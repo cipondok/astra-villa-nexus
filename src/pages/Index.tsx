@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -208,7 +207,7 @@ const Index = () => {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="any">{currentText.anyPrice}</SelectItem>
-                  <SelectItem value="0-1b">< Rp 1B</SelectItem>
+                  <SelectItem value="0-1b">Under Rp 1B</SelectItem>
                   <SelectItem value="1b-5b">Rp 1B - 5B</SelectItem>
                   <SelectItem value="5b+">Rp 5B+</SelectItem>
                 </SelectContent>
