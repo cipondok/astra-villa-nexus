@@ -6,10 +6,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Search, MapPin, Bed, Bath, Car, Heart, Star, Menu, Sun, Moon, Globe } from "lucide-react";
 import { useState } from "react";
-import Navigation from "@/components/Navigation";
+import RoleBasedNavigation from "@/components/RoleBasedNavigation";
 import PropertyCard from "@/components/PropertyCard";
 import VendorCard from "@/components/VendorCard";
-import AuthModal from "@/components/AuthModal";
+import RoleBasedAuthModal from "@/components/RoleBasedAuthModal";
 import { useTheme } from "@/components/ThemeProvider";
 
 const Index = () => {
@@ -142,7 +142,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navigation 
+      <RoleBasedNavigation 
         onLoginClick={() => setIsAuthModalOpen(true)}
         language={language}
         onLanguageToggle={toggleLanguage}
@@ -261,7 +261,7 @@ const Index = () => {
         </div>
       </section>
 
-      <AuthModal 
+      <RoleBasedAuthModal 
         isOpen={isAuthModalOpen} 
         onClose={() => setIsAuthModalOpen(false)}
         language={language}
