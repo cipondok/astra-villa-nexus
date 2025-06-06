@@ -110,11 +110,16 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
     setLoading(true);
     setValidationErrors({});
     
+    console.log('Starting login with email:', email);
+    
     const { error } = await signIn(email, password);
     
     if (!error) {
+      console.log('Login successful');
       onClose();
       resetForm();
+    } else {
+      console.log('Login failed:', error);
     }
     setLoading(false);
   };
@@ -135,14 +140,14 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
         return;
       }
 
-      // Step 2: Prepare user data - using 'general_user' to match database enum
+      // Step 2: Prepare user data - explicitly using 'general_user' enum value
       setRegistrationProgress(70);
       const userData = {
         full_name: fullName.trim(),
-        role: 'general_user', // This matches the database enum value
-        phone: '',
-        company_name: '',
-        license_number: ''
+        role: 'general_user', // Explicitly set to match database enum
+        phone: '', // Empty string for general users
+        company_name: '', // Empty string for general users
+        license_number: '' // Empty string for general users
       };
 
       console.log('Registration data prepared:', userData);
