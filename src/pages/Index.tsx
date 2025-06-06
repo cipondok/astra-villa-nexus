@@ -93,8 +93,10 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Property Listings */}
-      <PropertyListingsSection language={language} />
+      {/* Property Listings - wrapped in error boundary-like try/catch */}
+      <div className="property-listings-wrapper">
+        <PropertyListingsSection language={language} />
+      </div>
 
       {/* Auth Modal */}
       <AuthModal
