@@ -1,3 +1,4 @@
+
 import { useState, useEffect, createContext, useContext, ReactNode } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -89,16 +90,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       
       const redirectUrl = `${window.location.origin}/`;
       
-      // Clean and validate user data
+      // Clean and validate user data - make sure all fields are strings
       const cleanUserData = {
-        full_name: userData.full_name?.trim() || '',
-        phone: userData.phone?.replace(/[-\s]/g, '') || '',
-        role: userData.role || 'general_user',
-        company_name: userData.company_name?.trim() || '',
-        license_number: userData.license_number?.trim() || ''
+        full_name: String(userData.full_name || '').trim(),
+        phone: String(userData.phone || '').replace(/[-\s]/g, ''),
+        role: String(userData.role || 'general_user'),
+        company_name: String(userData.company_name || '').trim(),
+        license_number: String(userData.license_number || '').trim()
       };
 
       console.log('Clean user data for signup:', cleanUserData);
+
+      // Validate that role is one of the allowed values
+      const allowedRoles = ['general_user', 'property_owner', 'agent', 'vendor', 'admin'];
+      if (!allowedRoles.includes(cleanUserData.role)) {
+        cleanUserData.role = 'general_user';
+      }
 
       const { data, error } = await supabase.auth.signUp({
         email: email.trim(),
