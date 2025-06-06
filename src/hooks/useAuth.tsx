@@ -85,56 +85,51 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const signUp = async (email: string, password: string, userData: any) => {
     try {
-      console.log('=== SIGNUP DEBUG START ===');
+      console.log('=== SIGNUP ATTEMPT ===');
       console.log('Email:', email);
-      console.log('Original userData:', userData);
+      console.log('UserData received:', userData);
       
-      const redirectUrl = `${window.location.origin}/`;
-      console.log('Redirect URL:', redirectUrl);
+      // First, let's try to check if the database schema is correct
+      const { data: schemaCheck, error: schemaError } = await supabase
+        .from('profiles')
+        .select('role')
+        .limit(1);
       
-      // Ensure all metadata fields are strings and use exact enum values
-      const userMetadata = {
-        full_name: String(userData.full_name || '').trim(),
-        phone: String(userData.phone || '').trim(),
-        role: 'general_user', // Always use exact enum value
-        company_name: String(userData.company_name || '').trim(),
-        license_number: String(userData.license_number || '').trim()
-      };
+      console.log('Schema check result:', { schemaCheck, schemaError });
 
-      console.log('Clean metadata for Supabase:', userMetadata);
-
+      // Simplify the signup - just use basic data
       const { data, error } = await supabase.auth.signUp({
         email: email.trim(),
         password,
         options: {
-          emailRedirectTo: redirectUrl,
-          data: userMetadata
+          emailRedirectTo: `${window.location.origin}/`,
+          data: {
+            full_name: String(userData.full_name || '').trim(),
+            role: 'general_user'
+          }
         }
       });
 
-      console.log('=== SIGNUP RESPONSE ===');
-      console.log('Data:', data);
+      console.log('=== SIGNUP RESULT ===');
+      console.log('Success data:', data);
       console.log('Error:', error);
-      console.log('=== SIGNUP DEBUG END ===');
 
       if (error) {
-        console.error('Signup error details:', {
+        console.error('Full error details:', {
           message: error.message,
           status: error.status,
-          name: error.name
+          name: error.name,
+          code: error.code
         });
         
-        let errorMessage = error.message;
+        let errorMessage = 'Registration failed. Please try again.';
+        
         if (error.message.includes('User already registered')) {
           errorMessage = 'An account with this email already exists. Please try signing in instead.';
-        } else if (error.message.includes('Database error')) {
-          errorMessage = 'Registration failed due to a database error. Please try again.';
         } else if (error.message.includes('Invalid email')) {
           errorMessage = 'Please enter a valid email address.';
         } else if (error.message.includes('Password')) {
           errorMessage = 'Password must be at least 6 characters long.';
-        } else if (error.message.includes('Signup is disabled')) {
-          errorMessage = 'New user registration is currently disabled.';
         }
         
         toast({
