@@ -2,7 +2,7 @@
 import React, { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Box, Plane, Text } from '@react-three/drei';
-import { Mesh } from 'three';
+import { Group } from 'three';
 
 interface PropertyModel3DProps {
   propertyId: number;
@@ -11,8 +11,7 @@ interface PropertyModel3DProps {
 }
 
 const PropertyModel3D = ({ propertyId, stagingStyle, showNeighborhood }: PropertyModel3DProps) => {
-  const houseRef = useRef<Mesh>(null);
-  const furnitureRefs = useRef<Mesh[]>([]);
+  const houseRef = useRef<Group>(null);
 
   useFrame((state, delta) => {
     // Subtle breathing animation for the model
@@ -69,11 +68,7 @@ const PropertyModel3D = ({ propertyId, stagingStyle, showNeighborhood }: Propert
       {/* Virtual Staging Furniture */}
       <group>
         {/* Living Room Sofa */}
-        <Box 
-          args={[3, 0.8, 1.5]} 
-          position={[-1, 0.4, 1]}
-          ref={(el) => el && (furnitureRefs.current[0] = el)}
-        >
+        <Box args={[3, 0.8, 1.5]} position={[-1, 0.4, 1]}>
           <meshStandardMaterial color={getStagingColor(stagingStyle)} />
         </Box>
         

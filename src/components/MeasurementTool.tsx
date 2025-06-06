@@ -2,7 +2,7 @@
 import React, { useState, useRef } from 'react';
 import { useThree, useFrame } from '@react-three/fiber';
 import { Line, Text } from '@react-three/drei';
-import { Vector3, Raycaster } from 'three';
+import { Vector3, Vector2, Raycaster } from 'three';
 
 const MeasurementTool = () => {
   const { camera, scene, gl } = useThree();
@@ -20,10 +20,10 @@ const MeasurementTool = () => {
     event.preventDefault();
     
     const rect = gl.domElement.getBoundingClientRect();
-    const mouse = {
-      x: ((event.clientX - rect.left) / rect.width) * 2 - 1,
-      y: -((event.clientY - rect.top) / rect.height) * 2 + 1
-    };
+    const mouse = new Vector2(
+      ((event.clientX - rect.left) / rect.width) * 2 - 1,
+      -((event.clientY - rect.top) / rect.height) * 2 + 1
+    );
 
     raycaster.current.setFromCamera(mouse, camera);
     const intersects = raycaster.current.intersectObjects(scene.children, true);
@@ -100,7 +100,6 @@ const MeasurementTool = () => {
               color="red"
               anchorX="center"
               anchorY="middle"
-              billboard
             >
               {formatDistance(measurement.distance)}
             </Text>
@@ -116,7 +115,6 @@ const MeasurementTool = () => {
           color="white"
           anchorX="center"
           anchorY="middle"
-          billboard
         >
           Click two points to measure distance
         </Text>
@@ -130,7 +128,6 @@ const MeasurementTool = () => {
           color="orange"
           anchorX="center"
           anchorY="middle"
-          billboard
         >
           Click the second point to complete measurement
         </Text>
