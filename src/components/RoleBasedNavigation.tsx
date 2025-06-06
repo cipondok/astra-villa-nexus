@@ -15,7 +15,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface RoleBasedNavigationProps {
   onLoginClick: () => void;
-  language: string;
+  language: "en" | "id";
   onLanguageToggle: () => void;
   theme: string;
   onThemeToggle: () => void;
