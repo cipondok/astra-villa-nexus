@@ -1,7 +1,8 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
@@ -10,320 +11,215 @@ import { useAuth } from "@/contexts/AuthContext";
 interface RoleBasedAuthModalProps {
   isOpen: boolean;
   onClose: () => void;
-  language: string;
+  language: "en" | "id";
 }
 
 const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalProps) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [fullName, setFullName] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [registrationProgress, setRegistrationProgress] = useState(0);
-  const [validationErrors, setValidationErrors] = useState<{[key: string]: string}>({});
+  const [activeTab, setActiveTab] = useState("signin");
+  const [isLoading, setIsLoading] = useState(false);
+  const [signUpData, setSignUpData] = useState({
+    email: "",
+    password: "",
+    confirmPassword: "",
+    full_name: "",
+    role: "general_user",
+    phone: "",
+    company_name: "",
+    license_number: ""
+  });
+  const [signInData, setSignInData] = useState({
+    email: "",
+    password: ""
+  });
 
-  const { signUp, signIn } = useAuth();
+  const { signIn, signUp } = useAuth();
 
   const text = {
     en: {
-      login: "Login",
-      register: "Register", 
+      signin: "Sign In",
+      signup: "Sign Up",
       email: "Email",
       password: "Password",
+      confirmPassword: "Confirm Password",
       fullName: "Full Name",
-      loginBtn: "Sign In",
-      registerBtn: "Create Account",
-      close: "Close",
-      fillDemo: "Fill Demo Data",
-      passwordWeak: "Password must be at least 8 characters with uppercase, lowercase, and number",
-      emailInvalid: "Please enter a valid email address",
-      nameRequired: "Full name is required (minimum 2 characters)",
-      creatingAccount: "Creating account...",
+      role: "Role",
+      phone: "Phone Number",
+      companyName: "Company Name",
+      licenseNumber: "License Number",
+      generalUser: "General User",
+      propertyOwner: "Property Owner",
+      agent: "Real Estate Agent",
+      vendor: "Vendor",
+      signinButton: "Sign In",
+      signupButton: "Create Account",
+      switchToSignup: "Don't have an account? Sign up",
+      switchToSignin: "Already have an account? Sign in",
+      passwordMismatch: "Passwords don't match",
+      fillAllFields: "Please fill in all required fields"
     },
     id: {
-      login: "Masuk",
-      register: "Daftar",
+      signin: "Masuk",
+      signup: "Daftar",
       email: "Email",
       password: "Kata Sandi",
+      confirmPassword: "Konfirmasi Kata Sandi",
       fullName: "Nama Lengkap",
-      loginBtn: "Masuk",
-      registerBtn: "Buat Akun",
-      close: "Tutup",
-      fillDemo: "Isi Data Demo",
-      passwordWeak: "Kata sandi minimal 8 karakter dengan huruf besar, kecil, dan angka",
-      emailInvalid: "Masukkan alamat email yang valid",
-      nameRequired: "Nama lengkap wajib diisi (minimal 2 karakter)",
-      creatingAccount: "Membuat akun...",
+      role: "Peran",
+      phone: "Nomor Telepon",
+      companyName: "Nama Perusahaan",
+      licenseNumber: "Nomor Lisensi",
+      generalUser: "Pengguna Umum",
+      propertyOwner: "Pemilik Properti",
+      agent: "Agen Real Estat",
+      vendor: "Vendor",
+      signinButton: "Masuk",
+      signupButton: "Buat Akun",
+      switchToSignup: "Belum punya akun? Daftar",
+      switchToSignin: "Sudah punya akun? Masuk",
+      passwordMismatch: "Kata sandi tidak cocok",
+      fillAllFields: "Harap isi semua bidang yang diperlukan"
     }
   };
 
   const currentText = text[language];
 
-  // Demo data auto-fill function
-  const fillDemoData = () => {
-    const timestamp = Date.now();
-    setFullName("John Doe Demo");
-    setEmail(`demo${timestamp}@example.com`);
-    setPassword("Demo123456");
-    setValidationErrors({});
-  };
-
-  const validatePassword = (password: string): boolean => {
-    const hasUpperCase = /[A-Z]/.test(password);
-    const hasLowerCase = /[a-z]/.test(password);
-    const hasNumbers = /\d/.test(password);
-    const hasMinLength = password.length >= 8;
-    
-    return hasUpperCase && hasLowerCase && hasNumbers && hasMinLength;
-  };
-
-  const validateEmail = (email: string): boolean => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
-
-  const validateFullName = (name: string): boolean => {
-    return name.trim().length >= 2;
-  };
-
-  const validateForm = (): boolean => {
-    const errors: {[key: string]: string} = {};
-
-    if (!validateFullName(fullName)) {
-      errors.fullName = currentText.nameRequired;
-    }
-
-    if (!validateEmail(email)) {
-      errors.email = currentText.emailInvalid;
-    }
-
-    if (!validatePassword(password)) {
-      errors.password = currentText.passwordWeak;
-    }
-
-    setValidationErrors(errors);
-    return Object.keys(errors).length === 0;
-  };
+  if (!isOpen) return null;
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    setValidationErrors({});
+    setIsLoading(true);
     
-    console.log('Starting login with email:', email);
-    
-    const { error } = await signIn(email, password);
-    
-    if (!error) {
-      console.log('Login successful');
-      onClose();
-      resetForm();
-    } else {
-      console.log('Login failed:', error);
+    try {
+      const { success } = await signIn(signInData.email, signInData.password);
+      if (success) {
+        onClose();
+      }
+    } catch (error) {
+      console.error('Sign in error:', error);
+    } finally {
+      setIsLoading(false);
     }
-    setLoading(false);
   };
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    setRegistrationProgress(0);
+    
+    if (signUpData.password !== signUpData.confirmPassword) {
+      alert(currentText.passwordMismatch);
+      return;
+    }
 
+    if (!signUpData.email || !signUpData.password || !signUpData.full_name) {
+      alert(currentText.fillAllFields);
+      return;
+    }
+
+    setIsLoading(true);
+    
     try {
-      console.log('Form submission started', { email, fullName });
-      
-      // Step 1: Validate form
-      setRegistrationProgress(40);
-      if (!validateForm()) {
-        console.log('Form validation failed');
-        setLoading(false);
-        return;
-      }
-
-      // Step 2: Prepare user data - explicitly using 'general_user' enum value
-      setRegistrationProgress(70);
-      const userData = {
-        full_name: fullName.trim(),
-        role: 'general_user', // Explicitly set to match database enum
-        phone: '', // Empty string for general users
-        company_name: '', // Empty string for general users
-        license_number: '' // Empty string for general users
-      };
-
-      console.log('Registration data prepared:', userData);
-
-      // Step 3: Create account
-      setRegistrationProgress(90);
-      const { error } = await signUp(email, password, userData);
-      
-      setRegistrationProgress(100);
-      
-      if (!error) {
-        console.log('Registration successful');
+      const { success } = await signUp(signUpData.email, signUpData.password, signUpData.full_name);
+      if (success) {
         onClose();
-        resetForm();
-      } else {
-        console.log('Registration failed:', error);
       }
     } catch (error) {
-      console.error('Registration error:', error);
+      console.error('Sign up error:', error);
     } finally {
-      setLoading(false);
-      setRegistrationProgress(0);
+      setIsLoading(false);
     }
   };
 
-  const resetForm = () => {
-    setEmail("");
-    setPassword("");
-    setFullName("");
-    setValidationErrors({});
-    setRegistrationProgress(0);
-  };
-
-  if (!isOpen) return null;
-
-  // Check if form is valid (no errors and all required fields filled)
-  const isFormValid = Object.keys(validationErrors).every(key => !validationErrors[key]) &&
-    fullName.trim() && 
-    email.trim() && 
-    password.trim();
-
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <Card className="w-full max-w-md">
-        <CardContent className="p-6">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-orange-500 bg-clip-text text-transparent">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <Card className="w-full max-w-md max-h-[90vh] overflow-y-auto">
+        <CardHeader>
+          <div className="flex justify-between items-center">
+            <CardTitle className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-orange-500 bg-clip-text text-transparent">
               Astra Villa
-            </h2>
-            <Button variant="ghost" onClick={onClose} disabled={loading}>
-              {currentText.close}
+            </CardTitle>
+            <Button variant="ghost" size="sm" onClick={onClose}>
+              ×
             </Button>
           </div>
-          
-          <Tabs defaultValue="login" className="w-full">
+        </CardHeader>
+        <CardContent>
+          <Tabs value={activeTab} onValueChange={setActiveTab}>
             <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="login">{currentText.login}</TabsTrigger>
-              <TabsTrigger value="register">{currentText.register}</TabsTrigger>
+              <TabsTrigger value="signin">{currentText.signin}</TabsTrigger>
+              <TabsTrigger value="signup">{currentText.signup}</TabsTrigger>
             </TabsList>
             
-            <TabsContent value="login" className="space-y-4">
+            <TabsContent value="signin" className="mt-6">
               <form onSubmit={handleSignIn} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="login-email">{currentText.email}</Label>
+                <div>
+                  <Label htmlFor="signin-email">{currentText.email}</Label>
                   <Input
-                    id="login-email"
+                    id="signin-email"
                     type="email"
-                    placeholder={currentText.email}
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    value={signInData.email}
+                    onChange={(e) => setSignInData(prev => ({ ...prev, email: e.target.value }))}
                     required
-                    disabled={loading}
                   />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="login-password">{currentText.password}</Label>
+                <div>
+                  <Label htmlFor="signin-password">{currentText.password}</Label>
                   <Input
-                    id="login-password"
+                    id="signin-password"
                     type="password"
-                    placeholder={currentText.password}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    value={signInData.password}
+                    onChange={(e) => setSignInData(prev => ({ ...prev, password: e.target.value }))}
                     required
-                    disabled={loading}
                   />
                 </div>
-                <Button 
-                  type="submit" 
-                  className="w-full bg-gradient-to-r from-blue-600 to-orange-500"
-                  disabled={loading}
-                >
-                  {loading ? "Signing in..." : currentText.loginBtn}
+                <Button type="submit" className="w-full" disabled={isLoading}>
+                  {isLoading ? <Progress value={50} className="w-full h-2" /> : currentText.signinButton}
                 </Button>
               </form>
             </TabsContent>
             
-            <TabsContent value="register" className="space-y-4">
-              {/* Demo Data Fill Button */}
-              <div className="flex justify-center">
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  onClick={fillDemoData}
-                  disabled={loading}
-                  className="text-sm"
-                >
-                  {currentText.fillDemo}
-                </Button>
-              </div>
-
-              {loading && registrationProgress > 0 && (
-                <div className="space-y-2">
-                  <Progress value={registrationProgress} className="w-full" />
-                  <p className="text-sm text-center">
-                    {currentText.creatingAccount}
-                  </p>
-                </div>
-              )}
-              
+            <TabsContent value="signup" className="mt-6">
               <form onSubmit={handleSignUp} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="register-name">{currentText.fullName}</Label>
+                <div>
+                  <Label htmlFor="signup-email">{currentText.email}</Label>
                   <Input
-                    id="register-name"
-                    type="text"
-                    placeholder={currentText.fullName}
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    required
-                    disabled={loading}
-                    className={validationErrors.fullName ? "border-red-500" : ""}
-                  />
-                  {validationErrors.fullName && (
-                    <p className="text-sm text-red-500">{validationErrors.fullName}</p>
-                  )}
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="register-email">{currentText.email}</Label>
-                  <Input
-                    id="register-email"
+                    id="signup-email"
                     type="email"
-                    placeholder={currentText.email}
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    value={signUpData.email}
+                    onChange={(e) => setSignUpData(prev => ({ ...prev, email: e.target.value }))}
                     required
-                    disabled={loading}
-                    className={validationErrors.email ? "border-red-500" : ""}
                   />
-                  {validationErrors.email && (
-                    <p className="text-sm text-red-500">{validationErrors.email}</p>
-                  )}
                 </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="register-password">{currentText.password}</Label>
+                <div>
+                  <Label htmlFor="signup-fullname">{currentText.fullName}</Label>
                   <Input
-                    id="register-password"
-                    type="password"
-                    placeholder={currentText.password}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    id="signup-fullname"
+                    type="text"
+                    value={signUpData.full_name}
+                    onChange={(e) => setSignUpData(prev => ({ ...prev, full_name: e.target.value }))}
                     required
-                    disabled={loading}
-                    className={validationErrors.password ? "border-red-500" : ""}
                   />
-                  {validationErrors.password && (
-                    <p className="text-sm text-red-500">{validationErrors.password}</p>
-                  )}
                 </div>
-
-                <Button 
-                  type="submit" 
-                  className="w-full bg-gradient-to-r from-blue-600 to-orange-500"
-                  disabled={loading || !isFormValid}
-                >
-                  {loading ? "Creating account..." : currentText.registerBtn}
+                <div>
+                  <Label htmlFor="signup-password">{currentText.password}</Label>
+                  <Input
+                    id="signup-password"
+                    type="password"
+                    value={signUpData.password}
+                    onChange={(e) => setSignUpData(prev => ({ ...prev, password: e.target.value }))}
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="signup-confirm">{currentText.confirmPassword}</Label>
+                  <Input
+                    id="signup-confirm"
+                    type="password"
+                    value={signUpData.confirmPassword}
+                    onChange={(e) => setSignUpData(prev => ({ ...prev, confirmPassword: e.target.value }))}
+                    required
+                  />
+                </div>
+                <Button type="submit" className="w-full" disabled={isLoading}>
+                  {isLoading ? <Progress value={50} className="w-full h-2" /> : currentText.signupButton}
                 </Button>
               </form>
             </TabsContent>
