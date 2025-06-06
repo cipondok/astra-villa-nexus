@@ -2,7 +2,7 @@
 import React, { useState, useCallback } from 'react';
 import { useThree, ThreeEvent } from '@react-three/fiber';
 import { Text } from '@react-three/drei';
-import { Vector3 } from 'three';
+import { Vector3, Euler } from 'three';
 
 interface Measurement {
   start: Vector3;
@@ -68,31 +68,44 @@ const MeasurementTool = () => {
 
       {/* Render completed measurements */}
       {measurements.map((measurement) => {
+        const start = measurement.start;
+        const end = measurement.end;
+        
+        // Calculate midpoint for line position
         const midpoint = new Vector3()
-          .addVectors(measurement.start, measurement.end)
+          .addVectors(start, end)
           .multiplyScalar(0.5);
 
-        // Calculate the direction and rotation for the line
-        const direction = new Vector3().subVectors(measurement.end, measurement.start);
+        // Calculate direction and distance
+        const direction = new Vector3().subVectors(end, start);
         const distance = direction.length();
+        
+        // Calculate rotation to align line with direction
+        const rotation = new Euler();
+        rotation.setFromQuaternion(
+          new Vector3(0, 1, 0).lookAt(direction.normalize()).quaternion
+        );
         
         return (
           <group key={measurement.id}>
-            {/* Measurement line using a simple box geometry */}
-            <mesh position={midpoint}>
-              <boxGeometry args={[0.02, distance, 0.02]} />
+            {/* Measurement line */}
+            <mesh 
+              position={[midpoint.x, midpoint.y, midpoint.z]}
+              rotation={[rotation.x, rotation.y, rotation.z]}
+            >
+              <cylinderGeometry args={[0.01, 0.01, distance, 8]} />
               <meshBasicMaterial color="red" />
             </mesh>
             
             {/* Start point */}
-            <mesh position={[measurement.start.x, measurement.start.y, measurement.start.z]}>
-              <sphereGeometry args={[0.05]} />
+            <mesh position={[start.x, start.y, start.z]}>
+              <sphereGeometry args={[0.05, 16, 16]} />
               <meshBasicMaterial color="red" />
             </mesh>
             
             {/* End point */}
-            <mesh position={[measurement.end.x, measurement.end.y, measurement.end.z]}>
-              <sphereGeometry args={[0.05]} />
+            <mesh position={[end.x, end.y, end.z]}>
+              <sphereGeometry args={[0.05, 16, 16]} />
               <meshBasicMaterial color="red" />
             </mesh>
             
