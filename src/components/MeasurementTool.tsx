@@ -1,8 +1,8 @@
 
-import React, { useState, useRef, useCallback } from 'react';
-import { useThree, useFrame, ThreeEvent } from '@react-three/fiber';
-import { Line, Text } from '@react-three/drei';
-import { Vector3, Raycaster } from 'three';
+import React, { useState, useCallback } from 'react';
+import { useThree, ThreeEvent } from '@react-three/fiber';
+import { Text } from '@react-three/drei';
+import { Vector3 } from 'three';
 
 interface Measurement {
   start: Vector3;
@@ -12,11 +12,10 @@ interface Measurement {
 }
 
 const MeasurementTool = () => {
-  const { camera, scene, gl } = useThree();
+  const { camera, scene } = useThree();
   const [measurements, setMeasurements] = useState<Measurement[]>([]);
   const [currentStart, setCurrentStart] = useState<Vector3 | null>(null);
   const [isDrawing, setIsDrawing] = useState(false);
-  const raycaster = useRef(new Raycaster());
 
   const handlePointerDown = useCallback((event: ThreeEvent<PointerEvent>) => {
     event.stopPropagation();
@@ -64,7 +63,7 @@ const MeasurementTool = () => {
         visible={false}
       >
         <planeGeometry args={[100, 100]} />
-        <meshBasicMaterial transparent opacity={0} />
+        <meshBasicMaterial transparent={true} opacity={0} />
       </mesh>
 
       {/* Render completed measurements */}
@@ -73,35 +72,25 @@ const MeasurementTool = () => {
           .addVectors(measurement.start, measurement.end)
           .multiplyScalar(0.5);
 
-        // Create line points as simple arrays
-        const startArray: [number, number, number] = [
-          measurement.start.x, 
-          measurement.start.y, 
-          measurement.start.z
-        ];
-        const endArray: [number, number, number] = [
-          measurement.end.x, 
-          measurement.end.y, 
-          measurement.end.z
-        ];
-
         return (
           <group key={measurement.id}>
-            {/* Measurement line using simple array format */}
-            <Line
-              points={[startArray, endArray]}
-              color="red"
-              lineWidth={3}
-            />
+            {/* Measurement line using cylinderGeometry */}
+            <mesh 
+              position={midpoint}
+              lookAt={measurement.end}
+            >
+              <cylinderGeometry args={[0.01, 0.01, measurement.distance]} />
+              <meshBasicMaterial color="red" />
+            </mesh>
             
             {/* Start point */}
-            <mesh position={startArray}>
+            <mesh position={measurement.start}>
               <sphereGeometry args={[0.05]} />
               <meshBasicMaterial color="red" />
             </mesh>
             
             {/* End point */}
-            <mesh position={endArray}>
+            <mesh position={measurement.end}>
               <sphereGeometry args={[0.05]} />
               <meshBasicMaterial color="red" />
             </mesh>
