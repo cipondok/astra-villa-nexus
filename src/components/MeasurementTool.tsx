@@ -72,25 +72,26 @@ const MeasurementTool = () => {
           .addVectors(measurement.start, measurement.end)
           .multiplyScalar(0.5);
 
+        // Calculate the direction and rotation for the line
+        const direction = new Vector3().subVectors(measurement.end, measurement.start);
+        const distance = direction.length();
+        
         return (
           <group key={measurement.id}>
-            {/* Measurement line using cylinderGeometry */}
-            <mesh 
-              position={midpoint}
-              lookAt={measurement.end}
-            >
-              <cylinderGeometry args={[0.01, 0.01, measurement.distance]} />
+            {/* Measurement line using a simple box geometry */}
+            <mesh position={midpoint}>
+              <boxGeometry args={[0.02, distance, 0.02]} />
               <meshBasicMaterial color="red" />
             </mesh>
             
             {/* Start point */}
-            <mesh position={measurement.start}>
+            <mesh position={[measurement.start.x, measurement.start.y, measurement.start.z]}>
               <sphereGeometry args={[0.05]} />
               <meshBasicMaterial color="red" />
             </mesh>
             
             {/* End point */}
-            <mesh position={measurement.end}>
+            <mesh position={[measurement.end.x, measurement.end.y, measurement.end.z]}>
               <sphereGeometry args={[0.05]} />
               <meshBasicMaterial color="red" />
             </mesh>
