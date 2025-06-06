@@ -80,17 +80,26 @@ const MeasurementTool = () => {
         const direction = new Vector3().subVectors(end, start);
         const distance = direction.length();
         
-        // Calculate rotation to align cylinder with the line direction
-        const up = new Vector3(0, 1, 0);
-        const quaternion = new Quaternion();
-        quaternion.setFromUnitVectors(up, direction.normalize());
+        // Only calculate rotation if we have a valid direction
+        let rotationProps = {};
+        if (distance > 0.001) { // Avoid division by zero
+          const up = new Vector3(0, 1, 0);
+          const quaternion = new Quaternion();
+          const normalizedDirection = direction.clone().normalize();
+          
+          // Validate the normalized direction
+          if (normalizedDirection.length() > 0.99) {
+            quaternion.setFromUnitVectors(up, normalizedDirection);
+            rotationProps = { quaternion };
+          }
+        }
         
         return (
           <group key={measurement.id}>
             {/* Measurement line */}
             <mesh 
               position={[midpoint.x, midpoint.y, midpoint.z]}
-              quaternion={quaternion}
+              {...rotationProps}
             >
               <cylinderGeometry args={[0.01, 0.01, distance, 8]} />
               <meshBasicMaterial color="red" />
