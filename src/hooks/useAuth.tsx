@@ -1,3 +1,4 @@
+
 import { useState, useEffect, createContext, useContext, ReactNode } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -87,17 +88,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       console.log('=== SIGNUP ATTEMPT ===');
       console.log('Email:', email);
-      console.log('UserData received:', userData);
-      
-      // First, let's try to check if the database schema is correct
-      const { data: schemaCheck, error: schemaError } = await supabase
-        .from('profiles')
-        .select('role')
-        .limit(1);
-      
-      console.log('Schema check result:', { schemaCheck, schemaError });
+      console.log('UserData:', userData);
 
-      // Simplify the signup - just use basic data
       const { data, error } = await supabase.auth.signUp({
         email: email.trim(),
         password,
@@ -110,17 +102,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
       });
 
-      console.log('=== SIGNUP RESULT ===');
-      console.log('Success data:', data);
-      console.log('Error:', error);
+      console.log('Signup result:', { data, error });
 
       if (error) {
-        console.error('Full error details:', {
-          message: error.message,
-          status: error.status,
-          name: error.name,
-          code: error.code
-        });
+        console.error('Signup error:', error);
         
         let errorMessage = 'Registration failed. Please try again.';
         
