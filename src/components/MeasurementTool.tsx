@@ -2,7 +2,7 @@
 import React, { useState, useCallback } from 'react';
 import { useThree, ThreeEvent } from '@react-three/fiber';
 import { Text } from '@react-three/drei';
-import { Vector3, Euler } from 'three';
+import { Vector3, Quaternion, Object3D } from 'three';
 
 interface Measurement {
   start: Vector3;
@@ -80,18 +80,17 @@ const MeasurementTool = () => {
         const direction = new Vector3().subVectors(end, start);
         const distance = direction.length();
         
-        // Calculate rotation to align line with direction
-        const rotation = new Euler();
-        rotation.setFromQuaternion(
-          new Vector3(0, 1, 0).lookAt(direction.normalize()).quaternion
-        );
+        // Calculate rotation to align cylinder with the line direction
+        const up = new Vector3(0, 1, 0);
+        const quaternion = new Quaternion();
+        quaternion.setFromUnitVectors(up, direction.normalize());
         
         return (
           <group key={measurement.id}>
             {/* Measurement line */}
             <mesh 
               position={[midpoint.x, midpoint.y, midpoint.z]}
-              rotation={[rotation.x, rotation.y, rotation.z]}
+              quaternion={quaternion}
             >
               <cylinderGeometry args={[0.01, 0.01, distance, 8]} />
               <meshBasicMaterial color="red" />
