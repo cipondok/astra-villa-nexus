@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -45,6 +44,7 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
       loginBtn: "Sign In",
       registerBtn: "Create Account",
       close: "Close",
+      fillDemo: "Fill Demo Data",
       passwordWeak: "Password must be at least 8 characters with uppercase, lowercase, and number",
       emailExists: "Email already exists",
       phoneInvalid: "Please enter valid Indonesian phone number (08xx-xxxx-xxxx)",
@@ -78,6 +78,7 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
       loginBtn: "Masuk",
       registerBtn: "Buat Akun",
       close: "Tutup",
+      fillDemo: "Isi Data Demo",
       passwordWeak: "Kata sandi minimal 8 karakter dengan huruf besar, kecil, dan angka",
       emailExists: "Email sudah terdaftar",
       phoneInvalid: "Masukkan nomor telepon Indonesia yang valid (08xx-xxxx-xxxx)",
@@ -101,6 +102,32 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
   };
 
   const currentText = text[language];
+
+  // Demo data auto-fill function
+  const fillDemoData = () => {
+    const timestamp = Date.now();
+    setFullName("John Doe Demo");
+    setEmail(`demo${timestamp}@example.com`);
+    setPassword("Demo123456");
+    setPhone("0812-3456-7890");
+    setRole("general_user");
+    setCompanyName("Demo Company");
+    setLicenseNumber("LIC123456");
+    
+    // Clear any existing errors
+    setValidationErrors({});
+    
+    // Mark all fields as touched for validation
+    setFieldTouched({
+      fullName: true,
+      email: true,
+      password: true,
+      phone: true,
+      role: true,
+      companyName: true,
+      licenseNumber: true
+    });
+  };
 
   const validatePassword = (password: string): boolean => {
     const hasUpperCase = /[A-Z]/.test(password);
@@ -455,6 +482,19 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
             </TabsContent>
             
             <TabsContent value="register" className="space-y-4">
+              {/* Demo Data Fill Button */}
+              <div className="flex justify-center">
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  onClick={fillDemoData}
+                  disabled={loading}
+                  className="text-sm"
+                >
+                  {currentText.fillDemo}
+                </Button>
+              </div>
+
               {loading && registrationProgress > 0 && (
                 <div className="space-y-2">
                   <Progress value={registrationProgress} className="w-full" />
