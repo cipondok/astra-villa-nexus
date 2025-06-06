@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -26,6 +27,7 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
   const [loading, setLoading] = useState(false);
   const [registrationProgress, setRegistrationProgress] = useState(0);
   const [validationErrors, setValidationErrors] = useState<{[key: string]: string}>({});
+  const [isFormValid, setIsFormValid] = useState(false);
 
   const { signUp, signIn } = useAuth();
 
@@ -47,11 +49,14 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
       emailExists: "Email already exists",
       phoneInvalid: "Please enter valid Indonesian phone number (08xx-xxxx-xxxx)",
       emailInvalid: "Please enter a valid email address",
-      nameRequired: "Full name is required",
+      nameRequired: "Full name is required (minimum 2 characters)",
       roleRequired: "Please select your role",
+      companyRequired: "Company name is required for this role",
+      licenseRequired: "License number is required for agents",
       checkingEmail: "Checking email availability...",
       validatingData: "Validating data...",
       creatingAccount: "Creating account...",
+      formIncomplete: "Please complete all required fields correctly",
       roles: {
         general_user: "General User / Buyer / Renter",
         property_owner: "Property Owner",
@@ -77,11 +82,14 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
       emailExists: "Email sudah terdaftar",
       phoneInvalid: "Masukkan nomor telepon Indonesia yang valid (08xx-xxxx-xxxx)",
       emailInvalid: "Masukkan alamat email yang valid",
-      nameRequired: "Nama lengkap wajib diisi",
+      nameRequired: "Nama lengkap wajib diisi (minimal 2 karakter)",
       roleRequired: "Silakan pilih peran Anda",
+      companyRequired: "Nama perusahaan wajib diisi untuk peran ini",
+      licenseRequired: "Nomor lisensi wajib diisi untuk agen",
       checkingEmail: "Memeriksa ketersediaan email...",
       validatingData: "Memvalidasi data...", 
       creatingAccount: "Membuat akun...",
+      formIncomplete: "Silakan lengkapi semua field yang diperlukan dengan benar",
       roles: {
         general_user: "Pengguna Umum / Pembeli / Penyewa",
         property_owner: "Pemilik Properti",
@@ -113,6 +121,10 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
     const phoneRegex = /^08\d{8,11}$/;
     const cleanPhone = phone.replace(/[-\s]/g, '');
     return phoneRegex.test(cleanPhone);
+  };
+
+  const validateFullName = (name: string): boolean => {
+    return name.trim().length >= 2;
   };
 
   const formatPhoneNumber = (value: string): string => {
@@ -157,28 +169,80 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
   const validateForm = (): boolean => {
     const errors: {[key: string]: string} = {};
 
-    if (!fullName.trim()) {
+    // Validate full name
+    if (!validateFullName(fullName)) {
       errors.fullName = currentText.nameRequired;
     }
 
+    // Validate email
     if (!validateEmail(email)) {
       errors.email = currentText.emailInvalid;
     }
 
+    // Validate password
     if (!validatePassword(password)) {
       errors.password = currentText.passwordWeak;
     }
 
+    // Validate phone (if provided)
     if (phone && !validateIndonesianPhone(phone)) {
       errors.phone = currentText.phoneInvalid;
     }
 
+    // Validate role
     if (!role) {
       errors.role = currentText.roleRequired;
     }
 
+    // Validate company name for specific roles
+    const showCompanyFields = role === 'agent' || role === 'vendor' || role === 'property_owner';
+    if (showCompanyFields && !companyName.trim()) {
+      errors.companyName = currentText.companyRequired;
+    }
+
+    // Validate license number for agents
+    if (role === 'agent' && !licenseNumber.trim()) {
+      errors.licenseNumber = currentText.licenseRequired;
+    }
+
     setValidationErrors(errors);
-    return Object.keys(errors).length === 0;
+    const isValid = Object.keys(errors).length === 0;
+    setIsFormValid(isValid);
+    return isValid;
+  };
+
+  // Real-time validation
+  const handleFieldChange = (field: string, value: string) => {
+    switch (field) {
+      case 'fullName':
+        setFullName(value);
+        break;
+      case 'email':
+        setEmail(value);
+        break;
+      case 'password':
+        setPassword(value);
+        break;
+      case 'phone':
+        setPhone(formatPhoneNumber(value));
+        break;
+      case 'role':
+        setRole(value);
+        break;
+      case 'companyName':
+        setCompanyName(value);
+        break;
+      case 'licenseNumber':
+        setLicenseNumber(value);
+        break;
+    }
+    
+    // Clear specific field error when user starts typing
+    if (validationErrors[field]) {
+      const newErrors = { ...validationErrors };
+      delete newErrors[field];
+      setValidationErrors(newErrors);
+    }
   };
 
   const handleSignIn = async (e: React.FormEvent) => {
@@ -204,7 +268,7 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
     try {
       console.log('Form submission started', { email, fullName, role });
       
-      // Step 1: Validate form
+      // Step 1: Validate form completely
       setRegistrationProgress(20);
       if (!validateForm()) {
         console.log('Form validation failed');
@@ -266,11 +330,7 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
     setLicenseNumber("");
     setValidationErrors({});
     setRegistrationProgress(0);
-  };
-
-  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const formatted = formatPhoneNumber(e.target.value);
-    setPhone(formatted);
+    setIsFormValid(false);
   };
 
   if (!isOpen) return null;
@@ -353,9 +413,10 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
                     type="text"
                     placeholder={currentText.fullName}
                     value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
+                    onChange={(e) => handleFieldChange('fullName', e.target.value)}
                     required
                     disabled={loading}
+                    className={validationErrors.fullName ? "border-red-500" : ""}
                   />
                   {validationErrors.fullName && (
                     <p className="text-sm text-red-500">{validationErrors.fullName}</p>
@@ -369,9 +430,10 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
                     type="email"
                     placeholder={currentText.email}
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e) => handleFieldChange('email', e.target.value)}
                     required
                     disabled={loading}
+                    className={validationErrors.email ? "border-red-500" : ""}
                   />
                   {validationErrors.email && (
                     <p className="text-sm text-red-500">{validationErrors.email}</p>
@@ -385,9 +447,10 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
                     type="password"
                     placeholder={currentText.password}
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={(e) => handleFieldChange('password', e.target.value)}
                     required
                     disabled={loading}
+                    className={validationErrors.password ? "border-red-500" : ""}
                   />
                   {validationErrors.password && (
                     <p className="text-sm text-red-500">{validationErrors.password}</p>
@@ -401,8 +464,9 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
                     type="tel"
                     placeholder="08xx-xxxx-xxxx"
                     value={phone}
-                    onChange={handlePhoneChange}
+                    onChange={(e) => handleFieldChange('phone', e.target.value)}
                     disabled={loading}
+                    className={validationErrors.phone ? "border-red-500" : ""}
                   />
                   {validationErrors.phone && (
                     <p className="text-sm text-red-500">{validationErrors.phone}</p>
@@ -411,8 +475,8 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
 
                 <div className="space-y-2">
                   <Label htmlFor="register-role">{currentText.role}</Label>
-                  <Select value={role} onValueChange={setRole} disabled={loading}>
-                    <SelectTrigger>
+                  <Select value={role} onValueChange={(value) => handleFieldChange('role', value)} disabled={loading}>
+                    <SelectTrigger className={validationErrors.role ? "border-red-500" : ""}>
                       <SelectValue placeholder={currentText.role} />
                     </SelectTrigger>
                     <SelectContent>
@@ -436,9 +500,13 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
                       type="text"
                       placeholder={currentText.companyName}
                       value={companyName}
-                      onChange={(e) => setCompanyName(e.target.value)}
+                      onChange={(e) => handleFieldChange('companyName', e.target.value)}
                       disabled={loading}
+                      className={validationErrors.companyName ? "border-red-500" : ""}
                     />
+                    {validationErrors.companyName && (
+                      <p className="text-sm text-red-500">{validationErrors.companyName}</p>
+                    )}
                   </div>
                 )}
 
@@ -450,16 +518,24 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
                       type="text"
                       placeholder={currentText.licenseNumber}
                       value={licenseNumber}
-                      onChange={(e) => setLicenseNumber(e.target.value)}
+                      onChange={(e) => handleFieldChange('licenseNumber', e.target.value)}
                       disabled={loading}
+                      className={validationErrors.licenseNumber ? "border-red-500" : ""}
                     />
+                    {validationErrors.licenseNumber && (
+                      <p className="text-sm text-red-500">{validationErrors.licenseNumber}</p>
+                    )}
                   </div>
+                )}
+
+                {!isFormValid && Object.keys(validationErrors).length === 0 && (
+                  <p className="text-sm text-amber-600 text-center">{currentText.formIncomplete}</p>
                 )}
 
                 <Button 
                   type="submit" 
                   className="w-full bg-gradient-to-r from-blue-600 to-orange-500"
-                  disabled={loading}
+                  disabled={loading || !isFormValid}
                 >
                   {loading ? "Creating account..." : currentText.registerBtn}
                 </Button>
