@@ -36,7 +36,55 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
+  const fetchOrCreateProfile = async (userId: string, userEmail: string) => {
+    try {
+      console.log('Fetching profile for user:', userId);
+      
+      // Try to fetch existing profile
+      const { data: profileData, error: fetchError } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .single();
+      
+      if (fetchError && fetchError.code === 'PGRST116') {
+        // Profile doesn't exist, create it
+        console.log('Profile not found, creating new profile for user:', userId);
+        
+        const { data: newProfile, error: createError } = await supabase
+          .from('profiles')
+          .insert({
+            id: userId,
+            email: userEmail,
+            role: 'general_user',
+            verification_status: 'pending'
+          })
+          .select()
+          .single();
+        
+        if (createError) {
+          console.error('Error creating profile:', createError);
+          return null;
+        }
+        
+        console.log('Profile created successfully:', newProfile);
+        return newProfile;
+      } else if (fetchError) {
+        console.error('Error fetching profile:', fetchError);
+        return null;
+      }
+      
+      console.log('Profile fetched successfully:', profileData);
+      return profileData;
+    } catch (err) {
+      console.error('Profile fetch/create error:', err);
+      return null;
+    }
+  };
+
   useEffect(() => {
+    console.log('Setting up auth state listener');
+    
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
@@ -45,35 +93,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setUser(session?.user ?? null);
         
         if (session?.user) {
-          // Fetch user profile
-          setTimeout(async () => {
-            try {
-              const { data: profileData, error } = await supabase
-                .from('profiles')
-                .select('*')
-                .eq('id', session.user.id)
-                .single();
-              
-              if (error) {
-                console.error('Error fetching profile:', error);
-              } else {
-                setProfile(profileData);
-              }
-            } catch (err) {
-              console.error('Profile fetch error:', err);
-            } finally {
-              setLoading(false);
-            }
-          }, 0);
+          // Fetch or create user profile
+          const profileData = await fetchOrCreateProfile(session.user.id, session.user.email || '');
+          setProfile(profileData);
         } else {
           setProfile(null);
-          setLoading(false);
         }
+        
+        setLoading(false);
       }
     );
 
     // Check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log('Initial session check:', session?.user?.id);
       setSession(session);
       setUser(session?.user ?? null);
       if (!session) {
@@ -148,12 +181,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const signIn = async (email: string, password: string) => {
     try {
+      console.log('Starting login with email:', email);
+      
       const { error } = await supabase.auth.signInWithPassword({
         email,
         password
       });
 
       if (error) {
+        console.error('Login error:', error);
         let errorMessage = error.message;
         if (error.message.includes('Invalid login credentials')) {
           errorMessage = 'Invalid email or password. Please check your credentials and try again.';
@@ -165,6 +201,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           variant: "destructive"
         });
       } else {
+        console.log('Login successful');
         toast({
           title: "Welcome back!",
           description: "You have successfully signed in."
