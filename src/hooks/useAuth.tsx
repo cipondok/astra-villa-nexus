@@ -1,4 +1,3 @@
-
 import { useState, useEffect, createContext, useContext, ReactNode } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -86,37 +85,37 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const signUp = async (email: string, password: string, userData: any) => {
     try {
-      console.log('Starting signup process with data:', userData);
+      console.log('=== SIGNUP DEBUG START ===');
+      console.log('Email:', email);
+      console.log('Original userData:', userData);
       
       const redirectUrl = `${window.location.origin}/`;
+      console.log('Redirect URL:', redirectUrl);
       
-      // Clean and validate user data - make sure all fields are strings
-      const cleanUserData = {
+      // Ensure all metadata fields are strings and use exact enum values
+      const userMetadata = {
         full_name: String(userData.full_name || '').trim(),
-        phone: String(userData.phone || '').replace(/[-\s]/g, ''),
-        role: String(userData.role || 'general_user'),
+        phone: String(userData.phone || '').trim(),
+        role: 'general_user', // Always use exact enum value
         company_name: String(userData.company_name || '').trim(),
         license_number: String(userData.license_number || '').trim()
       };
 
-      console.log('Clean user data for signup:', cleanUserData);
-
-      // Validate that role is one of the allowed values
-      const allowedRoles = ['general_user', 'property_owner', 'agent', 'vendor', 'admin'];
-      if (!allowedRoles.includes(cleanUserData.role)) {
-        cleanUserData.role = 'general_user';
-      }
+      console.log('Clean metadata for Supabase:', userMetadata);
 
       const { data, error } = await supabase.auth.signUp({
         email: email.trim(),
         password,
         options: {
           emailRedirectTo: redirectUrl,
-          data: cleanUserData
+          data: userMetadata
         }
       });
 
-      console.log('Signup response:', { data, error });
+      console.log('=== SIGNUP RESPONSE ===');
+      console.log('Data:', data);
+      console.log('Error:', error);
+      console.log('=== SIGNUP DEBUG END ===');
 
       if (error) {
         console.error('Signup error details:', {
@@ -125,12 +124,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           name: error.name
         });
         
-        // Handle specific error cases with user-friendly messages
         let errorMessage = error.message;
         if (error.message.includes('User already registered')) {
           errorMessage = 'An account with this email already exists. Please try signing in instead.';
-        } else if (error.message.includes('Database error') || error.message.includes('insert or update')) {
-          errorMessage = 'Registration failed due to a database error. Please try again or contact support.';
+        } else if (error.message.includes('Database error')) {
+          errorMessage = 'Registration failed due to a database error. Please try again.';
         } else if (error.message.includes('Invalid email')) {
           errorMessage = 'Please enter a valid email address.';
         } else if (error.message.includes('Password')) {
