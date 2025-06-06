@@ -1,7 +1,6 @@
 
 import React, { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { Box, Plane, Text } from '@react-three/drei';
 import { Group } from 'three';
 
 interface PropertyModel3DProps {
@@ -14,7 +13,6 @@ const PropertyModel3D = ({ propertyId, stagingStyle, showNeighborhood }: Propert
   const houseRef = useRef<Group>(null);
 
   useFrame((state, delta) => {
-    // Subtle breathing animation for the model
     if (houseRef.current) {
       houseRef.current.rotation.y += delta * 0.1;
     }
@@ -34,113 +32,109 @@ const PropertyModel3D = ({ propertyId, stagingStyle, showNeighborhood }: Propert
 
   return (
     <group>
-      {/* House Structure */}
       <group ref={houseRef}>
         {/* Foundation */}
-        <Box args={[8, 0.5, 6]} position={[0, -0.25, 0]}>
+        <mesh position={[0, -0.25, 0]}>
+          <boxGeometry args={[8, 0.5, 6]} />
           <meshStandardMaterial color="#8b7355" />
-        </Box>
+        </mesh>
         
         {/* Walls */}
-        <Box args={[8, 3, 6]} position={[0, 1.5, 0]}>
+        <mesh position={[0, 1.5, 0]}>
+          <boxGeometry args={[8, 3, 6]} />
           <meshStandardMaterial color="#f5f5f5" />
-        </Box>
+        </mesh>
         
         {/* Roof */}
-        <Box args={[9, 0.3, 7]} position={[0, 3.5, 0]}>
+        <mesh position={[0, 3.5, 0]}>
+          <boxGeometry args={[9, 0.3, 7]} />
           <meshStandardMaterial color="#8b4513" />
-        </Box>
+        </mesh>
         
         {/* Windows */}
-        <Box args={[1.5, 1.5, 0.1]} position={[-2.5, 1.8, 3.1]}>
+        <mesh position={[-2.5, 1.8, 3.1]}>
+          <boxGeometry args={[1.5, 1.5, 0.1]} />
           <meshStandardMaterial color="#87ceeb" transparent opacity={0.7} />
-        </Box>
-        <Box args={[1.5, 1.5, 0.1]} position={[2.5, 1.8, 3.1]}>
+        </mesh>
+        <mesh position={[2.5, 1.8, 3.1]}>
+          <boxGeometry args={[1.5, 1.5, 0.1]} />
           <meshStandardMaterial color="#87ceeb" transparent opacity={0.7} />
-        </Box>
+        </mesh>
         
         {/* Door */}
-        <Box args={[1, 2.5, 0.1]} position={[0, 1.25, 3.1]}>
+        <mesh position={[0, 1.25, 3.1]}>
+          <boxGeometry args={[1, 2.5, 0.1]} />
           <meshStandardMaterial color="#8b4513" />
-        </Box>
+        </mesh>
       </group>
 
       {/* Virtual Staging Furniture */}
       <group>
         {/* Living Room Sofa */}
-        <Box args={[3, 0.8, 1.5]} position={[-1, 0.4, 1]}>
+        <mesh position={[-1, 0.4, 1]}>
+          <boxGeometry args={[3, 0.8, 1.5]} />
           <meshStandardMaterial color={getStagingColor(stagingStyle)} />
-        </Box>
+        </mesh>
         
         {/* Coffee Table */}
-        <Box args={[1.5, 0.4, 1]} position={[-1, 0.2, -0.5]}>
+        <mesh position={[-1, 0.2, -0.5]}>
+          <boxGeometry args={[1.5, 0.4, 1]} />
           <meshStandardMaterial color="#8b4513" />
-        </Box>
+        </mesh>
         
         {/* Dining Table */}
-        <Box args={[2, 0.8, 1]} position={[2, 0.4, 0]}>
+        <mesh position={[2, 0.4, 0]}>
+          <boxGeometry args={[2, 0.8, 1]} />
           <meshStandardMaterial color="#654321" />
-        </Box>
+        </mesh>
         
         {/* Chairs */}
-        <Box args={[0.5, 1, 0.5]} position={[1.2, 0.5, 0]}>
+        <mesh position={[1.2, 0.5, 0]}>
+          <boxGeometry args={[0.5, 1, 0.5]} />
           <meshStandardMaterial color={getStagingColor(stagingStyle)} />
-        </Box>
-        <Box args={[0.5, 1, 0.5]} position={[2.8, 0.5, 0]}>
+        </mesh>
+        <mesh position={[2.8, 0.5, 0]}>
+          <boxGeometry args={[0.5, 1, 0.5]} />
           <meshStandardMaterial color={getStagingColor(stagingStyle)} />
-        </Box>
+        </mesh>
       </group>
 
-      {/* Neighborhood Elements (when enabled) */}
+      {/* Neighborhood Elements */}
       {showNeighborhood && (
         <group>
           {/* Ground */}
-          <Plane args={[50, 50]} rotation={[-Math.PI / 2, 0, 0]} position={[0, -1, 0]}>
+          <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1, 0]}>
+            <planeGeometry args={[50, 50]} />
             <meshStandardMaterial color="#90EE90" />
-          </Plane>
+          </mesh>
           
           {/* Nearby Buildings */}
-          <Box args={[4, 4, 4]} position={[15, 2, 0]}>
+          <mesh position={[15, 2, 0]}>
+            <boxGeometry args={[4, 4, 4]} />
             <meshStandardMaterial color="#d3d3d3" />
-          </Box>
-          <Box args={[3, 6, 3]} position={[-15, 3, 5]}>
+          </mesh>
+          <mesh position={[-15, 3, 5]}>
+            <boxGeometry args={[3, 6, 3]} />
             <meshStandardMaterial color="#f0f0f0" />
-          </Box>
+          </mesh>
           
           {/* Trees */}
           <group position={[8, 0, 8]}>
-            <Box args={[0.5, 3, 0.5]} position={[0, 1.5, 0]}>
+            <mesh position={[0, 1.5, 0]}>
+              <boxGeometry args={[0.5, 3, 0.5]} />
               <meshStandardMaterial color="#8b4513" />
-            </Box>
-            <Box args={[2, 2, 2]} position={[0, 4, 0]}>
+            </mesh>
+            <mesh position={[0, 4, 0]}>
+              <boxGeometry args={[2, 2, 2]} />
               <meshStandardMaterial color="#228b22" />
-            </Box>
+            </mesh>
           </group>
           
           {/* Street */}
-          <Plane args={[60, 4]} rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.95, -10]}>
+          <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.95, -10]}>
+            <planeGeometry args={[60, 4]} />
             <meshStandardMaterial color="#404040" />
-          </Plane>
-          
-          {/* Location Labels */}
-          <Text
-            position={[15, 6, 0]}
-            fontSize={0.8}
-            color="white"
-            anchorX="center"
-            anchorY="middle"
-          >
-            School Zone
-          </Text>
-          <Text
-            position={[0, 1, -15]}
-            fontSize={0.8}
-            color="white"
-            anchorX="center"
-            anchorY="middle"
-          >
-            Main Road Access
-          </Text>
+          </mesh>
         </group>
       )}
     </group>
