@@ -19,7 +19,7 @@ export type Database = {
           id: string
           license_number: string | null
           phone: string | null
-          role: Database["public"]["Enums"]["user_role"]
+          role: Database["public"]["Enums"]["user_role"] | null
           updated_at: string | null
           verification_status: string | null
         }
@@ -32,7 +32,7 @@ export type Database = {
           id: string
           license_number?: string | null
           phone?: string | null
-          role?: Database["public"]["Enums"]["user_role"]
+          role?: Database["public"]["Enums"]["user_role"] | null
           updated_at?: string | null
           verification_status?: string | null
         }
@@ -45,7 +45,7 @@ export type Database = {
           id?: string
           license_number?: string | null
           phone?: string | null
-          role?: Database["public"]["Enums"]["user_role"]
+          role?: Database["public"]["Enums"]["user_role"] | null
           updated_at?: string | null
           verification_status?: string | null
         }
