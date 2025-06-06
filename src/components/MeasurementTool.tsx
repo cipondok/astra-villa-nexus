@@ -1,44 +1,39 @@
 
-import React, { useState, useRef } from 'react';
-import { useThree, useFrame } from '@react-three/fiber';
+import React, { useState, useRef, useCallback } from 'react';
+import { useThree, useFrame, ThreeEvent } from '@react-three/fiber';
 import { Line, Text } from '@react-three/drei';
-import { Vector3, Vector2, Raycaster } from 'three';
+import { Vector3, Raycaster } from 'three';
+
+interface Measurement {
+  start: Vector3;
+  end: Vector3;
+  distance: number;
+  id: string;
+}
 
 const MeasurementTool = () => {
   const { camera, scene, gl } = useThree();
-  const [measurements, setMeasurements] = useState<Array<{
-    start: Vector3;
-    end: Vector3;
-    distance: number;
-    id: string;
-  }>>([]);
+  const [measurements, setMeasurements] = useState<Measurement[]>([]);
   const [currentStart, setCurrentStart] = useState<Vector3 | null>(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const raycaster = useRef(new Raycaster());
 
-  const handleClick = (event: MouseEvent) => {
-    event.preventDefault();
+  const handlePointerDown = useCallback((event: ThreeEvent<PointerEvent>) => {
+    event.stopPropagation();
     
-    const rect = gl.domElement.getBoundingClientRect();
-    const mouse = new Vector2(
-      ((event.clientX - rect.left) / rect.width) * 2 - 1,
-      -((event.clientY - rect.top) / rect.height) * 2 + 1
-    );
-
-    raycaster.current.setFromCamera(mouse, camera);
-    const intersects = raycaster.current.intersectObjects(scene.children, true);
-
-    if (intersects.length > 0) {
-      const point = intersects[0].point;
+    const intersect = event.intersections[0];
+    if (intersect && intersect.point) {
+      const point = intersect.point.clone();
 
       if (!currentStart) {
-        setCurrentStart(point.clone());
+        setCurrentStart(point);
         setIsDrawing(true);
+        console.log('Started measurement at:', point);
       } else {
         const distance = currentStart.distanceTo(point);
-        const newMeasurement = {
-          start: currentStart,
-          end: point.clone(),
+        const newMeasurement: Measurement = {
+          start: currentStart.clone(),
+          end: point,
           distance,
           id: `measurement-${Date.now()}`
         };
@@ -46,17 +41,12 @@ const MeasurementTool = () => {
         setMeasurements(prev => [...prev, newMeasurement]);
         setCurrentStart(null);
         setIsDrawing(false);
+        console.log('Completed measurement:', newMeasurement);
       }
     }
-  };
+  }, [currentStart]);
 
-  React.useEffect(() => {
-    const canvas = gl.domElement;
-    canvas.addEventListener('click', handleClick);
-    return () => canvas.removeEventListener('click', handleClick);
-  }, [currentStart, gl.domElement]);
-
-  const formatDistance = (distance: number) => {
+  const formatDistance = (distance: number): string => {
     if (distance < 1) {
       return `${(distance * 100).toFixed(0)} cm`;
     } else {
@@ -66,29 +56,52 @@ const MeasurementTool = () => {
 
   return (
     <group>
+      {/* Invisible plane to catch clicks */}
+      <mesh 
+        position={[0, 0, 0]} 
+        rotation={[-Math.PI / 2, 0, 0]}
+        onPointerDown={handlePointerDown}
+        visible={false}
+      >
+        <planeGeometry args={[100, 100]} />
+        <meshBasicMaterial transparent opacity={0} />
+      </mesh>
+
       {/* Render completed measurements */}
       {measurements.map((measurement) => {
         const midpoint = new Vector3()
           .addVectors(measurement.start, measurement.end)
           .multiplyScalar(0.5);
 
+        // Create line points as simple arrays
+        const startArray: [number, number, number] = [
+          measurement.start.x, 
+          measurement.start.y, 
+          measurement.start.z
+        ];
+        const endArray: [number, number, number] = [
+          measurement.end.x, 
+          measurement.end.y, 
+          measurement.end.z
+        ];
+
         return (
           <group key={measurement.id}>
-            {/* Measurement line */}
+            {/* Measurement line using simple array format */}
             <Line
-              points={[measurement.start, measurement.end]}
+              points={[startArray, endArray]}
               color="red"
               lineWidth={3}
             />
             
             {/* Start point */}
-            <mesh position={[measurement.start.x, measurement.start.y, measurement.start.z]}>
+            <mesh position={startArray}>
               <sphereGeometry args={[0.05]} />
               <meshBasicMaterial color="red" />
             </mesh>
             
             {/* End point */}
-            <mesh position={[measurement.end.x, measurement.end.y, measurement.end.z]}>
+            <mesh position={endArray}>
               <sphereGeometry args={[0.05]} />
               <meshBasicMaterial color="red" />
             </mesh>
@@ -116,7 +129,7 @@ const MeasurementTool = () => {
           anchorX="center"
           anchorY="middle"
         >
-          Click two points to measure distance
+          Click on objects to measure distance
         </Text>
       )}
       
