@@ -86,41 +86,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     
     console.log('Setting up auth state listener');
 
-    const initializeAuth = async () => {
-      try {
-        // Get initial session
-        const { data: { session: initialSession } } = await supabase.auth.getSession();
-        
-        console.log('Initial session check:', !!initialSession);
-        
-        if (mounted) {
-          setSession(initialSession);
-          setUser(initialSession?.user ?? null);
-          
-          if (initialSession?.user) {
-            const profileData = await fetchOrCreateProfile(initialSession.user.id, initialSession.user.email || '');
-            if (mounted) {
-              setProfile(profileData);
-            }
-          }
-          
-          // Always set loading to false after initialization
-          setLoading(false);
-        }
-      } catch (err) {
-        console.error('Auth initialization error:', err);
-        if (mounted) {
-          setLoading(false);
-        }
-      }
-    };
-
-    // Set up auth state listener
+    // Set up auth state listener first
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         if (!mounted) return;
         
         console.log('Auth state changed:', event, !!session);
+        
         setSession(session);
         setUser(session?.user ?? null);
         
@@ -134,10 +106,32 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             setProfile(null);
           }
         }
+        
+        // Set loading to false after processing auth state change
+        if (mounted) {
+          setLoading(false);
+        }
       }
     );
 
-    // Initialize auth immediately
+    // Get initial session - this will trigger the auth state change event
+    const initializeAuth = async () => {
+      try {
+        const { data: { session: initialSession } } = await supabase.auth.getSession();
+        console.log('Initial session check:', !!initialSession);
+        
+        // If no session found, still set loading to false
+        if (!initialSession && mounted) {
+          setLoading(false);
+        }
+      } catch (err) {
+        console.error('Auth initialization error:', err);
+        if (mounted) {
+          setLoading(false);
+        }
+      }
+    };
+
     initializeAuth();
 
     return () => {
