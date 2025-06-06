@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { Sun, Moon, Globe, Menu, User, LogOut, Settings } from "lucide-react";
+import { Sun, Moon, Globe, Menu, User, LogOut, Settings, Home } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
@@ -45,6 +45,7 @@ const RoleBasedNavigation = ({
 
   const text = {
     en: {
+      home: "Home",
       buy: "Buy",
       rent: "Rent",
       newProjects: "New Projects",
@@ -61,6 +62,7 @@ const RoleBasedNavigation = ({
       adminPanel: "Admin Panel"
     },
     id: {
+      home: "Beranda",
       buy: "Beli",
       rent: "Sewa",
       newProjects: "Proyek Baru",
@@ -87,6 +89,11 @@ const RoleBasedNavigation = ({
     } catch (error) {
       console.error('Error signing out:', error);
     }
+  };
+
+  const handleHomeClick = () => {
+    console.log('Navigating to home page');
+    navigate('/');
   };
 
   const getDashboardRoute = () => {
@@ -139,8 +146,11 @@ const RoleBasedNavigation = ({
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-b border-gray-200 dark:border-gray-700">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <div className="flex-shrink-0 cursor-pointer" onClick={() => navigate('/')}>
+          {/* Logo - Clickable to go home */}
+          <div 
+            className="flex-shrink-0 cursor-pointer hover:opacity-80 transition-opacity" 
+            onClick={handleHomeClick}
+          >
             <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-orange-500 bg-clip-text text-transparent">
               Astra Villa
             </h1>
@@ -148,6 +158,12 @@ const RoleBasedNavigation = ({
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
+            <button 
+              onClick={handleHomeClick}
+              className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium"
+            >
+              {currentText.home}
+            </button>
             <a href="#" className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium">
               {currentText.buy}
             </a>
@@ -213,6 +229,10 @@ const RoleBasedNavigation = ({
                     </div>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleHomeClick}>
+                    <Home className="h-4 w-4 mr-2" />
+                    {currentText.home}
+                  </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => navigate(getDashboardRoute())}>
                     {currentText.dashboard}
                   </DropdownMenuItem>
@@ -263,6 +283,12 @@ const RoleBasedNavigation = ({
         {isMenuOpen && (
           <div className="md:hidden border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
             <div className="px-2 pt-2 pb-3 space-y-1">
+              <button 
+                onClick={handleHomeClick}
+                className="block w-full text-left px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
+              >
+                {currentText.home}
+              </button>
               <a href="#" className="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400">
                 {currentText.buy}
               </a>
@@ -299,6 +325,10 @@ const RoleBasedNavigation = ({
                       <p className="text-xs text-muted-foreground capitalize">{profile.role.replace('_', ' ')}</p>
                     </div>
                   </div>
+                  <Button variant="ghost" onClick={handleHomeClick} className="w-full justify-start">
+                    <Home className="h-4 w-4 mr-2" />
+                    {currentText.home}
+                  </Button>
                   <Button variant="ghost" onClick={() => navigate(getDashboardRoute())} className="w-full justify-start">
                     {currentText.dashboard}
                   </Button>
