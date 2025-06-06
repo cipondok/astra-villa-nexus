@@ -9,6 +9,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import Index from "./pages/Index";
 import UserDashboardPage from "./pages/UserDashboardPage";
 import Profile from "./pages/Profile";
+import PropertyDetail from "./pages/PropertyDetail";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -25,6 +26,7 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/dashboard" element={<UserDashboardPage />} />
               <Route path="/profile" element={<Profile />} />
+              <Route path="/property/:id" element={<PropertyDetail />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

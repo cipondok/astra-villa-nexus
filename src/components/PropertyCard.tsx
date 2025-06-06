@@ -1,8 +1,10 @@
+
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Heart, MapPin, Bed, Bath, Square, Star, Eye, Camera, Box } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import PropertyViewer3D from "./PropertyViewer3D";
 
 interface Property {
@@ -28,6 +30,7 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
   const [isLiked, setIsLiked] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [is3DViewOpen, setIs3DViewOpen] = useState(false);
+  const navigate = useNavigate();
 
   const getTypeColor = (type: string) => {
     switch (type) {
@@ -55,12 +58,17 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
     }
   };
 
+  const handleViewDetails = () => {
+    navigate(`/property/${property.id}`);
+  };
+
   return (
     <>
       <Card 
         className="group overflow-hidden hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border-0 shadow-lg cursor-pointer"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
+        onClick={handleViewDetails}
       >
         <div className="relative overflow-hidden">
           <img
@@ -87,6 +95,10 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
                 <Button
                   size="sm"
                   className="bg-white/90 text-gray-800 hover:bg-white"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleViewDetails();
+                  }}
                 >
                   <Eye className="h-4 w-4 mr-2" />
                   View
@@ -119,7 +131,6 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
             )}
           </div>
 
-          {/* Heart icon */}
           <Button
             variant="ghost"
             size="sm"
@@ -134,13 +145,11 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
             <Heart className={`h-4 w-4 transition-all duration-300 ${isLiked ? 'fill-current scale-110' : ''}`} />
           </Button>
 
-          {/* Rating */}
           <div className="absolute bottom-4 right-4 bg-black/70 text-white px-2 py-1 rounded-lg flex items-center gap-1 backdrop-blur-sm">
             <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
             <span className="text-sm font-medium">{property.rating}</span>
           </div>
 
-          {/* View Count */}
           <div className="absolute bottom-4 left-4 bg-black/70 text-white px-2 py-1 rounded-lg flex items-center gap-1 backdrop-blur-sm">
             <Eye className="h-3 w-3" />
             <span className="text-xs">{Math.floor(Math.random() * 100) + 20}</span>
@@ -178,7 +187,13 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
             </div>
           </div>
 
-          <Button className="w-full bg-gradient-to-r from-blue-600 to-orange-500 hover:from-blue-700 hover:to-orange-600 text-white font-medium transition-all duration-300 transform group-hover:scale-105">
+          <Button 
+            className="w-full bg-gradient-to-r from-blue-600 to-orange-500 hover:from-blue-700 hover:to-orange-600 text-white font-medium transition-all duration-300 transform group-hover:scale-105"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleViewDetails();
+            }}
+          >
             View Details
           </Button>
         </CardContent>
