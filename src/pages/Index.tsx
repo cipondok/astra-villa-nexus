@@ -8,7 +8,7 @@ import PropertyListingsSection from "@/components/PropertyListingsSection";
 import SearchFilters from "@/components/SearchFilters";
 
 const Index = () => {
-  const [language, setLanguage] = useState("en");
+  const [language, setLanguage] = useState<"en" | "id">("en");
   const [theme, setTheme] = useState("light");
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const { user, profile, loading } = useAuth();
@@ -66,7 +66,7 @@ const Index = () => {
             Discover luxury villas, modern apartments, and exclusive properties with our advanced 3D visualization and virtual staging technology.
           </p>
           
-          <SearchFilters language={language} />
+          <SearchFilters language={language} onSearch={() => {}} />
         </div>
       </section>
 
