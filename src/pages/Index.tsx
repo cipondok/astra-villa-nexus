@@ -16,15 +16,20 @@ const Index = () => {
   console.log('Index page - Auth state:', { user: !!user, profile: !!profile, loading });
 
   const toggleLanguage = () => {
-    setLanguage(language === "en" ? "id" : "en");
+    setLanguage(prev => prev === "en" ? "id" : "en");
   };
 
   const toggleTheme = () => {
-    setTheme(theme === "light" ? "dark" : "light");
+    setTheme(prev => prev === "light" ? "dark" : "light");
   };
 
   const handleLoginClick = () => {
     setIsAuthModalOpen(true);
+  };
+
+  const handleSearch = () => {
+    console.log('Search triggered');
+    // Add search functionality here later
   };
 
   useEffect(() => {
@@ -66,7 +71,7 @@ const Index = () => {
             Discover luxury villas, modern apartments, and exclusive properties with our advanced 3D visualization and virtual staging technology.
           </p>
           
-          <SearchFilters language={language} onSearch={() => {}} />
+          <SearchFilters language={language} onSearch={handleSearch} />
         </div>
       </section>
 

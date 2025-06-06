@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Sun, Moon, Globe, Menu, User, LogOut, Settings } from "lucide-react";
 import { useState, useEffect } from "react";
@@ -80,8 +81,12 @@ const RoleBasedNavigation = ({
   const currentText = text[language];
 
   const handleSignOut = async () => {
-    await signOut();
-    navigate('/');
+    try {
+      await signOut();
+      navigate('/');
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
   };
 
   const getDashboardRoute = () => {
@@ -183,7 +188,7 @@ const RoleBasedNavigation = ({
               {theme === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
             </Button>
 
-            {/* Auth Section - Show user if both user and profile exist */}
+            {/* Auth Section */}
             {user && profile ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
