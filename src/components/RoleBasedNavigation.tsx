@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Sun, Moon, Globe, Menu, User, LogOut, Settings, Home } from "lucide-react";
 import { useState, useEffect } from "react";
@@ -84,8 +83,10 @@ const RoleBasedNavigation = ({
 
   const handleSignOut = async () => {
     try {
+      console.log('Signing out user...');
       await signOut();
       navigate('/');
+      setIsMenuOpen(false);
     } catch (error) {
       console.error('Error signing out:', error);
     }
@@ -206,56 +207,72 @@ const RoleBasedNavigation = ({
 
             {/* Auth Section */}
             {user && profile ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="flex items-center space-x-2 p-2">
-                    <Avatar className="h-8 w-8">
-                      <AvatarImage src={profile.avatar_url || undefined} alt={profile.full_name || 'User'} />
-                      <AvatarFallback className="text-sm">
-                        {getUserInitials()}
-                      </AvatarFallback>
-                    </Avatar>
-                    <span className="hidden md:block text-sm font-medium">
-                      {profile.full_name || profile.email}
-                    </span>
+              <>
+                {/* Desktop User Menu */}
+                <div className="hidden md:flex items-center space-x-2">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" className="flex items-center space-x-2 p-2">
+                        <Avatar className="h-8 w-8">
+                          <AvatarImage src={profile.avatar_url || undefined} alt={profile.full_name || 'User'} />
+                          <AvatarFallback className="text-sm">
+                            {getUserInitials()}
+                          </AvatarFallback>
+                        </Avatar>
+                        <span className="hidden md:block text-sm font-medium">
+                          {profile.full_name || profile.email}
+                        </span>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-56">
+                      <DropdownMenuLabel>
+                        <div className="flex flex-col space-y-1">
+                          <p className="text-sm font-medium">{profile.full_name || 'User'}</p>
+                          <p className="text-xs text-muted-foreground">{profile.email}</p>
+                          <p className="text-xs text-muted-foreground capitalize">{profile.role.replace('_', ' ')}</p>
+                        </div>
+                      </DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onClick={handleHomeClick}>
+                        <Home className="h-4 w-4 mr-2" />
+                        {currentText.home}
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => navigate(getDashboardRoute())}>
+                        {currentText.dashboard}
+                      </DropdownMenuItem>
+                      {getRoleSpecificMenuItems().map((item, index) => (
+                        <DropdownMenuItem key={index} onClick={() => navigate(item.route)}>
+                          {item.label}
+                        </DropdownMenuItem>
+                      ))}
+                      <DropdownMenuItem onClick={() => navigate('/profile')}>
+                        <User className="h-4 w-4 mr-2" />
+                        {currentText.profile}
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => navigate('/settings')}>
+                        <Settings className="h-4 w-4 mr-2" />
+                        {currentText.settings}
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onClick={handleSignOut}>
+                        <LogOut className="h-4 w-4 mr-2" />
+                        {currentText.logout}
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                  
+                  {/* Quick Logout Button */}
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleSignOut}
+                    className="flex items-center space-x-1 text-red-600 hover:text-red-700 hover:bg-red-50"
+                  >
+                    <LogOut className="h-4 w-4" />
+                    <span>{currentText.logout}</span>
                   </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56">
-                  <DropdownMenuLabel>
-                    <div className="flex flex-col space-y-1">
-                      <p className="text-sm font-medium">{profile.full_name || 'User'}</p>
-                      <p className="text-xs text-muted-foreground">{profile.email}</p>
-                      <p className="text-xs text-muted-foreground capitalize">{profile.role.replace('_', ' ')}</p>
-                    </div>
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={handleHomeClick}>
-                    <Home className="h-4 w-4 mr-2" />
-                    {currentText.home}
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate(getDashboardRoute())}>
-                    {currentText.dashboard}
-                  </DropdownMenuItem>
-                  {getRoleSpecificMenuItems().map((item, index) => (
-                    <DropdownMenuItem key={index} onClick={() => navigate(item.route)}>
-                      {item.label}
-                    </DropdownMenuItem>
-                  ))}
-                  <DropdownMenuItem onClick={() => navigate('/profile')}>
-                    <User className="h-4 w-4 mr-2" />
-                    {currentText.profile}
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate('/settings')}>
-                    <Settings className="h-4 w-4 mr-2" />
-                    {currentText.settings}
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={handleSignOut}>
-                    <LogOut className="h-4 w-4 mr-2" />
-                    {currentText.logout}
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+                </div>
+              </>
             ) : (
               <div className="hidden md:flex items-center">
                 <Button 
@@ -340,7 +357,11 @@ const RoleBasedNavigation = ({
                     <Settings className="h-4 w-4 mr-2" />
                     {currentText.settings}
                   </Button>
-                  <Button variant="ghost" onClick={handleSignOut} className="w-full justify-start text-red-600">
+                  <Button 
+                    variant="ghost" 
+                    onClick={handleSignOut} 
+                    className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50"
+                  >
                     <LogOut className="h-4 w-4 mr-2" />
                     {currentText.logout}
                   </Button>
