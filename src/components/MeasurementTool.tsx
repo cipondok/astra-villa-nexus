@@ -72,17 +72,11 @@ const MeasurementTool = () => {
           .addVectors(measurement.start, measurement.end)
           .multiplyScalar(0.5);
 
-        // Convert Vector3 points to array format for Line component
-        const linePoints = [
-          [measurement.start.x, measurement.start.y, measurement.start.z],
-          [measurement.end.x, measurement.end.y, measurement.end.z]
-        ];
-
         return (
           <group key={measurement.id}>
             {/* Measurement line */}
             <Line
-              points={linePoints}
+              points={[measurement.start, measurement.end]}
               color="red"
               lineWidth={3}
             />
