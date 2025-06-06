@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { Sun, Moon, Globe, Menu, User, LogOut } from "lucide-react";
+import { Sun, Moon, Globe, Menu, User, LogOut, Settings } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
@@ -12,6 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface RoleBasedNavigationProps {
   onLoginClick: () => void;
@@ -39,10 +40,10 @@ const RoleBasedNavigation = ({
       newProjects: "New Projects",
       vendors: "Vendors",
       about: "About",
-      login: "Login",
-      register: "Register",
+      loginRegister: "Login / Register",
       dashboard: "Dashboard",
       profile: "Profile",
+      settings: "Settings",
       logout: "Logout",
       myProperties: "My Properties",
       myListings: "My Listings",
@@ -55,10 +56,10 @@ const RoleBasedNavigation = ({
       newProjects: "Proyek Baru",
       vendors: "Vendor",
       about: "Tentang",
-      login: "Masuk",
-      register: "Daftar",
+      loginRegister: "Masuk / Daftar",
       dashboard: "Dashboard",
       profile: "Profil",
+      settings: "Pengaturan",
       logout: "Keluar",
       myProperties: "Properti Saya",
       myListings: "Listing Saya",
@@ -106,6 +107,18 @@ const RoleBasedNavigation = ({
       default:
         return [];
     }
+  };
+
+  const getUserInitials = () => {
+    if (profile?.full_name) {
+      return profile.full_name
+        .split(' ')
+        .map(name => name.charAt(0))
+        .join('')
+        .toUpperCase()
+        .substring(0, 2);
+    }
+    return profile?.email?.charAt(0).toUpperCase() || 'U';
   };
 
   return (
@@ -165,16 +178,24 @@ const RoleBasedNavigation = ({
             {user && profile ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="flex items-center space-x-2">
-                    <User className="h-4 w-4" />
-                    <span className="hidden md:block">{profile.full_name || profile.email}</span>
+                  <Button variant="ghost" className="flex items-center space-x-2 p-2">
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src={profile.avatar_url || undefined} alt={profile.full_name || 'User'} />
+                      <AvatarFallback className="text-sm">
+                        {getUserInitials()}
+                      </AvatarFallback>
+                    </Avatar>
+                    <span className="hidden md:block text-sm font-medium">
+                      {profile.full_name || profile.email}
+                    </span>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56">
                   <DropdownMenuLabel>
                     <div className="flex flex-col space-y-1">
                       <p className="text-sm font-medium">{profile.full_name || 'User'}</p>
-                      <p className="text-xs text-muted-foreground">{profile.role.replace('_', ' ')}</p>
+                      <p className="text-xs text-muted-foreground">{profile.email}</p>
+                      <p className="text-xs text-muted-foreground capitalize">{profile.role.replace('_', ' ')}</p>
                     </div>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
@@ -187,7 +208,12 @@ const RoleBasedNavigation = ({
                     </DropdownMenuItem>
                   ))}
                   <DropdownMenuItem onClick={() => navigate('/profile')}>
+                    <User className="h-4 w-4 mr-2" />
                     {currentText.profile}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate('/settings')}>
+                    <Settings className="h-4 w-4 mr-2" />
+                    {currentText.settings}
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleSignOut}>
@@ -197,15 +223,12 @@ const RoleBasedNavigation = ({
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <div className="hidden md:flex items-center space-x-2">
-                <Button variant="ghost" onClick={onLoginClick}>
-                  {currentText.login}
-                </Button>
+              <div className="hidden md:flex items-center">
                 <Button 
                   className="bg-gradient-to-r from-blue-600 to-orange-500 hover:from-blue-700 hover:to-orange-600"
                   onClick={onLoginClick}
                 >
-                  {currentText.register}
+                  {currentText.loginRegister}
                 </Button>
               </div>
             )}
@@ -243,12 +266,41 @@ const RoleBasedNavigation = ({
               </a>
               
               {!user && (
-                <div className="px-3 py-2 space-y-2">
-                  <Button variant="ghost" onClick={onLoginClick} className="w-full justify-start">
-                    {currentText.login}
-                  </Button>
+                <div className="px-3 py-2">
                   <Button onClick={onLoginClick} className="w-full bg-gradient-to-r from-blue-600 to-orange-500">
-                    {currentText.register}
+                    {currentText.loginRegister}
+                  </Button>
+                </div>
+              )}
+
+              {user && profile && (
+                <div className="px-3 py-2 space-y-2 border-t border-gray-200 dark:border-gray-700 mt-2 pt-2">
+                  <div className="flex items-center space-x-3 mb-2">
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src={profile.avatar_url || undefined} alt={profile.full_name || 'User'} />
+                      <AvatarFallback className="text-sm">
+                        {getUserInitials()}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <p className="text-sm font-medium">{profile.full_name || 'User'}</p>
+                      <p className="text-xs text-muted-foreground capitalize">{profile.role.replace('_', ' ')}</p>
+                    </div>
+                  </div>
+                  <Button variant="ghost" onClick={() => navigate(getDashboardRoute())} className="w-full justify-start">
+                    {currentText.dashboard}
+                  </Button>
+                  <Button variant="ghost" onClick={() => navigate('/profile')} className="w-full justify-start">
+                    <User className="h-4 w-4 mr-2" />
+                    {currentText.profile}
+                  </Button>
+                  <Button variant="ghost" onClick={() => navigate('/settings')} className="w-full justify-start">
+                    <Settings className="h-4 w-4 mr-2" />
+                    {currentText.settings}
+                  </Button>
+                  <Button variant="ghost" onClick={handleSignOut} className="w-full justify-start text-red-600">
+                    <LogOut className="h-4 w-4 mr-2" />
+                    {currentText.logout}
                   </Button>
                 </div>
               )}
