@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -27,7 +27,7 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
   const [loading, setLoading] = useState(false);
   const [registrationProgress, setRegistrationProgress] = useState(0);
   const [validationErrors, setValidationErrors] = useState<{[key: string]: string}>({});
-  const [isFormValid, setIsFormValid] = useState(false);
+  const [fieldTouched, setFieldTouched] = useState<{[key: string]: boolean}>({});
 
   const { signUp, signIn } = useAuth();
 
@@ -166,53 +166,52 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
     }
   };
 
-  const validateForm = (): boolean => {
-    const errors: {[key: string]: string} = {};
-
-    // Validate full name
-    if (!validateFullName(fullName)) {
-      errors.fullName = currentText.nameRequired;
+  // Real-time field validation
+  const validateField = (field: string, value: string): string => {
+    switch (field) {
+      case 'fullName':
+        if (!validateFullName(value)) {
+          return currentText.nameRequired;
+        }
+        break;
+      case 'email':
+        if (!validateEmail(value)) {
+          return currentText.emailInvalid;
+        }
+        break;
+      case 'password':
+        if (!validatePassword(value)) {
+          return currentText.passwordWeak;
+        }
+        break;
+      case 'phone':
+        if (value && !validateIndonesianPhone(value)) {
+          return currentText.phoneInvalid;
+        }
+        break;
+      case 'role':
+        if (!value) {
+          return currentText.roleRequired;
+        }
+        break;
+      case 'companyName':
+        const showCompanyFields = role === 'agent' || role === 'vendor' || role === 'property_owner';
+        if (showCompanyFields && !value.trim()) {
+          return currentText.companyRequired;
+        }
+        break;
+      case 'licenseNumber':
+        if (role === 'agent' && !value.trim()) {
+          return currentText.licenseRequired;
+        }
+        break;
     }
-
-    // Validate email
-    if (!validateEmail(email)) {
-      errors.email = currentText.emailInvalid;
-    }
-
-    // Validate password
-    if (!validatePassword(password)) {
-      errors.password = currentText.passwordWeak;
-    }
-
-    // Validate phone (if provided)
-    if (phone && !validateIndonesianPhone(phone)) {
-      errors.phone = currentText.phoneInvalid;
-    }
-
-    // Validate role
-    if (!role) {
-      errors.role = currentText.roleRequired;
-    }
-
-    // Validate company name for specific roles
-    const showCompanyFields = role === 'agent' || role === 'vendor' || role === 'property_owner';
-    if (showCompanyFields && !companyName.trim()) {
-      errors.companyName = currentText.companyRequired;
-    }
-
-    // Validate license number for agents
-    if (role === 'agent' && !licenseNumber.trim()) {
-      errors.licenseNumber = currentText.licenseRequired;
-    }
-
-    setValidationErrors(errors);
-    const isValid = Object.keys(errors).length === 0;
-    setIsFormValid(isValid);
-    return isValid;
+    return '';
   };
 
-  // Real-time validation
+  // Handle field changes with real-time validation
   const handleFieldChange = (field: string, value: string) => {
+    // Update the field value
     switch (field) {
       case 'fullName':
         setFullName(value);
@@ -228,6 +227,11 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
         break;
       case 'role':
         setRole(value);
+        // Clear company/license errors when role changes
+        const newErrors = { ...validationErrors };
+        delete newErrors.companyName;
+        delete newErrors.licenseNumber;
+        setValidationErrors(newErrors);
         break;
       case 'companyName':
         setCompanyName(value);
@@ -236,14 +240,63 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
         setLicenseNumber(value);
         break;
     }
-    
-    // Clear specific field error when user starts typing
-    if (validationErrors[field]) {
-      const newErrors = { ...validationErrors };
-      delete newErrors[field];
-      setValidationErrors(newErrors);
+
+    // Mark field as touched
+    setFieldTouched(prev => ({ ...prev, [field]: true }));
+
+    // Validate field in real-time only if it has been touched
+    if (fieldTouched[field] || field === 'role') {
+      const error = validateField(field, field === 'phone' ? formatPhoneNumber(value) : value);
+      setValidationErrors(prev => ({
+        ...prev,
+        [field]: error
+      }));
     }
   };
+
+  // Validate entire form
+  const validateForm = (): boolean => {
+    const errors: {[key: string]: string} = {};
+
+    // Validate all fields
+    const fullNameError = validateField('fullName', fullName);
+    if (fullNameError) errors.fullName = fullNameError;
+
+    const emailError = validateField('email', email);
+    if (emailError) errors.email = emailError;
+
+    const passwordError = validateField('password', password);
+    if (passwordError) errors.password = passwordError;
+
+    const phoneError = validateField('phone', phone);
+    if (phoneError) errors.phone = phoneError;
+
+    const roleError = validateField('role', role);
+    if (roleError) errors.role = roleError;
+
+    const companyError = validateField('companyName', companyName);
+    if (companyError) errors.companyName = companyError;
+
+    const licenseError = validateField('licenseNumber', licenseNumber);
+    if (licenseError) errors.licenseNumber = licenseError;
+
+    setValidationErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  // Effect to validate role-dependent fields when role changes
+  useEffect(() => {
+    if (fieldTouched.companyName || fieldTouched.licenseNumber) {
+      const companyError = validateField('companyName', companyName);
+      const licenseError = validateField('licenseNumber', licenseNumber);
+      
+      setValidationErrors(prev => ({
+        ...prev,
+        companyName: companyError,
+        licenseNumber: licenseError
+      }));
+    }
+  }, [role, companyName, licenseNumber, fieldTouched.companyName, fieldTouched.licenseNumber, currentText]);
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -263,7 +316,6 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
     e.preventDefault();
     setLoading(true);
     setRegistrationProgress(0);
-    setValidationErrors({});
 
     try {
       console.log('Form submission started', { email, fullName, role });
@@ -329,14 +381,23 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
     setCompanyName("");
     setLicenseNumber("");
     setValidationErrors({});
+    setFieldTouched({});
     setRegistrationProgress(0);
-    setIsFormValid(false);
   };
 
   if (!isOpen) return null;
 
   const showCompanyFields = role === 'agent' || role === 'vendor' || role === 'property_owner';
   const showLicenseField = role === 'agent';
+
+  // Check if form is valid (no errors and all required fields filled)
+  const isFormValid = Object.keys(validationErrors).every(key => !validationErrors[key]) &&
+    fullName.trim() && 
+    email.trim() && 
+    password.trim() && 
+    role &&
+    (!showCompanyFields || companyName.trim()) &&
+    (!showLicenseField || licenseNumber.trim());
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
@@ -414,6 +475,7 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
                     placeholder={currentText.fullName}
                     value={fullName}
                     onChange={(e) => handleFieldChange('fullName', e.target.value)}
+                    onBlur={() => setFieldTouched(prev => ({ ...prev, fullName: true }))}
                     required
                     disabled={loading}
                     className={validationErrors.fullName ? "border-red-500" : ""}
@@ -431,6 +493,7 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
                     placeholder={currentText.email}
                     value={email}
                     onChange={(e) => handleFieldChange('email', e.target.value)}
+                    onBlur={() => setFieldTouched(prev => ({ ...prev, email: true }))}
                     required
                     disabled={loading}
                     className={validationErrors.email ? "border-red-500" : ""}
@@ -448,6 +511,7 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
                     placeholder={currentText.password}
                     value={password}
                     onChange={(e) => handleFieldChange('password', e.target.value)}
+                    onBlur={() => setFieldTouched(prev => ({ ...prev, password: true }))}
                     required
                     disabled={loading}
                     className={validationErrors.password ? "border-red-500" : ""}
@@ -465,6 +529,7 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
                     placeholder="08xx-xxxx-xxxx"
                     value={phone}
                     onChange={(e) => handleFieldChange('phone', e.target.value)}
+                    onBlur={() => setFieldTouched(prev => ({ ...prev, phone: true }))}
                     disabled={loading}
                     className={validationErrors.phone ? "border-red-500" : ""}
                   />
@@ -501,6 +566,7 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
                       placeholder={currentText.companyName}
                       value={companyName}
                       onChange={(e) => handleFieldChange('companyName', e.target.value)}
+                      onBlur={() => setFieldTouched(prev => ({ ...prev, companyName: true }))}
                       disabled={loading}
                       className={validationErrors.companyName ? "border-red-500" : ""}
                     />
@@ -519,6 +585,7 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
                       placeholder={currentText.licenseNumber}
                       value={licenseNumber}
                       onChange={(e) => handleFieldChange('licenseNumber', e.target.value)}
+                      onBlur={() => setFieldTouched(prev => ({ ...prev, licenseNumber: true }))}
                       disabled={loading}
                       className={validationErrors.licenseNumber ? "border-red-500" : ""}
                     />
@@ -526,10 +593,6 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
                       <p className="text-sm text-red-500">{validationErrors.licenseNumber}</p>
                     )}
                   </div>
-                )}
-
-                {!isFormValid && Object.keys(validationErrors).length === 0 && (
-                  <p className="text-sm text-amber-600 text-center">{currentText.formIncomplete}</p>
                 )}
 
                 <Button 
