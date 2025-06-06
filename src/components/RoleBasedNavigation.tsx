@@ -1,7 +1,6 @@
-
 import { Button } from "@/components/ui/button";
 import { Sun, Moon, Globe, Menu, User, LogOut, Settings } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import {
@@ -32,6 +31,16 @@ const RoleBasedNavigation = ({
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { user, profile, signOut } = useAuth();
   const navigate = useNavigate();
+
+  // Debug logging
+  useEffect(() => {
+    console.log('RoleBasedNavigation - Auth state changed:', { 
+      user: !!user, 
+      profile: !!profile, 
+      userEmail: user?.email,
+      profileRole: profile?.role 
+    });
+  }, [user, profile]);
 
   const text = {
     en: {
@@ -174,7 +183,7 @@ const RoleBasedNavigation = ({
               {theme === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
             </Button>
 
-            {/* Auth Section */}
+            {/* Auth Section - Show user if both user and profile exist */}
             {user && profile ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -265,15 +274,13 @@ const RoleBasedNavigation = ({
                 {currentText.about}
               </a>
               
-              {!user && (
+              {!user || !profile ? (
                 <div className="px-3 py-2">
                   <Button onClick={onLoginClick} className="w-full bg-gradient-to-r from-blue-600 to-orange-500">
                     {currentText.loginRegister}
                   </Button>
                 </div>
-              )}
-
-              {user && profile && (
+              ) : (
                 <div className="px-3 py-2 space-y-2 border-t border-gray-200 dark:border-gray-700 mt-2 pt-2">
                   <div className="flex items-center space-x-3 mb-2">
                     <Avatar className="h-8 w-8">
