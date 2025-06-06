@@ -36,7 +36,6 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
       close: "Close",
       fillDemo: "Fill Demo Data",
       passwordWeak: "Password must be at least 8 characters with uppercase, lowercase, and number",
-      emailExists: "Email already exists",
       emailInvalid: "Please enter a valid email address",
       nameRequired: "Full name is required (minimum 2 characters)",
       creatingAccount: "Creating account...",
@@ -52,7 +51,6 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
       close: "Tutup",
       fillDemo: "Isi Data Demo",
       passwordWeak: "Kata sandi minimal 8 karakter dengan huruf besar, kecil, dan angka",
-      emailExists: "Email sudah terdaftar",
       emailInvalid: "Masukkan alamat email yang valid",
       nameRequired: "Nama lengkap wajib diisi (minimal 2 karakter)",
       creatingAccount: "Membuat akun...",
@@ -137,11 +135,11 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
         return;
       }
 
-      // Step 2: Prepare user data for general user
+      // Step 2: Prepare user data - using 'general_user' to match database enum
       setRegistrationProgress(70);
       const userData = {
         full_name: fullName.trim(),
-        role: 'general_user',
+        role: 'general_user', // This matches the database enum value
         phone: '',
         company_name: '',
         license_number: ''
