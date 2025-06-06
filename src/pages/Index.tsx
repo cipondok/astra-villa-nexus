@@ -38,16 +38,6 @@ const Index = () => {
     }
   }, [theme]);
 
-  // Simple loading check - if loading for more than 3 seconds, show content anyway
-  useEffect(() => {
-    if (loading) {
-      const timeout = setTimeout(() => {
-        console.log('Loading timeout reached, forcing content display');
-      }, 3000);
-      return () => clearTimeout(timeout);
-    }
-  }, [loading]);
-
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">

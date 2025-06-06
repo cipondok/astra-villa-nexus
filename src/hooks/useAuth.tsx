@@ -85,17 +85,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     let mounted = true;
     
     console.log('Setting up auth state listener');
-    
+
     const initializeAuth = async () => {
       try {
         // Get initial session
-        const { data: { session: initialSession }, error } = await supabase.auth.getSession();
+        const { data: { session: initialSession } } = await supabase.auth.getSession();
         
-        if (error) {
-          console.error('Error getting initial session:', error);
-        }
-
-        console.log('Initial session check:', initialSession?.user?.id);
+        console.log('Initial session check:', !!initialSession);
         
         if (mounted) {
           setSession(initialSession);
@@ -106,13 +102,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             if (mounted) {
               setProfile(profileData);
             }
-          } else {
-            if (mounted) {
-              setProfile(null);
-            }
           }
           
-          // ALWAYS set loading to false
+          // Always set loading to false after initialization
           setLoading(false);
         }
       } catch (err) {
@@ -128,7 +120,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       async (event, session) => {
         if (!mounted) return;
         
-        console.log('Auth state changed:', event, session?.user?.id);
+        console.log('Auth state changed:', event, !!session);
         setSession(session);
         setUser(session?.user ?? null);
         
