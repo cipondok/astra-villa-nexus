@@ -33,7 +33,7 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
   const text = {
     en: {
       login: "Login",
-      register: "Register",
+      register: "Register", 
       email: "Email",
       password: "Password",
       fullName: "Full Name",
@@ -56,7 +56,7 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
       roles: {
         general_user: "General User / Buyer / Renter",
         property_owner: "Property Owner",
-        agent: "Agent / Agency",
+        agent: "Agent / Agency", 
         vendor: "Vendor / Service Provider",
         admin: "Admin / Support"
       }
@@ -81,7 +81,7 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
       nameRequired: "Nama lengkap wajib diisi",
       roleRequired: "Silakan pilih peran Anda",
       checkingEmail: "Memeriksa ketersediaan email...",
-      validatingData: "Memvalidasi data...",
+      validatingData: "Memvalidasi data...", 
       creatingAccount: "Membuat akun...",
       roles: {
         general_user: "Pengguna Umum / Pembeli / Penyewa",
@@ -203,9 +203,12 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
     setValidationErrors({});
 
     try {
+      console.log('Form submission started', { email, fullName, role });
+      
       // Step 1: Validate form
       setRegistrationProgress(20);
       if (!validateForm()) {
+        console.log('Form validation failed');
         setLoading(false);
         return;
       }
@@ -231,7 +234,7 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
         license_number: licenseNumber.trim()
       };
 
-      console.log('Registration data:', userData);
+      console.log('Registration data prepared:', userData);
 
       // Step 4: Create account
       setRegistrationProgress(80);
@@ -240,8 +243,11 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
       setRegistrationProgress(100);
       
       if (!error) {
+        console.log('Registration successful');
         onClose();
         resetForm();
+      } else {
+        console.log('Registration failed:', error);
       }
     } catch (error) {
       console.error('Registration error:', error);

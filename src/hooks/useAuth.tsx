@@ -1,4 +1,3 @@
-
 import { useState, useEffect, createContext, useContext, ReactNode } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -90,19 +89,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       
       const redirectUrl = `${window.location.origin}/`;
       
-      // Ensure role is properly set
+      // Clean and validate user data
       const cleanUserData = {
-        full_name: userData.full_name || '',
-        phone: userData.phone || '',
+        full_name: userData.full_name?.trim() || '',
+        phone: userData.phone?.replace(/[-\s]/g, '') || '',
         role: userData.role || 'general_user',
-        company_name: userData.company_name || '',
-        license_number: userData.license_number || ''
+        company_name: userData.company_name?.trim() || '',
+        license_number: userData.license_number?.trim() || ''
       };
 
       console.log('Clean user data for signup:', cleanUserData);
 
       const { data, error } = await supabase.auth.signUp({
-        email,
+        email: email.trim(),
         password,
         options: {
           emailRedirectTo: redirectUrl,
@@ -113,16 +112,24 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       console.log('Signup response:', { data, error });
 
       if (error) {
-        console.error('Signup error:', error);
+        console.error('Signup error details:', {
+          message: error.message,
+          status: error.status,
+          name: error.name
+        });
         
-        // Handle specific error cases
+        // Handle specific error cases with user-friendly messages
         let errorMessage = error.message;
         if (error.message.includes('User already registered')) {
           errorMessage = 'An account with this email already exists. Please try signing in instead.';
-        } else if (error.message.includes('Database error')) {
-          errorMessage = 'Registration failed due to a database error. Please try again.';
+        } else if (error.message.includes('Database error') || error.message.includes('insert or update')) {
+          errorMessage = 'Registration failed due to a database error. Please try again or contact support.';
         } else if (error.message.includes('Invalid email')) {
           errorMessage = 'Please enter a valid email address.';
+        } else if (error.message.includes('Password')) {
+          errorMessage = 'Password must be at least 6 characters long.';
+        } else if (error.message.includes('Signup is disabled')) {
+          errorMessage = 'New user registration is currently disabled.';
         }
         
         toast({
@@ -130,16 +137,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           description: errorMessage,
           variant: "destructive"
         });
-      } else {
+      } else if (data.user && !data.user.email_confirmed_at) {
         toast({
           title: "Sign up successful",
-          description: "Please check your email to verify your account."
+          description: "Please check your email to verify your account before signing in."
+        });
+      } else {
+        toast({
+          title: "Account created",
+          description: "Your account has been created successfully!"
         });
       }
 
       return { error };
     } catch (err) {
-      console.error('Sign up error:', err);
+      console.error('Unexpected signup error:', err);
       toast({
         title: "Sign up failed",
         description: "An unexpected error occurred. Please try again.",
