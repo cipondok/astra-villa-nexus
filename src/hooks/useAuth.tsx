@@ -1,3 +1,4 @@
+
 import { useState, useEffect, createContext, useContext, ReactNode } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -86,7 +87,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     
     console.log('Setting up auth state listener');
 
-    // Set up auth state listener first
+    // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         if (!mounted) return;
@@ -107,32 +108,23 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           }
         }
         
-        // Set loading to false after processing auth state change
+        // Always set loading to false after processing
         if (mounted) {
           setLoading(false);
         }
       }
     );
 
-    // Get initial session - this will trigger the auth state change event
-    const initializeAuth = async () => {
-      try {
-        const { data: { session: initialSession } } = await supabase.auth.getSession();
-        console.log('Initial session check:', !!initialSession);
-        
-        // If no session found, still set loading to false
-        if (!initialSession && mounted) {
-          setLoading(false);
-        }
-      } catch (err) {
-        console.error('Auth initialization error:', err);
-        if (mounted) {
+    // Get initial session immediately
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (mounted) {
+        console.log('Initial session:', !!session);
+        // The onAuthStateChange will handle the session, but if no session, set loading false
+        if (!session) {
           setLoading(false);
         }
       }
-    };
-
-    initializeAuth();
+    });
 
     return () => {
       mounted = false;
