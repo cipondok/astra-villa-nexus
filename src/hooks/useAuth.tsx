@@ -86,21 +86,48 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const signUp = async (email: string, password: string, userData: any) => {
     try {
+      console.log('Starting signup process with data:', userData);
+      
       const redirectUrl = `${window.location.origin}/`;
       
-      const { error } = await supabase.auth.signUp({
+      // Ensure role is properly set
+      const cleanUserData = {
+        full_name: userData.full_name || '',
+        phone: userData.phone || '',
+        role: userData.role || 'general_user',
+        company_name: userData.company_name || '',
+        license_number: userData.license_number || ''
+      };
+
+      console.log('Clean user data for signup:', cleanUserData);
+
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
           emailRedirectTo: redirectUrl,
-          data: userData
+          data: cleanUserData
         }
       });
 
+      console.log('Signup response:', { data, error });
+
       if (error) {
+        console.error('Signup error:', error);
+        
+        // Handle specific error cases
+        let errorMessage = error.message;
+        if (error.message.includes('User already registered')) {
+          errorMessage = 'An account with this email already exists. Please try signing in instead.';
+        } else if (error.message.includes('Database error')) {
+          errorMessage = 'Registration failed due to a database error. Please try again.';
+        } else if (error.message.includes('Invalid email')) {
+          errorMessage = 'Please enter a valid email address.';
+        }
+        
         toast({
           title: "Sign up failed",
-          description: error.message,
+          description: errorMessage,
           variant: "destructive"
         });
       } else {
@@ -113,6 +140,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       return { error };
     } catch (err) {
       console.error('Sign up error:', err);
+      toast({
+        title: "Sign up failed",
+        description: "An unexpected error occurred. Please try again.",
+        variant: "destructive"
+      });
       return { error: err };
     }
   };
@@ -125,9 +157,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       });
 
       if (error) {
+        let errorMessage = error.message;
+        if (error.message.includes('Invalid login credentials')) {
+          errorMessage = 'Invalid email or password. Please check your credentials and try again.';
+        }
+        
         toast({
           title: "Sign in failed",
-          description: error.message,
+          description: errorMessage,
           variant: "destructive"
         });
       } else {
