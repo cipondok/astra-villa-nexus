@@ -1,8 +1,10 @@
 
 import { useState, useEffect } from "react";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/contexts/AuthContext";
+import { useSearchParams } from "react-router-dom";
 import RoleBasedNavigation from "@/components/RoleBasedNavigation";
-import RoleBasedAuthModal from "@/components/RoleBasedAuthModal";
+import AuthenticatedNavigation from "@/components/navigation/AuthenticatedNavigation";
+import AuthModal from "@/components/auth/AuthModal";
 import PropertyListingsSection from "@/components/PropertyListingsSection";
 import SearchFilters from "@/components/SearchFilters";
 
@@ -10,9 +12,15 @@ const Index = () => {
   const [language, setLanguage] = useState<"en" | "id">("en");
   const [theme, setTheme] = useState("light");
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const { user, profile, loading } = useAuth();
+  const { isAuthenticated, loading } = useAuth();
+  const [searchParams] = useSearchParams();
 
-  console.log('Index page - Auth state:', { user: !!user, profile: !!profile, loading });
+  // Check if auth modal should be opened from URL
+  useEffect(() => {
+    if (searchParams.get('auth') === 'true') {
+      setIsAuthModalOpen(true);
+    }
+  }, [searchParams]);
 
   const toggleLanguage = () => {
     setLanguage(prev => prev === "en" ? "id" : "en");
@@ -51,13 +59,22 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <RoleBasedNavigation
-        onLoginClick={handleLoginClick}
-        language={language}
-        onLanguageToggle={toggleLanguage}
-        theme={theme}
-        onThemeToggle={toggleTheme}
-      />
+      {isAuthenticated ? (
+        <AuthenticatedNavigation
+          language={language}
+          onLanguageToggle={toggleLanguage}
+          theme={theme}
+          onThemeToggle={toggleTheme}
+        />
+      ) : (
+        <RoleBasedNavigation
+          onLoginClick={handleLoginClick}
+          language={language}
+          onLanguageToggle={toggleLanguage}
+          theme={theme}
+          onThemeToggle={toggleTheme}
+        />
+      )}
       
       {/* Hero Section */}
       <section className="pt-20 pb-16 px-4 sm:px-6 lg:px-8">
@@ -80,7 +97,7 @@ const Index = () => {
       <PropertyListingsSection language={language} />
 
       {/* Auth Modal */}
-      <RoleBasedAuthModal
+      <AuthModal
         isOpen={isAuthModalOpen}
         onClose={() => setIsAuthModalOpen(false)}
         language={language}
