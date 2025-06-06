@@ -2,7 +2,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Heart, MapPin, Bed, Bath, Square, Star, Eye, Camera, Box } from "lucide-react";
+import { Heart, MapPin, Bed, Bath, Square, Star, Eye, Box } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import PropertyViewer3D from "./PropertyViewer3D";
@@ -80,37 +80,17 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
           {/* Hover Overlay */}
           <div className={`absolute inset-0 bg-black/40 transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="flex gap-3">
-                <Button
-                  size="sm"
-                  className="bg-white/90 text-gray-800 hover:bg-white"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setIs3DViewOpen(true);
-                  }}
-                >
-                  <Box className="h-4 w-4 mr-2" />
-                  3D View
-                </Button>
-                <Button
-                  size="sm"
-                  className="bg-white/90 text-gray-800 hover:bg-white"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleViewDetails();
-                  }}
-                >
-                  <Eye className="h-4 w-4 mr-2" />
-                  View
-                </Button>
-                <Button
-                  size="sm"
-                  className="bg-white/90 text-gray-800 hover:bg-white"
-                >
-                  <Camera className="h-4 w-4 mr-2" />
-                  Gallery
-                </Button>
-              </div>
+              <Button
+                size="sm"
+                className="bg-white/90 text-gray-800 hover:bg-white"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIs3DViewOpen(true);
+                }}
+              >
+                <Box className="h-4 w-4 mr-2" />
+                3D View
+              </Button>
             </div>
           </div>
           

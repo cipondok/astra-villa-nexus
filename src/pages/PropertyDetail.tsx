@@ -14,21 +14,23 @@ import PropertyAmenities from "@/components/PropertyAmenities";
 import FeedbackSection from "@/components/FeedbackSection";
 import ScheduleSurveyModal from "@/components/ScheduleSurveyModal";
 
-// Mock property data - in real app this would come from API
+// Mock property data with AI-generated images and IDR pricing
 const mockProperty = {
   id: 1,
   title: "Luxury Modern Villa with Ocean View",
   location: "Seminyak, Bali, Indonesia",
-  price: "$2,500,000",
+  price: "Rp 37,500,000,000", // IDR equivalent of $2.5M
   type: "sale",
   bedrooms: 4,
   bathrooms: 3,
   area: 350,
   images: [
-    "/placeholder.svg",
-    "/placeholder.svg",
-    "/placeholder.svg",
-    "/placeholder.svg"
+    "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&h=600&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&h=600&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&h=600&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800&h=600&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&h=600&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=800&h=600&fit=crop&auto=format"
   ],
   description: "Stunning modern villa featuring panoramic ocean views, contemporary design, and premium finishes throughout. This exceptional property offers luxury living with seamless indoor-outdoor entertainment spaces, infinity pool, and private beach access.",
   rating: 4.8,
@@ -39,7 +41,7 @@ const mockProperty = {
     title: "Senior Property Consultant",
     phone: "+62 821 1234 5678",
     email: "sarah.johnson@realestate.com",
-    avatar: "/placeholder.svg",
+    avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=200&h=200&fit=crop&auto=format",
     rating: 4.9,
     experience: "8 years",
     properties: 156
