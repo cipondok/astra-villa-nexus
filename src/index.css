@@ -1,3 +1,4 @@
+
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 @tailwind base;
 @tailwind components;
@@ -25,19 +26,19 @@
   :root {
     /* iPhone-style Light Mode Colors */
     --background: 0 0% 98%;
-    --foreground: 0 0% 15%;
+    --foreground: 0 0% 20%; /* Softer dark text */
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 15%;
+    --card-foreground: 0 0% 20%; /* Softer dark text */
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 15%;
+    --popover-foreground: 0 0% 20%; /* Softer dark text */
     --primary: 221.2 83.2% 53.3%;
     --primary-foreground: 0 0% 100%;
     --secondary: 220 14.3% 95.9%;
-    --secondary-foreground: 0 0% 15%;
+    --secondary-foreground: 0 0% 25%; /* Softer dark secondary text */
     --muted: 220 14.3% 95.9%;
-    --muted-foreground: 220 8.9% 46.1%;
+    --muted-foreground: 220 8.9% 50%; /* Balanced muted text */
     --accent: 220 14.3% 95.9%;
-    --accent-foreground: 0 0% 15%;
+    --accent-foreground: 0 0% 20%; /* Softer dark text */
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
     --border: 220 13% 91%;
@@ -52,11 +53,11 @@
     
     /* iPhone-style Light Sidebar */
     --sidebar-background: 0 0% 99%;
-    --sidebar-foreground: 0 0% 15%;
-    --sidebar-primary: 0 0% 15%;
+    --sidebar-foreground: 0 0% 20%; /* Softer dark text */
+    --sidebar-primary: 0 0% 20%; /* Softer dark text */
     --sidebar-primary-foreground: 0 0% 98%;
     --sidebar-accent: 220 14.3% 95.9%;
-    --sidebar-accent-foreground: 0 0% 15%;
+    --sidebar-accent-foreground: 0 0% 20%; /* Softer dark text */
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 10.6% 64.9%;
   }
@@ -64,21 +65,21 @@
   .dark {
     /* Titanium Blue Dark Mode Colors */
     --background: 222 47% 11%;
-    --foreground: 210 20% 85%; /* Softer half-white */
+    --foreground: 210 20% 82%; /* Smooth half-white */
     --card: 224 47% 15%;
-    --card-foreground: 210 20% 85%; /* Softer half-white */
+    --card-foreground: 210 20% 82%; /* Smooth half-white */
     --popover: 224 47% 15%;
-    --popover-foreground: 210 20% 85%; /* Softer half-white */
+    --popover-foreground: 210 20% 82%; /* Smooth half-white */
     --primary: 217 91% 60%;
     --primary-foreground: 222 47% 11%;
     --secondary: 222 47% 17%;
-    --secondary-foreground: 210 20% 85%; /* Softer half-white */
+    --secondary-foreground: 210 20% 82%; /* Smooth half-white */
     --muted: 222 47% 17%;
-    --muted-foreground: 215 15% 70%; /* Softer muted text */
+    --muted-foreground: 215 15% 68%; /* Smooth muted text */
     --accent: 222 47% 17%;
-    --accent-foreground: 210 20% 85%; /* Softer half-white */
+    --accent-foreground: 210 20% 82%; /* Smooth half-white */
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 20% 85%; /* Softer half-white */
+    --destructive-foreground: 210 20% 82%; /* Smooth half-white */
     --border: 222 47% 17%;
     --input: 222 47% 17%;
     --ring: 217 91% 60%;
@@ -90,11 +91,11 @@
     
     /* Titanium Blue Dark Sidebar */
     --sidebar-background: 222 47% 11%;
-    --sidebar-foreground: 210 20% 85%; /* Softer half-white */
-    --sidebar-primary: 210 20% 85%; /* Softer half-white */
+    --sidebar-foreground: 210 20% 82%; /* Smooth half-white */
+    --sidebar-primary: 210 20% 82%; /* Smooth half-white */
     --sidebar-primary-foreground: 222 47% 11%;
     --sidebar-accent: 222 47% 17%;
-    --sidebar-accent-foreground: 210 20% 85%; /* Softer half-white */
+    --sidebar-accent-foreground: 210 20% 82%; /* Smooth half-white */
     --sidebar-border: 222 47% 17%;
     --sidebar-ring: 217 91% 60%;
   }
@@ -174,42 +175,82 @@
   color: var(--primary-color);
 }
 
-/* Responsive text colors for better contrast with softer half-white */
+/* Smooth and compatible text colors for dark mode */
+.dark .text-gray-900 {
+  color: hsl(210 20% 82%); /* Primary text - smooth half-white */
+}
+
+.dark .text-gray-800 {
+  color: hsl(210 18% 78%); /* Near primary text */
+}
+
+.dark .text-gray-700 {
+  color: hsl(210 16% 74%); /* Secondary text */
+}
+
 .dark .text-gray-600 {
-  color: hsl(215 15% 70%); /* Softer muted text */
+  color: hsl(215 15% 68%); /* Smooth muted text */
 }
 
 .dark .text-gray-500 {
-  color: hsl(215 12% 65%); /* Even softer for secondary text */
+  color: hsl(215 12% 62%); /* Tertiary text */
 }
 
 .dark .text-gray-400 {
-  color: hsl(215 10% 60%); /* Subtle for tertiary text */
+  color: hsl(215 10% 56%); /* Subtle text */
 }
 
 .dark .text-gray-300 {
-  color: hsl(210 15% 75%); /* Soft for body text */
+  color: hsl(210 15% 72%); /* Body text */
 }
 
 .dark .text-gray-200 {
-  color: hsl(210 20% 80%); /* Half-white for primary text */
+  color: hsl(210 18% 76%); /* Emphasis text */
 }
 
 .dark .text-gray-100 {
-  color: hsl(210 20% 85%); /* Softest half-white for emphasis */
+  color: hsl(210 20% 80%); /* Highlight text */
 }
 
-/* Light mode text improvements for iPhone-style */
+.dark .text-white {
+  color: hsl(210 20% 82%); /* Override white with smooth half-white */
+}
+
+/* Light mode text improvements for iPhone-style with smooth colors */
+.text-gray-900 {
+  color: hsl(0 0% 20%); /* Softer than pure black */
+}
+
+.text-gray-800 {
+  color: hsl(0 0% 25%); /* Near primary text */
+}
+
+.text-gray-700 {
+  color: hsl(220 8.9% 35%); /* Secondary text */
+}
+
 .text-gray-600 {
-  color: hsl(220 8.9% 46.1%);
+  color: hsl(220 8.9% 50%); /* Balanced muted text */
 }
 
 .text-gray-500 {
-  color: hsl(220 8.9% 46.1%);
+  color: hsl(220 8.9% 50%); /* Consistent muted */
 }
 
 .text-gray-400 {
-  color: hsl(220 8.9% 46.1%);
+  color: hsl(220 8.9% 60%); /* Subtle text */
+}
+
+.text-gray-300 {
+  color: hsl(220 8.9% 70%); /* Light text */
+}
+
+.text-gray-200 {
+  color: hsl(220 8.9% 80%); /* Very light text */
+}
+
+.text-gray-100 {
+  color: hsl(220 8.9% 90%); /* Ultra light text */
 }
 
 /* Modern Admin Panel Animations */
