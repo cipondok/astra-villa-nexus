@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -114,25 +113,25 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
   };
 
   return (
-    <Card className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm shadow-2xl border-0 max-w-6xl mx-auto">
+    <Card className="bg-blue-sky-light-transparent backdrop-blur-sm shadow-2xl border-0 max-w-6xl mx-auto">
       <CardContent className="p-6 space-y-4">
         {/* Line 1: Property Type Tabs */}
         <div className="flex justify-center">
           <Tabs value={propertyType} onValueChange={setPropertyType} className="w-full max-w-4xl">
-            <TabsList className="grid w-full grid-cols-5 h-12 bg-gray-100 dark:bg-gray-800">
-              <TabsTrigger value="buy" className="text-sm font-medium">
+            <TabsList className="grid w-full grid-cols-5 h-12 bg-white/20 backdrop-blur-sm">
+              <TabsTrigger value="buy" className="text-sm font-medium text-white data-[state=active]:bg-white/30 data-[state=active]:text-white">
                 {currentText.buy}
               </TabsTrigger>
-              <TabsTrigger value="rent" className="text-sm font-medium">
+              <TabsTrigger value="rent" className="text-sm font-medium text-white data-[state=active]:bg-white/30 data-[state=active]:text-white">
                 {currentText.rent}
               </TabsTrigger>
-              <TabsTrigger value="new-project" className="text-sm font-medium">
+              <TabsTrigger value="new-project" className="text-sm font-medium text-white data-[state=active]:bg-white/30 data-[state=active]:text-white">
                 {currentText.newProject}
               </TabsTrigger>
-              <TabsTrigger value="commercial" className="text-sm font-medium">
+              <TabsTrigger value="commercial" className="text-sm font-medium text-white data-[state=active]:bg-white/30 data-[state=active]:text-white">
                 {currentText.commercial}
               </TabsTrigger>
-              <TabsTrigger value="pre-launch" className="text-sm font-medium">
+              <TabsTrigger value="pre-launch" className="text-sm font-medium text-white data-[state=active]:bg-white/30 data-[state=active]:text-white">
                 {currentText.preLaunch}
               </TabsTrigger>
             </TabsList>
@@ -142,17 +141,17 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
         {/* Line 2: Search Input and Button */}
         <div className="flex gap-3">
           <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-white/70" />
             <Input
               placeholder={currentText.search}
-              className="pl-10 h-12 text-base border-gray-300 dark:border-gray-600"
+              className="pl-10 h-12 text-base bg-white/20 border-white/30 text-white placeholder:text-white/70 backdrop-blur-sm"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
           <Button 
             onClick={handleSearch}
-            className="h-12 px-8 bg-gradient-to-r from-blue-600 to-orange-500 hover:from-blue-700 hover:to-orange-600 text-white font-semibold"
+            className="h-12 px-8 bg-gradient-to-r from-blue-600 to-orange-500 hover:from-blue-700 hover:to-orange-600 text-white font-semibold shadow-lg"
           >
             {currentText.searchBtn}
           </Button>
@@ -161,8 +160,8 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
         {/* Line 3: Location and Property Details */}
         <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
           <Select value={selectedState} onValueChange={setSelectedState}>
-            <SelectTrigger className="h-11">
-              <MapPin className="h-4 w-4 mr-2 text-gray-400" />
+            <SelectTrigger className="h-11 bg-white/20 border-white/30 text-white backdrop-blur-sm">
+              <MapPin className="h-4 w-4 mr-2 text-white/70" />
               <SelectValue placeholder={currentText.state} />
             </SelectTrigger>
             <SelectContent className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
@@ -219,10 +218,10 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
         </div>
 
         {/* Line 4: Search Filters */}
-        <div className="flex items-center gap-3 pt-2 border-t border-gray-200 dark:border-gray-700">
+        <div className="flex items-center gap-3 pt-2 border-t border-white/30">
           <div className="flex items-center gap-2">
-            <Filter className="h-4 w-4 text-gray-500" />
-            <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
+            <Filter className="h-4 w-4 text-white/70" />
+            <span className="text-sm font-medium text-white/90">
               {currentText.filters}:
             </span>
           </div>

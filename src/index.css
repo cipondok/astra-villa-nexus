@@ -44,7 +44,14 @@
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 200 25% 40%;
 
-    /* Blue Titanium Theme Colors */
+    /* Blue Sky Theme Colors - 70% transparency for light mode */
+    --blue-sky-light: 200 100% 85%;
+    --blue-sky: 200 100% 70%;
+    --blue-sky-dark: 200 100% 55%;
+    --blue-sky-transparent: 200 100% 70% / 0.7;
+    --blue-sky-light-transparent: 200 100% 85% / 0.7;
+    
+    /* Updated Blue Titanium for compatibility */
     --blue-titanium-light: 200 25% 85%;
     --blue-titanium: 200 25% 40%;
     --blue-titanium-dark: 200 25% 20%;
@@ -88,6 +95,13 @@
     --sidebar-border: 200 25% 12%;
     --sidebar-ring: 200 25% 60%;
 
+    /* Blue Sky Theme Colors for Dark Mode */
+    --blue-sky-light: 200 25% 60%;
+    --blue-sky: 200 25% 40%;
+    --blue-sky-dark: 200 25% 20%;
+    --blue-sky-transparent: 200 25% 40% / 0.7;
+    --blue-sky-light-transparent: 200 25% 60% / 0.7;
+    
     /* Blue Titanium Theme Colors for Dark Mode */
     --blue-titanium-light: 200 25% 60%;
     --blue-titanium: 200 25% 40%;

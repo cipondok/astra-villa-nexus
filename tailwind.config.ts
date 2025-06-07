@@ -67,6 +67,13 @@ export default {
 					light: 'hsl(var(--blue-titanium-light))',
 					DEFAULT: 'hsl(var(--blue-titanium))',
 					dark: 'hsl(var(--blue-titanium-dark))'
+				},
+				'blue-sky': {
+					light: 'hsl(var(--blue-sky-light))',
+					DEFAULT: 'hsl(var(--blue-sky))',
+					dark: 'hsl(var(--blue-sky-dark))',
+					transparent: 'hsl(var(--blue-sky-transparent))',
+					'light-transparent': 'hsl(var(--blue-sky-light-transparent))'
 				}
 			},
 			borderRadius: {
