@@ -145,7 +145,7 @@ const RoleBasedNavigation = ({
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-b border-gray-200 dark:border-gray-700">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/40 dark:bg-gray-900/40 backdrop-blur-md border-b border-gray-200/30 dark:border-gray-700/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo - Clickable to go home */}
@@ -162,23 +162,23 @@ const RoleBasedNavigation = ({
           <div className="hidden md:flex items-center space-x-8">
             <button 
               onClick={handleHomeClick}
-              className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium"
+              className="text-gray-800/80 dark:text-white/80 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium"
             >
               {currentText.home}
             </button>
-            <a href="#" className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium">
+            <a href="#" className="text-gray-800/80 dark:text-white/80 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium">
               {currentText.buy}
             </a>
-            <a href="#" className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium">
+            <a href="#" className="text-gray-800/80 dark:text-white/80 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium">
               {currentText.rent}
             </a>
-            <a href="#" className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium">
+            <a href="#" className="text-gray-800/80 dark:text-white/80 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium">
               {currentText.newProjects}
             </a>
-            <a href="#" className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium">
+            <a href="#" className="text-gray-800/80 dark:text-white/80 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium">
               {currentText.vendors}
             </a>
-            <a href="#" className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium">
+            <a href="#" className="text-gray-800/80 dark:text-white/80 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium">
               {currentText.about}
             </a>
           </div>
@@ -190,7 +190,7 @@ const RoleBasedNavigation = ({
               variant="ghost"
               size="sm"
               onClick={onLanguageToggle}
-              className="hidden sm:flex items-center space-x-1"
+              className="hidden sm:flex items-center space-x-1 text-gray-800/80 dark:text-white/80 hover:text-blue-600 dark:hover:text-blue-400"
             >
               <Globe className="h-4 w-4" />
               <span className="text-sm font-medium">{language.toUpperCase()}</span>
@@ -201,7 +201,7 @@ const RoleBasedNavigation = ({
               variant="ghost"
               size="sm"
               onClick={onThemeToggle}
-              className="hidden sm:flex"
+              className="hidden sm:flex text-gray-800/80 dark:text-white/80 hover:text-blue-600 dark:hover:text-blue-400"
             >
               {theme === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
             </Button>
@@ -213,7 +213,7 @@ const RoleBasedNavigation = ({
                 <div className="hidden md:flex items-center space-x-2">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" className="flex items-center space-x-2 p-2">
+                      <Button variant="ghost" className="flex items-center space-x-2 p-2 text-gray-800/80 dark:text-white/80">
                         <Avatar className="h-8 w-8">
                           <AvatarImage src={profile.avatar_url || undefined} alt={profile.full_name || 'User'} />
                           <AvatarFallback className="text-sm">
@@ -225,37 +225,37 @@ const RoleBasedNavigation = ({
                         </span>
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-56">
+                    <DropdownMenuContent align="end" className="w-56 bg-white/40 dark:bg-gray-900/40 backdrop-blur-md border border-gray-200/30 dark:border-gray-700/30">
                       <DropdownMenuLabel>
                         <div className="flex flex-col space-y-1">
-                          <p className="text-sm font-medium">{profile.full_name || 'User'}</p>
-                          <p className="text-xs text-muted-foreground">{profile.email}</p>
-                          <p className="text-xs text-muted-foreground capitalize">{profile.role.replace('_', ' ')}</p>
+                          <p className="text-sm font-medium text-gray-800/90 dark:text-white/90">{profile.full_name || 'User'}</p>
+                          <p className="text-xs text-gray-600/80 dark:text-gray-300/80">{profile.email}</p>
+                          <p className="text-xs text-gray-600/80 dark:text-gray-300/80 capitalize">{profile.role.replace('_', ' ')}</p>
                         </div>
                       </DropdownMenuLabel>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem onClick={handleHomeClick}>
+                      <DropdownMenuSeparator className="border-gray-200/50 dark:border-gray-700/50" />
+                      <DropdownMenuItem onClick={handleHomeClick} className="text-gray-800/80 dark:text-white/80 hover:bg-gray-100/50 dark:hover:bg-gray-800/50">
                         <Home className="h-4 w-4 mr-2" />
                         {currentText.home}
                       </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => navigate(getDashboardRoute())}>
+                      <DropdownMenuItem onClick={() => navigate(getDashboardRoute())} className="text-gray-800/80 dark:text-white/80 hover:bg-gray-100/50 dark:hover:bg-gray-800/50">
                         {currentText.dashboard}
                       </DropdownMenuItem>
                       {getRoleSpecificMenuItems().map((item, index) => (
-                        <DropdownMenuItem key={index} onClick={() => navigate(item.route)}>
+                        <DropdownMenuItem key={index} onClick={() => navigate(item.route)} className="text-gray-800/80 dark:text-white/80 hover:bg-gray-100/50 dark:hover:bg-gray-800/50">
                           {item.label}
                         </DropdownMenuItem>
                       ))}
-                      <DropdownMenuItem onClick={() => navigate('/profile')}>
+                      <DropdownMenuItem onClick={() => navigate('/profile')} className="text-gray-800/80 dark:text-white/80 hover:bg-gray-100/50 dark:hover:bg-gray-800/50">
                         <User className="h-4 w-4 mr-2" />
                         {currentText.profile}
                       </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => navigate('/settings')}>
+                      <DropdownMenuItem onClick={() => navigate('/settings')} className="text-gray-800/80 dark:text-white/80 hover:bg-gray-100/50 dark:hover:bg-gray-800/50">
                         <Settings className="h-4 w-4 mr-2" />
                         {currentText.settings}
                       </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem onClick={handleSignOut}>
+                      <DropdownMenuSeparator className="border-gray-200/50 dark:border-gray-700/50" />
+                      <DropdownMenuItem onClick={handleSignOut} className="text-red-600/80 hover:text-red-700 hover:bg-red-50/50 dark:hover:bg-red-900/20">
                         <LogOut className="h-4 w-4 mr-2" />
                         {currentText.logout}
                       </DropdownMenuItem>
@@ -267,7 +267,7 @@ const RoleBasedNavigation = ({
                     variant="outline"
                     size="sm"
                     onClick={handleSignOut}
-                    className="flex items-center space-x-1 text-red-600 hover:text-red-700 hover:bg-red-50"
+                    className="flex items-center space-x-1 text-red-600 hover:text-red-700 hover:bg-red-50/50 dark:hover:bg-red-900/20 border-red-200/50 dark:border-red-800/50"
                   >
                     <LogOut className="h-4 w-4" />
                     <span>{currentText.logout}</span>
@@ -289,7 +289,7 @@ const RoleBasedNavigation = ({
             <Button
               variant="ghost"
               size="sm"
-              className="md:hidden"
+              className="md:hidden text-gray-800/80 dark:text-white/80"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
               <Menu className="h-5 w-5" />
@@ -299,27 +299,27 @@ const RoleBasedNavigation = ({
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="md:hidden border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
+          <div className="md:hidden border-t border-gray-200/30 dark:border-gray-700/30 bg-white/40 dark:bg-gray-900/40 backdrop-blur-md">
             <div className="px-2 pt-2 pb-3 space-y-1">
               <button 
                 onClick={handleHomeClick}
-                className="block w-full text-left px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
+                className="block w-full text-left px-3 py-2 text-gray-800/80 dark:text-white/80 hover:text-blue-600 dark:hover:text-blue-400"
               >
                 {currentText.home}
               </button>
-              <a href="#" className="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400">
+              <a href="#" className="block px-3 py-2 text-gray-800/80 dark:text-white/80 hover:text-blue-600 dark:hover:text-blue-400">
                 {currentText.buy}
               </a>
-              <a href="#" className="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400">
+              <a href="#" className="block px-3 py-2 text-gray-800/80 dark:text-white/80 hover:text-blue-600 dark:hover:text-blue-400">
                 {currentText.rent}
               </a>
-              <a href="#" className="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400">
+              <a href="#" className="block px-3 py-2 text-gray-800/80 dark:text-white/80 hover:text-blue-600 dark:hover:text-blue-400">
                 {currentText.newProjects}
               </a>
-              <a href="#" className="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400">
+              <a href="#" className="block px-3 py-2 text-gray-800/80 dark:text-white/80 hover:text-blue-600 dark:hover:text-blue-400">
                 {currentText.vendors}
               </a>
-              <a href="#" className="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400">
+              <a href="#" className="block px-3 py-2 text-gray-800/80 dark:text-white/80 hover:text-blue-600 dark:hover:text-blue-400">
                 {currentText.about}
               </a>
               
@@ -330,7 +330,7 @@ const RoleBasedNavigation = ({
                   </Button>
                 </div>
               ) : (
-                <div className="px-3 py-2 space-y-2 border-t border-gray-200 dark:border-gray-700 mt-2 pt-2">
+                <div className="px-3 py-2 space-y-2 border-t border-gray-200/30 dark:border-gray-700/30 mt-2 pt-2">
                   <div className="flex items-center space-x-3 mb-2">
                     <Avatar className="h-8 w-8">
                       <AvatarImage src={profile.avatar_url || undefined} alt={profile.full_name || 'User'} />
@@ -339,29 +339,29 @@ const RoleBasedNavigation = ({
                       </AvatarFallback>
                     </Avatar>
                     <div>
-                      <p className="text-sm font-medium">{profile.full_name || 'User'}</p>
-                      <p className="text-xs text-muted-foreground capitalize">{profile.role.replace('_', ' ')}</p>
+                      <p className="text-sm font-medium text-gray-800/90 dark:text-white/90">{profile.full_name || 'User'}</p>
+                      <p className="text-xs text-gray-600/80 dark:text-gray-300/80 capitalize">{profile.role.replace('_', ' ')}</p>
                     </div>
                   </div>
-                  <Button variant="ghost" onClick={handleHomeClick} className="w-full justify-start">
+                  <Button variant="ghost" onClick={handleHomeClick} className="w-full justify-start text-gray-800/80 dark:text-white/80">
                     <Home className="h-4 w-4 mr-2" />
                     {currentText.home}
                   </Button>
-                  <Button variant="ghost" onClick={() => navigate(getDashboardRoute())} className="w-full justify-start">
+                  <Button variant="ghost" onClick={() => navigate(getDashboardRoute())} className="w-full justify-start text-gray-800/80 dark:text-white/80">
                     {currentText.dashboard}
                   </Button>
-                  <Button variant="ghost" onClick={() => navigate('/profile')} className="w-full justify-start">
+                  <Button variant="ghost" onClick={() => navigate('/profile')} className="w-full justify-start text-gray-800/80 dark:text-white/80">
                     <User className="h-4 w-4 mr-2" />
                     {currentText.profile}
                   </Button>
-                  <Button variant="ghost" onClick={() => navigate('/settings')} className="w-full justify-start">
+                  <Button variant="ghost" onClick={() => navigate('/settings')} className="w-full justify-start text-gray-800/80 dark:text-white/80">
                     <Settings className="h-4 w-4 mr-2" />
                     {currentText.settings}
                   </Button>
                   <Button 
                     variant="ghost" 
                     onClick={handleSignOut} 
-                    className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50"
+                    className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50/50 dark:hover:bg-red-900/20"
                   >
                     <LogOut className="h-4 w-4 mr-2" />
                     {currentText.logout}
