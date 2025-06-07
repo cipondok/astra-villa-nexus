@@ -2,8 +2,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSearchParams } from "react-router-dom";
-import RoleBasedNavigation from "@/components/RoleBasedNavigation";
-import AuthenticatedNavigation from "@/components/navigation/AuthenticatedNavigation";
+import EnhancedNavigation from "@/components/navigation/EnhancedNavigation";
 import AuthModal from "@/components/auth/AuthModal";
 import PropertyListingsSection from "@/components/PropertyListingsSection";
 import ModernSearchPanel from "@/components/ModernSearchPanel";
@@ -66,22 +65,13 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {isAuthenticated ? (
-        <AuthenticatedNavigation
-          language={language}
-          onLanguageToggle={toggleLanguage}
-          theme={theme}
-          onThemeToggle={toggleTheme}
-        />
-      ) : (
-        <RoleBasedNavigation
-          onLoginClick={handleLoginClick}
-          language={language}
-          onLanguageToggle={toggleLanguage}
-          theme={theme}
-          onThemeToggle={toggleTheme}
-        />
-      )}
+      <EnhancedNavigation
+        onLoginClick={!isAuthenticated ? handleLoginClick : undefined}
+        language={language}
+        onLanguageToggle={toggleLanguage}
+        theme={theme}
+        onThemeToggle={toggleTheme}
+      />
       
       {/* Hero Section with Modern Search */}
       <section className="pt-20 pb-8 px-4 sm:px-6 lg:px-8 relative">
