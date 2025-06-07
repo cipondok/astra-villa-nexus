@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -177,7 +178,7 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
         });
       } else if (error) {
         console.error('Signup failed:', error);
-        showError("Registration Failed", error);
+        showError("Registration Failed", error.message || "An error occurred during registration");
       }
     } catch (error) {
       console.error('Sign up error:', error);

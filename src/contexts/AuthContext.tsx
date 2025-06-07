@@ -14,6 +14,8 @@ interface Profile {
   license_number?: string;
   verification_status?: string;
   avatar_url?: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
 interface AuthContextType {
@@ -21,10 +23,10 @@ interface AuthContextType {
   profile: Profile | null;
   loading: boolean;
   isAuthenticated: boolean;
-  signIn: (email: string, password: string) => Promise<{ error: any }>;
-  signUp: (email: string, password: string, userData: any) => Promise<{ error: any }>;
+  signIn: (email: string, password: string) => Promise<{ error: any; success?: boolean }>;
+  signUp: (email: string, password: string, userData: any) => Promise<{ error: any; success?: boolean }>;
   signOut: () => Promise<void>;
-  updateProfile: (data: Partial<Profile>) => Promise<{ error: any }>;
+  updateProfile: (data: Partial<Profile>) => Promise<{ error: any; success?: boolean }>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -137,14 +139,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       if (error) {
         showError('Sign In Failed', error.message);
-        return { error };
+        return { error, success: false };
       }
 
       showSuccess('Welcome back!', 'You have been signed in successfully.');
-      return { error: null };
+      return { error: null, success: true };
     } catch (error: any) {
       showError('Sign In Error', error.message);
-      return { error };
+      return { error, success: false };
     } finally {
       setLoading(false);
     }
@@ -163,14 +165,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       if (error) {
         showError('Sign Up Failed', error.message);
-        return { error };
+        return { error, success: false };
       }
 
       showSuccess('Account Created!', 'Please check your email to verify your account.');
-      return { error: null };
+      return { error: null, success: true };
     } catch (error: any) {
       showError('Sign Up Error', error.message);
-      return { error };
+      return { error, success: false };
     } finally {
       setLoading(false);
     }
@@ -192,7 +194,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const updateProfile = async (data: Partial<Profile>) => {
     try {
-      if (!user) return { error: new Error('No user found') };
+      if (!user) return { error: new Error('No user found'), success: false };
 
       const { error } = await supabase
         .from('profiles')
@@ -200,21 +202,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           id: user.id,
           email: user.email,
           ...data,
-          updated_at: new Date().toISOString(),
         });
 
       if (error) {
         showError('Update Failed', error.message);
-        return { error };
+        return { error, success: false };
       }
 
       // Refresh profile data
       await fetchProfile(user.id);
       showSuccess('Profile Updated', 'Your profile has been updated successfully.');
-      return { error: null };
+      return { error: null, success: true };
     } catch (error: any) {
       showError('Update Error', error.message);
-      return { error };
+      return { error, success: false };
     }
   };
 

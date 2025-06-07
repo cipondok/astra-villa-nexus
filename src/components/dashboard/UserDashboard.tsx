@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -180,6 +179,17 @@ const UserDashboard = ({ language }: UserDashboardProps) => {
     }).format(date);
   };
 
+  // Get creation date from user or fallback to current date
+  const getCreationDate = () => {
+    if (profile?.created_at) {
+      return new Date(profile.created_at);
+    }
+    if (user?.created_at) {
+      return new Date(user.created_at);
+    }
+    return new Date(); // Fallback to current date
+  };
+
   if (!user || !profile) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -202,7 +212,7 @@ const UserDashboard = ({ language }: UserDashboardProps) => {
                 {currentText.welcome}, {profile.full_name || user.email}!
               </h1>
               <p className="text-gray-600 dark:text-gray-300 mt-2">
-                {currentText.memberSince} {formatDate(new Date(profile.created_at))}
+                {currentText.memberSince} {formatDate(getCreationDate())}
               </p>
             </div>
             <div className="flex items-center space-x-4">
@@ -263,8 +273,8 @@ const UserDashboard = ({ language }: UserDashboardProps) => {
                   <div>
                     <Label>{currentText.status}</Label>
                     <div className="flex items-center space-x-2">
-                      <Badge variant={getStatusVariant(profile.verification_status)}>
-                        {getStatusText(profile.verification_status)}
+                      <Badge variant={getStatusVariant(profile.verification_status || 'pending')}>
+                        {getStatusText(profile.verification_status || 'pending')}
                       </Badge>
                     </div>
                   </div>
