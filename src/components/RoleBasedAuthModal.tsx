@@ -15,8 +15,6 @@ interface RoleBasedAuthModalProps {
   language: "en" | "id";
 }
 
-type UserRole = 'general_user' | 'property_owner' | 'agent' | 'vendor' | 'admin';
-
 const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalProps) => {
   const [activeTab, setActiveTab] = useState("signin");
   const [isLoading, setIsLoading] = useState(false);
@@ -25,7 +23,7 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
     password: "",
     confirmPassword: "",
     full_name: "",
-    role: "general_user" as UserRole,
+    role: "general_user",
     phone: "",
     company_name: "",
     license_number: ""
@@ -107,6 +105,7 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
     setIsLoading(true);
     
     try {
+      console.log('Attempting sign in with:', signInData.email);
       const { success } = await signIn(signInData.email, signInData.password);
       if (success) {
         onClose();
@@ -122,6 +121,8 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    console.log('Sign up data:', signUpData);
+    
     if (signUpData.password !== signUpData.confirmPassword) {
       alert(currentText.passwordMismatch);
       return;
@@ -135,7 +136,7 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
     setIsLoading(true);
     
     try {
-      // Pass role and additional data through user metadata
+      console.log('Attempting sign up with role:', signUpData.role);
       const { success } = await signUp(
         signUpData.email, 
         signUpData.password, 
@@ -167,7 +168,7 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
     }
   };
 
-  const showAdditionalFields = (): boolean => {
+  const showAdditionalFields = () => {
     return signUpData.role === 'agent' || signUpData.role === 'vendor' || signUpData.role === 'property_owner';
   };
 
@@ -245,7 +246,7 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
                   <Label htmlFor="signup-role">{currentText.selectRole}</Label>
                   <Select 
                     value={signUpData.role} 
-                    onValueChange={(value: UserRole) => setSignUpData(prev => ({ ...prev, role: value }))}
+                    onValueChange={(value) => setSignUpData(prev => ({ ...prev, role: value }))}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder={currentText.selectRole} />
