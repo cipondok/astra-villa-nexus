@@ -1,3 +1,4 @@
+
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -38,89 +39,35 @@ import {
   Lock
 } from "lucide-react";
 
-type AdminPermission = "user_management" | "property_management" | "content_management" | "system_settings" | "billing_management" | "vendor_authorization" | "security_monitoring" | "order_tracking" | "ai_bot_management";
-
 const AdminDashboard = () => {
   const { user, profile, isAuthenticated, loading } = useAuth();
   const navigate = useNavigate();
-  const { showError, showSuccess } = useAlert();
+  const { showError } = useAlert();
   const [activeTab, setActiveTab] = useState("overview");
 
-  // Check if user is demo admin or real admin
+  // Check if user is demo admin
   const isDemoAdmin = user?.id === 'demo-admin-456' && profile?.role === 'admin';
 
-  // Check if user is admin with better error handling
-  const { data: adminData, isLoading: adminLoading, error: adminError } = useQuery({
-    queryKey: ['admin-check', user?.id],
-    queryFn: async () => {
-      if (!user?.id) {
-        console.log('No user ID found');
-        return null;
-      }
+  // Simplified admin check - if user is logged in and either demo admin or has admin role
+  const isAdmin = isAuthenticated && (isDemoAdmin || profile?.role === 'admin');
 
-      // If it's a demo admin, return mock admin data
-      if (isDemoAdmin) {
-        console.log('Demo admin detected, returning mock admin data');
-        return {
-          id: 'demo-admin-id',
-          user_id: user.id,
-          is_super_admin: true,
-          role: {
-            name: 'Super Admin',
-            permissions: [
-              'user_management',
-              'property_management', 
-              'content_management',
-              'system_settings',
-              'billing_management',
-              'vendor_authorization',
-              'security_monitoring',
-              'order_tracking',
-              'ai_bot_management'
-            ] as AdminPermission[]
-          }
-        };
-      }
-      
-      console.log('Checking admin status for user:', user.id);
-      
-      try {
-        const { data, error } = await supabase
-          .from('admin_users')
-          .select(`
-            *,
-            role:admin_roles(name, permissions)
-          `)
-          .eq('user_id', user.id)
-          .single();
-        
-        if (error) {
-          console.log('Admin check error:', error);
-          if (error.code === 'PGRST116') {
-            // No admin record found
-            return null;
-          }
-          throw error;
-        }
-        
-        console.log('Admin data found:', data);
-        return data;
-      } catch (err) {
-        console.error('Error checking admin status:', err);
-        throw err;
-      }
-    },
-    enabled: !!user?.id && isAuthenticated,
-    retry: 2,
-    refetchOnWindowFocus: false
-  });
-
-  // Dashboard statistics with error handling
+  // Dashboard statistics
   const { data: stats, isLoading: statsLoading } = useQuery({
     queryKey: ['admin-stats'],
     queryFn: async () => {
       try {
-        const [usersCount, propertiesCount, ordersCount, vendorRequestsCount, errorLogsCount] = await Promise.all([
+        // For demo purposes, return mock data if needed
+        if (isDemoAdmin) {
+          return {
+            users: 125,
+            properties: 89,
+            orders: 45,
+            vendorRequests: 12,
+            errorLogs: 3
+          };
+        }
+
+        const [usersCount, propertiesCount, ordersCount, vendorRequestsCount, errorLogsCount] = await Promise.allSettled([
           supabase.from('profiles').select('*', { count: 'exact', head: true }),
           supabase.from('properties').select('*', { count: 'exact', head: true }),
           supabase.from('orders').select('*', { count: 'exact', head: true }),
@@ -129,11 +76,11 @@ const AdminDashboard = () => {
         ]);
 
         return {
-          users: usersCount.count || 0,
-          properties: propertiesCount.count || 0,
-          orders: ordersCount.count || 0,
-          vendorRequests: vendorRequestsCount.count || 0,
-          errorLogs: errorLogsCount.count || 0
+          users: usersCount.status === 'fulfilled' ? (usersCount.value.count || 0) : 0,
+          properties: propertiesCount.status === 'fulfilled' ? (propertiesCount.value.count || 0) : 0,
+          orders: ordersCount.status === 'fulfilled' ? (ordersCount.value.count || 0) : 0,
+          vendorRequests: vendorRequestsCount.status === 'fulfilled' ? (vendorRequestsCount.value.count || 0) : 0,
+          errorLogs: errorLogsCount.status === 'fulfilled' ? (errorLogsCount.value.count || 0) : 0
         };
       } catch (err) {
         console.error('Error fetching admin stats:', err);
@@ -146,59 +93,35 @@ const AdminDashboard = () => {
         };
       }
     },
-    enabled: !!adminData || isDemoAdmin
+    enabled: isAdmin
   });
 
   useEffect(() => {
-    console.log('AdminDashboard useEffect - auth state:', { loading, isAuthenticated, user: !!user, isDemoAdmin });
-    
     if (!loading && !isAuthenticated) {
-      console.log('User not authenticated, redirecting to login');
       navigate('/?auth=true');
       return;
     }
 
-    if (!adminLoading && !loading && isAuthenticated && !adminData && !isDemoAdmin && !adminError) {
-      console.log('User authenticated but no admin privileges found');
+    if (!loading && isAuthenticated && !isAdmin) {
       showError("Access Denied", "You don't have admin privileges to access this panel.");
       navigate('/dashboard');
     }
-  }, [isAuthenticated, loading, adminData, adminLoading, adminError, navigate, showError, isDemoAdmin]);
+  }, [isAuthenticated, loading, isAdmin, navigate, showError]);
 
-  // Show loading state only for a short period
-  if (loading || (adminLoading && !adminError && !adminData && !isDemoAdmin)) {
-    console.log('Showing loading state - loading:', loading, 'adminLoading:', adminLoading);
+  // Show loading state
+  if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
           <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Loading Admin Panel...</h2>
-          <p className="text-gray-600 dark:text-gray-300 mt-2">Please wait while we verify your permissions</p>
         </div>
       </div>
     );
   }
 
-  // Show error state
-  if (adminError && !isDemoAdmin) {
-    console.log('Admin error occurred:', adminError);
-    return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
-        <div className="text-center">
-          <AlertTriangle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Error Loading Admin Panel</h2>
-          <p className="text-gray-600 dark:text-gray-300 mt-2">Please try refreshing the page</p>
-          <Button onClick={() => window.location.reload()} className="mt-4">
-            Refresh Page
-          </Button>
-        </div>
-      </div>
-    );
-  }
-
-  // Show access denied if no admin data and not demo admin
-  if (!adminData && !isDemoAdmin) {
-    console.log('No admin data, showing access denied');
+  // Show access denied if not admin
+  if (!isAdmin) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         <div className="text-center">
@@ -213,43 +136,20 @@ const AdminDashboard = () => {
     );
   }
 
-  const hasPermission = (permission: AdminPermission): boolean => {
-    if (isDemoAdmin) return true; // Demo admin has all permissions
-    return adminData?.is_super_admin || adminData?.role?.permissions?.includes(permission);
-  };
-
   // Handle quick action clicks
   const handleQuickAction = (action: string) => {
-    console.log('Quick action clicked:', action);
-    switch (action) {
-      case 'users':
-        setActiveTab('users');
-        break;
-      case 'properties':
-        setActiveTab('properties');
-        break;
-      case 'vendors':
-        setActiveTab('vendors');
-        break;
-      case 'security':
-        setActiveTab('security');
-        break;
-      case 'reports':
-        setActiveTab('reports');
-        break;
-      case 'settings':
-        setActiveTab('settings');
-        break;
-      default:
-        console.log('Unknown action:', action);
-    }
+    setActiveTab(action);
   };
-
-  console.log('Rendering admin dashboard for user:', user?.email, 'isDemoAdmin:', isDemoAdmin);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <AdminNavigation user={user} adminData={adminData || (isDemoAdmin ? { is_super_admin: true, role: { name: 'Demo Admin' } } : null)} />
+      <AdminNavigation 
+        user={user} 
+        adminData={{ 
+          is_super_admin: true, 
+          role: { name: isDemoAdmin ? 'Demo Admin' : 'Admin' } 
+        }} 
+      />
       
       <div className="pt-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto py-8">
@@ -261,40 +161,22 @@ const AdminDashboard = () => {
               Welcome back, {user?.user_metadata?.full_name || user?.email}
             </p>
             <Badge variant="secondary" className="mt-2">
-              {isDemoAdmin ? 'Demo Admin' : (adminData?.is_super_admin ? 'Super Admin' : adminData?.role?.name || 'Admin')}
+              {isDemoAdmin ? 'Demo Admin' : 'Admin'}
             </Badge>
           </div>
 
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
             <TabsList className="grid w-full grid-cols-6 lg:grid-cols-11">
               <TabsTrigger value="overview">Overview</TabsTrigger>
-              {hasPermission('user_management') && (
-                <TabsTrigger value="users">Users</TabsTrigger>
-              )}
-              {hasPermission('property_management') && (
-                <TabsTrigger value="properties">Properties</TabsTrigger>
-              )}
-              {hasPermission('content_management') && (
-                <TabsTrigger value="content">Content</TabsTrigger>
-              )}
-              {hasPermission('system_settings') && (
-                <TabsTrigger value="settings">Settings</TabsTrigger>
-              )}
-              {hasPermission('vendor_authorization') && (
-                <TabsTrigger value="vendors">Vendors</TabsTrigger>
-              )}
-              {hasPermission('billing_management') && (
-                <TabsTrigger value="billing">Billing</TabsTrigger>
-              )}
-              {hasPermission('order_tracking') && (
-                <TabsTrigger value="orders">Orders</TabsTrigger>
-              )}
-              {hasPermission('security_monitoring') && (
-                <TabsTrigger value="security">Security</TabsTrigger>
-              )}
-              {hasPermission('ai_bot_management') && (
-                <TabsTrigger value="ai">AI Bots</TabsTrigger>
-              )}
+              <TabsTrigger value="users">Users</TabsTrigger>
+              <TabsTrigger value="properties">Properties</TabsTrigger>
+              <TabsTrigger value="content">Content</TabsTrigger>
+              <TabsTrigger value="settings">Settings</TabsTrigger>
+              <TabsTrigger value="vendors">Vendors</TabsTrigger>
+              <TabsTrigger value="billing">Billing</TabsTrigger>
+              <TabsTrigger value="orders">Orders</TabsTrigger>
+              <TabsTrigger value="security">Security</TabsTrigger>
+              <TabsTrigger value="ai">AI Bots</TabsTrigger>
               <TabsTrigger value="reports">Reports</TabsTrigger>
             </TabsList>
 
@@ -373,46 +255,38 @@ const AdminDashboard = () => {
                     <CardDescription>Common administrative tasks</CardDescription>
                   </CardHeader>
                   <CardContent className="grid grid-cols-2 gap-4">
-                    {hasPermission('user_management') && (
-                      <Button 
-                        onClick={() => handleQuickAction('users')} 
-                        className="h-auto p-4 flex flex-col items-center space-y-2"
-                        variant="outline"
-                      >
-                        <Users className="h-6 w-6" />
-                        <span className="text-sm">Manage Users</span>
-                      </Button>
-                    )}
-                    {hasPermission('property_management') && (
-                      <Button 
-                        onClick={() => handleQuickAction('properties')} 
-                        className="h-auto p-4 flex flex-col items-center space-y-2"
-                        variant="outline"
-                      >
-                        <Building className="h-6 w-6" />
-                        <span className="text-sm">Properties</span>
-                      </Button>
-                    )}
-                    {hasPermission('vendor_authorization') && (
-                      <Button 
-                        onClick={() => handleQuickAction('vendors')} 
-                        className="h-auto p-4 flex flex-col items-center space-y-2"
-                        variant="outline"
-                      >
-                        <Store className="h-6 w-6" />
-                        <span className="text-sm">Vendors</span>
-                      </Button>
-                    )}
-                    {hasPermission('security_monitoring') && (
-                      <Button 
-                        onClick={() => handleQuickAction('security')} 
-                        className="h-auto p-4 flex flex-col items-center space-y-2"
-                        variant="outline"
-                      >
-                        <Shield className="h-6 w-6" />
-                        <span className="text-sm">Security</span>
-                      </Button>
-                    )}
+                    <Button 
+                      onClick={() => handleQuickAction('users')} 
+                      className="h-auto p-4 flex flex-col items-center space-y-2"
+                      variant="outline"
+                    >
+                      <Users className="h-6 w-6" />
+                      <span className="text-sm">Manage Users</span>
+                    </Button>
+                    <Button 
+                      onClick={() => handleQuickAction('properties')} 
+                      className="h-auto p-4 flex flex-col items-center space-y-2"
+                      variant="outline"
+                    >
+                      <Building className="h-6 w-6" />
+                      <span className="text-sm">Properties</span>
+                    </Button>
+                    <Button 
+                      onClick={() => handleQuickAction('vendors')} 
+                      className="h-auto p-4 flex flex-col items-center space-y-2"
+                      variant="outline"
+                    >
+                      <Store className="h-6 w-6" />
+                      <span className="text-sm">Vendors</span>
+                    </Button>
+                    <Button 
+                      onClick={() => handleQuickAction('security')} 
+                      className="h-auto p-4 flex flex-col items-center space-y-2"
+                      variant="outline"
+                    >
+                      <Shield className="h-6 w-6" />
+                      <span className="text-sm">Security</span>
+                    </Button>
                     <Button 
                       onClick={() => handleQuickAction('reports')} 
                       className="h-auto p-4 flex flex-col items-center space-y-2"
@@ -421,16 +295,14 @@ const AdminDashboard = () => {
                       <TrendingUp className="h-6 w-6" />
                       <span className="text-sm">Reports</span>
                     </Button>
-                    {hasPermission('system_settings') && (
-                      <Button 
-                        onClick={() => handleQuickAction('settings')} 
-                        className="h-auto p-4 flex flex-col items-center space-y-2"
-                        variant="outline"
-                      >
-                        <Settings className="h-6 w-6" />
-                        <span className="text-sm">Settings</span>
-                      </Button>
-                    )}
+                    <Button 
+                      onClick={() => handleQuickAction('settings')} 
+                      className="h-auto p-4 flex flex-col items-center space-y-2"
+                      variant="outline"
+                    >
+                      <Settings className="h-6 w-6" />
+                      <span className="text-sm">Settings</span>
+                    </Button>
                   </CardContent>
                 </Card>
 
@@ -480,59 +352,41 @@ const AdminDashboard = () => {
               </div>
             </TabsContent>
 
-            {hasPermission('user_management') && (
-              <TabsContent value="users">
-                <UserManagement />
-              </TabsContent>
-            )}
+            <TabsContent value="users">
+              <UserManagement />
+            </TabsContent>
 
-            {hasPermission('property_management') && (
-              <TabsContent value="properties">
-                <PropertyManagement />
-              </TabsContent>
-            )}
+            <TabsContent value="properties">
+              <PropertyManagement />
+            </TabsContent>
 
-            {hasPermission('content_management') && (
-              <TabsContent value="content">
-                <ContentManagement />
-              </TabsContent>
-            )}
+            <TabsContent value="content">
+              <ContentManagement />
+            </TabsContent>
 
-            {hasPermission('system_settings') && (
-              <TabsContent value="settings">
-                <SystemSettings />
-              </TabsContent>
-            )}
+            <TabsContent value="settings">
+              <SystemSettings />
+            </TabsContent>
 
-            {hasPermission('vendor_authorization') && (
-              <TabsContent value="vendors">
-                <VendorManagement />
-              </TabsContent>
-            )}
+            <TabsContent value="vendors">
+              <VendorManagement />
+            </TabsContent>
 
-            {hasPermission('billing_management') && (
-              <TabsContent value="billing">
-                <BillingManagement />
-              </TabsContent>
-            )}
+            <TabsContent value="billing">
+              <BillingManagement />
+            </TabsContent>
 
-            {hasPermission('order_tracking') && (
-              <TabsContent value="orders">
-                <OrderTracking />
-              </TabsContent>
-            )}
+            <TabsContent value="orders">
+              <OrderTracking />
+            </TabsContent>
 
-            {hasPermission('security_monitoring') && (
-              <TabsContent value="security">
-                <SecurityMonitoring />
-              </TabsContent>
-            )}
+            <TabsContent value="security">
+              <SecurityMonitoring />
+            </TabsContent>
 
-            {hasPermission('ai_bot_management') && (
-              <TabsContent value="ai">
-                <AIBotManagement />
-              </TabsContent>
-            )}
+            <TabsContent value="ai">
+              <AIBotManagement />
+            </TabsContent>
 
             <TabsContent value="reports">
               <SystemReports />
