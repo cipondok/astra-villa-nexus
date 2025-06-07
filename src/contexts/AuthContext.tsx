@@ -4,12 +4,14 @@ import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useAlert } from './AlertContext';
 
+type UserRole = 'general_user' | 'property_owner' | 'agent' | 'vendor' | 'admin';
+
 interface Profile {
   id: string;
   email: string;
   full_name?: string;
   phone?: string;
-  role: string;
+  role: UserRole;
   company_name?: string;
   license_number?: string;
   verification_status?: string;
@@ -196,13 +198,31 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       if (!user) return { error: new Error('No user found'), success: false };
 
+      // Prepare the update data with proper types
+      const updateData: {
+        id: string;
+        email: string;
+        full_name?: string;
+        phone?: string;
+        role?: UserRole;
+        company_name?: string;
+        license_number?: string;
+        verification_status?: string;
+        avatar_url?: string;
+      } = {
+        id: user.id,
+        email: user.email!,
+        ...data,
+      };
+
+      // Ensure role is properly typed if provided
+      if (data.role) {
+        updateData.role = data.role as UserRole;
+      }
+
       const { error } = await supabase
         .from('profiles')
-        .upsert({
-          id: user.id,
-          email: user.email,
-          ...data,
-        });
+        .upsert(updateData);
 
       if (error) {
         showError('Update Failed', error.message);
