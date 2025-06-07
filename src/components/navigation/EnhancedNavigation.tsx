@@ -129,9 +129,13 @@ const EnhancedNavigation = ({
   return (
     <nav className={`
       fixed top-0 left-0 right-0 z-50 transition-all duration-300
-      ${isScrolled 
-        ? 'bg-blue-titanium/70 dark:bg-blue-titanium-dark/70 backdrop-blur-md' 
-        : 'bg-blue-titanium-light/95 dark:bg-blue-titanium/95 backdrop-blur-sm'
+      ${theme === 'dark' 
+        ? (isScrolled 
+          ? 'bg-blue-titanium/70 dark:bg-blue-titanium-dark/70 backdrop-blur-md' 
+          : 'bg-blue-titanium-light/95 dark:bg-blue-titanium/95 backdrop-blur-sm')
+        : (isScrolled
+          ? 'bg-blue-titanium-light/70 backdrop-blur-md'
+          : 'bg-blue-titanium-light/95 backdrop-blur-sm')
       }
       border-b border-blue-titanium/20 dark:border-blue-titanium-light/20
     `}>
@@ -142,7 +146,11 @@ const EnhancedNavigation = ({
             className="flex-shrink-0 cursor-pointer hover:opacity-80 transition-opacity" 
             onClick={() => navigate('/')}
           >
-            <h1 className="text-2xl font-bold text-white drop-shadow-md">
+            <h1 className={`text-2xl font-bold drop-shadow-md ${
+              theme === 'dark' 
+                ? 'text-white' 
+                : 'text-blue-titanium-dark'
+            }`}>
               Astra Villa
             </h1>
           </div>
@@ -151,23 +159,47 @@ const EnhancedNavigation = ({
           <div className="hidden md:flex items-center space-x-8">
             <button 
               onClick={() => navigate('/')}
-              className="text-white/90 hover:text-white transition-colors font-medium drop-shadow-sm"
+              className={`transition-colors font-medium drop-shadow-sm ${
+                theme === 'dark'
+                  ? 'text-white/90 hover:text-white'
+                  : 'text-blue-titanium-dark/90 hover:text-blue-titanium-dark'
+              }`}
             >
               {currentText.home}
             </button>
-            <a href="#" className="text-white/90 hover:text-white transition-colors font-medium drop-shadow-sm">
+            <a href="#" className={`transition-colors font-medium drop-shadow-sm ${
+              theme === 'dark'
+                ? 'text-white/90 hover:text-white'
+                : 'text-blue-titanium-dark/90 hover:text-blue-titanium-dark'
+            }`}>
               {currentText.buy}
             </a>
-            <a href="#" className="text-white/90 hover:text-white transition-colors font-medium drop-shadow-sm">
+            <a href="#" className={`transition-colors font-medium drop-shadow-sm ${
+              theme === 'dark'
+                ? 'text-white/90 hover:text-white'
+                : 'text-blue-titanium-dark/90 hover:text-blue-titanium-dark'
+            }`}>
               {currentText.rent}
             </a>
-            <a href="#" className="text-white/90 hover:text-white transition-colors font-medium drop-shadow-sm">
+            <a href="#" className={`transition-colors font-medium drop-shadow-sm ${
+              theme === 'dark'
+                ? 'text-white/90 hover:text-white'
+                : 'text-blue-titanium-dark/90 hover:text-blue-titanium-dark'
+            }`}>
               {currentText.newProjects}
             </a>
-            <a href="#" className="text-white/90 hover:text-white transition-colors font-medium drop-shadow-sm">
+            <a href="#" className={`transition-colors font-medium drop-shadow-sm ${
+              theme === 'dark'
+                ? 'text-white/90 hover:text-white'
+                : 'text-blue-titanium-dark/90 hover:text-blue-titanium-dark'
+            }`}>
               {currentText.vendors}
             </a>
-            <a href="#" className="text-white/90 hover:text-white transition-colors font-medium drop-shadow-sm">
+            <a href="#" className={`transition-colors font-medium drop-shadow-sm ${
+              theme === 'dark'
+                ? 'text-white/90 hover:text-white'
+                : 'text-blue-titanium-dark/90 hover:text-blue-titanium-dark'
+            }`}>
               {currentText.about}
             </a>
           </div>
@@ -179,7 +211,11 @@ const EnhancedNavigation = ({
               variant="ghost"
               size="sm"
               onClick={onLanguageToggle}
-              className="hidden sm:flex items-center space-x-1 text-white/90 hover:text-white hover:bg-white/10"
+              className={`hidden sm:flex items-center space-x-1 ${
+                theme === 'dark'
+                  ? 'text-white/90 hover:text-white hover:bg-white/10'
+                  : 'text-blue-titanium-dark/90 hover:text-blue-titanium-dark hover:bg-blue-titanium/10'
+              }`}
             >
               <Globe className="h-4 w-4" />
               <span className="text-sm font-medium">{language.toUpperCase()}</span>
@@ -190,7 +226,11 @@ const EnhancedNavigation = ({
               variant="ghost"
               size="sm"
               onClick={onThemeToggle}
-              className="hidden sm:flex text-white/90 hover:text-white hover:bg-white/10"
+              className={`hidden sm:flex ${
+                theme === 'dark'
+                  ? 'text-white/90 hover:text-white hover:bg-white/10'
+                  : 'text-blue-titanium-dark/90 hover:text-blue-titanium-dark hover:bg-blue-titanium/10'
+              }`}
             >
               {theme === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
             </Button>
@@ -202,7 +242,11 @@ const EnhancedNavigation = ({
                   variant="ghost"
                   size="sm"
                   onClick={toggleAlerts}
-                  className="hidden sm:flex relative text-white/90 hover:text-white hover:bg-white/10"
+                  className={`hidden sm:flex relative ${
+                    theme === 'dark'
+                      ? 'text-white/90 hover:text-white hover:bg-white/10'
+                      : 'text-blue-titanium-dark/90 hover:text-blue-titanium-dark hover:bg-blue-titanium/10'
+                  }`}
                 >
                   <Bell className="h-4 w-4" />
                   <Badge variant="destructive" className="absolute -top-1 -right-1 h-5 w-5 p-0 text-xs">
@@ -234,7 +278,11 @@ const EnhancedNavigation = ({
                 {/* User Menu */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="flex items-center space-x-2 p-2 text-white/90 hover:text-white hover:bg-white/10">
+                    <Button variant="ghost" className={`flex items-center space-x-2 p-2 ${
+                      theme === 'dark'
+                        ? 'text-white/90 hover:text-white hover:bg-white/10'
+                        : 'text-blue-titanium-dark/90 hover:text-blue-titanium-dark hover:bg-blue-titanium/10'
+                    }`}>
                       <Avatar className="h-8 w-8 ring-2 ring-white/20">
                         <AvatarImage src={profile?.avatar_url || undefined} alt={profile?.full_name || 'User'} />
                         <AvatarFallback className="text-sm bg-blue-titanium text-white">
@@ -242,7 +290,7 @@ const EnhancedNavigation = ({
                         </AvatarFallback>
                       </Avatar>
                       <span className="hidden md:block text-sm font-medium">
-                        {profile?.full_name || profile?.email}
+                        {profile?.full_name || 'User'}
                       </span>
                     </Button>
                   </DropdownMenuTrigger>
@@ -250,7 +298,6 @@ const EnhancedNavigation = ({
                     <DropdownMenuLabel>
                       <div className="flex flex-col space-y-1">
                         <p className="text-sm font-medium">{profile?.full_name || 'User'}</p>
-                        <p className="text-xs text-muted-foreground">{profile?.email}</p>
                         <p className="text-xs text-muted-foreground capitalize">
                           {profile?.role.replace('_', ' ')}
                         </p>
@@ -289,7 +336,11 @@ const EnhancedNavigation = ({
             ) : (
               <div className="hidden md:flex items-center">
                 <Button 
-                  className="bg-white/20 text-white border-white/30 hover:bg-white/30 backdrop-blur-sm"
+                  className={`backdrop-blur-sm ${
+                    theme === 'dark'
+                      ? 'bg-white/20 text-white border-white/30 hover:bg-white/30'
+                      : 'bg-blue-titanium/20 text-blue-titanium-dark border-blue-titanium/30 hover:bg-blue-titanium/30'
+                  }`}
                   onClick={onLoginClick}
                 >
                   {currentText.loginRegister}
@@ -301,7 +352,11 @@ const EnhancedNavigation = ({
             <Button
               variant="ghost"
               size="sm"
-              className="md:hidden text-white/90 hover:text-white hover:bg-white/10"
+              className={`md:hidden ${
+                theme === 'dark'
+                  ? 'text-white/90 hover:text-white hover:bg-white/10'
+                  : 'text-blue-titanium-dark/90 hover:text-blue-titanium-dark hover:bg-blue-titanium/10'
+              }`}
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
               <Menu className="h-5 w-5" />
@@ -311,33 +366,65 @@ const EnhancedNavigation = ({
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="md:hidden border-t border-white/20 bg-blue-titanium/95 dark:bg-blue-titanium-dark/95">
+          <div className={`md:hidden border-t border-white/20 ${
+            theme === 'dark'
+              ? 'bg-blue-titanium/95 dark:bg-blue-titanium-dark/95'
+              : 'bg-blue-titanium-light/95'
+          }`}>
             <div className="px-2 pt-2 pb-3 space-y-1">
               <button 
                 onClick={() => { navigate('/'); setIsMenuOpen(false); }}
-                className="block w-full text-left px-3 py-2 text-white/90 hover:text-white hover:bg-white/10 rounded-md"
+                className={`block w-full text-left px-3 py-2 rounded-md ${
+                  theme === 'dark'
+                    ? 'text-white/90 hover:text-white hover:bg-white/10'
+                    : 'text-blue-titanium-dark/90 hover:text-blue-titanium-dark hover:bg-blue-titanium/10'
+                }`}
               >
                 {currentText.home}
               </button>
-              <a href="#" className="block px-3 py-2 text-white/90 hover:text-white hover:bg-white/10 rounded-md">
+              <a href="#" className={`block px-3 py-2 rounded-md ${
+                theme === 'dark'
+                  ? 'text-white/90 hover:text-white hover:bg-white/10'
+                  : 'text-blue-titanium-dark/90 hover:text-blue-titanium-dark hover:bg-blue-titanium/10'
+              }`}>
                 {currentText.buy}
               </a>
-              <a href="#" className="block px-3 py-2 text-white/90 hover:text-white hover:bg-white/10 rounded-md">
+              <a href="#" className={`block px-3 py-2 rounded-md ${
+                theme === 'dark'
+                  ? 'text-white/90 hover:text-white hover:bg-white/10'
+                  : 'text-blue-titanium-dark/90 hover:text-blue-titanium-dark hover:bg-blue-titanium/10'
+              }`}>
                 {currentText.rent}
               </a>
-              <a href="#" className="block px-3 py-2 text-white/90 hover:text-white hover:bg-white/10 rounded-md">
+              <a href="#" className={`block px-3 py-2 rounded-md ${
+                theme === 'dark'
+                  ? 'text-white/90 hover:text-white hover:bg-white/10'
+                  : 'text-blue-titanium-dark/90 hover:text-blue-titanium-dark hover:bg-blue-titanium/10'
+              }`}>
                 {currentText.newProjects}
               </a>
-              <a href="#" className="block px-3 py-2 text-white/90 hover:text-white hover:bg-white/10 rounded-md">
+              <a href="#" className={`block px-3 py-2 rounded-md ${
+                theme === 'dark'
+                  ? 'text-white/90 hover:text-white hover:bg-white/10'
+                  : 'text-blue-titanium-dark/90 hover:text-blue-titanium-dark hover:bg-blue-titanium/10'
+              }`}>
                 {currentText.vendors}
               </a>
-              <a href="#" className="block px-3 py-2 text-white/90 hover:text-white hover:bg-white/10 rounded-md">
+              <a href="#" className={`block px-3 py-2 rounded-md ${
+                theme === 'dark'
+                  ? 'text-white/90 hover:text-white hover:bg-white/10'
+                  : 'text-blue-titanium-dark/90 hover:text-blue-titanium-dark hover:bg-blue-titanium/10'
+              }`}>
                 {currentText.about}
               </a>
               
               {!isAuthenticated ? (
                 <div className="px-3 py-2">
-                  <Button onClick={onLoginClick} className="w-full bg-white/20 text-white border-white/30 hover:bg-white/30">
+                  <Button onClick={onLoginClick} className={`w-full backdrop-blur-sm ${
+                    theme === 'dark'
+                      ? 'bg-white/20 text-white border-white/30 hover:bg-white/30'
+                      : 'bg-blue-titanium/20 text-blue-titanium-dark border-blue-titanium/30 hover:bg-blue-titanium/30'
+                  }`}>
                     {currentText.loginRegister}
                   </Button>
                 </div>
@@ -351,15 +438,27 @@ const EnhancedNavigation = ({
                       </AvatarFallback>
                     </Avatar>
                     <div>
-                      <p className="text-sm font-medium text-white">{profile?.full_name || 'User'}</p>
-                      <p className="text-xs text-white/70 capitalize">{profile?.role.replace('_', ' ')}</p>
+                      <p className={`text-sm font-medium ${
+                        theme === 'dark' ? 'text-white' : 'text-blue-titanium-dark'
+                      }`}>{profile?.full_name || 'User'}</p>
+                      <p className={`text-xs capitalize ${
+                        theme === 'dark' ? 'text-white/70' : 'text-blue-titanium-dark/70'
+                      }`}>{profile?.role.replace('_', ' ')}</p>
                     </div>
                   </div>
-                  <Button variant="ghost" onClick={() => { navigate(getDashboardRoute()); setIsMenuOpen(false); }} className="w-full justify-start text-white/90 hover:text-white hover:bg-white/10">
+                  <Button variant="ghost" onClick={() => { navigate(getDashboardRoute()); setIsMenuOpen(false); }} className={`w-full justify-start ${
+                    theme === 'dark'
+                      ? 'text-white/90 hover:text-white hover:bg-white/10'
+                      : 'text-blue-titanium-dark/90 hover:text-blue-titanium-dark hover:bg-blue-titanium/10'
+                  }`}>
                     <User className="h-4 w-4 mr-2" />
                     {currentText.dashboard}
                   </Button>
-                  <Button variant="ghost" onClick={() => { navigate('/dashboard?tab=notifications'); setIsMenuOpen(false); }} className="w-full justify-start text-white/90 hover:text-white hover:bg-white/10">
+                  <Button variant="ghost" onClick={() => { navigate('/dashboard?tab=notifications'); setIsMenuOpen(false); }} className={`w-full justify-start ${
+                    theme === 'dark'
+                      ? 'text-white/90 hover:text-white hover:bg-white/10'
+                      : 'text-blue-titanium-dark/90 hover:text-blue-titanium-dark hover:bg-blue-titanium/10'
+                  }`}>
                     <Bell className="h-4 w-4 mr-2" />
                     {currentText.notifications}
                     <Badge variant="destructive" className="ml-auto h-5 w-5 p-0 text-xs">2</Badge>
