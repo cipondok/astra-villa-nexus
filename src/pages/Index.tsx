@@ -7,6 +7,7 @@ import AuthenticatedNavigation from "@/components/navigation/AuthenticatedNaviga
 import AuthModal from "@/components/auth/AuthModal";
 import PropertyListingsSection from "@/components/PropertyListingsSection";
 import ModernSearchPanel from "@/components/ModernSearchPanel";
+import ParticleEffect from "@/components/ParticleEffect";
 
 const Index = () => {
   const [language, setLanguage] = useState<"en" | "id">("en");
@@ -94,6 +95,11 @@ const Index = () => {
           <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto">
             Discover luxury villas, modern apartments, and exclusive properties with our advanced search technology.
           </p>
+          
+          {/* 3D Particle Effect */}
+          <div className="my-8">
+            <ParticleEffect />
+          </div>
           
           <ModernSearchPanel language={language} onSearch={handleSearch} />
         </div>
