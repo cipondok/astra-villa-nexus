@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { useAuth } from "@/contexts/AuthContext";
+import { useAlert } from "@/contexts/AlertContext";
 
 interface RoleBasedAuthModalProps {
   isOpen: boolean;
@@ -29,6 +29,7 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
   });
 
   const { signIn, signUp } = useAuth();
+  const { showSuccess, showError, showWarning } = useAlert();
 
   const text = {
     en: {
@@ -92,17 +93,17 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
     e.preventDefault();
     
     if (!signInData.email.trim()) {
-      alert(currentText.fillAllFields);
+      showWarning("Missing Information", currentText.fillAllFields);
       return;
     }
     
     if (!isValidEmail(signInData.email)) {
-      alert(currentText.emailInvalid);
+      showError("Invalid Email", currentText.emailInvalid);
       return;
     }
     
     if (!signInData.password) {
-      alert(currentText.fillAllFields);
+      showWarning("Missing Information", currentText.fillAllFields);
       return;
     }
     
@@ -112,11 +113,16 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
       console.log('Attempting sign in with:', signInData.email.trim());
       const { success } = await signIn(signInData.email.trim(), signInData.password);
       if (success) {
+        showSuccess(
+          "Welcome Back!", 
+          "You have successfully signed in to your account."
+        );
         onClose();
         setSignInData({ email: "", password: "" });
       }
     } catch (error) {
       console.error('Sign in error:', error);
+      showError("Sign In Failed", "An unexpected error occurred. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -128,22 +134,22 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
     console.log('Sign up data:', signUpData);
     
     if (!signUpData.email.trim() || !signUpData.password || !signUpData.full_name.trim()) {
-      alert(currentText.fillAllFields);
+      showWarning("Missing Information", currentText.fillAllFields);
       return;
     }
     
     if (!isValidEmail(signUpData.email)) {
-      alert(currentText.emailInvalid);
+      showError("Invalid Email", currentText.emailInvalid);
       return;
     }
     
     if (signUpData.password !== signUpData.confirmPassword) {
-      alert(currentText.passwordMismatch);
+      showError("Password Mismatch", currentText.passwordMismatch);
       return;
     }
 
     if (signUpData.password.length < 6) {
-      alert(currentText.passwordTooShort);
+      showError("Password Too Short", currentText.passwordTooShort);
       return;
     }
 
@@ -158,6 +164,10 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
       );
       
       if (success) {
+        showSuccess(
+          "Account Created Successfully!", 
+          "Welcome to Astra Villa! Your account has been created and you're now signed in."
+        );
         onClose();
         setSignUpData({
           email: "",
@@ -167,9 +177,11 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
         });
       } else if (error) {
         console.error('Signup failed:', error);
+        showError("Registration Failed", error);
       }
     } catch (error) {
       console.error('Sign up error:', error);
+      showError("Registration Failed", "An unexpected error occurred during registration. Please try again.");
     } finally {
       setIsLoading(false);
     }
