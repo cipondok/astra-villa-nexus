@@ -1,4 +1,3 @@
-
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 @tailwind base;
 @tailwind components;
@@ -65,21 +64,21 @@
   .dark {
     /* Titanium Blue Dark Mode Colors */
     --background: 222 47% 11%;
-    --foreground: 210 40% 98%;
+    --foreground: 210 20% 85%; /* Softer half-white */
     --card: 224 47% 15%;
-    --card-foreground: 210 40% 98%;
+    --card-foreground: 210 20% 85%; /* Softer half-white */
     --popover: 224 47% 15%;
-    --popover-foreground: 210 40% 98%;
+    --popover-foreground: 210 20% 85%; /* Softer half-white */
     --primary: 217 91% 60%;
     --primary-foreground: 222 47% 11%;
     --secondary: 222 47% 17%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary-foreground: 210 20% 85%; /* Softer half-white */
     --muted: 222 47% 17%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted-foreground: 215 15% 70%; /* Softer muted text */
     --accent: 222 47% 17%;
-    --accent-foreground: 210 40% 98%;
+    --accent-foreground: 210 20% 85%; /* Softer half-white */
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 210 20% 85%; /* Softer half-white */
     --border: 222 47% 17%;
     --input: 222 47% 17%;
     --ring: 217 91% 60%;
@@ -91,11 +90,11 @@
     
     /* Titanium Blue Dark Sidebar */
     --sidebar-background: 222 47% 11%;
-    --sidebar-foreground: 210 40% 98%;
-    --sidebar-primary: 210 40% 98%;
+    --sidebar-foreground: 210 20% 85%; /* Softer half-white */
+    --sidebar-primary: 210 20% 85%; /* Softer half-white */
     --sidebar-primary-foreground: 222 47% 11%;
     --sidebar-accent: 222 47% 17%;
-    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-accent-foreground: 210 20% 85%; /* Softer half-white */
     --sidebar-border: 222 47% 17%;
     --sidebar-ring: 217 91% 60%;
   }
@@ -175,17 +174,29 @@
   color: var(--primary-color);
 }
 
-/* Responsive text colors for better contrast */
+/* Responsive text colors for better contrast with softer half-white */
 .dark .text-gray-600 {
-  color: hsl(215 20.2% 65.1%);
+  color: hsl(215 15% 70%); /* Softer muted text */
 }
 
 .dark .text-gray-500 {
-  color: hsl(215 16.3% 56.9%);
+  color: hsl(215 12% 65%); /* Even softer for secondary text */
 }
 
 .dark .text-gray-400 {
-  color: hsl(215 13.8% 50.2%);
+  color: hsl(215 10% 60%); /* Subtle for tertiary text */
+}
+
+.dark .text-gray-300 {
+  color: hsl(210 15% 75%); /* Soft for body text */
+}
+
+.dark .text-gray-200 {
+  color: hsl(210 20% 80%); /* Half-white for primary text */
+}
+
+.dark .text-gray-100 {
+  color: hsl(210 20% 85%); /* Softest half-white for emphasis */
 }
 
 /* Light mode text improvements for iPhone-style */
