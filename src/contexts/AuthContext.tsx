@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -47,6 +48,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       try {
         console.log('Initializing auth...');
         
+        // Check for demo user first
+        const demoUser = localStorage.getItem('demo_user');
+        if (demoUser) {
+          console.log('Found demo user, using demo mode');
+          const mockUser = JSON.parse(demoUser) as User;
+          setUser(mockUser);
+          setProfile({
+            id: mockUser.id,
+            email: mockUser.email,
+            full_name: mockUser.user_metadata?.full_name || 'Demo User',
+            role: 'general_user'
+          });
+          if (mounted) {
+            setLoading(false);
+          }
+          return;
+        }
+        
         const { data: { session }, error } = await supabase.auth.getSession();
         
         if (error) {
@@ -84,6 +103,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         } else if (event === 'SIGNED_OUT') {
           setUser(null);
           setProfile(null);
+          localStorage.removeItem('demo_user'); // Clear demo user on signout
         }
         
         if (mounted) {
@@ -177,6 +197,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signOut = async () => {
     try {
       setLoading(true);
+      localStorage.removeItem('demo_user'); // Clear demo user
       await supabase.auth.signOut();
       setUser(null);
       setProfile(null);

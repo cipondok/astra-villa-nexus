@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -37,6 +36,7 @@ const AuthModal = ({ isOpen, onClose, language }: AuthModalProps) => {
       registerBtn: "Create Account",
       close: "Close",
       fillDemo: "Fill Demo Data",
+      demoLogin: "Demo Login (Skip Auth)",
       passwordsDontMatch: "Passwords do not match",
       emailRequired: "Email is required",
       passwordRequired: "Password is required",
@@ -59,6 +59,7 @@ const AuthModal = ({ isOpen, onClose, language }: AuthModalProps) => {
       registerBtn: "Buat Akun",
       close: "Tutup",
       fillDemo: "Isi Data Demo",
+      demoLogin: "Login Demo (Lewati Auth)",
       passwordsDontMatch: "Kata sandi tidak cocok",
       emailRequired: "Email wajib diisi",
       passwordRequired: "Kata sandi wajib diisi",
@@ -73,6 +74,28 @@ const AuthModal = ({ isOpen, onClose, language }: AuthModalProps) => {
   };
 
   const currentText = text[language];
+
+  const handleDemoLogin = () => {
+    console.log('Demo login clicked - bypassing authentication');
+    // Create a mock user object for testing
+    const mockUser = {
+      id: 'demo-user-123',
+      email: 'demo@astravilla.com',
+      user_metadata: { full_name: 'Demo User' },
+      app_metadata: {},
+      aud: 'authenticated',
+      created_at: new Date().toISOString(),
+      role: 'authenticated'
+    };
+    
+    // For demo purposes, we'll just close the modal and let the user see the app
+    // In a real scenario, you'd want to create a proper mock session
+    localStorage.setItem('demo_user', JSON.stringify(mockUser));
+    onClose();
+    
+    // Reload the page to trigger auth state check
+    window.location.reload();
+  };
 
   const fillDemoData = () => {
     const timestamp = Date.now();
@@ -191,22 +214,30 @@ const AuthModal = ({ isOpen, onClose, language }: AuthModalProps) => {
         </CardHeader>
         
         <CardContent>
+          <div className="space-y-4 mb-6">
+            <Button 
+              variant="outline" 
+              onClick={fillDemoData}
+              disabled={loading}
+              className="w-full"
+            >
+              {currentText.fillDemo}
+            </Button>
+            
+            <Button 
+              onClick={handleDemoLogin}
+              disabled={loading}
+              className="w-full bg-green-600 hover:bg-green-700 text-white"
+            >
+              {currentText.demoLogin}
+            </Button>
+          </div>
+
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="login">{currentText.login}</TabsTrigger>
               <TabsTrigger value="register">{currentText.register}</TabsTrigger>
             </TabsList>
-            
-            <div className="mt-4">
-              <Button 
-                variant="outline" 
-                onClick={fillDemoData}
-                disabled={loading}
-                className="w-full mb-4"
-              >
-                {currentText.fillDemo}
-              </Button>
-            </div>
 
             <TabsContent value="login" className="space-y-4">
               <form onSubmit={handleLogin} className="space-y-4">
