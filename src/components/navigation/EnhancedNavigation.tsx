@@ -151,7 +151,7 @@ const EnhancedNavigation = ({
             <h1 className={`text-2xl font-bold drop-shadow-md ${
               theme === 'dark' 
                 ? 'text-white' 
-                : 'text-white'
+                : 'text-blue-titanium-dark'
             }`}>
               Astra Villa
             </h1>
@@ -164,7 +164,7 @@ const EnhancedNavigation = ({
               className={`transition-colors font-medium drop-shadow-sm ${
                 theme === 'dark'
                   ? 'text-white/90 hover:text-white'
-                  : 'text-white/95 hover:text-white'
+                  : 'text-blue-titanium-dark hover:text-blue-titanium'
               }`}
             >
               {currentText.home}
@@ -172,35 +172,35 @@ const EnhancedNavigation = ({
             <a href="#" className={`transition-colors font-medium drop-shadow-sm ${
               theme === 'dark'
                 ? 'text-white/90 hover:text-white'
-                : 'text-white/95 hover:text-white'
+                : 'text-blue-titanium-dark hover:text-blue-titanium'
             }`}>
               {currentText.buy}
             </a>
             <a href="#" className={`transition-colors font-medium drop-shadow-sm ${
               theme === 'dark'
                 ? 'text-white/90 hover:text-white'
-                : 'text-white/95 hover:text-white'
+                : 'text-blue-titanium-dark hover:text-blue-titanium'
             }`}>
               {currentText.rent}
             </a>
             <a href="#" className={`transition-colors font-medium drop-shadow-sm ${
               theme === 'dark'
                 ? 'text-white/90 hover:text-white'
-                : 'text-white/95 hover:text-white'
+                : 'text-blue-titanium-dark hover:text-blue-titanium'
             }`}>
               {currentText.newProjects}
             </a>
             <a href="#" className={`transition-colors font-medium drop-shadow-sm ${
               theme === 'dark'
                 ? 'text-white/90 hover:text-white'
-                : 'text-white/95 hover:text-white'
+                : 'text-blue-titanium-dark hover:text-blue-titanium'
             }`}>
               {currentText.vendors}
             </a>
             <a href="#" className={`transition-colors font-medium drop-shadow-sm ${
               theme === 'dark'
                 ? 'text-white/90 hover:text-white'
-                : 'text-white/95 hover:text-white'
+                : 'text-blue-titanium-dark hover:text-blue-titanium'
             }`}>
               {currentText.about}
             </a>
@@ -216,7 +216,7 @@ const EnhancedNavigation = ({
               className={`hidden sm:flex items-center space-x-1 ${
                 theme === 'dark'
                   ? 'text-white/90 hover:text-white hover:bg-white/10'
-                  : 'text-white/95 hover:text-white hover:bg-white/20'
+                  : 'text-blue-titanium-dark hover:text-blue-titanium hover:bg-blue-titanium/10'
               }`}
             >
               <Globe className="h-4 w-4" />
@@ -231,7 +231,7 @@ const EnhancedNavigation = ({
               className={`hidden sm:flex ${
                 theme === 'dark'
                   ? 'text-white/90 hover:text-white hover:bg-white/10'
-                  : 'text-white/95 hover:text-white hover:bg-white/20'
+                  : 'text-blue-titanium-dark hover:text-blue-titanium hover:bg-blue-titanium/10'
               }`}
             >
               {theme === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
@@ -247,7 +247,7 @@ const EnhancedNavigation = ({
                   className={`hidden sm:flex relative ${
                     theme === 'dark'
                       ? 'text-white/90 hover:text-white hover:bg-white/10'
-                      : 'text-white/95 hover:text-white hover:bg-white/20'
+                      : 'text-blue-titanium-dark hover:text-blue-titanium hover:bg-blue-titanium/10'
                   }`}
                 >
                   <Bell className="h-4 w-4" />
@@ -283,7 +283,7 @@ const EnhancedNavigation = ({
                     <Button variant="ghost" className={`flex items-center space-x-2 p-2 ${
                       theme === 'dark'
                         ? 'text-white/90 hover:text-white hover:bg-white/10'
-                        : 'text-white/95 hover:text-white hover:bg-white/20'
+                        : 'text-blue-titanium-dark hover:text-blue-titanium hover:bg-blue-titanium/10'
                     }`}>
                       <Avatar className="h-8 w-8 ring-2 ring-white/20">
                         <AvatarImage src={profile?.avatar_url || undefined} alt={profile?.full_name || 'User'} />
@@ -357,7 +357,7 @@ const EnhancedNavigation = ({
               className={`md:hidden ${
                 theme === 'dark'
                   ? 'text-white/90 hover:text-white hover:bg-white/10'
-                  : 'text-white/95 hover:text-white hover:bg-white/20'
+                  : 'text-blue-titanium-dark hover:text-blue-titanium hover:bg-blue-titanium/10'
               }`}
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
@@ -379,7 +379,7 @@ const EnhancedNavigation = ({
                 className={`block w-full text-left px-3 py-2 rounded-md ${
                   theme === 'dark'
                     ? 'text-white/90 hover:text-white hover:bg-white/10'
-                    : 'text-white/95 hover:text-white hover:bg-white/20'
+                    : 'text-blue-titanium-dark hover:text-blue-titanium hover:bg-blue-titanium/10'
                 }`}
               >
                 {currentText.home}
@@ -387,35 +387,35 @@ const EnhancedNavigation = ({
               <a href="#" className={`block px-3 py-2 rounded-md ${
                 theme === 'dark'
                   ? 'text-white/90 hover:text-white hover:bg-white/10'
-                  : 'text-white/95 hover:text-white hover:bg-white/20'
+                  : 'text-blue-titanium-dark hover:text-blue-titanium hover:bg-blue-titanium/10'
               }`}>
                 {currentText.buy}
               </a>
               <a href="#" className={`block px-3 py-2 rounded-md ${
                 theme === 'dark'
                   ? 'text-white/90 hover:text-white hover:bg-white/10'
-                  : 'text-white/95 hover:text-white hover:bg-white/20'
+                  : 'text-blue-titanium-dark hover:text-blue-titanium hover:bg-blue-titanium/10'
               }`}>
                 {currentText.rent}
               </a>
               <a href="#" className={`block px-3 py-2 rounded-md ${
                 theme === 'dark'
                   ? 'text-white/90 hover:text-white hover:bg-white/10'
-                  : 'text-white/95 hover:text-white hover:bg-white/20'
+                  : 'text-blue-titanium-dark hover:text-blue-titanium hover:bg-blue-titanium/10'
               }`}>
                 {currentText.newProjects}
               </a>
               <a href="#" className={`block px-3 py-2 rounded-md ${
                 theme === 'dark'
                   ? 'text-white/90 hover:text-white hover:bg-white/10'
-                  : 'text-white/95 hover:text-white hover:bg-white/20'
+                  : 'text-blue-titanium-dark hover:text-blue-titanium hover:bg-blue-titanium/10'
               }`}>
                 {currentText.vendors}
               </a>
               <a href="#" className={`block px-3 py-2 rounded-md ${
                 theme === 'dark'
                   ? 'text-white/90 hover:text-white hover:bg-white/10'
-                  : 'text-white/95 hover:text-white hover:bg-white/20'
+                  : 'text-blue-titanium-dark hover:text-blue-titanium hover:bg-blue-titanium/10'
               }`}>
                 {currentText.about}
               </a>
@@ -441,17 +441,17 @@ const EnhancedNavigation = ({
                     </Avatar>
                     <div>
                       <p className={`text-sm font-medium ${
-                        theme === 'dark' ? 'text-white' : 'text-white'
+                        theme === 'dark' ? 'text-white' : 'text-blue-titanium-dark'
                       }`}>{profile?.full_name || 'User'}</p>
                       <p className={`text-xs capitalize ${
-                        theme === 'dark' ? 'text-white/70' : 'text-white/70'
+                        theme === 'dark' ? 'text-white/70' : 'text-blue-titanium'
                       }`}>{profile?.role.replace('_', ' ')}</p>
                     </div>
                   </div>
                   <Button variant="ghost" onClick={() => { navigate(getDashboardRoute()); setIsMenuOpen(false); }} className={`w-full justify-start ${
                     theme === 'dark'
                       ? 'text-white/90 hover:text-white hover:bg-white/10'
-                      : 'text-white/95 hover:text-white hover:bg-white/20'
+                      : 'text-blue-titanium-dark hover:text-blue-titanium hover:bg-blue-titanium/10'
                   }`}>
                     <User className="h-4 w-4 mr-2" />
                     {currentText.dashboard}
@@ -459,7 +459,7 @@ const EnhancedNavigation = ({
                   <Button variant="ghost" onClick={() => { navigate('/dashboard?tab=notifications'); setIsMenuOpen(false); }} className={`w-full justify-start ${
                     theme === 'dark'
                       ? 'text-white/90 hover:text-white hover:bg-white/10'
-                      : 'text-white/95 hover:text-white hover:bg-white/20'
+                      : 'text-blue-titanium-dark hover:text-blue-titanium hover:bg-blue-titanium/10'
                   }`}>
                     <Bell className="h-4 w-4 mr-2" />
                     {currentText.notifications}
