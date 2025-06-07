@@ -78,6 +78,63 @@ export type Database = {
           },
         ]
       }
+      agent_registration_requests: {
+        Row: {
+          business_type: string
+          company_name: string | null
+          created_at: string | null
+          email: string
+          full_name: string
+          id: string
+          license_number: string | null
+          phone: string | null
+          registration_documents: Json | null
+          review_notes: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string | null
+          submitted_at: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          business_type: string
+          company_name?: string | null
+          created_at?: string | null
+          email: string
+          full_name: string
+          id?: string
+          license_number?: string | null
+          phone?: string | null
+          registration_documents?: Json | null
+          review_notes?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string | null
+          submitted_at?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          business_type?: string
+          company_name?: string | null
+          created_at?: string | null
+          email?: string
+          full_name?: string
+          id?: string
+          license_number?: string | null
+          phone?: string | null
+          registration_documents?: Json | null
+          review_notes?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string | null
+          submitted_at?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       ai_bot_settings: {
         Row: {
           bot_name: string
@@ -194,6 +251,39 @@ export type Database = {
           },
         ]
       }
+      locations: {
+        Row: {
+          area: string
+          city: string
+          coordinates: unknown | null
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          postal_code: string | null
+          state: string
+        }
+        Insert: {
+          area: string
+          city: string
+          coordinates?: unknown | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          postal_code?: string | null
+          state: string
+        }
+        Update: {
+          area?: string
+          city?: string
+          coordinates?: unknown | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          postal_code?: string | null
+          state?: string
+        }
+        Relationships: []
+      }
       orders: {
         Row: {
           created_at: string | null
@@ -296,59 +386,124 @@ export type Database = {
       properties: {
         Row: {
           agent_id: string | null
+          approval_status: string | null
+          area: string | null
           area_sqm: number | null
           bathrooms: number | null
           bedrooms: number | null
+          city: string | null
           created_at: string | null
           description: string | null
           id: string
+          image_urls: string[] | null
           images: string[] | null
           listing_type: string
           location: string
           owner_id: string
+          owner_type: string | null
           price: number | null
+          property_features: Json | null
           property_type: string
+          state: string | null
           status: string | null
+          three_d_model_url: string | null
           title: string
           updated_at: string | null
+          virtual_tour_url: string | null
         }
         Insert: {
           agent_id?: string | null
+          approval_status?: string | null
+          area?: string | null
           area_sqm?: number | null
           bathrooms?: number | null
           bedrooms?: number | null
+          city?: string | null
           created_at?: string | null
           description?: string | null
           id?: string
+          image_urls?: string[] | null
           images?: string[] | null
           listing_type: string
           location: string
           owner_id: string
+          owner_type?: string | null
           price?: number | null
+          property_features?: Json | null
           property_type: string
+          state?: string | null
           status?: string | null
+          three_d_model_url?: string | null
           title: string
           updated_at?: string | null
+          virtual_tour_url?: string | null
         }
         Update: {
           agent_id?: string | null
+          approval_status?: string | null
+          area?: string | null
           area_sqm?: number | null
           bathrooms?: number | null
           bedrooms?: number | null
+          city?: string | null
           created_at?: string | null
           description?: string | null
           id?: string
+          image_urls?: string[] | null
           images?: string[] | null
           listing_type?: string
           location?: string
           owner_id?: string
+          owner_type?: string | null
           price?: number | null
+          property_features?: Json | null
           property_type?: string
+          state?: string | null
           status?: string | null
+          three_d_model_url?: string | null
           title?: string
           updated_at?: string | null
+          virtual_tour_url?: string | null
         }
         Relationships: []
+      }
+      property_images: {
+        Row: {
+          alt_text: string | null
+          created_at: string | null
+          display_order: number | null
+          id: string
+          image_type: string | null
+          image_url: string
+          property_id: string | null
+        }
+        Insert: {
+          alt_text?: string | null
+          created_at?: string | null
+          display_order?: number | null
+          id?: string
+          image_type?: string | null
+          image_url: string
+          property_id?: string | null
+        }
+        Update: {
+          alt_text?: string | null
+          created_at?: string | null
+          display_order?: number | null
+          id?: string
+          image_type?: string | null
+          image_url?: string
+          property_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "property_images_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       system_error_logs: {
         Row: {
