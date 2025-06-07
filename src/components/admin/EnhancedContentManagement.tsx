@@ -16,8 +16,7 @@ import { useAlert } from "@/contexts/AlertContext";
 
 const EnhancedContentManagement = () => {
   const [showForm, setShowForm] = useState(false);
-  const [editingContent, setEditingContent] = useState(null);
-  const [activeTab, setActiveTab] = useState("content");
+  const [editingContent, setEditingContent] = useState<any>(null);
   const [formData, setFormData] = useState({
     title: '',
     slug: '',
@@ -27,23 +26,20 @@ const EnhancedContentManagement = () => {
     category_id: '',
     seo_title: '',
     seo_description: '',
-    seo_keywords: [],
+    seo_keywords: '',
     featured_image: ''
   });
 
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
 
-  // Fetch content with categories
+  // Fetch content
   const { data: content, isLoading } = useQuery({
     queryKey: ['enhanced-cms-content'],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('cms_content')
-        .select(`
-          *,
-          category:content_categories(name, slug)
-        `)
+        .select('*')
         .order('created_at', { ascending: false });
       
       if (error) throw error;
@@ -72,7 +68,7 @@ const EnhancedContentManagement = () => {
         .from('cms_content')
         .insert([{
           ...contentData,
-          seo_keywords: contentData.seo_keywords?.split(',').map((k: string) => k.trim()) || []
+          seo_keywords: contentData.seo_keywords ? contentData.seo_keywords.split(',').map((k: string) => k.trim()) : []
         }]);
       if (error) throw error;
     },
@@ -93,7 +89,7 @@ const EnhancedContentManagement = () => {
         .from('cms_content')
         .update({
           ...updates,
-          seo_keywords: updates.seo_keywords?.split(',').map((k: string) => k.trim()) || []
+          seo_keywords: updates.seo_keywords ? updates.seo_keywords.split(',').map((k: string) => k.trim()) : []
         })
         .eq('id', id);
       if (error) throw error;
@@ -137,7 +133,7 @@ const EnhancedContentManagement = () => {
       category_id: '',
       seo_title: '',
       seo_description: '',
-      seo_keywords: [],
+      seo_keywords: '',
       featured_image: ''
     });
   };
@@ -161,7 +157,7 @@ const EnhancedContentManagement = () => {
       category_id: item.category_id || '',
       seo_title: item.seo_title || '',
       seo_description: item.seo_description || '',
-      seo_keywords: item.seo_keywords?.join(', ') || '',
+      seo_keywords: Array.isArray(item.seo_keywords) ? item.seo_keywords.join(', ') : '',
       featured_image: item.featured_image || ''
     });
     setShowForm(true);
@@ -180,6 +176,11 @@ const EnhancedContentManagement = () => {
       case 'archived': return 'outline';
       default: return 'secondary';
     }
+  };
+
+  const getCategoryName = (categoryId: string) => {
+    const category = categories?.find(cat => cat.id === categoryId);
+    return category?.name || 'Uncategorized';
   };
 
   return (
@@ -419,7 +420,7 @@ const EnhancedContentManagement = () => {
                       </TableCell>
                       <TableCell>
                         <Badge variant="outline" className="border-gray-600 text-gray-300">
-                          {item.category?.name || 'Uncategorized'}
+                          {getCategoryName(item.category_id)}
                         </Badge>
                       </TableCell>
                       <TableCell>

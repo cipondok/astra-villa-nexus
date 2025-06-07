@@ -163,7 +163,7 @@ const AdminDashboard = () => {
           </div>
 
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-            <TabsList className="grid w-full grid-cols-6 lg:grid-cols-12 bg-white/10 backdrop-blur-md">
+            <TabsList className="grid w-full grid-cols-6 lg:grid-cols-8 bg-white/10 backdrop-blur-md">
               <TabsTrigger value="overview" className="text-white data-[state=active]:bg-blue-600">Overview</TabsTrigger>
               <TabsTrigger value="users" className="text-white data-[state=active]:bg-blue-600">Users</TabsTrigger>
               <TabsTrigger value="properties" className="text-white data-[state=active]:bg-blue-600">Properties</TabsTrigger>
@@ -171,10 +171,6 @@ const AdminDashboard = () => {
               <TabsTrigger value="social" className="text-white data-[state=active]:bg-blue-600">Social</TabsTrigger>
               <TabsTrigger value="filters" className="text-white data-[state=active]:bg-blue-600">Filters</TabsTrigger>
               <TabsTrigger value="trending" className="text-white data-[state=active]:bg-blue-600">Trending</TabsTrigger>
-              <TabsTrigger value="vendors" className="text-white data-[state=active]:bg-blue-600">Vendors</TabsTrigger>
-              <TabsTrigger value="billing" className="text-white data-[state=active]:bg-blue-600">Billing</TabsTrigger>
-              <TabsTrigger value="orders" className="text-white data-[state=active]:bg-blue-600">Orders</TabsTrigger>
-              <TabsTrigger value="security" className="text-white data-[state=active]:bg-blue-600">Security</TabsTrigger>
               <TabsTrigger value="settings" className="text-white data-[state=active]:bg-blue-600">Settings</TabsTrigger>
             </TabsList>
 
@@ -374,24 +370,21 @@ const AdminDashboard = () => {
               <TrendingTopicsManagement />
             </TabsContent>
 
-            <TabsContent value="vendors">
-              <VendorManagement />
-            </TabsContent>
-
-            <TabsContent value="billing">
-              <BillingManagement />
-            </TabsContent>
-
-            <TabsContent value="orders">
-              <OrderTracking />
-            </TabsContent>
-
-            <TabsContent value="security">
-              <SecurityMonitoring />
-            </TabsContent>
-
             <TabsContent value="settings">
-              <SystemSettings />
+              <Card className="bg-white/10 backdrop-blur-md border-white/20">
+                <CardHeader>
+                  <CardTitle className="text-white">System Settings</CardTitle>
+                  <CardDescription className="text-gray-300">
+                    Manage system configuration and preferences
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-center py-8">
+                    <Settings className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                    <p className="text-gray-300">System settings panel coming soon...</p>
+                  </div>
+                </CardContent>
+              </Card>
             </TabsContent>
           </Tabs>
         </div>
