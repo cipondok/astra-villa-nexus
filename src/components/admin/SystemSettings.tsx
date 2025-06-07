@@ -48,9 +48,12 @@ const SystemSettings = () => {
         
         // Convert array to object for easier access
         const settingsObj = data?.reduce((acc: SystemSettingsData, setting: any) => {
-          acc[setting.key as keyof SystemSettingsData] = setting.value;
+          const key = setting.key as keyof SystemSettingsData;
+          if (key in acc || Object.prototype.hasOwnProperty.call({} as SystemSettingsData, key)) {
+            (acc as any)[key] = setting.value;
+          }
           return acc;
-        }, {}) || {};
+        }, {} as SystemSettingsData) || {};
         
         return settingsObj;
       } catch (error) {
