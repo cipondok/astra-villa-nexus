@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -9,10 +8,11 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useAlert } from "@/contexts/AlertContext";
-import { Building, Search, Edit, Eye, Trash2, Plus } from "lucide-react";
+import { Building, Search, Edit, Trash2 } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import PropertyInsertForm from "./PropertyInsertForm";
 
 const PropertyManagement = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -141,200 +141,206 @@ const PropertyManagement = () => {
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Property Management</CardTitle>
-        <CardDescription>Manage property listings and approvals</CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        {/* Search and Filters */}
-        <div className="flex flex-col sm:flex-row gap-4">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-            <Input
-              placeholder="Search properties..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
-            />
-          </div>
-          <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-48">
-              <SelectValue placeholder="Filter by status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Status</SelectItem>
-              <SelectItem value="available">Available</SelectItem>
-              <SelectItem value="sold">Sold</SelectItem>
-              <SelectItem value="pending">Pending</SelectItem>
-              <SelectItem value="draft">Draft</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+    <div className="space-y-6">
+      {/* Add Property Form */}
+      <PropertyInsertForm />
 
-        {/* Properties Table */}
-        <div className="border rounded-lg">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Property</TableHead>
-                <TableHead>Owner</TableHead>
-                <TableHead>Price</TableHead>
-                <TableHead>Type</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Created</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {isLoading ? (
+      {/* Existing Property Management */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Property Management</CardTitle>
+          <CardDescription>Manage property listings and approvals</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          {/* Search and Filters */}
+          <div className="flex flex-col sm:flex-row gap-4">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+              <Input
+                placeholder="Search properties..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <SelectTrigger className="w-48">
+                <SelectValue placeholder="Filter by status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Status</SelectItem>
+                <SelectItem value="available">Available</SelectItem>
+                <SelectItem value="sold">Sold</SelectItem>
+                <SelectItem value="pending">Pending</SelectItem>
+                <SelectItem value="draft">Draft</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Properties Table */}
+          <div className="border rounded-lg">
+            <Table>
+              <TableHeader>
                 <TableRow>
-                  <TableCell colSpan={7} className="text-center py-8">
-                    Loading properties...
-                  </TableCell>
+                  <TableHead>Property</TableHead>
+                  <TableHead>Owner</TableHead>
+                  <TableHead>Price</TableHead>
+                  <TableHead>Type</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Created</TableHead>
+                  <TableHead>Actions</TableHead>
                 </TableRow>
-              ) : properties?.map((property) => {
-                const ownerInfo = getOwnerInfo(property.owner);
-                return (
-                  <TableRow key={property.id}>
-                    <TableCell>
-                      <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center text-white">
-                          <Building className="h-5 w-5" />
-                        </div>
-                        <div>
-                          <p className="font-medium">{property.title}</p>
-                          <p className="text-sm text-gray-500">{property.location}</p>
-                        </div>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div>
-                        <p className="font-medium">{ownerInfo.name}</p>
-                        <p className="text-sm text-gray-500">{ownerInfo.email}</p>
-                      </div>
-                    </TableCell>
-                    <TableCell>{formatPrice(property.price)}</TableCell>
-                    <TableCell>
-                      <Badge variant="outline">
-                        {property.property_type?.replace('_', ' ').toUpperCase()}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <Badge className={getStatusColor(property.status)}>
-                        {property.status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>{new Date(property.created_at).toLocaleDateString()}</TableCell>
-                    <TableCell>
-                      <div className="flex space-x-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleEditProperty(property)}
-                        >
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="destructive"
-                          size="sm"
-                          onClick={() => deletePropertyMutation.mutate(property.id)}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
+              </TableHeader>
+              <TableBody>
+                {isLoading ? (
+                  <TableRow>
+                    <TableCell colSpan={7} className="text-center py-8">
+                      Loading properties...
                     </TableCell>
                   </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </div>
+                ) : properties?.map((property) => {
+                  const ownerInfo = getOwnerInfo(property.owner);
+                  return (
+                    <TableRow key={property.id}>
+                      <TableCell>
+                        <div className="flex items-center space-x-3">
+                          <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center text-white">
+                            <Building className="h-5 w-5" />
+                          </div>
+                          <div>
+                            <p className="font-medium">{property.title}</p>
+                            <p className="text-sm text-gray-500">{property.location}</p>
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div>
+                          <p className="font-medium">{ownerInfo.name}</p>
+                          <p className="text-sm text-gray-500">{ownerInfo.email}</p>
+                        </div>
+                      </TableCell>
+                      <TableCell>{formatPrice(property.price)}</TableCell>
+                      <TableCell>
+                        <Badge variant="outline">
+                          {property.property_type?.replace('_', ' ').toUpperCase()}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <Badge className={getStatusColor(property.status)}>
+                          {property.status}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>{new Date(property.created_at).toLocaleDateString()}</TableCell>
+                      <TableCell>
+                        <div className="flex space-x-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleEditProperty(property)}
+                          >
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => deletePropertyMutation.mutate(property.id)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </div>
 
-        {/* Edit Property Dialog */}
-        <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Edit Property</DialogTitle>
-              <DialogDescription>Update property information</DialogDescription>
-            </DialogHeader>
-            {selectedProperty && (
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="title">Title</Label>
-                  <Input
-                    id="title"
-                    value={selectedProperty.title || ''}
-                    onChange={(e) => setSelectedProperty({...selectedProperty, title: e.target.value})}
-                  />
+          {/* Edit Property Dialog */}
+          <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Edit Property</DialogTitle>
+                <DialogDescription>Update property information</DialogDescription>
+              </DialogHeader>
+              {selectedProperty && (
+                <div className="space-y-4">
+                  <div>
+                    <Label htmlFor="title">Title</Label>
+                    <Input
+                      id="title"
+                      value={selectedProperty.title || ''}
+                      onChange={(e) => setSelectedProperty({...selectedProperty, title: e.target.value})}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="description">Description</Label>
+                    <Textarea
+                      id="description"
+                      value={selectedProperty.description || ''}
+                      onChange={(e) => setSelectedProperty({...selectedProperty, description: e.target.value})}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="price">Price</Label>
+                    <Input
+                      id="price"
+                      type="number"
+                      value={selectedProperty.price || ''}
+                      onChange={(e) => setSelectedProperty({...selectedProperty, price: Number(e.target.value)})}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="status">Status</Label>
+                    <Select
+                      value={selectedProperty.status}
+                      onValueChange={(value) => setSelectedProperty({...selectedProperty, status: value})}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="available">Available</SelectItem>
+                        <SelectItem value="sold">Sold</SelectItem>
+                        <SelectItem value="pending">Pending</SelectItem>
+                        <SelectItem value="draft">Draft</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label htmlFor="property_type">Property Type</Label>
+                    <Select
+                      value={selectedProperty.property_type}
+                      onValueChange={(value) => setSelectedProperty({...selectedProperty, property_type: value})}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="house">House</SelectItem>
+                        <SelectItem value="apartment">Apartment</SelectItem>
+                        <SelectItem value="condo">Condo</SelectItem>
+                        <SelectItem value="townhouse">Townhouse</SelectItem>
+                        <SelectItem value="land">Land</SelectItem>
+                        <SelectItem value="commercial">Commercial</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
-                <div>
-                  <Label htmlFor="description">Description</Label>
-                  <Textarea
-                    id="description"
-                    value={selectedProperty.description || ''}
-                    onChange={(e) => setSelectedProperty({...selectedProperty, description: e.target.value})}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="price">Price</Label>
-                  <Input
-                    id="price"
-                    type="number"
-                    value={selectedProperty.price || ''}
-                    onChange={(e) => setSelectedProperty({...selectedProperty, price: Number(e.target.value)})}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="status">Status</Label>
-                  <Select
-                    value={selectedProperty.status}
-                    onValueChange={(value) => setSelectedProperty({...selectedProperty, status: value})}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="available">Available</SelectItem>
-                      <SelectItem value="sold">Sold</SelectItem>
-                      <SelectItem value="pending">Pending</SelectItem>
-                      <SelectItem value="draft">Draft</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label htmlFor="property_type">Property Type</Label>
-                  <Select
-                    value={selectedProperty.property_type}
-                    onValueChange={(value) => setSelectedProperty({...selectedProperty, property_type: value})}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="house">House</SelectItem>
-                      <SelectItem value="apartment">Apartment</SelectItem>
-                      <SelectItem value="condo">Condo</SelectItem>
-                      <SelectItem value="townhouse">Townhouse</SelectItem>
-                      <SelectItem value="land">Land</SelectItem>
-                      <SelectItem value="commercial">Commercial</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-            )}
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
-                Cancel
-              </Button>
-              <Button onClick={handleUpdateProperty} disabled={updatePropertyMutation.isPending}>
-                {updatePropertyMutation.isPending ? 'Updating...' : 'Update Property'}
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-      </CardContent>
-    </Card>
+              )}
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
+                  Cancel
+                </Button>
+                <Button onClick={handleUpdateProperty} disabled={updatePropertyMutation.isPending}>
+                  {updatePropertyMutation.isPending ? 'Updating...' : 'Update Property'}
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 
