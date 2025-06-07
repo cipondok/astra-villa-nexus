@@ -6,7 +6,7 @@ import RoleBasedNavigation from "@/components/RoleBasedNavigation";
 import AuthenticatedNavigation from "@/components/navigation/AuthenticatedNavigation";
 import AuthModal from "@/components/auth/AuthModal";
 import PropertyListingsSection from "@/components/PropertyListingsSection";
-import SearchFilters from "@/components/SearchFilters";
+import ModernSearchPanel from "@/components/ModernSearchPanel";
 
 const Index = () => {
   const [language, setLanguage] = useState<"en" | "id">("en");
@@ -34,8 +34,8 @@ const Index = () => {
     setIsAuthModalOpen(true);
   };
 
-  const handleSearch = () => {
-    console.log('Search triggered');
+  const handleSearch = (searchData: any) => {
+    console.log('Search triggered with data:', searchData);
   };
 
   useEffect(() => {
@@ -76,8 +76,8 @@ const Index = () => {
         />
       )}
       
-      {/* Hero Section */}
-      <section className="pt-20 pb-16 px-4 sm:px-6 lg:px-8">
+      {/* Hero Section with Modern Search */}
+      <section className="pt-20 pb-8 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto text-center">
           <h1 className="text-4xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6">
             Find Your Dream
@@ -86,14 +86,14 @@ const Index = () => {
             </span>
           </h1>
           <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto">
-            Discover luxury villas, modern apartments, and exclusive properties with our advanced 3D visualization and virtual staging technology.
+            Discover luxury villas, modern apartments, and exclusive properties with our advanced search technology.
           </p>
           
-          <SearchFilters language={language} onSearch={handleSearch} />
+          <ModernSearchPanel language={language} onSearch={handleSearch} />
         </div>
       </section>
 
-      {/* Property Listings - wrapped in error boundary-like try/catch */}
+      {/* Property Listings */}
       <div className="property-listings-wrapper">
         <PropertyListingsSection language={language} />
       </div>
