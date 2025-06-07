@@ -28,6 +28,7 @@ interface AuthContextType {
   signUp: (email: string, password: string, fullName: string) => Promise<{ error: any; success?: boolean }>;
   signOut: () => Promise<void>;
   updateProfile: (data: Partial<Profile>) => Promise<{ error: any; success?: boolean }>;
+  demoAgentLogin: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -52,6 +53,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         
         // Check for demo user first
         const demoUser = localStorage.getItem('demo_user');
+        const demoAgent = localStorage.getItem('demo_agent');
+        
+        if (demoAgent) {
+          console.log('Found demo agent, using demo mode');
+          const mockUser = JSON.parse(demoAgent) as User;
+          if (mounted) {
+            setUser(mockUser);
+            setProfile({
+              id: mockUser.id,
+              email: mockUser.email,
+              full_name: mockUser.user_metadata?.full_name || 'Demo Agent',
+              role: 'agent'
+            });
+            setLoading(false);
+            setInitialized(true);
+          }
+          return;
+        }
+        
         if (demoUser) {
           console.log('Found demo user, using demo mode');
           const mockUser = JSON.parse(demoUser) as User;
@@ -115,6 +135,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           setUser(null);
           setProfile(null);
           localStorage.removeItem('demo_user');
+          localStorage.removeItem('demo_agent');
         }
       }
     );
@@ -150,6 +171,32 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } catch (error) {
       console.error('Profile fetch error:', error);
     }
+  };
+
+  const demoAgentLogin = () => {
+    console.log('Demo agent login clicked');
+    const mockAgent = {
+      id: 'demo-agent-123',
+      email: 'agent@astravilla.com',
+      user_metadata: { full_name: 'Demo Agent' },
+      app_metadata: {},
+      aud: 'authenticated',
+      created_at: new Date().toISOString(),
+      role: 'authenticated'
+    };
+    
+    localStorage.setItem('demo_agent', JSON.stringify(mockAgent));
+    localStorage.removeItem('demo_user'); // Remove regular demo user if exists
+    
+    setUser(mockAgent as User);
+    setProfile({
+      id: mockAgent.id,
+      email: mockAgent.email,
+      full_name: 'Demo Agent',
+      role: 'agent'
+    });
+    
+    showSuccess('Demo Agent Login', 'You are now logged in as a demo property agent.');
   };
 
   const signIn = async (email: string, password: string) => {
@@ -200,6 +247,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signOut = async () => {
     try {
       localStorage.removeItem('demo_user');
+      localStorage.removeItem('demo_agent');
       await supabase.auth.signOut();
       setUser(null);
       setProfile(null);
@@ -246,6 +294,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     signUp,
     signOut,
     updateProfile,
+    demoAgentLogin,
   };
 
   console.log('AuthProvider providing value, loading:', loading, 'isAuthenticated:', !!user);

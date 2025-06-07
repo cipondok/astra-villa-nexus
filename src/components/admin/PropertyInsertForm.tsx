@@ -9,7 +9,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useAlert } from "@/contexts/AlertContext";
-import { Plus } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { Plus, UserCheck } from "lucide-react";
 
 const PropertyInsertForm = () => {
   const [formData, setFormData] = useState({
@@ -27,6 +28,7 @@ const PropertyInsertForm = () => {
   });
 
   const { showSuccess, showError } = useAlert();
+  const { profile } = useAuth();
   const queryClient = useQueryClient();
 
   // Fetch agents for demo selection
@@ -115,14 +117,35 @@ const PropertyInsertForm = () => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
+  // Auto-fill agent if user is logged in as agent
+  const fillAgentData = () => {
+    if (profile?.role === 'agent' && profile?.id) {
+      handleInputChange('agent_id', profile.id);
+      showSuccess("Agent Selected", "Current logged-in agent has been selected");
+    }
+  };
+
   return (
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Plus className="h-5 w-5" />
           Add Demo Property
+          {profile?.role === 'agent' && (
+            <span className="flex items-center gap-1 text-sm bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
+              <UserCheck className="h-3 w-3" />
+              Agent Mode
+            </span>
+          )}
         </CardTitle>
-        <CardDescription>Insert a new property listing (fully functional)</CardDescription>
+        <CardDescription>
+          Insert a new property listing (fully functional)
+          {profile?.role === 'agent' && (
+            <span className="block text-blue-600 text-sm mt-1">
+              You are logged in as: {profile.full_name || 'Demo Agent'}
+            </span>
+          )}
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -253,13 +276,31 @@ const PropertyInsertForm = () => {
 
             {/* Agent */}
             <div>
-              <Label htmlFor="agent_id">Agent (Demo IDs)</Label>
+              <Label htmlFor="agent_id" className="flex items-center gap-2">
+                Agent (Demo IDs)
+                {profile?.role === 'agent' && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={fillAgentData}
+                    className="text-xs"
+                  >
+                    Use Current Agent
+                  </Button>
+                )}
+              </Label>
               <Select value={formData.agent_id} onValueChange={(value) => handleInputChange('agent_id', value)}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select agent (optional)" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="">No Agent</SelectItem>
+                  {profile?.role === 'agent' && (
+                    <SelectItem value={profile.id}>
+                      {profile.full_name || 'Current Agent'} (You)
+                    </SelectItem>
+                  )}
                   {agents?.map((agent) => (
                     <SelectItem key={agent.id} value={agent.id}>
                       {agent.full_name || 'Unnamed'} ({agent.email})

@@ -6,7 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useAuth } from "@/contexts/AuthContext";
-import { X, Eye, EyeOff } from "lucide-react";
+import { X, Eye, EyeOff, UserCheck } from "lucide-react";
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -22,7 +22,7 @@ const AuthModal = ({ isOpen, onClose, language }: AuthModalProps) => {
   const [errors, setErrors] = useState<{[key: string]: string}>({});
   const [activeTab, setActiveTab] = useState("login");
   
-  const { signIn, signUp, loading } = useAuth();
+  const { signIn, signUp, loading, demoAgentLogin } = useAuth();
 
   const text = {
     en: {
@@ -37,6 +37,7 @@ const AuthModal = ({ isOpen, onClose, language }: AuthModalProps) => {
       close: "Close",
       fillDemo: "Fill Demo Data",
       demoLogin: "Demo Login (Skip Auth)",
+      demoAgentLogin: "Demo Agent Login",
       passwordsDontMatch: "Passwords do not match",
       emailRequired: "Email is required",
       passwordRequired: "Password is required",
@@ -60,6 +61,7 @@ const AuthModal = ({ isOpen, onClose, language }: AuthModalProps) => {
       close: "Tutup",
       fillDemo: "Isi Data Demo",
       demoLogin: "Login Demo (Lewati Auth)",
+      demoAgentLogin: "Login Demo Agen",
       passwordsDontMatch: "Kata sandi tidak cocok",
       emailRequired: "Email wajib diisi",
       passwordRequired: "Kata sandi wajib diisi",
@@ -77,7 +79,6 @@ const AuthModal = ({ isOpen, onClose, language }: AuthModalProps) => {
 
   const handleDemoLogin = () => {
     console.log('Demo login clicked - bypassing authentication');
-    // Create a mock user object for testing
     const mockUser = {
       id: 'demo-user-123',
       email: 'demo@astravilla.com',
@@ -88,13 +89,14 @@ const AuthModal = ({ isOpen, onClose, language }: AuthModalProps) => {
       role: 'authenticated'
     };
     
-    // For demo purposes, we'll just close the modal and let the user see the app
-    // In a real scenario, you'd want to create a proper mock session
     localStorage.setItem('demo_user', JSON.stringify(mockUser));
     onClose();
-    
-    // Reload the page to trigger auth state check
     window.location.reload();
+  };
+
+  const handleDemoAgentLogin = () => {
+    demoAgentLogin();
+    onClose();
   };
 
   const fillDemoData = () => {
@@ -214,7 +216,7 @@ const AuthModal = ({ isOpen, onClose, language }: AuthModalProps) => {
         </CardHeader>
         
         <CardContent>
-          <div className="space-y-4 mb-6">
+          <div className="space-y-3 mb-6">
             <Button 
               variant="outline" 
               onClick={fillDemoData}
@@ -230,6 +232,15 @@ const AuthModal = ({ isOpen, onClose, language }: AuthModalProps) => {
               className="w-full bg-green-600 hover:bg-green-700 text-white"
             >
               {currentText.demoLogin}
+            </Button>
+
+            <Button 
+              onClick={handleDemoAgentLogin}
+              disabled={loading}
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2"
+            >
+              <UserCheck className="h-4 w-4" />
+              {currentText.demoAgentLogin}
             </Button>
           </div>
 
