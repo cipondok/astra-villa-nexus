@@ -15,16 +15,16 @@ import EnhancedContentManagement from "@/components/admin/EnhancedContentManagem
 import SocialMediaManagement from "@/components/admin/SocialMediaManagement";
 import SearchFiltersManagement from "@/components/admin/SearchFiltersManagement";
 import TrendingTopicsManagement from "@/components/admin/TrendingTopicsManagement";
+import SystemSettings from "@/components/admin/SystemSettings";
+import VendorManagement from "@/components/admin/VendorManagement";
 import { 
   Users, 
   Building, 
   FileText, 
   Settings, 
   Store, 
-  CreditCard, 
   Package, 
   Shield, 
-  Bot,
   Activity,
   AlertTriangle,
   TrendingUp,
@@ -163,14 +163,14 @@ const AdminDashboard = () => {
           </div>
 
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-            <TabsList className="grid w-full grid-cols-6 lg:grid-cols-8 bg-white/10 backdrop-blur-md">
+            <TabsList className="grid w-full grid-cols-4 lg:grid-cols-8 bg-white/10 backdrop-blur-md">
               <TabsTrigger value="overview" className="text-white data-[state=active]:bg-blue-600">Overview</TabsTrigger>
               <TabsTrigger value="users" className="text-white data-[state=active]:bg-blue-600">Users</TabsTrigger>
               <TabsTrigger value="properties" className="text-white data-[state=active]:bg-blue-600">Properties</TabsTrigger>
+              <TabsTrigger value="vendors" className="text-white data-[state=active]:bg-blue-600">Vendors</TabsTrigger>
               <TabsTrigger value="content" className="text-white data-[state=active]:bg-blue-600">Content</TabsTrigger>
               <TabsTrigger value="social" className="text-white data-[state=active]:bg-blue-600">Social</TabsTrigger>
               <TabsTrigger value="filters" className="text-white data-[state=active]:bg-blue-600">Filters</TabsTrigger>
-              <TabsTrigger value="trending" className="text-white data-[state=active]:bg-blue-600">Trending</TabsTrigger>
               <TabsTrigger value="settings" className="text-white data-[state=active]:bg-blue-600">Settings</TabsTrigger>
             </TabsList>
 
@@ -354,6 +354,10 @@ const AdminDashboard = () => {
               <PropertyManagement />
             </TabsContent>
 
+            <TabsContent value="vendors">
+              <VendorManagement />
+            </TabsContent>
+
             <TabsContent value="content">
               <EnhancedContentManagement />
             </TabsContent>
@@ -366,25 +370,8 @@ const AdminDashboard = () => {
               <SearchFiltersManagement />
             </TabsContent>
 
-            <TabsContent value="trending">
-              <TrendingTopicsManagement />
-            </TabsContent>
-
             <TabsContent value="settings">
-              <Card className="bg-white/10 backdrop-blur-md border-white/20">
-                <CardHeader>
-                  <CardTitle className="text-white">System Settings</CardTitle>
-                  <CardDescription className="text-gray-300">
-                    Manage system configuration and preferences
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-center py-8">
-                    <Settings className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                    <p className="text-gray-300">System settings panel coming soon...</p>
-                  </div>
-                </CardContent>
-              </Card>
+              <SystemSettings />
             </TabsContent>
           </Tabs>
         </div>

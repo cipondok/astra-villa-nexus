@@ -10,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Settings, Save, Database, Globe, Shield, Mail, Upload } from "lucide-react";
+import { Settings, Save, Database, Globe, Shield, Mail, Upload, Users, Search, MapPin, Eye } from "lucide-react";
 import { useAlert } from "@/contexts/AlertContext";
 
 const SystemSettings = () => {
@@ -26,38 +26,54 @@ const SystemSettings = () => {
     default_language: "en"
   });
 
-  const [emailSettings, setEmailSettings] = useState({
-    smtp_host: "",
-    smtp_port: "587",
-    smtp_username: "",
-    smtp_password: "",
-    from_email: "",
-    from_name: ""
+  const [seoSettings, setSeoSettings] = useState({
+    meta_title: "Astra Villa - Premium Properties",
+    meta_description: "Discover premium properties with Astra Villa. Your trusted real estate platform.",
+    meta_keywords: "real estate, properties, villa, apartment, house",
+    google_analytics_id: "",
+    facebook_pixel_id: "",
+    google_site_verification: ""
+  });
+
+  const [authSettings, setAuthSettings] = useState({
+    enable_google_auth: false,
+    google_client_id: "",
+    google_client_secret: "",
+    enable_email_verification: true,
+    enable_password_reset: true,
+    session_timeout: "30"
   });
 
   const [securitySettings, setSecuritySettings] = useState({
+    enable_cloudflare: false,
+    cloudflare_zone_id: "",
+    cloudflare_api_token: "",
     enable_2fa: true,
-    session_timeout: "30",
     max_login_attempts: "5",
-    password_min_length: "8"
+    password_min_length: "8",
+    enable_rate_limiting: true
   });
 
-  const { data: systemSettings, isLoading } = useQuery({
-    queryKey: ['system-settings'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('system_settings')
-        .select('*');
-      if (error) throw error;
-      return data;
-    },
+  const [apiSettings, setApiSettings] = useState({
+    google_maps_api_key: "",
+    stripe_publishable_key: "",
+    stripe_secret_key: "",
+    openai_api_key: "",
+    email_service_api_key: ""
+  });
+
+  const [userRoleSettings, setUserRoleSettings] = useState({
+    default_user_role: "general_user",
+    auto_approve_agents: false,
+    auto_approve_vendors: false,
+    require_email_verification: true
   });
 
   const updateSettingsMutation = useMutation({
     mutationFn: async ({ category, settings }: { category: string; settings: any }) => {
       const updates = Object.entries(settings).map(([key, value]) => ({
         key,
-        value: value as any, // Fix: Cast to any to match Json type
+        value: value as any,
         category,
         description: `${category} setting for ${key}`
       }));
@@ -78,43 +94,37 @@ const SystemSettings = () => {
     },
   });
 
-  const handleSaveGeneral = () => {
-    updateSettingsMutation.mutate({ category: 'general', settings: generalSettings });
-  };
-
-  const handleSaveEmail = () => {
-    updateSettingsMutation.mutate({ category: 'email', settings: emailSettings });
-  };
-
-  const handleSaveSecurity = () => {
-    updateSettingsMutation.mutate({ category: 'security', settings: securitySettings });
+  const handleSave = (category: string, settings: any) => {
+    updateSettingsMutation.mutate({ category, settings });
   };
 
   return (
     <div className="space-y-6">
-      <Card>
+      <Card className="bg-white/10 backdrop-blur-md border-white/20">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
+          <CardTitle className="flex items-center gap-2 text-white">
             <Settings className="h-5 w-5" />
             System Settings
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="text-gray-300">
             Configure and manage system-wide settings
           </CardDescription>
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="general" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-4">
-              <TabsTrigger value="general">General</TabsTrigger>
-              <TabsTrigger value="email">Email</TabsTrigger>
-              <TabsTrigger value="security">Security</TabsTrigger>
-              <TabsTrigger value="advanced">Advanced</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-3 lg:grid-cols-6 bg-white/10">
+              <TabsTrigger value="general" className="text-white data-[state=active]:bg-blue-600">General</TabsTrigger>
+              <TabsTrigger value="seo" className="text-white data-[state=active]:bg-blue-600">SEO</TabsTrigger>
+              <TabsTrigger value="auth" className="text-white data-[state=active]:bg-blue-600">Auth</TabsTrigger>
+              <TabsTrigger value="security" className="text-white data-[state=active]:bg-blue-600">Security</TabsTrigger>
+              <TabsTrigger value="apis" className="text-white data-[state=active]:bg-blue-600">APIs</TabsTrigger>
+              <TabsTrigger value="roles" className="text-white data-[state=active]:bg-blue-600">User Roles</TabsTrigger>
             </TabsList>
 
             <TabsContent value="general" className="space-y-4">
-              <Card>
+              <Card className="bg-white/5 border-white/20">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
+                  <CardTitle className="flex items-center gap-2 text-white">
                     <Globe className="h-4 w-4" />
                     General Settings
                   </CardTitle>
@@ -122,30 +132,33 @@ const SystemSettings = () => {
                 <CardContent className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="site_name">Site Name</Label>
+                      <Label htmlFor="site_name" className="text-white">Site Name</Label>
                       <Input
                         id="site_name"
                         value={generalSettings.site_name}
                         onChange={(e) => setGeneralSettings({ ...generalSettings, site_name: e.target.value })}
+                        className="bg-gray-800 border-gray-700 text-white"
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="contact_email">Contact Email</Label>
+                      <Label htmlFor="contact_email" className="text-white">Contact Email</Label>
                       <Input
                         id="contact_email"
                         type="email"
                         value={generalSettings.contact_email}
                         onChange={(e) => setGeneralSettings({ ...generalSettings, contact_email: e.target.value })}
+                        className="bg-gray-800 border-gray-700 text-white"
                       />
                     </div>
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="site_description">Site Description</Label>
+                    <Label htmlFor="site_description" className="text-white">Site Description</Label>
                     <Textarea
                       id="site_description"
                       value={generalSettings.site_description}
                       onChange={(e) => setGeneralSettings({ ...generalSettings, site_description: e.target.value })}
+                      className="bg-gray-800 border-gray-700 text-white"
                       rows={3}
                     />
                   </div>
@@ -153,8 +166,8 @@ const SystemSettings = () => {
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <div>
-                        <Label>Maintenance Mode</Label>
-                        <p className="text-sm text-muted-foreground">Enable to show maintenance page to users</p>
+                        <Label className="text-white">Maintenance Mode</Label>
+                        <p className="text-sm text-gray-300">Enable to show maintenance page to users</p>
                       </div>
                       <Switch
                         checked={generalSettings.maintenance_mode}
@@ -164,8 +177,8 @@ const SystemSettings = () => {
 
                     <div className="flex items-center justify-between">
                       <div>
-                        <Label>Allow User Registrations</Label>
-                        <p className="text-sm text-muted-foreground">Allow new users to register accounts</p>
+                        <Label className="text-white">Allow User Registrations</Label>
+                        <p className="text-sm text-gray-300">Allow new users to register accounts</p>
                       </div>
                       <Switch
                         checked={generalSettings.allow_registrations}
@@ -174,109 +187,167 @@ const SystemSettings = () => {
                     </div>
                   </div>
 
-                  <div className="space-y-2">
-                    <Label>Default Language</Label>
-                    <Select value={generalSettings.default_language} onValueChange={(value) => setGeneralSettings({ ...generalSettings, default_language: value })}>
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="en">English</SelectItem>
-                        <SelectItem value="id">Indonesian</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <Button onClick={handleSaveGeneral} className="flex items-center gap-2">
-                    <Save className="h-4 w-4" />
+                  <Button onClick={() => handleSave('general', generalSettings)} className="bg-blue-600 hover:bg-blue-700">
+                    <Save className="h-4 w-4 mr-2" />
                     Save General Settings
                   </Button>
                 </CardContent>
               </Card>
             </TabsContent>
 
-            <TabsContent value="email" className="space-y-4">
-              <Card>
+            <TabsContent value="seo" className="space-y-4">
+              <Card className="bg-white/5 border-white/20">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Mail className="h-4 w-4" />
-                    Email Configuration
+                  <CardTitle className="flex items-center gap-2 text-white">
+                    <Search className="h-4 w-4" />
+                    SEO & Analytics
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="smtp_host">SMTP Host</Label>
+                      <Label htmlFor="meta_title" className="text-white">Meta Title</Label>
                       <Input
-                        id="smtp_host"
-                        value={emailSettings.smtp_host}
-                        onChange={(e) => setEmailSettings({ ...emailSettings, smtp_host: e.target.value })}
-                        placeholder="smtp.gmail.com"
+                        id="meta_title"
+                        value={seoSettings.meta_title}
+                        onChange={(e) => setSeoSettings({ ...seoSettings, meta_title: e.target.value })}
+                        className="bg-gray-800 border-gray-700 text-white"
                       />
                     </div>
+                    
                     <div className="space-y-2">
-                      <Label htmlFor="smtp_port">SMTP Port</Label>
+                      <Label htmlFor="meta_description" className="text-white">Meta Description</Label>
+                      <Textarea
+                        id="meta_description"
+                        value={seoSettings.meta_description}
+                        onChange={(e) => setSeoSettings({ ...seoSettings, meta_description: e.target.value })}
+                        className="bg-gray-800 border-gray-700 text-white"
+                        rows={3}
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="meta_keywords" className="text-white">Meta Keywords</Label>
                       <Input
-                        id="smtp_port"
-                        value={emailSettings.smtp_port}
-                        onChange={(e) => setEmailSettings({ ...emailSettings, smtp_port: e.target.value })}
-                        placeholder="587"
+                        id="meta_keywords"
+                        value={seoSettings.meta_keywords}
+                        onChange={(e) => setSeoSettings({ ...seoSettings, meta_keywords: e.target.value })}
+                        placeholder="keyword1, keyword2, keyword3"
+                        className="bg-gray-800 border-gray-700 text-white"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="google_analytics_id" className="text-white">Google Analytics ID</Label>
+                        <Input
+                          id="google_analytics_id"
+                          value={seoSettings.google_analytics_id}
+                          onChange={(e) => setSeoSettings({ ...seoSettings, google_analytics_id: e.target.value })}
+                          placeholder="G-XXXXXXXXXX"
+                          className="bg-gray-800 border-gray-700 text-white"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="facebook_pixel_id" className="text-white">Facebook Pixel ID</Label>
+                        <Input
+                          id="facebook_pixel_id"
+                          value={seoSettings.facebook_pixel_id}
+                          onChange={(e) => setSeoSettings({ ...seoSettings, facebook_pixel_id: e.target.value })}
+                          className="bg-gray-800 border-gray-700 text-white"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <Button onClick={() => handleSave('seo', seoSettings)} className="bg-green-600 hover:bg-green-700">
+                    <Save className="h-4 w-4 mr-2" />
+                    Save SEO Settings
+                  </Button>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="auth" className="space-y-4">
+              <Card className="bg-white/5 border-white/20">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-white">
+                    <Users className="h-4 w-4" />
+                    Authentication Settings
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <Label className="text-white">Enable Google Authentication</Label>
+                      <p className="text-sm text-gray-300">Allow users to sign in with Google</p>
+                    </div>
+                    <Switch
+                      checked={authSettings.enable_google_auth}
+                      onCheckedChange={(checked) => setAuthSettings({ ...authSettings, enable_google_auth: checked })}
+                    />
+                  </div>
+
+                  {authSettings.enable_google_auth && (
+                    <div className="grid grid-cols-2 gap-4 p-4 border border-gray-700 rounded-lg">
+                      <div className="space-y-2">
+                        <Label htmlFor="google_client_id" className="text-white">Google Client ID</Label>
+                        <Input
+                          id="google_client_id"
+                          value={authSettings.google_client_id}
+                          onChange={(e) => setAuthSettings({ ...authSettings, google_client_id: e.target.value })}
+                          className="bg-gray-800 border-gray-700 text-white"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="google_client_secret" className="text-white">Google Client Secret</Label>
+                        <Input
+                          id="google_client_secret"
+                          type="password"
+                          value={authSettings.google_client_secret}
+                          onChange={(e) => setAuthSettings({ ...authSettings, google_client_secret: e.target.value })}
+                          className="bg-gray-800 border-gray-700 text-white"
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <Label className="text-white">Email Verification</Label>
+                        <p className="text-sm text-gray-300">Require email verification for new accounts</p>
+                      </div>
+                      <Switch
+                        checked={authSettings.enable_email_verification}
+                        onCheckedChange={(checked) => setAuthSettings({ ...authSettings, enable_email_verification: checked })}
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <Label className="text-white">Password Reset</Label>
+                        <p className="text-sm text-gray-300">Allow users to reset their password</p>
+                      </div>
+                      <Switch
+                        checked={authSettings.enable_password_reset}
+                        onCheckedChange={(checked) => setAuthSettings({ ...authSettings, enable_password_reset: checked })}
                       />
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="smtp_username">SMTP Username</Label>
-                      <Input
-                        id="smtp_username"
-                        value={emailSettings.smtp_username}
-                        onChange={(e) => setEmailSettings({ ...emailSettings, smtp_username: e.target.value })}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="smtp_password">SMTP Password</Label>
-                      <Input
-                        id="smtp_password"
-                        type="password"
-                        value={emailSettings.smtp_password}
-                        onChange={(e) => setEmailSettings({ ...emailSettings, smtp_password: e.target.value })}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="from_email">From Email</Label>
-                      <Input
-                        id="from_email"
-                        type="email"
-                        value={emailSettings.from_email}
-                        onChange={(e) => setEmailSettings({ ...emailSettings, from_email: e.target.value })}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="from_name">From Name</Label>
-                      <Input
-                        id="from_name"
-                        value={emailSettings.from_name}
-                        onChange={(e) => setEmailSettings({ ...emailSettings, from_name: e.target.value })}
-                      />
-                    </div>
-                  </div>
-
-                  <Button onClick={handleSaveEmail} className="flex items-center gap-2">
-                    <Save className="h-4 w-4" />
-                    Save Email Settings
+                  <Button onClick={() => handleSave('auth', authSettings)} className="bg-purple-600 hover:bg-purple-700">
+                    <Save className="h-4 w-4 mr-2" />
+                    Save Auth Settings
                   </Button>
                 </CardContent>
               </Card>
             </TabsContent>
 
             <TabsContent value="security" className="space-y-4">
-              <Card>
+              <Card className="bg-white/5 border-white/20">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
+                  <CardTitle className="flex items-center gap-2 text-white">
                     <Shield className="h-4 w-4" />
                     Security Settings
                   </CardTitle>
@@ -284,80 +355,198 @@ const SystemSettings = () => {
                 <CardContent className="space-y-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <Label>Enable Two-Factor Authentication</Label>
-                      <p className="text-sm text-muted-foreground">Require 2FA for admin accounts</p>
+                      <Label className="text-white">Enable Cloudflare Protection</Label>
+                      <p className="text-sm text-gray-300">Protect your site with Cloudflare</p>
                     </div>
                     <Switch
-                      checked={securitySettings.enable_2fa}
-                      onCheckedChange={(checked) => setSecuritySettings({ ...securitySettings, enable_2fa: checked })}
+                      checked={securitySettings.enable_cloudflare}
+                      onCheckedChange={(checked) => setSecuritySettings({ ...securitySettings, enable_cloudflare: checked })}
                     />
                   </div>
 
+                  {securitySettings.enable_cloudflare && (
+                    <div className="grid grid-cols-2 gap-4 p-4 border border-gray-700 rounded-lg">
+                      <div className="space-y-2">
+                        <Label htmlFor="cloudflare_zone_id" className="text-white">Cloudflare Zone ID</Label>
+                        <Input
+                          id="cloudflare_zone_id"
+                          value={securitySettings.cloudflare_zone_id}
+                          onChange={(e) => setSecuritySettings({ ...securitySettings, cloudflare_zone_id: e.target.value })}
+                          className="bg-gray-800 border-gray-700 text-white"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="cloudflare_api_token" className="text-white">Cloudflare API Token</Label>
+                        <Input
+                          id="cloudflare_api_token"
+                          type="password"
+                          value={securitySettings.cloudflare_api_token}
+                          onChange={(e) => setSecuritySettings({ ...securitySettings, cloudflare_api_token: e.target.value })}
+                          className="bg-gray-800 border-gray-700 text-white"
+                        />
+                      </div>
+                    </div>
+                  )}
+
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="session_timeout">Session Timeout (minutes)</Label>
-                      <Input
-                        id="session_timeout"
-                        type="number"
-                        value={securitySettings.session_timeout}
-                        onChange={(e) => setSecuritySettings({ ...securitySettings, session_timeout: e.target.value })}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="max_login_attempts">Max Login Attempts</Label>
+                      <Label htmlFor="max_login_attempts" className="text-white">Max Login Attempts</Label>
                       <Input
                         id="max_login_attempts"
                         type="number"
                         value={securitySettings.max_login_attempts}
                         onChange={(e) => setSecuritySettings({ ...securitySettings, max_login_attempts: e.target.value })}
+                        className="bg-gray-800 border-gray-700 text-white"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="password_min_length" className="text-white">Minimum Password Length</Label>
+                      <Input
+                        id="password_min_length"
+                        type="number"
+                        value={securitySettings.password_min_length}
+                        onChange={(e) => setSecuritySettings({ ...securitySettings, password_min_length: e.target.value })}
+                        className="bg-gray-800 border-gray-700 text-white"
                       />
                     </div>
                   </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="password_min_length">Minimum Password Length</Label>
-                    <Input
-                      id="password_min_length"
-                      type="number"
-                      value={securitySettings.password_min_length}
-                      onChange={(e) => setSecuritySettings({ ...securitySettings, password_min_length: e.target.value })}
-                    />
-                  </div>
-
-                  <Button onClick={handleSaveSecurity} className="flex items-center gap-2">
-                    <Save className="h-4 w-4" />
+                  <Button onClick={() => handleSave('security', securitySettings)} className="bg-red-600 hover:bg-red-700">
+                    <Save className="h-4 w-4 mr-2" />
                     Save Security Settings
                   </Button>
                 </CardContent>
               </Card>
             </TabsContent>
 
-            <TabsContent value="advanced" className="space-y-4">
-              <Card>
+            <TabsContent value="apis" className="space-y-4">
+              <Card className="bg-white/5 border-white/20">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Database className="h-4 w-4" />
-                    Advanced Settings
+                  <CardTitle className="flex items-center gap-2 text-white">
+                    <MapPin className="h-4 w-4" />
+                    API Keys & Integrations
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <Button variant="outline" className="h-20 flex flex-col items-center justify-center">
-                      <Database className="h-6 w-6 mb-2" />
-                      <span>Database Backup</span>
-                    </Button>
-                    <Button variant="outline" className="h-20 flex flex-col items-center justify-center">
-                      <Upload className="h-6 w-6 mb-2" />
-                      <span>Import/Export</span>
-                    </Button>
+                  <div className="grid grid-cols-1 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="google_maps_api_key" className="text-white">Google Maps API Key</Label>
+                      <Input
+                        id="google_maps_api_key"
+                        type="password"
+                        value={apiSettings.google_maps_api_key}
+                        onChange={(e) => setApiSettings({ ...apiSettings, google_maps_api_key: e.target.value })}
+                        placeholder="Enter your Google Maps API key"
+                        className="bg-gray-800 border-gray-700 text-white"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="stripe_publishable_key" className="text-white">Stripe Publishable Key</Label>
+                        <Input
+                          id="stripe_publishable_key"
+                          value={apiSettings.stripe_publishable_key}
+                          onChange={(e) => setApiSettings({ ...apiSettings, stripe_publishable_key: e.target.value })}
+                          className="bg-gray-800 border-gray-700 text-white"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="stripe_secret_key" className="text-white">Stripe Secret Key</Label>
+                        <Input
+                          id="stripe_secret_key"
+                          type="password"
+                          value={apiSettings.stripe_secret_key}
+                          onChange={(e) => setApiSettings({ ...apiSettings, stripe_secret_key: e.target.value })}
+                          className="bg-gray-800 border-gray-700 text-white"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="openai_api_key" className="text-white">OpenAI API Key</Label>
+                      <Input
+                        id="openai_api_key"
+                        type="password"
+                        value={apiSettings.openai_api_key}
+                        onChange={(e) => setApiSettings({ ...apiSettings, openai_api_key: e.target.value })}
+                        placeholder="For AI chatbot functionality"
+                        className="bg-gray-800 border-gray-700 text-white"
+                      />
+                    </div>
                   </div>
-                  
-                  <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                    <h4 className="font-medium text-yellow-800">Advanced Operations</h4>
-                    <p className="text-sm text-yellow-700 mt-1">
-                      These operations require careful consideration. Please backup your data before proceeding.
-                    </p>
+
+                  <Button onClick={() => handleSave('apis', apiSettings)} className="bg-orange-600 hover:bg-orange-700">
+                    <Save className="h-4 w-4 mr-2" />
+                    Save API Settings
+                  </Button>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="roles" className="space-y-4">
+              <Card className="bg-white/5 border-white/20">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-white">
+                    <Eye className="h-4 w-4" />
+                    User Roles & Access Control
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <Label className="text-white">Default User Role</Label>
+                    <Select value={userRoleSettings.default_user_role} onValueChange={(value) => setUserRoleSettings({ ...userRoleSettings, default_user_role: value })}>
+                      <SelectTrigger className="bg-gray-800 border-gray-700 text-white">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="bg-gray-800 border-gray-700">
+                        <SelectItem value="general_user">General User</SelectItem>
+                        <SelectItem value="property_owner">Property Owner</SelectItem>
+                        <SelectItem value="agent">Agent</SelectItem>
+                        <SelectItem value="vendor">Vendor</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
+
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <Label className="text-white">Auto-approve Agent Registrations</Label>
+                        <p className="text-sm text-gray-300">Automatically approve new agent registrations</p>
+                      </div>
+                      <Switch
+                        checked={userRoleSettings.auto_approve_agents}
+                        onCheckedChange={(checked) => setUserRoleSettings({ ...userRoleSettings, auto_approve_agents: checked })}
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <Label className="text-white">Auto-approve Vendor Registrations</Label>
+                        <p className="text-sm text-gray-300">Automatically approve new vendor registrations</p>
+                      </div>
+                      <Switch
+                        checked={userRoleSettings.auto_approve_vendors}
+                        onCheckedChange={(checked) => setUserRoleSettings({ ...userRoleSettings, auto_approve_vendors: checked })}
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <Label className="text-white">Require Email Verification</Label>
+                        <p className="text-sm text-gray-300">Require email verification for role changes</p>
+                      </div>
+                      <Switch
+                        checked={userRoleSettings.require_email_verification}
+                        onCheckedChange={(checked) => setUserRoleSettings({ ...userRoleSettings, require_email_verification: checked })}
+                      />
+                    </div>
+                  </div>
+
+                  <Button onClick={() => handleSave('roles', userRoleSettings)} className="bg-indigo-600 hover:bg-indigo-700">
+                    <Save className="h-4 w-4 mr-2" />
+                    Save Role Settings
+                  </Button>
                 </CardContent>
               </Card>
             </TabsContent>
