@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -373,14 +372,14 @@ const PropertyManagement = () => {
                       <TableCell>
                         <div className="space-y-1">
                           <div className="text-sm font-medium">
-                            {property.owner?.full_name || 'Unknown Owner'}
+                            {Array.isArray(property.owner) ? property.owner[0]?.full_name : property.owner?.full_name || 'Unknown Owner'}
                           </div>
                           <div className="text-xs text-muted-foreground">
-                            {property.owner?.email}
+                            {Array.isArray(property.owner) ? property.owner[0]?.email : property.owner?.email}
                           </div>
                           {property.agent && (
                             <div className="text-xs text-blue-600">
-                              Agent: {property.agent.full_name}
+                              Agent: {Array.isArray(property.agent) ? property.agent[0]?.full_name : property.agent?.full_name}
                             </div>
                           )}
                         </div>
