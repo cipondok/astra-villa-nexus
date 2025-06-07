@@ -1,8 +1,9 @@
-
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import { 
   Home, 
   Building, 
@@ -22,6 +23,14 @@ interface RoleDashboardProps {
 
 const RoleDashboard = ({ language }: RoleDashboardProps) => {
   const { profile, user } = useAuth();
+  const navigate = useNavigate();
+
+  // Redirect agents to their dedicated dashboard
+  useEffect(() => {
+    if (profile?.role === 'agent') {
+      navigate('/dashboard/agent');
+    }
+  }, [profile?.role, navigate]);
 
   const text = {
     en: {

@@ -9,6 +9,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { AlertProvider } from "@/contexts/AlertContext";
 import Index from "./pages/Index";
 import UserDashboardPage from "./pages/UserDashboardPage";
+import AgentDashboard from "./pages/AgentDashboard";
 import Profile from "./pages/Profile";
 import PropertyDetail from "./pages/PropertyDetail";
 import Properties from "./pages/Properties";
@@ -35,6 +36,7 @@ const App = () => {
                 <Routes>
                   <Route path="/" element={<Index />} />
                   <Route path="/dashboard" element={<UserDashboardPage />} />
+                  <Route path="/dashboard/agent" element={<AgentDashboard />} />
                   <Route path="/admin" element={<AdminDashboard />} />
                   <Route path="/profile" element={<Profile />} />
                   <Route path="/properties" element={<Properties />} />
