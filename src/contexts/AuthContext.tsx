@@ -41,7 +41,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   console.log('AuthProvider rendering, loading:', loading, 'user:', user?.email);
 
-  // Get initial session and set up auth state listener
   useEffect(() => {
     let mounted = true;
 
@@ -49,7 +48,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       try {
         console.log('Initializing auth...');
         
-        // Get initial session
         const { data: { session }, error } = await supabase.auth.getSession();
         
         if (error) {
@@ -79,7 +77,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     };
 
-    // Set up auth state change listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         console.log('Auth state changed:', event, session?.user?.email || 'No user');
@@ -96,6 +93,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           setProfile(null);
         }
         
+        // Always set loading to false after auth state change
         setLoading(false);
       }
     );
@@ -120,7 +118,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       if (error) {
         console.error('Error fetching profile:', error);
-        // If profile doesn't exist, create a basic one
         if (error.code === 'PGRST116') {
           console.log('Profile not found, will be created on first update');
         }
@@ -201,27 +198,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       if (!user) return { error: new Error('No user found'), success: false };
 
-      // Prepare the update data with proper types
-      const updateData: {
-        id: string;
-        email: string;
-        full_name?: string;
-        phone?: string;
-        role?: UserRole;
-        company_name?: string;
-        license_number?: string;
-        verification_status?: string;
-        avatar_url?: string;
-      } = {
+      const updateData = {
         id: user.id,
         email: user.email!,
         ...data,
       };
-
-      // Ensure role is properly typed if provided
-      if (data.role) {
-        updateData.role = data.role as UserRole;
-      }
 
       const { error } = await supabase
         .from('profiles')
@@ -232,7 +213,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return { error, success: false };
       }
 
-      // Refresh profile data
       await fetchProfile(user.id);
       showSuccess('Profile Updated', 'Your profile has been updated successfully.');
       return { error: null, success: true };
