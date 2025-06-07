@@ -24,24 +24,25 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* iPhone-style Light Mode Colors */
+    --background: 0 0% 98%;
+    --foreground: 0 0% 15%;
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 0 0% 15%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 0 0% 15%;
     --primary: 221.2 83.2% 53.3%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 222.2 84% 4.9%;
-    --muted: 210 40% 96%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96%;
-    --accent-foreground: 222.2 84% 4.9%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 220 14.3% 95.9%;
+    --secondary-foreground: 0 0% 15%;
+    --muted: 220 14.3% 95.9%;
+    --muted-foreground: 220 8.9% 46.1%;
+    --accent: 220 14.3% 95.9%;
+    --accent-foreground: 0 0% 15%;
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
     --ring: 221.2 83.2% 53.3%;
     --radius: 0.75rem;
     --chart-1: 12 76% 61%;
@@ -50,52 +51,53 @@
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
     
-    /* Sidebar variables */
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
+    /* iPhone-style Light Sidebar */
+    --sidebar-background: 0 0% 99%;
+    --sidebar-foreground: 0 0% 15%;
+    --sidebar-primary: 0 0% 15%;
     --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-accent: 220 14.3% 95.9%;
+    --sidebar-accent-foreground: 0 0% 15%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 10.6% 64.9%;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
+    /* Titanium Blue Dark Mode Colors */
+    --background: 222 47% 11%;
     --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
+    --card: 224 47% 15%;
     --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
+    --popover: 224 47% 15%;
     --popover-foreground: 210 40% 98%;
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 84% 4.9%;
-    --secondary: 217.2 32.6% 17.5%;
+    --primary: 217 91% 60%;
+    --primary-foreground: 222 47% 11%;
+    --secondary: 222 47% 17%;
     --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
+    --muted: 222 47% 17%;
     --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
+    --accent: 222 47% 17%;
     --accent-foreground: 210 40% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 224.3 76.3% 94.1%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
+    --border: 222 47% 17%;
+    --input: 222 47% 17%;
+    --ring: 217 91% 60%;
+    --chart-1: 217 91% 60%;
+    --chart-2: 199 89% 48%;
+    --chart-3: 207 89% 86%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
     
-    /* Dark mode sidebar */
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 0 0% 98%;
-    --sidebar-primary-foreground: 240 5.9% 10%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 10.6% 64.9%;
+    /* Titanium Blue Dark Sidebar */
+    --sidebar-background: 222 47% 11%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 210 40% 98%;
+    --sidebar-primary-foreground: 222 47% 11%;
+    --sidebar-accent: 222 47% 17%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 222 47% 17%;
+    --sidebar-ring: 217 91% 60%;
   }
 }
 
@@ -126,45 +128,45 @@
   background-color: var(--primary-color-hover);
 }
 
-/* Enhanced dark mode backgrounds */
+/* Enhanced dark mode backgrounds with titanium blue theme */
 .dark .bg-gray-900 {
-  background-color: rgb(15 23 42);
+  background-color: hsl(222 47% 11%);
 }
 
 .dark .bg-gray-800 {
-  background-color: rgb(30 41 59);
+  background-color: hsl(222 47% 15%);
 }
 
 .dark .bg-gray-700 {
-  background-color: rgb(51 65 85);
+  background-color: hsl(222 47% 20%);
 }
 
-/* Glass morphism effects for dark mode */
+/* Glass morphism effects for titanium blue dark mode */
 .glass-dark {
-  background: rgba(15, 23, 42, 0.8);
+  background: hsla(222, 47%, 11%, 0.8);
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid hsla(217, 91%, 60%, 0.2);
 }
 
 .glass-card-dark {
-  background: rgba(30, 41, 59, 0.6);
+  background: hsla(222, 47%, 15%, 0.6);
   backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid hsla(217, 91%, 60%, 0.1);
 }
 
-/* Improved gradient backgrounds for dark mode */
+/* Improved gradient backgrounds for titanium blue dark mode */
 .gradient-dark {
   background: linear-gradient(135deg, 
-    rgba(15, 23, 42, 0.95) 0%, 
-    rgba(30, 41, 59, 0.9) 50%, 
-    rgba(51, 65, 85, 0.85) 100%);
+    hsla(222, 47%, 11%, 0.95) 0%, 
+    hsla(222, 47%, 15%, 0.9) 50%, 
+    hsla(222, 47%, 20%, 0.85) 100%);
 }
 
-/* Enhanced admin panel styling */
+/* Enhanced admin panel styling with titanium blue */
 .admin-panel-bg {
   background: linear-gradient(135deg, 
-    rgba(15, 23, 42, 0.98) 0%, 
-    rgba(30, 41, 59, 0.95) 100%);
+    hsla(222, 47%, 11%, 0.98) 0%, 
+    hsla(222, 47%, 15%, 0.95) 100%);
 }
 
 /* Currency display styling */
@@ -173,26 +175,39 @@
   color: var(--primary-color);
 }
 
-/* Responsive text colors for better contrast in dark mode */
+/* Responsive text colors for better contrast */
 .dark .text-gray-600 {
-  color: rgb(148 163 184);
+  color: hsl(215 20.2% 65.1%);
 }
 
 .dark .text-gray-500 {
-  color: rgb(100 116 139);
+  color: hsl(215 16.3% 56.9%);
 }
 
 .dark .text-gray-400 {
-  color: rgb(71 85 105);
+  color: hsl(215 13.8% 50.2%);
+}
+
+/* Light mode text improvements for iPhone-style */
+.text-gray-600 {
+  color: hsl(220 8.9% 46.1%);
+}
+
+.text-gray-500 {
+  color: hsl(220 8.9% 46.1%);
+}
+
+.text-gray-400 {
+  color: hsl(220 8.9% 46.1%);
 }
 
 /* Modern Admin Panel Animations */
 @keyframes admin-glow {
   0%, 100% {
-    box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
+    box-shadow: 0 0 20px hsla(217, 91%, 60%, 0.2);
   }
   50% {
-    box-shadow: 0 0 30px rgba(59, 130, 246, 0.4);
+    box-shadow: 0 0 30px hsla(217, 91%, 60%, 0.4);
   }
 }
 
