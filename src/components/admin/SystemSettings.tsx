@@ -14,6 +14,20 @@ import { Textarea } from "@/components/ui/textarea";
 import { Settings, Shield, Users, Database, Globe, Mail, Bell } from "lucide-react";
 import { useAlert } from "@/contexts/AlertContext";
 
+interface SystemSettingsData {
+  site_name?: string;
+  site_url?: string;
+  site_description?: string;
+  maintenance_mode?: boolean;
+  require_email_verification?: boolean;
+  enable_google_auth?: boolean;
+  session_timeout?: string;
+  enable_email_notifications?: boolean;
+  admin_email?: string;
+  enable_two_factor?: boolean;
+  max_login_attempts?: string;
+}
+
 const SystemSettings = () => {
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
@@ -21,17 +35,20 @@ const SystemSettings = () => {
   // Fetch system settings
   const { data: settings, isLoading } = useQuery({
     queryKey: ['system-settings'],
-    queryFn: async () => {
+    queryFn: async (): Promise<SystemSettingsData> => {
       try {
         const { data, error } = await supabase
           .from('system_settings')
           .select('*');
         
-        if (error) throw error;
+        if (error) {
+          console.error('Error fetching settings:', error);
+          throw error;
+        }
         
         // Convert array to object for easier access
-        const settingsObj = data?.reduce((acc, setting) => {
-          acc[setting.key] = setting.value;
+        const settingsObj = data?.reduce((acc: SystemSettingsData, setting: any) => {
+          acc[setting.key as keyof SystemSettingsData] = setting.value;
           return acc;
         }, {}) || {};
         
@@ -41,6 +58,8 @@ const SystemSettings = () => {
         return {};
       }
     },
+    retry: 1,
+    retryDelay: 2000,
   });
 
   // Update setting mutation
@@ -156,7 +175,7 @@ const SystemSettings = () => {
                   <div className="flex items-center space-x-2">
                     <Switch
                       id="email-verification"
-                      defaultChecked={settings?.require_email_verification || true}
+                      defaultChecked={settings?.require_email_verification ?? true}
                       onCheckedChange={(checked) => handleSettingUpdate('require_email_verification', checked, 'auth')}
                     />
                     <Label htmlFor="email-verification">Require Email Verification</Label>
@@ -203,7 +222,7 @@ const SystemSettings = () => {
                   <div className="flex items-center space-x-2">
                     <Switch
                       id="email-notifications"
-                      defaultChecked={settings?.enable_email_notifications || true}
+                      defaultChecked={settings?.enable_email_notifications ?? true}
                       onCheckedChange={(checked) => handleSettingUpdate('enable_email_notifications', checked, 'notifications')}
                     />
                     <Label htmlFor="email-notifications">Enable Email Notifications</Label>
