@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -52,9 +51,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         
         if (error) {
           console.error('Error getting session:', error);
-          if (mounted) {
-            setLoading(false);
-          }
           return;
         }
 
@@ -64,14 +60,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           setUser(session.user);
           await fetchProfile(session.user.id);
         }
-
-        if (mounted) {
-          console.log('Setting loading to false');
-          setLoading(false);
-        }
       } catch (error) {
         console.error('Auth initialization error:', error);
+      } finally {
         if (mounted) {
+          console.log('Setting loading to false after initialization');
           setLoading(false);
         }
       }
@@ -93,8 +86,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           setProfile(null);
         }
         
-        // Always set loading to false after auth state change
-        setLoading(false);
+        if (mounted) {
+          setLoading(false);
+        }
       }
     );
 
