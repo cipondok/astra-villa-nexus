@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Progress } from "@/components/ui/progress";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -22,7 +23,7 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
     password: "",
     confirmPassword: "",
     full_name: "",
-    role: "general_user",
+    role: "general_user" as const,
     phone: "",
     company_name: "",
     license_number: ""
@@ -55,7 +56,14 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
       switchToSignup: "Don't have an account? Sign up",
       switchToSignin: "Already have an account? Sign in",
       passwordMismatch: "Passwords don't match",
-      fillAllFields: "Please fill in all required fields"
+      fillAllFields: "Please fill in all required fields",
+      selectRole: "Select your role",
+      roleDescription: {
+        general_user: "Browse and search properties",
+        property_owner: "List and manage your properties",
+        agent: "Manage listings and clients",
+        vendor: "Offer property services"
+      }
     },
     id: {
       signin: "Masuk",
@@ -77,7 +85,14 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
       switchToSignup: "Belum punya akun? Daftar",
       switchToSignin: "Sudah punya akun? Masuk",
       passwordMismatch: "Kata sandi tidak cocok",
-      fillAllFields: "Harap isi semua bidang yang diperlukan"
+      fillAllFields: "Harap isi semua bidang yang diperlukan",
+      selectRole: "Pilih peran Anda",
+      roleDescription: {
+        general_user: "Telusuri dan cari properti",
+        property_owner: "Daftarkan dan kelola properti Anda",
+        agent: "Kelola listing dan klien",
+        vendor: "Tawarkan layanan properti"
+      }
     }
   };
 
@@ -93,6 +108,7 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
       const { success } = await signIn(signInData.email, signInData.password);
       if (success) {
         onClose();
+        setSignInData({ email: "", password: "" });
       }
     } catch (error) {
       console.error('Sign in error:', error);
@@ -117,15 +133,40 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
     setIsLoading(true);
     
     try {
-      const { success } = await signUp(signUpData.email, signUpData.password, signUpData.full_name);
+      // Pass role and additional data through user metadata
+      const { success } = await signUp(
+        signUpData.email, 
+        signUpData.password, 
+        signUpData.full_name,
+        {
+          role: signUpData.role,
+          phone: signUpData.phone,
+          company_name: signUpData.company_name,
+          license_number: signUpData.license_number
+        }
+      );
       if (success) {
         onClose();
+        setSignUpData({
+          email: "",
+          password: "",
+          confirmPassword: "",
+          full_name: "",
+          role: "general_user",
+          phone: "",
+          company_name: "",
+          license_number: ""
+        });
       }
     } catch (error) {
       console.error('Sign up error:', error);
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const showAdditionalFields = () => {
+    return signUpData.role === 'agent' || signUpData.role === 'vendor' || signUpData.role === 'property_owner';
   };
 
   return (
@@ -198,6 +239,80 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
                     required
                   />
                 </div>
+                <div>
+                  <Label htmlFor="signup-role">{currentText.selectRole}</Label>
+                  <Select 
+                    value={signUpData.role} 
+                    onValueChange={(value) => setSignUpData(prev => ({ ...prev, role: value as any }))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder={currentText.selectRole} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="general_user">
+                        <div>
+                          <div className="font-medium">{currentText.generalUser}</div>
+                          <div className="text-sm text-gray-500">{currentText.roleDescription.general_user}</div>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="property_owner">
+                        <div>
+                          <div className="font-medium">{currentText.propertyOwner}</div>
+                          <div className="text-sm text-gray-500">{currentText.roleDescription.property_owner}</div>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="agent">
+                        <div>
+                          <div className="font-medium">{currentText.agent}</div>
+                          <div className="text-sm text-gray-500">{currentText.roleDescription.agent}</div>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="vendor">
+                        <div>
+                          <div className="font-medium">{currentText.vendor}</div>
+                          <div className="text-sm text-gray-500">{currentText.roleDescription.vendor}</div>
+                        </div>
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                {showAdditionalFields() && (
+                  <>
+                    <div>
+                      <Label htmlFor="signup-phone">{currentText.phone}</Label>
+                      <Input
+                        id="signup-phone"
+                        type="tel"
+                        value={signUpData.phone}
+                        onChange={(e) => setSignUpData(prev => ({ ...prev, phone: e.target.value }))}
+                      />
+                    </div>
+                    {(signUpData.role === 'agent' || signUpData.role === 'vendor') && (
+                      <div>
+                        <Label htmlFor="signup-company">{currentText.companyName}</Label>
+                        <Input
+                          id="signup-company"
+                          type="text"
+                          value={signUpData.company_name}
+                          onChange={(e) => setSignUpData(prev => ({ ...prev, company_name: e.target.value }))}
+                        />
+                      </div>
+                    )}
+                    {signUpData.role === 'agent' && (
+                      <div>
+                        <Label htmlFor="signup-license">{currentText.licenseNumber}</Label>
+                        <Input
+                          id="signup-license"
+                          type="text"
+                          value={signUpData.license_number}
+                          onChange={(e) => setSignUpData(prev => ({ ...prev, license_number: e.target.value }))}
+                        />
+                      </div>
+                    )}
+                  </>
+                )}
+                
                 <div>
                   <Label htmlFor="signup-password">{currentText.password}</Label>
                   <Input

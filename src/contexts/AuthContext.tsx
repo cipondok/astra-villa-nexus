@@ -23,7 +23,7 @@ interface AuthContextType {
   profile: Profile | null;
   session: Session | null;
   loading: boolean;
-  signUp: (email: string, password: string, fullName: string) => Promise<{ success: boolean; error?: string }>;
+  signUp: (email: string, password: string, fullName: string, additionalData?: any) => Promise<{ success: boolean; error?: string }>;
   signIn: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
   signOut: () => Promise<void>;
   updateProfile: (updates: Partial<Profile>) => Promise<{ success: boolean; error?: string }>;
@@ -40,32 +40,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const { toast } = useToast();
 
   const isAuthenticated = !!user && !!session;
-
-  const createProfile = async (userId: string, email: string, fullName: string): Promise<Profile | null> => {
-    try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .insert({
-          id: userId,
-          email,
-          full_name: fullName,
-          role: 'general_user',
-          verification_status: 'pending'
-        })
-        .select()
-        .single();
-
-      if (error) {
-        console.error('Error creating profile:', error);
-        return null;
-      }
-
-      return data;
-    } catch (err) {
-      console.error('Profile creation error:', err);
-      return null;
-    }
-  };
 
   const fetchProfile = async (userId: string): Promise<Profile | null> => {
     try {
@@ -87,18 +61,24 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const signUp = async (email: string, password: string, fullName: string) => {
+  const signUp = async (email: string, password: string, fullName: string, additionalData?: any) => {
     try {
       setLoading(true);
       
+      const metadata = {
+        full_name: fullName.trim(),
+        role: additionalData?.role || 'general_user',
+        phone: additionalData?.phone || '',
+        company_name: additionalData?.company_name || '',
+        license_number: additionalData?.license_number || ''
+      };
+
       const { data, error } = await supabase.auth.signUp({
         email: email.trim(),
         password,
         options: {
           emailRedirectTo: `${window.location.origin}/`,
-          data: {
-            full_name: fullName.trim()
-          }
+          data: metadata
         }
       });
 
@@ -120,6 +100,23 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         });
         
         return { success: false, error: errorMessage };
+      }
+
+      // If user is created and confirmed, update their profile with additional data
+      if (data.user && data.user.email_confirmed_at) {
+        try {
+          await supabase
+            .from('profiles')
+            .update({
+              phone: additionalData?.phone || null,
+              company_name: additionalData?.company_name || null,
+              license_number: additionalData?.license_number || null,
+              role: additionalData?.role || 'general_user'
+            })
+            .eq('id', data.user.id);
+        } catch (updateError) {
+          console.error('Error updating profile:', updateError);
+        }
       }
 
       if (data.user && !data.user.email_confirmed_at) {
@@ -282,7 +279,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       async (event, session) => {
         if (!mounted) return;
 
-        console.log('Auth state changed:', event);
+        console.log('Auth state changed:', event, session?.user?.role);
         
         setSession(session);
         setUser(session?.user ?? null);
@@ -291,6 +288,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           const profileData = await fetchProfile(session.user.id);
           if (mounted) {
             setProfile(profileData);
+            console.log('User profile loaded:', profileData?.role);
           }
         } else {
           if (mounted) {
