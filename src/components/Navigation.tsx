@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Menu, X, User, LogOut, Settings } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useThemeSettings } from "@/contexts/ThemeSettingsContext";
-import AuthModal from "./auth/AuthModal";
+import RoleBasedAuthModal from "./RoleBasedAuthModal";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -150,7 +150,7 @@ const Navigation = () => {
         )}
       </nav>
 
-      <AuthModal 
+      <RoleBasedAuthModal 
         isOpen={showAuthModal} 
         onClose={() => setShowAuthModal(false)} 
       />

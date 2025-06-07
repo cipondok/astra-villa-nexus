@@ -25,9 +25,9 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-        <AuthProvider>
-          <ThemeSettingsProvider>
-            <AlertProvider>
+        <ThemeSettingsProvider>
+          <AlertProvider>
+            <AuthProvider>
               <TooltipProvider>
                 <Toaster />
                 <Sonner />
@@ -46,9 +46,9 @@ function App() {
                   </Routes>
                 </BrowserRouter>
               </TooltipProvider>
-            </AlertProvider>
-          </ThemeSettingsProvider>
-        </AuthProvider>
+            </AuthProvider>
+          </AlertProvider>
+        </ThemeSettingsProvider>
       </ThemeProvider>
     </QueryClientProvider>
   );
