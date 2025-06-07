@@ -54,9 +54,9 @@ const AdminDashboard = () => {
   // Simplified admin check - if user is logged in and either demo admin or has admin role
   const isAdmin = isAuthenticated && (isDemoAdmin || profile?.role === 'admin');
 
-  // Dashboard statistics with error handling for admin_users recursion
+  // Dashboard statistics with improved error handling to prevent infinite recursion
   const { data: stats, isLoading: statsLoading } = useQuery({
-    queryKey: ['admin-stats'],
+    queryKey: ['admin-dashboard-stats'],
     queryFn: async () => {
       try {
         // For demo purposes, return mock data if needed
@@ -70,25 +70,27 @@ const AdminDashboard = () => {
           };
         }
 
-        // Use Promise.allSettled to handle potential RLS issues gracefully
-        const [usersCount, propertiesCount, ordersCount, vendorRequestsCount, errorLogsCount] = await Promise.allSettled([
-          supabase.from('profiles').select('*', { count: 'exact', head: true }),
-          supabase.from('properties').select('*', { count: 'exact', head: true }),
-          supabase.from('orders').select('*', { count: 'exact', head: true }),
-          supabase.from('vendor_requests').select('*', { count: 'exact', head: true }),
-          supabase.from('system_error_logs').select('*', { count: 'exact', head: true })
-        ]);
+        // Use individual queries with better error handling
+        const statsPromises = [
+          supabase.from('profiles').select('*', { count: 'exact', head: true }).then(res => res.count || 0),
+          supabase.from('properties').select('*', { count: 'exact', head: true }).then(res => res.count || 0),
+          supabase.from('orders').select('*', { count: 'exact', head: true }).then(res => res.count || 0),
+          supabase.from('vendor_requests').select('*', { count: 'exact', head: true }).then(res => res.count || 0),
+          supabase.from('system_error_logs').select('*', { count: 'exact', head: true }).then(res => res.count || 0)
+        ];
+
+        const [users, properties, orders, vendorRequests, errorLogs] = await Promise.allSettled(statsPromises);
 
         return {
-          users: usersCount.status === 'fulfilled' ? (usersCount.value.count || 0) : 0,
-          properties: propertiesCount.status === 'fulfilled' ? (propertiesCount.value.count || 0) : 0,
-          orders: ordersCount.status === 'fulfilled' ? (ordersCount.value.count || 0) : 0,
-          vendorRequests: vendorRequestsCount.status === 'fulfilled' ? (vendorRequestsCount.value.count || 0) : 0,
-          errorLogs: errorLogsCount.status === 'fulfilled' ? (errorLogsCount.value.count || 0) : 0
+          users: users.status === 'fulfilled' ? users.value : 0,
+          properties: properties.status === 'fulfilled' ? properties.value : 0,
+          orders: orders.status === 'fulfilled' ? orders.value : 0,
+          vendorRequests: vendorRequests.status === 'fulfilled' ? vendorRequests.value : 0,
+          errorLogs: errorLogs.status === 'fulfilled' ? errorLogs.value : 0
         };
       } catch (err) {
-        console.error('Error fetching admin stats:', err);
-        // Return default values if there's an error
+        console.error('Error fetching admin dashboard stats:', err);
+        // Return default values instead of throwing
         return {
           users: 0,
           properties: 0,
@@ -99,8 +101,9 @@ const AdminDashboard = () => {
       }
     },
     enabled: isAdmin,
-    retry: 1, // Reduce retries to avoid infinite recursion loops
-    retryDelay: 2000
+    retry: 1,
+    retryDelay: 3000,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
   useEffect(() => {
@@ -183,7 +186,7 @@ const AdminDashboard = () => {
                 </TabsTrigger>
                 <TabsTrigger 
                   value="users" 
-                  className="whitespace-nowrap text-xs md:text-sm px-3 py-2.5 rounded-md transition-all duration-200 data-[state=active]:bg-green-600 data-[state=active]:text-white data-[state=active]:shadow-md hover:bg-green-50 dark:hover:bg-green-900/20 bg-background border border-border"
+                  className="whitespace-nowrap text-xs md:text-sm px-3 py-2.5 rounded-md transition-all duration-200 data-[state=active]:bg-emerald-600 data-[state=active]:text-white data-[state=active]:shadow-md hover:bg-emerald-50 dark:hover:bg-emerald-900/20 bg-background border border-border"
                 >
                   Users
                 </TabsTrigger>
@@ -195,7 +198,7 @@ const AdminDashboard = () => {
                 </TabsTrigger>
                 <TabsTrigger 
                   value="vendors" 
-                  className="whitespace-nowrap text-xs md:text-sm px-3 py-2.5 rounded-md transition-all duration-200 data-[state=active]:bg-purple-600 data-[state=active]:text-white data-[state=active]:shadow-md hover:bg-purple-50 dark:hover:bg-purple-900/20 bg-background border border-border"
+                  className="whitespace-nowrap text-xs md:text-sm px-3 py-2.5 rounded-md transition-all duration-200 data-[state=active]:bg-violet-600 data-[state=active]:text-white data-[state=active]:shadow-md hover:bg-violet-50 dark:hover:bg-violet-900/20 bg-background border border-border"
                 >
                   Vendors
                 </TabsTrigger>
