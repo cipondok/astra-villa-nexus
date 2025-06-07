@@ -103,7 +103,7 @@ const SecurityMonitoring = () => {
     return locationData?.city || 'Unknown';
   };
 
-  const formatIPAddress = (ip: string) => {
+  const formatIPAddress = (ip: string | null | undefined) => {
     return ip || 'Unknown';
   };
 
@@ -200,7 +200,7 @@ const SecurityMonitoring = () => {
                           </Badge>
                         </TableCell>
                         <TableCell>{activity.description}</TableCell>
-                        <TableCell>{formatIPAddress(activity.ip_address)}</TableCell>
+                        <TableCell>{formatIPAddress(activity.ip_address?.toString())}</TableCell>
                         <TableCell>{getLocationInfo(activity.location_data)}</TableCell>
                         <TableCell>{new Date(activity.created_at).toLocaleString()}</TableCell>
                       </TableRow>
@@ -249,7 +249,7 @@ const SecurityMonitoring = () => {
                             </p>
                           </div>
                         </TableCell>
-                        <TableCell>{formatIPAddress(session.ip_address)}</TableCell>
+                        <TableCell>{formatIPAddress(session.ip_address?.toString())}</TableCell>
                         <TableCell>
                           <span className="text-sm text-gray-600 truncate max-w-32 block">
                             {session.user_agent?.substring(0, 50) || 'Unknown'}
