@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,6 +14,8 @@ interface RoleBasedAuthModalProps {
   language: "en" | "id";
 }
 
+type UserRole = "general_user" | "property_owner" | "agent" | "vendor" | "admin";
+
 const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalProps) => {
   const [activeTab, setActiveTab] = useState("signin");
   const [isLoading, setIsLoading] = useState(false);
@@ -23,7 +24,7 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
     password: "",
     confirmPassword: "",
     full_name: "",
-    role: "general_user",
+    role: "general_user" as UserRole,
     phone: "",
     company_name: "",
     license_number: ""
@@ -100,8 +101,19 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
 
   if (!isOpen) return null;
 
+  const isValidEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!isValidEmail(signInData.email)) {
+      alert("Please enter a valid email address");
+      return;
+    }
+    
     setIsLoading(true);
     
     try {
@@ -123,6 +135,11 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
     
     console.log('Sign up data:', signUpData);
     
+    if (!isValidEmail(signUpData.email)) {
+      alert("Please enter a valid email address");
+      return;
+    }
+    
     if (signUpData.password !== signUpData.confirmPassword) {
       alert(currentText.passwordMismatch);
       return;
@@ -133,11 +150,16 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
       return;
     }
 
+    if (signUpData.password.length < 6) {
+      alert("Password must be at least 6 characters long");
+      return;
+    }
+
     setIsLoading(true);
     
     try {
       console.log('Attempting sign up with role:', signUpData.role);
-      const { success } = await signUp(
+      const { success, error } = await signUp(
         signUpData.email, 
         signUpData.password, 
         signUpData.full_name,
@@ -148,6 +170,7 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
           license_number: signUpData.license_number
         }
       );
+      
       if (success) {
         onClose();
         setSignUpData({
@@ -155,11 +178,13 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
           password: "",
           confirmPassword: "",
           full_name: "",
-          role: "general_user",
+          role: "general_user" as UserRole,
           phone: "",
           company_name: "",
           license_number: ""
         });
+      } else if (error) {
+        console.error('Signup failed:', error);
       }
     } catch (error) {
       console.error('Sign up error:', error);
@@ -246,7 +271,7 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
                   <Label htmlFor="signup-role">{currentText.selectRole}</Label>
                   <Select 
                     value={signUpData.role} 
-                    onValueChange={(value) => setSignUpData(prev => ({ ...prev, role: value }))}
+                    onValueChange={(value: UserRole) => setSignUpData(prev => ({ ...prev, role: value }))}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder={currentText.selectRole} />
@@ -324,6 +349,7 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
                     value={signUpData.password}
                     onChange={(e) => setSignUpData(prev => ({ ...prev, password: e.target.value }))}
                     required
+                    minLength={6}
                   />
                 </div>
                 <div>
