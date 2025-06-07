@@ -84,8 +84,13 @@ const Index = () => {
       )}
       
       {/* Hero Section with Modern Search */}
-      <section className="pt-20 pb-8 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto text-center">
+      <section className="pt-20 pb-8 px-4 sm:px-6 lg:px-8 relative">
+        {/* 3D Particle Effect as Background */}
+        <div className="absolute inset-0 z-0">
+          <ParticleEffect />
+        </div>
+        
+        <div className="max-w-7xl mx-auto text-center relative z-10">
           <h1 className="text-4xl md:text-6xl font-bold text-gray-900 dark:text-white opacity-60 mb-6">
             Find Your Dream
             <span className="block bg-gradient-to-r from-blue-600 to-orange-500 bg-clip-text text-transparent opacity-60">
@@ -95,11 +100,6 @@ const Index = () => {
           <p className="text-xl text-gray-600 dark:text-gray-300 opacity-60 mb-8 max-w-3xl mx-auto">
             Discover luxury villas, modern apartments, and exclusive properties with our advanced search technology.
           </p>
-          
-          {/* 3D Particle Effect */}
-          <div className="my-8">
-            <ParticleEffect />
-          </div>
           
           <ModernSearchPanel language={language} onSearch={handleSearch} />
         </div>
