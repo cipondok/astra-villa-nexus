@@ -202,20 +202,22 @@ const SystemSettings = () => {
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="general" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-2 lg:grid-cols-5 bg-white/10">
-              <TabsTrigger value="general" className="text-white data-[state=active]:bg-blue-600">General</TabsTrigger>
-              <TabsTrigger value="auth" className="text-white data-[state=active]:bg-blue-600">Authentication</TabsTrigger>
-              <TabsTrigger value="users" className="text-white data-[state=active]:bg-blue-600">User Roles</TabsTrigger>
-              <TabsTrigger value="properties" className="text-white data-[state=active]:bg-blue-600">Properties</TabsTrigger>
-              <TabsTrigger value="surveys" className="text-white data-[state=active]:bg-blue-600">Surveys</TabsTrigger>
-              <TabsTrigger value="compliance" className="text-white data-[state=active]:bg-blue-600">Compliance</TabsTrigger>
-              <TabsTrigger value="staff" className="text-white data-[state=active]:bg-blue-600">Staff</TabsTrigger>
-              <TabsTrigger value="support" className="text-white data-[state=active]:bg-blue-600">Support</TabsTrigger>
-              <TabsTrigger value="security" className="text-white data-[state=active]:bg-blue-600">Security</TabsTrigger>
-              <TabsTrigger value="apis" className="text-white data-[state=active]:bg-blue-600">APIs</TabsTrigger>
-              <TabsTrigger value="notifications" className="text-white data-[state=active]:bg-blue-600">Notifications</TabsTrigger>
-              <TabsTrigger value="seo" className="text-white data-[state=active]:bg-blue-600">SEO</TabsTrigger>
-            </TabsList>
+            <div className="overflow-x-auto">
+              <TabsList className="grid w-full grid-cols-6 lg:grid-cols-12 bg-white/10 min-w-max">
+                <TabsTrigger value="general" className="text-white data-[state=active]:bg-blue-600 whitespace-nowrap">General</TabsTrigger>
+                <TabsTrigger value="auth" className="text-white data-[state=active]:bg-blue-600 whitespace-nowrap">Authentication</TabsTrigger>
+                <TabsTrigger value="users" className="text-white data-[state=active]:bg-blue-600 whitespace-nowrap">User Roles</TabsTrigger>
+                <TabsTrigger value="properties" className="text-white data-[state=active]:bg-blue-600 whitespace-nowrap">Properties</TabsTrigger>
+                <TabsTrigger value="surveys" className="text-white data-[state=active]:bg-blue-600 whitespace-nowrap">Surveys</TabsTrigger>
+                <TabsTrigger value="compliance" className="text-white data-[state=active]:bg-blue-600 whitespace-nowrap">Compliance</TabsTrigger>
+                <TabsTrigger value="staff" className="text-white data-[state=active]:bg-blue-600 whitespace-nowrap">Staff</TabsTrigger>
+                <TabsTrigger value="support" className="text-white data-[state=active]:bg-blue-600 whitespace-nowrap">Support</TabsTrigger>
+                <TabsTrigger value="security" className="text-white data-[state=active]:bg-blue-600 whitespace-nowrap">Security</TabsTrigger>
+                <TabsTrigger value="apis" className="text-white data-[state=active]:bg-blue-600 whitespace-nowrap">APIs</TabsTrigger>
+                <TabsTrigger value="notifications" className="text-white data-[state=active]:bg-blue-600 whitespace-nowrap">Notifications</TabsTrigger>
+                <TabsTrigger value="seo" className="text-white data-[state=active]:bg-blue-600 whitespace-nowrap">SEO</TabsTrigger>
+              </TabsList>
+            </div>
 
             <TabsContent value="general" className="space-y-4">
               <Card className="bg-white/5 border-white/20">
