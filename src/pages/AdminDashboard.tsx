@@ -123,7 +123,7 @@ const AdminDashboard = () => {
   // Show loading state
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen bg-background/60 backdrop-blur-xl flex items-center justify-center">
         <div className="text-center card-ios p-8">
           <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-primary mx-auto mb-6"></div>
           <h2 className="text-xl font-semibold text-foreground">Loading Control Panel...</h2>
@@ -136,7 +136,7 @@ const AdminDashboard = () => {
   // Show access denied if not admin
   if (!isAdmin) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen bg-background/60 backdrop-blur-xl flex items-center justify-center">
         <div className="text-center card-ios p-8 max-w-md mx-auto">
           <div className="w-16 h-16 bg-gradient-to-br from-amber-500 to-amber-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-amber-500/25">
             <Shield className="h-8 w-8 text-white" />
@@ -157,7 +157,7 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background/60 backdrop-blur-xl">
       <AdminNavigation 
         user={user} 
         adminData={{ 
@@ -166,246 +166,243 @@ const AdminDashboard = () => {
         }} 
       />
       
-      <div className="pt-20 px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto py-8">
-          {/* Header Section */}
-          <div className="mb-10">
-            <div className="flex items-center gap-4 mb-6">
-              <div className="w-16 h-16 bg-gradient-to-br from-primary to-primary/80 rounded-2xl flex items-center justify-center shadow-lg shadow-primary/25">
-                <Shield className="h-8 w-8 text-white" />
+      <div className="pt-20 px-4 lg:px-6">
+        <div className="max-w-7xl mx-auto py-6">
+          {/* Compact Header Section */}
+          <div className="mb-6">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 bg-gradient-to-br from-primary to-primary/80 rounded-xl flex items-center justify-center shadow-lg shadow-primary/25">
+                <Shield className="h-6 w-6 text-white" />
               </div>
               <div>
-                <h1 className="text-4xl font-bold text-foreground">
-                  Control Panel
-                </h1>
-                <p className="text-muted-foreground text-lg">
+                <p className="text-muted-foreground text-sm">
                   Welcome back, {user?.user_metadata?.full_name || user?.email}
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-3">
-              <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20 px-4 py-2 text-sm">
-                <Zap className="h-4 w-4 mr-2" />
-                {profile?.role === 'admin' ? 'System Administrator' : 'Demo Administrator'}
+            <div className="flex items-center gap-2">
+              <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20 px-3 py-1 text-xs">
+                <Zap className="h-3 w-3 mr-1" />
+                {profile?.role === 'admin' ? 'System Admin' : 'Demo Admin'}
               </Badge>
-              <Badge variant="secondary" className="bg-ios-green/10 text-ios-green border-ios-green/20 px-4 py-2 text-sm">
-                <Activity className="h-4 w-4 mr-2" />
+              <Badge variant="secondary" className="bg-ios-green/10 text-ios-green border-ios-green/20 px-3 py-1 text-xs">
+                <Activity className="h-3 w-3 mr-1" />
                 Online
               </Badge>
             </div>
           </div>
 
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
-            {/* Modern Tab Navigation */}
-            <div className="glass-ios p-2 border border-border/30 shadow-lg">
-              <TabsList className="grid w-full grid-cols-2 md:grid-cols-5 lg:grid-cols-10 gap-2 bg-transparent h-auto p-2">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+            {/* Compact Tab Navigation */}
+            <div className="glass-ios p-1.5 border border-border/30 shadow-lg">
+              <TabsList className="grid w-full grid-cols-2 md:grid-cols-5 lg:grid-cols-10 gap-1 bg-transparent h-auto p-1">
                 <TabsTrigger 
                   value="overview" 
-                  className="relative px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg hover:bg-accent text-foreground border border-transparent data-[state=active]:border-primary/30"
+                  className="relative px-3 py-2 rounded-lg text-xs font-medium transition-all duration-300 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg hover:bg-accent text-foreground border border-transparent data-[state=active]:border-primary/30"
                 >
-                  <BarChart3 className="h-4 w-4 mr-2" />
+                  <BarChart3 className="h-3 w-3 mr-1" />
                   Overview
                 </TabsTrigger>
                 <TabsTrigger 
                   value="users" 
-                  className="relative px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 data-[state=active]:bg-ios-green data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-accent text-foreground border border-transparent data-[state=active]:border-ios-green/30"
+                  className="relative px-3 py-2 rounded-lg text-xs font-medium transition-all duration-300 data-[state=active]:bg-ios-green data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-accent text-foreground border border-transparent data-[state=active]:border-ios-green/30"
                 >
-                  <Users className="h-4 w-4 mr-2" />
+                  <Users className="h-3 w-3 mr-1" />
                   Users
                 </TabsTrigger>
                 <TabsTrigger 
                   value="properties" 
-                  className="relative px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 data-[state=active]:bg-ios-orange data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-accent text-foreground border border-transparent data-[state=active]:border-ios-orange/30"
+                  className="relative px-3 py-2 rounded-lg text-xs font-medium transition-all duration-300 data-[state=active]:bg-ios-orange data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-accent text-foreground border border-transparent data-[state=active]:border-ios-orange/30"
                 >
-                  <Building className="h-4 w-4 mr-2" />
+                  <Building className="h-3 w-3 mr-1" />
                   Properties
                 </TabsTrigger>
                 <TabsTrigger 
                   value="vendors" 
-                  className="relative px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 data-[state=active]:bg-ios-purple data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-accent text-foreground border border-transparent data-[state=active]:border-ios-purple/30"
+                  className="relative px-3 py-2 rounded-lg text-xs font-medium transition-all duration-300 data-[state=active]:bg-ios-purple data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-accent text-foreground border border-transparent data-[state=active]:border-ios-purple/30"
                 >
-                  <Store className="h-4 w-4 mr-2" />
+                  <Store className="h-3 w-3 mr-1" />
                   Vendors
                 </TabsTrigger>
                 <TabsTrigger 
                   value="content" 
-                  className="relative px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg hover:bg-accent text-foreground border border-transparent data-[state=active]:border-primary/30"
+                  className="relative px-3 py-2 rounded-lg text-xs font-medium transition-all duration-300 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg hover:bg-accent text-foreground border border-transparent data-[state=active]:border-primary/30"
                 >
-                  <FileText className="h-4 w-4 mr-2" />
+                  <FileText className="h-3 w-3 mr-1" />
                   Content
                 </TabsTrigger>
                 <TabsTrigger 
                   value="social" 
-                  className="relative px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 data-[state=active]:bg-ios-pink data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-accent text-foreground border border-transparent data-[state=active]:border-ios-pink/30"
+                  className="relative px-3 py-2 rounded-lg text-xs font-medium transition-all duration-300 data-[state=active]:bg-ios-pink data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-accent text-foreground border border-transparent data-[state=active]:border-ios-pink/30"
                 >
-                  <Share2 className="h-4 w-4 mr-2" />
+                  <Share2 className="h-3 w-3 mr-1" />
                   Social
                 </TabsTrigger>
                 <TabsTrigger 
                   value="filters" 
-                  className="relative px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg hover:bg-accent text-foreground border border-transparent data-[state=active]:border-primary/30"
+                  className="relative px-3 py-2 rounded-lg text-xs font-medium transition-all duration-300 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg hover:bg-accent text-foreground border border-transparent data-[state=active]:border-primary/30"
                 >
-                  <Search className="h-4 w-4 mr-2" />
+                  <Search className="h-3 w-3 mr-1" />
                   Filters
                 </TabsTrigger>
                 <TabsTrigger 
                   value="roles" 
-                  className="relative px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg hover:bg-accent text-foreground border border-transparent data-[state=active]:border-primary/30"
+                  className="relative px-3 py-2 rounded-lg text-xs font-medium transition-all duration-300 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg hover:bg-accent text-foreground border border-transparent data-[state=active]:border-primary/30"
                 >
-                  <Shield className="h-4 w-4 mr-2" />
+                  <Shield className="h-3 w-3 mr-1" />
                   Roles
                 </TabsTrigger>
                 <TabsTrigger 
                   value="feedback" 
-                  className="relative px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 data-[state=active]:bg-ios-yellow data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-accent text-foreground border border-transparent data-[state=active]:border-ios-yellow/30"
+                  className="relative px-3 py-2 rounded-lg text-xs font-medium transition-all duration-300 data-[state=active]:bg-ios-yellow data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-accent text-foreground border border-transparent data-[state=active]:border-ios-yellow/30"
                 >
-                  <Bell className="h-4 w-4 mr-2" />
+                  <Bell className="h-3 w-3 mr-1" />
                   Feedback
                 </TabsTrigger>
                 <TabsTrigger 
                   value="settings" 
-                  className="relative px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 data-[state=active]:bg-ios-red data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-accent text-foreground border border-transparent data-[state=active]:border-ios-red/30"
+                  className="relative px-3 py-2 rounded-lg text-xs font-medium transition-all duration-300 data-[state=active]:bg-ios-red data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-accent text-foreground border border-transparent data-[state=active]:border-ios-red/30"
                 >
-                  <Settings className="h-4 w-4 mr-2" />
+                  <Settings className="h-3 w-3 mr-1" />
                   Settings
                 </TabsTrigger>
               </TabsList>
             </div>
 
-            <TabsContent value="overview" className="space-y-8">
-              {/* Stats Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+            <TabsContent value="overview" className="space-y-6">
+              {/* Compact Stats Grid */}
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
                 <Card className="card-ios hover:shadow-xl hover:shadow-primary/10 transition-all duration-300">
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-                    <CardTitle className="text-sm font-medium text-muted-foreground">Total Users</CardTitle>
-                    <div className="w-10 h-10 bg-gradient-to-br from-primary to-primary/80 rounded-lg flex items-center justify-center shadow-lg shadow-primary/25">
-                      <Users className="h-5 w-5 text-white" />
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-xs font-medium text-muted-foreground">Users</CardTitle>
+                    <div className="w-8 h-8 bg-gradient-to-br from-primary to-primary/80 rounded-lg flex items-center justify-center shadow-lg shadow-primary/25">
+                      <Users className="h-4 w-4 text-white" />
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-3xl font-bold text-foreground mb-1">
+                    <div className="text-2xl font-bold text-foreground mb-1">
                       {statsLoading ? '...' : (stats?.users || 0)}
                     </div>
-                    <p className="text-xs text-muted-foreground">Registered users</p>
+                    <p className="text-xs text-muted-foreground">Registered</p>
                   </CardContent>
                 </Card>
 
                 <Card className="card-ios hover:shadow-xl hover:shadow-ios-orange/10 transition-all duration-300">
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-                    <CardTitle className="text-sm font-medium text-muted-foreground">Properties</CardTitle>
-                    <div className="w-10 h-10 bg-gradient-to-br from-ios-orange to-orange-600 rounded-lg flex items-center justify-center shadow-lg shadow-ios-orange/25">
-                      <Building className="h-5 w-5 text-white" />
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-xs font-medium text-muted-foreground">Properties</CardTitle>
+                    <div className="w-8 h-8 bg-gradient-to-br from-ios-orange to-orange-600 rounded-lg flex items-center justify-center shadow-lg shadow-ios-orange/25">
+                      <Building className="h-4 w-4 text-white" />
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-3xl font-bold text-foreground mb-1">
+                    <div className="text-2xl font-bold text-foreground mb-1">
                       {statsLoading ? '...' : (stats?.properties || 0)}
                     </div>
-                    <p className="text-xs text-muted-foreground">Listed properties</p>
+                    <p className="text-xs text-muted-foreground">Listed</p>
                   </CardContent>
                 </Card>
 
                 <Card className="card-ios hover:shadow-xl hover:shadow-ios-green/10 transition-all duration-300">
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-                    <CardTitle className="text-sm font-medium text-muted-foreground">Orders</CardTitle>
-                    <div className="w-10 h-10 bg-gradient-to-br from-ios-green to-green-600 rounded-lg flex items-center justify-center shadow-lg shadow-ios-green/25">
-                      <Package className="h-5 w-5 text-white" />
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-xs font-medium text-muted-foreground">Orders</CardTitle>
+                    <div className="w-8 h-8 bg-gradient-to-br from-ios-green to-green-600 rounded-lg flex items-center justify-center shadow-lg shadow-ios-green/25">
+                      <Package className="h-4 w-4 text-white" />
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-3xl font-bold text-foreground mb-1">
+                    <div className="text-2xl font-bold text-foreground mb-1">
                       {statsLoading ? '...' : (stats?.orders || 0)}
                     </div>
-                    <p className="text-xs text-muted-foreground">Total orders</p>
+                    <p className="text-xs text-muted-foreground">Total</p>
                   </CardContent>
                 </Card>
 
                 <Card className="card-ios hover:shadow-xl hover:shadow-ios-purple/10 transition-all duration-300">
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-                    <CardTitle className="text-sm font-medium text-muted-foreground">Vendor Requests</CardTitle>
-                    <div className="w-10 h-10 bg-gradient-to-br from-ios-purple to-purple-600 rounded-lg flex items-center justify-center shadow-lg shadow-ios-purple/25">
-                      <Store className="h-5 w-5 text-white" />
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-xs font-medium text-muted-foreground">Vendors</CardTitle>
+                    <div className="w-8 h-8 bg-gradient-to-br from-ios-purple to-purple-600 rounded-lg flex items-center justify-center shadow-lg shadow-ios-purple/25">
+                      <Store className="h-4 w-4 text-white" />
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-3xl font-bold text-foreground mb-1">
+                    <div className="text-2xl font-bold text-foreground mb-1">
                       {statsLoading ? '...' : (stats?.vendorRequests || 0)}
                     </div>
-                    <p className="text-xs text-muted-foreground">Pending approval</p>
+                    <p className="text-xs text-muted-foreground">Pending</p>
                   </CardContent>
                 </Card>
 
                 <Card className="card-ios hover:shadow-xl hover:shadow-ios-red/10 transition-all duration-300">
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-                    <CardTitle className="text-sm font-medium text-muted-foreground">System Alerts</CardTitle>
-                    <div className="w-10 h-10 bg-gradient-to-br from-ios-red to-red-600 rounded-lg flex items-center justify-center shadow-lg shadow-ios-red/25">
-                      <AlertTriangle className="h-5 w-5 text-white" />
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-xs font-medium text-muted-foreground">Alerts</CardTitle>
+                    <div className="w-8 h-8 bg-gradient-to-br from-ios-red to-red-600 rounded-lg flex items-center justify-center shadow-lg shadow-ios-red/25">
+                      <AlertTriangle className="h-4 w-4 text-white" />
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-3xl font-bold text-foreground mb-1">
+                    <div className="text-2xl font-bold text-foreground mb-1">
                       {statsLoading ? '...' : (stats?.errorLogs || 0)}
                     </div>
-                    <p className="text-xs text-muted-foreground">Unresolved errors</p>
+                    <p className="text-xs text-muted-foreground">Unresolved</p>
                   </CardContent>
                 </Card>
               </div>
 
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Quick Actions */}
                 <Card className="card-ios">
                   <CardHeader>
-                    <CardTitle className="text-xl font-semibold text-foreground flex items-center gap-3">
-                      <Zap className="h-6 w-6 text-primary" />
+                    <CardTitle className="text-lg font-semibold text-foreground flex items-center gap-2">
+                      <Zap className="h-5 w-5 text-primary" />
                       Quick Actions
                     </CardTitle>
-                    <CardDescription className="text-muted-foreground">Common administrative tasks</CardDescription>
+                    <CardDescription className="text-muted-foreground text-sm">Common administrative tasks</CardDescription>
                   </CardHeader>
-                  <CardContent className="grid grid-cols-2 gap-4">
+                  <CardContent className="grid grid-cols-2 gap-3">
                     <Button 
                       onClick={() => handleQuickAction('users')} 
                       variant="ios-green"
-                      className="h-20 p-4 flex flex-col items-center space-y-2"
+                      className="h-16 p-3 flex flex-col items-center space-y-1"
                     >
-                      <Users className="h-6 w-6" />
-                      <span className="text-sm font-medium">Manage Users</span>
+                      <Users className="h-5 w-5" />
+                      <span className="text-xs font-medium">Users</span>
                     </Button>
                     <Button 
                       onClick={() => handleQuickAction('content')} 
                       variant="ios"
-                      className="h-20 p-4 flex flex-col items-center space-y-2"
+                      className="h-16 p-3 flex flex-col items-center space-y-1"
                     >
-                      <FileText className="h-6 w-6" />
-                      <span className="text-sm font-medium">Content & SEO</span>
+                      <FileText className="h-5 w-5" />
+                      <span className="text-xs font-medium">Content</span>
                     </Button>
                     <Button 
                       onClick={() => handleQuickAction('social')} 
-                      className="h-20 p-4 flex flex-col items-center space-y-2 bg-gradient-to-r from-ios-pink to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white shadow-lg shadow-ios-pink/25"
+                      className="h-16 p-3 flex flex-col items-center space-y-1 bg-gradient-to-r from-ios-pink to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white shadow-lg shadow-ios-pink/25"
                     >
-                      <Share2 className="h-6 w-6" />
-                      <span className="text-sm font-medium">Social Media</span>
+                      <Share2 className="h-5 w-5" />
+                      <span className="text-xs font-medium">Social</span>
                     </Button>
                     <Button 
                       onClick={() => handleQuickAction('filters')} 
-                      className="h-20 p-4 flex flex-col items-center space-y-2 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary text-white shadow-lg"
+                      className="h-16 p-3 flex flex-col items-center space-y-1 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary text-white shadow-lg"
                     >
-                      <Search className="h-6 w-6" />
-                      <span className="text-sm font-medium">Search Filters</span>
+                      <Search className="h-5 w-5" />
+                      <span className="text-xs font-medium">Filters</span>
                     </Button>
                     <Button 
                       onClick={() => handleQuickAction('vendors')} 
-                      className="h-20 p-4 flex flex-col items-center space-y-2 bg-gradient-to-r from-ios-purple to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white shadow-lg shadow-ios-purple/25"
+                      className="h-16 p-3 flex flex-col items-center space-y-1 bg-gradient-to-r from-ios-purple to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white shadow-lg shadow-ios-purple/25"
                     >
-                      <Store className="h-6 w-6" />
-                      <span className="text-sm font-medium">Vendors</span>
+                      <Store className="h-5 w-5" />
+                      <span className="text-xs font-medium">Vendors</span>
                     </Button>
                     <Button 
                       onClick={() => handleQuickAction('settings')} 
                       variant="ios-red"
-                      className="h-20 p-4 flex flex-col items-center space-y-2"
+                      className="h-16 p-3 flex flex-col items-center space-y-1"
                     >
-                      <Settings className="h-6 w-6" />
-                      <span className="text-sm font-medium">Settings</span>
+                      <Settings className="h-5 w-5" />
+                      <span className="text-xs font-medium">Settings</span>
                     </Button>
                   </CardContent>
                 </Card>
@@ -413,52 +410,52 @@ const AdminDashboard = () => {
                 {/* System Status */}
                 <Card className="card-ios">
                   <CardHeader>
-                    <CardTitle className="text-xl font-semibold text-foreground flex items-center gap-3">
-                      <Activity className="h-6 w-6 text-ios-green" />
+                    <CardTitle className="text-lg font-semibold text-foreground flex items-center gap-2">
+                      <Activity className="h-5 w-5 text-ios-green" />
                       System Status
                     </CardTitle>
-                    <CardDescription className="text-muted-foreground">Platform health and monitoring</CardDescription>
+                    <CardDescription className="text-muted-foreground text-sm">Platform health monitoring</CardDescription>
                   </CardHeader>
-                  <CardContent className="space-y-6">
-                    <div className="flex items-center justify-between p-4 bg-ios-green/10 rounded-xl border border-ios-green/20">
-                      <span className="text-sm flex items-center gap-3 text-foreground font-medium">
-                        <div className="w-3 h-3 bg-ios-green rounded-full animate-pulse"></div>
-                        <Activity className="h-4 w-4" />
+                  <CardContent className="space-y-4">
+                    <div className="flex items-center justify-between p-3 bg-ios-green/10 rounded-xl border border-ios-green/20">
+                      <span className="text-sm flex items-center gap-2 text-foreground font-medium">
+                        <div className="w-2 h-2 bg-ios-green rounded-full animate-pulse"></div>
+                        <Activity className="h-3 w-3" />
                         System Status
                       </span>
-                      <Badge className="bg-ios-green text-white border-0">Online</Badge>
+                      <Badge className="bg-ios-green text-white border-0 text-xs">Online</Badge>
                     </div>
-                    <div className="flex items-center justify-between p-4 bg-primary/10 rounded-xl border border-primary/20">
-                      <span className="text-sm flex items-center gap-3 text-foreground font-medium">
-                        <div className="w-3 h-3 bg-primary rounded-full"></div>
-                        <Database className="h-4 w-4" />
+                    <div className="flex items-center justify-between p-3 bg-primary/10 rounded-xl border border-primary/20">
+                      <span className="text-sm flex items-center gap-2 text-foreground font-medium">
+                        <div className="w-2 h-2 bg-primary rounded-full"></div>
+                        <Database className="h-3 w-3" />
                         Database
                       </span>
-                      <Badge className="bg-primary text-primary-foreground border-0">Healthy</Badge>
+                      <Badge className="bg-primary text-primary-foreground border-0 text-xs">Healthy</Badge>
                     </div>
-                    <div className="flex items-center justify-between p-4 bg-ios-green/10 rounded-xl border border-ios-green/20">
-                      <span className="text-sm flex items-center gap-3 text-foreground font-medium">
-                        <div className="w-3 h-3 bg-ios-green rounded-full"></div>
-                        <Globe className="h-4 w-4" />
+                    <div className="flex items-center justify-between p-3 bg-ios-green/10 rounded-xl border border-ios-green/20">
+                      <span className="text-sm flex items-center gap-2 text-foreground font-medium">
+                        <div className="w-2 h-2 bg-ios-green rounded-full"></div>
+                        <Globe className="h-3 w-3" />
                         API Status
                       </span>
-                      <Badge className="bg-ios-green text-white border-0">Operational</Badge>
+                      <Badge className="bg-ios-green text-white border-0 text-xs">Operational</Badge>
                     </div>
-                    <div className="flex items-center justify-between p-4 bg-primary/10 rounded-xl border border-primary/20">
-                      <span className="text-sm flex items-center gap-3 text-foreground font-medium">
-                        <div className="w-3 h-3 bg-primary rounded-full"></div>
-                        <Lock className="h-4 w-4" />
+                    <div className="flex items-center justify-between p-3 bg-primary/10 rounded-xl border border-primary/20">
+                      <span className="text-sm flex items-center gap-2 text-foreground font-medium">
+                        <div className="w-2 h-2 bg-primary rounded-full"></div>
+                        <Lock className="h-3 w-3" />
                         Security
                       </span>
-                      <Badge className="bg-primary text-primary-foreground border-0">Protected</Badge>
+                      <Badge className="bg-primary text-primary-foreground border-0 text-xs">Protected</Badge>
                     </div>
-                    <div className="flex items-center justify-between p-4 bg-ios-yellow/10 rounded-xl border border-ios-yellow/20">
-                      <span className="text-sm flex items-center gap-3 text-foreground font-medium">
-                        <div className="w-3 h-3 bg-ios-yellow rounded-full"></div>
-                        <Bell className="h-4 w-4" />
+                    <div className="flex items-center justify-between p-3 bg-ios-yellow/10 rounded-xl border border-ios-yellow/20">
+                      <span className="text-sm flex items-center gap-2 text-foreground font-medium">
+                        <div className="w-2 h-2 bg-ios-yellow rounded-full"></div>
+                        <Bell className="h-3 w-3" />
                         Alerts
                       </span>
-                      <Badge className="bg-ios-yellow text-white border-0">{stats?.errorLogs || 0} Pending</Badge>
+                      <Badge className="bg-ios-yellow text-white border-0 text-xs">{stats?.errorLogs || 0} Pending</Badge>
                     </div>
                   </CardContent>
                 </Card>
