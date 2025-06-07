@@ -40,10 +40,11 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
       fullName: "Full Name",
       signinButton: "Sign In",
       signupButton: "Create Account",
-      switchToSignup: "Don't have an account? Sign up",
-      switchToSignin: "Already have an account? Sign in",
+      fillDemo: "Fill Demo Data",
       passwordMismatch: "Passwords don't match",
-      fillAllFields: "Please fill in all required fields"
+      fillAllFields: "Please fill in all required fields",
+      emailInvalid: "Please enter a valid email address",
+      passwordTooShort: "Password must be at least 6 characters"
     },
     id: {
       signin: "Masuk",
@@ -54,10 +55,11 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
       fullName: "Nama Lengkap",
       signinButton: "Masuk",
       signupButton: "Buat Akun",
-      switchToSignup: "Belum punya akun? Daftar",
-      switchToSignin: "Sudah punya akun? Masuk",
+      fillDemo: "Isi Data Demo",
       passwordMismatch: "Kata sandi tidak cocok",
-      fillAllFields: "Harap isi semua bidang yang diperlukan"
+      fillAllFields: "Harap isi semua bidang yang diperlukan",
+      emailInvalid: "Masukkan alamat email yang valid",
+      passwordTooShort: "Kata sandi minimal 6 karakter"
     }
   };
 
@@ -66,23 +68,49 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
   if (!isOpen) return null;
 
   const isValidEmail = (email: string): boolean => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailRegex.test(email.trim());
+  };
+
+  const fillDemoData = () => {
+    if (activeTab === "signup") {
+      setSignUpData({
+        email: "demo@example.com",
+        password: "Demo123456",
+        confirmPassword: "Demo123456",
+        full_name: "John Doe"
+      });
+    } else {
+      setSignInData({
+        email: "demo@example.com",
+        password: "demo123456"
+      });
+    }
   };
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    if (!signInData.email.trim()) {
+      alert(currentText.fillAllFields);
+      return;
+    }
+    
     if (!isValidEmail(signInData.email)) {
-      alert("Please enter a valid email address");
+      alert(currentText.emailInvalid);
+      return;
+    }
+    
+    if (!signInData.password) {
+      alert(currentText.fillAllFields);
       return;
     }
     
     setIsLoading(true);
     
     try {
-      console.log('Attempting sign in with:', signInData.email);
-      const { success } = await signIn(signInData.email, signInData.password);
+      console.log('Attempting sign in with:', signInData.email.trim());
+      const { success } = await signIn(signInData.email.trim(), signInData.password);
       if (success) {
         onClose();
         setSignInData({ email: "", password: "" });
@@ -99,8 +127,13 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
     
     console.log('Sign up data:', signUpData);
     
+    if (!signUpData.email.trim() || !signUpData.password || !signUpData.full_name.trim()) {
+      alert(currentText.fillAllFields);
+      return;
+    }
+    
     if (!isValidEmail(signUpData.email)) {
-      alert("Please enter a valid email address");
+      alert(currentText.emailInvalid);
       return;
     }
     
@@ -109,27 +142,19 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
       return;
     }
 
-    if (!signUpData.email || !signUpData.password || !signUpData.full_name) {
-      alert(currentText.fillAllFields);
-      return;
-    }
-
     if (signUpData.password.length < 6) {
-      alert("Password must be at least 6 characters long");
+      alert(currentText.passwordTooShort);
       return;
     }
 
     setIsLoading(true);
     
     try {
-      console.log('Attempting sign up with default role: general_user');
+      console.log('Attempting sign up with clean email:', signUpData.email.trim());
       const { success, error } = await signUp(
-        signUpData.email, 
+        signUpData.email.trim(), 
         signUpData.password, 
-        signUpData.full_name,
-        {
-          role: 'general_user'
-        }
+        signUpData.full_name.trim()
       );
       
       if (success) {
@@ -170,6 +195,17 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
               <TabsTrigger value="signup">{currentText.signup}</TabsTrigger>
             </TabsList>
             
+            <div className="mt-4">
+              <Button 
+                variant="outline" 
+                onClick={fillDemoData}
+                disabled={isLoading}
+                className="w-full mb-4"
+              >
+                {currentText.fillDemo}
+              </Button>
+            </div>
+            
             <TabsContent value="signin" className="mt-6">
               <form onSubmit={handleSignIn} className="space-y-4">
                 <div>
@@ -180,6 +216,7 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
                     value={signInData.email}
                     onChange={(e) => setSignInData(prev => ({ ...prev, email: e.target.value }))}
                     required
+                    disabled={isLoading}
                   />
                 </div>
                 <div>
@@ -190,6 +227,7 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
                     value={signInData.password}
                     onChange={(e) => setSignInData(prev => ({ ...prev, password: e.target.value }))}
                     required
+                    disabled={isLoading}
                   />
                 </div>
                 <Button type="submit" className="w-full" disabled={isLoading}>
@@ -208,6 +246,7 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
                     value={signUpData.email}
                     onChange={(e) => setSignUpData(prev => ({ ...prev, email: e.target.value }))}
                     required
+                    disabled={isLoading}
                   />
                 </div>
                 <div>
@@ -218,6 +257,7 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
                     value={signUpData.full_name}
                     onChange={(e) => setSignUpData(prev => ({ ...prev, full_name: e.target.value }))}
                     required
+                    disabled={isLoading}
                   />
                 </div>
                 <div>
@@ -229,6 +269,7 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
                     onChange={(e) => setSignUpData(prev => ({ ...prev, password: e.target.value }))}
                     required
                     minLength={6}
+                    disabled={isLoading}
                   />
                 </div>
                 <div>
@@ -239,6 +280,7 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
                     value={signUpData.confirmPassword}
                     onChange={(e) => setSignUpData(prev => ({ ...prev, confirmPassword: e.target.value }))}
                     required
+                    disabled={isLoading}
                   />
                 </div>
                 <Button type="submit" className="w-full" disabled={isLoading}>
