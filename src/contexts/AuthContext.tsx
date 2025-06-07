@@ -36,6 +36,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [initialized, setInitialized] = useState(false);
   const { showError, showSuccess } = useAlert();
 
   console.log('AuthProvider rendering, loading:', loading, 'user:', user?.email);
@@ -44,6 +45,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     let mounted = true;
 
     const initializeAuth = async () => {
+      if (initialized) return;
+      
       try {
         console.log('Initializing auth...');
         
@@ -52,15 +55,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (demoUser) {
           console.log('Found demo user, using demo mode');
           const mockUser = JSON.parse(demoUser) as User;
-          setUser(mockUser);
-          setProfile({
-            id: mockUser.id,
-            email: mockUser.email,
-            full_name: mockUser.user_metadata?.full_name || 'Demo User',
-            role: 'general_user'
-          });
           if (mounted) {
+            setUser(mockUser);
+            setProfile({
+              id: mockUser.id,
+              email: mockUser.email,
+              full_name: mockUser.user_metadata?.full_name || 'Demo User',
+              role: 'general_user'
+            });
             setLoading(false);
+            setInitialized(true);
           }
           return;
         }
@@ -69,6 +73,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         
         if (error) {
           console.error('Error getting session:', error);
+          if (mounted) {
+            setLoading(false);
+            setInitialized(true);
+          }
           return;
         }
 
@@ -78,12 +86,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           setUser(session.user);
           await fetchProfile(session.user.id);
         }
+        
+        if (mounted) {
+          setLoading(false);
+          setInitialized(true);
+        }
       } catch (error) {
         console.error('Auth initialization error:', error);
-      } finally {
         if (mounted) {
-          console.log('Setting loading to false after initialization');
           setLoading(false);
+          setInitialized(true);
         }
       }
     };
@@ -92,7 +104,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       async (event, session) => {
         console.log('Auth state changed:', event, session?.user?.email || 'No user');
         
-        if (!mounted) return;
+        if (!mounted || !initialized) return;
 
         if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
           if (session?.user) {
@@ -102,11 +114,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         } else if (event === 'SIGNED_OUT') {
           setUser(null);
           setProfile(null);
-          localStorage.removeItem('demo_user'); // Clear demo user on signout
-        }
-        
-        if (mounted) {
-          setLoading(false);
+          localStorage.removeItem('demo_user');
         }
       }
     );
@@ -117,7 +125,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       mounted = false;
       subscription.unsubscribe();
     };
-  }, []);
+  }, [initialized]);
 
   const fetchProfile = async (userId: string) => {
     try {
@@ -146,7 +154,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signIn = async (email: string, password: string) => {
     try {
-      setLoading(true);
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -162,14 +169,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } catch (error: any) {
       showError('Sign In Error', error.message);
       return { error, success: false };
-    } finally {
-      setLoading(false);
     }
   };
 
   const signUp = async (email: string, password: string, fullName: string) => {
     try {
-      setLoading(true);
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -190,23 +194,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } catch (error: any) {
       showError('Sign Up Error', error.message);
       return { error, success: false };
-    } finally {
-      setLoading(false);
     }
   };
 
   const signOut = async () => {
     try {
-      setLoading(true);
-      localStorage.removeItem('demo_user'); // Clear demo user
+      localStorage.removeItem('demo_user');
       await supabase.auth.signOut();
       setUser(null);
       setProfile(null);
       showSuccess('Signed Out', 'You have been signed out successfully.');
     } catch (error: any) {
       showError('Sign Out Error', error.message);
-    } finally {
-      setLoading(false);
     }
   };
 
