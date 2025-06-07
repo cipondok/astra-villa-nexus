@@ -1,9 +1,8 @@
-
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSearchParams } from "react-router-dom";
 import EnhancedNavigation from "@/components/navigation/EnhancedNavigation";
-import AuthModal from "@/components/auth/AuthModal";
+import EnhancedAuthModal from "@/components/auth/EnhancedAuthModal";
 import PropertyListingsSection from "@/components/PropertyListingsSection";
 import ModernSearchPanel from "@/components/ModernSearchPanel";
 import ParticleEffect from "@/components/ParticleEffect";
@@ -100,8 +99,8 @@ const Index = () => {
         <PropertyListingsSection language={language} />
       </div>
 
-      {/* Auth Modal */}
-      <AuthModal
+      {/* Enhanced Auth Modal */}
+      <EnhancedAuthModal
         isOpen={isAuthModalOpen}
         onClose={() => setIsAuthModalOpen(false)}
         language={language}

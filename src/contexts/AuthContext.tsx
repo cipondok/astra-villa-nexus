@@ -52,62 +52,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       try {
         console.log('Initializing auth...');
         
-        // Check for demo users first
-        const demoUser = localStorage.getItem('demo_user');
-        const demoAgent = localStorage.getItem('demo_agent');
-        const demoAdmin = localStorage.getItem('demo_admin');
-        
-        if (demoAdmin) {
-          console.log('Found demo admin, using demo mode');
-          const mockUser = JSON.parse(demoAdmin) as User;
-          if (mounted) {
-            setUser(mockUser);
-            setProfile({
-              id: mockUser.id,
-              email: mockUser.email,
-              full_name: mockUser.user_metadata?.full_name || 'Demo Admin',
-              role: 'admin'
-            });
-            setLoading(false);
-            setInitialized(true);
-          }
-          return;
-        }
-        
-        if (demoAgent) {
-          console.log('Found demo agent, using demo mode');
-          const mockUser = JSON.parse(demoAgent) as User;
-          if (mounted) {
-            setUser(mockUser);
-            setProfile({
-              id: mockUser.id,
-              email: mockUser.email,
-              full_name: mockUser.user_metadata?.full_name || 'Demo Agent',
-              role: 'agent'
-            });
-            setLoading(false);
-            setInitialized(true);
-          }
-          return;
-        }
-        
-        if (demoUser) {
-          console.log('Found demo user, using demo mode');
-          const mockUser = JSON.parse(demoUser) as User;
-          if (mounted) {
-            setUser(mockUser);
-            setProfile({
-              id: mockUser.id,
-              email: mockUser.email,
-              full_name: mockUser.user_metadata?.full_name || 'Demo User',
-              role: 'general_user'
-            });
-            setLoading(false);
-            setInitialized(true);
-          }
-          return;
-        }
-        
         const { data: { session }, error } = await supabase.auth.getSession();
         
         if (error) {
@@ -153,9 +97,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         } else if (event === 'SIGNED_OUT') {
           setUser(null);
           setProfile(null);
-          localStorage.removeItem('demo_user');
-          localStorage.removeItem('demo_agent');
-          localStorage.removeItem('demo_admin');
         }
       }
     );
@@ -275,7 +216,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         options: {
           data: {
             full_name: fullName
-          }
+          },
+          emailRedirectTo: `${window.location.origin}/dashboard`
         }
       });
 
@@ -294,9 +236,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signOut = async () => {
     try {
-      localStorage.removeItem('demo_user');
-      localStorage.removeItem('demo_agent');
-      localStorage.removeItem('demo_admin');
       await supabase.auth.signOut();
       setUser(null);
       setProfile(null);
@@ -343,8 +282,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     signUp,
     signOut,
     updateProfile,
-    demoAgentLogin,
-    demoAdminLogin,
   };
 
   console.log('AuthProvider providing value, loading:', loading, 'isAuthenticated:', !!user);

@@ -17,6 +17,10 @@ import SearchFiltersManagement from "@/components/admin/SearchFiltersManagement"
 import TrendingTopicsManagement from "@/components/admin/TrendingTopicsManagement";
 import SystemSettings from "@/components/admin/SystemSettings";
 import VendorManagement from "@/components/admin/VendorManagement";
+import UserRolesManagement from "@/components/admin/UserRolesManagement";
+import FeedbackManagement from "@/components/admin/FeedbackManagement";
+import ContactManagement from "@/components/admin/ContactManagement";
+import PropertySurveyManagement from "@/components/admin/PropertySurveyManagement";
 import { 
   Users, 
   Building, 
@@ -144,7 +148,7 @@ const AdminDashboard = () => {
         user={user} 
         adminData={{ 
           is_super_admin: true, 
-          role: { name: isDemoAdmin ? 'Demo Admin' : 'Admin' } 
+          role: { name: profile?.role === 'admin' ? 'Admin' : 'Demo Admin' } 
         }} 
       />
       
@@ -158,12 +162,12 @@ const AdminDashboard = () => {
               Welcome back, {user?.user_metadata?.full_name || user?.email}
             </p>
             <Badge variant="secondary" className="mt-2 bg-blue-600 text-white">
-              {isDemoAdmin ? 'Demo Admin' : 'Admin'}
+              {profile?.role === 'admin' ? 'Admin' : 'Demo Admin'}
             </Badge>
           </div>
 
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-            <TabsList className="grid w-full grid-cols-4 lg:grid-cols-8 bg-white/10 backdrop-blur-md">
+            <TabsList className="grid w-full grid-cols-4 lg:grid-cols-10 bg-white/10 backdrop-blur-md">
               <TabsTrigger value="overview" className="text-white data-[state=active]:bg-blue-600">Overview</TabsTrigger>
               <TabsTrigger value="users" className="text-white data-[state=active]:bg-blue-600">Users</TabsTrigger>
               <TabsTrigger value="properties" className="text-white data-[state=active]:bg-blue-600">Properties</TabsTrigger>
@@ -171,6 +175,8 @@ const AdminDashboard = () => {
               <TabsTrigger value="content" className="text-white data-[state=active]:bg-blue-600">Content</TabsTrigger>
               <TabsTrigger value="social" className="text-white data-[state=active]:bg-blue-600">Social</TabsTrigger>
               <TabsTrigger value="filters" className="text-white data-[state=active]:bg-blue-600">Filters</TabsTrigger>
+              <TabsTrigger value="roles" className="text-white data-[state=active]:bg-blue-600">Roles</TabsTrigger>
+              <TabsTrigger value="feedback" className="text-white data-[state=active]:bg-blue-600">Feedback</TabsTrigger>
               <TabsTrigger value="settings" className="text-white data-[state=active]:bg-blue-600">Settings</TabsTrigger>
             </TabsList>
 
@@ -368,6 +374,22 @@ const AdminDashboard = () => {
 
             <TabsContent value="filters">
               <SearchFiltersManagement />
+            </TabsContent>
+
+            <TabsContent value="roles">
+              <UserRolesManagement />
+            </TabsContent>
+
+            <TabsContent value="feedback">
+              <FeedbackManagement />
+            </TabsContent>
+
+            <TabsContent value="contact">
+              <ContactManagement />
+            </TabsContent>
+
+            <TabsContent value="surveys">
+              <PropertySurveyManagement />
             </TabsContent>
 
             <TabsContent value="settings">
