@@ -168,6 +168,36 @@ export type Database = {
         }
         Relationships: []
       }
+      analytics_settings: {
+        Row: {
+          configuration: Json | null
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          tool_name: string
+          tracking_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          configuration?: Json | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          tool_name: string
+          tracking_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          configuration?: Json | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          tool_name?: string
+          tracking_id?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       billing_plans: {
         Row: {
           billing_cycle: string | null
@@ -207,10 +237,15 @@ export type Database = {
       cms_content: {
         Row: {
           author_id: string | null
+          category_id: string | null
           content: Json | null
           created_at: string | null
+          featured_image: string | null
           id: string
           meta_data: Json | null
+          seo_description: string | null
+          seo_keywords: string[] | null
+          seo_title: string | null
           slug: string | null
           status: string | null
           title: string
@@ -219,10 +254,15 @@ export type Database = {
         }
         Insert: {
           author_id?: string | null
+          category_id?: string | null
           content?: Json | null
           created_at?: string | null
+          featured_image?: string | null
           id?: string
           meta_data?: Json | null
+          seo_description?: string | null
+          seo_keywords?: string[] | null
+          seo_title?: string | null
           slug?: string | null
           status?: string | null
           title: string
@@ -231,10 +271,15 @@ export type Database = {
         }
         Update: {
           author_id?: string | null
+          category_id?: string | null
           content?: Json | null
           created_at?: string | null
+          featured_image?: string | null
           id?: string
           meta_data?: Json | null
+          seo_description?: string | null
+          seo_keywords?: string[] | null
+          seo_title?: string | null
           slug?: string | null
           status?: string | null
           title?: string
@@ -245,6 +290,91 @@ export type Database = {
           {
             foreignKeyName: "cms_content_author_id_fkey"
             columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      content_categories: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          parent_id: string | null
+          slug: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          parent_id?: string | null
+          slug: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          parent_id?: string | null
+          slug?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "content_categories_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "content_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      feedback_monitoring: {
+        Row: {
+          content: string
+          created_at: string | null
+          feedback_type: string
+          id: string
+          priority: string | null
+          rating: number | null
+          status: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          feedback_type: string
+          id?: string
+          priority?: string | null
+          rating?: number | null
+          status?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          feedback_type?: string
+          id?: string
+          priority?: string | null
+          rating?: number | null
+          status?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "feedback_monitoring_user_id_fkey"
+            columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
@@ -505,6 +635,78 @@ export type Database = {
           },
         ]
       }
+      search_filters: {
+        Row: {
+          category: string | null
+          created_at: string | null
+          display_order: number | null
+          filter_name: string
+          filter_options: Json | null
+          filter_type: string
+          id: string
+          is_active: boolean | null
+          updated_at: string | null
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string | null
+          display_order?: number | null
+          filter_name: string
+          filter_options?: Json | null
+          filter_type: string
+          id?: string
+          is_active?: boolean | null
+          updated_at?: string | null
+        }
+        Update: {
+          category?: string | null
+          created_at?: string | null
+          display_order?: number | null
+          filter_name?: string
+          filter_options?: Json | null
+          filter_type?: string
+          id?: string
+          is_active?: boolean | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      social_media_settings: {
+        Row: {
+          account_name: string | null
+          api_credentials: Json | null
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          platform: string
+          posting_settings: Json | null
+          profile_url: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          account_name?: string | null
+          api_credentials?: Json | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          platform: string
+          posting_settings?: Json | null
+          profile_url?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          account_name?: string | null
+          api_credentials?: Json | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          platform?: string
+          posting_settings?: Json | null
+          profile_url?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       system_error_logs: {
         Row: {
           created_at: string | null
@@ -585,6 +787,36 @@ export type Database = {
           key?: string
           updated_at?: string | null
           value?: Json | null
+        }
+        Relationships: []
+      }
+      trending_topics: {
+        Row: {
+          category: string | null
+          created_at: string | null
+          date_tracked: string | null
+          id: string
+          related_keywords: string[] | null
+          topic: string
+          trend_score: number | null
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string | null
+          date_tracked?: string | null
+          id?: string
+          related_keywords?: string[] | null
+          topic: string
+          trend_score?: number | null
+        }
+        Update: {
+          category?: string | null
+          created_at?: string | null
+          date_tracked?: string | null
+          id?: string
+          related_keywords?: string[] | null
+          topic?: string
+          trend_score?: number | null
         }
         Relationships: []
       }
@@ -775,6 +1007,53 @@ export type Database = {
           {
             foreignKeyName: "vendor_requests_user_id_fkey"
             columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vendor_services: {
+        Row: {
+          availability: Json | null
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          price_range: Json | null
+          service_category: string | null
+          service_description: string | null
+          service_name: string
+          updated_at: string | null
+          vendor_id: string | null
+        }
+        Insert: {
+          availability?: Json | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          price_range?: Json | null
+          service_category?: string | null
+          service_description?: string | null
+          service_name: string
+          updated_at?: string | null
+          vendor_id?: string | null
+        }
+        Update: {
+          availability?: Json | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          price_range?: Json | null
+          service_category?: string | null
+          service_description?: string | null
+          service_name?: string
+          updated_at?: string | null
+          vendor_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendor_services_vendor_id_fkey"
+            columns: ["vendor_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
