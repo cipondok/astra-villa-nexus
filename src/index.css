@@ -8,6 +8,18 @@
   --primary-color: #3b82f6;
   --primary-color-rgb: 59, 130, 246;
   --primary-color-hover: #2563eb;
+  
+  /* Titanium Blue Color Palette */
+  --blue-titanium-light: 207 89% 86%;
+  --blue-titanium: 217 91% 60%;
+  --blue-titanium-dark: 217 91% 45%;
+  
+  /* Blue Sky variants for gradients */
+  --blue-sky-light: 199 89% 48%;
+  --blue-sky: 217 91% 60%;
+  --blue-sky-dark: 217 91% 45%;
+  --blue-sky-transparent: 217 91% 60% / 0.1;
+  --blue-sky-light-transparent: 199 89% 48% / 0.1;
 }
 
 @layer base {
@@ -37,6 +49,16 @@
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
+    
+    /* Sidebar variables */
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 10.6% 64.9%;
   }
 
   .dark {
@@ -64,6 +86,16 @@
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
+    
+    /* Dark mode sidebar */
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 0 0% 98%;
+    --sidebar-primary-foreground: 240 5.9% 10%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 10.6% 64.9%;
   }
 }
 
@@ -152,4 +184,32 @@
 
 .dark .text-gray-400 {
   color: rgb(71 85 105);
+}
+
+/* Modern Admin Panel Animations */
+@keyframes admin-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(59, 130, 246, 0.4);
+  }
+}
+
+.admin-glow {
+  animation: admin-glow 3s ease-in-out infinite;
+}
+
+/* Titanium Blue gradient backgrounds */
+.bg-titanium-gradient {
+  background: linear-gradient(135deg, 
+    hsl(var(--blue-titanium)) 0%, 
+    hsl(var(--blue-titanium-dark)) 100%);
+}
+
+.bg-sky-gradient {
+  background: linear-gradient(135deg, 
+    hsl(var(--blue-sky-light)) 0%, 
+    hsl(var(--blue-sky)) 50%,
+    hsl(var(--blue-sky-dark)) 100%);
 }
