@@ -1,3 +1,4 @@
+
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -169,22 +170,74 @@ const AdminDashboard = () => {
           </div>
 
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-            <TabsList className="grid w-full grid-cols-4 lg:grid-cols-10 bg-card border-border">
-              <TabsTrigger value="overview" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Overview</TabsTrigger>
-              <TabsTrigger value="users" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Users</TabsTrigger>
-              <TabsTrigger value="properties" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Properties</TabsTrigger>
-              <TabsTrigger value="vendors" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Vendors</TabsTrigger>
-              <TabsTrigger value="content" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Content</TabsTrigger>
-              <TabsTrigger value="social" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Social</TabsTrigger>
-              <TabsTrigger value="filters" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Filters</TabsTrigger>
-              <TabsTrigger value="roles" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Roles</TabsTrigger>
-              <TabsTrigger value="feedback" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Feedback</TabsTrigger>
-              <TabsTrigger value="settings" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Settings</TabsTrigger>
-            </TabsList>
+            <div className="bg-card rounded-lg p-2 shadow-sm border border-border">
+              <TabsList className="grid w-full grid-cols-2 md:grid-cols-5 lg:grid-cols-10 gap-1 bg-transparent h-auto">
+                <TabsTrigger 
+                  value="overview" 
+                  className="whitespace-nowrap text-xs md:text-sm px-2 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm"
+                >
+                  Overview
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="users" 
+                  className="whitespace-nowrap text-xs md:text-sm px-2 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm"
+                >
+                  Users
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="properties" 
+                  className="whitespace-nowrap text-xs md:text-sm px-2 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm"
+                >
+                  Properties
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="vendors" 
+                  className="whitespace-nowrap text-xs md:text-sm px-2 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm"
+                >
+                  Vendors
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="content" 
+                  className="whitespace-nowrap text-xs md:text-sm px-2 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm"
+                >
+                  Content
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="social" 
+                  className="whitespace-nowrap text-xs md:text-sm px-2 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm"
+                >
+                  Social
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="filters" 
+                  className="whitespace-nowrap text-xs md:text-sm px-2 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm"
+                >
+                  Filters
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="roles" 
+                  className="whitespace-nowrap text-xs md:text-sm px-2 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm"
+                >
+                  Roles
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="feedback" 
+                  className="whitespace-nowrap text-xs md:text-sm px-2 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm"
+                >
+                  Feedback
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="settings" 
+                  className="whitespace-nowrap text-xs md:text-sm px-2 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm"
+                >
+                  Settings
+                </TabsTrigger>
+              </TabsList>
+            </div>
 
             <TabsContent value="overview" className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-                <Card className="bg-card border-border">
+                <Card className="bg-card border-border hover:shadow-md transition-shadow">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium text-card-foreground">Total Users</CardTitle>
                     <Users className="h-4 w-4 text-primary" />
@@ -197,7 +250,7 @@ const AdminDashboard = () => {
                   </CardContent>
                 </Card>
 
-                <Card className="bg-card border-border">
+                <Card className="bg-card border-border hover:shadow-md transition-shadow">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium text-card-foreground">Properties</CardTitle>
                     <Building className="h-4 w-4 text-primary" />
@@ -210,7 +263,7 @@ const AdminDashboard = () => {
                   </CardContent>
                 </Card>
 
-                <Card className="bg-card border-border">
+                <Card className="bg-card border-border hover:shadow-md transition-shadow">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium text-card-foreground">Orders</CardTitle>
                     <Package className="h-4 w-4 text-primary" />
@@ -223,7 +276,7 @@ const AdminDashboard = () => {
                   </CardContent>
                 </Card>
 
-                <Card className="bg-card border-border">
+                <Card className="bg-card border-border hover:shadow-md transition-shadow">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium text-card-foreground">Vendor Requests</CardTitle>
                     <Store className="h-4 w-4 text-primary" />
@@ -236,7 +289,7 @@ const AdminDashboard = () => {
                   </CardContent>
                 </Card>
 
-                <Card className="bg-card border-border">
+                <Card className="bg-card border-border hover:shadow-md transition-shadow">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium text-card-foreground">System Errors</CardTitle>
                     <AlertTriangle className="h-4 w-4 text-destructive" />
@@ -259,95 +312,95 @@ const AdminDashboard = () => {
                   <CardContent className="grid grid-cols-2 gap-4">
                     <Button 
                       onClick={() => handleQuickAction('users')} 
-                      className="h-auto p-4 flex flex-col items-center space-y-2 bg-primary hover:bg-primary/90"
-                      variant="outline"
+                      className="h-auto p-4 flex flex-col items-center space-y-2 bg-primary hover:bg-primary/90 text-primary-foreground"
+                      variant="default"
                     >
                       <Users className="h-6 w-6" />
                       <span className="text-sm">Manage Users</span>
                     </Button>
                     <Button 
                       onClick={() => handleQuickAction('content')} 
-                      className="h-auto p-4 flex flex-col items-center space-y-2 bg-primary hover:bg-primary/90"
-                      variant="outline"
+                      className="h-auto p-4 flex flex-col items-center space-y-2 bg-primary hover:bg-primary/90 text-primary-foreground"
+                      variant="default"
                     >
                       <FileText className="h-6 w-6" />
                       <span className="text-sm">Content & SEO</span>
                     </Button>
                     <Button 
                       onClick={() => handleQuickAction('social')} 
-                      className="h-auto p-4 flex flex-col items-center space-y-2 bg-primary hover:bg-primary/90"
-                      variant="outline"
+                      className="h-auto p-4 flex flex-col items-center space-y-2 bg-primary hover:bg-primary/90 text-primary-foreground"
+                      variant="default"
                     >
                       <Share2 className="h-6 w-6" />
                       <span className="text-sm">Social Media</span>
                     </Button>
                     <Button 
-                      onClick={() => handleQuickAction('trending')} 
-                      className="h-auto p-4 flex flex-col items-center space-y-2 bg-primary hover:bg-primary/90"
-                      variant="outline"
-                    >
-                      <TrendingUp className="h-6 w-6" />
-                      <span className="text-sm">Trending Topics</span>
-                    </Button>
-                    <Button 
                       onClick={() => handleQuickAction('filters')} 
-                      className="h-auto p-4 flex flex-col items-center space-y-2 bg-primary hover:bg-primary/90"
-                      variant="outline"
+                      className="h-auto p-4 flex flex-col items-center space-y-2 bg-primary hover:bg-primary/90 text-primary-foreground"
+                      variant="default"
                     >
                       <Search className="h-6 w-6" />
                       <span className="text-sm">Search Filters</span>
                     </Button>
                     <Button 
-                      onClick={() => handleQuickAction('security')} 
-                      className="h-auto p-4 flex flex-col items-center space-y-2 bg-primary hover:bg-primary/90"
-                      variant="outline"
+                      onClick={() => handleQuickAction('vendors')} 
+                      className="h-auto p-4 flex flex-col items-center space-y-2 bg-primary hover:bg-primary/90 text-primary-foreground"
+                      variant="default"
                     >
-                      <Shield className="h-6 w-6" />
-                      <span className="text-sm">Security</span>
+                      <Store className="h-6 w-6" />
+                      <span className="text-sm">Vendors</span>
+                    </Button>
+                    <Button 
+                      onClick={() => handleQuickAction('settings')} 
+                      className="h-auto p-4 flex flex-col items-center space-y-2 bg-primary hover:bg-primary/90 text-primary-foreground"
+                      variant="default"
+                    >
+                      <Settings className="h-6 w-6" />
+                      <span className="text-sm">Settings</span>
                     </Button>
                   </CardContent>
                 </Card>
 
-                <Card>
+                <Card className="bg-card border-border">
                   <CardHeader>
-                    <CardTitle>System Status</CardTitle>
-                    <CardDescription>Platform health and monitoring</CardDescription>
+                    <CardTitle className="text-card-foreground">System Status</CardTitle>
+                    <CardDescription className="text-muted-foreground">Platform health and monitoring</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm flex items-center gap-2">
+                      <span className="text-sm flex items-center gap-2 text-card-foreground">
                         <Activity className="h-4 w-4" />
                         System Status
                       </span>
-                      <Badge variant="default" className="bg-green-500">Online</Badge>
+                      <Badge variant="default" className="bg-green-500 text-white">Online</Badge>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm flex items-center gap-2">
+                      <span className="text-sm flex items-center gap-2 text-card-foreground">
                         <Database className="h-4 w-4" />
                         Database
                       </span>
-                      <Badge variant="default" className="bg-green-500">Healthy</Badge>
+                      <Badge variant="default" className="bg-green-500 text-white">Healthy</Badge>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm flex items-center gap-2">
+                      <span className="text-sm flex items-center gap-2 text-card-foreground">
                         <Globe className="h-4 w-4" />
                         API Status
                       </span>
-                      <Badge variant="default" className="bg-green-500">Operational</Badge>
+                      <Badge variant="default" className="bg-green-500 text-white">Operational</Badge>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm flex items-center gap-2">
+                      <span className="text-sm flex items-center gap-2 text-card-foreground">
                         <Lock className="h-4 w-4" />
                         Security
                       </span>
-                      <Badge variant="default" className="bg-green-500">Protected</Badge>
+                      <Badge variant="default" className="bg-green-500 text-white">Protected</Badge>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm flex items-center gap-2">
+                      <span className="text-sm flex items-center gap-2 text-card-foreground">
                         <Bell className="h-4 w-4" />
                         Alerts
                       </span>
-                      <Badge variant="secondary">{stats?.errorLogs || 0} Pending</Badge>
+                      <Badge variant="secondary" className="bg-muted text-muted-foreground">{stats?.errorLogs || 0} Pending</Badge>
                     </div>
                   </CardContent>
                 </Card>

@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Settings } from "lucide-react";
+import { Settings, Loader2 } from "lucide-react";
 import { useAlert } from "@/contexts/AlertContext";
 
 interface SystemSetting {
@@ -43,37 +43,52 @@ const SystemSettings = () => {
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
 
-  const { data: settings, isLoading, isError } = useQuery({
+  const { data: settings, isLoading, isError, error } = useQuery({
     queryKey: ['system-settings'],
     queryFn: async () => {
+      console.log('Fetching system settings...');
       const { data, error } = await supabase
         .from('system_settings')
         .select('*');
-      if (error) throw error;
+      
+      if (error) {
+        console.error('Settings fetch error:', error);
+        throw error;
+      }
+      
+      console.log('Settings fetched:', data);
       return data as SystemSetting[];
     },
+    retry: 3,
+    retryDelay: 1000,
   });
 
   useEffect(() => {
-    if (settings) {
+    if (settings && settings.length > 0) {
+      console.log('Processing settings:', settings);
       const siteNameSetting = settings.find(setting => setting.key === 'site_name');
       const primaryColorSetting = settings.find(setting => setting.key === 'primary_color');
       const defaultCurrencySetting = settings.find(setting => setting.key === 'default_currency');
       const timezoneSetting = settings.find(setting => setting.key === 'timezone');
       const maintenanceModeSetting = settings.find(setting => setting.key === 'maintenance_mode');
 
-      setGeneralSettings({
-        site_name: siteNameSetting?.value || "",
+      const newSettings = {
+        site_name: siteNameSetting?.value || "AstraVilla Realty",
         primary_color: primaryColorSetting?.value || "#3b82f6",
         default_currency: defaultCurrencySetting?.value || "USD",
         timezone: timezoneSetting?.value || "UTC",
         maintenance_mode: maintenanceModeSetting?.value || false,
-      });
+      };
+      
+      console.log('Updating general settings:', newSettings);
+      setGeneralSettings(newSettings);
     }
   }, [settings]);
 
   const updateSettingMutation = useMutation({
     mutationFn: async ({ key, value, category }: { key: string; value: any; category: string }) => {
+      console.log('Updating setting:', { key, value, category });
+      
       const { error } = await supabase
         .from('system_settings')
         .upsert({
@@ -85,7 +100,10 @@ const SystemSettings = () => {
           onConflict: 'key'
         });
       
-      if (error) throw error;
+      if (error) {
+        console.error('Setting update error:', error);
+        throw error;
+      }
       
       // If updating primary color, apply it immediately to CSS
       if (key === 'primary_color') {
@@ -97,6 +115,8 @@ const SystemSettings = () => {
         document.documentElement.style.setProperty('--primary-color-rgb', `${r}, ${g}, ${b}`);
         document.documentElement.style.setProperty('--primary-color-hover', `rgb(${Math.max(0, r-20)}, ${Math.max(0, g-20)}, ${Math.max(0, b-20)})`);
       }
+      
+      console.log('Setting updated successfully');
     },
     onSuccess: () => {
       showSuccess("Settings Updated", "System settings have been updated successfully.");
@@ -104,14 +124,18 @@ const SystemSettings = () => {
       queryClient.invalidateQueries({ queryKey: ['system-settings-theme'] });
     },
     onError: (error: any) => {
-      showError("Update Failed", error.message);
+      console.error('Setting update failed:', error);
+      showError("Update Failed", error.message || "Failed to update settings");
     },
   });
 
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        <div className="flex flex-col items-center space-y-4">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          <p className="text-muted-foreground">Loading system settings...</p>
+        </div>
       </div>
     );
   }
@@ -120,7 +144,21 @@ const SystemSettings = () => {
     return (
       <Card className="bg-card border-border">
         <CardContent className="p-6">
-          <p className="text-destructive">Error loading settings. Please try again.</p>
+          <div className="text-center space-y-4">
+            <Settings className="h-12 w-12 text-muted-foreground mx-auto" />
+            <div>
+              <h3 className="text-lg font-medium text-foreground mb-2">Error Loading Settings</h3>
+              <p className="text-destructive mb-4">
+                {error?.message || "Failed to load system settings. Please check your connection and try again."}
+              </p>
+              <Button 
+                onClick={() => queryClient.invalidateQueries({ queryKey: ['system-settings'] })}
+                className="bg-primary hover:bg-primary/90 text-primary-foreground"
+              >
+                Retry Loading
+              </Button>
+            </div>
+          </div>
         </CardContent>
       </Card>
     );
@@ -131,7 +169,7 @@ const SystemSettings = () => {
       <Card className="bg-card border-border">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-card-foreground">
-            <Settings className="h-6 w-6" />
+            <Settings className="h-6 w-6 text-primary" />
             System Settings & Configuration
           </CardTitle>
           <CardDescription className="text-muted-foreground">
@@ -140,20 +178,80 @@ const SystemSettings = () => {
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="general" className="space-y-6">
-            <div className="overflow-x-auto">
-              <TabsList className="grid w-full grid-cols-6 lg:grid-cols-12 bg-muted border-border min-w-max">
-                <TabsTrigger value="general" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground whitespace-nowrap">General</TabsTrigger>
-                <TabsTrigger value="auth" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground whitespace-nowrap">Authentication</TabsTrigger>
-                <TabsTrigger value="users" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground whitespace-nowrap">User Roles</TabsTrigger>
-                <TabsTrigger value="properties" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground whitespace-nowrap">Properties</TabsTrigger>
-                <TabsTrigger value="surveys" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground whitespace-nowrap">Surveys</TabsTrigger>
-                <TabsTrigger value="compliance" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground whitespace-nowrap">Compliance</TabsTrigger>
-                <TabsTrigger value="staff" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground whitespace-nowrap">Staff</TabsTrigger>
-                <TabsTrigger value="support" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground whitespace-nowrap">Support</TabsTrigger>
-                <TabsTrigger value="security" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground whitespace-nowrap">Security</TabsTrigger>
-                <TabsTrigger value="apis" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground whitespace-nowrap">APIs</TabsTrigger>
-                <TabsTrigger value="notifications" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground whitespace-nowrap">Notifications</TabsTrigger>
-                <TabsTrigger value="seo" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground whitespace-nowrap">SEO</TabsTrigger>
+            <div className="bg-muted rounded-lg p-1">
+              <TabsList className="grid w-full grid-cols-3 md:grid-cols-6 lg:grid-cols-12 gap-1 bg-transparent h-auto">
+                <TabsTrigger 
+                  value="general" 
+                  className="whitespace-nowrap text-xs px-2 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                >
+                  General
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="auth" 
+                  className="whitespace-nowrap text-xs px-2 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                >
+                  Auth
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="users" 
+                  className="whitespace-nowrap text-xs px-2 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                >
+                  Users
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="properties" 
+                  className="whitespace-nowrap text-xs px-2 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                >
+                  Properties
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="surveys" 
+                  className="whitespace-nowrap text-xs px-2 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                >
+                  Surveys
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="compliance" 
+                  className="whitespace-nowrap text-xs px-2 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                >
+                  Compliance
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="staff" 
+                  className="whitespace-nowrap text-xs px-2 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                >
+                  Staff
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="support" 
+                  className="whitespace-nowrap text-xs px-2 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                >
+                  Support
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="security" 
+                  className="whitespace-nowrap text-xs px-2 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                >
+                  Security
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="apis" 
+                  className="whitespace-nowrap text-xs px-2 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                >
+                  APIs
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="notifications" 
+                  className="whitespace-nowrap text-xs px-2 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                >
+                  Notifications
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="seo" 
+                  className="whitespace-nowrap text-xs px-2 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                >
+                  SEO
+                </TabsTrigger>
               </TabsList>
             </div>
 
@@ -165,10 +263,10 @@ const SystemSettings = () => {
                     Basic site settings and appearance
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label className="text-foreground">Site Name</Label>
+                <CardContent className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-3">
+                      <Label className="text-foreground font-medium">Site Name</Label>
                       <Input
                         value={generalSettings.site_name}
                         onChange={(e) => setGeneralSettings({ ...generalSettings, site_name: e.target.value })}
@@ -179,13 +277,21 @@ const SystemSettings = () => {
                         size="sm" 
                         onClick={() => updateSettingMutation.mutate({ key: 'site_name', value: generalSettings.site_name, category: 'general' })}
                         className="bg-primary hover:bg-primary/90 text-primary-foreground"
+                        disabled={updateSettingMutation.isPending}
                       >
-                        Save Site Name
+                        {updateSettingMutation.isPending ? (
+                          <>
+                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                            Saving...
+                          </>
+                        ) : (
+                          'Save Site Name'
+                        )}
                       </Button>
                     </div>
                     
-                    <div className="space-y-2">
-                      <Label className="text-foreground">Primary Color</Label>
+                    <div className="space-y-3">
+                      <Label className="text-foreground font-medium">Primary Color</Label>
                       <div className="flex gap-2">
                         <Input
                           type="color"
@@ -204,13 +310,21 @@ const SystemSettings = () => {
                         size="sm" 
                         onClick={() => updateSettingMutation.mutate({ key: 'primary_color', value: generalSettings.primary_color, category: 'general' })}
                         className="bg-primary hover:bg-primary/90 text-primary-foreground"
+                        disabled={updateSettingMutation.isPending}
                       >
-                        Apply Color
+                        {updateSettingMutation.isPending ? (
+                          <>
+                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                            Applying...
+                          </>
+                        ) : (
+                          'Apply Color'
+                        )}
                       </Button>
                     </div>
                     
-                    <div className="space-y-2">
-                      <Label className="text-foreground">Default Currency</Label>
+                    <div className="space-y-3">
+                      <Label className="text-foreground font-medium">Default Currency</Label>
                       <Select value={generalSettings.default_currency} onValueChange={(value) => setGeneralSettings({ ...generalSettings, default_currency: value })}>
                         <SelectTrigger className="bg-background border-border text-foreground">
                           <SelectValue />
@@ -237,13 +351,21 @@ const SystemSettings = () => {
                         size="sm" 
                         onClick={() => updateSettingMutation.mutate({ key: 'default_currency', value: generalSettings.default_currency, category: 'general' })}
                         className="bg-primary hover:bg-primary/90 text-primary-foreground"
+                        disabled={updateSettingMutation.isPending}
                       >
-                        Save Currency
+                        {updateSettingMutation.isPending ? (
+                          <>
+                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                            Saving...
+                          </>
+                        ) : (
+                          'Save Currency'
+                        )}
                       </Button>
                     </div>
 
-                    <div className="space-y-2">
-                      <Label className="text-foreground">Timezone</Label>
+                    <div className="space-y-3">
+                      <Label className="text-foreground font-medium">Timezone</Label>
                       <Select value={generalSettings.timezone} onValueChange={(value) => setGeneralSettings({ ...generalSettings, timezone: value })}>
                         <SelectTrigger className="bg-background border-border text-foreground">
                           <SelectValue />
@@ -266,27 +388,36 @@ const SystemSettings = () => {
                         size="sm" 
                         onClick={() => updateSettingMutation.mutate({ key: 'timezone', value: generalSettings.timezone, category: 'general' })}
                         className="bg-primary hover:bg-primary/90 text-primary-foreground"
+                        disabled={updateSettingMutation.isPending}
                       >
-                        Save Timezone
+                        {updateSettingMutation.isPending ? (
+                          <>
+                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                            Saving...
+                          </>
+                        ) : (
+                          'Save Timezone'
+                        )}
                       </Button>
                     </div>
                   </div>
 
-                  <div className="pt-4 border-t border-border">
+                  <div className="pt-6 border-t border-border">
                     <div className="flex items-center justify-between">
                       <div>
-                        <Label className="text-foreground">Maintenance Mode</Label>
-                        <p className="text-sm text-muted-foreground">Enable to temporarily disable site access</p>
+                        <Label className="text-foreground font-medium">Maintenance Mode</Label>
+                        <p className="text-sm text-muted-foreground mt-1">Enable to temporarily disable site access</p>
                       </div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-3">
                         <Switch
                           checked={generalSettings.maintenance_mode}
                           onCheckedChange={(checked) => {
                             setGeneralSettings({ ...generalSettings, maintenance_mode: checked });
                             updateSettingMutation.mutate({ key: 'maintenance_mode', value: checked, category: 'general' });
                           }}
+                          disabled={updateSettingMutation.isPending}
                         />
-                        <Badge variant={generalSettings.maintenance_mode ? "destructive" : "default"}>
+                        <Badge variant={generalSettings.maintenance_mode ? "destructive" : "default"} className="min-w-[60px] justify-center">
                           {generalSettings.maintenance_mode ? "ON" : "OFF"}
                         </Badge>
                       </div>
@@ -305,7 +436,7 @@ const SystemSettings = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-card-foreground">Authentication settings content</p>
+                  <p className="text-card-foreground">Authentication settings content coming soon...</p>
                 </CardContent>
               </Card>
             </TabsContent>
@@ -319,7 +450,7 @@ const SystemSettings = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-card-foreground">User roles management content</p>
+                  <p className="text-card-foreground">User roles management content coming soon...</p>
                 </CardContent>
               </Card>
             </TabsContent>
@@ -333,7 +464,7 @@ const SystemSettings = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-card-foreground">Properties configuration content</p>
+                  <p className="text-card-foreground">Properties configuration content coming soon...</p>
                 </CardContent>
               </Card>
             </TabsContent>
@@ -347,7 +478,7 @@ const SystemSettings = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-card-foreground">Surveys configuration content</p>
+                  <p className="text-card-foreground">Surveys configuration content coming soon...</p>
                 </CardContent>
               </Card>
             </TabsContent>
@@ -361,7 +492,7 @@ const SystemSettings = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-card-foreground">Compliance settings content</p>
+                  <p className="text-card-foreground">Compliance settings content coming soon...</p>
                 </CardContent>
               </Card>
             </TabsContent>
@@ -375,7 +506,7 @@ const SystemSettings = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-card-foreground">Staff management content</p>
+                  <p className="text-card-foreground">Staff management content coming soon...</p>
                 </CardContent>
               </Card>
             </TabsContent>
@@ -389,7 +520,7 @@ const SystemSettings = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-card-foreground">Support settings content</p>
+                  <p className="text-card-foreground">Support settings content coming soon...</p>
                 </CardContent>
               </Card>
             </TabsContent>
@@ -403,7 +534,7 @@ const SystemSettings = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-card-foreground">Security settings content</p>
+                  <p className="text-card-foreground">Security settings content coming soon...</p>
                 </CardContent>
               </Card>
             </TabsContent>
@@ -417,7 +548,7 @@ const SystemSettings = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-card-foreground">API settings content</p>
+                  <p className="text-card-foreground">API settings content coming soon...</p>
                 </CardContent>
               </Card>
             </TabsContent>
@@ -431,7 +562,7 @@ const SystemSettings = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-card-foreground">Notifications settings content</p>
+                  <p className="text-card-foreground">Notifications settings content coming soon...</p>
                 </CardContent>
               </Card>
             </TabsContent>
@@ -445,7 +576,7 @@ const SystemSettings = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-card-foreground">SEO settings content</p>
+                  <p className="text-card-foreground">SEO settings content coming soon...</p>
                 </CardContent>
               </Card>
             </TabsContent>
