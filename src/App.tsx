@@ -11,6 +11,8 @@ import Index from "./pages/Index";
 import UserDashboardPage from "./pages/UserDashboardPage";
 import Profile from "./pages/Profile";
 import PropertyDetail from "./pages/PropertyDetail";
+import Properties from "./pages/Properties";
+import About from "./pages/About";
 import AdminDashboard from "./pages/AdminDashboard";
 import NotFound from "./pages/NotFound";
 
@@ -30,6 +32,8 @@ const App = () => (
                 <Route path="/dashboard" element={<UserDashboardPage />} />
                 <Route path="/admin" element={<AdminDashboard />} />
                 <Route path="/profile" element={<Profile />} />
+                <Route path="/properties" element={<Properties />} />
+                <Route path="/about" element={<About />} />
                 <Route path="/property/:id" element={<PropertyDetail />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />

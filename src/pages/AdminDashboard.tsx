@@ -1,3 +1,4 @@
+
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -130,8 +131,8 @@ const AdminDashboard = () => {
     }
   }, [isAuthenticated, loading, adminData, adminLoading, adminError, navigate, showError]);
 
-  // Show loading state
-  if (loading || adminLoading) {
+  // Show loading state only for a short period
+  if (loading || (adminLoading && !adminError && !adminData)) {
     console.log('Showing loading state - loading:', loading, 'adminLoading:', adminLoading);
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
@@ -180,6 +181,24 @@ const AdminDashboard = () => {
 
   const hasPermission = (permission: AdminPermission): boolean => {
     return adminData?.is_super_admin || adminData?.role?.permissions?.includes(permission);
+  };
+
+  // Handle quick action clicks
+  const handleQuickAction = (action: string) => {
+    console.log('Quick action clicked:', action);
+    switch (action) {
+      case 'users':
+        setActiveTab('users');
+        break;
+      case 'vendors':
+        setActiveTab('vendors');
+        break;
+      case 'security':
+        setActiveTab('security');
+        break;
+      default:
+        console.log('Unknown action:', action);
+    }
   };
 
   console.log('Rendering admin dashboard for user:', user?.email);
@@ -296,30 +315,36 @@ const AdminDashboard = () => {
                     <CardDescription>Common administrative tasks</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    <Button 
-                      onClick={() => setActiveTab('users')} 
-                      className="w-full justify-start"
-                      variant="outline"
-                    >
-                      <Users className="mr-2 h-4 w-4" />
-                      Manage Users
-                    </Button>
-                    <Button 
-                      onClick={() => setActiveTab('vendors')} 
-                      className="w-full justify-start"
-                      variant="outline"
-                    >
-                      <Store className="mr-2 h-4 w-4" />
-                      Review Vendor Requests
-                    </Button>
-                    <Button 
-                      onClick={() => setActiveTab('security')} 
-                      className="w-full justify-start"
-                      variant="outline"
-                    >
-                      <Shield className="mr-2 h-4 w-4" />
-                      Security Monitoring
-                    </Button>
+                    {hasPermission('user_management') && (
+                      <Button 
+                        onClick={() => handleQuickAction('users')} 
+                        className="w-full justify-start"
+                        variant="outline"
+                      >
+                        <Users className="mr-2 h-4 w-4" />
+                        Manage Users
+                      </Button>
+                    )}
+                    {hasPermission('vendor_authorization') && (
+                      <Button 
+                        onClick={() => handleQuickAction('vendors')} 
+                        className="w-full justify-start"
+                        variant="outline"
+                      >
+                        <Store className="mr-2 h-4 w-4" />
+                        Review Vendor Requests
+                      </Button>
+                    )}
+                    {hasPermission('security_monitoring') && (
+                      <Button 
+                        onClick={() => handleQuickAction('security')} 
+                        className="w-full justify-start"
+                        variant="outline"
+                      >
+                        <Shield className="mr-2 h-4 w-4" />
+                        Security Monitoring
+                      </Button>
+                    )}
                   </CardContent>
                 </Card>
 
