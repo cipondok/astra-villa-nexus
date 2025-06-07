@@ -57,7 +57,7 @@ const SystemSettings = () => {
     mutationFn: async ({ category, settings }: { category: string; settings: any }) => {
       const updates = Object.entries(settings).map(([key, value]) => ({
         key,
-        value: { data: value },
+        value: value as any, // Fix: Cast to any to match Json type
         category,
         description: `${category} setting for ${key}`
       }));

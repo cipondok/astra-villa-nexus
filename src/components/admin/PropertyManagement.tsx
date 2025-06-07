@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -79,7 +78,13 @@ const PropertyManagement = () => {
 
       const { data, error } = await query;
       if (error) throw error;
-      return data as PropertyWithRelations[];
+
+      // Transform the data to match our interface
+      return data?.map((property: any) => ({
+        ...property,
+        owner: Array.isArray(property.owner) ? property.owner[0] : property.owner,
+        agent: Array.isArray(property.agent) ? property.agent[0] : property.agent,
+      })) as PropertyWithRelations[];
     },
   });
 
