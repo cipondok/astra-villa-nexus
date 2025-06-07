@@ -1,4 +1,3 @@
-
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -42,79 +41,148 @@ const AdminDashboard = () => {
   const { showError, showSuccess } = useAlert();
   const [activeTab, setActiveTab] = useState("overview");
 
-  // Check if user is admin
-  const { data: adminData, isLoading: adminLoading } = useQuery({
+  // Check if user is admin with better error handling
+  const { data: adminData, isLoading: adminLoading, error: adminError } = useQuery({
     queryKey: ['admin-check', user?.id],
     queryFn: async () => {
-      if (!user?.id) return null;
-      const { data, error } = await supabase
-        .from('admin_users')
-        .select(`
-          *,
-          role:admin_roles(name, permissions)
-        `)
-        .eq('user_id', user.id)
-        .single();
-      
-      if (error && error.code !== 'PGRST116') {
-        throw error;
+      if (!user?.id) {
+        console.log('No user ID found');
+        return null;
       }
-      return data;
+      
+      console.log('Checking admin status for user:', user.id);
+      
+      try {
+        const { data, error } = await supabase
+          .from('admin_users')
+          .select(`
+            *,
+            role:admin_roles(name, permissions)
+          `)
+          .eq('user_id', user.id)
+          .single();
+        
+        if (error) {
+          console.log('Admin check error:', error);
+          if (error.code === 'PGRST116') {
+            // No admin record found
+            return null;
+          }
+          throw error;
+        }
+        
+        console.log('Admin data found:', data);
+        return data;
+      } catch (err) {
+        console.error('Error checking admin status:', err);
+        throw err;
+      }
     },
-    enabled: !!user?.id
+    enabled: !!user?.id && isAuthenticated,
+    retry: 2,
+    refetchOnWindowFocus: false
   });
 
-  // Dashboard statistics
-  const { data: stats } = useQuery({
+  // Dashboard statistics with error handling
+  const { data: stats, isLoading: statsLoading } = useQuery({
     queryKey: ['admin-stats'],
     queryFn: async () => {
-      const [usersCount, propertiesCount, ordersCount, vendorRequestsCount] = await Promise.all([
-        supabase.from('profiles').select('*', { count: 'exact', head: true }),
-        supabase.from('properties').select('*', { count: 'exact', head: true }),
-        supabase.from('orders').select('*', { count: 'exact', head: true }),
-        supabase.from('vendor_requests').select('*', { count: 'exact', head: true })
-      ]);
+      try {
+        const [usersCount, propertiesCount, ordersCount, vendorRequestsCount] = await Promise.all([
+          supabase.from('profiles').select('*', { count: 'exact', head: true }),
+          supabase.from('properties').select('*', { count: 'exact', head: true }),
+          supabase.from('orders').select('*', { count: 'exact', head: true }),
+          supabase.from('vendor_requests').select('*', { count: 'exact', head: true })
+        ]);
 
-      return {
-        users: usersCount.count || 0,
-        properties: propertiesCount.count || 0,
-        orders: ordersCount.count || 0,
-        vendorRequests: vendorRequestsCount.count || 0
-      };
+        return {
+          users: usersCount.count || 0,
+          properties: propertiesCount.count || 0,
+          orders: ordersCount.count || 0,
+          vendorRequests: vendorRequestsCount.count || 0
+        };
+      } catch (err) {
+        console.error('Error fetching admin stats:', err);
+        return {
+          users: 0,
+          properties: 0,
+          orders: 0,
+          vendorRequests: 0
+        };
+      }
     },
     enabled: !!adminData
   });
 
   useEffect(() => {
+    console.log('AdminDashboard useEffect - auth state:', { loading, isAuthenticated, user: !!user });
+    
     if (!loading && !isAuthenticated) {
+      console.log('User not authenticated, redirecting to login');
       navigate('/?auth=true');
       return;
     }
 
-    if (!adminLoading && !adminData) {
+    if (!adminLoading && !loading && isAuthenticated && adminData === null && !adminError) {
+      console.log('User authenticated but no admin privileges found');
       showError("Access Denied", "You don't have admin privileges to access this panel.");
-      navigate('/');
+      navigate('/dashboard');
     }
-  }, [isAuthenticated, loading, adminData, adminLoading, navigate, showError]);
+  }, [isAuthenticated, loading, adminData, adminLoading, adminError, navigate, showError]);
 
+  // Show loading state
   if (loading || adminLoading) {
+    console.log('Showing loading state - loading:', loading, 'adminLoading:', adminLoading);
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
           <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Loading Admin Panel...</h2>
+          <p className="text-gray-600 dark:text-gray-300 mt-2">Please wait while we verify your permissions</p>
         </div>
       </div>
     );
   }
 
+  // Show error state
+  if (adminError) {
+    console.log('Admin error occurred:', adminError);
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+        <div className="text-center">
+          <AlertTriangle className="h-12 w-12 text-red-500 mx-auto mb-4" />
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Error Loading Admin Panel</h2>
+          <p className="text-gray-600 dark:text-gray-300 mt-2">Please try refreshing the page</p>
+          <Button onClick={() => window.location.reload()} className="mt-4">
+            Refresh Page
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  // Show access denied if no admin data
   if (!adminData) {
-    return null;
+    console.log('No admin data, showing access denied');
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+        <div className="text-center">
+          <Shield className="h-12 w-12 text-yellow-500 mx-auto mb-4" />
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Access Denied</h2>
+          <p className="text-gray-600 dark:text-gray-300 mt-2">You don't have admin privileges to access this panel.</p>
+          <Button onClick={() => navigate('/dashboard')} className="mt-4">
+            Go to Dashboard
+          </Button>
+        </div>
+      </div>
+    );
   }
 
   const hasPermission = (permission: AdminPermission): boolean => {
     return adminData?.is_super_admin || adminData?.role?.permissions?.includes(permission);
   };
+
+  console.log('Rendering admin dashboard for user:', user?.email);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -130,7 +198,7 @@ const AdminDashboard = () => {
               Welcome back, {user?.user_metadata?.full_name || user?.email}
             </p>
             <Badge variant="secondary" className="mt-2">
-              {adminData.is_super_admin ? 'Super Admin' : adminData.role?.name}
+              {adminData.is_super_admin ? 'Super Admin' : adminData.role?.name || 'Admin'}
             </Badge>
           </div>
 
@@ -174,7 +242,9 @@ const AdminDashboard = () => {
                     <Users className="h-4 w-4 text-muted-foreground" />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold">{stats?.users || 0}</div>
+                    <div className="text-2xl font-bold">
+                      {statsLoading ? '...' : (stats?.users || 0)}
+                    </div>
                     <p className="text-xs text-muted-foreground">Registered users</p>
                   </CardContent>
                 </Card>
@@ -185,7 +255,9 @@ const AdminDashboard = () => {
                     <Building className="h-4 w-4 text-muted-foreground" />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold">{stats?.properties || 0}</div>
+                    <div className="text-2xl font-bold">
+                      {statsLoading ? '...' : (stats?.properties || 0)}
+                    </div>
                     <p className="text-xs text-muted-foreground">Listed properties</p>
                   </CardContent>
                 </Card>
@@ -196,7 +268,9 @@ const AdminDashboard = () => {
                     <Package className="h-4 w-4 text-muted-foreground" />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold">{stats?.orders || 0}</div>
+                    <div className="text-2xl font-bold">
+                      {statsLoading ? '...' : (stats?.orders || 0)}
+                    </div>
                     <p className="text-xs text-muted-foreground">Total orders</p>
                   </CardContent>
                 </Card>
@@ -207,7 +281,9 @@ const AdminDashboard = () => {
                     <Store className="h-4 w-4 text-muted-foreground" />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold">{stats?.vendorRequests || 0}</div>
+                    <div className="text-2xl font-bold">
+                      {statsLoading ? '...' : (stats?.vendorRequests || 0)}
+                    </div>
                     <p className="text-xs text-muted-foreground">Pending approval</p>
                   </CardContent>
                 </Card>
