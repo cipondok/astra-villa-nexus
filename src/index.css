@@ -1,111 +1,69 @@
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --primary-color: #3b82f6;
+  --primary-color-rgb: 59, 130, 246;
+  --primary-color-hover: #2563eb;
+}
 
 @layer base {
   :root {
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
-
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;
-
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
-
-    --primary: 200 25% 40%;
+    --primary: 221.2 83.2% 53.3%;
     --primary-foreground: 210 40% 98%;
-
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-
-    --muted: 210 40% 96.1%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222.2 84% 4.9%;
+    --muted: 210 40% 96%;
     --muted-foreground: 215.4 16.3% 46.9%;
-
-    --accent: 200 25% 88%;
-    --accent-foreground: 200 25% 15%;
-
+    --accent: 210 40% 96%;
+    --accent-foreground: 222.2 84% 4.9%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
-
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 200 25% 40%;
-
-    --radius: 0.5rem;
-
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 200 25% 40%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 200 25% 95%;
-    --sidebar-accent-foreground: 200 25% 15%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 200 25% 40%;
-
-    /* Blue Sky Theme Colors - 70% transparency for light mode */
-    --blue-sky-light: 200 100% 85%;
-    --blue-sky: 200 100% 70%;
-    --blue-sky-dark: 200 100% 55%;
-    --blue-sky-transparent: 200 100% 70% / 0.7;
-    --blue-sky-light-transparent: 200 100% 85% / 0.7;
-    
-    /* Updated Blue Titanium for compatibility */
-    --blue-titanium-light: 200 25% 85%;
-    --blue-titanium: 200 25% 40%;
-    --blue-titanium-dark: 200 25% 20%;
+    --ring: 221.2 83.2% 53.3%;
+    --radius: 0.75rem;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
   }
 
   .dark {
-    --background: 200 25% 8%;
+    --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
-
-    --card: 200 25% 8%;
+    --card: 222.2 84% 4.9%;
     --card-foreground: 210 40% 98%;
-
-    --popover: 200 25% 8%;
+    --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
-
-    --primary: 200 25% 60%;
-    --primary-foreground: 200 25% 8%;
-
-    --secondary: 200 25% 15%;
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 84% 4.9%;
+    --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
-
-    --muted: 200 25% 15%;
+    --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 200 25% 15%;
-    --accent-foreground: 200 25% 85%;
-
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
-
-    --border: 200 25% 15%;
-    --input: 200 25% 15%;
-    --ring: 200 25% 60%;
-
-    --sidebar-background: 200 25% 5%;
-    --sidebar-foreground: 200 25% 85%;
-    --sidebar-primary: 200 25% 60%;
-    --sidebar-primary-foreground: 200 25% 5%;
-    --sidebar-accent: 200 25% 12%;
-    --sidebar-accent-foreground: 200 25% 85%;
-    --sidebar-border: 200 25% 12%;
-    --sidebar-ring: 200 25% 60%;
-
-    /* Blue Sky Theme Colors for Dark Mode */
-    --blue-sky-light: 200 25% 60%;
-    --blue-sky: 200 25% 40%;
-    --blue-sky-dark: 200 25% 20%;
-    --blue-sky-transparent: 200 25% 40% / 0.7;
-    --blue-sky-light-transparent: 200 25% 60% / 0.7;
-    
-    /* Blue Titanium Theme Colors for Dark Mode */
-    --blue-titanium-light: 200 25% 60%;
-    --blue-titanium: 200 25% 40%;
-    --blue-titanium-dark: 200 25% 20%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 94.1%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
   }
 }
 
@@ -113,8 +71,85 @@
   * {
     @apply border-border;
   }
-
   body {
     @apply bg-background text-foreground;
+    font-family: 'Inter', sans-serif;
   }
+}
+
+/* Custom utility classes for dynamic theming */
+.bg-primary-dynamic {
+  background-color: var(--primary-color);
+}
+
+.text-primary-dynamic {
+  color: var(--primary-color);
+}
+
+.border-primary-dynamic {
+  border-color: var(--primary-color);
+}
+
+.hover\:bg-primary-dynamic:hover {
+  background-color: var(--primary-color-hover);
+}
+
+/* Enhanced dark mode backgrounds */
+.dark .bg-gray-900 {
+  background-color: rgb(15 23 42);
+}
+
+.dark .bg-gray-800 {
+  background-color: rgb(30 41 59);
+}
+
+.dark .bg-gray-700 {
+  background-color: rgb(51 65 85);
+}
+
+/* Glass morphism effects for dark mode */
+.glass-dark {
+  background: rgba(15, 23, 42, 0.8);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-card-dark {
+  background: rgba(30, 41, 59, 0.6);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Improved gradient backgrounds for dark mode */
+.gradient-dark {
+  background: linear-gradient(135deg, 
+    rgba(15, 23, 42, 0.95) 0%, 
+    rgba(30, 41, 59, 0.9) 50%, 
+    rgba(51, 65, 85, 0.85) 100%);
+}
+
+/* Enhanced admin panel styling */
+.admin-panel-bg {
+  background: linear-gradient(135deg, 
+    rgba(15, 23, 42, 0.98) 0%, 
+    rgba(30, 41, 59, 0.95) 100%);
+}
+
+/* Currency display styling */
+.currency-display {
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+/* Responsive text colors for better contrast in dark mode */
+.dark .text-gray-600 {
+  color: rgb(148 163 184);
+}
+
+.dark .text-gray-500 {
+  color: rgb(100 116 139);
+}
+
+.dark .text-gray-400 {
+  color: rgb(71 85 105);
 }

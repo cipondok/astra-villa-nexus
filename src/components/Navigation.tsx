@@ -1,152 +1,160 @@
 
-import { Button } from "@/components/ui/button";
-import { Sun, Moon, Globe, Menu } from "lucide-react";
 import { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Menu, X, User, LogOut, Settings } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { useThemeSettings } from "@/contexts/ThemeSettingsContext";
+import AuthModal from "./auth/AuthModal";
 
-interface NavigationProps {
-  onLoginClick: () => void;
-  language: string;
-  onLanguageToggle: () => void;
-  theme: string;
-  onThemeToggle: () => void;
-}
+const Navigation = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const location = useLocation();
+  const { user, signOut } = useAuth();
+  const { themeSettings } = useThemeSettings();
 
-const Navigation = ({ onLoginClick, language, onLanguageToggle, theme, onThemeToggle }: NavigationProps) => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navItems = [
+    { name: "Home", path: "/" },
+    { name: "Properties", path: "/properties" },
+    { name: "About", path: "/about" },
+  ];
 
-  const text = {
-    en: {
-      buy: "Buy",
-      rent: "Rent",
-      newProjects: "New Projects",
-      vendors: "Vendors",
-      about: "About",
-      login: "Login",
-      register: "Register"
-    },
-    id: {
-      buy: "Beli",
-      rent: "Sewa",
-      newProjects: "Proyek Baru",
-      vendors: "Vendor",
-      about: "Tentang",
-      login: "Masuk",
-      register: "Daftar"
-    }
+  const handleSignOut = async () => {
+    await signOut();
+    setIsOpen(false);
   };
 
-  const currentText = text[language];
-
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-b border-gray-200 dark:border-gray-700">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <div className="flex-shrink-0">
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-orange-500 bg-clip-text text-transparent">
-              Astra Villa
-            </h1>
-          </div>
+    <>
+      <nav className="glass-dark border-b border-white/10 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between h-16">
+            <div className="flex items-center">
+              <Link to="/" className="flex-shrink-0 flex items-center">
+                <span className="text-2xl font-bold text-primary-dynamic">
+                  {themeSettings.siteName}
+                </span>
+              </Link>
+            </div>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
-            <a href="#" className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium">
-              {currentText.buy}
-            </a>
-            <a href="#" className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium">
-              {currentText.rent}
-            </a>
-            <a href="#" className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium">
-              {currentText.newProjects}
-            </a>
-            <a href="#" className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium">
-              {currentText.vendors}
-            </a>
-            <a href="#" className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium">
-              {currentText.about}
-            </a>
-          </div>
-
-          {/* Right side controls */}
-          <div className="flex items-center space-x-4">
-            {/* Language Toggle */}
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={onLanguageToggle}
-              className="hidden sm:flex items-center space-x-1"
-            >
-              <Globe className="h-4 w-4" />
-              <span className="text-sm font-medium">{language.toUpperCase()}</span>
-            </Button>
-
-            {/* Theme Toggle */}
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={onThemeToggle}
-              className="hidden sm:flex"
-            >
-              {theme === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
-            </Button>
-
-            {/* Auth Buttons */}
-            <div className="hidden md:flex items-center space-x-2">
-              <Button variant="ghost" onClick={onLoginClick}>
-                {currentText.login}
-              </Button>
-              <Button 
-                className="bg-gradient-to-r from-blue-600 to-orange-500 hover:from-blue-700 hover:to-orange-600"
-                onClick={onLoginClick}
-              >
-                {currentText.register}
-              </Button>
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center space-x-8">
+              {navItems.map((item) => (
+                <Link
+                  key={item.name}
+                  to={item.path}
+                  className={`px-3 py-2 text-sm font-medium transition-colors ${
+                    location.pathname === item.path
+                      ? "text-primary-dynamic border-b-2 border-primary-dynamic"
+                      : "text-gray-300 hover:text-white"
+                  }`}
+                >
+                  {item.name}
+                </Link>
+              ))}
+              
+              {user ? (
+                <div className="flex items-center space-x-4">
+                  <Link
+                    to="/dashboard"
+                    className="flex items-center space-x-1 px-3 py-2 text-sm font-medium text-gray-300 hover:text-white transition-colors"
+                  >
+                    <User className="w-4 h-4" />
+                    <span>Dashboard</span>
+                  </Link>
+                  <Button
+                    onClick={handleSignOut}
+                    variant="ghost"
+                    size="sm"
+                    className="text-gray-300 hover:text-white hover:bg-white/10"
+                  >
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Sign Out
+                  </Button>
+                </div>
+              ) : (
+                <Button
+                  onClick={() => setShowAuthModal(true)}
+                  className="bg-primary-dynamic hover:bg-primary-dynamic text-white"
+                >
+                  Sign In
+                </Button>
+              )}
             </div>
 
             {/* Mobile menu button */}
-            <Button
-              variant="ghost"
-              size="sm"
-              className="md:hidden"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-            >
-              <Menu className="h-5 w-5" />
-            </Button>
+            <div className="md:hidden">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setIsOpen(!isOpen)}
+                className="text-gray-300 hover:text-white hover:bg-white/10"
+              >
+                {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              </Button>
+            </div>
           </div>
         </div>
 
         {/* Mobile Navigation */}
-        {isMenuOpen && (
-          <div className="md:hidden border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
+        {isOpen && (
+          <div className="md:hidden glass-card-dark border-t border-white/10">
             <div className="px-2 pt-2 pb-3 space-y-1">
-              <a href="#" className="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400">
-                {currentText.buy}
-              </a>
-              <a href="#" className="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400">
-                {currentText.rent}
-              </a>
-              <a href="#" className="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400">
-                {currentText.newProjects}
-              </a>
-              <a href="#" className="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400">
-                {currentText.vendors}
-              </a>
-              <a href="#" className="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400">
-                {currentText.about}
-              </a>
-              <div className="px-3 py-2 space-y-2">
-                <Button variant="ghost" onClick={onLoginClick} className="w-full justify-start">
-                  {currentText.login}
+              {navItems.map((item) => (
+                <Link
+                  key={item.name}
+                  to={item.path}
+                  className={`block px-3 py-2 text-base font-medium transition-colors ${
+                    location.pathname === item.path
+                      ? "text-primary-dynamic bg-white/10"
+                      : "text-gray-300 hover:text-white hover:bg-white/5"
+                  }`}
+                  onClick={() => setIsOpen(false)}
+                >
+                  {item.name}
+                </Link>
+              ))}
+              
+              {user ? (
+                <>
+                  <Link
+                    to="/dashboard"
+                    className="flex items-center space-x-2 px-3 py-2 text-base font-medium text-gray-300 hover:text-white hover:bg-white/5 transition-colors"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    <User className="w-4 h-4" />
+                    <span>Dashboard</span>
+                  </Link>
+                  <button
+                    onClick={handleSignOut}
+                    className="flex items-center space-x-2 w-full px-3 py-2 text-base font-medium text-gray-300 hover:text-white hover:bg-white/5 transition-colors"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    <span>Sign Out</span>
+                  </button>
+                </>
+              ) : (
+                <Button
+                  onClick={() => {
+                    setShowAuthModal(true);
+                    setIsOpen(false);
+                  }}
+                  className="w-full mt-2 bg-primary-dynamic hover:bg-primary-dynamic text-white"
+                >
+                  Sign In
                 </Button>
-                <Button onClick={onLoginClick} className="w-full bg-gradient-to-r from-blue-600 to-orange-500">
-                  {currentText.register}
-                </Button>
-              </div>
+              )}
             </div>
           </div>
         )}
-      </div>
-    </nav>
+      </nav>
+
+      <AuthModal 
+        isOpen={showAuthModal} 
+        onClose={() => setShowAuthModal(false)} 
+      />
+    </>
   );
 };
 
