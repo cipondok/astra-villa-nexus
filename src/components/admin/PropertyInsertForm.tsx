@@ -73,7 +73,7 @@ const PropertyInsertForm = () => {
           bedrooms: propertyData.bedrooms ? Number(propertyData.bedrooms) : null,
           bathrooms: propertyData.bathrooms ? Number(propertyData.bathrooms) : null,
           area_sqm: propertyData.area_sqm ? Number(propertyData.area_sqm) : null,
-          agent_id: propertyData.agent_id || null,
+          agent_id: propertyData.agent_id === "none" ? null : propertyData.agent_id || null,
           owner_id: propertyData.owner_id,
           status: 'available'
         }]);
@@ -295,7 +295,7 @@ const PropertyInsertForm = () => {
                   <SelectValue placeholder="Select agent (optional)" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">No Agent</SelectItem>
+                  <SelectItem value="none">No Agent</SelectItem>
                   {profile?.role === 'agent' && (
                     <SelectItem value={profile.id}>
                       {profile.full_name || 'Current Agent'} (You)
