@@ -13,9 +13,20 @@ import { Label } from "@/components/ui/label";
 import { Shield, Users, Plus, Edit, Trash2 } from "lucide-react";
 import { useAlert } from "@/contexts/AlertContext";
 
+type UserRole = 'general_user' | 'property_owner' | 'agent' | 'vendor' | 'admin';
+
+interface UserProfile {
+  id: string;
+  email: string;
+  full_name?: string;
+  role: UserRole;
+  verification_status?: string;
+  created_at?: string;
+}
+
 const UserRolesManagement = () => {
-  const [selectedUser, setSelectedUser] = useState(null);
-  const [newRole, setNewRole] = useState("");
+  const [selectedUser, setSelectedUser] = useState<UserProfile | null>(null);
+  const [newRole, setNewRole] = useState<UserRole>("general_user");
   const [showRoleDialog, setShowRoleDialog] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -31,12 +42,12 @@ const UserRolesManagement = () => {
         .order('created_at', { ascending: false });
       
       if (error) throw error;
-      return data;
+      return data as UserProfile[];
     },
   });
 
   const updateUserRoleMutation = useMutation({
-    mutationFn: async ({ userId, role }: { userId: string; role: string }) => {
+    mutationFn: async ({ userId, role }: { userId: string; role: UserRole }) => {
       const { error } = await supabase
         .from('profiles')
         .update({ role })
@@ -54,7 +65,7 @@ const UserRolesManagement = () => {
     },
   });
 
-  const handleRoleUpdate = (user: any) => {
+  const handleRoleUpdate = (user: UserProfile) => {
     setSelectedUser(user);
     setNewRole(user.role);
     setShowRoleDialog(true);
@@ -66,7 +77,7 @@ const UserRolesManagement = () => {
     }
   };
 
-  const getRoleBadge = (role: string) => {
+  const getRoleBadge = (role: UserRole) => {
     const roleColors = {
       admin: "bg-red-500",
       agent: "bg-blue-500",
@@ -76,7 +87,7 @@ const UserRolesManagement = () => {
     };
     
     return (
-      <Badge className={`${roleColors[role] || roleColors.general_user} text-white`}>
+      <Badge className={`${roleColors[role]} text-white`}>
         {role.replace('_', ' ').toUpperCase()}
       </Badge>
     );
@@ -193,7 +204,7 @@ const UserRolesManagement = () => {
           <div className="space-y-4">
             <div>
               <Label className="text-gray-300">Select New Role</Label>
-              <Select value={newRole} onValueChange={setNewRole}>
+              <Select value={newRole} onValueChange={(value: UserRole) => setNewRole(value)}>
                 <SelectTrigger className="bg-gray-800 border-gray-700 text-white">
                   <SelectValue placeholder="Select a role" />
                 </SelectTrigger>

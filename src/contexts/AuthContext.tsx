@@ -282,6 +282,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     signUp,
     signOut,
     updateProfile,
+    demoAgentLogin,
+    demoAdminLogin,
   };
 
   console.log('AuthProvider providing value, loading:', loading, 'isAuthenticated:', !!user);
