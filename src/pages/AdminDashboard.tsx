@@ -123,11 +123,11 @@ const AdminDashboard = () => {
   // Show loading state
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-400 mx-auto mb-6"></div>
-          <h2 className="text-xl font-semibold text-white">Loading Control Panel...</h2>
-          <p className="text-blue-200 mt-2">Initializing admin systems</p>
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center card-ios p-8">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-primary mx-auto mb-6"></div>
+          <h2 className="text-xl font-semibold text-foreground">Loading Control Panel...</h2>
+          <p className="text-muted-foreground mt-2">Initializing admin systems</p>
         </div>
       </div>
     );
@@ -136,12 +136,14 @@ const AdminDashboard = () => {
   // Show access denied if not admin
   if (!isAdmin) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 flex items-center justify-center">
-        <div className="text-center bg-slate-800/50 backdrop-blur-lg rounded-2xl p-8 border border-blue-500/20">
-          <Shield className="h-16 w-16 text-yellow-400 mx-auto mb-6" />
-          <h2 className="text-2xl font-bold text-white mb-4">Access Denied</h2>
-          <p className="text-blue-200 mb-6">You don't have admin privileges to access this control panel.</p>
-          <Button onClick={() => navigate('/dashboard')} className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3">
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center card-ios p-8 max-w-md mx-auto">
+          <div className="w-16 h-16 bg-gradient-to-br from-amber-500 to-amber-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-amber-500/25">
+            <Shield className="h-8 w-8 text-white" />
+          </div>
+          <h2 className="text-2xl font-bold text-foreground mb-4">Access Denied</h2>
+          <p className="text-muted-foreground mb-6">You don't have admin privileges to access this control panel.</p>
+          <Button onClick={() => navigate('/dashboard')} variant="ios" className="px-6 py-3">
             Return to Dashboard
           </Button>
         </div>
@@ -155,7 +157,7 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800">
+    <div className="min-h-screen bg-background">
       <AdminNavigation 
         user={user} 
         adminData={{ 
@@ -169,24 +171,24 @@ const AdminDashboard = () => {
           {/* Header Section */}
           <div className="mb-10">
             <div className="flex items-center gap-4 mb-6">
-              <div className="w-16 h-16 bg-gradient-to-br from-blue-400 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
+              <div className="w-16 h-16 bg-gradient-to-br from-primary to-primary/80 rounded-2xl flex items-center justify-center shadow-lg shadow-primary/25">
                 <Shield className="h-8 w-8 text-white" />
               </div>
               <div>
-                <h1 className="text-4xl font-bold bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent">
+                <h1 className="text-4xl font-bold text-foreground">
                   Control Panel
                 </h1>
-                <p className="text-blue-200 text-lg">
+                <p className="text-muted-foreground text-lg">
                   Welcome back, {user?.user_metadata?.full_name || user?.email}
                 </p>
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <Badge className="bg-blue-600/20 text-blue-300 border-blue-500/30 px-4 py-2 text-sm">
+              <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20 px-4 py-2 text-sm">
                 <Zap className="h-4 w-4 mr-2" />
                 {profile?.role === 'admin' ? 'System Administrator' : 'Demo Administrator'}
               </Badge>
-              <Badge className="bg-green-600/20 text-green-300 border-green-500/30 px-4 py-2 text-sm">
+              <Badge variant="secondary" className="bg-ios-green/10 text-ios-green border-ios-green/20 px-4 py-2 text-sm">
                 <Activity className="h-4 w-4 mr-2" />
                 Online
               </Badge>
@@ -195,74 +197,74 @@ const AdminDashboard = () => {
 
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
             {/* Modern Tab Navigation */}
-            <div className="bg-slate-800/40 backdrop-blur-xl rounded-2xl p-2 border border-blue-500/20 shadow-2xl">
+            <div className="glass-ios p-2 border border-border/30 shadow-lg">
               <TabsList className="grid w-full grid-cols-2 md:grid-cols-5 lg:grid-cols-10 gap-2 bg-transparent h-auto p-2">
                 <TabsTrigger 
                   value="overview" 
-                  className="relative px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-blue-700 data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-blue-600/10 text-blue-200 border border-transparent data-[state=active]:border-blue-400/30"
+                  className="relative px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg hover:bg-accent text-foreground border border-transparent data-[state=active]:border-primary/30"
                 >
                   <BarChart3 className="h-4 w-4 mr-2" />
                   Overview
                 </TabsTrigger>
                 <TabsTrigger 
                   value="users" 
-                  className="relative px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-600 data-[state=active]:to-emerald-700 data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-emerald-600/10 text-blue-200 border border-transparent data-[state=active]:border-emerald-400/30"
+                  className="relative px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 data-[state=active]:bg-ios-green data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-accent text-foreground border border-transparent data-[state=active]:border-ios-green/30"
                 >
                   <Users className="h-4 w-4 mr-2" />
                   Users
                 </TabsTrigger>
                 <TabsTrigger 
                   value="properties" 
-                  className="relative px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 data-[state=active]:bg-gradient-to-r data-[state=active]:from-orange-600 data-[state=active]:to-orange-700 data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-orange-600/10 text-blue-200 border border-transparent data-[state=active]:border-orange-400/30"
+                  className="relative px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 data-[state=active]:bg-ios-orange data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-accent text-foreground border border-transparent data-[state=active]:border-ios-orange/30"
                 >
                   <Building className="h-4 w-4 mr-2" />
                   Properties
                 </TabsTrigger>
                 <TabsTrigger 
                   value="vendors" 
-                  className="relative px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-600 data-[state=active]:to-violet-700 data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-violet-600/10 text-blue-200 border border-transparent data-[state=active]:border-violet-400/30"
+                  className="relative px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 data-[state=active]:bg-ios-purple data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-accent text-foreground border border-transparent data-[state=active]:border-ios-purple/30"
                 >
                   <Store className="h-4 w-4 mr-2" />
                   Vendors
                 </TabsTrigger>
                 <TabsTrigger 
                   value="content" 
-                  className="relative px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 data-[state=active]:bg-gradient-to-r data-[state=active]:from-indigo-600 data-[state=active]:to-indigo-700 data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-indigo-600/10 text-blue-200 border border-transparent data-[state=active]:border-indigo-400/30"
+                  className="relative px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg hover:bg-accent text-foreground border border-transparent data-[state=active]:border-primary/30"
                 >
                   <FileText className="h-4 w-4 mr-2" />
                   Content
                 </TabsTrigger>
                 <TabsTrigger 
                   value="social" 
-                  className="relative px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 data-[state=active]:bg-gradient-to-r data-[state=active]:from-pink-600 data-[state=active]:to-pink-700 data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-pink-600/10 text-blue-200 border border-transparent data-[state=active]:border-pink-400/30"
+                  className="relative px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 data-[state=active]:bg-ios-pink data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-accent text-foreground border border-transparent data-[state=active]:border-ios-pink/30"
                 >
                   <Share2 className="h-4 w-4 mr-2" />
                   Social
                 </TabsTrigger>
                 <TabsTrigger 
                   value="filters" 
-                  className="relative px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 data-[state=active]:bg-gradient-to-r data-[state=active]:from-teal-600 data-[state=active]:to-teal-700 data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-teal-600/10 text-blue-200 border border-transparent data-[state=active]:border-teal-400/30"
+                  className="relative px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg hover:bg-accent text-foreground border border-transparent data-[state=active]:border-primary/30"
                 >
                   <Search className="h-4 w-4 mr-2" />
                   Filters
                 </TabsTrigger>
                 <TabsTrigger 
                   value="roles" 
-                  className="relative px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 data-[state=active]:bg-gradient-to-r data-[state=active]:from-cyan-600 data-[state=active]:to-cyan-700 data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-cyan-600/10 text-blue-200 border border-transparent data-[state=active]:border-cyan-400/30"
+                  className="relative px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg hover:bg-accent text-foreground border border-transparent data-[state=active]:border-primary/30"
                 >
                   <Shield className="h-4 w-4 mr-2" />
                   Roles
                 </TabsTrigger>
                 <TabsTrigger 
                   value="feedback" 
-                  className="relative px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-600 data-[state=active]:to-amber-700 data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-amber-600/10 text-blue-200 border border-transparent data-[state=active]:border-amber-400/30"
+                  className="relative px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 data-[state=active]:bg-ios-yellow data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-accent text-foreground border border-transparent data-[state=active]:border-ios-yellow/30"
                 >
                   <Bell className="h-4 w-4 mr-2" />
                   Feedback
                 </TabsTrigger>
                 <TabsTrigger 
                   value="settings" 
-                  className="relative px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 data-[state=active]:bg-gradient-to-r data-[state=active]:from-red-600 data-[state=active]:to-red-700 data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-red-600/10 text-blue-200 border border-transparent data-[state=active]:border-red-400/30"
+                  className="relative px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 data-[state=active]:bg-ios-red data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-accent text-foreground border border-transparent data-[state=active]:border-ios-red/30"
                 >
                   <Settings className="h-4 w-4 mr-2" />
                   Settings
@@ -273,131 +275,134 @@ const AdminDashboard = () => {
             <TabsContent value="overview" className="space-y-8">
               {/* Stats Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-                <Card className="bg-slate-800/40 backdrop-blur-xl border-blue-500/20 hover:border-blue-400/40 transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/10">
+                <Card className="card-ios hover:shadow-xl hover:shadow-primary/10 transition-all duration-300">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-                    <CardTitle className="text-sm font-medium text-blue-200">Total Users</CardTitle>
-                    <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
+                    <CardTitle className="text-sm font-medium text-muted-foreground">Total Users</CardTitle>
+                    <div className="w-10 h-10 bg-gradient-to-br from-primary to-primary/80 rounded-lg flex items-center justify-center shadow-lg shadow-primary/25">
                       <Users className="h-5 w-5 text-white" />
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-3xl font-bold text-white mb-1">
+                    <div className="text-3xl font-bold text-foreground mb-1">
                       {statsLoading ? '...' : (stats?.users || 0)}
                     </div>
-                    <p className="text-xs text-blue-300">Registered users</p>
+                    <p className="text-xs text-muted-foreground">Registered users</p>
                   </CardContent>
                 </Card>
 
-                <Card className="bg-slate-800/40 backdrop-blur-xl border-orange-500/20 hover:border-orange-400/40 transition-all duration-300 hover:shadow-xl hover:shadow-orange-500/10">
+                <Card className="card-ios hover:shadow-xl hover:shadow-ios-orange/10 transition-all duration-300">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-                    <CardTitle className="text-sm font-medium text-blue-200">Properties</CardTitle>
-                    <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center">
+                    <CardTitle className="text-sm font-medium text-muted-foreground">Properties</CardTitle>
+                    <div className="w-10 h-10 bg-gradient-to-br from-ios-orange to-orange-600 rounded-lg flex items-center justify-center shadow-lg shadow-ios-orange/25">
                       <Building className="h-5 w-5 text-white" />
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-3xl font-bold text-white mb-1">
+                    <div className="text-3xl font-bold text-foreground mb-1">
                       {statsLoading ? '...' : (stats?.properties || 0)}
                     </div>
-                    <p className="text-xs text-blue-300">Listed properties</p>
+                    <p className="text-xs text-muted-foreground">Listed properties</p>
                   </CardContent>
                 </Card>
 
-                <Card className="bg-slate-800/40 backdrop-blur-xl border-green-500/20 hover:border-green-400/40 transition-all duration-300 hover:shadow-xl hover:shadow-green-500/10">
+                <Card className="card-ios hover:shadow-xl hover:shadow-ios-green/10 transition-all duration-300">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-                    <CardTitle className="text-sm font-medium text-blue-200">Orders</CardTitle>
-                    <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center">
+                    <CardTitle className="text-sm font-medium text-muted-foreground">Orders</CardTitle>
+                    <div className="w-10 h-10 bg-gradient-to-br from-ios-green to-green-600 rounded-lg flex items-center justify-center shadow-lg shadow-ios-green/25">
                       <Package className="h-5 w-5 text-white" />
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-3xl font-bold text-white mb-1">
+                    <div className="text-3xl font-bold text-foreground mb-1">
                       {statsLoading ? '...' : (stats?.orders || 0)}
                     </div>
-                    <p className="text-xs text-blue-300">Total orders</p>
+                    <p className="text-xs text-muted-foreground">Total orders</p>
                   </CardContent>
                 </Card>
 
-                <Card className="bg-slate-800/40 backdrop-blur-xl border-purple-500/20 hover:border-purple-400/40 transition-all duration-300 hover:shadow-xl hover:shadow-purple-500/10">
+                <Card className="card-ios hover:shadow-xl hover:shadow-ios-purple/10 transition-all duration-300">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-                    <CardTitle className="text-sm font-medium text-blue-200">Vendor Requests</CardTitle>
-                    <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center">
+                    <CardTitle className="text-sm font-medium text-muted-foreground">Vendor Requests</CardTitle>
+                    <div className="w-10 h-10 bg-gradient-to-br from-ios-purple to-purple-600 rounded-lg flex items-center justify-center shadow-lg shadow-ios-purple/25">
                       <Store className="h-5 w-5 text-white" />
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-3xl font-bold text-white mb-1">
+                    <div className="text-3xl font-bold text-foreground mb-1">
                       {statsLoading ? '...' : (stats?.vendorRequests || 0)}
                     </div>
-                    <p className="text-xs text-blue-300">Pending approval</p>
+                    <p className="text-xs text-muted-foreground">Pending approval</p>
                   </CardContent>
                 </Card>
 
-                <Card className="bg-slate-800/40 backdrop-blur-xl border-red-500/20 hover:border-red-400/40 transition-all duration-300 hover:shadow-xl hover:shadow-red-500/10">
+                <Card className="card-ios hover:shadow-xl hover:shadow-ios-red/10 transition-all duration-300">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-                    <CardTitle className="text-sm font-medium text-blue-200">System Alerts</CardTitle>
-                    <div className="w-10 h-10 bg-gradient-to-br from-red-500 to-red-600 rounded-lg flex items-center justify-center">
+                    <CardTitle className="text-sm font-medium text-muted-foreground">System Alerts</CardTitle>
+                    <div className="w-10 h-10 bg-gradient-to-br from-ios-red to-red-600 rounded-lg flex items-center justify-center shadow-lg shadow-ios-red/25">
                       <AlertTriangle className="h-5 w-5 text-white" />
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-3xl font-bold text-white mb-1">
+                    <div className="text-3xl font-bold text-foreground mb-1">
                       {statsLoading ? '...' : (stats?.errorLogs || 0)}
                     </div>
-                    <p className="text-xs text-blue-300">Unresolved errors</p>
+                    <p className="text-xs text-muted-foreground">Unresolved errors</p>
                   </CardContent>
                 </Card>
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* Quick Actions */}
-                <Card className="bg-slate-800/40 backdrop-blur-xl border-blue-500/20">
+                <Card className="card-ios">
                   <CardHeader>
-                    <CardTitle className="text-xl font-semibold text-white flex items-center gap-3">
-                      <Zap className="h-6 w-6 text-blue-400" />
+                    <CardTitle className="text-xl font-semibold text-foreground flex items-center gap-3">
+                      <Zap className="h-6 w-6 text-primary" />
                       Quick Actions
                     </CardTitle>
-                    <CardDescription className="text-blue-300">Common administrative tasks</CardDescription>
+                    <CardDescription className="text-muted-foreground">Common administrative tasks</CardDescription>
                   </CardHeader>
                   <CardContent className="grid grid-cols-2 gap-4">
                     <Button 
                       onClick={() => handleQuickAction('users')} 
-                      className="h-20 p-4 flex flex-col items-center space-y-2 bg-gradient-to-br from-emerald-600 to-emerald-700 hover:from-emerald-500 hover:to-emerald-600 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300"
+                      variant="ios-green"
+                      className="h-20 p-4 flex flex-col items-center space-y-2"
                     >
                       <Users className="h-6 w-6" />
                       <span className="text-sm font-medium">Manage Users</span>
                     </Button>
                     <Button 
                       onClick={() => handleQuickAction('content')} 
-                      className="h-20 p-4 flex flex-col items-center space-y-2 bg-gradient-to-br from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300"
+                      variant="ios"
+                      className="h-20 p-4 flex flex-col items-center space-y-2"
                     >
                       <FileText className="h-6 w-6" />
                       <span className="text-sm font-medium">Content & SEO</span>
                     </Button>
                     <Button 
                       onClick={() => handleQuickAction('social')} 
-                      className="h-20 p-4 flex flex-col items-center space-y-2 bg-gradient-to-br from-pink-600 to-pink-700 hover:from-pink-500 hover:to-pink-600 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300"
+                      className="h-20 p-4 flex flex-col items-center space-y-2 bg-gradient-to-r from-ios-pink to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white shadow-lg shadow-ios-pink/25"
                     >
                       <Share2 className="h-6 w-6" />
                       <span className="text-sm font-medium">Social Media</span>
                     </Button>
                     <Button 
                       onClick={() => handleQuickAction('filters')} 
-                      className="h-20 p-4 flex flex-col items-center space-y-2 bg-gradient-to-br from-teal-600 to-teal-700 hover:from-teal-500 hover:to-teal-600 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300"
+                      className="h-20 p-4 flex flex-col items-center space-y-2 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary text-white shadow-lg"
                     >
                       <Search className="h-6 w-6" />
                       <span className="text-sm font-medium">Search Filters</span>
                     </Button>
                     <Button 
                       onClick={() => handleQuickAction('vendors')} 
-                      className="h-20 p-4 flex flex-col items-center space-y-2 bg-gradient-to-br from-purple-600 to-purple-700 hover:from-purple-500 hover:to-purple-600 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300"
+                      className="h-20 p-4 flex flex-col items-center space-y-2 bg-gradient-to-r from-ios-purple to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white shadow-lg shadow-ios-purple/25"
                     >
                       <Store className="h-6 w-6" />
                       <span className="text-sm font-medium">Vendors</span>
                     </Button>
                     <Button 
                       onClick={() => handleQuickAction('settings')} 
-                      className="h-20 p-4 flex flex-col items-center space-y-2 bg-gradient-to-br from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300"
+                      variant="ios-red"
+                      className="h-20 p-4 flex flex-col items-center space-y-2"
                     >
                       <Settings className="h-6 w-6" />
                       <span className="text-sm font-medium">Settings</span>
@@ -406,54 +411,54 @@ const AdminDashboard = () => {
                 </Card>
 
                 {/* System Status */}
-                <Card className="bg-slate-800/40 backdrop-blur-xl border-blue-500/20">
+                <Card className="card-ios">
                   <CardHeader>
-                    <CardTitle className="text-xl font-semibold text-white flex items-center gap-3">
-                      <Activity className="h-6 w-6 text-green-400" />
+                    <CardTitle className="text-xl font-semibold text-foreground flex items-center gap-3">
+                      <Activity className="h-6 w-6 text-ios-green" />
                       System Status
                     </CardTitle>
-                    <CardDescription className="text-blue-300">Platform health and monitoring</CardDescription>
+                    <CardDescription className="text-muted-foreground">Platform health and monitoring</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-6">
-                    <div className="flex items-center justify-between p-4 bg-green-500/10 rounded-xl border border-green-500/20">
-                      <span className="text-sm flex items-center gap-3 text-white font-medium">
-                        <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+                    <div className="flex items-center justify-between p-4 bg-ios-green/10 rounded-xl border border-ios-green/20">
+                      <span className="text-sm flex items-center gap-3 text-foreground font-medium">
+                        <div className="w-3 h-3 bg-ios-green rounded-full animate-pulse"></div>
                         <Activity className="h-4 w-4" />
                         System Status
                       </span>
-                      <Badge className="bg-green-500 text-white border-0">Online</Badge>
+                      <Badge className="bg-ios-green text-white border-0">Online</Badge>
                     </div>
-                    <div className="flex items-center justify-between p-4 bg-blue-500/10 rounded-xl border border-blue-500/20">
-                      <span className="text-sm flex items-center gap-3 text-white font-medium">
-                        <div className="w-3 h-3 bg-blue-400 rounded-full"></div>
+                    <div className="flex items-center justify-between p-4 bg-primary/10 rounded-xl border border-primary/20">
+                      <span className="text-sm flex items-center gap-3 text-foreground font-medium">
+                        <div className="w-3 h-3 bg-primary rounded-full"></div>
                         <Database className="h-4 w-4" />
                         Database
                       </span>
-                      <Badge className="bg-blue-500 text-white border-0">Healthy</Badge>
+                      <Badge className="bg-primary text-primary-foreground border-0">Healthy</Badge>
                     </div>
-                    <div className="flex items-center justify-between p-4 bg-green-500/10 rounded-xl border border-green-500/20">
-                      <span className="text-sm flex items-center gap-3 text-white font-medium">
-                        <div className="w-3 h-3 bg-green-400 rounded-full"></div>
+                    <div className="flex items-center justify-between p-4 bg-ios-green/10 rounded-xl border border-ios-green/20">
+                      <span className="text-sm flex items-center gap-3 text-foreground font-medium">
+                        <div className="w-3 h-3 bg-ios-green rounded-full"></div>
                         <Globe className="h-4 w-4" />
                         API Status
                       </span>
-                      <Badge className="bg-green-500 text-white border-0">Operational</Badge>
+                      <Badge className="bg-ios-green text-white border-0">Operational</Badge>
                     </div>
-                    <div className="flex items-center justify-between p-4 bg-blue-500/10 rounded-xl border border-blue-500/20">
-                      <span className="text-sm flex items-center gap-3 text-white font-medium">
-                        <div className="w-3 h-3 bg-blue-400 rounded-full"></div>
+                    <div className="flex items-center justify-between p-4 bg-primary/10 rounded-xl border border-primary/20">
+                      <span className="text-sm flex items-center gap-3 text-foreground font-medium">
+                        <div className="w-3 h-3 bg-primary rounded-full"></div>
                         <Lock className="h-4 w-4" />
                         Security
                       </span>
-                      <Badge className="bg-blue-500 text-white border-0">Protected</Badge>
+                      <Badge className="bg-primary text-primary-foreground border-0">Protected</Badge>
                     </div>
-                    <div className="flex items-center justify-between p-4 bg-amber-500/10 rounded-xl border border-amber-500/20">
-                      <span className="text-sm flex items-center gap-3 text-white font-medium">
-                        <div className="w-3 h-3 bg-amber-400 rounded-full"></div>
+                    <div className="flex items-center justify-between p-4 bg-ios-yellow/10 rounded-xl border border-ios-yellow/20">
+                      <span className="text-sm flex items-center gap-3 text-foreground font-medium">
+                        <div className="w-3 h-3 bg-ios-yellow rounded-full"></div>
                         <Bell className="h-4 w-4" />
                         Alerts
                       </span>
-                      <Badge className="bg-amber-500 text-white border-0">{stats?.errorLogs || 0} Pending</Badge>
+                      <Badge className="bg-ios-yellow text-white border-0">{stats?.errorLogs || 0} Pending</Badge>
                     </div>
                   </CardContent>
                 </Card>
