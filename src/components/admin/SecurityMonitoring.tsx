@@ -6,105 +6,88 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Shield, AlertTriangle, Activity, Search, Eye, Ban } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Shield, Search, AlertTriangle, Activity, Globe, Clock } from "lucide-react";
 
 const SecurityMonitoring = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [activityFilter, setActivityFilter] = useState("all");
+  const [severityFilter, setSeverityFilter] = useState("all");
 
-  const { data: userActivity, isLoading: activityLoading } = useQuery({
-    queryKey: ['user-activity', searchTerm, activityFilter],
+  const { data: errorLogs, isLoading: logsLoading } = useQuery({
+    queryKey: ['error-logs', searchTerm, severityFilter],
     queryFn: async () => {
       let query = supabase
+        .from('system_error_logs')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(100);
+
+      if (searchTerm) {
+        query = query.or(`error_message.ilike.%${searchTerm}%,error_type.ilike.%${searchTerm}%`);
+      }
+
+      if (severityFilter !== 'all') {
+        query = query.eq('severity', severityFilter);
+      }
+
+      const { data, error } = await query;
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  const { data: activityLogs, isLoading: activityLoading } = useQuery({
+    queryKey: ['activity-logs'],
+    queryFn: async () => {
+      const { data, error } = await supabase
         .from('user_activity_logs')
         .select(`
           *,
-          user:profiles(full_name, email)
-        `);
+          user:profiles!user_activity_logs_user_id_fkey(full_name, email)
+        `)
+        .order('created_at', { ascending: false })
+        .limit(100);
       
-      if (searchTerm) {
-        query = query.ilike('description', `%${searchTerm}%`);
-      }
-      
-      if (activityFilter !== 'all') {
-        query = query.eq('activity_type', activityFilter);
-      }
-      
-      const { data, error } = await query.order('created_at', { ascending: false }).limit(100);
       if (error) throw error;
       return data;
-    }
+    },
   });
 
-  const { data: userSessions, isLoading: sessionsLoading } = useQuery({
+  const { data: sessions, isLoading: sessionsLoading } = useQuery({
     queryKey: ['user-sessions'],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('user_sessions')
         .select(`
           *,
-          user:profiles(full_name, email)
+          user:profiles!user_sessions_user_id_fkey(full_name, email)
         `)
-        .eq('is_active', true)
-        .order('created_at', { ascending: false });
-      
-      if (error) throw error;
-      return data;
-    }
-  });
-
-  const { data: errorLogs, isLoading: errorsLoading } = useQuery({
-    queryKey: ['error-logs'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('system_error_logs')
-        .select('*')
         .order('created_at', { ascending: false })
         .limit(50);
       
       if (error) throw error;
       return data;
-    }
+    },
   });
 
-  const getActivityTypeColor = (type: string) => {
-    switch (type) {
-      case 'login': return 'bg-green-500';
-      case 'logout': return 'bg-blue-500';
-      case 'failed_login': return 'bg-red-500';
-      case 'password_change': return 'bg-yellow-500';
-      case 'profile_update': return 'bg-purple-500';
-      default: return 'bg-gray-500';
-    }
-  };
-
-  const getSeverityColor = (severity: string) => {
+  const getSeverityBadgeVariant = (severity: string) => {
     switch (severity) {
-      case 'critical': return 'bg-red-500';
-      case 'high': return 'bg-orange-500';
-      case 'medium': return 'bg-yellow-500';
-      case 'low': return 'bg-green-500';
-      default: return 'bg-gray-500';
+      case 'high': return 'destructive';
+      case 'medium': return 'secondary';
+      case 'low': return 'outline';
+      default: return 'secondary';
     }
   };
 
-  const getLocationInfo = (locationData: any) => {
-    if (typeof locationData === 'string') {
-      try {
-        const parsed = JSON.parse(locationData);
-        return parsed.city || 'Unknown';
-      } catch {
-        return 'Unknown';
-      }
+  const getSeverityIcon = (severity: string) => {
+    switch (severity) {
+      case 'high': return <AlertTriangle className="h-4 w-4" />;
+      case 'medium': return <Shield className="h-4 w-4" />;
+      case 'low': return <Activity className="h-4 w-4" />;
+      default: return <Activity className="h-4 w-4" />;
     }
-    return locationData?.city || 'Unknown';
-  };
-
-  const formatIPAddress = (ip: string | null | undefined) => {
-    return ip || 'Unknown';
   };
 
   return (
@@ -115,55 +98,124 @@ const SecurityMonitoring = () => {
             <Shield className="h-5 w-5" />
             Security Monitoring
           </CardTitle>
-          <CardDescription>Monitor user activities, sessions, and system security</CardDescription>
+          <CardDescription>
+            Monitor system security, errors, and user activity
+          </CardDescription>
         </CardHeader>
-      </Card>
+        <CardContent>
+          <Tabs defaultValue="errors" className="w-full">
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="errors">
+                <AlertTriangle className="h-4 w-4 mr-2" />
+                Error Logs
+              </TabsTrigger>
+              <TabsTrigger value="activity">
+                <Activity className="h-4 w-4 mr-2" />
+                User Activity
+              </TabsTrigger>
+              <TabsTrigger value="sessions">
+                <Globe className="h-4 w-4 mr-2" />
+                Active Sessions
+              </TabsTrigger>
+            </TabsList>
 
-      <Tabs defaultValue="activity" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="activity">User Activity</TabsTrigger>
-          <TabsTrigger value="sessions">Active Sessions</TabsTrigger>
-          <TabsTrigger value="errors">Error Logs</TabsTrigger>
-          <TabsTrigger value="security">Security Alerts</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="activity" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Activity className="h-4 w-4" />
-                User Activity Logs
-              </CardTitle>
-              <CardDescription>Track user actions and behaviors</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {/* Filters */}
-              <div className="flex flex-col sm:flex-row gap-4">
+            <TabsContent value="errors" className="space-y-4">
+              <div className="flex gap-4">
                 <div className="relative flex-1">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input
-                    placeholder="Search activities..."
+                    placeholder="Search error logs..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="pl-10"
                   />
                 </div>
-                <Select value={activityFilter} onValueChange={setActivityFilter}>
+                <Select value={severityFilter} onValueChange={setSeverityFilter}>
                   <SelectTrigger className="w-48">
-                    <SelectValue placeholder="Filter by type" />
+                    <SelectValue placeholder="Filter by severity" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">All Activities</SelectItem>
-                    <SelectItem value="login">Login</SelectItem>
-                    <SelectItem value="logout">Logout</SelectItem>
-                    <SelectItem value="failed_login">Failed Login</SelectItem>
-                    <SelectItem value="password_change">Password Change</SelectItem>
-                    <SelectItem value="profile_update">Profile Update</SelectItem>
+                    <SelectItem value="all">All Severities</SelectItem>
+                    <SelectItem value="high">High</SelectItem>
+                    <SelectItem value="medium">Medium</SelectItem>
+                    <SelectItem value="low">Low</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
-              {/* Activity Table */}
+              <div className="border rounded-lg">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Error</TableHead>
+                      <TableHead>Type</TableHead>
+                      <TableHead>Severity</TableHead>
+                      <TableHead>URL</TableHead>
+                      <TableHead>Time</TableHead>
+                      <TableHead>Status</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {logsLoading ? (
+                      <TableRow>
+                        <TableCell colSpan={6} className="text-center py-8">
+                          Loading error logs...
+                        </TableCell>
+                      </TableRow>
+                    ) : errorLogs?.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={6} className="text-center py-8">
+                          No error logs found
+                        </TableCell>
+                      </TableRow>
+                    ) : (
+                      errorLogs?.map((log) => (
+                        <TableRow key={log.id}>
+                          <TableCell>
+                            <div className="space-y-1">
+                              <div className="font-medium truncate max-w-xs">{log.error_message}</div>
+                              {log.stack_trace && (
+                                <div className="text-xs text-muted-foreground truncate max-w-xs">
+                                  {log.stack_trace}
+                                </div>
+                              )}
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant="outline">{log.error_type}</Badge>
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex items-center gap-2">
+                              {getSeverityIcon(log.severity)}
+                              <Badge variant={getSeverityBadgeVariant(log.severity)}>
+                                {log.severity}
+                              </Badge>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="text-sm text-muted-foreground truncate max-w-xs">
+                              {log.request_url || 'N/A'}
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="text-sm">
+                              {new Date(log.created_at).toLocaleString()}
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant={log.is_resolved ? 'default' : 'destructive'}>
+                              {log.is_resolved ? 'Resolved' : 'Open'}
+                            </Badge>
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="activity" className="space-y-4">
               <div className="border rounded-lg">
                 <Table>
                   <TableHeader>
@@ -172,63 +224,68 @@ const SecurityMonitoring = () => {
                       <TableHead>Activity</TableHead>
                       <TableHead>Description</TableHead>
                       <TableHead>IP Address</TableHead>
-                      <TableHead>Location</TableHead>
                       <TableHead>Time</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {activityLoading ? (
                       <TableRow>
-                        <TableCell colSpan={6} className="text-center py-8">
-                          Loading activities...
+                        <TableCell colSpan={5} className="text-center py-8">
+                          Loading activity logs...
                         </TableCell>
                       </TableRow>
-                    ) : userActivity?.map((activity) => (
-                      <TableRow key={activity.id}>
-                        <TableCell>
-                          <div>
-                            <p className="font-medium">
-                              {Array.isArray(activity.user) && activity.user.length > 0
-                                ? activity.user[0]?.full_name || activity.user[0]?.email
-                                : activity.user?.full_name || activity.user?.email || 'Unknown User'}
-                            </p>
-                          </div>
+                    ) : activityLogs?.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={5} className="text-center py-8">
+                          No activity logs found
                         </TableCell>
-                        <TableCell>
-                          <Badge className={getActivityTypeColor(activity.activity_type)}>
-                            {activity.activity_type.replace('_', ' ').toUpperCase()}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>{activity.description}</TableCell>
-                        <TableCell>{formatIPAddress(activity.ip_address?.toString())}</TableCell>
-                        <TableCell>{getLocationInfo(activity.location_data)}</TableCell>
-                        <TableCell>{new Date(activity.created_at).toLocaleString()}</TableCell>
                       </TableRow>
-                    ))}
+                    ) : (
+                      activityLogs?.map((log) => (
+                        <TableRow key={log.id}>
+                          <TableCell>
+                            <div className="space-y-1">
+                              <div className="font-medium">{log.user?.full_name || 'Unknown'}</div>
+                              <div className="text-sm text-muted-foreground">{log.user?.email}</div>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant="outline">{log.activity_type}</Badge>
+                          </TableCell>
+                          <TableCell>
+                            <div className="text-sm max-w-xs truncate">
+                              {log.description || 'No description'}
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="text-sm text-muted-foreground">
+                              {log.ip_address || 'N/A'}
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="text-sm">
+                              {new Date(log.created_at).toLocaleString()}
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    )}
                   </TableBody>
                 </Table>
               </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
+            </TabsContent>
 
-        <TabsContent value="sessions" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Active User Sessions</CardTitle>
-              <CardDescription>Monitor currently active user sessions</CardDescription>
-            </CardHeader>
-            <CardContent>
+            <TabsContent value="sessions" className="space-y-4">
               <div className="border rounded-lg">
                 <Table>
                   <TableHeader>
                     <TableRow>
                       <TableHead>User</TableHead>
+                      <TableHead>Status</TableHead>
                       <TableHead>IP Address</TableHead>
-                      <TableHead>Device</TableHead>
-                      <TableHead>Location</TableHead>
-                      <TableHead>Started</TableHead>
-                      <TableHead>Actions</TableHead>
+                      <TableHead>User Agent</TableHead>
+                      <TableHead>Created</TableHead>
+                      <TableHead>Expires</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -238,115 +295,56 @@ const SecurityMonitoring = () => {
                           Loading sessions...
                         </TableCell>
                       </TableRow>
-                    ) : userSessions?.map((session) => (
-                      <TableRow key={session.id}>
-                        <TableCell>
-                          <div>
-                            <p className="font-medium">
-                              {Array.isArray(session.user) && session.user.length > 0
-                                ? session.user[0]?.full_name || session.user[0]?.email
-                                : session.user?.full_name || session.user?.email || 'Unknown User'}
-                            </p>
-                          </div>
-                        </TableCell>
-                        <TableCell>{formatIPAddress(session.ip_address?.toString())}</TableCell>
-                        <TableCell>
-                          <span className="text-sm text-gray-600 truncate max-w-32 block">
-                            {session.user_agent?.substring(0, 50) || 'Unknown'}
-                          </span>
-                        </TableCell>
-                        <TableCell>{getLocationInfo(session.location_data)}</TableCell>
-                        <TableCell>{new Date(session.created_at).toLocaleString()}</TableCell>
-                        <TableCell>
-                          <Button variant="destructive" size="sm">
-                            <Ban className="h-4 w-4" />
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="errors" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <AlertTriangle className="h-4 w-4" />
-                System Error Logs
-              </CardTitle>
-              <CardDescription>Monitor system errors and issues</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="border rounded-lg">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Error Type</TableHead>
-                      <TableHead>Message</TableHead>
-                      <TableHead>Severity</TableHead>
-                      <TableHead>User</TableHead>
-                      <TableHead>Time</TableHead>
-                      <TableHead>Status</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {errorsLoading ? (
+                    ) : sessions?.length === 0 ? (
                       <TableRow>
                         <TableCell colSpan={6} className="text-center py-8">
-                          Loading error logs...
+                          No active sessions found
                         </TableCell>
                       </TableRow>
-                    ) : errorLogs?.map((error) => (
-                      <TableRow key={error.id}>
-                        <TableCell>
-                          <Badge variant="outline">{error.error_type}</Badge>
-                        </TableCell>
-                        <TableCell>
-                          <span className="text-sm text-gray-600 truncate max-w-64 block">
-                            {error.error_message}
-                          </span>
-                        </TableCell>
-                        <TableCell>
-                          <Badge className={getSeverityColor(error.severity)}>
-                            {error.severity}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>
-                          {error.user_id ? 'User ID: ' + error.user_id.substring(0, 8) : 'System'}
-                        </TableCell>
-                        <TableCell>{new Date(error.created_at).toLocaleString()}</TableCell>
-                        <TableCell>
-                          <Badge variant={error.is_resolved ? "default" : "destructive"}>
-                            {error.is_resolved ? 'Resolved' : 'Open'}
-                          </Badge>
-                        </TableCell>
-                      </TableRow>
-                    ))}
+                    ) : (
+                      sessions?.map((session) => (
+                        <TableRow key={session.id}>
+                          <TableCell>
+                            <div className="space-y-1">
+                              <div className="font-medium">{session.user?.full_name || 'Unknown'}</div>
+                              <div className="text-sm text-muted-foreground">{session.user?.email}</div>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant={session.is_active ? 'default' : 'secondary'}>
+                              {session.is_active ? 'Active' : 'Inactive'}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            <div className="text-sm text-muted-foreground">
+                              {session.ip_address || 'N/A'}
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="text-sm text-muted-foreground truncate max-w-xs">
+                              {session.user_agent || 'N/A'}
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="text-sm">
+                              {new Date(session.created_at).toLocaleString()}
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="text-sm">
+                              {session.expires_at ? new Date(session.expires_at).toLocaleString() : 'N/A'}
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    )}
                   </TableBody>
                 </Table>
               </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="security" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Security Alerts</CardTitle>
-              <CardDescription>Security incidents and suspicious activities</CardDescription>
-            </CardHeader>
-            <CardContent className="text-center py-8">
-              <AlertTriangle className="h-12 w-12 text-yellow-500 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold mb-2">No Security Alerts</h3>
-              <p className="text-gray-600">All systems are secure. No suspicious activities detected.</p>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+            </TabsContent>
+          </Tabs>
+        </CardContent>
+      </Card>
     </div>
   );
 };

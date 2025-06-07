@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -6,23 +5,25 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import { useAlert } from "@/contexts/AlertContext";
-import { Bot, Plus, Edit, Activity, Zap, Settings } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
+import { Bot, Plus, Edit, Trash2, Settings, BarChart3 } from "lucide-react";
+import { useAlert } from "@/contexts/AlertContext";
 
 const AIBotManagement = () => {
-  const [isCreateBotOpen, setIsCreateBotOpen] = useState(false);
-  const [editingBot, setEditingBot] = useState<any>(null);
-  const [newBot, setNewBot] = useState({
+  const [showBotForm, setShowBotForm] = useState(false);
+  const [editingBot, setEditingBot] = useState(null);
+  const [botData, setBotData] = useState({
     bot_name: '',
-    model_type: 'openai',
-    configuration: '',
-    is_active: true
+    model_type: 'gpt-3.5-turbo',
+    is_active: true,
+    configuration: {}
   });
+
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
 
@@ -36,101 +37,103 @@ const AIBotManagement = () => {
       
       if (error) throw error;
       return data;
-    }
+    },
   });
 
   const createBotMutation = useMutation({
     mutationFn: async (botData: any) => {
       const { error } = await supabase
         .from('ai_bot_settings')
-        .insert({
-          ...botData,
-          configuration: botData.configuration ? JSON.parse(botData.configuration) : {},
-          usage_stats: {}
-        });
-      
+        .insert([botData]);
       if (error) throw error;
     },
     onSuccess: () => {
+      showSuccess("Bot Created", "AI bot has been created successfully.");
       queryClient.invalidateQueries({ queryKey: ['ai-bots'] });
-      showSuccess("Success", "AI Bot created successfully");
-      setIsCreateBotOpen(false);
-      setNewBot({
-        bot_name: '',
-        model_type: 'openai',
-        configuration: '',
-        is_active: true
-      });
+      setShowBotForm(false);
+      resetBotForm();
     },
-    onError: (error) => {
-      showError("Error", `Failed to create bot: ${error.message}`);
-    }
+    onError: (error: any) => {
+      showError("Creation Failed", error.message);
+    },
   });
 
   const updateBotMutation = useMutation({
-    mutationFn: async ({ id, updates }: { id: string, updates: any }) => {
+    mutationFn: async ({ id, updates }: { id: string; updates: any }) => {
       const { error } = await supabase
         .from('ai_bot_settings')
-        .update({
-          ...updates,
-          configuration: updates.configuration ? JSON.parse(updates.configuration) : {},
-          updated_at: new Date().toISOString()
-        })
+        .update(updates)
         .eq('id', id);
-      
       if (error) throw error;
     },
     onSuccess: () => {
+      showSuccess("Bot Updated", "AI bot has been updated successfully.");
       queryClient.invalidateQueries({ queryKey: ['ai-bots'] });
-      showSuccess("Success", "AI Bot updated successfully");
+      setShowBotForm(false);
       setEditingBot(null);
+      resetBotForm();
     },
-    onError: (error) => {
-      showError("Error", `Failed to update bot: ${error.message}`);
-    }
+    onError: (error: any) => {
+      showError("Update Failed", error.message);
+    },
   });
 
-  const toggleBotStatus = async (botId: string, currentStatus: boolean) => {
-    updateBotMutation.mutate({
-      id: botId,
-      updates: { is_active: !currentStatus }
+  const deleteBotMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase
+        .from('ai_bot_settings')
+        .delete()
+        .eq('id', id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      showSuccess("Bot Deleted", "AI bot has been deleted successfully.");
+      queryClient.invalidateQueries({ queryKey: ['ai-bots'] });
+    },
+    onError: (error: any) => {
+      showError("Deletion Failed", error.message);
+    },
+  });
+
+  const resetBotForm = () => {
+    setBotData({
+      bot_name: '',
+      model_type: 'gpt-3.5-turbo',
+      is_active: true,
+      configuration: {}
     });
   };
 
-  const handleCreateBot = () => {
-    if (!newBot.bot_name.trim()) {
-      showError("Error", "Bot name is required");
-      return;
+  const handleBotSubmit = () => {
+    if (editingBot) {
+      updateBotMutation.mutate({ id: editingBot.id, updates: botData });
+    } else {
+      createBotMutation.mutate(botData);
     }
-    createBotMutation.mutate(newBot);
   };
 
-  const handleUpdateBot = () => {
-    if (!editingBot) return;
-    updateBotMutation.mutate({
-      id: editingBot.id,
-      updates: {
-        bot_name: editingBot.bot_name,
-        model_type: editingBot.model_type,
-        configuration: editingBot.configuration,
-        is_active: editingBot.is_active
-      }
+  const handleEditBot = (bot: any) => {
+    setEditingBot(bot);
+    setBotData({
+      bot_name: bot.bot_name,
+      model_type: bot.model_type,
+      is_active: bot.is_active,
+      configuration: bot.configuration || {}
     });
+    setShowBotForm(true);
   };
 
-  const getModelColor = (model: string) => {
-    switch (model) {
-      case 'openai': return 'bg-green-500';
-      case 'anthropic': return 'bg-blue-500';
-      case 'gemini': return 'bg-purple-500';
-      case 'local': return 'bg-gray-500';
-      default: return 'bg-gray-500';
+  const handleDeleteBot = (id: string) => {
+    if (confirm('Are you sure you want to delete this AI bot?')) {
+      deleteBotMutation.mutate(id);
     }
   };
 
-  const formatUsageStats = (stats: any) => {
-    if (!stats || typeof stats !== 'object') return 'No data';
-    return Object.entries(stats).map(([key, value]) => `${key}: ${value}`).join(', ');
+  const toggleBotStatus = (id: string, currentStatus: boolean) => {
+    updateBotMutation.mutate({ 
+      id, 
+      updates: { is_active: !currentStatus, updated_at: new Date().toISOString() }
+    });
   };
 
   return (
@@ -143,275 +146,178 @@ const AIBotManagement = () => {
                 <Bot className="h-5 w-5" />
                 AI Bot Management
               </CardTitle>
-              <CardDescription>Configure and manage AI bots and automation</CardDescription>
+              <CardDescription>
+                Configure and manage AI chatbots and automation
+              </CardDescription>
             </div>
-            <Dialog open={isCreateBotOpen} onOpenChange={setIsCreateBotOpen}>
+            <Dialog open={showBotForm} onOpenChange={setShowBotForm}>
               <DialogTrigger asChild>
-                <Button>
+                <Button onClick={() => { resetBotForm(); setEditingBot(null); }}>
                   <Plus className="h-4 w-4 mr-2" />
-                  Add AI Bot
+                  Add Bot
                 </Button>
               </DialogTrigger>
-              <DialogContent>
+              <DialogContent className="max-w-2xl">
                 <DialogHeader>
-                  <DialogTitle>Create New AI Bot</DialogTitle>
-                  <DialogDescription>Configure a new AI bot for automation</DialogDescription>
+                  <DialogTitle>
+                    {editingBot ? 'Edit AI Bot' : 'Create New AI Bot'}
+                  </DialogTitle>
+                  <DialogDescription>
+                    {editingBot ? 'Update the bot configuration.' : 'Set up a new AI bot.'}
+                  </DialogDescription>
                 </DialogHeader>
-                <div className="space-y-4">
-                  <div>
-                    <Label htmlFor="bot-name">Bot Name</Label>
+                <div className="grid gap-4 py-4">
+                  <div className="grid gap-2">
+                    <Label htmlFor="bot_name">Bot Name</Label>
                     <Input
-                      id="bot-name"
-                      value={newBot.bot_name}
-                      onChange={(e) => setNewBot({...newBot, bot_name: e.target.value})}
+                      id="bot_name"
+                      value={botData.bot_name}
+                      onChange={(e) => setBotData({ ...botData, bot_name: e.target.value })}
                       placeholder="Customer Support Bot"
                     />
                   </div>
-                  <div>
-                    <Label htmlFor="model-type">AI Model Type</Label>
-                    <Select
-                      value={newBot.model_type}
-                      onValueChange={(value) => setNewBot({...newBot, model_type: value})}
-                    >
+                  <div className="grid gap-2">
+                    <Label htmlFor="model_type">Model Type</Label>
+                    <Select value={botData.model_type} onValueChange={(value) => setBotData({ ...botData, model_type: value })}>
                       <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="openai">OpenAI (GPT)</SelectItem>
-                        <SelectItem value="anthropic">Anthropic (Claude)</SelectItem>
-                        <SelectItem value="gemini">Google (Gemini)</SelectItem>
-                        <SelectItem value="local">Local Model</SelectItem>
+                        <SelectItem value="gpt-3.5-turbo">GPT-3.5 Turbo</SelectItem>
+                        <SelectItem value="gpt-4">GPT-4</SelectItem>
+                        <SelectItem value="claude-3">Claude 3</SelectItem>
+                        <SelectItem value="gemini-pro">Gemini Pro</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
-                  <div>
-                    <Label htmlFor="bot-config">Configuration (JSON)</Label>
-                    <Textarea
-                      id="bot-config"
-                      value={newBot.configuration}
-                      onChange={(e) => setNewBot({...newBot, configuration: e.target.value})}
-                      placeholder='{"model": "gpt-4", "temperature": 0.7, "max_tokens": 2000}'
-                      rows={4}
-                    />
-                  </div>
                   <div className="flex items-center space-x-2">
                     <Switch
-                      id="bot-active"
-                      checked={newBot.is_active}
-                      onCheckedChange={(checked) => setNewBot({...newBot, is_active: checked})}
+                      id="is_active"
+                      checked={botData.is_active}
+                      onCheckedChange={(checked) => setBotData({ ...botData, is_active: checked })}
                     />
-                    <Label htmlFor="bot-active">Active</Label>
+                    <Label htmlFor="is_active">Active</Label>
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="configuration">Configuration (JSON)</Label>
+                    <Textarea
+                      id="configuration"
+                      value={JSON.stringify(botData.configuration, null, 2)}
+                      onChange={(e) => {
+                        try {
+                          const parsed = JSON.parse(e.target.value);
+                          setBotData({ ...botData, configuration: parsed });
+                        } catch (error) {
+                          // Invalid JSON, keep the text as is
+                        }
+                      }}
+                      placeholder='{"temperature": 0.7, "max_tokens": 1000, "system_prompt": "You are a helpful assistant..."}'
+                      rows={8}
+                    />
                   </div>
                 </div>
                 <DialogFooter>
-                  <Button variant="outline" onClick={() => setIsCreateBotOpen(false)}>
+                  <Button variant="outline" onClick={() => setShowBotForm(false)}>
                     Cancel
                   </Button>
-                  <Button onClick={handleCreateBot} disabled={createBotMutation.isPending}>
-                    {createBotMutation.isPending ? 'Creating...' : 'Create Bot'}
+                  <Button 
+                    onClick={handleBotSubmit}
+                    disabled={createBotMutation.isPending || updateBotMutation.isPending}
+                  >
+                    {editingBot ? 'Update' : 'Create'} Bot
                   </Button>
                 </DialogFooter>
               </DialogContent>
             </Dialog>
           </div>
         </CardHeader>
+        <CardContent>
+          <div className="border rounded-lg">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Bot Name</TableHead>
+                  <TableHead>Model</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Usage Stats</TableHead>
+                  <TableHead>Created</TableHead>
+                  <TableHead>Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {isLoading ? (
+                  <TableRow>
+                    <TableCell colSpan={6} className="text-center py-8">
+                      Loading AI bots...
+                    </TableCell>
+                  </TableRow>
+                ) : aiBots?.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={6} className="text-center py-8">
+                      No AI bots found
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  aiBots?.map((bot) => (
+                    <TableRow key={bot.id}>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <Bot className="h-4 w-4" />
+                          <div>
+                            <div className="font-medium">{bot.bot_name}</div>
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="outline">{bot.model_type}</Badge>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <Switch
+                            checked={bot.is_active}
+                            onCheckedChange={() => toggleBotStatus(bot.id, bot.is_active)}
+                          />
+                          <Badge variant={bot.is_active ? 'default' : 'secondary'}>
+                            {bot.is_active ? 'Active' : 'Inactive'}
+                          </Badge>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-1">
+                          <BarChart3 className="h-4 w-4" />
+                          <span className="text-sm">
+                            {bot.usage_stats?.total_requests || 0} requests
+                          </span>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        {new Date(bot.created_at).toLocaleDateString()}
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <Button size="sm" variant="outline">
+                            <Settings className="h-4 w-4" />
+                          </Button>
+                          <Button size="sm" variant="outline" onClick={() => handleEditBot(bot)}>
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button 
+                            size="sm" 
+                            variant="outline" 
+                            onClick={() => handleDeleteBot(bot.id)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
+          </div>
+        </CardContent>
       </Card>
-
-      {/* AI Bots Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {isLoading ? (
-          <div className="col-span-full text-center py-8">Loading AI bots...</div>
-        ) : aiBots?.map((bot) => (
-          <Card key={bot.id} className="relative">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Bot className="h-5 w-5" />
-                  <CardTitle className="text-lg">{bot.bot_name}</CardTitle>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Badge className={getModelColor(bot.model_type)}>
-                    {bot.model_type.toUpperCase()}
-                  </Badge>
-                  <Switch
-                    checked={bot.is_active}
-                    onCheckedChange={() => toggleBotStatus(bot.id, bot.is_active)}
-                  />
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <h4 className="font-medium mb-2 flex items-center gap-2">
-                  <Settings className="h-4 w-4" />
-                  Configuration
-                </h4>
-                <div className="bg-gray-50 p-3 rounded text-sm">
-                  <pre className="whitespace-pre-wrap text-xs">
-                    {JSON.stringify(bot.configuration, null, 2)}
-                  </pre>
-                </div>
-              </div>
-
-              <div>
-                <h4 className="font-medium mb-2 flex items-center gap-2">
-                  <Activity className="h-4 w-4" />
-                  Usage Statistics
-                </h4>
-                <div className="text-sm text-gray-600">
-                  {formatUsageStats(bot.usage_stats)}
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between text-sm text-gray-500">
-                <span>Created: {new Date(bot.created_at).toLocaleDateString()}</span>
-                <span>Updated: {new Date(bot.updated_at).toLocaleDateString()}</span>
-              </div>
-
-              <div className="flex space-x-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setEditingBot({
-                    ...bot,
-                    configuration: JSON.stringify(bot.configuration, null, 2)
-                  })}
-                  className="flex-1"
-                >
-                  <Edit className="h-4 w-4 mr-1" />
-                  Edit
-                </Button>
-                <Button
-                  variant={bot.is_active ? "default" : "secondary"}
-                  size="sm"
-                  onClick={() => toggleBotStatus(bot.id, bot.is_active)}
-                  className="flex-1"
-                >
-                  <Zap className="h-4 w-4 mr-1" />
-                  {bot.is_active ? 'Active' : 'Inactive'}
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
-      {/* Summary Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Bots</CardTitle>
-            <Bot className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{aiBots?.length || 0}</div>
-            <p className="text-xs text-muted-foreground">Configured bots</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Bots</CardTitle>
-            <Zap className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-green-600">
-              {aiBots?.filter(bot => bot.is_active).length || 0}
-            </div>
-            <p className="text-xs text-muted-foreground">Currently running</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">OpenAI Bots</CardTitle>
-            <Bot className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {aiBots?.filter(bot => bot.model_type === 'openai').length || 0}
-            </div>
-            <p className="text-xs text-muted-foreground">GPT-powered</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Other Models</CardTitle>
-            <Activity className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {aiBots?.filter(bot => bot.model_type !== 'openai').length || 0}
-            </div>
-            <p className="text-xs text-muted-foreground">Alternative AI</p>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Edit Bot Dialog */}
-      <Dialog open={!!editingBot} onOpenChange={() => setEditingBot(null)}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Edit AI Bot</DialogTitle>
-            <DialogDescription>Update bot configuration and settings</DialogDescription>
-          </DialogHeader>
-          {editingBot && (
-            <div className="space-y-4">
-              <div>
-                <Label htmlFor="edit-bot-name">Bot Name</Label>
-                <Input
-                  id="edit-bot-name"
-                  value={editingBot.bot_name}
-                  onChange={(e) => setEditingBot({...editingBot, bot_name: e.target.value})}
-                />
-              </div>
-              <div>
-                <Label htmlFor="edit-model-type">AI Model Type</Label>
-                <Select
-                  value={editingBot.model_type}
-                  onValueChange={(value) => setEditingBot({...editingBot, model_type: value})}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="openai">OpenAI (GPT)</SelectItem>
-                    <SelectItem value="anthropic">Anthropic (Claude)</SelectItem>
-                    <SelectItem value="gemini">Google (Gemini)</SelectItem>
-                    <SelectItem value="local">Local Model</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Label htmlFor="edit-bot-config">Configuration (JSON)</Label>
-                <Textarea
-                  id="edit-bot-config"
-                  value={editingBot.configuration}
-                  onChange={(e) => setEditingBot({...editingBot, configuration: e.target.value})}
-                  rows={6}
-                />
-              </div>
-              <div className="flex items-center space-x-2">
-                <Switch
-                  id="edit-bot-active"
-                  checked={editingBot.is_active}
-                  onCheckedChange={(checked) => setEditingBot({...editingBot, is_active: checked})}
-                />
-                <Label htmlFor="edit-bot-active">Active</Label>
-              </div>
-            </div>
-          )}
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setEditingBot(null)}>
-              Cancel
-            </Button>
-            <Button onClick={handleUpdateBot} disabled={updateBotMutation.isPending}>
-              {updateBotMutation.isPending ? 'Updating...' : 'Update Bot'}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };
