@@ -24,7 +24,13 @@ const VendorManagement = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('vendor_requests')
-        .select('*')
+        .select(`
+          *,
+          profiles!vendor_requests_user_id_fkey (
+            full_name,
+            email
+          )
+        `)
         .order('created_at', { ascending: false });
       
       if (error) throw error;
@@ -161,8 +167,8 @@ const VendorManagement = () => {
                           </TableCell>
                           <TableCell className="text-gray-300">
                             <div className="text-sm">
-                              <div>{request.full_name}</div>
-                              <div className="text-gray-400">{request.email}</div>
+                              <div>{request.profiles?.full_name || 'N/A'}</div>
+                              <div className="text-gray-400">{request.profiles?.email || 'N/A'}</div>
                             </div>
                           </TableCell>
                           <TableCell>
@@ -240,11 +246,11 @@ const VendorManagement = () => {
                 </div>
                 <div>
                   <label className="text-gray-300 font-medium">Contact Person:</label>
-                  <p className="text-white">{selectedRequest.full_name}</p>
+                  <p className="text-white">{selectedRequest.profiles?.full_name || 'N/A'}</p>
                 </div>
                 <div>
                   <label className="text-gray-300 font-medium">Email:</label>
-                  <p className="text-white">{selectedRequest.email}</p>
+                  <p className="text-white">{selectedRequest.profiles?.email || 'N/A'}</p>
                 </div>
               </div>
               <div>
