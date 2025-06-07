@@ -1,103 +1,110 @@
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --primary-color: #3b82f6;
-  --primary-color-rgb: 59, 130, 246;
-  --primary-color-hover: #2563eb;
+  /* iPhone-style Blue Color Palette */
+  --primary-color: #007AFF;
+  --primary-color-rgb: 0, 122, 255;
+  --primary-color-hover: #0056CC;
   
-  /* Titanium Blue Color Palette */
-  --blue-titanium-light: 207 89% 86%;
-  --blue-titanium: 217 91% 60%;
-  --blue-titanium-dark: 217 91% 45%;
+  /* iPhone System Blue variants */
+  --ios-blue-light: 10 86% 86%;
+  --ios-blue: 211 100% 50%;
+  --ios-blue-dark: 211 100% 35%;
   
-  /* Blue Sky variants for gradients */
-  --blue-sky-light: 199 89% 48%;
-  --blue-sky: 217 91% 60%;
-  --blue-sky-dark: 217 91% 45%;
-  --blue-sky-transparent: 217 91% 60% / 0.1;
-  --blue-sky-light-transparent: 199 89% 48% / 0.1;
+  /* iPhone System Colors */
+  --ios-green: 142 76% 36%;
+  --ios-orange: 28 100% 50%;
+  --ios-red: 4 90% 58%;
+  --ios-purple: 255 45% 65%;
+  --ios-pink: 316 73% 69%;
+  --ios-yellow: 48 100% 50%;
+  
+  /* iPhone Gray Scale */
+  --ios-gray-light: 240 6% 97%;
+  --ios-gray: 240 5% 41%;
+  --ios-gray-dark: 240 6% 15%;
 }
 
 @layer base {
   :root {
     /* iPhone-style Light Mode Colors */
-    --background: 0 0% 98%;
-    --foreground: 0 0% 20%; /* Softer dark text */
+    --background: 0 0% 99%;
+    --foreground: 240 10% 4%;
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 20%; /* Softer dark text */
+    --card-foreground: 240 10% 4%;
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 20%; /* Softer dark text */
-    --primary: 221.2 83.2% 53.3%;
+    --popover-foreground: 240 10% 4%;
+    --primary: 211 100% 50%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 220 14.3% 95.9%;
-    --secondary-foreground: 0 0% 25%; /* Softer dark secondary text */
-    --muted: 220 14.3% 95.9%;
-    --muted-foreground: 220 8.9% 50%; /* Balanced muted text */
-    --accent: 220 14.3% 95.9%;
-    --accent-foreground: 0 0% 20%; /* Softer dark text */
-    --destructive: 0 84.2% 60.2%;
+    --secondary: 240 5% 96%;
+    --secondary-foreground: 240 6% 10%;
+    --muted: 240 5% 96%;
+    --muted-foreground: 240 4% 46%;
+    --accent: 240 5% 96%;
+    --accent-foreground: 240 6% 10%;
+    --destructive: 4 90% 58%;
     --destructive-foreground: 0 0% 98%;
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
-    --ring: 221.2 83.2% 53.3%;
-    --radius: 0.75rem;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
+    --border: 240 6% 90%;
+    --input: 240 6% 90%;
+    --ring: 211 100% 50%;
+    --radius: 12px;
+    --chart-1: 211 100% 50%;
+    --chart-2: 142 76% 36%;
+    --chart-3: 28 100% 50%;
+    --chart-4: 255 45% 65%;
+    --chart-5: 316 73% 69%;
     
     /* iPhone-style Light Sidebar */
     --sidebar-background: 0 0% 99%;
-    --sidebar-foreground: 0 0% 20%; /* Softer dark text */
-    --sidebar-primary: 0 0% 20%; /* Softer dark text */
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 220 14.3% 95.9%;
-    --sidebar-accent-foreground: 0 0% 20%; /* Softer dark text */
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 10.6% 64.9%;
+    --sidebar-foreground: 240 10% 4%;
+    --sidebar-primary: 240 10% 4%;
+    --sidebar-primary-foreground: 0 0% 99%;
+    --sidebar-accent: 240 5% 96%;
+    --sidebar-accent-foreground: 240 6% 10%;
+    --sidebar-border: 240 6% 90%;
+    --sidebar-ring: 211 100% 50%;
   }
 
   .dark {
-    /* Titanium Blue Dark Mode Colors */
-    --background: 222 47% 11%;
-    --foreground: 210 20% 82%; /* Smooth half-white */
-    --card: 224 47% 15%;
-    --card-foreground: 210 20% 82%; /* Smooth half-white */
-    --popover: 224 47% 15%;
-    --popover-foreground: 210 20% 82%; /* Smooth half-white */
-    --primary: 217 91% 60%;
-    --primary-foreground: 222 47% 11%;
-    --secondary: 222 47% 17%;
-    --secondary-foreground: 210 20% 82%; /* Smooth half-white */
-    --muted: 222 47% 17%;
-    --muted-foreground: 215 15% 68%; /* Smooth muted text */
-    --accent: 222 47% 17%;
-    --accent-foreground: 210 20% 82%; /* Smooth half-white */
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 20% 82%; /* Smooth half-white */
-    --border: 222 47% 17%;
-    --input: 222 47% 17%;
-    --ring: 217 91% 60%;
-    --chart-1: 217 91% 60%;
-    --chart-2: 199 89% 48%;
-    --chart-3: 207 89% 86%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
+    /* iPhone-style Dark Mode Colors */
+    --background: 240 10% 4%;
+    --foreground: 0 0% 95%;
+    --card: 240 4% 9%;
+    --card-foreground: 0 0% 95%;
+    --popover: 240 4% 9%;
+    --popover-foreground: 0 0% 95%;
+    --primary: 211 100% 50%;
+    --primary-foreground: 240 10% 4%;
+    --secondary: 240 4% 9%;
+    --secondary-foreground: 0 0% 95%;
+    --muted: 240 4% 9%;
+    --muted-foreground: 240 5% 64%;
+    --accent: 240 4% 9%;
+    --accent-foreground: 0 0% 95%;
+    --destructive: 4 90% 58%;
+    --destructive-foreground: 0 0% 95%;
+    --border: 240 4% 11%;
+    --input: 240 4% 11%;
+    --ring: 211 100% 50%;
+    --chart-1: 211 100% 50%;
+    --chart-2: 142 76% 36%;
+    --chart-3: 28 100% 50%;
+    --chart-4: 255 45% 65%;
+    --chart-5: 316 73% 69%;
     
-    /* Titanium Blue Dark Sidebar */
-    --sidebar-background: 222 47% 11%;
-    --sidebar-foreground: 210 20% 82%; /* Smooth half-white */
-    --sidebar-primary: 210 20% 82%; /* Smooth half-white */
-    --sidebar-primary-foreground: 222 47% 11%;
-    --sidebar-accent: 222 47% 17%;
-    --sidebar-accent-foreground: 210 20% 82%; /* Smooth half-white */
-    --sidebar-border: 222 47% 17%;
-    --sidebar-ring: 217 91% 60%;
+    /* iPhone-style Dark Sidebar */
+    --sidebar-background: 240 10% 4%;
+    --sidebar-foreground: 0 0% 95%;
+    --sidebar-primary: 0 0% 95%;
+    --sidebar-primary-foreground: 240 10% 4%;
+    --sidebar-accent: 240 4% 9%;
+    --sidebar-accent-foreground: 0 0% 95%;
+    --sidebar-border: 240 4% 11%;
+    --sidebar-ring: 211 100% 50%;
   }
 }
 
@@ -107,176 +114,193 @@
   }
   body {
     @apply bg-background text-foreground;
-    font-family: 'Inter', sans-serif;
+    font-family: 'SF Pro Display', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
 
-/* Custom utility classes for dynamic theming */
-.bg-primary-dynamic {
-  background-color: var(--primary-color);
+/* iPhone-style Button Styling */
+.btn-ios {
+  @apply rounded-xl font-medium transition-all duration-200 ease-out;
+  @apply active:scale-95 focus:outline-none focus:ring-2 focus:ring-primary/30;
 }
 
-.text-primary-dynamic {
-  color: var(--primary-color);
+.btn-primary-ios {
+  @apply bg-primary text-primary-foreground hover:bg-primary/90;
+  @apply shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30;
 }
 
-.border-primary-dynamic {
-  border-color: var(--primary-color);
+.btn-secondary-ios {
+  @apply bg-secondary text-secondary-foreground hover:bg-secondary/80;
+  @apply border border-border/50;
 }
 
-.hover\:bg-primary-dynamic:hover {
-  background-color: var(--primary-color-hover);
+/* iPhone-style Dropdown Styling */
+.dropdown-ios {
+  @apply bg-background/95 backdrop-blur-xl border border-border/30;
+  @apply rounded-2xl shadow-2xl shadow-black/10 dark:shadow-black/50;
+  @apply animate-in fade-in-0 zoom-in-95 slide-in-from-top-2;
 }
 
-/* Enhanced dark mode backgrounds with titanium blue theme */
-.dark .bg-gray-900 {
-  background-color: hsl(222 47% 11%);
+/* iPhone-style Card Styling */
+.card-ios {
+  @apply bg-card/60 backdrop-blur-xl border border-border/30;
+  @apply rounded-2xl shadow-lg shadow-black/5 dark:shadow-black/20;
 }
 
-.dark .bg-gray-800 {
-  background-color: hsl(222 47% 15%);
+/* iPhone-style Glass Effect */
+.glass-ios {
+  @apply bg-background/60 backdrop-blur-xl border border-border/20;
+  @apply shadow-lg shadow-black/5 dark:shadow-black/20;
 }
 
-.dark .bg-gray-700 {
-  background-color: hsl(222 47% 20%);
+/* iPhone-style Text Colors */
+.text-ios-primary {
+  @apply text-foreground;
 }
 
-/* Glass morphism effects for titanium blue dark mode */
-.glass-dark {
-  background: hsla(222, 47%, 11%, 0.8);
-  backdrop-filter: blur(12px);
-  border: 1px solid hsla(217, 91%, 60%, 0.2);
+.text-ios-secondary {
+  @apply text-muted-foreground;
 }
 
-.glass-card-dark {
-  background: hsla(222, 47%, 15%, 0.6);
-  backdrop-filter: blur(8px);
-  border: 1px solid hsla(217, 91%, 60%, 0.1);
+.text-ios-accent {
+  @apply text-primary;
 }
 
-/* Improved gradient backgrounds for titanium blue dark mode */
-.gradient-dark {
-  background: linear-gradient(135deg, 
-    hsla(222, 47%, 11%, 0.95) 0%, 
-    hsla(222, 47%, 15%, 0.9) 50%, 
-    hsla(222, 47%, 20%, 0.85) 100%);
+/* iPhone-style Icon Colors */
+.icon-ios {
+  @apply text-foreground/80 hover:text-primary transition-colors duration-200;
 }
 
-/* Enhanced admin panel styling with titanium blue */
-.admin-panel-bg {
-  background: linear-gradient(135deg, 
-    hsla(222, 47%, 11%, 0.98) 0%, 
-    hsla(222, 47%, 15%, 0.95) 100%);
+.icon-ios-muted {
+  @apply text-muted-foreground hover:text-foreground transition-colors duration-200;
 }
 
-/* Currency display styling */
-.currency-display {
-  font-weight: 600;
-  color: var(--primary-color);
+/* iPhone-style Navigation */
+.nav-ios {
+  @apply bg-background/60 backdrop-blur-xl border-b border-border/30;
+  @apply shadow-sm shadow-black/5 dark:shadow-black/20;
 }
 
-/* Smooth and compatible text colors for dark mode */
-.dark .text-gray-900 {
-  color: hsl(210 20% 82%); /* Primary text - smooth half-white */
+/* iPhone System Colors */
+.bg-ios-blue {
+  background-color: hsl(var(--ios-blue));
 }
 
-.dark .text-gray-800 {
-  color: hsl(210 18% 78%); /* Near primary text */
+.bg-ios-green {
+  background-color: hsl(var(--ios-green));
 }
 
-.dark .text-gray-700 {
-  color: hsl(210 16% 74%); /* Secondary text */
+.bg-ios-orange {
+  background-color: hsl(var(--ios-orange));
 }
 
-.dark .text-gray-600 {
-  color: hsl(215 15% 68%); /* Smooth muted text */
+.bg-ios-red {
+  background-color: hsl(var(--ios-red));
 }
 
-.dark .text-gray-500 {
-  color: hsl(215 12% 62%); /* Tertiary text */
+.bg-ios-purple {
+  background-color: hsl(var(--ios-purple));
 }
 
-.dark .text-gray-400 {
-  color: hsl(215 10% 56%); /* Subtle text */
+.bg-ios-pink {
+  background-color: hsl(var(--ios-pink));
 }
 
-.dark .text-gray-300 {
-  color: hsl(210 15% 72%); /* Body text */
+.bg-ios-yellow {
+  background-color: hsl(var(--ios-yellow));
 }
 
-.dark .text-gray-200 {
-  color: hsl(210 18% 76%); /* Emphasis text */
+.text-ios-blue {
+  color: hsl(var(--ios-blue));
 }
 
-.dark .text-gray-100 {
-  color: hsl(210 20% 80%); /* Highlight text */
+.text-ios-green {
+  color: hsl(var(--ios-green));
 }
 
-.dark .text-white {
-  color: hsl(210 20% 82%); /* Override white with smooth half-white */
+.text-ios-orange {
+  color: hsl(var(--ios-orange));
 }
 
-/* Light mode text improvements for iPhone-style with smooth colors */
-.text-gray-900 {
-  color: hsl(0 0% 20%); /* Softer than pure black */
+.text-ios-red {
+  color: hsl(var(--ios-red));
 }
 
-.text-gray-800 {
-  color: hsl(0 0% 25%); /* Near primary text */
+.text-ios-purple {
+  color: hsl(var(--ios-purple));
 }
 
-.text-gray-700 {
-  color: hsl(220 8.9% 35%); /* Secondary text */
+.text-ios-pink {
+  color: hsl(var(--ios-pink));
 }
 
-.text-gray-600 {
-  color: hsl(220 8.9% 50%); /* Balanced muted text */
+.text-ios-yellow {
+  color: hsl(var(--ios-yellow));
 }
 
-.text-gray-500 {
-  color: hsl(220 8.9% 50%); /* Consistent muted */
+/* iPhone-style Gradients */
+.gradient-ios-blue {
+  background: linear-gradient(135deg, hsl(var(--ios-blue)) 0%, hsl(var(--ios-blue-dark)) 100%);
 }
 
-.text-gray-400 {
-  color: hsl(220 8.9% 60%); /* Subtle text */
+.gradient-ios-sunset {
+  background: linear-gradient(135deg, hsl(var(--ios-orange)) 0%, hsl(var(--ios-pink)) 100%);
 }
 
-.text-gray-300 {
-  color: hsl(220 8.9% 70%); /* Light text */
+.gradient-ios-ocean {
+  background: linear-gradient(135deg, hsl(var(--ios-blue)) 0%, hsl(var(--ios-purple)) 100%);
 }
 
-.text-gray-200 {
-  color: hsl(220 8.9% 80%); /* Very light text */
-}
-
-.text-gray-100 {
-  color: hsl(220 8.9% 90%); /* Ultra light text */
-}
-
-/* Modern Admin Panel Animations */
-@keyframes admin-glow {
+/* Enhanced Animations */
+@keyframes ios-bounce {
   0%, 100% {
-    box-shadow: 0 0 20px hsla(217, 91%, 60%, 0.2);
+    transform: scale(1);
   }
   50% {
-    box-shadow: 0 0 30px hsla(217, 91%, 60%, 0.4);
+    transform: scale(1.05);
   }
 }
 
-.admin-glow {
-  animation: admin-glow 3s ease-in-out infinite;
+.animate-ios-bounce {
+  animation: ios-bounce 0.3s ease-in-out;
 }
 
-/* Titanium Blue gradient backgrounds */
-.bg-titanium-gradient {
-  background: linear-gradient(135deg, 
-    hsl(var(--blue-titanium)) 0%, 
-    hsl(var(--blue-titanium-dark)) 100%);
+/* Custom scrollbar for iOS look */
+::-webkit-scrollbar {
+  width: 6px;
 }
 
-.bg-sky-gradient {
-  background: linear-gradient(135deg, 
-    hsl(var(--blue-sky-light)) 0%, 
-    hsl(var(--blue-sky)) 50%,
-    hsl(var(--blue-sky-dark)) 100%);
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground) / 0.3);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.5);
+}
+
+/* Dark mode specific enhancements */
+.dark ::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground) / 0.2);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.4);
+}
+
+/* Selection colors */
+::selection {
+  background: hsl(var(--primary) / 0.2);
+  color: hsl(var(--primary-foreground));
+}
+
+.dark ::selection {
+  background: hsl(var(--primary) / 0.3);
+  color: hsl(var(--foreground));
 }
