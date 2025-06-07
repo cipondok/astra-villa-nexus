@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { useAlert } from "@/contexts/AlertContext";
+import { useThemeSettings } from "@/contexts/ThemeSettingsContext";
 import AdminNavigation from "@/components/admin/AdminNavigation";
 import UserManagement from "@/components/admin/UserManagement";
 import PropertyManagement from "@/components/admin/PropertyManagement";
@@ -44,6 +45,7 @@ const AdminDashboard = () => {
   const { user, profile, isAuthenticated, loading } = useAuth();
   const navigate = useNavigate();
   const { showError } = useAlert();
+  const { themeSettings } = useThemeSettings();
   const [activeTab, setActiveTab] = useState("overview");
 
   // Check if user is demo admin
@@ -112,10 +114,10 @@ const AdminDashboard = () => {
   // Show loading state
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Loading Admin Panel...</h2>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <h2 className="text-lg font-semibold text-foreground">Loading Admin Panel...</h2>
         </div>
       </div>
     );
@@ -124,11 +126,11 @@ const AdminDashboard = () => {
   // Show access denied if not admin
   if (!isAdmin) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <Shield className="h-12 w-12 text-yellow-500 mx-auto mb-4" />
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Access Denied</h2>
-          <p className="text-gray-600 dark:text-gray-300 mt-2">You don't have admin privileges to access this panel.</p>
+          <h2 className="text-lg font-semibold text-foreground">Access Denied</h2>
+          <p className="text-muted-foreground mt-2">You don't have admin privileges to access this panel.</p>
           <Button onClick={() => navigate('/dashboard')} className="mt-4">
             Go to Dashboard
           </Button>
@@ -143,7 +145,7 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900">
+    <div className="min-h-screen bg-background">
       <AdminNavigation 
         user={user} 
         adminData={{ 
@@ -155,109 +157,109 @@ const AdminDashboard = () => {
       <div className="pt-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto py-8">
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-white">
+            <h1 className="text-3xl font-bold text-foreground">
               Enhanced Admin Control Panel
             </h1>
-            <p className="text-gray-300 mt-2">
+            <p className="text-muted-foreground mt-2">
               Welcome back, {user?.user_metadata?.full_name || user?.email}
             </p>
-            <Badge variant="secondary" className="mt-2 bg-blue-600 text-white">
+            <Badge variant="secondary" className="mt-2 bg-primary text-primary-foreground">
               {profile?.role === 'admin' ? 'Admin' : 'Demo Admin'}
             </Badge>
           </div>
 
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-            <TabsList className="grid w-full grid-cols-4 lg:grid-cols-10 bg-white/10 backdrop-blur-md">
-              <TabsTrigger value="overview" className="text-white data-[state=active]:bg-blue-600">Overview</TabsTrigger>
-              <TabsTrigger value="users" className="text-white data-[state=active]:bg-blue-600">Users</TabsTrigger>
-              <TabsTrigger value="properties" className="text-white data-[state=active]:bg-blue-600">Properties</TabsTrigger>
-              <TabsTrigger value="vendors" className="text-white data-[state=active]:bg-blue-600">Vendors</TabsTrigger>
-              <TabsTrigger value="content" className="text-white data-[state=active]:bg-blue-600">Content</TabsTrigger>
-              <TabsTrigger value="social" className="text-white data-[state=active]:bg-blue-600">Social</TabsTrigger>
-              <TabsTrigger value="filters" className="text-white data-[state=active]:bg-blue-600">Filters</TabsTrigger>
-              <TabsTrigger value="roles" className="text-white data-[state=active]:bg-blue-600">Roles</TabsTrigger>
-              <TabsTrigger value="feedback" className="text-white data-[state=active]:bg-blue-600">Feedback</TabsTrigger>
-              <TabsTrigger value="settings" className="text-white data-[state=active]:bg-blue-600">Settings</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-4 lg:grid-cols-10 bg-card border-border">
+              <TabsTrigger value="overview" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Overview</TabsTrigger>
+              <TabsTrigger value="users" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Users</TabsTrigger>
+              <TabsTrigger value="properties" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Properties</TabsTrigger>
+              <TabsTrigger value="vendors" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Vendors</TabsTrigger>
+              <TabsTrigger value="content" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Content</TabsTrigger>
+              <TabsTrigger value="social" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Social</TabsTrigger>
+              <TabsTrigger value="filters" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Filters</TabsTrigger>
+              <TabsTrigger value="roles" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Roles</TabsTrigger>
+              <TabsTrigger value="feedback" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Feedback</TabsTrigger>
+              <TabsTrigger value="settings" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Settings</TabsTrigger>
             </TabsList>
 
             <TabsContent value="overview" className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-                <Card className="bg-white/10 backdrop-blur-md border-white/20">
+                <Card className="bg-card border-border">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium text-white">Total Users</CardTitle>
-                    <Users className="h-4 w-4 text-blue-400" />
+                    <CardTitle className="text-sm font-medium text-card-foreground">Total Users</CardTitle>
+                    <Users className="h-4 w-4 text-primary" />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold text-white">
+                    <div className="text-2xl font-bold text-card-foreground">
                       {statsLoading ? '...' : (stats?.users || 0)}
                     </div>
-                    <p className="text-xs text-gray-300">Registered users</p>
+                    <p className="text-xs text-muted-foreground">Registered users</p>
                   </CardContent>
                 </Card>
 
-                <Card className="bg-white/10 backdrop-blur-md border-white/20">
+                <Card className="bg-card border-border">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium text-white">Properties</CardTitle>
-                    <Building className="h-4 w-4 text-green-400" />
+                    <CardTitle className="text-sm font-medium text-card-foreground">Properties</CardTitle>
+                    <Building className="h-4 w-4 text-primary" />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold text-white">
+                    <div className="text-2xl font-bold text-card-foreground">
                       {statsLoading ? '...' : (stats?.properties || 0)}
                     </div>
-                    <p className="text-xs text-gray-300">Listed properties</p>
+                    <p className="text-xs text-muted-foreground">Listed properties</p>
                   </CardContent>
                 </Card>
 
-                <Card className="bg-white/10 backdrop-blur-md border-white/20">
+                <Card className="bg-card border-border">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium text-white">Orders</CardTitle>
-                    <Package className="h-4 w-4 text-purple-400" />
+                    <CardTitle className="text-sm font-medium text-card-foreground">Orders</CardTitle>
+                    <Package className="h-4 w-4 text-primary" />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold text-white">
+                    <div className="text-2xl font-bold text-card-foreground">
                       {statsLoading ? '...' : (stats?.orders || 0)}
                     </div>
-                    <p className="text-xs text-gray-300">Total orders</p>
+                    <p className="text-xs text-muted-foreground">Total orders</p>
                   </CardContent>
                 </Card>
 
-                <Card className="bg-white/10 backdrop-blur-md border-white/20">
+                <Card className="bg-card border-border">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium text-white">Vendor Requests</CardTitle>
-                    <Store className="h-4 w-4 text-orange-400" />
+                    <CardTitle className="text-sm font-medium text-card-foreground">Vendor Requests</CardTitle>
+                    <Store className="h-4 w-4 text-primary" />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold text-white">
+                    <div className="text-2xl font-bold text-card-foreground">
                       {statsLoading ? '...' : (stats?.vendorRequests || 0)}
                     </div>
-                    <p className="text-xs text-gray-300">Pending approval</p>
+                    <p className="text-xs text-muted-foreground">Pending approval</p>
                   </CardContent>
                 </Card>
 
-                <Card className="bg-white/10 backdrop-blur-md border-white/20">
+                <Card className="bg-card border-border">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium text-white">System Errors</CardTitle>
-                    <AlertTriangle className="h-4 w-4 text-red-400" />
+                    <CardTitle className="text-sm font-medium text-card-foreground">System Errors</CardTitle>
+                    <AlertTriangle className="h-4 w-4 text-destructive" />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold text-white">
+                    <div className="text-2xl font-bold text-card-foreground">
                       {statsLoading ? '...' : (stats?.errorLogs || 0)}
                     </div>
-                    <p className="text-xs text-gray-300">Unresolved errors</p>
+                    <p className="text-xs text-muted-foreground">Unresolved errors</p>
                   </CardContent>
                 </Card>
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <Card className="bg-white/10 backdrop-blur-md border-white/20">
+                <Card className="bg-card border-border">
                   <CardHeader>
-                    <CardTitle className="text-white">Quick Actions</CardTitle>
-                    <CardDescription className="text-gray-300">Common administrative tasks</CardDescription>
+                    <CardTitle className="text-card-foreground">Quick Actions</CardTitle>
+                    <CardDescription className="text-muted-foreground">Common administrative tasks</CardDescription>
                   </CardHeader>
                   <CardContent className="grid grid-cols-2 gap-4">
                     <Button 
                       onClick={() => handleQuickAction('users')} 
-                      className="h-auto p-4 flex flex-col items-center space-y-2 bg-blue-600 hover:bg-blue-700"
+                      className="h-auto p-4 flex flex-col items-center space-y-2 bg-primary hover:bg-primary/90"
                       variant="outline"
                     >
                       <Users className="h-6 w-6" />
@@ -265,7 +267,7 @@ const AdminDashboard = () => {
                     </Button>
                     <Button 
                       onClick={() => handleQuickAction('content')} 
-                      className="h-auto p-4 flex flex-col items-center space-y-2 bg-green-600 hover:bg-green-700"
+                      className="h-auto p-4 flex flex-col items-center space-y-2 bg-primary hover:bg-primary/90"
                       variant="outline"
                     >
                       <FileText className="h-6 w-6" />
@@ -273,7 +275,7 @@ const AdminDashboard = () => {
                     </Button>
                     <Button 
                       onClick={() => handleQuickAction('social')} 
-                      className="h-auto p-4 flex flex-col items-center space-y-2 bg-purple-600 hover:bg-purple-700"
+                      className="h-auto p-4 flex flex-col items-center space-y-2 bg-primary hover:bg-primary/90"
                       variant="outline"
                     >
                       <Share2 className="h-6 w-6" />
@@ -281,7 +283,7 @@ const AdminDashboard = () => {
                     </Button>
                     <Button 
                       onClick={() => handleQuickAction('trending')} 
-                      className="h-auto p-4 flex flex-col items-center space-y-2 bg-orange-600 hover:bg-orange-700"
+                      className="h-auto p-4 flex flex-col items-center space-y-2 bg-primary hover:bg-primary/90"
                       variant="outline"
                     >
                       <TrendingUp className="h-6 w-6" />
@@ -289,7 +291,7 @@ const AdminDashboard = () => {
                     </Button>
                     <Button 
                       onClick={() => handleQuickAction('filters')} 
-                      className="h-auto p-4 flex flex-col items-center space-y-2 bg-pink-600 hover:bg-pink-700"
+                      className="h-auto p-4 flex flex-col items-center space-y-2 bg-primary hover:bg-primary/90"
                       variant="outline"
                     >
                       <Search className="h-6 w-6" />
@@ -297,7 +299,7 @@ const AdminDashboard = () => {
                     </Button>
                     <Button 
                       onClick={() => handleQuickAction('security')} 
-                      className="h-auto p-4 flex flex-col items-center space-y-2 bg-red-600 hover:bg-red-700"
+                      className="h-auto p-4 flex flex-col items-center space-y-2 bg-primary hover:bg-primary/90"
                       variant="outline"
                     >
                       <Shield className="h-6 w-6" />
