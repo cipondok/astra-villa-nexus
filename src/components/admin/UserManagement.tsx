@@ -11,6 +11,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Users, Search, UserCheck, UserX, Mail, Phone } from "lucide-react";
 import { useAlert } from "@/contexts/AlertContext";
 
+type UserRole = "general_user" | "property_owner" | "agent" | "vendor" | "admin";
+
 const UserManagement = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");
@@ -30,7 +32,7 @@ const UserManagement = () => {
       }
 
       if (roleFilter !== 'all') {
-        query = query.eq('role', roleFilter);
+        query = query.eq('role', roleFilter as UserRole);
       }
 
       const { data, error } = await query;
@@ -57,7 +59,7 @@ const UserManagement = () => {
   });
 
   const handleRoleChange = (userId: string, newRole: string) => {
-    updateUserMutation.mutate({ userId, updates: { role: newRole } });
+    updateUserMutation.mutate({ userId, updates: { role: newRole as UserRole } });
   };
 
   const handleStatusChange = (userId: string, newStatus: string) => {

@@ -245,8 +245,8 @@ const SecurityMonitoring = () => {
                         <TableRow key={log.id}>
                           <TableCell>
                             <div className="space-y-1">
-                              <div className="font-medium">{log.user?.full_name || 'Unknown'}</div>
-                              <div className="text-sm text-muted-foreground">{log.user?.email}</div>
+                              <div className="font-medium">{String(log.user?.full_name || 'Unknown')}</div>
+                              <div className="text-sm text-muted-foreground">{String(log.user?.email || '')}</div>
                             </div>
                           </TableCell>
                           <TableCell>
@@ -259,7 +259,7 @@ const SecurityMonitoring = () => {
                           </TableCell>
                           <TableCell>
                             <div className="text-sm text-muted-foreground">
-                              {log.ip_address || 'N/A'}
+                              {String(log.ip_address || 'N/A')}
                             </div>
                           </TableCell>
                           <TableCell>
@@ -306,8 +306,8 @@ const SecurityMonitoring = () => {
                         <TableRow key={session.id}>
                           <TableCell>
                             <div className="space-y-1">
-                              <div className="font-medium">{session.user?.full_name || 'Unknown'}</div>
-                              <div className="text-sm text-muted-foreground">{session.user?.email}</div>
+                              <div className="font-medium">{String(session.user?.full_name || 'Unknown')}</div>
+                              <div className="text-sm text-muted-foreground">{String(session.user?.email || '')}</div>
                             </div>
                           </TableCell>
                           <TableCell>
@@ -317,7 +317,7 @@ const SecurityMonitoring = () => {
                           </TableCell>
                           <TableCell>
                             <div className="text-sm text-muted-foreground">
-                              {session.ip_address || 'N/A'}
+                              {String(session.ip_address || 'N/A')}
                             </div>
                           </TableCell>
                           <TableCell>

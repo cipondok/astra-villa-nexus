@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -38,15 +38,19 @@ const SystemSettings = () => {
       if (error) throw error;
       return data;
     },
-    onSuccess: (data) => {
+  });
+
+  // Use useEffect to handle settings update when data is loaded
+  useEffect(() => {
+    if (systemSettings) {
       // Convert array of settings to object
-      const settingsObj = data.reduce((acc, setting) => {
+      const settingsObj = systemSettings.reduce((acc, setting) => {
         acc[setting.key] = setting.value;
         return acc;
-      }, {});
+      }, {} as any);
       setSettings({ ...settings, ...settingsObj });
     }
-  });
+  }, [systemSettings]);
 
   const updateSettingMutation = useMutation({
     mutationFn: async ({ key, value, category }: { key: string; value: any; category: string }) => {

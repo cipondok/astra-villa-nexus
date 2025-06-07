@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -16,7 +17,7 @@ import { useAlert } from "@/contexts/AlertContext";
 
 const AIBotManagement = () => {
   const [showBotForm, setShowBotForm] = useState(false);
-  const [editingBot, setEditingBot] = useState(null);
+  const [editingBot, setEditingBot] = useState<any>(null);
   const [botData, setBotData] = useState({
     bot_name: '',
     model_type: 'gpt-3.5-turbo',
@@ -134,6 +135,12 @@ const AIBotManagement = () => {
       id, 
       updates: { is_active: !currentStatus, updated_at: new Date().toISOString() }
     });
+  };
+
+  // Helper function to safely get usage stats
+  const getUsageStats = (usageStats: any) => {
+    if (!usageStats || typeof usageStats !== 'object') return { total_requests: 0 };
+    return usageStats as { total_requests?: number };
   };
 
   return (
@@ -258,60 +265,63 @@ const AIBotManagement = () => {
                     </TableCell>
                   </TableRow>
                 ) : (
-                  aiBots?.map((bot) => (
-                    <TableRow key={bot.id}>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <Bot className="h-4 w-4" />
-                          <div>
-                            <div className="font-medium">{bot.bot_name}</div>
+                  aiBots?.map((bot) => {
+                    const stats = getUsageStats(bot.usage_stats);
+                    return (
+                      <TableRow key={bot.id}>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <Bot className="h-4 w-4" />
+                            <div>
+                              <div className="font-medium">{bot.bot_name}</div>
+                            </div>
                           </div>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline">{bot.model_type}</Badge>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <Switch
-                            checked={bot.is_active}
-                            onCheckedChange={() => toggleBotStatus(bot.id, bot.is_active)}
-                          />
-                          <Badge variant={bot.is_active ? 'default' : 'secondary'}>
-                            {bot.is_active ? 'Active' : 'Inactive'}
-                          </Badge>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-1">
-                          <BarChart3 className="h-4 w-4" />
-                          <span className="text-sm">
-                            {bot.usage_stats?.total_requests || 0} requests
-                          </span>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        {new Date(bot.created_at).toLocaleDateString()}
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <Button size="sm" variant="outline">
-                            <Settings className="h-4 w-4" />
-                          </Button>
-                          <Button size="sm" variant="outline" onClick={() => handleEditBot(bot)}>
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                          <Button 
-                            size="sm" 
-                            variant="outline" 
-                            onClick={() => handleDeleteBot(bot.id)}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant="outline">{bot.model_type}</Badge>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <Switch
+                              checked={bot.is_active}
+                              onCheckedChange={() => toggleBotStatus(bot.id, bot.is_active)}
+                            />
+                            <Badge variant={bot.is_active ? 'default' : 'secondary'}>
+                              {bot.is_active ? 'Active' : 'Inactive'}
+                            </Badge>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-1">
+                            <BarChart3 className="h-4 w-4" />
+                            <span className="text-sm">
+                              {stats.total_requests || 0} requests
+                            </span>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          {new Date(bot.created_at).toLocaleDateString()}
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <Button size="sm" variant="outline">
+                              <Settings className="h-4 w-4" />
+                            </Button>
+                            <Button size="sm" variant="outline" onClick={() => handleEditBot(bot)}>
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                            <Button 
+                              size="sm" 
+                              variant="outline" 
+                              onClick={() => handleDeleteBot(bot.id)}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })
                 )}
               </TableBody>
             </Table>
