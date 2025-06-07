@@ -91,7 +91,12 @@ const AlertSystem = ({ alerts, onRemoveAlert }: AlertSystemProps) => {
 
 interface AlertItemProps {
   alert: AlertMessage;
-  styles: ReturnType<typeof AlertSystem.prototype.getAlertStyles>;
+  styles: {
+    container: string;
+    icon: string;
+    title: string;
+    message: string;
+  };
   icon: React.ReactNode;
   onRemove: () => void;
 }
@@ -123,63 +128,72 @@ const AlertItem = ({ alert, styles, icon, onRemove }: AlertItemProps) => {
     }, 300);
   };
 
+  const progressBarStyle = {
+    animationDuration: `${alert.duration || 5000}ms`,
+    animationTimingFunction: 'linear',
+    animationFillMode: 'forwards' as const,
+    animationName: 'shrink'
+  };
+
   return (
-    <div
-      className={`
-        transform transition-all duration-300 ease-out
-        ${isVisible && !isLeaving 
-          ? 'translate-x-0 opacity-100 scale-100' 
-          : 'translate-x-full opacity-0 scale-95'
-        }
-        ${styles.container}
-        border rounded-lg shadow-lg backdrop-blur-sm
-        p-4 relative overflow-hidden
-      `}
-    >
-      {/* Subtle animated background */}
-      <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent animate-pulse" />
-      
-      <div className="relative flex items-start space-x-3">
-        <div className={`flex-shrink-0 ${styles.icon}`}>
-          {icon}
+    <>
+      <style>
+        {`
+          @keyframes shrink {
+            from { width: 100%; }
+            to { width: 0%; }
+          }
+        `}
+      </style>
+      <div
+        className={`
+          transform transition-all duration-300 ease-out
+          ${isVisible && !isLeaving 
+            ? 'translate-x-0 opacity-100 scale-100' 
+            : 'translate-x-full opacity-0 scale-95'
+          }
+          ${styles.container}
+          border rounded-lg shadow-lg backdrop-blur-sm
+          p-4 relative overflow-hidden
+        `}
+      >
+        {/* Subtle animated background */}
+        <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent animate-pulse" />
+        
+        <div className="relative flex items-start space-x-3">
+          <div className={`flex-shrink-0 ${styles.icon}`}>
+            {icon}
+          </div>
+          
+          <div className="flex-1 min-w-0">
+            <h4 className={`text-sm font-semibold ${styles.title} mb-1`}>
+              {alert.title}
+            </h4>
+            <p className={`text-sm ${styles.message} leading-relaxed`}>
+              {alert.message}
+            </p>
+          </div>
+          
+          <button
+            onClick={handleRemove}
+            className={`
+              flex-shrink-0 ml-4 inline-flex text-gray-400 hover:text-gray-600 
+              dark:text-gray-500 dark:hover:text-gray-300
+              focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500
+              rounded-md p-1 transition-colors duration-200
+            `}
+          >
+            <X className="h-4 w-4" />
+          </button>
         </div>
         
-        <div className="flex-1 min-w-0">
-          <h4 className={`text-sm font-semibold ${styles.title} mb-1`}>
-            {alert.title}
-          </h4>
-          <p className={`text-sm ${styles.message} leading-relaxed`}>
-            {alert.message}
-          </p>
-        </div>
-        
-        <button
-          onClick={handleRemove}
-          className={`
-            flex-shrink-0 ml-4 inline-flex text-gray-400 hover:text-gray-600 
-            dark:text-gray-500 dark:hover:text-gray-300
-            focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500
-            rounded-md p-1 transition-colors duration-200
-          `}
-        >
-          <X className="h-4 w-4" />
-        </button>
+        {/* Progress bar for auto-dismiss */}
+        <div 
+          className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full" 
+          style={progressBarStyle}
+        />
       </div>
-      
-      {/* Progress bar for auto-dismiss */}
-      <div className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full animate-pulse" 
-           style={{ 
-             width: '100%',
-             animation: `shrink ${alert.duration || 5000}ms linear forwards`
-           }} />
-      
-      <style jsx>{`
-        @keyframes shrink {
-          from { width: 100%; }
-          to { width: 0%; }
-        }
-      `}</style>
-    </div>
+    </>
   );
 };
 
