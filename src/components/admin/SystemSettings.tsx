@@ -121,7 +121,9 @@ const SystemSettings = () => {
     enable_ip_blocking: true,
     enable_ddos_protection: true,
     security_scan_frequency: "daily",
-    enable_ssl_enforcement: true
+    enable_ssl_enforcement: true,
+    max_login_attempts: "5",
+    password_min_length: "8"
   });
 
   const [apiSettings, setApiSettings] = useState({
@@ -870,15 +872,28 @@ const SystemSettings = () => {
 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="max_login_attempts" className="text-white">Max Login Attempts</Label>
+                      <Label htmlFor="max_requests_per_minute" className="text-white">Max Requests per Minute</Label>
                       <Input
-                        id="max_login_attempts"
+                        id="max_requests_per_minute"
+                        type="number"
+                        value={securitySettings.max_requests_per_minute}
+                        onChange={(e) => setSecuritySettings({ ...securitySettings, max_requests_per_minute: e.target.value })}
+                        className="bg-gray-800 border-gray-700 text-white"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="security_max_login_attempts" className="text-white">Max Login Attempts</Label>
+                      <Input
+                        id="security_max_login_attempts"
                         type="number"
                         value={securitySettings.max_login_attempts}
                         onChange={(e) => setSecuritySettings({ ...securitySettings, max_login_attempts: e.target.value })}
                         className="bg-gray-800 border-gray-700 text-white"
                       />
                     </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="password_min_length" className="text-white">Minimum Password Length</Label>
                       <Input
