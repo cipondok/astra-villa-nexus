@@ -1,4 +1,3 @@
-
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -37,10 +36,13 @@ import {
 type AdminPermission = "user_management" | "property_management" | "content_management" | "system_settings" | "billing_management" | "vendor_authorization" | "security_monitoring" | "order_tracking" | "ai_bot_management";
 
 const AdminDashboard = () => {
-  const { user, isAuthenticated, loading } = useAuth();
+  const { user, profile, isAuthenticated, loading } = useAuth();
   const navigate = useNavigate();
   const { showError, showSuccess } = useAlert();
   const [activeTab, setActiveTab] = useState("overview");
+
+  // Check if user is demo admin or real admin
+  const isDemoAdmin = user?.id === 'demo-admin-456' && profile?.role === 'admin';
 
   // Check if user is admin with better error handling
   const { data: adminData, isLoading: adminLoading, error: adminError } = useQuery({
@@ -49,6 +51,30 @@ const AdminDashboard = () => {
       if (!user?.id) {
         console.log('No user ID found');
         return null;
+      }
+
+      // If it's a demo admin, return mock admin data
+      if (isDemoAdmin) {
+        console.log('Demo admin detected, returning mock admin data');
+        return {
+          id: 'demo-admin-id',
+          user_id: user.id,
+          is_super_admin: true,
+          role: {
+            name: 'Super Admin',
+            permissions: [
+              'user_management',
+              'property_management', 
+              'content_management',
+              'system_settings',
+              'billing_management',
+              'vendor_authorization',
+              'security_monitoring',
+              'order_tracking',
+              'ai_bot_management'
+            ] as AdminPermission[]
+          }
+        };
       }
       
       console.log('Checking admin status for user:', user.id);
@@ -112,11 +138,11 @@ const AdminDashboard = () => {
         };
       }
     },
-    enabled: !!adminData
+    enabled: !!adminData || isDemoAdmin
   });
 
   useEffect(() => {
-    console.log('AdminDashboard useEffect - auth state:', { loading, isAuthenticated, user: !!user });
+    console.log('AdminDashboard useEffect - auth state:', { loading, isAuthenticated, user: !!user, isDemoAdmin });
     
     if (!loading && !isAuthenticated) {
       console.log('User not authenticated, redirecting to login');
@@ -124,15 +150,15 @@ const AdminDashboard = () => {
       return;
     }
 
-    if (!adminLoading && !loading && isAuthenticated && adminData === null && !adminError) {
+    if (!adminLoading && !loading && isAuthenticated && !adminData && !isDemoAdmin && !adminError) {
       console.log('User authenticated but no admin privileges found');
       showError("Access Denied", "You don't have admin privileges to access this panel.");
       navigate('/dashboard');
     }
-  }, [isAuthenticated, loading, adminData, adminLoading, adminError, navigate, showError]);
+  }, [isAuthenticated, loading, adminData, adminLoading, adminError, navigate, showError, isDemoAdmin]);
 
   // Show loading state only for a short period
-  if (loading || (adminLoading && !adminError && !adminData)) {
+  if (loading || (adminLoading && !adminError && !adminData && !isDemoAdmin)) {
     console.log('Showing loading state - loading:', loading, 'adminLoading:', adminLoading);
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
@@ -146,7 +172,7 @@ const AdminDashboard = () => {
   }
 
   // Show error state
-  if (adminError) {
+  if (adminError && !isDemoAdmin) {
     console.log('Admin error occurred:', adminError);
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
@@ -162,8 +188,8 @@ const AdminDashboard = () => {
     );
   }
 
-  // Show access denied if no admin data
-  if (!adminData) {
+  // Show access denied if no admin data and not demo admin
+  if (!adminData && !isDemoAdmin) {
     console.log('No admin data, showing access denied');
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
@@ -180,6 +206,7 @@ const AdminDashboard = () => {
   }
 
   const hasPermission = (permission: AdminPermission): boolean => {
+    if (isDemoAdmin) return true; // Demo admin has all permissions
     return adminData?.is_super_admin || adminData?.role?.permissions?.includes(permission);
   };
 
@@ -201,11 +228,11 @@ const AdminDashboard = () => {
     }
   };
 
-  console.log('Rendering admin dashboard for user:', user?.email);
+  console.log('Rendering admin dashboard for user:', user?.email, 'isDemoAdmin:', isDemoAdmin);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <AdminNavigation user={user} adminData={adminData} />
+      <AdminNavigation user={user} adminData={adminData || (isDemoAdmin ? { is_super_admin: true, role: { name: 'Demo Admin' } } : null)} />
       
       <div className="pt-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto py-8">
@@ -217,7 +244,7 @@ const AdminDashboard = () => {
               Welcome back, {user?.user_metadata?.full_name || user?.email}
             </p>
             <Badge variant="secondary" className="mt-2">
-              {adminData.is_super_admin ? 'Super Admin' : adminData.role?.name || 'Admin'}
+              {isDemoAdmin ? 'Demo Admin' : (adminData?.is_super_admin ? 'Super Admin' : adminData?.role?.name || 'Admin')}
             </Badge>
           </div>
 

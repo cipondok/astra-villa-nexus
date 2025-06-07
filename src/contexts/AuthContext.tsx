@@ -29,6 +29,7 @@ interface AuthContextType {
   signOut: () => Promise<void>;
   updateProfile: (data: Partial<Profile>) => Promise<{ error: any; success?: boolean }>;
   demoAgentLogin: () => void;
+  demoAdminLogin: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -51,9 +52,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       try {
         console.log('Initializing auth...');
         
-        // Check for demo user first
+        // Check for demo users first
         const demoUser = localStorage.getItem('demo_user');
         const demoAgent = localStorage.getItem('demo_agent');
+        const demoAdmin = localStorage.getItem('demo_admin');
+        
+        if (demoAdmin) {
+          console.log('Found demo admin, using demo mode');
+          const mockUser = JSON.parse(demoAdmin) as User;
+          if (mounted) {
+            setUser(mockUser);
+            setProfile({
+              id: mockUser.id,
+              email: mockUser.email,
+              full_name: mockUser.user_metadata?.full_name || 'Demo Admin',
+              role: 'admin'
+            });
+            setLoading(false);
+            setInitialized(true);
+          }
+          return;
+        }
         
         if (demoAgent) {
           console.log('Found demo agent, using demo mode');
@@ -136,6 +155,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           setProfile(null);
           localStorage.removeItem('demo_user');
           localStorage.removeItem('demo_agent');
+          localStorage.removeItem('demo_admin');
         }
       }
     );
@@ -186,7 +206,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
     
     localStorage.setItem('demo_agent', JSON.stringify(mockAgent));
-    localStorage.removeItem('demo_user'); // Remove regular demo user if exists
+    localStorage.removeItem('demo_user');
+    localStorage.removeItem('demo_admin');
     
     setUser(mockAgent as User);
     setProfile({
@@ -197,6 +218,33 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     });
     
     showSuccess('Demo Agent Login', 'You are now logged in as a demo property agent.');
+  };
+
+  const demoAdminLogin = () => {
+    console.log('Demo admin login clicked');
+    const mockAdmin = {
+      id: 'demo-admin-456',
+      email: 'admin@astravilla.com',
+      user_metadata: { full_name: 'Demo Admin' },
+      app_metadata: {},
+      aud: 'authenticated',
+      created_at: new Date().toISOString(),
+      role: 'authenticated'
+    };
+    
+    localStorage.setItem('demo_admin', JSON.stringify(mockAdmin));
+    localStorage.removeItem('demo_user');
+    localStorage.removeItem('demo_agent');
+    
+    setUser(mockAdmin as User);
+    setProfile({
+      id: mockAdmin.id,
+      email: mockAdmin.email,
+      full_name: 'Demo Admin',
+      role: 'admin'
+    });
+    
+    showSuccess('Demo Admin Login', 'You are now logged in as a demo administrator.');
   };
 
   const signIn = async (email: string, password: string) => {
@@ -248,6 +296,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       localStorage.removeItem('demo_user');
       localStorage.removeItem('demo_agent');
+      localStorage.removeItem('demo_admin');
       await supabase.auth.signOut();
       setUser(null);
       setProfile(null);
@@ -295,6 +344,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     signOut,
     updateProfile,
     demoAgentLogin,
+    demoAdminLogin,
   };
 
   console.log('AuthProvider providing value, loading:', loading, 'isAuthenticated:', !!user);
