@@ -15,6 +15,8 @@ interface RoleBasedAuthModalProps {
   language: "en" | "id";
 }
 
+type UserRole = 'general_user' | 'property_owner' | 'agent' | 'vendor' | 'admin';
+
 const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalProps) => {
   const [activeTab, setActiveTab] = useState("signin");
   const [isLoading, setIsLoading] = useState(false);
@@ -23,7 +25,7 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
     password: "",
     confirmPassword: "",
     full_name: "",
-    role: "general_user" as const,
+    role: "general_user" as UserRole,
     phone: "",
     company_name: "",
     license_number: ""
@@ -165,7 +167,7 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
     }
   };
 
-  const showAdditionalFields = () => {
+  const showAdditionalFields = (): boolean => {
     return signUpData.role === 'agent' || signUpData.role === 'vendor' || signUpData.role === 'property_owner';
   };
 
@@ -243,7 +245,7 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
                   <Label htmlFor="signup-role">{currentText.selectRole}</Label>
                   <Select 
                     value={signUpData.role} 
-                    onValueChange={(value) => setSignUpData(prev => ({ ...prev, role: value as any }))}
+                    onValueChange={(value: UserRole) => setSignUpData(prev => ({ ...prev, role: value }))}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder={currentText.selectRole} />
