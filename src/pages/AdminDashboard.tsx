@@ -18,6 +18,7 @@ import BillingManagement from "@/components/admin/BillingManagement";
 import OrderTracking from "@/components/admin/OrderTracking";
 import SecurityMonitoring from "@/components/admin/SecurityMonitoring";
 import AIBotManagement from "@/components/admin/AIBotManagement";
+import SystemReports from "@/components/admin/SystemReports";
 import { 
   Users, 
   Building, 
@@ -30,7 +31,11 @@ import {
   Bot,
   Activity,
   AlertTriangle,
-  TrendingUp
+  TrendingUp,
+  Database,
+  Globe,
+  Bell,
+  Lock
 } from "lucide-react";
 
 type AdminPermission = "user_management" | "property_management" | "content_management" | "system_settings" | "billing_management" | "vendor_authorization" | "security_monitoring" | "order_tracking" | "ai_bot_management";
@@ -115,18 +120,20 @@ const AdminDashboard = () => {
     queryKey: ['admin-stats'],
     queryFn: async () => {
       try {
-        const [usersCount, propertiesCount, ordersCount, vendorRequestsCount] = await Promise.all([
+        const [usersCount, propertiesCount, ordersCount, vendorRequestsCount, errorLogsCount] = await Promise.all([
           supabase.from('profiles').select('*', { count: 'exact', head: true }),
           supabase.from('properties').select('*', { count: 'exact', head: true }),
           supabase.from('orders').select('*', { count: 'exact', head: true }),
-          supabase.from('vendor_requests').select('*', { count: 'exact', head: true })
+          supabase.from('vendor_requests').select('*', { count: 'exact', head: true }),
+          supabase.from('system_error_logs').select('*', { count: 'exact', head: true })
         ]);
 
         return {
           users: usersCount.count || 0,
           properties: propertiesCount.count || 0,
           orders: ordersCount.count || 0,
-          vendorRequests: vendorRequestsCount.count || 0
+          vendorRequests: vendorRequestsCount.count || 0,
+          errorLogs: errorLogsCount.count || 0
         };
       } catch (err) {
         console.error('Error fetching admin stats:', err);
@@ -134,7 +141,8 @@ const AdminDashboard = () => {
           users: 0,
           properties: 0,
           orders: 0,
-          vendorRequests: 0
+          vendorRequests: 0,
+          errorLogs: 0
         };
       }
     },
@@ -217,11 +225,20 @@ const AdminDashboard = () => {
       case 'users':
         setActiveTab('users');
         break;
+      case 'properties':
+        setActiveTab('properties');
+        break;
       case 'vendors':
         setActiveTab('vendors');
         break;
       case 'security':
         setActiveTab('security');
+        break;
+      case 'reports':
+        setActiveTab('reports');
+        break;
+      case 'settings':
+        setActiveTab('settings');
         break;
       default:
         console.log('Unknown action:', action);
@@ -249,7 +266,7 @@ const AdminDashboard = () => {
           </div>
 
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-            <TabsList className="grid w-full grid-cols-5 lg:grid-cols-10">
+            <TabsList className="grid w-full grid-cols-6 lg:grid-cols-11">
               <TabsTrigger value="overview">Overview</TabsTrigger>
               {hasPermission('user_management') && (
                 <TabsTrigger value="users">Users</TabsTrigger>
@@ -278,10 +295,11 @@ const AdminDashboard = () => {
               {hasPermission('ai_bot_management') && (
                 <TabsTrigger value="ai">AI Bots</TabsTrigger>
               )}
+              <TabsTrigger value="reports">Reports</TabsTrigger>
             </TabsList>
 
             <TabsContent value="overview" className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium">Total Users</CardTitle>
@@ -333,6 +351,19 @@ const AdminDashboard = () => {
                     <p className="text-xs text-muted-foreground">Pending approval</p>
                   </CardContent>
                 </Card>
+
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">System Errors</CardTitle>
+                    <AlertTriangle className="h-4 w-4 text-muted-foreground" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">
+                      {statsLoading ? '...' : (stats?.errorLogs || 0)}
+                    </div>
+                    <p className="text-xs text-muted-foreground">Unresolved errors</p>
+                  </CardContent>
+                </Card>
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -341,35 +372,63 @@ const AdminDashboard = () => {
                     <CardTitle>Quick Actions</CardTitle>
                     <CardDescription>Common administrative tasks</CardDescription>
                   </CardHeader>
-                  <CardContent className="space-y-4">
+                  <CardContent className="grid grid-cols-2 gap-4">
                     {hasPermission('user_management') && (
                       <Button 
                         onClick={() => handleQuickAction('users')} 
-                        className="w-full justify-start"
+                        className="h-auto p-4 flex flex-col items-center space-y-2"
                         variant="outline"
                       >
-                        <Users className="mr-2 h-4 w-4" />
-                        Manage Users
+                        <Users className="h-6 w-6" />
+                        <span className="text-sm">Manage Users</span>
+                      </Button>
+                    )}
+                    {hasPermission('property_management') && (
+                      <Button 
+                        onClick={() => handleQuickAction('properties')} 
+                        className="h-auto p-4 flex flex-col items-center space-y-2"
+                        variant="outline"
+                      >
+                        <Building className="h-6 w-6" />
+                        <span className="text-sm">Properties</span>
                       </Button>
                     )}
                     {hasPermission('vendor_authorization') && (
                       <Button 
                         onClick={() => handleQuickAction('vendors')} 
-                        className="w-full justify-start"
+                        className="h-auto p-4 flex flex-col items-center space-y-2"
                         variant="outline"
                       >
-                        <Store className="mr-2 h-4 w-4" />
-                        Review Vendor Requests
+                        <Store className="h-6 w-6" />
+                        <span className="text-sm">Vendors</span>
                       </Button>
                     )}
                     {hasPermission('security_monitoring') && (
                       <Button 
                         onClick={() => handleQuickAction('security')} 
-                        className="w-full justify-start"
+                        className="h-auto p-4 flex flex-col items-center space-y-2"
                         variant="outline"
                       >
-                        <Shield className="mr-2 h-4 w-4" />
-                        Security Monitoring
+                        <Shield className="h-6 w-6" />
+                        <span className="text-sm">Security</span>
+                      </Button>
+                    )}
+                    <Button 
+                      onClick={() => handleQuickAction('reports')} 
+                      className="h-auto p-4 flex flex-col items-center space-y-2"
+                      variant="outline"
+                    >
+                      <TrendingUp className="h-6 w-6" />
+                      <span className="text-sm">Reports</span>
+                    </Button>
+                    {hasPermission('system_settings') && (
+                      <Button 
+                        onClick={() => handleQuickAction('settings')} 
+                        className="h-auto p-4 flex flex-col items-center space-y-2"
+                        variant="outline"
+                      >
+                        <Settings className="h-6 w-6" />
+                        <span className="text-sm">Settings</span>
                       </Button>
                     )}
                   </CardContent>
@@ -378,20 +437,43 @@ const AdminDashboard = () => {
                 <Card>
                   <CardHeader>
                     <CardTitle>System Status</CardTitle>
-                    <CardDescription>Platform health and alerts</CardDescription>
+                    <CardDescription>Platform health and monitoring</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm">System Status</span>
+                      <span className="text-sm flex items-center gap-2">
+                        <Activity className="h-4 w-4" />
+                        System Status
+                      </span>
                       <Badge variant="default" className="bg-green-500">Online</Badge>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm">Database</span>
+                      <span className="text-sm flex items-center gap-2">
+                        <Database className="h-4 w-4" />
+                        Database
+                      </span>
                       <Badge variant="default" className="bg-green-500">Healthy</Badge>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm">API Status</span>
+                      <span className="text-sm flex items-center gap-2">
+                        <Globe className="h-4 w-4" />
+                        API Status
+                      </span>
                       <Badge variant="default" className="bg-green-500">Operational</Badge>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm flex items-center gap-2">
+                        <Lock className="h-4 w-4" />
+                        Security
+                      </span>
+                      <Badge variant="default" className="bg-green-500">Protected</Badge>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm flex items-center gap-2">
+                        <Bell className="h-4 w-4" />
+                        Alerts
+                      </span>
+                      <Badge variant="secondary">{stats?.errorLogs || 0} Pending</Badge>
                     </div>
                   </CardContent>
                 </Card>
@@ -451,6 +533,10 @@ const AdminDashboard = () => {
                 <AIBotManagement />
               </TabsContent>
             )}
+
+            <TabsContent value="reports">
+              <SystemReports />
+            </TabsContent>
           </Tabs>
         </div>
       </div>
