@@ -169,8 +169,9 @@ const SystemSettings = () => {
   const saveSettingsMutation = useMutation({
     mutationFn: async (changes: Record<string, { value: any; category: string }>) => {
       if (offlineMode) {
-        // In offline mode, just simulate a save
+        // In offline mode, just simulate a save with a brief delay
         console.log('Offline mode: Changes saved locally:', changes);
+        await new Promise(resolve => setTimeout(resolve, 500));
         return;
       }
 
