@@ -1,3 +1,4 @@
+
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -42,6 +43,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const fetchProfile = async (userId: string): Promise<Profile | null> => {
     try {
+      console.log('Fetching profile for user:', userId);
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
@@ -53,6 +55,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         return null;
       }
 
+      console.log('Profile fetched successfully:', data);
       return data;
     } catch (err) {
       console.error('Profile fetch error:', err);
@@ -101,7 +104,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         return { success: false, error: errorMessage };
       }
 
-      // If user is created and confirmed, update their profile with additional data
       if (data.user && data.user.email_confirmed_at) {
         try {
           await supabase
@@ -250,13 +252,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const initializeAuth = async () => {
       try {
+        console.log('Initializing auth...');
         const { data: { session: initialSession }, error } = await supabase.auth.getSession();
         
         if (error) {
           console.error('Error getting initial session:', error);
+          if (mounted) {
+            setLoading(false);
+          }
+          return;
         }
 
         if (mounted && initialSession) {
+          console.log('Initial session found:', initialSession.user?.email);
           setSession(initialSession);
           setUser(initialSession.user);
           
@@ -269,6 +277,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         console.error('Auth initialization error:', error);
       } finally {
         if (mounted) {
+          console.log('Auth initialization complete');
           setLoading(false);
         }
       }
@@ -278,7 +287,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       async (event, session) => {
         if (!mounted) return;
 
-        console.log('Auth state changed:', event, session?.user?.role);
+        console.log('Auth state changed:', event, session?.user?.email);
         
         setSession(session);
         setUser(session?.user ?? null);
@@ -293,6 +302,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           if (mounted) {
             setProfile(null);
           }
+        }
+        
+        if (mounted) {
+          setLoading(false);
         }
       }
     );
