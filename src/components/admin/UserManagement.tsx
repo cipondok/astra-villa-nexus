@@ -13,9 +13,11 @@ import { Search, UserPlus, Edit, Ban, CheckCircle } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 
+type UserRole = "general_user" | "property_owner" | "agent" | "vendor" | "admin";
+
 const UserManagement = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [roleFilter, setRoleFilter] = useState("all");
+  const [roleFilter, setRoleFilter] = useState<string>("all");
   const [selectedUser, setSelectedUser] = useState<any>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const { showSuccess, showError } = useAlert();
@@ -31,7 +33,7 @@ const UserManagement = () => {
       }
       
       if (roleFilter !== 'all') {
-        query = query.eq('role', roleFilter);
+        query = query.eq('role', roleFilter as UserRole);
       }
       
       const { data, error } = await query.order('created_at', { ascending: false });
@@ -212,7 +214,7 @@ const UserManagement = () => {
                   <Label htmlFor="role">Role</Label>
                   <Select
                     value={selectedUser.role}
-                    onValueChange={(value) => setSelectedUser({...selectedUser, role: value})}
+                    onValueChange={(value: UserRole) => setSelectedUser({...selectedUser, role: value})}
                   >
                     <SelectTrigger>
                       <SelectValue />

@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -9,7 +8,7 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useAlert } from "@/contexts/AlertContext";
-import { Settings, Save, Database, Security, Globe, Palette } from "lucide-react";
+import { Settings, Save, Database, Shield, Globe, Palette } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const SystemSettings = () => {
@@ -194,7 +193,7 @@ const SystemSettings = () => {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Security className="h-4 w-4" />
+                <Shield className="h-4 w-4" />
                 Security Settings
               </CardTitle>
               <CardDescription>Authentication and security configuration</CardDescription>

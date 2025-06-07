@@ -5,52 +5,40 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Textarea } from "@/components/ui/textarea";
 import { useAlert } from "@/contexts/AlertContext";
-import { Search, FileText, Plus, Edit, Trash2, Eye } from "lucide-react";
+import { FileText, Plus, Edit, Trash2, Eye, Save } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 
 const ContentManagement = () => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [typeFilter, setTypeFilter] = useState("all");
-  const [statusFilter, setStatusFilter] = useState("all");
+  const [selectedContent, setSelectedContent] = useState<any>(null);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
-  const [editingContent, setEditingContent] = useState<any>(null);
   const [newContent, setNewContent] = useState({
-    title: '',
     type: 'page',
-    content: '',
-    status: 'draft',
-    slug: ''
+    title: '',
+    slug: '',
+    content: { body: '', meta_title: '', meta_description: '' },
+    status: 'draft'
   });
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
 
   const { data: content, isLoading } = useQuery({
-    queryKey: ['cms-content', searchTerm, typeFilter, statusFilter],
+    queryKey: ['cms-content'],
     queryFn: async () => {
-      let query = supabase.from('cms_content').select(`
-        *,
-        author:profiles!cms_content_author_id_fkey(full_name, email)
-      `);
+      const { data, error } = await supabase
+        .from('cms_content')
+        .select(`
+          *,
+          author:profiles(full_name, email)
+        `)
+        .order('created_at', { ascending: false });
       
-      if (searchTerm) {
-        query = query.or(`title.ilike.%${searchTerm}%,slug.ilike.%${searchTerm}%`);
-      }
-      
-      if (typeFilter !== 'all') {
-        query = query.eq('type', typeFilter);
-      }
-      
-      if (statusFilter !== 'all') {
-        query = query.eq('status', statusFilter);
-      }
-      
-      const { data, error } = await query.order('updated_at', { ascending: false });
       if (error) throw error;
       return data;
     }
@@ -58,24 +46,26 @@ const ContentManagement = () => {
 
   const createContentMutation = useMutation({
     mutationFn: async (contentData: any) => {
-      const { data: { user } } = await supabase.auth.getUser();
-      
       const { error } = await supabase
         .from('cms_content')
         .insert({
           ...contentData,
-          author_id: user?.id,
-          content: { body: contentData.content },
-          slug: contentData.slug || contentData.title.toLowerCase().replace(/\s+/g, '-')
+          author_id: (await supabase.auth.getUser()).data.user?.id,
+          content: JSON.stringify(contentData.content)
         });
-      
       if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['cms-content'] });
       showSuccess("Success", "Content created successfully");
       setIsCreateDialogOpen(false);
-      setNewContent({ title: '', type: 'page', content: '', status: 'draft', slug: '' });
+      setNewContent({
+        type: 'page',
+        title: '',
+        slug: '',
+        content: { body: '', meta_title: '', meta_description: '' },
+        status: 'draft'
+      });
     },
     onError: (error) => {
       showError("Error", `Failed to create content: ${error.message}`);
@@ -88,17 +78,17 @@ const ContentManagement = () => {
         .from('cms_content')
         .update({
           ...updates,
-          content: { body: updates.content },
+          content: JSON.stringify(updates.content),
           updated_at: new Date().toISOString()
         })
         .eq('id', id);
-      
       if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['cms-content'] });
       showSuccess("Success", "Content updated successfully");
-      setEditingContent(null);
+      setIsEditDialogOpen(false);
+      setSelectedContent(null);
     },
     onError: (error) => {
       showError("Error", `Failed to update content: ${error.message}`);
@@ -111,7 +101,6 @@ const ContentManagement = () => {
         .from('cms_content')
         .delete()
         .eq('id', id);
-      
       if (error) throw error;
     },
     onSuccess: () => {
@@ -123,32 +112,32 @@ const ContentManagement = () => {
     }
   });
 
+  const handleEditContent = (contentItem: any) => {
+    setSelectedContent({
+      ...contentItem,
+      content: typeof contentItem.content === 'string' 
+        ? JSON.parse(contentItem.content) 
+        : contentItem.content
+    });
+    setIsEditDialogOpen(true);
+  };
+
   const handleCreateContent = () => {
-    if (!newContent.title.trim()) {
-      showError("Error", "Title is required");
-      return;
-    }
     createContentMutation.mutate(newContent);
   };
 
   const handleUpdateContent = () => {
-    if (!editingContent) return;
+    if (!selectedContent) return;
     updateContentMutation.mutate({
-      id: editingContent.id,
+      id: selectedContent.id,
       updates: {
-        title: editingContent.title,
-        type: editingContent.type,
-        content: editingContent.content.body || editingContent.content,
-        status: editingContent.status,
-        slug: editingContent.slug
+        title: selectedContent.title,
+        slug: selectedContent.slug,
+        content: selectedContent.content,
+        status: selectedContent.status,
+        type: selectedContent.type
       }
     });
-  };
-
-  const handleDeleteContent = (id: string) => {
-    if (confirm('Are you sure you want to delete this content?')) {
-      deleteContentMutation.mutate(id);
-    }
   };
 
   const getStatusColor = (status: string) => {
@@ -156,150 +145,37 @@ const ContentManagement = () => {
       case 'published': return 'bg-green-500';
       case 'draft': return 'bg-yellow-500';
       case 'archived': return 'bg-gray-500';
-      default: return 'bg-gray-500';
+      default: return 'bg-blue-500';
     }
   };
 
-  const getTypeColor = (type: string) => {
-    switch (type) {
-      case 'page': return 'bg-blue-500';
-      case 'post': return 'bg-purple-500';
-      case 'banner': return 'bg-orange-500';
-      default: return 'bg-gray-500';
+  const getContentBody = (contentData: any) => {
+    if (typeof contentData === 'string') {
+      try {
+        const parsed = JSON.parse(contentData);
+        return parsed.body || '';
+      } catch {
+        return contentData;
+      }
     }
+    return contentData?.body || '';
   };
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <FileText className="h-5 w-5" />
-          Content Management System
-        </CardTitle>
-        <CardDescription>Manage website content, pages, and blog posts</CardDescription>
+        <div className="flex justify-between items-center">
+          <div>
+            <CardTitle>Content Management System</CardTitle>
+            <CardDescription>Manage website pages, posts, and content</CardDescription>
+          </div>
+          <Button onClick={() => setIsCreateDialogOpen(true)}>
+            <Plus className="h-4 w-4 mr-2" />
+            Create Content
+          </Button>
+        </div>
       </CardHeader>
       <CardContent className="space-y-6">
-        {/* Search and Filters */}
-        <div className="flex flex-col sm:flex-row gap-4">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-            <Input
-              placeholder="Search content by title or slug..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
-            />
-          </div>
-          <Select value={typeFilter} onValueChange={setTypeFilter}>
-            <SelectTrigger className="w-48">
-              <SelectValue placeholder="Filter by type" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Types</SelectItem>
-              <SelectItem value="page">Page</SelectItem>
-              <SelectItem value="post">Post</SelectItem>
-              <SelectItem value="banner">Banner</SelectItem>
-            </SelectContent>
-          </Select>
-          <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-48">
-              <SelectValue placeholder="Filter by status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Status</SelectItem>
-              <SelectItem value="published">Published</SelectItem>
-              <SelectItem value="draft">Draft</SelectItem>
-              <SelectItem value="archived">Archived</SelectItem>
-            </SelectContent>
-          </Select>
-          <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-            <DialogTrigger asChild>
-              <Button>
-                <Plus className="h-4 w-4 mr-2" />
-                Create Content
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-2xl">
-              <DialogHeader>
-                <DialogTitle>Create New Content</DialogTitle>
-                <DialogDescription>Add new content to your website</DialogDescription>
-              </DialogHeader>
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="title">Title</Label>
-                  <Input
-                    id="title"
-                    value={newContent.title}
-                    onChange={(e) => setNewContent({...newContent, title: e.target.value})}
-                    placeholder="Enter content title"
-                  />
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="type">Type</Label>
-                    <Select
-                      value={newContent.type}
-                      onValueChange={(value) => setNewContent({...newContent, type: value})}
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="page">Page</SelectItem>
-                        <SelectItem value="post">Post</SelectItem>
-                        <SelectItem value="banner">Banner</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <Label htmlFor="status">Status</Label>
-                    <Select
-                      value={newContent.status}
-                      onValueChange={(value) => setNewContent({...newContent, status: value})}
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="draft">Draft</SelectItem>
-                        <SelectItem value="published">Published</SelectItem>
-                        <SelectItem value="archived">Archived</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-                <div>
-                  <Label htmlFor="slug">Slug (URL)</Label>
-                  <Input
-                    id="slug"
-                    value={newContent.slug}
-                    onChange={(e) => setNewContent({...newContent, slug: e.target.value})}
-                    placeholder="content-url-slug"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="content">Content</Label>
-                  <Textarea
-                    id="content"
-                    value={newContent.content}
-                    onChange={(e) => setNewContent({...newContent, content: e.target.value})}
-                    placeholder="Enter your content here..."
-                    rows={6}
-                  />
-                </div>
-              </div>
-              <DialogFooter>
-                <Button variant="outline" onClick={() => setIsCreateDialogOpen(false)}>
-                  Cancel
-                </Button>
-                <Button onClick={handleCreateContent} disabled={createContentMutation.isPending}>
-                  {createContentMutation.isPending ? 'Creating...' : 'Create Content'}
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-        </div>
-
         {/* Content Table */}
         <div className="border rounded-lg">
           <Table>
@@ -309,7 +185,7 @@ const ContentManagement = () => {
                 <TableHead>Type</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Author</TableHead>
-                <TableHead>Updated</TableHead>
+                <TableHead>Created</TableHead>
                 <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -329,123 +205,32 @@ const ContentManagement = () => {
                     </div>
                   </TableCell>
                   <TableCell>
-                    <Badge className={getTypeColor(item.type)}>
-                      {item.type.toUpperCase()}
-                    </Badge>
+                    <Badge variant="outline">{item.type.toUpperCase()}</Badge>
                   </TableCell>
                   <TableCell>
                     <Badge className={getStatusColor(item.status)}>
-                      {item.status.toUpperCase()}
+                      {item.status}
                     </Badge>
                   </TableCell>
                   <TableCell>
-                    <div>
-                      <p className="text-sm">{item.author?.full_name || 'Unknown'}</p>
-                      <p className="text-xs text-gray-500">{item.author?.email}</p>
-                    </div>
+                    {Array.isArray(item.author) && item.author.length > 0 
+                      ? item.author[0]?.full_name || item.author[0]?.email
+                      : 'Unknown'}
                   </TableCell>
-                  <TableCell>
-                    {new Date(item.updated_at).toLocaleDateString()}
-                  </TableCell>
+                  <TableCell>{new Date(item.created_at).toLocaleDateString()}</TableCell>
                   <TableCell>
                     <div className="flex space-x-2">
-                      <Dialog>
-                        <DialogTrigger asChild>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => setEditingContent({
-                              ...item,
-                              content: item.content?.body || item.content || ''
-                            })}
-                          >
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                        </DialogTrigger>
-                        <DialogContent className="max-w-2xl">
-                          <DialogHeader>
-                            <DialogTitle>Edit Content</DialogTitle>
-                            <DialogDescription>Update content information</DialogDescription>
-                          </DialogHeader>
-                          {editingContent && (
-                            <div className="space-y-4">
-                              <div>
-                                <Label htmlFor="edit-title">Title</Label>
-                                <Input
-                                  id="edit-title"
-                                  value={editingContent.title}
-                                  onChange={(e) => setEditingContent({...editingContent, title: e.target.value})}
-                                />
-                              </div>
-                              <div className="grid grid-cols-2 gap-4">
-                                <div>
-                                  <Label htmlFor="edit-type">Type</Label>
-                                  <Select
-                                    value={editingContent.type}
-                                    onValueChange={(value) => setEditingContent({...editingContent, type: value})}
-                                  >
-                                    <SelectTrigger>
-                                      <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      <SelectItem value="page">Page</SelectItem>
-                                      <SelectItem value="post">Post</SelectItem>
-                                      <SelectItem value="banner">Banner</SelectItem>
-                                    </SelectContent>
-                                  </Select>
-                                </div>
-                                <div>
-                                  <Label htmlFor="edit-status">Status</Label>
-                                  <Select
-                                    value={editingContent.status}
-                                    onValueChange={(value) => setEditingContent({...editingContent, status: value})}
-                                  >
-                                    <SelectTrigger>
-                                      <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      <SelectItem value="draft">Draft</SelectItem>
-                                      <SelectItem value="published">Published</SelectItem>
-                                      <SelectItem value="archived">Archived</SelectItem>
-                                    </SelectContent>
-                                  </Select>
-                                </div>
-                              </div>
-                              <div>
-                                <Label htmlFor="edit-slug">Slug</Label>
-                                <Input
-                                  id="edit-slug"
-                                  value={editingContent.slug}
-                                  onChange={(e) => setEditingContent({...editingContent, slug: e.target.value})}
-                                />
-                              </div>
-                              <div>
-                                <Label htmlFor="edit-content">Content</Label>
-                                <Textarea
-                                  id="edit-content"
-                                  value={editingContent.content}
-                                  onChange={(e) => setEditingContent({...editingContent, content: e.target.value})}
-                                  rows={6}
-                                />
-                              </div>
-                            </div>
-                          )}
-                          <DialogFooter>
-                            <Button variant="outline" onClick={() => setEditingContent(null)}>
-                              Cancel
-                            </Button>
-                            <Button onClick={handleUpdateContent} disabled={updateContentMutation.isPending}>
-                              {updateContentMutation.isPending ? 'Updating...' : 'Update Content'}
-                            </Button>
-                          </DialogFooter>
-                        </DialogContent>
-                      </Dialog>
-                      
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => handleDeleteContent(item.id)}
-                        className="text-red-600 hover:text-red-700"
+                        onClick={() => handleEditContent(item)}
+                      >
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => deleteContentMutation.mutate(item.id)}
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>
@@ -457,39 +242,200 @@ const ContentManagement = () => {
           </Table>
         </div>
 
-        {/* Summary Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Card>
-            <CardContent className="p-4">
-              <div className="text-center">
-                <p className="text-2xl font-bold text-green-600">
-                  {content?.filter(c => c.status === 'published').length || 0}
-                </p>
-                <p className="text-sm text-gray-600">Published</p>
+        {/* Create Content Dialog */}
+        <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+          <DialogContent className="max-w-4xl">
+            <DialogHeader>
+              <DialogTitle>Create New Content</DialogTitle>
+              <DialogDescription>Add new page or post content</DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="title">Title</Label>
+                  <Input
+                    id="title"
+                    value={newContent.title}
+                    onChange={(e) => setNewContent({...newContent, title: e.target.value})}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="slug">Slug</Label>
+                  <Input
+                    id="slug"
+                    value={newContent.slug}
+                    onChange={(e) => setNewContent({...newContent, slug: e.target.value})}
+                  />
+                </div>
               </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-4">
-              <div className="text-center">
-                <p className="text-2xl font-bold text-yellow-600">
-                  {content?.filter(c => c.status === 'draft').length || 0}
-                </p>
-                <p className="text-sm text-gray-600">Drafts</p>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="type">Content Type</Label>
+                  <Select
+                    value={newContent.type}
+                    onValueChange={(value) => setNewContent({...newContent, type: value})}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="page">Page</SelectItem>
+                      <SelectItem value="post">Post</SelectItem>
+                      <SelectItem value="banner">Banner</SelectItem>
+                      <SelectItem value="announcement">Announcement</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label htmlFor="status">Status</Label>
+                  <Select
+                    value={newContent.status}
+                    onValueChange={(value) => setNewContent({...newContent, status: value})}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="draft">Draft</SelectItem>
+                      <SelectItem value="published">Published</SelectItem>
+                      <SelectItem value="archived">Archived</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-4">
-              <div className="text-center">
-                <p className="text-2xl font-bold text-gray-600">
-                  {content?.filter(c => c.status === 'archived').length || 0}
-                </p>
-                <p className="text-sm text-gray-600">Archived</p>
+              <div>
+                <Label htmlFor="content">Content Body</Label>
+                <Textarea
+                  id="content"
+                  rows={6}
+                  value={newContent.content.body}
+                  onChange={(e) => setNewContent({
+                    ...newContent, 
+                    content: {...newContent.content, body: e.target.value}
+                  })}
+                />
               </div>
-            </CardContent>
-          </Card>
-        </div>
+              <div>
+                <Label htmlFor="meta_title">Meta Title</Label>
+                <Input
+                  id="meta_title"
+                  value={newContent.content.meta_title}
+                  onChange={(e) => setNewContent({
+                    ...newContent, 
+                    content: {...newContent.content, meta_title: e.target.value}
+                  })}
+                />
+              </div>
+              <div>
+                <Label htmlFor="meta_description">Meta Description</Label>
+                <Textarea
+                  id="meta_description"
+                  rows={2}
+                  value={newContent.content.meta_description}
+                  onChange={(e) => setNewContent({
+                    ...newContent, 
+                    content: {...newContent.content, meta_description: e.target.value}
+                  })}
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setIsCreateDialogOpen(false)}>
+                Cancel
+              </Button>
+              <Button onClick={handleCreateContent} disabled={createContentMutation.isPending}>
+                {createContentMutation.isPending ? 'Creating...' : 'Create Content'}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Edit Content Dialog */}
+        <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+          <DialogContent className="max-w-4xl">
+            <DialogHeader>
+              <DialogTitle>Edit Content</DialogTitle>
+              <DialogDescription>Update content information</DialogDescription>
+            </DialogHeader>
+            {selectedContent && (
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="edit_title">Title</Label>
+                    <Input
+                      id="edit_title"
+                      value={selectedContent.title || ''}
+                      onChange={(e) => setSelectedContent({...selectedContent, title: e.target.value})}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="edit_slug">Slug</Label>
+                    <Input
+                      id="edit_slug"
+                      value={selectedContent.slug || ''}
+                      onChange={(e) => setSelectedContent({...selectedContent, slug: e.target.value})}
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="edit_type">Content Type</Label>
+                    <Select
+                      value={selectedContent.type}
+                      onValueChange={(value) => setSelectedContent({...selectedContent, type: value})}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="page">Page</SelectItem>
+                        <SelectItem value="post">Post</SelectItem>
+                        <SelectItem value="banner">Banner</SelectItem>
+                        <SelectItem value="announcement">Announcement</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label htmlFor="edit_status">Status</Label>
+                    <Select
+                      value={selectedContent.status}
+                      onValueChange={(value) => setSelectedContent({...selectedContent, status: value})}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="draft">Draft</SelectItem>
+                        <SelectItem value="published">Published</SelectItem>
+                        <SelectItem value="archived">Archived</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <div>
+                  <Label htmlFor="edit_content">Content Body</Label>
+                  <Textarea
+                    id="edit_content"
+                    rows={6}
+                    value={selectedContent.content?.body || ''}
+                    onChange={(e) => setSelectedContent({
+                      ...selectedContent, 
+                      content: {...selectedContent.content, body: e.target.value}
+                    })}
+                  />
+                </div>
+              </div>
+            )}
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
+                Cancel
+              </Button>
+              <Button onClick={handleUpdateContent} disabled={updateContentMutation.isPending}>
+                {updateContentMutation.isPending ? 'Updating...' : 'Update Content'}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </CardContent>
     </Card>
   );

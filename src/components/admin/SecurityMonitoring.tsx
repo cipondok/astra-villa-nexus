@@ -6,38 +6,40 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Shield, AlertTriangle, Activity, Search, Eye, Ban } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Search, Shield, Eye, MapPin, Smartphone, AlertTriangle } from "lucide-react";
 
 const SecurityMonitoring = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [activityFilter, setActivityFilter] = useState("all");
 
-  // User Activity Logs
-  const { data: activityLogs, isLoading: activityLoading } = useQuery({
-    queryKey: ['activity-logs', searchTerm],
+  const { data: userActivity, isLoading: activityLoading } = useQuery({
+    queryKey: ['user-activity', searchTerm, activityFilter],
     queryFn: async () => {
       let query = supabase
         .from('user_activity_logs')
         .select(`
           *,
           user:profiles(full_name, email)
-        `)
-        .order('created_at', { ascending: false })
-        .limit(100);
-
+        `);
+      
       if (searchTerm) {
         query = query.ilike('description', `%${searchTerm}%`);
       }
-
-      const { data, error } = await query;
+      
+      if (activityFilter !== 'all') {
+        query = query.eq('activity_type', activityFilter);
+      }
+      
+      const { data, error } = await query.order('created_at', { ascending: false }).limit(100);
       if (error) throw error;
       return data;
     }
   });
 
-  // User Sessions
-  const { data: sessions, isLoading: sessionsLoading } = useQuery({
+  const { data: userSessions, isLoading: sessionsLoading } = useQuery({
     queryKey: ['user-sessions'],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -48,13 +50,12 @@ const SecurityMonitoring = () => {
         `)
         .eq('is_active', true)
         .order('created_at', { ascending: false });
-
+      
       if (error) throw error;
       return data;
     }
   });
 
-  // System Error Logs
   const { data: errorLogs, isLoading: errorsLoading } = useQuery({
     queryKey: ['error-logs'],
     queryFn: async () => {
@@ -63,18 +64,20 @@ const SecurityMonitoring = () => {
         .select('*')
         .order('created_at', { ascending: false })
         .limit(50);
-
+      
       if (error) throw error;
       return data;
     }
   });
 
-  const getActivityIcon = (type: string) => {
+  const getActivityTypeColor = (type: string) => {
     switch (type) {
-      case 'login': return <Shield className="h-4 w-4 text-green-500" />;
-      case 'logout': return <Shield className="h-4 w-4 text-red-500" />;
-      case 'view': return <Eye className="h-4 w-4 text-blue-500" />;
-      default: return <AlertTriangle className="h-4 w-4 text-yellow-500" />;
+      case 'login': return 'bg-green-500';
+      case 'logout': return 'bg-blue-500';
+      case 'failed_login': return 'bg-red-500';
+      case 'password_change': return 'bg-yellow-500';
+      case 'profile_update': return 'bg-purple-500';
+      default: return 'bg-gray-500';
     }
   };
 
@@ -88,9 +91,20 @@ const SecurityMonitoring = () => {
     }
   };
 
-  const formatIpAddress = (ip: any) => {
-    if (!ip) return 'Unknown';
-    return typeof ip === 'string' ? ip : ip.toString();
+  const getLocationInfo = (locationData: any) => {
+    if (typeof locationData === 'string') {
+      try {
+        const parsed = JSON.parse(locationData);
+        return parsed.city || 'Unknown';
+      } catch {
+        return 'Unknown';
+      }
+    }
+    return locationData?.city || 'Unknown';
+  };
+
+  const formatIPAddress = (ip: string) => {
+    return ip || 'Unknown';
   };
 
   return (
@@ -99,45 +113,64 @@ const SecurityMonitoring = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Shield className="h-5 w-5" />
-            Security Monitoring & Analytics
+            Security Monitoring
           </CardTitle>
-          <CardDescription>
-            Monitor user activities, sessions, and system security events
-          </CardDescription>
+          <CardDescription>Monitor user activities, sessions, and system security</CardDescription>
         </CardHeader>
       </Card>
 
-      <Tabs defaultValue="activities" className="space-y-6">
+      <Tabs defaultValue="activity" className="space-y-6">
         <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="activities">User Activities</TabsTrigger>
+          <TabsTrigger value="activity">User Activity</TabsTrigger>
           <TabsTrigger value="sessions">Active Sessions</TabsTrigger>
-          <TabsTrigger value="errors">System Errors</TabsTrigger>
-          <TabsTrigger value="analytics">Analytics</TabsTrigger>
+          <TabsTrigger value="errors">Error Logs</TabsTrigger>
+          <TabsTrigger value="security">Security Alerts</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="activities" className="space-y-4">
+        <TabsContent value="activity" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>User Activity Logs</CardTitle>
-              <CardDescription>Real-time tracking of user actions</CardDescription>
+              <CardTitle className="flex items-center gap-2">
+                <Activity className="h-4 w-4" />
+                User Activity Logs
+              </CardTitle>
+              <CardDescription>Track user actions and behaviors</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                <Input
-                  placeholder="Search activities..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
-                />
+              {/* Filters */}
+              <div className="flex flex-col sm:flex-row gap-4">
+                <div className="relative flex-1">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                  <Input
+                    placeholder="Search activities..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-10"
+                  />
+                </div>
+                <Select value={activityFilter} onValueChange={setActivityFilter}>
+                  <SelectTrigger className="w-48">
+                    <SelectValue placeholder="Filter by type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Activities</SelectItem>
+                    <SelectItem value="login">Login</SelectItem>
+                    <SelectItem value="logout">Logout</SelectItem>
+                    <SelectItem value="failed_login">Failed Login</SelectItem>
+                    <SelectItem value="password_change">Password Change</SelectItem>
+                    <SelectItem value="profile_update">Profile Update</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
+              {/* Activity Table */}
               <div className="border rounded-lg">
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Activity</TableHead>
                       <TableHead>User</TableHead>
+                      <TableHead>Activity</TableHead>
+                      <TableHead>Description</TableHead>
                       <TableHead>IP Address</TableHead>
                       <TableHead>Location</TableHead>
                       <TableHead>Time</TableHead>
@@ -146,47 +179,30 @@ const SecurityMonitoring = () => {
                   <TableBody>
                     {activityLoading ? (
                       <TableRow>
-                        <TableCell colSpan={5} className="text-center py-8">
+                        <TableCell colSpan={6} className="text-center py-8">
                           Loading activities...
                         </TableCell>
                       </TableRow>
-                    ) : activityLogs?.map((log) => (
-                      <TableRow key={log.id}>
-                        <TableCell>
-                          <div className="flex items-center space-x-2">
-                            {getActivityIcon(log.activity_type)}
-                            <div>
-                              <p className="font-medium">{log.activity_type}</p>
-                              <p className="text-sm text-gray-500">{log.description}</p>
-                            </div>
-                          </div>
-                        </TableCell>
+                    ) : userActivity?.map((activity) => (
+                      <TableRow key={activity.id}>
                         <TableCell>
                           <div>
-                            <p className="font-medium">{log.user?.full_name || 'Unknown'}</p>
-                            <p className="text-sm text-gray-500">{log.user?.email}</p>
+                            <p className="font-medium">
+                              {Array.isArray(activity.user) && activity.user.length > 0
+                                ? activity.user[0]?.full_name || activity.user[0]?.email
+                                : activity.user?.full_name || activity.user?.email || 'Unknown User'}
+                            </p>
                           </div>
                         </TableCell>
                         <TableCell>
-                          <code className="bg-gray-100 px-2 py-1 rounded text-sm">
-                            {formatIpAddress(log.ip_address)}
-                          </code>
+                          <Badge className={getActivityTypeColor(activity.activity_type)}>
+                            {activity.activity_type.replace('_', ' ').toUpperCase()}
+                          </Badge>
                         </TableCell>
-                        <TableCell>
-                          {log.location_data ? (
-                            <div className="flex items-center space-x-1">
-                              <MapPin className="h-4 w-4 text-gray-400" />
-                              <span className="text-sm">
-                                {log.location_data.city || 'Unknown'}
-                              </span>
-                            </div>
-                          ) : (
-                            <span className="text-gray-400">Unknown</span>
-                          )}
-                        </TableCell>
-                        <TableCell>
-                          {new Date(log.created_at).toLocaleString()}
-                        </TableCell>
+                        <TableCell>{activity.description}</TableCell>
+                        <TableCell>{formatIPAddress(activity.ip_address)}</TableCell>
+                        <TableCell>{getLocationInfo(activity.location_data)}</TableCell>
+                        <TableCell>{new Date(activity.created_at).toLocaleString()}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
@@ -200,7 +216,7 @@ const SecurityMonitoring = () => {
           <Card>
             <CardHeader>
               <CardTitle>Active User Sessions</CardTitle>
-              <CardDescription>Monitor currently logged-in users</CardDescription>
+              <CardDescription>Monitor currently active user sessions</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="border rounded-lg">
@@ -212,7 +228,7 @@ const SecurityMonitoring = () => {
                       <TableHead>Device</TableHead>
                       <TableHead>Location</TableHead>
                       <TableHead>Started</TableHead>
-                      <TableHead>Expires</TableHead>
+                      <TableHead>Actions</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -222,44 +238,29 @@ const SecurityMonitoring = () => {
                           Loading sessions...
                         </TableCell>
                       </TableRow>
-                    ) : sessions?.map((session) => (
+                    ) : userSessions?.map((session) => (
                       <TableRow key={session.id}>
                         <TableCell>
                           <div>
-                            <p className="font-medium">{session.user?.full_name || 'Unknown'}</p>
-                            <p className="text-sm text-gray-500">{session.user?.email}</p>
+                            <p className="font-medium">
+                              {Array.isArray(session.user) && session.user.length > 0
+                                ? session.user[0]?.full_name || session.user[0]?.email
+                                : session.user?.full_name || session.user?.email || 'Unknown User'}
+                            </p>
                           </div>
                         </TableCell>
+                        <TableCell>{formatIPAddress(session.ip_address)}</TableCell>
                         <TableCell>
-                          <code className="bg-gray-100 px-2 py-1 rounded text-sm">
-                            {formatIpAddress(session.ip_address)}
-                          </code>
+                          <span className="text-sm text-gray-600 truncate max-w-32 block">
+                            {session.user_agent?.substring(0, 50) || 'Unknown'}
+                          </span>
                         </TableCell>
+                        <TableCell>{getLocationInfo(session.location_data)}</TableCell>
+                        <TableCell>{new Date(session.created_at).toLocaleString()}</TableCell>
                         <TableCell>
-                          <div className="flex items-center space-x-1">
-                            <Smartphone className="h-4 w-4 text-gray-400" />
-                            <span className="text-sm">
-                              {session.user_agent ? session.user_agent.substring(0, 30) + '...' : 'Unknown'}
-                            </span>
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          {session.location_data ? (
-                            <div className="flex items-center space-x-1">
-                              <MapPin className="h-4 w-4 text-gray-400" />
-                              <span className="text-sm">
-                                {session.location_data.city || 'Unknown'}
-                              </span>
-                            </div>
-                          ) : (
-                            <span className="text-gray-400">Unknown</span>
-                          )}
-                        </TableCell>
-                        <TableCell>
-                          {new Date(session.created_at).toLocaleString()}
-                        </TableCell>
-                        <TableCell>
-                          {session.expires_at ? new Date(session.expires_at).toLocaleString() : 'Never'}
+                          <Button variant="destructive" size="sm">
+                            <Ban className="h-4 w-4" />
+                          </Button>
                         </TableCell>
                       </TableRow>
                     ))}
@@ -273,8 +274,11 @@ const SecurityMonitoring = () => {
         <TabsContent value="errors" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>System Error Logs</CardTitle>
-              <CardDescription>Monitor and track system errors</CardDescription>
+              <CardTitle className="flex items-center gap-2">
+                <AlertTriangle className="h-4 w-4" />
+                System Error Logs
+              </CardTitle>
+              <CardDescription>Monitor system errors and issues</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="border rounded-lg">
@@ -284,7 +288,7 @@ const SecurityMonitoring = () => {
                       <TableHead>Error Type</TableHead>
                       <TableHead>Message</TableHead>
                       <TableHead>Severity</TableHead>
-                      <TableHead>URL</TableHead>
+                      <TableHead>User</TableHead>
                       <TableHead>Time</TableHead>
                       <TableHead>Status</TableHead>
                     </TableRow>
@@ -302,9 +306,9 @@ const SecurityMonitoring = () => {
                           <Badge variant="outline">{error.error_type}</Badge>
                         </TableCell>
                         <TableCell>
-                          <p className="text-sm max-w-xs truncate" title={error.error_message}>
+                          <span className="text-sm text-gray-600 truncate max-w-64 block">
                             {error.error_message}
-                          </p>
+                          </span>
                         </TableCell>
                         <TableCell>
                           <Badge className={getSeverityColor(error.severity)}>
@@ -312,15 +316,11 @@ const SecurityMonitoring = () => {
                           </Badge>
                         </TableCell>
                         <TableCell>
-                          <code className="text-xs bg-gray-100 px-1 py-0.5 rounded">
-                            {error.request_url || 'N/A'}
-                          </code>
+                          {error.user_id ? 'User ID: ' + error.user_id.substring(0, 8) : 'System'}
                         </TableCell>
+                        <TableCell>{new Date(error.created_at).toLocaleString()}</TableCell>
                         <TableCell>
-                          {new Date(error.created_at).toLocaleString()}
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant={error.is_resolved ? "default" : "secondary"}>
+                          <Badge variant={error.is_resolved ? "default" : "destructive"}>
                             {error.is_resolved ? 'Resolved' : 'Open'}
                           </Badge>
                         </TableCell>
@@ -333,60 +333,18 @@ const SecurityMonitoring = () => {
           </Card>
         </TabsContent>
 
-        <TabsContent value="analytics" className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Active Sessions</CardTitle>
-                <Shield className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{sessions?.length || 0}</div>
-                <p className="text-xs text-muted-foreground">Currently online</p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Error Rate</CardTitle>
-                <AlertTriangle className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">
-                  {errorLogs?.filter(e => !e.is_resolved).length || 0}
-                </div>
-                <p className="text-xs text-muted-foreground">Unresolved errors</p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Daily Activities</CardTitle>
-                <Eye className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">
-                  {activityLogs?.filter(log => 
-                    new Date(log.created_at) > new Date(Date.now() - 24 * 60 * 60 * 1000)
-                  ).length || 0}
-                </div>
-                <p className="text-xs text-muted-foreground">Last 24 hours</p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Unique IPs</CardTitle>
-                <MapPin className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">
-                  {new Set(sessions?.map(s => formatIpAddress(s.ip_address))).size || 0}
-                </div>
-                <p className="text-xs text-muted-foreground">Different locations</p>
-              </CardContent>
-            </Card>
-          </div>
+        <TabsContent value="security" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Security Alerts</CardTitle>
+              <CardDescription>Security incidents and suspicious activities</CardDescription>
+            </CardHeader>
+            <CardContent className="text-center py-8">
+              <AlertTriangle className="h-12 w-12 text-yellow-500 mx-auto mb-4" />
+              <h3 className="text-lg font-semibold mb-2">No Security Alerts</h3>
+              <p className="text-gray-600">All systems are secure. No suspicious activities detected.</p>
+            </CardContent>
+          </Card>
         </TabsContent>
       </Tabs>
     </div>

@@ -34,6 +34,8 @@ import {
   TrendingUp
 } from "lucide-react";
 
+type AdminPermission = "user_management" | "property_management" | "content_management" | "system_settings" | "billing_management" | "vendor_authorization" | "security_monitoring" | "order_tracking" | "ai_bot_management";
+
 const AdminDashboard = () => {
   const { user, isAuthenticated, loading } = useAuth();
   const navigate = useNavigate();
@@ -110,7 +112,7 @@ const AdminDashboard = () => {
     return null;
   }
 
-  const hasPermission = (permission: string) => {
+  const hasPermission = (permission: AdminPermission): boolean => {
     return adminData?.is_super_admin || adminData?.role?.permissions?.includes(permission);
   };
 
