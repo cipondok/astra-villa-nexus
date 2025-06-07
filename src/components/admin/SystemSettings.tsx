@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Settings, Loader2 } from "lucide-react";
+import { Settings, Loader2, RefreshCw, AlertCircle } from "lucide-react";
 import { useAlert } from "@/contexts/AlertContext";
 
 interface SystemSetting {
@@ -43,24 +43,31 @@ const SystemSettings = () => {
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
 
-  const { data: settings, isLoading, isError, error } = useQuery({
+  const { data: settings, isLoading, isError, error, refetch } = useQuery({
     queryKey: ['system-settings'],
     queryFn: async () => {
       console.log('Fetching system settings...');
-      const { data, error } = await supabase
-        .from('system_settings')
-        .select('*');
-      
-      if (error) {
-        console.error('Settings fetch error:', error);
-        throw error;
+      try {
+        const { data, error } = await supabase
+          .from('system_settings')
+          .select('*');
+        
+        if (error) {
+          console.error('Settings fetch error:', error);
+          throw error;
+        }
+        
+        console.log('Settings fetched successfully:', data);
+        return data as SystemSetting[];
+      } catch (err) {
+        console.error('Failed to fetch settings:', err);
+        // Return empty array on error to prevent infinite loading
+        return [];
       }
-      
-      console.log('Settings fetched:', data);
-      return data as SystemSetting[];
     },
-    retry: 3,
-    retryDelay: 1000,
+    retry: 2,
+    retryDelay: 3000,
+    refetchOnWindowFocus: false
   });
 
   useEffect(() => {
@@ -82,6 +89,16 @@ const SystemSettings = () => {
       
       console.log('Updating general settings:', newSettings);
       setGeneralSettings(newSettings);
+    } else if (settings && settings.length === 0) {
+      // If settings array is empty, use defaults
+      console.log('No settings found, using defaults');
+      setGeneralSettings({
+        site_name: "AstraVilla Realty",
+        primary_color: "#3b82f6",
+        default_currency: "USD",
+        timezone: "UTC",
+        maintenance_mode: false,
+      });
     }
   }, [settings]);
 
@@ -89,34 +106,39 @@ const SystemSettings = () => {
     mutationFn: async ({ key, value, category }: { key: string; value: any; category: string }) => {
       console.log('Updating setting:', { key, value, category });
       
-      const { error } = await supabase
-        .from('system_settings')
-        .upsert({
-          key,
-          value,
-          category,
-          updated_at: new Date().toISOString()
-        }, {
-          onConflict: 'key'
-        });
-      
-      if (error) {
-        console.error('Setting update error:', error);
-        throw error;
+      try {
+        const { error } = await supabase
+          .from('system_settings')
+          .upsert({
+            key,
+            value,
+            category,
+            updated_at: new Date().toISOString()
+          }, {
+            onConflict: 'key'
+          });
+        
+        if (error) {
+          console.error('Setting update error:', error);
+          throw error;
+        }
+        
+        // If updating primary color, apply it immediately to CSS
+        if (key === 'primary_color') {
+          document.documentElement.style.setProperty('--primary-color', value);
+          const hex = value.replace('#', '');
+          const r = parseInt(hex.substr(0, 2), 16);
+          const g = parseInt(hex.substr(2, 2), 16);
+          const b = parseInt(hex.substr(4, 2), 16);
+          document.documentElement.style.setProperty('--primary-color-rgb', `${r}, ${g}, ${b}`);
+          document.documentElement.style.setProperty('--primary-color-hover', `rgb(${Math.max(0, r-20)}, ${Math.max(0, g-20)}, ${Math.max(0, b-20)})`);
+        }
+        
+        console.log('Setting updated successfully');
+      } catch (err) {
+        console.error('Failed to update setting:', err);
+        throw err;
       }
-      
-      // If updating primary color, apply it immediately to CSS
-      if (key === 'primary_color') {
-        document.documentElement.style.setProperty('--primary-color', value);
-        const hex = value.replace('#', '');
-        const r = parseInt(hex.substr(0, 2), 16);
-        const g = parseInt(hex.substr(2, 2), 16);
-        const b = parseInt(hex.substr(4, 2), 16);
-        document.documentElement.style.setProperty('--primary-color-rgb', `${r}, ${g}, ${b}`);
-        document.documentElement.style.setProperty('--primary-color-hover', `rgb(${Math.max(0, r-20)}, ${Math.max(0, g-20)}, ${Math.max(0, b-20)})`);
-      }
-      
-      console.log('Setting updated successfully');
     },
     onSuccess: () => {
       showSuccess("Settings Updated", "System settings have been updated successfully.");
@@ -145,18 +167,36 @@ const SystemSettings = () => {
       <Card className="bg-card border-border">
         <CardContent className="p-6">
           <div className="text-center space-y-4">
-            <Settings className="h-12 w-12 text-muted-foreground mx-auto" />
+            <AlertCircle className="h-12 w-12 text-destructive mx-auto" />
             <div>
-              <h3 className="text-lg font-medium text-foreground mb-2">Error Loading Settings</h3>
+              <h3 className="text-lg font-medium text-foreground mb-2">Settings Loading Error</h3>
               <p className="text-destructive mb-4">
-                {error?.message || "Failed to load system settings. Please check your connection and try again."}
+                {error?.message || "Unable to load system settings. This might be due to database permissions or RLS policies."}
               </p>
-              <Button 
-                onClick={() => queryClient.invalidateQueries({ queryKey: ['system-settings'] })}
-                className="bg-primary hover:bg-primary/90 text-primary-foreground"
-              >
-                Retry Loading
-              </Button>
+              <div className="space-x-2">
+                <Button 
+                  onClick={() => refetch()}
+                  className="bg-primary hover:bg-primary/90 text-primary-foreground"
+                >
+                  <RefreshCw className="h-4 w-4 mr-2" />
+                  Retry Loading
+                </Button>
+                <Button 
+                  variant="outline"
+                  onClick={() => {
+                    // Reset to defaults and allow manual configuration
+                    setGeneralSettings({
+                      site_name: "AstraVilla Realty",
+                      primary_color: "#3b82f6",
+                      default_currency: "USD",
+                      timezone: "UTC",
+                      maintenance_mode: false,
+                    });
+                  }}
+                >
+                  Use Defaults
+                </Button>
+              </div>
             </div>
           </div>
         </CardContent>
@@ -178,77 +218,77 @@ const SystemSettings = () => {
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="general" className="space-y-6">
-            <div className="bg-muted rounded-lg p-1">
-              <TabsList className="grid w-full grid-cols-3 md:grid-cols-6 lg:grid-cols-12 gap-1 bg-transparent h-auto">
+            <div className="bg-muted/20 rounded-lg p-2 border border-border/50">
+              <TabsList className="grid w-full grid-cols-3 md:grid-cols-6 lg:grid-cols-12 gap-2 bg-transparent h-auto p-1">
                 <TabsTrigger 
                   value="general" 
-                  className="whitespace-nowrap text-xs px-2 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                  className="whitespace-nowrap text-xs px-2 py-2 rounded-md data-[state=active]:bg-blue-600 data-[state=active]:text-white data-[state=active]:shadow-sm hover:bg-blue-50 dark:hover:bg-blue-900/20 bg-background border border-border"
                 >
                   General
                 </TabsTrigger>
                 <TabsTrigger 
                   value="auth" 
-                  className="whitespace-nowrap text-xs px-2 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                  className="whitespace-nowrap text-xs px-2 py-2 rounded-md data-[state=active]:bg-green-600 data-[state=active]:text-white data-[state=active]:shadow-sm hover:bg-green-50 dark:hover:bg-green-900/20 bg-background border border-border"
                 >
                   Auth
                 </TabsTrigger>
                 <TabsTrigger 
                   value="users" 
-                  className="whitespace-nowrap text-xs px-2 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                  className="whitespace-nowrap text-xs px-2 py-2 rounded-md data-[state=active]:bg-orange-600 data-[state=active]:text-white data-[state=active]:shadow-sm hover:bg-orange-50 dark:hover:bg-orange-900/20 bg-background border border-border"
                 >
                   Users
                 </TabsTrigger>
                 <TabsTrigger 
                   value="properties" 
-                  className="whitespace-nowrap text-xs px-2 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                  className="whitespace-nowrap text-xs px-2 py-2 rounded-md data-[state=active]:bg-purple-600 data-[state=active]:text-white data-[state=active]:shadow-sm hover:bg-purple-50 dark:hover:bg-purple-900/20 bg-background border border-border"
                 >
                   Properties
                 </TabsTrigger>
                 <TabsTrigger 
                   value="surveys" 
-                  className="whitespace-nowrap text-xs px-2 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                  className="whitespace-nowrap text-xs px-2 py-2 rounded-md data-[state=active]:bg-indigo-600 data-[state=active]:text-white data-[state=active]:shadow-sm hover:bg-indigo-50 dark:hover:bg-indigo-900/20 bg-background border border-border"
                 >
                   Surveys
                 </TabsTrigger>
                 <TabsTrigger 
                   value="compliance" 
-                  className="whitespace-nowrap text-xs px-2 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                  className="whitespace-nowrap text-xs px-2 py-2 rounded-md data-[state=active]:bg-pink-600 data-[state=active]:text-white data-[state=active]:shadow-sm hover:bg-pink-50 dark:hover:bg-pink-900/20 bg-background border border-border"
                 >
                   Compliance
                 </TabsTrigger>
                 <TabsTrigger 
                   value="staff" 
-                  className="whitespace-nowrap text-xs px-2 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                  className="whitespace-nowrap text-xs px-2 py-2 rounded-md data-[state=active]:bg-teal-600 data-[state=active]:text-white data-[state=active]:shadow-sm hover:bg-teal-50 dark:hover:bg-teal-900/20 bg-background border border-border"
                 >
                   Staff
                 </TabsTrigger>
                 <TabsTrigger 
                   value="support" 
-                  className="whitespace-nowrap text-xs px-2 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                  className="whitespace-nowrap text-xs px-2 py-2 rounded-md data-[state=active]:bg-cyan-600 data-[state=active]:text-white data-[state=active]:shadow-sm hover:bg-cyan-50 dark:hover:bg-cyan-900/20 bg-background border border-border"
                 >
                   Support
                 </TabsTrigger>
                 <TabsTrigger 
                   value="security" 
-                  className="whitespace-nowrap text-xs px-2 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                  className="whitespace-nowrap text-xs px-2 py-2 rounded-md data-[state=active]:bg-amber-600 data-[state=active]:text-white data-[state=active]:shadow-sm hover:bg-amber-50 dark:hover:bg-amber-900/20 bg-background border border-border"
                 >
                   Security
                 </TabsTrigger>
                 <TabsTrigger 
                   value="apis" 
-                  className="whitespace-nowrap text-xs px-2 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                  className="whitespace-nowrap text-xs px-2 py-2 rounded-md data-[state=active]:bg-red-600 data-[state=active]:text-white data-[state=active]:shadow-sm hover:bg-red-50 dark:hover:bg-red-900/20 bg-background border border-border"
                 >
                   APIs
                 </TabsTrigger>
                 <TabsTrigger 
                   value="notifications" 
-                  className="whitespace-nowrap text-xs px-2 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                  className="whitespace-nowrap text-xs px-2 py-2 rounded-md data-[state=active]:bg-emerald-600 data-[state=active]:text-white data-[state=active]:shadow-sm hover:bg-emerald-50 dark:hover:bg-emerald-900/20 bg-background border border-border"
                 >
                   Notifications
                 </TabsTrigger>
                 <TabsTrigger 
                   value="seo" 
-                  className="whitespace-nowrap text-xs px-2 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                  className="whitespace-nowrap text-xs px-2 py-2 rounded-md data-[state=active]:bg-violet-600 data-[state=active]:text-white data-[state=active]:shadow-sm hover:bg-violet-50 dark:hover:bg-violet-900/20 bg-background border border-border"
                 >
                   SEO
                 </TabsTrigger>
@@ -276,7 +316,7 @@ const SystemSettings = () => {
                       <Button 
                         size="sm" 
                         onClick={() => updateSettingMutation.mutate({ key: 'site_name', value: generalSettings.site_name, category: 'general' })}
-                        className="bg-primary hover:bg-primary/90 text-primary-foreground"
+                        className="bg-blue-600 hover:bg-blue-700 text-white"
                         disabled={updateSettingMutation.isPending}
                       >
                         {updateSettingMutation.isPending ? (
@@ -309,7 +349,7 @@ const SystemSettings = () => {
                       <Button 
                         size="sm" 
                         onClick={() => updateSettingMutation.mutate({ key: 'primary_color', value: generalSettings.primary_color, category: 'general' })}
-                        className="bg-primary hover:bg-primary/90 text-primary-foreground"
+                        className="bg-green-600 hover:bg-green-700 text-white"
                         disabled={updateSettingMutation.isPending}
                       >
                         {updateSettingMutation.isPending ? (
@@ -350,7 +390,7 @@ const SystemSettings = () => {
                       <Button 
                         size="sm" 
                         onClick={() => updateSettingMutation.mutate({ key: 'default_currency', value: generalSettings.default_currency, category: 'general' })}
-                        className="bg-primary hover:bg-primary/90 text-primary-foreground"
+                        className="bg-orange-600 hover:bg-orange-700 text-white"
                         disabled={updateSettingMutation.isPending}
                       >
                         {updateSettingMutation.isPending ? (
@@ -387,7 +427,7 @@ const SystemSettings = () => {
                       <Button 
                         size="sm" 
                         onClick={() => updateSettingMutation.mutate({ key: 'timezone', value: generalSettings.timezone, category: 'general' })}
-                        className="bg-primary hover:bg-primary/90 text-primary-foreground"
+                        className="bg-purple-600 hover:bg-purple-700 text-white"
                         disabled={updateSettingMutation.isPending}
                       >
                         {updateSettingMutation.isPending ? (

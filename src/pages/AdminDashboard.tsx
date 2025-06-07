@@ -1,4 +1,3 @@
-
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -55,7 +54,7 @@ const AdminDashboard = () => {
   // Simplified admin check - if user is logged in and either demo admin or has admin role
   const isAdmin = isAuthenticated && (isDemoAdmin || profile?.role === 'admin');
 
-  // Dashboard statistics
+  // Dashboard statistics with error handling for admin_users recursion
   const { data: stats, isLoading: statsLoading } = useQuery({
     queryKey: ['admin-stats'],
     queryFn: async () => {
@@ -71,6 +70,7 @@ const AdminDashboard = () => {
           };
         }
 
+        // Use Promise.allSettled to handle potential RLS issues gracefully
         const [usersCount, propertiesCount, ordersCount, vendorRequestsCount, errorLogsCount] = await Promise.allSettled([
           supabase.from('profiles').select('*', { count: 'exact', head: true }),
           supabase.from('properties').select('*', { count: 'exact', head: true }),
@@ -88,6 +88,7 @@ const AdminDashboard = () => {
         };
       } catch (err) {
         console.error('Error fetching admin stats:', err);
+        // Return default values if there's an error
         return {
           users: 0,
           properties: 0,
@@ -97,7 +98,9 @@ const AdminDashboard = () => {
         };
       }
     },
-    enabled: isAdmin
+    enabled: isAdmin,
+    retry: 1, // Reduce retries to avoid infinite recursion loops
+    retryDelay: 2000
   });
 
   useEffect(() => {
@@ -170,65 +173,65 @@ const AdminDashboard = () => {
           </div>
 
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-            <div className="bg-card rounded-lg p-2 shadow-sm border border-border">
-              <TabsList className="grid w-full grid-cols-2 md:grid-cols-5 lg:grid-cols-10 gap-1 bg-transparent h-auto">
+            <div className="bg-card rounded-lg p-3 shadow-sm border border-border">
+              <TabsList className="grid w-full grid-cols-2 md:grid-cols-5 lg:grid-cols-10 gap-2 bg-transparent h-auto p-1">
                 <TabsTrigger 
                   value="overview" 
-                  className="whitespace-nowrap text-xs md:text-sm px-2 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm"
+                  className="whitespace-nowrap text-xs md:text-sm px-3 py-2.5 rounded-md transition-all duration-200 data-[state=active]:bg-blue-600 data-[state=active]:text-white data-[state=active]:shadow-md hover:bg-blue-50 dark:hover:bg-blue-900/20 bg-background border border-border"
                 >
                   Overview
                 </TabsTrigger>
                 <TabsTrigger 
                   value="users" 
-                  className="whitespace-nowrap text-xs md:text-sm px-2 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm"
+                  className="whitespace-nowrap text-xs md:text-sm px-3 py-2.5 rounded-md transition-all duration-200 data-[state=active]:bg-green-600 data-[state=active]:text-white data-[state=active]:shadow-md hover:bg-green-50 dark:hover:bg-green-900/20 bg-background border border-border"
                 >
                   Users
                 </TabsTrigger>
                 <TabsTrigger 
                   value="properties" 
-                  className="whitespace-nowrap text-xs md:text-sm px-2 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm"
+                  className="whitespace-nowrap text-xs md:text-sm px-3 py-2.5 rounded-md transition-all duration-200 data-[state=active]:bg-orange-600 data-[state=active]:text-white data-[state=active]:shadow-md hover:bg-orange-50 dark:hover:bg-orange-900/20 bg-background border border-border"
                 >
                   Properties
                 </TabsTrigger>
                 <TabsTrigger 
                   value="vendors" 
-                  className="whitespace-nowrap text-xs md:text-sm px-2 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm"
+                  className="whitespace-nowrap text-xs md:text-sm px-3 py-2.5 rounded-md transition-all duration-200 data-[state=active]:bg-purple-600 data-[state=active]:text-white data-[state=active]:shadow-md hover:bg-purple-50 dark:hover:bg-purple-900/20 bg-background border border-border"
                 >
                   Vendors
                 </TabsTrigger>
                 <TabsTrigger 
                   value="content" 
-                  className="whitespace-nowrap text-xs md:text-sm px-2 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm"
+                  className="whitespace-nowrap text-xs md:text-sm px-3 py-2.5 rounded-md transition-all duration-200 data-[state=active]:bg-indigo-600 data-[state=active]:text-white data-[state=active]:shadow-md hover:bg-indigo-50 dark:hover:bg-indigo-900/20 bg-background border border-border"
                 >
                   Content
                 </TabsTrigger>
                 <TabsTrigger 
                   value="social" 
-                  className="whitespace-nowrap text-xs md:text-sm px-2 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm"
+                  className="whitespace-nowrap text-xs md:text-sm px-3 py-2.5 rounded-md transition-all duration-200 data-[state=active]:bg-pink-600 data-[state=active]:text-white data-[state=active]:shadow-md hover:bg-pink-50 dark:hover:bg-pink-900/20 bg-background border border-border"
                 >
                   Social
                 </TabsTrigger>
                 <TabsTrigger 
                   value="filters" 
-                  className="whitespace-nowrap text-xs md:text-sm px-2 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm"
+                  className="whitespace-nowrap text-xs md:text-sm px-3 py-2.5 rounded-md transition-all duration-200 data-[state=active]:bg-teal-600 data-[state=active]:text-white data-[state=active]:shadow-md hover:bg-teal-50 dark:hover:bg-teal-900/20 bg-background border border-border"
                 >
                   Filters
                 </TabsTrigger>
                 <TabsTrigger 
                   value="roles" 
-                  className="whitespace-nowrap text-xs md:text-sm px-2 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm"
+                  className="whitespace-nowrap text-xs md:text-sm px-3 py-2.5 rounded-md transition-all duration-200 data-[state=active]:bg-cyan-600 data-[state=active]:text-white data-[state=active]:shadow-md hover:bg-cyan-50 dark:hover:bg-cyan-900/20 bg-background border border-border"
                 >
                   Roles
                 </TabsTrigger>
                 <TabsTrigger 
                   value="feedback" 
-                  className="whitespace-nowrap text-xs md:text-sm px-2 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm"
+                  className="whitespace-nowrap text-xs md:text-sm px-3 py-2.5 rounded-md transition-all duration-200 data-[state=active]:bg-amber-600 data-[state=active]:text-white data-[state=active]:shadow-md hover:bg-amber-50 dark:hover:bg-amber-900/20 bg-background border border-border"
                 >
                   Feedback
                 </TabsTrigger>
                 <TabsTrigger 
                   value="settings" 
-                  className="whitespace-nowrap text-xs md:text-sm px-2 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm"
+                  className="whitespace-nowrap text-xs md:text-sm px-3 py-2.5 rounded-md transition-all duration-200 data-[state=active]:bg-red-600 data-[state=active]:text-white data-[state=active]:shadow-md hover:bg-red-50 dark:hover:bg-red-900/20 bg-background border border-border"
                 >
                   Settings
                 </TabsTrigger>
@@ -312,7 +315,7 @@ const AdminDashboard = () => {
                   <CardContent className="grid grid-cols-2 gap-4">
                     <Button 
                       onClick={() => handleQuickAction('users')} 
-                      className="h-auto p-4 flex flex-col items-center space-y-2 bg-primary hover:bg-primary/90 text-primary-foreground"
+                      className="h-auto p-4 flex flex-col items-center space-y-2 bg-green-600 hover:bg-green-700 text-white"
                       variant="default"
                     >
                       <Users className="h-6 w-6" />
@@ -320,7 +323,7 @@ const AdminDashboard = () => {
                     </Button>
                     <Button 
                       onClick={() => handleQuickAction('content')} 
-                      className="h-auto p-4 flex flex-col items-center space-y-2 bg-primary hover:bg-primary/90 text-primary-foreground"
+                      className="h-auto p-4 flex flex-col items-center space-y-2 bg-indigo-600 hover:bg-indigo-700 text-white"
                       variant="default"
                     >
                       <FileText className="h-6 w-6" />
@@ -328,7 +331,7 @@ const AdminDashboard = () => {
                     </Button>
                     <Button 
                       onClick={() => handleQuickAction('social')} 
-                      className="h-auto p-4 flex flex-col items-center space-y-2 bg-primary hover:bg-primary/90 text-primary-foreground"
+                      className="h-auto p-4 flex flex-col items-center space-y-2 bg-pink-600 hover:bg-pink-700 text-white"
                       variant="default"
                     >
                       <Share2 className="h-6 w-6" />
@@ -336,7 +339,7 @@ const AdminDashboard = () => {
                     </Button>
                     <Button 
                       onClick={() => handleQuickAction('filters')} 
-                      className="h-auto p-4 flex flex-col items-center space-y-2 bg-primary hover:bg-primary/90 text-primary-foreground"
+                      className="h-auto p-4 flex flex-col items-center space-y-2 bg-teal-600 hover:bg-teal-700 text-white"
                       variant="default"
                     >
                       <Search className="h-6 w-6" />
@@ -344,7 +347,7 @@ const AdminDashboard = () => {
                     </Button>
                     <Button 
                       onClick={() => handleQuickAction('vendors')} 
-                      className="h-auto p-4 flex flex-col items-center space-y-2 bg-primary hover:bg-primary/90 text-primary-foreground"
+                      className="h-auto p-4 flex flex-col items-center space-y-2 bg-purple-600 hover:bg-purple-700 text-white"
                       variant="default"
                     >
                       <Store className="h-6 w-6" />
@@ -352,7 +355,7 @@ const AdminDashboard = () => {
                     </Button>
                     <Button 
                       onClick={() => handleQuickAction('settings')} 
-                      className="h-auto p-4 flex flex-col items-center space-y-2 bg-primary hover:bg-primary/90 text-primary-foreground"
+                      className="h-auto p-4 flex flex-col items-center space-y-2 bg-red-600 hover:bg-red-700 text-white"
                       variant="default"
                     >
                       <Settings className="h-6 w-6" />
