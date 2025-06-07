@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -11,7 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { Settings, Shield, Users, Database, Globe, Mail, Bell, Palette, Server, Lock } from "lucide-react";
+import { Settings, Shield, Users, Database, Globe, Mail, Bell, Palette, Server, Lock, Save } from "lucide-react";
 import { useAlert } from "@/contexts/AlertContext";
 
 interface SystemSettingsData {
@@ -81,6 +80,8 @@ interface SystemSettingsData {
 const SystemSettings = () => {
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
+  const [pendingChanges, setPendingChanges] = useState<Record<string, any>>({});
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
   // Fetch system settings
   const { data: settings, isLoading } = useQuery({
@@ -97,13 +98,10 @@ const SystemSettings = () => {
         }
         
         // Convert array to object for easier access
-        const settingsObj = data?.reduce((acc: SystemSettingsData, setting: any) => {
-          const key = setting.key as keyof SystemSettingsData;
-          if (key in ({} as SystemSettingsData) || setting.key) {
-            (acc as any)[key] = setting.value;
-          }
+        const settingsObj = data?.reduce((acc: Record<string, any>, setting: any) => {
+          acc[setting.key] = setting.value;
           return acc;
-        }, {} as SystemSettingsData) || {};
+        }, {}) || {};
         
         return settingsObj;
       } catch (error) {
@@ -115,30 +113,56 @@ const SystemSettings = () => {
     retryDelay: 2000,
   });
 
-  // Update setting mutation
-  const updateSettingMutation = useMutation({
-    mutationFn: async ({ key, value, category }: { key: string; value: any; category: string }) => {
-      const { error } = await supabase
-        .from('system_settings')
-        .upsert({
-          key,
-          value,
-          category,
-          updated_at: new Date().toISOString()
-        });
-      if (error) throw error;
+  // Save settings mutation
+  const saveSettingsMutation = useMutation({
+    mutationFn: async (changes: Record<string, { value: any; category: string }>) => {
+      console.log('Saving changes:', changes);
+      
+      const promises = Object.entries(changes).map(([key, { value, category }]) =>
+        supabase
+          .from('system_settings')
+          .upsert({
+            key,
+            value,
+            category,
+            updated_at: new Date().toISOString()
+          })
+      );
+
+      const results = await Promise.all(promises);
+      const errors = results.filter(result => result.error);
+      
+      if (errors.length > 0) {
+        throw new Error(`Failed to save ${errors.length} settings`);
+      }
     },
     onSuccess: () => {
-      showSuccess("Settings Updated", "System settings have been updated successfully.");
+      showSuccess("Settings Saved", "All system settings have been saved successfully.");
+      setPendingChanges({});
+      setHasUnsavedChanges(false);
       queryClient.invalidateQueries({ queryKey: ['system-settings'] });
     },
     onError: (error: any) => {
-      showError("Update Failed", error.message);
+      showError("Save Failed", error.message);
     },
   });
 
-  const handleSettingUpdate = (key: string, value: any, category: string = 'general') => {
-    updateSettingMutation.mutate({ key, value, category });
+  const handleSettingChange = (key: string, value: any, category: string = 'general') => {
+    setPendingChanges(prev => ({
+      ...prev,
+      [key]: { value, category }
+    }));
+    setHasUnsavedChanges(true);
+  };
+
+  const handleSaveSettings = () => {
+    if (Object.keys(pendingChanges).length > 0) {
+      saveSettingsMutation.mutate(pendingChanges);
+    }
+  };
+
+  const getCurrentValue = (key: string) => {
+    return pendingChanges[key]?.value ?? (settings as any)?.[key];
   };
 
   if (isLoading) {
@@ -153,13 +177,32 @@ const SystemSettings = () => {
     <div className="space-y-6">
       <Card className="bg-card border-border">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-card-foreground">
-            <Settings className="h-5 w-5" />
-            System Settings
-          </CardTitle>
-          <CardDescription className="text-muted-foreground">
-            Configure system-wide settings and preferences
-          </CardDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="flex items-center gap-2 text-card-foreground">
+                <Settings className="h-5 w-5" />
+                System Settings
+              </CardTitle>
+              <CardDescription className="text-muted-foreground">
+                Configure system-wide settings and preferences
+              </CardDescription>
+            </div>
+            <div className="flex items-center gap-2">
+              {hasUnsavedChanges && (
+                <Badge variant="secondary" className="text-orange-600">
+                  Unsaved Changes
+                </Badge>
+              )}
+              <Button 
+                onClick={handleSaveSettings}
+                disabled={!hasUnsavedChanges || saveSettingsMutation.isPending}
+                className="flex items-center gap-2"
+              >
+                <Save className="h-4 w-4" />
+                {saveSettingsMutation.isPending ? 'Saving...' : 'Save Changes'}
+              </Button>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="general" className="space-y-6">
@@ -188,16 +231,16 @@ const SystemSettings = () => {
                       <Label htmlFor="site-name">Site Name</Label>
                       <Input
                         id="site-name"
-                        defaultValue={settings?.site_name || "AstraVilla"}
-                        onBlur={(e) => handleSettingUpdate('site_name', e.target.value, 'general')}
+                        value={getCurrentValue('site_name') || "AstraVilla"}
+                        onChange={(e) => handleSettingChange('site_name', e.target.value, 'general')}
                       />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="site-url">Site URL</Label>
                       <Input
                         id="site-url"
-                        defaultValue={settings?.site_url || "https://astravilla.com"}
-                        onBlur={(e) => handleSettingUpdate('site_url', e.target.value, 'general')}
+                        value={getCurrentValue('site_url') || "https://astravilla.com"}
+                        onChange={(e) => handleSettingChange('site_url', e.target.value, 'general')}
                       />
                     </div>
                   </div>
@@ -206,8 +249,8 @@ const SystemSettings = () => {
                     <Label htmlFor="site-description">Site Description</Label>
                     <Textarea
                       id="site-description"
-                      defaultValue={settings?.site_description || "Luxury real estate platform"}
-                      onBlur={(e) => handleSettingUpdate('site_description', e.target.value, 'general')}
+                      value={getCurrentValue('site_description') || "Luxury real estate platform"}
+                      onChange={(e) => handleSettingChange('site_description', e.target.value, 'general')}
                     />
                   </div>
                   
@@ -216,18 +259,18 @@ const SystemSettings = () => {
                       <Label htmlFor="site-logo">Site Logo URL</Label>
                       <Input
                         id="site-logo"
-                        defaultValue={settings?.site_logo || ""}
+                        value={getCurrentValue('site_logo') || ""}
                         placeholder="https://example.com/logo.png"
-                        onBlur={(e) => handleSettingUpdate('site_logo', e.target.value, 'general')}
+                        onChange={(e) => handleSettingChange('site_logo', e.target.value, 'general')}
                       />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="favicon">Favicon URL</Label>
                       <Input
                         id="favicon"
-                        defaultValue={settings?.favicon || ""}
+                        value={getCurrentValue('favicon') || ""}
                         placeholder="https://example.com/favicon.ico"
-                        onBlur={(e) => handleSettingUpdate('favicon', e.target.value, 'general')}
+                        onChange={(e) => handleSettingChange('favicon', e.target.value, 'general')}
                       />
                     </div>
                   </div>
@@ -236,19 +279,19 @@ const SystemSettings = () => {
                     <div className="flex items-center space-x-2">
                       <Switch
                         id="maintenance-mode"
-                        checked={settings?.maintenance_mode || false}
-                        onCheckedChange={(checked) => handleSettingUpdate('maintenance_mode', checked, 'general')}
+                        checked={getCurrentValue('maintenance_mode') || false}
+                        onCheckedChange={(checked) => handleSettingChange('maintenance_mode', checked, 'general')}
                       />
                       <Label htmlFor="maintenance-mode">Maintenance Mode</Label>
                     </div>
                     
-                    {settings?.maintenance_mode && (
+                    {getCurrentValue('maintenance_mode') && (
                       <div className="space-y-2">
                         <Label htmlFor="maintenance-message">Maintenance Message</Label>
                         <Textarea
                           id="maintenance-message"
-                          defaultValue={settings?.maintenance_message || "Site is under maintenance. Please check back later."}
-                          onBlur={(e) => handleSettingUpdate('maintenance_message', e.target.value, 'general')}
+                          value={getCurrentValue('maintenance_message') || "Site is under maintenance. Please check back later."}
+                          onChange={(e) => handleSettingChange('maintenance_message', e.target.value, 'general')}
                         />
                       </div>
                     )}
@@ -272,7 +315,7 @@ const SystemSettings = () => {
                       <Switch
                         id="email-verification"
                         checked={settings?.require_email_verification ?? true}
-                        onCheckedChange={(checked) => handleSettingUpdate('require_email_verification', checked, 'auth')}
+                        onCheckedChange={(checked) => handleSettingChange('require_email_verification', checked, 'auth')}
                       />
                       <Label htmlFor="email-verification">Require Email Verification</Label>
                     </div>
@@ -281,7 +324,7 @@ const SystemSettings = () => {
                       <Switch
                         id="password-reset"
                         checked={settings?.enable_password_reset ?? true}
-                        onCheckedChange={(checked) => handleSettingUpdate('enable_password_reset', checked, 'auth')}
+                        onCheckedChange={(checked) => handleSettingChange('enable_password_reset', checked, 'auth')}
                       />
                       <Label htmlFor="password-reset">Enable Password Reset</Label>
                     </div>
@@ -292,7 +335,7 @@ const SystemSettings = () => {
                       <Switch
                         id="google-auth"
                         checked={settings?.enable_google_auth || false}
-                        onCheckedChange={(checked) => handleSettingUpdate('enable_google_auth', checked, 'auth')}
+                        onCheckedChange={(checked) => handleSettingChange('enable_google_auth', checked, 'auth')}
                       />
                       <Label htmlFor="google-auth">Google Auth</Label>
                     </div>
@@ -301,7 +344,7 @@ const SystemSettings = () => {
                       <Switch
                         id="facebook-auth"
                         checked={settings?.enable_facebook_auth || false}
-                        onCheckedChange={(checked) => handleSettingUpdate('enable_facebook_auth', checked, 'auth')}
+                        onCheckedChange={(checked) => handleSettingChange('enable_facebook_auth', checked, 'auth')}
                       />
                       <Label htmlFor="facebook-auth">Facebook Auth</Label>
                     </div>
@@ -310,7 +353,7 @@ const SystemSettings = () => {
                       <Switch
                         id="github-auth"
                         checked={settings?.enable_github_auth || false}
-                        onCheckedChange={(checked) => handleSettingUpdate('enable_github_auth', checked, 'auth')}
+                        onCheckedChange={(checked) => handleSettingChange('enable_github_auth', checked, 'auth')}
                       />
                       <Label htmlFor="github-auth">GitHub Auth</Label>
                     </div>
@@ -321,7 +364,7 @@ const SystemSettings = () => {
                       <Label htmlFor="session-timeout">Session Timeout</Label>
                       <Select
                         defaultValue={settings?.session_timeout || "24"}
-                        onValueChange={(value) => handleSettingUpdate('session_timeout', value, 'auth')}
+                        onValueChange={(value) => handleSettingChange('session_timeout', value, 'auth')}
                       >
                         <SelectTrigger>
                           <SelectValue />
@@ -339,7 +382,7 @@ const SystemSettings = () => {
                       <Label htmlFor="password-min-length">Min Password Length</Label>
                       <Select
                         defaultValue={settings?.password_min_length || "8"}
-                        onValueChange={(value) => handleSettingUpdate('password_min_length', value, 'auth')}
+                        onValueChange={(value) => handleSettingChange('password_min_length', value, 'auth')}
                       >
                         <SelectTrigger>
                           <SelectValue />
@@ -370,7 +413,7 @@ const SystemSettings = () => {
                     <Switch
                       id="email-notifications"
                       checked={settings?.enable_email_notifications ?? true}
-                      onCheckedChange={(checked) => handleSettingUpdate('enable_email_notifications', checked, 'notifications')}
+                      onCheckedChange={(checked) => handleSettingChange('enable_email_notifications', checked, 'notifications')}
                     />
                     <Label htmlFor="email-notifications">Enable Email Notifications</Label>
                   </div>
@@ -381,8 +424,8 @@ const SystemSettings = () => {
                       <Input
                         id="admin-email"
                         type="email"
-                        defaultValue={settings?.admin_email || "admin@astravilla.com"}
-                        onBlur={(e) => handleSettingUpdate('admin_email', e.target.value, 'notifications')}
+                        value={getCurrentValue('admin_email') || "admin@astravilla.com"}
+                        onChange={(e) => handleSettingChange('admin_email', e.target.value, 'notifications')}
                       />
                     </div>
                     
@@ -390,9 +433,9 @@ const SystemSettings = () => {
                       <Label htmlFor="smtp-host">SMTP Host</Label>
                       <Input
                         id="smtp-host"
-                        defaultValue={settings?.smtp_host || ""}
+                        value={getCurrentValue('smtp_host') || ""}
                         placeholder="mail.example.com"
-                        onBlur={(e) => handleSettingUpdate('smtp_host', e.target.value, 'notifications')}
+                        onChange={(e) => handleSettingChange('smtp_host', e.target.value, 'notifications')}
                       />
                     </div>
                   </div>
@@ -402,8 +445,8 @@ const SystemSettings = () => {
                       <Label htmlFor="smtp-port">SMTP Port</Label>
                       <Input
                         id="smtp-port"
-                        defaultValue={settings?.smtp_port || "587"}
-                        onBlur={(e) => handleSettingUpdate('smtp_port', e.target.value, 'notifications')}
+                        value={getCurrentValue('smtp_port') || "587"}
+                        onChange={(e) => handleSettingChange('smtp_port', e.target.value, 'notifications')}
                       />
                     </div>
                     
@@ -411,8 +454,8 @@ const SystemSettings = () => {
                       <Label htmlFor="smtp-username">SMTP Username</Label>
                       <Input
                         id="smtp-username"
-                        defaultValue={settings?.smtp_username || ""}
-                        onBlur={(e) => handleSettingUpdate('smtp_username', e.target.value, 'notifications')}
+                        value={getCurrentValue('smtp_username') || ""}
+                        onChange={(e) => handleSettingChange('smtp_username', e.target.value, 'notifications')}
                       />
                     </div>
                     
@@ -421,8 +464,8 @@ const SystemSettings = () => {
                       <Input
                         id="smtp-password"
                         type="password"
-                        defaultValue={settings?.smtp_password || ""}
-                        onBlur={(e) => handleSettingUpdate('smtp_password', e.target.value, 'notifications')}
+                        value={getCurrentValue('smtp_password') || ""}
+                        onChange={(e) => handleSettingChange('smtp_password', e.target.value, 'notifications')}
                       />
                     </div>
                   </div>
@@ -441,7 +484,7 @@ const SystemSettings = () => {
                     <Switch
                       id="sms-notifications"
                       checked={settings?.enable_sms_notifications || false}
-                      onCheckedChange={(checked) => handleSettingUpdate('enable_sms_notifications', checked, 'notifications')}
+                      onCheckedChange={(checked) => handleSettingChange('enable_sms_notifications', checked, 'notifications')}
                     />
                     <Label htmlFor="sms-notifications">Enable SMS Notifications</Label>
                   </div>
@@ -450,7 +493,7 @@ const SystemSettings = () => {
                     <Label htmlFor="sms-provider">SMS Provider</Label>
                     <Select
                       defaultValue={settings?.sms_provider || "twilio"}
-                      onValueChange={(value) => handleSettingUpdate('sms_provider', value, 'notifications')}
+                      onValueChange={(value) => handleSettingChange('sms_provider', value, 'notifications')}
                     >
                       <SelectTrigger>
                         <SelectValue />
@@ -481,7 +524,7 @@ const SystemSettings = () => {
                       <Switch
                         id="two-factor"
                         checked={settings?.enable_two_factor || false}
-                        onCheckedChange={(checked) => handleSettingUpdate('enable_two_factor', checked, 'security')}
+                        onCheckedChange={(checked) => handleSettingChange('enable_two_factor', checked, 'security')}
                       />
                       <Label htmlFor="two-factor">Enable Two-Factor Authentication</Label>
                     </div>
@@ -490,7 +533,7 @@ const SystemSettings = () => {
                       <Switch
                         id="captcha"
                         checked={settings?.enable_captcha || false}
-                        onCheckedChange={(checked) => handleSettingUpdate('enable_captcha', checked, 'security')}
+                        onCheckedChange={(checked) => handleSettingChange('enable_captcha', checked, 'security')}
                       />
                       <Label htmlFor="captcha">Enable CAPTCHA</Label>
                     </div>
@@ -501,7 +544,7 @@ const SystemSettings = () => {
                       <Label htmlFor="max-login-attempts">Max Login Attempts</Label>
                       <Select
                         defaultValue={settings?.max_login_attempts || "5"}
-                        onValueChange={(value) => handleSettingUpdate('max_login_attempts', value, 'security')}
+                        onValueChange={(value) => handleSettingChange('max_login_attempts', value, 'security')}
                       >
                         <SelectTrigger>
                           <SelectValue />
@@ -518,7 +561,7 @@ const SystemSettings = () => {
                       <Label htmlFor="lockout-duration">Lockout Duration</Label>
                       <Select
                         defaultValue={settings?.lockout_duration || "15"}
-                        onValueChange={(value) => handleSettingUpdate('lockout_duration', value, 'security')}
+                        onValueChange={(value) => handleSettingChange('lockout_duration', value, 'security')}
                       >
                         <SelectTrigger>
                           <SelectValue />
@@ -536,7 +579,7 @@ const SystemSettings = () => {
                       <Label htmlFor="captcha-provider">CAPTCHA Provider</Label>
                       <Select
                         defaultValue={settings?.captcha_provider || "recaptcha"}
-                        onValueChange={(value) => handleSettingUpdate('captcha_provider', value, 'security')}
+                        onValueChange={(value) => handleSettingChange('captcha_provider', value, 'security')}
                       >
                         <SelectTrigger>
                           <SelectValue />
@@ -554,7 +597,7 @@ const SystemSettings = () => {
                     <Switch
                       id="rate-limiting"
                       checked={settings?.enable_rate_limiting || false}
-                      onCheckedChange={(checked) => handleSettingUpdate('enable_rate_limiting', checked, 'security')}
+                      onCheckedChange={(checked) => handleSettingChange('enable_rate_limiting', checked, 'security')}
                     />
                     <Label htmlFor="rate-limiting">Enable Rate Limiting</Label>
                   </div>
@@ -578,8 +621,8 @@ const SystemSettings = () => {
                       <Input
                         id="primary-color"
                         type="color"
-                        defaultValue={settings?.primary_color || "#3b82f6"}
-                        onChange={(e) => handleSettingUpdate('primary_color', e.target.value, 'appearance')}
+                        value={getCurrentValue('primary_color') || "#3b82f6"}
+                        onChange={(e) => handleSettingChange('primary_color', e.target.value, 'appearance')}
                       />
                     </div>
                     
@@ -588,8 +631,8 @@ const SystemSettings = () => {
                       <Input
                         id="secondary-color"
                         type="color"
-                        defaultValue={settings?.secondary_color || "#6b7280"}
-                        onChange={(e) => handleSettingUpdate('secondary_color', e.target.value, 'appearance')}
+                        value={getCurrentValue('secondary_color') || "#6b7280"}
+                        onChange={(e) => handleSettingChange('secondary_color', e.target.value, 'appearance')}
                       />
                     </div>
                   </div>
@@ -599,7 +642,7 @@ const SystemSettings = () => {
                       <Label htmlFor="default-theme">Default Theme</Label>
                       <Select
                         defaultValue={settings?.default_theme || "light"}
-                        onValueChange={(value) => handleSettingUpdate('default_theme', value, 'appearance')}
+                        onValueChange={(value) => handleSettingChange('default_theme', value, 'appearance')}
                       >
                         <SelectTrigger>
                           <SelectValue />
@@ -616,7 +659,7 @@ const SystemSettings = () => {
                       <Switch
                         id="dark-mode"
                         checked={settings?.enable_dark_mode ?? true}
-                        onCheckedChange={(checked) => handleSettingUpdate('enable_dark_mode', checked, 'appearance')}
+                        onCheckedChange={(checked) => handleSettingChange('enable_dark_mode', checked, 'appearance')}
                       />
                       <Label htmlFor="dark-mode">Enable Dark Mode Toggle</Label>
                     </div>
@@ -627,8 +670,8 @@ const SystemSettings = () => {
                     <Textarea
                       id="custom-css"
                       placeholder="/* Add your custom CSS here */"
-                      defaultValue={settings?.custom_css || ""}
-                      onBlur={(e) => handleSettingUpdate('custom_css', e.target.value, 'appearance')}
+                      value={getCurrentValue('custom_css') || ""}
+                      onChange={(e) => handleSettingChange('custom_css', e.target.value, 'appearance')}
                     />
                   </div>
                 </CardContent>
@@ -650,8 +693,8 @@ const SystemSettings = () => {
                       <Input
                         id="api-rate-limit"
                         type="number"
-                        defaultValue={settings?.api_rate_limit || "100"}
-                        onBlur={(e) => handleSettingUpdate('api_rate_limit', e.target.value, 'integrations')}
+                        value={getCurrentValue('api_rate_limit') || "100"}
+                        onChange={(e) => handleSettingChange('api_rate_limit', e.target.value, 'integrations')}
                       />
                     </div>
                     
@@ -659,7 +702,7 @@ const SystemSettings = () => {
                       <Switch
                         id="api-docs"
                         checked={settings?.enable_api_docs ?? true}
-                        onCheckedChange={(checked) => handleSettingUpdate('enable_api_docs', checked, 'integrations')}
+                        onCheckedChange={(checked) => handleSettingChange('enable_api_docs', checked, 'integrations')}
                       />
                       <Label htmlFor="api-docs">Enable API Documentation</Label>
                     </div>
@@ -670,8 +713,8 @@ const SystemSettings = () => {
                     <Input
                       id="webhook-secret"
                       type="password"
-                      defaultValue={settings?.webhook_secret || ""}
-                      onBlur={(e) => handleSettingUpdate('webhook_secret', e.target.value, 'integrations')}
+                      value={getCurrentValue('webhook_secret') || ""}
+                      onChange={(e) => handleSettingChange('webhook_secret', e.target.value, 'integrations')}
                     />
                   </div>
                   
@@ -680,7 +723,7 @@ const SystemSettings = () => {
                       <Label htmlFor="analytics-provider">Analytics Provider</Label>
                       <Select
                         defaultValue={settings?.analytics_provider || "none"}
-                        onValueChange={(value) => handleSettingUpdate('analytics_provider', value, 'integrations')}
+                        onValueChange={(value) => handleSettingChange('analytics_provider', value, 'integrations')}
                       >
                         <SelectTrigger>
                           <SelectValue />
@@ -698,9 +741,9 @@ const SystemSettings = () => {
                       <Label htmlFor="analytics-id">Analytics ID</Label>
                       <Input
                         id="analytics-id"
-                        defaultValue={settings?.analytics_id || ""}
+                        value={getCurrentValue('analytics_id') || ""}
                         placeholder="GA-XXXXXXXXX-X"
-                        onBlur={(e) => handleSettingUpdate('analytics_id', e.target.value, 'integrations')}
+                        onChange={(e) => handleSettingChange('analytics_id', e.target.value, 'integrations')}
                       />
                     </div>
                   </div>
@@ -718,8 +761,8 @@ const SystemSettings = () => {
                       <Input
                         id="max-file-size"
                         type="number"
-                        defaultValue={settings?.max_file_size || "10"}
-                        onBlur={(e) => handleSettingUpdate('max_file_size', e.target.value, 'integrations')}
+                        value={getCurrentValue('max_file_size') || "10"}
+                        onChange={(e) => handleSettingChange('max_file_size', e.target.value, 'integrations')}
                       />
                     </div>
                     
@@ -727,7 +770,7 @@ const SystemSettings = () => {
                       <Label htmlFor="storage-provider">Storage Provider</Label>
                       <Select
                         defaultValue={settings?.storage_provider || "supabase"}
-                        onValueChange={(value) => handleSettingUpdate('storage_provider', value, 'integrations')}
+                        onValueChange={(value) => handleSettingChange('storage_provider', value, 'integrations')}
                       >
                         <SelectTrigger>
                           <SelectValue />
@@ -746,8 +789,8 @@ const SystemSettings = () => {
                       <Label htmlFor="allowed-file-types">Allowed File Types</Label>
                       <Input
                         id="allowed-file-types"
-                        defaultValue={settings?.allowed_file_types || "jpg,jpeg,png,gif,pdf,doc,docx"}
-                        onBlur={(e) => handleSettingUpdate('allowed_file_types', e.target.value, 'integrations')}
+                        value={getCurrentValue('allowed_file_types') || "jpg,jpeg,png,gif,pdf,doc,docx"}
+                        onChange={(e) => handleSettingChange('allowed_file_types', e.target.value, 'integrations')}
                       />
                     </div>
                     
@@ -755,9 +798,9 @@ const SystemSettings = () => {
                       <Label htmlFor="cdn-url">CDN URL</Label>
                       <Input
                         id="cdn-url"
-                        defaultValue={settings?.cdn_url || ""}
+                        value={getCurrentValue('cdn_url') || ""}
                         placeholder="https://cdn.example.com"
-                        onBlur={(e) => handleSettingUpdate('cdn_url', e.target.value, 'integrations')}
+                        onChange={(e) => handleSettingChange('cdn_url', e.target.value, 'integrations')}
                       />
                     </div>
                   </div>
@@ -779,7 +822,7 @@ const SystemSettings = () => {
                       <Label htmlFor="cache-duration">Cache Duration (hours)</Label>
                       <Select
                         defaultValue={settings?.cache_duration || "24"}
-                        onValueChange={(value) => handleSettingUpdate('cache_duration', value, 'performance')}
+                        onValueChange={(value) => handleSettingChange('cache_duration', value, 'performance')}
                       >
                         <SelectTrigger>
                           <SelectValue />
@@ -797,7 +840,7 @@ const SystemSettings = () => {
                       <Label htmlFor="backup-frequency">Database Backup Frequency</Label>
                       <Select
                         defaultValue={settings?.database_backup_frequency || "daily"}
-                        onValueChange={(value) => handleSettingUpdate('database_backup_frequency', value, 'performance')}
+                        onValueChange={(value) => handleSettingChange('database_backup_frequency', value, 'performance')}
                       >
                         <SelectTrigger>
                           <SelectValue />
@@ -816,7 +859,7 @@ const SystemSettings = () => {
                       <Switch
                         id="compression"
                         checked={settings?.enable_compression ?? true}
-                        onCheckedChange={(checked) => handleSettingUpdate('enable_compression', checked, 'performance')}
+                        onCheckedChange={(checked) => handleSettingChange('enable_compression', checked, 'performance')}
                       />
                       <Label htmlFor="compression">Enable Compression</Label>
                     </div>
@@ -825,7 +868,7 @@ const SystemSettings = () => {
                       <Switch
                         id="cdn"
                         checked={settings?.enable_cdn || false}
-                        onCheckedChange={(checked) => handleSettingUpdate('enable_cdn', checked, 'performance')}
+                        onCheckedChange={(checked) => handleSettingChange('enable_cdn', checked, 'performance')}
                       />
                       <Label htmlFor="cdn">Enable CDN</Label>
                     </div>
