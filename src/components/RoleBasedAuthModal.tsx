@@ -1,10 +1,10 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Progress } from "@/components/ui/progress";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -14,8 +14,6 @@ interface RoleBasedAuthModalProps {
   language: "en" | "id";
 }
 
-type UserRole = "general_user" | "property_owner" | "agent" | "vendor" | "admin";
-
 const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalProps) => {
   const [activeTab, setActiveTab] = useState("signin");
   const [isLoading, setIsLoading] = useState(false);
@@ -23,11 +21,7 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
     email: "",
     password: "",
     confirmPassword: "",
-    full_name: "",
-    role: "general_user" as UserRole,
-    phone: "",
-    company_name: "",
-    license_number: ""
+    full_name: ""
   });
   const [signInData, setSignInData] = useState({
     email: "",
@@ -44,27 +38,12 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
       password: "Password",
       confirmPassword: "Confirm Password",
       fullName: "Full Name",
-      role: "Role",
-      phone: "Phone Number",
-      companyName: "Company Name",
-      licenseNumber: "License Number",
-      generalUser: "General User",
-      propertyOwner: "Property Owner",
-      agent: "Real Estate Agent",
-      vendor: "Vendor",
       signinButton: "Sign In",
       signupButton: "Create Account",
       switchToSignup: "Don't have an account? Sign up",
       switchToSignin: "Already have an account? Sign in",
       passwordMismatch: "Passwords don't match",
-      fillAllFields: "Please fill in all required fields",
-      selectRole: "Select your role",
-      roleDescription: {
-        general_user: "Browse and search properties",
-        property_owner: "List and manage your properties",
-        agent: "Manage listings and clients",
-        vendor: "Offer property services"
-      }
+      fillAllFields: "Please fill in all required fields"
     },
     id: {
       signin: "Masuk",
@@ -73,27 +52,12 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
       password: "Kata Sandi",
       confirmPassword: "Konfirmasi Kata Sandi",
       fullName: "Nama Lengkap",
-      role: "Peran",
-      phone: "Nomor Telepon",
-      companyName: "Nama Perusahaan",
-      licenseNumber: "Nomor Lisensi",
-      generalUser: "Pengguna Umum",
-      propertyOwner: "Pemilik Properti",
-      agent: "Agen Real Estat",
-      vendor: "Vendor",
       signinButton: "Masuk",
       signupButton: "Buat Akun",
       switchToSignup: "Belum punya akun? Daftar",
       switchToSignin: "Sudah punya akun? Masuk",
       passwordMismatch: "Kata sandi tidak cocok",
-      fillAllFields: "Harap isi semua bidang yang diperlukan",
-      selectRole: "Pilih peran Anda",
-      roleDescription: {
-        general_user: "Telusuri dan cari properti",
-        property_owner: "Daftarkan dan kelola properti Anda",
-        agent: "Kelola listing dan klien",
-        vendor: "Tawarkan layanan properti"
-      }
+      fillAllFields: "Harap isi semua bidang yang diperlukan"
     }
   };
 
@@ -158,16 +122,13 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
     setIsLoading(true);
     
     try {
-      console.log('Attempting sign up with role:', signUpData.role);
+      console.log('Attempting sign up with default role: general_user');
       const { success, error } = await signUp(
         signUpData.email, 
         signUpData.password, 
         signUpData.full_name,
         {
-          role: signUpData.role,
-          phone: signUpData.phone,
-          company_name: signUpData.company_name,
-          license_number: signUpData.license_number
+          role: 'general_user'
         }
       );
       
@@ -177,11 +138,7 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
           email: "",
           password: "",
           confirmPassword: "",
-          full_name: "",
-          role: "general_user" as UserRole,
-          phone: "",
-          company_name: "",
-          license_number: ""
+          full_name: ""
         });
       } else if (error) {
         console.error('Signup failed:', error);
@@ -191,10 +148,6 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const showAdditionalFields = () => {
-    return signUpData.role === 'agent' || signUpData.role === 'vendor' || signUpData.role === 'property_owner';
   };
 
   return (
@@ -267,80 +220,6 @@ const RoleBasedAuthModal = ({ isOpen, onClose, language }: RoleBasedAuthModalPro
                     required
                   />
                 </div>
-                <div>
-                  <Label htmlFor="signup-role">{currentText.selectRole}</Label>
-                  <Select 
-                    value={signUpData.role} 
-                    onValueChange={(value: UserRole) => setSignUpData(prev => ({ ...prev, role: value }))}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder={currentText.selectRole} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="general_user">
-                        <div>
-                          <div className="font-medium">{currentText.generalUser}</div>
-                          <div className="text-sm text-gray-500">{currentText.roleDescription.general_user}</div>
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="property_owner">
-                        <div>
-                          <div className="font-medium">{currentText.propertyOwner}</div>
-                          <div className="text-sm text-gray-500">{currentText.roleDescription.property_owner}</div>
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="agent">
-                        <div>
-                          <div className="font-medium">{currentText.agent}</div>
-                          <div className="text-sm text-gray-500">{currentText.roleDescription.agent}</div>
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="vendor">
-                        <div>
-                          <div className="font-medium">{currentText.vendor}</div>
-                          <div className="text-sm text-gray-500">{currentText.roleDescription.vendor}</div>
-                        </div>
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                {showAdditionalFields() && (
-                  <>
-                    <div>
-                      <Label htmlFor="signup-phone">{currentText.phone}</Label>
-                      <Input
-                        id="signup-phone"
-                        type="tel"
-                        value={signUpData.phone}
-                        onChange={(e) => setSignUpData(prev => ({ ...prev, phone: e.target.value }))}
-                      />
-                    </div>
-                    {(signUpData.role === 'agent' || signUpData.role === 'vendor') && (
-                      <div>
-                        <Label htmlFor="signup-company">{currentText.companyName}</Label>
-                        <Input
-                          id="signup-company"
-                          type="text"
-                          value={signUpData.company_name}
-                          onChange={(e) => setSignUpData(prev => ({ ...prev, company_name: e.target.value }))}
-                        />
-                      </div>
-                    )}
-                    {signUpData.role === 'agent' && (
-                      <div>
-                        <Label htmlFor="signup-license">{currentText.licenseNumber}</Label>
-                        <Input
-                          id="signup-license"
-                          type="text"
-                          value={signUpData.license_number}
-                          onChange={(e) => setSignUpData(prev => ({ ...prev, license_number: e.target.value }))}
-                        />
-                      </div>
-                    )}
-                  </>
-                )}
-                
                 <div>
                   <Label htmlFor="signup-password">{currentText.password}</Label>
                   <Input
