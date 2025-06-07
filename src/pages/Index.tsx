@@ -86,13 +86,13 @@ const Index = () => {
       {/* Hero Section with Modern Search */}
       <section className="pt-20 pb-8 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto text-center">
-          <h1 className="text-4xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6">
+          <h1 className="text-4xl md:text-6xl font-bold text-gray-900 dark:text-white opacity-60 mb-6">
             Find Your Dream
-            <span className="block bg-gradient-to-r from-blue-600 to-orange-500 bg-clip-text text-transparent">
+            <span className="block bg-gradient-to-r from-blue-600 to-orange-500 bg-clip-text text-transparent opacity-60">
               Property
             </span>
           </h1>
-          <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto">
+          <p className="text-xl text-gray-600 dark:text-gray-300 opacity-60 mb-8 max-w-3xl mx-auto">
             Discover luxury villas, modern apartments, and exclusive properties with our advanced search technology.
           </p>
           
