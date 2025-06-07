@@ -31,7 +31,7 @@ const ParticleField = () => {
     <Points ref={ref} positions={particlesPosition} stride={3} frustumCulled={false}>
       <PointMaterial
         transparent
-        color="#3b82f6"
+        color="#4a90a4"
         size={0.02}
         sizeAttenuation={true}
         depthWrite={false}
