@@ -39,6 +39,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true);
   const { showError, showSuccess } = useAlert();
 
+  console.log('AuthProvider rendering, loading:', loading, 'user:', user?.email);
+
   // Get initial session and set up auth state listener
   useEffect(() => {
     let mounted = true;
@@ -66,6 +68,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
 
         if (mounted) {
+          console.log('Setting loading to false');
           setLoading(false);
         }
       } catch (error) {
@@ -249,6 +252,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     signOut,
     updateProfile,
   };
+
+  console.log('AuthProvider providing value, loading:', loading, 'isAuthenticated:', !!user);
 
   return (
     <AuthContext.Provider value={value}>

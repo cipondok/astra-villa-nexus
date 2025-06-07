@@ -15,6 +15,8 @@ const Index = () => {
   const { isAuthenticated, loading } = useAuth();
   const [searchParams] = useSearchParams();
 
+  console.log('Index component rendering, loading:', loading, 'isAuthenticated:', isAuthenticated);
+
   // Check if auth modal should be opened from URL
   useEffect(() => {
     if (searchParams.get('auth') === 'true') {
@@ -48,6 +50,7 @@ const Index = () => {
 
   // Show loading only for a brief moment
   if (loading) {
+    console.log('Showing loading screen');
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         <div className="text-center">
@@ -57,6 +60,8 @@ const Index = () => {
       </div>
     );
   }
+
+  console.log('Rendering main content');
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
