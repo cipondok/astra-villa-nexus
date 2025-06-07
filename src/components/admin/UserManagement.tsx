@@ -8,14 +8,37 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Users, Search, UserCheck, UserX, Mail, Phone } from "lucide-react";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Users, Search, UserCheck, UserX, Mail, Phone, Plus, Edit, Trash2, Eye } from "lucide-react";
 import { useAlert } from "@/contexts/AlertContext";
 
 type UserRole = "general_user" | "property_owner" | "agent" | "vendor" | "admin";
 
+interface User {
+  id: string;
+  email: string;
+  full_name?: string;
+  phone?: string;
+  role: UserRole;
+  verification_status?: string;
+  company_name?: string;
+  created_at?: string;
+}
+
 const UserManagement = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [editingUser, setEditingUser] = useState<User | null>(null);
+  const [newUser, setNewUser] = useState({
+    email: "",
+    full_name: "",
+    phone: "",
+    role: "general_user" as UserRole,
+    company_name: ""
+  });
+
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
 
@@ -37,6 +60,24 @@ const UserManagement = () => {
 
       const { data, error } = await query;
       if (error) throw error;
+      return data as User[];
+    },
+  });
+
+  const { data: userStats } = useQuery({
+    queryKey: ['user-stats'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('role')
+        .then(result => {
+          if (result.error) throw result.error;
+          const stats = result.data.reduce((acc: any, user: any) => {
+            acc[user.role] = (acc[user.role] || 0) + 1;
+            return acc;
+          }, {});
+          return stats;
+        });
       return data;
     },
   });
@@ -52,9 +93,28 @@ const UserManagement = () => {
     onSuccess: () => {
       showSuccess("User Updated", "User has been updated successfully.");
       queryClient.invalidateQueries({ queryKey: ['admin-users'] });
+      queryClient.invalidateQueries({ queryKey: ['user-stats'] });
     },
     onError: (error: any) => {
       showError("Update Failed", error.message);
+    },
+  });
+
+  const deleteUserMutation = useMutation({
+    mutationFn: async (userId: string) => {
+      const { error } = await supabase
+        .from('profiles')
+        .delete()
+        .eq('id', userId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      showSuccess("User Deleted", "User has been deleted successfully.");
+      queryClient.invalidateQueries({ queryKey: ['admin-users'] });
+      queryClient.invalidateQueries({ queryKey: ['user-stats'] });
+    },
+    onError: (error: any) => {
+      showError("Delete Failed", error.message);
     },
   });
 
@@ -64,6 +124,39 @@ const UserManagement = () => {
 
   const handleStatusChange = (userId: string, newStatus: string) => {
     updateUserMutation.mutate({ userId, updates: { verification_status: newStatus } });
+  };
+
+  const handleEditUser = (user: User) => {
+    setEditingUser(user);
+    setNewUser({
+      email: user.email,
+      full_name: user.full_name || "",
+      phone: user.phone || "",
+      role: user.role,
+      company_name: user.company_name || ""
+    });
+  };
+
+  const handleSaveUser = () => {
+    if (editingUser) {
+      updateUserMutation.mutate({ 
+        userId: editingUser.id, 
+        updates: {
+          full_name: newUser.full_name,
+          phone: newUser.phone,
+          role: newUser.role,
+          company_name: newUser.company_name
+        }
+      });
+    }
+    setEditingUser(null);
+    setNewUser({
+      email: "",
+      full_name: "",
+      phone: "",
+      role: "general_user",
+      company_name: ""
+    });
   };
 
   const getRoleBadgeVariant = (role: string) => {
@@ -87,15 +180,53 @@ const UserManagement = () => {
 
   return (
     <div className="space-y-6">
+      {/* User Statistics Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+        <Card>
+          <CardContent className="p-4">
+            <div className="text-2xl font-bold">{userStats?.general_user || 0}</div>
+            <p className="text-xs text-muted-foreground">General Users</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
+            <div className="text-2xl font-bold">{userStats?.property_owner || 0}</div>
+            <p className="text-xs text-muted-foreground">Property Owners</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
+            <div className="text-2xl font-bold">{userStats?.agent || 0}</div>
+            <p className="text-xs text-muted-foreground">Agents</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
+            <div className="text-2xl font-bold">{userStats?.vendor || 0}</div>
+            <p className="text-xs text-muted-foreground">Vendors</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
+            <div className="text-2xl font-bold">{userStats?.admin || 0}</div>
+            <p className="text-xs text-muted-foreground">Admins</p>
+          </CardContent>
+        </Card>
+      </div>
+
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Users className="h-5 w-5" />
-            User Management
-          </CardTitle>
-          <CardDescription>
-            Manage user accounts, roles, and verification status
-          </CardDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="flex items-center gap-2">
+                <Users className="h-5 w-5" />
+                User Management
+              </CardTitle>
+              <CardDescription>
+                Manage user accounts, roles, and verification status
+              </CardDescription>
+            </div>
+          </div>
         </CardHeader>
         <CardContent className="space-y-4">
           {/* Search and Filter Controls */}
@@ -221,21 +352,22 @@ const UserManagement = () => {
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => handleStatusChange(user.id, 'verified')}
-                            disabled={user.verification_status === 'verified'}
-                          >
-                            <UserCheck className="h-4 w-4" />
+                          <Button size="sm" variant="outline">
+                            <Eye className="h-4 w-4" />
                           </Button>
-                          <Button
-                            size="sm"
+                          <Button 
+                            size="sm" 
                             variant="outline"
-                            onClick={() => handleStatusChange(user.id, 'rejected')}
-                            disabled={user.verification_status === 'rejected'}
+                            onClick={() => handleEditUser(user)}
                           >
-                            <UserX className="h-4 w-4" />
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button 
+                            size="sm" 
+                            variant="outline"
+                            onClick={() => deleteUserMutation.mutate(user.id)}
+                          >
+                            <Trash2 className="h-4 w-4" />
                           </Button>
                         </div>
                       </TableCell>
@@ -247,6 +379,76 @@ const UserManagement = () => {
           </div>
         </CardContent>
       </Card>
+
+      {/* Edit User Dialog */}
+      <Dialog open={!!editingUser} onOpenChange={(open) => !open && setEditingUser(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit User</DialogTitle>
+            <DialogDescription>
+              Update user information and settings
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="edit_full_name">Full Name</Label>
+              <Input
+                id="edit_full_name"
+                value={newUser.full_name}
+                onChange={(e) => setNewUser({ ...newUser, full_name: e.target.value })}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="edit_email">Email</Label>
+              <Input
+                id="edit_email"
+                type="email"
+                value={newUser.email}
+                disabled
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="edit_phone">Phone</Label>
+              <Input
+                id="edit_phone"
+                value={newUser.phone}
+                onChange={(e) => setNewUser({ ...newUser, phone: e.target.value })}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="edit_role">Role</Label>
+              <Select value={newUser.role} onValueChange={(value) => setNewUser({ ...newUser, role: value as UserRole })}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="general_user">General User</SelectItem>
+                  <SelectItem value="property_owner">Property Owner</SelectItem>
+                  <SelectItem value="agent">Agent</SelectItem>
+                  <SelectItem value="vendor">Vendor</SelectItem>
+                  <SelectItem value="admin">Admin</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="edit_company">Company Name</Label>
+              <Input
+                id="edit_company"
+                value={newUser.company_name}
+                onChange={(e) => setNewUser({ ...newUser, company_name: e.target.value })}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditingUser(null)}>
+              Cancel
+            </Button>
+            <Button onClick={handleSaveUser}>
+              Save Changes
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

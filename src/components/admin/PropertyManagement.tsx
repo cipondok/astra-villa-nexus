@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -10,14 +11,37 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Building, Search, Plus, Edit, Trash2, Eye, CheckCircle, XCircle, MapPin, DollarSign } from "lucide-react";
+import { Building, Search, Plus, Edit, Trash2, Eye, MapPin, DollarSign } from "lucide-react";
 import { useAlert } from "@/contexts/AlertContext";
+
+interface PropertyOwner {
+  full_name: string;
+  email: string;
+}
+
+interface PropertyWithRelations {
+  id: string;
+  title: string;
+  description?: string;
+  property_type: string;
+  listing_type: string;
+  price?: number;
+  location: string;
+  bedrooms?: number;
+  bathrooms?: number;
+  area_sqm?: number;
+  status?: string;
+  approval_status?: string;
+  created_at?: string;
+  owner?: PropertyOwner;
+  agent?: PropertyOwner;
+}
 
 const PropertyManagement = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
-  const [editingProperty, setEditingProperty] = useState<any>(null);
+  const [editingProperty, setEditingProperty] = useState<PropertyWithRelations | null>(null);
   const [newProperty, setNewProperty] = useState({
     title: "",
     description: "",
@@ -55,7 +79,7 @@ const PropertyManagement = () => {
 
       const { data, error } = await query;
       if (error) throw error;
-      return data;
+      return data as PropertyWithRelations[];
     },
   });
 
@@ -69,7 +93,7 @@ const PropertyManagement = () => {
           bedrooms: propertyData.bedrooms ? parseInt(propertyData.bedrooms) : null,
           bathrooms: propertyData.bathrooms ? parseInt(propertyData.bathrooms) : null,
           area_sqm: propertyData.area_sqm ? parseInt(propertyData.area_sqm) : null,
-          owner_id: '00000000-0000-0000-0000-000000000000', // Placeholder - should be actual user
+          owner_id: '00000000-0000-0000-0000-000000000000',
           status: 'pending_approval'
         });
       if (error) throw error;
@@ -300,7 +324,6 @@ const PropertyManagement = () => {
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
-          {/* Search and Filter Controls */}
           <div className="flex gap-4">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -325,7 +348,6 @@ const PropertyManagement = () => {
             </Select>
           </div>
 
-          {/* Properties Table */}
           <div className="border rounded-lg">
             <Table>
               <TableHeader>
@@ -372,14 +394,14 @@ const PropertyManagement = () => {
                       <TableCell>
                         <div className="space-y-1">
                           <div className="text-sm font-medium">
-                            {Array.isArray(property.owner) ? property.owner[0]?.full_name : property.owner?.full_name || 'Unknown Owner'}
+                            {property.owner?.full_name || 'Unknown Owner'}
                           </div>
                           <div className="text-xs text-muted-foreground">
-                            {Array.isArray(property.owner) ? property.owner[0]?.email : property.owner?.email}
+                            {property.owner?.email}
                           </div>
                           {property.agent && (
                             <div className="text-xs text-blue-600">
-                              Agent: {Array.isArray(property.agent) ? property.agent[0]?.full_name : property.agent?.full_name}
+                              Agent: {property.agent.full_name}
                             </div>
                           )}
                         </div>
