@@ -84,6 +84,22 @@ const PropertyManagement = () => {
     }).format(price);
   };
 
+  // Helper function to safely get owner data
+  const getOwnerData = (owner: any) => {
+    if (Array.isArray(owner)) {
+      return owner[0] || null;
+    }
+    return owner;
+  };
+
+  // Helper function to safely get agent data
+  const getAgentData = (agent: any) => {
+    if (Array.isArray(agent)) {
+      return agent[0] || null;
+    }
+    return agent;
+  };
+
   return (
     <div className="space-y-6">
       <Tabs defaultValue="list" className="w-full">
@@ -155,71 +171,76 @@ const PropertyManagement = () => {
                         </TableCell>
                       </TableRow>
                     ) : (
-                      properties?.map((property) => (
-                        <TableRow key={property.id}>
-                          <TableCell>
-                            <div className="space-y-1">
-                              <div className="font-medium">{property.title}</div>
-                              <div className="text-sm text-muted-foreground">{property.location}</div>
-                              <div className="text-xs text-muted-foreground">
-                                {property.bedrooms}BR • {property.bathrooms}BA • {property.area_sqm}m²
-                              </div>
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            <div className="space-y-1">
-                              <div className="text-sm font-medium">
-                                Owner: {property.owner?.full_name || 'Unknown'}
-                              </div>
-                              <div className="text-xs text-muted-foreground">
-                                {property.owner?.email}
-                              </div>
-                              {property.agent && (
+                      properties?.map((property) => {
+                        const ownerData = getOwnerData(property.owner);
+                        const agentData = getAgentData(property.agent);
+                        
+                        return (
+                          <TableRow key={property.id}>
+                            <TableCell>
+                              <div className="space-y-1">
+                                <div className="font-medium">{property.title}</div>
+                                <div className="text-sm text-muted-foreground">{property.location}</div>
                                 <div className="text-xs text-muted-foreground">
-                                  Agent: {property.agent.full_name}
+                                  {property.bedrooms}BR • {property.bathrooms}BA • {property.area_sqm}m²
                                 </div>
-                              )}
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            <div className="space-y-1">
-                              <Badge variant="outline">{property.property_type}</Badge>
-                              <div className="text-xs text-muted-foreground">{property.listing_type}</div>
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            {property.price ? formatPrice(property.price) : 'N/A'}
-                          </TableCell>
-                          <TableCell>
-                            <Badge variant={getStatusBadgeVariant(property.approval_status || 'pending')}>
-                              {property.approval_status || 'pending'}
-                            </Badge>
-                          </TableCell>
-                          <TableCell>
-                            <div className="flex items-center gap-2">
-                              <Button size="sm" variant="outline">
-                                <Eye className="h-4 w-4" />
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => handleApprovalChange(property.id, 'approved')}
-                                disabled={property.approval_status === 'approved'}
-                              >
-                                <Check className="h-4 w-4" />
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => handleApprovalChange(property.id, 'rejected')}
-                                disabled={property.approval_status === 'rejected'}
-                              >
-                                <X className="h-4 w-4" />
-                              </Button>
-                            </div>
-                          </TableCell>
-                        </TableRow>
-                      ))
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              <div className="space-y-1">
+                                <div className="text-sm font-medium">
+                                  Owner: {ownerData?.full_name || 'Unknown'}
+                                </div>
+                                <div className="text-xs text-muted-foreground">
+                                  {ownerData?.email}
+                                </div>
+                                {agentData && (
+                                  <div className="text-xs text-muted-foreground">
+                                    Agent: {agentData.full_name}
+                                  </div>
+                                )}
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              <div className="space-y-1">
+                                <Badge variant="outline">{property.property_type}</Badge>
+                                <div className="text-xs text-muted-foreground">{property.listing_type}</div>
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              {property.price ? formatPrice(property.price) : 'N/A'}
+                            </TableCell>
+                            <TableCell>
+                              <Badge variant={getStatusBadgeVariant(property.approval_status || 'pending')}>
+                                {property.approval_status || 'pending'}
+                              </Badge>
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex items-center gap-2">
+                                <Button size="sm" variant="outline">
+                                  <Eye className="h-4 w-4" />
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => handleApprovalChange(property.id, 'approved')}
+                                  disabled={property.approval_status === 'approved'}
+                                >
+                                  <Check className="h-4 w-4" />
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => handleApprovalChange(property.id, 'rejected')}
+                                  disabled={property.approval_status === 'rejected'}
+                                >
+                                  <X className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })
                     )}
                   </TableBody>
                 </Table>
