@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSearchParams } from "react-router-dom";
@@ -6,6 +7,7 @@ import EnhancedAuthModal from "@/components/auth/EnhancedAuthModal";
 import PropertyListingsSection from "@/components/PropertyListingsSection";
 import ModernSearchPanel from "@/components/ModernSearchPanel";
 import ParticleEffect from "@/components/ParticleEffect";
+import ProfessionalFooter from "@/components/ProfessionalFooter";
 
 const Index = () => {
   const [language, setLanguage] = useState<"en" | "id">("en");
@@ -51,10 +53,10 @@ const Index = () => {
   if (loading) {
     console.log('Showing loading screen');
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-2"></div>
-          <p className="text-sm text-gray-600 dark:text-gray-300">Loading...</p>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-ios-blue mx-auto mb-2"></div>
+          <p className="text-sm text-muted-foreground">Loading...</p>
         </div>
       </div>
     );
@@ -63,7 +65,7 @@ const Index = () => {
   console.log('Rendering main content');
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-background">
       <EnhancedNavigation
         onLoginClick={!isAuthenticated ? handleLoginClick : undefined}
         language={language}
@@ -80,13 +82,13 @@ const Index = () => {
         </div>
         
         <div className="max-w-7xl mx-auto text-center relative z-10">
-          <h1 className="text-4xl md:text-6xl font-bold text-gray-900 dark:text-white opacity-60 mb-6">
+          <h1 className="text-4xl md:text-6xl font-bold text-foreground/60 mb-6">
             Find Your Dream
-            <span className="block bg-gradient-to-r from-blue-600 to-orange-500 bg-clip-text text-transparent opacity-60">
+            <span className="block bg-gradient-to-r from-ios-blue to-ios-blue/80 bg-clip-text text-transparent opacity-60">
               Property
             </span>
           </h1>
-          <p className="text-xl text-gray-600 dark:text-gray-300 opacity-60 mb-8 max-w-3xl mx-auto">
+          <p className="text-xl text-muted-foreground opacity-60 mb-8 max-w-3xl mx-auto">
             Discover luxury villas, modern apartments, and exclusive properties with our advanced search technology.
           </p>
           
@@ -98,6 +100,9 @@ const Index = () => {
       <div className="property-listings-wrapper">
         <PropertyListingsSection language={language} />
       </div>
+
+      {/* Professional Footer */}
+      <ProfessionalFooter language={language} />
 
       {/* Enhanced Auth Modal */}
       <EnhancedAuthModal
