@@ -59,30 +59,10 @@ const DatabaseTableManagement = () => {
   const queryClient = useQueryClient();
   const { user } = useAuth();
 
-  // Check if current user is super admin using the new safe function
-  const { data: isSuperAdmin } = useQuery({
-    queryKey: ['is-super-admin-safe', user?.id],
-    queryFn: async () => {
-      if (!user?.id) return false;
-      
-      try {
-        // Use the new safe function to check super admin status
-        const { data, error } = await supabase.rpc('is_super_admin_safe');
-        
-        if (error) {
-          console.error('Error checking super admin status:', error);
-          return false;
-        }
-        
-        console.log('Super admin check result:', data);
-        return data || false;
-      } catch (error) {
-        console.error('Error in super admin check:', error);
-        return false;
-      }
-    },
-    enabled: !!user?.id,
-  });
+  // Direct check for super admin using email
+  const isSuperAdmin = user?.email === 'mycode103@gmail.com';
+
+  console.log('DatabaseTableManagement render - isSuperAdmin:', isSuperAdmin, 'user email:', user?.email);
 
   // Fetch database statistics
   const { data: dbStats, isLoading: statsLoading } = useQuery({
@@ -221,8 +201,6 @@ const DatabaseTableManagement = () => {
     }
     executeSqlMutation.mutate(sqlQuery);
   };
-
-  console.log('DatabaseTableManagement render - isSuperAdmin:', isSuperAdmin, 'user email:', user?.email);
 
   if (!isSuperAdmin) {
     return (
