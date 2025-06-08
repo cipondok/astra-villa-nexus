@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -12,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Label } from "@/components/ui/label";
 import { Shield, Users, Edit, Trash2, AlertCircle } from "lucide-react";
 import { useAlert } from "@/contexts/AlertContext";
+import { useAuth } from "@/contexts/AuthContext";
 
 type UserRole = 'general_user' | 'property_owner' | 'agent' | 'vendor' | 'admin';
 
@@ -31,7 +31,44 @@ const UserRolesManagement = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
   const { showSuccess, showError } = useAlert();
+  const { user } = useAuth();
   const queryClient = useQueryClient();
+
+  // Check if current user is super admin using the new safe function
+  const { data: isSuperAdmin } = useQuery({
+    queryKey: ['is-super-admin-safe', user?.id],
+    queryFn: async () => {
+      if (!user?.id) return false;
+      
+      try {
+        const { data, error } = await supabase.rpc('is_current_user_super_admin_safe');
+        
+        if (error) {
+          console.error('Error checking super admin status:', error);
+          return false;
+        }
+        
+        return data || false;
+      } catch (error) {
+        console.error('Error in super admin check:', error);
+        return false;
+      }
+    },
+    enabled: !!user?.id,
+  });
+
+  // Only show this component if user is super admin
+  if (!isSuperAdmin) {
+    return (
+      <Card className="border-red-500/20">
+        <CardContent className="p-6 text-center">
+          <Shield className="h-12 w-12 text-red-500 mx-auto mb-4" />
+          <h3 className="text-lg font-semibold text-red-900">Access Denied</h3>
+          <p className="text-red-700">Super administrator privileges required for user roles management.</p>
+        </CardContent>
+      </Card>
+    );
+  }
 
   // Fetch users with better error handling to avoid infinite recursion
   const { data: users, isLoading: usersLoading, error } = useQuery({

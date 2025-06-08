@@ -35,24 +35,26 @@ const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState("overview");
   const { user, profile } = useAuth();
 
-  // Check if current user is super admin
+  // Check if current user is super admin using the new safe function
   const { data: isSuperAdmin } = useQuery({
-    queryKey: ['is-super-admin', user?.id],
+    queryKey: ['is-super-admin-safe', user?.id],
     queryFn: async () => {
       if (!user?.id) return false;
       
-      const { data, error } = await supabase
-        .from('admin_users')
-        .select('is_super_admin')
-        .eq('user_id', user.id)
-        .single();
-      
-      if (error) {
-        console.error('Error checking super admin status:', error);
+      try {
+        const { data, error } = await supabase.rpc('is_current_user_super_admin_safe');
+        
+        if (error) {
+          console.error('Error checking super admin status:', error);
+          return false;
+        }
+        
+        console.log('Super admin check result:', data);
+        return data || false;
+      } catch (error) {
+        console.error('Error in super admin check:', error);
         return false;
       }
-      
-      return data?.is_super_admin || false;
     },
     enabled: !!user?.id,
   });
