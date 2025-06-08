@@ -48,13 +48,15 @@ const SystemSettings = () => {
     api_rate_limit: "1000"
   });
 
+  const [isLoading, setIsLoading] = useState(true);
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
 
-  const { data: systemSettings, isLoading, refetch } = useQuery({
+  // Fetch system settings with better error handling
+  const { data: systemSettings, isLoading: queryLoading, refetch } = useQuery({
     queryKey: ['system-settings'],
     queryFn: async () => {
-      console.log('Fetching system settings');
+      console.log('Fetching system settings from database...');
       
       const { data, error } = await supabase
         .from('system_settings')
@@ -62,12 +64,14 @@ const SystemSettings = () => {
       
       if (error) {
         console.error('Error fetching system settings:', error);
-        throw error;
+        throw new Error(`Failed to fetch settings: ${error.message}`);
       }
       
-      console.log('Fetched system settings:', data?.length || 0);
-      return data;
+      console.log('Fetched system settings:', data?.length || 0, 'settings');
+      return data || [];
     },
+    retry: 3,
+    retryDelay: 1000,
   });
 
   // Load settings from database when component mounts
@@ -76,60 +80,70 @@ const SystemSettings = () => {
       const loadedSettings = { ...settings };
       
       systemSettings.forEach((setting: any) => {
-        if (setting.value && typeof setting.value === 'object' && setting.value.value !== undefined) {
-          const key = setting.key as keyof SettingsState;
-          if (key in loadedSettings) {
-            (loadedSettings as any)[key] = setting.value.value;
+        try {
+          if (setting.value && typeof setting.value === 'object' && setting.value.value !== undefined) {
+            const key = setting.key as keyof SettingsState;
+            if (key in loadedSettings) {
+              (loadedSettings as any)[key] = setting.value.value;
+            }
+          } else if (setting.value !== null) {
+            const key = setting.key as keyof SettingsState;
+            if (key in loadedSettings) {
+              (loadedSettings as any)[key] = setting.value;
+            }
           }
-        } else if (setting.value !== null) {
-          const key = setting.key as keyof SettingsState;
-          if (key in loadedSettings) {
-            (loadedSettings as any)[key] = setting.value;
-          }
+        } catch (error) {
+          console.error('Error processing setting:', setting.key, error);
         }
       });
       
       console.log('Loaded settings from database:', loadedSettings);
       setSettings(loadedSettings);
     }
+    setIsLoading(false);
   }, [systemSettings]);
 
+  // Individual setting mutation for better control
   const saveSettingMutation = useMutation({
     mutationFn: async ({ key, value, category }: { key: string; value: any; category: string }) => {
-      console.log('Saving setting:', key, value, category);
+      console.log('Saving setting to database:', key, value, category);
+      
+      const settingData = {
+        key,
+        value: { value }, // Store as JSON with value property for consistency
+        category,
+        description: `System setting for ${key.replace(/_/g, ' ')}`
+      };
       
       const { error } = await supabase
         .from('system_settings')
-        .upsert({
-          key,
-          value: { value }, // Store as JSON with value property
-          category,
-          description: `System setting for ${key.replace(/_/g, ' ')}`
+        .upsert(settingData, { 
+          onConflict: 'key',
+          ignoreDuplicates: false 
         });
       
       if (error) {
         console.error('Error saving setting:', error);
-        throw error;
+        throw new Error(`Failed to save ${key}: ${error.message}`);
       }
       
-      console.log('Setting saved successfully');
+      console.log('Setting saved successfully:', key);
+      return { key, value, category };
     },
-    onSuccess: () => {
-      showSuccess("Settings Saved", "System settings have been updated successfully.");
-      queryClient.invalidateQueries({ queryKey: ['system-settings'] });
-      refetch();
+    onSuccess: (data) => {
+      console.log('Setting saved:', data.key);
     },
-    onError: (error: any) => {
+    onError: (error: any, variables) => {
       console.error('Save settings mutation error:', error);
-      showError("Save Failed", error.message);
+      showError("Save Failed", `Failed to save ${variables.key}: ${error.message}`);
     },
   });
 
+  // Save all settings
   const handleSave = async () => {
     console.log('Saving all settings:', settings);
     
     try {
-      // Save each setting individually
       const promises = Object.entries(settings).map(([key, value]) => {
         let category = 'general';
         
@@ -150,8 +164,13 @@ const SystemSettings = () => {
       
       await Promise.all(promises);
       
+      showSuccess("Settings Saved", "All system settings have been updated successfully.");
+      queryClient.invalidateQueries({ queryKey: ['system-settings'] });
+      refetch();
+      
     } catch (error) {
       console.error('Error saving settings:', error);
+      // Individual errors are already handled by the mutation
     }
   };
 
@@ -162,6 +181,12 @@ const SystemSettings = () => {
       [key]: value
     }));
   };
+
+  const handleRefresh = () => {
+    refetch();
+  };
+
+  const loading = queryLoading || isLoading;
 
   return (
     <div className="space-y-6">
@@ -178,19 +203,19 @@ const SystemSettings = () => {
               </CardDescription>
             </div>
             <div className="flex gap-2">
-              <Button onClick={() => refetch()} variant="outline" size="sm">
+              <Button onClick={handleRefresh} variant="outline" size="sm" disabled={loading}>
                 <RefreshCw className="h-4 w-4 mr-2" />
                 Refresh
               </Button>
-              <Button onClick={handleSave} size="sm">
+              <Button onClick={handleSave} size="sm" disabled={saveSettingMutation.isPending}>
                 <Save className="h-4 w-4 mr-2" />
-                Save Changes
+                {saveSettingMutation.isPending ? 'Saving...' : 'Save Changes'}
               </Button>
             </div>
           </div>
         </CardHeader>
         <CardContent className="space-y-8">
-          {isLoading ? (
+          {loading ? (
             <div className="text-center py-8">
               Loading settings...
             </div>

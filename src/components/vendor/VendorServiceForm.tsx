@@ -22,9 +22,10 @@ interface ServiceCategory {
 interface ServiceFormProps {
   service?: any;
   onClose: () => void;
+  onSuccess?: () => void;
 }
 
-const VendorServiceForm = ({ service, onClose }: ServiceFormProps) => {
+const VendorServiceForm = ({ service, onClose, onSuccess }: ServiceFormProps) => {
   const { user } = useAuth();
   const { toast } = useToast();
   const [categories, setCategories] = useState<ServiceCategory[]>([]);
@@ -40,6 +41,7 @@ const VendorServiceForm = ({ service, onClose }: ServiceFormProps) => {
     featured: false
   });
   const [saving, setSaving] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchCategories();
@@ -60,22 +62,60 @@ const VendorServiceForm = ({ service, onClose }: ServiceFormProps) => {
 
   const fetchCategories = async () => {
     try {
+      console.log('Fetching vendor service categories...');
       const { data, error } = await supabase
         .from('vendor_service_categories')
         .select('*')
         .eq('is_active', true)
         .order('display_order');
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching categories:', error);
+        throw error;
+      }
+      
+      console.log('Fetched categories:', data);
       setCategories(data || []);
     } catch (error: any) {
       console.error('Error fetching categories:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load service categories",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user) return;
+    if (!user) {
+      toast({
+        title: "Error",
+        description: "You must be logged in to create services",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (!formData.service_name.trim()) {
+      toast({
+        title: "Error",
+        description: "Service name is required",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (!formData.category_id) {
+      toast({
+        title: "Error",
+        description: "Please select a category",
+        variant: "destructive"
+      });
+      return;
+    }
 
     setSaving(true);
     try {
@@ -86,23 +126,31 @@ const VendorServiceForm = ({ service, onClose }: ServiceFormProps) => {
 
       let result;
       if (service) {
+        console.log('Updating service:', service.id, serviceData);
         result = await supabase
           .from('vendor_services')
           .update(serviceData)
           .eq('id', service.id);
       } else {
+        console.log('Creating new service:', serviceData);
         result = await supabase
           .from('vendor_services')
           .insert([serviceData]);
       }
 
-      if (result.error) throw result.error;
+      if (result.error) {
+        console.error('Error saving service:', result.error);
+        throw result.error;
+      }
 
       toast({
         title: "Success",
         description: `Service ${service ? 'updated' : 'created'} successfully`
       });
       
+      if (onSuccess) {
+        onSuccess();
+      }
       onClose();
     } catch (error: any) {
       console.error('Error saving service:', error);
@@ -122,6 +170,16 @@ const VendorServiceForm = ({ service, onClose }: ServiceFormProps) => {
     { value: 'business_location', label: 'At business location' },
     { value: 'flexible', label: 'Flexible location' }
   ];
+
+  if (loading) {
+    return (
+      <Card className="mb-6">
+        <CardContent className="py-8">
+          <div className="text-center">Loading service categories...</div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card className="mb-6">
@@ -164,11 +222,15 @@ const VendorServiceForm = ({ service, onClose }: ServiceFormProps) => {
                   <SelectValue placeholder="Select category" />
                 </SelectTrigger>
                 <SelectContent>
-                  {categories.map((category) => (
-                    <SelectItem key={category.id} value={category.id}>
-                      {category.name}
-                    </SelectItem>
-                  ))}
+                  {categories.length === 0 ? (
+                    <SelectItem value="" disabled>No categories available</SelectItem>
+                  ) : (
+                    categories.map((category) => (
+                      <SelectItem key={category.id} value={category.id}>
+                        {category.icon} {category.name}
+                      </SelectItem>
+                    ))
+                  )}
                 </SelectContent>
               </Select>
             </div>
