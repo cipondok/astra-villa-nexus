@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -31,11 +30,13 @@ import {
   AlertTriangle
 } from "lucide-react";
 
+type UserRole = "general_user" | "property_owner" | "agent" | "vendor" | "admin";
+
 interface DatabaseUser {
   id: string;
   email: string;
   full_name: string | null;
-  role: string;
+  role: UserRole;
   verification_status: string;
   created_at: string;
   updated_at: string;
@@ -145,7 +146,7 @@ const DatabaseUserManagement = () => {
         .update({
           full_name: userData.full_name,
           phone: userData.phone,
-          role: userData.role,
+          role: userData.role as UserRole,
           verification_status: userData.verification_status,
           company_name: userData.company_name,
           license_number: userData.license_number,
@@ -207,7 +208,7 @@ const DatabaseUserManagement = () => {
       // First update the profile role to admin
       const { error: profileError } = await supabase
         .from('profiles')
-        .update({ role: 'admin' })
+        .update({ role: 'admin' as UserRole })
         .eq('id', userId);
       
       if (profileError) {
@@ -260,7 +261,7 @@ const DatabaseUserManagement = () => {
       // Update profile role back to general_user
       const { error: profileError } = await supabase
         .from('profiles')
-        .update({ role: 'general_user' })
+        .update({ role: 'general_user' as UserRole })
         .eq('id', userId);
       
       if (profileError) {
@@ -833,7 +834,7 @@ const DatabaseUserManagement = () => {
                   <Label>Role</Label>
                   <Select 
                     value={editingUser.role || ''} 
-                    onValueChange={(value) => setEditingUser(prev => ({ ...prev, role: value }))}
+                    onValueChange={(value: UserRole) => setEditingUser(prev => ({ ...prev, role: value }))}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Select role" />
