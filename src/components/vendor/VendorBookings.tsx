@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -65,28 +64,34 @@ const VendorBookings = () => {
       if (error) throw error;
 
       // Type-safe data handling
-      const typedBookings: Booking[] = (data || []).map(booking => ({
-        id: booking.id,
-        booking_date: booking.booking_date,
-        booking_time: booking.booking_time,
-        duration_minutes: booking.duration_minutes,
-        total_amount: booking.total_amount,
-        status: booking.status,
-        customer_notes: booking.customer_notes,
-        vendor_notes: booking.vendor_notes,
-        location_address: booking.location_address,
-        contact_phone: booking.contact_phone,
-        contact_email: booking.contact_email,
-        service: booking.service && typeof booking.service === 'object' && 'service_name' in booking.service
-          ? { service_name: booking.service.service_name }
-          : null,
-        customer: booking.customer && typeof booking.customer === 'object' && 'full_name' in booking.customer && 'email' in booking.customer
-          ? { 
-              full_name: booking.customer.full_name || 'Unknown',
-              email: booking.customer.email || ''
-            }
-          : null
-      }));
+      const typedBookings: Booking[] = (data || []).map(booking => {
+        // Safe customer handling
+        const customerData = booking.customer && 
+          typeof booking.customer === 'object' && 
+          'full_name' in booking.customer && 
+          'email' in booking.customer ? booking.customer : null;
+
+        return {
+          id: booking.id,
+          booking_date: booking.booking_date,
+          booking_time: booking.booking_time,
+          duration_minutes: booking.duration_minutes,
+          total_amount: booking.total_amount,
+          status: booking.status,
+          customer_notes: booking.customer_notes,
+          vendor_notes: booking.vendor_notes,
+          location_address: booking.location_address,
+          contact_phone: booking.contact_phone,
+          contact_email: booking.contact_email,
+          service: booking.service && typeof booking.service === 'object' && 'service_name' in booking.service
+            ? { service_name: booking.service.service_name }
+            : null,
+          customer: customerData ? {
+            full_name: customerData.full_name || 'Unknown',
+            email: customerData.email || ''
+          } : null
+        };
+      });
 
       setBookings(typedBookings);
     } catch (error: any) {
