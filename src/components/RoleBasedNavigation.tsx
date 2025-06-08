@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Sun, Moon, Globe, Menu, User, LogOut, Settings, Home } from "lucide-react";
 import { useState, useEffect } from "react";
@@ -53,7 +52,9 @@ const RoleBasedNavigation = ({
       myProperties: "My Properties",
       myListings: "My Listings",
       myServices: "My Services",
-      adminPanel: "Admin Panel"
+      adminPanel: "Admin Panel",
+      vendorDashboard: "Vendor Dashboard",
+      becomeVendor: "Become a Vendor"
     },
     id: {
       loginRegister: "Masuk / Daftar",
@@ -64,7 +65,9 @@ const RoleBasedNavigation = ({
       myProperties: "Properti Saya",
       myListings: "Listing Saya",
       myServices: "Layanan Saya",
-      adminPanel: "Panel Admin"
+      adminPanel: "Panel Admin",
+      vendorDashboard: "Dashboard Vendor",
+      becomeVendor: "Jadi Vendor"
     }
   };
 
@@ -112,11 +115,21 @@ const RoleBasedNavigation = ({
       case 'agent':
         return [{ label: currentText.myListings, route: '/dashboard/agent/listings' }];
       case 'vendor':
-        return [{ label: currentText.myServices, route: '/dashboard/vendor/services' }];
+        return [{ label: currentText.myServices, route: '/dashboard/vendor' }];
       case 'admin':
         return [{ label: currentText.adminPanel, route: '/dashboard/admin' }];
       default:
         return [];
+    }
+  };
+
+  const getVendorMenuItems = () => {
+    if (!user) return [];
+    
+    if (profile?.role === 'vendor') {
+      return [{ label: currentText.vendorDashboard, route: '/dashboard/vendor' }];
+    } else {
+      return [{ label: currentText.becomeVendor, route: '/vendor/register' }];
     }
   };
 
@@ -202,6 +215,11 @@ const RoleBasedNavigation = ({
                       </DropdownMenuItem>
                       {getRoleSpecificMenuItems().map((item, index) => (
                         <DropdownMenuItem key={index} onClick={() => navigate(item.route)} className="text-foreground hover:bg-ios-blue/10">
+                          {item.label}
+                        </DropdownMenuItem>
+                      ))}
+                      {getVendorMenuItems().map((item, index) => (
+                        <DropdownMenuItem key={`vendor-${index}`} onClick={() => navigate(item.route)} className="text-foreground hover:bg-ios-blue/10">
                           {item.label}
                         </DropdownMenuItem>
                       ))}
@@ -302,6 +320,11 @@ const RoleBasedNavigation = ({
                   <DropdownMenuItem onClick={() => navigate(getDashboardRoute())} className="text-foreground hover:bg-ios-blue/10">
                     {currentText.dashboard}
                   </DropdownMenuItem>
+                  {getVendorMenuItems().map((item, index) => (
+                    <DropdownMenuItem key={`vendor-mobile-${index}`} onClick={() => navigate(item.route)} className="text-foreground hover:bg-ios-blue/10">
+                      {item.label}
+                    </DropdownMenuItem>
+                  ))}
                   <DropdownMenuItem onClick={() => navigate('/profile')} className="text-foreground hover:bg-ios-blue/10">
                     <User className="h-4 w-4 mr-2" />
                     {currentText.profile}
@@ -361,6 +384,11 @@ const RoleBasedNavigation = ({
                   <Button variant="ghost" onClick={() => navigate(getDashboardRoute())} className="w-full justify-start text-foreground hover:bg-ios-blue/10">
                     {currentText.dashboard}
                   </Button>
+                  {getVendorMenuItems().map((item, index) => (
+                    <Button key={`vendor-mobile-nav-${index}`} variant="ghost" onClick={() => navigate(item.route)} className="w-full justify-start text-foreground hover:bg-ios-blue/10">
+                      {item.label}
+                    </Button>
+                  ))}
                   <Button variant="ghost" onClick={() => navigate('/profile')} className="w-full justify-start text-foreground hover:bg-ios-blue/10">
                     <User className="h-4 w-4 mr-2" />
                     {currentText.profile}

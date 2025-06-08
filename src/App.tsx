@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -17,6 +16,8 @@ import About from "./pages/About";
 import AdminDashboard from "./pages/AdminDashboard";
 import AgentDashboard from "./pages/AgentDashboard";
 import UserDashboardPage from "./pages/UserDashboardPage";
+import VendorDashboard from "./pages/VendorDashboard";
+import VendorRegistration from "./pages/VendorRegistration";
 import Help from "./pages/Help";
 import NotFound from "./pages/NotFound";
 
@@ -38,6 +39,8 @@ const App = () => (
                   <Route path="/dashboard/admin" element={<AdminDashboard />} />
                   <Route path="/dashboard/agent" element={<AgentDashboard />} />
                   <Route path="/dashboard/user" element={<UserDashboardPage />} />
+                  <Route path="/dashboard/vendor" element={<VendorDashboard />} />
+                  <Route path="/vendor/register" element={<VendorRegistration />} />
                   <Route path="/properties" element={<Properties />} />
                   <Route path="/property/:id" element={<PropertyDetail />} />
                   <Route path="/profile" element={<Profile />} />

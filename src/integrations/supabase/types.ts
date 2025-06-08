@@ -956,6 +956,177 @@ export type Database = {
           },
         ]
       }
+      vendor_bookings: {
+        Row: {
+          booking_date: string
+          booking_time: string | null
+          contact_email: string | null
+          contact_phone: string | null
+          created_at: string | null
+          customer_id: string | null
+          customer_notes: string | null
+          duration_minutes: number | null
+          id: string
+          location_address: string | null
+          service_id: string | null
+          status: string | null
+          total_amount: number | null
+          updated_at: string | null
+          vendor_id: string | null
+          vendor_notes: string | null
+        }
+        Insert: {
+          booking_date: string
+          booking_time?: string | null
+          contact_email?: string | null
+          contact_phone?: string | null
+          created_at?: string | null
+          customer_id?: string | null
+          customer_notes?: string | null
+          duration_minutes?: number | null
+          id?: string
+          location_address?: string | null
+          service_id?: string | null
+          status?: string | null
+          total_amount?: number | null
+          updated_at?: string | null
+          vendor_id?: string | null
+          vendor_notes?: string | null
+        }
+        Update: {
+          booking_date?: string
+          booking_time?: string | null
+          contact_email?: string | null
+          contact_phone?: string | null
+          created_at?: string | null
+          customer_id?: string | null
+          customer_notes?: string | null
+          duration_minutes?: number | null
+          id?: string
+          location_address?: string | null
+          service_id?: string | null
+          status?: string | null
+          total_amount?: number | null
+          updated_at?: string | null
+          vendor_id?: string | null
+          vendor_notes?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendor_bookings_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vendor_bookings_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "vendor_services"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vendor_bookings_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vendor_business_profiles: {
+        Row: {
+          banner_url: string | null
+          business_address: string | null
+          business_description: string | null
+          business_email: string | null
+          business_hours: Json | null
+          business_name: string
+          business_phone: string | null
+          business_type: string
+          business_website: string | null
+          certifications: Json | null
+          created_at: string | null
+          gallery_images: Json | null
+          id: string
+          insurance_info: Json | null
+          is_active: boolean | null
+          is_verified: boolean | null
+          license_number: string | null
+          logo_url: string | null
+          rating: number | null
+          service_areas: Json | null
+          social_media: Json | null
+          tax_id: string | null
+          total_reviews: number | null
+          updated_at: string | null
+          vendor_id: string | null
+        }
+        Insert: {
+          banner_url?: string | null
+          business_address?: string | null
+          business_description?: string | null
+          business_email?: string | null
+          business_hours?: Json | null
+          business_name: string
+          business_phone?: string | null
+          business_type: string
+          business_website?: string | null
+          certifications?: Json | null
+          created_at?: string | null
+          gallery_images?: Json | null
+          id?: string
+          insurance_info?: Json | null
+          is_active?: boolean | null
+          is_verified?: boolean | null
+          license_number?: string | null
+          logo_url?: string | null
+          rating?: number | null
+          service_areas?: Json | null
+          social_media?: Json | null
+          tax_id?: string | null
+          total_reviews?: number | null
+          updated_at?: string | null
+          vendor_id?: string | null
+        }
+        Update: {
+          banner_url?: string | null
+          business_address?: string | null
+          business_description?: string | null
+          business_email?: string | null
+          business_hours?: Json | null
+          business_name?: string
+          business_phone?: string | null
+          business_type?: string
+          business_website?: string | null
+          certifications?: Json | null
+          created_at?: string | null
+          gallery_images?: Json | null
+          id?: string
+          insurance_info?: Json | null
+          is_active?: boolean | null
+          is_verified?: boolean | null
+          license_number?: string | null
+          logo_url?: string | null
+          rating?: number | null
+          service_areas?: Json | null
+          social_media?: Json | null
+          tax_id?: string | null
+          total_reviews?: number | null
+          updated_at?: string | null
+          vendor_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendor_business_profiles_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       vendor_requests: {
         Row: {
           business_name: string
@@ -1013,44 +1184,235 @@ export type Database = {
           },
         ]
       }
+      vendor_reviews: {
+        Row: {
+          created_at: string | null
+          customer_id: string | null
+          id: string
+          is_verified: boolean | null
+          rating: number
+          response_date: string | null
+          response_text: string | null
+          review_text: string | null
+          service_id: string | null
+          updated_at: string | null
+          vendor_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          customer_id?: string | null
+          id?: string
+          is_verified?: boolean | null
+          rating: number
+          response_date?: string | null
+          response_text?: string | null
+          review_text?: string | null
+          service_id?: string | null
+          updated_at?: string | null
+          vendor_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          customer_id?: string | null
+          id?: string
+          is_verified?: boolean | null
+          rating?: number
+          response_date?: string | null
+          response_text?: string | null
+          review_text?: string | null
+          service_id?: string | null
+          updated_at?: string | null
+          vendor_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendor_reviews_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vendor_reviews_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "vendor_services"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vendor_reviews_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vendor_service_categories: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          display_order: number | null
+          icon: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          display_order?: number | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          display_order?: number | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      vendor_service_items: {
+        Row: {
+          created_at: string | null
+          display_order: number | null
+          duration_minutes: number | null
+          id: string
+          is_available: boolean | null
+          item_description: string | null
+          item_name: string
+          price: number | null
+          service_id: string | null
+          unit: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          display_order?: number | null
+          duration_minutes?: number | null
+          id?: string
+          is_available?: boolean | null
+          item_description?: string | null
+          item_name: string
+          price?: number | null
+          service_id?: string | null
+          unit?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          display_order?: number | null
+          duration_minutes?: number | null
+          id?: string
+          is_available?: boolean | null
+          item_description?: string | null
+          item_name?: string
+          price?: number | null
+          service_id?: string | null
+          unit?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendor_service_items_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "vendor_services"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       vendor_services: {
         Row: {
           availability: Json | null
+          business_profile_id: string | null
+          cancellation_policy: string | null
+          category_id: string | null
           created_at: string | null
+          duration_minutes: number | null
+          featured: boolean | null
           id: string
           is_active: boolean | null
+          location_type: string | null
           price_range: Json | null
+          rating: number | null
+          requirements: string | null
           service_category: string | null
           service_description: string | null
+          service_images: Json | null
           service_name: string
+          total_bookings: number | null
           updated_at: string | null
           vendor_id: string | null
         }
         Insert: {
           availability?: Json | null
+          business_profile_id?: string | null
+          cancellation_policy?: string | null
+          category_id?: string | null
           created_at?: string | null
+          duration_minutes?: number | null
+          featured?: boolean | null
           id?: string
           is_active?: boolean | null
+          location_type?: string | null
           price_range?: Json | null
+          rating?: number | null
+          requirements?: string | null
           service_category?: string | null
           service_description?: string | null
+          service_images?: Json | null
           service_name: string
+          total_bookings?: number | null
           updated_at?: string | null
           vendor_id?: string | null
         }
         Update: {
           availability?: Json | null
+          business_profile_id?: string | null
+          cancellation_policy?: string | null
+          category_id?: string | null
           created_at?: string | null
+          duration_minutes?: number | null
+          featured?: boolean | null
           id?: string
           is_active?: boolean | null
+          location_type?: string | null
           price_range?: Json | null
+          rating?: number | null
+          requirements?: string | null
           service_category?: string | null
           service_description?: string | null
+          service_images?: Json | null
           service_name?: string
+          total_bookings?: number | null
           updated_at?: string | null
           vendor_id?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "vendor_services_business_profile_id_fkey"
+            columns: ["business_profile_id"]
+            isOneToOne: false
+            referencedRelation: "vendor_business_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vendor_services_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "vendor_service_categories"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "vendor_services_vendor_id_fkey"
             columns: ["vendor_id"]
