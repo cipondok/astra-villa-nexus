@@ -1427,6 +1427,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      check_admin_access: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
+      check_super_admin_access: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
       get_current_user_admin_status: {
         Args: Record<PropertyKey, never>
         Returns: boolean

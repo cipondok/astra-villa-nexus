@@ -27,7 +27,9 @@ import {
   Filter,
   Trash2,
   Crown,
-  AlertTriangle
+  AlertTriangle,
+  CheckCircle,
+  XCircle
 } from "lucide-react";
 
 type UserRole = "general_user" | "property_owner" | "agent" | "vendor" | "admin";
@@ -63,6 +65,7 @@ const DatabaseUserManagement = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");
   const [authFilter, setAuthFilter] = useState("all");
+  const [verificationFilter, setVerificationFilter] = useState("all");
   const [selectedUser, setSelectedUser] = useState<DatabaseUser | null>(null);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -126,6 +129,8 @@ const DatabaseUserManagement = () => {
   // Update user profile mutation
   const updateUserMutation = useMutation({
     mutationFn: async (userData: Partial<DatabaseUser>) => {
+      console.log('Updating user profile:', userData.id, userData);
+      
       const { error } = await supabase
         .from('profiles')
         .update({
@@ -139,7 +144,12 @@ const DatabaseUserManagement = () => {
         })
         .eq('id', userData.id);
       
-      if (error) throw error;
+      if (error) {
+        console.error('Update error:', error);
+        throw error;
+      }
+      
+      console.log('User profile updated successfully');
       return userData;
     },
     onSuccess: () => {
@@ -149,6 +159,39 @@ const DatabaseUserManagement = () => {
       refetch();
     },
     onError: (error: any) => {
+      console.error('Update failed:', error);
+      showError("Update Failed", error.message);
+    },
+  });
+
+  // Quick verification status update mutation
+  const updateVerificationMutation = useMutation({
+    mutationFn: async ({ userId, status }: { userId: string; status: string }) => {
+      console.log('Updating verification status:', userId, status);
+      
+      const { error } = await supabase
+        .from('profiles')
+        .update({
+          verification_status: status,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', userId);
+      
+      if (error) {
+        console.error('Verification update error:', error);
+        throw error;
+      }
+      
+      console.log('Verification status updated successfully');
+      return { userId, status };
+    },
+    onSuccess: (data) => {
+      showSuccess("Status Updated", `User verification status changed to ${data.status}.`);
+      queryClient.invalidateQueries({ queryKey: ['database-users'] });
+      refetch();
+    },
+    onError: (error: any) => {
+      console.error('Verification update failed:', error);
       showError("Update Failed", error.message);
     },
   });
@@ -279,19 +322,27 @@ const DatabaseUserManagement = () => {
       (authFilter === "admin" && user.is_admin) ||
       (authFilter === "verified" && user.verification_status === 'approved') ||
       (authFilter === "pending" && user.verification_status === 'pending');
+
+    const matchesVerification = 
+      verificationFilter === "all" ||
+      user.verification_status === verificationFilter;
     
-    return matchesSearch && matchesRole && matchesAuth;
+    return matchesSearch && matchesRole && matchesAuth && matchesVerification;
   }) || [];
 
   const getStatusBadge = (status: string) => {
-    const statusColors: { [key: string]: "default" | "secondary" | "destructive" | "outline" } = {
-      approved: "default",
-      pending: "secondary",
-      rejected: "destructive"
+    const statusConfig = {
+      approved: { variant: "default" as const, icon: CheckCircle, color: "text-green-600" },
+      pending: { variant: "secondary" as const, icon: AlertTriangle, color: "text-yellow-600" },
+      rejected: { variant: "destructive" as const, icon: XCircle, color: "text-red-600" }
     };
     
+    const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.pending;
+    const Icon = config.icon;
+    
     return (
-      <Badge variant={statusColors[status] || "outline"}>
+      <Badge variant={config.variant} className="flex items-center gap-1">
+        <Icon className="h-3 w-3" />
         {status?.toUpperCase()}
       </Badge>
     );
@@ -344,6 +395,11 @@ const DatabaseUserManagement = () => {
     if (editingUser.id) {
       updateUserMutation.mutate(editingUser);
     }
+  };
+
+  const handleQuickVerify = (userId: string, currentStatus: string) => {
+    const newStatus = currentStatus === 'approved' ? 'pending' : 'approved';
+    updateVerificationMutation.mutate({ userId, status: newStatus });
   };
 
   if (!isSuperAdmin) {
@@ -433,6 +489,18 @@ const DatabaseUserManagement = () => {
                 <SelectItem value="general_user">General User</SelectItem>
               </SelectContent>
             </Select>
+            <Select value={verificationFilter} onValueChange={setVerificationFilter}>
+              <SelectTrigger className="w-[180px]">
+                <UserCheck className="h-4 w-4 mr-2" />
+                <SelectValue placeholder="Filter by status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Status</SelectItem>
+                <SelectItem value="approved">Verified</SelectItem>
+                <SelectItem value="pending">Pending</SelectItem>
+                <SelectItem value="rejected">Rejected</SelectItem>
+              </SelectContent>
+            </Select>
             <Select value={authFilter} onValueChange={setAuthFilter}>
               <SelectTrigger className="w-[180px]">
                 <Key className="h-4 w-4 mr-2" />
@@ -467,12 +535,26 @@ const DatabaseUserManagement = () => {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Super Admins</p>
-                <p className="text-2xl font-bold text-red-600">
-                  {databaseUsers?.filter(u => u.admin_permissions.includes('super_admin')).length || 0}
+                <p className="text-sm font-medium text-muted-foreground">Verified Users</p>
+                <p className="text-2xl font-bold text-green-600">
+                  {databaseUsers?.filter(u => u.verification_status === 'approved').length || 0}
                 </p>
               </div>
-              <Crown className="h-8 w-8 text-red-600" />
+              <CheckCircle className="h-8 w-8 text-green-600" />
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Pending Verification</p>
+                <p className="text-2xl font-bold text-yellow-600">
+                  {databaseUsers?.filter(u => u.verification_status === 'pending').length || 0}
+                </p>
+              </div>
+              <AlertTriangle className="h-8 w-8 text-yellow-600" />
             </div>
           </CardContent>
         </Card>
@@ -490,26 +572,12 @@ const DatabaseUserManagement = () => {
             </div>
           </CardContent>
         </Card>
-        
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Verified Users</p>
-                <p className="text-2xl font-bold text-green-600">
-                  {databaseUsers?.filter(u => u.verification_status === 'approved').length || 0}
-                </p>
-              </div>
-              <UserCheck className="h-8 w-8 text-green-600" />
-            </div>
-          </CardContent>
-        </Card>
       </div>
 
       {/* Users Table */}
       <Card>
         <CardHeader>
-          <CardTitle>Database Users & Access Control</CardTitle>
+          <CardTitle>Database Users & Verification Status</CardTitle>
         </CardHeader>
         <CardContent>
           {isLoading ? (
@@ -525,7 +593,7 @@ const DatabaseUserManagement = () => {
                   <TableHead>User</TableHead>
                   <TableHead>Email</TableHead>
                   <TableHead>Role</TableHead>
-                  <TableHead>Auth Status</TableHead>
+                  <TableHead>Verification</TableHead>
                   <TableHead>Admin Access</TableHead>
                   <TableHead>Created</TableHead>
                   <TableHead>Actions</TableHead>
@@ -551,8 +619,27 @@ const DatabaseUserManagement = () => {
                         <Badge variant="destructive" className="ml-2 text-xs">OWNER</Badge>
                       )}
                     </TableCell>
-                    <TableCell>{getRoleBadge(user.role, user.is_admin, user.admin_permissions)}</TableCell>
-                    <TableCell>{getStatusBadge(user.verification_status)}</TableCell>
+                    <TableCell>
+                      <Badge variant={user.role === 'admin' ? 'destructive' : 'outline'}>
+                        {user.role.replace('_', ' ').toUpperCase()}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        {getStatusBadge(user.verification_status)}
+                        {isSuperAdmin && (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleQuickVerify(user.id, user.verification_status)}
+                            disabled={updateVerificationMutation.isPending}
+                            className="h-6 text-xs"
+                          >
+                            {user.verification_status === 'approved' ? 'Unverify' : 'Verify'}
+                          </Button>
+                        )}
+                      </div>
+                    </TableCell>
                     <TableCell>
                       {user.is_admin ? (
                         <div className="flex items-center gap-2">
@@ -589,42 +676,6 @@ const DatabaseUserManagement = () => {
                           >
                             <Edit className="h-4 w-4 mr-1" />
                             Edit
-                          </Button>
-                        )}
-                        {user.is_admin ? (
-                          <Button 
-                            size="sm" 
-                            variant="destructive"
-                            onClick={() => revokeAdminMutation.mutate(user.id)}
-                            disabled={revokeAdminMutation.isPending || user.email === 'mycode103@gmail.com'}
-                          >
-                            <UserX className="h-4 w-4 mr-1" />
-                            Revoke
-                          </Button>
-                        ) : (
-                          <Button 
-                            size="sm" 
-                            variant="default"
-                            onClick={() => grantAdminMutation.mutate({ userId: user.id })}
-                            disabled={grantAdminMutation.isPending}
-                          >
-                            <UserCheck className="h-4 w-4 mr-1" />
-                            Grant
-                          </Button>
-                        )}
-                        {isSuperAdmin && user.email !== 'mycode103@gmail.com' && (
-                          <Button 
-                            size="sm" 
-                            variant="destructive"
-                            onClick={() => {
-                              if (confirm(`Are you sure you want to permanently delete user ${user.email}? This action cannot be undone.`)) {
-                                deleteUserMutation.mutate(user.id);
-                              }
-                            }}
-                            disabled={deleteUserMutation.isPending}
-                          >
-                            <Trash2 className="h-4 w-4 mr-1" />
-                            Delete
                           </Button>
                         )}
                       </div>
