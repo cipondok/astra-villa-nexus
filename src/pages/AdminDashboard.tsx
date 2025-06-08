@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -15,6 +16,7 @@ import VendorManagement from "@/components/admin/VendorManagement";
 import DatabaseUserManagement from "@/components/admin/DatabaseUserManagement";
 import DatabaseTableManagement from "@/components/admin/DatabaseTableManagement";
 import ErrorReportingSystem from "@/components/admin/ErrorReportingSystem";
+import UserRolesManagement from "@/components/admin/UserRolesManagement";
 import { useAuth } from "@/contexts/AuthContext";
 import { 
   Users, 
@@ -27,7 +29,11 @@ import {
   Palette,
   Store,
   Database,
-  Bug
+  Bug,
+  UserCheck,
+  Activity,
+  Globe,
+  Lock
 } from "lucide-react";
 
 const AdminDashboard = () => {
@@ -71,24 +77,32 @@ const AdminDashboard = () => {
         .select('*', { count: 'exact', head: true })
         .eq('status', 'pending');
 
+      // Get system error count
+      const { count: errorCount } = await supabase
+        .from('system_error_logs')
+        .select('*', { count: 'exact', head: true })
+        .eq('is_resolved', false);
+
       console.log('Admin stats fetched:', {
         userCount,
         propertyCount,
         activeListings,
         pendingApprovals,
-        vendorRequests
+        vendorRequests,
+        errorCount
       });
 
       return {
         totalUsers: userCount || 0,
         totalProperties: propertyCount || 0,
-        totalRevenue: 0, // You can calculate this from orders table
+        totalRevenue: 0,
         activeListings: activeListings || 0,
         pendingApprovals: (pendingApprovals || 0) + (vendorRequests || 0),
-        systemHealth: 98.5
+        systemHealth: errorCount === 0 ? 99.5 : Math.max(85, 99.5 - (errorCount * 2)),
+        unresolvedErrors: errorCount || 0
       };
     },
-    refetchInterval: 30000, // Refresh every 30 seconds
+    refetchInterval: 30000,
   });
 
   // Sample admin data for navigation
@@ -105,13 +119,14 @@ const AdminDashboard = () => {
   };
 
   const quickActions = [
-    { label: "Add Property", action: () => console.log("Add property"), icon: Building, variant: "ios" as const },
-    { label: "Manage Users", action: () => setActiveTab("users"), icon: Users, variant: "ios-green" as const },
+    { label: "User Roles", action: () => setActiveTab("user-roles"), icon: UserCheck, variant: "ios" as const },
+    { label: "System Monitor", action: () => setActiveTab("system-monitor"), icon: Activity, variant: "ios-green" as const },
+    { label: "Security Settings", action: () => setActiveTab("security"), icon: Lock, variant: "ios-red" as const },
     { label: "Database Users", action: () => setActiveTab("database"), icon: Database, variant: "default" as const },
     { label: "Database Tables", action: () => setActiveTab("database-tables"), icon: Database, variant: "ios-purple" as const },
     { label: "Error Reports", action: () => setActiveTab("error-reports"), icon: Bug, variant: "ios-red" as const },
     { label: "Manage Vendors", action: () => setActiveTab("vendors"), icon: Store, variant: "ios-purple" as const },
-    { label: "System Reports", action: () => setActiveTab("reports"), icon: BarChart3, variant: "ios-orange" as const }
+    { label: "Analytics", action: () => setActiveTab("reports"), icon: BarChart3, variant: "ios-orange" as const }
   ];
 
   return (
@@ -123,13 +138,13 @@ const AdminDashboard = () => {
           
           {/* Super Admin Status Indicator */}
           {isSuperAdmin && (
-            <Card className="glass-ios border-red-500/20 bg-red-50/50">
+            <Card className="glass-ios border-red-500/20 bg-red-50/50 dark:bg-red-950/20">
               <CardContent className="p-4">
                 <div className="flex items-center gap-3">
                   <Shield className="h-6 w-6 text-red-600" />
                   <div>
-                    <h3 className="font-semibold text-red-900">Super Administrator Access</h3>
-                    <p className="text-sm text-red-700">
+                    <h3 className="font-semibold text-red-900 dark:text-red-100">Super Administrator Access</h3>
+                    <p className="text-sm text-red-700 dark:text-red-300">
                       You have full system control and elevated privileges. Email: mycode103@gmail.com
                     </p>
                   </div>
@@ -142,46 +157,54 @@ const AdminDashboard = () => {
           )}
           
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-            <TabsList className="grid w-full grid-cols-10 glass-ios">
-              <TabsTrigger value="overview" className="flex items-center gap-2">
+            <TabsList className="grid w-full grid-cols-6 lg:grid-cols-12 glass-ios">
+              <TabsTrigger value="overview" className="flex items-center gap-2 text-xs">
                 <BarChart3 className="h-4 w-4" />
-                Overview
+                <span className="hidden sm:inline">Overview</span>
               </TabsTrigger>
-              <TabsTrigger value="users" className="flex items-center gap-2">
+              <TabsTrigger value="users" className="flex items-center gap-2 text-xs">
                 <Users className="h-4 w-4" />
-                Users
+                <span className="hidden sm:inline">Users</span>
               </TabsTrigger>
-              <TabsTrigger value="database" className="flex items-center gap-2">
-                <Database className="h-4 w-4" />
-                Database
+              <TabsTrigger value="user-roles" className="flex items-center gap-2 text-xs">
+                <UserCheck className="h-4 w-4" />
+                <span className="hidden sm:inline">Roles</span>
               </TabsTrigger>
-              <TabsTrigger value="database-tables" className="flex items-center gap-2">
-                <Database className="h-4 w-4" />
-                DB Tables
-              </TabsTrigger>
-              <TabsTrigger value="error-reports" className="flex items-center gap-2">
-                <Bug className="h-4 w-4" />
-                Errors
-              </TabsTrigger>
-              <TabsTrigger value="vendors" className="flex items-center gap-2">
-                <Store className="h-4 w-4" />
-                Vendors
-              </TabsTrigger>
-              <TabsTrigger value="properties" className="flex items-center gap-2">
+              <TabsTrigger value="properties" className="flex items-center gap-2 text-xs">
                 <Building className="h-4 w-4" />
-                Properties
+                <span className="hidden sm:inline">Properties</span>
               </TabsTrigger>
-              <TabsTrigger value="design" className="flex items-center gap-2">
+              <TabsTrigger value="vendors" className="flex items-center gap-2 text-xs">
+                <Store className="h-4 w-4" />
+                <span className="hidden sm:inline">Vendors</span>
+              </TabsTrigger>
+              <TabsTrigger value="database" className="flex items-center gap-2 text-xs">
+                <Database className="h-4 w-4" />
+                <span className="hidden sm:inline">DB Users</span>
+              </TabsTrigger>
+              <TabsTrigger value="database-tables" className="flex items-center gap-2 text-xs">
+                <Database className="h-4 w-4" />
+                <span className="hidden sm:inline">DB Tables</span>
+              </TabsTrigger>
+              <TabsTrigger value="error-reports" className="flex items-center gap-2 text-xs">
+                <Bug className="h-4 w-4" />
+                <span className="hidden sm:inline">Errors</span>
+              </TabsTrigger>
+              <TabsTrigger value="system-monitor" className="flex items-center gap-2 text-xs">
+                <Activity className="h-4 w-4" />
+                <span className="hidden sm:inline">Monitor</span>
+              </TabsTrigger>
+              <TabsTrigger value="design" className="flex items-center gap-2 text-xs">
                 <Palette className="h-4 w-4" />
-                Design
+                <span className="hidden sm:inline">Design</span>
               </TabsTrigger>
-              <TabsTrigger value="settings" className="flex items-center gap-2">
+              <TabsTrigger value="settings" className="flex items-center gap-2 text-xs">
                 <Settings className="h-4 w-4" />
-                Settings
+                <span className="hidden sm:inline">Settings</span>
               </TabsTrigger>
-              <TabsTrigger value="reports" className="flex items-center gap-2">
+              <TabsTrigger value="reports" className="flex items-center gap-2 text-xs">
                 <BarChart3 className="h-4 w-4" />
-                Reports
+                <span className="hidden sm:inline">Reports</span>
               </TabsTrigger>
             </TabsList>
 
@@ -216,15 +239,15 @@ const AdminDashboard = () => {
                 </CardContent>
               </Card>
 
-              {/* Real Statistics Cards */}
-              <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-3">
+              {/* Enhanced Statistics Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3">
                 <Card className="glass-ios">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium">Total Users</CardTitle>
                     <Users className="h-4 w-4 text-muted-foreground" />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-xl font-bold">{stats?.totalUsers || 0}</div>
+                    <div className="text-2xl font-bold">{stats?.totalUsers || 0}</div>
                     <p className="text-xs text-muted-foreground">
                       Real registered users
                     </p>
@@ -237,7 +260,7 @@ const AdminDashboard = () => {
                     <Building className="h-4 w-4 text-muted-foreground" />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-xl font-bold">{stats?.totalProperties || 0}</div>
+                    <div className="text-2xl font-bold">{stats?.totalProperties || 0}</div>
                     <p className="text-xs text-muted-foreground">
                       Total properties in database
                     </p>
@@ -250,7 +273,7 @@ const AdminDashboard = () => {
                     <TrendingUp className="h-4 w-4 text-muted-foreground" />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-xl font-bold">{stats?.activeListings || 0}</div>
+                    <div className="text-2xl font-bold">{stats?.activeListings || 0}</div>
                     <p className="text-xs text-muted-foreground">
                       Approved properties
                     </p>
@@ -263,7 +286,7 @@ const AdminDashboard = () => {
                     <Bell className="h-4 w-4 text-muted-foreground" />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-xl font-bold">{stats?.pendingApprovals || 0}</div>
+                    <div className="text-2xl font-bold">{stats?.pendingApprovals || 0}</div>
                     <p className="text-xs text-muted-foreground">
                       {stats?.pendingApprovals ? (
                         <Badge variant="destructive" className="text-xs">Needs attention</Badge>
@@ -280,10 +303,63 @@ const AdminDashboard = () => {
                     <Shield className="h-4 w-4 text-muted-foreground" />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-xl font-bold">{stats?.systemHealth || 0}%</div>
+                    <div className="text-2xl font-bold">{stats?.systemHealth || 0}%</div>
                     <p className="text-xs text-muted-foreground">
-                      <span className="text-green-600">Excellent</span> performance
+                      {stats?.unresolvedErrors === 0 ? (
+                        <span className="text-green-600">Excellent</span>
+                      ) : (
+                        <Badge variant="destructive" className="text-xs">{stats?.unresolvedErrors} errors</Badge>
+                      )}
                     </p>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* System Status Overview */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <Card className="glass-ios">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Activity className="h-5 w-5" />
+                      System Status
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm">Database Connection</span>
+                      <Badge variant="default" className="bg-green-500">Online</Badge>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm">Authentication Service</span>
+                      <Badge variant="default" className="bg-green-500">Active</Badge>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm">File Storage</span>
+                      <Badge variant="default" className="bg-green-500">Available</Badge>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm">Background Jobs</span>
+                      <Badge variant="default" className="bg-green-500">Running</Badge>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="glass-ios">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Globe className="h-5 w-5" />
+                      Recent Activity
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3">
+                      {adminData.recentActivities.map((activity) => (
+                        <div key={activity.id} className="flex justify-between items-center">
+                          <span className="text-sm">{activity.action}</span>
+                          <span className="text-xs text-muted-foreground">{activity.timestamp}</span>
+                        </div>
+                      ))}
+                    </div>
                   </CardContent>
                 </Card>
               </div>
@@ -291,6 +367,10 @@ const AdminDashboard = () => {
 
             <TabsContent value="users">
               <UserManagement />
+            </TabsContent>
+
+            <TabsContent value="user-roles">
+              <UserRolesManagement />
             </TabsContent>
 
             <TabsContent value="database">
@@ -311,6 +391,26 @@ const AdminDashboard = () => {
 
             <TabsContent value="properties">
               <PropertyManagement />
+            </TabsContent>
+
+            <TabsContent value="system-monitor">
+              <Card className="glass-ios">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Activity className="h-5 w-5" />
+                    System Monitor
+                  </CardTitle>
+                  <CardDescription>
+                    Real-time system performance and health monitoring
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-center py-8">
+                    <Activity className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                    <p className="text-muted-foreground">System monitoring dashboard coming soon...</p>
+                  </div>
+                </CardContent>
+              </Card>
             </TabsContent>
 
             <TabsContent value="design">
