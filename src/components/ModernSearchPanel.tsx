@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -36,7 +37,7 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
   const [selectedState, setSelectedState] = useState("");
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedArea, setSelectedArea] = useState("");
-  const [priceRange, setPriceRange] = useState([0, 10000000]);
+  const [priceRange, setPriceRange] = useState([100000000, 1000000000]); // 100 juta to 1 milyar
   const [propertyType, setPropertyType] = useState("");
   const [bedrooms, setBedrooms] = useState("");
   const [bathrooms, setBathrooms] = useState("");
@@ -73,7 +74,9 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
       townhouse: "Townhouse",
       land: "Land",
       trending: "Trending Searches",
-      close: "Close"
+      close: "Close",
+      categories: "Categories",
+      applyFilters: "Apply Filters"
     },
     id: {
       buy: "Beli",
@@ -101,7 +104,9 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
       townhouse: "Rumah Susun",
       land: "Tanah",
       trending: "Pencarian Trending",
-      close: "Tutup"
+      close: "Tutup",
+      categories: "Kategori",
+      applyFilters: "Terapkan Filter"
     }
   };
 
@@ -238,6 +243,15 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
     return currentText.location;
   };
 
+  const formatPrice = (price: number) => {
+    if (price >= 1000000000) {
+      return `${(price / 1000000000).toFixed(1)}M`; // Milyar
+    } else if (price >= 1000000) {
+      return `${Math.round(price / 1000000)}jt`; // Juta
+    }
+    return price.toLocaleString();
+  };
+
   return (
     <div className="w-full max-w-6xl mx-auto">
       {/* Search Type Tabs - Now with 5 tabs */}
@@ -349,211 +363,212 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
             </div>
           </div>
 
-          {/* Filters with improved modal */}
+          {/* Filters with Sheet */}
           <div className="relative">
-            <Button
-              variant="outline"
-              className="w-full justify-between bg-white/20 border-white/30 text-foreground hover:bg-white/30"
-              onClick={() => setIsFiltersOpen(true)}
-            >
-              <div className="flex items-center gap-2">
-                <Filter className="h-4 w-4" />
-                {currentText.filters}
-              </div>
-              <ChevronDown className="h-4 w-4" />
-            </Button>
-
-            {/* Custom Filters Modal */}
-            {isFiltersOpen && (
-              <div className="fixed inset-0 z-50 flex items-center justify-center">
-                {/* Backdrop */}
-                <div 
-                  className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-                  onClick={() => setIsFiltersOpen(false)}
-                />
-                
-                {/* Modal Content */}
-                <div className="relative bg-background/95 backdrop-blur-md rounded-2xl border border-white/20 shadow-2xl max-w-lg w-full mx-4 max-h-[80vh] overflow-y-auto">
-                  {/* Header */}
-                  <div className="flex items-center justify-between p-6 border-b border-white/10">
-                    <h2 className="text-lg font-semibold">{currentText.filters}</h2>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setIsFiltersOpen(false)}
-                      className="h-8 w-8 p-0 hover:bg-white/10"
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
+            <Sheet open={isFiltersOpen} onOpenChange={setIsFiltersOpen}>
+              <SheetTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="w-full justify-between bg-white/20 border-white/30 text-foreground hover:bg-white/30"
+                >
+                  <div className="flex items-center gap-2">
+                    <Filter className="h-4 w-4" />
+                    {currentText.filters}
                   </div>
-                  
-                  <div className="space-y-6 p-6">
-                    {/* Location Selection */}
-                    <div className="space-y-3">
-                      <label className="text-sm font-medium">{currentText.location}</label>
-                      
-                      {!userLocation && (
-                        <>
-                          <Select value={selectedState} onValueChange={handleStateChange}>
+                  <ChevronDown className="h-4 w-4" />
+                </Button>
+              </SheetTrigger>
+              
+              <SheetContent side="right" className="w-[400px] sm:w-[540px] bg-background/95 backdrop-blur-md border-l border-white/20">
+                <SheetHeader className="pb-6">
+                  <SheetTitle className="text-lg font-semibold flex items-center gap-2">
+                    <Filter className="h-5 w-5" />
+                    {currentText.filters}
+                  </SheetTitle>
+                </SheetHeader>
+                
+                <div className="space-y-8 overflow-y-auto max-h-[calc(100vh-150px)]">
+                  {/* Location Category */}
+                  <div className="space-y-4">
+                    <h3 className="text-sm font-semibold text-primary border-b border-white/10 pb-2">
+                      📍 {currentText.location}
+                    </h3>
+                    
+                    {!userLocation && (
+                      <div className="space-y-3">
+                        <Select value={selectedState} onValueChange={handleStateChange}>
+                          <SelectTrigger>
+                            <SelectValue placeholder={currentText.selectState} />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {states.map((state) => (
+                              <SelectItem key={state} value={state}>{state}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+
+                        {selectedState && getAvailableCities().length > 0 && (
+                          <Select value={selectedCity} onValueChange={handleCityChange}>
                             <SelectTrigger>
-                              <SelectValue placeholder={currentText.selectState} />
+                              <SelectValue placeholder={currentText.selectCity} />
                             </SelectTrigger>
                             <SelectContent>
-                              {states.map((state) => (
-                                <SelectItem key={state} value={state}>{state}</SelectItem>
+                              {getAvailableCities().map((city) => (
+                                <SelectItem key={city} value={city}>{city}</SelectItem>
                               ))}
                             </SelectContent>
                           </Select>
+                        )}
 
-                          {selectedState && getAvailableCities().length > 0 && (
-                            <Select value={selectedCity} onValueChange={handleCityChange}>
-                              <SelectTrigger>
-                                <SelectValue placeholder={currentText.selectCity} />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {getAvailableCities().map((city) => (
-                                  <SelectItem key={city} value={city}>{city}</SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                          )}
+                        {selectedCity && getAvailableAreas().length > 0 && (
+                          <Select value={selectedArea} onValueChange={setSelectedArea}>
+                            <SelectTrigger>
+                              <SelectValue placeholder={currentText.selectArea} />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {getAvailableAreas().map((area) => (
+                                <SelectItem key={area} value={area}>{area}</SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        )}
+                      </div>
+                    )}
 
-                          {selectedCity && getAvailableAreas().length > 0 && (
-                            <Select value={selectedArea} onValueChange={setSelectedArea}>
-                              <SelectTrigger>
-                                <SelectValue placeholder={currentText.selectArea} />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {getAvailableAreas().map((area) => (
-                                  <SelectItem key={area} value={area}>{area}</SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                          )}
+                    <Button 
+                      variant={userLocation ? "default" : "outline"} 
+                      onClick={detectNearMe} 
+                      className="w-full"
+                      disabled={isDetectingLocation}
+                    >
+                      {isDetectingLocation ? (
+                        <>
+                          <div className="animate-spin h-4 w-4 border-2 border-current border-t-transparent rounded-full mr-2" />
+                          Detecting...
+                        </>
+                      ) : (
+                        <>
+                          <Navigation className="h-4 w-4 mr-2" />
+                          {currentText.detectLocation}
                         </>
                       )}
-
-                      <Button 
-                        variant={userLocation ? "default" : "outline"} 
-                        onClick={detectNearMe} 
-                        className="w-full"
-                        disabled={isDetectingLocation}
-                      >
-                        {isDetectingLocation ? (
-                          <>
-                            <div className="animate-spin h-4 w-4 border-2 border-current border-t-transparent rounded-full mr-2" />
-                            Detecting...
-                          </>
-                        ) : (
-                          <>
-                            <Navigation className="h-4 w-4 mr-2" />
-                            {currentText.detectLocation}
-                          </>
-                        )}
-                      </Button>
-
-                      {userLocation && (
-                        <div className="flex items-center gap-2 p-3 bg-primary/10 rounded-lg">
-                          <Navigation className="h-4 w-4 text-primary" />
-                          <span className="text-sm text-primary font-medium">
-                            {currentText.nearMe} - Location detected
-                          </span>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => setUserLocation(null)}
-                            className="ml-auto h-6 w-6 p-0"
-                          >
-                            <X className="h-3 w-3" />
-                          </Button>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Price Range */}
-                    <div className="space-y-3">
-                      <label className="text-sm font-medium">{currentText.priceRange}</label>
-                      <div className="px-3">
-                        <Slider
-                          value={priceRange}
-                          onValueChange={setPriceRange}
-                          max={50000000}
-                          min={0}
-                          step={100000}
-                          className="w-full"
-                        />
-                        <div className="flex justify-between text-sm text-muted-foreground mt-1">
-                          <span>Rp {priceRange[0].toLocaleString()}</span>
-                          <span>Rp {priceRange[1].toLocaleString()}</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Property Type */}
-                    <div className="space-y-3">
-                      <label className="text-sm font-medium">{currentText.propertyType}</label>
-                      <div className="grid grid-cols-2 gap-2">
-                        {propertyTypes.map((type) => (
-                          <Button
-                            key={type.value}
-                            variant={propertyType === type.value ? "default" : "outline"}
-                            className="justify-start"
-                            onClick={() => setPropertyType(propertyType === type.value ? "" : type.value)}
-                          >
-                            <type.icon className="h-4 w-4 mr-2" />
-                            {type.label}
-                          </Button>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Bedrooms */}
-                    <div className="space-y-3">
-                      <label className="text-sm font-medium">{currentText.bedrooms}</label>
-                      <div className="flex gap-2">
-                        {["1", "2", "3", "4", "5+"].map((num) => (
-                          <Button
-                            key={num}
-                            variant={bedrooms === num ? "default" : "outline"}
-                            size="sm"
-                            onClick={() => setBedrooms(bedrooms === num ? "" : num)}
-                          >
-                            <Bed className="h-4 w-4 mr-1" />
-                            {num}
-                          </Button>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Bathrooms */}
-                    <div className="space-y-3">
-                      <label className="text-sm font-medium">{currentText.bathrooms}</label>
-                      <div className="flex gap-2">
-                        {["1", "2", "3", "4", "5+"].map((num) => (
-                          <Button
-                            key={num}
-                            variant={bathrooms === num ? "default" : "outline"}
-                            size="sm"
-                            onClick={() => setBathrooms(bathrooms === num ? "" : num)}
-                          >
-                            <Bath className="h-4 w-4 mr-1" />
-                            {num}
-                          </Button>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Apply Button */}
-                    <Button 
-                      onClick={() => setIsFiltersOpen(false)}
-                      className="w-full bg-primary hover:bg-primary/90"
-                    >
-                      Apply Filters
                     </Button>
+
+                    {userLocation && (
+                      <div className="flex items-center gap-2 p-3 bg-primary/10 rounded-lg">
+                        <Navigation className="h-4 w-4 text-primary" />
+                        <span className="text-sm text-primary font-medium">
+                          {currentText.nearMe} - Location detected
+                        </span>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setUserLocation(null)}
+                          className="ml-auto h-6 w-6 p-0"
+                        >
+                          <X className="h-3 w-3" />
+                        </Button>
+                      </div>
+                    )}
                   </div>
+
+                  {/* Price Range Category */}
+                  <div className="space-y-4">
+                    <h3 className="text-sm font-semibold text-primary border-b border-white/10 pb-2">
+                      💰 {currentText.priceRange}
+                    </h3>
+                    <div className="px-3">
+                      <Slider
+                        value={priceRange}
+                        onValueChange={setPriceRange}
+                        max={1000000000} // 1 milyar
+                        min={100000000}  // 100 juta
+                        step={10000000}  // 10 juta
+                        className="w-full"
+                      />
+                      <div className="flex justify-between text-sm text-muted-foreground mt-2">
+                        <span>Rp {formatPrice(priceRange[0])}</span>
+                        <span>Rp {formatPrice(priceRange[1])}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Property Type Category */}
+                  <div className="space-y-4">
+                    <h3 className="text-sm font-semibold text-primary border-b border-white/10 pb-2">
+                      🏠 {currentText.propertyType}
+                    </h3>
+                    <div className="grid grid-cols-2 gap-2">
+                      {propertyTypes.map((type) => (
+                        <Button
+                          key={type.value}
+                          variant={propertyType === type.value ? "default" : "outline"}
+                          className="justify-start h-12"
+                          onClick={() => setPropertyType(propertyType === type.value ? "" : type.value)}
+                        >
+                          <type.icon className="h-4 w-4 mr-2" />
+                          {type.label}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Bedrooms Category */}
+                  <div className="space-y-4">
+                    <h3 className="text-sm font-semibold text-primary border-b border-white/10 pb-2">
+                      🛏️ {currentText.bedrooms}
+                    </h3>
+                    <div className="flex flex-wrap gap-2">
+                      {["1", "2", "3", "4", "5+"].map((num) => (
+                        <Button
+                          key={num}
+                          variant={bedrooms === num ? "default" : "outline"}
+                          size="sm"
+                          className="min-w-[60px]"
+                          onClick={() => setBedrooms(bedrooms === num ? "" : num)}
+                        >
+                          <Bed className="h-4 w-4 mr-1" />
+                          {num}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Bathrooms Category */}
+                  <div className="space-y-4">
+                    <h3 className="text-sm font-semibold text-primary border-b border-white/10 pb-2">
+                      🚿 {currentText.bathrooms}
+                    </h3>
+                    <div className="flex flex-wrap gap-2">
+                      {["1", "2", "3", "4", "5+"].map((num) => (
+                        <Button
+                          key={num}
+                          variant={bathrooms === num ? "default" : "outline"}
+                          size="sm"
+                          className="min-w-[60px]"
+                          onClick={() => setBathrooms(bathrooms === num ? "" : num)}
+                        >
+                          <Bath className="h-4 w-4 mr-1" />
+                          {num}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Apply Button */}
+                  <Button 
+                    onClick={() => {
+                      setIsFiltersOpen(false);
+                      handleSearch();
+                    }}
+                    className="w-full bg-primary hover:bg-primary/90 h-12 text-base font-medium"
+                  >
+                    <Filter className="h-4 w-4 mr-2" />
+                    {currentText.applyFilters}
+                  </Button>
                 </div>
-              </div>
-            )}
+              </SheetContent>
+            </Sheet>
           </div>
         </div>
 
