@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -65,20 +64,27 @@ const ErrorReportingSystem = () => {
   const queryClient = useQueryClient();
   const { user } = useAuth();
 
-  // Check if current user is super admin
+  // Check if current user is super admin using the new safe function
   const { data: isSuperAdmin } = useQuery({
-    queryKey: ['is-super-admin', user?.id],
+    queryKey: ['is-super-admin-safe', user?.id],
     queryFn: async () => {
       if (!user?.id) return false;
       
-      const { data, error } = await supabase
-        .from('admin_users')
-        .select('is_super_admin')
-        .eq('user_id', user.id)
-        .single();
-      
-      if (error) return false;
-      return data?.is_super_admin || false;
+      try {
+        // Use the new safe function to check super admin status
+        const { data, error } = await supabase.rpc('is_super_admin_safe');
+        
+        if (error) {
+          console.error('Error checking super admin status:', error);
+          return false;
+        }
+        
+        console.log('Super admin check result:', data);
+        return data || false;
+      } catch (error) {
+        console.error('Error in super admin check:', error);
+        return false;
+      }
     },
     enabled: !!user?.id,
   });
@@ -248,6 +254,8 @@ const ErrorReportingSystem = () => {
     setIsViewModalOpen(true);
   };
 
+  console.log('ErrorReportingSystem render - isSuperAdmin:', isSuperAdmin, 'user email:', user?.email);
+
   if (!isSuperAdmin) {
     return (
       <Card className="border-red-500/20">
@@ -255,6 +263,11 @@ const ErrorReportingSystem = () => {
           <Shield className="h-12 w-12 text-red-500 mx-auto mb-4" />
           <h3 className="text-lg font-semibold text-red-900">Access Denied</h3>
           <p className="text-red-700">Super administrator privileges required for error management.</p>
+          <p className="text-sm text-red-600 mt-2">
+            Current user: {user?.email || 'Not logged in'}
+            <br />
+            Super admin status: {isSuperAdmin ? 'Granted' : 'Denied'}
+          </p>
         </CardContent>
       </Card>
     );
