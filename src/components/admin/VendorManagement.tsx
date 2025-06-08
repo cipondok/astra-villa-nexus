@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -26,10 +27,31 @@ import {
   Building
 } from "lucide-react";
 
+// Define the type for vendor request with profile
+type VendorRequestWithProfile = {
+  id: string;
+  user_id: string;
+  business_name: string;
+  business_type: string;
+  status: string;
+  created_at: string;
+  updated_at: string;
+  review_notes: string | null;
+  reviewed_by: string | null;
+  verification_documents: any;
+  license_documents: any;
+  profiles: {
+    id: string;
+    full_name: string | null;
+    email: string;
+    phone: string | null;
+  } | null;
+};
+
 const VendorManagement = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
-  const [selectedRequest, setSelectedRequest] = useState<any>(null);
+  const [selectedRequest, setSelectedRequest] = useState<VendorRequestWithProfile | null>(null);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [reviewNotes, setReviewNotes] = useState("");
   
@@ -39,7 +61,7 @@ const VendorManagement = () => {
   // Fetch vendor requests with proper join
   const { data: vendorRequests, isLoading, refetch } = useQuery({
     queryKey: ['vendor-requests'],
-    queryFn: async () => {
+    queryFn: async (): Promise<VendorRequestWithProfile[]> => {
       console.log('Fetching vendor requests');
       
       // First get vendor requests
@@ -53,31 +75,31 @@ const VendorManagement = () => {
         throw new Error(`Failed to fetch vendor requests: ${requestsError.message}`);
       }
 
-      // Then get profiles for each request
-      if (requests && requests.length > 0) {
-        const userIds = requests.map(req => req.user_id).filter(Boolean);
-        
-        const { data: profiles, error: profilesError } = await supabase
-          .from('profiles')
-          .select('id, full_name, email, phone')
-          .in('id', userIds);
-
-        if (profilesError) {
-          console.error('Error fetching profiles:', profilesError);
-        }
-
-        // Merge the data
-        const requestsWithProfiles = requests.map(request => ({
-          ...request,
-          profiles: profiles?.find(profile => profile.id === request.user_id) || null
-        }));
-
-        console.log('Fetched vendor requests with profiles:', requestsWithProfiles.length);
-        return requestsWithProfiles;
+      if (!requests || requests.length === 0) {
+        console.log('No vendor requests found');
+        return [];
       }
+
+      // Then get profiles for each request
+      const userIds = requests.map(req => req.user_id).filter(Boolean);
       
-      console.log('Fetched vendor requests:', requests?.length || 0);
-      return requests || [];
+      const { data: profiles, error: profilesError } = await supabase
+        .from('profiles')
+        .select('id, full_name, email, phone')
+        .in('id', userIds);
+
+      if (profilesError) {
+        console.error('Error fetching profiles:', profilesError);
+      }
+
+      // Merge the data
+      const requestsWithProfiles: VendorRequestWithProfile[] = requests.map(request => ({
+        ...request,
+        profiles: profiles?.find(profile => profile.id === request.user_id) || null
+      }));
+
+      console.log('Fetched vendor requests with profiles:', requestsWithProfiles.length);
+      return requestsWithProfiles;
     },
     retry: 2,
     refetchInterval: 30000,
@@ -212,7 +234,7 @@ const VendorManagement = () => {
     );
   };
 
-  const handleViewRequest = (request: any) => {
+  const handleViewRequest = (request: VendorRequestWithProfile) => {
     setSelectedRequest(request);
     setReviewNotes(request.review_notes || "");
     setIsViewModalOpen(true);
