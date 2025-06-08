@@ -12,6 +12,7 @@ import { CheckCircle, AlertCircle } from "lucide-react";
 
 const Index = () => {
   const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [language, setLanguage] = useState<"en" | "id">("en");
   const [searchParams, setSearchParams] = useSearchParams();
   const { isAuthenticated, user } = useAuth();
 
@@ -116,10 +117,10 @@ const Index = () => {
       </section>
 
       {/* Property Listings Section */}
-      <PropertyListingsSection />
+      <PropertyListingsSection language={language} />
 
       {/* Footer */}
-      <ProfessionalFooter />
+      <ProfessionalFooter language={language} />
 
       {/* Auth Modal */}
       <RoleBasedAuthModal 
