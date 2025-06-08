@@ -10,7 +10,9 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { useAlert } from "@/contexts/AlertContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { 
   Database, 
   Users, 
@@ -23,7 +25,10 @@ import {
   UserX,
   Settings,
   Search,
-  Filter
+  Filter,
+  Trash2,
+  Crown,
+  AlertTriangle
 } from "lucide-react";
 
 interface DatabaseUser {
@@ -59,9 +64,30 @@ const DatabaseUserManagement = () => {
   const [authFilter, setAuthFilter] = useState("all");
   const [selectedUser, setSelectedUser] = useState<DatabaseUser | null>(null);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editingUser, setEditingUser] = useState<Partial<DatabaseUser>>({});
   
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
+  const { user } = useAuth();
+
+  // Check if current user is super admin
+  const { data: isSuperAdmin } = useQuery({
+    queryKey: ['is-super-admin', user?.id],
+    queryFn: async () => {
+      if (!user?.id) return false;
+      
+      const { data, error } = await supabase
+        .from('admin_users')
+        .select('is_super_admin')
+        .eq('user_id', user.id)
+        .single();
+      
+      if (error) return false;
+      return data?.is_super_admin || false;
+    },
+    enabled: !!user?.id,
+  });
 
   // Fetch all users with admin status
   const { data: databaseUsers, isLoading, refetch } = useQuery({
@@ -96,7 +122,9 @@ const DatabaseUserManagement = () => {
         return {
           ...profile,
           is_admin: profile.role === 'admin' || !!adminRecord,
-          admin_permissions: adminRecord ? ['super_admin'] : profile.role === 'admin' ? ['admin'] : [],
+          admin_permissions: adminRecord ? 
+            (adminRecord.is_super_admin ? ['super_admin'] : ['admin']) : 
+            (profile.role === 'admin' ? ['admin'] : []),
           last_sign_in_at: null,
           email_confirmed_at: null
         };
@@ -109,25 +137,66 @@ const DatabaseUserManagement = () => {
     refetchInterval: 30000,
   });
 
-  // Fetch admin users separately for detailed view
-  const { data: adminUsers } = useQuery({
-    queryKey: ['admin-users-detailed'],
-    queryFn: async (): Promise<AdminUser[]> => {
-      console.log('Fetching admin users detailed');
+  // Update user profile mutation
+  const updateUserMutation = useMutation({
+    mutationFn: async (userData: Partial<DatabaseUser>) => {
+      const { error } = await supabase
+        .from('profiles')
+        .update({
+          full_name: userData.full_name,
+          phone: userData.phone,
+          role: userData.role,
+          verification_status: userData.verification_status,
+          company_name: userData.company_name,
+          license_number: userData.license_number,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', userData.id);
       
-      const { data, error } = await supabase
-        .from('admin_users')
-        .select('*')
-        .order('created_at', { ascending: false });
-      
-      if (error) {
-        console.error('Error fetching admin users:', error);
-        return [];
+      if (error) throw error;
+      return userData;
+    },
+    onSuccess: () => {
+      showSuccess("User Updated", "User profile has been updated successfully.");
+      queryClient.invalidateQueries({ queryKey: ['database-users'] });
+      setIsEditModalOpen(false);
+      refetch();
+    },
+    onError: (error: any) => {
+      showError("Update Failed", error.message);
+    },
+  });
+
+  // Delete user mutation (Super Admin only)
+  const deleteUserMutation = useMutation({
+    mutationFn: async (userId: string) => {
+      if (!isSuperAdmin) {
+        throw new Error("Only super admins can delete users");
       }
       
-      return data || [];
+      // First remove from admin_users if exists
+      await supabase
+        .from('admin_users')
+        .delete()
+        .eq('user_id', userId);
+      
+      // Then delete from profiles
+      const { error } = await supabase
+        .from('profiles')
+        .delete()
+        .eq('id', userId);
+      
+      if (error) throw error;
+      return userId;
     },
-    retry: 2,
+    onSuccess: () => {
+      showSuccess("User Deleted", "User has been permanently deleted from the system.");
+      queryClient.invalidateQueries({ queryKey: ['database-users'] });
+      refetch();
+    },
+    onError: (error: any) => {
+      showError("Delete Failed", error.message);
+    },
   });
 
   // Grant admin access mutation
@@ -160,10 +229,12 @@ const DatabaseUserManagement = () => {
       
       return { userId, isSuperAdmin };
     },
-    onSuccess: () => {
-      showSuccess("Admin Access Granted", "User has been granted admin access successfully.");
+    onSuccess: (data) => {
+      showSuccess(
+        "Admin Access Granted", 
+        `${data.isSuperAdmin ? 'Super admin' : 'Admin'} access has been granted successfully.`
+      );
       queryClient.invalidateQueries({ queryKey: ['database-users'] });
-      queryClient.invalidateQueries({ queryKey: ['admin-users-detailed'] });
       refetch();
     },
     onError: (error: any) => {
@@ -201,7 +272,6 @@ const DatabaseUserManagement = () => {
     onSuccess: () => {
       showSuccess("Admin Access Revoked", "Admin access has been revoked successfully.");
       queryClient.invalidateQueries({ queryKey: ['database-users'] });
-      queryClient.invalidateQueries({ queryKey: ['admin-users-detailed'] });
       refetch();
     },
     onError: (error: any) => {
@@ -241,7 +311,16 @@ const DatabaseUserManagement = () => {
     );
   };
 
-  const getRoleBadge = (role: string, isAdmin: boolean) => {
+  const getRoleBadge = (role: string, isAdmin: boolean, adminPermissions: string[]) => {
+    if (adminPermissions.includes('super_admin')) {
+      return (
+        <Badge variant="destructive" className="flex items-center gap-1 bg-red-600">
+          <Crown className="h-3 w-3" />
+          SUPER ADMIN
+        </Badge>
+      );
+    }
+    
     if (isAdmin) {
       return (
         <Badge variant="destructive" className="flex items-center gap-1">
@@ -270,8 +349,36 @@ const DatabaseUserManagement = () => {
     setIsViewModalOpen(true);
   };
 
+  const handleEditUser = (user: DatabaseUser) => {
+    setEditingUser(user);
+    setIsEditModalOpen(true);
+  };
+
+  const handleSaveUser = () => {
+    if (editingUser.id) {
+      updateUserMutation.mutate(editingUser);
+    }
+  };
+
   return (
     <div className="space-y-6">
+      {/* Super Admin Header */}
+      {isSuperAdmin && (
+        <Card className="border-red-500/20 bg-red-50/50">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <Crown className="h-6 w-6 text-red-600" />
+              <div>
+                <h3 className="font-semibold text-red-900">Super Administrator Control Panel</h3>
+                <p className="text-sm text-red-700">
+                  Full database access enabled for mycode103@gmail.com - Exercise caution with user modifications
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Header with Controls */}
       <Card>
         <CardHeader>
@@ -280,9 +387,14 @@ const DatabaseUserManagement = () => {
               <CardTitle className="flex items-center gap-2">
                 <Database className="h-5 w-5" />
                 Database User Management
+                {isSuperAdmin && <Crown className="h-4 w-4 text-red-600" />}
               </CardTitle>
               <CardDescription>
-                View user table data, authorization status, and admin access control. Total users: {filteredUsers.length}
+                {isSuperAdmin 
+                  ? "Super Admin: Full control over user accounts, authorization, and system access"
+                  : "View user table data, authorization status, and admin access control"
+                }
+                <br />Total users: {filteredUsers.length}
               </CardDescription>
             </div>
             <Button onClick={() => refetch()} variant="outline">
@@ -352,6 +464,20 @@ const DatabaseUserManagement = () => {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
+                <p className="text-sm font-medium text-muted-foreground">Super Admins</p>
+                <p className="text-2xl font-bold text-red-600">
+                  {databaseUsers?.filter(u => u.admin_permissions.includes('super_admin')).length || 0}
+                </p>
+              </div>
+              <Crown className="h-8 w-8 text-red-600" />
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
                 <p className="text-sm font-medium text-muted-foreground">Admin Users</p>
                 <p className="text-2xl font-bold text-red-600">
                   {databaseUsers?.filter(u => u.is_admin).length || 0}
@@ -372,20 +498,6 @@ const DatabaseUserManagement = () => {
                 </p>
               </div>
               <UserCheck className="h-8 w-8 text-green-600" />
-            </div>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Pending Users</p>
-                <p className="text-2xl font-bold text-yellow-600">
-                  {databaseUsers?.filter(u => u.verification_status === 'pending').length || 0}
-                </p>
-              </div>
-              <UserX className="h-8 w-8 text-yellow-600" />
             </div>
           </CardContent>
         </Card>
@@ -430,8 +542,13 @@ const DatabaseUserManagement = () => {
                         </div>
                       </div>
                     </TableCell>
-                    <TableCell>{user.email}</TableCell>
-                    <TableCell>{getRoleBadge(user.role, user.is_admin)}</TableCell>
+                    <TableCell>
+                      {user.email}
+                      {user.email === 'mycode103@gmail.com' && (
+                        <Badge variant="destructive" className="ml-2 text-xs">OWNER</Badge>
+                      )}
+                    </TableCell>
+                    <TableCell>{getRoleBadge(user.role, user.is_admin, user.admin_permissions)}</TableCell>
                     <TableCell>{getStatusBadge(user.verification_status)}</TableCell>
                     <TableCell>
                       {user.is_admin ? (
@@ -441,7 +558,7 @@ const DatabaseUserManagement = () => {
                             GRANTED
                           </Badge>
                           {user.admin_permissions.includes('super_admin') && (
-                            <Badge variant="outline" className="text-xs">SUPER</Badge>
+                            <Badge variant="outline" className="text-xs bg-red-50">SUPER</Badge>
                           )}
                         </div>
                       ) : (
@@ -461,12 +578,22 @@ const DatabaseUserManagement = () => {
                           <Eye className="h-4 w-4 mr-1" />
                           View
                         </Button>
+                        {isSuperAdmin && (
+                          <Button 
+                            size="sm" 
+                            variant="outline"
+                            onClick={() => handleEditUser(user)}
+                          >
+                            <Edit className="h-4 w-4 mr-1" />
+                            Edit
+                          </Button>
+                        )}
                         {user.is_admin ? (
                           <Button 
                             size="sm" 
                             variant="destructive"
                             onClick={() => revokeAdminMutation.mutate(user.id)}
-                            disabled={revokeAdminMutation.isPending}
+                            disabled={revokeAdminMutation.isPending || user.email === 'mycode103@gmail.com'}
                           >
                             <UserX className="h-4 w-4 mr-1" />
                             Revoke
@@ -480,6 +607,21 @@ const DatabaseUserManagement = () => {
                           >
                             <UserCheck className="h-4 w-4 mr-1" />
                             Grant
+                          </Button>
+                        )}
+                        {isSuperAdmin && user.email !== 'mycode103@gmail.com' && (
+                          <Button 
+                            size="sm" 
+                            variant="destructive"
+                            onClick={() => {
+                              if (confirm(`Are you sure you want to permanently delete user ${user.email}? This action cannot be undone.`)) {
+                                deleteUserMutation.mutate(user.id);
+                              }
+                            }}
+                            disabled={deleteUserMutation.isPending}
+                          >
+                            <Trash2 className="h-4 w-4 mr-1" />
+                            Delete
                           </Button>
                         )}
                       </div>
@@ -523,7 +665,7 @@ const DatabaseUserManagement = () => {
                   </div>
                   <div>
                     <Label>Role</Label>
-                    <div className="mt-1">{getRoleBadge(selectedUser.role, selectedUser.is_admin)}</div>
+                    <div className="mt-1">{getRoleBadge(selectedUser.role, selectedUser.is_admin, selectedUser.admin_permissions)}</div>
                   </div>
                   <div>
                     <Label>Verification Status</Label>
@@ -554,7 +696,8 @@ const DatabaseUserManagement = () => {
                     <div className="mt-1 flex gap-1 flex-wrap">
                       {selectedUser.admin_permissions.length > 0 ? (
                         selectedUser.admin_permissions.map((permission, index) => (
-                          <Badge key={index} variant="outline" className="text-xs">
+                          <Badge key={index} variant={permission === 'super_admin' ? 'destructive' : 'outline'} className="text-xs">
+                            {permission === 'super_admin' && <Crown className="h-3 w-3 mr-1" />}
                             {permission.toUpperCase()}
                           </Badge>
                         ))
@@ -610,7 +753,7 @@ const DatabaseUserManagement = () => {
                       revokeAdminMutation.mutate(selectedUser.id);
                       setIsViewModalOpen(false);
                     }}
-                    disabled={revokeAdminMutation.isPending}
+                    disabled={revokeAdminMutation.isPending || selectedUser.email === 'mycode103@gmail.com'}
                     variant="destructive"
                     className="flex-1"
                   >
@@ -630,23 +773,134 @@ const DatabaseUserManagement = () => {
                     {grantAdminMutation.isPending ? 'Granting...' : 'Grant Admin Access'}
                   </Button>
                 )}
-                <Button
-                  onClick={() => {
-                    grantAdminMutation.mutate({ userId: selectedUser.id, isSuperAdmin: true });
-                    setIsViewModalOpen(false);
-                  }}
-                  disabled={grantAdminMutation.isPending || selectedUser.admin_permissions.includes('super_admin')}
-                  variant="outline"
-                  className="flex-1"
-                >
-                  <Shield className="h-4 w-4 mr-2" />
-                  Grant Super Admin
-                </Button>
+                {isSuperAdmin && !selectedUser.admin_permissions.includes('super_admin') && (
+                  <Button
+                    onClick={() => {
+                      grantAdminMutation.mutate({ userId: selectedUser.id, isSuperAdmin: true });
+                      setIsViewModalOpen(false);
+                    }}
+                    disabled={grantAdminMutation.isPending}
+                    variant="outline"
+                    className="flex-1"
+                  >
+                    <Crown className="h-4 w-4 mr-2" />
+                    Grant Super Admin
+                  </Button>
+                )}
               </div>
             </div>
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Edit User Modal (Super Admin Only) */}
+      {isSuperAdmin && (
+        <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
+          <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Crown className="h-5 w-5 text-red-600" />
+                Super Admin: Edit User Profile
+              </DialogTitle>
+            </DialogHeader>
+            
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 p-3 bg-red-50 rounded-lg">
+                <AlertTriangle className="h-4 w-4 text-red-600" />
+                <span className="text-sm text-red-700">
+                  Caution: You are modifying user data with super admin privileges
+                </span>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label>Full Name</Label>
+                  <Input
+                    value={editingUser.full_name || ''}
+                    onChange={(e) => setEditingUser(prev => ({ ...prev, full_name: e.target.value }))}
+                    placeholder="Enter full name"
+                  />
+                </div>
+                <div>
+                  <Label>Phone</Label>
+                  <Input
+                    value={editingUser.phone || ''}
+                    onChange={(e) => setEditingUser(prev => ({ ...prev, phone: e.target.value }))}
+                    placeholder="Enter phone number"
+                  />
+                </div>
+                <div>
+                  <Label>Role</Label>
+                  <Select 
+                    value={editingUser.role || ''} 
+                    onValueChange={(value) => setEditingUser(prev => ({ ...prev, role: value }))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select role" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="general_user">General User</SelectItem>
+                      <SelectItem value="property_owner">Property Owner</SelectItem>
+                      <SelectItem value="agent">Agent</SelectItem>
+                      <SelectItem value="vendor">Vendor</SelectItem>
+                      <SelectItem value="admin">Admin</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>Verification Status</Label>
+                  <Select 
+                    value={editingUser.verification_status || ''} 
+                    onValueChange={(value) => setEditingUser(prev => ({ ...prev, verification_status: value }))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="pending">Pending</SelectItem>
+                      <SelectItem value="approved">Approved</SelectItem>
+                      <SelectItem value="rejected">Rejected</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>Company Name</Label>
+                  <Input
+                    value={editingUser.company_name || ''}
+                    onChange={(e) => setEditingUser(prev => ({ ...prev, company_name: e.target.value }))}
+                    placeholder="Enter company name"
+                  />
+                </div>
+                <div>
+                  <Label>License Number</Label>
+                  <Input
+                    value={editingUser.license_number || ''}
+                    onChange={(e) => setEditingUser(prev => ({ ...prev, license_number: e.target.value }))}
+                    placeholder="Enter license number"
+                  />
+                </div>
+              </div>
+
+              <div className="flex gap-3 pt-4">
+                <Button
+                  onClick={handleSaveUser}
+                  disabled={updateUserMutation.isPending}
+                  className="flex-1"
+                >
+                  {updateUserMutation.isPending ? 'Saving...' : 'Save Changes'}
+                </Button>
+                <Button
+                  onClick={() => setIsEditModalOpen(false)}
+                  variant="outline"
+                  className="flex-1"
+                >
+                  Cancel
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 };

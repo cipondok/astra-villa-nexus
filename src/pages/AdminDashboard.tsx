@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -31,6 +32,28 @@ import {
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState("overview");
   const { user, profile } = useAuth();
+
+  // Check if current user is super admin
+  const { data: isSuperAdmin } = useQuery({
+    queryKey: ['is-super-admin', user?.id],
+    queryFn: async () => {
+      if (!user?.id) return false;
+      
+      const { data, error } = await supabase
+        .from('admin_users')
+        .select('is_super_admin')
+        .eq('user_id', user.id)
+        .single();
+      
+      if (error) {
+        console.error('Error checking super admin status:', error);
+        return false;
+      }
+      
+      return data?.is_super_admin || false;
+    },
+    enabled: !!user?.id,
+  });
 
   // Fetch real statistics from database
   const { data: stats } = useQuery({
@@ -102,7 +125,7 @@ const AdminDashboard = () => {
   const quickActions = [
     { label: "Add Property", action: () => console.log("Add property"), icon: Building, variant: "ios" as const },
     { label: "Manage Users", action: () => setActiveTab("users"), icon: Users, variant: "ios-green" as const },
-    { label: "Database Users", action: () => setActiveTab("database"), icon: Database, variant: "ios-blue" as const },
+    { label: "Database Users", action: () => setActiveTab("database"), icon: Database, variant: "default" as const },
     { label: "Manage Vendors", action: () => setActiveTab("vendors"), icon: Store, variant: "ios-purple" as const },
     { label: "System Reports", action: () => setActiveTab("reports"), icon: BarChart3, variant: "ios-orange" as const }
   ];
@@ -113,6 +136,26 @@ const AdminDashboard = () => {
       
       <div className="pt-16">
         <div className="max-w-7xl mx-auto p-6 space-y-6">
+          
+          {/* Super Admin Status Indicator */}
+          {isSuperAdmin && (
+            <Card className="glass-ios border-red-500/20 bg-red-50/50">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <Shield className="h-6 w-6 text-red-600" />
+                  <div>
+                    <h3 className="font-semibold text-red-900">Super Administrator Access</h3>
+                    <p className="text-sm text-red-700">
+                      You have full system control and elevated privileges. Email: mycode103@gmail.com
+                    </p>
+                  </div>
+                  <Badge variant="destructive" className="ml-auto">
+                    SUPER ADMIN
+                  </Badge>
+                </div>
+              </CardContent>
+            </Card>
+          )}
           
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
             <TabsList className="grid w-full grid-cols-8 glass-ios">
@@ -156,8 +199,13 @@ const AdminDashboard = () => {
                 <CardHeader className="pb-3">
                   <CardTitle className="text-lg flex items-center gap-2">
                     <Shield className="h-5 w-5 text-primary" />
-                    Quick Actions
+                    {isSuperAdmin ? "Super Admin Controls" : "Quick Actions"}
                   </CardTitle>
+                  {isSuperAdmin && (
+                    <CardDescription className="text-red-600 font-medium">
+                      Full system access granted for mycode103@gmail.com
+                    </CardDescription>
+                  )}
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
