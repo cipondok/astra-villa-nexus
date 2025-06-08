@@ -48,7 +48,7 @@ const UserManagement = () => {
   const { user: currentUser } = useAuth();
   const queryClient = useQueryClient();
 
-  // Fetch users with proper error handling
+  // Fetch users
   const { data: users, isLoading, refetch } = useQuery({
     queryKey: ['admin-users'],
     queryFn: async () => {
@@ -63,30 +63,35 @@ const UserManagement = () => {
         throw new Error(`Failed to fetch users: ${error.message}`);
       }
       
-      console.log('Fetched users:', data);
+      console.log('Fetched users:', data?.length || 0);
       return data || [];
     },
-    retry: 3,
-    retryDelay: 1000,
+    retry: 2,
+    refetchInterval: 30000, // Refresh every 30 seconds
   });
 
-  // Add user with proper auth user creation
+  // Add user mutation
   const addUserMutation = useMutation({
     mutationFn: async (userData: NewUserForm) => {
-      console.log('Creating new user:', userData);
+      console.log('Creating new user:', userData.email, userData.role);
       
       if (!userData.password || userData.password.length < 6) {
         throw new Error('Password must be at least 6 characters long');
       }
+
+      if (!userData.email || !userData.full_name) {
+        throw new Error('Email and full name are required');
+      }
       
-      // Create auth user first using admin API
-      const { data: authData, error: authError } = await supabase.auth.admin.createUser({
+      // Create the user using Supabase auth signup
+      const { data: authData, error: authError } = await supabase.auth.signUp({
         email: userData.email,
         password: userData.password,
-        email_confirm: true,
-        user_metadata: {
-          full_name: userData.full_name,
-          role: userData.role
+        options: {
+          data: {
+            full_name: userData.full_name,
+            role: userData.role
+          }
         }
       });
       
@@ -99,30 +104,27 @@ const UserManagement = () => {
         throw new Error('User creation failed - no user data returned');
       }
       
-      // Create profile with the specified role
+      // Update the profile with the correct role and additional info
       const { error: profileError } = await supabase
         .from('profiles')
-        .upsert({
-          id: authData.user.id,
-          email: userData.email,
-          full_name: userData.full_name,
+        .update({
           role: userData.role,
           phone: userData.phone,
           verification_status: 'approved'
-        });
+        })
+        .eq('id', authData.user.id);
       
       if (profileError) {
-        console.error('Error creating profile:', profileError);
-        // Try to clean up the auth user if profile creation fails
-        await supabase.auth.admin.deleteUser(authData.user.id);
-        throw new Error(`Failed to create user profile: ${profileError.message}`);
+        console.error('Error updating profile:', profileError);
+        // Don't throw here as user is created, just log the error
+        console.warn('Profile update failed but user was created');
       }
       
-      console.log('User created successfully with role:', userData.role);
+      console.log('User created successfully:', authData.user.id, userData.role);
       return authData.user;
     },
     onSuccess: () => {
-      showSuccess("User Created", "New user has been created successfully with the specified role.");
+      showSuccess("User Created", "New user has been created successfully.");
       setIsAddUserOpen(false);
       setNewUser({ email: '', full_name: '', role: 'general_user', phone: '', password: '' });
       queryClient.invalidateQueries({ queryKey: ['admin-users'] });
@@ -134,7 +136,7 @@ const UserManagement = () => {
     },
   });
 
-  // Delete user mutation with proper cleanup
+  // Delete user mutation
   const deleteUserMutation = useMutation({
     mutationFn: async (userId: string) => {
       console.log('Deleting user:', userId);
@@ -148,14 +150,6 @@ const UserManagement = () => {
       if (profileError) {
         console.error('Error deleting profile:', profileError);
         throw new Error(`Failed to delete user profile: ${profileError.message}`);
-      }
-      
-      // Then delete the auth user
-      const { error: authError } = await supabase.auth.admin.deleteUser(userId);
-      
-      if (authError) {
-        console.error('Error deleting auth user:', authError);
-        throw new Error(`Failed to delete user account: ${authError.message}`);
       }
       
       console.log('User deleted successfully');
@@ -202,8 +196,7 @@ const UserManagement = () => {
     if (userId === currentUser?.id) {
       return false;
     }
-    // Allow deletion of non-admin users or if current user is super admin
-    return userRole !== 'admin' || currentUser?.id !== userId;
+    return true;
   };
 
   const handleAddUser = () => {
@@ -217,11 +210,23 @@ const UserManagement = () => {
       return;
     }
     
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(newUser.email)) {
+      showError("Invalid Email", "Please enter a valid email address.");
+      return;
+    }
+    
     addUserMutation.mutate(newUser);
   };
 
-  const handleRefresh = () => {
-    refetch();
+  const generatePassword = () => {
+    const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let password = '';
+    for (let i = 0; i < 8; i++) {
+      password += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    setNewUser(prev => ({ ...prev, password }));
   };
 
   return (
@@ -236,7 +241,7 @@ const UserManagement = () => {
                 User Management
               </CardTitle>
               <CardDescription>
-                Manage system users and their roles
+                Manage system users and their roles. Total users: {filteredUsers.length}
               </CardDescription>
             </div>
             <Dialog open={isAddUserOpen} onOpenChange={setIsAddUserOpen}>
@@ -246,7 +251,7 @@ const UserManagement = () => {
                   Add User
                 </Button>
               </DialogTrigger>
-              <DialogContent>
+              <DialogContent className="max-w-md">
                 <DialogHeader>
                   <DialogTitle>Add New User</DialogTitle>
                 </DialogHeader>
@@ -261,17 +266,7 @@ const UserManagement = () => {
                       placeholder="user@example.com"
                     />
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="password">Password *</Label>
-                    <Input
-                      id="password"
-                      type="password"
-                      value={newUser.password}
-                      onChange={(e) => setNewUser({...newUser, password: e.target.value})}
-                      placeholder="Minimum 6 characters"
-                      minLength={6}
-                    />
-                  </div>
+                  
                   <div className="space-y-2">
                     <Label htmlFor="full_name">Full Name *</Label>
                     <Input
@@ -281,6 +276,7 @@ const UserManagement = () => {
                       placeholder="John Doe"
                     />
                   </div>
+                  
                   <div className="space-y-2">
                     <Label htmlFor="phone">Phone</Label>
                     <Input
@@ -290,6 +286,7 @@ const UserManagement = () => {
                       placeholder="+1234567890"
                     />
                   </div>
+                  
                   <div className="space-y-2">
                     <Label htmlFor="role">Role *</Label>
                     <Select value={newUser.role} onValueChange={(value) => setNewUser({...newUser, role: value as any})}>
@@ -305,6 +302,24 @@ const UserManagement = () => {
                       </SelectContent>
                     </Select>
                   </div>
+                  
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center">
+                      <Label htmlFor="password">Password *</Label>
+                      <Button type="button" variant="outline" size="sm" onClick={generatePassword}>
+                        Generate
+                      </Button>
+                    </div>
+                    <Input
+                      id="password"
+                      type="password"
+                      value={newUser.password}
+                      onChange={(e) => setNewUser({...newUser, password: e.target.value})}
+                      placeholder="Minimum 6 characters"
+                      minLength={6}
+                    />
+                  </div>
+                  
                   <div className="flex gap-2">
                     <Button 
                       onClick={handleAddUser} 
@@ -353,7 +368,7 @@ const UserManagement = () => {
                 <SelectItem value="general_user">General User</SelectItem>
               </SelectContent>
             </Select>
-            <Button onClick={handleRefresh} variant="outline">
+            <Button onClick={() => refetch()} variant="outline">
               <RefreshCw className="h-4 w-4 mr-2" />
               Refresh
             </Button>

@@ -8,185 +8,234 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { useAlert } from "@/contexts/AlertContext";
-import { CheckCircle, XCircle, Eye, Search, Filter, UserCheck, UserX, RefreshCw } from "lucide-react";
+import { 
+  Store, 
+  UserPlus, 
+  Eye, 
+  Check, 
+  X, 
+  Search, 
+  Filter, 
+  RefreshCw,
+  FileText,
+  Phone,
+  Mail,
+  Building
+} from "lucide-react";
 
 const VendorManagement = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [selectedRequest, setSelectedRequest] = useState<any>(null);
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  const [reviewNotes, setReviewNotes] = useState("");
+  
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
 
   // Fetch vendor requests
-  const { data: vendorRequests, isLoading: requestsLoading, refetch: refetchRequests } = useQuery({
+  const { data: vendorRequests, isLoading, refetch } = useQuery({
     queryKey: ['vendor-requests'],
     queryFn: async () => {
       console.log('Fetching vendor requests');
       const { data, error } = await supabase
         .from('vendor_requests')
-        .select('*')
+        .select(`
+          *,
+          profiles:user_id (
+            full_name,
+            email,
+            phone
+          )
+        `)
         .order('created_at', { ascending: false });
       
       if (error) {
         console.error('Error fetching vendor requests:', error);
-        throw error;
+        throw new Error(`Failed to fetch vendor requests: ${error.message}`);
       }
       
-      console.log('Fetched vendor requests:', data);
+      console.log('Fetched vendor requests:', data?.length || 0);
       return data || [];
     },
+    retry: 2,
+    refetchInterval: 30000,
   });
 
-  // Fetch vendor profiles
-  const { data: vendorProfiles, isLoading: profilesLoading, refetch: refetchProfiles } = useQuery({
+  // Fetch vendor business profiles
+  const { data: vendorProfiles } = useQuery({
     queryKey: ['vendor-profiles'],
     queryFn: async () => {
-      console.log('Fetching vendor profiles');
+      console.log('Fetching vendor business profiles');
       const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('role', 'vendor')
+        .from('vendor_business_profiles')
+        .select(`
+          *,
+          profiles:vendor_id (
+            full_name,
+            email,
+            phone
+          )
+        `)
         .order('created_at', { ascending: false });
       
       if (error) {
         console.error('Error fetching vendor profiles:', error);
-        throw error;
+        return [];
       }
       
-      console.log('Fetched vendor profiles:', data);
       return data || [];
     },
+    retry: 2,
   });
 
-  // Approve vendor mutation
+  // Approve vendor request mutation
   const approveVendorMutation = useMutation({
-    mutationFn: async (requestId: string) => {
+    mutationFn: async ({ requestId, userId }: { requestId: string; userId: string }) => {
       console.log('Approving vendor request:', requestId);
       
-      // Get the request details first
-      const { data: request, error: requestError } = await supabase
-        .from('vendor_requests')
-        .select('*')
-        .eq('id', requestId)
-        .single();
-      
-      if (requestError) {
-        console.error('Error fetching request:', requestError);
-        throw requestError;
-      }
-      
       // Update the request status
-      const { error: updateError } = await supabase
+      const { error: requestError } = await supabase
         .from('vendor_requests')
-        .update({ 
+        .update({
           status: 'approved',
-          reviewed_at: new Date().toISOString()
+          reviewed_at: new Date().toISOString(),
+          review_notes: reviewNotes
         })
         .eq('id', requestId);
       
-      if (updateError) {
-        console.error('Error updating request:', updateError);
-        throw updateError;
+      if (requestError) {
+        throw new Error(`Failed to approve request: ${requestError.message}`);
       }
       
-      // Update the user's profile to vendor role
+      // Update user role to vendor
       const { error: profileError } = await supabase
         .from('profiles')
-        .update({ 
-          role: 'vendor',
-          verification_status: 'approved'
-        })
-        .eq('id', request.user_id);
+        .update({ role: 'vendor' })
+        .eq('id', userId);
       
       if (profileError) {
-        console.error('Error updating profile:', profileError);
-        throw profileError;
+        throw new Error(`Failed to update user role: ${profileError.message}`);
       }
       
-      console.log('Vendor approved successfully');
+      return { requestId, userId };
     },
     onSuccess: () => {
-      showSuccess("Vendor Approved", "The vendor application has been approved successfully.");
+      showSuccess("Vendor Approved", "Vendor request has been approved successfully.");
+      setIsViewModalOpen(false);
+      setSelectedRequest(null);
+      setReviewNotes("");
       queryClient.invalidateQueries({ queryKey: ['vendor-requests'] });
-      queryClient.invalidateQueries({ queryKey: ['vendor-profiles'] });
-      refetchRequests();
-      refetchProfiles();
+      queryClient.invalidateQueries({ queryKey: ['admin-users'] });
+      refetch();
     },
     onError: (error: any) => {
-      console.error('Approve vendor error:', error);
       showError("Approval Failed", error.message);
     },
   });
 
-  // Reject vendor mutation
+  // Reject vendor request mutation
   const rejectVendorMutation = useMutation({
     mutationFn: async (requestId: string) => {
       console.log('Rejecting vendor request:', requestId);
       
       const { error } = await supabase
         .from('vendor_requests')
-        .update({ 
+        .update({
           status: 'rejected',
-          reviewed_at: new Date().toISOString()
+          reviewed_at: new Date().toISOString(),
+          review_notes: reviewNotes
         })
         .eq('id', requestId);
       
       if (error) {
-        console.error('Error rejecting request:', error);
-        throw error;
+        throw new Error(`Failed to reject request: ${error.message}`);
       }
       
-      console.log('Vendor rejected successfully');
+      return requestId;
     },
     onSuccess: () => {
-      showSuccess("Vendor Rejected", "The vendor application has been rejected.");
+      showSuccess("Vendor Rejected", "Vendor request has been rejected.");
+      setIsViewModalOpen(false);
+      setSelectedRequest(null);
+      setReviewNotes("");
       queryClient.invalidateQueries({ queryKey: ['vendor-requests'] });
-      refetchRequests();
+      refetch();
     },
     onError: (error: any) => {
-      console.error('Reject vendor error:', error);
       showError("Rejection Failed", error.message);
     },
   });
 
-  // Filter data
+  // Filter requests
   const filteredRequests = vendorRequests?.filter((request) => {
-    const matchesSearch = request.business_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         request.business_type?.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = 
+      request.business_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      request.profiles?.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      request.profiles?.email?.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === "all" || request.status === statusFilter;
     return matchesSearch && matchesStatus;
   }) || [];
 
-  const filteredProfiles = vendorProfiles?.filter((profile) => {
-    return profile.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-           profile.email?.toLowerCase().includes(searchTerm.toLowerCase());
-  }) || [];
-
   const getStatusBadge = (status: string) => {
-    switch (status) {
-      case 'pending':
-        return <Badge variant="secondary">Pending</Badge>;
-      case 'approved':
-        return <Badge variant="default">Approved</Badge>;
-      case 'rejected':
-        return <Badge variant="destructive">Rejected</Badge>;
-      default:
-        return <Badge variant="outline">{status}</Badge>;
+    const statusColors: { [key: string]: "default" | "secondary" | "destructive" | "outline" } = {
+      pending: "secondary",
+      approved: "default",
+      rejected: "destructive"
+    };
+    
+    return (
+      <Badge variant={statusColors[status] || "outline"}>
+        {status?.toUpperCase()}
+      </Badge>
+    );
+  };
+
+  const handleViewRequest = (request: any) => {
+    setSelectedRequest(request);
+    setReviewNotes(request.review_notes || "");
+    setIsViewModalOpen(true);
+  };
+
+  const handleApprove = () => {
+    if (selectedRequest) {
+      approveVendorMutation.mutate({
+        requestId: selectedRequest.id,
+        userId: selectedRequest.user_id
+      });
+    }
+  };
+
+  const handleReject = () => {
+    if (selectedRequest) {
+      rejectVendorMutation.mutate(selectedRequest.id);
     }
   };
 
   return (
     <div className="space-y-6">
-      {/* Search and Filter Controls */}
+      {/* Header with Controls */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <UserCheck className="h-5 w-5" />
-            Vendor Management
-          </CardTitle>
-          <CardDescription>
-            Manage vendor applications and approved vendors
-          </CardDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="flex items-center gap-2">
+                <Store className="h-5 w-5" />
+                Vendor Management
+              </CardTitle>
+              <CardDescription>
+                Manage vendor requests and business profiles. Total requests: {filteredRequests.length}
+              </CardDescription>
+            </div>
+            <Button onClick={() => refetch()} variant="outline">
+              <RefreshCw className="h-4 w-4 mr-2" />
+              Refresh
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
           <div className="flex flex-col sm:flex-row gap-4">
@@ -213,35 +262,86 @@ const VendorManagement = () => {
                 <SelectItem value="rejected">Rejected</SelectItem>
               </SelectContent>
             </Select>
-            <Button onClick={() => { refetchRequests(); refetchProfiles(); }} variant="outline">
-              <RefreshCw className="h-4 w-4 mr-2" />
-              Refresh
-            </Button>
           </div>
         </CardContent>
       </Card>
 
-      {/* Vendor Applications */}
+      {/* Statistics Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Total Requests</p>
+                <p className="text-2xl font-bold">{vendorRequests?.length || 0}</p>
+              </div>
+              <FileText className="h-8 w-8 text-muted-foreground" />
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Pending</p>
+                <p className="text-2xl font-bold text-yellow-600">
+                  {vendorRequests?.filter(r => r.status === 'pending').length || 0}
+                </p>
+              </div>
+              <FileText className="h-8 w-8 text-yellow-600" />
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Approved</p>
+                <p className="text-2xl font-bold text-green-600">
+                  {vendorRequests?.filter(r => r.status === 'approved').length || 0}
+                </p>
+              </div>
+              <Check className="h-8 w-8 text-green-600" />
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Active Vendors</p>
+                <p className="text-2xl font-bold text-blue-600">
+                  {vendorProfiles?.filter(p => p.is_active).length || 0}
+                </p>
+              </div>
+              <Building className="h-8 w-8 text-blue-600" />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Vendor Requests Table */}
       <Card>
         <CardHeader>
-          <CardTitle>Pending Applications</CardTitle>
-          <CardDescription>
-            Review and approve vendor applications
-          </CardDescription>
+          <CardTitle>Vendor Requests</CardTitle>
         </CardHeader>
         <CardContent>
-          {requestsLoading ? (
-            <div className="text-center py-8">Loading vendor applications...</div>
+          {isLoading ? (
+            <div className="text-center py-8">Loading vendor requests...</div>
           ) : filteredRequests.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">
-              No vendor applications found
+              No vendor requests found
             </div>
           ) : (
             <Table>
               <TableHeader>
                 <TableRow>
                   <TableHead>Business Name</TableHead>
-                  <TableHead>Type</TableHead>
+                  <TableHead>Owner</TableHead>
+                  <TableHead>Business Type</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Submitted</TableHead>
                   <TableHead>Actions</TableHead>
@@ -250,40 +350,31 @@ const VendorManagement = () => {
               <TableBody>
                 {filteredRequests.map((request) => (
                   <TableRow key={request.id}>
-                    <TableCell className="font-medium">{request.business_name}</TableCell>
+                    <TableCell className="font-medium">
+                      {request.business_name}
+                    </TableCell>
+                    <TableCell>
+                      <div>
+                        <div className="font-medium">{request.profiles?.full_name || 'N/A'}</div>
+                        <div className="text-sm text-muted-foreground">
+                          {request.profiles?.email}
+                        </div>
+                      </div>
+                    </TableCell>
                     <TableCell>{request.business_type}</TableCell>
                     <TableCell>{getStatusBadge(request.status)}</TableCell>
                     <TableCell>
                       {new Date(request.created_at).toLocaleDateString()}
                     </TableCell>
                     <TableCell>
-                      <div className="flex gap-2">
-                        {request.status === 'pending' && (
-                          <>
-                            <Button
-                              size="sm"
-                              onClick={() => approveVendorMutation.mutate(request.id)}
-                              disabled={approveVendorMutation.isPending}
-                            >
-                              <CheckCircle className="h-4 w-4 mr-1" />
-                              Approve
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="destructive"
-                              onClick={() => rejectVendorMutation.mutate(request.id)}
-                              disabled={rejectVendorMutation.isPending}
-                            >
-                              <XCircle className="h-4 w-4 mr-1" />
-                              Reject
-                            </Button>
-                          </>
-                        )}
-                        <Button size="sm" variant="outline">
-                          <Eye className="h-4 w-4 mr-1" />
-                          View
-                        </Button>
-                      </div>
+                      <Button 
+                        size="sm" 
+                        variant="outline"
+                        onClick={() => handleViewRequest(request)}
+                      >
+                        <Eye className="h-4 w-4 mr-1" />
+                        View
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -293,64 +384,110 @@ const VendorManagement = () => {
         </CardContent>
       </Card>
 
-      {/* Approved Vendors */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Approved Vendors</CardTitle>
-          <CardDescription>
-            Manage existing vendor accounts
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          {profilesLoading ? (
-            <div className="text-center py-8">Loading vendor profiles...</div>
-          ) : filteredProfiles.length === 0 ? (
-            <div className="text-center py-8 text-muted-foreground">
-              No approved vendors found
+      {/* View Request Modal */}
+      <Dialog open={isViewModalOpen} onOpenChange={setIsViewModalOpen}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Vendor Request Details</DialogTitle>
+          </DialogHeader>
+          
+          {selectedRequest && (
+            <div className="space-y-6">
+              {/* Business Information */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Business Information</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label>Business Name</Label>
+                    <p className="font-medium">{selectedRequest.business_name}</p>
+                  </div>
+                  <div>
+                    <Label>Business Type</Label>
+                    <p className="font-medium">{selectedRequest.business_type}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Owner Information */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Owner Information</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="flex items-center gap-2">
+                      <UserPlus className="h-4 w-4" />
+                      Full Name
+                    </Label>
+                    <p className="font-medium">{selectedRequest.profiles?.full_name}</p>
+                  </div>
+                  <div>
+                    <Label className="flex items-center gap-2">
+                      <Mail className="h-4 w-4" />
+                      Email
+                    </Label>
+                    <p className="font-medium">{selectedRequest.profiles?.email}</p>
+                  </div>
+                  {selectedRequest.profiles?.phone && (
+                    <div>
+                      <Label className="flex items-center gap-2">
+                        <Phone className="h-4 w-4" />
+                        Phone
+                      </Label>
+                      <p className="font-medium">{selectedRequest.profiles.phone}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Documents */}
+              {selectedRequest.verification_documents && (
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold">Verification Documents</h3>
+                  <div className="p-4 bg-muted rounded-lg">
+                    <pre className="text-sm">
+                      {JSON.stringify(selectedRequest.verification_documents, null, 2)}
+                    </pre>
+                  </div>
+                </div>
+              )}
+
+              {/* Review Notes */}
+              <div className="space-y-4">
+                <Label htmlFor="review_notes">Review Notes</Label>
+                <Textarea
+                  id="review_notes"
+                  value={reviewNotes}
+                  onChange={(e) => setReviewNotes(e.target.value)}
+                  placeholder="Add review notes..."
+                  rows={3}
+                />
+              </div>
+
+              {/* Action Buttons */}
+              {selectedRequest.status === 'pending' && (
+                <div className="flex gap-3">
+                  <Button
+                    onClick={handleApprove}
+                    disabled={approveVendorMutation.isPending}
+                    className="flex-1 bg-green-600 hover:bg-green-700"
+                  >
+                    <Check className="h-4 w-4 mr-2" />
+                    {approveVendorMutation.isPending ? 'Approving...' : 'Approve'}
+                  </Button>
+                  <Button
+                    onClick={handleReject}
+                    disabled={rejectVendorMutation.isPending}
+                    variant="destructive"
+                    className="flex-1"
+                  >
+                    <X className="h-4 w-4 mr-2" />
+                    {rejectVendorMutation.isPending ? 'Rejecting...' : 'Reject'}
+                  </Button>
+                </div>
+              )}
             </div>
-          ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Email</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Joined</TableHead>
-                  <TableHead>Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredProfiles.map((profile) => (
-                  <TableRow key={profile.id}>
-                    <TableCell className="font-medium">{profile.full_name || 'N/A'}</TableCell>
-                    <TableCell>{profile.email}</TableCell>
-                    <TableCell>
-                      <Badge variant={profile.verification_status === 'approved' ? 'default' : 'secondary'}>
-                        {profile.verification_status || 'pending'}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      {new Date(profile.created_at).toLocaleDateString()}
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex gap-2">
-                        <Button size="sm" variant="outline">
-                          <Eye className="h-4 w-4 mr-1" />
-                          View
-                        </Button>
-                        <Button size="sm" variant="destructive">
-                          <UserX className="h-4 w-4 mr-1" />
-                          Suspend
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
           )}
-        </CardContent>
-      </Card>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
