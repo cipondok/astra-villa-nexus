@@ -83,7 +83,30 @@ const VendorBusinessProfile = () => {
       }
 
       if (data) {
-        setProfile(data);
+        // Safely handle JSON fields
+        const typedProfile: BusinessProfile = {
+          id: data.id,
+          business_name: data.business_name || '',
+          business_type: data.business_type || '',
+          business_description: data.business_description || '',
+          business_address: data.business_address || '',
+          business_phone: data.business_phone || '',
+          business_email: data.business_email || '',
+          business_website: data.business_website || '',
+          license_number: data.license_number || '',
+          tax_id: data.tax_id || '',
+          business_hours: data.business_hours || {},
+          service_areas: Array.isArray(data.service_areas) ? data.service_areas : [],
+          certifications: Array.isArray(data.certifications) ? data.certifications : [],
+          insurance_info: data.insurance_info || {},
+          logo_url: data.logo_url || '',
+          banner_url: data.banner_url || '',
+          gallery_images: Array.isArray(data.gallery_images) ? data.gallery_images : [],
+          social_media: data.social_media || {},
+          is_active: data.is_active ?? true
+        };
+        
+        setProfile(typedProfile);
       }
     } catch (error: any) {
       console.error('Error fetching business profile:', error);

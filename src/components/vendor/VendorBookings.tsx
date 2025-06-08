@@ -22,11 +22,11 @@ interface Booking {
   contact_email: string;
   service: {
     service_name: string;
-  };
+  } | null;
   customer: {
     full_name: string;
     email: string;
-  };
+  } | null;
 }
 
 const VendorBookings = () => {
@@ -64,7 +64,31 @@ const VendorBookings = () => {
 
       if (error) throw error;
 
-      setBookings(data || []);
+      // Type-safe data handling
+      const typedBookings: Booking[] = (data || []).map(booking => ({
+        id: booking.id,
+        booking_date: booking.booking_date,
+        booking_time: booking.booking_time,
+        duration_minutes: booking.duration_minutes,
+        total_amount: booking.total_amount,
+        status: booking.status,
+        customer_notes: booking.customer_notes,
+        vendor_notes: booking.vendor_notes,
+        location_address: booking.location_address,
+        contact_phone: booking.contact_phone,
+        contact_email: booking.contact_email,
+        service: booking.service && typeof booking.service === 'object' && 'service_name' in booking.service
+          ? { service_name: booking.service.service_name }
+          : null,
+        customer: booking.customer && typeof booking.customer === 'object' && 'full_name' in booking.customer
+          ? { 
+              full_name: booking.customer.full_name || 'Unknown',
+              email: booking.customer.email || ''
+            }
+          : null
+      }));
+
+      setBookings(typedBookings);
     } catch (error: any) {
       console.error('Error fetching bookings:', error);
       toast({

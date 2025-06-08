@@ -7,6 +7,7 @@ import AuthenticatedNavigation from "@/components/navigation/AuthenticatedNaviga
 import VendorRegistrationForm from "@/components/vendor/VendorRegistrationForm";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Label } from "@/components/ui/label";
 import { CheckCircle, Clock, XCircle } from "lucide-react";
 
 const VendorRegistration = () => {

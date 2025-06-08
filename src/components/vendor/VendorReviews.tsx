@@ -18,10 +18,10 @@ interface Review {
   created_at: string;
   service: {
     service_name: string;
-  };
+  } | null;
   customer: {
     full_name: string;
-  };
+  } | null;
 }
 
 const VendorReviews = () => {
@@ -55,7 +55,24 @@ const VendorReviews = () => {
 
       if (error) throw error;
 
-      setReviews(data || []);
+      // Type-safe data handling
+      const typedReviews: Review[] = (data || []).map(review => ({
+        id: review.id,
+        rating: review.rating,
+        review_text: review.review_text || '',
+        response_text: review.response_text || '',
+        response_date: review.response_date || '',
+        is_verified: review.is_verified || false,
+        created_at: review.created_at,
+        service: review.service && typeof review.service === 'object' && 'service_name' in review.service
+          ? { service_name: review.service.service_name }
+          : null,
+        customer: review.customer && typeof review.customer === 'object' && 'full_name' in review.customer
+          ? { full_name: review.customer.full_name || 'Anonymous' }
+          : null
+      }));
+
+      setReviews(typedReviews);
     } catch (error: any) {
       console.error('Error fetching reviews:', error);
       toast({
