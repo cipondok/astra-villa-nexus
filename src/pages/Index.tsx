@@ -1,219 +1,130 @@
 
 import { useState, useEffect } from "react";
-import { useAuth } from "@/contexts/AuthContext";
-import { useSearchParams, useNavigate } from "react-router-dom";
-import EnhancedNavigation from "@/components/navigation/EnhancedNavigation";
-import EnhancedAuthModal from "@/components/auth/EnhancedAuthModal";
-import PropertyListingsSection from "@/components/PropertyListingsSection";
-import AdvancedFilters from "@/components/search/AdvancedFilters";
-import EnhancedPropertyCard from "@/components/property/EnhancedPropertyCard";
+import { useSearchParams } from "react-router-dom";
+import Navigation from "@/components/Navigation";
 import ParticleEffect from "@/components/ParticleEffect";
+import PropertyListingsSection from "@/components/PropertyListingsSection";
 import ProfessionalFooter from "@/components/ProfessionalFooter";
-import { useTheme } from "@/components/ThemeProvider";
+import RoleBasedAuthModal from "@/components/RoleBasedAuthModal";
+import { useAuth } from "@/contexts/AuthContext";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { CheckCircle, AlertCircle } from "lucide-react";
 
 const Index = () => {
-  const [language, setLanguage] = useState<"en" | "id">("en");
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const [searchFilters, setSearchFilters] = useState({});
-  const [searchResults, setSearchResults] = useState([]);
-  const { isAuthenticated, loading } = useAuth();
-  const { theme } = useTheme();
-  const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const { isAuthenticated, user } = useAuth();
 
-  console.log('Index component rendering, loading:', loading, 'isAuthenticated:', isAuthenticated);
-
-  // Check if auth modal should be opened from URL
+  // Check URL parameters for auth modal and confirmation
   useEffect(() => {
-    if (searchParams.get('auth') === 'true') {
-      setIsAuthModalOpen(true);
+    const authParam = searchParams.get('auth');
+    const confirmedParam = searchParams.get('confirmed');
+    
+    if (authParam === 'true') {
+      setAuthModalOpen(true);
     }
-  }, [searchParams]);
 
-  const toggleLanguage = () => {
-    setLanguage(prev => prev === "en" ? "id" : "en");
-  };
-
-  const handleLoginClick = () => {
-    setIsAuthModalOpen(true);
-  };
-
-  const handleFiltersChange = (filters: any) => {
-    setSearchFilters(filters);
-    console.log('Filters changed:', filters);
-  };
-
-  const handleSearch = (searchData: any) => {
-    console.log('Search triggered with data:', searchData);
-    // Here you would typically make an API call to search properties
-    // For now, we'll just log the search data
-  };
-
-  const handlePropertyView = (id: string) => {
-    navigate(`/property/${id}`);
-  };
-
-  const handlePropertySave = (id: string) => {
-    console.log('Property saved:', id);
-    // Implement save functionality
-  };
-
-  const handlePropertyShare = (id: string) => {
-    console.log('Property shared:', id);
-    // Implement share functionality
-  };
-
-  // Sample properties for demonstration
-  const sampleProperties = [
-    {
-      id: '1',
-      title: 'Luxury Villa with Ocean View',
-      price: 8500000000,
-      location: 'Canggu, Bali',
-      bedrooms: 4,
-      bathrooms: 3,
-      area_sqm: 350,
-      property_type: 'villa',
-      listing_type: 'sale',
-      images: ['/placeholder.svg'],
-      property_features: {
-        pool: true,
-        parking: 2,
-        garden: true,
-        furnished: true
-      }
-    },
-    {
-      id: '2',
-      title: 'Modern Apartment in City Center',
-      price: 45000000,
-      location: 'Jakarta Selatan, Jakarta',
-      bedrooms: 2,
-      bathrooms: 2,
-      area_sqm: 120,
-      property_type: 'apartment',
-      listing_type: 'rent',
-      images: ['/placeholder.svg'],
-      property_features: {
-        parking: 1,
-        furnished: true,
-        gym: true,
-        security: true
-      }
-    },
-    {
-      id: '3',
-      title: 'Traditional House with Garden',
-      price: 3200000000,
-      location: 'Yogyakarta, DIY',
-      bedrooms: 3,
-      bathrooms: 2,
-      area_sqm: 200,
-      property_type: 'house',
-      listing_type: 'sale',
-      images: ['/placeholder.svg'],
-      property_features: {
-        garden: true,
-        parking: 1,
-        traditional: true
-      }
+    if (confirmedParam === 'true') {
+      // Clear the URL parameter
+      setSearchParams(prev => {
+        const newParams = new URLSearchParams(prev);
+        newParams.delete('confirmed');
+        return newParams;
+      });
     }
-  ];
+  }, [searchParams, setSearchParams]);
 
-  // Show loading only for a brief moment
-  if (loading) {
-    console.log('Showing loading screen');
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-2"></div>
-          <p className="text-sm text-muted-foreground">Loading...</p>
-        </div>
-      </div>
-    );
-  }
+  const handleAuthModalClose = () => {
+    setAuthModalOpen(false);
+    // Clear auth parameter from URL
+    setSearchParams(prev => {
+      const newParams = new URLSearchParams(prev);
+      newParams.delete('auth');
+      newParams.delete('message');
+      return newParams;
+    });
+  };
 
-  console.log('Rendering main content');
+  // Get message from URL params
+  const message = searchParams.get('message');
+  const confirmed = searchParams.get('confirmed');
 
   return (
-    <div className="min-h-screen bg-background">
-      <EnhancedNavigation
-        onLoginClick={!isAuthenticated ? handleLoginClick : undefined}
-        language={language}
-        onLanguageToggle={toggleLanguage}
-      />
+    <div className="min-h-screen bg-background text-foreground">
+      <ParticleEffect />
+      <Navigation />
       
-      {/* Hero Section with Advanced Search */}
-      <section className="pt-20 pb-8 px-4 sm:px-6 lg:px-8 relative">
-        {/* 3D Particle Effect as Background */}
-        <div className="absolute inset-0 z-0">
-          <ParticleEffect />
+      {/* Email confirmation success message */}
+      {confirmed === 'true' && (
+        <div className="container mx-auto px-4 pt-20">
+          <Alert className="max-w-md mx-auto mb-6 border-green-200 bg-green-50">
+            <CheckCircle className="h-4 w-4 text-green-600" />
+            <AlertDescription className="text-green-800">
+              Email verified successfully! You can now access your dashboard.
+            </AlertDescription>
+          </Alert>
         </div>
-        
-        <div className="max-w-7xl mx-auto text-center relative z-10">
-          <h1 className="text-4xl md:text-6xl font-bold text-foreground/60 mb-6">
-            Find Your Dream
-            <span className="block bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent opacity-60">
-              Property
-            </span>
+      )}
+
+      {/* Error or info message */}
+      {message && (
+        <div className="container mx-auto px-4 pt-20">
+          <Alert className="max-w-lg mx-auto mb-6 border-amber-200 bg-amber-50">
+            <AlertCircle className="h-4 w-4 text-amber-600" />
+            <AlertDescription className="text-amber-800">
+              {message}
+            </AlertDescription>
+          </Alert>
+        </div>
+      )}
+      
+      {/* Show email verification status for logged in users */}
+      {user && !user.email_confirmed_at && (
+        <div className="container mx-auto px-4 pt-20">
+          <Alert className="max-w-lg mx-auto mb-6 border-blue-200 bg-blue-50">
+            <AlertCircle className="h-4 w-4 text-blue-600" />
+            <AlertDescription className="text-blue-800">
+              Please check your email and click the verification link to activate your account.
+            </AlertDescription>
+          </Alert>
+        </div>
+      )}
+
+      {/* Hero Section */}
+      <section className="relative min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8">
+        <div className="text-center max-w-4xl mx-auto relative z-10">
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-orange-500 bg-clip-text text-transparent leading-tight">
+            Find Your Dream Property
           </h1>
-          <p className="text-xl text-muted-foreground opacity-60 mb-8 max-w-3xl mx-auto">
-            Discover luxury villas, modern apartments, and exclusive properties with our advanced search technology.
+          <p className="text-lg sm:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed">
+            Discover premium real estate opportunities in Indonesia's most sought-after locations. 
+            From luxury villas to modern apartments, find your perfect home today.
           </p>
           
-          {/* Advanced Filters Component */}
-          <div className="mb-8">
-            <AdvancedFilters 
-              language={language} 
-              onFiltersChange={handleFiltersChange}
-              onSearch={handleSearch}
-            />
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <button 
+              onClick={() => setAuthModalOpen(true)}
+              className="px-8 py-3 bg-gradient-to-r from-blue-600 to-orange-500 text-white rounded-lg font-semibold hover:shadow-lg transform hover:scale-105 transition-all duration-200"
+            >
+              Get Started
+            </button>
+            <button className="px-8 py-3 border border-border rounded-lg font-semibold hover:bg-accent transition-colors">
+              Browse Properties
+            </button>
           </div>
         </div>
       </section>
 
-      {/* Featured Properties Section */}
-      <section className="py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-foreground mb-4">
-              {language === 'en' ? 'Featured Properties' : 'Properti Unggulan'}
-            </h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
-              {language === 'en' 
-                ? 'Discover our handpicked selection of premium properties'
-                : 'Temukan pilihan properti premium yang telah kami kurasi'}
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {sampleProperties.map((property) => (
-              <EnhancedPropertyCard
-                key={property.id}
-                property={property}
-                language={language}
-                onView={handlePropertyView}
-                onSave={handlePropertySave}
-                onShare={handlePropertyShare}
-              />
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* Property Listings Section */}
+      <PropertyListingsSection />
 
-      {/* Original Property Listings */}
-      <div className="property-listings-wrapper">
-        <PropertyListingsSection language={language} />
-      </div>
+      {/* Footer */}
+      <ProfessionalFooter />
 
-      {/* Professional Footer */}
-      <ProfessionalFooter language={language} />
-
-      {/* Enhanced Auth Modal */}
-      <EnhancedAuthModal
-        isOpen={isAuthModalOpen}
-        onClose={() => setIsAuthModalOpen(false)}
-        language={language}
+      {/* Auth Modal */}
+      <RoleBasedAuthModal 
+        isOpen={authModalOpen} 
+        onClose={handleAuthModalClose}
       />
     </div>
   );

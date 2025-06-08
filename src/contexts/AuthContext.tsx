@@ -40,7 +40,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [initialized, setInitialized] = useState(false);
   const { showError, showSuccess } = useAlert();
 
-  console.log('AuthProvider rendering, loading:', loading, 'user:', user?.email);
+  console.log('AuthProvider rendering, loading:', loading, 'user:', user?.email, 'email_confirmed:', user?.email_confirmed_at);
 
   useEffect(() => {
     let mounted = true;
@@ -62,11 +62,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           return;
         }
 
-        console.log('Initial session:', session?.user?.email || 'No session');
+        console.log('Initial session:', session?.user?.email || 'No session', 'email_confirmed:', session?.user?.email_confirmed_at);
 
         if (session?.user && mounted) {
           setUser(session.user);
-          await fetchProfile(session.user.id);
+          // Only fetch profile if email is confirmed or user has been created
+          if (session.user.email_confirmed_at || session.user.created_at) {
+            await fetchProfile(session.user.id);
+          }
         }
         
         if (mounted) {
@@ -84,14 +87,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        console.log('Auth state changed:', event, session?.user?.email || 'No user');
+        console.log('Auth state changed:', event, session?.user?.email || 'No user', 'email_confirmed:', session?.user?.email_confirmed_at);
         
         if (!mounted || !initialized) return;
 
         if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
           if (session?.user) {
             setUser(session.user);
-            await fetchProfile(session.user.id);
+            // Only fetch profile after email confirmation
+            if (session.user.email_confirmed_at) {
+              await fetchProfile(session.user.id);
+            } else {
+              console.log('Email not confirmed yet, skipping profile fetch');
+            }
           }
         } else if (event === 'SIGNED_OUT') {
           setUser(null);
@@ -160,6 +168,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signUp = async (email: string, password: string, fullName: string) => {
     try {
       console.log('Attempting sign up for:', email);
+      
+      // Use the current origin for email redirect
+      const redirectUrl = `${window.location.origin}/?confirmed=true`;
+      
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -167,7 +179,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           data: {
             full_name: fullName
           },
-          emailRedirectTo: `${window.location.origin}/dashboard`
+          emailRedirectTo: redirectUrl
         }
       });
 
@@ -178,7 +190,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
 
       console.log('Sign up successful for:', email);
-      showSuccess('Account Created!', 'Please check your email to verify your account.');
+      
+      if (data.user && !data.user.email_confirmed_at) {
+        showSuccess('Account Created!', 'Please check your email and click the verification link to activate your account.');
+      } else {
+        showSuccess('Account Created!', 'Your account has been created successfully.');
+      }
+      
       return { error: null, success: true };
     } catch (error: any) {
       console.error('Sign up error:', error);
@@ -230,18 +248,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  // Check if user is authenticated AND email is confirmed
+  const isAuthenticated = !!user && !!user.email_confirmed_at;
+
   const value = {
     user,
     profile,
     loading,
-    isAuthenticated: !!user,
+    isAuthenticated,
     signIn,
     signUp,
     signOut,
     updateProfile,
   };
 
-  console.log('AuthProvider providing value, loading:', loading, 'isAuthenticated:', !!user, 'role:', profile?.role);
+  console.log('AuthProvider providing value, loading:', loading, 'isAuthenticated:', isAuthenticated, 'email_confirmed:', user?.email_confirmed_at, 'role:', profile?.role);
 
   return (
     <AuthContext.Provider value={value}>
