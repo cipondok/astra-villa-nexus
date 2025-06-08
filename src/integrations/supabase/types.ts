@@ -1443,6 +1443,10 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: boolean
       }
+      is_super_admin_safe: {
+        Args: { user_email?: string }
+        Returns: boolean
+      }
     }
     Enums: {
       admin_permission:

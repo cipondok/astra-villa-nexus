@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -72,20 +73,27 @@ const DatabaseUserManagement = () => {
   const queryClient = useQueryClient();
   const { user } = useAuth();
 
-  // Check if current user is super admin
+  // Check if current user is super admin using the new safe function
   const { data: isSuperAdmin } = useQuery({
-    queryKey: ['is-super-admin', user?.id],
+    queryKey: ['is-super-admin-safe', user?.id],
     queryFn: async () => {
       if (!user?.id) return false;
       
-      const { data, error } = await supabase
-        .from('admin_users')
-        .select('is_super_admin')
-        .eq('user_id', user.id)
-        .single();
-      
-      if (error) return false;
-      return data?.is_super_admin || false;
+      try {
+        // Use the new safe function to check super admin status
+        const { data, error } = await supabase.rpc('is_super_admin_safe');
+        
+        if (error) {
+          console.error('Error checking super admin status:', error);
+          return false;
+        }
+        
+        console.log('Super admin check result:', data);
+        return data || false;
+      } catch (error) {
+        console.error('Error in super admin check:', error);
+        return false;
+      }
     },
     enabled: !!user?.id,
   });
@@ -360,6 +368,23 @@ const DatabaseUserManagement = () => {
       updateUserMutation.mutate(editingUser);
     }
   };
+
+  if (!isSuperAdmin) {
+    return (
+      <Card className="border-red-500/20">
+        <CardContent className="p-6 text-center">
+          <Shield className="h-12 w-12 text-red-500 mx-auto mb-4" />
+          <h3 className="text-lg font-semibold text-red-900">Access Denied</h3>
+          <p className="text-red-700">Super administrator privileges required for database management.</p>
+          <p className="text-sm text-red-600 mt-2">
+            Current user: {user?.email || 'Not logged in'}
+            <br />
+            Super admin status: {isSuperAdmin ? 'Granted' : 'Denied'}
+          </p>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -644,7 +669,6 @@ const DatabaseUserManagement = () => {
           
           {selectedUser && (
             <div className="space-y-6">
-              {/* User Information */}
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold">User Information</h3>
                 <div className="grid grid-cols-2 gap-4">
@@ -675,7 +699,6 @@ const DatabaseUserManagement = () => {
                 </div>
               </div>
 
-              {/* Admin Access Details */}
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold">Admin Access & Permissions</h3>
                 <div className="grid grid-cols-2 gap-4">
@@ -710,7 +733,6 @@ const DatabaseUserManagement = () => {
                 </div>
               </div>
 
-              {/* Timestamps */}
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold">Account Timeline</h3>
                 <div className="grid grid-cols-2 gap-4">
@@ -725,7 +747,6 @@ const DatabaseUserManagement = () => {
                 </div>
               </div>
 
-              {/* Company Information (if applicable) */}
               {(selectedUser.company_name || selectedUser.license_number) && (
                 <div className="space-y-4">
                   <h3 className="text-lg font-semibold">Professional Information</h3>
@@ -746,7 +767,6 @@ const DatabaseUserManagement = () => {
                 </div>
               )}
 
-              {/* Action Buttons */}
               <div className="flex gap-3 pt-4 border-t">
                 {selectedUser.is_admin ? (
                   <Button
@@ -794,7 +814,6 @@ const DatabaseUserManagement = () => {
         </DialogContent>
       </Dialog>
 
-      {/* Edit User Modal (Super Admin Only) */}
       {isSuperAdmin && (
         <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
           <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
