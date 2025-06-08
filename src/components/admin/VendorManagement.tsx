@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -37,30 +36,48 @@ const VendorManagement = () => {
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
 
-  // Fetch vendor requests
+  // Fetch vendor requests with proper join
   const { data: vendorRequests, isLoading, refetch } = useQuery({
     queryKey: ['vendor-requests'],
     queryFn: async () => {
       console.log('Fetching vendor requests');
-      const { data, error } = await supabase
+      
+      // First get vendor requests
+      const { data: requests, error: requestsError } = await supabase
         .from('vendor_requests')
-        .select(`
-          *,
-          profiles:user_id (
-            full_name,
-            email,
-            phone
-          )
-        `)
+        .select('*')
         .order('created_at', { ascending: false });
       
-      if (error) {
-        console.error('Error fetching vendor requests:', error);
-        throw new Error(`Failed to fetch vendor requests: ${error.message}`);
+      if (requestsError) {
+        console.error('Error fetching vendor requests:', requestsError);
+        throw new Error(`Failed to fetch vendor requests: ${requestsError.message}`);
+      }
+
+      // Then get profiles for each request
+      if (requests && requests.length > 0) {
+        const userIds = requests.map(req => req.user_id).filter(Boolean);
+        
+        const { data: profiles, error: profilesError } = await supabase
+          .from('profiles')
+          .select('id, full_name, email, phone')
+          .in('id', userIds);
+
+        if (profilesError) {
+          console.error('Error fetching profiles:', profilesError);
+        }
+
+        // Merge the data
+        const requestsWithProfiles = requests.map(request => ({
+          ...request,
+          profiles: profiles?.find(profile => profile.id === request.user_id) || null
+        }));
+
+        console.log('Fetched vendor requests with profiles:', requestsWithProfiles.length);
+        return requestsWithProfiles;
       }
       
-      console.log('Fetched vendor requests:', data?.length || 0);
-      return data || [];
+      console.log('Fetched vendor requests:', requests?.length || 0);
+      return requests || [];
     },
     retry: 2,
     refetchInterval: 30000,
@@ -357,7 +374,7 @@ const VendorManagement = () => {
                       <div>
                         <div className="font-medium">{request.profiles?.full_name || 'N/A'}</div>
                         <div className="text-sm text-muted-foreground">
-                          {request.profiles?.email}
+                          {request.profiles?.email || 'N/A'}
                         </div>
                       </div>
                     </TableCell>
@@ -417,14 +434,14 @@ const VendorManagement = () => {
                       <UserPlus className="h-4 w-4" />
                       Full Name
                     </Label>
-                    <p className="font-medium">{selectedRequest.profiles?.full_name}</p>
+                    <p className="font-medium">{selectedRequest.profiles?.full_name || 'N/A'}</p>
                   </div>
                   <div>
                     <Label className="flex items-center gap-2">
                       <Mail className="h-4 w-4" />
                       Email
                     </Label>
-                    <p className="font-medium">{selectedRequest.profiles?.email}</p>
+                    <p className="font-medium">{selectedRequest.profiles?.email || 'N/A'}</p>
                   </div>
                   {selectedRequest.profiles?.phone && (
                     <div>
