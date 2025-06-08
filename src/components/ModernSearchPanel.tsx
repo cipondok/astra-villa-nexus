@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -38,7 +37,6 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
   const [bedrooms, setBedrooms] = useState("");
   const [bathrooms, setBathrooms] = useState("");
   const [searchValue, setSearchValue] = useState("");
-  const [showTrending, setShowTrending] = useState(false);
   const [currentTrendingIndex, setCurrentTrendingIndex] = useState(0);
 
   const text = {
@@ -96,7 +94,7 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
 
   const trendingSearches = [
     "Villa in Bali",
-    "Apartment Jakarta Selatan",
+    "Apartment Jakarta Selatan", 
     "House in Bandung",
     "Luxury Condo Surabaya",
     "Land in Yogyakarta",
@@ -165,7 +163,6 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
       searchQuery: searchValue
     };
     onSearch(searchData);
-    setShowTrending(false);
   };
 
   const detectLocation = () => {
@@ -176,12 +173,6 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
         setSelectedCity("Jakarta Selatan");
       });
     }
-  };
-
-  const handleTrendingClick = (trending: string) => {
-    setSearchValue(trending);
-    setShowTrending(false);
-    handleSearch();
   };
 
   const handleStateChange = (value: string) => {
@@ -233,7 +224,7 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
       {/* Main Search Panel */}
       <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 shadow-2xl">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-          {/* Search Input with Trending */}
+          {/* Search Input with animated placeholder */}
           <div className="md:col-span-2 relative">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
@@ -242,55 +233,55 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
                 className="pl-10 pr-10 bg-white/20 border-white/30 text-foreground placeholder:text-foreground/50 transition-all duration-200"
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
-                onFocus={() => setShowTrending(true)}
               />
-              <TrendingUp 
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4 cursor-pointer hover:text-primary transition-colors"
-                onClick={() => setShowTrending(!showTrending)}
-              />
+              <TrendingUp className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
             </div>
-            
-            {/* Trending Searches Dropdown */}
-            {showTrending && (
-              <div className="absolute top-full left-0 right-0 mt-1 bg-white/95 backdrop-blur-md rounded-lg border border-white/30 shadow-lg z-10 transition-all duration-150 animate-in slide-in-from-top-2">
-                <div className="p-2">
-                  <div className="text-xs font-medium text-gray-700 mb-2 flex items-center gap-1">
-                    <TrendingUp className="h-3 w-3" />
-                    {currentText.trending}
-                  </div>
-                  {trendingSearches.map((trending, index) => (
-                    <div
-                      key={index}
-                      className={`px-3 py-2 hover:bg-blue-100 rounded cursor-pointer text-sm transition-all duration-200 ${
-                        index === currentTrendingIndex 
-                          ? 'bg-blue-50 text-blue-700 font-medium animate-pulse' 
-                          : 'text-gray-800 hover:text-blue-600'
-                      }`}
-                      onClick={() => handleTrendingClick(trending)}
-                    >
-                      {trending}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
 
           {/* Location Selection */}
           <div className="relative">
-            <Button
-              variant="outline"
-              className="w-full justify-between bg-white/20 border-white/30 text-foreground hover:bg-white/30"
-              onClick={detectLocation}
-            >
-              <div className="flex items-center gap-2">
-                <MapPinned className="h-4 w-4" />
-                <span className="truncate">
-                  {selectedArea || selectedCity || selectedState || currentText.location}
-                </span>
-              </div>
-              <ChevronDown className="h-4 w-4" />
-            </Button>
+            <Select value={selectedArea || selectedCity || selectedState} onValueChange={() => {}}>
+              <SelectTrigger className="w-full bg-white/20 border-white/30 text-foreground hover:bg-white/30">
+                <div className="flex items-center gap-2">
+                  <MapPinned className="h-4 w-4" />
+                  <span className="truncate">
+                    {selectedArea || selectedCity || selectedState || currentText.location}
+                  </span>
+                </div>
+              </SelectTrigger>
+              <SelectContent>
+                <div className="p-2 text-xs font-medium text-gray-700 border-b">Select Location</div>
+                {/* States */}
+                {!selectedState && states.map((state) => (
+                  <SelectItem key={state} value={state} onClick={() => handleStateChange(state)}>
+                    📍 {state}
+                  </SelectItem>
+                ))}
+                {/* Cities */}
+                {selectedState && !selectedCity && getAvailableCities().map((city) => (
+                  <SelectItem key={city} value={city} onClick={() => handleCityChange(city)}>
+                    🏙️ {city}
+                  </SelectItem>
+                ))}
+                {/* Areas */}
+                {selectedState && selectedCity && getAvailableAreas().map((area) => (
+                  <SelectItem key={area} value={area} onClick={() => setSelectedArea(area)}>
+                    📍 {area}
+                  </SelectItem>
+                ))}
+                {/* Back options */}
+                {selectedCity && (
+                  <SelectItem value="back-to-city" onClick={() => setSelectedCity("")}>
+                    ← Back to Cities
+                  </SelectItem>
+                )}
+                {selectedState && !selectedCity && (
+                  <SelectItem value="back-to-state" onClick={() => setSelectedState("")}>
+                    ← Back to States
+                  </SelectItem>
+                )}
+              </SelectContent>
+            </Select>
           </div>
 
           {/* Filters */}
@@ -441,11 +432,11 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
         <div className="flex justify-center">
           <Button 
             onClick={handleSearch}
-            className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-3 rounded-full text-lg font-medium shadow-lg hover:shadow-xl transition-all duration-500 hover:scale-105"
+            className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-3 rounded-full text-lg font-medium shadow-lg hover:shadow-xl transition-all duration-1000 hover:scale-105"
           >
-            <Bot className="h-5 w-5 mr-2 animate-pulse" style={{ animationDuration: '2s' }} />
+            <Bot className="h-5 w-5 mr-2 animate-pulse" style={{ animationDuration: '3s' }} />
             {currentText.search}
-            <Sparkles className="h-4 w-4 ml-2 animate-bounce" style={{ animationDuration: '1.5s' }} />
+            <Sparkles className="h-4 w-4 ml-2 animate-bounce" style={{ animationDuration: '2s' }} />
           </Button>
         </div>
 
