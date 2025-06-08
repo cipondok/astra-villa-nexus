@@ -128,7 +128,7 @@ const AdminDashboard = () => {
     { label: "Add Property", action: () => console.log("Add property"), icon: Building, variant: "ios" as const },
     { label: "Manage Users", action: () => setActiveTab("users"), icon: Users, variant: "ios-green" as const },
     { label: "Database Users", action: () => setActiveTab("database"), icon: Database, variant: "default" as const },
-    { label: "Database Tables", action: () => setActiveTab("database-tables"), icon: Database, variant: "ios-blue" as const },
+    { label: "Database Tables", action: () => setActiveTab("database-tables"), icon: Database, variant: "ios-purple" as const },
     { label: "Error Reports", action: () => setActiveTab("error-reports"), icon: Bug, variant: "ios-red" as const },
     { label: "Manage Vendors", action: () => setActiveTab("vendors"), icon: Store, variant: "ios-purple" as const },
     { label: "System Reports", action: () => setActiveTab("reports"), icon: BarChart3, variant: "ios-orange" as const }

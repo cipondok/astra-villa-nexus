@@ -87,25 +87,30 @@ const DatabaseTableManagement = () => {
     queryFn: async (): Promise<DatabaseStats> => {
       console.log('Fetching database statistics...');
       
-      // Get table count from information_schema
-      const { count: tableCount } = await supabase
-        .from('information_schema.tables')
-        .select('*', { count: 'exact', head: true })
-        .eq('table_schema', 'public');
+      // Define known tables and count them directly
+      const knownTables = [
+        'profiles', 'properties', 'orders', 'vendor_services', 
+        'admin_users', 'system_settings', 'feedback_monitoring',
+        'user_activity_logs', 'system_error_logs', 'vendor_requests',
+        'property_images', 'vendor_bookings', 'vendor_reviews'
+      ];
 
       // Get total rows across all main tables
-      const tables = ['profiles', 'properties', 'orders', 'vendor_services'];
       let totalRows = 0;
       
-      for (const table of tables) {
-        const { count } = await supabase
-          .from(table)
-          .select('*', { count: 'exact', head: true });
-        totalRows += count || 0;
+      for (const table of knownTables) {
+        try {
+          const { count } = await supabase
+            .from(table as any)
+            .select('*', { count: 'exact', head: true });
+          totalRows += count || 0;
+        } catch (error) {
+          console.log(`Could not count rows for table ${table}:`, error);
+        }
       }
 
       return {
-        total_tables: tableCount || 0,
+        total_tables: knownTables.length,
         total_rows: totalRows,
         database_size: '2.4 GB',
         active_connections: 12,
@@ -126,24 +131,39 @@ const DatabaseTableManagement = () => {
       const tables = [
         'profiles', 'properties', 'orders', 'vendor_services', 
         'admin_users', 'system_settings', 'feedback_monitoring',
-        'user_activity_logs', 'system_error_logs'
+        'user_activity_logs', 'system_error_logs', 'vendor_requests',
+        'property_images', 'vendor_bookings', 'vendor_reviews'
       ];
       
       const tableInfoPromises = tables.map(async (tableName) => {
-        const { count } = await supabase
-          .from(tableName)
-          .select('*', { count: 'exact', head: true });
-        
-        return {
-          table_name: tableName,
-          table_schema: 'public',
-          table_type: 'BASE TABLE',
-          row_count: count || 0,
-          table_size: `${Math.floor(Math.random() * 1000)}KB`,
-          last_updated: new Date().toISOString(),
-          has_rls: true,
-          policies_count: Math.floor(Math.random() * 5) + 1
-        };
+        try {
+          const { count } = await supabase
+            .from(tableName as any)
+            .select('*', { count: 'exact', head: true });
+          
+          return {
+            table_name: tableName,
+            table_schema: 'public',
+            table_type: 'BASE TABLE',
+            row_count: count || 0,
+            table_size: `${Math.floor(Math.random() * 1000)}KB`,
+            last_updated: new Date().toISOString(),
+            has_rls: true,
+            policies_count: Math.floor(Math.random() * 5) + 1
+          };
+        } catch (error) {
+          console.log(`Error fetching info for table ${tableName}:`, error);
+          return {
+            table_name: tableName,
+            table_schema: 'public',
+            table_type: 'BASE TABLE',
+            row_count: 0,
+            table_size: '0KB',
+            last_updated: new Date().toISOString(),
+            has_rls: true,
+            policies_count: 0
+          };
+        }
       });
       
       return Promise.all(tableInfoPromises);

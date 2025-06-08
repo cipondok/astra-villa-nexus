@@ -30,11 +30,13 @@ import {
   TrendingUp
 } from "lucide-react";
 
+type SeverityType = 'low' | 'medium' | 'high' | 'critical';
+
 interface SystemError {
   id: string;
   error_type: string;
   error_message: string;
-  severity: 'low' | 'medium' | 'high' | 'critical';
+  severity: SeverityType;
   user_id: string | null;
   request_url: string | null;
   request_method: string | null;
@@ -133,7 +135,12 @@ const ErrorReportingSystem = () => {
       }
       
       console.log('Fetched system errors:', data?.length || 0);
-      return data || [];
+      
+      // Type assertion to ensure severity is properly typed
+      return (data || []).map(row => ({
+        ...row,
+        severity: (row.severity as SeverityType) || 'medium'
+      }));
     },
     enabled: !!isSuperAdmin,
     refetchInterval: 15000,
