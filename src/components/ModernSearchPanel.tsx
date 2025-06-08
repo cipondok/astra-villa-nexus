@@ -19,7 +19,9 @@ import {
   Sparkles,
   ChevronDown,
   MapPinned,
-  TrendingUp
+  TrendingUp,
+  Rocket,
+  Building2
 } from "lucide-react";
 
 interface ModernSearchPanelProps {
@@ -44,6 +46,8 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
       buy: "Buy",
       rent: "Rent", 
       newProjects: "New Projects",
+      preLaunching: "Pre-launching",
+      commercial: "Commercial",
       searchPlaceholder: "Search properties...",
       location: "Location",
       priceRange: "Price Range",
@@ -67,7 +71,9 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
     id: {
       buy: "Beli",
       rent: "Sewa",
-      newProjects: "Proyek Baru", 
+      newProjects: "Proyek Baru",
+      preLaunching: "Pra-Peluncuran",
+      commercial: "Komersial",
       searchPlaceholder: "Cari properti...",
       location: "Lokasi",
       priceRange: "Rentang Harga",
@@ -196,25 +202,27 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
 
   return (
     <div className="w-full max-w-6xl mx-auto">
-      {/* Search Type Tabs */}
+      {/* Search Type Tabs - Now with 5 tabs */}
       <div className="flex justify-center mb-6">
-        <div className="flex bg-white/10 backdrop-blur-md rounded-full p-1 border border-white/20">
+        <div className="flex bg-white/10 backdrop-blur-md rounded-full p-1 border border-white/20 overflow-x-auto">
           {[
             { key: "buy", label: currentText.buy, icon: Home },
             { key: "rent", label: currentText.rent, icon: Car },
-            { key: "newProjects", label: currentText.newProjects, icon: Building }
+            { key: "newProjects", label: currentText.newProjects, icon: Building },
+            { key: "preLaunching", label: currentText.preLaunching, icon: Rocket },
+            { key: "commercial", label: currentText.commercial, icon: Building2 }
           ].map((type) => (
             <Button
               key={type.key}
               variant={searchType === type.key ? "default" : "ghost"}
-              className={`flex items-center gap-2 rounded-full px-6 py-2 transition-all duration-300 ${
+              className={`flex items-center gap-2 rounded-full px-4 py-2 transition-all duration-300 text-xs sm:text-sm whitespace-nowrap ${
                 searchType === type.key 
                   ? "bg-primary text-primary-foreground shadow-lg" 
                   : "text-foreground/70 hover:text-foreground hover:bg-white/10"
               }`}
               onClick={() => setSearchType(type.key)}
             >
-              <type.icon className="h-4 w-4" />
+              <type.icon className="h-3 w-3 sm:h-4 sm:w-4" />
               {type.label}
             </Button>
           ))}
@@ -224,7 +232,7 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
       {/* Main Search Panel */}
       <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 shadow-2xl">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-          {/* Search Input with animated placeholder */}
+          {/* Search Input */}
           <div className="md:col-span-2 relative">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
