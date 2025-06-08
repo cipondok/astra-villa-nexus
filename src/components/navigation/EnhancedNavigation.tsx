@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { Sun, Moon, Globe, Menu, User, LogOut, Settings, Bell, Home, ArrowUp, MessageCircle, Sparkles, Bot } from "lucide-react";
+import { Sun, Moon, Globe, Menu, User, LogOut, Settings, Bell, Home, ArrowUp, MessageCircle, Sparkles, Bot, LogIn, UserPlus } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -14,6 +14,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 
 interface EnhancedNavigationProps {
   onLoginClick?: () => void;
@@ -54,24 +59,32 @@ const EnhancedNavigation = ({
     en: {
       home: "Home",
       loginRegister: "Login / Register",
+      login: "Login",
+      register: "Register",
       dashboard: "Dashboard",
       profile: "Profile",
       settings: "Settings",
       notifications: "Notifications",
       logout: "Sign Out",
       chat: "AI Chat",
-      scrollTop: "Back to Top"
+      scrollTop: "Back to Top",
+      english: "English",
+      indonesian: "Indonesian"
     },
     id: {
       home: "Beranda",
       loginRegister: "Masuk / Daftar",
+      login: "Masuk",
+      register: "Daftar",
       dashboard: "Dashboard",
       profile: "Profil",
       settings: "Pengaturan",
       notifications: "Notifikasi",
       logout: "Keluar",
       chat: "Chat AI",
-      scrollTop: "Kembali ke Atas"
+      scrollTop: "Kembali ke Atas",
+      english: "Bahasa Inggris",
+      indonesian: "Bahasa Indonesia"
     }
   };
 
@@ -146,10 +159,10 @@ const EnhancedNavigation = ({
             >
               <div className="flex items-center space-x-2">
                 <div className="relative">
-                  <Bot className="h-8 w-8 text-primary animate-pulse" />
-                  <Sparkles className="absolute -top-1 -right-1 h-4 w-4 text-yellow-500 animate-bounce" />
+                  <Bot className="h-8 w-8 text-primary animate-pulse" style={{ animationDuration: '3s' }} />
+                  <Sparkles className="absolute -top-1 -right-1 h-4 w-4 text-yellow-500 animate-bounce" style={{ animationDuration: '2.5s' }} />
                 </div>
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-orange-500 bg-clip-text text-transparent animate-pulse drop-shadow-md">
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-orange-500 bg-clip-text text-transparent animate-pulse drop-shadow-md" style={{ animationDuration: '4s' }}>
                   Astra Villa
                 </h1>
               </div>
@@ -174,20 +187,38 @@ const EnhancedNavigation = ({
 
             {/* Right side controls */}
             <div className="flex items-center space-x-3">
-              {/* Language Toggle */}
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={onLanguageToggle}
-                className={`hidden sm:flex items-center space-x-1 glass-ios rounded-full px-3 py-2 ${
-                  theme === 'dark'
-                    ? 'text-white/90 hover:text-white hover:bg-white/10'
-                    : 'text-blue-titanium-dark hover:text-blue-titanium hover:bg-blue-titanium/10'
-                }`}
-              >
-                <Globe className="h-4 w-4" />
-                <span className="text-sm font-medium">{language.toUpperCase()}</span>
-              </Button>
+              {/* Language Toggle with Country Flags */}
+              <HoverCard>
+                <HoverCardTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={onLanguageToggle}
+                    className={`hidden sm:flex items-center space-x-1 glass-ios rounded-full px-3 py-2 ${
+                      theme === 'dark'
+                        ? 'text-white/90 hover:text-white hover:bg-white/10'
+                        : 'text-blue-titanium-dark hover:text-blue-titanium hover:bg-blue-titanium/10'
+                    }`}
+                  >
+                    <span className="text-lg">
+                      {language === 'en' ? '🇺🇸' : '🇮🇩'}
+                    </span>
+                  </Button>
+                </HoverCardTrigger>
+                <HoverCardContent className="w-64">
+                  <div className="space-y-2">
+                    <h4 className="text-sm font-semibold">Language / Bahasa</h4>
+                    <div className="flex items-center space-x-2">
+                      <span>🇺🇸</span>
+                      <span className="text-sm">{currentText.english}</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <span>🇮🇩</span>
+                      <span className="text-sm">{currentText.indonesian}</span>
+                    </div>
+                  </div>
+                </HoverCardContent>
+              </HoverCard>
 
               {/* Theme Toggle */}
               <Button
@@ -292,16 +323,31 @@ const EnhancedNavigation = ({
                 </>
               ) : (
                 <div className="hidden md:flex items-center">
-                  <Button 
-                    className={`glass-ios rounded-full px-4 py-2 transition-all duration-200 hover:scale-105 ${
-                      theme === 'dark'
-                        ? 'bg-white/20 text-white border-white/30 hover:bg-white/30'
-                        : 'bg-blue-titanium/20 text-blue-titanium-dark border-blue-titanium/30 hover:bg-blue-titanium/30'
-                    }`}
-                    onClick={onLoginClick}
-                  >
-                    {currentText.loginRegister}
-                  </Button>
+                  {/* Login/Register Dropdown */}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button 
+                        className={`glass-ios rounded-full px-4 py-2 transition-all duration-200 hover:scale-105 ${
+                          theme === 'dark'
+                            ? 'bg-white/20 text-white border-white/30 hover:bg-white/30'
+                            : 'bg-blue-titanium/20 text-blue-titanium-dark border-blue-titanium/30 hover:bg-blue-titanium/30'
+                        }`}
+                      >
+                        <User className="h-4 w-4 mr-2" />
+                        Account
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-48">
+                      <DropdownMenuItem onClick={onLoginClick}>
+                        <LogIn className="h-4 w-4 mr-2" />
+                        {currentText.login}
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={onLoginClick}>
+                        <UserPlus className="h-4 w-4 mr-2" />
+                        {currentText.register}
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </div>
               )}
 

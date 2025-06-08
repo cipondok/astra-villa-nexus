@@ -19,7 +19,8 @@ import {
   Bot,
   Sparkles,
   ChevronDown,
-  MapPinned
+  MapPinned,
+  TrendingUp
 } from "lucide-react";
 
 interface ModernSearchPanelProps {
@@ -36,6 +37,8 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
   const [propertyType, setPropertyType] = useState("");
   const [bedrooms, setBedrooms] = useState("");
   const [bathrooms, setBathrooms] = useState("");
+  const [searchValue, setSearchValue] = useState("");
+  const [showTrending, setShowTrending] = useState(false);
 
   const text = {
     en: {
@@ -59,7 +62,8 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
       house: "House",
       condo: "Condo",
       townhouse: "Townhouse",
-      land: "Land"
+      land: "Land",
+      trending: "Trending Searches"
     },
     id: {
       buy: "Beli",
@@ -82,11 +86,20 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
       house: "Rumah", 
       condo: "Kondominium",
       townhouse: "Rumah Susun",
-      land: "Tanah"
+      land: "Tanah",
+      trending: "Pencarian Trending"
     }
   };
 
   const currentText = text[language];
+
+  const trendingSearches = [
+    "Villa in Bali",
+    "Apartment Jakarta Selatan",
+    "House in Bandung",
+    "Luxury Condo Surabaya",
+    "Land in Yogyakarta"
+  ];
 
   const states = ["DKI Jakarta", "Jawa Barat", "Jawa Tengah", "Jawa Timur", "Bali"];
   const cities = {
@@ -120,20 +133,27 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
       priceRange,
       propertyType,
       bedrooms,
-      bathrooms
+      bathrooms,
+      searchQuery: searchValue
     };
     onSearch(searchData);
+    setShowTrending(false);
   };
 
   const detectLocation = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
         console.log("Location detected:", position.coords);
-        // You would typically use a geocoding service here
         setSelectedState("DKI Jakarta");
         setSelectedCity("Jakarta Selatan");
       });
     }
+  };
+
+  const handleTrendingClick = (trending: string) => {
+    setSearchValue(trending);
+    setShowTrending(false);
+    handleSearch();
   };
 
   return (
@@ -149,7 +169,7 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
             <Button
               key={type.key}
               variant={searchType === type.key ? "default" : "ghost"}
-              className={`flex items-center gap-2 rounded-full px-6 py-2 transition-all ${
+              className={`flex items-center gap-2 rounded-full px-6 py-2 transition-all duration-300 ${
                 searchType === type.key 
                   ? "bg-primary text-primary-foreground shadow-lg" 
                   : "text-foreground/70 hover:text-foreground hover:bg-white/10"
@@ -166,15 +186,43 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
       {/* Main Search Panel */}
       <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 shadow-2xl">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-          {/* Search Input */}
-          <div className="md:col-span-2">
+          {/* Search Input with Trending */}
+          <div className="md:col-span-2 relative">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
               <Input
                 placeholder={currentText.searchPlaceholder}
-                className="pl-10 bg-white/20 border-white/30 text-foreground placeholder:text-foreground/50"
+                className="pl-10 pr-10 bg-white/20 border-white/30 text-foreground placeholder:text-foreground/50"
+                value={searchValue}
+                onChange={(e) => setSearchValue(e.target.value)}
+                onFocus={() => setShowTrending(true)}
+              />
+              <TrendingUp 
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4 cursor-pointer"
+                onClick={() => setShowTrending(!showTrending)}
               />
             </div>
+            
+            {/* Trending Searches Dropdown */}
+            {showTrending && (
+              <div className="absolute top-full left-0 right-0 mt-1 bg-white/90 backdrop-blur-md rounded-lg border border-white/30 shadow-lg z-10">
+                <div className="p-2">
+                  <div className="text-xs font-medium text-muted-foreground mb-2 flex items-center gap-1">
+                    <TrendingUp className="h-3 w-3" />
+                    {currentText.trending}
+                  </div>
+                  {trendingSearches.map((trending, index) => (
+                    <div
+                      key={index}
+                      className="px-3 py-2 hover:bg-white/20 rounded cursor-pointer text-sm text-foreground transition-colors"
+                      onClick={() => handleTrendingClick(trending)}
+                    >
+                      {trending}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Location Selection */}
@@ -347,11 +395,11 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
         <div className="flex justify-center">
           <Button 
             onClick={handleSearch}
-            className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-3 rounded-full text-lg font-medium shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+            className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-3 rounded-full text-lg font-medium shadow-lg hover:shadow-xl transition-all duration-700 hover:scale-105"
           >
-            <Bot className="h-5 w-5 mr-2 animate-pulse" />
+            <Bot className="h-5 w-5 mr-2 animate-pulse" style={{ animationDuration: '3s' }} />
             {currentText.search}
-            <Sparkles className="h-4 w-4 ml-2 animate-bounce" />
+            <Sparkles className="h-4 w-4 ml-2 animate-bounce" style={{ animationDuration: '2s' }} />
           </Button>
         </div>
 
