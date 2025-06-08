@@ -57,16 +57,9 @@ const VendorReviews = () => {
 
       // Type-safe data handling
       const typedReviews: Review[] = (data || []).map(review => {
-        // Safe customer handling - extract properties safely
-        let customerName = 'Anonymous';
+        // Safe customer handling
+        const customerData = review.customer as any;
         
-        if (review.customer && 
-            typeof review.customer === 'object' && 
-            !Array.isArray(review.customer)) {
-          const customerObj = review.customer as any;
-          customerName = customerObj.full_name || 'Anonymous';
-        }
-
         return {
           id: review.id,
           rating: review.rating,
@@ -79,7 +72,7 @@ const VendorReviews = () => {
             ? { service_name: review.service.service_name }
             : { service_name: 'Unknown Service' },
           customer: {
-            full_name: customerName
+            full_name: customerData?.full_name || 'Anonymous'
           }
         };
       });

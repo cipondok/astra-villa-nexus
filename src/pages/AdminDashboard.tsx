@@ -10,6 +10,7 @@ import PropertyManagement from "@/components/admin/PropertyManagement";
 import SystemSettings from "@/components/admin/SystemSettings";
 import SystemReports from "@/components/admin/SystemReports";
 import WebsiteDesignSettings from "@/components/admin/WebsiteDesignSettings";
+import VendorManagement from "@/components/admin/VendorManagement";
 import { useAuth } from "@/contexts/AuthContext";
 import { 
   Users, 
@@ -20,7 +21,8 @@ import {
   Bell, 
   DollarSign, 
   TrendingUp,
-  Palette
+  Palette,
+  Store
 } from "lucide-react";
 
 const AdminDashboard = () => {
@@ -53,8 +55,8 @@ const AdminDashboard = () => {
   const quickActions = [
     { label: "Add Property", action: () => console.log("Add property"), icon: Building, variant: "ios" as const },
     { label: "Manage Users", action: () => setActiveTab("users"), icon: Users, variant: "ios-green" as const },
-    { label: "System Reports", action: () => setActiveTab("reports"), icon: BarChart3, variant: "ios-orange" as const },
-    { label: "Website Design", action: () => setActiveTab("design"), icon: Palette, variant: "ios-red" as const }
+    { label: "Manage Vendors", action: () => setActiveTab("vendors"), icon: Store, variant: "ios-purple" as const },
+    { label: "System Reports", action: () => setActiveTab("reports"), icon: BarChart3, variant: "ios-orange" as const }
   ];
 
   return (
@@ -65,7 +67,7 @@ const AdminDashboard = () => {
         <div className="max-w-7xl mx-auto p-6 space-y-6">
           
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-            <TabsList className="grid w-full grid-cols-6 glass-ios">
+            <TabsList className="grid w-full grid-cols-7 glass-ios">
               <TabsTrigger value="overview" className="flex items-center gap-2">
                 <BarChart3 className="h-4 w-4" />
                 Overview
@@ -73,6 +75,10 @@ const AdminDashboard = () => {
               <TabsTrigger value="users" className="flex items-center gap-2">
                 <Users className="h-4 w-4" />
                 Users
+              </TabsTrigger>
+              <TabsTrigger value="vendors" className="flex items-center gap-2">
+                <Store className="h-4 w-4" />
+                Vendors
               </TabsTrigger>
               <TabsTrigger value="properties" className="flex items-center gap-2">
                 <Building className="h-4 w-4" />
@@ -202,6 +208,10 @@ const AdminDashboard = () => {
 
             <TabsContent value="users">
               <UserManagement />
+            </TabsContent>
+
+            <TabsContent value="vendors">
+              <VendorManagement />
             </TabsContent>
 
             <TabsContent value="properties">

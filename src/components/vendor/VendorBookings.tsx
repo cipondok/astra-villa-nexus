@@ -65,18 +65,9 @@ const VendorBookings = () => {
 
       // Type-safe data handling
       const typedBookings: Booking[] = (data || []).map(booking => {
-        // Safe customer handling - extract properties safely
-        let customerName = 'Unknown';
-        let customerEmail = '';
+        // Safe customer handling
+        const customerData = booking.customer as any;
         
-        if (booking.customer && 
-            typeof booking.customer === 'object' && 
-            !Array.isArray(booking.customer)) {
-          const customerObj = booking.customer as any;
-          customerName = customerObj.full_name || 'Unknown';
-          customerEmail = customerObj.email || '';
-        }
-
         return {
           id: booking.id,
           booking_date: booking.booking_date,
@@ -92,9 +83,9 @@ const VendorBookings = () => {
           service: booking.service && typeof booking.service === 'object' && 'service_name' in booking.service
             ? { service_name: booking.service.service_name }
             : null,
-          customer: booking.customer ? {
-            full_name: customerName,
-            email: customerEmail
+          customer: customerData ? {
+            full_name: customerData.full_name || 'Unknown',
+            email: customerData.email || ''
           } : null
         };
       });
