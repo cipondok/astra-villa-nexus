@@ -10,7 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { Shield, Users, Edit, Trash2, AlertCircle } from "lucide-react";
+import { Shield, Users, Edit, Trash2, AlertCircle, CheckCircle, XCircle, Crown } from "lucide-react";
 import { useAlert } from "@/contexts/AlertContext";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -36,34 +36,15 @@ const UserRolesManagement = () => {
   const queryClient = useQueryClient();
 
   // All hooks must be called unconditionally at the top level
-  // Check if current user is super admin using the new safe function
-  const { data: isSuperAdmin, isLoading: superAdminLoading } = useQuery({
-    queryKey: ['is-super-admin-safe', user?.id],
-    queryFn: async () => {
-      if (!user?.id) return false;
-      
-      try {
-        const { data, error } = await supabase.rpc('is_current_user_super_admin_safe');
-        
-        if (error) {
-          console.error('Error checking super admin status:', error);
-          return false;
-        }
-        
-        return data || false;
-      } catch (error) {
-        console.error('Error in super admin check:', error);
-        return false;
-      }
-    },
-    enabled: !!user?.id,
-  });
+  // Check if current user is super admin using email (simpler approach)
+  const isSuperAdmin = user?.email === 'mycode103@gmail.com';
 
-  // Fetch users with better error handling to avoid infinite recursion
+  // Fetch users directly from profiles table to avoid RLS issues
   const { data: users, isLoading: usersLoading, error } = useQuery({
     queryKey: ['admin-users-management'],
     queryFn: async () => {
       try {
+        console.log('Fetching users for admin panel');
         const { data, error } = await supabase
           .from('profiles')
           .select('*')
@@ -74,10 +55,10 @@ const UserRolesManagement = () => {
           throw error;
         }
         
+        console.log('Fetched users:', data?.length);
         return data as UserProfile[];
       } catch (err) {
         console.error('Query error:', err);
-        // Return empty array instead of throwing to prevent infinite recursion
         return [];
       }
     },
@@ -88,6 +69,7 @@ const UserRolesManagement = () => {
 
   const updateUserRoleMutation = useMutation({
     mutationFn: async ({ userId, role }: { userId: string; role: UserRole }) => {
+      console.log('Updating user role:', userId, role);
       const { error } = await supabase
         .from('profiles')
         .update({ role, updated_at: new Date().toISOString() })
@@ -105,17 +87,27 @@ const UserRolesManagement = () => {
     },
   });
 
-  // Now we can do conditional rendering after all hooks are declared
-  if (superAdminLoading) {
-    return (
-      <Card className="bg-card border-border">
-        <CardContent className="p-6 text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Checking permissions...</p>
-        </CardContent>
-      </Card>
-    );
-  }
+  // Update verification status mutation
+  const updateVerificationMutation = useMutation({
+    mutationFn: async ({ userId, status }: { userId: string; status: string }) => {
+      console.log('Updating verification status:', userId, status);
+      const { error } = await supabase
+        .from('profiles')
+        .update({ 
+          verification_status: status,
+          updated_at: new Date().toISOString() 
+        })
+        .eq('id', userId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      showSuccess("Status Updated", "User verification status has been updated successfully.");
+      queryClient.invalidateQueries({ queryKey: ['admin-users-management'] });
+    },
+    onError: (error: any) => {
+      showError("Update Failed", error.message);
+    },
+  });
 
   // Only show this component if user is super admin
   if (!isSuperAdmin) {
@@ -142,6 +134,11 @@ const UserRolesManagement = () => {
     }
   };
 
+  const handleVerificationToggle = (user: UserProfile) => {
+    const newStatus = user.verification_status === 'approved' ? 'pending' : 'approved';
+    updateVerificationMutation.mutate({ userId: user.id, status: newStatus });
+  };
+
   const getRoleBadge = (role: UserRole) => {
     const roleConfig = {
       admin: { color: "bg-red-500 text-white", label: "Admin" },
@@ -159,11 +156,42 @@ const UserRolesManagement = () => {
     );
   };
 
+  const getStatusBadge = (status?: string) => {
+    if (!status || status === 'pending') {
+      return (
+        <Badge variant="secondary" className="flex items-center gap-1">
+          <AlertCircle className="h-3 w-3" />
+          PENDING
+        </Badge>
+      );
+    }
+    
+    if (status === 'approved') {
+      return (
+        <Badge variant="default" className="flex items-center gap-1 bg-green-600">
+          <CheckCircle className="h-3 w-3" />
+          APPROVED
+        </Badge>
+      );
+    }
+    
+    return (
+      <Badge variant="destructive" className="flex items-center gap-1">
+        <XCircle className="h-3 w-3" />
+        {status.toUpperCase()}
+      </Badge>
+    );
+  };
+
   const filteredUsers = users?.filter(user => 
     user.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     user.role?.toLowerCase().includes(searchTerm.toLowerCase())
   ) || [];
+
+  // Separate pending and approved users for easier visibility
+  const pendingUsers = filteredUsers.filter(user => !user.verification_status || user.verification_status === 'pending');
+  const approvedUsers = filteredUsers.filter(user => user.verification_status === 'approved');
 
   if (error) {
     return (
@@ -192,6 +220,7 @@ const UserRolesManagement = () => {
           <CardTitle className="flex items-center gap-2 text-card-foreground">
             <Shield className="h-5 w-5" />
             User Roles & Access Control
+            {isSuperAdmin && <Crown className="h-4 w-4 text-red-600" />}
           </CardTitle>
           <CardDescription className="text-muted-foreground">
             Manage user roles and permissions across the platform
@@ -209,23 +238,95 @@ const UserRolesManagement = () => {
               />
             </div>
 
-            {/* Role Statistics */}
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-              {['admin', 'agent', 'property_owner', 'vendor', 'general_user'].map((role) => {
-                const count = users?.filter(user => user.role === role).length || 0;
-                return (
-                  <div key={role} className="bg-muted rounded-lg p-3 text-center">
-                    <div className="text-2xl font-bold text-foreground">{count}</div>
-                    <div className="text-sm text-muted-foreground capitalize">
-                      {role.replace('_', ' ')}
-                    </div>
-                  </div>
-                );
-              })}
+            {/* Statistics */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="bg-muted rounded-lg p-3 text-center">
+                <div className="text-2xl font-bold text-foreground">{filteredUsers.length}</div>
+                <div className="text-sm text-muted-foreground">Total Users</div>
+              </div>
+              <div className="bg-yellow-50 rounded-lg p-3 text-center">
+                <div className="text-2xl font-bold text-yellow-600">{pendingUsers.length}</div>
+                <div className="text-sm text-yellow-700">Pending Approval</div>
+              </div>
+              <div className="bg-green-50 rounded-lg p-3 text-center">
+                <div className="text-2xl font-bold text-green-600">{approvedUsers.length}</div>
+                <div className="text-sm text-green-700">Approved Users</div>
+              </div>
+              <div className="bg-red-50 rounded-lg p-3 text-center">
+                <div className="text-2xl font-bold text-red-600">
+                  {users?.filter(user => user.role === 'admin').length || 0}
+                </div>
+                <div className="text-sm text-red-700">Admin Users</div>
+              </div>
             </div>
 
-            {/* Users Table */}
+            {/* Pending Users Section */}
+            {pendingUsers.length > 0 && (
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
+                  <AlertCircle className="h-5 w-5 text-yellow-600" />
+                  Pending Users ({pendingUsers.length})
+                </h3>
+                <div className="border border-yellow-200 rounded-lg bg-yellow-50">
+                  <Table>
+                    <TableHeader>
+                      <TableRow className="border-yellow-200">
+                        <TableHead className="text-muted-foreground">User</TableHead>
+                        <TableHead className="text-muted-foreground">Email</TableHead>
+                        <TableHead className="text-muted-foreground">Role</TableHead>
+                        <TableHead className="text-muted-foreground">Status</TableHead>
+                        <TableHead className="text-muted-foreground">Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {pendingUsers.map((user) => (
+                        <TableRow key={user.id} className="border-yellow-200">
+                          <TableCell className="text-foreground">
+                            <div className="flex items-center gap-3">
+                              <div className="w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center text-white text-sm font-semibold">
+                                {user.full_name?.charAt(0)?.toUpperCase() || user.email?.charAt(0)?.toUpperCase() || 'U'}
+                              </div>
+                              <div>
+                                <div className="font-medium">{user.full_name || 'No Name'}</div>
+                                <div className="text-muted-foreground text-sm">ID: {user.id.slice(0, 8)}...</div>
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell className="text-muted-foreground">{user.email}</TableCell>
+                          <TableCell>{getRoleBadge(user.role)}</TableCell>
+                          <TableCell>{getStatusBadge(user.verification_status)}</TableCell>
+                          <TableCell className="space-x-2">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleRoleUpdate(user)}
+                              className="border-border text-foreground hover:bg-muted"
+                            >
+                              <Edit className="h-4 w-4 mr-1" />
+                              Edit Role
+                            </Button>
+                            <Button
+                              size="sm"
+                              onClick={() => handleVerificationToggle(user)}
+                              className="bg-green-600 hover:bg-green-700 text-white"
+                            >
+                              <CheckCircle className="h-4 w-4 mr-1" />
+                              Approve
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </div>
+            )}
+
+            {/* All Users Table */}
             <div className="border border-border rounded-lg bg-card">
+              <div className="p-4 border-b border-border">
+                <h3 className="text-lg font-semibold text-foreground">All Users</h3>
+              </div>
               <Table>
                 <TableHeader>
                   <TableRow className="border-border">
@@ -264,24 +365,31 @@ const UserRolesManagement = () => {
                           </div>
                         </TableCell>
                         <TableCell className="text-muted-foreground">{user.email}</TableCell>
+                        <TableCell>{getRoleBadge(user.role)}</TableCell>
+                        <TableCell>{getStatusBadge(user.verification_status)}</TableCell>
                         <TableCell>
-                          {getRoleBadge(user.role)}
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant={user.verification_status === 'verified' ? 'default' : 'outline'}>
-                            {user.verification_status || 'pending'}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => handleRoleUpdate(user)}
-                            className="border-border text-foreground hover:bg-muted"
-                          >
-                            <Edit className="h-4 w-4 mr-1" />
-                            Edit Role
-                          </Button>
+                          <div className="flex gap-2">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleRoleUpdate(user)}
+                              className="border-border text-foreground hover:bg-muted"
+                            >
+                              <Edit className="h-4 w-4 mr-1" />
+                              Edit Role
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleVerificationToggle(user)}
+                              className={user.verification_status === 'approved' ? 
+                                "border-yellow-500 text-yellow-700 hover:bg-yellow-50" : 
+                                "border-green-500 text-green-700 hover:bg-green-50"
+                              }
+                            >
+                              {user.verification_status === 'approved' ? 'Set Pending' : 'Approve'}
+                            </Button>
+                          </div>
                         </TableCell>
                       </TableRow>
                     ))
