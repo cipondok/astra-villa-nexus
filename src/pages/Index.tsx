@@ -8,12 +8,13 @@ import PropertyListingsSection from "@/components/PropertyListingsSection";
 import ModernSearchPanel from "@/components/ModernSearchPanel";
 import ParticleEffect from "@/components/ParticleEffect";
 import ProfessionalFooter from "@/components/ProfessionalFooter";
+import { useTheme } from "@/components/ThemeProvider";
 
 const Index = () => {
   const [language, setLanguage] = useState<"en" | "id">("en");
-  const [theme, setTheme] = useState("light");
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const { isAuthenticated, loading } = useAuth();
+  const { theme } = useTheme();
   const [searchParams] = useSearchParams();
 
   console.log('Index component rendering, loading:', loading, 'isAuthenticated:', isAuthenticated);
@@ -29,10 +30,6 @@ const Index = () => {
     setLanguage(prev => prev === "en" ? "id" : "en");
   };
 
-  const toggleTheme = () => {
-    setTheme(prev => prev === "light" ? "dark" : "light");
-  };
-
   const handleLoginClick = () => {
     setIsAuthModalOpen(true);
   };
@@ -41,21 +38,13 @@ const Index = () => {
     console.log('Search triggered with data:', searchData);
   };
 
-  useEffect(() => {
-    if (theme === "dark") {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  }, [theme]);
-
   // Show loading only for a brief moment
   if (loading) {
     console.log('Showing loading screen');
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-ios-blue mx-auto mb-2"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-2"></div>
           <p className="text-sm text-muted-foreground">Loading...</p>
         </div>
       </div>
@@ -70,8 +59,6 @@ const Index = () => {
         onLoginClick={!isAuthenticated ? handleLoginClick : undefined}
         language={language}
         onLanguageToggle={toggleLanguage}
-        theme={theme}
-        onThemeToggle={toggleTheme}
       />
       
       {/* Hero Section with Modern Search */}
@@ -84,7 +71,7 @@ const Index = () => {
         <div className="max-w-7xl mx-auto text-center relative z-10">
           <h1 className="text-4xl md:text-6xl font-bold text-foreground/60 mb-6">
             Find Your Dream
-            <span className="block bg-gradient-to-r from-ios-blue to-ios-blue/80 bg-clip-text text-transparent opacity-60">
+            <span className="block bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent opacity-60">
               Property
             </span>
           </h1>

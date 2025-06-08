@@ -1,9 +1,9 @@
-
 import { Button } from "@/components/ui/button";
-import { Sun, Moon, Globe, Menu, User, LogOut, Settings, Bell, Home, ArrowUp, MessageCircle, Sparkles, Bot, LogIn, UserPlus, Lock, Unlock } from "lucide-react";
+import { Sun, Moon, Sunset, Globe, Menu, User, LogOut, Settings, Bell, Home, ArrowUp, MessageCircle, Sparkles, Bot, LogIn, UserPlus, Lock, Unlock } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { useTheme } from "@/components/ThemeProvider";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,16 +24,12 @@ interface EnhancedNavigationProps {
   onLoginClick?: () => void;
   language: "en" | "id";
   onLanguageToggle: () => void;
-  theme: string;
-  onThemeToggle: () => void;
 }
 
 const EnhancedNavigation = ({ 
   onLoginClick,
   language, 
-  onLanguageToggle, 
-  theme, 
-  onThemeToggle 
+  onLanguageToggle
 }: EnhancedNavigationProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -42,6 +38,7 @@ const EnhancedNavigation = ({
   const [showChatBot, setShowChatBot] = useState(false);
   const [isLoginDropdownOpen, setIsLoginDropdownOpen] = useState(false);
   const { user, profile, signOut, isAuthenticated } = useAuth();
+  const { theme, setTheme } = useTheme();
   const navigate = useNavigate();
 
   // Handle scroll effect
@@ -70,7 +67,10 @@ const EnhancedNavigation = ({
       chat: "AI Chat",
       scrollTop: "Back to Top",
       english: "English",
-      indonesian: "Indonesian"
+      indonesian: "Indonesian",
+      lightMode: "Light Mode",
+      middleMode: "Middle Mode",
+      darkMode: "Dark Mode"
     },
     id: {
       home: "Beranda",
@@ -85,11 +85,47 @@ const EnhancedNavigation = ({
       chat: "Chat AI",
       scrollTop: "Kembali ke Atas",
       english: "Bahasa Inggris",
-      indonesian: "Bahasa Indonesia"
+      indonesian: "Bahasa Indonesia",
+      lightMode: "Mode Terang",
+      middleMode: "Mode Tengah",
+      darkMode: "Mode Gelap"
     }
   };
 
   const currentText = text[language];
+
+  const handleThemeToggle = () => {
+    const themes = ["light", "middle", "dark"] as const;
+    const currentIndex = themes.indexOf(theme as "light" | "middle" | "dark");
+    const nextIndex = (currentIndex + 1) % themes.length;
+    setTheme(themes[nextIndex]);
+  };
+
+  const getThemeIcon = () => {
+    switch (theme) {
+      case "light":
+        return <Sun className="h-4 w-4" />;
+      case "middle":
+        return <Sunset className="h-4 w-4" />;
+      case "dark":
+        return <Moon className="h-4 w-4" />;
+      default:
+        return <Sun className="h-4 w-4" />;
+    }
+  };
+
+  const getThemeLabel = () => {
+    switch (theme) {
+      case "light":
+        return currentText.lightMode;
+      case "middle":
+        return currentText.middleMode;
+      case "dark":
+        return currentText.darkMode;
+      default:
+        return currentText.lightMode;
+    }
+  };
 
   const getUserInitials = () => {
     if (profile?.full_name) {
@@ -142,18 +178,11 @@ const EnhancedNavigation = ({
     <>
       <nav className={`
         fixed top-0 left-0 right-0 z-50 transition-all duration-300
-        ${theme === 'dark' 
-          ? (isScrolled 
-            ? 'bg-blue-titanium/70 dark:bg-blue-titanium-dark/70 backdrop-blur-md' 
-            : 'bg-blue-titanium-light/95 dark:bg-blue-titanium/95 backdrop-blur-sm')
-          : (isScrolled
-            ? 'bg-blue-sky-transparent backdrop-blur-md'
-            : 'bg-blue-sky-light-transparent backdrop-blur-sm')
+        ${isScrolled 
+          ? 'bg-background/70 backdrop-blur-md' 
+          : 'bg-background/95 backdrop-blur-sm'
         }
-        border-b ${theme === 'dark' 
-          ? 'border-blue-titanium/20 dark:border-blue-titanium-light/20'
-          : 'border-blue-sky/30'
-        }
+        border-b border-border/20
       `}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
@@ -179,11 +208,7 @@ const EnhancedNavigation = ({
                 variant="ghost"
                 size="sm"
                 onClick={() => navigate('/')}
-                className={`glass-ios rounded-full px-4 py-2 transition-all duration-200 hover:scale-105 ${
-                  theme === 'dark'
-                    ? 'text-white/90 hover:text-white hover:bg-white/10'
-                    : 'text-blue-titanium-dark hover:text-blue-titanium hover:bg-blue-titanium/10'
-                }`}
+                className="glass-ios rounded-full px-4 py-2 transition-all duration-200 hover:scale-105 text-foreground/90 hover:text-foreground hover:bg-foreground/10"
               >
                 <Home className="h-4 w-4 mr-2" />
                 {currentText.home}
@@ -199,11 +224,7 @@ const EnhancedNavigation = ({
                     variant="ghost"
                     size="sm"
                     onClick={onLanguageToggle}
-                    className={`hidden sm:flex items-center space-x-1 glass-ios rounded-full px-3 py-2 ${
-                      theme === 'dark'
-                        ? 'text-white/90 hover:text-white hover:bg-white/10'
-                        : 'text-blue-titanium-dark hover:text-blue-titanium hover:bg-blue-titanium/10'
-                    }`}
+                    className="hidden sm:flex items-center space-x-1 glass-ios rounded-full px-3 py-2 text-foreground/90 hover:text-foreground hover:bg-foreground/10"
                   >
                     <span className="text-lg">
                       {language === 'en' ? '🇺🇸' : '🇮🇩'}
@@ -225,30 +246,35 @@ const EnhancedNavigation = ({
                 </HoverCardContent>
               </HoverCard>
 
-              {/* Theme Toggle */}
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={onThemeToggle}
-                className={`hidden sm:flex glass-ios rounded-full p-2 ${
-                  theme === 'dark'
-                    ? 'text-white/90 hover:text-white hover:bg-white/10'
-                    : 'text-blue-titanium-dark hover:text-blue-titanium hover:bg-blue-titanium/10'
-                }`}
-              >
-                {theme === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
-              </Button>
+              {/* Theme Toggle with 3 modes */}
+              <HoverCard>
+                <HoverCardTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleThemeToggle}
+                    className="hidden sm:flex glass-ios rounded-full p-2 text-foreground/90 hover:text-foreground hover:bg-foreground/10"
+                  >
+                    {getThemeIcon()}
+                  </Button>
+                </HoverCardTrigger>
+                <HoverCardContent className="w-48">
+                  <div className="space-y-2">
+                    <h4 className="text-sm font-semibold">Theme / Tema</h4>
+                    <p className="text-sm text-muted-foreground">{getThemeLabel()}</p>
+                    <div className="text-xs text-muted-foreground">
+                      Click to cycle: Light → Middle → Dark
+                    </div>
+                  </div>
+                </HoverCardContent>
+              </HoverCard>
 
               {/* AI Chat Bot Button */}
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => setShowChatBot(!showChatBot)}
-                className={`hidden sm:flex glass-ios rounded-full p-2 relative ${
-                  theme === 'dark'
-                    ? 'text-white/90 hover:text-white hover:bg-white/10'
-                    : 'text-blue-titanium-dark hover:text-blue-titanium hover:bg-blue-titanium/10'
-                }`}
+                className="hidden sm:flex glass-ios rounded-full p-2 relative text-foreground/90 hover:text-foreground hover:bg-foreground/10"
               >
                 <MessageCircle className="h-4 w-4" />
                 <div className="absolute -top-1 -right-1 h-2 w-2 bg-green-500 rounded-full animate-pulse"></div>
@@ -261,11 +287,7 @@ const EnhancedNavigation = ({
                     variant="ghost"
                     size="sm"
                     onClick={toggleAlerts}
-                    className={`hidden sm:flex relative glass-ios rounded-full p-2 ${
-                      theme === 'dark'
-                        ? 'text-white/90 hover:text-white hover:bg-white/10'
-                        : 'text-blue-titanium-dark hover:text-blue-titanium hover:bg-blue-titanium/10'
-                    }`}
+                    className="hidden sm:flex relative glass-ios rounded-full p-2 text-foreground/90 hover:text-foreground hover:bg-foreground/10"
                   >
                     <Bell className="h-4 w-4" />
                     <Badge variant="destructive" className="absolute -top-1 -right-1 h-5 w-5 p-0 text-xs">
@@ -276,14 +298,10 @@ const EnhancedNavigation = ({
                   {/* User Menu */}
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" className={`flex items-center space-x-2 p-2 glass-ios rounded-full ${
-                        theme === 'dark'
-                          ? 'text-white/90 hover:text-white hover:bg-white/10'
-                          : 'text-blue-titanium-dark hover:text-blue-titanium hover:bg-blue-titanium/10'
-                      }`}>
+                      <Button variant="ghost" className="flex items-center space-x-2 p-2 glass-ios rounded-full text-foreground/90 hover:text-foreground hover:bg-foreground/10">
                         <Avatar className="h-8 w-8 ring-2 ring-white/20">
                           <AvatarImage src={profile?.avatar_url || undefined} alt={profile?.full_name || 'User'} />
-                          <AvatarFallback className="text-sm bg-blue-titanium text-white">
+                          <AvatarFallback className="text-sm bg-primary text-primary-foreground">
                             {getUserInitials()}
                           </AvatarFallback>
                         </Avatar>
@@ -333,26 +351,18 @@ const EnhancedNavigation = ({
                     <DropdownMenuTrigger asChild>
                       <Button
                         onClick={handleLoginDropdownClick}
-                        className={`relative group glass-ios rounded-full w-12 h-12 p-0 border-2 transition-all duration-300 hover:scale-110 ${
-                          theme === 'dark'
-                            ? 'bg-gradient-to-br from-gray-800 to-gray-900 border-gray-600 hover:border-white/40 shadow-lg hover:shadow-white/20'
-                            : 'bg-gradient-to-br from-gray-100 to-gray-200 border-gray-300 hover:border-blue-400 shadow-lg hover:shadow-blue-500/20'
-                        }`}
+                        className="relative group glass-ios rounded-full w-12 h-12 p-0 border-2 transition-all duration-300 hover:scale-110 bg-gradient-to-br from-card to-muted border-border hover:border-primary/40 shadow-lg hover:shadow-primary/20"
                       >
                         <div className="relative">
                           {isLoginDropdownOpen ? (
-                            <Unlock className={`h-5 w-5 transition-colors duration-200 ${
-                              theme === 'dark' ? 'text-green-400' : 'text-green-600'
-                            }`} />
+                            <Unlock className="h-5 w-5 transition-colors duration-200 text-green-500" />
                           ) : (
-                            <Lock className={`h-5 w-5 transition-colors duration-200 ${
-                              theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
-                            }`} />
+                            <Lock className="h-5 w-5 transition-colors duration-200 text-muted-foreground" />
                           )}
                           <div className={`absolute inset-0 rounded-full transition-all duration-300 ${
                             isLoginDropdownOpen 
                               ? 'bg-green-500/20 animate-pulse' 
-                              : 'bg-transparent group-hover:bg-blue-500/10'
+                              : 'bg-transparent group-hover:bg-primary/10'
                           }`} />
                         </div>
                       </Button>
@@ -375,11 +385,7 @@ const EnhancedNavigation = ({
               <Button
                 variant="ghost"
                 size="sm"
-                className={`md:hidden glass-ios rounded-full p-2 ${
-                  theme === 'dark'
-                    ? 'text-white/90 hover:text-white hover:bg-white/10'
-                    : 'text-blue-titanium-dark hover:text-blue-titanium hover:bg-blue-titanium/10'
-                }`}
+                className="md:hidden glass-ios rounded-full p-2 text-foreground/90 hover:text-foreground hover:bg-foreground/10"
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
               >
                 <Menu className="h-5 w-5" />
@@ -389,19 +395,11 @@ const EnhancedNavigation = ({
 
           {/* Mobile Navigation */}
           {isMenuOpen && (
-            <div className={`md:hidden border-t border-white/20 ${
-              theme === 'dark'
-                ? 'bg-blue-titanium/95 dark:bg-blue-titanium-dark/95'
-                : 'bg-blue-sky-light-transparent'
-            }`}>
+            <div className="md:hidden border-t border-border/20 bg-background/95">
               <div className="px-2 pt-2 pb-3 space-y-1">
                 <button 
                   onClick={() => { navigate('/'); setIsMenuOpen(false); }}
-                  className={`block w-full text-left px-3 py-2 rounded-md ${
-                    theme === 'dark'
-                      ? 'text-white/90 hover:text-white hover:bg-white/10'
-                      : 'text-blue-titanium-dark hover:text-blue-titanium hover:bg-blue-titanium/10'
-                  }`}
+                  className="block w-full text-left px-3 py-2 rounded-md text-foreground/90 hover:text-foreground hover:bg-foreground/10"
                 >
                   {currentText.home}
                 </button>
@@ -410,11 +408,7 @@ const EnhancedNavigation = ({
                   <div className="px-3 py-2 space-y-2">
                     <Button 
                       onClick={() => { onLoginClick?.(); setIsMenuOpen(false); }} 
-                      className={`w-full backdrop-blur-sm ${
-                        theme === 'dark'
-                          ? 'bg-white/20 text-white border-white/30 hover:bg-white/30'
-                          : 'bg-blue-titanium/20 text-blue-titanium-dark border-blue-titanium/30 hover:bg-blue-titanium/30'
-                      }`}
+                      className="w-full backdrop-blur-sm bg-primary/20 text-primary-foreground border-primary/30 hover:bg-primary/30"
                     >
                       <LogIn className="h-4 w-4 mr-2" />
                       {currentText.login}
@@ -422,47 +416,31 @@ const EnhancedNavigation = ({
                     <Button 
                       onClick={() => { onLoginClick?.(); setIsMenuOpen(false); }} 
                       variant="outline"
-                      className={`w-full backdrop-blur-sm ${
-                        theme === 'dark'
-                          ? 'border-white/30 text-white hover:bg-white/10'
-                          : 'border-blue-titanium/30 text-blue-titanium-dark hover:bg-blue-titanium/10'
-                      }`}
+                      className="w-full backdrop-blur-sm border-border/30 text-foreground hover:bg-foreground/10"
                     >
                       <UserPlus className="h-4 w-4 mr-2" />
                       {currentText.register}
                     </Button>
                   </div>
                 ) : (
-                  <div className="px-3 py-2 space-y-2 border-t border-white/20 mt-2 pt-2">
+                  <div className="px-3 py-2 space-y-2 border-t border-border/20 mt-2 pt-2">
                     <div className="flex items-center space-x-3 mb-2">
                       <Avatar className="h-8 w-8 ring-2 ring-white/20">
                         <AvatarImage src={profile?.avatar_url || undefined} alt={profile?.full_name || 'User'} />
-                        <AvatarFallback className="text-sm bg-blue-titanium text-white">
+                        <AvatarFallback className="text-sm bg-primary text-primary-foreground">
                           {getUserInitials()}
                         </AvatarFallback>
                       </Avatar>
                       <div>
-                        <p className={`text-sm font-medium ${
-                          theme === 'dark' ? 'text-white' : 'text-blue-titanium-dark'
-                        }`}>{profile?.full_name || 'User'}</p>
-                        <p className={`text-xs capitalize ${
-                          theme === 'dark' ? 'text-white/70' : 'text-blue-titanium'
-                        }`}>{profile?.role.replace('_', ' ')}</p>
+                        <p className="text-sm font-medium text-foreground">{profile?.full_name || 'User'}</p>
+                        <p className="text-xs capitalize text-muted-foreground">{profile?.role.replace('_', ' ')}</p>
                       </div>
                     </div>
-                    <Button variant="ghost" onClick={() => { navigate(getDashboardRoute()); setIsMenuOpen(false); }} className={`w-full justify-start ${
-                      theme === 'dark'
-                        ? 'text-white/90 hover:text-white hover:bg-white/10'
-                        : 'text-blue-titanium-dark hover:text-blue-titanium hover:bg-blue-titanium/10'
-                    }`}>
+                    <Button variant="ghost" onClick={() => { navigate(getDashboardRoute()); setIsMenuOpen(false); }} className="w-full justify-start text-foreground/90 hover:text-foreground hover:bg-foreground/10">
                       <User className="h-4 w-4 mr-2" />
                       {currentText.dashboard}
                     </Button>
-                    <Button variant="ghost" onClick={() => { navigate('/dashboard?tab=notifications'); setIsMenuOpen(false); }} className={`w-full justify-start ${
-                      theme === 'dark'
-                        ? 'text-white/90 hover:text-white hover:bg-white/10'
-                        : 'text-blue-titanium-dark hover:text-blue-titanium hover:bg-blue-titanium/10'
-                    }`}>
+                    <Button variant="ghost" onClick={() => { navigate('/dashboard?tab=notifications'); setIsMenuOpen(false); }} className="w-full justify-start text-foreground/90 hover:text-foreground hover:bg-foreground/10">
                       <Bell className="h-4 w-4 mr-2" />
                       {currentText.notifications}
                       <Badge variant="destructive" className="ml-auto h-5 w-5 p-0 text-xs">2</Badge>
@@ -470,7 +448,7 @@ const EnhancedNavigation = ({
                     <Button 
                       variant="ghost" 
                       onClick={handleSignOut} 
-                      className="w-full justify-start text-red-200 hover:text-red-100 hover:bg-red-500/20"
+                      className="w-full justify-start text-red-500 hover:text-red-400 hover:bg-red-500/20"
                     >
                       <LogOut className="h-4 w-4 mr-2" />
                       {currentText.logout}

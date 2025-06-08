@@ -69,6 +69,44 @@
     --sidebar-ring: 211 100% 50%;
   }
 
+  .middle {
+    /* iPhone-style Middle Mode Colors */
+    --background: 220 13% 18%;
+    --foreground: 220 13% 91%;
+    --card: 220 13% 16%;
+    --card-foreground: 220 13% 91%;
+    --popover: 220 13% 16%;
+    --popover-foreground: 220 13% 91%;
+    --primary: 211 100% 50%;
+    --primary-foreground: 220 13% 9%;
+    --secondary: 220 13% 16%;
+    --secondary-foreground: 220 13% 91%;
+    --muted: 220 13% 16%;
+    --muted-foreground: 220 5% 64%;
+    --accent: 220 13% 16%;
+    --accent-foreground: 220 13% 91%;
+    --destructive: 4 90% 58%;
+    --destructive-foreground: 220 13% 91%;
+    --border: 220 13% 21%;
+    --input: 220 13% 21%;
+    --ring: 211 100% 50%;
+    --chart-1: 211 100% 50%;
+    --chart-2: 142 76% 36%;
+    --chart-3: 28 100% 50%;
+    --chart-4: 255 45% 65%;
+    --chart-5: 316 73% 69%;
+    
+    /* iPhone-style Middle Sidebar */
+    --sidebar-background: 220 13% 18%;
+    --sidebar-foreground: 220 13% 91%;
+    --sidebar-primary: 220 13% 91%;
+    --sidebar-primary-foreground: 220 13% 9%;
+    --sidebar-accent: 220 13% 16%;
+    --sidebar-accent-foreground: 220 13% 91%;
+    --sidebar-border: 220 13% 21%;
+    --sidebar-ring: 211 100% 50%;
+  }
+
   .dark {
     /* iPhone-style Dark Mode Colors */
     --background: 240 10% 4%;
