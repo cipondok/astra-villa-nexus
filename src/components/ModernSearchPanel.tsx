@@ -21,7 +21,9 @@ import {
   MapPinned,
   TrendingUp,
   Rocket,
-  Building2
+  Building2,
+  Navigation,
+  X
 } from "lucide-react";
 
 interface ModernSearchPanelProps {
@@ -40,6 +42,9 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
   const [bathrooms, setBathrooms] = useState("");
   const [searchValue, setSearchValue] = useState("");
   const [currentTrendingIndex, setCurrentTrendingIndex] = useState(0);
+  const [isFiltersOpen, setIsFiltersOpen] = useState(false);
+  const [userLocation, setUserLocation] = useState<{lat: number, lng: number} | null>(null);
+  const [isDetectingLocation, setIsDetectingLocation] = useState(false);
 
   const text = {
     en: {
@@ -50,13 +55,14 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
       commercial: "Commercial",
       searchPlaceholder: "Search properties...",
       location: "Location",
+      nearMe: "Near Me",
       priceRange: "Price Range",
       propertyType: "Property Type",
       bedrooms: "Bedrooms",
       bathrooms: "Bathrooms",
       filters: "Filters",
       search: "AI Search",
-      detectLocation: "Detect Location",
+      detectLocation: "Detect My Location",
       selectState: "Select State",
       selectCity: "Select City",
       selectArea: "Select Area",
@@ -66,7 +72,8 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
       condo: "Condo",
       townhouse: "Townhouse",
       land: "Land",
-      trending: "Trending Searches"
+      trending: "Trending Searches",
+      close: "Close"
     },
     id: {
       buy: "Beli",
@@ -76,13 +83,14 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
       commercial: "Komersial",
       searchPlaceholder: "Cari properti...",
       location: "Lokasi",
+      nearMe: "Dekat Saya",
       priceRange: "Rentang Harga",
       propertyType: "Tipe Properti",
       bedrooms: "Kamar Tidur",
       bathrooms: "Kamar Mandi",
       filters: "Filter",
       search: "Pencarian AI",
-      detectLocation: "Deteksi Lokasi",
+      detectLocation: "Deteksi Lokasi Saya",
       selectState: "Pilih Provinsi",
       selectCity: "Pilih Kota",
       selectArea: "Pilih Area",
@@ -92,7 +100,8 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
       condo: "Kondominium",
       townhouse: "Rumah Susun",
       land: "Tanah",
-      trending: "Pencarian Trending"
+      trending: "Pencarian Trending",
+      close: "Tutup"
     }
   };
 
@@ -153,7 +162,7 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentTrendingIndex((prev) => (prev + 1) % trendingSearches.length);
-    }, 3000); // Change every 3 seconds
+    }, 3000);
 
     return () => clearInterval(interval);
   }, [trendingSearches.length]);
@@ -161,7 +170,9 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
   const handleSearch = () => {
     const searchData = {
       type: searchType,
-      location: { state: selectedState, city: selectedCity, area: selectedArea },
+      location: userLocation ? 
+        { nearMe: true, coordinates: userLocation } : 
+        { state: selectedState, city: selectedCity, area: selectedArea },
       priceRange,
       propertyType,
       bedrooms,
@@ -171,13 +182,31 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
     onSearch(searchData);
   };
 
-  const detectLocation = () => {
+  const detectNearMe = async () => {
+    setIsDetectingLocation(true);
+    
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        console.log("Location detected:", position.coords);
-        setSelectedState("DKI Jakarta");
-        setSelectedCity("Jakarta Selatan");
-      });
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const location = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          };
+          setUserLocation(location);
+          setSelectedState("");
+          setSelectedCity("");
+          setSelectedArea("");
+          console.log("Location detected:", location);
+          setIsDetectingLocation(false);
+        },
+        (error) => {
+          console.error("Error detecting location:", error);
+          setIsDetectingLocation(false);
+        }
+      );
+    } else {
+      console.error("Geolocation not supported");
+      setIsDetectingLocation(false);
     }
   };
 
@@ -185,6 +214,7 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
     setSelectedState(value);
     setSelectedCity("");
     setSelectedArea("");
+    setUserLocation(null);
   };
 
   const handleCityChange = (value: string) => {
@@ -198,6 +228,14 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
 
   const getAvailableAreas = () => {
     return selectedCity ? areas[selectedCity as keyof typeof areas] || [] : [];
+  };
+
+  const getLocationDisplayText = () => {
+    if (userLocation) return currentText.nearMe;
+    if (selectedArea) return selectedArea;
+    if (selectedCity) return selectedCity;
+    if (selectedState) return selectedState;
+    return currentText.location;
   };
 
   return (
@@ -246,194 +284,277 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
             </div>
           </div>
 
-          {/* Location Selection */}
+          {/* Location Selection with Near Me */}
           <div className="relative">
-            <Select value={selectedArea || selectedCity || selectedState} onValueChange={() => {}}>
-              <SelectTrigger className="w-full bg-white/20 border-white/30 text-foreground hover:bg-white/30">
-                <div className="flex items-center gap-2">
-                  <MapPinned className="h-4 w-4" />
-                  <span className="truncate">
-                    {selectedArea || selectedCity || selectedState || currentText.location}
-                  </span>
-                </div>
-              </SelectTrigger>
-              <SelectContent>
-                <div className="p-2 text-xs font-medium text-gray-700 border-b">Select Location</div>
-                {/* States */}
-                {!selectedState && states.map((state) => (
-                  <SelectItem key={state} value={state} onClick={() => handleStateChange(state)}>
-                    📍 {state}
-                  </SelectItem>
-                ))}
-                {/* Cities */}
-                {selectedState && !selectedCity && getAvailableCities().map((city) => (
-                  <SelectItem key={city} value={city} onClick={() => handleCityChange(city)}>
-                    🏙️ {city}
-                  </SelectItem>
-                ))}
-                {/* Areas */}
-                {selectedState && selectedCity && getAvailableAreas().map((area) => (
-                  <SelectItem key={area} value={area} onClick={() => setSelectedArea(area)}>
-                    📍 {area}
-                  </SelectItem>
-                ))}
-                {/* Back options */}
-                {selectedCity && (
-                  <SelectItem value="back-to-city" onClick={() => setSelectedCity("")}>
-                    ← Back to Cities
-                  </SelectItem>
+            <div className="flex gap-2">
+              <Select value={selectedArea || selectedCity || selectedState} onValueChange={() => {}}>
+                <SelectTrigger className="flex-1 bg-white/20 border-white/30 text-foreground hover:bg-white/30">
+                  <div className="flex items-center gap-2">
+                    <MapPinned className="h-4 w-4" />
+                    <span className="truncate">
+                      {getLocationDisplayText()}
+                    </span>
+                  </div>
+                </SelectTrigger>
+                <SelectContent>
+                  <div className="p-2 text-xs font-medium text-gray-700 border-b">Select Location</div>
+                  {/* States */}
+                  {!selectedState && !userLocation && states.map((state) => (
+                    <SelectItem key={state} value={state} onClick={() => handleStateChange(state)}>
+                      📍 {state}
+                    </SelectItem>
+                  ))}
+                  {/* Cities */}
+                  {selectedState && !selectedCity && getAvailableCities().map((city) => (
+                    <SelectItem key={city} value={city} onClick={() => handleCityChange(city)}>
+                      🏙️ {city}
+                    </SelectItem>
+                  ))}
+                  {/* Areas */}
+                  {selectedState && selectedCity && getAvailableAreas().map((area) => (
+                    <SelectItem key={area} value={area} onClick={() => setSelectedArea(area)}>
+                      📍 {area}
+                    </SelectItem>
+                  ))}
+                  {/* Back options */}
+                  {selectedCity && (
+                    <SelectItem value="back-to-city" onClick={() => setSelectedCity("")}>
+                      ← Back to Cities
+                    </SelectItem>
+                  )}
+                  {selectedState && !selectedCity && (
+                    <SelectItem value="back-to-state" onClick={() => setSelectedState("")}>
+                      ← Back to States
+                    </SelectItem>
+                  )}
+                </SelectContent>
+              </Select>
+              
+              {/* Near Me Button */}
+              <Button
+                variant={userLocation ? "default" : "outline"}
+                size="sm"
+                onClick={detectNearMe}
+                disabled={isDetectingLocation}
+                className={`bg-white/20 border-white/30 hover:bg-white/30 px-3 ${
+                  userLocation ? "bg-primary text-primary-foreground" : ""
+                }`}
+              >
+                {isDetectingLocation ? (
+                  <div className="animate-spin h-4 w-4 border-2 border-current border-t-transparent rounded-full" />
+                ) : (
+                  <Navigation className="h-4 w-4" />
                 )}
-                {selectedState && !selectedCity && (
-                  <SelectItem value="back-to-state" onClick={() => setSelectedState("")}>
-                    ← Back to States
-                  </SelectItem>
-                )}
-              </SelectContent>
-            </Select>
+              </Button>
+            </div>
           </div>
 
-          {/* Filters */}
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button
-                variant="outline"
-                className="w-full justify-between bg-white/20 border-white/30 text-foreground hover:bg-white/30"
-              >
-                <div className="flex items-center gap-2">
-                  <Filter className="h-4 w-4" />
-                  {currentText.filters}
-                </div>
-                <ChevronDown className="h-4 w-4" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent className="w-[400px] sm:w-[540px]">
-              <SheetHeader>
-                <SheetTitle>{currentText.filters}</SheetTitle>
-              </SheetHeader>
-              
-              <div className="space-y-6 py-6">
-                {/* Location Selection */}
-                <div className="space-y-3">
-                  <label className="text-sm font-medium">{currentText.location}</label>
+          {/* Filters with improved modal */}
+          <div className="relative">
+            <Button
+              variant="outline"
+              className="w-full justify-between bg-white/20 border-white/30 text-foreground hover:bg-white/30"
+              onClick={() => setIsFiltersOpen(true)}
+            >
+              <div className="flex items-center gap-2">
+                <Filter className="h-4 w-4" />
+                {currentText.filters}
+              </div>
+              <ChevronDown className="h-4 w-4" />
+            </Button>
+
+            {/* Custom Filters Modal */}
+            {isFiltersOpen && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center">
+                {/* Backdrop */}
+                <div 
+                  className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+                  onClick={() => setIsFiltersOpen(false)}
+                />
+                
+                {/* Modal Content */}
+                <div className="relative bg-background/95 backdrop-blur-md rounded-2xl border border-white/20 shadow-2xl max-w-lg w-full mx-4 max-h-[80vh] overflow-y-auto">
+                  {/* Header */}
+                  <div className="flex items-center justify-between p-6 border-b border-white/10">
+                    <h2 className="text-lg font-semibold">{currentText.filters}</h2>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setIsFiltersOpen(false)}
+                      className="h-8 w-8 p-0 hover:bg-white/10"
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
                   
-                  <Select value={selectedState} onValueChange={handleStateChange}>
-                    <SelectTrigger>
-                      <SelectValue placeholder={currentText.selectState} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {states.map((state) => (
-                        <SelectItem key={state} value={state}>{state}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <div className="space-y-6 p-6">
+                    {/* Location Selection */}
+                    <div className="space-y-3">
+                      <label className="text-sm font-medium">{currentText.location}</label>
+                      
+                      {!userLocation && (
+                        <>
+                          <Select value={selectedState} onValueChange={handleStateChange}>
+                            <SelectTrigger>
+                              <SelectValue placeholder={currentText.selectState} />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {states.map((state) => (
+                                <SelectItem key={state} value={state}>{state}</SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
 
-                  {selectedState && getAvailableCities().length > 0 && (
-                    <Select value={selectedCity} onValueChange={handleCityChange}>
-                      <SelectTrigger>
-                        <SelectValue placeholder={currentText.selectCity} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {getAvailableCities().map((city) => (
-                          <SelectItem key={city} value={city}>{city}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  )}
+                          {selectedState && getAvailableCities().length > 0 && (
+                            <Select value={selectedCity} onValueChange={handleCityChange}>
+                              <SelectTrigger>
+                                <SelectValue placeholder={currentText.selectCity} />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {getAvailableCities().map((city) => (
+                                  <SelectItem key={city} value={city}>{city}</SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          )}
 
-                  {selectedCity && getAvailableAreas().length > 0 && (
-                    <Select value={selectedArea} onValueChange={setSelectedArea}>
-                      <SelectTrigger>
-                        <SelectValue placeholder={currentText.selectArea} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {getAvailableAreas().map((area) => (
-                          <SelectItem key={area} value={area}>{area}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  )}
+                          {selectedCity && getAvailableAreas().length > 0 && (
+                            <Select value={selectedArea} onValueChange={setSelectedArea}>
+                              <SelectTrigger>
+                                <SelectValue placeholder={currentText.selectArea} />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {getAvailableAreas().map((area) => (
+                                  <SelectItem key={area} value={area}>{area}</SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          )}
+                        </>
+                      )}
 
-                  <Button variant="outline" onClick={detectLocation} className="w-full">
-                    <MapPin className="h-4 w-4 mr-2" />
-                    {currentText.detectLocation}
-                  </Button>
-                </div>
+                      <Button 
+                        variant={userLocation ? "default" : "outline"} 
+                        onClick={detectNearMe} 
+                        className="w-full"
+                        disabled={isDetectingLocation}
+                      >
+                        {isDetectingLocation ? (
+                          <>
+                            <div className="animate-spin h-4 w-4 border-2 border-current border-t-transparent rounded-full mr-2" />
+                            Detecting...
+                          </>
+                        ) : (
+                          <>
+                            <Navigation className="h-4 w-4 mr-2" />
+                            {currentText.detectLocation}
+                          </>
+                        )}
+                      </Button>
 
-                {/* Price Range */}
-                <div className="space-y-3">
-                  <label className="text-sm font-medium">{currentText.priceRange}</label>
-                  <div className="px-3">
-                    <Slider
-                      value={priceRange}
-                      onValueChange={setPriceRange}
-                      max={50000000}
-                      min={0}
-                      step={100000}
-                      className="w-full"
-                    />
-                    <div className="flex justify-between text-sm text-muted-foreground mt-1">
-                      <span>Rp {priceRange[0].toLocaleString()}</span>
-                      <span>Rp {priceRange[1].toLocaleString()}</span>
+                      {userLocation && (
+                        <div className="flex items-center gap-2 p-3 bg-primary/10 rounded-lg">
+                          <Navigation className="h-4 w-4 text-primary" />
+                          <span className="text-sm text-primary font-medium">
+                            {currentText.nearMe} - Location detected
+                          </span>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setUserLocation(null)}
+                            className="ml-auto h-6 w-6 p-0"
+                          >
+                            <X className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      )}
                     </div>
-                  </div>
-                </div>
 
-                {/* Property Type */}
-                <div className="space-y-3">
-                  <label className="text-sm font-medium">{currentText.propertyType}</label>
-                  <div className="grid grid-cols-2 gap-2">
-                    {propertyTypes.map((type) => (
-                      <Button
-                        key={type.value}
-                        variant={propertyType === type.value ? "default" : "outline"}
-                        className="justify-start"
-                        onClick={() => setPropertyType(propertyType === type.value ? "" : type.value)}
-                      >
-                        <type.icon className="h-4 w-4 mr-2" />
-                        {type.label}
-                      </Button>
-                    ))}
-                  </div>
-                </div>
+                    {/* Price Range */}
+                    <div className="space-y-3">
+                      <label className="text-sm font-medium">{currentText.priceRange}</label>
+                      <div className="px-3">
+                        <Slider
+                          value={priceRange}
+                          onValueChange={setPriceRange}
+                          max={50000000}
+                          min={0}
+                          step={100000}
+                          className="w-full"
+                        />
+                        <div className="flex justify-between text-sm text-muted-foreground mt-1">
+                          <span>Rp {priceRange[0].toLocaleString()}</span>
+                          <span>Rp {priceRange[1].toLocaleString()}</span>
+                        </div>
+                      </div>
+                    </div>
 
-                {/* Bedrooms */}
-                <div className="space-y-3">
-                  <label className="text-sm font-medium">{currentText.bedrooms}</label>
-                  <div className="flex gap-2">
-                    {["1", "2", "3", "4", "5+"].map((num) => (
-                      <Button
-                        key={num}
-                        variant={bedrooms === num ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => setBedrooms(bedrooms === num ? "" : num)}
-                      >
-                        <Bed className="h-4 w-4 mr-1" />
-                        {num}
-                      </Button>
-                    ))}
-                  </div>
-                </div>
+                    {/* Property Type */}
+                    <div className="space-y-3">
+                      <label className="text-sm font-medium">{currentText.propertyType}</label>
+                      <div className="grid grid-cols-2 gap-2">
+                        {propertyTypes.map((type) => (
+                          <Button
+                            key={type.value}
+                            variant={propertyType === type.value ? "default" : "outline"}
+                            className="justify-start"
+                            onClick={() => setPropertyType(propertyType === type.value ? "" : type.value)}
+                          >
+                            <type.icon className="h-4 w-4 mr-2" />
+                            {type.label}
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
 
-                {/* Bathrooms */}
-                <div className="space-y-3">
-                  <label className="text-sm font-medium">{currentText.bathrooms}</label>
-                  <div className="flex gap-2">
-                    {["1", "2", "3", "4", "5+"].map((num) => (
-                      <Button
-                        key={num}
-                        variant={bathrooms === num ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => setBathrooms(bathrooms === num ? "" : num)}
-                      >
-                        <Bath className="h-4 w-4 mr-1" />
-                        {num}
-                      </Button>
-                    ))}
+                    {/* Bedrooms */}
+                    <div className="space-y-3">
+                      <label className="text-sm font-medium">{currentText.bedrooms}</label>
+                      <div className="flex gap-2">
+                        {["1", "2", "3", "4", "5+"].map((num) => (
+                          <Button
+                            key={num}
+                            variant={bedrooms === num ? "default" : "outline"}
+                            size="sm"
+                            onClick={() => setBedrooms(bedrooms === num ? "" : num)}
+                          >
+                            <Bed className="h-4 w-4 mr-1" />
+                            {num}
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Bathrooms */}
+                    <div className="space-y-3">
+                      <label className="text-sm font-medium">{currentText.bathrooms}</label>
+                      <div className="flex gap-2">
+                        {["1", "2", "3", "4", "5+"].map((num) => (
+                          <Button
+                            key={num}
+                            variant={bathrooms === num ? "default" : "outline"}
+                            size="sm"
+                            onClick={() => setBathrooms(bathrooms === num ? "" : num)}
+                          >
+                            <Bath className="h-4 w-4 mr-1" />
+                            {num}
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Apply Button */}
+                    <Button 
+                      onClick={() => setIsFiltersOpen(false)}
+                      className="w-full bg-primary hover:bg-primary/90"
+                    >
+                      Apply Filters
+                    </Button>
                   </div>
                 </div>
               </div>
-            </SheetContent>
-          </Sheet>
+            )}
+          </div>
         </div>
 
         {/* Search Button */}
@@ -449,12 +570,12 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
         </div>
 
         {/* Active Filters */}
-        {(selectedState || propertyType || bedrooms || bathrooms) && (
+        {(selectedState || userLocation || propertyType || bedrooms || bathrooms) && (
           <div className="flex flex-wrap gap-2 mt-4">
-            {selectedState && (
+            {(selectedState || userLocation) && (
               <Badge variant="secondary" className="bg-white/20">
                 <MapPin className="h-3 w-3 mr-1" />
-                {selectedArea || selectedCity || selectedState}
+                {userLocation ? currentText.nearMe : (selectedArea || selectedCity || selectedState)}
               </Badge>
             )}
             {propertyType && (
