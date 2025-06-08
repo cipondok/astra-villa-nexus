@@ -1,8 +1,9 @@
 
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
-import { Shield, LogOut, Home, Menu } from "lucide-react";
+import { LogOut, Home } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import AnimatedLogo from "@/components/AnimatedLogo";
 
 interface AdminNavigationProps {
   user: any;
@@ -27,9 +28,7 @@ const AdminNavigation = ({ user, adminData }: AdminNavigationProps) => {
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           <div className="flex items-center space-x-6">
-            <div className="w-12 h-12 bg-gradient-to-br from-primary to-primary/80 rounded-xl flex items-center justify-center shadow-lg shadow-primary/25">
-              <Shield className="h-7 w-7 text-white" />
-            </div>
+            <AnimatedLogo />
             <div>
               <h1 className="text-2xl font-bold text-foreground">
                 Control Panel

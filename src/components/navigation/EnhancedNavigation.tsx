@@ -8,6 +8,7 @@ import { useThemeSettings } from "@/contexts/ThemeSettingsContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import ThemeToggleSwitch from "@/components/ThemeToggleSwitch";
+import AnimatedLogo from "@/components/AnimatedLogo";
 
 interface EnhancedNavigationProps {
   onLoginClick?: () => void;
@@ -89,19 +90,9 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
     <nav className="fixed top-0 left-0 right-0 z-50 nav-ios">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
-          {/* Logo/Brand */}
-          <Link to="/" className="flex items-center space-x-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-primary to-primary/80 rounded-xl flex items-center justify-center shadow-lg shadow-primary/25">
-              <span className="text-white font-bold text-xl">A</span>
-            </div>
-            <div className="hidden sm:block">
-              <h1 className="text-xl font-bold text-foreground">
-                {themeSettings.siteName}
-              </h1>
-              <p className="text-xs text-muted-foreground">
-                Premium Real Estate
-              </p>
-            </div>
+          {/* Animated Logo */}
+          <Link to="/">
+            <AnimatedLogo />
           </Link>
 
           {/* Desktop Navigation */}
