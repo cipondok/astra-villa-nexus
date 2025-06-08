@@ -6,6 +6,7 @@ import ParticleEffect from "@/components/ParticleEffect";
 import PropertyListingsSection from "@/components/PropertyListingsSection";
 import ProfessionalFooter from "@/components/ProfessionalFooter";
 import RoleBasedAuthModal from "@/components/RoleBasedAuthModal";
+import ModernSearchPanel from "@/components/ModernSearchPanel";
 import { useAuth } from "@/contexts/AuthContext";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { CheckCircle, AlertCircle } from "lucide-react";
@@ -46,6 +47,11 @@ const Index = () => {
     });
   };
 
+  const handleSearch = (searchData: any) => {
+    console.log("Search data:", searchData);
+    // TODO: Implement search functionality
+  };
+
   // Get message from URL params
   const message = searchParams.get('message');
   const confirmed = searchParams.get('confirmed');
@@ -54,7 +60,7 @@ const Index = () => {
     <div className="min-h-screen bg-background text-foreground">
       <Navigation />
       
-      {/* Alerts Section - Fixed positioning */}
+      {/* Alerts Section */}
       <div className="relative z-20">
         {/* Email confirmation success message */}
         {confirmed === 'true' && (
@@ -94,14 +100,14 @@ const Index = () => {
       </div>
 
       {/* Hero Section with Particle Background */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Particle Effect Background - Fixed positioning */}
+      <section className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden">
+        {/* Particle Effect Background */}
         <div className="absolute inset-0 z-0">
           <ParticleEffect />
         </div>
         
         {/* Hero Content */}
-        <div className="relative z-10 text-center max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="relative z-10 text-center max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-orange-500 bg-clip-text text-transparent leading-tight animate-fade-in">
             Find Your Dream Property
           </h1>
@@ -109,18 +115,27 @@ const Index = () => {
             Discover premium real estate opportunities in Indonesia's most sought-after locations. 
             From luxury villas to modern apartments, find your perfect home today.
           </p>
-          
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-fade-in animation-delay-400">
-            <button 
-              onClick={() => setAuthModalOpen(true)}
-              className="px-8 py-3 bg-gradient-to-r from-blue-600 to-orange-500 text-white rounded-lg font-semibold hover:shadow-lg transform hover:scale-105 transition-all duration-200 btn-ios btn-primary-ios"
-            >
-              Get Started
-            </button>
-            <button className="px-8 py-3 border border-border rounded-lg font-semibold hover:bg-accent transition-colors btn-ios btn-secondary-ios">
-              Browse Properties
-            </button>
-          </div>
+        </div>
+
+        {/* Search Panel */}
+        <div className="relative z-10 w-full px-4 sm:px-6 lg:px-8 mb-8 animate-fade-in animation-delay-400">
+          <ModernSearchPanel 
+            language={language} 
+            onSearch={handleSearch}
+          />
+        </div>
+        
+        {/* CTA Buttons */}
+        <div className="relative z-10 flex flex-col sm:flex-row gap-4 justify-center items-center animate-fade-in animation-delay-600">
+          <button 
+            onClick={() => setAuthModalOpen(true)}
+            className="px-8 py-3 bg-gradient-to-r from-blue-600 to-orange-500 text-white rounded-lg font-semibold hover:shadow-lg transform hover:scale-105 transition-all duration-200 btn-ios btn-primary-ios"
+          >
+            Get Started
+          </button>
+          <button className="px-8 py-3 border border-border rounded-lg font-semibold hover:bg-accent transition-colors btn-ios btn-secondary-ios">
+            Browse Properties
+          </button>
         </div>
       </section>
 
