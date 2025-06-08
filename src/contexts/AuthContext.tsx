@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -28,9 +29,6 @@ interface AuthContextType {
   signUp: (email: string, password: string, fullName: string) => Promise<{ error: any; success?: boolean }>;
   signOut: () => Promise<void>;
   updateProfile: (data: Partial<Profile>) => Promise<{ error: any; success?: boolean }>;
-  demoAgentLogin: () => void;
-  demoAdminLogin: () => void;
-  demoVendorLogin: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -128,110 +126,32 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return;
       }
 
-      console.log('Profile fetched:', data?.email);
+      console.log('Profile fetched:', data?.email, 'Role:', data?.role);
       setProfile(data);
     } catch (error) {
       console.error('Profile fetch error:', error);
     }
   };
 
-  const demoAgentLogin = () => {
-    console.log('Demo agent login clicked');
-    const mockAgent = {
-      id: 'demo-agent-123',
-      email: 'agent@astravilla.com',
-      user_metadata: { full_name: 'Demo Agent' },
-      app_metadata: {},
-      aud: 'authenticated',
-      created_at: new Date().toISOString(),
-      role: 'authenticated'
-    };
-    
-    localStorage.setItem('demo_agent', JSON.stringify(mockAgent));
-    localStorage.removeItem('demo_user');
-    localStorage.removeItem('demo_admin');
-    
-    setUser(mockAgent as User);
-    setProfile({
-      id: mockAgent.id,
-      email: mockAgent.email,
-      full_name: 'Demo Agent',
-      role: 'agent'
-    });
-    
-    showSuccess('Demo Agent Login', 'You are now logged in as a demo property agent.');
-  };
-
-  const demoAdminLogin = () => {
-    console.log('Demo admin login clicked');
-    const mockAdmin = {
-      id: 'demo-admin-456',
-      email: 'admin@astravilla.com',
-      user_metadata: { full_name: 'Demo Admin' },
-      app_metadata: {},
-      aud: 'authenticated',
-      created_at: new Date().toISOString(),
-      role: 'authenticated'
-    };
-    
-    localStorage.setItem('demo_admin', JSON.stringify(mockAdmin));
-    localStorage.removeItem('demo_user');
-    localStorage.removeItem('demo_agent');
-    
-    setUser(mockAdmin as User);
-    setProfile({
-      id: mockAdmin.id,
-      email: mockAdmin.email,
-      full_name: 'Demo Admin',
-      role: 'admin'
-    });
-    
-    showSuccess('Demo Admin Login', 'You are now logged in as a demo administrator.');
-  };
-
-  const demoVendorLogin = () => {
-    console.log('Demo vendor login clicked');
-    const mockVendor = {
-      id: 'demo-vendor-789',
-      email: 'vendor@astravilla.com',
-      user_metadata: { full_name: 'Demo Vendor' },
-      app_metadata: {},
-      aud: 'authenticated',
-      created_at: new Date().toISOString(),
-      role: 'authenticated'
-    };
-    
-    localStorage.setItem('demo_vendor', JSON.stringify(mockVendor));
-    localStorage.removeItem('demo_user');
-    localStorage.removeItem('demo_agent');
-    localStorage.removeItem('demo_admin');
-    
-    setUser(mockVendor as User);
-    setProfile({
-      id: mockVendor.id,
-      email: mockVendor.email,
-      full_name: 'Demo Vendor',
-      role: 'vendor'
-    });
-    
-    showSuccess('Demo Vendor Login', 'You are now logged in as a demo vendor.');
-  };
-
   const signIn = async (email: string, password: string) => {
     try {
+      console.log('Attempting sign in for:', email);
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
       if (error) {
+        console.error('Sign in error:', error);
         showError('Sign In Failed', error.message);
         return { error, success: false };
       }
 
+      console.log('Sign in successful for:', email);
       showSuccess('Welcome back!', 'You have been signed in successfully.');
       return { error: null, success: true };
     } catch (error: any) {
+      console.error('Sign in error:', error);
       showError('Sign In Error', error.message);
       return { error, success: false };
     }
@@ -239,6 +159,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signUp = async (email: string, password: string, fullName: string) => {
     try {
+      console.log('Attempting sign up for:', email);
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -251,13 +172,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       });
 
       if (error) {
+        console.error('Sign up error:', error);
         showError('Sign Up Failed', error.message);
         return { error, success: false };
       }
 
+      console.log('Sign up successful for:', email);
       showSuccess('Account Created!', 'Please check your email to verify your account.');
       return { error: null, success: true };
     } catch (error: any) {
+      console.error('Sign up error:', error);
       showError('Sign Up Error', error.message);
       return { error, success: false };
     }
@@ -265,11 +189,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signOut = async () => {
     try {
+      console.log('Signing out user...');
       await supabase.auth.signOut();
       setUser(null);
       setProfile(null);
       showSuccess('Signed Out', 'You have been signed out successfully.');
     } catch (error: any) {
+      console.error('Sign out error:', error);
       showError('Sign Out Error', error.message);
     }
   };
@@ -289,6 +215,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         .upsert(updateData);
 
       if (error) {
+        console.error('Profile update error:', error);
         showError('Update Failed', error.message);
         return { error, success: false };
       }
@@ -297,6 +224,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       showSuccess('Profile Updated', 'Your profile has been updated successfully.');
       return { error: null, success: true };
     } catch (error: any) {
+      console.error('Update error:', error);
       showError('Update Error', error.message);
       return { error, success: false };
     }
@@ -311,12 +239,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     signUp,
     signOut,
     updateProfile,
-    demoAgentLogin,
-    demoAdminLogin,
-    demoVendorLogin,
   };
 
-  console.log('AuthProvider providing value, loading:', loading, 'isAuthenticated:', !!user);
+  console.log('AuthProvider providing value, loading:', loading, 'isAuthenticated:', !!user, 'role:', profile?.role);
 
   return (
     <AuthContext.Provider value={value}>

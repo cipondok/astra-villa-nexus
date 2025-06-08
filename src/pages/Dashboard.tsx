@@ -4,14 +4,43 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
-  const { user, loading } = useAuth();
+  const { user, profile, loading } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!loading && !user) {
-      navigate('/');
+    if (!loading) {
+      if (!user) {
+        console.log('No user found, redirecting to home');
+        navigate('/');
+        return;
+      }
+
+      if (profile) {
+        console.log('User logged in with role:', profile.role);
+        // Redirect based on user role
+        switch (profile.role) {
+          case 'admin':
+            console.log('Redirecting admin to admin dashboard');
+            navigate('/dashboard/admin');
+            break;
+          case 'agent':
+            console.log('Redirecting agent to agent dashboard');
+            navigate('/dashboard/agent');
+            break;
+          case 'vendor':
+            console.log('Redirecting vendor to vendor dashboard');
+            navigate('/dashboard/vendor');
+            break;
+          case 'property_owner':
+          case 'general_user':
+          default:
+            console.log('Redirecting user to user dashboard');
+            navigate('/dashboard/user');
+            break;
+        }
+      }
     }
-  }, [user, loading, navigate]);
+  }, [user, profile, loading, navigate]);
 
   if (loading) {
     return (
@@ -24,19 +53,12 @@ const Dashboard = () => {
     );
   }
 
-  if (!user) {
-    return null;
-  }
-
+  // This component should redirect, so we show loading while redirect happens
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pt-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">
-          Dashboard
-        </h1>
-        <p className="text-gray-600 dark:text-gray-400">
-          Welcome to your dashboard, {user.email}!
-        </p>
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+        <p className="mt-4 text-gray-600">Redirecting...</p>
       </div>
     </div>
   );

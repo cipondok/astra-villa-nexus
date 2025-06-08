@@ -5,9 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/contexts/AuthContext";
-import { Eye, EyeOff, UserCheck, Users, Building, Star, Wrench } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 
 interface RoleBasedAuthModalProps {
   isOpen: boolean;
@@ -22,7 +21,7 @@ const RoleBasedAuthModal = ({ isOpen, onClose }: RoleBasedAuthModalProps) => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   
-  const { signIn, signUp, demoAgentLogin, demoAdminLogin, demoVendorLogin } = useAuth();
+  const { signIn, signUp } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,14 +29,26 @@ const RoleBasedAuthModal = ({ isOpen, onClose }: RoleBasedAuthModalProps) => {
 
     try {
       if (isLogin) {
+        console.log('Attempting login for:', email);
         const result = await signIn(email, password);
         if (result.success) {
+          console.log('Login successful, closing modal');
           onClose();
+          // Reset form
+          setEmail("");
+          setPassword("");
+          setFullName("");
         }
       } else {
+        console.log('Attempting sign up for:', email);
         const result = await signUp(email, password, fullName);
         if (result.success) {
+          console.log('Sign up successful, closing modal');
           onClose();
+          // Reset form
+          setEmail("");
+          setPassword("");
+          setFullName("");
         }
       }
     } catch (error) {
@@ -47,24 +58,13 @@ const RoleBasedAuthModal = ({ isOpen, onClose }: RoleBasedAuthModalProps) => {
     }
   };
 
-  const handleDemoLogin = (type: 'user' | 'agent' | 'admin' | 'vendor') => {
-    if (type === 'agent') {
-      demoAgentLogin();
-    } else if (type === 'admin') {
-      demoAdminLogin();
-    } else if (type === 'vendor') {
-      demoVendorLogin();
-    }
-    onClose();
-  };
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-[400px]">
         <DialogHeader>
           <DialogTitle>Welcome to AstraVilla</DialogTitle>
           <DialogDescription>
-            Sign in to your account or create a new one to get started
+            {isLogin ? 'Sign in to your account' : 'Create a new account to get started'}
           </DialogDescription>
         </DialogHeader>
 
@@ -121,67 +121,6 @@ const RoleBasedAuthModal = ({ isOpen, onClose }: RoleBasedAuthModalProps) => {
                 {isLoading ? "Signing in..." : "Sign In"}
               </Button>
             </form>
-
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t" />
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-background px-2 text-muted-foreground">
-                  Or try demo accounts
-                </span>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 gap-3">
-              <Card className="cursor-pointer hover:bg-accent/50 transition-colors" onClick={() => handleDemoLogin('user')}>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm flex items-center gap-2">
-                    <Users className="h-4 w-4" />
-                    Demo User
-                  </CardTitle>
-                  <CardDescription className="text-xs">
-                    Experience the platform as a regular user
-                  </CardDescription>
-                </CardHeader>
-              </Card>
-
-              <Card className="cursor-pointer hover:bg-accent/50 transition-colors" onClick={() => handleDemoLogin('agent')}>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm flex items-center gap-2">
-                    <Building className="h-4 w-4" />
-                    Demo Agent
-                  </CardTitle>
-                  <CardDescription className="text-xs">
-                    Access agent features and property management
-                  </CardDescription>
-                </CardHeader>
-              </Card>
-
-              <Card className="cursor-pointer hover:bg-accent/50 transition-colors" onClick={() => handleDemoLogin('vendor')}>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm flex items-center gap-2">
-                    <Wrench className="h-4 w-4" />
-                    Demo Vendor
-                  </CardTitle>
-                  <CardDescription className="text-xs">
-                    Manage services and bookings as a vendor
-                  </CardDescription>
-                </CardHeader>
-              </Card>
-
-              <Card className="cursor-pointer hover:bg-accent/50 transition-colors" onClick={() => handleDemoLogin('admin')}>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm flex items-center gap-2">
-                    <Star className="h-4 w-4" />
-                    Demo Admin
-                  </CardTitle>
-                  <CardDescription className="text-xs">
-                    Full administrative access to all features
-                  </CardDescription>
-                </CardHeader>
-              </Card>
-            </div>
           </TabsContent>
 
           <TabsContent value="signup" className="space-y-4">
@@ -218,6 +157,7 @@ const RoleBasedAuthModal = ({ isOpen, onClose }: RoleBasedAuthModalProps) => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
+                    minLength={6}
                   />
                   <Button
                     type="button"

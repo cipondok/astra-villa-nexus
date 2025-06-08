@@ -1,5 +1,7 @@
 
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
@@ -29,22 +31,66 @@ const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState("overview");
   const { user, profile } = useAuth();
 
-  // Sample data - in real app, this would come from your backend
-  const stats = {
-    totalUsers: 1234,
-    totalProperties: 567,
-    totalRevenue: 89012,
-    activeListings: 234,
-    pendingApprovals: 12,
-    systemHealth: 98.5
-  };
+  // Fetch real statistics from database
+  const { data: stats } = useQuery({
+    queryKey: ['admin-stats'],
+    queryFn: async () => {
+      console.log('Fetching admin statistics...');
+      
+      // Get user count
+      const { count: userCount } = await supabase
+        .from('profiles')
+        .select('*', { count: 'exact', head: true });
 
-  // Sample admin data
+      // Get property count
+      const { count: propertyCount } = await supabase
+        .from('properties')
+        .select('*', { count: 'exact', head: true });
+
+      // Get active listings count
+      const { count: activeListings } = await supabase
+        .from('properties')
+        .select('*', { count: 'exact', head: true })
+        .eq('status', 'approved');
+
+      // Get pending approvals count
+      const { count: pendingApprovals } = await supabase
+        .from('properties')
+        .select('*', { count: 'exact', head: true })
+        .eq('approval_status', 'pending');
+
+      // Get vendor requests count
+      const { count: vendorRequests } = await supabase
+        .from('vendor_requests')
+        .select('*', { count: 'exact', head: true })
+        .eq('status', 'pending');
+
+      console.log('Admin stats fetched:', {
+        userCount,
+        propertyCount,
+        activeListings,
+        pendingApprovals,
+        vendorRequests
+      });
+
+      return {
+        totalUsers: userCount || 0,
+        totalProperties: propertyCount || 0,
+        totalRevenue: 0, // You can calculate this from orders table
+        activeListings: activeListings || 0,
+        pendingApprovals: (pendingApprovals || 0) + (vendorRequests || 0),
+        systemHealth: 98.5
+      };
+    },
+    refetchInterval: 30000, // Refresh every 30 seconds
+  });
+
+  // Sample admin data for navigation
   const adminData = {
-    totalUsers: stats.totalUsers,
-    totalProperties: stats.totalProperties,
-    totalRevenue: stats.totalRevenue,
-    systemHealth: stats.systemHealth,
+    totalUsers: stats?.totalUsers || 0,
+    totalProperties: stats?.totalProperties || 0,
+    totalRevenue: stats?.totalRevenue || 0,
+    systemHealth: stats?.systemHealth || 0,
     recentActivities: [
       { id: 1, action: "New user registered", timestamp: "2 minutes ago" },
       { id: 2, action: "Property listing approved", timestamp: "5 minutes ago" },
@@ -124,7 +170,7 @@ const AdminDashboard = () => {
                 </CardContent>
               </Card>
 
-              {/* Overview Cards - Made smaller and more compact */}
+              {/* Real Statistics Cards */}
               <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-3">
                 <Card className="glass-ios">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -132,9 +178,9 @@ const AdminDashboard = () => {
                     <Users className="h-4 w-4 text-muted-foreground" />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-xl font-bold">{stats.totalUsers.toLocaleString()}</div>
+                    <div className="text-xl font-bold">{stats?.totalUsers || 0}</div>
                     <p className="text-xs text-muted-foreground">
-                      <span className="text-green-600">+12%</span> from last month
+                      Real registered users
                     </p>
                   </CardContent>
                 </Card>
@@ -145,22 +191,9 @@ const AdminDashboard = () => {
                     <Building className="h-4 w-4 text-muted-foreground" />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-xl font-bold">{stats.totalProperties.toLocaleString()}</div>
+                    <div className="text-xl font-bold">{stats?.totalProperties || 0}</div>
                     <p className="text-xs text-muted-foreground">
-                      <span className="text-green-600">+8%</span> from last month
-                    </p>
-                  </CardContent>
-                </Card>
-
-                <Card className="glass-ios">
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Revenue</CardTitle>
-                    <DollarSign className="h-4 w-4 text-muted-foreground" />
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-xl font-bold">Rp {stats.totalRevenue.toLocaleString()}M</div>
-                    <p className="text-xs text-muted-foreground">
-                      <span className="text-green-600">+15%</span> from last month
+                      Total properties in database
                     </p>
                   </CardContent>
                 </Card>
@@ -171,9 +204,9 @@ const AdminDashboard = () => {
                     <TrendingUp className="h-4 w-4 text-muted-foreground" />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-xl font-bold">{stats.activeListings}</div>
+                    <div className="text-xl font-bold">{stats?.activeListings || 0}</div>
                     <p className="text-xs text-muted-foreground">
-                      <span className="text-blue-600">Live properties</span>
+                      Approved properties
                     </p>
                   </CardContent>
                 </Card>
@@ -184,9 +217,13 @@ const AdminDashboard = () => {
                     <Bell className="h-4 w-4 text-muted-foreground" />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-xl font-bold">{stats.pendingApprovals}</div>
+                    <div className="text-xl font-bold">{stats?.pendingApprovals || 0}</div>
                     <p className="text-xs text-muted-foreground">
-                      <Badge variant="destructive" className="text-xs">Needs attention</Badge>
+                      {stats?.pendingApprovals ? (
+                        <Badge variant="destructive" className="text-xs">Needs attention</Badge>
+                      ) : (
+                        <span className="text-green-600">All clear</span>
+                      )}
                     </p>
                   </CardContent>
                 </Card>
@@ -197,7 +234,7 @@ const AdminDashboard = () => {
                     <Shield className="h-4 w-4 text-muted-foreground" />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-xl font-bold">{stats.systemHealth}%</div>
+                    <div className="text-xl font-bold">{stats?.systemHealth || 0}%</div>
                     <p className="text-xs text-muted-foreground">
                       <span className="text-green-600">Excellent</span> performance
                     </p>
