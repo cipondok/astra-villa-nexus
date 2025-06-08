@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -13,6 +12,7 @@ import SystemSettings from "@/components/admin/SystemSettings";
 import SystemReports from "@/components/admin/SystemReports";
 import WebsiteDesignSettings from "@/components/admin/WebsiteDesignSettings";
 import VendorManagement from "@/components/admin/VendorManagement";
+import DatabaseUserManagement from "@/components/admin/DatabaseUserManagement";
 import { useAuth } from "@/contexts/AuthContext";
 import { 
   Users, 
@@ -24,7 +24,8 @@ import {
   DollarSign, 
   TrendingUp,
   Palette,
-  Store
+  Store,
+  Database
 } from "lucide-react";
 
 const AdminDashboard = () => {
@@ -101,6 +102,7 @@ const AdminDashboard = () => {
   const quickActions = [
     { label: "Add Property", action: () => console.log("Add property"), icon: Building, variant: "ios" as const },
     { label: "Manage Users", action: () => setActiveTab("users"), icon: Users, variant: "ios-green" as const },
+    { label: "Database Users", action: () => setActiveTab("database"), icon: Database, variant: "ios-blue" as const },
     { label: "Manage Vendors", action: () => setActiveTab("vendors"), icon: Store, variant: "ios-purple" as const },
     { label: "System Reports", action: () => setActiveTab("reports"), icon: BarChart3, variant: "ios-orange" as const }
   ];
@@ -113,7 +115,7 @@ const AdminDashboard = () => {
         <div className="max-w-7xl mx-auto p-6 space-y-6">
           
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-            <TabsList className="grid w-full grid-cols-7 glass-ios">
+            <TabsList className="grid w-full grid-cols-8 glass-ios">
               <TabsTrigger value="overview" className="flex items-center gap-2">
                 <BarChart3 className="h-4 w-4" />
                 Overview
@@ -121,6 +123,10 @@ const AdminDashboard = () => {
               <TabsTrigger value="users" className="flex items-center gap-2">
                 <Users className="h-4 w-4" />
                 Users
+              </TabsTrigger>
+              <TabsTrigger value="database" className="flex items-center gap-2">
+                <Database className="h-4 w-4" />
+                Database
               </TabsTrigger>
               <TabsTrigger value="vendors" className="flex items-center gap-2">
                 <Store className="h-4 w-4" />
@@ -245,6 +251,10 @@ const AdminDashboard = () => {
 
             <TabsContent value="users">
               <UserManagement />
+            </TabsContent>
+
+            <TabsContent value="database">
+              <DatabaseUserManagement />
             </TabsContent>
 
             <TabsContent value="vendors">
