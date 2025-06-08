@@ -19,11 +19,11 @@ const AdvancedFilters = ({ language, onFiltersChange, onSearch }: AdvancedFilter
   const [isExpanded, setIsExpanded] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [filters, setFilters] = useState({
-    propertyType: '',
-    listingType: '',
+    propertyType: 'all',
+    listingType: 'all',
     priceRange: [0, 10000000000],
-    bedrooms: '',
-    bathrooms: '',
+    bedrooms: 'all',
+    bathrooms: 'all',
     areaRange: [0, 1000],
     location: '',
     features: [] as string[],
@@ -136,11 +136,11 @@ const AdvancedFilters = ({ language, onFiltersChange, onSearch }: AdvancedFilter
 
   const clearFilters = () => {
     const clearedFilters = {
-      propertyType: '',
-      listingType: '',
+      propertyType: 'all',
+      listingType: 'all',
       priceRange: [0, 10000000000],
-      bedrooms: '',
-      bathrooms: '',
+      bedrooms: 'all',
+      bathrooms: 'all',
       areaRange: [0, 1000],
       location: '',
       features: [],
@@ -205,7 +205,7 @@ const AdvancedFilters = ({ language, onFiltersChange, onSearch }: AdvancedFilter
                     <SelectValue placeholder={currentText.any} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">{currentText.any}</SelectItem>
+                    <SelectItem value="all">{currentText.any}</SelectItem>
                     {propertyTypes.map((type) => (
                       <SelectItem key={type.value} value={type.value}>
                         {type.label}
@@ -223,7 +223,7 @@ const AdvancedFilters = ({ language, onFiltersChange, onSearch }: AdvancedFilter
                     <SelectValue placeholder={currentText.any} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">{currentText.any}</SelectItem>
+                    <SelectItem value="all">{currentText.any}</SelectItem>
                     {listingTypes.map((type) => (
                       <SelectItem key={type.value} value={type.value}>
                         {type.label}
@@ -251,7 +251,7 @@ const AdvancedFilters = ({ language, onFiltersChange, onSearch }: AdvancedFilter
                     <SelectValue placeholder={currentText.any} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">{currentText.any}</SelectItem>
+                    <SelectItem value="all">{currentText.any}</SelectItem>
                     <SelectItem value="1">1+</SelectItem>
                     <SelectItem value="2">2+</SelectItem>
                     <SelectItem value="3">3+</SelectItem>
@@ -269,7 +269,7 @@ const AdvancedFilters = ({ language, onFiltersChange, onSearch }: AdvancedFilter
                     <SelectValue placeholder={currentText.any} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">{currentText.any}</SelectItem>
+                    <SelectItem value="all">{currentText.any}</SelectItem>
                     <SelectItem value="1">1+</SelectItem>
                     <SelectItem value="2">2+</SelectItem>
                     <SelectItem value="3">3+</SelectItem>
