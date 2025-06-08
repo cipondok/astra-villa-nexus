@@ -26,8 +26,8 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider defaultTheme="system" storageKey="astra-villa-theme">
       <ThemeSettingsProvider>
-        <AuthProvider>
-          <AlertProvider>
+        <AlertProvider>
+          <AuthProvider>
             <TooltipProvider>
               <Toaster />
               <Sonner />
@@ -47,8 +47,8 @@ const App = () => (
                 </Routes>
               </BrowserRouter>
             </TooltipProvider>
-          </AlertProvider>
-        </AuthProvider>
+          </AuthProvider>
+        </AlertProvider>
       </ThemeSettingsProvider>
     </ThemeProvider>
   </QueryClientProvider>
