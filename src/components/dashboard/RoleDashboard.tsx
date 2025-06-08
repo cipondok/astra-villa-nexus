@@ -148,19 +148,23 @@ const RoleDashboard = ({ language }: RoleDashboardProps) => {
 
   const currentText = text[language];
 
-  if (!profile) {
+  // Show loading if no user data at all
+  if (!user) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading profile...</p>
+          <p className="text-gray-600">Loading your dashboard...</p>
         </div>
       </div>
     );
   }
 
   const getRoleConfig = () => {
-    switch (profile.role) {
+    // Use profile role if available, otherwise default to general user
+    const userRole = profile?.role || 'general_user';
+    
+    switch (userRole) {
       case 'property_owner':
         return currentText.propertyOwner;
       case 'agent':
@@ -176,7 +180,9 @@ const RoleDashboard = ({ language }: RoleDashboardProps) => {
   };
 
   const getRoleIcon = () => {
-    switch (profile.role) {
+    const userRole = profile?.role || 'general_user';
+    
+    switch (userRole) {
       case 'property_owner':
         return Building;
       case 'agent':
@@ -195,7 +201,9 @@ const RoleDashboard = ({ language }: RoleDashboardProps) => {
   const RoleIcon = getRoleIcon();
 
   const getRoleBadgeColor = () => {
-    switch (profile.role) {
+    const userRole = profile?.role || 'general_user';
+    
+    switch (userRole) {
       case 'admin':
         return 'bg-purple-100 text-purple-800';
       case 'agent':
@@ -210,6 +218,11 @@ const RoleDashboard = ({ language }: RoleDashboardProps) => {
     }
   };
 
+  // Get display name and email
+  const displayName = profile?.full_name || user?.user_metadata?.full_name || user?.email || 'User';
+  const displayEmail = profile?.email || user?.email || '';
+  const userRole = profile?.role || 'general_user';
+
   return (
     <div className="space-y-6">
       {/* Welcome Section */}
@@ -217,14 +230,14 @@ const RoleDashboard = ({ language }: RoleDashboardProps) => {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold">
-              {currentText.welcome}, {profile.full_name || user?.email}!
+              {currentText.welcome}, {displayName}!
             </h1>
             <p className="text-blue-100 mt-2">{roleConfig.description}</p>
           </div>
           <div className="flex items-center space-x-2">
             <RoleIcon className="h-8 w-8" />
             <Badge className={`${getRoleBadgeColor()} border-0`}>
-              {profile.role.replace('_', ' ').toUpperCase()}
+              {userRole.replace('_', ' ').toUpperCase()}
             </Badge>
           </div>
         </div>
@@ -287,15 +300,15 @@ const RoleDashboard = ({ language }: RoleDashboardProps) => {
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
                   <span className="text-gray-600">Email:</span>
-                  <span>{profile.email}</span>
+                  <span>{displayEmail}</span>
                 </div>
-                {profile.phone && (
+                {profile?.phone && (
                   <div className="flex justify-between">
                     <span className="text-gray-600">Phone:</span>
                     <span>{profile.phone}</span>
                   </div>
                 )}
-                {profile.company_name && (
+                {profile?.company_name && (
                   <div className="flex justify-between">
                     <span className="text-gray-600">Company:</span>
                     <span>{profile.company_name}</span>
@@ -303,8 +316,8 @@ const RoleDashboard = ({ language }: RoleDashboardProps) => {
                 )}
                 <div className="flex justify-between">
                   <span className="text-gray-600">Status:</span>
-                  <Badge variant={profile.verification_status === 'verified' ? 'default' : 'secondary'}>
-                    {profile.verification_status}
+                  <Badge variant={profile?.verification_status === 'verified' ? 'default' : 'secondary'}>
+                    {profile?.verification_status || 'pending'}
                   </Badge>
                 </div>
               </div>
@@ -320,7 +333,7 @@ const RoleDashboard = ({ language }: RoleDashboardProps) => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-gray-600">No recent activity to display.</p>
+              <p className="text-sm text-gray-600">Welcome to your dashboard! Start exploring the available features.</p>
             </CardContent>
           </Card>
         </div>

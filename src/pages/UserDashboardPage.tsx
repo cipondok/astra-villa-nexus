@@ -6,7 +6,7 @@ import RoleDashboard from "@/components/dashboard/RoleDashboard";
 import AuthenticatedNavigation from "@/components/navigation/AuthenticatedNavigation";
 
 const UserDashboardPage = () => {
-  const { isAuthenticated, loading, profile } = useAuth();
+  const { isAuthenticated, loading, profile, user } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [language, setLanguage] = useState<"en" | "id">((searchParams.get('lang') as "en" | "id") || "en");
@@ -14,20 +14,21 @@ const UserDashboardPage = () => {
 
   useEffect(() => {
     if (!loading) {
-      if (!isAuthenticated) {
+      if (!isAuthenticated || !user) {
         console.log('User not authenticated, redirecting to home');
-        navigate('/?auth=true');
+        navigate('/?auth=true', { replace: true });
         return;
       }
 
-      // Check if user has a valid role for this dashboard
+      // Allow access if user exists, even without complete profile
+      // Profile might still be loading or user might be new
       if (profile && !['general_user', 'property_owner'].includes(profile.role)) {
         console.log('User role not allowed for user dashboard, redirecting to appropriate dashboard');
-        navigate('/dashboard');
+        navigate('/dashboard', { replace: true });
         return;
       }
     }
-  }, [isAuthenticated, loading, profile, navigate]);
+  }, [isAuthenticated, loading, profile, user, navigate]);
 
   const toggleLanguage = () => {
     setLanguage(prev => prev === "en" ? "id" : "en");
@@ -42,13 +43,14 @@ const UserDashboardPage = () => {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <h2 className="text-lg font-semibold text-foreground">Loading...</h2>
+          <h2 className="text-lg font-semibold text-foreground">Loading your dashboard...</h2>
+          <p className="text-sm text-muted-foreground mt-2">Please wait while we set up your workspace</p>
         </div>
       </div>
     );
   }
 
-  if (!isAuthenticated) {
+  if (!isAuthenticated || !user) {
     return null; // Will redirect in useEffect
   }
 

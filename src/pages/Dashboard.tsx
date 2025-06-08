@@ -21,26 +21,30 @@ const Dashboard = () => {
         switch (profile.role) {
           case 'admin':
             console.log('Redirecting admin to admin dashboard');
-            navigate('/dashboard/admin');
+            navigate('/dashboard/admin', { replace: true });
             break;
           case 'agent':
             console.log('Redirecting agent to agent dashboard');
-            navigate('/dashboard/agent');
+            navigate('/dashboard/agent', { replace: true });
             break;
           case 'vendor':
             console.log('Redirecting vendor to vendor dashboard');
-            navigate('/dashboard/vendor');
+            navigate('/dashboard/vendor', { replace: true });
             break;
           case 'property_owner':
             console.log('Redirecting property owner to user dashboard');
-            navigate('/dashboard/user');
+            navigate('/dashboard/user', { replace: true });
             break;
           case 'general_user':
           default:
             console.log('Redirecting general user to user dashboard');
-            navigate('/dashboard/user');
+            navigate('/dashboard/user', { replace: true });
             break;
         }
+      } else if (user) {
+        // If user exists but no profile, redirect to user dashboard with fallback
+        console.log('User exists but no profile, redirecting to user dashboard');
+        navigate('/dashboard/user', { replace: true });
       }
     }
   }, [user, profile, loading, navigate]);
@@ -50,7 +54,7 @@ const Dashboard = () => {
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-4 text-muted-foreground">Loading...</p>
+          <p className="mt-4 text-muted-foreground">Loading your dashboard...</p>
         </div>
       </div>
     );
@@ -61,7 +65,7 @@ const Dashboard = () => {
     <div className="min-h-screen flex items-center justify-center bg-background">
       <div className="text-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-        <p className="mt-4 text-muted-foreground">Redirecting...</p>
+        <p className="mt-4 text-muted-foreground">Redirecting to your dashboard...</p>
       </div>
     </div>
   );
