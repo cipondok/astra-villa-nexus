@@ -27,6 +27,9 @@
   --ios-gray-light: 240 6% 97%;
   --ios-gray: 240 5% 41%;
   --ios-gray-dark: 240 6% 15%;
+
+  /* Light Blue 60% Transparent for Light Mode */
+  --light-blue-60: rgba(135, 206, 250, 0.6);
 }
 
 @layer base {
@@ -215,10 +218,30 @@
   @apply text-muted-foreground hover:text-foreground transition-colors duration-200;
 }
 
-/* iPhone-style Navigation */
+/* iPhone-style Navigation - Light Blue 60% transparent in light mode */
 .nav-ios {
-  @apply bg-background/60 backdrop-blur-xl border-b border-border/30;
+  @apply border-b border-border/30;
   @apply shadow-sm shadow-black/5 dark:shadow-black/20;
+  background: var(--light-blue-60);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+
+.middle .nav-ios,
+.dark .nav-ios {
+  @apply bg-background/60 backdrop-blur-xl;
+}
+
+/* Light Blue 60% transparent search panel background in light mode */
+.search-panel-light-blue {
+  background: var(--light-blue-60);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+
+.middle .search-panel-light-blue,
+.dark .search-panel-light-blue {
+  @apply bg-background/60 backdrop-blur-xl;
 }
 
 /* iPhone System Colors */
