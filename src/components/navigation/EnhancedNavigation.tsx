@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Sun, Moon, Globe, Menu, User, LogOut, Settings, Bell, Home, ArrowUp, MessageCircle, Sparkles, Bot } from "lucide-react";
 import { useState, useEffect } from "react";
@@ -338,41 +339,6 @@ const EnhancedNavigation = ({
                 >
                   {currentText.home}
                 </button>
-                <a href="#" className={`block px-3 py-2 rounded-md ${
-                  theme === 'dark'
-                    ? 'text-white/90 hover:text-white hover:bg-white/10'
-                    : 'text-blue-titanium-dark hover:text-blue-titanium hover:bg-blue-titanium/10'
-                }`}>
-                  {currentText.buy}
-                </a>
-                <a href="#" className={`block px-3 py-2 rounded-md ${
-                  theme === 'dark'
-                    ? 'text-white/90 hover:text-white hover:bg-white/10'
-                    : 'text-blue-titanium-dark hover:text-blue-titanium hover:bg-blue-titanium/10'
-                }`}>
-                  {currentText.rent}
-                </a>
-                <a href="#" className={`block px-3 py-2 rounded-md ${
-                  theme === 'dark'
-                    ? 'text-white/90 hover:text-white hover:bg-white/10'
-                    : 'text-blue-titanium-dark hover:text-blue-titanium hover:bg-blue-titanium/10'
-                }`}>
-                  {currentText.newProjects}
-                </a>
-                <a href="#" className={`block px-3 py-2 rounded-md ${
-                  theme === 'dark'
-                    ? 'text-white/90 hover:text-white hover:bg-white/10'
-                    : 'text-blue-titanium-dark hover:text-blue-titanium hover:bg-blue-titanium/10'
-                }`}>
-                  {currentText.vendors}
-                </a>
-                <a href="#" className={`block px-3 py-2 rounded-md ${
-                  theme === 'dark'
-                    ? 'text-white/90 hover:text-white hover:bg-white/10'
-                    : 'text-blue-titanium-dark hover:text-blue-titanium hover:bg-blue-titanium/10'
-                }`}>
-                  {currentText.about}
-                </a>
                 
                 {!isAuthenticated ? (
                   <div className="px-3 py-2">

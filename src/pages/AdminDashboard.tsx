@@ -10,6 +10,7 @@ import PropertyManagement from "@/components/admin/PropertyManagement";
 import SystemSettings from "@/components/admin/SystemSettings";
 import SystemReports from "@/components/admin/SystemReports";
 import WebsiteDesignSettings from "@/components/admin/WebsiteDesignSettings";
+import { useAuth } from "@/contexts/AuthContext";
 import { 
   Users, 
   Building, 
@@ -19,12 +20,12 @@ import {
   Bell, 
   DollarSign, 
   TrendingUp,
-  Palette,
-  Layout
+  Palette
 } from "lucide-react";
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState("overview");
+  const { user, profile } = useAuth();
 
   // Sample data - in real app, this would come from your backend
   const stats = {
@@ -36,6 +37,19 @@ const AdminDashboard = () => {
     systemHealth: 98.5
   };
 
+  // Sample admin data
+  const adminData = {
+    totalUsers: stats.totalUsers,
+    totalProperties: stats.totalProperties,
+    totalRevenue: stats.totalRevenue,
+    systemHealth: stats.systemHealth,
+    recentActivities: [
+      { id: 1, action: "New user registered", timestamp: "2 minutes ago" },
+      { id: 2, action: "Property listing approved", timestamp: "5 minutes ago" },
+      { id: 3, action: "System backup completed", timestamp: "1 hour ago" }
+    ]
+  };
+
   const quickActions = [
     { label: "Add Property", action: () => console.log("Add property"), icon: Building, variant: "ios" as const },
     { label: "Manage Users", action: () => setActiveTab("users"), icon: Users, variant: "ios-green" as const },
@@ -45,7 +59,7 @@ const AdminDashboard = () => {
 
   return (
     <div className="min-h-screen bg-background/60 backdrop-blur-xl">
-      <AdminNavigation />
+      <AdminNavigation user={user} adminData={adminData} />
       
       <div className="pt-16">
         <div className="max-w-7xl mx-auto p-6 space-y-6">
@@ -104,15 +118,15 @@ const AdminDashboard = () => {
                 </CardContent>
               </Card>
 
-              {/* Overview Cards */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {/* Overview Cards - Made smaller and more compact */}
+              <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-3">
                 <Card className="glass-ios">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium">Total Users</CardTitle>
                     <Users className="h-4 w-4 text-muted-foreground" />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold">{stats.totalUsers.toLocaleString()}</div>
+                    <div className="text-xl font-bold">{stats.totalUsers.toLocaleString()}</div>
                     <p className="text-xs text-muted-foreground">
                       <span className="text-green-600">+12%</span> from last month
                     </p>
@@ -121,11 +135,11 @@ const AdminDashboard = () => {
 
                 <Card className="glass-ios">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Total Properties</CardTitle>
+                    <CardTitle className="text-sm font-medium">Properties</CardTitle>
                     <Building className="h-4 w-4 text-muted-foreground" />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold">{stats.totalProperties.toLocaleString()}</div>
+                    <div className="text-xl font-bold">{stats.totalProperties.toLocaleString()}</div>
                     <p className="text-xs text-muted-foreground">
                       <span className="text-green-600">+8%</span> from last month
                     </p>
@@ -138,7 +152,7 @@ const AdminDashboard = () => {
                     <DollarSign className="h-4 w-4 text-muted-foreground" />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold">Rp {stats.totalRevenue.toLocaleString()}M</div>
+                    <div className="text-xl font-bold">Rp {stats.totalRevenue.toLocaleString()}M</div>
                     <p className="text-xs text-muted-foreground">
                       <span className="text-green-600">+15%</span> from last month
                     </p>
@@ -151,7 +165,7 @@ const AdminDashboard = () => {
                     <TrendingUp className="h-4 w-4 text-muted-foreground" />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold">{stats.activeListings}</div>
+                    <div className="text-xl font-bold">{stats.activeListings}</div>
                     <p className="text-xs text-muted-foreground">
                       <span className="text-blue-600">Live properties</span>
                     </p>
@@ -164,7 +178,7 @@ const AdminDashboard = () => {
                     <Bell className="h-4 w-4 text-muted-foreground" />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold">{stats.pendingApprovals}</div>
+                    <div className="text-xl font-bold">{stats.pendingApprovals}</div>
                     <p className="text-xs text-muted-foreground">
                       <Badge variant="destructive" className="text-xs">Needs attention</Badge>
                     </p>
@@ -177,7 +191,7 @@ const AdminDashboard = () => {
                     <Shield className="h-4 w-4 text-muted-foreground" />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold">{stats.systemHealth}%</div>
+                    <div className="text-xl font-bold">{stats.systemHealth}%</div>
                     <p className="text-xs text-muted-foreground">
                       <span className="text-green-600">Excellent</span> performance
                     </p>

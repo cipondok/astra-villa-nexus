@@ -1,401 +1,339 @@
 
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Slider } from "@/components/ui/slider";
+import { Badge } from "@/components/ui/badge";
 import { 
   Search, 
   MapPin, 
-  Bed, 
-  Bath, 
-  Car, 
-  Wifi, 
-  AirVent, 
-  Sofa, 
   Filter, 
-  Bot, 
   Home, 
   Building, 
-  Building2,
-  Castle,
-  TreePine,
-  Locate,
-  Sparkles
+  Car, 
+  Bed,
+  Bath,
+  Square,
+  Bot,
+  Sparkles,
+  ChevronDown,
+  MapPinned
 } from "lucide-react";
-import { useState } from "react";
 
 interface ModernSearchPanelProps {
   language: "en" | "id";
-  onSearch: (filters: any) => void;
+  onSearch: (data: any) => void;
 }
 
 const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
-  const [propertyType, setPropertyType] = useState("buy");
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchType, setSearchType] = useState("buy");
   const [selectedState, setSelectedState] = useState("");
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedArea, setSelectedArea] = useState("");
-  const [priceRange, setPriceRange] = useState([0, 10000000000]);
+  const [priceRange, setPriceRange] = useState([0, 10000000]);
+  const [propertyType, setPropertyType] = useState("");
   const [bedrooms, setBedrooms] = useState("");
   const [bathrooms, setBathrooms] = useState("");
-  const [amenities, setAmenities] = useState<string[]>([]);
-  const [selectedPropertyType, setSelectedPropertyType] = useState("");
 
   const text = {
     en: {
       buy: "Buy",
       rent: "Rent", 
-      newProject: "New Project",
-      commercial: "Commercial",
-      preLaunch: "Pre-Launch",
-      search: "Search properties, location...",
-      searchBtn: "AI Search",
-      state: "Select State",
-      city: "Select City",
-      area: "Select Area",
-      propertyType: "Property Type",
+      newProjects: "New Projects",
+      searchPlaceholder: "Search properties...",
+      location: "Location",
       priceRange: "Price Range",
+      propertyType: "Property Type",
       bedrooms: "Bedrooms",
       bathrooms: "Bathrooms",
       filters: "Filters",
-      anyPrice: "Any Price",
-      anyBed: "Any",
-      anyBath: "Any",
-      allTypes: "All Types",
+      search: "AI Search",
       detectLocation: "Detect Location",
-      apartment: "Apartment",
-      house: "House",
+      selectState: "Select State",
+      selectCity: "Select City",
+      selectArea: "Select Area",
       villa: "Villa",
+      apartment: "Apartment", 
+      house: "House",
+      condo: "Condo",
       townhouse: "Townhouse",
-      commercial: "Commercial"
+      land: "Land"
     },
     id: {
       buy: "Beli",
       rent: "Sewa",
-      newProject: "Proyek Baru", 
-      commercial: "Komersial",
-      preLaunch: "Pra-Peluncuran",
-      search: "Cari properti, lokasi...",
-      searchBtn: "Pencarian AI",
-      state: "Pilih Provinsi",
-      city: "Pilih Kota",
-      area: "Pilih Area",
-      propertyType: "Jenis Properti",
-      priceRange: "Range Harga",
+      newProjects: "Proyek Baru", 
+      searchPlaceholder: "Cari properti...",
+      location: "Lokasi",
+      priceRange: "Rentang Harga",
+      propertyType: "Tipe Properti",
       bedrooms: "Kamar Tidur",
-      bathrooms: "Kamar Mandi", 
+      bathrooms: "Kamar Mandi",
       filters: "Filter",
-      anyPrice: "Semua Harga",
-      anyBed: "Semua",
-      anyBath: "Semua",
-      allTypes: "Semua Jenis",
+      search: "Pencarian AI",
       detectLocation: "Deteksi Lokasi",
-      apartment: "Apartemen",
-      house: "Rumah",
+      selectState: "Pilih Provinsi",
+      selectCity: "Pilih Kota",
+      selectArea: "Pilih Area",
       villa: "Villa",
-      townhouse: "Rumah Teres",
-      commercial: "Komersial"
+      apartment: "Apartemen",
+      house: "Rumah", 
+      condo: "Kondominium",
+      townhouse: "Rumah Susun",
+      land: "Tanah"
     }
   };
 
   const currentText = text[language];
 
-  const indonesianStates = [
-    "DKI Jakarta", "West Java", "East Java", "Central Java", "Bali", "North Sumatra",
-    "South Sumatra", "West Sumatra", "Riau", "South Kalimantan", "East Kalimantan"
-  ];
-
-  const citiesByState: { [key: string]: string[] } = {
-    "DKI Jakarta": ["Central Jakarta", "North Jakarta", "South Jakarta", "East Jakarta", "West Jakarta"],
-    "West Java": ["Bandung", "Bekasi", "Bogor", "Depok", "Cirebon"],
-    "East Java": ["Surabaya", "Malang", "Sidoarjo", "Gresik", "Mojokerto"],
-    "Central Java": ["Semarang", "Solo", "Yogyakarta", "Magelang", "Pekalongan"],
-    "Bali": ["Denpasar", "Ubud", "Sanur", "Kuta", "Seminyak"]
+  const states = ["DKI Jakarta", "Jawa Barat", "Jawa Tengah", "Jawa Timur", "Bali"];
+  const cities = {
+    "DKI Jakarta": ["Jakarta Pusat", "Jakarta Selatan", "Jakarta Utara", "Jakarta Barat", "Jakarta Timur"],
+    "Jawa Barat": ["Bandung", "Bekasi", "Depok", "Bogor", "Tangerang"],
+    "Jawa Tengah": ["Semarang", "Solo", "Yogyakarta", "Magelang"],
+    "Jawa Timur": ["Surabaya", "Malang", "Sidoarjo", "Gresik"],
+    "Bali": ["Denpasar", "Ubud", "Sanur", "Canggu", "Seminyak"]
   };
 
-  const areasByCity: { [key: string]: string[] } = {
-    "Central Jakarta": ["Menteng", "Gambir", "Tanah Abang", "Kemayoran"],
-    "Bandung": ["Dago", "Cihampelas", "Pasteur", "Setiabudi"],
+  const areas = {
+    "Jakarta Pusat": ["Menteng", "Gambir", "Tanah Abang", "Kemayoran"],
+    "Jakarta Selatan": ["Kebayoran Baru", "Senayan", "Pondok Indah", "Kemang"],
+    "Bandung": ["Dago", "Braga", "Cihampelas", "Pasteur"],
     "Surabaya": ["Gubeng", "Wonokromo", "Tegalsari", "Genteng"]
   };
 
-  const propertyTypeIcons = {
-    apartment: Building,
-    house: Home,
-    villa: Castle,
-    townhouse: Building2,
-    commercial: TreePine
-  };
-
   const propertyTypes = [
-    { value: "all", label: currentText.allTypes, icon: Home },
+    { value: "villa", label: currentText.villa, icon: Home },
     { value: "apartment", label: currentText.apartment, icon: Building },
     { value: "house", label: currentText.house, icon: Home },
-    { value: "villa", label: currentText.villa, icon: Castle },
-    { value: "townhouse", label: currentText.townhouse, icon: Building2 },
-    { value: "commercial", label: currentText.commercial, icon: TreePine }
+    { value: "condo", label: currentText.condo, icon: Building },
+    { value: "townhouse", label: currentText.townhouse, icon: Home },
+    { value: "land", label: currentText.land, icon: Square }
   ];
 
-  const amenityOptions = [
-    { icon: Car, key: "parking", label: language === "en" ? "Parking" : "Parkir" },
-    { icon: Wifi, key: "wifi", label: "WiFi" },
-    { icon: AirVent, key: "ac", label: "AC" },
-    { icon: Sofa, key: "gym", label: language === "en" ? "Gym" : "Gym" }
-  ];
-
-  const toggleAmenity = (amenityKey: string) => {
-    setAmenities(prev => 
-      prev.includes(amenityKey) 
-        ? prev.filter(a => a !== amenityKey)
-        : [...prev, amenityKey]
-    );
+  const handleSearch = () => {
+    const searchData = {
+      type: searchType,
+      location: { state: selectedState, city: selectedCity, area: selectedArea },
+      priceRange,
+      propertyType,
+      bedrooms,
+      bathrooms
+    };
+    onSearch(searchData);
   };
 
   const detectLocation = () => {
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          console.log("Location detected:", position.coords);
-          // Here you would implement reverse geocoding to get the location name
-          setSearchQuery("Current Location");
-        },
-        (error) => {
-          console.error("Error detecting location:", error);
-        }
-      );
-    }
-  };
-
-  const handleSearch = () => {
-    onSearch({
-      propertyType,
-      query: searchQuery,
-      state: selectedState,
-      city: selectedCity,
-      area: selectedArea,
-      priceRange,
-      bedrooms,
-      bathrooms,
-      amenities,
-      selectedPropertyType
-    });
-  };
-
-  const formatPrice = (value: number) => {
-    if (value >= 1000000000) {
-      return `Rp ${(value / 1000000000).toFixed(1)}B`;
-    } else if (value >= 1000000) {
-      return `Rp ${(value / 1000000).toFixed(0)}M`;
-    } else {
-      return `Rp ${(value / 1000).toFixed(0)}K`;
+      navigator.geolocation.getCurrentPosition((position) => {
+        console.log("Location detected:", position.coords);
+        // You would typically use a geocoding service here
+        setSelectedState("DKI Jakarta");
+        setSelectedCity("Jakarta Selatan");
+      });
     }
   };
 
   return (
-    <Card className="bg-blue-sky-light-transparent backdrop-blur-sm shadow-2xl border-0 max-w-6xl mx-auto">
-      <CardContent className="p-6 space-y-4">
-        {/* Line 1: Property Type Tabs with Icons */}
-        <div className="flex justify-center">
-          <Tabs value={propertyType} onValueChange={setPropertyType} className="w-full max-w-4xl">
-            <TabsList className="grid w-full grid-cols-5 h-12 bg-white/20 backdrop-blur-sm">
-              <TabsTrigger value="buy" className="text-sm font-medium text-blue-titanium-dark data-[state=active]:bg-white/30 flex items-center gap-2">
-                <Home className="h-4 w-4" />
-                {currentText.buy}
-              </TabsTrigger>
-              <TabsTrigger value="rent" className="text-sm font-medium text-blue-titanium-dark data-[state=active]:bg-white/30 flex items-center gap-2">
-                <Building className="h-4 w-4" />
-                {currentText.rent}
-              </TabsTrigger>
-              <TabsTrigger value="new-project" className="text-sm font-medium text-blue-titanium-dark data-[state=active]:bg-white/30 flex items-center gap-2">
-                <Building2 className="h-4 w-4" />
-                {currentText.newProject}
-              </TabsTrigger>
-              <TabsTrigger value="commercial" className="text-sm font-medium text-blue-titanium-dark data-[state=active]:bg-white/30 flex items-center gap-2">
-                <TreePine className="h-4 w-4" />
-                {currentText.commercial}
-              </TabsTrigger>
-              <TabsTrigger value="pre-launch" className="text-sm font-medium text-blue-titanium-dark data-[state=active]:bg-white/30 flex items-center gap-2">
-                <Sparkles className="h-4 w-4" />
-                {currentText.preLaunch}
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
-        </div>
-
-        {/* Line 2: Search Input with Location Detection and AI Search Button */}
-        <div className="flex gap-3">
-          <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-blue-titanium/70" />
-            <Input
-              placeholder={currentText.search}
-              className="pl-10 pr-12 h-12 text-base bg-white/20 border-white/30 text-blue-titanium-dark placeholder:text-blue-titanium/70 backdrop-blur-sm"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
+    <div className="w-full max-w-6xl mx-auto">
+      {/* Search Type Tabs */}
+      <div className="flex justify-center mb-6">
+        <div className="flex bg-white/10 backdrop-blur-md rounded-full p-1 border border-white/20">
+          {[
+            { key: "buy", label: currentText.buy, icon: Home },
+            { key: "rent", label: currentText.rent, icon: Car },
+            { key: "newProjects", label: currentText.newProjects, icon: Building }
+          ].map((type) => (
             <Button
-              variant="ghost"
-              size="sm"
-              onClick={detectLocation}
-              className="absolute right-2 top-1/2 transform -translate-y-1/2 p-1 hover:bg-white/20"
-              title={currentText.detectLocation}
+              key={type.key}
+              variant={searchType === type.key ? "default" : "ghost"}
+              className={`flex items-center gap-2 rounded-full px-6 py-2 transition-all ${
+                searchType === type.key 
+                  ? "bg-primary text-primary-foreground shadow-lg" 
+                  : "text-foreground/70 hover:text-foreground hover:bg-white/10"
+              }`}
+              onClick={() => setSearchType(type.key)}
             >
-              <Locate className="h-4 w-4 text-blue-titanium/70" />
+              <type.icon className="h-4 w-4" />
+              {type.label}
+            </Button>
+          ))}
+        </div>
+      </div>
+
+      {/* Main Search Panel */}
+      <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 shadow-2xl">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+          {/* Search Input */}
+          <div className="md:col-span-2">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+              <Input
+                placeholder={currentText.searchPlaceholder}
+                className="pl-10 bg-white/20 border-white/30 text-foreground placeholder:text-foreground/50"
+              />
+            </div>
+          </div>
+
+          {/* Location Selection */}
+          <div className="relative">
+            <Button
+              variant="outline"
+              className="w-full justify-between bg-white/20 border-white/30 text-foreground hover:bg-white/30"
+              onClick={detectLocation}
+            >
+              <div className="flex items-center gap-2">
+                <MapPinned className="h-4 w-4" />
+                <span>{selectedArea || selectedCity || selectedState || currentText.location}</span>
+              </div>
+              <ChevronDown className="h-4 w-4" />
             </Button>
           </div>
-          <Button 
-            onClick={handleSearch}
-            className="h-12 px-8 bg-gradient-to-r from-blue-600 to-orange-500 hover:from-blue-700 hover:to-orange-600 text-white font-semibold shadow-lg animate-pulse"
-          >
-            <Bot className="h-5 w-5 mr-2 animate-spin" />
-            {currentText.searchBtn}
-          </Button>
-        </div>
 
-        {/* Line 3: Location Selection (State → City → Area) */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-          <Select value={selectedState} onValueChange={(value) => {
-            setSelectedState(value);
-            setSelectedCity("");
-            setSelectedArea("");
-          }}>
-            <SelectTrigger className="h-11 bg-white/20 border-white/30 text-blue-titanium-dark backdrop-blur-sm">
-              <MapPin className="h-4 w-4 mr-2 text-blue-titanium/70" />
-              <SelectValue placeholder={currentText.state} />
-            </SelectTrigger>
-            <SelectContent className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-              {indonesianStates.map((state) => (
-                <SelectItem key={state} value={state}>{state}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          
-          <Select value={selectedCity} onValueChange={(value) => {
-            setSelectedCity(value);
-            setSelectedArea("");
-          }} disabled={!selectedState}>
-            <SelectTrigger className="h-11 bg-white/20 border-white/30 text-blue-titanium-dark backdrop-blur-sm">
-              <SelectValue placeholder={currentText.city} />
-            </SelectTrigger>
-            <SelectContent className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-              {selectedState && citiesByState[selectedState]?.map((city) => (
-                <SelectItem key={city} value={city}>{city}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          <Select value={selectedArea} onValueChange={setSelectedArea} disabled={!selectedCity}>
-            <SelectTrigger className="h-11 bg-white/20 border-white/30 text-blue-titanium-dark backdrop-blur-sm">
-              <SelectValue placeholder={currentText.area} />
-            </SelectTrigger>
-            <SelectContent className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-              {selectedCity && areasByCity[selectedCity]?.map((area) => (
-                <SelectItem key={area} value={area}>{area}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        {/* Line 4: Property Type and Quick Filters */}
-        <div className="flex items-center gap-3 pt-2 border-t border-white/30">
-          <Select value={selectedPropertyType} onValueChange={setSelectedPropertyType}>
-            <SelectTrigger className="h-9 w-40 bg-white/20 border-white/30 text-blue-titanium-dark backdrop-blur-sm">
-              <SelectValue placeholder={currentText.propertyType} />
-            </SelectTrigger>
-            <SelectContent className="bg-white dark:bg-gray-800">
-              {propertyTypes.map((type) => (
-                <SelectItem key={type.value} value={type.value}>
-                  <div className="flex items-center gap-2">
-                    <type.icon className="h-4 w-4" />
-                    {type.label}
-                  </div>
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          <Select value={bedrooms} onValueChange={setBedrooms}>
-            <SelectTrigger className="h-9 w-24 bg-white/20 border-white/30 text-blue-titanium-dark backdrop-blur-sm">
-              <Bed className="h-4 w-4 mr-1" />
-              <SelectValue placeholder={currentText.anyBed} />
-            </SelectTrigger>
-            <SelectContent className="bg-white dark:bg-gray-800">
-              <SelectItem value="any">{currentText.anyBed}</SelectItem>
-              <SelectItem value="1">1</SelectItem>
-              <SelectItem value="2">2</SelectItem>
-              <SelectItem value="3">3</SelectItem>
-              <SelectItem value="4+">4+</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Select value={bathrooms} onValueChange={setBathrooms}>
-            <SelectTrigger className="h-9 w-24 bg-white/20 border-white/30 text-blue-titanium-dark backdrop-blur-sm">
-              <Bath className="h-4 w-4 mr-1" />
-              <SelectValue placeholder={currentText.anyBath} />
-            </SelectTrigger>
-            <SelectContent className="bg-white dark:bg-gray-800">
-              <SelectItem value="any">{currentText.anyBath}</SelectItem>
-              <SelectItem value="1">1</SelectItem>
-              <SelectItem value="2">2</SelectItem>
-              <SelectItem value="3">3</SelectItem>
-              <SelectItem value="4+">4+</SelectItem>
-            </SelectContent>
-          </Select>
-
-          {/* Advanced Filters Sheet */}
+          {/* Filters */}
           <Sheet>
             <SheetTrigger asChild>
               <Button
                 variant="outline"
-                size="sm"
-                className="h-9 px-3 bg-white/20 border-white/30 text-blue-titanium-dark backdrop-blur-sm"
+                className="w-full justify-between bg-white/20 border-white/30 text-foreground hover:bg-white/30"
               >
-                <Filter className="h-4 w-4 mr-2" />
-                {currentText.filters}
+                <div className="flex items-center gap-2">
+                  <Filter className="h-4 w-4" />
+                  {currentText.filters}
+                </div>
+                <ChevronDown className="h-4 w-4" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-80">
+            <SheetContent className="w-[400px] sm:w-[540px]">
               <SheetHeader>
                 <SheetTitle>{currentText.filters}</SheetTitle>
-                <SheetDescription>
-                  Adjust your search filters
-                </SheetDescription>
               </SheetHeader>
-              <div className="space-y-6 mt-6">
-                {/* Price Range Slider */}
-                <div>
-                  <label className="text-sm font-medium mb-3 block">{currentText.priceRange}</label>
-                  <Slider
-                    value={priceRange}
-                    onValueChange={setPriceRange}
-                    max={10000000000}
-                    min={0}
-                    step={100000000}
-                    className="mb-2"
-                  />
-                  <div className="flex justify-between text-xs text-muted-foreground">
-                    <span>{formatPrice(priceRange[0])}</span>
-                    <span>{formatPrice(priceRange[1])}</span>
+              
+              <div className="space-y-6 py-6">
+                {/* Location Selection */}
+                <div className="space-y-3">
+                  <label className="text-sm font-medium">{currentText.location}</label>
+                  
+                  <Select value={selectedState} onValueChange={(value) => {
+                    setSelectedState(value);
+                    setSelectedCity("");
+                    setSelectedArea("");
+                  }}>
+                    <SelectTrigger>
+                      <SelectValue placeholder={currentText.selectState} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {states.map((state) => (
+                        <SelectItem key={state} value={state}>{state}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+
+                  {selectedState && (
+                    <Select value={selectedCity} onValueChange={(value) => {
+                      setSelectedCity(value);
+                      setSelectedArea("");
+                    }}>
+                      <SelectTrigger>
+                        <SelectValue placeholder={currentText.selectCity} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {cities[selectedState as keyof typeof cities]?.map((city) => (
+                          <SelectItem key={city} value={city}>{city}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+
+                  {selectedCity && areas[selectedCity as keyof typeof areas] && (
+                    <Select value={selectedArea} onValueChange={setSelectedArea}>
+                      <SelectTrigger>
+                        <SelectValue placeholder={currentText.selectArea} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {areas[selectedCity as keyof typeof areas]?.map((area) => (
+                          <SelectItem key={area} value={area}>{area}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+
+                  <Button variant="outline" onClick={detectLocation} className="w-full">
+                    <MapPin className="h-4 w-4 mr-2" />
+                    {currentText.detectLocation}
+                  </Button>
+                </div>
+
+                {/* Price Range */}
+                <div className="space-y-3">
+                  <label className="text-sm font-medium">{currentText.priceRange}</label>
+                  <div className="px-3">
+                    <Slider
+                      value={priceRange}
+                      onValueChange={setPriceRange}
+                      max={50000000}
+                      min={0}
+                      step={100000}
+                      className="w-full"
+                    />
+                    <div className="flex justify-between text-sm text-muted-foreground mt-1">
+                      <span>Rp {priceRange[0].toLocaleString()}</span>
+                      <span>Rp {priceRange[1].toLocaleString()}</span>
+                    </div>
                   </div>
                 </div>
 
-                {/* Amenities */}
-                <div>
-                  <label className="text-sm font-medium mb-3 block">Amenities</label>
+                {/* Property Type */}
+                <div className="space-y-3">
+                  <label className="text-sm font-medium">{currentText.propertyType}</label>
                   <div className="grid grid-cols-2 gap-2">
-                    {amenityOptions.map((amenity) => (
+                    {propertyTypes.map((type) => (
                       <Button
-                        key={amenity.key}
-                        variant={amenities.includes(amenity.key) ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => toggleAmenity(amenity.key)}
-                        className="h-9 px-3"
+                        key={type.value}
+                        variant={propertyType === type.value ? "default" : "outline"}
+                        className="justify-start"
+                        onClick={() => setPropertyType(propertyType === type.value ? "" : type.value)}
                       >
-                        <amenity.icon className="h-4 w-4 mr-1" />
-                        <span className="text-xs">{amenity.label}</span>
+                        <type.icon className="h-4 w-4 mr-2" />
+                        {type.label}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Bedrooms */}
+                <div className="space-y-3">
+                  <label className="text-sm font-medium">{currentText.bedrooms}</label>
+                  <div className="flex gap-2">
+                    {["1", "2", "3", "4", "5+"].map((num) => (
+                      <Button
+                        key={num}
+                        variant={bedrooms === num ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setBedrooms(bedrooms === num ? "" : num)}
+                      >
+                        <Bed className="h-4 w-4 mr-1" />
+                        {num}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Bathrooms */}
+                <div className="space-y-3">
+                  <label className="text-sm font-medium">{currentText.bathrooms}</label>
+                  <div className="flex gap-2">
+                    {["1", "2", "3", "4", "5+"].map((num) => (
+                      <Button
+                        key={num}
+                        variant={bathrooms === num ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setBathrooms(bathrooms === num ? "" : num)}
+                      >
+                        <Bath className="h-4 w-4 mr-1" />
+                        {num}
                       </Button>
                     ))}
                   </div>
@@ -404,8 +342,49 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
             </SheetContent>
           </Sheet>
         </div>
-      </CardContent>
-    </Card>
+
+        {/* Search Button */}
+        <div className="flex justify-center">
+          <Button 
+            onClick={handleSearch}
+            className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-3 rounded-full text-lg font-medium shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+          >
+            <Bot className="h-5 w-5 mr-2 animate-pulse" />
+            {currentText.search}
+            <Sparkles className="h-4 w-4 ml-2 animate-bounce" />
+          </Button>
+        </div>
+
+        {/* Active Filters */}
+        {(selectedState || propertyType || bedrooms || bathrooms) && (
+          <div className="flex flex-wrap gap-2 mt-4">
+            {selectedState && (
+              <Badge variant="secondary" className="bg-white/20">
+                <MapPin className="h-3 w-3 mr-1" />
+                {selectedArea || selectedCity || selectedState}
+              </Badge>
+            )}
+            {propertyType && (
+              <Badge variant="secondary" className="bg-white/20">
+                {propertyTypes.find(t => t.value === propertyType)?.label}
+              </Badge>
+            )}
+            {bedrooms && (
+              <Badge variant="secondary" className="bg-white/20">
+                <Bed className="h-3 w-3 mr-1" />
+                {bedrooms} {currentText.bedrooms}
+              </Badge>
+            )}
+            {bathrooms && (
+              <Badge variant="secondary" className="bg-white/20">
+                <Bath className="h-3 w-3 mr-1" />
+                {bathrooms} {currentText.bathrooms}
+              </Badge>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
   );
 };
 
