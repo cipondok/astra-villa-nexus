@@ -42,15 +42,17 @@ const UserManagement = () => {
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
 
-  const { data: users, isLoading } = useQuery({
+  const { data: users, isLoading, refetch } = useQuery({
     queryKey: ['admin-users', searchTerm, roleFilter],
     queryFn: async () => {
+      console.log('Fetching users with filters:', { searchTerm, roleFilter });
+      
       let query = supabase
         .from('profiles')
         .select('*')
         .order('created_at', { ascending: false });
 
-      if (searchTerm) {
+      if (searchTerm.trim()) {
         query = query.or(`full_name.ilike.%${searchTerm}%,email.ilike.%${searchTerm}%`);
       }
 
@@ -59,7 +61,12 @@ const UserManagement = () => {
       }
 
       const { data, error } = await query;
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching users:', error);
+        throw error;
+      }
+      
+      console.log('Fetched users:', data?.length || 0);
       return data as User[];
     },
   });
@@ -67,62 +74,91 @@ const UserManagement = () => {
   const { data: userStats } = useQuery({
     queryKey: ['user-stats'],
     queryFn: async () => {
+      console.log('Fetching user statistics');
+      
       const { data, error } = await supabase
         .from('profiles')
-        .select('role')
-        .then(result => {
-          if (result.error) throw result.error;
-          const stats = result.data.reduce((acc: any, user: any) => {
-            acc[user.role] = (acc[user.role] || 0) + 1;
-            return acc;
-          }, {});
-          return stats;
-        });
-      return data;
+        .select('role');
+        
+      if (error) {
+        console.error('Error fetching user stats:', error);
+        throw error;
+      }
+
+      const stats = data.reduce((acc: any, user: any) => {
+        acc[user.role] = (acc[user.role] || 0) + 1;
+        return acc;
+      }, {});
+      
+      console.log('User stats:', stats);
+      return stats;
     },
   });
 
   const updateUserMutation = useMutation({
     mutationFn: async ({ userId, updates }: { userId: string; updates: any }) => {
+      console.log('Updating user:', userId, updates);
+      
       const { error } = await supabase
         .from('profiles')
         .update(updates)
         .eq('id', userId);
-      if (error) throw error;
+        
+      if (error) {
+        console.error('Error updating user:', error);
+        throw error;
+      }
+      
+      console.log('User updated successfully');
     },
     onSuccess: () => {
       showSuccess("User Updated", "User has been updated successfully.");
       queryClient.invalidateQueries({ queryKey: ['admin-users'] });
       queryClient.invalidateQueries({ queryKey: ['user-stats'] });
+      refetch();
     },
     onError: (error: any) => {
+      console.error('Update user mutation error:', error);
       showError("Update Failed", error.message);
     },
   });
 
   const deleteUserMutation = useMutation({
     mutationFn: async (userId: string) => {
+      console.log('Deleting user:', userId);
+      
+      // First delete from profiles table
       const { error } = await supabase
         .from('profiles')
         .delete()
         .eq('id', userId);
-      if (error) throw error;
+        
+      if (error) {
+        console.error('Error deleting user profile:', error);
+        throw error;
+      }
+      
+      console.log('User deleted successfully');
     },
     onSuccess: () => {
       showSuccess("User Deleted", "User has been deleted successfully.");
       queryClient.invalidateQueries({ queryKey: ['admin-users'] });
       queryClient.invalidateQueries({ queryKey: ['user-stats'] });
+      refetch();
     },
     onError: (error: any) => {
+      console.error('Delete user mutation error:', error);
       showError("Delete Failed", error.message);
     },
   });
 
   const handleRoleChange = (userId: string, newRole: string) => {
+    console.log('Changing role for user:', userId, 'to:', newRole);
     updateUserMutation.mutate({ userId, updates: { role: newRole as UserRole } });
   };
 
   const handleStatusChange = (userId: string, newStatus: string) => {
+    console.log('Changing status for user:', userId, 'to:', newStatus);
     updateUserMutation.mutate({ userId, updates: { verification_status: newStatus } });
   };
 
@@ -226,6 +262,9 @@ const UserManagement = () => {
                 Manage user accounts, roles, and verification status
               </CardDescription>
             </div>
+            <Button onClick={() => refetch()} variant="outline">
+              Refresh Data
+            </Button>
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -366,6 +405,7 @@ const UserManagement = () => {
                             size="sm" 
                             variant="outline"
                             onClick={() => deleteUserMutation.mutate(user.id)}
+                            className="text-red-600 hover:text-red-700"
                           >
                             <Trash2 className="h-4 w-4" />
                           </Button>

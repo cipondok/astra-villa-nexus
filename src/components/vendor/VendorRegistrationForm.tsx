@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useToast } from "@/hooks/use-toast";
+import { useAlert } from "@/contexts/AlertContext";
 import { Building2, FileText, CheckCircle } from "lucide-react";
 
 interface VendorRegistrationFormProps {
@@ -16,8 +16,8 @@ interface VendorRegistrationFormProps {
 }
 
 const VendorRegistrationForm = ({ onSuccess }: VendorRegistrationFormProps) => {
-  const { user, updateProfile } = useAuth();
-  const { toast } = useToast();
+  const { user } = useAuth();
+  const { showSuccess, showError } = useAlert();
   const [formData, setFormData] = useState({
     business_name: '',
     business_type: '',
@@ -46,22 +46,37 @@ const VendorRegistrationForm = ({ onSuccess }: VendorRegistrationFormProps) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user) return;
+    if (!user) {
+      showError("Authentication Required", "You must be logged in to register as a vendor.");
+      return;
+    }
 
     setSubmitting(true);
     try {
-      // First update user profile to vendor role
-      const { error: profileError } = await updateProfile({
-        role: 'vendor',
-        full_name: formData.full_name,
-        phone: formData.phone,
-        company_name: formData.company_name,
-        license_number: formData.license_number
-      });
+      console.log('Starting vendor registration for user:', user.id);
 
-      if (profileError) throw profileError;
+      // Step 1: Update user profile to vendor role
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .upsert({
+          id: user.id,
+          email: user.email!,
+          full_name: formData.full_name,
+          phone: formData.phone,
+          role: 'vendor',
+          company_name: formData.company_name,
+          license_number: formData.license_number,
+          verification_status: 'pending'
+        });
 
-      // Then create vendor registration request
+      if (profileError) {
+        console.error('Profile update error:', profileError);
+        throw profileError;
+      }
+
+      console.log('Profile updated successfully');
+
+      // Step 2: Create vendor registration request
       const { error: requestError } = await supabase
         .from('vendor_requests')
         .insert([{
@@ -72,21 +87,38 @@ const VendorRegistrationForm = ({ onSuccess }: VendorRegistrationFormProps) => {
           status: 'pending'
         }]);
 
-      if (requestError) throw requestError;
+      if (requestError) {
+        console.error('Vendor request error:', requestError);
+        throw requestError;
+      }
 
-      toast({
-        title: "Success!",
-        description: "Your vendor application has been submitted for review."
-      });
-      
+      console.log('Vendor request created successfully');
+
+      // Step 3: Create vendor business profile
+      const { error: businessProfileError } = await supabase
+        .from('vendor_business_profiles')
+        .insert([{
+          vendor_id: user.id,
+          business_name: formData.business_name,
+          business_type: formData.business_type,
+          business_phone: formData.phone,
+          business_email: formData.email,
+          is_active: false, // Will be activated when approved
+          is_verified: false
+        }]);
+
+      if (businessProfileError) {
+        console.error('Business profile error:', businessProfileError);
+        throw businessProfileError;
+      }
+
+      console.log('Business profile created successfully');
+
+      showSuccess("Application Submitted", "Your vendor application has been submitted successfully and is pending review.");
       onSuccess();
     } catch (error: any) {
-      console.error('Error submitting vendor registration:', error);
-      toast({
-        title: "Error",
-        description: error.message || "Failed to submit application",
-        variant: "destructive"
-      });
+      console.error('Vendor registration error:', error);
+      showError("Registration Failed", error.message || "Failed to submit vendor application. Please try again.");
     } finally {
       setSubmitting(false);
     }
