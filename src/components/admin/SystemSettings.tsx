@@ -78,10 +78,14 @@ const SystemSettings = () => {
       systemSettings.forEach((setting: any) => {
         if (setting.value && typeof setting.value === 'object' && setting.value.value !== undefined) {
           const key = setting.key as keyof SettingsState;
-          loadedSettings[key] = setting.value.value as any;
+          if (key in loadedSettings) {
+            (loadedSettings as any)[key] = setting.value.value;
+          }
         } else if (setting.value !== null) {
           const key = setting.key as keyof SettingsState;
-          loadedSettings[key] = setting.value as any;
+          if (key in loadedSettings) {
+            (loadedSettings as any)[key] = setting.value;
+          }
         }
       });
       

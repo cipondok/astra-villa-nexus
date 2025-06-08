@@ -164,7 +164,7 @@ const UserManagement = () => {
   }) || [];
 
   const getRoleBadge = (role: string) => {
-    const roleColors = {
+    const roleColors: { [key: string]: "destructive" | "default" | "secondary" | "outline" } = {
       admin: "destructive",
       agent: "default",
       vendor: "secondary", 
@@ -173,7 +173,7 @@ const UserManagement = () => {
     };
     
     return (
-      <Badge variant={roleColors[role as keyof typeof roleColors] || "outline"}>
+      <Badge variant={roleColors[role] || "outline"}>
         {role === 'admin' && <Shield className="h-3 w-3 mr-1" />}
         {role === 'agent' && <ShieldAlert className="h-3 w-3 mr-1" />}
         {role.replace('_', ' ').toUpperCase()}
@@ -196,6 +196,10 @@ const UserManagement = () => {
       return;
     }
     addUserMutation.mutate(newUser);
+  };
+
+  const handleRefresh = () => {
+    refetch();
   };
 
   return (
@@ -316,7 +320,7 @@ const UserManagement = () => {
                 <SelectItem value="general_user">General User</SelectItem>
               </SelectContent>
             </Select>
-            <Button onClick={refetch} variant="outline">
+            <Button onClick={handleRefresh} variant="outline">
               <RefreshCw className="h-4 w-4 mr-2" />
               Refresh
             </Button>
