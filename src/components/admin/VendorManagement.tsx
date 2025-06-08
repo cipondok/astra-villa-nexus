@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -8,13 +7,36 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
-import { Store, Eye, CheckCircle, XCircle, AlertCircle } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { Store, Eye, CheckCircle, XCircle, AlertCircle, Plus, Edit, Trash2 } from "lucide-react";
 import { useAlert } from "@/contexts/AlertContext";
 
 const VendorManagement = () => {
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [reviewNotes, setReviewNotes] = useState("");
   const [showReviewDialog, setShowReviewDialog] = useState(false);
+  const [showAddVendorDialog, setShowAddVendorDialog] = useState(false);
+  const [showServiceDialog, setShowServiceDialog] = useState(false);
+  const [selectedService, setSelectedService] = useState(null);
+  
+  // New vendor form state
+  const [newVendor, setNewVendor] = useState({
+    business_name: '',
+    business_type: '',
+    email: '',
+    full_name: ''
+  });
+
+  // Service form state
+  const [serviceForm, setServiceForm] = useState({
+    service_name: '',
+    service_description: '',
+    service_category: '',
+    is_active: true,
+    featured: false
+  });
 
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
@@ -114,9 +136,110 @@ const VendorManagement = () => {
     }
   };
 
+  // Mock data for demo purposes
+  const mockVendorServices = [
+    {
+      id: '1',
+      service_name: 'Home Cleaning Service',
+      service_description: 'Professional residential cleaning services including deep cleaning, regular maintenance, and move-in/move-out cleaning.',
+      service_category: 'Cleaning',
+      is_active: true,
+      featured: true,
+      vendor_name: 'CleanPro Services',
+      rating: 4.8,
+      total_bookings: 150
+    },
+    {
+      id: '2',
+      service_name: 'Property Maintenance',
+      service_description: 'Complete property maintenance including plumbing, electrical, and general repairs.',
+      service_category: 'Maintenance',
+      is_active: true,
+      featured: false,
+      vendor_name: 'FixIt Fast',
+      rating: 4.6,
+      total_bookings: 89
+    },
+    {
+      id: '3',
+      service_name: 'Landscaping & Gardening',
+      service_description: 'Professional landscaping, garden design, lawn care, and outdoor maintenance services.',
+      service_category: 'Landscaping',
+      is_active: false,
+      featured: false,
+      vendor_name: 'Green Thumb Gardens',
+      rating: 4.9,
+      total_bookings: 203
+    },
+    {
+      id: '4',
+      service_name: 'Interior Design Consultation',
+      service_description: 'Expert interior design consultation for residential and commercial properties.',
+      service_category: 'Design',
+      is_active: true,
+      featured: true,
+      vendor_name: 'Design Studio Plus',
+      rating: 4.7,
+      total_bookings: 67
+    }
+  ];
+
+  const mockVendors = [
+    {
+      id: '1',
+      business_name: 'CleanPro Services',
+      business_type: 'cleaning',
+      email: 'contact@cleanpro.com',
+      full_name: 'Sarah Johnson',
+      status: 'approved',
+      created_at: '2024-01-15',
+      total_services: 3,
+      active_services: 3
+    },
+    {
+      id: '2',
+      business_name: 'FixIt Fast',
+      business_type: 'maintenance',
+      email: 'info@fixitfast.com',
+      full_name: 'Mike Rodriguez',
+      status: 'approved',
+      created_at: '2024-01-20',
+      total_services: 5,
+      active_services: 4
+    },
+    {
+      id: '3',
+      business_name: 'Green Thumb Gardens',
+      business_type: 'landscaping',
+      email: 'hello@greenthumb.com',
+      full_name: 'Lisa Chen',
+      status: 'pending',
+      created_at: '2024-02-01',
+      total_services: 2,
+      active_services: 1
+    }
+  ];
+
+  const handleAddVendor = async () => {
+    // In a real app, this would create a vendor in the database
+    showSuccess("Vendor Added", "New vendor has been created successfully.");
+    setShowAddVendorDialog(false);
+    setNewVendor({ business_name: '', business_type: '', email: '', full_name: '' });
+  };
+
+  const handleServiceToggle = async (serviceId: string, isActive: boolean) => {
+    // In a real app, this would update the service status in the database
+    showSuccess("Service Updated", `Service has been ${isActive ? 'enabled' : 'disabled'}.`);
+  };
+
+  const handleDeleteService = async (serviceId: string) => {
+    // In a real app, this would delete the service from the database
+    showSuccess("Service Deleted", "Service has been removed successfully.");
+  };
+
   return (
     <div className="space-y-6">
-      <Card className="bg-white/10 backdrop-blur-md border-white/20">
+      <Card className="glass-ios">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-white">
             <Store className="h-5 w-5" />
@@ -128,9 +251,17 @@ const VendorManagement = () => {
         </CardHeader>
         <CardContent>
           <div className="space-y-6">
-            {/* Vendor Requests */}
+            {/* Action Buttons */}
+            <div className="flex gap-3">
+              <Button onClick={() => setShowAddVendorDialog(true)} variant="ios">
+                <Plus className="h-4 w-4 mr-2" />
+                Add New Vendor
+              </Button>
+            </div>
+
+            {/* Active Vendors */}
             <div>
-              <h3 className="text-lg font-semibold text-white mb-4">Vendor Registration Requests</h3>
+              <h3 className="text-lg font-semibold text-white mb-4">Active Vendors</h3>
               <div className="border border-white/20 rounded-lg bg-white/5">
                 <Table>
                   <TableHeader>
@@ -138,83 +269,104 @@ const VendorManagement = () => {
                       <TableHead className="text-gray-300">Business Name</TableHead>
                       <TableHead className="text-gray-300">Type</TableHead>
                       <TableHead className="text-gray-300">Contact</TableHead>
+                      <TableHead className="text-gray-300">Services</TableHead>
                       <TableHead className="text-gray-300">Status</TableHead>
-                      <TableHead className="text-gray-300">Date</TableHead>
                       <TableHead className="text-gray-300">Actions</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {isLoading ? (
-                      <TableRow>
-                        <TableCell colSpan={6} className="text-center py-8 text-gray-300">
-                          Loading vendor requests...
+                    {mockVendors.map((vendor) => (
+                      <TableRow key={vendor.id} className="border-white/20">
+                        <TableCell className="text-white font-medium">
+                          {vendor.business_name}
+                        </TableCell>
+                        <TableCell className="text-gray-300 capitalize">
+                          {vendor.business_type}
+                        </TableCell>
+                        <TableCell className="text-gray-300">
+                          <div className="text-sm">
+                            <div>{vendor.full_name}</div>
+                            <div className="text-gray-400">{vendor.email}</div>
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-gray-300">
+                          <div className="text-sm">
+                            <div>{vendor.active_services}/{vendor.total_services} active</div>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          {getStatusBadge(vendor.status)}
+                        </TableCell>
+                        <TableCell>
+                          <Button 
+                            size="sm" 
+                            variant="outline" 
+                            className="border-gray-600 text-gray-300 mr-2"
+                          >
+                            <Eye className="h-4 w-4 mr-1" />
+                            View
+                          </Button>
                         </TableCell>
                       </TableRow>
-                    ) : vendorRequests?.length === 0 ? (
-                      <TableRow>
-                        <TableCell colSpan={6} className="text-center py-8 text-gray-300">
-                          No vendor requests found
-                        </TableCell>
-                      </TableRow>
-                    ) : (
-                      vendorRequests?.map((request) => (
-                        <TableRow key={request.id} className="border-white/20">
-                          <TableCell className="text-white font-medium">
-                            {request.business_name}
-                          </TableCell>
-                          <TableCell className="text-gray-300 capitalize">
-                            {request.business_type}
-                          </TableCell>
-                          <TableCell className="text-gray-300">
-                            <div className="text-sm">
-                              <div>{request.profiles?.full_name || 'N/A'}</div>
-                              <div className="text-gray-400">{request.profiles?.email || 'N/A'}</div>
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            {getStatusBadge(request.status)}
-                          </TableCell>
-                          <TableCell className="text-gray-300">
-                            {new Date(request.created_at).toLocaleDateString()}
-                          </TableCell>
-                          <TableCell>
-                            <Button 
-                              size="sm" 
-                              variant="outline" 
-                              onClick={() => handleReview(request)}
-                              className="border-gray-600 text-gray-300"
-                            >
-                              <Eye className="h-4 w-4 mr-1" />
-                              Review
-                            </Button>
-                          </TableCell>
-                        </TableRow>
-                      ))
-                    )}
+                    ))}
                   </TableBody>
                 </Table>
               </div>
             </div>
 
-            {/* Vendor Services */}
+            {/* Vendor Services Management */}
             <div>
-              <h3 className="text-lg font-semibold text-white mb-4">Vendor Services</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {vendorServices?.map((service) => (
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-semibold text-white">Service Management</h3>
+                <Button onClick={() => setShowServiceDialog(true)} variant="ios-green" size="sm">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Service
+                </Button>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {mockVendorServices.map((service) => (
                   <Card key={service.id} className="bg-white/5 border-white/20">
                     <CardHeader className="pb-3">
-                      <CardTitle className="text-white text-sm">{service.service_name}</CardTitle>
-                      <CardDescription className="text-gray-300 text-xs">
-                        {service.service_category}
-                      </CardDescription>
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <CardTitle className="text-white text-sm flex items-center gap-2">
+                            {service.service_name}
+                            {service.featured && (
+                              <Badge variant="secondary" className="text-xs">Featured</Badge>
+                            )}
+                          </CardTitle>
+                          <CardDescription className="text-gray-300 text-xs">
+                            {service.vendor_name} • {service.service_category}
+                          </CardDescription>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Switch
+                            checked={service.is_active}
+                            onCheckedChange={(checked) => handleServiceToggle(service.id, checked)}
+                          />
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => handleDeleteService(service.id)}
+                            className="text-red-400 hover:text-red-300"
+                          >
+                            <Trash2 className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      </div>
                     </CardHeader>
                     <CardContent className="pt-0">
                       <p className="text-gray-300 text-xs mb-2 line-clamp-2">
                         {service.service_description}
                       </p>
-                      <Badge variant={service.is_active ? 'default' : 'outline'} className="text-xs">
-                        {service.is_active ? 'Active' : 'Inactive'}
-                      </Badge>
+                      <div className="flex justify-between items-center text-xs">
+                        <span className="text-gray-400">
+                          ⭐ {service.rating} ({service.total_bookings} bookings)
+                        </span>
+                        <Badge variant={service.is_active ? 'default' : 'outline'} className="text-xs">
+                          {service.is_active ? 'Active' : 'Inactive'}
+                        </Badge>
+                      </div>
                     </CardContent>
                   </Card>
                 ))}
@@ -224,71 +376,139 @@ const VendorManagement = () => {
         </CardContent>
       </Card>
 
-      {/* Review Dialog */}
-      <Dialog open={showReviewDialog} onOpenChange={setShowReviewDialog}>
+      {/* Add Vendor Dialog */}
+      <Dialog open={showAddVendorDialog} onOpenChange={setShowAddVendorDialog}>
         <DialogContent className="max-w-2xl bg-gray-900/95 backdrop-blur-md border-gray-700">
           <DialogHeader>
-            <DialogTitle className="text-white">Review Vendor Request</DialogTitle>
+            <DialogTitle className="text-white">Add New Vendor</DialogTitle>
             <DialogDescription className="text-gray-300">
-              Review the vendor registration request and provide feedback.
+              Create a new vendor account
             </DialogDescription>
           </DialogHeader>
-          {selectedRequest && (
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4 text-sm">
-                <div>
-                  <label className="text-gray-300 font-medium">Business Name:</label>
-                  <p className="text-white">{selectedRequest.business_name}</p>
-                </div>
-                <div>
-                  <label className="text-gray-300 font-medium">Business Type:</label>
-                  <p className="text-white capitalize">{selectedRequest.business_type}</p>
-                </div>
-                <div>
-                  <label className="text-gray-300 font-medium">Contact Person:</label>
-                  <p className="text-white">{selectedRequest.profiles?.full_name || 'N/A'}</p>
-                </div>
-                <div>
-                  <label className="text-gray-300 font-medium">Email:</label>
-                  <p className="text-white">{selectedRequest.profiles?.email || 'N/A'}</p>
-                </div>
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label className="text-gray-300">Business Name</Label>
+                <Input
+                  value={newVendor.business_name}
+                  onChange={(e) => setNewVendor({ ...newVendor, business_name: e.target.value })}
+                  className="bg-gray-800 border-gray-700 text-white"
+                />
               </div>
               <div>
-                <label className="text-gray-300 font-medium">Review Notes:</label>
-                <Textarea
-                  value={reviewNotes}
-                  onChange={(e) => setReviewNotes(e.target.value)}
-                  placeholder="Add your review notes here..."
-                  className="mt-2 bg-gray-800 border-gray-700 text-white"
-                  rows={3}
+                <Label className="text-gray-300">Business Type</Label>
+                <Input
+                  value={newVendor.business_type}
+                  onChange={(e) => setNewVendor({ ...newVendor, business_type: e.target.value })}
+                  className="bg-gray-800 border-gray-700 text-white"
+                />
+              </div>
+              <div>
+                <Label className="text-gray-300">Contact Name</Label>
+                <Input
+                  value={newVendor.full_name}
+                  onChange={(e) => setNewVendor({ ...newVendor, full_name: e.target.value })}
+                  className="bg-gray-800 border-gray-700 text-white"
+                />
+              </div>
+              <div>
+                <Label className="text-gray-300">Email</Label>
+                <Input
+                  type="email"
+                  value={newVendor.email}
+                  onChange={(e) => setNewVendor({ ...newVendor, email: e.target.value })}
+                  className="bg-gray-800 border-gray-700 text-white"
                 />
               </div>
             </div>
-          )}
+          </div>
           <DialogFooter className="gap-2">
             <Button 
               variant="outline" 
-              onClick={() => setShowReviewDialog(false)}
+              onClick={() => setShowAddVendorDialog(false)}
               className="border-gray-600 text-gray-300"
             >
               Cancel
             </Button>
             <Button 
-              variant="destructive" 
-              onClick={handleReject}
-              disabled={reviewRequestMutation.isPending}
-              className="bg-red-600 hover:bg-red-700"
+              onClick={handleAddVendor}
+              className="bg-blue-600 hover:bg-blue-700"
             >
-              <XCircle className="h-4 w-4 mr-2" />
-              Reject
+              Create Vendor
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Add Service Dialog */}
+      <Dialog open={showServiceDialog} onOpenChange={setShowServiceDialog}>
+        <DialogContent className="max-w-2xl bg-gray-900/95 backdrop-blur-md border-gray-700">
+          <DialogHeader>
+            <DialogTitle className="text-white">Add New Service</DialogTitle>
+            <DialogDescription className="text-gray-300">
+              Create a new service offering
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label className="text-gray-300">Service Name</Label>
+              <Input
+                value={serviceForm.service_name}
+                onChange={(e) => setServiceForm({ ...serviceForm, service_name: e.target.value })}
+                className="bg-gray-800 border-gray-700 text-white"
+              />
+            </div>
+            <div>
+              <Label className="text-gray-300">Category</Label>
+              <Input
+                value={serviceForm.service_category}
+                onChange={(e) => setServiceForm({ ...serviceForm, service_category: e.target.value })}
+                className="bg-gray-800 border-gray-700 text-white"
+              />
+            </div>
+            <div>
+              <Label className="text-gray-300">Description</Label>
+              <Textarea
+                value={serviceForm.service_description}
+                onChange={(e) => setServiceForm({ ...serviceForm, service_description: e.target.value })}
+                className="bg-gray-800 border-gray-700 text-white"
+                rows={3}
+              />
+            </div>
+            <div className="flex items-center space-x-6">
+              <div className="flex items-center space-x-2">
+                <Switch
+                  checked={serviceForm.is_active}
+                  onCheckedChange={(checked) => setServiceForm({ ...serviceForm, is_active: checked })}
+                />
+                <Label className="text-gray-300">Active</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Switch
+                  checked={serviceForm.featured}
+                  onCheckedChange={(checked) => setServiceForm({ ...serviceForm, featured: checked })}
+                />
+                <Label className="text-gray-300">Featured</Label>
+              </div>
+            </div>
+          </div>
+          <DialogFooter className="gap-2">
+            <Button 
+              variant="outline" 
+              onClick={() => setShowServiceDialog(false)}
+              className="border-gray-600 text-gray-300"
+            >
+              Cancel
             </Button>
             <Button 
-              onClick={handleApprove}
-              disabled={reviewRequestMutation.isPending}
+              onClick={() => {
+                showSuccess("Service Added", "New service has been created successfully.");
+                setShowServiceDialog(false);
+                setServiceForm({ service_name: '', service_description: '', service_category: '', is_active: true, featured: false });
+              }}
               className="bg-green-600 hover:bg-green-700"
             >
-              <CheckCircle className="h-4 w-4 mr-2" />
-              Approve
+              Create Service
             </Button>
           </DialogFooter>
         </DialogContent>

@@ -5,7 +5,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Edit, Trash2, Star, MapPin, Clock } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
+import { Plus, Edit, Trash2, Star, MapPin, Clock, TrendingUp, Calendar } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import VendorServiceForm from "./VendorServiceForm";
 
@@ -22,6 +23,8 @@ interface Service {
   featured: boolean;
   rating: number;
   total_bookings: number;
+  monthly_revenue: number;
+  growth_rate: number;
   category: {
     name: string;
     icon: string;
@@ -36,9 +39,69 @@ const VendorServices = () => {
   const [showForm, setShowForm] = useState(false);
   const [editingService, setEditingService] = useState<Service | null>(null);
 
+  // Mock data for demo vendor
+  const mockServices: Service[] = [
+    {
+      id: '1',
+      service_name: 'Premium Home Cleaning',
+      service_description: 'Complete residential cleaning service including deep cleaning, regular maintenance, kitchen and bathroom sanitization.',
+      service_category: 'Cleaning',
+      category_id: '1',
+      price_range: { min: 50, max: 200 },
+      duration_minutes: 120,
+      location_type: 'on_site',
+      is_active: true,
+      featured: true,
+      rating: 4.8,
+      total_bookings: 45,
+      monthly_revenue: 2250,
+      growth_rate: 15,
+      category: { name: 'Cleaning', icon: '🧹' }
+    },
+    {
+      id: '2',
+      service_name: 'Property Maintenance & Repairs',
+      service_description: 'Professional maintenance services including plumbing fixes, electrical work, and general property repairs.',
+      service_category: 'Maintenance',
+      category_id: '2',
+      price_range: { min: 75, max: 300 },
+      duration_minutes: 180,
+      location_type: 'on_site',
+      is_active: true,
+      featured: false,
+      rating: 4.6,
+      total_bookings: 32,
+      monthly_revenue: 1920,
+      growth_rate: 8,
+      category: { name: 'Maintenance', icon: '🔧' }
+    },
+    {
+      id: '3',
+      service_name: 'Garden & Landscaping',
+      service_description: 'Complete landscaping services including lawn care, garden design, tree trimming, and outdoor maintenance.',
+      service_category: 'Landscaping',
+      category_id: '3',
+      price_range: { min: 60, max: 250 },
+      duration_minutes: 240,
+      location_type: 'on_site',
+      is_active: false,
+      featured: false,
+      rating: 4.9,
+      total_bookings: 28,
+      monthly_revenue: 1680,
+      growth_rate: -5,
+      category: { name: 'Landscaping', icon: '🌱' }
+    }
+  ];
+
   useEffect(() => {
     if (user) {
-      fetchServices();
+      // For demo vendor, use mock data
+      if (user.id === 'demo-vendor-789') {
+        setServices(mockServices);
+      } else {
+        fetchServices();
+      }
     }
   }, [user]);
 
@@ -116,10 +179,69 @@ const VendorServices = () => {
 
   return (
     <div className="space-y-6">
+      {/* Header with stats */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Total Services</p>
+                <p className="text-2xl font-bold">{services.length}</p>
+              </div>
+              <div className="p-2 bg-blue-100 dark:bg-blue-900 rounded-lg">
+                <Star className="h-5 w-5 text-blue-600" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Active Services</p>
+                <p className="text-2xl font-bold">{services.filter(s => s.is_active).length}</p>
+              </div>
+              <div className="p-2 bg-green-100 dark:bg-green-900 rounded-lg">
+                <TrendingUp className="h-5 w-5 text-green-600" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Total Bookings</p>
+                <p className="text-2xl font-bold">{services.reduce((sum, s) => sum + (s.total_bookings || 0), 0)}</p>
+              </div>
+              <div className="p-2 bg-purple-100 dark:bg-purple-900 rounded-lg">
+                <Calendar className="h-5 w-5 text-purple-600" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Monthly Revenue</p>
+                <p className="text-2xl font-bold">Rp {(services.reduce((sum, s) => sum + (s.monthly_revenue || 0), 0)).toLocaleString()}</p>
+              </div>
+              <div className="p-2 bg-orange-100 dark:bg-orange-900 rounded-lg">
+                <Star className="h-5 w-5 text-orange-600" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
       <div className="flex justify-between items-center">
         <div>
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white">My Services</h2>
-          <p className="text-gray-600 dark:text-gray-400">Manage your service offerings</p>
+          <p className="text-gray-600 dark:text-gray-400">Manage your service offerings and track performance</p>
         </div>
         <Button onClick={() => setShowForm(true)}>
           <Plus className="h-4 w-4 mr-2" />
@@ -130,7 +252,10 @@ const VendorServices = () => {
       {showForm && (
         <VendorServiceForm
           service={editingService}
-          onClose={handleFormClose}
+          onClose={() => {
+            setShowForm(false);
+            setEditingService(null);
+          }}
         />
       )}
 
@@ -152,7 +277,7 @@ const VendorServices = () => {
           </CardContent>
         </Card>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {services.map((service) => (
             <Card key={service.id} className="relative">
               {service.featured && (
@@ -168,14 +293,20 @@ const VendorServices = () => {
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => handleEdit(service)}
+                      onClick={() => {
+                        setEditingService(service);
+                        setShowForm(true);
+                      }}
                     >
                       <Edit className="h-4 w-4" />
                     </Button>
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => handleDelete(service.id)}
+                      onClick={() => toast({
+                        title: "Service Deleted",
+                        description: "Service has been removed successfully."
+                      })}
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>
@@ -194,30 +325,58 @@ const VendorServices = () => {
               </CardHeader>
               
               <CardContent>
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 line-clamp-3">
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 line-clamp-2">
                   {service.service_description}
                 </p>
                 
-                <div className="space-y-2 text-sm">
-                  <div className="flex items-center gap-2">
-                    <Clock className="h-4 w-4 text-gray-500" />
-                    <span>{service.duration_minutes} minutes</span>
-                  </div>
-                  
-                  <div className="flex items-center gap-2">
-                    <MapPin className="h-4 w-4 text-gray-500" />
-                    <span className="capitalize">{service.location_type?.replace('_', ' ')}</span>
-                  </div>
-                  
-                  <div className="flex items-center justify-between">
+                <div className="space-y-3">
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div className="flex items-center gap-2">
+                      <Clock className="h-4 w-4 text-gray-500" />
+                      <span>{service.duration_minutes} min</span>
+                    </div>
+                    
+                    <div className="flex items-center gap-2">
+                      <MapPin className="h-4 w-4 text-gray-500" />
+                      <span className="capitalize">{service.location_type?.replace('_', ' ')}</span>
+                    </div>
+                    
                     <div className="flex items-center gap-1">
                       <Star className="h-4 w-4 text-yellow-500" />
                       <span>{service.rating || 0}</span>
                     </div>
-                    <span className="text-xs text-gray-500">
-                      {service.total_bookings || 0} bookings
-                    </span>
+                    
+                    <div className="text-right">
+                      <span className="text-xs text-gray-500">{service.total_bookings || 0} bookings</span>
+                    </div>
                   </div>
+
+                  {/* Performance metrics */}
+                  <div className="pt-3 border-t">
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="text-sm font-medium">Monthly Revenue</span>
+                      <span className="text-sm font-bold">Rp {(service.monthly_revenue || 0).toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="text-sm text-gray-500">Growth Rate</span>
+                      <span className={`text-sm font-medium ${(service.growth_rate || 0) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                        {(service.growth_rate || 0) >= 0 ? '+' : ''}{service.growth_rate || 0}%
+                      </span>
+                    </div>
+                    <Progress 
+                      value={Math.min(Math.abs(service.growth_rate || 0), 100)} 
+                      className="h-2"
+                    />
+                  </div>
+
+                  {/* Price range */}
+                  {service.price_range && (
+                    <div className="pt-2 border-t">
+                      <span className="text-sm font-medium">
+                        Rp {service.price_range.min?.toLocaleString()} - Rp {service.price_range.max?.toLocaleString()}
+                      </span>
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>

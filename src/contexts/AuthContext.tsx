@@ -30,6 +30,7 @@ interface AuthContextType {
   updateProfile: (data: Partial<Profile>) => Promise<{ error: any; success?: boolean }>;
   demoAgentLogin: () => void;
   demoAdminLogin: () => void;
+  demoVendorLogin: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -188,6 +189,34 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     showSuccess('Demo Admin Login', 'You are now logged in as a demo administrator.');
   };
 
+  const demoVendorLogin = () => {
+    console.log('Demo vendor login clicked');
+    const mockVendor = {
+      id: 'demo-vendor-789',
+      email: 'vendor@astravilla.com',
+      user_metadata: { full_name: 'Demo Vendor' },
+      app_metadata: {},
+      aud: 'authenticated',
+      created_at: new Date().toISOString(),
+      role: 'authenticated'
+    };
+    
+    localStorage.setItem('demo_vendor', JSON.stringify(mockVendor));
+    localStorage.removeItem('demo_user');
+    localStorage.removeItem('demo_agent');
+    localStorage.removeItem('demo_admin');
+    
+    setUser(mockVendor as User);
+    setProfile({
+      id: mockVendor.id,
+      email: mockVendor.email,
+      full_name: 'Demo Vendor',
+      role: 'vendor'
+    });
+    
+    showSuccess('Demo Vendor Login', 'You are now logged in as a demo vendor.');
+  };
+
   const signIn = async (email: string, password: string) => {
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
@@ -284,6 +313,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     updateProfile,
     demoAgentLogin,
     demoAdminLogin,
+    demoVendorLogin,
   };
 
   console.log('AuthProvider providing value, loading:', loading, 'isAuthenticated:', !!user);

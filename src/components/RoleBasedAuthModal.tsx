@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/contexts/AuthContext";
-import { Eye, EyeOff, UserCheck, Users, Building, Star } from "lucide-react";
+import { Eye, EyeOff, UserCheck, Users, Building, Star, Wrench } from "lucide-react";
 
 interface RoleBasedAuthModalProps {
   isOpen: boolean;
@@ -22,7 +22,7 @@ const RoleBasedAuthModal = ({ isOpen, onClose }: RoleBasedAuthModalProps) => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   
-  const { signIn, signUp, demoAgentLogin, demoAdminLogin } = useAuth();
+  const { signIn, signUp, demoAgentLogin, demoAdminLogin, demoVendorLogin } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,11 +47,13 @@ const RoleBasedAuthModal = ({ isOpen, onClose }: RoleBasedAuthModalProps) => {
     }
   };
 
-  const handleDemoLogin = (type: 'user' | 'agent' | 'admin') => {
+  const handleDemoLogin = (type: 'user' | 'agent' | 'admin' | 'vendor') => {
     if (type === 'agent') {
       demoAgentLogin();
     } else if (type === 'admin') {
       demoAdminLogin();
+    } else if (type === 'vendor') {
+      demoVendorLogin();
     }
     onClose();
   };
@@ -152,6 +154,18 @@ const RoleBasedAuthModal = ({ isOpen, onClose }: RoleBasedAuthModalProps) => {
                   </CardTitle>
                   <CardDescription className="text-xs">
                     Access agent features and property management
+                  </CardDescription>
+                </CardHeader>
+              </Card>
+
+              <Card className="cursor-pointer hover:bg-accent/50 transition-colors" onClick={() => handleDemoLogin('vendor')}>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm flex items-center gap-2">
+                    <Wrench className="h-4 w-4" />
+                    Demo Vendor
+                  </CardTitle>
+                  <CardDescription className="text-xs">
+                    Manage services and bookings as a vendor
                   </CardDescription>
                 </CardHeader>
               </Card>
