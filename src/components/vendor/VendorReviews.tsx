@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -58,16 +57,14 @@ const VendorReviews = () => {
 
       // Type-safe data handling
       const typedReviews: Review[] = (data || []).map(review => {
-        // Safe customer handling - properly check for customer data
-        let customerData: { full_name: string; } | null = null;
+        // Safe customer handling - extract properties safely
+        let customerName = 'Anonymous';
         
         if (review.customer && 
             typeof review.customer === 'object' && 
-            !Array.isArray(review.customer) &&
-            'full_name' in review.customer) {
-          customerData = {
-            full_name: review.customer.full_name || 'Anonymous'
-          };
+            !Array.isArray(review.customer)) {
+          const customerObj = review.customer as any;
+          customerName = customerObj.full_name || 'Anonymous';
         }
 
         return {
@@ -81,7 +78,9 @@ const VendorReviews = () => {
           service: review.service && typeof review.service === 'object' && 'service_name' in review.service
             ? { service_name: review.service.service_name }
             : { service_name: 'Unknown Service' },
-          customer: customerData || { full_name: 'Anonymous' }
+          customer: {
+            full_name: customerName
+          }
         };
       });
 

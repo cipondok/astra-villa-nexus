@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -66,18 +65,16 @@ const VendorBookings = () => {
 
       // Type-safe data handling
       const typedBookings: Booking[] = (data || []).map(booking => {
-        // Safe customer handling - properly check for customer data
-        let customerData: { full_name: string; email: string; } | null = null;
+        // Safe customer handling - extract properties safely
+        let customerName = 'Unknown';
+        let customerEmail = '';
         
         if (booking.customer && 
             typeof booking.customer === 'object' && 
-            !Array.isArray(booking.customer) &&
-            'full_name' in booking.customer && 
-            'email' in booking.customer) {
-          customerData = {
-            full_name: booking.customer.full_name || 'Unknown',
-            email: booking.customer.email || ''
-          };
+            !Array.isArray(booking.customer)) {
+          const customerObj = booking.customer as any;
+          customerName = customerObj.full_name || 'Unknown';
+          customerEmail = customerObj.email || '';
         }
 
         return {
@@ -95,7 +92,10 @@ const VendorBookings = () => {
           service: booking.service && typeof booking.service === 'object' && 'service_name' in booking.service
             ? { service_name: booking.service.service_name }
             : null,
-          customer: customerData
+          customer: booking.customer ? {
+            full_name: customerName,
+            email: customerEmail
+          } : null
         };
       });
 
