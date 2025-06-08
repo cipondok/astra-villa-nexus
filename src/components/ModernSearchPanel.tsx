@@ -291,7 +291,7 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
 
       {/* Main Search Panel */}
       <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 shadow-2xl">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
           {/* Search Input */}
           <div className="md:col-span-2 relative">
             <div className="relative">
@@ -303,71 +303,6 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
                 onChange={(e) => setSearchValue(e.target.value)}
               />
               <TrendingUp className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-            </div>
-          </div>
-
-          {/* Location Selection with Near Me */}
-          <div className="relative">
-            <div className="flex gap-2">
-              <Select value={selectedArea || selectedCity || selectedState} onValueChange={() => {}}>
-                <SelectTrigger className="flex-1 bg-white/20 border-white/30 text-foreground hover:bg-white/30">
-                  <div className="flex items-center gap-2">
-                    <MapPinned className="h-4 w-4" />
-                    <span className="truncate">
-                      {getLocationDisplayText()}
-                    </span>
-                  </div>
-                </SelectTrigger>
-                <SelectContent>
-                  <div className="p-2 text-xs font-medium text-gray-700 border-b">Select Location</div>
-                  {/* States */}
-                  {!selectedState && !userLocation && states.map((state) => (
-                    <SelectItem key={state} value={state} onClick={() => handleStateChange(state)}>
-                      📍 {state}
-                    </SelectItem>
-                  ))}
-                  {/* Cities */}
-                  {selectedState && !selectedCity && getAvailableCities().map((city) => (
-                    <SelectItem key={city} value={city} onClick={() => handleCityChange(city)}>
-                      🏙️ {city}
-                    </SelectItem>
-                  ))}
-                  {/* Areas */}
-                  {selectedState && selectedCity && getAvailableAreas().map((area) => (
-                    <SelectItem key={area} value={area} onClick={() => setSelectedArea(area)}>
-                      📍 {area}
-                    </SelectItem>
-                  ))}
-                  {/* Back options */}
-                  {selectedCity && (
-                    <SelectItem value="back-to-city" onClick={() => setSelectedCity("")}>
-                      ← Back to Cities
-                    </SelectItem>
-                  )}
-                  {selectedState && !selectedCity && (
-                    <SelectItem value="back-to-state" onClick={() => setSelectedState("")}>
-                      ← Back to States
-                    </SelectItem>
-                  )}
-                </SelectContent>
-              </Select>
-              
-              {/* Near Me Button */}
-              <Button
-                variant={userLocation ? "default" : "outline"}
-                size="sm"
-                onClick={detectNearMe}
-                disabled={isDetectingLocation}
-                className={`bg-white/20 border-white/30 hover:bg-white/30 px-3 ${
-                  userLocation ? "bg-primary text-primary-foreground" : ""
-                }`}
-              >
-                {isDetectingLocation ? (
-                  <div className="animate-spin h-4 w-4 border-2 border-current border-t-transparent rounded-full" />
-                ) : (
-                  <Navigation className="h-4 w-4" />
-                )}
-              </Button>
             </div>
           </div>
 
@@ -387,7 +322,7 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
                 </Button>
               </SheetTrigger>
               
-              <SheetContent side="right" className="w-[400px] sm:w-[540px] bg-background/95 backdrop-blur-md border-l border-white/20">
+              <SheetContent side="right" className="w-[400px] sm:w-[540px] bg-background/40 backdrop-blur-md border-l border-white/20">
                 <SheetHeader className="pb-6">
                   <SheetTitle className="text-lg font-semibold flex items-center gap-2">
                     <Filter className="h-5 w-5" />
