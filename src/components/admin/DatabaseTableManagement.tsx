@@ -8,7 +8,6 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useAlert } from "@/contexts/AlertContext";
@@ -17,12 +16,10 @@ import {
   Database, 
   Shield, 
   Eye, 
-  Edit, 
   RefreshCw,
   Settings,
   Search,
   Filter,
-  Trash2,
   Crown,
   AlertTriangle,
   Table2,
@@ -52,7 +49,6 @@ interface DatabaseStats {
 }
 
 const DatabaseTableManagement = () => {
-  const [selectedTable, setSelectedTable] = useState<string>("");
   const [searchTerm, setSearchTerm] = useState("");
   const [tableFilter, setTableFilter] = useState("all");
   const [sqlQuery, setSqlQuery] = useState("");
