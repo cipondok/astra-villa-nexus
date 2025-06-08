@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { Sun, Moon, Globe, Menu, User, LogOut, Settings, Bell, Home, ArrowUp, MessageCircle, Sparkles, Bot, LogIn, UserPlus } from "lucide-react";
+import { Sun, Moon, Globe, Menu, User, LogOut, Settings, Bell, Home, ArrowUp, MessageCircle, Sparkles, Bot, LogIn, UserPlus, Lock, Unlock } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -40,6 +40,7 @@ const EnhancedNavigation = ({
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [alertsOpen, setAlertsOpen] = useState(false);
   const [showChatBot, setShowChatBot] = useState(false);
+  const [isLoginDropdownOpen, setIsLoginDropdownOpen] = useState(false);
   const { user, profile, signOut, isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
@@ -131,6 +132,10 @@ const EnhancedNavigation = ({
       default:
         return '/dashboard';
     }
+  };
+
+  const handleLoginDropdownClick = () => {
+    setIsLoginDropdownOpen(!isLoginDropdownOpen);
   };
 
   return (
@@ -323,26 +328,41 @@ const EnhancedNavigation = ({
                 </>
               ) : (
                 <div className="hidden md:flex items-center">
-                  {/* Login/Register Dropdown */}
-                  <DropdownMenu>
+                  {/* iPhone-style Unlock Button */}
+                  <DropdownMenu open={isLoginDropdownOpen} onOpenChange={setIsLoginDropdownOpen}>
                     <DropdownMenuTrigger asChild>
-                      <Button 
-                        className={`glass-ios rounded-full px-4 py-2 transition-all duration-200 hover:scale-105 ${
+                      <Button
+                        onClick={handleLoginDropdownClick}
+                        className={`relative group glass-ios rounded-full w-12 h-12 p-0 border-2 transition-all duration-300 hover:scale-110 ${
                           theme === 'dark'
-                            ? 'bg-white/20 text-white border-white/30 hover:bg-white/30'
-                            : 'bg-blue-titanium/20 text-blue-titanium-dark border-blue-titanium/30 hover:bg-blue-titanium/30'
+                            ? 'bg-gradient-to-br from-gray-800 to-gray-900 border-gray-600 hover:border-white/40 shadow-lg hover:shadow-white/20'
+                            : 'bg-gradient-to-br from-gray-100 to-gray-200 border-gray-300 hover:border-blue-400 shadow-lg hover:shadow-blue-500/20'
                         }`}
                       >
-                        <User className="h-4 w-4 mr-2" />
-                        Account
+                        <div className="relative">
+                          {isLoginDropdownOpen ? (
+                            <Unlock className={`h-5 w-5 transition-colors duration-200 ${
+                              theme === 'dark' ? 'text-green-400' : 'text-green-600'
+                            }`} />
+                          ) : (
+                            <Lock className={`h-5 w-5 transition-colors duration-200 ${
+                              theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
+                            }`} />
+                          )}
+                          <div className={`absolute inset-0 rounded-full transition-all duration-300 ${
+                            isLoginDropdownOpen 
+                              ? 'bg-green-500/20 animate-pulse' 
+                              : 'bg-transparent group-hover:bg-blue-500/10'
+                          }`} />
+                        </div>
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-48">
-                      <DropdownMenuItem onClick={onLoginClick}>
+                    <DropdownMenuContent align="end" className="w-48 mt-2">
+                      <DropdownMenuItem onClick={() => { onLoginClick?.(); setIsLoginDropdownOpen(false); }}>
                         <LogIn className="h-4 w-4 mr-2" />
                         {currentText.login}
                       </DropdownMenuItem>
-                      <DropdownMenuItem onClick={onLoginClick}>
+                      <DropdownMenuItem onClick={() => { onLoginClick?.(); setIsLoginDropdownOpen(false); }}>
                         <UserPlus className="h-4 w-4 mr-2" />
                         {currentText.register}
                       </DropdownMenuItem>
@@ -387,13 +407,29 @@ const EnhancedNavigation = ({
                 </button>
                 
                 {!isAuthenticated ? (
-                  <div className="px-3 py-2">
-                    <Button onClick={onLoginClick} className={`w-full backdrop-blur-sm ${
-                      theme === 'dark'
-                        ? 'bg-white/20 text-white border-white/30 hover:bg-white/30'
-                        : 'bg-blue-titanium/20 text-blue-titanium-dark border-blue-titanium/30 hover:bg-blue-titanium/30'
-                    }`}>
-                      {currentText.loginRegister}
+                  <div className="px-3 py-2 space-y-2">
+                    <Button 
+                      onClick={() => { onLoginClick?.(); setIsMenuOpen(false); }} 
+                      className={`w-full backdrop-blur-sm ${
+                        theme === 'dark'
+                          ? 'bg-white/20 text-white border-white/30 hover:bg-white/30'
+                          : 'bg-blue-titanium/20 text-blue-titanium-dark border-blue-titanium/30 hover:bg-blue-titanium/30'
+                      }`}
+                    >
+                      <LogIn className="h-4 w-4 mr-2" />
+                      {currentText.login}
+                    </Button>
+                    <Button 
+                      onClick={() => { onLoginClick?.(); setIsMenuOpen(false); }} 
+                      variant="outline"
+                      className={`w-full backdrop-blur-sm ${
+                        theme === 'dark'
+                          ? 'border-white/30 text-white hover:bg-white/10'
+                          : 'border-blue-titanium/30 text-blue-titanium-dark hover:bg-blue-titanium/10'
+                      }`}
+                    >
+                      <UserPlus className="h-4 w-4 mr-2" />
+                      {currentText.register}
                     </Button>
                   </div>
                 ) : (
