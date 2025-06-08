@@ -27,8 +27,8 @@
   --ios-gray: 240 5% 41%;
   --ios-gray-dark: 240 6% 15%;
 
-  /* Blue 80% Transparent for Light Mode */
-  --blue-80: rgba(0, 0, 255, 0.8);
+  /* Blue 50% Transparent for Light Mode */
+  --blue-50: rgba(0, 0, 255, 0.5);
 }
 
 @layer base {
@@ -217,11 +217,11 @@
   @apply text-muted-foreground hover:text-foreground transition-colors duration-200;
 }
 
-/* iPhone-style Navigation - Blue 80% transparent in light mode */
+/* iPhone-style Navigation - Blue 50% transparent in light mode */
 .nav-ios {
   @apply border-b border-border/30;
   @apply shadow-sm shadow-black/5 dark:shadow-black/20;
-  background: var(--blue-80);
+  background: var(--blue-50);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
 }
@@ -231,9 +231,9 @@
   @apply bg-background/60 backdrop-blur-xl;
 }
 
-/* Blue 80% transparent search panel background in light mode */
+/* Blue 50% transparent search panel background in light mode */
 .search-panel-blue {
-  background: var(--blue-80);
+  background: var(--blue-50);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
 }
