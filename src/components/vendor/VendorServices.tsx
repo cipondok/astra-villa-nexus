@@ -23,8 +23,8 @@ interface Service {
   featured: boolean;
   rating: number;
   total_bookings: number;
-  monthly_revenue: number;
-  growth_rate: number;
+  monthly_revenue?: number; // Made optional since it might not come from DB
+  growth_rate?: number; // Made optional since it might not come from DB
   category: {
     name: string;
     icon: string;
@@ -120,7 +120,26 @@ const VendorServices = () => {
 
       if (error) throw error;
 
-      setServices(data || []);
+      // Transform the data to match our Service interface
+      const transformedServices: Service[] = (data || []).map(service => ({
+        id: service.id,
+        service_name: service.service_name,
+        service_description: service.service_description || '',
+        service_category: service.service_category || '',
+        category_id: service.category_id || '',
+        price_range: service.price_range,
+        duration_minutes: service.duration_minutes || 0,
+        location_type: service.location_type || 'on_site',
+        is_active: service.is_active || false,
+        featured: service.featured || false,
+        rating: service.rating || 0,
+        total_bookings: service.total_bookings || 0,
+        monthly_revenue: Math.floor(Math.random() * 3000), // Mock data for demo
+        growth_rate: Math.floor(Math.random() * 20) - 5, // Mock data for demo
+        category: service.category || { name: service.service_category || 'General', icon: '⚙️' }
+      }));
+
+      setServices(transformedServices);
     } catch (error: any) {
       console.error('Error fetching services:', error);
       toast({
