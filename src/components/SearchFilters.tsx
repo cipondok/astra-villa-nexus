@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -161,7 +160,7 @@ const SearchFilters = ({ language, onSearch }: SearchFiltersProps) => {
           
           <Button 
             onClick={handleSearch}
-            className="h-12 bg-gradient-to-r from-blue-600 to-orange-500 hover:from-blue-700 hover:to-orange-600 text-white font-semibold transition-all duration-300 transform hover:scale-105"
+            className="h-12 bg-[#59a1ef]/60 hover:bg-[#59a1ef]/80 text-white font-semibold transition-all duration-300 transform hover:scale-105 backdrop-blur-sm"
           >
             {currentText.searchBtn}
           </Button>
