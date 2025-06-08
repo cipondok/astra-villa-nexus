@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -34,8 +35,9 @@ const UserRolesManagement = () => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
 
+  // All hooks must be called unconditionally at the top level
   // Check if current user is super admin using the new safe function
-  const { data: isSuperAdmin } = useQuery({
+  const { data: isSuperAdmin, isLoading: superAdminLoading } = useQuery({
     queryKey: ['is-super-admin-safe', user?.id],
     queryFn: async () => {
       if (!user?.id) return false;
@@ -56,19 +58,6 @@ const UserRolesManagement = () => {
     },
     enabled: !!user?.id,
   });
-
-  // Only show this component if user is super admin
-  if (!isSuperAdmin) {
-    return (
-      <Card className="border-red-500/20">
-        <CardContent className="p-6 text-center">
-          <Shield className="h-12 w-12 text-red-500 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-red-900">Access Denied</h3>
-          <p className="text-red-700">Super administrator privileges required for user roles management.</p>
-        </CardContent>
-      </Card>
-    );
-  }
 
   // Fetch users with better error handling to avoid infinite recursion
   const { data: users, isLoading: usersLoading, error } = useQuery({
@@ -94,6 +83,7 @@ const UserRolesManagement = () => {
     },
     retry: 1,
     retryDelay: 2000,
+    enabled: !!isSuperAdmin, // Only fetch if user is super admin
   });
 
   const updateUserRoleMutation = useMutation({
@@ -114,6 +104,31 @@ const UserRolesManagement = () => {
       showError("Update Failed", error.message);
     },
   });
+
+  // Now we can do conditional rendering after all hooks are declared
+  if (superAdminLoading) {
+    return (
+      <Card className="bg-card border-border">
+        <CardContent className="p-6 text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Checking permissions...</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  // Only show this component if user is super admin
+  if (!isSuperAdmin) {
+    return (
+      <Card className="border-red-500/20">
+        <CardContent className="p-6 text-center">
+          <Shield className="h-12 w-12 text-red-500 mx-auto mb-4" />
+          <h3 className="text-lg font-semibold text-red-900">Access Denied</h3>
+          <p className="text-red-700">Super administrator privileges required for user roles management.</p>
+        </CardContent>
+      </Card>
+    );
+  }
 
   const handleRoleUpdate = (user: UserProfile) => {
     setSelectedUser(user);
