@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useAuth } from "@/contexts/AuthContext";
-import { X, Eye, EyeOff, UserCheck } from "lucide-react";
+import { X, Eye, EyeOff } from "lucide-react";
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -22,7 +23,7 @@ const AuthModal = ({ isOpen, onClose, language }: AuthModalProps) => {
   const [errors, setErrors] = useState<{[key: string]: string}>({});
   const [activeTab, setActiveTab] = useState("login");
   
-  const { signIn, signUp, loading, demoAgentLogin } = useAuth();
+  const { signIn, signUp, loading } = useAuth();
 
   const text = {
     en: {
@@ -36,8 +37,6 @@ const AuthModal = ({ isOpen, onClose, language }: AuthModalProps) => {
       registerBtn: "Create Account",
       close: "Close",
       fillDemo: "Fill Demo Data",
-      demoLogin: "Demo Login (Skip Auth)",
-      demoAgentLogin: "Demo Agent Login",
       passwordsDontMatch: "Passwords do not match",
       emailRequired: "Email is required",
       passwordRequired: "Password is required",
@@ -60,8 +59,6 @@ const AuthModal = ({ isOpen, onClose, language }: AuthModalProps) => {
       registerBtn: "Buat Akun",
       close: "Tutup",
       fillDemo: "Isi Data Demo",
-      demoLogin: "Login Demo (Lewati Auth)",
-      demoAgentLogin: "Login Demo Agen",
       passwordsDontMatch: "Kata sandi tidak cocok",
       emailRequired: "Email wajib diisi",
       passwordRequired: "Kata sandi wajib diisi",
@@ -76,28 +73,6 @@ const AuthModal = ({ isOpen, onClose, language }: AuthModalProps) => {
   };
 
   const currentText = text[language];
-
-  const handleDemoLogin = () => {
-    console.log('Demo login clicked - bypassing authentication');
-    const mockUser = {
-      id: 'demo-user-123',
-      email: 'demo@astravilla.com',
-      user_metadata: { full_name: 'Demo User' },
-      app_metadata: {},
-      aud: 'authenticated',
-      created_at: new Date().toISOString(),
-      role: 'authenticated'
-    };
-    
-    localStorage.setItem('demo_user', JSON.stringify(mockUser));
-    onClose();
-    window.location.reload();
-  };
-
-  const handleDemoAgentLogin = () => {
-    demoAgentLogin();
-    onClose();
-  };
 
   const fillDemoData = () => {
     const timestamp = Date.now();
@@ -224,23 +199,6 @@ const AuthModal = ({ isOpen, onClose, language }: AuthModalProps) => {
               className="w-full"
             >
               {currentText.fillDemo}
-            </Button>
-            
-            <Button 
-              onClick={handleDemoLogin}
-              disabled={loading}
-              className="w-full bg-green-600 hover:bg-green-700 text-white"
-            >
-              {currentText.demoLogin}
-            </Button>
-
-            <Button 
-              onClick={handleDemoAgentLogin}
-              disabled={loading}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2"
-            >
-              <UserCheck className="h-4 w-4" />
-              {currentText.demoAgentLogin}
             </Button>
           </div>
 
@@ -433,7 +391,7 @@ const AuthModal = ({ isOpen, onClose, language }: AuthModalProps) => {
                   >
                     {currentText.switchToLogin}
                   </button>
-                </p>
+                  </p>
               </form>
             </TabsContent>
           </Tabs>
