@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,6 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { 
   Search, 
   MapPin, 
@@ -24,7 +24,8 @@ import {
   Rocket,
   Building2,
   Navigation,
-  X
+  X,
+  ChevronRight
 } from "lucide-react";
 
 interface ModernSearchPanelProps {
@@ -46,6 +47,13 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
   const [userLocation, setUserLocation] = useState<{lat: number, lng: number} | null>(null);
   const [isDetectingLocation, setIsDetectingLocation] = useState(false);
+  
+  // Collapsible states for filter categories
+  const [isLocationOpen, setIsLocationOpen] = useState(false);
+  const [isPriceOpen, setIsPriceOpen] = useState(false);
+  const [isPropertyTypeOpen, setIsPropertyTypeOpen] = useState(false);
+  const [isBedroomsOpen, setIsBedroomsOpen] = useState(false);
+  const [isBathroomsOpen, setIsBathroomsOpen] = useState(false);
 
   const text = {
     en: {
@@ -387,173 +395,227 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
                   </SheetTitle>
                 </SheetHeader>
                 
-                <div className="space-y-8 overflow-y-auto max-h-[calc(100vh-150px)]">
-                  {/* Location Category */}
-                  <div className="space-y-4">
-                    <h3 className="text-sm font-semibold text-primary border-b border-white/10 pb-2">
-                      📍 {currentText.location}
-                    </h3>
-                    
-                    {!userLocation && (
-                      <div className="space-y-3">
-                        <Select value={selectedState} onValueChange={handleStateChange}>
-                          <SelectTrigger>
-                            <SelectValue placeholder={currentText.selectState} />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {states.map((state) => (
-                              <SelectItem key={state} value={state}>{state}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-
-                        {selectedState && getAvailableCities().length > 0 && (
-                          <Select value={selectedCity} onValueChange={handleCityChange}>
+                <div className="space-y-4 overflow-y-auto max-h-[calc(100vh-150px)]">
+                  {/* Location Category - Collapsible */}
+                  <Collapsible open={isLocationOpen} onOpenChange={setIsLocationOpen}>
+                    <CollapsibleTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        className="w-full justify-between p-4 h-auto border border-white/10 rounded-lg hover:bg-white/5"
+                      >
+                        <div className="flex items-center gap-3">
+                          <MapPinned className="h-5 w-5 text-primary" />
+                          <span className="font-medium">{currentText.location}</span>
+                        </div>
+                        <ChevronRight className={`h-4 w-4 transition-transform ${isLocationOpen ? 'rotate-90' : ''}`} />
+                      </Button>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="space-y-4 mt-4 ml-4">
+                      {!userLocation && (
+                        <div className="space-y-3">
+                          <Select value={selectedState} onValueChange={handleStateChange}>
                             <SelectTrigger>
-                              <SelectValue placeholder={currentText.selectCity} />
+                              <SelectValue placeholder={currentText.selectState} />
                             </SelectTrigger>
                             <SelectContent>
-                              {getAvailableCities().map((city) => (
-                                <SelectItem key={city} value={city}>{city}</SelectItem>
+                              {states.map((state) => (
+                                <SelectItem key={state} value={state}>{state}</SelectItem>
                               ))}
                             </SelectContent>
                           </Select>
-                        )}
 
-                        {selectedCity && getAvailableAreas().length > 0 && (
-                          <Select value={selectedArea} onValueChange={setSelectedArea}>
-                            <SelectTrigger>
-                              <SelectValue placeholder={currentText.selectArea} />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {getAvailableAreas().map((area) => (
-                                <SelectItem key={area} value={area}>{area}</SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        )}
-                      </div>
-                    )}
+                          {selectedState && getAvailableCities().length > 0 && (
+                            <Select value={selectedCity} onValueChange={handleCityChange}>
+                              <SelectTrigger>
+                                <SelectValue placeholder={currentText.selectCity} />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {getAvailableCities().map((city) => (
+                                  <SelectItem key={city} value={city}>{city}</SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          )}
 
-                    <Button 
-                      variant={userLocation ? "default" : "outline"} 
-                      onClick={detectNearMe} 
-                      className="w-full"
-                      disabled={isDetectingLocation}
-                    >
-                      {isDetectingLocation ? (
-                        <>
-                          <div className="animate-spin h-4 w-4 border-2 border-current border-t-transparent rounded-full mr-2" />
-                          Detecting...
-                        </>
-                      ) : (
-                        <>
-                          <Navigation className="h-4 w-4 mr-2" />
-                          {currentText.detectLocation}
-                        </>
+                          {selectedCity && getAvailableAreas().length > 0 && (
+                            <Select value={selectedArea} onValueChange={setSelectedArea}>
+                              <SelectTrigger>
+                                <SelectValue placeholder={currentText.selectArea} />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {getAvailableAreas().map((area) => (
+                                  <SelectItem key={area} value={area}>{area}</SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          )}
+                        </div>
                       )}
-                    </Button>
 
-                    {userLocation && (
-                      <div className="flex items-center gap-2 p-3 bg-primary/10 rounded-lg">
-                        <Navigation className="h-4 w-4 text-primary" />
-                        <span className="text-sm text-primary font-medium">
-                          {currentText.nearMe} - Location detected
-                        </span>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => setUserLocation(null)}
-                          className="ml-auto h-6 w-6 p-0"
-                        >
-                          <X className="h-3 w-3" />
-                        </Button>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Price Range Category */}
-                  <div className="space-y-4">
-                    <h3 className="text-sm font-semibold text-primary border-b border-white/10 pb-2">
-                      💰 {currentText.priceRange}
-                    </h3>
-                    <div className="px-3">
-                      <Slider
-                        value={priceRange}
-                        onValueChange={setPriceRange}
-                        max={1000000000} // 1 milyar
-                        min={100000000}  // 100 juta
-                        step={10000000}  // 10 juta
+                      <Button 
+                        variant={userLocation ? "default" : "outline"} 
+                        onClick={detectNearMe} 
                         className="w-full"
-                      />
-                      <div className="flex justify-between text-sm text-muted-foreground mt-2">
-                        <span>Rp {formatPrice(priceRange[0])}</span>
-                        <span>Rp {formatPrice(priceRange[1])}</span>
+                        disabled={isDetectingLocation}
+                      >
+                        {isDetectingLocation ? (
+                          <>
+                            <div className="animate-spin h-4 w-4 border-2 border-current border-t-transparent rounded-full mr-2" />
+                            Detecting...
+                          </>
+                        ) : (
+                          <>
+                            <Navigation className="h-4 w-4 mr-2" />
+                            {currentText.detectLocation}
+                          </>
+                        )}
+                      </Button>
+
+                      {userLocation && (
+                        <div className="flex items-center gap-2 p-3 bg-primary/10 rounded-lg">
+                          <Navigation className="h-4 w-4 text-primary" />
+                          <span className="text-sm text-primary font-medium">
+                            {currentText.nearMe} - Location detected
+                          </span>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setUserLocation(null)}
+                            className="ml-auto h-6 w-6 p-0"
+                          >
+                            <X className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      )}
+                    </CollapsibleContent>
+                  </Collapsible>
+
+                  {/* Price Range Category - Collapsible */}
+                  <Collapsible open={isPriceOpen} onOpenChange={setIsPriceOpen}>
+                    <CollapsibleTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        className="w-full justify-between p-4 h-auto border border-white/10 rounded-lg hover:bg-white/5"
+                      >
+                        <div className="flex items-center gap-3">
+                          <span className="h-5 w-5 text-primary text-lg">💰</span>
+                          <span className="font-medium">{currentText.priceRange}</span>
+                        </div>
+                        <ChevronRight className={`h-4 w-4 transition-transform ${isPriceOpen ? 'rotate-90' : ''}`} />
+                      </Button>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="mt-4 ml-4">
+                      <div className="px-3">
+                        <Slider
+                          value={priceRange}
+                          onValueChange={setPriceRange}
+                          max={1000000000} // 1 milyar
+                          min={100000000}  // 100 juta
+                          step={10000000}  // 10 juta
+                          className="w-full"
+                        />
+                        <div className="flex justify-between text-sm text-muted-foreground mt-2">
+                          <span>Rp {formatPrice(priceRange[0])}</span>
+                          <span>Rp {formatPrice(priceRange[1])}</span>
+                        </div>
                       </div>
-                    </div>
-                  </div>
+                    </CollapsibleContent>
+                  </Collapsible>
 
-                  {/* Property Type Category */}
-                  <div className="space-y-4">
-                    <h3 className="text-sm font-semibold text-primary border-b border-white/10 pb-2">
-                      🏠 {currentText.propertyType}
-                    </h3>
-                    <div className="grid grid-cols-2 gap-2">
-                      {propertyTypes.map((type) => (
-                        <Button
-                          key={type.value}
-                          variant={propertyType === type.value ? "default" : "outline"}
-                          className="justify-start h-12"
-                          onClick={() => setPropertyType(propertyType === type.value ? "" : type.value)}
-                        >
-                          <type.icon className="h-4 w-4 mr-2" />
-                          {type.label}
-                        </Button>
-                      ))}
-                    </div>
-                  </div>
+                  {/* Property Type Category - Collapsible */}
+                  <Collapsible open={isPropertyTypeOpen} onOpenChange={setIsPropertyTypeOpen}>
+                    <CollapsibleTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        className="w-full justify-between p-4 h-auto border border-white/10 rounded-lg hover:bg-white/5"
+                      >
+                        <div className="flex items-center gap-3">
+                          <Home className="h-5 w-5 text-primary" />
+                          <span className="font-medium">{currentText.propertyType}</span>
+                        </div>
+                        <ChevronRight className={`h-4 w-4 transition-transform ${isPropertyTypeOpen ? 'rotate-90' : ''}`} />
+                      </Button>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="mt-4 ml-4">
+                      <div className="grid grid-cols-2 gap-2">
+                        {propertyTypes.map((type) => (
+                          <Button
+                            key={type.value}
+                            variant={propertyType === type.value ? "default" : "outline"}
+                            className="justify-start h-12"
+                            onClick={() => setPropertyType(propertyType === type.value ? "" : type.value)}
+                          >
+                            <type.icon className="h-4 w-4 mr-2" />
+                            {type.label}
+                          </Button>
+                        ))}
+                      </div>
+                    </CollapsibleContent>
+                  </Collapsible>
 
-                  {/* Bedrooms Category */}
-                  <div className="space-y-4">
-                    <h3 className="text-sm font-semibold text-primary border-b border-white/10 pb-2">
-                      🛏️ {currentText.bedrooms}
-                    </h3>
-                    <div className="flex flex-wrap gap-2">
-                      {["1", "2", "3", "4", "5+"].map((num) => (
-                        <Button
-                          key={num}
-                          variant={bedrooms === num ? "default" : "outline"}
-                          size="sm"
-                          className="min-w-[60px]"
-                          onClick={() => setBedrooms(bedrooms === num ? "" : num)}
-                        >
-                          <Bed className="h-4 w-4 mr-1" />
-                          {num}
-                        </Button>
-                      ))}
-                    </div>
-                  </div>
+                  {/* Bedrooms Category - Collapsible */}
+                  <Collapsible open={isBedroomsOpen} onOpenChange={setIsBedroomsOpen}>
+                    <CollapsibleTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        className="w-full justify-between p-4 h-auto border border-white/10 rounded-lg hover:bg-white/5"
+                      >
+                        <div className="flex items-center gap-3">
+                          <Bed className="h-5 w-5 text-primary" />
+                          <span className="font-medium">{currentText.bedrooms}</span>
+                        </div>
+                        <ChevronRight className={`h-4 w-4 transition-transform ${isBedroomsOpen ? 'rotate-90' : ''}`} />
+                      </Button>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="mt-4 ml-4">
+                      <div className="flex flex-wrap gap-2">
+                        {["1", "2", "3", "4", "5+"].map((num) => (
+                          <Button
+                            key={num}
+                            variant={bedrooms === num ? "default" : "outline"}
+                            size="sm"
+                            className="min-w-[60px]"
+                            onClick={() => setBedrooms(bedrooms === num ? "" : num)}
+                          >
+                            <Bed className="h-4 w-4 mr-1" />
+                            {num}
+                          </Button>
+                        ))}
+                      </div>
+                    </CollapsibleContent>
+                  </Collapsible>
 
-                  {/* Bathrooms Category */}
-                  <div className="space-y-4">
-                    <h3 className="text-sm font-semibold text-primary border-b border-white/10 pb-2">
-                      🚿 {currentText.bathrooms}
-                    </h3>
-                    <div className="flex flex-wrap gap-2">
-                      {["1", "2", "3", "4", "5+"].map((num) => (
-                        <Button
-                          key={num}
-                          variant={bathrooms === num ? "default" : "outline"}
-                          size="sm"
-                          className="min-w-[60px]"
-                          onClick={() => setBathrooms(bathrooms === num ? "" : num)}
-                        >
-                          <Bath className="h-4 w-4 mr-1" />
-                          {num}
-                        </Button>
-                      ))}
-                    </div>
-                  </div>
+                  {/* Bathrooms Category - Collapsible */}
+                  <Collapsible open={isBathroomsOpen} onOpenChange={setIsBathroomsOpen}>
+                    <CollapsibleTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        className="w-full justify-between p-4 h-auto border border-white/10 rounded-lg hover:bg-white/5"
+                      >
+                        <div className="flex items-center gap-3">
+                          <Bath className="h-5 w-5 text-primary" />
+                          <span className="font-medium">{currentText.bathrooms}</span>
+                        </div>
+                        <ChevronRight className={`h-4 w-4 transition-transform ${isBathroomsOpen ? 'rotate-90' : ''}`} />
+                      </Button>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="mt-4 ml-4">
+                      <div className="flex flex-wrap gap-2">
+                        {["1", "2", "3", "4", "5+"].map((num) => (
+                          <Button
+                            key={num}
+                            variant={bathrooms === num ? "default" : "outline"}
+                            size="sm"
+                            className="min-w-[60px]"
+                            onClick={() => setBathrooms(bathrooms === num ? "" : num)}
+                          >
+                            <Bath className="h-4 w-4 mr-1" />
+                            {num}
+                          </Button>
+                        ))}
+                      </div>
+                    </CollapsibleContent>
+                  </Collapsible>
 
                   {/* Apply Button */}
                   <Button 
@@ -561,7 +623,7 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
                       setIsFiltersOpen(false);
                       handleSearch();
                     }}
-                    className="w-full bg-primary hover:bg-primary/90 h-12 text-base font-medium"
+                    className="w-full bg-primary hover:bg-primary/90 h-12 text-base font-medium mt-6"
                   >
                     <Filter className="h-4 w-4 mr-2" />
                     {currentText.applyFilters}
