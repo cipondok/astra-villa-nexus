@@ -27,8 +27,8 @@
   --ios-gray: 240 5% 41%;
   --ios-gray-dark: 240 6% 15%;
 
-  /* Titanium Blue 70% Transparent for Light Mode */
-  --titanium-blue-70: rgba(105, 131, 158, 0.7);
+  /* Blue 70% Transparent for Light Mode */
+  --blue-70: rgba(0, 0, 255, 0.7);
 }
 
 @layer base {
@@ -217,11 +217,11 @@
   @apply text-muted-foreground hover:text-foreground transition-colors duration-200;
 }
 
-/* iPhone-style Navigation - Titanium Blue 70% transparent in light mode */
+/* iPhone-style Navigation - Blue 70% transparent in light mode */
 .nav-ios {
   @apply border-b border-border/30;
   @apply shadow-sm shadow-black/5 dark:shadow-black/20;
-  background: var(--titanium-blue-70);
+  background: var(--blue-70);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
 }
@@ -231,15 +231,15 @@
   @apply bg-background/60 backdrop-blur-xl;
 }
 
-/* Titanium Blue 70% transparent search panel background in light mode */
-.search-panel-titanium-blue {
-  background: var(--titanium-blue-70);
+/* Blue 70% transparent search panel background in light mode */
+.search-panel-blue {
+  background: var(--blue-70);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
 }
 
-.middle .search-panel-titanium-blue,
-.dark .search-panel-titanium-blue {
+.middle .search-panel-blue,
+.dark .search-panel-blue {
   @apply bg-background/60 backdrop-blur-xl;
 }
 
