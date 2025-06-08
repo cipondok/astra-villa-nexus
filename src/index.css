@@ -31,8 +31,8 @@
 
 @layer base {
   :root {
-    /* iPhone-style Light Mode Colors */
-    --background: 0 0% 56%;
+    /* iPhone-style Light Mode Colors - Updated to use white background */
+    --background: 0 0% 100%;
     --foreground: 240 10% 4%;
     --card: 0 0% 100%;
     --card-foreground: 240 10% 4%;
@@ -58,8 +58,8 @@
     --chart-4: 255 45% 65%;
     --chart-5: 316 73% 69%;
     
-    /* iPhone-style Light Sidebar */
-    --sidebar-background: 0 0% 56%;
+    /* iPhone-style Light Sidebar - Updated to use white background */
+    --sidebar-background: 0 0% 100%;
     --sidebar-foreground: 240 10% 4%;
     --sidebar-primary: 240 10% 4%;
     --sidebar-primary-foreground: 0 0% 99%;
