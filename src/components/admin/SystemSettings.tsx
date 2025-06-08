@@ -11,8 +11,26 @@ import { Textarea } from "@/components/ui/textarea";
 import { Settings, Save, RefreshCw } from "lucide-react";
 import { useAlert } from "@/contexts/AlertContext";
 
+interface SettingsState {
+  email_verification: boolean;
+  two_factor_auth: boolean;
+  maintenance_mode: boolean;
+  user_registration: boolean;
+  email_notifications: boolean;
+  push_notifications: boolean;
+  data_backup: boolean;
+  auto_updates: boolean;
+  site_name: string;
+  site_description: string;
+  contact_email: string;
+  support_phone: string;
+  max_file_size: string;
+  session_timeout: string;
+  api_rate_limit: string;
+}
+
 const SystemSettings = () => {
-  const [settings, setSettings] = useState({
+  const [settings, setSettings] = useState<SettingsState>({
     email_verification: true,
     two_factor_auth: false,
     maintenance_mode: false,
@@ -59,9 +77,11 @@ const SystemSettings = () => {
       
       systemSettings.forEach((setting: any) => {
         if (setting.value && typeof setting.value === 'object' && setting.value.value !== undefined) {
-          loadedSettings[setting.key as keyof typeof settings] = setting.value.value;
+          const key = setting.key as keyof SettingsState;
+          loadedSettings[key] = setting.value.value as any;
         } else if (setting.value !== null) {
-          loadedSettings[setting.key as keyof typeof settings] = setting.value;
+          const key = setting.key as keyof SettingsState;
+          loadedSettings[key] = setting.value as any;
         }
       });
       
@@ -131,7 +151,7 @@ const SystemSettings = () => {
     }
   };
 
-  const handleSettingChange = (key: string, value: any) => {
+  const handleSettingChange = (key: keyof SettingsState, value: any) => {
     console.log('Setting changed:', key, value);
     setSettings(prev => ({
       ...prev,
