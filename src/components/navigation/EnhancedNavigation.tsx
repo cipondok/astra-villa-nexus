@@ -1,5 +1,6 @@
+
 import { Button } from "@/components/ui/button";
-import { Sun, Moon, Sunset, Globe, Menu, User, LogOut, Settings, Bell, Home, ArrowUp, MessageCircle, Sparkles, Bot, LogIn, UserPlus, Lock, Unlock } from "lucide-react";
+import { Globe, Menu, User, LogOut, Settings, Bell, Home, ArrowUp, MessageCircle, Sparkles, Bot, LogIn, UserPlus, Lock, Unlock, Plus, HelpCircle } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -19,6 +20,7 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
+import ThemeToggleBar from "../ThemeToggleBar";
 
 interface EnhancedNavigationProps {
   onLoginClick?: () => void;
@@ -38,7 +40,7 @@ const EnhancedNavigation = ({
   const [showChatBot, setShowChatBot] = useState(false);
   const [isLoginDropdownOpen, setIsLoginDropdownOpen] = useState(false);
   const { user, profile, signOut, isAuthenticated } = useAuth();
-  const { theme, setTheme } = useTheme();
+  const { theme } = useTheme();
   const navigate = useNavigate();
 
   // Handle scroll effect
@@ -56,6 +58,8 @@ const EnhancedNavigation = ({
   const text = {
     en: {
       home: "Home",
+      postAdvertising: "Post Advertising",
+      help: "Help",
       loginRegister: "Login / Register",
       login: "Login",
       register: "Register",
@@ -70,10 +74,14 @@ const EnhancedNavigation = ({
       indonesian: "Indonesian",
       lightMode: "Light Mode",
       middleMode: "Middle Mode",
-      darkMode: "Dark Mode"
+      darkMode: "Dark Mode",
+      loginRequired: "Please login to access this feature",
+      addProperty: "Add Property"
     },
     id: {
       home: "Beranda",
+      postAdvertising: "Pasang Iklan",
+      help: "Bantuan",
       loginRegister: "Masuk / Daftar",
       login: "Masuk",
       register: "Daftar",
@@ -88,44 +96,13 @@ const EnhancedNavigation = ({
       indonesian: "Bahasa Indonesia",
       lightMode: "Mode Terang",
       middleMode: "Mode Tengah",
-      darkMode: "Mode Gelap"
+      darkMode: "Mode Gelap",
+      loginRequired: "Silakan login untuk mengakses fitur ini",
+      addProperty: "Tambah Properti"
     }
   };
 
   const currentText = text[language];
-
-  const handleThemeToggle = () => {
-    const themes = ["light", "middle", "dark"] as const;
-    const currentIndex = themes.indexOf(theme as "light" | "middle" | "dark");
-    const nextIndex = (currentIndex + 1) % themes.length;
-    setTheme(themes[nextIndex]);
-  };
-
-  const getThemeIcon = () => {
-    switch (theme) {
-      case "light":
-        return <Sun className="h-4 w-4" />;
-      case "middle":
-        return <Sunset className="h-4 w-4" />;
-      case "dark":
-        return <Moon className="h-4 w-4" />;
-      default:
-        return <Sun className="h-4 w-4" />;
-    }
-  };
-
-  const getThemeLabel = () => {
-    switch (theme) {
-      case "light":
-        return currentText.lightMode;
-      case "middle":
-        return currentText.middleMode;
-      case "dark":
-        return currentText.darkMode;
-      default:
-        return currentText.lightMode;
-    }
-  };
 
   const getUserInitials = () => {
     if (profile?.full_name) {
@@ -143,6 +120,16 @@ const EnhancedNavigation = ({
     await signOut();
     navigate('/');
     setIsMenuOpen(false);
+  };
+
+  const handlePostAdvertisingClick = () => {
+    if (!isAuthenticated) {
+      alert(currentText.loginRequired);
+      onLoginClick?.();
+      return;
+    }
+    // Navigate to property listing page (will be implemented)
+    navigate('/dashboard?tab=properties');
   };
 
   const toggleAlerts = () => {
@@ -202,7 +189,7 @@ const EnhancedNavigation = ({
               </div>
             </div>
 
-            {/* Desktop Navigation - Soft Button Style */}
+            {/* Desktop Navigation - Updated with new buttons */}
             <div className="hidden md:flex items-center space-x-4">
               <Button
                 variant="ghost"
@@ -213,10 +200,35 @@ const EnhancedNavigation = ({
                 <Home className="h-4 w-4 mr-2" />
                 {currentText.home}
               </Button>
+
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handlePostAdvertisingClick}
+                className="glass-ios rounded-full px-4 py-2 transition-all duration-200 hover:scale-105 text-foreground/90 hover:text-foreground hover:bg-foreground/10"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                {currentText.postAdvertising}
+              </Button>
+
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => navigate('/help')}
+                className="glass-ios rounded-full px-4 py-2 transition-all duration-200 hover:scale-105 text-foreground/90 hover:text-foreground hover:bg-foreground/10"
+              >
+                <HelpCircle className="h-4 w-4 mr-2" />
+                {currentText.help}
+              </Button>
             </div>
 
             {/* Right side controls */}
             <div className="flex items-center space-x-3">
+              {/* Theme Toggle Bar - 3 Step Selection */}
+              <div className="hidden lg:block">
+                <ThemeToggleBar language={language} />
+              </div>
+
               {/* Language Toggle with Country Flags */}
               <HoverCard>
                 <HoverCardTrigger asChild>
@@ -241,29 +253,6 @@ const EnhancedNavigation = ({
                     <div className="flex items-center space-x-2">
                       <span>🇮🇩</span>
                       <span className="text-sm">{currentText.indonesian}</span>
-                    </div>
-                  </div>
-                </HoverCardContent>
-              </HoverCard>
-
-              {/* Theme Toggle with 3 modes */}
-              <HoverCard>
-                <HoverCardTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={handleThemeToggle}
-                    className="hidden sm:flex glass-ios rounded-full p-2 text-foreground/90 hover:text-foreground hover:bg-foreground/10"
-                  >
-                    {getThemeIcon()}
-                  </Button>
-                </HoverCardTrigger>
-                <HoverCardContent className="w-48">
-                  <div className="space-y-2">
-                    <h4 className="text-sm font-semibold">Theme / Tema</h4>
-                    <p className="text-sm text-muted-foreground">{getThemeLabel()}</p>
-                    <div className="text-xs text-muted-foreground">
-                      Click to cycle: Light → Middle → Dark
                     </div>
                   </div>
                 </HoverCardContent>
@@ -401,8 +390,30 @@ const EnhancedNavigation = ({
                   onClick={() => { navigate('/'); setIsMenuOpen(false); }}
                   className="block w-full text-left px-3 py-2 rounded-md text-foreground/90 hover:text-foreground hover:bg-foreground/10"
                 >
+                  <Home className="h-4 w-4 inline mr-2" />
                   {currentText.home}
                 </button>
+                
+                <button 
+                  onClick={() => { handlePostAdvertisingClick(); setIsMenuOpen(false); }}
+                  className="block w-full text-left px-3 py-2 rounded-md text-foreground/90 hover:text-foreground hover:bg-foreground/10"
+                >
+                  <Plus className="h-4 w-4 inline mr-2" />
+                  {currentText.postAdvertising}
+                </button>
+
+                <button 
+                  onClick={() => { navigate('/help'); setIsMenuOpen(false); }}
+                  className="block w-full text-left px-3 py-2 rounded-md text-foreground/90 hover:text-foreground hover:bg-foreground/10"
+                >
+                  <HelpCircle className="h-4 w-4 inline mr-2" />
+                  {currentText.help}
+                </button>
+
+                {/* Mobile Theme Toggle */}
+                <div className="px-3 py-2">
+                  <ThemeToggleBar language={language} />
+                </div>
                 
                 {!isAuthenticated ? (
                   <div className="px-3 py-2 space-y-2">
@@ -488,6 +499,7 @@ const EnhancedNavigation = ({
               <div className="flex items-center space-x-2">
                 <Bot className="h-5 w-5 text-primary" />
                 <h3 className="font-semibold">{currentText.chat}</h3>
+                <div className="h-2 w-2 bg-green-500 rounded-full animate-pulse"></div>
               </div>
               <Button variant="ghost" size="sm" onClick={() => setShowChatBot(false)}>
                 ×
@@ -495,7 +507,24 @@ const EnhancedNavigation = ({
             </div>
           </div>
           <div className="p-4 h-80 overflow-y-auto">
-            <p className="text-sm text-muted-foreground">AI Chat Bot interface will be implemented here.</p>
+            <div className="space-y-4">
+              <div className="flex items-start space-x-2">
+                <Bot className="h-6 w-6 text-primary mt-1" />
+                <div className="bg-muted/50 rounded-lg p-3 max-w-xs">
+                  <p className="text-sm">
+                    {language === 'en' 
+                      ? "Hello! I'm your AI assistant. How can I help you find the perfect property today?" 
+                      : "Halo! Saya asisten AI Anda. Bagaimana saya bisa membantu Anda menemukan properti yang sempurna hari ini?"
+                    }
+                  </p>
+                </div>
+              </div>
+              <div className="text-center">
+                <p className="text-xs text-muted-foreground">
+                  {language === 'en' ? 'AI Chat Bot is ready to help!' : 'AI Chat Bot siap membantu!'}
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       )}
