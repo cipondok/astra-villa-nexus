@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -39,6 +39,7 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
   const [bathrooms, setBathrooms] = useState("");
   const [searchValue, setSearchValue] = useState("");
   const [showTrending, setShowTrending] = useState(false);
+  const [currentTrendingIndex, setCurrentTrendingIndex] = useState(0);
 
   const text = {
     en: {
@@ -98,7 +99,10 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
     "Apartment Jakarta Selatan",
     "House in Bandung",
     "Luxury Condo Surabaya",
-    "Land in Yogyakarta"
+    "Land in Yogyakarta",
+    "Modern House Jakarta",
+    "Beachfront Villa Bali",
+    "Office Space Jakarta"
   ];
 
   const states = ["DKI Jakarta", "Jawa Barat", "Jawa Tengah", "Jawa Timur", "Bali"];
@@ -113,8 +117,23 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
   const areas = {
     "Jakarta Pusat": ["Menteng", "Gambir", "Tanah Abang", "Kemayoran"],
     "Jakarta Selatan": ["Kebayoran Baru", "Senayan", "Pondok Indah", "Kemang"],
+    "Jakarta Utara": ["Kelapa Gading", "Pantai Indah Kapuk", "Ancol", "Sunter"],
+    "Jakarta Barat": ["Grogol", "Kebon Jeruk", "Cengkareng", "Kalideres"],
+    "Jakarta Timur": ["Cakung", "Kramat Jati", "Jatinegara", "Duren Sawit"],
     "Bandung": ["Dago", "Braga", "Cihampelas", "Pasteur"],
-    "Surabaya": ["Gubeng", "Wonokromo", "Tegalsari", "Genteng"]
+    "Bekasi": ["Harapan Indah", "Galaxy", "Kemang Pratama", "Summarecon"],
+    "Depok": ["Margonda", "UI", "Cinere", "Limo"],
+    "Bogor": ["Bogor Tengah", "Tanah Sareal", "Dramaga", "Sentul"],
+    "Tangerang": ["BSD", "Alam Sutera", "Gading Serpong", "Karawaci"],
+    "Surabaya": ["Gubeng", "Wonokromo", "Tegalsari", "Genteng"],
+    "Malang": ["Klojen", "Blimbing", "Lowokwaru", "Sukun"],
+    "Sidoarjo": ["Waru", "Taman", "Gedangan", "Buduran"],
+    "Gresik": ["Kebomas", "Manyar", "Duduksampeyan", "Cerme"],
+    "Denpasar": ["Denpasar Barat", "Denpasar Timur", "Denpasar Selatan", "Denpasar Utara"],
+    "Ubud": ["Ubud Center", "Mas", "Peliatan", "Petulu"],
+    "Sanur": ["Sanur Kauh", "Sanur Kaja", "Renon", "Sesetan"],
+    "Canggu": ["Batu Bolong", "Echo Beach", "Berawa", "Pererenan"],
+    "Seminyak": ["Seminyak Center", "Petitenget", "Oberoi", "Laksmana"]
   };
 
   const propertyTypes = [
@@ -125,6 +144,15 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
     { value: "townhouse", label: currentText.townhouse, icon: Home },
     { value: "land", label: currentText.land, icon: Square }
   ];
+
+  // Auto-cycling trending searches
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTrendingIndex((prev) => (prev + 1) % trendingSearches.length);
+    }, 3000); // Change every 3 seconds
+
+    return () => clearInterval(interval);
+  }, [trendingSearches.length]);
 
   const handleSearch = () => {
     const searchData = {
@@ -154,6 +182,25 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
     setSearchValue(trending);
     setShowTrending(false);
     handleSearch();
+  };
+
+  const handleStateChange = (value: string) => {
+    setSelectedState(value);
+    setSelectedCity("");
+    setSelectedArea("");
+  };
+
+  const handleCityChange = (value: string) => {
+    setSelectedCity(value);
+    setSelectedArea("");
+  };
+
+  const getAvailableCities = () => {
+    return selectedState ? cities[selectedState as keyof typeof cities] || [] : [];
+  };
+
+  const getAvailableAreas = () => {
+    return selectedCity ? areas[selectedCity as keyof typeof areas] || [] : [];
   };
 
   return (
@@ -191,30 +238,34 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
               <Input
-                placeholder={currentText.searchPlaceholder}
-                className="pl-10 pr-10 bg-white/20 border-white/30 text-foreground placeholder:text-foreground/50"
+                placeholder={searchValue || `${currentText.searchPlaceholder} ${trendingSearches[currentTrendingIndex]}`}
+                className="pl-10 pr-10 bg-white/20 border-white/30 text-foreground placeholder:text-foreground/50 transition-all duration-200"
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
                 onFocus={() => setShowTrending(true)}
               />
               <TrendingUp 
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4 cursor-pointer"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4 cursor-pointer hover:text-primary transition-colors"
                 onClick={() => setShowTrending(!showTrending)}
               />
             </div>
             
             {/* Trending Searches Dropdown */}
             {showTrending && (
-              <div className="absolute top-full left-0 right-0 mt-1 bg-white/90 backdrop-blur-md rounded-lg border border-white/30 shadow-lg z-10">
+              <div className="absolute top-full left-0 right-0 mt-1 bg-white/95 backdrop-blur-md rounded-lg border border-white/30 shadow-lg z-10 transition-all duration-150 animate-in slide-in-from-top-2">
                 <div className="p-2">
-                  <div className="text-xs font-medium text-muted-foreground mb-2 flex items-center gap-1">
+                  <div className="text-xs font-medium text-gray-700 mb-2 flex items-center gap-1">
                     <TrendingUp className="h-3 w-3" />
                     {currentText.trending}
                   </div>
                   {trendingSearches.map((trending, index) => (
                     <div
                       key={index}
-                      className="px-3 py-2 hover:bg-white/20 rounded cursor-pointer text-sm text-foreground transition-colors"
+                      className={`px-3 py-2 hover:bg-blue-100 rounded cursor-pointer text-sm transition-all duration-200 ${
+                        index === currentTrendingIndex 
+                          ? 'bg-blue-50 text-blue-700 font-medium animate-pulse' 
+                          : 'text-gray-800 hover:text-blue-600'
+                      }`}
                       onClick={() => handleTrendingClick(trending)}
                     >
                       {trending}
@@ -234,7 +285,9 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
             >
               <div className="flex items-center gap-2">
                 <MapPinned className="h-4 w-4" />
-                <span>{selectedArea || selectedCity || selectedState || currentText.location}</span>
+                <span className="truncate">
+                  {selectedArea || selectedCity || selectedState || currentText.location}
+                </span>
               </div>
               <ChevronDown className="h-4 w-4" />
             </Button>
@@ -264,11 +317,7 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
                 <div className="space-y-3">
                   <label className="text-sm font-medium">{currentText.location}</label>
                   
-                  <Select value={selectedState} onValueChange={(value) => {
-                    setSelectedState(value);
-                    setSelectedCity("");
-                    setSelectedArea("");
-                  }}>
+                  <Select value={selectedState} onValueChange={handleStateChange}>
                     <SelectTrigger>
                       <SelectValue placeholder={currentText.selectState} />
                     </SelectTrigger>
@@ -279,29 +328,26 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
                     </SelectContent>
                   </Select>
 
-                  {selectedState && (
-                    <Select value={selectedCity} onValueChange={(value) => {
-                      setSelectedCity(value);
-                      setSelectedArea("");
-                    }}>
+                  {selectedState && getAvailableCities().length > 0 && (
+                    <Select value={selectedCity} onValueChange={handleCityChange}>
                       <SelectTrigger>
                         <SelectValue placeholder={currentText.selectCity} />
                       </SelectTrigger>
                       <SelectContent>
-                        {cities[selectedState as keyof typeof cities]?.map((city) => (
+                        {getAvailableCities().map((city) => (
                           <SelectItem key={city} value={city}>{city}</SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
                   )}
 
-                  {selectedCity && areas[selectedCity as keyof typeof areas] && (
+                  {selectedCity && getAvailableAreas().length > 0 && (
                     <Select value={selectedArea} onValueChange={setSelectedArea}>
                       <SelectTrigger>
                         <SelectValue placeholder={currentText.selectArea} />
                       </SelectTrigger>
                       <SelectContent>
-                        {areas[selectedCity as keyof typeof areas]?.map((area) => (
+                        {getAvailableAreas().map((area) => (
                           <SelectItem key={area} value={area}>{area}</SelectItem>
                         ))}
                       </SelectContent>
@@ -395,11 +441,11 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
         <div className="flex justify-center">
           <Button 
             onClick={handleSearch}
-            className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-3 rounded-full text-lg font-medium shadow-lg hover:shadow-xl transition-all duration-700 hover:scale-105"
+            className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-3 rounded-full text-lg font-medium shadow-lg hover:shadow-xl transition-all duration-500 hover:scale-105"
           >
-            <Bot className="h-5 w-5 mr-2 animate-pulse" style={{ animationDuration: '3s' }} />
+            <Bot className="h-5 w-5 mr-2 animate-pulse" style={{ animationDuration: '2s' }} />
             {currentText.search}
-            <Sparkles className="h-4 w-4 ml-2 animate-bounce" style={{ animationDuration: '2s' }} />
+            <Sparkles className="h-4 w-4 ml-2 animate-bounce" style={{ animationDuration: '1.5s' }} />
           </Button>
         </div>
 
