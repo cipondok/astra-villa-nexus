@@ -80,7 +80,7 @@ const VendorBookings = () => {
         service: booking.service && typeof booking.service === 'object' && 'service_name' in booking.service
           ? { service_name: booking.service.service_name }
           : null,
-        customer: booking.customer && typeof booking.customer === 'object' && 'full_name' in booking.customer
+        customer: booking.customer && typeof booking.customer === 'object' && 'full_name' in booking.customer && 'email' in booking.customer
           ? { 
               full_name: booking.customer.full_name || 'Unknown',
               email: booking.customer.email || ''

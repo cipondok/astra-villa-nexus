@@ -83,7 +83,7 @@ const VendorBusinessProfile = () => {
       }
 
       if (data) {
-        // Safely handle JSON fields
+        // Safely handle JSON fields with proper type conversion
         const typedProfile: BusinessProfile = {
           id: data.id,
           business_name: data.business_name || '',
@@ -96,12 +96,16 @@ const VendorBusinessProfile = () => {
           license_number: data.license_number || '',
           tax_id: data.tax_id || '',
           business_hours: data.business_hours || {},
-          service_areas: Array.isArray(data.service_areas) ? data.service_areas : [],
+          service_areas: Array.isArray(data.service_areas) 
+            ? (data.service_areas as string[])
+            : [],
           certifications: Array.isArray(data.certifications) ? data.certifications : [],
           insurance_info: data.insurance_info || {},
           logo_url: data.logo_url || '',
           banner_url: data.banner_url || '',
-          gallery_images: Array.isArray(data.gallery_images) ? data.gallery_images : [],
+          gallery_images: Array.isArray(data.gallery_images) 
+            ? (data.gallery_images as string[])
+            : [],
           social_media: data.social_media || {},
           is_active: data.is_active ?? true
         };
