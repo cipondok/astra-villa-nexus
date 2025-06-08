@@ -28,7 +28,7 @@
   --ios-gray-dark: 240 6% 15%;
 
   /* Blue 50% Transparent for Light Mode */
-  --blue-50: rgba(0, 0, 255, 0.5);
+  --blue-50: rgba(89, 161, 239, 0.5);
 }
 
 @layer base {
