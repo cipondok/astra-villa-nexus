@@ -1,9 +1,9 @@
+
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
 import { 
   Home, 
   Building, 
@@ -168,6 +168,7 @@ const RoleDashboard = ({ language }: RoleDashboardProps) => {
         return currentText.vendor;
       case 'admin':
         return currentText.admin;
+      case 'general_user':
       default:
         return currentText.generalUser;
     }
@@ -183,6 +184,7 @@ const RoleDashboard = ({ language }: RoleDashboardProps) => {
         return Wrench;
       case 'admin':
         return Crown;
+      case 'general_user':
       default:
         return Home;
     }
@@ -201,6 +203,7 @@ const RoleDashboard = ({ language }: RoleDashboardProps) => {
         return 'bg-green-100 text-green-800';
       case 'vendor':
         return 'bg-orange-100 text-orange-800';
+      case 'general_user':
       default:
         return 'bg-gray-100 text-gray-800';
     }
@@ -246,7 +249,14 @@ const RoleDashboard = ({ language }: RoleDashboardProps) => {
                       key={index}
                       variant="outline"
                       className="h-auto p-4 flex flex-col items-center space-y-2 hover:bg-blue-50"
-                      onClick={() => console.log(`Navigate to ${action.label}`)}
+                      onClick={() => {
+                        // Handle navigation based on action
+                        if (action.label.includes("Properties") || action.label.includes("Properti")) {
+                          navigate('/properties');
+                        } else {
+                          console.log(`Navigate to ${action.label}`);
+                        }
+                      }}
                     >
                       <IconComponent className="h-6 w-6" />
                       <span className="text-sm font-medium">{action.label}</span>

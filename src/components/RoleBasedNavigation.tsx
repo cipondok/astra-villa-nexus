@@ -94,15 +94,16 @@ const RoleBasedNavigation = ({
     
     switch (profile.role) {
       case 'property_owner':
-        return '/dashboard/owner';
+        return '/dashboard/user';
       case 'agent':
         return '/dashboard/agent';
       case 'vendor':
         return '/dashboard/vendor';
       case 'admin':
         return '/dashboard/admin';
+      case 'general_user':
       default:
-        return '/dashboard';
+        return '/dashboard/user';
     }
   };
 

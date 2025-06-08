@@ -32,9 +32,12 @@ const Dashboard = () => {
             navigate('/dashboard/vendor');
             break;
           case 'property_owner':
+            console.log('Redirecting property owner to user dashboard');
+            navigate('/dashboard/user');
+            break;
           case 'general_user':
           default:
-            console.log('Redirecting user to user dashboard');
+            console.log('Redirecting general user to user dashboard');
             navigate('/dashboard/user');
             break;
         }
