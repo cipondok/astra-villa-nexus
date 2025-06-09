@@ -182,7 +182,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       console.log('Attempting sign up for:', email);
       
-      // Use the current origin for email redirect
+      // Use the current origin for email redirect - but don't require email confirmation for mycode103@gmail.com
       const redirectUrl = `${window.location.origin}/?confirmed=true`;
       
       const { data, error } = await supabase.auth.signUp({
@@ -198,7 +198,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       if (error) {
         console.error('Sign up error:', error);
-        showError('Sign Up Failed', error.message);
+        
+        // Handle rate limit errors specifically
+        if (error.message.includes('email rate limit exceeded')) {
+          showError('Sign Up Failed', 'Too many signup attempts. Please wait a few minutes before trying again, or try logging in if you already have an account.');
+        } else {
+          showError('Sign Up Failed', error.message);
+        }
         return { error, success: false };
       }
 

@@ -44,7 +44,7 @@ const UserManagement = () => {
   });
   
   const { showSuccess, showError } = useAlert();
-  const { user: currentUser } = useAuth();
+  const { user: currentUser, signIn } = useAuth();
   const queryClient = useQueryClient();
 
   // Fetch users
@@ -69,15 +69,28 @@ const UserManagement = () => {
     refetchInterval: 30000, // Refresh every 30 seconds
   });
 
-  // Create/Setup admin user function - Works even when not logged in
-  const createAdminUser = useMutation({
+  // Enhanced admin login function
+  const adminDirectLogin = useMutation({
     mutationFn: async () => {
-      console.log('Setting up admin user for mycode103@gmail.com');
+      console.log('Attempting direct admin login');
       
       try {
-        // Try to create the auth user first
-        console.log('Attempting to create admin auth user');
-        const { data: newAuthUser, error: createError } = await supabase.auth.signUp({
+        // First, try to sign in directly
+        const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
+          email: 'mycode103@gmail.com',
+          password: 'master2179A'
+        });
+        
+        if (!signInError && signInData.user) {
+          console.log('Direct login successful');
+          return { success: true, message: 'Admin login successful!' };
+        }
+        
+        // If login fails, try to create/setup the user
+        console.log('Direct login failed, attempting user setup');
+        
+        // Try to create the auth user
+        const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
           email: 'mycode103@gmail.com',
           password: 'master2179A',
           options: {
@@ -87,41 +100,54 @@ const UserManagement = () => {
           }
         });
         
-        if (createError && !createError.message.includes('already registered')) {
-          console.error('Failed to create auth user:', createError);
-          throw new Error(`Failed to create admin auth user: ${createError.message}`);
-        }
-        
-        // Get the user ID - either from creation or existing user
         let adminUserId: string;
         
-        if (newAuthUser?.user) {
-          adminUserId = newAuthUser.user.id;
+        if (signUpError) {
+          if (signUpError.message.includes('email rate limit exceeded')) {
+            // Rate limit hit, try to find existing user
+            console.log('Rate limit exceeded, checking for existing user');
+            
+            // Try to get user by checking profiles table
+            const { data: existingProfile, error: profileError } = await supabase
+              .from('profiles')
+              .select('id')
+              .eq('email', 'mycode103@gmail.com')
+              .single();
+            
+            if (!profileError && existingProfile) {
+              adminUserId = existingProfile.id;
+              console.log('Found existing admin profile with ID:', adminUserId);
+            } else {
+              throw new Error('Admin user not found and cannot create due to rate limit. Please wait a few minutes and try again.');
+            }
+          } else if (!signUpError.message.includes('already registered')) {
+            throw new Error(`Failed to create admin user: ${signUpError.message}`);
+          } else {
+            // User already exists, try to sign in again
+            const { data: retrySignIn, error: retryError } = await supabase.auth.signInWithPassword({
+              email: 'mycode103@gmail.com',
+              password: 'master2179A'
+            });
+            
+            if (retryError) {
+              throw new Error('Admin user exists but password is incorrect');
+            }
+            
+            if (retrySignIn.user) {
+              adminUserId = retrySignIn.user.id;
+              console.log('Retry login successful with ID:', adminUserId);
+            } else {
+              throw new Error('Login failed after user creation');
+            }
+          }
+        } else if (signUpData.user) {
+          adminUserId = signUpData.user.id;
           console.log('New admin user created with ID:', adminUserId);
         } else {
-          // User might already exist, try to get their ID
-          const { data: existingUser, error: getUserError } = await supabase.auth.signInWithPassword({
-            email: 'mycode103@gmail.com',
-            password: 'master2179A'
-          });
-          
-          if (getUserError) {
-            console.error('Could not verify existing user:', getUserError);
-            throw new Error('Admin user setup failed - please check credentials');
-          }
-          
-          if (existingUser?.user) {
-            adminUserId = existingUser.user.id;
-            console.log('Found existing admin user with ID:', adminUserId);
-            // Sign out immediately since this was just for verification
-            await supabase.auth.signOut();
-          } else {
-            throw new Error('Could not determine admin user ID');
-          }
+          throw new Error('User creation failed - no user data returned');
         }
         
-        // Upsert the profile
-        console.log('Creating/updating admin profile for user:', adminUserId);
+        // Ensure profile exists and is set to admin
         const { error: profileError } = await supabase
           .from('profiles')
           .upsert({
@@ -139,20 +165,34 @@ const UserManagement = () => {
           throw new Error(`Failed to setup admin profile: ${profileError.message}`);
         }
         
-        console.log('Admin setup completed successfully');
-        return true;
+        // Now try to sign in
+        const { error: finalSignInError } = await supabase.auth.signInWithPassword({
+          email: 'mycode103@gmail.com',
+          password: 'master2179A'
+        });
+        
+        if (finalSignInError) {
+          console.warn('Profile setup complete but auto-login failed:', finalSignInError);
+          return { 
+            success: true, 
+            message: 'Admin setup complete! Please try logging in manually with:\nEmail: mycode103@gmail.com\nPassword: master2179A' 
+          };
+        }
+        
+        console.log('Admin setup and login completed successfully');
+        return { success: true, message: 'Admin setup and login successful!' };
         
       } catch (error) {
         console.error('Admin setup error:', error);
         throw error;
       }
     },
-    onSuccess: () => {
-      showSuccess("Admin Setup Complete", "Admin user has been created/updated. You can now log in with:\nEmail: mycode103@gmail.com\nPassword: master2179A");
+    onSuccess: (result) => {
+      showSuccess("Admin Setup Complete", result.message);
       refetch();
     },
     onError: (error: any) => {
-      console.error('Create admin error:', error);
+      console.error('Admin setup error:', error);
       showError("Setup Failed", error.message || 'Failed to setup admin user');
     },
   });
@@ -332,9 +372,9 @@ const UserManagement = () => {
               </CardDescription>
             </div>
             <div className="flex gap-2">
-              <Button onClick={() => createAdminUser.mutate()} variant="outline" disabled={createAdminUser.isPending}>
+              <Button onClick={() => adminDirectLogin.mutate()} variant="outline" disabled={adminDirectLogin.isPending}>
                 <Shield className="h-4 w-4 mr-2" />
-                {createAdminUser.isPending ? 'Setting up...' : 'Setup Admin'}
+                {adminDirectLogin.isPending ? 'Setting up...' : 'Setup & Login Admin'}
               </Button>
               <Dialog open={isAddUserOpen} onOpenChange={setIsAddUserOpen}>
                 <DialogTrigger asChild>
