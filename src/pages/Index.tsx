@@ -60,11 +60,11 @@ const Index = () => {
     <div className="min-h-screen bg-background text-foreground">
       <Navigation />
       
-      {/* Alerts Section */}
+      {/* Alerts Section - Reduced top padding */}
       <div className="relative z-20">
         {/* Email confirmation success message */}
         {confirmed === 'true' && (
-          <div className="container mx-auto px-4 pt-24 pb-4">
+          <div className="container mx-auto px-4 pt-20 pb-2">
             <Alert className="max-w-md mx-auto border-green-200 bg-green-50">
               <CheckCircle className="h-4 w-4 text-green-600" />
               <AlertDescription className="text-green-800">
@@ -76,7 +76,7 @@ const Index = () => {
 
         {/* Error or info message */}
         {message && (
-          <div className="container mx-auto px-4 pt-24 pb-4">
+          <div className="container mx-auto px-4 pt-20 pb-2">
             <Alert className="max-w-lg mx-auto border-amber-200 bg-amber-50">
               <AlertCircle className="h-4 w-4 text-amber-600" />
               <AlertDescription className="text-amber-800">
@@ -88,7 +88,7 @@ const Index = () => {
         
         {/* Show email verification status for logged in users */}
         {user && !user.email_confirmed_at && (
-          <div className="container mx-auto px-4 pt-24 pb-4">
+          <div className="container mx-auto px-4 pt-20 pb-2">
             <Alert className="max-w-lg mx-auto border-blue-200 bg-blue-50">
               <AlertCircle className="h-4 w-4 text-blue-600" />
               <AlertDescription className="text-blue-800">
@@ -99,49 +99,49 @@ const Index = () => {
         )}
       </div>
 
-      {/* Hero Section with Particle Background */}
-      <section className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden">
+      {/* Hero Section with Particle Background - Reduced spacing */}
+      <section className="relative min-h-[80vh] flex flex-col items-center justify-center overflow-hidden">
         {/* Particle Effect Background */}
         <div className="absolute inset-0 z-0">
           <ParticleEffect />
         </div>
         
-        {/* Hero Content */}
-        <div className="relative z-10 text-center max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-orange-500 bg-clip-text text-transparent leading-tight animate-fade-in">
+        {/* Hero Content - Reduced spacing */}
+        <div className="relative z-10 text-center max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mb-4">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-orange-500 bg-clip-text text-transparent leading-tight animate-fade-in">
             Find Your Dream Property
           </h1>
-          <p className="text-lg sm:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed animate-fade-in animation-delay-200">
+          <p className="text-base sm:text-lg text-muted-foreground mb-6 max-w-2xl mx-auto leading-relaxed animate-fade-in animation-delay-200">
             Discover premium real estate opportunities in Indonesia's most sought-after locations. 
             From luxury villas to modern apartments, find your perfect home today.
           </p>
         </div>
 
-        {/* Search Panel */}
-        <div className="relative z-10 w-full px-4 sm:px-6 lg:px-8 mb-8 animate-fade-in animation-delay-400">
+        {/* Search Panel - Reduced spacing */}
+        <div className="relative z-10 w-full px-4 sm:px-6 lg:px-8 mb-4 animate-fade-in animation-delay-400">
           <ModernSearchPanel 
             language={language} 
             onSearch={handleSearch}
           />
         </div>
         
-        {/* CTA Buttons */}
-        <div className="relative z-10 flex flex-col sm:flex-row gap-4 justify-center items-center animate-fade-in animation-delay-600">
+        {/* CTA Buttons - Reduced spacing */}
+        <div className="relative z-10 flex flex-col sm:flex-row gap-3 justify-center items-center animate-fade-in animation-delay-600">
           <button 
             onClick={() => setAuthModalOpen(true)}
-            className="px-8 py-3 bg-gradient-to-r from-blue-600 to-orange-500 text-white rounded-lg font-semibold hover:shadow-lg transform hover:scale-105 transition-all duration-200 btn-ios btn-primary-ios"
+            className="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-orange-500 text-white rounded-lg font-semibold hover:shadow-lg transform hover:scale-105 transition-all duration-200 btn-ios btn-primary-ios"
           >
             Get Started
           </button>
-          <button className="px-8 py-3 border border-border rounded-lg font-semibold hover:bg-accent transition-colors btn-ios btn-secondary-ios">
+          <button className="px-6 py-2.5 border border-border rounded-lg font-semibold hover:bg-accent transition-colors btn-ios btn-secondary-ios">
             Browse Properties
           </button>
         </div>
       </section>
 
-      {/* Property Listings Section */}
+      {/* Property Listings Section - Reduced spacing */}
       <div className="relative z-10 bg-background">
-        <div className="container mx-auto px-4 py-16">
+        <div className="container mx-auto px-4 py-8">
           <PropertyListingsSection language={language} />
         </div>
       </div>

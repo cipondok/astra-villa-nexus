@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -261,9 +262,9 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
   };
 
   return (
-    <div className="w-full max-w-6xl mx-auto">
-      {/* Search Type Tabs - Now with 5 tabs */}
-      <div className="flex justify-center mb-6">
+    <div className="w-full max-w-5xl mx-auto">
+      {/* Search Type Tabs - More compact */}
+      <div className="flex justify-center mb-4">
         <div className="flex bg-white/10 backdrop-blur-md rounded-full p-1 border border-white/20 overflow-x-auto">
           {[
             { key: "buy", label: currentText.buy, icon: Home },
@@ -275,30 +276,30 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
             <Button
               key={type.key}
               variant={searchType === type.key ? "default" : "ghost"}
-              className={`flex items-center gap-2 rounded-full px-4 py-2 transition-all duration-300 text-xs sm:text-sm whitespace-nowrap ${
+              className={`flex items-center gap-1 rounded-full px-3 py-1.5 transition-all duration-300 text-xs whitespace-nowrap ${
                 searchType === type.key 
                   ? "bg-primary text-primary-foreground shadow-lg" 
                   : "text-foreground/70 hover:text-foreground hover:bg-white/10"
               }`}
               onClick={() => setSearchType(type.key)}
             >
-              <type.icon className="h-3 w-3 sm:h-4 sm:w-4" />
+              <type.icon className="h-3 w-3" />
               {type.label}
             </Button>
           ))}
         </div>
       </div>
 
-      {/* Main Search Panel */}
-      <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 shadow-2xl">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+      {/* Main Search Panel - Reduced padding */}
+      <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 shadow-2xl">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
           {/* Search Input */}
           <div className="md:col-span-2 relative">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
               <Input
                 placeholder={searchValue || `${currentText.searchPlaceholder} ${trendingSearches[currentTrendingIndex]}`}
-                className="pl-10 pr-10 bg-white/20 border-white/30 text-foreground placeholder:text-foreground/50 transition-all duration-200"
+                className="pl-10 pr-10 bg-white/20 border-white/30 text-foreground placeholder:text-foreground/50 transition-all duration-200 h-10"
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
               />
@@ -312,7 +313,7 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
               <SheetTrigger asChild>
                 <Button
                   variant="outline"
-                  className="w-full justify-between bg-white/20 border-white/30 text-foreground hover:bg-white/30"
+                  className="w-full justify-between bg-white/20 border-white/30 text-foreground hover:bg-white/30 h-10"
                 >
                   <div className="flex items-center gap-2">
                     <Filter className="h-4 w-4" />
@@ -569,40 +570,40 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
           </div>
         </div>
 
-        {/* Search Button */}
+        {/* Search Button - More compact */}
         <div className="flex justify-center">
           <Button 
             onClick={handleSearch}
-            className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-3 rounded-full text-lg font-medium shadow-lg hover:shadow-xl transition-all duration-1000 hover:scale-105"
+            className="bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-2 rounded-full text-base font-medium shadow-lg hover:shadow-xl transition-all duration-1000 hover:scale-105"
           >
-            <Bot className="h-5 w-5 mr-2 animate-pulse" style={{ animationDuration: '3s' }} />
+            <Bot className="h-4 w-4 mr-2 animate-pulse" style={{ animationDuration: '3s' }} />
             {currentText.search}
             <Sparkles className="h-4 w-4 ml-2 animate-bounce" style={{ animationDuration: '2s' }} />
           </Button>
         </div>
 
-        {/* Active Filters */}
+        {/* Active Filters - More compact */}
         {(selectedState || userLocation || propertyType || bedrooms || bathrooms) && (
-          <div className="flex flex-wrap gap-2 mt-4">
+          <div className="flex flex-wrap gap-2 mt-3">
             {(selectedState || userLocation) && (
-              <Badge variant="secondary" className="bg-white/20">
+              <Badge variant="secondary" className="bg-white/20 text-xs">
                 <MapPin className="h-3 w-3 mr-1" />
                 {userLocation ? currentText.nearMe : (selectedArea || selectedCity || selectedState)}
               </Badge>
             )}
             {propertyType && (
-              <Badge variant="secondary" className="bg-white/20">
+              <Badge variant="secondary" className="bg-white/20 text-xs">
                 {propertyTypes.find(t => t.value === propertyType)?.label}
               </Badge>
             )}
             {bedrooms && (
-              <Badge variant="secondary" className="bg-white/20">
+              <Badge variant="secondary" className="bg-white/20 text-xs">
                 <Bed className="h-3 w-3 mr-1" />
                 {bedrooms} {currentText.bedrooms}
               </Badge>
             )}
             {bathrooms && (
-              <Badge variant="secondary" className="bg-white/20">
+              <Badge variant="secondary" className="bg-white/20 text-xs">
                 <Bath className="h-3 w-3 mr-1" />
                 {bathrooms} {currentText.bathrooms}
               </Badge>
