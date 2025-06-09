@@ -7,6 +7,7 @@ import PropertyListingsSection from "@/components/PropertyListingsSection";
 import ProfessionalFooter from "@/components/ProfessionalFooter";
 import RoleBasedAuthModal from "@/components/RoleBasedAuthModal";
 import ModernSearchPanel from "@/components/ModernSearchPanel";
+import ThemeToggleSwitch from "@/components/ThemeToggleSwitch";
 import { useAuth } from "@/contexts/AuthContext";
 
 const Index = () => {
@@ -44,6 +45,11 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Navigation />
+
+      {/* Theme Toggle - Fixed position in top right */}
+      <div className="fixed top-20 right-4 z-50">
+        <ThemeToggleSwitch language={language} />
+      </div>
 
       {/* Hero Section with Particle Background */}
       <section className="relative min-h-[80vh] flex flex-col items-center justify-center overflow-hidden pt-16">
