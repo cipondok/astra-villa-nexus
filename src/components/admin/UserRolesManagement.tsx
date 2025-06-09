@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -10,9 +9,10 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { Shield, Users, Edit, Trash2, AlertCircle, CheckCircle, XCircle, Crown } from "lucide-react";
+import { Shield, Users, Edit, Trash2, AlertCircle, CheckCircle, XCircle, Crown, UserPlus, Plus } from "lucide-react";
 import { useAlert } from "@/contexts/AlertContext";
 import { useAuth } from "@/contexts/AuthContext";
+import UserCreationModal from "./UserCreationModal";
 
 type UserRole = 'general_user' | 'property_owner' | 'agent' | 'vendor' | 'admin';
 
@@ -23,12 +23,17 @@ interface UserProfile {
   role: UserRole;
   verification_status?: string;
   created_at?: string;
+  phone?: string;
+  company_name?: string;
+  license_number?: string;
 }
 
 const UserRolesManagement = () => {
   const [selectedUser, setSelectedUser] = useState<UserProfile | null>(null);
   const [newRole, setNewRole] = useState<UserRole>("general_user");
+  const [newVerificationStatus, setNewVerificationStatus] = useState("pending");
   const [showRoleDialog, setShowRoleDialog] = useState(false);
+  const [showCreateModal, setShowCreateModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
   const { showSuccess, showError } = useAlert();
@@ -68,16 +73,29 @@ const UserRolesManagement = () => {
   });
 
   const updateUserRoleMutation = useMutation({
-    mutationFn: async ({ userId, role }: { userId: string; role: UserRole }) => {
-      console.log('Updating user role:', userId, role);
+    mutationFn: async ({ userId, role, verificationStatus }: { 
+      userId: string; 
+      role: UserRole; 
+      verificationStatus?: string; 
+    }) => {
+      console.log('Updating user role and status:', userId, role, verificationStatus);
+      const updateData: any = { 
+        role, 
+        updated_at: new Date().toISOString() 
+      };
+      
+      if (verificationStatus) {
+        updateData.verification_status = verificationStatus;
+      }
+      
       const { error } = await supabase
         .from('profiles')
-        .update({ role, updated_at: new Date().toISOString() })
+        .update(updateData)
         .eq('id', userId);
       if (error) throw error;
     },
     onSuccess: () => {
-      showSuccess("Role Updated", "User role has been updated successfully.");
+      showSuccess("User Updated", "User role and status have been updated successfully.");
       queryClient.invalidateQueries({ queryKey: ['admin-users-management'] });
       setShowRoleDialog(false);
       setSelectedUser(null);
@@ -125,12 +143,17 @@ const UserRolesManagement = () => {
   const handleRoleUpdate = (user: UserProfile) => {
     setSelectedUser(user);
     setNewRole(user.role);
+    setNewVerificationStatus(user.verification_status || 'pending');
     setShowRoleDialog(true);
   };
 
   const handleRoleSave = () => {
     if (selectedUser && newRole) {
-      updateUserRoleMutation.mutate({ userId: selectedUser.id, role: newRole });
+      updateUserRoleMutation.mutate({ 
+        userId: selectedUser.id, 
+        role: newRole,
+        verificationStatus: newVerificationStatus
+      });
     }
   };
 
@@ -217,14 +240,25 @@ const UserRolesManagement = () => {
     <div className="space-y-6">
       <Card className="bg-card border-border">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-card-foreground">
-            <Shield className="h-5 w-5" />
-            User Roles & Access Control
-            {isSuperAdmin && <Crown className="h-4 w-4 text-red-600" />}
-          </CardTitle>
-          <CardDescription className="text-muted-foreground">
-            Manage user roles and permissions across the platform
-          </CardDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="flex items-center gap-2 text-card-foreground">
+                <Shield className="h-5 w-5" />
+                User Roles & Access Control
+                {isSuperAdmin && <Crown className="h-4 w-4 text-red-600" />}
+              </CardTitle>
+              <CardDescription className="text-muted-foreground">
+                Manage user roles and permissions across the platform
+              </CardDescription>
+            </div>
+            <Button 
+              onClick={() => setShowCreateModal(true)}
+              className="bg-primary hover:bg-primary/90 text-primary-foreground"
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Create User
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
           <div className="space-y-6">
@@ -401,13 +435,13 @@ const UserRolesManagement = () => {
         </CardContent>
       </Card>
 
-      {/* Role Edit Dialog */}
+      {/* Enhanced Role Edit Dialog */}
       <Dialog open={showRoleDialog} onOpenChange={setShowRoleDialog}>
         <DialogContent className="max-w-md bg-card border-border">
           <DialogHeader>
-            <DialogTitle className="text-card-foreground">Update User Role</DialogTitle>
+            <DialogTitle className="text-card-foreground">Update User Role & Status</DialogTitle>
             <DialogDescription className="text-muted-foreground">
-              Change the role for {selectedUser?.full_name || selectedUser?.email}
+              Change the role and verification status for {selectedUser?.full_name || selectedUser?.email}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
@@ -426,6 +460,19 @@ const UserRolesManagement = () => {
                 </SelectContent>
               </Select>
             </div>
+            <div>
+              <Label className="text-foreground">Verification Status</Label>
+              <Select value={newVerificationStatus} onValueChange={setNewVerificationStatus}>
+                <SelectTrigger className="bg-background border-border text-foreground">
+                  <SelectValue placeholder="Select verification status" />
+                </SelectTrigger>
+                <SelectContent className="bg-popover border-border">
+                  <SelectItem value="approved" className="text-popover-foreground">Approved</SelectItem>
+                  <SelectItem value="pending" className="text-popover-foreground">Pending</SelectItem>
+                  <SelectItem value="rejected" className="text-popover-foreground">Rejected</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
           <DialogFooter>
             <Button 
@@ -440,11 +487,17 @@ const UserRolesManagement = () => {
               disabled={updateUserRoleMutation.isPending}
               className="bg-primary hover:bg-primary/90"
             >
-              Update Role
+              Update User
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* User Creation Modal */}
+      <UserCreationModal 
+        isOpen={showCreateModal} 
+        onClose={() => setShowCreateModal(false)} 
+      />
     </div>
   );
 };
