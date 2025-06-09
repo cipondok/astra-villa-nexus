@@ -70,6 +70,56 @@ const UserManagement = () => {
     refetchInterval: 30000, // Refresh every 30 seconds
   });
 
+  // Create admin user function
+  const createAdminUser = useMutation({
+    mutationFn: async () => {
+      console.log('Creating admin user profile for mycode103@gmail.com');
+      
+      // Check if admin user already exists
+      const { data: existingUser } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('email', 'mycode103@gmail.com')
+        .single();
+        
+      if (existingUser) {
+        console.log('Admin user already exists, updating role to admin');
+        const { error } = await supabase
+          .from('profiles')
+          .update({ role: 'admin' })
+          .eq('email', 'mycode103@gmail.com');
+          
+        if (error) {
+          throw new Error(`Failed to update admin role: ${error.message}`);
+        }
+      } else {
+        console.log('Creating new admin profile');
+        const { error } = await supabase
+          .from('profiles')
+          .insert({
+            email: 'mycode103@gmail.com',
+            full_name: 'Super Admin',
+            role: 'admin',
+            verification_status: 'approved'
+          });
+          
+        if (error) {
+          throw new Error(`Failed to create admin profile: ${error.message}`);
+        }
+      }
+      
+      return true;
+    },
+    onSuccess: () => {
+      showSuccess("Admin Setup", "Admin user profile has been created/updated.");
+      refetch();
+    },
+    onError: (error: any) => {
+      console.error('Create admin error:', error);
+      showError("Setup Failed", error.message || 'Failed to setup admin user');
+    },
+  });
+
   // Add user mutation
   const addUserMutation = useMutation({
     mutationFn: async (userData: NewUserForm) => {
@@ -244,101 +294,107 @@ const UserManagement = () => {
                 Manage system users and their roles. Total users: {filteredUsers.length}
               </CardDescription>
             </div>
-            <Dialog open={isAddUserOpen} onOpenChange={setIsAddUserOpen}>
-              <DialogTrigger asChild>
-                <Button>
-                  <UserPlus className="h-4 w-4 mr-2" />
-                  Add User
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="max-w-md">
-                <DialogHeader>
-                  <DialogTitle>Add New User</DialogTitle>
-                </DialogHeader>
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="email">Email *</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      value={newUser.email}
-                      onChange={(e) => setNewUser({...newUser, email: e.target.value})}
-                      placeholder="user@example.com"
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="full_name">Full Name *</Label>
-                    <Input
-                      id="full_name"
-                      value={newUser.full_name}
-                      onChange={(e) => setNewUser({...newUser, full_name: e.target.value})}
-                      placeholder="John Doe"
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="phone">Phone</Label>
-                    <Input
-                      id="phone"
-                      value={newUser.phone}
-                      onChange={(e) => setNewUser({...newUser, phone: e.target.value})}
-                      placeholder="+1234567890"
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="role">Role *</Label>
-                    <Select value={newUser.role} onValueChange={(value) => setNewUser({...newUser, role: value as any})}>
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="general_user">General User</SelectItem>
-                        <SelectItem value="property_owner">Property Owner</SelectItem>
-                        <SelectItem value="agent">Agent</SelectItem>
-                        <SelectItem value="vendor">Vendor</SelectItem>
-                        <SelectItem value="admin">Admin</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <div className="flex justify-between items-center">
-                      <Label htmlFor="password">Password *</Label>
-                      <Button type="button" variant="outline" size="sm" onClick={generatePassword}>
-                        Generate
+            <div className="flex gap-2">
+              <Button onClick={() => createAdminUser.mutate()} variant="outline">
+                <Shield className="h-4 w-4 mr-2" />
+                Setup Admin
+              </Button>
+              <Dialog open={isAddUserOpen} onOpenChange={setIsAddUserOpen}>
+                <DialogTrigger asChild>
+                  <Button>
+                    <UserPlus className="h-4 w-4 mr-2" />
+                    Add User
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-md">
+                  <DialogHeader>
+                    <DialogTitle>Add New User</DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="email">Email *</Label>
+                      <Input
+                        id="email"
+                        type="email"
+                        value={newUser.email}
+                        onChange={(e) => setNewUser({...newUser, email: e.target.value})}
+                        placeholder="user@example.com"
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="full_name">Full Name *</Label>
+                      <Input
+                        id="full_name"
+                        value={newUser.full_name}
+                        onChange={(e) => setNewUser({...newUser, full_name: e.target.value})}
+                        placeholder="John Doe"
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="phone">Phone</Label>
+                      <Input
+                        id="phone"
+                        value={newUser.phone}
+                        onChange={(e) => setNewUser({...newUser, phone: e.target.value})}
+                        placeholder="+1234567890"
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="role">Role *</Label>
+                      <Select value={newUser.role} onValueChange={(value) => setNewUser({...newUser, role: value as any})}>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="general_user">General User</SelectItem>
+                          <SelectItem value="property_owner">Property Owner</SelectItem>
+                          <SelectItem value="agent">Agent</SelectItem>
+                          <SelectItem value="vendor">Vendor</SelectItem>
+                          <SelectItem value="admin">Admin</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <div className="flex justify-between items-center">
+                        <Label htmlFor="password">Password *</Label>
+                        <Button type="button" variant="outline" size="sm" onClick={generatePassword}>
+                          Generate
+                        </Button>
+                      </div>
+                      <Input
+                        id="password"
+                        type="password"
+                        value={newUser.password}
+                        onChange={(e) => setNewUser({...newUser, password: e.target.value})}
+                        placeholder="Minimum 6 characters"
+                        minLength={6}
+                      />
+                    </div>
+                    
+                    <div className="flex gap-2">
+                      <Button 
+                        onClick={handleAddUser} 
+                        disabled={addUserMutation.isPending}
+                        className="flex-1"
+                      >
+                        {addUserMutation.isPending ? 'Creating...' : 'Create User'}
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        onClick={() => setIsAddUserOpen(false)}
+                        className="flex-1"
+                      >
+                        Cancel
                       </Button>
                     </div>
-                    <Input
-                      id="password"
-                      type="password"
-                      value={newUser.password}
-                      onChange={(e) => setNewUser({...newUser, password: e.target.value})}
-                      placeholder="Minimum 6 characters"
-                      minLength={6}
-                    />
                   </div>
-                  
-                  <div className="flex gap-2">
-                    <Button 
-                      onClick={handleAddUser} 
-                      disabled={addUserMutation.isPending}
-                      className="flex-1"
-                    >
-                      {addUserMutation.isPending ? 'Creating...' : 'Create User'}
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      onClick={() => setIsAddUserOpen(false)}
-                      className="flex-1"
-                    >
-                      Cancel
-                    </Button>
-                  </div>
-                </div>
-              </DialogContent>
-            </Dialog>
+                </DialogContent>
+              </Dialog>
+            </div>
           </div>
         </CardHeader>
         <CardContent>

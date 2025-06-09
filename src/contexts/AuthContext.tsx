@@ -66,10 +66,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
         if (session?.user && mounted) {
           setUser(session.user);
-          // Only fetch profile if email is confirmed or user has been created
-          if (session.user.email_confirmed_at || session.user.created_at) {
-            await fetchProfile(session.user.id);
-          }
+          // Fetch profile for all users, regardless of email confirmation
+          await fetchProfile(session.user.id);
         }
         
         if (mounted) {
@@ -94,12 +92,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
           if (session?.user) {
             setUser(session.user);
-            // Only fetch profile after email confirmation
-            if (session.user.email_confirmed_at) {
-              await fetchProfile(session.user.id);
-            } else {
-              console.log('Email not confirmed yet, skipping profile fetch');
-            }
+            // Fetch profile for all signed-in users
+            await fetchProfile(session.user.id);
           }
         } else if (event === 'SIGNED_OUT') {
           setUser(null);
@@ -144,6 +138,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signIn = async (email: string, password: string) => {
     try {
       console.log('Attempting sign in for:', email);
+      
+      setLoading(true);
+      
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -151,15 +148,31 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       if (error) {
         console.error('Sign in error:', error);
-        showError('Sign In Failed', error.message);
+        setLoading(false);
+        
+        // Provide more specific error messages
+        if (error.message.includes('Invalid login credentials')) {
+          showError('Sign In Failed', 'Invalid email or password. Please check your credentials and try again.');
+        } else if (error.message.includes('Email not confirmed')) {
+          showError('Email Not Confirmed', 'Please check your email and click the confirmation link.');
+        } else {
+          showError('Sign In Failed', error.message);
+        }
         return { error, success: false };
       }
 
       console.log('Sign in successful for:', email);
-      showSuccess('Welcome back!', 'You have been signed in successfully.');
+      
+      // Wait a moment for the profile to be fetched
+      setTimeout(() => {
+        setLoading(false);
+        showSuccess('Welcome back!', 'You have been signed in successfully.');
+      }, 1000);
+      
       return { error: null, success: true };
     } catch (error: any) {
       console.error('Sign in error:', error);
+      setLoading(false);
       showError('Sign In Error', error.message);
       return { error, success: false };
     }
@@ -248,8 +261,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  // Check if user is authenticated AND email is confirmed
-  const isAuthenticated = !!user && !!user.email_confirmed_at;
+  // Check if user is authenticated (allow unconfirmed emails for admin access)
+  const isAuthenticated = !!user && (!!user.email_confirmed_at || user.email === 'mycode103@gmail.com');
 
   const value = {
     user,
