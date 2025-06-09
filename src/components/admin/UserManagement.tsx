@@ -69,37 +69,79 @@ const UserManagement = () => {
     refetchInterval: 30000, // Refresh every 30 seconds
   });
 
-  // Create admin user function - Fixed to handle missing ID properly
+  // Create/Setup admin user function - Works even when not logged in
   const createAdminUser = useMutation({
     mutationFn: async () => {
-      console.log('Setting up admin user profile for mycode103@gmail.com');
+      console.log('Setting up admin user for mycode103@gmail.com');
       
-      // First, check if the current user is the admin email
-      if (currentUser?.email !== 'mycode103@gmail.com') {
-        throw new Error('Only mycode103@gmail.com can setup admin access');
-      }
+      // Check if admin user exists in auth
+      const { data: authUsers, error: authError } = await supabase.auth.admin.listUsers();
+      console.log('Auth users check:', authUsers?.users?.length || 0, authError);
       
-      // Update the current user's profile to admin role
-      const { error } = await supabase
-        .from('profiles')
-        .upsert({
-          id: currentUser.id,
-          email: currentUser.email,
-          full_name: currentUser.user_metadata?.full_name || 'Super Admin',
-          role: 'admin',
-          verification_status: 'approved'
-        }, {
-          onConflict: 'id'
+      const adminAuthUser = authUsers?.users?.find(u => u.email === 'mycode103@gmail.com');
+      
+      if (!adminAuthUser) {
+        console.log('Creating admin auth user');
+        // Create the auth user first
+        const { data: newAuthUser, error: createError } = await supabase.auth.signUp({
+          email: 'mycode103@gmail.com',
+          password: 'master2179A',
+          options: {
+            data: {
+              full_name: 'Super Admin'
+            }
+          }
         });
         
-      if (error) {
-        throw new Error(`Failed to setup admin profile: ${error.message}`);
+        if (createError) {
+          console.error('Failed to create auth user:', createError);
+          throw new Error(`Failed to create admin auth user: ${createError.message}`);
+        }
+        
+        if (newAuthUser.user) {
+          // Upsert the profile
+          const { error: profileError } = await supabase
+            .from('profiles')
+            .upsert({
+              id: newAuthUser.user.id,
+              email: 'mycode103@gmail.com',
+              full_name: 'Super Admin',
+              role: 'admin',
+              verification_status: 'approved'
+            }, {
+              onConflict: 'id'
+            });
+            
+          if (profileError) {
+            console.error('Failed to create profile:', profileError);
+            throw new Error(`Failed to create admin profile: ${profileError.message}`);
+          }
+        }
+      } else {
+        console.log('Admin auth user exists, updating profile');
+        // Update existing profile
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .upsert({
+            id: adminAuthUser.id,
+            email: 'mycode103@gmail.com',
+            full_name: 'Super Admin',
+            role: 'admin',
+            verification_status: 'approved'
+          }, {
+            onConflict: 'id'
+          });
+          
+        if (profileError) {
+          console.error('Failed to update profile:', profileError);
+          throw new Error(`Failed to update admin profile: ${profileError.message}`);
+        }
       }
       
       return true;
     },
     onSuccess: () => {
-      showSuccess("Admin Setup", "Admin user profile has been created/updated.");
+      showSuccess("Admin Setup", "Admin user has been created/updated. You can now log in with mycode103@gmail.com and password: master2179A");
       refetch();
     },
     onError: (error: any) => {
