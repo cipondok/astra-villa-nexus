@@ -9,7 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { Shield, Users, Edit, Trash2, AlertCircle, CheckCircle, XCircle, Crown, UserPlus, Plus } from "lucide-react";
+import { Shield, Users, Edit, Trash2, AlertCircle, CheckCircle, XCircle, Crown, UserPlus, Plus, RefreshCw } from "lucide-react";
 import { useAlert } from "@/contexts/AlertContext";
 import { useAuth } from "@/contexts/AuthContext";
 import UserCreationModal from "./UserCreationModal";
@@ -40,12 +40,11 @@ const UserRolesManagement = () => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
 
-  // All hooks must be called unconditionally at the top level
-  // Check if current user is super admin using email (simpler approach)
+  // Check if current user is super admin using email
   const isSuperAdmin = user?.email === 'mycode103@gmail.com';
 
-  // Fetch users directly from profiles table to avoid RLS issues
-  const { data: users, isLoading: usersLoading, error } = useQuery({
+  // Fetch users with improved error handling and retry logic
+  const { data: users, isLoading: usersLoading, error, refetch } = useQuery({
     queryKey: ['admin-users-management'],
     queryFn: async () => {
       try {
@@ -64,12 +63,13 @@ const UserRolesManagement = () => {
         return data as UserProfile[];
       } catch (err) {
         console.error('Query error:', err);
-        return [];
+        throw err;
       }
     },
-    retry: 1,
-    retryDelay: 2000,
-    enabled: !!isSuperAdmin, // Only fetch if user is super admin
+    retry: 2,
+    retryDelay: 1000,
+    enabled: !!isSuperAdmin,
+    refetchInterval: 10000, // Refresh every 10 seconds
   });
 
   const updateUserRoleMutation = useMutation({
@@ -97,15 +97,16 @@ const UserRolesManagement = () => {
     onSuccess: () => {
       showSuccess("User Updated", "User role and status have been updated successfully.");
       queryClient.invalidateQueries({ queryKey: ['admin-users-management'] });
+      queryClient.invalidateQueries({ queryKey: ['database-users'] });
       setShowRoleDialog(false);
       setSelectedUser(null);
+      refetch();
     },
     onError: (error: any) => {
       showError("Update Failed", error.message);
     },
   });
 
-  // Update verification status mutation
   const updateVerificationMutation = useMutation({
     mutationFn: async ({ userId, status }: { userId: string; status: string }) => {
       console.log('Updating verification status:', userId, status);
@@ -121,6 +122,8 @@ const UserRolesManagement = () => {
     onSuccess: () => {
       showSuccess("Status Updated", "User verification status has been updated successfully.");
       queryClient.invalidateQueries({ queryKey: ['admin-users-management'] });
+      queryClient.invalidateQueries({ queryKey: ['database-users'] });
+      refetch();
     },
     onError: (error: any) => {
       showError("Update Failed", error.message);
@@ -160,6 +163,11 @@ const UserRolesManagement = () => {
   const handleVerificationToggle = (user: UserProfile) => {
     const newStatus = user.verification_status === 'approved' ? 'pending' : 'approved';
     updateVerificationMutation.mutate({ userId: user.id, status: newStatus });
+  };
+
+  const handleRefresh = () => {
+    console.log('Manual refresh triggered');
+    refetch();
   };
 
   const getRoleBadge = (role: UserRole) => {
@@ -212,7 +220,6 @@ const UserRolesManagement = () => {
     user.role?.toLowerCase().includes(searchTerm.toLowerCase())
   ) || [];
 
-  // Separate pending and approved users for easier visibility
   const pendingUsers = filteredUsers.filter(user => !user.verification_status || user.verification_status === 'pending');
   const approvedUsers = filteredUsers.filter(user => user.verification_status === 'approved');
 
@@ -226,8 +233,12 @@ const UserRolesManagement = () => {
               <div>
                 <h3 className="font-semibold">Error Loading Users</h3>
                 <p className="text-sm text-muted-foreground">
-                  Unable to load user data. This might be due to database configuration issues.
+                  Unable to load user data: {error.message}
                 </p>
+                <Button onClick={handleRefresh} className="mt-2" size="sm">
+                  <RefreshCw className="h-4 w-4 mr-2" />
+                  Retry
+                </Button>
               </div>
             </div>
           </CardContent>
@@ -251,13 +262,23 @@ const UserRolesManagement = () => {
                 Manage user roles and permissions across the platform
               </CardDescription>
             </div>
-            <Button 
-              onClick={() => setShowCreateModal(true)}
-              className="bg-primary hover:bg-primary/90 text-primary-foreground"
-            >
-              <Plus className="h-4 w-4 mr-2" />
-              Create User
-            </Button>
+            <div className="flex gap-2">
+              <Button 
+                onClick={handleRefresh}
+                variant="outline"
+                className="border-border text-foreground"
+              >
+                <RefreshCw className="h-4 w-4 mr-2" />
+                Refresh
+              </Button>
+              <Button 
+                onClick={() => setShowCreateModal(true)}
+                className="bg-primary hover:bg-primary/90 text-primary-foreground"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Create User
+              </Button>
+            </div>
           </div>
         </CardHeader>
         <CardContent>
@@ -294,68 +315,6 @@ const UserRolesManagement = () => {
               </div>
             </div>
 
-            {/* Pending Users Section */}
-            {pendingUsers.length > 0 && (
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
-                  <AlertCircle className="h-5 w-5 text-yellow-600" />
-                  Pending Users ({pendingUsers.length})
-                </h3>
-                <div className="border border-yellow-200 rounded-lg bg-yellow-50">
-                  <Table>
-                    <TableHeader>
-                      <TableRow className="border-yellow-200">
-                        <TableHead className="text-muted-foreground">User</TableHead>
-                        <TableHead className="text-muted-foreground">Email</TableHead>
-                        <TableHead className="text-muted-foreground">Role</TableHead>
-                        <TableHead className="text-muted-foreground">Status</TableHead>
-                        <TableHead className="text-muted-foreground">Actions</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {pendingUsers.map((user) => (
-                        <TableRow key={user.id} className="border-yellow-200">
-                          <TableCell className="text-foreground">
-                            <div className="flex items-center gap-3">
-                              <div className="w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center text-white text-sm font-semibold">
-                                {user.full_name?.charAt(0)?.toUpperCase() || user.email?.charAt(0)?.toUpperCase() || 'U'}
-                              </div>
-                              <div>
-                                <div className="font-medium">{user.full_name || 'No Name'}</div>
-                                <div className="text-muted-foreground text-sm">ID: {user.id.slice(0, 8)}...</div>
-                              </div>
-                            </div>
-                          </TableCell>
-                          <TableCell className="text-muted-foreground">{user.email}</TableCell>
-                          <TableCell>{getRoleBadge(user.role)}</TableCell>
-                          <TableCell>{getStatusBadge(user.verification_status)}</TableCell>
-                          <TableCell className="space-x-2">
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => handleRoleUpdate(user)}
-                              className="border-border text-foreground hover:bg-muted"
-                            >
-                              <Edit className="h-4 w-4 mr-1" />
-                              Edit Role
-                            </Button>
-                            <Button
-                              size="sm"
-                              onClick={() => handleVerificationToggle(user)}
-                              className="bg-green-600 hover:bg-green-700 text-white"
-                            >
-                              <CheckCircle className="h-4 w-4 mr-1" />
-                              Approve
-                            </Button>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
-              </div>
-            )}
-
             {/* All Users Table */}
             <div className="border border-border rounded-lg bg-card">
               <div className="p-4 border-b border-border">
@@ -381,7 +340,7 @@ const UserRolesManagement = () => {
                   ) : filteredUsers.length === 0 ? (
                     <TableRow>
                       <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
-                        No users found
+                        {users?.length === 0 ? "No users found. Try creating a new user." : "No users match your search criteria."}
                       </TableCell>
                     </TableRow>
                   ) : (

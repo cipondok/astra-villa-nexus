@@ -44,14 +44,15 @@ const UserCreationModal = ({ isOpen, onClose }: UserCreationModalProps) => {
     }) => {
       console.log('Creating new user with admin privileges:', userData);
       
-      // First create the user in Supabase Auth
+      // Create the user in Supabase Auth with metadata
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: userData.email,
         password: userData.password,
         options: {
           data: {
             full_name: userData.fullName,
-            role: userData.role
+            role: userData.role,
+            verification_status: userData.verificationStatus
           }
         }
       });
@@ -65,37 +66,71 @@ const UserCreationModal = ({ isOpen, onClose }: UserCreationModalProps) => {
         throw new Error('User creation failed - no user returned');
       }
 
-      console.log('User created in auth, now creating profile:', authData.user.id);
+      console.log('User created in auth:', authData.user.id);
 
-      // Create/update the profile with admin privileges
-      const profileData = {
-        id: authData.user.id,
-        email: userData.email,
-        full_name: userData.fullName,
-        phone: userData.phone || null,
-        role: userData.role,
-        verification_status: userData.verificationStatus,
-        company_name: userData.companyName || null,
-        license_number: userData.licenseNumber || null,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      };
+      // Wait a moment for the trigger to potentially create the profile
+      await new Promise(resolve => setTimeout(resolve, 1000));
 
-      const { error: profileError } = await supabase
+      // Check if profile was created by trigger, if not create it manually
+      const { data: existingProfile } = await supabase
         .from('profiles')
-        .upsert(profileData);
+        .select('*')
+        .eq('id', authData.user.id)
+        .single();
 
-      if (profileError) {
-        console.error('Profile creation error:', profileError);
-        throw profileError;
+      if (!existingProfile) {
+        console.log('Profile not created by trigger, creating manually');
+        
+        // Create the profile manually
+        const profileData = {
+          id: authData.user.id,
+          email: userData.email,
+          full_name: userData.fullName,
+          phone: userData.phone || null,
+          role: userData.role,
+          verification_status: userData.verificationStatus,
+          company_name: userData.companyName || null,
+          license_number: userData.licenseNumber || null,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        };
+
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .insert(profileData);
+
+        if (profileError) {
+          console.error('Profile creation error:', profileError);
+          throw profileError;
+        }
+      } else {
+        console.log('Profile already exists, updating with additional data');
+        
+        // Update the existing profile with additional data
+        const { error: updateError } = await supabase
+          .from('profiles')
+          .update({
+            phone: userData.phone || null,
+            company_name: userData.companyName || null,
+            license_number: userData.licenseNumber || null,
+            verification_status: userData.verificationStatus,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', authData.user.id);
+
+        if (updateError) {
+          console.error('Profile update error:', updateError);
+          throw updateError;
+        }
       }
 
-      console.log('User and profile created successfully');
+      console.log('User and profile created/updated successfully');
       return authData.user;
     },
     onSuccess: () => {
-      showSuccess("User Created", "New user has been created successfully with the specified role and verification status.");
+      showSuccess("User Created", "New user has been created successfully and should now appear in the user management tables.");
       queryClient.invalidateQueries({ queryKey: ['admin-users-management'] });
+      queryClient.invalidateQueries({ queryKey: ['database-users'] });
       handleClose();
     },
     onError: (error: any) => {
