@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -35,6 +34,7 @@ import {
   Globe,
   Lock
 } from "lucide-react";
+import SMTPSettings from "@/components/admin/SMTPSettings";
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState("overview");
@@ -157,7 +157,7 @@ const AdminDashboard = () => {
           )}
           
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-            <TabsList className="grid w-full grid-cols-6 lg:grid-cols-12 glass-ios">
+            <TabsList className="grid w-full grid-cols-6 lg:grid-cols-13 glass-ios">
               <TabsTrigger value="overview" className="flex items-center gap-2 text-xs">
                 <BarChart3 className="h-4 w-4" />
                 <span className="hidden sm:inline">Overview</span>
@@ -193,6 +193,10 @@ const AdminDashboard = () => {
               <TabsTrigger value="system-monitor" className="flex items-center gap-2 text-xs">
                 <Activity className="h-4 w-4" />
                 <span className="hidden sm:inline">Monitor</span>
+              </TabsTrigger>
+              <TabsTrigger value="smtp" className="flex items-center gap-2 text-xs">
+                <Globe className="h-4 w-4" />
+                <span className="hidden sm:inline">SMTP</span>
               </TabsTrigger>
               <TabsTrigger value="design" className="flex items-center gap-2 text-xs">
                 <Palette className="h-4 w-4" />
@@ -411,6 +415,10 @@ const AdminDashboard = () => {
                   </div>
                 </CardContent>
               </Card>
+            </TabsContent>
+
+            <TabsContent value="smtp">
+              <SMTPSettings />
             </TabsContent>
 
             <TabsContent value="design">
