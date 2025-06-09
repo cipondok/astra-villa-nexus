@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -29,6 +28,7 @@ interface AuthContextType {
   signUp: (email: string, password: string, fullName: string) => Promise<{ error: any; success?: boolean }>;
   signOut: () => Promise<void>;
   updateProfile: (data: Partial<Profile>) => Promise<{ error: any; success?: boolean }>;
+  refreshProfile: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -40,7 +40,44 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [initialized, setInitialized] = useState(false);
   const { showError, showSuccess } = useAlert();
 
-  console.log('AuthProvider rendering, loading:', loading, 'user:', user?.email);
+  console.log('AuthProvider rendering, loading:', loading, 'user:', user?.email, 'profile role:', profile?.role, 'verification:', profile?.verification_status);
+
+  const fetchProfile = async (userId: string, forceRefresh: boolean = false) => {
+    try {
+      console.log('Fetching profile for user:', userId, 'forceRefresh:', forceRefresh);
+      
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .single();
+
+      if (error) {
+        console.error('Error fetching profile:', error);
+        if (error.code === 'PGRST116') {
+          console.log('Profile not found, will be created on first update');
+        }
+        return;
+      }
+
+      console.log('Profile fetched successfully:', {
+        email: data?.email,
+        role: data?.role,
+        verification_status: data?.verification_status,
+        updated_at: data?.updated_at
+      });
+      setProfile(data);
+    } catch (error) {
+      console.error('Profile fetch error:', error);
+    }
+  };
+
+  const refreshProfile = async () => {
+    if (user?.id) {
+      console.log('Manually refreshing profile for user:', user.email);
+      await fetchProfile(user.id, true);
+    }
+  };
 
   useEffect(() => {
     let mounted = true;
@@ -66,8 +103,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
         if (session?.user && mounted) {
           setUser(session.user);
-          // Fetch profile for all users (email verification disabled for testing)
-          await fetchProfile(session.user.id);
+          // Force fresh profile fetch on initialization
+          await fetchProfile(session.user.id, true);
         }
         
         if (mounted) {
@@ -92,8 +129,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
           if (session?.user) {
             setUser(session.user);
-            // Fetch profile for all signed-in users (email verification disabled)
-            await fetchProfile(session.user.id);
+            // Force fresh profile fetch on sign in
+            await fetchProfile(session.user.id, true);
           }
         } else if (event === 'SIGNED_OUT') {
           setUser(null);
@@ -109,31 +146,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       subscription.unsubscribe();
     };
   }, [initialized]);
-
-  const fetchProfile = async (userId: string) => {
-    try {
-      console.log('Fetching profile for user:', userId);
-      
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', userId)
-        .single();
-
-      if (error) {
-        console.error('Error fetching profile:', error);
-        if (error.code === 'PGRST116') {
-          console.log('Profile not found, will be created on first update');
-        }
-        return;
-      }
-
-      console.log('Profile fetched:', data?.email, 'Role:', data?.role);
-      setProfile(data);
-    } catch (error) {
-      console.error('Profile fetch error:', error);
-    }
-  };
 
   const signIn = async (email: string, password: string) => {
     try {
@@ -161,11 +173,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       console.log('Sign in successful for:', email);
       
-      // Wait a moment for the profile to be fetched
-      setTimeout(() => {
-        setLoading(false);
-        showSuccess('Welcome back!', 'You have been signed in successfully.');
-      }, 1000);
+      // Force profile refresh after successful sign in
+      if (data.user) {
+        setTimeout(async () => {
+          await fetchProfile(data.user.id, true);
+          setLoading(false);
+          showSuccess('Welcome back!', 'You have been signed in successfully.');
+        }, 500);
+      }
       
       return { error: null, success: true };
     } catch (error: any) {
@@ -250,7 +265,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return { error, success: false };
       }
 
-      await fetchProfile(user.id);
+      await fetchProfile(user.id, true);
       showSuccess('Profile Updated', 'Your profile has been updated successfully.');
       return { error: null, success: true };
     } catch (error: any) {
@@ -272,9 +287,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     signUp,
     signOut,
     updateProfile,
+    refreshProfile,
   };
 
-  console.log('AuthProvider providing value, loading:', loading, 'isAuthenticated:', isAuthenticated, 'role:', profile?.role);
+  console.log('AuthProvider providing value, loading:', loading, 'isAuthenticated:', isAuthenticated, 'role:', profile?.role, 'verification:', profile?.verification_status);
 
   return (
     <AuthContext.Provider value={value}>
