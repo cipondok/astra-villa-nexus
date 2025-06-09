@@ -40,7 +40,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [initialized, setInitialized] = useState(false);
   const { showError, showSuccess } = useAlert();
 
-  console.log('AuthProvider rendering, loading:', loading, 'user:', user?.email, 'email_confirmed:', user?.email_confirmed_at);
+  console.log('AuthProvider rendering, loading:', loading, 'user:', user?.email);
 
   useEffect(() => {
     let mounted = true;
@@ -62,11 +62,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           return;
         }
 
-        console.log('Initial session:', session?.user?.email || 'No session', 'email_confirmed:', session?.user?.email_confirmed_at);
+        console.log('Initial session:', session?.user?.email || 'No session');
 
         if (session?.user && mounted) {
           setUser(session.user);
-          // Fetch profile for all users, regardless of email confirmation
+          // Fetch profile for all users (email verification disabled for testing)
           await fetchProfile(session.user.id);
         }
         
@@ -85,14 +85,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        console.log('Auth state changed:', event, session?.user?.email || 'No user', 'email_confirmed:', session?.user?.email_confirmed_at);
+        console.log('Auth state changed:', event, session?.user?.email || 'No user');
         
         if (!mounted || !initialized) return;
 
         if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
           if (session?.user) {
             setUser(session.user);
-            // Fetch profile for all signed-in users
+            // Fetch profile for all signed-in users (email verification disabled)
             await fetchProfile(session.user.id);
           }
         } else if (event === 'SIGNED_OUT') {
@@ -153,8 +153,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         // Provide more specific error messages
         if (error.message.includes('Invalid login credentials')) {
           showError('Sign In Failed', 'Invalid email or password. Please check your credentials and try again.');
-        } else if (error.message.includes('Email not confirmed')) {
-          showError('Email Not Confirmed', 'Please check your email and click the confirmation link.');
         } else {
           showError('Sign In Failed', error.message);
         }
@@ -182,9 +180,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       console.log('Attempting sign up for:', email);
       
-      // Use the current origin for email redirect - but don't require email confirmation for mycode103@gmail.com
-      const redirectUrl = `${window.location.origin}/?confirmed=true`;
-      
+      // Disable email confirmation for testing - users can login immediately
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -192,7 +188,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           data: {
             full_name: fullName
           },
-          emailRedirectTo: redirectUrl
+          emailRedirectTo: `${window.location.origin}/`
         }
       });
 
@@ -210,11 +206,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       console.log('Sign up successful for:', email);
       
-      if (data.user && !data.user.email_confirmed_at) {
-        showSuccess('Account Created!', 'Please check your email and click the verification link to activate your account.');
-      } else {
-        showSuccess('Account Created!', 'Your account has been created successfully.');
-      }
+      // Show success message without email verification requirement
+      showSuccess('Account Created!', 'Your account has been created successfully. You can now sign in.');
       
       return { error: null, success: true };
     } catch (error: any) {
@@ -267,8 +260,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  // Check if user is authenticated (allow unconfirmed emails for admin access)
-  const isAuthenticated = !!user && (!!user.email_confirmed_at || user.email === 'mycode103@gmail.com');
+  // Check if user is authenticated (email verification disabled for testing)
+  const isAuthenticated = !!user;
 
   const value = {
     user,
@@ -281,7 +274,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     updateProfile,
   };
 
-  console.log('AuthProvider providing value, loading:', loading, 'isAuthenticated:', isAuthenticated, 'email_confirmed:', user?.email_confirmed_at, 'role:', profile?.role);
+  console.log('AuthProvider providing value, loading:', loading, 'isAuthenticated:', isAuthenticated, 'role:', profile?.role);
 
   return (
     <AuthContext.Provider value={value}>
