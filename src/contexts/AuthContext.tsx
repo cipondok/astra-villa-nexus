@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -46,29 +47,74 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       console.log('Fetching profile for user:', userId, 'forceRefresh:', forceRefresh);
       
-      const { data, error } = await supabase
+      // First check if profile exists
+      const { data, error, count } = await supabase
         .from('profiles')
-        .select('*')
-        .eq('id', userId)
-        .single();
+        .select('*', { count: 'exact' })
+        .eq('id', userId);
+
+      console.log('Profile query result:', { data, error, count });
 
       if (error) {
         console.error('Error fetching profile:', error);
         if (error.code === 'PGRST116') {
-          console.log('Profile not found, will be created on first update');
+          console.log('Profile not found, creating profile for super admin email');
+          // If this is the super admin email, create the profile
+          if (user?.email === 'mycode103@gmail.com') {
+            await createSuperAdminProfile(userId, user.email);
+            return;
+          }
         }
         return;
       }
 
-      console.log('Profile fetched successfully:', {
-        email: data?.email,
-        role: data?.role,
-        verification_status: data?.verification_status,
-        updated_at: data?.updated_at
-      });
-      setProfile(data);
+      if (data && data.length > 0) {
+        console.log('Profile fetched successfully:', {
+          email: data[0]?.email,
+          role: data[0]?.role,
+          verification_status: data[0]?.verification_status,
+          updated_at: data[0]?.updated_at
+        });
+        setProfile(data[0]);
+      } else {
+        console.log('No profile found, creating for super admin email');
+        if (user?.email === 'mycode103@gmail.com') {
+          await createSuperAdminProfile(userId, user.email);
+        }
+      }
     } catch (error) {
       console.error('Profile fetch error:', error);
+    }
+  };
+
+  const createSuperAdminProfile = async (userId: string, email: string) => {
+    try {
+      console.log('Creating super admin profile for:', email);
+      
+      const { data, error } = await supabase
+        .from('profiles')
+        .upsert({
+          id: userId,
+          email: email,
+          role: 'admin',
+          verification_status: 'approved',
+          full_name: 'Super Admin',
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        })
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Error creating super admin profile:', error);
+        return;
+      }
+
+      console.log('Super admin profile created:', data);
+      setProfile(data);
+      showSuccess('Profile Created', 'Super admin profile has been created successfully.');
+    } catch (error) {
+      console.error('Create super admin profile error:', error);
     }
   };
 
