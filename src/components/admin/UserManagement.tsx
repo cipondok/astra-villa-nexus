@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -70,42 +69,31 @@ const UserManagement = () => {
     refetchInterval: 30000, // Refresh every 30 seconds
   });
 
-  // Create admin user function
+  // Create admin user function - Fixed to handle missing ID properly
   const createAdminUser = useMutation({
     mutationFn: async () => {
-      console.log('Creating admin user profile for mycode103@gmail.com');
+      console.log('Setting up admin user profile for mycode103@gmail.com');
       
-      // Check if admin user already exists
-      const { data: existingUser } = await supabase
+      // First, check if the current user is the admin email
+      if (currentUser?.email !== 'mycode103@gmail.com') {
+        throw new Error('Only mycode103@gmail.com can setup admin access');
+      }
+      
+      // Update the current user's profile to admin role
+      const { error } = await supabase
         .from('profiles')
-        .select('*')
-        .eq('email', 'mycode103@gmail.com')
-        .single();
+        .upsert({
+          id: currentUser.id,
+          email: currentUser.email,
+          full_name: currentUser.user_metadata?.full_name || 'Super Admin',
+          role: 'admin',
+          verification_status: 'approved'
+        }, {
+          onConflict: 'id'
+        });
         
-      if (existingUser) {
-        console.log('Admin user already exists, updating role to admin');
-        const { error } = await supabase
-          .from('profiles')
-          .update({ role: 'admin' })
-          .eq('email', 'mycode103@gmail.com');
-          
-        if (error) {
-          throw new Error(`Failed to update admin role: ${error.message}`);
-        }
-      } else {
-        console.log('Creating new admin profile');
-        const { error } = await supabase
-          .from('profiles')
-          .insert({
-            email: 'mycode103@gmail.com',
-            full_name: 'Super Admin',
-            role: 'admin',
-            verification_status: 'approved'
-          });
-          
-        if (error) {
-          throw new Error(`Failed to create admin profile: ${error.message}`);
-        }
+      if (error) {
+        throw new Error(`Failed to setup admin profile: ${error.message}`);
       }
       
       return true;
