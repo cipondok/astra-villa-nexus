@@ -41,17 +41,34 @@ const RoleBasedAuthModal = ({ isOpen, onClose }: RoleBasedAuthModalProps) => {
         }
       } else {
         console.log('Attempting sign up for:', email);
-        const result = await signUp(email, password, fullName);
-        if (result.success) {
-          console.log('Sign up successful, closing modal');
-          onClose();
-          // Reset form
-          setEmail("");
-          setPassword("");
-          setFullName("");
+        // Simplified signup - just basic user registration
+        const { data, error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            data: {
+              full_name: fullName
+            }
+          }
+        });
+
+        if (error) {
+          console.error('Sign up error:', error);
+          if (error.message.includes('email rate limit exceeded')) {
+            throw new Error('Too many signup attempts. Please wait a few minutes before trying again.');
+          } else {
+            throw new Error(error.message);
+          }
         }
+
+        console.log('Sign up successful for:', email);
+        onClose();
+        // Reset form
+        setEmail("");
+        setPassword("");
+        setFullName("");
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Auth error:', error);
     } finally {
       setIsLoading(false);
@@ -153,7 +170,7 @@ const RoleBasedAuthModal = ({ isOpen, onClose }: RoleBasedAuthModalProps) => {
                   <Input
                     id="signup-password"
                     type={showPassword ? "text" : "password"}
-                    placeholder="Create a password"
+                    placeholder="Create a password (min 6 characters)"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
@@ -178,6 +195,9 @@ const RoleBasedAuthModal = ({ isOpen, onClose }: RoleBasedAuthModalProps) => {
                 {isLoading ? "Creating account..." : "Create Account"}
               </Button>
             </form>
+            <p className="text-xs text-gray-600 text-center">
+              New accounts are automatically approved and ready to use
+            </p>
           </TabsContent>
         </Tabs>
       </DialogContent>
