@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -48,73 +47,76 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       console.log('Fetching profile for user:', userId, 'forceRefresh:', forceRefresh);
       
       // First check if profile exists
-      const { data, error, count } = await supabase
+      const { data, error } = await supabase
         .from('profiles')
-        .select('*', { count: 'exact' })
-        .eq('id', userId);
+        .select('*')
+        .eq('id', userId)
+        .single();
 
-      console.log('Profile query result:', { data, error, count });
+      console.log('Profile query result:', { data, error });
 
       if (error) {
-        console.error('Error fetching profile:', error);
         if (error.code === 'PGRST116') {
-          console.log('Profile not found, creating profile for super admin email');
-          // If this is the super admin email, create the profile
-          if (user?.email === 'mycode103@gmail.com') {
-            await createSuperAdminProfile(userId, user.email);
-            return;
-          }
+          console.log('Profile not found, creating profile');
+          // Profile doesn't exist, create it
+          await createUserProfile(userId);
+          return;
         }
+        console.error('Error fetching profile:', error);
         return;
       }
 
-      if (data && data.length > 0) {
+      if (data) {
         console.log('Profile fetched successfully:', {
-          email: data[0]?.email,
-          role: data[0]?.role,
-          verification_status: data[0]?.verification_status,
-          updated_at: data[0]?.updated_at
+          email: data.email,
+          role: data.role,
+          verification_status: data.verification_status,
+          updated_at: data.updated_at
         });
-        setProfile(data[0]);
-      } else {
-        console.log('No profile found, creating for super admin email');
-        if (user?.email === 'mycode103@gmail.com') {
-          await createSuperAdminProfile(userId, user.email);
-        }
+        setProfile(data);
       }
     } catch (error) {
       console.error('Profile fetch error:', error);
     }
   };
 
-  const createSuperAdminProfile = async (userId: string, email: string) => {
+  const createUserProfile = async (userId: string) => {
     try {
-      console.log('Creating super admin profile for:', email);
+      console.log('Creating user profile for:', userId);
       
+      // Get user details from auth
+      const { data: authUser } = await supabase.auth.getUser();
+      
+      if (!authUser.user) {
+        console.error('No auth user found');
+        return;
+      }
+
+      const profileData = {
+        id: userId,
+        email: authUser.user.email!,
+        full_name: authUser.user.user_metadata?.full_name || 'New User',
+        role: 'general_user' as UserRole,
+        verification_status: 'approved',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      };
+
       const { data, error } = await supabase
         .from('profiles')
-        .upsert({
-          id: userId,
-          email: email,
-          role: 'admin',
-          verification_status: 'approved',
-          full_name: 'Super Admin',
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        })
+        .insert(profileData)
         .select()
         .single();
 
       if (error) {
-        console.error('Error creating super admin profile:', error);
+        console.error('Error creating profile:', error);
         return;
       }
 
-      console.log('Super admin profile created:', data);
+      console.log('Profile created successfully:', data);
       setProfile(data);
-      showSuccess('Profile Created', 'Super admin profile has been created successfully.');
     } catch (error) {
-      console.error('Create super admin profile error:', error);
+      console.error('Create profile error:', error);
     }
   };
 
@@ -149,7 +151,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
         if (session?.user && mounted) {
           setUser(session.user);
-          // Force fresh profile fetch on initialization
           await fetchProfile(session.user.id, true);
         }
         
@@ -175,8 +176,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
           if (session?.user) {
             setUser(session.user);
-            // Force fresh profile fetch on sign in
             await fetchProfile(session.user.id, true);
+            
+            if (event === 'SIGNED_IN') {
+              showSuccess('Welcome!', 'You have been signed in successfully.');
+            }
           }
         } else if (event === 'SIGNED_OUT') {
           setUser(null);
@@ -208,7 +212,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         console.error('Sign in error:', error);
         setLoading(false);
         
-        // Provide more specific error messages
         if (error.message.includes('Invalid login credentials')) {
           showError('Sign In Failed', 'Invalid email or password. Please check your credentials and try again.');
         } else {
@@ -219,12 +222,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       console.log('Sign in successful for:', email);
       
-      // Force profile refresh after successful sign in
       if (data.user) {
         setTimeout(async () => {
           await fetchProfile(data.user.id, true);
           setLoading(false);
-          showSuccess('Welcome back!', 'You have been signed in successfully.');
         }, 500);
       }
       
@@ -241,7 +242,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       console.log('Attempting sign up for:', email);
       
-      // Disable email confirmation for testing - users can login immediately
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -256,7 +256,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (error) {
         console.error('Sign up error:', error);
         
-        // Handle rate limit errors specifically
         if (error.message.includes('email rate limit exceeded')) {
           showError('Sign Up Failed', 'Too many signup attempts. Please wait a few minutes before trying again, or try logging in if you already have an account.');
         } else {
@@ -267,8 +266,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       console.log('Sign up successful for:', email);
       
-      // Show success message without email verification requirement
-      showSuccess('Account Created!', 'Your account has been created successfully. You can now sign in.');
+      showSuccess('Account Created!', 'Please check your email for a verification link to complete your registration.');
       
       return { error: null, success: true };
     } catch (error: any) {
@@ -321,7 +319,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  // Check if user is authenticated (email verification disabled for testing)
   const isAuthenticated = !!user;
 
   const value = {
@@ -352,3 +349,5 @@ export const useAuth = () => {
   }
   return context;
 };
+
+export const AuthContext = createContext<AuthContextType | undefined>(undefined);

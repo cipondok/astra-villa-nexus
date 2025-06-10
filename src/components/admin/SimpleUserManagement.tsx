@@ -1,5 +1,4 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAlert } from "@/contexts/AlertContext";
-import { Users, UserPlus, Search, Filter, Shield, Ban, Play, Pause } from "lucide-react";
+import { Users, UserPlus, Search, Filter, Shield, Ban, Play, Pause, RefreshCw } from "lucide-react";
 import SimpleRegistrationModal from "@/components/auth/SimpleRegistrationModal";
 
 type UserRole = 'general_user' | 'property_owner' | 'agent' | 'vendor' | 'admin';
@@ -31,7 +30,7 @@ const SimpleUserManagement = () => {
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
 
-  const { data: users = [], isLoading } = useQuery({
+  const { data: users = [], isLoading, refetch } = useQuery({
     queryKey: ['admin-users-management', searchTerm, roleFilter],
     queryFn: async () => {
       console.log('Fetching users for simple management...');
@@ -59,7 +58,19 @@ const SimpleUserManagement = () => {
       console.log('Users fetched successfully:', data?.length);
       return data || [];
     },
+    refetchInterval: 10000, // Refresh every 10 seconds
+    staleTime: 5000, // Data is fresh for 5 seconds
   });
+
+  // Auto-refresh when modal closes
+  useEffect(() => {
+    if (!isRegistrationModalOpen) {
+      const timer = setTimeout(() => {
+        refetch();
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [isRegistrationModalOpen, refetch]);
 
   const updateUserMutation = useMutation({
     mutationFn: async ({ userId, updates }: { userId: string; updates: Partial<UserProfile> }) => {
@@ -80,6 +91,7 @@ const SimpleUserManagement = () => {
     onSuccess: (userId) => {
       showSuccess("User Updated", "User information has been updated successfully.");
       queryClient.invalidateQueries({ queryKey: ['admin-users-management'] });
+      refetch();
     },
     onError: (error: any) => {
       console.error('Update failed:', error);
@@ -158,13 +170,23 @@ const SimpleUserManagement = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Users className="h-5 w-5" />
-          Simple User Management
-        </CardTitle>
-        <CardDescription>
-          Quick actions for user management - roles, status, and registration
-        </CardDescription>
+        <div className="flex items-center justify-between">
+          <div>
+            <CardTitle className="flex items-center gap-2">
+              <Users className="h-5 w-5" />
+              Simple User Management
+            </CardTitle>
+            <CardDescription>
+              Quick actions for user management - roles, status, and registration
+              <br />
+              Total users: {users.length} | Showing: {filteredUsers.length}
+            </CardDescription>
+          </div>
+          <Button onClick={() => refetch()} variant="outline" size="sm">
+            <RefreshCw className="h-4 w-4 mr-2" />
+            Refresh
+          </Button>
+        </div>
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Action Bar */}
@@ -207,7 +229,14 @@ const SimpleUserManagement = () => {
         ) : filteredUsers.length === 0 ? (
           <div className="text-center py-8">
             <Users className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <p className="text-gray-500">No users found</p>
+            <p className="text-gray-500">
+              {users.length === 0 ? 'No users found in database' : 'No users match your filters'}
+            </p>
+            {users.length === 0 && (
+              <p className="text-sm text-gray-400 mt-2">
+                Users will appear here after they verify their email and sign in
+              </p>
+            )}
           </div>
         ) : (
           <div className="space-y-4">
@@ -292,3 +321,5 @@ const SimpleUserManagement = () => {
 };
 
 export default SimpleUserManagement;
+
+</initial_code>
