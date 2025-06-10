@@ -1,6 +1,9 @@
+
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { BarChart3, Users, Shield, Database, Home, FileText, Store, MessageSquare, Activity, Settings, Crown } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { BarChart3, Users, Shield, Database, Home, FileText, Store, MessageSquare, Activity, Settings, Crown, ArrowLeft } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
 interface AdminNavigationProps {
@@ -36,6 +39,14 @@ const AdminNavigation = ({ activeSection, onSectionChange }: AdminNavigationProp
   return (
     <Card className="h-full">
       <CardHeader className="pb-4">
+        <div className="flex items-center justify-between mb-2">
+          <Link to="/">
+            <Button variant="outline" size="sm" className="flex items-center gap-2">
+              <ArrowLeft className="h-4 w-4" />
+              Back to Home
+            </Button>
+          </Link>
+        </div>
         <CardTitle className="flex items-center gap-2 text-lg">
           <Shield className="h-5 w-5 text-blue-600" />
           Admin Control Panel

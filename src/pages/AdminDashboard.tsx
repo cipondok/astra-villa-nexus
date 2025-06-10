@@ -1,10 +1,12 @@
 
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import Shell from "@/components/Shell";
 import { useAuth } from "@/contexts/AuthContext";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, Home } from "lucide-react";
 import AdminNavigation from "@/components/admin/AdminNavigation";
 import SystemMonitor from "@/components/admin/SystemMonitor";
 import UserRolesManagement from "@/components/admin/UserRolesManagement";
@@ -53,6 +55,19 @@ const AdminDashboard = () => {
 
   return (
     <Shell>
+      {/* Top Navigation Bar with Home Link */}
+      <div className="mb-4 flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <Link to="/">
+            <Button variant="outline" className="flex items-center gap-2">
+              <Home className="h-4 w-4" />
+              Home
+            </Button>
+          </Link>
+          <h1 className="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="md:col-span-1">
           {user ? (
