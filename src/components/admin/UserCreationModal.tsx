@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAlert } from "@/contexts/AlertContext";
-import { UserPlus, Eye, EyeOff } from "lucide-react";
+import { UserPlus, Eye, EyeOff, Loader2 } from "lucide-react";
 
 type UserRole = 'general_user' | 'property_owner' | 'agent' | 'vendor' | 'admin';
 
@@ -42,107 +42,169 @@ const UserCreationModal = ({ isOpen, onClose }: UserCreationModalProps) => {
       companyName?: string;
       licenseNumber?: string;
     }) => {
-      console.log('Creating new user with admin privileges:', userData);
+      console.log('Creating new user with enhanced admin process:', userData);
       
-      // Create the user in Supabase Auth with metadata
-      const { data: authData, error: authError } = await supabase.auth.signUp({
-        email: userData.email,
-        password: userData.password,
-        options: {
-          data: {
-            full_name: userData.fullName,
-            role: userData.role,
-            verification_status: userData.verificationStatus
+      // Comprehensive validation
+      if (!userData.email || !userData.password || !userData.fullName) {
+        throw new Error('Email, password, and full name are required');
+      }
+
+      if (userData.password.length < 6) {
+        throw new Error('Password must be at least 6 characters long');
+      }
+
+      // Email validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(userData.email)) {
+        throw new Error('Please enter a valid email address');
+      }
+
+      try {
+        // Create the user in Supabase Auth with metadata
+        const { data: authData, error: authError } = await supabase.auth.signUp({
+          email: userData.email,
+          password: userData.password,
+          options: {
+            data: {
+              full_name: userData.fullName,
+              role: userData.role,
+              verification_status: userData.verificationStatus,
+              phone: userData.phone || null,
+              company_name: userData.companyName || null,
+              license_number: userData.licenseNumber || null
+            }
+          }
+        });
+
+        if (authError) {
+          console.error('Auth creation error:', authError);
+          
+          // Handle specific error cases
+          if (authError.message.includes('already registered')) {
+            throw new Error('A user with this email already exists');
+          } else if (authError.message.includes('email rate limit')) {
+            throw new Error('Too many signup attempts. Please wait a few minutes before trying again');
+          } else {
+            throw new Error(`Registration failed: ${authError.message}`);
           }
         }
-      });
 
-      if (authError) {
-        console.error('Auth creation error:', authError);
-        throw authError;
-      }
-
-      if (!authData.user) {
-        throw new Error('User creation failed - no user returned');
-      }
-
-      console.log('User created in auth:', authData.user.id);
-
-      // Wait a moment for the trigger to potentially create the profile
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      // Check if profile was created by trigger, if not create it manually
-      const { data: existingProfile } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', authData.user.id)
-        .single();
-
-      if (!existingProfile) {
-        console.log('Profile not created by trigger, creating manually');
-        
-        // Create the profile manually
-        const profileData = {
-          id: authData.user.id,
-          email: userData.email,
-          full_name: userData.fullName,
-          phone: userData.phone || null,
-          role: userData.role,
-          verification_status: userData.verificationStatus,
-          company_name: userData.companyName || null,
-          license_number: userData.licenseNumber || null,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        };
-
-        const { error: profileError } = await supabase
-          .from('profiles')
-          .insert(profileData);
-
-        if (profileError) {
-          console.error('Profile creation error:', profileError);
-          throw profileError;
+        if (!authData.user) {
+          throw new Error('User creation failed - no user returned');
         }
-      } else {
-        console.log('Profile already exists, updating with additional data');
+
+        console.log('User created in auth:', authData.user.id);
+
+        // Wait longer for the trigger to work
+        await new Promise(resolve => setTimeout(resolve, 4000));
+
+        // Check if profile was created by trigger with retries
+        let retries = 5;
+        let existingProfile = null;
         
-        // Update the existing profile with additional data
-        const { error: updateError } = await supabase
-          .from('profiles')
-          .update({
+        while (retries > 0 && !existingProfile) {
+          const { data: profileData, error: profileError } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', authData.user.id)
+            .single();
+
+          if (profileError && profileError.code !== 'PGRST116') {
+            console.error('Profile check error:', profileError);
+            retries--;
+            if (retries > 0) {
+              await new Promise(resolve => setTimeout(resolve, 1000));
+              continue;
+            }
+          } else if (profileData) {
+            existingProfile = profileData;
+            break;
+          }
+          
+          retries--;
+          if (retries > 0) {
+            await new Promise(resolve => setTimeout(resolve, 1000));
+          }
+        }
+
+        if (!existingProfile) {
+          console.log('Profile not created by trigger, creating manually');
+          
+          // Create the profile manually with all data
+          const profileData = {
+            id: authData.user.id,
+            email: userData.email,
+            full_name: userData.fullName,
             phone: userData.phone || null,
+            role: userData.role,
+            verification_status: userData.verificationStatus,
             company_name: userData.companyName || null,
             license_number: userData.licenseNumber || null,
-            verification_status: userData.verificationStatus,
+            created_at: new Date().toISOString(),
             updated_at: new Date().toISOString()
-          })
-          .eq('id', authData.user.id);
+          };
 
-        if (updateError) {
-          console.error('Profile update error:', updateError);
-          throw updateError;
+          const { error: profileError } = await supabase
+            .from('profiles')
+            .insert(profileData);
+
+          if (profileError) {
+            console.error('Profile creation error:', profileError);
+            throw new Error(`Profile creation failed: ${profileError.message}`);
+          }
+          
+          console.log('Profile created manually with all data');
+        } else {
+          console.log('Profile already exists, updating with additional data');
+          
+          // Update the existing profile with additional data
+          const { error: updateError } = await supabase
+            .from('profiles')
+            .update({
+              phone: userData.phone || null,
+              company_name: userData.companyName || null,
+              license_number: userData.licenseNumber || null,
+              verification_status: userData.verificationStatus,
+              updated_at: new Date().toISOString()
+            })
+            .eq('id', authData.user.id);
+
+          if (updateError) {
+            console.error('Profile update error:', updateError);
+            throw new Error(`Profile update failed: ${updateError.message}`);
+          }
+          
+          console.log('Profile updated with additional data');
         }
-      }
 
-      console.log('User and profile created/updated successfully');
-      return authData.user;
+        console.log('User and profile process completed successfully');
+        return authData.user;
+      } catch (error: any) {
+        console.error('User creation process failed:', error);
+        throw error;
+      }
     },
-    onSuccess: () => {
-      showSuccess("User Created", "New user has been created successfully and should now appear in the user management tables.");
+    onSuccess: (user) => {
+      console.log('Complete user creation successful:', user.id);
+      showSuccess("User Created Successfully", "New user has been created with all details and is ready to use the system.");
+      
+      // Refresh all related queries
       queryClient.invalidateQueries({ queryKey: ['admin-users-management'] });
       queryClient.invalidateQueries({ queryKey: ['database-users'] });
+      queryClient.invalidateQueries({ queryKey: ['profiles'] });
+      
       handleClose();
     },
     onError: (error: any) => {
       console.error('User creation failed:', error);
-      showError("Creation Failed", error.message || "Failed to create user");
+      showError("Creation Failed", error.message || "Failed to create user. Please try again with different details.");
     },
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!email || !password || !fullName || !role) {
+    if (!email.trim() || !password.trim() || !fullName.trim()) {
       showError("Validation Error", "Please fill in all required fields");
       return;
     }
@@ -153,14 +215,14 @@ const UserCreationModal = ({ isOpen, onClose }: UserCreationModalProps) => {
     }
 
     createUserMutation.mutate({
-      email,
+      email: email.trim(),
       password,
-      fullName,
-      phone,
+      fullName: fullName.trim(),
+      phone: phone.trim(),
       role,
       verificationStatus,
-      companyName: companyName || undefined,
-      licenseNumber: licenseNumber || undefined
+      companyName: companyName.trim() || undefined,
+      licenseNumber: licenseNumber.trim() || undefined
     });
   };
 
@@ -188,6 +250,8 @@ const UserCreationModal = ({ isOpen, onClose }: UserCreationModalProps) => {
     return descriptions[role];
   };
 
+  const isLoading = createUserMutation.isPending;
+
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="max-w-md bg-card border-border">
@@ -212,7 +276,8 @@ const UserCreationModal = ({ isOpen, onClose }: UserCreationModalProps) => {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="user@example.com"
                 required
-                className="bg-background border-border text-foreground"
+                disabled={isLoading}
+                className="bg-background border-border text-foreground mt-1"
               />
             </div>
             <div>
@@ -223,14 +288,15 @@ const UserCreationModal = ({ isOpen, onClose }: UserCreationModalProps) => {
                 onChange={(e) => setFullName(e.target.value)}
                 placeholder="John Doe"
                 required
-                className="bg-background border-border text-foreground"
+                disabled={isLoading}
+                className="bg-background border-border text-foreground mt-1"
               />
             </div>
           </div>
 
           <div>
             <Label htmlFor="password" className="text-foreground">Password *</Label>
-            <div className="relative">
+            <div className="relative mt-1">
               <Input
                 id="password"
                 type={showPassword ? "text" : "password"}
@@ -238,7 +304,9 @@ const UserCreationModal = ({ isOpen, onClose }: UserCreationModalProps) => {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Minimum 6 characters"
                 required
+                disabled={isLoading}
                 className="bg-background border-border text-foreground pr-10"
+                minLength={6}
               />
               <Button
                 type="button"
@@ -246,6 +314,7 @@ const UserCreationModal = ({ isOpen, onClose }: UserCreationModalProps) => {
                 size="sm"
                 className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
                 onClick={() => setShowPassword(!showPassword)}
+                disabled={isLoading}
               >
                 {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
               </Button>
@@ -259,14 +328,15 @@ const UserCreationModal = ({ isOpen, onClose }: UserCreationModalProps) => {
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               placeholder="+1234567890"
-              className="bg-background border-border text-foreground"
+              disabled={isLoading}
+              className="bg-background border-border text-foreground mt-1"
             />
           </div>
 
           <div>
             <Label htmlFor="role" className="text-foreground">User Role *</Label>
-            <Select value={role} onValueChange={(value: UserRole) => setRole(value)}>
-              <SelectTrigger className="bg-background border-border text-foreground">
+            <Select value={role} onValueChange={(value: UserRole) => setRole(value)} disabled={isLoading}>
+              <SelectTrigger className="bg-background border-border text-foreground mt-1">
                 <SelectValue placeholder="Select a role" />
               </SelectTrigger>
               <SelectContent className="bg-popover border-border">
@@ -282,8 +352,8 @@ const UserCreationModal = ({ isOpen, onClose }: UserCreationModalProps) => {
 
           <div>
             <Label htmlFor="verificationStatus" className="text-foreground">Verification Status</Label>
-            <Select value={verificationStatus} onValueChange={setVerificationStatus}>
-              <SelectTrigger className="bg-background border-border text-foreground">
+            <Select value={verificationStatus} onValueChange={setVerificationStatus} disabled={isLoading}>
+              <SelectTrigger className="bg-background border-border text-foreground mt-1">
                 <SelectValue placeholder="Select verification status" />
               </SelectTrigger>
               <SelectContent className="bg-popover border-border">
@@ -303,7 +373,8 @@ const UserCreationModal = ({ isOpen, onClose }: UserCreationModalProps) => {
                   value={companyName}
                   onChange={(e) => setCompanyName(e.target.value)}
                   placeholder="Company LLC"
-                  className="bg-background border-border text-foreground"
+                  disabled={isLoading}
+                  className="bg-background border-border text-foreground mt-1"
                 />
               </div>
               <div>
@@ -313,7 +384,8 @@ const UserCreationModal = ({ isOpen, onClose }: UserCreationModalProps) => {
                   value={licenseNumber}
                   onChange={(e) => setLicenseNumber(e.target.value)}
                   placeholder="LIC123456"
-                  className="bg-background border-border text-foreground"
+                  disabled={isLoading}
+                  className="bg-background border-border text-foreground mt-1"
                 />
               </div>
             </div>
@@ -325,6 +397,7 @@ const UserCreationModal = ({ isOpen, onClose }: UserCreationModalProps) => {
             type="button"
             variant="outline" 
             onClick={handleClose}
+            disabled={isLoading}
             className="border-border text-foreground"
           >
             Cancel
@@ -332,10 +405,17 @@ const UserCreationModal = ({ isOpen, onClose }: UserCreationModalProps) => {
           <Button 
             type="submit"
             onClick={handleSubmit}
-            disabled={createUserMutation.isPending}
+            disabled={isLoading}
             className="bg-primary hover:bg-primary/90"
           >
-            {createUserMutation.isPending ? "Creating..." : "Create User"}
+            {isLoading ? (
+              <>
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                Creating...
+              </>
+            ) : (
+              "Create User"
+            )}
           </Button>
         </DialogFooter>
       </DialogContent>

@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAlert } from "@/contexts/AlertContext";
-import { UserPlus, Eye, EyeOff } from "lucide-react";
+import { UserPlus, Eye, EyeOff, Loader2 } from "lucide-react";
 
 type UserRole = 'general_user' | 'property_owner' | 'agent' | 'vendor' | 'admin';
 
@@ -34,97 +34,150 @@ const SimpleRegistrationModal = ({ isOpen, onClose }: SimpleRegistrationModalPro
       fullName: string;
       role: UserRole;
     }) => {
-      console.log('Creating user with simplified process:', userData.email);
+      console.log('Creating user with enhanced process:', userData.email);
       
-      // Create user with basic auth
-      const { data: authData, error: authError } = await supabase.auth.signUp({
-        email: userData.email,
-        password: userData.password,
-        options: {
-          data: {
-            full_name: userData.fullName,
-            role: userData.role
+      // Validate input data
+      if (!userData.email || !userData.password || !userData.fullName) {
+        throw new Error('All fields are required');
+      }
+
+      if (userData.password.length < 6) {
+        throw new Error('Password must be at least 6 characters long');
+      }
+
+      // Email validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(userData.email)) {
+        throw new Error('Please enter a valid email address');
+      }
+
+      try {
+        // Create user with Supabase Auth
+        const { data: authData, error: authError } = await supabase.auth.signUp({
+          email: userData.email,
+          password: userData.password,
+          options: {
+            data: {
+              full_name: userData.fullName,
+              role: userData.role
+            }
+          }
+        });
+
+        if (authError) {
+          console.error('Auth error:', authError);
+          
+          // Handle specific error cases
+          if (authError.message.includes('already registered')) {
+            throw new Error('A user with this email already exists');
+          } else if (authError.message.includes('email rate limit')) {
+            throw new Error('Too many signup attempts. Please wait a few minutes before trying again');
+          } else if (authError.message.includes('Password should be')) {
+            throw new Error('Password does not meet security requirements');
+          } else {
+            throw new Error(`Registration failed: ${authError.message}`);
           }
         }
-      });
 
-      if (authError) {
-        console.error('Auth error:', authError);
-        throw new Error(`Registration failed: ${authError.message}`);
-      }
-
-      if (!authData.user) {
-        throw new Error('User creation failed - no user data returned');
-      }
-
-      console.log('User created successfully:', authData.user.id);
-
-      // Wait for trigger to create profile
-      await new Promise(resolve => setTimeout(resolve, 2000));
-
-      // Verify profile was created
-      const { data: profile, error: profileError } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', authData.user.id)
-        .single();
-
-      if (profileError && profileError.code !== 'PGRST116') {
-        console.error('Profile verification error:', profileError);
-        throw new Error(`Profile creation failed: ${profileError.message}`);
-      }
-
-      if (!profile) {
-        console.log('Profile not found, creating manually...');
-        
-        // Create profile manually if trigger failed
-        const { error: manualProfileError } = await supabase
-          .from('profiles')
-          .insert({
-            id: authData.user.id,
-            email: userData.email,
-            full_name: userData.fullName,
-            role: userData.role,
-            verification_status: 'approved'
-          });
-
-        if (manualProfileError) {
-          console.error('Manual profile creation error:', manualProfileError);
-          throw new Error(`Manual profile creation failed: ${manualProfileError.message}`);
+        if (!authData.user) {
+          throw new Error('User creation failed - no user data returned');
         }
-      }
 
-      return authData.user;
+        console.log('User created successfully:', authData.user.id);
+
+        // Wait for the database trigger to create the profile
+        await new Promise(resolve => setTimeout(resolve, 3000));
+
+        // Verify profile creation with retries
+        let retries = 3;
+        let profile = null;
+        
+        while (retries > 0 && !profile) {
+          const { data: profileData, error: profileError } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', authData.user.id)
+            .single();
+
+          if (profileError && profileError.code !== 'PGRST116') {
+            console.error('Profile verification error:', profileError);
+            retries--;
+            if (retries > 0) {
+              await new Promise(resolve => setTimeout(resolve, 1000));
+              continue;
+            }
+          } else if (profileData) {
+            profile = profileData;
+            break;
+          }
+          
+          retries--;
+          if (retries > 0) {
+            await new Promise(resolve => setTimeout(resolve, 1000));
+          }
+        }
+
+        // If profile still doesn't exist, create it manually
+        if (!profile) {
+          console.log('Profile not found after retries, creating manually...');
+          
+          const { error: manualProfileError } = await supabase
+            .from('profiles')
+            .insert({
+              id: authData.user.id,
+              email: userData.email,
+              full_name: userData.fullName,
+              role: userData.role,
+              verification_status: 'approved',
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString()
+            });
+
+          if (manualProfileError) {
+            console.error('Manual profile creation error:', manualProfileError);
+            throw new Error(`Profile creation failed: ${manualProfileError.message}`);
+          }
+          
+          console.log('Profile created manually');
+        } else {
+          console.log('Profile found:', profile.id);
+        }
+
+        return authData.user;
+      } catch (error: any) {
+        console.error('User creation process failed:', error);
+        throw error;
+      }
     },
-    onSuccess: () => {
-      showSuccess("Registration Successful", "User has been created and can now login.");
+    onSuccess: (user) => {
+      console.log('User creation completed successfully:', user.id);
+      showSuccess("User Created Successfully", "The new user has been created and can now login to the system.");
+      
+      // Invalidate and refetch all user-related queries
       queryClient.invalidateQueries({ queryKey: ['admin-users-management'] });
       queryClient.invalidateQueries({ queryKey: ['database-users'] });
+      queryClient.invalidateQueries({ queryKey: ['profiles'] });
+      
       handleClose();
     },
     onError: (error: any) => {
-      console.error('Registration failed:', error);
-      showError("Registration Failed", error.message || "Please try again with different details");
+      console.error('User creation failed:', error);
+      showError("Registration Failed", error.message || "Failed to create user. Please try again.");
     },
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!email || !password || !fullName) {
-      showError("Missing Information", "Please fill in all required fields");
-      return;
-    }
-
-    if (password.length < 6) {
-      showError("Invalid Password", "Password must be at least 6 characters long");
+    if (!email.trim() || !password.trim() || !fullName.trim()) {
+      showError("Validation Error", "Please fill in all required fields");
       return;
     }
 
     createUserMutation.mutate({
-      email,
+      email: email.trim(),
       password,
-      fullName,
+      fullName: fullName.trim(),
       role
     });
   };
@@ -137,6 +190,8 @@ const SimpleRegistrationModal = ({ isOpen, onClose }: SimpleRegistrationModalPro
     setShowPassword(false);
     onClose();
   };
+
+  const isLoading = createUserMutation.isPending;
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
@@ -161,6 +216,8 @@ const SimpleRegistrationModal = ({ isOpen, onClose }: SimpleRegistrationModalPro
               onChange={(e) => setEmail(e.target.value)}
               placeholder="user@example.com"
               required
+              disabled={isLoading}
+              className="mt-1"
             />
           </div>
 
@@ -172,12 +229,14 @@ const SimpleRegistrationModal = ({ isOpen, onClose }: SimpleRegistrationModalPro
               onChange={(e) => setFullName(e.target.value)}
               placeholder="John Doe"
               required
+              disabled={isLoading}
+              className="mt-1"
             />
           </div>
 
           <div>
             <Label htmlFor="password">Password *</Label>
-            <div className="relative">
+            <div className="relative mt-1">
               <Input
                 id="password"
                 type={showPassword ? "text" : "password"}
@@ -185,6 +244,8 @@ const SimpleRegistrationModal = ({ isOpen, onClose }: SimpleRegistrationModalPro
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Minimum 6 characters"
                 required
+                disabled={isLoading}
+                minLength={6}
               />
               <Button
                 type="button"
@@ -192,6 +253,7 @@ const SimpleRegistrationModal = ({ isOpen, onClose }: SimpleRegistrationModalPro
                 size="sm"
                 className="absolute right-0 top-0 h-full px-3"
                 onClick={() => setShowPassword(!showPassword)}
+                disabled={isLoading}
               >
                 {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
               </Button>
@@ -200,8 +262,8 @@ const SimpleRegistrationModal = ({ isOpen, onClose }: SimpleRegistrationModalPro
 
           <div>
             <Label htmlFor="role">User Role</Label>
-            <Select value={role} onValueChange={(value: UserRole) => setRole(value)}>
-              <SelectTrigger>
+            <Select value={role} onValueChange={(value: UserRole) => setRole(value)} disabled={isLoading}>
+              <SelectTrigger className="mt-1">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -216,15 +278,27 @@ const SimpleRegistrationModal = ({ isOpen, onClose }: SimpleRegistrationModalPro
         </form>
 
         <DialogFooter>
-          <Button type="button" variant="outline" onClick={handleClose}>
+          <Button 
+            type="button" 
+            variant="outline" 
+            onClick={handleClose}
+            disabled={isLoading}
+          >
             Cancel
           </Button>
           <Button 
             type="submit"
             onClick={handleSubmit}
-            disabled={createUserMutation.isPending}
+            disabled={isLoading}
           >
-            {createUserMutation.isPending ? "Creating..." : "Create User"}
+            {isLoading ? (
+              <>
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                Creating...
+              </>
+            ) : (
+              "Create User"
+            )}
           </Button>
         </DialogFooter>
       </DialogContent>
