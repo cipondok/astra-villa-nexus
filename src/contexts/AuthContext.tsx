@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -349,5 +350,3 @@ export const useAuth = () => {
   }
   return context;
 };
-
-export const AuthContext = createContext<AuthContextType | undefined>(undefined);
