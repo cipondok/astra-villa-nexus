@@ -38,7 +38,7 @@ interface Invoice {
   payment_method: string;
   notes: string;
   created_at: string;
-  profiles: {
+  customer_profile: {
     full_name: string;
     email: string;
   };
@@ -73,7 +73,7 @@ const VendorBillingManagement = () => {
         .from('vendor_invoices')
         .select(`
           *,
-          profiles:customer_id (
+          customer_profile:profiles!customer_id (
             full_name,
             email
           )
@@ -100,7 +100,7 @@ const VendorBillingManagement = () => {
         .from('vendor_customers')
         .select(`
           customer_id,
-          profiles:customer_id (
+          customer_profile:profiles!customer_id (
             full_name,
             email
           )
@@ -191,7 +191,7 @@ const VendorBillingManagement = () => {
   const filteredInvoices = invoices.filter(invoice => {
     const matchesSearch = !searchTerm || 
       invoice.invoice_number.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      invoice.profiles?.full_name?.toLowerCase().includes(searchTerm.toLowerCase());
+      invoice.customer_profile?.full_name?.toLowerCase().includes(searchTerm.toLowerCase());
     
     const matchesStatus = statusFilter === 'all' || invoice.status === statusFilter;
     
@@ -362,8 +362,8 @@ const VendorBillingManagement = () => {
                     <TableCell className="font-medium">{invoice.invoice_number}</TableCell>
                     <TableCell>
                       <div>
-                        <div className="font-medium">{invoice.profiles?.full_name || 'N/A'}</div>
-                        <div className="text-sm text-muted-foreground">{invoice.profiles?.email}</div>
+                        <div className="font-medium">{invoice.customer_profile?.full_name || 'N/A'}</div>
+                        <div className="text-sm text-muted-foreground">{invoice.customer_profile?.email}</div>
                       </div>
                     </TableCell>
                     <TableCell>${invoice.total_amount.toFixed(2)}</TableCell>
@@ -433,7 +433,7 @@ const VendorBillingManagement = () => {
                 <SelectContent>
                   {customers.map((customer) => (
                     <SelectItem key={customer.customer_id} value={customer.customer_id}>
-                      {customer.profiles?.full_name || customer.profiles?.email}
+                      {customer.customer_profile?.full_name || customer.customer_profile?.email}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -517,8 +517,8 @@ const VendorBillingManagement = () => {
                 <div>
                   <h3 className="font-semibold mb-2">Customer</h3>
                   <div className="space-y-2">
-                    <p><strong>Name:</strong> {selectedInvoice.profiles?.full_name || 'N/A'}</p>
-                    <p><strong>Email:</strong> {selectedInvoice.profiles?.email || 'N/A'}</p>
+                    <p><strong>Name:</strong> {selectedInvoice.customer_profile?.full_name || 'N/A'}</p>
+                    <p><strong>Email:</strong> {selectedInvoice.customer_profile?.email || 'N/A'}</p>
                   </div>
                 </div>
               </div>

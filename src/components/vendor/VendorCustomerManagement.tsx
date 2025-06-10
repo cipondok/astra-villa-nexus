@@ -23,7 +23,7 @@ interface Customer {
   total_spent: number;
   last_order_date: string;
   notes: string;
-  profiles: {
+  customer_profile: {
     full_name: string;
     email: string;
     phone: string;
@@ -49,7 +49,7 @@ const VendorCustomerManagement = () => {
         .from('vendor_customers')
         .select(`
           *,
-          profiles:customer_id (
+          customer_profile:profiles!customer_id (
             full_name,
             email,
             phone
@@ -95,8 +95,8 @@ const VendorCustomerManagement = () => {
 
   const filteredCustomers = customers.filter(customer => {
     const matchesSearch = !searchTerm || 
-      customer.profiles?.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      customer.profiles?.email?.toLowerCase().includes(searchTerm.toLowerCase());
+      customer.customer_profile?.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      customer.customer_profile?.email?.toLowerCase().includes(searchTerm.toLowerCase());
     
     const matchesStatus = statusFilter === 'all' || customer.relationship_status === statusFilter;
     
@@ -249,22 +249,22 @@ const VendorCustomerManagement = () => {
                   <TableRow key={customer.id}>
                     <TableCell>
                       <div>
-                        <div className="font-medium">{customer.profiles?.full_name || 'N/A'}</div>
-                        <div className="text-sm text-muted-foreground">{customer.profiles?.email}</div>
+                        <div className="font-medium">{customer.customer_profile?.full_name || 'N/A'}</div>
+                        <div className="text-sm text-muted-foreground">{customer.customer_profile?.email}</div>
                       </div>
                     </TableCell>
                     <TableCell>
                       <div className="flex flex-col gap-1">
-                        {customer.profiles?.email && (
+                        {customer.customer_profile?.email && (
                           <div className="flex items-center gap-1 text-sm">
                             <Mail className="h-3 w-3" />
-                            {customer.profiles.email}
+                            {customer.customer_profile.email}
                           </div>
                         )}
-                        {customer.profiles?.phone && (
+                        {customer.customer_profile?.phone && (
                           <div className="flex items-center gap-1 text-sm">
                             <Phone className="h-3 w-3" />
-                            {customer.profiles.phone}
+                            {customer.customer_profile.phone}
                           </div>
                         )}
                       </div>
@@ -331,9 +331,9 @@ const VendorCustomerManagement = () => {
                 <div>
                   <h3 className="font-semibold mb-2">Customer Information</h3>
                   <div className="space-y-2">
-                    <p><strong>Name:</strong> {selectedCustomer.profiles?.full_name || 'N/A'}</p>
-                    <p><strong>Email:</strong> {selectedCustomer.profiles?.email || 'N/A'}</p>
-                    <p><strong>Phone:</strong> {selectedCustomer.profiles?.phone || 'N/A'}</p>
+                    <p><strong>Name:</strong> {selectedCustomer.customer_profile?.full_name || 'N/A'}</p>
+                    <p><strong>Email:</strong> {selectedCustomer.customer_profile?.email || 'N/A'}</p>
+                    <p><strong>Phone:</strong> {selectedCustomer.customer_profile?.phone || 'N/A'}</p>
                     <p><strong>Type:</strong> {selectedCustomer.customer_type.replace('_', ' ')}</p>
                   </div>
                 </div>

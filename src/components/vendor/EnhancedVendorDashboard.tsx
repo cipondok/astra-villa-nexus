@@ -32,7 +32,7 @@ const EnhancedVendorDashboard = () => {
                 onSuccess={() => setShowServiceForm(false)}
               />
             ) : (
-              <VendorServices onAddService={() => setShowServiceForm(true)} />
+              <VendorServices />
             )}
           </div>
         );

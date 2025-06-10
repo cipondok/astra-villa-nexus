@@ -45,7 +45,7 @@ interface ProjectProgress {
       service_name: string;
     };
   };
-  profiles: {
+  customer_profile: {
     full_name: string;
     email: string;
   };
@@ -85,7 +85,7 @@ const VendorProgressTracking = () => {
               service_name
             )
           ),
-          profiles:customer_id (
+          customer_profile:profiles!customer_id (
             full_name,
             email
           )
@@ -320,8 +320,8 @@ const VendorProgressTracking = () => {
                     </TableCell>
                     <TableCell>
                       <div>
-                        <div className="font-medium">{project.profiles?.full_name || 'N/A'}</div>
-                        <div className="text-sm text-muted-foreground">{project.profiles?.email}</div>
+                        <div className="font-medium">{project.customer_profile?.full_name || 'N/A'}</div>
+                        <div className="text-sm text-muted-foreground">{project.customer_profile?.email}</div>
                       </div>
                     </TableCell>
                     <TableCell>
