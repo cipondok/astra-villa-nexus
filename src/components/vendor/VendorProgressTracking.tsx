@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -31,7 +30,7 @@ interface ProjectProgress {
   progress_percentage: number;
   current_stage: string;
   status: string;
-  milestones: any[];
+  milestones: any; // Changed from any[] to any to match Json type
   next_action: string;
   estimated_completion: string;
   notes: string;
