@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -8,7 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAlert } from "@/contexts/AlertContext";
-import { UserPlus, Eye, EyeOff, Loader2 } from "lucide-react";
+import { UserPlus, Eye, EyeOff, Loader2, AlertTriangle } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 type UserRole = 'general_user' | 'property_owner' | 'agent' | 'vendor' | 'admin';
 
@@ -27,8 +27,9 @@ const UserCreationModal = ({ isOpen, onClose }: UserCreationModalProps) => {
   const [companyName, setCompanyName] = useState("");
   const [licenseNumber, setLicenseNumber] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [isRateLimited, setIsRateLimited] = useState(false);
 
-  const { showSuccess, showError } = useAlert();
+  const { showSuccess, showError, showWarning } = useAlert();
   const queryClient = useQueryClient();
 
   const createUserMutation = useMutation({
@@ -81,9 +82,10 @@ const UserCreationModal = ({ isOpen, onClose }: UserCreationModalProps) => {
           
           // Handle specific error cases
           if (authError.message.includes('already registered')) {
-            throw new Error('A user with this email already exists');
-          } else if (authError.message.includes('email rate limit')) {
-            throw new Error('Too many signup attempts. Please wait a few minutes before trying again');
+            throw new Error('A user with this email already exists. Try with a different email.');
+          } else if (authError.message.includes('email rate limit') || authError.code === 'over_email_send_rate_limit') {
+            setIsRateLimited(true);
+            throw new Error('RATE_LIMITED');
           } else {
             throw new Error(`Registration failed: ${authError.message}`);
           }
@@ -94,90 +96,6 @@ const UserCreationModal = ({ isOpen, onClose }: UserCreationModalProps) => {
         }
 
         console.log('User created in auth:', authData.user.id);
-
-        // Wait longer for the trigger to work
-        await new Promise(resolve => setTimeout(resolve, 4000));
-
-        // Check if profile was created by trigger with retries
-        let retries = 5;
-        let existingProfile = null;
-        
-        while (retries > 0 && !existingProfile) {
-          const { data: profileData, error: profileError } = await supabase
-            .from('profiles')
-            .select('*')
-            .eq('id', authData.user.id)
-            .single();
-
-          if (profileError && profileError.code !== 'PGRST116') {
-            console.error('Profile check error:', profileError);
-            retries--;
-            if (retries > 0) {
-              await new Promise(resolve => setTimeout(resolve, 1000));
-              continue;
-            }
-          } else if (profileData) {
-            existingProfile = profileData;
-            break;
-          }
-          
-          retries--;
-          if (retries > 0) {
-            await new Promise(resolve => setTimeout(resolve, 1000));
-          }
-        }
-
-        if (!existingProfile) {
-          console.log('Profile not created by trigger, creating manually');
-          
-          // Create the profile manually with all data
-          const profileData = {
-            id: authData.user.id,
-            email: userData.email,
-            full_name: userData.fullName,
-            phone: userData.phone || null,
-            role: userData.role,
-            verification_status: userData.verificationStatus,
-            company_name: userData.companyName || null,
-            license_number: userData.licenseNumber || null,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString()
-          };
-
-          const { error: profileError } = await supabase
-            .from('profiles')
-            .insert(profileData);
-
-          if (profileError) {
-            console.error('Profile creation error:', profileError);
-            throw new Error(`Profile creation failed: ${profileError.message}`);
-          }
-          
-          console.log('Profile created manually with all data');
-        } else {
-          console.log('Profile already exists, updating with additional data');
-          
-          // Update the existing profile with additional data
-          const { error: updateError } = await supabase
-            .from('profiles')
-            .update({
-              phone: userData.phone || null,
-              company_name: userData.companyName || null,
-              license_number: userData.licenseNumber || null,
-              verification_status: userData.verificationStatus,
-              updated_at: new Date().toISOString()
-            })
-            .eq('id', authData.user.id);
-
-          if (updateError) {
-            console.error('Profile update error:', updateError);
-            throw new Error(`Profile update failed: ${updateError.message}`);
-          }
-          
-          console.log('Profile updated with additional data');
-        }
-
-        console.log('User and profile process completed successfully');
         return authData.user;
       } catch (error: any) {
         console.error('User creation process failed:', error);
@@ -186,7 +104,7 @@ const UserCreationModal = ({ isOpen, onClose }: UserCreationModalProps) => {
     },
     onSuccess: (user) => {
       console.log('Complete user creation successful:', user.id);
-      showSuccess("User Created Successfully", "New user has been created with all details and is ready to use the system.");
+      showSuccess("User Created Successfully", "New user has been created and is ready to use the system.");
       
       // Refresh all related queries
       queryClient.invalidateQueries({ queryKey: ['admin-users-management'] });
@@ -197,7 +115,15 @@ const UserCreationModal = ({ isOpen, onClose }: UserCreationModalProps) => {
     },
     onError: (error: any) => {
       console.error('User creation failed:', error);
-      showError("Creation Failed", error.message || "Failed to create user. Please try again with different details.");
+      
+      if (error.message === 'RATE_LIMITED') {
+        showWarning(
+          "Rate Limited", 
+          "Too many signup attempts detected. Please wait 5-10 minutes before trying again, or use a different email address."
+        );
+      } else {
+        showError("Creation Failed", error.message || "Failed to create user. Please try again with different details.");
+      }
     },
   });
 
@@ -213,6 +139,9 @@ const UserCreationModal = ({ isOpen, onClose }: UserCreationModalProps) => {
       showError("Validation Error", "Password must be at least 6 characters long");
       return;
     }
+
+    // Reset rate limit flag on new attempt
+    setIsRateLimited(false);
 
     createUserMutation.mutate({
       email: email.trim(),
@@ -236,6 +165,7 @@ const UserCreationModal = ({ isOpen, onClose }: UserCreationModalProps) => {
     setCompanyName("");
     setLicenseNumber("");
     setShowPassword(false);
+    setIsRateLimited(false);
     onClose();
   };
 
@@ -264,6 +194,18 @@ const UserCreationModal = ({ isOpen, onClose }: UserCreationModalProps) => {
             Create a new user account with specified role and verification status
           </DialogDescription>
         </DialogHeader>
+
+        {isRateLimited && (
+          <Alert variant="destructive">
+            <AlertTriangle className="h-4 w-4" />
+            <AlertDescription>
+              Email rate limit reached. Solutions:
+              <br />• Wait 5-10 minutes before trying again
+              <br />• Use a different email address
+              <br />• Disable email confirmation in Supabase Auth settings
+            </AlertDescription>
+          </Alert>
+        )}
         
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
@@ -405,7 +347,7 @@ const UserCreationModal = ({ isOpen, onClose }: UserCreationModalProps) => {
           <Button 
             type="submit"
             onClick={handleSubmit}
-            disabled={isLoading}
+            disabled={isLoading || isRateLimited}
             className="bg-primary hover:bg-primary/90"
           >
             {isLoading ? (

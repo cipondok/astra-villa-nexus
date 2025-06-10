@@ -8,7 +8,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAlert } from "@/contexts/AlertContext";
-import { UserPlus, Eye, EyeOff, Loader2 } from "lucide-react";
+import { UserPlus, Eye, EyeOff, Loader2, AlertTriangle } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 type UserRole = 'general_user' | 'property_owner' | 'agent' | 'vendor' | 'admin';
 
@@ -23,8 +24,9 @@ const SimpleRegistrationModal = ({ isOpen, onClose }: SimpleRegistrationModalPro
   const [fullName, setFullName] = useState("");
   const [role, setRole] = useState<UserRole>("general_user");
   const [showPassword, setShowPassword] = useState(false);
+  const [isRateLimited, setIsRateLimited] = useState(false);
 
-  const { showSuccess, showError } = useAlert();
+  const { showSuccess, showError, showWarning } = useAlert();
   const queryClient = useQueryClient();
 
   const createUserMutation = useMutation({
@@ -69,9 +71,10 @@ const SimpleRegistrationModal = ({ isOpen, onClose }: SimpleRegistrationModalPro
           
           // Handle specific error cases
           if (authError.message.includes('already registered')) {
-            throw new Error('A user with this email already exists');
-          } else if (authError.message.includes('email rate limit')) {
-            throw new Error('Too many signup attempts. Please wait a few minutes before trying again');
+            throw new Error('A user with this email already exists. Try signing in instead.');
+          } else if (authError.message.includes('email rate limit') || authError.code === 'over_email_send_rate_limit') {
+            setIsRateLimited(true);
+            throw new Error('RATE_LIMITED');
           } else if (authError.message.includes('Password should be')) {
             throw new Error('Password does not meet security requirements');
           } else {
@@ -84,65 +87,6 @@ const SimpleRegistrationModal = ({ isOpen, onClose }: SimpleRegistrationModalPro
         }
 
         console.log('User created successfully:', authData.user.id);
-
-        // Wait for the database trigger to create the profile
-        await new Promise(resolve => setTimeout(resolve, 3000));
-
-        // Verify profile creation with retries
-        let retries = 3;
-        let profile = null;
-        
-        while (retries > 0 && !profile) {
-          const { data: profileData, error: profileError } = await supabase
-            .from('profiles')
-            .select('*')
-            .eq('id', authData.user.id)
-            .single();
-
-          if (profileError && profileError.code !== 'PGRST116') {
-            console.error('Profile verification error:', profileError);
-            retries--;
-            if (retries > 0) {
-              await new Promise(resolve => setTimeout(resolve, 1000));
-              continue;
-            }
-          } else if (profileData) {
-            profile = profileData;
-            break;
-          }
-          
-          retries--;
-          if (retries > 0) {
-            await new Promise(resolve => setTimeout(resolve, 1000));
-          }
-        }
-
-        // If profile still doesn't exist, create it manually
-        if (!profile) {
-          console.log('Profile not found after retries, creating manually...');
-          
-          const { error: manualProfileError } = await supabase
-            .from('profiles')
-            .insert({
-              id: authData.user.id,
-              email: userData.email,
-              full_name: userData.fullName,
-              role: userData.role,
-              verification_status: 'approved',
-              created_at: new Date().toISOString(),
-              updated_at: new Date().toISOString()
-            });
-
-          if (manualProfileError) {
-            console.error('Manual profile creation error:', manualProfileError);
-            throw new Error(`Profile creation failed: ${manualProfileError.message}`);
-          }
-          
-          console.log('Profile created manually');
-        } else {
-          console.log('Profile found:', profile.id);
-        }
-
         return authData.user;
       } catch (error: any) {
         console.error('User creation process failed:', error);
@@ -162,7 +106,15 @@ const SimpleRegistrationModal = ({ isOpen, onClose }: SimpleRegistrationModalPro
     },
     onError: (error: any) => {
       console.error('User creation failed:', error);
-      showError("Registration Failed", error.message || "Failed to create user. Please try again.");
+      
+      if (error.message === 'RATE_LIMITED') {
+        showWarning(
+          "Rate Limited", 
+          "Too many signup attempts detected. Please wait 5-10 minutes before trying again, or use a different email address."
+        );
+      } else {
+        showError("Registration Failed", error.message || "Failed to create user. Please try again.");
+      }
     },
   });
 
@@ -173,6 +125,9 @@ const SimpleRegistrationModal = ({ isOpen, onClose }: SimpleRegistrationModalPro
       showError("Validation Error", "Please fill in all required fields");
       return;
     }
+
+    // Reset rate limit flag on new attempt
+    setIsRateLimited(false);
 
     createUserMutation.mutate({
       email: email.trim(),
@@ -188,6 +143,7 @@ const SimpleRegistrationModal = ({ isOpen, onClose }: SimpleRegistrationModalPro
     setFullName("");
     setRole("general_user");
     setShowPassword(false);
+    setIsRateLimited(false);
     onClose();
   };
 
@@ -205,6 +161,17 @@ const SimpleRegistrationModal = ({ isOpen, onClose }: SimpleRegistrationModalPro
             Create a new user account with simplified process
           </DialogDescription>
         </DialogHeader>
+
+        {isRateLimited && (
+          <Alert variant="destructive">
+            <AlertTriangle className="h-4 w-4" />
+            <AlertDescription>
+              Signup rate limit reached. Please wait 5-10 minutes or try with a different email address.
+              <br />
+              <strong>Tip:</strong> Ask your admin to disable email confirmation in Supabase settings for faster testing.
+            </AlertDescription>
+          </Alert>
+        )}
         
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -289,7 +256,7 @@ const SimpleRegistrationModal = ({ isOpen, onClose }: SimpleRegistrationModalPro
           <Button 
             type="submit"
             onClick={handleSubmit}
-            disabled={isLoading}
+            disabled={isLoading || isRateLimited}
           >
             {isLoading ? (
               <>
