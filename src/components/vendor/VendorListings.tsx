@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -82,7 +81,7 @@ const VendorListings = () => {
       if (!user?.id) throw new Error('No user');
       
       const { data, error } = await supabase
-        .from('vendor_property_listings' as any)
+        .from('vendor_property_listings')
         .select('*')
         .eq('vendor_id', user.id)
         .order('created_at', { ascending: false });
@@ -97,7 +96,7 @@ const VendorListings = () => {
     mutationFn: async (listingData: any) => {
       if (editingListing) {
         const { error } = await supabase
-          .from('vendor_property_listings' as any)
+          .from('vendor_property_listings')
           .update({
             ...listingData,
             updated_at: new Date().toISOString()
@@ -107,7 +106,7 @@ const VendorListings = () => {
         if (error) throw error;
       } else {
         const { error } = await supabase
-          .from('vendor_property_listings' as any)
+          .from('vendor_property_listings')
           .insert({
             vendor_id: user?.id,
             ...listingData
@@ -146,7 +145,7 @@ const VendorListings = () => {
   const deleteListingMutation = useMutation({
     mutationFn: async (listingId: string) => {
       const { error } = await supabase
-        .from('vendor_property_listings' as any)
+        .from('vendor_property_listings')
         .delete()
         .eq('id', listingId);
       

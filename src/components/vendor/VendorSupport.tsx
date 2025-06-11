@@ -27,6 +27,21 @@ import {
   BookOpen
 } from "lucide-react";
 
+interface SupportTicket {
+  id: string;
+  vendor_id: string;
+  subject: string;
+  category: string;
+  priority: string;
+  description: string;
+  status: string;
+  response?: string;
+  responded_by?: string;
+  responded_at?: string;
+  created_at: string;
+  updated_at: string;
+}
+
 const VendorSupport = () => {
   const { user } = useAuth();
   const { showSuccess, showError } = useAlert();
@@ -54,7 +69,7 @@ const VendorSupport = () => {
         .order('created_at', { ascending: false });
       
       if (error) throw error;
-      return data || [];
+      return (data || []) as SupportTicket[];
     },
   });
 
