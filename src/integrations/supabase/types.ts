@@ -619,6 +619,51 @@ export type Database = {
           },
         ]
       }
+      daily_analytics: {
+        Row: {
+          avg_session_duration: number | null
+          bounce_rate: number | null
+          created_at: string
+          date: string
+          id: string
+          new_users: number | null
+          returning_users: number | null
+          total_page_views: number | null
+          total_searches: number | null
+          total_visitors: number | null
+          unique_visitors: number | null
+          updated_at: string
+        }
+        Insert: {
+          avg_session_duration?: number | null
+          bounce_rate?: number | null
+          created_at?: string
+          date: string
+          id?: string
+          new_users?: number | null
+          returning_users?: number | null
+          total_page_views?: number | null
+          total_searches?: number | null
+          total_visitors?: number | null
+          unique_visitors?: number | null
+          updated_at?: string
+        }
+        Update: {
+          avg_session_duration?: number | null
+          bounce_rate?: number | null
+          created_at?: string
+          date?: string
+          id?: string
+          new_users?: number | null
+          returning_users?: number | null
+          total_page_views?: number | null
+          total_searches?: number | null
+          total_visitors?: number | null
+          unique_visitors?: number | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       daily_check_ins: {
         Row: {
           check_in_date: string
@@ -940,6 +985,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      search_analytics: {
+        Row: {
+          clicked_result_id: string | null
+          created_at: string
+          id: string
+          results_count: number | null
+          search_filters: Json | null
+          search_query: string
+          session_id: string
+          user_id: string | null
+          visitor_id: string
+        }
+        Insert: {
+          clicked_result_id?: string | null
+          created_at?: string
+          id?: string
+          results_count?: number | null
+          search_filters?: Json | null
+          search_query: string
+          session_id: string
+          user_id?: string | null
+          visitor_id: string
+        }
+        Update: {
+          clicked_result_id?: string | null
+          created_at?: string
+          id?: string
+          results_count?: number | null
+          search_filters?: Json | null
+          search_query?: string
+          session_id?: string
+          user_id?: string | null
+          visitor_id?: string
+        }
+        Relationships: []
       }
       search_filters: {
         Row: {
@@ -2787,11 +2868,66 @@ export type Database = {
           },
         ]
       }
+      web_analytics: {
+        Row: {
+          browser: string | null
+          city: string | null
+          country: string | null
+          created_at: string
+          device_type: string | null
+          id: string
+          ip_address: unknown | null
+          os: string | null
+          page_path: string
+          referrer: string | null
+          session_id: string
+          user_agent: string | null
+          user_id: string | null
+          visitor_id: string
+        }
+        Insert: {
+          browser?: string | null
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          device_type?: string | null
+          id?: string
+          ip_address?: unknown | null
+          os?: string | null
+          page_path: string
+          referrer?: string | null
+          session_id: string
+          user_agent?: string | null
+          user_id?: string | null
+          visitor_id: string
+        }
+        Update: {
+          browser?: string | null
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          device_type?: string | null
+          id?: string
+          ip_address?: unknown | null
+          os?: string | null
+          page_path?: string
+          referrer?: string | null
+          session_id?: string
+          user_agent?: string | null
+          user_id?: string | null
+          visitor_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
+      aggregate_daily_analytics: {
+        Args: { target_date?: string }
+        Returns: undefined
+      }
       can_change_business_nature: {
         Args: { vendor_id: string }
         Returns: boolean

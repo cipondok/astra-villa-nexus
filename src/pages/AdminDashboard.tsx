@@ -5,7 +5,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Settings, Users, Home, List, Plus, Gift, Calendar, Database, Shield, FileText, Store, MessageSquare, Activity } from "lucide-react";
+import { Settings, Users, Home, List, Plus, Gift, Calendar, Database, Shield, FileText, Store, MessageSquare, Activity, BarChart3 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Navigation from "@/components/Navigation";
 import AstraTokenSettings from "@/components/admin/AstraTokenSettings";
@@ -19,6 +19,7 @@ import VendorServiceCategoryManagement from "@/components/admin/VendorServiceCat
 import FeedbackManagement from "@/components/admin/FeedbackManagement";
 import SystemMonitor from "@/components/admin/SystemMonitor";
 import SystemSettings from "@/components/admin/SystemSettings";
+import WebTrafficAnalytics from "@/components/admin/WebTrafficAnalytics";
 
 const AdminDashboard = () => {
   const { user, signOut } = useAuth();
@@ -74,10 +75,14 @@ const AdminDashboard = () => {
       
       <main className="container mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-9">
+          <TabsList className="grid w-full grid-cols-10">
             <TabsTrigger value="system" className="flex items-center gap-2">
               <Activity className="h-4 w-4" />
               System
+            </TabsTrigger>
+            <TabsTrigger value="analytics" className="flex items-center gap-2">
+              <BarChart3 className="h-4 w-4" />
+              Analytics
             </TabsTrigger>
             <TabsTrigger value="users" className="flex items-center gap-2">
               <Users className="h-4 w-4" />
@@ -118,6 +123,10 @@ const AdminDashboard = () => {
               <SystemMonitor />
               <SystemSettings />
             </div>
+          </TabsContent>
+
+          <TabsContent value="analytics">
+            <WebTrafficAnalytics />
           </TabsContent>
 
           <TabsContent value="users">
