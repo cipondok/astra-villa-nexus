@@ -3,13 +3,16 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Progress } from "@/components/ui/progress";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import Shell from "@/components/Shell";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { AlertProvider } from "@/contexts/AlertContext";
+import Navigation from "@/components/Navigation";
 import VendorProfileProgress from "@/components/vendor/VendorProfileProgress";
 import VendorServicesList from "@/components/vendor/VendorServicesList";
 import VendorListings from "@/components/vendor/VendorListings";
@@ -18,16 +21,26 @@ import VendorPayouts from "@/components/vendor/VendorPayouts";
 import VendorSupport from "@/components/vendor/VendorSupport";
 import VendorSettings from "@/components/vendor/VendorSettings";
 import AstraTokenDashboard from "@/components/vendor/AstraTokenDashboard";
-import ThemeSwitcher from "@/components/ui/theme-switcher";
-import NotificationCenter from "@/components/ui/notification-center";
-import DailyCheckIn from "@/components/ui/daily-check-in";
+import { 
+  Building, 
+  Users, 
+  Calendar, 
+  Star, 
+  TrendingUp, 
+  DollarSign,
+  Settings,
+  Award,
+  Crown,
+  PlusCircle,
+  BarChart3,
+  Wrench
+} from "lucide-react";
 
 const VendorDashboard = () => {
   const navigate = useNavigate();
-  const { user, signOut } = useAuth();
-  const [activeView, setActiveView] = useState("profile");
+  const { user, signOut, profile, isAuthenticated, loading } = useAuth();
 
-  const { data: profile, isLoading } = useQuery({
+  const { data: vendorProfile, isLoading } = useQuery({
     queryKey: ['vendor-profile', user?.id],
     queryFn: async () => {
       if (!user?.id) throw new Error('No user');
@@ -45,14 +58,63 @@ const VendorDashboard = () => {
   });
 
   useEffect(() => {
-    if (!user) {
-      navigate('/sign-in');
+    if (!loading && !isAuthenticated) {
+      navigate('/?auth=true');
     }
-  }, [user, navigate]);
+    if (!loading && isAuthenticated && profile?.role !== 'vendor') {
+      navigate('/dashboard');
+    }
+  }, [isAuthenticated, loading, profile, navigate]);
 
-  if (!user) {
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <h2 className="text-lg font-semibold text-foreground">Loading...</h2>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated || profile?.role !== 'vendor') {
     return null;
   }
+
+  // Vendor membership data
+  const vendorMembership = {
+    currentLevel: {
+      name: "Silver",
+      level: 2,
+      icon: Award,
+      color: "bg-gradient-to-r from-gray-400 to-gray-600",
+      textColor: "text-gray-600"
+    },
+    nextLevel: {
+      name: "Gold",
+      level: 3,
+      icon: Crown
+    },
+    progress: {
+      current: 6,
+      required: 10,
+      percentage: 60
+    },
+    benefits: [
+      "2% Commission Rate",
+      "Basic Support",
+      "Service Analytics",
+      "2 Featured Services/month",
+      "Basic Tools Access"
+    ]
+  };
+
+  const stats = {
+    totalServices: 8,
+    activeServices: 6,
+    totalBookings: 24,
+    totalClients: 15,
+  };
 
   const handleAddService = () => {
     console.log('Add service clicked');
@@ -62,107 +124,178 @@ const VendorDashboard = () => {
     console.log('Edit service clicked', service);
   };
 
-  const renderView = () => {
-    switch (activeView) {
-      case "profile":
-        return <VendorProfileProgress />;
-      case "services":
-        return <VendorServicesList onAddService={handleAddService} onEditService={handleEditService} />;
-      case "listings":
-        return <VendorListings />;
-      case "analytics":
-        return <VendorAnalytics />;
-      case "payouts":
-        return <VendorPayouts />;
-      case "support":
-        return <VendorSupport />;
-      case "settings":
-        return <VendorSettings />;
-      case "astra":
-        return <AstraTokenDashboard />;
-      default:
-        return <VendorProfileProgress />;
-    }
-  };
+  const CurrentIcon = vendorMembership.currentLevel.icon;
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="border-b bg-card">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <h1 className="text-2xl font-bold">Vendor Dashboard</h1>
-            </div>
-            <div className="flex items-center space-x-4">
-              <NotificationCenter />
-              <ThemeSwitcher variant="compact" />
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="h-8 w-8 p-0 rounded-full">
-                    <Avatar className="h-8 w-8">
-                      <AvatarImage src={profile?.avatar_url || ""} alt={profile?.full_name || "Avatar"} />
-                      <AvatarFallback>{profile?.full_name?.charAt(0).toUpperCase() || "AV"}</AvatarFallback>
-                    </Avatar>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => signOut()}>Sign Out</DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+    <AlertProvider>
+      <div className="min-h-screen bg-background">
+        <Navigation />
+        <div className="pt-16 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-7xl mx-auto py-8">
+            <div className="space-y-6">
+              {/* Welcome Section */}
+              <div className="bg-gradient-to-r from-blue-600 to-orange-500 text-white p-6 rounded-lg">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h1 className="text-2xl font-bold">Vendor Dashboard</h1>
+                    <p className="text-blue-100 mt-2">Welcome back! Manage your services and track your business performance</p>
+                  </div>
+                  <Building className="h-8 w-8" />
+                </div>
+              </div>
+
+              {/* Vendor Membership Card */}
+              <Card className="border-l-4 border-l-gray-500">
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className={`w-12 h-12 rounded-full ${vendorMembership.currentLevel.color} flex items-center justify-center`}>
+                        <CurrentIcon className="h-6 w-6 text-white" />
+                      </div>
+                      <div>
+                        <CardTitle className="text-lg">
+                          Level {vendorMembership.currentLevel.level}: {vendorMembership.currentLevel.name} Vendor
+                        </CardTitle>
+                        <CardDescription>
+                          Progress to {vendorMembership.nextLevel.name}: {vendorMembership.progress.current}/{vendorMembership.progress.required}
+                        </CardDescription>
+                      </div>
+                    </div>
+                    <Badge className={vendorMembership.currentLevel.color} variant="secondary">
+                      {vendorMembership.currentLevel.name}
+                    </Badge>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div>
+                      <div className="flex justify-between text-sm mb-2">
+                        <span>Progress to next level</span>
+                        <span>{vendorMembership.progress.percentage}%</span>
+                      </div>
+                      <Progress value={vendorMembership.progress.percentage} className="h-2" />
+                    </div>
+                    <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
+                      {vendorMembership.benefits.map((benefit, index) => (
+                        <Badge key={index} variant="outline" className="text-xs">
+                          {benefit}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Quick Stats */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Total Services</CardTitle>
+                    <Wrench className="h-4 w-4 text-muted-foreground" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">{stats.totalServices}</div>
+                    <p className="text-xs text-muted-foreground">Services you offer</p>
+                  </CardContent>
+                </Card>
+                
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Active Services</CardTitle>
+                    <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">{stats.activeServices}</div>
+                    <p className="text-xs text-muted-foreground">Currently available</p>
+                  </CardContent>
+                </Card>
+                
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Total Bookings</CardTitle>
+                    <Calendar className="h-4 w-4 text-muted-foreground" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">{stats.totalBookings}</div>
+                    <p className="text-xs text-muted-foreground">All time bookings</p>
+                  </CardContent>
+                </Card>
+                
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Total Clients</CardTitle>
+                    <Users className="h-4 w-4 text-muted-foreground" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">{stats.totalClients}</div>
+                    <p className="text-xs text-muted-foreground">Active clients</p>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Main Content */}
+              <Tabs defaultValue="services" className="space-y-4">
+                <TabsList className="grid w-full grid-cols-6">
+                  <TabsTrigger value="services">My Services</TabsTrigger>
+                  <TabsTrigger value="listings">Listings</TabsTrigger>
+                  <TabsTrigger value="analytics">Analytics</TabsTrigger>
+                  <TabsTrigger value="payouts">Payouts</TabsTrigger>
+                  <TabsTrigger value="support">Support</TabsTrigger>
+                  <TabsTrigger value="settings">Settings</TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="services" className="space-y-4">
+                  <div className="flex justify-between items-center">
+                    <h2 className="text-xl font-semibold">My Services</h2>
+                    <Button onClick={handleAddService}>
+                      <PlusCircle className="h-4 w-4 mr-2" />
+                      Add Service
+                    </Button>
+                  </div>
+                  <VendorServicesList onAddService={handleAddService} onEditService={handleEditService} />
+                </TabsContent>
+
+                <TabsContent value="listings">
+                  <VendorListings />
+                </TabsContent>
+
+                <TabsContent value="analytics">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Business Analytics</CardTitle>
+                      <CardDescription>Track your service performance and business metrics</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-center py-12">
+                        <BarChart3 className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+                        <h3 className="text-lg font-medium mb-2">Analytics Dashboard</h3>
+                        <p className="text-muted-foreground mb-4">View detailed insights about your service performance and customer trends</p>
+                        <Button>
+                          <TrendingUp className="h-4 w-4 mr-2" />
+                          View Analytics
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+
+                <TabsContent value="payouts">
+                  <VendorPayouts />
+                </TabsContent>
+
+                <TabsContent value="support">
+                  <VendorSupport />
+                </TabsContent>
+
+                <TabsContent value="settings">
+                  <VendorSettings />
+                </TabsContent>
+              </Tabs>
             </div>
           </div>
         </div>
-      </header>
-
-      <div className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          {/* Sidebar Navigation */}
-          <aside className="md:col-span-1 space-y-4">
-            <Card className="card-ios">
-              <CardHeader>
-                <CardTitle>Navigation</CardTitle>
-                <CardDescription>Manage your vendor profile</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                <Button variant="ghost" className="w-full justify-start" onClick={() => setActiveView("profile")}>
-                  Profile Progress
-                </Button>
-                <Button variant="ghost" className="w-full justify-start" onClick={() => setActiveView("services")}>
-                  Services
-                </Button>
-                <Button variant="ghost" className="w-full justify-start" onClick={() => setActiveView("listings")}>
-                  Listings
-                </Button>
-                <Button variant="ghost" className="w-full justify-start" onClick={() => setActiveView("analytics")}>
-                  Analytics
-                </Button>
-                <Button variant="ghost" className="w-full justify-start" onClick={() => setActiveView("payouts")}>
-                  Payouts
-                </Button>
-                <Button variant="ghost" className="w-full justify-start" onClick={() => setActiveView("support")}>
-                  Support
-                </Button>
-                <Button variant="ghost" className="w-full justify-start" onClick={() => setActiveView("settings")}>
-                  Settings
-                </Button>
-                <Button variant="ghost" className="w-full justify-start" onClick={() => setActiveView("astra")}>
-                  ASTRA Tokens
-                </Button>
-              </CardContent>
-            </Card>
-
-            <DailyCheckIn />
-          </aside>
-
-          {/* Main Content */}
-          <main className="md:col-span-3">
-            {renderView()}
-          </main>
-        </div>
       </div>
-    </div>
+    </AlertProvider>
   );
 };
 
