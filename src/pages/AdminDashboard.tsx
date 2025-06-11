@@ -13,6 +13,8 @@ import SimpleUserManagement from "@/components/admin/SimpleUserManagement";
 import PropertyManagement from "@/components/admin/PropertyManagement";
 import ContentManagement from "@/components/admin/ContentManagement";
 import VendorManagement from "@/components/admin/VendorManagement";
+import AdminVendorServiceManagement from "@/components/admin/AdminVendorServiceManagement";
+import VendorServiceCategoryManagement from "@/components/admin/VendorServiceCategoryManagement";
 import FeedbackManagement from "@/components/admin/FeedbackManagement";
 import SystemMonitor from "@/components/admin/SystemMonitor";
 import SystemSettings from "@/components/admin/SystemSettings";
@@ -68,7 +70,7 @@ const AdminDashboard = () => {
       
       <main className="container mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-8">
+          <TabsList className="grid w-full grid-cols-9">
             <TabsTrigger value="users" className="flex items-center gap-2">
               <Users className="h-4 w-4" />
               Users
@@ -81,6 +83,14 @@ const AdminDashboard = () => {
               <Store className="h-4 w-4" />
               Vendors
             </TabsTrigger>
+            <TabsTrigger value="vendor-services" className="flex items-center gap-2">
+              <Settings className="h-4 w-4" />
+              Services
+            </TabsTrigger>
+            <TabsTrigger value="service-categories" className="flex items-center gap-2">
+              <List className="h-4 w-4" />
+              Categories
+            </TabsTrigger>
             <TabsTrigger value="content" className="flex items-center gap-2">
               <FileText className="h-4 w-4" />
               Content
@@ -90,12 +100,8 @@ const AdminDashboard = () => {
               Feedback
             </TabsTrigger>
             <TabsTrigger value="astra-settings" className="flex items-center gap-2">
-              <Settings className="h-4 w-4" />
+              <Gift className="h-4 w-4" />
               ASTRA
-            </TabsTrigger>
-            <TabsTrigger value="daily-rewards" className="flex items-center gap-2">
-              <Calendar className="h-4 w-4" />
-              Daily Rewards
             </TabsTrigger>
             <TabsTrigger value="system" className="flex items-center gap-2">
               <Activity className="h-4 w-4" />
@@ -115,6 +121,14 @@ const AdminDashboard = () => {
             <VendorManagement />
           </TabsContent>
 
+          <TabsContent value="vendor-services">
+            <AdminVendorServiceManagement />
+          </TabsContent>
+
+          <TabsContent value="service-categories">
+            <VendorServiceCategoryManagement />
+          </TabsContent>
+
           <TabsContent value="content">
             <ContentManagement />
           </TabsContent>
@@ -125,10 +139,6 @@ const AdminDashboard = () => {
 
           <TabsContent value="astra-settings">
             <AstraTokenSettings />
-          </TabsContent>
-
-          <TabsContent value="daily-rewards">
-            <DailyCheckInManagement />
           </TabsContent>
 
           <TabsContent value="system">
