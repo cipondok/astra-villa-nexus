@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -377,5 +378,3 @@ const VendorServiceForm = ({ service, onClose, onSuccess }: ServiceFormProps) =>
 };
 
 export default VendorServiceForm;
-
-</edits_to_apply>
