@@ -17,6 +17,7 @@ import VendorManagement from "@/components/admin/VendorManagement";
 import FeedbackManagement from "@/components/admin/FeedbackManagement";
 import SystemSettings from "@/components/admin/SystemSettings";
 import SimpleUserManagement from "@/components/admin/SimpleUserManagement";
+import ThemeToggleSwitch from "@/components/ThemeToggleSwitch";
 
 const AdminDashboard = () => {
   const [activeSection, setActiveSection] = useState('overview');
@@ -55,30 +56,38 @@ const AdminDashboard = () => {
 
   return (
     <Shell>
-      {/* Top Navigation Bar with Home Link */}
-      <div className="mb-4 flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <Link to="/">
-            <Button variant="outline" className="flex items-center gap-2">
-              <Home className="h-4 w-4" />
-              Home
-            </Button>
-          </Link>
-          <h1 className="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
+      {/* Enhanced Top Navigation Bar with Theme Support */}
+      <div className="mb-6 p-4 glass-ios rounded-2xl border border-border/30">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <Link to="/">
+              <Button variant="outline" className="btn-ios flex items-center gap-2 glass-ios">
+                <Home className="h-4 w-4" />
+                <span className="hidden sm:inline">Home</span>
+              </Button>
+            </Link>
+            <div>
+              <h1 className="text-2xl font-bold text-foreground">Admin Dashboard</h1>
+              <p className="text-sm text-muted-foreground">System Management & Control Panel</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <ThemeToggleSwitch language="en" />
+          </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="md:col-span-1">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <div className="lg:col-span-1">
           {user ? (
             <AdminNavigation activeSection={activeSection} onSectionChange={handleSectionChange} />
           ) : (
-            <Card className="h-full">
+            <Card className="card-ios">
               <CardContent className="p-6">
-                <Alert variant="destructive">
+                <Alert variant="destructive" className="glass-ios border-destructive/30">
                   <AlertCircle className="h-4 w-4" />
-                  <AlertTitle>Authentication Required</AlertTitle>
-                  <AlertDescription>
+                  <AlertTitle className="text-destructive-foreground">Authentication Required</AlertTitle>
+                  <AlertDescription className="text-destructive-foreground/80">
                     You must be logged in to access the admin dashboard.
                   </AlertDescription>
                 </Alert>
@@ -86,16 +95,18 @@ const AdminDashboard = () => {
             </Card>
           )}
         </div>
-        <div className="md:col-span-3">
+        <div className="lg:col-span-3">
           {user ? (
-            renderContent()
+            <div className="space-y-6">
+              {renderContent()}
+            </div>
           ) : (
-            <Card className="h-full">
+            <Card className="card-ios">
               <CardContent className="p-6">
-                <Alert variant="destructive">
+                <Alert variant="destructive" className="glass-ios border-destructive/30">
                   <AlertCircle className="h-4 w-4" />
-                  <AlertTitle>Authentication Required</AlertTitle>
-                  <AlertDescription>
+                  <AlertTitle className="text-destructive-foreground">Authentication Required</AlertTitle>
+                  <AlertDescription className="text-destructive-foreground/80">
                     You must be logged in to access the admin dashboard.
                   </AlertDescription>
                 </Alert>

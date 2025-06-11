@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,6 +7,7 @@ import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Palette, Layout, Type, Image, Settings } from "lucide-react";
+import ThemeToggleSwitch from "@/components/ThemeToggleSwitch";
 
 const WebsiteDesignSettings = () => {
   const [primaryColor, setPrimaryColor] = useState("#007AFF");
@@ -79,31 +79,34 @@ const WebsiteDesignSettings = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between p-4 glass-ios rounded-2xl border border-border/30">
         <div>
-          <h2 className="text-2xl font-bold">Website Design Settings</h2>
+          <h2 className="text-2xl font-bold text-foreground">Website Design Settings</h2>
           <p className="text-muted-foreground">Customize your website's appearance and theme</p>
         </div>
-        <Button onClick={handleSaveSettings} className="bg-primary hover:bg-primary/90">
-          Save Changes
-        </Button>
+        <div className="flex items-center gap-3">
+          <ThemeToggleSwitch language="en" />
+          <Button onClick={handleSaveSettings} className="btn-primary-ios">
+            Save Changes
+          </Button>
+        </div>
       </div>
 
       <Tabs defaultValue="colors" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="colors" className="flex items-center gap-2">
+        <TabsList className="glass-ios border border-border/30">
+          <TabsTrigger value="colors" className="flex items-center gap-2 text-muted-foreground data-[state=active]:text-foreground">
             <Palette className="h-4 w-4" />
             Colors
           </TabsTrigger>
-          <TabsTrigger value="typography" className="flex items-center gap-2">
+          <TabsTrigger value="typography" className="flex items-center gap-2 text-muted-foreground data-[state=active]:text-foreground">
             <Type className="h-4 w-4" />
             Typography
           </TabsTrigger>
-          <TabsTrigger value="layout" className="flex items-center gap-2">
+          <TabsTrigger value="layout" className="flex items-center gap-2 text-muted-foreground data-[state=active]:text-foreground">
             <Layout className="h-4 w-4" />
             Layout
           </TabsTrigger>
-          <TabsTrigger value="templates" className="flex items-center gap-2">
+          <TabsTrigger value="templates" className="flex items-center gap-2 text-muted-foreground data-[state=active]:text-foreground">
             <Image className="h-4 w-4" />
             Templates
           </TabsTrigger>
@@ -111,25 +114,26 @@ const WebsiteDesignSettings = () => {
 
         <TabsContent value="colors" className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card>
+            <Card className="card-ios">
               <CardHeader>
-                <CardTitle>Color Palette</CardTitle>
-                <CardDescription>Choose your brand colors</CardDescription>
+                <CardTitle className="text-foreground">Color Palette</CardTitle>
+                <CardDescription className="text-muted-foreground">Choose your brand colors</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">Primary Color</label>
+                  <label className="text-sm font-medium text-foreground">Primary Color</label>
                   <div className="flex items-center gap-2">
                     <Input
                       type="color"
                       value={primaryColor}
                       onChange={(e) => setPrimaryColor(e.target.value)}
-                      className="w-16 h-10 p-1 border rounded"
+                      className="w-16 h-10 p-1 border rounded glass-ios"
                     />
                     <Input
                       value={primaryColor}
                       onChange={(e) => setPrimaryColor(e.target.value)}
                       placeholder="#007AFF"
+                      className="glass-ios text-foreground"
                     />
                   </div>
                 </div>
@@ -170,10 +174,10 @@ const WebsiteDesignSettings = () => {
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="card-ios">
               <CardHeader>
-                <CardTitle>Color Presets</CardTitle>
-                <CardDescription>Quick color combinations</CardDescription>
+                <CardTitle className="text-foreground">Color Presets</CardTitle>
+                <CardDescription className="text-muted-foreground">Quick color combinations</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 gap-2">
@@ -181,7 +185,7 @@ const WebsiteDesignSettings = () => {
                     <Button
                       key={preset.name}
                       variant="outline"
-                      className="justify-start h-12"
+                      className="justify-start h-12 btn-secondary-ios text-foreground"
                       onClick={() => {
                         setPrimaryColor(preset.primary);
                         setSecondaryColor(preset.secondary);
