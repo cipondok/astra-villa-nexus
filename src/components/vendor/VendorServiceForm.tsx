@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -9,6 +8,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { X } from "lucide-react";
 
@@ -29,12 +30,16 @@ const VendorServiceForm = ({ service, onClose, onSuccess }: ServiceFormProps) =>
   const { user } = useAuth();
   const { toast } = useToast();
   const [categories, setCategories] = useState<ServiceCategory[]>([]);
+  const [allowedDurationUnits, setAllowedDurationUnits] = useState<string[]>(['hours']);
   const [formData, setFormData] = useState({
     service_name: '',
     service_description: '',
     category_id: '',
-    duration_minutes: 60,
+    duration_value: 1,
+    duration_unit: 'hours',
     location_type: 'on_site',
+    service_location_types: ['on_site'],
+    delivery_options: {},
     requirements: '',
     cancellation_policy: '',
     is_active: true,
@@ -45,13 +50,17 @@ const VendorServiceForm = ({ service, onClose, onSuccess }: ServiceFormProps) =>
 
   useEffect(() => {
     fetchCategories();
+    fetchAllowedDurationUnits();
     if (service) {
       setFormData({
         service_name: service.service_name || '',
         service_description: service.service_description || '',
         category_id: service.category_id || '',
-        duration_minutes: service.duration_minutes || 60,
+        duration_value: service.duration_value || 1,
+        duration_unit: service.duration_unit || 'hours',
         location_type: service.location_type || 'on_site',
+        service_location_types: service.service_location_types || ['on_site'],
+        delivery_options: service.delivery_options || {},
         requirements: service.requirements || '',
         cancellation_policy: service.cancellation_policy || '',
         is_active: service.is_active ?? true,
@@ -62,19 +71,13 @@ const VendorServiceForm = ({ service, onClose, onSuccess }: ServiceFormProps) =>
 
   const fetchCategories = async () => {
     try {
-      console.log('Fetching vendor service categories...');
       const { data, error } = await supabase
         .from('vendor_service_categories')
         .select('*')
         .eq('is_active', true)
         .order('display_order');
 
-      if (error) {
-        console.error('Error fetching categories:', error);
-        throw error;
-      }
-      
-      console.log('Fetched categories:', data);
+      if (error) throw error;
       setCategories(data || []);
     } catch (error: any) {
       console.error('Error fetching categories:', error);
@@ -88,30 +91,35 @@ const VendorServiceForm = ({ service, onClose, onSuccess }: ServiceFormProps) =>
     }
   };
 
+  const fetchAllowedDurationUnits = async () => {
+    if (!user) return;
+    
+    try {
+      const { data: profile } = await supabase
+        .from('vendor_business_profiles')
+        .select(`
+          business_nature_id,
+          vendor_business_nature_categories!inner(allowed_duration_units)
+        `)
+        .eq('vendor_id', user.id)
+        .maybeSingle();
+
+      if (profile?.vendor_business_nature_categories) {
+        setAllowedDurationUnits(profile.vendor_business_nature_categories.allowed_duration_units || ['hours']);
+      }
+    } catch (error: any) {
+      console.error('Error fetching duration units:', error);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user) {
-      toast({
-        title: "Error",
-        description: "You must be logged in to create services",
-        variant: "destructive"
-      });
-      return;
-    }
+    if (!user) return;
 
     if (!formData.service_name.trim()) {
       toast({
         title: "Error",
         description: "Service name is required",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    if (!formData.category_id) {
-      toast({
-        title: "Error",
-        description: "Please select a category",
         variant: "destructive"
       });
       return;
@@ -126,31 +134,24 @@ const VendorServiceForm = ({ service, onClose, onSuccess }: ServiceFormProps) =>
 
       let result;
       if (service) {
-        console.log('Updating service:', service.id, serviceData);
         result = await supabase
           .from('vendor_services')
           .update(serviceData)
           .eq('id', service.id);
       } else {
-        console.log('Creating new service:', serviceData);
         result = await supabase
           .from('vendor_services')
           .insert([serviceData]);
       }
 
-      if (result.error) {
-        console.error('Error saving service:', result.error);
-        throw result.error;
-      }
+      if (result.error) throw result.error;
 
       toast({
         title: "Success",
         description: `Service ${service ? 'updated' : 'created'} successfully`
       });
       
-      if (onSuccess) {
-        onSuccess();
-      }
+      if (onSuccess) onSuccess();
       onClose();
     } catch (error: any) {
       console.error('Error saving service:', error);
@@ -164,12 +165,28 @@ const VendorServiceForm = ({ service, onClose, onSuccess }: ServiceFormProps) =>
     }
   };
 
-  const locationTypes = [
-    { value: 'on_site', label: 'On-site (at customer location)' },
-    { value: 'remote', label: 'Remote/Virtual' },
-    { value: 'business_location', label: 'At business location' },
-    { value: 'flexible', label: 'Flexible location' }
+  const locationTypeOptions = [
+    { id: 'on_site', label: 'On-site (at customer location)', icon: '🏠' },
+    { id: 'remote', label: 'Remote/Virtual', icon: '💻' },
+    { id: 'business_location', label: 'At business location', icon: '🏢' },
+    { id: 'home_delivery', label: 'Home delivery', icon: '🚚' },
+    { id: 'pickup_delivery', label: 'Pickup & delivery', icon: '📦' },
+    { id: 'third_party_delivery', label: '3rd party delivery', icon: '🚛' }
   ];
+
+  const handleLocationTypeChange = (locationId: string, checked: boolean) => {
+    let updatedTypes = [...formData.service_location_types];
+    
+    if (checked) {
+      if (!updatedTypes.includes(locationId)) {
+        updatedTypes.push(locationId);
+      }
+    } else {
+      updatedTypes = updatedTypes.filter(type => type !== locationId);
+    }
+    
+    setFormData({ ...formData, service_location_types: updatedTypes });
+  };
 
   if (loading) {
     return (
@@ -236,15 +253,40 @@ const VendorServiceForm = ({ service, onClose, onSuccess }: ServiceFormProps) =>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="duration_minutes">Duration (minutes)</Label>
-              <Input
-                id="duration_minutes"
-                type="number"
-                value={formData.duration_minutes}
-                onChange={(e) => setFormData({ ...formData, duration_minutes: parseInt(e.target.value) || 0 })}
-                placeholder="Enter duration"
-                min="1"
-              />
+              <Label htmlFor="duration_value">Service Duration</Label>
+              <div className="flex gap-2">
+                <Input
+                  id="duration_value"
+                  type="number"
+                  value={formData.duration_value}
+                  onChange={(e) => setFormData({ ...formData, duration_value: parseInt(e.target.value) || 1 })}
+                  placeholder="Duration"
+                  min="1"
+                  className="flex-1"
+                />
+                <Select
+                  value={formData.duration_unit}
+                  onValueChange={(value) => setFormData({ ...formData, duration_unit: value })}
+                >
+                  <SelectTrigger className="w-32">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {allowedDurationUnits.map((unit) => (
+                      <SelectItem key={unit} value={unit}>
+                        {unit.charAt(0).toUpperCase() + unit.slice(1)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="flex gap-1 mt-1">
+                {allowedDurationUnits.map((unit) => (
+                  <Badge key={unit} variant="secondary" className="text-xs">
+                    {unit}
+                  </Badge>
+                ))}
+              </div>
             </div>
 
             <div className="space-y-2">
@@ -257,9 +299,9 @@ const VendorServiceForm = ({ service, onClose, onSuccess }: ServiceFormProps) =>
                   <SelectValue placeholder="Select location type" />
                 </SelectTrigger>
                 <SelectContent>
-                  {locationTypes.map((type) => (
-                    <SelectItem key={type.value} value={type.value}>
-                      {type.label}
+                  {locationTypeOptions.map((type) => (
+                    <SelectItem key={type.id} value={type.id}>
+                      {type.icon} {type.label}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -335,3 +377,5 @@ const VendorServiceForm = ({ service, onClose, onSuccess }: ServiceFormProps) =>
 };
 
 export default VendorServiceForm;
+
+</edits_to_apply>

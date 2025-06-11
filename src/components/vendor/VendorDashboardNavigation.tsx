@@ -1,17 +1,21 @@
 
-import { useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import React from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { 
-  Building2,
-  Wrench, 
+  Building2, 
   Users, 
-  DollarSign, 
+  Calendar, 
+  Star, 
   TrendingUp, 
-  MessageSquare, 
-  Shield, 
-  Headphones,
-  BarChart3
+  DollarSign,
+  Settings,
+  Plus,
+  FileText,
+  Clock,
+  MessageSquare,
+  Shield,
+  HeadphonesIcon
 } from "lucide-react";
 
 interface VendorDashboardNavigationProps {
@@ -20,91 +24,105 @@ interface VendorDashboardNavigationProps {
 }
 
 const VendorDashboardNavigation = ({ activeSection, onSectionChange }: VendorDashboardNavigationProps) => {
-  const navigationItems = [
+  const navigationSections = [
     {
       id: 'business-profile',
       label: 'Business Profile',
       icon: Building2,
-      description: 'Manage your business information'
+      description: 'Manage business information and nature'
     },
     {
       id: 'services',
-      label: 'Services & Items',
-      icon: Wrench,
-      description: 'Manage your service offerings'
+      label: 'Services',
+      icon: Settings,
+      description: 'Create and manage your services'
     },
     {
       id: 'customers',
-      label: 'Customer Management',
+      label: 'Customers',
       icon: Users,
-      description: 'Manage customer relationships'
+      description: 'Customer management and relationships'
     },
     {
       id: 'billing',
-      label: 'Billing & Invoices',
+      label: 'Billing',
       icon: DollarSign,
-      description: 'Manage invoices and payments'
+      description: 'Invoices and payments'
     },
     {
       id: 'progress',
-      label: 'Progress Tracking',
+      label: 'Project Progress',
       icon: TrendingUp,
-      description: 'Track project progress'
+      description: 'Track project milestones'
+    },
+    {
+      id: 'holidays',
+      label: 'Holiday Management',
+      icon: Calendar,
+      description: 'Set service holidays and off days'
+    },
+    {
+      id: 'change-requests',
+      label: 'Change Requests',
+      icon: FileText,
+      description: 'Request profile or service changes'
     },
     {
       id: 'feedback',
-      label: 'Feedback & Reviews',
-      icon: MessageSquare,
-      description: 'Manage customer feedback'
+      label: 'Reviews & Feedback',
+      icon: Star,
+      description: 'Customer reviews and ratings'
     },
     {
       id: 'compliance',
       label: 'Compliance',
       icon: Shield,
-      description: 'Manage licenses & certifications'
+      description: 'Licenses and certifications'
     },
     {
       id: 'customer-service',
       label: 'Customer Service',
-      icon: Headphones,
-      description: 'Handle support tickets'
+      icon: HeadphonesIcon,
+      description: 'Support tickets and communications'
     },
     {
       id: 'analytics',
       label: 'Analytics',
-      icon: BarChart3,
-      description: 'Business insights & reports'
+      icon: TrendingUp,
+      description: 'Business performance insights'
     }
   ];
 
   return (
-    <Card className="mb-6">
-      <CardContent className="p-6">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-          {navigationItems.map((item) => {
-            const Icon = item.icon;
-            const isActive = activeSection === item.id;
-            
-            return (
-              <Button
-                key={item.id}
-                variant={isActive ? "default" : "outline"}
-                className={`h-auto p-4 flex flex-col items-center gap-2 ${
-                  isActive ? "bg-primary text-primary-foreground" : "hover:bg-muted"
-                }`}
-                onClick={() => onSectionChange(item.id)}
-              >
-                <Icon className="h-6 w-6" />
-                <div className="text-center">
-                  <div className="font-medium text-sm">{item.label}</div>
-                  <div className="text-xs opacity-70 mt-1">{item.description}</div>
-                </div>
-              </Button>
-            );
-          })}
-        </div>
-      </CardContent>
-    </Card>
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+      {navigationSections.map((section) => {
+        const Icon = section.icon;
+        const isActive = activeSection === section.id;
+        
+        return (
+          <Card 
+            key={section.id}
+            className={`cursor-pointer transition-all hover:shadow-md ${
+              isActive 
+                ? 'ring-2 ring-blue-500 bg-blue-50' 
+                : 'hover:bg-gray-50'
+            }`}
+            onClick={() => onSectionChange(section.id)}
+          >
+            <CardHeader className="pb-2">
+              <CardTitle className="flex items-center gap-2 text-sm">
+                <Icon className={`h-4 w-4 ${isActive ? 'text-blue-600' : 'text-gray-600'}`} />
+                {section.label}
+                {isActive && <Badge variant="default" className="text-xs">Active</Badge>}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="pt-0">
+              <p className="text-xs text-muted-foreground">{section.description}</p>
+            </CardContent>
+          </Card>
+        );
+      })}
+    </div>
   );
 };
 

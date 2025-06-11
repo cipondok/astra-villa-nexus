@@ -1118,17 +1118,56 @@ export type Database = {
           },
         ]
       }
+      vendor_business_nature_categories: {
+        Row: {
+          allowed_duration_units: string[] | null
+          change_restriction_days: number | null
+          created_at: string | null
+          description: string | null
+          display_order: number | null
+          id: string
+          is_active: boolean | null
+          name: string
+          updated_at: string | null
+        }
+        Insert: {
+          allowed_duration_units?: string[] | null
+          change_restriction_days?: number | null
+          created_at?: string | null
+          description?: string | null
+          display_order?: number | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          updated_at?: string | null
+        }
+        Update: {
+          allowed_duration_units?: string[] | null
+          change_restriction_days?: number | null
+          created_at?: string | null
+          description?: string | null
+          display_order?: number | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       vendor_business_profiles: {
         Row: {
           banner_url: string | null
           business_address: string | null
           business_description: string | null
           business_email: string | null
+          business_finalized_at: string | null
           business_hours: Json | null
           business_name: string
+          business_nature_id: string | null
           business_phone: string | null
           business_type: string
           business_website: string | null
+          can_change_nature: boolean | null
           certifications: Json | null
           created_at: string | null
           gallery_images: Json | null
@@ -1136,6 +1175,7 @@ export type Database = {
           insurance_info: Json | null
           is_active: boolean | null
           is_verified: boolean | null
+          last_nature_change_at: string | null
           license_number: string | null
           logo_url: string | null
           rating: number | null
@@ -1151,11 +1191,14 @@ export type Database = {
           business_address?: string | null
           business_description?: string | null
           business_email?: string | null
+          business_finalized_at?: string | null
           business_hours?: Json | null
           business_name: string
+          business_nature_id?: string | null
           business_phone?: string | null
           business_type: string
           business_website?: string | null
+          can_change_nature?: boolean | null
           certifications?: Json | null
           created_at?: string | null
           gallery_images?: Json | null
@@ -1163,6 +1206,7 @@ export type Database = {
           insurance_info?: Json | null
           is_active?: boolean | null
           is_verified?: boolean | null
+          last_nature_change_at?: string | null
           license_number?: string | null
           logo_url?: string | null
           rating?: number | null
@@ -1178,11 +1222,14 @@ export type Database = {
           business_address?: string | null
           business_description?: string | null
           business_email?: string | null
+          business_finalized_at?: string | null
           business_hours?: Json | null
           business_name?: string
+          business_nature_id?: string | null
           business_phone?: string | null
           business_type?: string
           business_website?: string | null
+          can_change_nature?: boolean | null
           certifications?: Json | null
           created_at?: string | null
           gallery_images?: Json | null
@@ -1190,6 +1237,7 @@ export type Database = {
           insurance_info?: Json | null
           is_active?: boolean | null
           is_verified?: boolean | null
+          last_nature_change_at?: string | null
           license_number?: string | null
           logo_url?: string | null
           rating?: number | null
@@ -1202,9 +1250,76 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "vendor_business_profiles_business_nature_id_fkey"
+            columns: ["business_nature_id"]
+            isOneToOne: false
+            referencedRelation: "vendor_business_nature_categories"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "vendor_business_profiles_vendor_id_fkey"
             columns: ["vendor_id"]
             isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vendor_change_requests: {
+        Row: {
+          admin_notes: string | null
+          created_at: string | null
+          current_data: Json | null
+          id: string
+          reason: string
+          request_type: string
+          requested_data: Json | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string | null
+          updated_at: string | null
+          vendor_id: string | null
+        }
+        Insert: {
+          admin_notes?: string | null
+          created_at?: string | null
+          current_data?: Json | null
+          id?: string
+          reason: string
+          request_type: string
+          requested_data?: Json | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string | null
+          updated_at?: string | null
+          vendor_id?: string | null
+        }
+        Update: {
+          admin_notes?: string | null
+          created_at?: string | null
+          current_data?: Json | null
+          id?: string
+          reason?: string
+          request_type?: string
+          requested_data?: Json | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string | null
+          updated_at?: string | null
+          vendor_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendor_change_requests_reviewed_by_fkey"
+            columns: ["reviewed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vendor_change_requests_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -1399,6 +1514,59 @@ export type Database = {
           },
           {
             foreignKeyName: "vendor_feedback_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vendor_holidays: {
+        Row: {
+          affected_service_ids: string[] | null
+          affects_all_services: boolean | null
+          created_at: string | null
+          end_date: string
+          holiday_name: string
+          id: string
+          is_active: boolean | null
+          is_recurring: boolean | null
+          recurrence_pattern: string | null
+          start_date: string
+          updated_at: string | null
+          vendor_id: string | null
+        }
+        Insert: {
+          affected_service_ids?: string[] | null
+          affects_all_services?: boolean | null
+          created_at?: string | null
+          end_date: string
+          holiday_name: string
+          id?: string
+          is_active?: boolean | null
+          is_recurring?: boolean | null
+          recurrence_pattern?: string | null
+          start_date: string
+          updated_at?: string | null
+          vendor_id?: string | null
+        }
+        Update: {
+          affected_service_ids?: string[] | null
+          affects_all_services?: boolean | null
+          created_at?: string | null
+          end_date?: string
+          holiday_name?: string
+          id?: string
+          is_active?: boolean | null
+          is_recurring?: boolean | null
+          recurrence_pattern?: string | null
+          start_date?: string
+          updated_at?: string | null
+          vendor_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendor_holidays_vendor_id_fkey"
             columns: ["vendor_id"]
             isOneToOne: false
             referencedRelation: "profiles"
@@ -1796,8 +1964,12 @@ export type Database = {
           cancellation_policy: string | null
           category_id: string | null
           created_at: string | null
+          delivery_options: Json | null
           duration_minutes: number | null
+          duration_unit: string | null
+          duration_value: number | null
           featured: boolean | null
+          holiday_schedule_id: string | null
           id: string
           is_active: boolean | null
           location_type: string | null
@@ -1808,6 +1980,7 @@ export type Database = {
           service_category: string | null
           service_description: string | null
           service_images: Json | null
+          service_location_types: string[] | null
           service_name: string
           subcategory_id: string | null
           total_bookings: number | null
@@ -1820,8 +1993,12 @@ export type Database = {
           cancellation_policy?: string | null
           category_id?: string | null
           created_at?: string | null
+          delivery_options?: Json | null
           duration_minutes?: number | null
+          duration_unit?: string | null
+          duration_value?: number | null
           featured?: boolean | null
+          holiday_schedule_id?: string | null
           id?: string
           is_active?: boolean | null
           location_type?: string | null
@@ -1832,6 +2009,7 @@ export type Database = {
           service_category?: string | null
           service_description?: string | null
           service_images?: Json | null
+          service_location_types?: string[] | null
           service_name: string
           subcategory_id?: string | null
           total_bookings?: number | null
@@ -1844,8 +2022,12 @@ export type Database = {
           cancellation_policy?: string | null
           category_id?: string | null
           created_at?: string | null
+          delivery_options?: Json | null
           duration_minutes?: number | null
+          duration_unit?: string | null
+          duration_value?: number | null
           featured?: boolean | null
+          holiday_schedule_id?: string | null
           id?: string
           is_active?: boolean | null
           location_type?: string | null
@@ -1856,6 +2038,7 @@ export type Database = {
           service_category?: string | null
           service_description?: string | null
           service_images?: Json | null
+          service_location_types?: string[] | null
           service_name?: string
           subcategory_id?: string | null
           total_bookings?: number | null
@@ -1875,6 +2058,13 @@ export type Database = {
             columns: ["category_id"]
             isOneToOne: false
             referencedRelation: "vendor_service_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vendor_services_holiday_schedule_id_fkey"
+            columns: ["holiday_schedule_id"]
+            isOneToOne: false
+            referencedRelation: "vendor_holidays"
             referencedColumns: ["id"]
           },
           {
@@ -1949,6 +2139,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      can_change_business_nature: {
+        Args: { vendor_id: string }
+        Returns: boolean
+      }
       check_admin_access: {
         Args: Record<PropertyKey, never>
         Returns: boolean

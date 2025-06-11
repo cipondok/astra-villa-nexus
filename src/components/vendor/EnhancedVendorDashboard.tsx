@@ -11,6 +11,8 @@ import VendorProgressTracking from "./VendorProgressTracking";
 import VendorReviews from "./VendorReviews";
 import VendorBookings from "./VendorBookings";
 import VendorAnalytics from "./VendorAnalytics";
+import VendorHolidayManagement from "./VendorHolidayManagement";
+import VendorChangeRequests from "./VendorChangeRequests";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 const EnhancedVendorDashboard = () => {
@@ -48,6 +50,12 @@ const EnhancedVendorDashboard = () => {
       
       case 'feedback':
         return <VendorReviews />;
+      
+      case 'holidays':
+        return <VendorHolidayManagement />;
+      
+      case 'change-requests':
+        return <VendorChangeRequests />;
       
       case 'compliance':
         return (
@@ -108,7 +116,7 @@ const EnhancedVendorDashboard = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">
-            Vendor Dashboard
+            Enhanced Vendor Dashboard
           </h1>
           <p className="text-gray-600 mt-2">
             Welcome back, {profile?.full_name || user?.email}! Manage your business operations from here.

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -8,10 +7,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
-import { Building2, MapPin, Phone, Mail, Globe, Camera, Award } from "lucide-react";
+import { Building2 } from "lucide-react";
+import BusinessNatureSelector from "./BusinessNatureSelector";
 
 interface BusinessProfile {
   id?: string;
@@ -24,14 +23,9 @@ interface BusinessProfile {
   business_website: string;
   license_number: string;
   tax_id: string;
-  business_hours: any;
-  service_areas: string[];
-  certifications: any[];
-  insurance_info: any;
-  logo_url: string;
-  banner_url: string;
-  gallery_images: string[];
-  social_media: any;
+  business_nature_id: string;
+  business_finalized_at: string | null;
+  can_change_nature: boolean;
   is_active: boolean;
 }
 
@@ -48,22 +42,19 @@ const VendorBusinessProfile = () => {
     business_website: '',
     license_number: '',
     tax_id: '',
-    business_hours: {},
-    service_areas: [],
-    certifications: [],
-    insurance_info: {},
-    logo_url: '',
-    banner_url: '',
-    gallery_images: [],
-    social_media: {},
+    business_nature_id: '',
+    business_finalized_at: null,
+    can_change_nature: true,
     is_active: true
   });
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [canChangeNature, setCanChangeNature] = useState(true);
 
   useEffect(() => {
     if (user) {
       fetchBusinessProfile();
+      checkCanChangeNature();
     }
   }, [user]);
 
@@ -83,8 +74,7 @@ const VendorBusinessProfile = () => {
       }
 
       if (data) {
-        // Safely handle JSON fields with proper type conversion
-        const typedProfile: BusinessProfile = {
+        setProfile({
           id: data.id,
           business_name: data.business_name || '',
           business_type: data.business_type || '',
@@ -95,22 +85,11 @@ const VendorBusinessProfile = () => {
           business_website: data.business_website || '',
           license_number: data.license_number || '',
           tax_id: data.tax_id || '',
-          business_hours: data.business_hours || {},
-          service_areas: Array.isArray(data.service_areas) 
-            ? (data.service_areas as string[])
-            : [],
-          certifications: Array.isArray(data.certifications) ? data.certifications : [],
-          insurance_info: data.insurance_info || {},
-          logo_url: data.logo_url || '',
-          banner_url: data.banner_url || '',
-          gallery_images: Array.isArray(data.gallery_images) 
-            ? (data.gallery_images as string[])
-            : [],
-          social_media: data.social_media || {},
+          business_nature_id: data.business_nature_id || '',
+          business_finalized_at: data.business_finalized_at,
+          can_change_nature: data.can_change_nature ?? true,
           is_active: data.is_active ?? true
-        };
-        
-        setProfile(typedProfile);
+        });
       }
     } catch (error: any) {
       console.error('Error fetching business profile:', error);
@@ -121,6 +100,20 @@ const VendorBusinessProfile = () => {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const checkCanChangeNature = async () => {
+    if (!user) return;
+    
+    try {
+      const { data, error } = await supabase
+        .rpc('can_change_business_nature', { vendor_id: user.id });
+
+      if (error) throw error;
+      setCanChangeNature(data);
+    } catch (error: any) {
+      console.error('Error checking change permissions:', error);
     }
   };
 
@@ -156,6 +149,45 @@ const VendorBusinessProfile = () => {
     }
   };
 
+  const handleNatureSelect = (natureId: string) => {
+    setProfile({ ...profile, business_nature_id: natureId });
+  };
+
+  const handleFinalize = async () => {
+    if (!user) return;
+
+    try {
+      const { error } = await supabase
+        .from('vendor_business_profiles')
+        .update({ 
+          business_finalized_at: new Date().toISOString(),
+          business_nature_id: profile.business_nature_id
+        })
+        .eq('vendor_id', user.id);
+
+      if (error) throw error;
+
+      setProfile({ 
+        ...profile, 
+        business_finalized_at: new Date().toISOString() 
+      });
+      
+      toast({
+        title: "Success",
+        description: "Business setup finalized successfully"
+      });
+      
+      await fetchBusinessProfile();
+    } catch (error: any) {
+      console.error('Error finalizing business:', error);
+      toast({
+        title: "Error",
+        description: "Failed to finalize business setup",
+        variant: "destructive"
+      });
+    }
+  };
+
   const businessTypes = [
     'Individual Contractor',
     'Small Business',
@@ -175,6 +207,14 @@ const VendorBusinessProfile = () => {
 
   return (
     <div className="space-y-6">
+      <BusinessNatureSelector
+        currentNatureId={profile.business_nature_id}
+        canChange={canChangeNature && profile.can_change_nature}
+        onNatureSelect={handleNatureSelect}
+        onFinalize={handleFinalize}
+        isFinalized={!!profile.business_finalized_at}
+      />
+
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
