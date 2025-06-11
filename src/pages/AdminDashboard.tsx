@@ -17,6 +17,9 @@ import VendorManagement from "@/components/admin/VendorManagement";
 import FeedbackManagement from "@/components/admin/FeedbackManagement";
 import SystemSettings from "@/components/admin/SystemSettings";
 import SimpleUserManagement from "@/components/admin/SimpleUserManagement";
+import AdminVendorServiceManagement from "@/components/admin/AdminVendorServiceManagement";
+import AdminKYCManagement from "@/components/admin/AdminKYCManagement";
+import AdminMembershipManagement from "@/components/admin/AdminMembershipManagement";
 import ThemeToggleSwitch from "@/components/ThemeToggleSwitch";
 
 const AdminDashboard = () => {
@@ -43,6 +46,12 @@ const AdminDashboard = () => {
         return <EnhancedContentManagement />;
       case 'vendors':
         return <VendorManagement />;
+      case 'vendor-services':
+        return <AdminVendorServiceManagement />;
+      case 'kyc-management':
+        return <AdminKYCManagement />;
+      case 'membership-levels':
+        return <AdminMembershipManagement />;
       case 'feedback':
         return <FeedbackManagement />;
       case 'system-monitor':

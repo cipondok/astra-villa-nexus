@@ -78,6 +78,51 @@ export type Database = {
           },
         ]
       }
+      admin_vendor_service_controls: {
+        Row: {
+          admin_action: string
+          admin_id: string | null
+          admin_notes: string | null
+          created_at: string | null
+          id: string
+          service_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          admin_action: string
+          admin_id?: string | null
+          admin_notes?: string | null
+          created_at?: string | null
+          id?: string
+          service_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          admin_action?: string
+          admin_id?: string | null
+          admin_notes?: string | null
+          created_at?: string | null
+          id?: string
+          service_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "admin_vendor_service_controls_admin_id_fkey"
+            columns: ["admin_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "admin_vendor_service_controls_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "vendor_services"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       agent_registration_requests: {
         Row: {
           business_type: string
@@ -1578,6 +1623,7 @@ export type Database = {
         Row: {
           booking_id: string | null
           created_at: string | null
+          currency: string | null
           customer_id: string | null
           due_date: string | null
           id: string
@@ -1595,6 +1641,7 @@ export type Database = {
         Insert: {
           booking_id?: string | null
           created_at?: string | null
+          currency?: string | null
           customer_id?: string | null
           due_date?: string | null
           id?: string
@@ -1612,6 +1659,7 @@ export type Database = {
         Update: {
           booking_id?: string | null
           created_at?: string | null
+          currency?: string | null
           customer_id?: string | null
           due_date?: string | null
           id?: string
@@ -1650,6 +1698,81 @@ export type Database = {
           },
         ]
       }
+      vendor_kyc_verification: {
+        Row: {
+          created_at: string | null
+          email_verified_at: string | null
+          face_verification_url: string | null
+          face_verified_at: string | null
+          id: string
+          ktp_image_url: string | null
+          ktp_number: string | null
+          ktp_verified_at: string | null
+          mobile_number: string | null
+          mobile_verified_at: string | null
+          notes: string | null
+          overall_status: string | null
+          updated_at: string | null
+          vendor_id: string | null
+          verified_by: string | null
+          whatsapp_number: string | null
+          whatsapp_verified_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email_verified_at?: string | null
+          face_verification_url?: string | null
+          face_verified_at?: string | null
+          id?: string
+          ktp_image_url?: string | null
+          ktp_number?: string | null
+          ktp_verified_at?: string | null
+          mobile_number?: string | null
+          mobile_verified_at?: string | null
+          notes?: string | null
+          overall_status?: string | null
+          updated_at?: string | null
+          vendor_id?: string | null
+          verified_by?: string | null
+          whatsapp_number?: string | null
+          whatsapp_verified_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email_verified_at?: string | null
+          face_verification_url?: string | null
+          face_verified_at?: string | null
+          id?: string
+          ktp_image_url?: string | null
+          ktp_number?: string | null
+          ktp_verified_at?: string | null
+          mobile_number?: string | null
+          mobile_verified_at?: string | null
+          notes?: string | null
+          overall_status?: string | null
+          updated_at?: string | null
+          vendor_id?: string | null
+          verified_by?: string | null
+          whatsapp_number?: string | null
+          whatsapp_verified_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendor_kyc_verification_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vendor_kyc_verification_verified_by_fkey"
+            columns: ["verified_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       vendor_main_categories: {
         Row: {
           created_at: string | null
@@ -1682,6 +1805,109 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      vendor_membership_levels: {
+        Row: {
+          benefits: Json | null
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          level_name: string
+          level_number: number
+          min_completed_bookings: number | null
+          min_rating: number | null
+          requirements: Json | null
+          tasks_required: number | null
+          time_requirement_days: number | null
+        }
+        Insert: {
+          benefits?: Json | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          level_name: string
+          level_number: number
+          min_completed_bookings?: number | null
+          min_rating?: number | null
+          requirements?: Json | null
+          tasks_required?: number | null
+          time_requirement_days?: number | null
+        }
+        Update: {
+          benefits?: Json | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          level_name?: string
+          level_number?: number
+          min_completed_bookings?: number | null
+          min_rating?: number | null
+          requirements?: Json | null
+          tasks_required?: number | null
+          time_requirement_days?: number | null
+        }
+        Relationships: []
+      }
+      vendor_membership_progress: {
+        Row: {
+          completed_tasks: number | null
+          created_at: string | null
+          current_level_id: string | null
+          id: string
+          level_achieved_at: string | null
+          level_started_at: string | null
+          next_level_id: string | null
+          progress_percentage: number | null
+          updated_at: string | null
+          vendor_id: string | null
+        }
+        Insert: {
+          completed_tasks?: number | null
+          created_at?: string | null
+          current_level_id?: string | null
+          id?: string
+          level_achieved_at?: string | null
+          level_started_at?: string | null
+          next_level_id?: string | null
+          progress_percentage?: number | null
+          updated_at?: string | null
+          vendor_id?: string | null
+        }
+        Update: {
+          completed_tasks?: number | null
+          created_at?: string | null
+          current_level_id?: string | null
+          id?: string
+          level_achieved_at?: string | null
+          level_started_at?: string | null
+          next_level_id?: string | null
+          progress_percentage?: number | null
+          updated_at?: string | null
+          vendor_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendor_membership_progress_current_level_id_fkey"
+            columns: ["current_level_id"]
+            isOneToOne: false
+            referencedRelation: "vendor_membership_levels"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vendor_membership_progress_next_level_id_fkey"
+            columns: ["next_level_id"]
+            isOneToOne: false
+            referencedRelation: "vendor_membership_levels"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vendor_membership_progress_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       vendor_project_progress: {
         Row: {
@@ -1910,6 +2136,7 @@ export type Database = {
       vendor_service_items: {
         Row: {
           created_at: string | null
+          currency: string | null
           display_order: number | null
           duration_minutes: number | null
           id: string
@@ -1923,6 +2150,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string | null
+          currency?: string | null
           display_order?: number | null
           duration_minutes?: number | null
           id?: string
@@ -1936,6 +2164,7 @@ export type Database = {
         }
         Update: {
           created_at?: string | null
+          currency?: string | null
           display_order?: number | null
           duration_minutes?: number | null
           id?: string
@@ -1964,6 +2193,7 @@ export type Database = {
           cancellation_policy: string | null
           category_id: string | null
           created_at: string | null
+          currency: string | null
           delivery_options: Json | null
           duration_minutes: number | null
           duration_unit: string | null
@@ -1993,6 +2223,7 @@ export type Database = {
           cancellation_policy?: string | null
           category_id?: string | null
           created_at?: string | null
+          currency?: string | null
           delivery_options?: Json | null
           duration_minutes?: number | null
           duration_unit?: string | null
@@ -2022,6 +2253,7 @@ export type Database = {
           cancellation_policy?: string | null
           category_id?: string | null
           created_at?: string | null
+          currency?: string | null
           delivery_options?: Json | null
           duration_minutes?: number | null
           duration_unit?: string | null

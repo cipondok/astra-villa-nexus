@@ -16,7 +16,9 @@ import {
   Clock,
   MessageSquare,
   Shield,
-  HeadphonesIcon
+  HeadphonesIcon,
+  CreditCard,
+  Award
 } from "lucide-react";
 
 interface VendorDashboardNavigationProps {
@@ -60,7 +62,7 @@ const VendorDashboardNavigation = ({ activeSection, onSectionChange }: VendorDas
       id: 'billing',
       label: 'Billing',
       icon: DollarSign,
-      description: 'Invoices and payments'
+      description: 'Invoices and payments (IDR)'
     },
     {
       id: 'progress',
@@ -79,6 +81,20 @@ const VendorDashboardNavigation = ({ activeSection, onSectionChange }: VendorDas
       label: 'Change Requests',
       icon: FileText,
       description: 'Request profile changes'
+    },
+    {
+      id: 'kyc-verification',
+      label: 'KYC Verification',
+      icon: CreditCard,
+      description: 'Identity verification',
+      badge: 'Required'
+    },
+    {
+      id: 'membership-progress',
+      label: 'Membership Level',
+      icon: Award,
+      description: 'Track membership progress',
+      badge: 'New'
     },
     {
       id: 'feedback',
@@ -125,7 +141,12 @@ const VendorDashboardNavigation = ({ activeSection, onSectionChange }: VendorDas
             <CardHeader className="pb-2">
               <CardTitle className="flex items-center gap-2 text-sm">
                 <Icon className={`h-4 w-4 ${isActive ? 'text-blue-600' : 'text-gray-600'}`} />
-                {section.label}
+                <span className="flex-1">{section.label}</span>
+                {section.badge && (
+                  <Badge variant="secondary" className="text-xs">
+                    {section.badge}
+                  </Badge>
+                )}
                 {isActive && <Badge variant="default" className="text-xs">Active</Badge>}
               </CardTitle>
             </CardHeader>

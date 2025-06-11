@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { BarChart3, Users, Shield, Database, Home, FileText, Store, MessageSquare, Activity, Settings, Crown, ArrowLeft } from "lucide-react";
+import { BarChart3, Users, Shield, Database, Home, FileText, Store, MessageSquare, Activity, Settings, Crown, ArrowLeft, Award, CreditCard } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
 interface AdminNavigationProps {
@@ -44,6 +44,9 @@ const AdminNavigation = ({ activeSection, onSectionChange }: AdminNavigationProp
     { id: 'properties', label: 'Property Management', icon: Home, color: 'text-ios-blue' },
     { id: 'content', label: 'Content Management', icon: FileText, color: 'text-ios-pink' },
     { id: 'vendors', label: 'Vendor Management', icon: Store, color: 'text-ios-green' },
+    { id: 'vendor-services', label: 'Vendor Services', icon: Settings, color: 'text-ios-cyan', badge: 'New' },
+    { id: 'kyc-management', label: 'KYC Verification', icon: CreditCard, color: 'text-ios-indigo', badge: 'New' },
+    { id: 'membership-levels', label: 'Membership Levels', icon: Award, color: 'text-ios-purple', badge: 'New' },
     { id: 'feedback', label: 'Feedback & Reports', icon: MessageSquare, color: 'text-ios-yellow' },
     { id: 'system-monitor', label: 'System Monitor', icon: Activity, color: 'text-ios-red' },
     { id: 'settings', label: 'System Settings', icon: Settings, color: 'text-muted-foreground' },
@@ -93,9 +96,14 @@ const AdminNavigation = ({ activeSection, onSectionChange }: AdminNavigationProp
                 `}
               >
                 <Icon className={`h-4 w-4 transition-colors ${isActive ? 'text-primary' : item.color}`} />
-                <span className="text-sm font-medium">{item.label}</span>
+                <span className="text-sm font-medium flex-1">{item.label}</span>
+                {item.badge && (
+                  <Badge variant="secondary" className="text-xs">
+                    {item.badge}
+                  </Badge>
+                )}
                 {isActive && (
-                  <Badge variant="secondary" className="ml-auto text-xs">
+                  <Badge variant="secondary" className="text-xs">
                     Active
                   </Badge>
                 )}
