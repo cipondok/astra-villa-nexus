@@ -23,7 +23,7 @@ import SystemSettings from "@/components/admin/SystemSettings";
 const AdminDashboard = () => {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState("users");
+  const [activeTab, setActiveTab] = useState("system");
 
   // Check if user is admin
   const isAdmin = user?.email === 'mycode103@gmail.com' || user?.user_metadata?.role === 'admin';
@@ -75,6 +75,10 @@ const AdminDashboard = () => {
       <main className="container mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TabsList className="grid w-full grid-cols-9">
+            <TabsTrigger value="system" className="flex items-center gap-2">
+              <Activity className="h-4 w-4" />
+              System
+            </TabsTrigger>
             <TabsTrigger value="users" className="flex items-center gap-2">
               <Users className="h-4 w-4" />
               Users
@@ -107,11 +111,14 @@ const AdminDashboard = () => {
               <Gift className="h-4 w-4" />
               ASTRA
             </TabsTrigger>
-            <TabsTrigger value="system" className="flex items-center gap-2">
-              <Activity className="h-4 w-4" />
-              System
-            </TabsTrigger>
           </TabsList>
+
+          <TabsContent value="system">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <SystemMonitor />
+              <SystemSettings />
+            </div>
+          </TabsContent>
 
           <TabsContent value="users">
             <SimpleUserManagement />
@@ -143,13 +150,6 @@ const AdminDashboard = () => {
 
           <TabsContent value="astra-settings">
             <AstraTokenSettings />
-          </TabsContent>
-
-          <TabsContent value="system">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <SystemMonitor />
-              <SystemSettings />
-            </div>
           </TabsContent>
         </Tabs>
       </main>
