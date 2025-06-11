@@ -16,7 +16,11 @@ import {
   Users,
   TrendingUp,
   Edit,
-  Trash2
+  Trash2,
+  MapPin,
+  Bed,
+  Bath,
+  Square
 } from "lucide-react";
 import PropertyListingForm from "./PropertyListingForm";
 
@@ -47,6 +51,51 @@ const PropertyOwnerOverview = () => {
     activeListings: properties?.filter(p => p.status === 'active').length || 0,
     pendingApproval: properties?.filter(p => p.approval_status === 'pending').length || 0,
     totalViews: 0, // This would come from analytics
+  };
+
+  const formatPrice = (price: number, listingType: string) => {
+    const formatted = new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(price);
+    
+    if (listingType === 'rent') {
+      return `${formatted}/month`;
+    } else if (listingType === 'lease') {
+      return `${formatted}/year`;
+    }
+    return formatted;
+  };
+
+  const getPropertyTypeColor = (type: string) => {
+    const colors = {
+      villa: 'bg-purple-100 text-purple-800',
+      apartment: 'bg-blue-100 text-blue-800',
+      house: 'bg-green-100 text-green-800',
+      commercial: 'bg-orange-100 text-orange-800',
+      land: 'bg-yellow-100 text-yellow-800',
+    };
+    return colors[type as keyof typeof colors] || 'bg-gray-100 text-gray-800';
+  };
+
+  const getStatusColor = (status: string) => {
+    const colors = {
+      active: 'bg-green-100 text-green-800',
+      draft: 'bg-gray-100 text-gray-800',
+      inactive: 'bg-red-100 text-red-800',
+    };
+    return colors[status as keyof typeof colors] || 'bg-gray-100 text-gray-800';
+  };
+
+  const getApprovalColor = (status: string) => {
+    const colors = {
+      approved: 'bg-green-100 text-green-800',
+      pending: 'bg-yellow-100 text-yellow-800',
+      rejected: 'bg-red-100 text-red-800',
+    };
+    return colors[status as keyof typeof colors] || 'bg-gray-100 text-gray-800';
   };
 
   return (
@@ -155,37 +204,80 @@ const PropertyOwnerOverview = () => {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {properties?.map((property) => (
-                <Card key={property.id}>
+                <Card key={property.id} className="overflow-hidden">
+                  {/* Property Image */}
+                  <div className="relative h-48 bg-gray-200">
+                    {property.images && property.images.length > 0 ? (
+                      <img
+                        src={property.images[0]}
+                        alt={property.title}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center bg-gray-100">
+                        <Building2 className="h-12 w-12 text-gray-400" />
+                      </div>
+                    )}
+                    <div className="absolute top-2 right-2 flex gap-1">
+                      <Badge className={getStatusColor(property.status)}>
+                        {property.status}
+                      </Badge>
+                    </div>
+                  </div>
+
                   <CardContent className="p-4">
                     <div className="space-y-3">
-                      <div className="flex justify-between items-start">
-                        <h3 className="font-semibold line-clamp-2">{property.title}</h3>
-                        <Badge variant={property.status === 'active' ? 'default' : 'secondary'}>
-                          {property.status}
-                        </Badge>
+                      <div>
+                        <h3 className="font-semibold line-clamp-2 mb-1">{property.title}</h3>
+                        <div className="flex items-center text-sm text-gray-600 mb-2">
+                          <MapPin className="h-3 w-3 mr-1" />
+                          <span className="line-clamp-1">{property.location}</span>
+                        </div>
                       </div>
                       
                       <p className="text-sm text-gray-600 line-clamp-2">{property.description}</p>
                       
-                      <div className="space-y-1 text-sm">
-                        <div className="flex justify-between">
-                          <span>Type:</span>
-                          <span>{property.property_type}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>Location:</span>
-                          <span>{property.location}</span>
-                        </div>
-                        {property.price && (
-                          <div className="flex justify-between font-semibold">
-                            <span>Price:</span>
-                            <span>${property.price.toLocaleString()}</span>
-                          </div>
-                        )}
+                      <div className="flex items-center gap-2">
+                        <Badge className={getPropertyTypeColor(property.property_type)}>
+                          {property.property_type}
+                        </Badge>
+                        <Badge variant="outline">
+                          {property.listing_type}
+                        </Badge>
                       </div>
+
+                      {/* Property Details */}
+                      {(property.bedrooms || property.bathrooms || property.area_sqm) && (
+                        <div className="flex items-center gap-4 text-sm text-gray-600">
+                          {property.bedrooms && (
+                            <div className="flex items-center gap-1">
+                              <Bed className="h-3 w-3" />
+                              <span>{property.bedrooms}</span>
+                            </div>
+                          )}
+                          {property.bathrooms && (
+                            <div className="flex items-center gap-1">
+                              <Bath className="h-3 w-3" />
+                              <span>{property.bathrooms}</span>
+                            </div>
+                          )}
+                          {property.area_sqm && (
+                            <div className="flex items-center gap-1">
+                              <Square className="h-3 w-3" />
+                              <span>{property.area_sqm}m²</span>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                      
+                      {property.price && (
+                        <div className="text-lg font-bold text-primary">
+                          {formatPrice(property.price, property.listing_type)}
+                        </div>
+                      )}
                       
                       <div className="flex justify-between items-center pt-2">
-                        <Badge variant="outline">
+                        <Badge variant="outline" className={getApprovalColor(property.approval_status)}>
                           {property.approval_status}
                         </Badge>
                         <div className="flex gap-1">
