@@ -15,10 +15,16 @@ import {
   Coins, 
   TrendingUp,
   Trophy,
-  Gift
+  Gift,
+  ArrowRight,
+  ExternalLink
 } from "lucide-react";
 
-const VendorProfileProgress = () => {
+interface VendorProfileProgressProps {
+  onNavigateToSection?: (section: string) => void;
+}
+
+const VendorProfileProgress = ({ onNavigateToSection }: VendorProfileProgressProps) => {
   const { user } = useAuth();
   const { showSuccess } = useAlert();
   const queryClient = useQueryClient();
@@ -111,32 +117,46 @@ const VendorProfileProgress = () => {
 
   const progressSteps = [
     {
+      id: "business-info",
       title: "Business Information",
       description: "Complete your business profile",
       completed: profileData?.businessProfile?.business_name && 
                  profileData?.businessProfile?.business_description,
-      icon: Circle
+      icon: Circle,
+      navigationSection: "business-profile"
     },
     {
+      id: "contact-details",
       title: "Contact Details",
       description: "Add phone and address",
       completed: profileData?.businessProfile?.business_phone && 
                  profileData?.businessProfile?.business_address,
-      icon: Circle
+      icon: Circle,
+      navigationSection: "business-profile"
     },
     {
+      id: "create-services",
       title: "Create Services",
       description: "Add at least one service",
       completed: (profileData?.servicesCount || 0) > 0,
-      icon: Circle
+      icon: Circle,
+      navigationSection: "services"
     },
     {
+      id: "kyc-verification",
       title: "KYC Verification",
       description: "Complete identity verification",
       completed: profileData?.kycData?.overall_status === 'approved',
-      icon: Circle
+      icon: Circle,
+      navigationSection: "kyc-verification"
     }
   ];
+
+  const handleStepClick = (step: any) => {
+    if (!step.completed && onNavigateToSection) {
+      onNavigateToSection(step.navigationSection);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -219,18 +239,33 @@ const VendorProfileProgress = () => {
           <div className="space-y-4">
             {progressSteps.map((step, index) => {
               const Icon = step.completed ? CheckCircle : Circle;
+              const isClickable = !step.completed && onNavigateToSection;
+              
               return (
-                <div key={index} className="flex items-center gap-4 p-4 rounded-lg border">
+                <div 
+                  key={index} 
+                  className={`flex items-center gap-4 p-4 rounded-lg border transition-all duration-200 ${
+                    isClickable 
+                      ? 'cursor-pointer hover:bg-accent/50 hover:border-primary' 
+                      : ''
+                  }`}
+                  onClick={() => handleStepClick(step)}
+                >
                   <Icon className={`h-6 w-6 ${step.completed ? 'text-green-600' : 'text-gray-400'}`} />
                   <div className="flex-1">
                     <div className="font-medium">{step.title}</div>
                     <div className="text-sm text-muted-foreground">{step.description}</div>
                   </div>
-                  {step.completed ? (
-                    <Badge className="bg-green-100 text-green-800">Complete</Badge>
-                  ) : (
-                    <Badge variant="outline">Pending</Badge>
-                  )}
+                  <div className="flex items-center gap-2">
+                    {step.completed ? (
+                      <Badge className="bg-green-100 text-green-800">Complete</Badge>
+                    ) : (
+                      <Badge variant="outline">Pending</Badge>
+                    )}
+                    {isClickable && (
+                      <ArrowRight className="h-4 w-4 text-muted-foreground" />
+                    )}
+                  </div>
                 </div>
               );
             })}

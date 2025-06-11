@@ -14,6 +14,11 @@ import VendorBookings from "./VendorBookings";
 import VendorAnalytics from "./VendorAnalytics";
 import VendorHolidayManagement from "./VendorHolidayManagement";
 import VendorChangeRequests from "./VendorChangeRequests";
+import VendorProfileProgress from "./VendorProfileProgress";
+import VendorSettings from "./VendorSettings";
+import VendorSupport from "./VendorSupport";
+import VendorListings from "./VendorListings";
+import VendorKYCVerification from "./VendorKYCVerification";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
@@ -24,6 +29,10 @@ const EnhancedVendorDashboard = () => {
   const [showServiceForm, setShowServiceForm] = useState(false);
   const [editingService, setEditingService] = useState(null);
   const [editingProfile, setEditingProfile] = useState(false);
+
+  const handleNavigateToSection = (section: string) => {
+    setActiveSection(section);
+  };
 
   const renderContent = () => {
     switch (activeSection) {
@@ -86,9 +95,19 @@ const EnhancedVendorDashboard = () => {
                   >
                     Edit Profile
                   </Button>
+                  <Button 
+                    variant="outline" 
+                    className="w-full justify-start"
+                    onClick={() => setActiveSection('property-listings')}
+                  >
+                    Manage Listings
+                  </Button>
                 </CardContent>
               </Card>
             </div>
+
+            {/* Profile Progress */}
+            <VendorProfileProgress onNavigateToSection={handleNavigateToSection} />
 
             {/* Recent Activity */}
             <Card>
@@ -209,6 +228,18 @@ const EnhancedVendorDashboard = () => {
       
       case 'change-requests':
         return <VendorChangeRequests />;
+
+      case 'property-listings':
+        return <VendorListings />;
+
+      case 'settings':
+        return <VendorSettings />;
+
+      case 'support':
+        return <VendorSupport />;
+
+      case 'kyc-verification':
+        return <VendorKYCVerification />;
       
       case 'compliance':
         return (
