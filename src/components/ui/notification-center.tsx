@@ -19,6 +19,7 @@ interface Notification {
   type: 'info' | 'success' | 'warning' | 'error';
   is_read: boolean;
   created_at: string;
+  updated_at: string;
 }
 
 const NotificationCenter = () => {
@@ -48,7 +49,7 @@ const NotificationCenter = () => {
     mutationFn: async (notificationId: string) => {
       const { error } = await supabase
         .from('user_notifications')
-        .update({ is_read: true })
+        .update({ is_read: true, updated_at: new Date().toISOString() })
         .eq('id', notificationId);
       
       if (error) throw error;
@@ -64,7 +65,7 @@ const NotificationCenter = () => {
       
       const { error } = await supabase
         .from('user_notifications')
-        .update({ is_read: true })
+        .update({ is_read: true, updated_at: new Date().toISOString() })
         .eq('user_id', user.id)
         .eq('is_read', false);
       
@@ -165,7 +166,7 @@ const NotificationCenter = () => {
                   <Card 
                     key={notification.id} 
                     className={`cursor-pointer transition-colors ${
-                      !notification.is_read ? 'bg-blue-50 border-blue-200' : ''
+                      !notification.is_read ? 'bg-blue-50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-800' : ''
                     }`}
                     onClick={() => handleNotificationClick(notification)}
                   >

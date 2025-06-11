@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useRouter } from 'next/router';
 import { useQuery } from "@tanstack/react-query";
@@ -19,6 +20,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { cn } from "@/lib/utils";
 import ThemeSwitcher from "@/components/ui/theme-switcher";
 import NotificationCenter from "@/components/ui/notification-center";
+import DailyCheckIn from "@/components/ui/daily-check-in";
 
 const UserDashboardPage = () => {
   const { user, signOut } = useAuth();
@@ -117,23 +119,31 @@ const UserDashboardPage = () => {
       </header>
 
       <main className="container mx-auto px-4 py-8">
-        <Card className="w-full max-w-4xl mx-auto">
-          <CardHeader>
-            <CardTitle className="text-2xl">Welcome to Your Dashboard</CardTitle>
-            <CardDescription>
-              Manage your account, view listings, and more.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <p>
-              Hello, {profile?.full_name || "User"}! This is your personalized
-              dashboard.
-            </p>
-            <Button onClick={() => router.push('/')}>
-              Go to Homepage
-            </Button>
-          </CardContent>
-        </Card>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2">
+            <Card className="w-full">
+              <CardHeader>
+                <CardTitle className="text-2xl">Welcome to Your Dashboard</CardTitle>
+                <CardDescription>
+                  Manage your account, view listings, and more.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p>
+                  Hello, {profile?.full_name || "User"}! This is your personalized
+                  dashboard.
+                </p>
+                <Button onClick={() => router.push('/')}>
+                  Go to Homepage
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+          
+          <div className="space-y-4">
+            <DailyCheckIn />
+          </div>
+        </div>
       </main>
     </div>
   );

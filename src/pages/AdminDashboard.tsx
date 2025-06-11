@@ -1,7 +1,9 @@
+
 import { useState } from "react";
 import { useRouter } from "next/router";
 import { useAuth } from "@/contexts/AuthContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Cog6ToothIcon, UsersIcon, HomeIcon, ListBulletIcon, PlusIcon, GiftIcon, SettingsIcon, CalendarIcon } from "@heroicons/react/24/outline";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -44,21 +46,27 @@ const AdminDashboard = () => {
       
       <main className="container mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-12">
-            <TabsTrigger value="users" className="col-span-3">
-              <UsersIcon className="h-4 w-4 mr-2" />
+          <TabsList className="grid w-full grid-cols-5">
+            <TabsTrigger value="users" className="flex items-center gap-2">
+              <UsersIcon className="h-4 w-4" />
               Users
             </TabsTrigger>
-            <TabsTrigger value="listings" className="col-span-3">
-              <ListBulletIcon className="h-4 w-4 mr-2" />
+            <TabsTrigger value="listings" className="flex items-center gap-2">
+              <ListBulletIcon className="h-4 w-4" />
               Listings
             </TabsTrigger>
-            <TabsTrigger value="create-listing" className="col-span-3">
-              <PlusIcon className="h-4 w-4 mr-2" />
+            <TabsTrigger value="create-listing" className="flex items-center gap-2">
+              <PlusIcon className="h-4 w-4" />
               Create Listing
             </TabsTrigger>
-            <TabsTrigger value="astra-settings">ASTRA Settings</TabsTrigger>
-            <TabsTrigger value="daily-rewards">Daily Rewards</TabsTrigger>
+            <TabsTrigger value="astra-settings" className="flex items-center gap-2">
+              <SettingsIcon className="h-4 w-4" />
+              ASTRA Settings
+            </TabsTrigger>
+            <TabsTrigger value="daily-rewards" className="flex items-center gap-2">
+              <CalendarIcon className="h-4 w-4" />
+              Daily Rewards
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="users">

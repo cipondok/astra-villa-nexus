@@ -1,9 +1,11 @@
+
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Shell } from "@/components/Shell";
 import { supabase } from "@/integrations/supabase/client";
@@ -18,6 +20,7 @@ import VendorSettings from "@/components/vendor/VendorSettings";
 import AstraTokenDashboard from "@/components/vendor/AstraTokenDashboard";
 import ThemeSwitcher from "@/components/ui/theme-switcher";
 import NotificationCenter from "@/components/ui/notification-center";
+import DailyCheckIn from "@/components/ui/daily-check-in";
 
 const VendorDashboard = () => {
   const router = useRouter();
@@ -108,7 +111,7 @@ const VendorDashboard = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           {/* Sidebar Navigation */}
-          <aside className="md:col-span-1">
+          <aside className="md:col-span-1 space-y-4">
             <Card className="card-ios">
               <CardHeader>
                 <CardTitle>Navigation</CardTitle>
@@ -141,6 +144,8 @@ const VendorDashboard = () => {
                 </Button>
               </CardContent>
             </Card>
+
+            <DailyCheckIn />
           </aside>
 
           {/* Main Content */}

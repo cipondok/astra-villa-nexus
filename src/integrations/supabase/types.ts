@@ -619,6 +619,30 @@ export type Database = {
           },
         ]
       }
+      daily_check_ins: {
+        Row: {
+          check_in_date: string
+          created_at: string
+          id: string
+          tokens_awarded: number
+          user_id: string
+        }
+        Insert: {
+          check_in_date?: string
+          created_at?: string
+          id?: string
+          tokens_awarded?: number
+          user_id: string
+        }
+        Update: {
+          check_in_date?: string
+          created_at?: string
+          id?: string
+          tokens_awarded?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
       feedback_monitoring: {
         Row: {
           content: string
@@ -1145,6 +1169,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      user_notifications: {
+        Row: {
+          created_at: string
+          id: string
+          is_read: boolean
+          message: string
+          title: string
+          type: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          message: string
+          title: string
+          type?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          message?: string
+          title?: string
+          type?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       user_sessions: {
         Row: {
@@ -2612,6 +2669,14 @@ export type Database = {
       is_super_admin_safe: {
         Args: { user_email?: string }
         Returns: boolean
+      }
+      process_daily_check_in: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          success: boolean
+          message: string
+          tokens_awarded: number
+        }[]
       }
     }
     Enums: {
