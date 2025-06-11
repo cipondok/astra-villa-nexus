@@ -9,6 +9,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import AgentTools from "./AgentTools";
+import AgentSettings from "./AgentSettings";
+import AgentNotifications from "./AgentNotifications";
 import { 
   Building, 
   PlusCircle, 
@@ -271,11 +273,13 @@ const AgentOverview = () => {
 
       {/* Main Content */}
       <Tabs defaultValue="listings" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="listings">My Listings</TabsTrigger>
           <TabsTrigger value="clients">Clients</TabsTrigger>
           <TabsTrigger value="analytics">Analytics</TabsTrigger>
           <TabsTrigger value="tools">Tools</TabsTrigger>
+          <TabsTrigger value="notifications">Notifications</TabsTrigger>
+          <TabsTrigger value="settings">Settings</TabsTrigger>
         </TabsList>
 
         <TabsContent value="listings" className="space-y-4">
@@ -396,9 +400,19 @@ const AgentOverview = () => {
         <TabsContent value="tools">
           <AgentTools />
         </TabsContent>
+
+        <TabsContent value="notifications">
+          <AgentNotifications />
+        </TabsContent>
+
+        <TabsContent value="settings">
+          <AgentSettings />
+        </TabsContent>
       </Tabs>
     </div>
   );
 };
 
 export default AgentOverview;
+
+}

@@ -1,8 +1,9 @@
 
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useTheme } from "@/components/ThemeProvider";
+import { AlertProvider } from "@/contexts/AlertContext";
 import Navigation from "@/components/Navigation";
 import AgentOverview from "@/components/agent/AgentOverview";
 
@@ -35,14 +36,16 @@ const AgentDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navigation />
-      <div className="pt-16 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto py-8">
-          <AgentOverview />
+    <AlertProvider>
+      <div className="min-h-screen bg-background">
+        <Navigation />
+        <div className="pt-16 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-7xl mx-auto py-8">
+            <AgentOverview />
+          </div>
         </div>
       </div>
-    </div>
+    </AlertProvider>
   );
 };
 
