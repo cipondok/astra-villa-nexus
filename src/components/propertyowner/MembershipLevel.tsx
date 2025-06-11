@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { 
   Crown, 
   Star, 
@@ -13,13 +13,10 @@ import {
   Gift,
   CheckCircle,
   Clock,
-  ChevronDown,
-  ChevronUp
+  ChevronRight
 } from "lucide-react";
 
 const MembershipLevel = () => {
-  const [isExpanded, setIsExpanded] = useState(false);
-  
   // Mock membership data
   const currentLevel = {
     name: "Silver",
@@ -61,10 +58,10 @@ const MembershipLevel = () => {
   const NextIcon = nextLevel.icon;
 
   return (
-    <Collapsible open={isExpanded} onOpenChange={setIsExpanded}>
-      <Card className="w-full">
-        <CollapsibleTrigger asChild>
-          <CardHeader className="pb-4 cursor-pointer hover:bg-gray-50 transition-colors">
+    <Dialog>
+      <DialogTrigger asChild>
+        <Card className="w-full cursor-pointer hover:shadow-lg transition-shadow">
+          <CardHeader className="pb-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className={`w-10 h-10 rounded-full ${currentLevel.color} flex items-center justify-center`}>
@@ -74,78 +71,75 @@ const MembershipLevel = () => {
                   <CardTitle className="text-lg">
                     Level {currentLevel.level}: {currentLevel.name}
                   </CardTitle>
-                  {!isExpanded && (
-                    <CardDescription className="text-sm">
-                      Progress to {nextLevel.name}: {progress.current}/{progress.required}
-                    </CardDescription>
-                  )}
+                  <CardDescription className="text-sm">
+                    Progress to {nextLevel.name}: {progress.current}/{progress.required}
+                  </CardDescription>
                 </div>
               </div>
               <div className="flex items-center gap-2">
                 <Badge className={currentLevel.color} variant="secondary">
                   {currentLevel.name}
                 </Badge>
-                {isExpanded ? (
-                  <ChevronUp className="h-4 w-4 text-muted-foreground" />
-                ) : (
-                  <ChevronDown className="h-4 w-4 text-muted-foreground" />
-                )}
+                <ChevronRight className="h-4 w-4 text-muted-foreground" />
               </div>
             </div>
           </CardHeader>
-        </CollapsibleTrigger>
+        </Card>
+      </DialogTrigger>
+      
+      <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-3">
+            <div className={`w-12 h-12 rounded-full ${currentLevel.color} flex items-center justify-center`}>
+              <CurrentIcon className="h-6 w-6 text-white" />
+            </div>
+            Membership Level {currentLevel.level}: {currentLevel.name}
+          </DialogTitle>
+        </DialogHeader>
         
-        <CollapsibleContent>
-          <CardContent className="space-y-4">
-            {/* Current Level Status - Compact */}
-            <div className="text-center space-y-1">
-              <div className={`w-12 h-12 mx-auto rounded-full ${currentLevel.color} flex items-center justify-center`}>
-                <CurrentIcon className="h-6 w-6 text-white" />
-              </div>
-              <h3 className="text-base font-semibold">Level {currentLevel.level}: {currentLevel.name}</h3>
-              <p className="text-xs text-muted-foreground">Keep it up!</p>
+        <div className="space-y-6">
+          {/* Progress to Next Level */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-medium">Progress to {nextLevel.name}</h3>
+              <span className="text-muted-foreground">{progress.current}/{progress.required}</span>
             </div>
+            <Progress value={progress.percentage} className="h-2" />
+          </div>
 
-            {/* Progress to Next Level - Compact */}
-            <div className="space-y-2">
-              <div className="flex items-center justify-between text-sm">
-                <span className="font-medium">Progress to {nextLevel.name}</span>
-                <span className="text-muted-foreground">{progress.current}/{progress.required}</span>
-              </div>
-              <Progress value={progress.percentage} className="h-1.5" />
-            </div>
-
-            {/* Requirements Table - Compact */}
-            <div className="space-y-2">
-              <h4 className="text-sm font-medium flex items-center gap-2">
-                <TrendingUp className="h-3 w-3" />
+          {/* Requirements and Benefits in two columns */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Requirements */}
+            <div className="space-y-3">
+              <h4 className="text-base font-medium flex items-center gap-2">
+                <TrendingUp className="h-4 w-4" />
                 Requirements
               </h4>
               <div className="rounded-md border">
                 <Table>
                   <TableHeader>
-                    <TableRow className="h-8">
-                      <TableHead className="w-6 p-2"></TableHead>
-                      <TableHead className="p-2 text-xs">Requirement</TableHead>
-                      <TableHead className="p-2 text-xs">Current</TableHead>
-                      <TableHead className="p-2 text-xs">Target</TableHead>
+                    <TableRow>
+                      <TableHead className="w-8"></TableHead>
+                      <TableHead>Requirement</TableHead>
+                      <TableHead>Current</TableHead>
+                      <TableHead>Target</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {requirements.map((req, index) => (
-                      <TableRow key={index} className="h-8">
-                        <TableCell className="p-2">
+                      <TableRow key={index}>
+                        <TableCell>
                           {req.completed ? (
-                            <CheckCircle className="h-3 w-3 text-green-500" />
+                            <CheckCircle className="h-4 w-4 text-green-500" />
                           ) : (
-                            <Clock className="h-3 w-3 text-orange-500" />
+                            <Clock className="h-4 w-4 text-orange-500" />
                           )}
                         </TableCell>
-                        <TableCell className="p-2 text-xs font-medium">{req.name}</TableCell>
-                        <TableCell className={`p-2 text-xs ${req.completed ? "text-green-600" : "text-muted-foreground"}`}>
+                        <TableCell className="font-medium">{req.name}</TableCell>
+                        <TableCell className={req.completed ? "text-green-600" : "text-muted-foreground"}>
                           {req.current}
                         </TableCell>
-                        <TableCell className="p-2 text-xs text-muted-foreground">{req.required}</TableCell>
+                        <TableCell className="text-muted-foreground">{req.required}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
@@ -153,32 +147,32 @@ const MembershipLevel = () => {
               </div>
             </div>
 
-            {/* Benefits Comparison Table - Compact */}
-            <div className="space-y-2">
-              <h4 className="text-sm font-medium flex items-center gap-2">
-                <Gift className="h-3 w-3" />
+            {/* Benefits */}
+            <div className="space-y-3">
+              <h4 className="text-base font-medium flex items-center gap-2">
+                <Gift className="h-4 w-4" />
                 Benefits
               </h4>
               <div className="rounded-md border">
                 <Table>
                   <TableHeader>
-                    <TableRow className="h-8">
-                      <TableHead className="p-2 text-xs">Benefit</TableHead>
-                      <TableHead className="p-2 text-xs">Current</TableHead>
-                      <TableHead className="p-2 text-xs">Next Level</TableHead>
+                    <TableRow>
+                      <TableHead>Benefit</TableHead>
+                      <TableHead>Current</TableHead>
+                      <TableHead>Next Level</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {benefits.map((benefit, index) => (
-                      <TableRow key={index} className="h-8">
-                        <TableCell className="p-2 text-xs font-medium">{benefit.name}</TableCell>
-                        <TableCell className="p-2">
-                          <Badge variant={benefit.unlocked ? "default" : "secondary"} className="text-xs px-1 py-0">
+                      <TableRow key={index}>
+                        <TableCell className="font-medium">{benefit.name}</TableCell>
+                        <TableCell>
+                          <Badge variant={benefit.unlocked ? "default" : "secondary"}>
                             {benefit.current}
                           </Badge>
                         </TableCell>
-                        <TableCell className="p-2">
-                          <Badge variant="outline" className="border-yellow-500 text-yellow-700 text-xs px-1 py-0">
+                        <TableCell>
+                          <Badge variant="outline" className="border-yellow-500 text-yellow-700">
                             {benefit.next}
                           </Badge>
                         </TableCell>
@@ -188,16 +182,18 @@ const MembershipLevel = () => {
                 </Table>
               </div>
             </div>
+          </div>
 
-            {/* Action Button - Compact */}
-            <Button className="w-full h-8 text-xs" variant="outline">
-              <NextIcon className="h-3 w-3 mr-1" />
+          {/* Action Button */}
+          <div className="pt-4">
+            <Button className="w-full" variant="outline">
+              <NextIcon className="h-4 w-4 mr-2" />
               View Upgrade Path
             </Button>
-          </CardContent>
-        </CollapsibleContent>
-      </Card>
-    </Collapsible>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 };
 
