@@ -204,11 +204,11 @@ const PropertyOwnerOverview = () => {
               </CardContent>
             </Card>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
               {properties?.map((property) => (
                 <Card key={property.id} className="overflow-hidden">
                   {/* Compact Property Image */}
-                  <div className="relative h-24 bg-gray-200">
+                  <div className="relative h-32 bg-gray-200">
                     {property.images && property.images.length > 0 ? (
                       <img
                         src={property.images[0]}
@@ -217,75 +217,77 @@ const PropertyOwnerOverview = () => {
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center bg-gray-100">
-                        <Building2 className="h-4 w-4 text-gray-400" />
+                        <Building2 className="h-6 w-6 text-gray-400" />
                       </div>
                     )}
                     <div className="absolute top-1 right-1">
-                      <Badge className={`${getStatusColor(property.status)} text-xs px-1 py-0`}>
+                      <Badge className={`${getStatusColor(property.status)} text-xs`}>
                         {property.status}
                       </Badge>
                     </div>
                   </div>
 
-                  <CardContent className="p-2 space-y-1">
-                    <div>
-                      <h3 className="font-semibold text-xs line-clamp-1">{property.title}</h3>
-                      <div className="flex items-center text-xs text-gray-600">
-                        <MapPin className="h-2 w-2 mr-1" />
-                        <span className="line-clamp-1 text-xs">{property.location}</span>
+                  <CardContent className="p-3">
+                    <div className="space-y-2">
+                      <div>
+                        <h3 className="font-semibold text-sm line-clamp-1 mb-1">{property.title}</h3>
+                        <div className="flex items-center text-xs text-gray-600 mb-1">
+                          <MapPin className="h-3 w-3 mr-1" />
+                          <span className="line-clamp-1">{property.location}</span>
+                        </div>
                       </div>
-                    </div>
-                    
-                    <div className="flex items-center gap-1 flex-wrap">
-                      <Badge className={`${getPropertyTypeColor(property.property_type)} text-xs px-1 py-0`}>
-                        {property.property_type}
-                      </Badge>
-                      <Badge variant="outline" className="text-xs px-1 py-0">
-                        {property.listing_type}
-                      </Badge>
-                    </div>
+                      
+                      <div className="flex items-center gap-1 flex-wrap">
+                        <Badge className={`${getPropertyTypeColor(property.property_type)} text-xs`}>
+                          {property.property_type}
+                        </Badge>
+                        <Badge variant="outline" className="text-xs">
+                          {property.listing_type}
+                        </Badge>
+                      </div>
 
-                    {/* Ultra Compact Property Details */}
-                    {(property.bedrooms || property.bathrooms || property.area_sqm) && (
-                      <div className="flex items-center gap-2 text-xs text-gray-600">
-                        {property.bedrooms && (
-                          <div className="flex items-center gap-0.5">
-                            <Bed className="h-2 w-2" />
-                            <span className="text-xs">{property.bedrooms}</span>
-                          </div>
-                        )}
-                        {property.bathrooms && (
-                          <div className="flex items-center gap-0.5">
-                            <Bath className="h-2 w-2" />
-                            <span className="text-xs">{property.bathrooms}</span>
-                          </div>
-                        )}
-                        {property.area_sqm && (
-                          <div className="flex items-center gap-0.5">
-                            <Square className="h-2 w-2" />
-                            <span className="text-xs">{property.area_sqm}m²</span>
-                          </div>
-                        )}
-                      </div>
-                    )}
-                    
-                    {property.price && (
-                      <div className="text-xs font-bold text-primary">
-                        {formatPrice(property.price, property.listing_type)}
-                      </div>
-                    )}
-                    
-                    <div className="flex justify-between items-center">
-                      <Badge variant="outline" className={`${getApprovalColor(property.approval_status)} text-xs px-1 py-0`}>
-                        {property.approval_status}
-                      </Badge>
-                      <div className="flex gap-0.5">
-                        <Button size="sm" variant="outline" className="h-5 w-5 p-0">
-                          <Edit className="h-2 w-2" />
-                        </Button>
-                        <Button size="sm" variant="outline" className="h-5 w-5 p-0">
-                          <Trash2 className="h-2 w-2" />
-                        </Button>
+                      {/* Compact Property Details */}
+                      {(property.bedrooms || property.bathrooms || property.area_sqm) && (
+                        <div className="flex items-center gap-3 text-xs text-gray-600">
+                          {property.bedrooms && (
+                            <div className="flex items-center gap-1">
+                              <Bed className="h-3 w-3" />
+                              <span>{property.bedrooms}</span>
+                            </div>
+                          )}
+                          {property.bathrooms && (
+                            <div className="flex items-center gap-1">
+                              <Bath className="h-3 w-3" />
+                              <span>{property.bathrooms}</span>
+                            </div>
+                          )}
+                          {property.area_sqm && (
+                            <div className="flex items-center gap-1">
+                              <Square className="h-3 w-3" />
+                              <span>{property.area_sqm}m²</span>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                      
+                      {property.price && (
+                        <div className="text-sm font-bold text-primary">
+                          {formatPrice(property.price, property.listing_type)}
+                        </div>
+                      )}
+                      
+                      <div className="flex justify-between items-center pt-1">
+                        <Badge variant="outline" className={`${getApprovalColor(property.approval_status)} text-xs`}>
+                          {property.approval_status}
+                        </Badge>
+                        <div className="flex gap-1">
+                          <Button size="sm" variant="outline" className="h-6 w-6 p-0">
+                            <Edit className="h-3 w-3" />
+                          </Button>
+                          <Button size="sm" variant="outline" className="h-6 w-6 p-0">
+                            <Trash2 className="h-3 w-3" />
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   </CardContent>
