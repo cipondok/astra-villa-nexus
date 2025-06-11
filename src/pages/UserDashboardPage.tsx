@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { useRouter } from 'next/router';
+import { useNavigate } from 'react-router-dom';
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -24,7 +24,7 @@ import DailyCheckIn from "@/components/ui/daily-check-in";
 
 const UserDashboardPage = () => {
   const { user, signOut } = useAuth();
-  const router = useRouter();
+  const navigate = useNavigate();
   const [isMounted, setIsMounted] = useState(false);
 
   const { data: profile, isLoading } = useQuery({
@@ -98,11 +98,11 @@ const UserDashboardPage = () => {
                 <DropdownMenuContent align="end">
                   <DropdownMenuLabel>My Account</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => router.push('/profile')}>
+                  <DropdownMenuItem onClick={() => navigate('/profile')}>
                     <Icons.user className="mr-2 h-4 w-4" />
                     <span>Profile</span>
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => router.push('/account/settings')}>
+                  <DropdownMenuItem onClick={() => navigate('/account/settings')}>
                     <Icons.settings className="mr-2 h-4 w-4" />
                     <span>Settings</span>
                   </DropdownMenuItem>
@@ -133,7 +133,7 @@ const UserDashboardPage = () => {
                   Hello, {profile?.full_name || "User"}! This is your personalized
                   dashboard.
                 </p>
-                <Button onClick={() => router.push('/')}>
+                <Button onClick={() => navigate('/')}>
                   Go to Homepage
                 </Button>
               </CardContent>

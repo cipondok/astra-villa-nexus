@@ -1,13 +1,13 @@
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/router";
+import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Shell } from "@/components/Shell";
+import Shell from "@/components/Shell";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import VendorProfileProgress from "@/components/vendor/VendorProfileProgress";
@@ -23,7 +23,7 @@ import NotificationCenter from "@/components/ui/notification-center";
 import DailyCheckIn from "@/components/ui/daily-check-in";
 
 const VendorDashboard = () => {
-  const router = useRouter();
+  const navigate = useNavigate();
   const { user, signOut } = useAuth();
   const [activeView, setActiveView] = useState("profile");
 
@@ -46,20 +46,28 @@ const VendorDashboard = () => {
 
   useEffect(() => {
     if (!user) {
-      router.push('/sign-in');
+      navigate('/sign-in');
     }
-  }, [user, router]);
+  }, [user, navigate]);
 
   if (!user) {
     return null;
   }
+
+  const handleAddService = () => {
+    console.log('Add service clicked');
+  };
+
+  const handleEditService = (service: any) => {
+    console.log('Edit service clicked', service);
+  };
 
   const renderView = () => {
     switch (activeView) {
       case "profile":
         return <VendorProfileProgress />;
       case "services":
-        return <VendorServicesList />;
+        return <VendorServicesList onAddService={handleAddService} onEditService={handleEditService} />;
       case "listings":
         return <VendorListings />;
       case "analytics":

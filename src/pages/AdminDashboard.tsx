@@ -1,18 +1,18 @@
 
 import { useState } from "react";
-import { useRouter } from "next/router";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Cog6ToothIcon, UsersIcon, HomeIcon, ListBulletIcon, PlusIcon, GiftIcon, SettingsIcon, CalendarIcon } from "@heroicons/react/24/outline";
+import { Settings, Users, Home, List, Plus, Gift, Calendar } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AstraTokenSettings from "@/components/admin/AstraTokenSettings";
 import DailyCheckInManagement from "@/components/admin/DailyCheckInManagement";
 
 const AdminDashboard = () => {
   const { user, signOut } = useAuth();
-  const router = useRouter();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("users");
 
   return (
@@ -21,7 +21,7 @@ const AdminDashboard = () => {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <HomeIcon className="h-6 w-6" />
+              <Home className="h-6 w-6" />
               <h1 className="text-2xl font-bold">Admin Dashboard</h1>
             </div>
             <DropdownMenu>
@@ -35,7 +35,7 @@ const AdminDashboard = () => {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                <DropdownMenuItem onClick={() => router.push('/profile')}>Profile</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate('/profile')}>Profile</DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => signOut()}>Logout</DropdownMenuItem>
               </DropdownMenuContent>
@@ -48,23 +48,23 @@ const AdminDashboard = () => {
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="users" className="flex items-center gap-2">
-              <UsersIcon className="h-4 w-4" />
+              <Users className="h-4 w-4" />
               Users
             </TabsTrigger>
             <TabsTrigger value="listings" className="flex items-center gap-2">
-              <ListBulletIcon className="h-4 w-4" />
+              <List className="h-4 w-4" />
               Listings
             </TabsTrigger>
             <TabsTrigger value="create-listing" className="flex items-center gap-2">
-              <PlusIcon className="h-4 w-4" />
+              <Plus className="h-4 w-4" />
               Create Listing
             </TabsTrigger>
             <TabsTrigger value="astra-settings" className="flex items-center gap-2">
-              <SettingsIcon className="h-4 w-4" />
+              <Settings className="h-4 w-4" />
               ASTRA Settings
             </TabsTrigger>
             <TabsTrigger value="daily-rewards" className="flex items-center gap-2">
-              <CalendarIcon className="h-4 w-4" />
+              <Calendar className="h-4 w-4" />
               Daily Rewards
             </TabsTrigger>
           </TabsList>
