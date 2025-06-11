@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -23,6 +22,9 @@ import {
   Square
 } from "lucide-react";
 import PropertyListingForm from "./PropertyListingForm";
+import PropertyOwnerAnalytics from "./PropertyOwnerAnalytics";
+import PropertyOwnerSettings from "./PropertyOwnerSettings";
+import MembershipLevel from "./MembershipLevel";
 
 const PropertyOwnerOverview = () => {
   const { user } = useAuth();
@@ -100,14 +102,21 @@ const PropertyOwnerOverview = () => {
 
   return (
     <div className="space-y-6">
-      {/* Welcome Section */}
-      <div className="bg-gradient-to-r from-blue-600 to-orange-500 text-white p-6 rounded-lg">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold">Property Owner Dashboard</h1>
-            <p className="text-blue-100 mt-2">Manage your property listings and track performance</p>
+      {/* Welcome Section with Membership Level */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2">
+          <div className="bg-gradient-to-r from-blue-600 to-orange-500 text-white p-6 rounded-lg">
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-2xl font-bold">Property Owner Dashboard</h1>
+                <p className="text-blue-100 mt-2">Manage your property listings and track performance</p>
+              </div>
+              <Building2 className="h-8 w-8" />
+            </div>
           </div>
-          <Building2 className="h-8 w-8" />
+        </div>
+        <div className="lg:col-span-1">
+          <MembershipLevel />
         </div>
       </div>
 
@@ -298,27 +307,11 @@ const PropertyOwnerOverview = () => {
         </TabsContent>
 
         <TabsContent value="analytics">
-          <Card>
-            <CardHeader>
-              <CardTitle>Property Analytics</CardTitle>
-              <CardDescription>Track performance of your listings</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-center py-8 text-gray-500">Analytics dashboard coming soon...</p>
-            </CardContent>
-          </Card>
+          <PropertyOwnerAnalytics />
         </TabsContent>
 
         <TabsContent value="settings">
-          <Card>
-            <CardHeader>
-              <CardTitle>Account Settings</CardTitle>
-              <CardDescription>Manage your property owner preferences</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-center py-8 text-gray-500">Settings panel coming soon...</p>
-            </CardContent>
-          </Card>
+          <PropertyOwnerSettings />
         </TabsContent>
       </Tabs>
     </div>
