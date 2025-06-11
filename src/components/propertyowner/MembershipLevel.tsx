@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { 
   Crown, 
   Star, 
@@ -92,55 +93,77 @@ const MembershipLevel = () => {
           </div>
         </div>
 
-        {/* Requirements */}
+        {/* Requirements Table */}
         <div className="space-y-3">
           <h4 className="text-sm font-medium flex items-center gap-2">
             <TrendingUp className="h-4 w-4" />
             Requirements for {nextLevel.name}
           </h4>
-          <div className="space-y-2">
-            {requirements.map((req, index) => (
-              <div key={index} className="flex items-center justify-between p-2 rounded-lg bg-muted/50">
-                <div className="flex items-center gap-2">
-                  {req.completed ? (
-                    <CheckCircle className="h-4 w-4 text-green-500" />
-                  ) : (
-                    <Clock className="h-4 w-4 text-orange-500" />
-                  )}
-                  <span className="text-sm">{req.name}</span>
-                </div>
-                <div className="text-sm">
-                  <span className={req.completed ? "text-green-600" : "text-muted-foreground"}>
-                    {req.current}
-                  </span>
-                  <span className="text-muted-foreground"> / {req.required}</span>
-                </div>
-              </div>
-            ))}
+          <div className="rounded-md border">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-4"></TableHead>
+                  <TableHead>Requirement</TableHead>
+                  <TableHead>Current</TableHead>
+                  <TableHead>Target</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {requirements.map((req, index) => (
+                  <TableRow key={index}>
+                    <TableCell>
+                      {req.completed ? (
+                        <CheckCircle className="h-4 w-4 text-green-500" />
+                      ) : (
+                        <Clock className="h-4 w-4 text-orange-500" />
+                      )}
+                    </TableCell>
+                    <TableCell className="font-medium">{req.name}</TableCell>
+                    <TableCell className={req.completed ? "text-green-600" : "text-muted-foreground"}>
+                      {req.current}
+                    </TableCell>
+                    <TableCell className="text-muted-foreground">{req.required}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           </div>
         </div>
 
-        {/* Benefits Comparison */}
+        {/* Benefits Comparison Table */}
         <div className="space-y-3">
           <h4 className="text-sm font-medium flex items-center gap-2">
             <Gift className="h-4 w-4" />
             Benefits Upgrade
           </h4>
-          <div className="space-y-2">
-            {benefits.map((benefit, index) => (
-              <div key={index} className="flex items-center justify-between p-2 rounded-lg bg-muted/50">
-                <span className="text-sm">{benefit.name}</span>
-                <div className="flex items-center gap-2 text-xs">
-                  <Badge variant={benefit.unlocked ? "default" : "secondary"}>
-                    {benefit.current}
-                  </Badge>
-                  <span className="text-muted-foreground">→</span>
-                  <Badge variant="outline" className="border-yellow-500 text-yellow-700">
-                    {benefit.next}
-                  </Badge>
-                </div>
-              </div>
-            ))}
+          <div className="rounded-md border">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Benefit</TableHead>
+                  <TableHead>Current</TableHead>
+                  <TableHead>Next Level</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {benefits.map((benefit, index) => (
+                  <TableRow key={index}>
+                    <TableCell className="font-medium">{benefit.name}</TableCell>
+                    <TableCell>
+                      <Badge variant={benefit.unlocked ? "default" : "secondary"}>
+                        {benefit.current}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant="outline" className="border-yellow-500 text-yellow-700">
+                        {benefit.next}
+                      </Badge>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           </div>
         </div>
 
