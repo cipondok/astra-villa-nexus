@@ -2,14 +2,17 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, User, LogOut, Settings } from "lucide-react";
+import { Menu, X, User, LogOut, Globe } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useThemeSettings } from "@/contexts/ThemeSettingsContext";
+import { useTheme } from "@/components/ThemeProvider";
 import RoleBasedAuthModal from "./RoleBasedAuthModal";
+import ThemeToggleSwitch from "./ThemeToggleSwitch";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [language, setLanguage] = useState<"en" | "id">("en");
   const location = useLocation();
   const { user, signOut } = useAuth();
   const { themeSettings } = useThemeSettings();
@@ -25,6 +28,10 @@ const Navigation = () => {
     setIsOpen(false);
   };
 
+  const toggleLanguage = () => {
+    setLanguage(prev => prev === "en" ? "id" : "en");
+  };
+
   return (
     <>
       <nav className="glass-dark border-b border-white/10 sticky top-0 z-50">
@@ -32,8 +39,10 @@ const Navigation = () => {
           <div className="flex justify-between h-16">
             <div className="flex items-center">
               <Link to="/" className="flex-shrink-0 flex items-center">
-                <span className="text-2xl font-bold text-primary-dynamic">
-                  {themeSettings.siteName}
+                <span className="text-2xl font-bold">
+                  <span className="inline-block animate-gradient bg-gradient-to-r from-blue-400 via-purple-400 to-orange-400 bg-clip-text text-transparent bg-[length:300%_300%] hover:scale-105 transition-transform duration-300">
+                    {themeSettings.siteName}
+                  </span>
                 </span>
               </Link>
             </div>
@@ -53,6 +62,23 @@ const Navigation = () => {
                   {item.name}
                 </Link>
               ))}
+            </div>
+
+            {/* Right side controls */}
+            <div className="hidden md:flex items-center space-x-4">
+              {/* Language Toggle */}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={toggleLanguage}
+                className="text-gray-300 hover:text-white hover:bg-white/10 flex items-center gap-2"
+              >
+                <Globe className="h-4 w-4" />
+                <span className="text-sm font-medium">{language.toUpperCase()}</span>
+              </Button>
+
+              {/* Theme Toggle Switch */}
+              <ThemeToggleSwitch language={language} />
               
               {user ? (
                 <div className="flex items-center space-x-4">
@@ -84,7 +110,10 @@ const Navigation = () => {
             </div>
 
             {/* Mobile menu button */}
-            <div className="md:hidden">
+            <div className="md:hidden flex items-center space-x-2">
+              {/* Mobile Theme Toggle */}
+              <ThemeToggleSwitch language={language} className="scale-90" />
+              
               <Button
                 variant="ghost"
                 size="sm"
@@ -115,6 +144,16 @@ const Navigation = () => {
                   {item.name}
                 </Link>
               ))}
+              
+              {/* Mobile Language Toggle */}
+              <Button
+                variant="ghost"
+                onClick={toggleLanguage}
+                className="w-full justify-start text-gray-300 hover:text-white hover:bg-white/5"
+              >
+                <Globe className="h-4 w-4 mr-2" />
+                Language: {language.toUpperCase()}
+              </Button>
               
               {user ? (
                 <>
