@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { BarChart3, Users, Shield, Database, Home, FileText, Store, MessageSquare, Activity, Settings, Crown, ArrowLeft, Award, CreditCard } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import ThemeToggleSwitch from "@/components/ThemeToggleSwitch";
 
 interface AdminNavigationProps {
   activeSection: string;
@@ -59,9 +60,10 @@ const AdminNavigation = ({ activeSection, onSectionChange }: AdminNavigationProp
           <Link to="/">
             <Button variant="ghost" size="sm" className="btn-ios flex items-center gap-2 text-muted-foreground hover:text-foreground">
               <ArrowLeft className="h-4 w-4" />
-              <span className="text-sm">Back</span>
+              <span className="text-sm">Back to Home</span>
             </Button>
           </Link>
+          <ThemeToggleSwitch language="en" className="scale-90" />
         </div>
         <CardTitle className="flex items-center gap-2 text-lg text-foreground">
           <Shield className="h-5 w-5 text-primary" />
