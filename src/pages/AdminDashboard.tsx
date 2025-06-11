@@ -20,6 +20,7 @@ import FeedbackManagement from "@/components/admin/FeedbackManagement";
 import SystemMonitor from "@/components/admin/SystemMonitor";
 import SystemSettings from "@/components/admin/SystemSettings";
 import WebTrafficAnalytics from "@/components/admin/WebTrafficAnalytics";
+import PropertySampleData from "@/components/admin/PropertySampleData";
 
 const AdminDashboard = () => {
   const { user, signOut } = useAuth();
@@ -45,6 +46,9 @@ const AdminDashboard = () => {
     <div className="min-h-screen bg-background">
       {/* Add Navigation at the top */}
       <Navigation />
+      
+      {/* Add PropertySampleData component to populate sample data */}
+      <PropertySampleData />
       
       <header className="border-b bg-card">
         <div className="container mx-auto px-4 py-4">
