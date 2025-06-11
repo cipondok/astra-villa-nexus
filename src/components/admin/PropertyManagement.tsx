@@ -33,6 +33,8 @@ interface PropertyWithRelations {
   status?: string;
   approval_status?: string;
   created_at?: string;
+  owner_id?: string;
+  agent_id?: string;
   owner?: PropertyOwner;
   agent?: PropertyOwner;
 }
@@ -64,11 +66,7 @@ const PropertyManagement = () => {
       
       let query = supabase
         .from('properties')
-        .select(`
-          *,
-          owner:profiles!properties_owner_id_fkey(full_name, email),
-          agent:profiles!properties_agent_id_fkey(full_name, email)
-        `)
+        .select('*')
         .order('created_at', { ascending: false });
 
       if (searchTerm) {
@@ -79,21 +77,57 @@ const PropertyManagement = () => {
         query = query.eq('status', statusFilter);
       }
 
-      const { data, error } = await query;
+      const { data: propertiesData, error: propertiesError } = await query;
       
-      console.log('Properties query result:', { data, error });
+      console.log('Properties query result:', { data: propertiesData, error: propertiesError });
       
-      if (error) {
-        console.error('Error fetching properties:', error);
-        throw error;
+      if (propertiesError) {
+        console.error('Error fetching properties:', propertiesError);
+        throw propertiesError;
       }
 
-      // Transform the data to match our interface
-      return data?.map((property: any) => ({
-        ...property,
-        owner: Array.isArray(property.owner) ? property.owner[0] : property.owner,
-        agent: Array.isArray(property.agent) ? property.agent[0] : property.agent,
-      })) as PropertyWithRelations[];
+      if (!propertiesData || propertiesData.length === 0) {
+        return [];
+      }
+
+      // Get unique owner and agent IDs
+      const ownerIds = [...new Set(propertiesData.map(p => p.owner_id).filter(Boolean))];
+      const agentIds = [...new Set(propertiesData.map(p => p.agent_id).filter(Boolean))];
+      const allUserIds = [...new Set([...ownerIds, ...agentIds])];
+
+      console.log('Fetching user profiles for IDs:', allUserIds);
+
+      // Fetch profiles separately
+      let profilesData = [];
+      if (allUserIds.length > 0) {
+        const { data: profiles, error: profilesError } = await supabase
+          .from('profiles')
+          .select('id, full_name, email')
+          .in('id', allUserIds);
+
+        if (profilesError) {
+          console.warn('Error fetching profiles:', profilesError);
+        } else {
+          profilesData = profiles || [];
+        }
+      }
+
+      console.log('Profiles data:', profilesData);
+
+      // Map properties with owner/agent information
+      const propertiesWithRelations = propertiesData.map((property: any) => {
+        const owner = profilesData.find(p => p.id === property.owner_id);
+        const agent = profilesData.find(p => p.id === property.agent_id);
+
+        return {
+          ...property,
+          owner: owner ? { full_name: owner.full_name, email: owner.email } : null,
+          agent: agent ? { full_name: agent.full_name, email: agent.email } : null,
+        };
+      });
+
+      console.log('Final properties with relations:', propertiesWithRelations);
+      return propertiesWithRelations as PropertyWithRelations[];
     },
   });
 
