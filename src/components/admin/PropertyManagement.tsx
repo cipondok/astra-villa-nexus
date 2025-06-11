@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -10,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Building, Search, Plus, Edit, Trash2, Eye, MapPin, DollarSign } from "lucide-react";
+import { Building, Search, Plus, Edit, Trash2, Eye, MapPin, DollarSign, RefreshCw } from "lucide-react";
 import { useAlert } from "@/contexts/AlertContext";
 
 interface PropertyOwner {
@@ -56,9 +57,11 @@ const PropertyManagement = () => {
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
 
-  const { data: properties, isLoading } = useQuery({
+  const { data: properties, isLoading, error, refetch } = useQuery({
     queryKey: ['admin-properties', searchTerm, statusFilter],
     queryFn: async () => {
+      console.log('Fetching properties...');
+      
       let query = supabase
         .from('properties')
         .select(`
@@ -77,7 +80,13 @@ const PropertyManagement = () => {
       }
 
       const { data, error } = await query;
-      if (error) throw error;
+      
+      console.log('Properties query result:', { data, error });
+      
+      if (error) {
+        console.error('Error fetching properties:', error);
+        throw error;
+      }
 
       // Transform the data to match our interface
       return data?.map((property: any) => ({
@@ -88,8 +97,26 @@ const PropertyManagement = () => {
     },
   });
 
+  // Debug: Log the current state
+  console.log('PropertyManagement state:', { 
+    properties, 
+    isLoading, 
+    error, 
+    propertiesCount: properties?.length 
+  });
+
   const createPropertyMutation = useMutation({
     mutationFn: async (propertyData: any) => {
+      const { data: adminProfile } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('email', 'mycode103@gmail.com')
+        .single();
+
+      if (!adminProfile) {
+        throw new Error('Admin profile not found');
+      }
+
       const { error } = await supabase
         .from('properties')
         .insert({
@@ -98,8 +125,9 @@ const PropertyManagement = () => {
           bedrooms: propertyData.bedrooms ? parseInt(propertyData.bedrooms) : null,
           bathrooms: propertyData.bathrooms ? parseInt(propertyData.bathrooms) : null,
           area_sqm: propertyData.area_sqm ? parseInt(propertyData.area_sqm) : null,
-          owner_id: '00000000-0000-0000-0000-000000000000',
-          status: 'pending_approval'
+          owner_id: adminProfile.id,
+          status: 'active',
+          approval_status: 'approved'
         });
       if (error) throw error;
     },
@@ -203,129 +231,135 @@ const PropertyManagement = () => {
                 Manage property listings, approvals, and content
               </CardDescription>
             </div>
-            <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-              <DialogTrigger asChild>
-                <Button>
-                  <Plus className="h-4 w-4 mr-2" />
-                  Add Property
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="max-w-2xl">
-                <DialogHeader>
-                  <DialogTitle>Add New Property</DialogTitle>
-                  <DialogDescription>
-                    Create a new property listing
-                  </DialogDescription>
-                </DialogHeader>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="title">Title</Label>
-                    <Input
-                      id="title"
-                      value={newProperty.title}
-                      onChange={(e) => setNewProperty({ ...newProperty, title: e.target.value })}
-                      placeholder="Property title"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="location">Location</Label>
-                    <Input
-                      id="location"
-                      value={newProperty.location}
-                      onChange={(e) => setNewProperty({ ...newProperty, location: e.target.value })}
-                      placeholder="Property location"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="property_type">Property Type</Label>
-                    <Select value={newProperty.property_type} onValueChange={(value) => setNewProperty({ ...newProperty, property_type: value })}>
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="house">House</SelectItem>
-                        <SelectItem value="apartment">Apartment</SelectItem>
-                        <SelectItem value="villa">Villa</SelectItem>
-                        <SelectItem value="townhouse">Townhouse</SelectItem>
-                        <SelectItem value="land">Land</SelectItem>
-                        <SelectItem value="commercial">Commercial</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="listing_type">Listing Type</Label>
-                    <Select value={newProperty.listing_type} onValueChange={(value) => setNewProperty({ ...newProperty, listing_type: value })}>
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="sale">For Sale</SelectItem>
-                        <SelectItem value="rent">For Rent</SelectItem>
-                        <SelectItem value="lease">For Lease</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="price">Price</Label>
-                    <Input
-                      id="price"
-                      type="number"
-                      value={newProperty.price}
-                      onChange={(e) => setNewProperty({ ...newProperty, price: e.target.value })}
-                      placeholder="Property price"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="area_sqm">Area (sqm)</Label>
-                    <Input
-                      id="area_sqm"
-                      type="number"
-                      value={newProperty.area_sqm}
-                      onChange={(e) => setNewProperty({ ...newProperty, area_sqm: e.target.value })}
-                      placeholder="Area in square meters"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="bedrooms">Bedrooms</Label>
-                    <Input
-                      id="bedrooms"
-                      type="number"
-                      value={newProperty.bedrooms}
-                      onChange={(e) => setNewProperty({ ...newProperty, bedrooms: e.target.value })}
-                      placeholder="Number of bedrooms"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="bathrooms">Bathrooms</Label>
-                    <Input
-                      id="bathrooms"
-                      type="number"
-                      value={newProperty.bathrooms}
-                      onChange={(e) => setNewProperty({ ...newProperty, bathrooms: e.target.value })}
-                      placeholder="Number of bathrooms"
-                    />
-                  </div>
-                  <div className="col-span-2 space-y-2">
-                    <Label htmlFor="description">Description</Label>
-                    <Textarea
-                      id="description"
-                      value={newProperty.description}
-                      onChange={(e) => setNewProperty({ ...newProperty, description: e.target.value })}
-                      placeholder="Property description"
-                      rows={3}
-                    />
-                  </div>
-                </div>
-                <DialogFooter>
-                  <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
-                    Cancel
-                  </Button>
-                  <Button onClick={handleAddProperty}>
+            <div className="flex gap-2">
+              <Button variant="outline" onClick={() => refetch()}>
+                <RefreshCw className="h-4 w-4 mr-2" />
+                Refresh
+              </Button>
+              <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button>
+                    <Plus className="h-4 w-4 mr-2" />
                     Add Property
                   </Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
+                </DialogTrigger>
+                <DialogContent className="max-w-2xl">
+                  <DialogHeader>
+                    <DialogTitle>Add New Property</DialogTitle>
+                    <DialogDescription>
+                      Create a new property listing
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="title">Title</Label>
+                      <Input
+                        id="title"
+                        value={newProperty.title}
+                        onChange={(e) => setNewProperty({ ...newProperty, title: e.target.value })}
+                        placeholder="Property title"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="location">Location</Label>
+                      <Input
+                        id="location"
+                        value={newProperty.location}
+                        onChange={(e) => setNewProperty({ ...newProperty, location: e.target.value })}
+                        placeholder="Property location"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="property_type">Property Type</Label>
+                      <Select value={newProperty.property_type} onValueChange={(value) => setNewProperty({ ...newProperty, property_type: value })}>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="house">House</SelectItem>
+                          <SelectItem value="apartment">Apartment</SelectItem>
+                          <SelectItem value="villa">Villa</SelectItem>
+                          <SelectItem value="townhouse">Townhouse</SelectItem>
+                          <SelectItem value="land">Land</SelectItem>
+                          <SelectItem value="commercial">Commercial</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="listing_type">Listing Type</Label>
+                      <Select value={newProperty.listing_type} onValueChange={(value) => setNewProperty({ ...newProperty, listing_type: value })}>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="sale">For Sale</SelectItem>
+                          <SelectItem value="rent">For Rent</SelectItem>
+                          <SelectItem value="lease">For Lease</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="price">Price</Label>
+                      <Input
+                        id="price"
+                        type="number"
+                        value={newProperty.price}
+                        onChange={(e) => setNewProperty({ ...newProperty, price: e.target.value })}
+                        placeholder="Property price"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="area_sqm">Area (sqm)</Label>
+                      <Input
+                        id="area_sqm"
+                        type="number"
+                        value={newProperty.area_sqm}
+                        onChange={(e) => setNewProperty({ ...newProperty, area_sqm: e.target.value })}
+                        placeholder="Area in square meters"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="bedrooms">Bedrooms</Label>
+                      <Input
+                        id="bedrooms"
+                        type="number"
+                        value={newProperty.bedrooms}
+                        onChange={(e) => setNewProperty({ ...newProperty, bedrooms: e.target.value })}
+                        placeholder="Number of bedrooms"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="bathrooms">Bathrooms</Label>
+                      <Input
+                        id="bathrooms"
+                        type="number"
+                        value={newProperty.bathrooms}
+                        onChange={(e) => setNewProperty({ ...newProperty, bathrooms: e.target.value })}
+                        placeholder="Number of bathrooms"
+                      />
+                    </div>
+                    <div className="col-span-2 space-y-2">
+                      <Label htmlFor="description">Description</Label>
+                      <Textarea
+                        id="description"
+                        value={newProperty.description}
+                        onChange={(e) => setNewProperty({ ...newProperty, description: e.target.value })}
+                        placeholder="Property description"
+                        rows={3}
+                      />
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
+                      Cancel
+                    </Button>
+                    <Button onClick={handleAddProperty}>
+                      Add Property
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </div>
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -353,6 +387,14 @@ const PropertyManagement = () => {
             </Select>
           </div>
 
+          {error && (
+            <div className="p-4 bg-destructive/10 border border-destructive rounded-lg">
+              <p className="text-destructive">
+                Error loading properties: {error.message}
+              </p>
+            </div>
+          )}
+
           <div className="border rounded-lg">
             <Table>
               <TableHeader>
@@ -376,7 +418,12 @@ const PropertyManagement = () => {
                 ) : properties?.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={7} className="text-center py-8">
-                      No properties found
+                      <div className="space-y-2">
+                        <p>No properties found</p>
+                        <p className="text-sm text-muted-foreground">
+                          Click "Add Property" to create your first property listing
+                        </p>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ) : (
