@@ -4,6 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -12,9 +15,12 @@ interface AuthModalProps {
 }
 
 const AuthModal = ({ isOpen, onClose, language }: AuthModalProps) => {
+  const { signIn, signUp } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
+  const [role, setRole] = useState("general_user");
+  const [loading, setLoading] = useState(false);
 
   const text = {
     en: {
@@ -23,25 +29,66 @@ const AuthModal = ({ isOpen, onClose, language }: AuthModalProps) => {
       email: "Email",
       password: "Password",
       name: "Full Name",
+      role: "I am a",
       loginBtn: "Sign In",
       registerBtn: "Create Account",
-      close: "Close"
+      close: "Close",
+      generalUser: "General User",
+      propertyOwner: "Property Owner",
+      agent: "Real Estate Agent",
+      vendor: "Service Vendor"
     },
     id: {
       login: "Masuk",
       register: "Daftar",
       email: "Email",
       password: "Kata Sandi",
-      name: "Nama Lengkap", 
+      name: "Nama Lengkap",
+      role: "Saya adalah",
       loginBtn: "Masuk",
       registerBtn: "Buat Akun",
-      close: "Tutup"
+      close: "Tutup",
+      generalUser: "Pengguna Umum",
+      propertyOwner: "Pemilik Properti",
+      agent: "Agen Real Estat",
+      vendor: "Vendor Layanan"
     }
   };
 
   const currentText = text[language];
 
   if (!isOpen) return null;
+
+  const handleLogin = async () => {
+    setLoading(true);
+    try {
+      const { success } = await signIn(email, password);
+      if (success) {
+        onClose();
+        setEmail("");
+        setPassword("");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRegister = async () => {
+    setLoading(true);
+    try {
+      // Set the role in user metadata during signup
+      const { success } = await signUp(email, password, name);
+      if (success) {
+        onClose();
+        setEmail("");
+        setPassword("");
+        setName("");
+        setRole("general_user");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
@@ -62,53 +109,85 @@ const AuthModal = ({ isOpen, onClose, language }: AuthModalProps) => {
             
             <TabsContent value="login" className="space-y-4">
               <div className="space-y-2">
+                <Label htmlFor="login-email">{currentText.email}</Label>
                 <Input
+                  id="login-email"
                   type="email"
-                  placeholder={currentText.email}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  placeholder={currentText.email}
                 />
               </div>
               <div className="space-y-2">
+                <Label htmlFor="login-password">{currentText.password}</Label>
                 <Input
+                  id="login-password"
                   type="password"
-                  placeholder={currentText.password}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  placeholder={currentText.password}
                 />
               </div>
-              <Button className="w-full bg-gradient-to-r from-blue-600 to-orange-500">
-                {currentText.loginBtn}
+              <Button 
+                className="w-full bg-gradient-to-r from-blue-600 to-orange-500"
+                onClick={handleLogin}
+                disabled={loading || !email || !password}
+              >
+                {loading ? 'Signing in...' : currentText.loginBtn}
               </Button>
             </TabsContent>
             
             <TabsContent value="register" className="space-y-4">
               <div className="space-y-2">
+                <Label htmlFor="register-name">{currentText.name}</Label>
                 <Input
+                  id="register-name"
                   type="text"
-                  placeholder={currentText.name}
                   value={name}
                   onChange={(e) => setName(e.target.value)}
+                  placeholder={currentText.name}
                 />
               </div>
               <div className="space-y-2">
+                <Label htmlFor="register-email">{currentText.email}</Label>
                 <Input
+                  id="register-email"
                   type="email"
-                  placeholder={currentText.email}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  placeholder={currentText.email}
                 />
               </div>
               <div className="space-y-2">
+                <Label htmlFor="register-password">{currentText.password}</Label>
                 <Input
+                  id="register-password"
                   type="password"
-                  placeholder={currentText.password}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  placeholder={currentText.password}
                 />
               </div>
-              <Button className="w-full bg-gradient-to-r from-blue-600 to-orange-500">
-                {currentText.registerBtn}
+              <div className="space-y-2">
+                <Label htmlFor="register-role">{currentText.role}</Label>
+                <Select value={role} onValueChange={setRole}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="general_user">{currentText.generalUser}</SelectItem>
+                    <SelectItem value="property_owner">{currentText.propertyOwner}</SelectItem>
+                    <SelectItem value="agent">{currentText.agent}</SelectItem>
+                    <SelectItem value="vendor">{currentText.vendor}</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <Button 
+                className="w-full bg-gradient-to-r from-blue-600 to-orange-500"
+                onClick={handleRegister}
+                disabled={loading || !email || !password || !name}
+              >
+                {loading ? 'Creating account...' : currentText.registerBtn}
               </Button>
             </TabsContent>
           </Tabs>

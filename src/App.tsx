@@ -1,60 +1,46 @@
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
+
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Toaster } from "@/components/ui/toaster";
 import { AuthProvider } from "@/contexts/AuthContext";
-import { ThemeSettingsProvider } from "@/contexts/ThemeSettingsContext";
 import { AlertProvider } from "@/contexts/AlertContext";
-import { ThemeProvider } from "@/components/ThemeProvider";
-import Index from "./pages/Index";
-import Dashboard from "./pages/Dashboard";
-import Properties from "./pages/Properties";
-import PropertyDetail from "./pages/PropertyDetail";
-import Profile from "./pages/Profile";
-import About from "./pages/About";
-import AdminDashboard from "./pages/AdminDashboard";
-import AgentDashboard from "./pages/AgentDashboard";
-import UserDashboardPage from "./pages/UserDashboardPage";
-import VendorDashboard from "./pages/VendorDashboard";
-import VendorRegistration from "./pages/VendorRegistration";
-import Help from "./pages/Help";
-import NotFound from "./pages/NotFound";
+import Index from "@/pages/Index";
+import Dashboard from "@/pages/Dashboard";
+import AdminDashboard from "@/pages/AdminDashboard";
+import UserDashboard from "@/pages/UserDashboard";
+import VendorDashboard from "@/pages/VendorDashboard";
+import AgentDashboard from "@/pages/AgentDashboard";
+import PropertyOwnerDashboard from "@/pages/PropertyOwnerDashboard";
+import Auth from "@/pages/Auth";
+import Properties from "@/pages/Properties";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <ThemeProvider defaultTheme="system" storageKey="astra-villa-theme">
-      <ThemeSettingsProvider>
-        <AlertProvider>
-          <AuthProvider>
-            <TooltipProvider>
+function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <AlertProvider>
+        <AuthProvider>
+          <Router>
+            <div className="min-h-screen bg-background">
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/auth" element={<Auth />} />
+                <Route path="/properties" element={<Properties />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/dashboard/admin" element={<AdminDashboard />} />
+                <Route path="/dashboard/user" element={<UserDashboard />} />
+                <Route path="/dashboard/vendor" element={<VendorDashboard />} />
+                <Route path="/dashboard/agent" element={<AgentDashboard />} />
+                <Route path="/dashboard/property-owner" element={<PropertyOwnerDashboard />} />
+              </Routes>
               <Toaster />
-              <Sonner />
-              <BrowserRouter>
-                <Routes>
-                  <Route path="/" element={<Index />} />
-                  <Route path="/dashboard" element={<Dashboard />} />
-                  <Route path="/dashboard/admin" element={<AdminDashboard />} />
-                  <Route path="/dashboard/agent" element={<AgentDashboard />} />
-                  <Route path="/dashboard/user" element={<UserDashboardPage />} />
-                  <Route path="/dashboard/vendor" element={<VendorDashboard />} />
-                  <Route path="/vendor/register" element={<VendorRegistration />} />
-                  <Route path="/properties" element={<Properties />} />
-                  <Route path="/property/:id" element={<PropertyDetail />} />
-                  <Route path="/profile" element={<Profile />} />
-                  <Route path="/about" element={<About />} />
-                  <Route path="/help" element={<Help />} />
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-              </BrowserRouter>
-            </TooltipProvider>
-          </AuthProvider>
-        </AlertProvider>
-      </ThemeSettingsProvider>
-    </ThemeProvider>
-  </QueryClientProvider>
-);
+            </div>
+          </Router>
+        </AuthProvider>
+      </AlertProvider>
+    </QueryClientProvider>
+  );
+}
 
 export default App;

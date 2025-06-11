@@ -32,8 +32,8 @@ const Dashboard = () => {
             navigate('/dashboard/vendor', { replace: true });
             break;
           case 'property_owner':
-            console.log('Redirecting property owner to user dashboard');
-            navigate('/dashboard/user', { replace: true });
+            console.log('Redirecting property owner to property owner dashboard');
+            navigate('/dashboard/property-owner', { replace: true });
             break;
           case 'general_user':
           default:

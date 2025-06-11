@@ -3,9 +3,9 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import AuthenticatedNavigation from "@/components/navigation/AuthenticatedNavigation";
-import AgentOverview from "@/components/agent/AgentOverview";
+import PropertyOwnerOverview from "@/components/propertyowner/PropertyOwnerOverview";
 
-const AgentDashboard = () => {
+const PropertyOwnerDashboard = () => {
   const { isAuthenticated, loading, profile } = useAuth();
   const navigate = useNavigate();
 
@@ -13,7 +13,7 @@ const AgentDashboard = () => {
     if (!loading && !isAuthenticated) {
       navigate('/?auth=true');
     }
-    if (!loading && isAuthenticated && profile?.role !== 'agent') {
+    if (!loading && isAuthenticated && profile?.role !== 'property_owner') {
       navigate('/dashboard');
     }
   }, [isAuthenticated, loading, profile, navigate]);
@@ -29,7 +29,7 @@ const AgentDashboard = () => {
     );
   }
 
-  if (!isAuthenticated || profile?.role !== 'agent') {
+  if (!isAuthenticated || profile?.role !== 'property_owner') {
     return null;
   }
 
@@ -43,11 +43,11 @@ const AgentDashboard = () => {
       />
       <div className="pt-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto py-8">
-          <AgentOverview />
+          <PropertyOwnerOverview />
         </div>
       </div>
     </div>
   );
 };
 
-export default AgentDashboard;
+export default PropertyOwnerDashboard;
