@@ -1,72 +1,140 @@
-
+import { useState, useEffect } from "react";
+import { useRouter } from 'next/router';
+import { useQuery } from "@tanstack/react-query";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Icons } from "@/components/icons";
+import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { useEffect, useState } from "react";
-import RoleDashboard from "@/components/dashboard/RoleDashboard";
-import AuthenticatedNavigation from "@/components/navigation/AuthenticatedNavigation";
+import { cn } from "@/lib/utils";
+import ThemeSwitcher from "@/components/ui/theme-switcher";
+import NotificationCenter from "@/components/ui/notification-center";
 
 const UserDashboardPage = () => {
-  const { isAuthenticated, loading, profile, user } = useAuth();
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const [language, setLanguage] = useState<"en" | "id">((searchParams.get('lang') as "en" | "id") || "en");
-  const [theme, setTheme] = useState("light");
+  const { user, signOut } = useAuth();
+  const router = useRouter();
+  const [isMounted, setIsMounted] = useState(false);
+
+  const { data: profile, isLoading } = useQuery({
+    queryKey: ['user-profile', user?.id],
+    queryFn: async () => {
+      if (!user?.id) throw new Error('No user');
+
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .single();
+
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!user?.id,
+  });
 
   useEffect(() => {
-    if (!loading) {
-      if (!isAuthenticated || !user) {
-        console.log('User not authenticated, redirecting to home');
-        navigate('/?auth=true', { replace: true });
-        return;
-      }
+    setIsMounted(true);
+  }, []);
 
-      // Allow access if user exists, even without complete profile
-      // Profile might still be loading or user might be new
-      if (profile && !['general_user', 'property_owner'].includes(profile.role)) {
-        console.log('User role not allowed for user dashboard, redirecting to appropriate dashboard');
-        navigate('/dashboard', { replace: true });
-        return;
-      }
-    }
-  }, [isAuthenticated, loading, profile, user, navigate]);
-
-  const toggleLanguage = () => {
-    setLanguage(prev => prev === "en" ? "id" : "en");
-  };
-
-  const toggleTheme = () => {
-    setTheme(prev => prev === "light" ? "dark" : "light");
-  };
-
-  if (loading) {
+  if (!isMounted) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <h2 className="text-lg font-semibold text-foreground">Loading your dashboard...</h2>
-          <p className="text-sm text-muted-foreground mt-2">Please wait while we set up your workspace</p>
-        </div>
+        <Card className="w-full max-w-md p-8 space-y-4">
+          <div className="flex justify-center">
+            <Icons.logo className="h-10 w-10" />
+          </div>
+          <CardHeader>
+            <CardTitle className="text-2xl text-center">Loading...</CardTitle>
+            <CardDescription className="text-center text-muted-foreground">
+              Please wait while we load your dashboard.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-full" />
+          </CardContent>
+        </Card>
       </div>
     );
   }
 
-  if (!isAuthenticated || !user) {
-    return null; // Will redirect in useEffect
-  }
-
   return (
     <div className="min-h-screen bg-background">
-      <AuthenticatedNavigation
-        language={language}
-        onLanguageToggle={toggleLanguage}
-        theme={theme}
-        onThemeToggle={toggleTheme}
-      />
-      <div className="pt-16 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto py-8">
-          <RoleDashboard language={language} />
+      <header className="border-b bg-card">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <Icons.logo className="h-6 w-6" />
+              <CardTitle className="text-lg font-semibold">
+                AstraVilla User Dashboard
+              </CardTitle>
+            </div>
+            <div className="flex items-center space-x-4">
+              <NotificationCenter />
+              <ThemeSwitcher variant="compact" />
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="h-8 w-8 p-0 rounded-full">
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src={profile?.avatar_url || ""} alt={profile?.full_name || "Avatar"} />
+                      <AvatarFallback>{profile?.full_name?.charAt(0).toUpperCase() || "AV"}</AvatarFallback>
+                    </Avatar>
+                    <span className="sr-only">Open user menu</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => router.push('/profile')}>
+                    <Icons.user className="mr-2 h-4 w-4" />
+                    <span>Profile</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => router.push('/account/settings')}>
+                    <Icons.settings className="mr-2 h-4 w-4" />
+                    <span>Settings</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => signOut()}>
+                    <Icons.logout className="mr-2 h-4 w-4" />
+                    <span>Log out</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          </div>
         </div>
-      </div>
+      </header>
+
+      <main className="container mx-auto px-4 py-8">
+        <Card className="w-full max-w-4xl mx-auto">
+          <CardHeader>
+            <CardTitle className="text-2xl">Welcome to Your Dashboard</CardTitle>
+            <CardDescription>
+              Manage your account, view listings, and more.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <p>
+              Hello, {profile?.full_name || "User"}! This is your personalized
+              dashboard.
+            </p>
+            <Button onClick={() => router.push('/')}>
+              Go to Homepage
+            </Button>
+          </CardContent>
+        </Card>
+      </main>
     </div>
   );
 };
