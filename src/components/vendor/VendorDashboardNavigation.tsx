@@ -3,6 +3,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { 
+  LayoutDashboard,
   Building2, 
   Users, 
   Calendar, 
@@ -26,22 +27,34 @@ interface VendorDashboardNavigationProps {
 const VendorDashboardNavigation = ({ activeSection, onSectionChange }: VendorDashboardNavigationProps) => {
   const navigationSections = [
     {
+      id: 'dashboard',
+      label: 'Dashboard',
+      icon: LayoutDashboard,
+      description: 'Overview and quick stats'
+    },
+    {
       id: 'business-profile',
       label: 'Business Profile',
       icon: Building2,
-      description: 'Manage business information and nature'
+      description: 'Manage business information'
     },
     {
       id: 'services',
       label: 'Services',
       icon: Settings,
-      description: 'Create and manage your services'
+      description: 'Create and manage services'
+    },
+    {
+      id: 'bookings',
+      label: 'Bookings',
+      icon: Calendar,
+      description: 'View and manage bookings'
     },
     {
       id: 'customers',
       label: 'Customers',
       icon: Users,
-      description: 'Customer management and relationships'
+      description: 'Customer management'
     },
     {
       id: 'billing',
@@ -58,14 +71,14 @@ const VendorDashboardNavigation = ({ activeSection, onSectionChange }: VendorDas
     {
       id: 'holidays',
       label: 'Holiday Management',
-      icon: Calendar,
-      description: 'Set service holidays and off days'
+      icon: Clock,
+      description: 'Set service holidays'
     },
     {
       id: 'change-requests',
       label: 'Change Requests',
       icon: FileText,
-      description: 'Request profile or service changes'
+      description: 'Request profile changes'
     },
     {
       id: 'feedback',
@@ -83,13 +96,13 @@ const VendorDashboardNavigation = ({ activeSection, onSectionChange }: VendorDas
       id: 'customer-service',
       label: 'Customer Service',
       icon: HeadphonesIcon,
-      description: 'Support tickets and communications'
+      description: 'Support tickets'
     },
     {
       id: 'analytics',
       label: 'Analytics',
       icon: TrendingUp,
-      description: 'Business performance insights'
+      description: 'Business insights'
     }
   ];
 

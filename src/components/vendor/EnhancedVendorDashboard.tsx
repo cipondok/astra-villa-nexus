@@ -2,9 +2,10 @@
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import VendorDashboardNavigation from "./VendorDashboardNavigation";
+import VendorProfileView from "./VendorProfileView";
 import VendorBusinessProfile from "./VendorBusinessProfile";
-import EnhancedVendorServiceForm from "./EnhancedVendorServiceForm";
-import VendorServices from "./VendorServices";
+import VendorServicesList from "./VendorServicesList";
+import VendorServiceForm from "./VendorServiceForm";
 import VendorCustomerManagement from "./VendorCustomerManagement";
 import VendorBillingManagement from "./VendorBillingManagement";
 import VendorProgressTracking from "./VendorProgressTracking";
@@ -14,30 +15,182 @@ import VendorAnalytics from "./VendorAnalytics";
 import VendorHolidayManagement from "./VendorHolidayManagement";
 import VendorChangeRequests from "./VendorChangeRequests";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
 
 const EnhancedVendorDashboard = () => {
   const { user, profile } = useAuth();
-  const [activeSection, setActiveSection] = useState('business-profile');
+  const [activeSection, setActiveSection] = useState('dashboard');
   const [showServiceForm, setShowServiceForm] = useState(false);
+  const [editingService, setEditingService] = useState(null);
+  const [editingProfile, setEditingProfile] = useState(false);
 
   const renderContent = () => {
     switch (activeSection) {
-      case 'business-profile':
-        return <VendorBusinessProfile />;
-      
-      case 'services':
+      case 'dashboard':
         return (
           <div className="space-y-6">
-            {showServiceForm ? (
-              <EnhancedVendorServiceForm 
-                onClose={() => setShowServiceForm(false)}
-                onSuccess={() => setShowServiceForm(false)}
-              />
-            ) : (
-              <VendorServices />
-            )}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Quick Stats */}
+              <Card className="lg:col-span-2">
+                <CardHeader>
+                  <CardTitle>Business Overview</CardTitle>
+                  <CardDescription>Your business performance at a glance</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="text-center">
+                      <p className="text-2xl font-bold text-blue-600">12</p>
+                      <p className="text-sm text-gray-600">Services</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-2xl font-bold text-green-600">45</p>
+                      <p className="text-sm text-gray-600">Bookings</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-2xl font-bold text-yellow-600">4.8</p>
+                      <p className="text-sm text-gray-600">Rating</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-2xl font-bold text-purple-600">28</p>
+                      <p className="text-sm text-gray-600">Reviews</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Quick Actions */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Quick Actions</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <Button 
+                    variant="outline" 
+                    className="w-full justify-start"
+                    onClick={() => setActiveSection('services')}
+                  >
+                    Manage Services
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    className="w-full justify-start"
+                    onClick={() => setActiveSection('bookings')}
+                  >
+                    View Bookings
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    className="w-full justify-start"
+                    onClick={() => setActiveSection('business-profile')}
+                  >
+                    Edit Profile
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Recent Activity */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Recent Activity</CardTitle>
+                <CardDescription>Latest updates on your business</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex items-center gap-4 p-3 bg-blue-50 rounded-lg">
+                    <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                    <div>
+                      <p className="text-sm font-medium">New booking received</p>
+                      <p className="text-xs text-gray-600">Premium Home Cleaning - 2 hours ago</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-4 p-3 bg-green-50 rounded-lg">
+                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                    <div>
+                      <p className="text-sm font-medium">Payment received</p>
+                      <p className="text-xs text-gray-600">Rp 150,000 - 4 hours ago</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-4 p-3 bg-yellow-50 rounded-lg">
+                    <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                    <div>
+                      <p className="text-sm font-medium">New review</p>
+                      <p className="text-xs text-gray-600">5 stars - Property Maintenance - 1 day ago</p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         );
+      
+      case 'business-profile':
+        if (editingProfile) {
+          return (
+            <div className="space-y-4">
+              <Button 
+                variant="ghost" 
+                onClick={() => setEditingProfile(false)}
+                className="mb-4"
+              >
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Back to Profile View
+              </Button>
+              <VendorBusinessProfile />
+            </div>
+          );
+        }
+        return (
+          <VendorProfileView 
+            profile={{}} 
+            businessNature={{}} 
+            onEdit={() => setEditingProfile(true)}
+            canChangeNature={true}
+          />
+        );
+      
+      case 'services':
+        if (showServiceForm) {
+          return (
+            <div className="space-y-4">
+              <Button 
+                variant="ghost" 
+                onClick={() => {
+                  setShowServiceForm(false);
+                  setEditingService(null);
+                }}
+                className="mb-4"
+              >
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Back to Services
+              </Button>
+              <VendorServiceForm 
+                service={editingService}
+                onClose={() => {
+                  setShowServiceForm(false);
+                  setEditingService(null);
+                }}
+                onSuccess={() => {
+                  setShowServiceForm(false);
+                  setEditingService(null);
+                }}
+              />
+            </div>
+          );
+        }
+        return (
+          <VendorServicesList 
+            onAddService={() => setShowServiceForm(true)}
+            onEditService={(service) => {
+              setEditingService(service);
+              setShowServiceForm(true);
+            }}
+          />
+        );
+      
+      case 'bookings':
+        return <VendorBookings />;
       
       case 'customers':
         return <VendorCustomerManagement />;
@@ -107,7 +260,14 @@ const EnhancedVendorDashboard = () => {
         return <VendorAnalytics />;
       
       default:
-        return <VendorBusinessProfile />;
+        return (
+          <VendorProfileView 
+            profile={{}} 
+            businessNature={{}} 
+            onEdit={() => setEditingProfile(true)}
+            canChangeNature={true}
+          />
+        );
     }
   };
 
@@ -116,7 +276,7 @@ const EnhancedVendorDashboard = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">
-            Enhanced Vendor Dashboard
+            Vendor Control Panel
           </h1>
           <p className="text-gray-600 mt-2">
             Welcome back, {profile?.full_name || user?.email}! Manage your business operations from here.
