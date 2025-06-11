@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 import AgentTools from "./AgentTools";
 import { 
   Building, 
@@ -29,6 +29,7 @@ import {
 
 const AgentOverview = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   // Sample properties for agent cs@astravilla.com
   const sampleProperties = [
@@ -151,6 +152,19 @@ const AgentOverview = () => {
     return `Rp ${price.toLocaleString()}`;
   };
 
+  const handleViewProperty = (propertyId: string) => {
+    navigate(`/property/${propertyId}`);
+  };
+
+  const handleEditProperty = (propertyId: string) => {
+    // For now, we'll show an alert. In the future, this could navigate to an edit page
+    alert(`Edit property ${propertyId} - This feature will be implemented soon`);
+  };
+
+  const handleAddListing = () => {
+    alert("Add new listing - This feature will be implemented soon");
+  };
+
   const CurrentIcon = agentMembership.currentLevel.icon;
 
   return (
@@ -267,7 +281,7 @@ const AgentOverview = () => {
         <TabsContent value="listings" className="space-y-4">
           <div className="flex justify-between items-center">
             <h2 className="text-xl font-semibold">Property Listings</h2>
-            <Button>
+            <Button onClick={handleAddListing}>
               <PlusCircle className="h-4 w-4 mr-2" />
               Add Listing
             </Button>
@@ -313,11 +327,21 @@ const AgentOverview = () => {
                     </div>
                     
                     <div className="flex gap-2 pt-2">
-                      <Button size="sm" variant="outline" className="flex-1">
+                      <Button 
+                        size="sm" 
+                        variant="outline" 
+                        className="flex-1"
+                        onClick={() => handleViewProperty(property.id)}
+                      >
                         <Eye className="h-4 w-4 mr-1" />
                         View
                       </Button>
-                      <Button size="sm" variant="outline" className="flex-1">
+                      <Button 
+                        size="sm" 
+                        variant="outline" 
+                        className="flex-1"
+                        onClick={() => handleEditProperty(property.id)}
+                      >
                         <Edit className="h-4 w-4 mr-1" />
                         Edit
                       </Button>
