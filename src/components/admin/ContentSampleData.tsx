@@ -194,6 +194,7 @@ const ContentSampleData = () => {
 
   useEffect(() => {
     const addSampleContent = async () => {
+      // Only run for the specific admin email to avoid RLS issues
       if (!user || user.email !== 'mycode103@gmail.com') {
         console.log('User not admin, skipping sample content creation');
         return;
@@ -202,11 +203,11 @@ const ContentSampleData = () => {
       try {
         console.log('Checking for existing content...');
         
-        // Check if content already exists
-        const { data: existingContent, error: checkError } = await supabase
+        // Check if content already exists by counting rows
+        const { count, error: checkError } = await supabase
           .from('cms_content')
-          .select('id, author_id')
-          .limit(5);
+          .select('*', { count: 'exact', head: true })
+          .eq('author_id', user.id);
 
         if (checkError) {
           console.error('Error checking existing content:', checkError);
@@ -214,37 +215,20 @@ const ContentSampleData = () => {
           return;
         }
 
-        console.log('Existing content:', existingContent);
+        console.log('Content count:', count);
 
-        // Get the admin user ID
-        const { data: adminProfile, error: profileError } = await supabase
-          .from('profiles')
-          .select('id')
-          .eq('email', 'mycode103@gmail.com')
-          .single();
-
-        if (profileError || !adminProfile) {
-          console.error('Error getting admin profile:', profileError);
-          showError("Error", "Admin profile not found");
-          return;
-        }
-
-        console.log('Admin profile:', adminProfile);
-
-        // Check if this admin already has content
-        const adminContent = existingContent?.filter(c => c.author_id === adminProfile.id) || [];
-        
-        if (adminContent.length > 0) {
-          console.log('Admin already has content:', adminContent.length);
+        // If content already exists for this user, skip creation
+        if (count && count > 0) {
+          console.log('Admin already has content:', count, 'items');
           return;
         }
 
         console.log('Creating sample content for admin...');
 
-        // Insert sample content
+        // Insert sample content with the user's ID as author
         const contentToInsert = sampleContent.map(content => ({
           ...content,
-          author_id: adminProfile.id
+          author_id: user.id
         }));
 
         const { error: insertError } = await supabase
