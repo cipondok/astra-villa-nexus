@@ -60,7 +60,7 @@ const ThemeToggleSwitch = ({ language = "en", className = "" }: ThemeToggleSwitc
       onClick={cycleTheme}
       className={`
         flex items-center space-x-2 px-3 py-2 rounded-full transition-all duration-300
-        glass-ios border border-border/30 hover:bg-foreground/10
+        bg-transparent border-transparent hover:bg-white/5
         ${className}
       `}
     >

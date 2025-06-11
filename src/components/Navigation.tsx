@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, User, LogOut, Globe } from "lucide-react";
+import { Menu, X, User, LogOut, Globe, Bot } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useThemeSettings } from "@/contexts/ThemeSettingsContext";
 import { useTheme } from "@/components/ThemeProvider";
@@ -38,12 +38,18 @@ const Navigation = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex items-center">
-              <Link to="/" className="flex-shrink-0 flex items-center">
-                <span className="text-2xl font-bold">
-                  <span className="inline-block animate-gradient bg-gradient-to-r from-blue-400 via-purple-400 to-orange-400 bg-clip-text text-transparent bg-[length:300%_300%] hover:scale-105 transition-transform duration-300">
-                    {themeSettings.siteName}
+              <Link to="/" className="flex-shrink-0 flex items-center group">
+                <div className="flex items-center space-x-2">
+                  <div className="relative">
+                    <Bot className="w-6 h-6 text-primary-dynamic animate-pulse" />
+                    <div className="absolute inset-0 w-6 h-6 bg-primary-dynamic/20 rounded-full animate-ping"></div>
+                  </div>
+                  <span className="text-2xl font-bold">
+                    <span className="inline-block animate-gradient bg-gradient-to-r from-blue-400 via-purple-400 to-orange-400 bg-clip-text text-transparent bg-[length:300%_300%] hover:scale-105 transition-transform duration-300 group-hover:from-purple-400 group-hover:via-blue-400 group-hover:to-orange-400">
+                      Astra Villa
+                    </span>
                   </span>
-                </span>
+                </div>
               </Link>
             </div>
 
@@ -77,8 +83,10 @@ const Navigation = () => {
                 <span className="text-sm font-medium">{language.toUpperCase()}</span>
               </Button>
 
-              {/* Theme Toggle Switch */}
-              <ThemeToggleSwitch language={language} />
+              {/* Theme Toggle Switch - Made Transparent */}
+              <div className="bg-transparent">
+                <ThemeToggleSwitch language={language} className="bg-transparent border-transparent hover:bg-white/5" />
+              </div>
               
               {user ? (
                 <div className="flex items-center space-x-4">
@@ -111,8 +119,10 @@ const Navigation = () => {
 
             {/* Mobile menu button */}
             <div className="md:hidden flex items-center space-x-2">
-              {/* Mobile Theme Toggle */}
-              <ThemeToggleSwitch language={language} className="scale-90" />
+              {/* Mobile Theme Toggle - Made Transparent */}
+              <div className="bg-transparent">
+                <ThemeToggleSwitch language={language} className="scale-90 bg-transparent border-transparent hover:bg-white/5" />
+              </div>
               
               <Button
                 variant="ghost"
