@@ -7,10 +7,13 @@ import {
   Crown, 
   Star, 
   TrendingUp, 
-  Gift
+  Gift,
+  CheckCircle,
+  Clock
 } from "lucide-react";
 
 const MembershipLevel = () => {
+  // Mock membership data
   const currentLevel = {
     name: "Silver",
     level: 2,
@@ -32,46 +35,119 @@ const MembershipLevel = () => {
     percentage: 70
   };
 
+  const benefits = [
+    { name: "Lower Commission Rates", current: "3.5%", next: "2.5%", unlocked: true },
+    { name: "Priority Support", current: "Standard", next: "Premium", unlocked: true },
+    { name: "Advanced Analytics", current: "Basic", next: "Advanced", unlocked: false },
+    { name: "Featured Listings", current: "1/month", next: "3/month", unlocked: false },
+    { name: "Marketing Tools", current: "Limited", next: "Full Access", unlocked: false }
+  ];
+
+  const requirements = [
+    { name: "Active Properties", current: 5, required: 10, completed: false },
+    { name: "Positive Reviews", current: 23, required: 25, completed: false },
+    { name: "Response Time", current: "2.4h", required: "< 2h", completed: false },
+    { name: "Account Age", current: "8 months", required: "6 months", completed: true }
+  ];
+
   const CurrentIcon = currentLevel.icon;
   const NextIcon = nextLevel.icon;
 
   return (
-    <Card className="w-full h-fit">
-      <CardHeader className="pb-3">
+    <Card className="w-full">
+      <CardHeader>
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle className="flex items-center gap-2 text-sm">
-              <CurrentIcon className={`h-4 w-4 ${currentLevel.textColor}`} />
-              Membership
+            <CardTitle className="flex items-center gap-2">
+              <CurrentIcon className={`h-5 w-5 ${currentLevel.textColor}`} />
+              Membership Level
             </CardTitle>
+            <CardDescription>Track your progress and unlock new benefits</CardDescription>
           </div>
           <Badge className={currentLevel.color} variant="secondary">
-            {currentLevel.name}
+            {currentLevel.name} Member
           </Badge>
         </div>
       </CardHeader>
-      <CardContent className="space-y-3">
-        {/* Compact Level Status */}
+      <CardContent className="space-y-6">
+        {/* Current Level Status */}
         <div className="text-center space-y-2">
-          <div className={`w-12 h-12 mx-auto rounded-full ${currentLevel.color} flex items-center justify-center`}>
-            <CurrentIcon className="h-6 w-6 text-white" />
+          <div className={`w-16 h-16 mx-auto rounded-full ${currentLevel.color} flex items-center justify-center`}>
+            <CurrentIcon className="h-8 w-8 text-white" />
           </div>
-          <h3 className="text-sm font-semibold">Level {currentLevel.level}: {currentLevel.name}</h3>
+          <h3 className="text-lg font-semibold">Level {currentLevel.level}: {currentLevel.name}</h3>
+          <p className="text-sm text-muted-foreground">You're doing great! Keep it up.</p>
         </div>
 
-        {/* Compact Progress */}
-        <div className="space-y-2">
-          <div className="flex items-center justify-between text-xs">
-            <span className="font-medium">Progress to {nextLevel.name}</span>
-            <span className="text-muted-foreground">{progress.current}/{progress.required}</span>
+        {/* Progress to Next Level */}
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-medium">Progress to {nextLevel.name}</span>
+            <span className="text-sm text-muted-foreground">{progress.current}/{progress.required} completed</span>
           </div>
-          <Progress value={progress.percentage} className="h-1" />
+          <Progress value={progress.percentage} className="h-2" />
+          <div className="flex items-center justify-between text-xs text-muted-foreground">
+            <span>Current: {currentLevel.name}</span>
+            <span>Next: {nextLevel.name}</span>
+          </div>
         </div>
 
-        {/* Compact Action */}
-        <Button className="w-full" variant="outline" size="sm">
-          <NextIcon className="h-3 w-3 mr-2" />
-          View Details
+        {/* Requirements */}
+        <div className="space-y-3">
+          <h4 className="text-sm font-medium flex items-center gap-2">
+            <TrendingUp className="h-4 w-4" />
+            Requirements for {nextLevel.name}
+          </h4>
+          <div className="space-y-2">
+            {requirements.map((req, index) => (
+              <div key={index} className="flex items-center justify-between p-2 rounded-lg bg-muted/50">
+                <div className="flex items-center gap-2">
+                  {req.completed ? (
+                    <CheckCircle className="h-4 w-4 text-green-500" />
+                  ) : (
+                    <Clock className="h-4 w-4 text-orange-500" />
+                  )}
+                  <span className="text-sm">{req.name}</span>
+                </div>
+                <div className="text-sm">
+                  <span className={req.completed ? "text-green-600" : "text-muted-foreground"}>
+                    {req.current}
+                  </span>
+                  <span className="text-muted-foreground"> / {req.required}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Benefits Comparison */}
+        <div className="space-y-3">
+          <h4 className="text-sm font-medium flex items-center gap-2">
+            <Gift className="h-4 w-4" />
+            Benefits Upgrade
+          </h4>
+          <div className="space-y-2">
+            {benefits.map((benefit, index) => (
+              <div key={index} className="flex items-center justify-between p-2 rounded-lg bg-muted/50">
+                <span className="text-sm">{benefit.name}</span>
+                <div className="flex items-center gap-2 text-xs">
+                  <Badge variant={benefit.unlocked ? "default" : "secondary"}>
+                    {benefit.current}
+                  </Badge>
+                  <span className="text-muted-foreground">→</span>
+                  <Badge variant="outline" className="border-yellow-500 text-yellow-700">
+                    {benefit.next}
+                  </Badge>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Action Button */}
+        <Button className="w-full" variant="outline">
+          <NextIcon className="h-4 w-4 mr-2" />
+          View Upgrade Path
         </Button>
       </CardContent>
     </Card>
