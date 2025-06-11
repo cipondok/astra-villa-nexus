@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAlert } from "@/contexts/AlertContext";
@@ -26,9 +26,28 @@ import {
   Bath,
   Square,
   Heart,
-  Star,
   Camera
 } from "lucide-react";
+
+interface PropertyListing {
+  id: string;
+  vendor_id: string;
+  title: string;
+  description?: string;
+  property_type: string;
+  location: string;
+  bedrooms: number;
+  bathrooms: number;
+  area_sqm: number;
+  price: number;
+  price_type: string;
+  is_furnished: boolean;
+  amenities: string[];
+  images: string[];
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
 
 const VendorListings = () => {
   const { user } = useAuth();
@@ -38,7 +57,7 @@ const VendorListings = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [editingListing, setEditingListing] = useState<any>(null);
+  const [editingListing, setEditingListing] = useState<PropertyListing | null>(null);
   
   const [listingForm, setListingForm] = useState({
     title: "",
@@ -63,13 +82,13 @@ const VendorListings = () => {
       if (!user?.id) throw new Error('No user');
       
       const { data, error } = await supabase
-        .from('vendor_property_listings')
+        .from('vendor_property_listings' as any)
         .select('*')
         .eq('vendor_id', user.id)
         .order('created_at', { ascending: false });
       
       if (error) throw error;
-      return data || [];
+      return (data || []) as PropertyListing[];
     },
   });
 
@@ -78,7 +97,7 @@ const VendorListings = () => {
     mutationFn: async (listingData: any) => {
       if (editingListing) {
         const { error } = await supabase
-          .from('vendor_property_listings')
+          .from('vendor_property_listings' as any)
           .update({
             ...listingData,
             updated_at: new Date().toISOString()
@@ -88,7 +107,7 @@ const VendorListings = () => {
         if (error) throw error;
       } else {
         const { error } = await supabase
-          .from('vendor_property_listings')
+          .from('vendor_property_listings' as any)
           .insert({
             vendor_id: user?.id,
             ...listingData
@@ -127,7 +146,7 @@ const VendorListings = () => {
   const deleteListingMutation = useMutation({
     mutationFn: async (listingId: string) => {
       const { error } = await supabase
-        .from('vendor_property_listings')
+        .from('vendor_property_listings' as any)
         .delete()
         .eq('id', listingId);
       
@@ -162,7 +181,7 @@ const VendorListings = () => {
     setIsCreateModalOpen(true);
   };
 
-  const handleEditListing = (listing: any) => {
+  const handleEditListing = (listing: PropertyListing) => {
     setEditingListing(listing);
     setListingForm({
       title: listing.title || "",

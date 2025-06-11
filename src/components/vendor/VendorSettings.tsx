@@ -5,7 +5,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
@@ -39,15 +38,6 @@ const VendorSettings = () => {
 
   const [businessSettings, setBusinessSettings] = useState({
     autoAcceptBookings: false,
-    businessHours: {
-      monday: { open: "09:00", close: "17:00", isOpen: true },
-      tuesday: { open: "09:00", close: "17:00", isOpen: true },
-      wednesday: { open: "09:00", close: "17:00", isOpen: true },
-      thursday: { open: "09:00", close: "17:00", isOpen: true },
-      friday: { open: "09:00", close: "17:00", isOpen: true },
-      saturday: { open: "09:00", close: "15:00", isOpen: true },
-      sunday: { open: "10:00", close: "14:00", isOpen: false }
-    },
     bookingLeadTime: 24,
     maxAdvanceBooking: 30,
     cancellationPolicy: "24_hours"
@@ -61,7 +51,6 @@ const VendorSettings = () => {
       digitalWallet: true,
       creditCard: false
     },
-    invoiceTemplate: "standard",
     taxRate: 0
   });
 
@@ -72,7 +61,7 @@ const VendorSettings = () => {
       if (!user?.id) throw new Error('No user');
       
       const { data, error } = await supabase
-        .from('vendor_settings')
+        .from('vendor_settings' as any)
         .select('*')
         .eq('vendor_id', user.id)
         .single();
@@ -84,9 +73,9 @@ const VendorSettings = () => {
 
   // Save settings mutation
   const saveSettingsMutation = useMutation({
-    mutationFn: async (settings: any) => {
+    mutationFn: async () => {
       const { error } = await supabase
-        .from('vendor_settings')
+        .from('vendor_settings' as any)
         .upsert({
           vendor_id: user?.id,
           notification_settings: notificationSettings,
@@ -107,11 +96,7 @@ const VendorSettings = () => {
   });
 
   const handleSaveSettings = () => {
-    saveSettingsMutation.mutate({
-      notificationSettings,
-      businessSettings,
-      paymentSettings
-    });
+    saveSettingsMutation.mutate();
   };
 
   if (isLoading) {
@@ -196,7 +181,7 @@ const VendorSettings = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Clock className="h-5 w-5" />
-            Business Hours & Booking Settings
+            Business & Booking Settings
           </CardTitle>
           <CardDescription>Configure your availability and booking policies</CardDescription>
         </CardHeader>

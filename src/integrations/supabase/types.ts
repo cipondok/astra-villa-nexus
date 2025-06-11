@@ -2234,6 +2234,74 @@ export type Database = {
           },
         ]
       }
+      vendor_property_listings: {
+        Row: {
+          amenities: string[] | null
+          area_sqm: number | null
+          bathrooms: number | null
+          bedrooms: number | null
+          created_at: string | null
+          description: string | null
+          id: string
+          images: string[] | null
+          is_active: boolean | null
+          is_furnished: boolean | null
+          location: string
+          price: number
+          price_type: string | null
+          property_type: string
+          title: string
+          updated_at: string | null
+          vendor_id: string | null
+        }
+        Insert: {
+          amenities?: string[] | null
+          area_sqm?: number | null
+          bathrooms?: number | null
+          bedrooms?: number | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          images?: string[] | null
+          is_active?: boolean | null
+          is_furnished?: boolean | null
+          location: string
+          price?: number
+          price_type?: string | null
+          property_type: string
+          title: string
+          updated_at?: string | null
+          vendor_id?: string | null
+        }
+        Update: {
+          amenities?: string[] | null
+          area_sqm?: number | null
+          bathrooms?: number | null
+          bedrooms?: number | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          images?: string[] | null
+          is_active?: boolean | null
+          is_furnished?: boolean | null
+          location?: string
+          price?: number
+          price_type?: string | null
+          property_type?: string
+          title?: string
+          updated_at?: string | null
+          vendor_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendor_property_listings_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       vendor_requests: {
         Row: {
           business_name: string
@@ -2572,6 +2640,44 @@ export type Database = {
             foreignKeyName: "vendor_services_vendor_id_fkey"
             columns: ["vendor_id"]
             isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vendor_settings: {
+        Row: {
+          business_settings: Json | null
+          created_at: string | null
+          id: string
+          notification_settings: Json | null
+          payment_settings: Json | null
+          updated_at: string | null
+          vendor_id: string | null
+        }
+        Insert: {
+          business_settings?: Json | null
+          created_at?: string | null
+          id?: string
+          notification_settings?: Json | null
+          payment_settings?: Json | null
+          updated_at?: string | null
+          vendor_id?: string | null
+        }
+        Update: {
+          business_settings?: Json | null
+          created_at?: string | null
+          id?: string
+          notification_settings?: Json | null
+          payment_settings?: Json | null
+          updated_at?: string | null
+          vendor_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendor_settings_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: true
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
