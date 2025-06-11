@@ -1,16 +1,13 @@
 
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { useTheme } from "@/components/ThemeProvider";
-import AuthenticatedNavigation from "@/components/navigation/AuthenticatedNavigation";
+import { useEffect } from "react";
+import Navigation from "@/components/Navigation";
 import PropertyOwnerOverview from "@/components/propertyowner/PropertyOwnerOverview";
 
 const PropertyOwnerDashboard = () => {
   const { isAuthenticated, loading, profile } = useAuth();
-  const { theme, setTheme } = useTheme();
   const navigate = useNavigate();
-  const [language, setLanguage] = useState<"en" | "id">("en");
 
   useEffect(() => {
     if (!loading && !isAuthenticated) {
@@ -20,20 +17,6 @@ const PropertyOwnerDashboard = () => {
       navigate('/dashboard');
     }
   }, [isAuthenticated, loading, profile, navigate]);
-
-  const handleLanguageToggle = () => {
-    setLanguage(prev => prev === "en" ? "id" : "en");
-  };
-
-  const handleThemeToggle = () => {
-    if (theme === "light") {
-      setTheme("middle");
-    } else if (theme === "middle") {
-      setTheme("dark");
-    } else {
-      setTheme("light");
-    }
-  };
 
   if (loading) {
     return (
@@ -52,12 +35,7 @@ const PropertyOwnerDashboard = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <AuthenticatedNavigation
-        language={language}
-        onLanguageToggle={handleLanguageToggle}
-        theme={theme}
-        onThemeToggle={handleThemeToggle}
-      />
+      <Navigation />
       <div className="pt-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto py-8">
           <PropertyOwnerOverview />

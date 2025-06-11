@@ -2,7 +2,7 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import AuthenticatedNavigation from "@/components/navigation/AuthenticatedNavigation";
+import Navigation from "@/components/Navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { 
@@ -41,12 +41,7 @@ const UserDashboard = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <AuthenticatedNavigation
-        language="en"
-        onLanguageToggle={() => {}}
-        theme="light"
-        onThemeToggle={() => {}}
-      />
+      <Navigation />
       <div className="pt-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto py-8">
           {/* Welcome Section */}
