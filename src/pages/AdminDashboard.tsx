@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -21,6 +20,7 @@ import SystemMonitor from "@/components/admin/SystemMonitor";
 import SystemSettings from "@/components/admin/SystemSettings";
 import WebTrafficAnalytics from "@/components/admin/WebTrafficAnalytics";
 import PropertySampleData from "@/components/admin/PropertySampleData";
+import ContentSampleData from "@/components/admin/ContentSampleData";
 
 const AdminDashboard = () => {
   const { user, signOut } = useAuth();
@@ -47,8 +47,9 @@ const AdminDashboard = () => {
       {/* Add Navigation at the top */}
       <Navigation />
       
-      {/* Add PropertySampleData component to populate sample data */}
+      {/* Add sample data components to populate data */}
       <PropertySampleData />
+      <ContentSampleData />
       
       <header className="border-b bg-card">
         <div className="container mx-auto px-4 py-4">
