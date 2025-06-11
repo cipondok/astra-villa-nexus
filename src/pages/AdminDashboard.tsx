@@ -5,15 +5,37 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Settings, Users, Home, List, Plus, Gift, Calendar } from "lucide-react";
+import { Settings, Users, Home, List, Plus, Gift, Calendar, Database, Shield, FileText, Store, MessageSquare, Activity } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AstraTokenSettings from "@/components/admin/AstraTokenSettings";
 import DailyCheckInManagement from "@/components/admin/DailyCheckInManagement";
+import SimpleUserManagement from "@/components/admin/SimpleUserManagement";
+import PropertyManagement from "@/components/admin/PropertyManagement";
+import ContentManagement from "@/components/admin/ContentManagement";
+import VendorManagement from "@/components/admin/VendorManagement";
+import FeedbackManagement from "@/components/admin/FeedbackManagement";
+import SystemMonitor from "@/components/admin/SystemMonitor";
+import SystemSettings from "@/components/admin/SystemSettings";
 
 const AdminDashboard = () => {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("users");
+
+  // Check if user is admin
+  const isAdmin = user?.email === 'mycode103@gmail.com' || user?.user_metadata?.role === 'admin';
+
+  if (!isAdmin) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-destructive mb-4">Access Denied</h1>
+          <p className="text-muted-foreground mb-6">You don't have permission to access the admin dashboard.</p>
+          <Button onClick={() => navigate('/')}>Return to Home</Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -46,48 +68,59 @@ const AdminDashboard = () => {
       
       <main className="container mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-8">
             <TabsTrigger value="users" className="flex items-center gap-2">
               <Users className="h-4 w-4" />
               Users
             </TabsTrigger>
-            <TabsTrigger value="listings" className="flex items-center gap-2">
-              <List className="h-4 w-4" />
-              Listings
+            <TabsTrigger value="properties" className="flex items-center gap-2">
+              <Home className="h-4 w-4" />
+              Properties
             </TabsTrigger>
-            <TabsTrigger value="create-listing" className="flex items-center gap-2">
-              <Plus className="h-4 w-4" />
-              Create Listing
+            <TabsTrigger value="vendors" className="flex items-center gap-2">
+              <Store className="h-4 w-4" />
+              Vendors
+            </TabsTrigger>
+            <TabsTrigger value="content" className="flex items-center gap-2">
+              <FileText className="h-4 w-4" />
+              Content
+            </TabsTrigger>
+            <TabsTrigger value="feedback" className="flex items-center gap-2">
+              <MessageSquare className="h-4 w-4" />
+              Feedback
             </TabsTrigger>
             <TabsTrigger value="astra-settings" className="flex items-center gap-2">
               <Settings className="h-4 w-4" />
-              ASTRA Settings
+              ASTRA
             </TabsTrigger>
             <TabsTrigger value="daily-rewards" className="flex items-center gap-2">
               <Calendar className="h-4 w-4" />
               Daily Rewards
             </TabsTrigger>
+            <TabsTrigger value="system" className="flex items-center gap-2">
+              <Activity className="h-4 w-4" />
+              System
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="users">
-            <div>
-              <h2 className="text-xl font-bold">Manage Users</h2>
-              <p className="text-muted-foreground">View, edit, and manage user accounts</p>
-            </div>
+            <SimpleUserManagement />
           </TabsContent>
 
-          <TabsContent value="listings">
-            <div>
-              <h2 className="text-xl font-bold">Manage Listings</h2>
-              <p className="text-muted-foreground">View, edit, and manage property listings</p>
-            </div>
+          <TabsContent value="properties">
+            <PropertyManagement />
           </TabsContent>
 
-          <TabsContent value="create-listing">
-            <div>
-              <h2 className="text-xl font-bold">Create Listing</h2>
-              <p className="text-muted-foreground">Add a new property listing to the platform</p>
-            </div>
+          <TabsContent value="vendors">
+            <VendorManagement />
+          </TabsContent>
+
+          <TabsContent value="content">
+            <ContentManagement />
+          </TabsContent>
+
+          <TabsContent value="feedback">
+            <FeedbackManagement />
           </TabsContent>
 
           <TabsContent value="astra-settings">
@@ -96,6 +129,13 @@ const AdminDashboard = () => {
 
           <TabsContent value="daily-rewards">
             <DailyCheckInManagement />
+          </TabsContent>
+
+          <TabsContent value="system">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <SystemMonitor />
+              <SystemSettings />
+            </div>
           </TabsContent>
         </Tabs>
       </main>
