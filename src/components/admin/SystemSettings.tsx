@@ -21,6 +21,7 @@ interface SettingsState {
   data_backup: boolean;
   auto_updates: boolean;
   site_name: string;
+  site_title: string;
   site_description: string;
   contact_email: string;
   support_phone: string;
@@ -40,6 +41,7 @@ const SystemSettings = () => {
     data_backup: true,
     auto_updates: false,
     site_name: "Astra Villa",
+    site_title: "Astra Villa - Premium Property Management",
     site_description: "Premium Property Management Platform",
     contact_email: "admin@astravilla.com",
     support_phone: "+1-555-0123",
@@ -83,11 +85,12 @@ const SystemSettings = () => {
         try {
           const key = setting.key as keyof SettingsState;
           if (key in loadedSettings) {
-            if (setting.value && typeof setting.value === 'object' && setting.value.value !== undefined) {
-              (loadedSettings as any)[key] = setting.value.value;
-            } else if (setting.value !== null) {
-              (loadedSettings as any)[key] = setting.value;
+            // Handle different value formats
+            let value = setting.value;
+            if (typeof value === 'object' && value !== null) {
+              value = value.value || value;
             }
+            (loadedSettings as any)[key] = value;
           }
         } catch (error) {
           console.error('Error processing setting:', setting.key, error);
@@ -98,36 +101,40 @@ const SystemSettings = () => {
     }
   }, [systemSettings]);
 
-  // Individual setting mutation
+  // Individual setting mutation with improved error handling
   const saveSettingMutation = useMutation({
     mutationFn: async ({ key, value, category }: { key: string; value: any; category: string }) => {
-      console.log('Saving individual setting:', key, value);
+      console.log('Saving setting:', key, '=', value, 'category:', category);
       
       const settingData = {
         key,
-        value,
+        value: typeof value === 'object' ? value : { value },
         category,
         description: `System setting for ${key.replace(/_/g, ' ')}`
       };
       
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('system_settings')
         .upsert(settingData, { 
           onConflict: 'key',
           ignoreDuplicates: false 
-        });
+        })
+        .select();
       
       if (error) {
+        console.error('Save error:', error);
         throw new Error(`Failed to save ${key}: ${error.message}`);
       }
       
+      console.log('Successfully saved:', data);
       return { key, value, category };
     },
     onMutate: ({ key }) => {
       setSavingStates(prev => ({ ...prev, [key]: 'saving' }));
     },
-    onSuccess: ({ key }) => {
+    onSuccess: ({ key, value }) => {
       setSavingStates(prev => ({ ...prev, [key]: 'success' }));
+      showSuccess("Setting Saved", `${key.replace(/_/g, ' ')} has been updated successfully.`);
       setTimeout(() => {
         setSavingStates(prev => ({ ...prev, [key]: 'idle' }));
       }, 2000);
@@ -147,8 +154,31 @@ const SystemSettings = () => {
       ...prev,
       [key]: value
     }));
+  };
 
-    // Determine category
+  const handleSaveSetting = (key: keyof SettingsState) => {
+    const value = settings[key];
+    let category = 'general';
+    
+    // Categorize settings
+    if (['email_verification', 'two_factor_auth', 'user_registration'].includes(key)) {
+      category = 'authentication';
+    } else if (['email_notifications', 'push_notifications'].includes(key)) {
+      category = 'notifications';
+    } else if (['data_backup', 'auto_updates', 'maintenance_mode'].includes(key)) {
+      category = 'system';
+    } else if (['site_name', 'site_title', 'site_description', 'contact_email', 'support_phone'].includes(key)) {
+      category = 'website';
+    } else if (['max_file_size', 'session_timeout', 'api_rate_limit'].includes(key)) {
+      category = 'performance';
+    }
+
+    saveSettingMutation.mutate({ key, value, category });
+  };
+
+  const handleSwitchChange = (key: keyof SettingsState, checked: boolean) => {
+    setSettings(prev => ({ ...prev, [key]: checked }));
+    
     let category = 'general';
     if (['email_verification', 'two_factor_auth', 'user_registration'].includes(key)) {
       category = 'authentication';
@@ -156,29 +186,10 @@ const SystemSettings = () => {
       category = 'notifications';
     } else if (['data_backup', 'auto_updates', 'maintenance_mode'].includes(key)) {
       category = 'system';
-    } else if (['site_name', 'site_description', 'contact_email', 'support_phone'].includes(key)) {
-      category = 'website';
-    } else if (['max_file_size', 'session_timeout', 'api_rate_limit'].includes(key)) {
-      category = 'performance';
     }
 
-    // Auto-save for switches immediately
-    if (typeof value === 'boolean') {
-      saveSettingMutation.mutate({ key, value, category });
-    }
-  };
-
-  const handleInputSave = (key: keyof SettingsState) => {
-    const value = settings[key];
-    let category = 'general';
-    
-    if (['site_name', 'site_description', 'contact_email', 'support_phone'].includes(key)) {
-      category = 'website';
-    } else if (['max_file_size', 'session_timeout', 'api_rate_limit'].includes(key)) {
-      category = 'performance';
-    }
-
-    saveSettingMutation.mutate({ key, value, category });
+    // Auto-save switches
+    saveSettingMutation.mutate({ key, value: checked, category });
   };
 
   const getSaveIcon = (key: string) => {
@@ -195,25 +206,74 @@ const SystemSettings = () => {
     }
   };
 
-  const SettingCard = ({ 
-    title, 
+  const InputWithSave = ({ 
+    id, 
+    label, 
+    value, 
+    onChange, 
+    onSave, 
+    type = "text",
+    disabled = false 
+  }: {
+    id: string;
+    label: string;
+    value: string;
+    onChange: (value: string) => void;
+    onSave: () => void;
+    type?: string;
+    disabled?: boolean;
+  }) => (
+    <div className="flex items-end gap-2">
+      <div className="flex-1">
+        <Label htmlFor={id}>{label}</Label>
+        <Input
+          id={id}
+          type={type}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          disabled={disabled}
+          className="mt-1"
+        />
+      </div>
+      <Button 
+        onClick={onSave}
+        disabled={savingStates[id] === 'saving' || disabled}
+        size="sm"
+        className="mb-0"
+      >
+        {getSaveIcon(id)}
+      </Button>
+    </div>
+  );
+
+  const SwitchWithLabel = ({ 
+    id, 
+    label, 
     description, 
-    settingKey, 
-    children 
-  }: { 
-    title: string; 
-    description: string; 
-    settingKey: string; 
-    children: React.ReactNode; 
+    checked, 
+    onChange 
+  }: {
+    id: string;
+    label: string;
+    description: string;
+    checked: boolean;
+    onChange: (checked: boolean) => void;
   }) => (
     <div className="flex items-center justify-between p-4 border rounded-lg">
       <div className="flex-1">
-        <Label className="font-medium">{title}</Label>
+        <Label className="font-medium">{label}</Label>
         <p className="text-sm text-muted-foreground">{description}</p>
-        {children}
       </div>
-      <div className="ml-4 min-w-[24px] flex justify-center">
-        {savingStates[settingKey] && savingStates[settingKey] !== 'idle' && getSaveIcon(settingKey)}
+      <div className="flex items-center gap-2">
+        {savingStates[id] && savingStates[id] !== 'idle' && (
+          <div className="min-w-[24px] flex justify-center">
+            {getSaveIcon(id)}
+          </div>
+        )}
+        <Switch
+          checked={checked}
+          onCheckedChange={onChange}
+        />
       </div>
     </div>
   );
@@ -229,7 +289,7 @@ const SystemSettings = () => {
                 System Settings
               </CardTitle>
               <CardDescription>
-                Configure system-wide settings. Settings auto-save when changed.
+                Configure system-wide settings. Changes are saved automatically for switches.
               </CardDescription>
             </div>
             <Button onClick={() => refetch()} variant="outline" size="sm" disabled={isLoading}>
@@ -243,186 +303,44 @@ const SystemSettings = () => {
             <div className="text-center py-8">Loading settings...</div>
           ) : (
             <>
-              {/* Authentication Settings */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Authentication & Security</h3>
-                <div className="grid grid-cols-1 gap-4">
-                  <SettingCard
-                    title="Email Verification"
-                    description="Require email verification for new users"
-                    settingKey="email_verification"
-                  >
-                    <Switch
-                      checked={settings.email_verification}
-                      onCheckedChange={(checked) => handleSettingChange('email_verification', checked)}
-                      className="mt-2"
-                    />
-                  </SettingCard>
-                  
-                  <SettingCard
-                    title="Two-Factor Authentication"
-                    description="Enable 2FA for enhanced security"
-                    settingKey="two_factor_auth"
-                  >
-                    <Switch
-                      checked={settings.two_factor_auth}
-                      onCheckedChange={(checked) => handleSettingChange('two_factor_auth', checked)}
-                      className="mt-2"
-                    />
-                  </SettingCard>
-                  
-                  <SettingCard
-                    title="User Registration"
-                    description="Allow new user registrations"
-                    settingKey="user_registration"
-                  >
-                    <Switch
-                      checked={settings.user_registration}
-                      onCheckedChange={(checked) => handleSettingChange('user_registration', checked)}
-                      className="mt-2"
-                    />
-                  </SettingCard>
-                </div>
-              </div>
-
-              {/* Notification Settings */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Notifications</h3>
-                <div className="grid grid-cols-1 gap-4">
-                  <SettingCard
-                    title="Email Notifications"
-                    description="Send system notifications via email"
-                    settingKey="email_notifications"
-                  >
-                    <Switch
-                      checked={settings.email_notifications}
-                      onCheckedChange={(checked) => handleSettingChange('email_notifications', checked)}
-                      className="mt-2"
-                    />
-                  </SettingCard>
-                  
-                  <SettingCard
-                    title="Push Notifications"
-                    description="Enable browser push notifications"
-                    settingKey="push_notifications"
-                  >
-                    <Switch
-                      checked={settings.push_notifications}
-                      onCheckedChange={(checked) => handleSettingChange('push_notifications', checked)}
-                      className="mt-2"
-                    />
-                  </SettingCard>
-                </div>
-              </div>
-
-              {/* System Settings */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">System Management</h3>
-                <div className="grid grid-cols-1 gap-4">
-                  <SettingCard
-                    title="Maintenance Mode"
-                    description="Enable maintenance mode for updates"
-                    settingKey="maintenance_mode"
-                  >
-                    <Switch
-                      checked={settings.maintenance_mode}
-                      onCheckedChange={(checked) => handleSettingChange('maintenance_mode', checked)}
-                      className="mt-2"
-                    />
-                  </SettingCard>
-                  
-                  <SettingCard
-                    title="Data Backup"
-                    description="Enable automatic data backups"
-                    settingKey="data_backup"
-                  >
-                    <Switch
-                      checked={settings.data_backup}
-                      onCheckedChange={(checked) => handleSettingChange('data_backup', checked)}
-                      className="mt-2"
-                    />
-                  </SettingCard>
-                  
-                  <SettingCard
-                    title="Auto Updates"
-                    description="Automatically install system updates"
-                    settingKey="auto_updates"
-                  >
-                    <Switch
-                      checked={settings.auto_updates}
-                      onCheckedChange={(checked) => handleSettingChange('auto_updates', checked)}
-                      className="mt-2"
-                    />
-                  </SettingCard>
-                </div>
-              </div>
-
-              {/* Website Settings */}
+              {/* Website Configuration */}
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold">Website Configuration</h3>
                 <div className="space-y-4">
-                  <div className="flex items-center gap-4">
-                    <div className="flex-1">
-                      <Label htmlFor="site_name">Site Name</Label>
-                      <Input
-                        id="site_name"
-                        value={settings.site_name}
-                        onChange={(e) => handleSettingChange('site_name', e.target.value)}
-                        className="mt-1"
-                      />
-                    </div>
-                    <Button 
-                      onClick={() => handleInputSave('site_name')}
-                      disabled={savingStates.site_name === 'saving'}
-                      size="sm"
-                      className="mt-6"
-                    >
-                      {getSaveIcon('site_name')}
-                    </Button>
-                  </div>
+                  <InputWithSave
+                    id="site_name"
+                    label="Site Name"
+                    value={settings.site_name}
+                    onChange={(value) => handleSettingChange('site_name', value)}
+                    onSave={() => handleSaveSetting('site_name')}
+                  />
                   
-                  <div className="flex items-center gap-4">
-                    <div className="flex-1">
-                      <Label htmlFor="contact_email">Contact Email</Label>
-                      <Input
-                        id="contact_email"
-                        type="email"
-                        value={settings.contact_email}
-                        onChange={(e) => handleSettingChange('contact_email', e.target.value)}
-                        className="mt-1"
-                      />
-                    </div>
-                    <Button 
-                      onClick={() => handleInputSave('contact_email')}
-                      disabled={savingStates.contact_email === 'saving'}
-                      size="sm"
-                      className="mt-6"
-                    >
-                      {getSaveIcon('contact_email')}
-                    </Button>
-                  </div>
+                  <InputWithSave
+                    id="site_title"
+                    label="Site Title"
+                    value={settings.site_title}
+                    onChange={(value) => handleSettingChange('site_title', value)}
+                    onSave={() => handleSaveSetting('site_title')}
+                  />
                   
-                  <div className="flex items-center gap-4">
-                    <div className="flex-1">
-                      <Label htmlFor="support_phone">Support Phone</Label>
-                      <Input
-                        id="support_phone"
-                        value={settings.support_phone}
-                        onChange={(e) => handleSettingChange('support_phone', e.target.value)}
-                        className="mt-1"
-                      />
-                    </div>
-                    <Button 
-                      onClick={() => handleInputSave('support_phone')}
-                      disabled={savingStates.support_phone === 'saving'}
-                      size="sm"
-                      className="mt-6"
-                    >
-                      {getSaveIcon('support_phone')}
-                    </Button>
-                  </div>
+                  <InputWithSave
+                    id="contact_email"
+                    label="Contact Email"
+                    type="email"
+                    value={settings.contact_email}
+                    onChange={(value) => handleSettingChange('contact_email', value)}
+                    onSave={() => handleSaveSetting('contact_email')}
+                  />
                   
-                  <div className="flex items-center gap-4">
+                  <InputWithSave
+                    id="support_phone"
+                    label="Support Phone"
+                    value={settings.support_phone}
+                    onChange={(value) => handleSettingChange('support_phone', value)}
+                    onSave={() => handleSaveSetting('support_phone')}
+                  />
+                  
+                  <div className="flex items-end gap-2">
                     <div className="flex-1">
                       <Label htmlFor="site_description">Site Description</Label>
                       <Textarea
@@ -434,10 +352,9 @@ const SystemSettings = () => {
                       />
                     </div>
                     <Button 
-                      onClick={() => handleInputSave('site_description')}
+                      onClick={() => handleSaveSetting('site_description')}
                       disabled={savingStates.site_description === 'saving'}
                       size="sm"
-                      className="mt-6"
                     >
                       {getSaveIcon('site_description')}
                     </Button>
@@ -445,72 +362,110 @@ const SystemSettings = () => {
                 </div>
               </div>
 
+              {/* Authentication Settings */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Authentication & Security</h3>
+                <div className="space-y-4">
+                  <SwitchWithLabel
+                    id="email_verification"
+                    label="Email Verification"
+                    description="Require email verification for new users"
+                    checked={settings.email_verification}
+                    onChange={(checked) => handleSwitchChange('email_verification', checked)}
+                  />
+                  
+                  <SwitchWithLabel
+                    id="two_factor_auth"
+                    label="Two-Factor Authentication"
+                    description="Enable 2FA for enhanced security"
+                    checked={settings.two_factor_auth}
+                    onChange={(checked) => handleSwitchChange('two_factor_auth', checked)}
+                  />
+                  
+                  <SwitchWithLabel
+                    id="user_registration"
+                    label="User Registration"
+                    description="Allow new user registrations"
+                    checked={settings.user_registration}
+                    onChange={(checked) => handleSwitchChange('user_registration', checked)}
+                  />
+                </div>
+              </div>
+
+              {/* System Management */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">System Management</h3>
+                <div className="space-y-4">
+                  <SwitchWithLabel
+                    id="maintenance_mode"
+                    label="Maintenance Mode"
+                    description="Enable maintenance mode for updates"
+                    checked={settings.maintenance_mode}
+                    onChange={(checked) => handleSwitchChange('maintenance_mode', checked)}
+                  />
+                  
+                  <SwitchWithLabel
+                    id="data_backup"
+                    label="Data Backup"
+                    description="Enable automatic data backups"
+                    checked={settings.data_backup}
+                    onChange={(checked) => handleSwitchChange('data_backup', checked)}
+                  />
+                </div>
+              </div>
+
               {/* Performance Settings */}
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold">Performance & Limits</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="flex items-center gap-2">
-                    <div className="flex-1">
-                      <Label htmlFor="max_file_size">Max File Size (MB)</Label>
-                      <Input
-                        id="max_file_size"
-                        type="number"
-                        value={settings.max_file_size}
-                        onChange={(e) => handleSettingChange('max_file_size', e.target.value)}
-                        className="mt-1"
-                      />
-                    </div>
-                    <Button 
-                      onClick={() => handleInputSave('max_file_size')}
-                      disabled={savingStates.max_file_size === 'saving'}
-                      size="sm"
-                      className="mt-6"
-                    >
-                      {getSaveIcon('max_file_size')}
-                    </Button>
-                  </div>
+                  <InputWithSave
+                    id="max_file_size"
+                    label="Max File Size (MB)"
+                    type="number"
+                    value={settings.max_file_size}
+                    onChange={(value) => handleSettingChange('max_file_size', value)}
+                    onSave={() => handleSaveSetting('max_file_size')}
+                  />
                   
-                  <div className="flex items-center gap-2">
-                    <div className="flex-1">
-                      <Label htmlFor="session_timeout">Session Timeout (min)</Label>
-                      <Input
-                        id="session_timeout"
-                        type="number"
-                        value={settings.session_timeout}
-                        onChange={(e) => handleSettingChange('session_timeout', e.target.value)}
-                        className="mt-1"
-                      />
-                    </div>
-                    <Button 
-                      onClick={() => handleInputSave('session_timeout')}
-                      disabled={savingStates.session_timeout === 'saving'}
-                      size="sm"
-                      className="mt-6"
-                    >
-                      {getSaveIcon('session_timeout')}
-                    </Button>
-                  </div>
+                  <InputWithSave
+                    id="session_timeout"
+                    label="Session Timeout (min)"
+                    type="number"
+                    value={settings.session_timeout}
+                    onChange={(value) => handleSettingChange('session_timeout', value)}
+                    onSave={() => handleSaveSetting('session_timeout')}
+                  />
                   
-                  <div className="flex items-center gap-2">
-                    <div className="flex-1">
-                      <Label htmlFor="api_rate_limit">API Rate Limit (req/hr)</Label>
-                      <Input
-                        id="api_rate_limit"
-                        type="number"
-                        value={settings.api_rate_limit}
-                        onChange={(e) => handleSettingChange('api_rate_limit', e.target.value)}
-                        className="mt-1"
-                      />
-                    </div>
-                    <Button 
-                      onClick={() => handleInputSave('api_rate_limit')}
-                      disabled={savingStates.api_rate_limit === 'saving'}
-                      size="sm"
-                      className="mt-6"
-                    >
-                      {getSaveIcon('api_rate_limit')}
-                    </Button>
-                  </div>
+                  <InputWithSave
+                    id="api_rate_limit"
+                    label="API Rate Limit (req/hr)"
+                    type="number"
+                    value={settings.api_rate_limit}
+                    onChange={(value) => handleSettingChange('api_rate_limit', value)}
+                    onSave={() => handleSaveSetting('api_rate_limit')}
+                  />
+                </div>
+              </div>
+
+              {/* Notification Settings */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Notifications</h3>
+                <div className="space-y-4">
+                  <SwitchWithLabel
+                    id="email_notifications"
+                    label="Email Notifications"
+                    description="Send system notifications via email"
+                    checked={settings.email_notifications}
+                    onChange={(checked) => handleSwitchChange('email_notifications', checked)}
+                  />
+                  
+                  <SwitchWithLabel
+                    id="push_notifications"
+                    label="Push Notifications"
+                    description="Enable browser push notifications"
+                    checked={settings.push_notifications}
+                    onChange={(checked) => handleSwitchChange('push_notifications', checked)}
+                  />
                 </div>
               </div>
             </>
