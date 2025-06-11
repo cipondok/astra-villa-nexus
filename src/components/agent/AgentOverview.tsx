@@ -414,5 +414,3 @@ const AgentOverview = () => {
 };
 
 export default AgentOverview;
-
-}
