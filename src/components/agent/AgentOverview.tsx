@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import AgentTools from "./AgentTools";
 import { 
   Building, 
   PlusCircle, 
@@ -369,32 +369,7 @@ const AgentOverview = () => {
         </TabsContent>
 
         <TabsContent value="tools">
-          <Card>
-            <CardHeader>
-              <CardTitle>Agent Tools</CardTitle>
-              <CardDescription>Useful tools to enhance your productivity</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <Button variant="outline" className="h-24 flex flex-col items-center justify-center space-y-2">
-                  <Phone className="h-6 w-6" />
-                  <span className="text-sm">Call Log</span>
-                </Button>
-                <Button variant="outline" className="h-24 flex flex-col items-center justify-center space-y-2">
-                  <Mail className="h-6 w-6" />
-                  <span className="text-sm">Email Templates</span>
-                </Button>
-                <Button variant="outline" className="h-24 flex flex-col items-center justify-center space-y-2">
-                  <Calendar className="h-6 w-6" />
-                  <span className="text-sm">Schedule Viewings</span>
-                </Button>
-                <Button variant="outline" className="h-24 flex flex-col items-center justify-center space-y-2">
-                  <BarChart3 className="h-6 w-6" />
-                  <span className="text-sm">Market Analysis</span>
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+          <AgentTools />
         </TabsContent>
       </Tabs>
     </div>
@@ -402,3 +377,5 @@ const AgentOverview = () => {
 };
 
 export default AgentOverview;
+
+}
