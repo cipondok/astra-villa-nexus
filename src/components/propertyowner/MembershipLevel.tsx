@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -56,74 +55,70 @@ const MembershipLevel = () => {
 
   return (
     <Card className="w-full">
-      <CardHeader>
+      <CardHeader className="pb-4">
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle className="flex items-center gap-2">
-              <CurrentIcon className={`h-5 w-5 ${currentLevel.textColor}`} />
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <CurrentIcon className={`h-4 w-4 ${currentLevel.textColor}`} />
               Membership Level
             </CardTitle>
-            <CardDescription>Track your progress and unlock new benefits</CardDescription>
+            <CardDescription className="text-sm">Track your progress and unlock new benefits</CardDescription>
           </div>
           <Badge className={currentLevel.color} variant="secondary">
-            {currentLevel.name} Member
+            {currentLevel.name}
           </Badge>
         </div>
       </CardHeader>
-      <CardContent className="space-y-6">
-        {/* Current Level Status */}
-        <div className="text-center space-y-2">
-          <div className={`w-16 h-16 mx-auto rounded-full ${currentLevel.color} flex items-center justify-center`}>
-            <CurrentIcon className="h-8 w-8 text-white" />
+      <CardContent className="space-y-4">
+        {/* Current Level Status - Compact */}
+        <div className="text-center space-y-1">
+          <div className={`w-12 h-12 mx-auto rounded-full ${currentLevel.color} flex items-center justify-center`}>
+            <CurrentIcon className="h-6 w-6 text-white" />
           </div>
-          <h3 className="text-lg font-semibold">Level {currentLevel.level}: {currentLevel.name}</h3>
-          <p className="text-sm text-muted-foreground">You're doing great! Keep it up.</p>
+          <h3 className="text-base font-semibold">Level {currentLevel.level}: {currentLevel.name}</h3>
+          <p className="text-xs text-muted-foreground">Keep it up!</p>
         </div>
 
-        {/* Progress to Next Level */}
-        <div className="space-y-3">
-          <div className="flex items-center justify-between">
-            <span className="text-sm font-medium">Progress to {nextLevel.name}</span>
-            <span className="text-sm text-muted-foreground">{progress.current}/{progress.required} completed</span>
+        {/* Progress to Next Level - Compact */}
+        <div className="space-y-2">
+          <div className="flex items-center justify-between text-sm">
+            <span className="font-medium">Progress to {nextLevel.name}</span>
+            <span className="text-muted-foreground">{progress.current}/{progress.required}</span>
           </div>
-          <Progress value={progress.percentage} className="h-2" />
-          <div className="flex items-center justify-between text-xs text-muted-foreground">
-            <span>Current: {currentLevel.name}</span>
-            <span>Next: {nextLevel.name}</span>
-          </div>
+          <Progress value={progress.percentage} className="h-1.5" />
         </div>
 
-        {/* Requirements Table */}
-        <div className="space-y-3">
+        {/* Requirements Table - Compact */}
+        <div className="space-y-2">
           <h4 className="text-sm font-medium flex items-center gap-2">
-            <TrendingUp className="h-4 w-4" />
-            Requirements for {nextLevel.name}
+            <TrendingUp className="h-3 w-3" />
+            Requirements
           </h4>
           <div className="rounded-md border">
             <Table>
               <TableHeader>
-                <TableRow>
-                  <TableHead className="w-4"></TableHead>
-                  <TableHead>Requirement</TableHead>
-                  <TableHead>Current</TableHead>
-                  <TableHead>Target</TableHead>
+                <TableRow className="h-8">
+                  <TableHead className="w-6 p-2"></TableHead>
+                  <TableHead className="p-2 text-xs">Requirement</TableHead>
+                  <TableHead className="p-2 text-xs">Current</TableHead>
+                  <TableHead className="p-2 text-xs">Target</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {requirements.map((req, index) => (
-                  <TableRow key={index}>
-                    <TableCell>
+                  <TableRow key={index} className="h-8">
+                    <TableCell className="p-2">
                       {req.completed ? (
-                        <CheckCircle className="h-4 w-4 text-green-500" />
+                        <CheckCircle className="h-3 w-3 text-green-500" />
                       ) : (
-                        <Clock className="h-4 w-4 text-orange-500" />
+                        <Clock className="h-3 w-3 text-orange-500" />
                       )}
                     </TableCell>
-                    <TableCell className="font-medium">{req.name}</TableCell>
-                    <TableCell className={req.completed ? "text-green-600" : "text-muted-foreground"}>
+                    <TableCell className="p-2 text-xs font-medium">{req.name}</TableCell>
+                    <TableCell className={`p-2 text-xs ${req.completed ? "text-green-600" : "text-muted-foreground"}`}>
                       {req.current}
                     </TableCell>
-                    <TableCell className="text-muted-foreground">{req.required}</TableCell>
+                    <TableCell className="p-2 text-xs text-muted-foreground">{req.required}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -131,32 +126,32 @@ const MembershipLevel = () => {
           </div>
         </div>
 
-        {/* Benefits Comparison Table */}
-        <div className="space-y-3">
+        {/* Benefits Comparison Table - Compact */}
+        <div className="space-y-2">
           <h4 className="text-sm font-medium flex items-center gap-2">
-            <Gift className="h-4 w-4" />
-            Benefits Upgrade
+            <Gift className="h-3 w-3" />
+            Benefits
           </h4>
           <div className="rounded-md border">
             <Table>
               <TableHeader>
-                <TableRow>
-                  <TableHead>Benefit</TableHead>
-                  <TableHead>Current</TableHead>
-                  <TableHead>Next Level</TableHead>
+                <TableRow className="h-8">
+                  <TableHead className="p-2 text-xs">Benefit</TableHead>
+                  <TableHead className="p-2 text-xs">Current</TableHead>
+                  <TableHead className="p-2 text-xs">Next Level</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {benefits.map((benefit, index) => (
-                  <TableRow key={index}>
-                    <TableCell className="font-medium">{benefit.name}</TableCell>
-                    <TableCell>
-                      <Badge variant={benefit.unlocked ? "default" : "secondary"}>
+                  <TableRow key={index} className="h-8">
+                    <TableCell className="p-2 text-xs font-medium">{benefit.name}</TableCell>
+                    <TableCell className="p-2">
+                      <Badge variant={benefit.unlocked ? "default" : "secondary"} className="text-xs px-1 py-0">
                         {benefit.current}
                       </Badge>
                     </TableCell>
-                    <TableCell>
-                      <Badge variant="outline" className="border-yellow-500 text-yellow-700">
+                    <TableCell className="p-2">
+                      <Badge variant="outline" className="border-yellow-500 text-yellow-700 text-xs px-1 py-0">
                         {benefit.next}
                       </Badge>
                     </TableCell>
@@ -167,9 +162,9 @@ const MembershipLevel = () => {
           </div>
         </div>
 
-        {/* Action Button */}
-        <Button className="w-full" variant="outline">
-          <NextIcon className="h-4 w-4 mr-2" />
+        {/* Action Button - Compact */}
+        <Button className="w-full h-8 text-xs" variant="outline">
+          <NextIcon className="h-3 w-3 mr-1" />
           View Upgrade Path
         </Button>
       </CardContent>
