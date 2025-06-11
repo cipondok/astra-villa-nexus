@@ -11,7 +11,6 @@ import UserDashboard from "@/pages/UserDashboard";
 import VendorDashboard from "@/pages/VendorDashboard";
 import AgentDashboard from "@/pages/AgentDashboard";
 import PropertyOwnerDashboard from "@/pages/PropertyOwnerDashboard";
-import Auth from "@/pages/Auth";
 import Properties from "@/pages/Properties";
 
 const queryClient = new QueryClient();
@@ -25,7 +24,6 @@ function App() {
             <div className="min-h-screen bg-background">
               <Routes>
                 <Route path="/" element={<Index />} />
-                <Route path="/auth" element={<Auth />} />
                 <Route path="/properties" element={<Properties />} />
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/dashboard/admin" element={<AdminDashboard />} />
