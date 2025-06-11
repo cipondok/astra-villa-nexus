@@ -25,6 +25,10 @@ import PropertyListingForm from "./PropertyListingForm";
 import PropertyOwnerAnalytics from "./PropertyOwnerAnalytics";
 import PropertyOwnerSettings from "./PropertyOwnerSettings";
 import MembershipLevel from "./MembershipLevel";
+import RecentActivity from "./RecentActivity";
+import QuickActions from "./QuickActions";
+import PropertyInsights from "./PropertyInsights";
+import UpcomingTasks from "./UpcomingTasks";
 
 const PropertyOwnerOverview = () => {
   const { user } = useAuth();
@@ -314,6 +318,18 @@ const PropertyOwnerOverview = () => {
           <PropertyOwnerSettings />
         </TabsContent>
       </Tabs>
+
+      {/* Additional Dashboard Sections */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="space-y-6">
+          <QuickActions />
+          <PropertyInsights />
+        </div>
+        <div className="space-y-6">
+          <RecentActivity />
+          <UpcomingTasks />
+        </div>
+      </div>
     </div>
   );
 };
