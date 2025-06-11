@@ -1,13 +1,17 @@
 
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
-import AuthenticatedNavigation from "@/components/navigation/AuthenticatedNavigation";
+import { useEffect, useState } from "react";
+import { ThemeProvider } from "@/components/ThemeProvider";
+import EnhancedNavigation from "@/components/navigation/EnhancedNavigation";
 import PropertyOwnerOverview from "@/components/propertyowner/PropertyOwnerOverview";
+import RoleBasedAuthModal from "@/components/RoleBasedAuthModal";
 
 const PropertyOwnerDashboard = () => {
   const { isAuthenticated, loading, profile } = useAuth();
   const navigate = useNavigate();
+  const [language, setLanguage] = useState<"en" | "id">("en");
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
   useEffect(() => {
     if (!loading && !isAuthenticated) {
@@ -17,6 +21,10 @@ const PropertyOwnerDashboard = () => {
       navigate('/dashboard');
     }
   }, [isAuthenticated, loading, profile, navigate]);
+
+  const toggleLanguage = () => {
+    setLanguage(prev => prev === "en" ? "id" : "en");
+  };
 
   if (loading) {
     return (
@@ -34,19 +42,24 @@ const PropertyOwnerDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <AuthenticatedNavigation
-        language="en"
-        onLanguageToggle={() => {}}
-        theme="light"
-        onThemeToggle={() => {}}
-      />
-      <div className="pt-16 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto py-8">
-          <PropertyOwnerOverview />
+    <ThemeProvider defaultTheme="system" storageKey="astra-villa-theme">
+      <div className="min-h-screen bg-background">
+        <EnhancedNavigation
+          onLoginClick={() => setShowAuthModal(true)}
+          language={language}
+          onLanguageToggle={toggleLanguage}
+        />
+        <div className="pt-20 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-7xl mx-auto py-8">
+            <PropertyOwnerOverview />
+          </div>
         </div>
+        <RoleBasedAuthModal 
+          isOpen={showAuthModal} 
+          onClose={() => setShowAuthModal(false)} 
+        />
       </div>
-    </div>
+    </ThemeProvider>
   );
 };
 
