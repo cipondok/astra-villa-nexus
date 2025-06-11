@@ -213,6 +213,85 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_chat_logs: {
+        Row: {
+          ai_response: string | null
+          created_at: string | null
+          id: string
+          message: string
+          session_id: string | null
+          user_id: string | null
+          user_type: string | null
+        }
+        Insert: {
+          ai_response?: string | null
+          created_at?: string | null
+          id?: string
+          message: string
+          session_id?: string | null
+          user_id?: string | null
+          user_type?: string | null
+        }
+        Update: {
+          ai_response?: string | null
+          created_at?: string | null
+          id?: string
+          message?: string
+          session_id?: string | null
+          user_id?: string | null
+          user_type?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_chat_logs_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ai_vendor_suggestions: {
+        Row: {
+          ai_suggestion: Json
+          confidence_score: number | null
+          created_at: string | null
+          id: string
+          status: string | null
+          suggestion_type: string
+          updated_at: string | null
+          vendor_id: string | null
+        }
+        Insert: {
+          ai_suggestion: Json
+          confidence_score?: number | null
+          created_at?: string | null
+          id?: string
+          status?: string | null
+          suggestion_type: string
+          updated_at?: string | null
+          vendor_id?: string | null
+        }
+        Update: {
+          ai_suggestion?: Json
+          confidence_score?: number | null
+          created_at?: string | null
+          id?: string
+          status?: string | null
+          suggestion_type?: string
+          updated_at?: string | null
+          vendor_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_vendor_suggestions_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       analytics_settings: {
         Row: {
           configuration: Json | null
@@ -242,6 +321,81 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      astra_token_settings: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          setting_key: string
+          setting_value: Json
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          setting_key: string
+          setting_value: Json
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          setting_key?: string
+          setting_value?: Json
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      astra_token_transactions: {
+        Row: {
+          admin_id: string | null
+          amount: number
+          created_at: string | null
+          description: string | null
+          id: string
+          reference_id: string | null
+          transaction_type: string
+          vendor_id: string | null
+        }
+        Insert: {
+          admin_id?: string | null
+          amount: number
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          reference_id?: string | null
+          transaction_type: string
+          vendor_id?: string | null
+        }
+        Update: {
+          admin_id?: string | null
+          amount?: number
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          reference_id?: string | null
+          transaction_type?: string
+          vendor_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "astra_token_transactions_admin_id_fkey"
+            columns: ["admin_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "astra_token_transactions_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       billing_plans: {
         Row: {
@@ -1084,6 +1238,41 @@ export type Database = {
           },
         ]
       }
+      vendor_astra_balances: {
+        Row: {
+          balance: number | null
+          created_at: string | null
+          id: string
+          lifetime_earned: number | null
+          updated_at: string | null
+          vendor_id: string | null
+        }
+        Insert: {
+          balance?: number | null
+          created_at?: string | null
+          id?: string
+          lifetime_earned?: number | null
+          updated_at?: string | null
+          vendor_id?: string | null
+        }
+        Update: {
+          balance?: number | null
+          created_at?: string | null
+          id?: string
+          lifetime_earned?: number | null
+          updated_at?: string | null
+          vendor_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendor_astra_balances_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       vendor_bookings: {
         Row: {
           booking_date: string
@@ -1201,6 +1390,8 @@ export type Database = {
       }
       vendor_business_profiles: {
         Row: {
+          astra_profile_bonus_claimed: boolean | null
+          astra_signup_bonus_claimed: boolean | null
           banner_url: string | null
           business_address: string | null
           business_description: string | null
@@ -1223,6 +1414,7 @@ export type Database = {
           last_nature_change_at: string | null
           license_number: string | null
           logo_url: string | null
+          profile_completion_percentage: number | null
           rating: number | null
           service_areas: Json | null
           social_media: Json | null
@@ -1232,6 +1424,8 @@ export type Database = {
           vendor_id: string | null
         }
         Insert: {
+          astra_profile_bonus_claimed?: boolean | null
+          astra_signup_bonus_claimed?: boolean | null
           banner_url?: string | null
           business_address?: string | null
           business_description?: string | null
@@ -1254,6 +1448,7 @@ export type Database = {
           last_nature_change_at?: string | null
           license_number?: string | null
           logo_url?: string | null
+          profile_completion_percentage?: number | null
           rating?: number | null
           service_areas?: Json | null
           social_media?: Json | null
@@ -1263,6 +1458,8 @@ export type Database = {
           vendor_id?: string | null
         }
         Update: {
+          astra_profile_bonus_claimed?: boolean | null
+          astra_signup_bonus_claimed?: boolean | null
           banner_url?: string | null
           business_address?: string | null
           business_description?: string | null
@@ -1285,6 +1482,7 @@ export type Database = {
           last_nature_change_at?: string | null
           license_number?: string | null
           logo_url?: string | null
+          profile_completion_percentage?: number | null
           rating?: number | null
           service_areas?: Json | null
           social_media?: Json | null
