@@ -18,9 +18,12 @@ import {
   Camera
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useAlert } from "@/contexts/AlertContext";
 
 const PropertyOwnerSettings = () => {
-  const { profile } = useAuth();
+  const { profile, updateProfile, loading } = useAuth();
+  const { showSuccess, showError } = useAlert();
+  
   const [settings, setSettings] = useState({
     // Profile Settings
     displayName: profile?.full_name || '',
@@ -48,9 +51,28 @@ const PropertyOwnerSettings = () => {
     allowNegotiation: true
   });
 
-  const handleSave = () => {
-    console.log('Saving settings:', settings);
-    // Add save logic here
+  const handleSave = async () => {
+    try {
+      console.log('Saving settings:', settings);
+      
+      // Update profile data that can be saved to the database
+      const profileData = {
+        full_name: settings.displayName,
+        phone: settings.phone,
+        // Note: email updates should be handled separately through Supabase auth
+      };
+
+      const result = await updateProfile(profileData);
+      
+      if (result.success) {
+        showSuccess('Settings Saved', 'Your profile settings have been updated successfully.');
+      } else {
+        showError('Save Failed', 'Failed to save your settings. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error saving settings:', error);
+      showError('Save Error', 'An error occurred while saving your settings.');
+    }
   };
 
   return (
@@ -227,9 +249,9 @@ const PropertyOwnerSettings = () => {
 
       {/* Save Changes */}
       <div className="flex justify-end">
-        <Button onClick={handleSave} className="flex items-center gap-2">
+        <Button onClick={handleSave} disabled={loading} className="flex items-center gap-2">
           <Save className="h-4 w-4" />
-          Save Changes
+          {loading ? 'Saving...' : 'Save Changes'}
         </Button>
       </div>
     </div>
