@@ -22,6 +22,18 @@ import {
   Edit
 } from "lucide-react";
 
+interface TokenSetting {
+  id: string;
+  setting_key: string;
+  setting_value: {
+    amount?: number;
+    percentage?: number;
+    enabled?: boolean;
+    [key: string]: any;
+  };
+  description: string;
+}
+
 const AstraTokenManagement = () => {
   const [showRewardModal, setShowRewardModal] = useState(false);
   const [selectedVendor, setSelectedVendor] = useState<any>(null);
@@ -40,7 +52,7 @@ const AstraTokenManagement = () => {
         .order('setting_key');
       
       if (error) throw error;
-      return data;
+      return data as TokenSetting[];
     },
   });
 

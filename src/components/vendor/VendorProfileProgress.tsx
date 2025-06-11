@@ -93,15 +93,15 @@ const VendorProfileProgress = () => {
     return Math.round((completed / total) * 100);
   };
 
-  const claimSignupBonusMutation = useMutation({
+  const claimProfileCompletionBonusMutation = useMutation({
     mutationFn: async () => {
-      const { error } = await supabase.rpc('claim_signup_bonus', {
+      const { error } = await supabase.rpc('claim_profile_completion_bonus', {
         vendor_id: user?.id
       });
       if (error) throw error;
     },
     onSuccess: () => {
-      showSuccess("Success", "ASTRA signup bonus claimed!");
+      showSuccess("Success", "ASTRA profile completion bonus claimed!");
       queryClient.invalidateQueries({ queryKey: ['vendor-profile-progress'] });
     },
   });
@@ -195,8 +195,8 @@ const VendorProfileProgress = () => {
                   </div>
                 </div>
                 <Button 
-                  onClick={() => claimSignupBonusMutation.mutate()}
-                  disabled={claimSignupBonusMutation.isPending}
+                  onClick={() => claimProfileCompletionBonusMutation.mutate()}
+                  disabled={claimProfileCompletionBonusMutation.isPending}
                   className="bg-green-600 hover:bg-green-700"
                 >
                   Claim Bonus

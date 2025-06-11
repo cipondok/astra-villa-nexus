@@ -14,6 +14,18 @@ import {
   Award
 } from "lucide-react";
 
+interface TokenSetting {
+  id: string;
+  setting_key: string;
+  setting_value: {
+    amount?: number;
+    percentage?: number;
+    enabled?: boolean;
+    [key: string]: any;
+  };
+  description: string;
+}
+
 const AstraTokenDashboard = () => {
   const { user } = useAuth();
 
@@ -51,7 +63,7 @@ const AstraTokenDashboard = () => {
       return {
         balance: balance || { balance: 0, lifetime_earned: 0 },
         transactions: transactions || [],
-        settings: settings || []
+        settings: (settings || []) as TokenSetting[]
       };
     },
   });
