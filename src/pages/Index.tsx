@@ -46,27 +46,26 @@ const Index = () => {
       <Navigation />
 
       {/* Hero Section with Particle Background - More compact */}
-      <section className="relative min-h-[75vh] flex flex-col items-center justify-center overflow-hidden pt-20">
+      <section className="relative min-h-[60vh] flex flex-col items-center justify-center overflow-hidden pt-16">
         {/* Particle Effect Background */}
         <div className="absolute inset-0 z-0">
           <ParticleEffect />
         </div>
         
-        {/* Hero Content - Reduced spacing */}
-        <div className="relative z-10 text-center max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mb-6">
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 leading-tight animate-fade-in">
+        {/* Hero Content - Reduced spacing and removed old text */}
+        <div className="relative z-10 text-center max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mb-4">
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-4 leading-tight animate-fade-in">
             <span className="inline-block animate-gradient bg-gradient-to-r from-blue-600 via-purple-500 to-orange-500 bg-clip-text text-transparent bg-[length:300%_300%] hover:scale-105 transition-transform duration-300">
               Astra Villa
             </span>
           </h1>
-          <p className="text-lg sm:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed animate-fade-in animation-delay-200">
-            Discover premium real estate opportunities in Indonesia's most sought-after locations. 
-            From luxury villas to modern apartments, find your perfect home today.
+          <p className="text-lg sm:text-xl text-muted-foreground mb-6 max-w-2xl mx-auto leading-relaxed animate-fade-in animation-delay-200">
+            Discover premium real estate opportunities in Indonesia's most sought-after locations.
           </p>
         </div>
 
-        {/* Search Panel - Closer to hero content */}
-        <div className="relative z-10 w-full px-4 sm:px-6 lg:px-8 mb-6 animate-fade-in animation-delay-400">
+        {/* Search Panel - Much closer to hero content */}
+        <div className="relative z-10 w-full px-4 sm:px-6 lg:px-8 mb-4 animate-fade-in animation-delay-400">
           <ModernSearchPanel 
             language={language} 
             onSearch={handleSearch}

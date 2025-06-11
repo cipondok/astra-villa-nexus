@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,7 +12,7 @@ import {
   Filter, 
   Home, 
   Building, 
-  Car, 
+  KeyRound, 
   Bed,
   Bath,
   Square,
@@ -268,7 +267,7 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
         <div className="flex bg-white/10 backdrop-blur-md rounded-full p-1 border border-white/20 overflow-x-auto">
           {[
             { key: "buy", label: currentText.buy, icon: Home },
-            { key: "rent", label: currentText.rent, icon: Car },
+            { key: "rent", label: currentText.rent, icon: KeyRound },
             { key: "newProjects", label: currentText.newProjects, icon: Building },
             { key: "preLaunching", label: currentText.preLaunching, icon: Rocket },
             { key: "commercial", label: currentText.commercial, icon: Building2 }
