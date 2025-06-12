@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { Star, TrendingUp, Zap, Clock, Eye, Loader2, Search, AlertCircle } from "lucide-react";
 import CompactPropertyCard from "./CompactPropertyCard";
+import LiveListingsSection from "./LiveListingsSection";
 import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -330,6 +331,9 @@ const PropertyListingsSection = ({
   // Show default layout when no search has been performed
   return (
     <div className="space-y-8">
+      {/* Live Listings & Auctions Section - NEW */}
+      <LiveListingsSection language={language} />
+
       {/* Debug panel - remove this in production */}
       {debugInfo && allProperties.length === 0 && (
         <section className="p-3 md:p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
@@ -466,7 +470,7 @@ const PropertyListingsSection = ({
             <h2 className="text-lg font-bold text-red-600">
               {currentText.hotDeals}
             </h2>
-            <Badge className="bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200 animate-pulse text-xs">
+            <Badge className="bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200 text-xs">
               {currentText.limitedTime}
             </Badge>
           </div>
