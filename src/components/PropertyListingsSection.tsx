@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -22,6 +23,7 @@ const PropertyListingsSection = ({
 }: PropertyListingsSectionProps) => {
   const gridRef = useRef<HTMLDivElement>(null);
   const [featuredProperties, setFeaturedProperties] = useState<any[]>([]);
+  const [similarProperties, setSimilarProperties] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   const text = {
@@ -36,7 +38,9 @@ const PropertyListingsSection = ({
       trending: "Trending",
       searchResults: "Search Results",
       noResults: "No properties found matching your criteria",
-      searching: "Searching properties..."
+      searching: "Searching properties...",
+      similarProperties: "Similar Properties You Might Like",
+      tryAdjusting: "Try adjusting your search criteria or browse these similar properties:"
     },
     id: {
       featured: "Properti Pilihan",
@@ -49,7 +53,9 @@ const PropertyListingsSection = ({
       trending: "Trending",
       searchResults: "Hasil Pencarian",
       noResults: "Tidak ada properti yang sesuai dengan kriteria Anda",
-      searching: "Mencari properti..."
+      searching: "Mencari properti...",
+      similarProperties: "Properti Serupa yang Mungkin Anda Suka",
+      tryAdjusting: "Coba sesuaikan kriteria pencarian Anda atau jelajahi properti serupa ini:"
     }
   };
 
@@ -97,6 +103,48 @@ const PropertyListingsSection = ({
 
     fetchFeaturedProperties();
   }, []);
+
+  // Fetch similar properties when no search results found
+  useEffect(() => {
+    const fetchSimilarProperties = async () => {
+      if (hasSearched && searchResults.length === 0 && !isSearching) {
+        try {
+          const { data: properties, error } = await supabase
+            .from('properties')
+            .select('*')
+            .eq('status', 'approved')
+            .eq('approval_status', 'approved')
+            .limit(6)
+            .order('created_at', { ascending: false });
+
+          if (error) {
+            console.error('Error fetching similar properties:', error);
+          } else if (properties) {
+            const transformedProperties = properties.map(property => ({
+              id: property.id,
+              title: property.title,
+              location: `${property.area || ''}, ${property.city || ''}, ${property.state || ''}`.replace(/^,\s*|,\s*$/g, ''),
+              price: property.price ? `Rp ${property.price.toLocaleString()}` : 'Contact for price',
+              type: property.listing_type,
+              bedrooms: property.bedrooms || 0,
+              bathrooms: property.bathrooms || 0,
+              area: property.area_sqm || 0,
+              image: property.image_urls?.[0] || "https://images.unsplash.com/photo-1721322800607-8c38375eef04?w=400&h=300&fit=crop",
+              rating: 4.5 + Math.random() * 0.5,
+              featured: false,
+              isHotDeal: false
+            }));
+            
+            setSimilarProperties(transformedProperties);
+          }
+        } catch (error) {
+          console.error('Error fetching similar properties:', error);
+        }
+      }
+    };
+
+    fetchSimilarProperties();
+  }, [hasSearched, searchResults.length, isSearching]);
 
   const popularSearches = language === "en" 
     ? ["Apartment Jakarta", "Villa Bali", "House Surabaya", "Boarding Bandung", "Office Space", "Landed House"]
@@ -151,7 +199,7 @@ const PropertyListingsSection = ({
     window.addEventListener('resize', debouncedBalance);
     
     return () => window.removeEventListener('resize', debouncedBalance);
-  }, []);
+  }, [featuredProperties, similarProperties, transformedSearchResults]);
 
   // Debounce utility
   const debounce = (func: Function, wait: number) => {
@@ -194,18 +242,40 @@ const PropertyListingsSection = ({
               ))}
             </div>
           ) : (
-            <div className="text-center py-12">
-              <div className="text-muted-foreground text-lg mb-4">
-                {currentText.noResults}
+            <div className="space-y-8">
+              <div className="text-center py-12">
+                <div className="text-muted-foreground text-lg mb-4">
+                  {currentText.noResults}
+                </div>
+                <p className="text-sm text-muted-foreground mb-6">
+                  {currentText.tryAdjusting}
+                </p>
               </div>
-              <p className="text-sm text-muted-foreground">
-                Try adjusting your search criteria or browse our featured properties below.
-              </p>
+
+              {/* Similar Properties Section */}
+              {similarProperties.length > 0 && (
+                <div>
+                  <div className="flex items-center gap-2 md:gap-3 mb-6">
+                    <Star className="h-6 w-6 md:h-8 md:w-8 text-orange-500" />
+                    <h3 className="text-xl md:text-2xl lg:text-3xl font-bold">
+                      {currentText.similarProperties}
+                    </h3>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 lg:gap-8">
+                    {similarProperties.map((property) => (
+                      <div key={property.id} className="property-card h-full">
+                        <PropertyCard property={property} />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </section>
 
-        {/* Show featured properties below search results */}
+        {/* Always show featured properties below search results */}
         <div className="border-t pt-8">
           <div className="flex items-center gap-2 md:gap-3 mb-6 md:mb-8 px-4 md:px-6 lg:px-8">
             <Star className="h-6 w-6 md:h-8 md:w-8 text-yellow-500" />
@@ -221,7 +291,7 @@ const PropertyListingsSection = ({
           ) : (
             <Carousel className="w-full px-4 md:px-6 lg:px-8">
               <CarouselContent className="-ml-2 md:-ml-4">
-                {featuredProperties.slice(0, 4).map((property) => (
+                {featuredProperties.slice(0, 6).map((property) => (
                   <CarouselItem key={property.id} className="pl-2 md:pl-4 basis-full sm:basis-1/2 lg:basis-1/3 xl:basis-1/4">
                     <div className="property-card h-full">
                       <PropertyCard property={property} />
@@ -262,7 +332,7 @@ const PropertyListingsSection = ({
           <div className="flex items-center justify-center py-12">
             <Loader2 className="h-8 w-8 animate-spin" />
           </div>
-        ) : (
+        ) : featuredProperties.length > 0 ? (
           <Carousel className="w-full">
             <CarouselContent className="-ml-2 md:-ml-4">
               {featuredProperties.map((property) => (
@@ -276,6 +346,10 @@ const PropertyListingsSection = ({
             <CarouselPrevious className="hidden sm:flex" />
             <CarouselNext className="hidden sm:flex" />
           </Carousel>
+        ) : (
+          <div className="text-center py-12">
+            <p className="text-muted-foreground">No properties available at the moment.</p>
+          </div>
         )}
       </section>
 
@@ -288,7 +362,6 @@ const PropertyListingsSection = ({
           </h2>
         </div>
         
-        {/* Adaptive Grid: 1 col mobile, 2 tablet, 3 laptop, 4 desktop */}
         <div 
           ref={gridRef}
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 lg:gap-8"
