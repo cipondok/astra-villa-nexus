@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, User, LogOut, Globe, Bot, Plus } from "lucide-react";
+import { Menu, X, User, LogOut, Globe, Bot, Plus, Home, Building, Info } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useThemeSettings } from "@/contexts/ThemeSettingsContext";
 import { useTheme } from "@/components/ThemeProvider";
@@ -18,9 +18,9 @@ const Navigation = () => {
   const { themeSettings } = useThemeSettings();
 
   const navItems = [
-    { name: "Home", path: "/" },
-    { name: "Properties", path: "/properties" },
-    { name: "About", path: "/about" },
+    { name: "Home", path: "/", icon: Home },
+    { name: "Properties", path: "/properties", icon: Building },
+    { name: "About", path: "/about", icon: Info },
   ];
 
   const handleSignOut = async () => {
@@ -34,17 +34,17 @@ const Navigation = () => {
 
   return (
     <>
-      <nav className="glass-dark border-b border-white/10 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
+      <nav className="glass-dark border-b border-white/10 sticky top-0 z-50 backdrop-blur-xl bg-white/80 dark:bg-gray-900/80">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4">
+          <div className="flex justify-between h-14">
             <div className="flex items-center">
               <Link to="/" className="flex-shrink-0 flex items-center group">
                 <div className="flex items-center space-x-2">
                   <div className="relative">
-                    <Bot className="w-6 h-6 text-primary-dynamic animate-pulse" />
-                    <div className="absolute inset-0 w-6 h-6 bg-primary-dynamic/20 rounded-full animate-ping"></div>
+                    <Bot className="w-5 h-5 text-primary-dynamic animate-pulse" />
+                    <div className="absolute inset-0 w-5 h-5 bg-primary-dynamic/20 rounded-full animate-ping"></div>
                   </div>
-                  <span className="text-2xl font-bold">
+                  <span className="text-lg font-bold">
                     <span className="inline-block animate-gradient bg-gradient-to-r from-blue-400 via-purple-400 to-orange-400 bg-clip-text text-transparent bg-[length:300%_300%] hover:scale-105 transition-transform duration-300 group-hover:from-purple-400 group-hover:via-blue-400 group-hover:to-orange-400">
                       Astra Villa
                     </span>
@@ -53,116 +53,118 @@ const Navigation = () => {
               </Link>
             </div>
 
-            {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-8">
+            {/* Desktop Navigation - More compact */}
+            <div className="hidden md:flex items-center space-x-4">
               {navItems.map((item) => (
                 <Link
                   key={item.name}
                   to={item.path}
-                  className={`px-3 py-2 text-sm font-medium transition-colors ${
+                  className={`flex items-center gap-1 px-3 py-2 text-sm font-medium transition-all duration-300 rounded-xl ${
                     location.pathname === item.path
-                      ? "text-primary-dynamic border-b-2 border-primary-dynamic"
-                      : "text-gray-300 hover:text-white"
+                      ? "text-primary-dynamic bg-primary-dynamic/10 border border-primary-dynamic/20"
+                      : "text-gray-600 dark:text-gray-300 hover:text-primary-dynamic hover:bg-gray-100 dark:hover:bg-gray-800"
                   }`}
                 >
-                  {item.name}
+                  <item.icon className="h-4 w-4" />
+                  <span className="hidden lg:inline">{item.name}</span>
                 </Link>
               ))}
               
-              {/* Add Property Button - Only show if user is logged in */}
+              {/* Add Property Button - Compact */}
               {user && (
                 <Link
                   to="/add-property"
-                  className="flex items-center gap-2 px-4 py-2 bg-primary-dynamic text-white rounded-lg hover:bg-primary-dynamic/80 transition-colors"
+                  className="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl hover:from-blue-600 hover:to-purple-600 transition-all duration-300 text-sm shadow-lg hover:shadow-xl transform hover:scale-105"
                 >
                   <Plus className="h-4 w-4" />
-                  Add Property
+                  <span className="hidden lg:inline">Add</span>
                 </Link>
               )}
             </div>
 
-            {/* Right side controls */}
-            <div className="hidden md:flex items-center space-x-4">
-              {/* Language Toggle */}
+            {/* Right side controls - More compact */}
+            <div className="hidden md:flex items-center space-x-2">
+              {/* Language Toggle - iPhone style */}
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={toggleLanguage}
-                className="text-gray-300 hover:text-white hover:bg-white/10 flex items-center gap-2"
+                className="text-gray-600 dark:text-gray-300 hover:text-primary-dynamic hover:bg-gray-100 dark:hover:bg-gray-800 flex items-center gap-1 rounded-xl px-3 py-2"
               >
                 <Globe className="h-4 w-4" />
                 <span className="text-sm font-medium">{language.toUpperCase()}</span>
               </Button>
 
-              {/* Theme Toggle Switch - Made Transparent */}
+              {/* Theme Toggle Switch - More compact */}
               <div className="bg-transparent">
-                <ThemeToggleSwitch language={language} className="bg-transparent border-transparent hover:bg-white/5" />
+                <ThemeToggleSwitch language={language} className="bg-transparent border-transparent hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl" />
               </div>
               
               {user ? (
-                <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-2">
                   <Link
                     to="/dashboard"
-                    className="flex items-center space-x-1 px-3 py-2 text-sm font-medium text-gray-300 hover:text-white transition-colors"
+                    className="flex items-center space-x-1 px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-primary-dynamic hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-300 rounded-xl"
                   >
                     <User className="w-4 h-4" />
-                    <span>Dashboard</span>
+                    <span className="hidden lg:inline">Dashboard</span>
                   </Link>
                   <Button
                     onClick={handleSignOut}
                     variant="ghost"
                     size="sm"
-                    className="text-gray-300 hover:text-white hover:bg-white/10"
+                    className="text-gray-600 dark:text-gray-300 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl px-3 py-2"
                   >
-                    <LogOut className="w-4 h-4 mr-2" />
-                    Sign Out
+                    <LogOut className="w-4 h-4" />
+                    <span className="hidden lg:inline ml-1">Sign Out</span>
                   </Button>
                 </div>
               ) : (
                 <Button
                   onClick={() => setShowAuthModal(true)}
-                  className="bg-primary-dynamic hover:bg-primary-dynamic text-white"
+                  className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-xl px-4 py-2 text-sm shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
                 >
                   Sign In
                 </Button>
               )}
             </div>
 
-            {/* Mobile menu button */}
+            {/* Mobile menu button - iPhone style */}
             <div className="md:hidden flex items-center space-x-2">
-              {/* Mobile Theme Toggle - Made Transparent */}
+              {/* Mobile Theme Toggle - Compact */}
               <div className="bg-transparent">
-                <ThemeToggleSwitch language={language} className="scale-90 bg-transparent border-transparent hover:bg-white/5" />
+                <ThemeToggleSwitch language={language} className="scale-90 bg-transparent border-transparent hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg" />
               </div>
               
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsOpen(!isOpen)}
-                className="text-gray-300 hover:text-white hover:bg-white/10"
+                className="text-gray-600 dark:text-gray-300 hover:text-primary-dynamic hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl p-2"
               >
-                {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+                {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
               </Button>
             </div>
           </div>
         </div>
 
-        {/* Mobile Navigation */}
+        {/* Mobile Navigation - iPhone style */}
         {isOpen && (
-          <div className="md:hidden glass-card-dark border-t border-white/10">
-            <div className="px-2 pt-2 pb-3 space-y-1">
+          <div className="md:hidden glass-card-dark border-t border-white/10 backdrop-blur-xl bg-white/90 dark:bg-gray-900/90">
+            <div className="px-3 pt-2 pb-3 space-y-1">
               {navItems.map((item) => (
                 <Link
                   key={item.name}
                   to={item.path}
-                  className={`block px-3 py-2 text-base font-medium transition-colors ${
+                  className={`flex items-center gap-3 px-4 py-3 text-base font-medium transition-all duration-300 rounded-xl ${
                     location.pathname === item.path
-                      ? "text-primary-dynamic bg-white/10"
-                      : "text-gray-300 hover:text-white hover:bg-white/5"
+                      ? "text-primary-dynamic bg-primary-dynamic/10 border border-primary-dynamic/20"
+                      : "text-gray-600 dark:text-gray-300 hover:text-primary-dynamic hover:bg-gray-100 dark:hover:bg-gray-800"
                   }`}
                   onClick={() => setIsOpen(false)}
                 >
-                  {item.name}
+                  <item.icon className="h-5 w-5" />
+                  <span>{item.name}</span>
                 </Link>
               ))}
               
@@ -170,10 +172,10 @@ const Navigation = () => {
               {user && (
                 <Link
                   to="/add-property"
-                  className="flex items-center gap-2 px-3 py-2 text-base font-medium text-gray-300 hover:text-white hover:bg-white/5 transition-colors"
+                  className="flex items-center gap-3 px-4 py-3 text-base font-medium text-white bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 transition-all duration-300 rounded-xl shadow-lg"
                   onClick={() => setIsOpen(false)}
                 >
-                  <Plus className="h-4 w-4" />
+                  <Plus className="h-5 w-5" />
                   Add Property
                 </Link>
               )}
@@ -182,9 +184,9 @@ const Navigation = () => {
               <Button
                 variant="ghost"
                 onClick={toggleLanguage}
-                className="w-full justify-start text-gray-300 hover:text-white hover:bg-white/5"
+                className="w-full justify-start text-gray-600 dark:text-gray-300 hover:text-primary-dynamic hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl px-4 py-3"
               >
-                <Globe className="h-4 w-4 mr-2" />
+                <Globe className="h-5 w-5 mr-3" />
                 Language: {language.toUpperCase()}
               </Button>
               
@@ -192,18 +194,18 @@ const Navigation = () => {
                 <>
                   <Link
                     to="/dashboard"
-                    className="flex items-center space-x-2 px-3 py-2 text-base font-medium text-gray-300 hover:text-white hover:bg-white/5 transition-colors"
+                    className="flex items-center gap-3 px-4 py-3 text-base font-medium text-gray-600 dark:text-gray-300 hover:text-primary-dynamic hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-300 rounded-xl"
                     onClick={() => setIsOpen(false)}
                   >
-                    <User className="w-4 h-4" />
-                    <span>Dashboard</span>
+                    <User className="w-5 h-5" />
+                    Dashboard
                   </Link>
                   <button
                     onClick={handleSignOut}
-                    className="flex items-center space-x-2 w-full px-3 py-2 text-base font-medium text-gray-300 hover:text-white hover:bg-white/5 transition-colors"
+                    className="flex items-center gap-3 w-full px-4 py-3 text-base font-medium text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-300 rounded-xl"
                   >
-                    <LogOut className="w-4 h-4" />
-                    <span>Sign Out</span>
+                    <LogOut className="w-5 h-5" />
+                    Sign Out
                   </button>
                 </>
               ) : (
@@ -212,7 +214,7 @@ const Navigation = () => {
                     setShowAuthModal(true);
                     setIsOpen(false);
                   }}
-                  className="w-full mt-2 bg-primary-dynamic hover:bg-primary-dynamic text-white"
+                  className="w-full mt-2 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-xl py-3 shadow-lg"
                 >
                   Sign In
                 </Button>
