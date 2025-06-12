@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -31,7 +30,7 @@ const PropertyInsertForm = () => {
     bedrooms: "",
     bathrooms: "",
     area_sqm: "",
-    agent_id: "",
+    agent_id: "no-agent",
     owner_id: "",
     owner_type: "individual",
     images: [] as string[],
@@ -91,7 +90,7 @@ const PropertyInsertForm = () => {
           bedrooms: propertyData.bedrooms ? Number(propertyData.bedrooms) : null,
           bathrooms: propertyData.bathrooms ? Number(propertyData.bathrooms) : null,
           area_sqm: propertyData.area_sqm ? Number(propertyData.area_sqm) : null,
-          agent_id: propertyData.agent_id === "none" ? null : propertyData.agent_id || null,
+          agent_id: propertyData.agent_id === "no-agent" ? null : propertyData.agent_id,
           owner_id: propertyData.owner_id,
           owner_type: propertyData.owner_type,
           approval_status: 'pending',
@@ -120,7 +119,7 @@ const PropertyInsertForm = () => {
         bedrooms: "",
         bathrooms: "",
         area_sqm: "",
-        agent_id: "",
+        agent_id: "no-agent",
         owner_id: "",
         owner_type: "individual",
         images: [],
@@ -419,7 +418,7 @@ const PropertyInsertForm = () => {
                       <SelectValue placeholder="Select agent (optional)" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="none">No Agent</SelectItem>
+                      <SelectItem value="no-agent">No Agent</SelectItem>
                       {profile?.role === 'agent' && (
                         <SelectItem value={profile.id}>
                           {profile.full_name || 'Current Agent'} (You)

@@ -61,7 +61,7 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
         bathrooms: property.bathrooms?.toString() || "",
         area_sqm: property.area_sqm?.toString() || "",
         owner_id: property.owner_id || "",
-        agent_id: property.agent_id || ""
+        agent_id: property.agent_id || "no-agent"
       });
     }
   }, [property]);
@@ -91,7 +91,11 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
   });
 
   const handleUpdate = () => {
-    updatePropertyMutation.mutate(editData);
+    const submitData = {
+      ...editData,
+      agent_id: editData.agent_id === "no-agent" ? null : editData.agent_id
+    };
+    updatePropertyMutation.mutate(submitData);
   };
 
   const propertyOwners = users?.filter(user => 
@@ -226,12 +230,12 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
 
           <div className="space-y-2">
             <Label htmlFor="edit-agent">Agent (Optional)</Label>
-            <Select value={editData.agent_id || ""} onValueChange={(value) => setEditData({ ...editData, agent_id: value || null })}>
+            <Select value={editData.agent_id || "no-agent"} onValueChange={(value) => setEditData({ ...editData, agent_id: value === "no-agent" ? null : value })}>
               <SelectTrigger>
                 <SelectValue placeholder="Select agent (optional)" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">No Agent</SelectItem>
+                <SelectItem value="no-agent">No Agent</SelectItem>
                 {agents.map((user) => (
                   <SelectItem key={user.id} value={user.id}>
                     {user.full_name} ({user.email})
