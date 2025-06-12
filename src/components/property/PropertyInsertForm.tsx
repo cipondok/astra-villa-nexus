@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -11,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useAuth } from "@/contexts/AuthContext";
-import { Plus, Home, MapPin, Camera, Sparkles, Bot } from "lucide-react";
+import { Plus, Home, MapPin, Camera, Sparkles, Bot, CheckCircle, AlertCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { formatIDR } from "@/utils/currency";
 import LocationSelector from "./LocationSelector";
@@ -51,6 +50,7 @@ const PropertyInsertForm = () => {
   const [currentTab, setCurrentTab] = useState("basic");
   const [aiSuggestion, setAiSuggestion] = useState("");
   const [showAiHelp, setShowAiHelp] = useState(false);
+  const [validationErrors, setValidationErrors] = useState<string[]>([]);
 
   const { user, profile } = useAuth();
   const navigate = useNavigate();
@@ -90,6 +90,7 @@ const PropertyInsertForm = () => {
     onSuccess: () => {
       alert("Properti berhasil diajukan! Tim admin kami akan meninjau dalam 24 jam.");
       navigate('/');
+      // Reset form
       setFormData({
         title: "",
         description: "",
@@ -117,6 +118,20 @@ const PropertyInsertForm = () => {
     }
   });
 
+  const validateForm = () => {
+    const errors: string[] = [];
+    
+    if (!formData.title) errors.push("Judul properti wajib diisi");
+    if (!formData.property_type) errors.push("Tipe properti wajib dipilih");
+    if (!formData.listing_type) errors.push("Tipe listing wajib dipilih");
+    if (!formData.state) errors.push("Provinsi wajib dipilih");
+    if (!formData.city) errors.push("Kota wajib dipilih");
+    if (!formData.area) errors.push("Area wajib dipilih");
+    
+    setValidationErrors(errors);
+    return errors.length === 0;
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -125,7 +140,7 @@ const PropertyInsertForm = () => {
       return;
     }
 
-    if (!formData.title || !formData.property_type || !formData.listing_type) {
+    if (!validateForm()) {
       alert("Mohon lengkapi semua bidang yang wajib diisi");
       return;
     }
@@ -135,6 +150,10 @@ const PropertyInsertForm = () => {
 
   const handleInputChange = (field: string, value: string | boolean | string[]) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+    // Clear validation errors when user starts typing
+    if (validationErrors.length > 0) {
+      setValidationErrors([]);
+    }
   };
 
   const generateAiSuggestion = () => {
@@ -144,7 +163,9 @@ const PropertyInsertForm = () => {
       "Tambahkan foto eksterior, interior, dan fasilitas untuk meningkatkan daya tarik properti",
       "Sertakan informasi tentang akses transportasi umum dan fasilitas terdekat",
       "Untuk properti di area ini, tambahkan informasi tentang keamanan 24 jam",
-      "Pertimbangkan untuk menambahkan virtual tour 3D untuk menarik lebih banyak pembeli"
+      "Pertimbangkan untuk menambahkan virtual tour 3D untuk menarik lebih banyak pembeli",
+      "Deskripsi yang detail dapat meningkatkan minat pembeli hingga 40%",
+      "Properti dengan 3D tour mendapat 2x lebih banyak views"
     ];
     setAiSuggestion(suggestions[Math.floor(Math.random() * suggestions.length)]);
   };
@@ -161,7 +182,7 @@ const PropertyInsertForm = () => {
   if (!user) {
     return (
       <div className="max-w-2xl mx-auto p-6 text-center">
-        <Card>
+        <Card className="bg-white/95 backdrop-blur-sm border-white/20">
           <CardContent className="p-8">
             <Home className="h-16 w-16 mx-auto mb-4 text-gray-400" />
             <h2 className="text-2xl font-bold mb-4">Login Diperlukan</h2>
@@ -178,314 +199,371 @@ const PropertyInsertForm = () => {
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Plus className="h-5 w-5" />
+    <div className="p-6">
+      {/* Validation Errors */}
+      {validationErrors.length > 0 && (
+        <div className="mb-6 p-4 bg-red-50/90 backdrop-blur-sm border border-red-200 rounded-lg">
+          <div className="flex items-start">
+            <AlertCircle className="h-5 w-5 text-red-500 mt-0.5 mr-2" />
+            <div>
+              <h4 className="font-medium text-red-800 mb-1">Harap lengkapi:</h4>
+              <ul className="text-sm text-red-700 list-disc list-inside">
+                {validationErrors.map((error, index) => (
+                  <li key={index}>{error}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Header */}
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+            <Plus className="h-6 w-6 text-blue-600" />
             Tambah Listing Properti
-            <span className="text-sm bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
-              {profile?.role === 'agent' ? 'Agen' : 'Pemilik'}
-            </span>
-          </CardTitle>
-          <CardDescription>
+            {profile?.role === 'agent' && (
+              <span className="text-sm bg-blue-100/80 text-blue-700 px-3 py-1 rounded-full">
+                Agen
+              </span>
+            )}
+          </h2>
+          <p className="text-gray-600 mt-1">
             Listingkan properti Anda untuk dijual atau disewakan
             {profile?.role === 'agent' && (
               <span className="block text-blue-600 text-sm mt-1">
                 Anda login sebagai agen: {profile.full_name || profile.email}
               </span>
             )}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="flex justify-end mb-4">
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={generateAiSuggestion}
-              className="flex items-center gap-2"
-            >
-              <Bot className="h-4 w-4" />
-              Bantuan AI
-            </Button>
+          </p>
+        </div>
+        
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={generateAiSuggestion}
+          className="flex items-center gap-2 bg-white/80 backdrop-blur-sm border-blue-200 hover:bg-blue-50"
+        >
+          <Bot className="h-4 w-4" />
+          Bantuan AI
+        </Button>
+      </div>
+
+      {/* AI Help Section */}
+      {showAiHelp && aiSuggestion && (
+        <div className="mb-6 p-4 bg-gradient-to-r from-blue-50/90 to-purple-50/90 backdrop-blur-sm rounded-lg border border-blue-200/50">
+          <div className="flex items-start gap-3">
+            <Sparkles className="h-5 w-5 text-blue-500 mt-0.5" />
+            <div>
+              <h4 className="font-medium text-blue-900 mb-1">💡 Saran AI</h4>
+              <p className="text-blue-700 text-sm">{aiSuggestion}</p>
+            </div>
           </div>
+        </div>
+      )}
 
-          {showAiHelp && aiSuggestion && (
-            <Card className="mb-6 bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200">
-              <CardContent className="p-4">
-                <div className="flex items-start gap-3">
-                  <Sparkles className="h-5 w-5 text-blue-500 mt-0.5" />
-                  <div>
-                    <h4 className="font-medium text-blue-900 mb-1">Saran AI</h4>
-                    <p className="text-blue-700 text-sm">{aiSuggestion}</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          )}
+      <form onSubmit={handleSubmit}>
+        <Tabs value={currentTab} onValueChange={setCurrentTab} className="w-full">
+          <TabsList className="grid w-full grid-cols-4 bg-white/80 backdrop-blur-sm">
+            <TabsTrigger value="basic" className="flex items-center gap-2">
+              <Home className="h-4 w-4" />
+              <span className="hidden sm:inline">Informasi Dasar</span>
+              <span className="sm:hidden">Dasar</span>
+            </TabsTrigger>
+            <TabsTrigger value="location" className="flex items-center gap-2">
+              <MapPin className="h-4 w-4" />
+              <span className="hidden sm:inline">Lokasi</span>
+              <span className="sm:hidden">Lokasi</span>
+            </TabsTrigger>
+            <TabsTrigger value="details" className="flex items-center gap-2">
+              <CheckCircle className="h-4 w-4" />
+              <span className="hidden sm:inline">Detail & Fitur</span>
+              <span className="sm:hidden">Detail</span>
+            </TabsTrigger>
+            <TabsTrigger value="media" className="flex items-center gap-2">
+              <Camera className="h-4 w-4" />
+              <span className="hidden sm:inline">Media & 3D</span>
+              <span className="sm:hidden">Media</span>
+            </TabsTrigger>
+          </TabsList>
 
-          <form onSubmit={handleSubmit}>
-            <Tabs value={currentTab} onValueChange={setCurrentTab} className="w-full">
-              <TabsList className="grid w-full grid-cols-4">
-                <TabsTrigger value="basic">Informasi Dasar</TabsTrigger>
-                <TabsTrigger value="location">Lokasi</TabsTrigger>
-                <TabsTrigger value="details">Detail & Fitur</TabsTrigger>
-                <TabsTrigger value="media">Media & 3D</TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="basic" className="space-y-6 mt-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="title">Judul Properti *</Label>
-                    <Input
-                      id="title"
-                      value={formData.title}
-                      onChange={(e) => handleInputChange('title', e.target.value)}
-                      placeholder="Rumah Keluarga Indah di Jakarta"
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="price">Harga (IDR) *</Label>
-                    <Input
-                      id="price"
-                      value={formData.price}
-                      onChange={(e) => handleInputChange('price', e.target.value.replace(/[^0-9]/g, ''))}
-                      placeholder="2500000000"
-                    />
-                    {formData.price && (
-                      <p className="text-sm text-gray-500 mt-1">
-                        {formatIDR(Number(formData.price))}
-                      </p>
-                    )}
-                  </div>
-
-                  <div>
-                    <Label htmlFor="property_type">Tipe Properti *</Label>
-                    <Select value={formData.property_type} onValueChange={(value) => handleInputChange('property_type', value)}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Pilih tipe properti" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="house">Rumah</SelectItem>
-                        <SelectItem value="apartment">Apartemen</SelectItem>
-                        <SelectItem value="condo">Kondominium</SelectItem>
-                        <SelectItem value="townhouse">Rumah Teras</SelectItem>
-                        <SelectItem value="land">Tanah</SelectItem>
-                        <SelectItem value="commercial">Komersial</SelectItem>
-                        <SelectItem value="villa">Villa</SelectItem>
-                        <SelectItem value="shop">Ruko</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div>
-                    <Label>Tipe Listing *</Label>
-                    <RadioGroup 
-                      value={formData.listing_type} 
-                      onValueChange={(value) => handleInputChange('listing_type', value)}
-                      className="flex flex-row space-x-6 mt-2"
-                    >
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="sale" id="sale" />
-                        <Label htmlFor="sale" className="text-sm">Dijual</Label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="rent" id="rent" />
-                        <Label htmlFor="rent" className="text-sm">Disewakan</Label>
-                      </div>
-                    </RadioGroup>
-                  </div>
+          <TabsContent value="basic" className="space-y-6 mt-6">
+            <div className="bg-white/60 backdrop-blur-sm rounded-lg p-6 border border-white/30">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="title">Judul Properti *</Label>
+                  <Input
+                    id="title"
+                    value={formData.title}
+                    onChange={(e) => handleInputChange('title', e.target.value)}
+                    placeholder="Rumah Keluarga Indah di Jakarta"
+                    required
+                    className="bg-white/90"
+                  />
                 </div>
 
                 <div>
-                  <Label htmlFor="description">Deskripsi</Label>
-                  <Textarea
-                    id="description"
-                    value={formData.description}
-                    onChange={(e) => handleInputChange('description', e.target.value)}
-                    placeholder="Deskripsi detail properti..."
-                    rows={4}
+                  <Label htmlFor="price">Harga (IDR) *</Label>
+                  <Input
+                    id="price"
+                    value={formData.price}
+                    onChange={(e) => handleInputChange('price', e.target.value.replace(/[^0-9]/g, ''))}
+                    placeholder="2500000000"
+                    className="bg-white/90"
+                  />
+                  {formData.price && (
+                    <p className="text-sm text-gray-500 mt-1">
+                      {formatIDR(Number(formData.price))}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <Label htmlFor="property_type">Tipe Properti *</Label>
+                  <Select value={formData.property_type} onValueChange={(value) => handleInputChange('property_type', value)}>
+                    <SelectTrigger className="bg-white/90">
+                      <SelectValue placeholder="Pilih tipe properti" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-white/95 backdrop-blur-md">
+                      <SelectItem value="house">🏠 Rumah</SelectItem>
+                      <SelectItem value="apartment">🏢 Apartemen</SelectItem>
+                      <SelectItem value="condo">🏙️ Kondominium</SelectItem>
+                      <SelectItem value="townhouse">🏘️ Rumah Teras</SelectItem>
+                      <SelectItem value="land">🌍 Tanah</SelectItem>
+                      <SelectItem value="commercial">🏪 Komersial</SelectItem>
+                      <SelectItem value="villa">🏖️ Villa</SelectItem>
+                      <SelectItem value="shop">🏬 Ruko</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label>Tipe Listing *</Label>
+                  <RadioGroup 
+                    value={formData.listing_type} 
+                    onValueChange={(value) => handleInputChange('listing_type', value)}
+                    className="flex flex-row space-x-6 mt-2"
+                  >
+                    <div className="flex items-center space-x-2 bg-white/60 rounded-lg px-3 py-2">
+                      <RadioGroupItem value="sale" id="sale" />
+                      <Label htmlFor="sale" className="text-sm font-medium">💰 Dijual</Label>
+                    </div>
+                    <div className="flex items-center space-x-2 bg-white/60 rounded-lg px-3 py-2">
+                      <RadioGroupItem value="rent" id="rent" />
+                      <Label htmlFor="rent" className="text-sm font-medium">🏠 Disewakan</Label>
+                    </div>
+                  </RadioGroup>
+                </div>
+              </div>
+
+              <div className="mt-4">
+                <Label htmlFor="description">Deskripsi</Label>
+                <Textarea
+                  id="description"
+                  value={formData.description}
+                  onChange={(e) => handleInputChange('description', e.target.value)}
+                  placeholder="Deskripsi detail properti..."
+                  rows={4}
+                  className="bg-white/90"
+                />
+              </div>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="location" className="space-y-6 mt-6">
+            <div className="bg-white/60 backdrop-blur-sm rounded-lg p-6 border border-white/30">
+              <LocationSelector
+                selectedState={formData.state}
+                selectedCity={formData.city}
+                selectedArea={formData.area}
+                onStateChange={(state) => handleInputChange('state', state)}
+                onCityChange={(city) => handleInputChange('city', city)}
+                onAreaChange={(area) => handleInputChange('area', area)}
+                onLocationChange={(location) => handleInputChange('location', location)}
+              />
+            </div>
+          </TabsContent>
+
+          <TabsContent value="details" className="space-y-6 mt-6">
+            <div className="bg-white/60 backdrop-blur-sm rounded-lg p-6 border border-white/30">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label htmlFor="bedrooms">🛏️ Kamar Tidur</Label>
+                  <Select value={formData.bedrooms} onValueChange={(value) => handleInputChange('bedrooms', value)}>
+                    <SelectTrigger className="bg-white/90">
+                      <SelectValue placeholder="Pilih" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-white/95 backdrop-blur-md">
+                      {[0,1,2,3,4,5,6].map(num => (
+                        <SelectItem key={num} value={num.toString()}>{num}+ Kamar</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label htmlFor="bathrooms">🚿 Kamar Mandi</Label>
+                  <Select value={formData.bathrooms} onValueChange={(value) => handleInputChange('bathrooms', value)}>
+                    <SelectTrigger className="bg-white/90">
+                      <SelectValue placeholder="Pilih" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-white/95 backdrop-blur-md">
+                      {[1,2,3,4,5,6].map(num => (
+                        <SelectItem key={num} value={num.toString()}>{num}+ Kamar</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label htmlFor="area_sqm">📐 Luas (m²)</Label>
+                  <Input
+                    id="area_sqm"
+                    type="number"
+                    value={formData.area_sqm}
+                    onChange={(e) => handleInputChange('area_sqm', e.target.value)}
+                    placeholder="120"
+                    min="0"
+                    className="bg-white/90"
                   />
                 </div>
-              </TabsContent>
+              </div>
 
-              <TabsContent value="location" className="space-y-6 mt-6">
-                <LocationSelector
-                  selectedState={formData.state}
-                  selectedCity={formData.city}
-                  selectedArea={formData.area}
-                  onStateChange={(state) => handleInputChange('state', state)}
-                  onCityChange={(city) => handleInputChange('city', city)}
-                  onAreaChange={(area) => handleInputChange('area', area)}
-                  onLocationChange={(location) => handleInputChange('location', location)}
-                />
-              </TabsContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                <div>
+                  <Label>🪑 Kondisi Furnitur</Label>
+                  <RadioGroup 
+                    value={formData.furnishing} 
+                    onValueChange={(value) => handleInputChange('furnishing', value)}
+                    className="flex flex-col space-y-2 mt-2"
+                  >
+                    <div className="flex items-center space-x-2 bg-white/60 rounded-lg px-3 py-2">
+                      <RadioGroupItem value="unfurnished" id="unfurnished" />
+                      <Label htmlFor="unfurnished" className="text-sm">Tidak Berperabot</Label>
+                    </div>
+                    <div className="flex items-center space-x-2 bg-white/60 rounded-lg px-3 py-2">
+                      <RadioGroupItem value="semi-furnished" id="semi-furnished" />
+                      <Label htmlFor="semi-furnished" className="text-sm">Semi Furnished</Label>
+                    </div>
+                    <div className="flex items-center space-x-2 bg-white/60 rounded-lg px-3 py-2">
+                      <RadioGroupItem value="fully-furnished" id="fully-furnished" />
+                      <Label htmlFor="fully-furnished" className="text-sm">Fully Furnished</Label>
+                    </div>
+                  </RadioGroup>
+                </div>
 
-              <TabsContent value="details" className="space-y-6 mt-6">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label htmlFor="parking">🚗 Parkir</Label>
+                  <Select value={formData.parking} onValueChange={(value) => handleInputChange('parking', value)}>
+                    <SelectTrigger className="bg-white/90">
+                      <SelectValue placeholder="Pilih kapasitas parkir" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-white/95 backdrop-blur-md">
+                      <SelectItem value="0">❌ Tidak Ada</SelectItem>
+                      <SelectItem value="1">🚗 1 Mobil</SelectItem>
+                      <SelectItem value="2">🚗🚗 2 Mobil</SelectItem>
+                      <SelectItem value="3">🚗🚗🚗 3+ Mobil</SelectItem>
+                      <SelectItem value="carport">🏠 Carport</SelectItem>
+                      <SelectItem value="garage">🏢 Garasi Tertutup</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="media" className="space-y-6 mt-6">
+            <div className="bg-white/60 backdrop-blur-sm rounded-lg p-6 border border-white/30">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label>🥽 Virtual Tour 3D</Label>
+                  <RadioGroup 
+                    value={formData.has_3d_tour.toString()} 
+                    onValueChange={(value) => handleInputChange('has_3d_tour', value === 'true')}
+                    className="flex flex-row space-x-6 mt-2"
+                  >
+                    <div className="flex items-center space-x-2 bg-white/60 rounded-lg px-3 py-2">
+                      <RadioGroupItem value="true" id="has_3d" />
+                      <Label htmlFor="has_3d" className="text-sm">✅ Ada 3D Tour</Label>
+                    </div>
+                    <div className="flex items-center space-x-2 bg-white/60 rounded-lg px-3 py-2">
+                      <RadioGroupItem value="false" id="no_3d" />
+                      <Label htmlFor="no_3d" className="text-sm">❌ Tidak Ada</Label>
+                    </div>
+                  </RadioGroup>
+                </div>
+              </div>
+
+              {formData.has_3d_tour && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                   <div>
-                    <Label htmlFor="bedrooms">Kamar Tidur</Label>
-                    <Select value={formData.bedrooms} onValueChange={(value) => handleInputChange('bedrooms', value)}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Pilih" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {[0,1,2,3,4,5,6].map(num => (
-                          <SelectItem key={num} value={num.toString()}>{num}+</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div>
-                    <Label htmlFor="bathrooms">Kamar Mandi</Label>
-                    <Select value={formData.bathrooms} onValueChange={(value) => handleInputChange('bathrooms', value)}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Pilih" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {[1,2,3,4,5,6].map(num => (
-                          <SelectItem key={num} value={num.toString()}>{num}+</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div>
-                    <Label htmlFor="area_sqm">Luas (m²)</Label>
+                    <Label htmlFor="three_d_model_url">🔗 URL Model 3D</Label>
                     <Input
-                      id="area_sqm"
-                      type="number"
-                      value={formData.area_sqm}
-                      onChange={(e) => handleInputChange('area_sqm', e.target.value)}
-                      placeholder="120"
-                      min="0"
+                      id="three_d_model_url"
+                      value={formData.three_d_model_url}
+                      onChange={(e) => handleInputChange('three_d_model_url', e.target.value)}
+                      placeholder="https://example.com/3d-model"
+                      className="bg-white/90"
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="virtual_tour_url">🌐 URL Virtual Tour</Label>
+                    <Input
+                      id="virtual_tour_url"
+                      value={formData.virtual_tour_url}
+                      onChange={(e) => handleInputChange('virtual_tour_url', e.target.value)}
+                      placeholder="https://example.com/virtual-tour"
+                      className="bg-white/90"
                     />
                   </div>
                 </div>
+              )}
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label>Kondisi Furnitur</Label>
-                    <RadioGroup 
-                      value={formData.furnishing} 
-                      onValueChange={(value) => handleInputChange('furnishing', value)}
-                      className="flex flex-col space-y-2 mt-2"
-                    >
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="unfurnished" id="unfurnished" />
-                        <Label htmlFor="unfurnished" className="text-sm">Tidak Berperabot</Label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="semi-furnished" id="semi-furnished" />
-                        <Label htmlFor="semi-furnished" className="text-sm">Semi Furnished</Label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="fully-furnished" id="fully-furnished" />
-                        <Label htmlFor="fully-furnished" className="text-sm">Fully Furnished</Label>
-                      </div>
-                    </RadioGroup>
-                  </div>
-
-                  <div>
-                    <Label htmlFor="parking">Parkir</Label>
-                    <Select value={formData.parking} onValueChange={(value) => handleInputChange('parking', value)}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Pilih kapasitas parkir" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="0">Tidak Ada</SelectItem>
-                        <SelectItem value="1">1 Mobil</SelectItem>
-                        <SelectItem value="2">2 Mobil</SelectItem>
-                        <SelectItem value="3">3+ Mobil</SelectItem>
-                        <SelectItem value="carport">Carport</SelectItem>
-                        <SelectItem value="garage">Garasi Tertutup</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+              <div className="mt-6 p-6 border-dashed border-2 border-gray-300 rounded-lg bg-white/40">
+                <div className="text-center">
+                  <Camera className="h-12 w-12 mx-auto text-gray-400 mb-2" />
+                  <p className="text-gray-600 mb-2">📸 Upload Foto Properti</p>
+                  <p className="text-sm text-gray-500">Drag & drop atau klik untuk upload</p>
+                  <Button type="button" variant="outline" className="mt-2 bg-white/90">
+                    Pilih Foto
+                  </Button>
                 </div>
-              </TabsContent>
-
-              <TabsContent value="media" className="space-y-6 mt-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label>Virtual Tour 3D</Label>
-                    <RadioGroup 
-                      value={formData.has_3d_tour.toString()} 
-                      onValueChange={(value) => handleInputChange('has_3d_tour', value === 'true')}
-                      className="flex flex-row space-x-6 mt-2"
-                    >
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="true" id="has_3d" />
-                        <Label htmlFor="has_3d" className="text-sm">Ada 3D Tour</Label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="false" id="no_3d" />
-                        <Label htmlFor="no_3d" className="text-sm">Tidak Ada</Label>
-                      </div>
-                    </RadioGroup>
-                  </div>
-                </div>
-
-                {formData.has_3d_tour && (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="three_d_model_url">URL Model 3D</Label>
-                      <Input
-                        id="three_d_model_url"
-                        value={formData.three_d_model_url}
-                        onChange={(e) => handleInputChange('three_d_model_url', e.target.value)}
-                        placeholder="https://example.com/3d-model"
-                      />
-                    </div>
-
-                    <div>
-                      <Label htmlFor="virtual_tour_url">URL Virtual Tour</Label>
-                      <Input
-                        id="virtual_tour_url"
-                        value={formData.virtual_tour_url}
-                        onChange={(e) => handleInputChange('virtual_tour_url', e.target.value)}
-                        placeholder="https://example.com/virtual-tour"
-                      />
-                    </div>
-                  </div>
-                )}
-
-                <Card className="p-4 border-dashed border-2 border-gray-300">
-                  <div className="text-center">
-                    <Camera className="h-12 w-12 mx-auto text-gray-400 mb-2" />
-                    <p className="text-gray-600 mb-2">Upload Foto Properti</p>
-                    <p className="text-sm text-gray-500">Drag & drop atau klik untuk upload</p>
-                    <Button type="button" variant="outline" className="mt-2">
-                      Pilih Foto
-                    </Button>
-                  </div>
-                </Card>
-              </TabsContent>
-            </Tabs>
-
-            <div className="flex gap-4 mt-8">
-              <Button 
-                type="submit" 
-                className="flex-1"
-                disabled={insertPropertyMutation.isPending}
-              >
-                {insertPropertyMutation.isPending ? 'Mengirim...' : 'Kirim untuk Review'}
-              </Button>
-              <Button 
-                type="button"
-                variant="outline"
-                onClick={() => navigate('/')}
-              >
-                Batal
-              </Button>
+              </div>
             </div>
-          </form>
-        </CardContent>
-      </Card>
+          </TabsContent>
+        </Tabs>
+
+        <div className="flex gap-4 mt-8">
+          <Button 
+            type="submit" 
+            className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg"
+            disabled={insertPropertyMutation.isPending}
+          >
+            {insertPropertyMutation.isPending ? (
+              <>
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                Mengirim...
+              </>
+            ) : (
+              <>
+                <CheckCircle className="h-4 w-4 mr-2" />
+                Kirim untuk Review
+              </>
+            )}
+          </Button>
+          <Button 
+            type="button"
+            variant="outline"
+            onClick={() => navigate('/')}
+            className="bg-white/90 backdrop-blur-sm"
+          >
+            Batal
+          </Button>
+        </div>
+      </form>
     </div>
   );
 };
