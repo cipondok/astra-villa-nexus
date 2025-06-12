@@ -2,7 +2,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
-import { useAlert } from './AlertContext';
 
 type UserRole = 'general_user' | 'property_owner' | 'agent' | 'vendor' | 'admin';
 
@@ -39,7 +38,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const [initialized, setInitialized] = useState(false);
-  const { showError, showSuccess } = useAlert();
 
   console.log('AuthProvider rendering, loading:', loading, 'user:', user?.email, 'profile role:', profile?.role, 'verification:', profile?.verification_status);
 
@@ -180,7 +178,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             await fetchProfile(session.user.id, true);
             
             if (event === 'SIGNED_IN') {
-              showSuccess('Welcome!', 'You have been signed in successfully.');
+              console.log('User signed in successfully');
             }
           }
         } else if (event === 'SIGNED_OUT') {
@@ -213,11 +211,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         console.error('Sign in error:', error);
         setLoading(false);
         
-        if (error.message.includes('Invalid login credentials')) {
-          showError('Sign In Failed', 'Invalid email or password. Please check your credentials and try again.');
-        } else {
-          showError('Sign In Failed', error.message);
-        }
         return { error, success: false };
       }
 
@@ -234,7 +227,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } catch (error: any) {
       console.error('Sign in error:', error);
       setLoading(false);
-      showError('Sign In Error', error.message);
       return { error, success: false };
     }
   };
@@ -256,23 +248,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       if (error) {
         console.error('Sign up error:', error);
-        
-        if (error.message.includes('email rate limit exceeded')) {
-          showError('Sign Up Failed', 'Too many signup attempts. Please wait a few minutes before trying again, or try logging in if you already have an account.');
-        } else {
-          showError('Sign Up Failed', error.message);
-        }
         return { error, success: false };
       }
 
       console.log('Sign up successful for:', email);
       
-      showSuccess('Account Created!', 'Please check your email for a verification link to complete your registration.');
-      
       return { error: null, success: true };
     } catch (error: any) {
       console.error('Sign up error:', error);
-      showError('Sign Up Error', error.message);
       return { error, success: false };
     }
   };
@@ -283,10 +266,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       await supabase.auth.signOut();
       setUser(null);
       setProfile(null);
-      showSuccess('Signed Out', 'You have been signed out successfully.');
     } catch (error: any) {
       console.error('Sign out error:', error);
-      showError('Sign Out Error', error.message);
     }
   };
 
@@ -306,16 +287,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       if (error) {
         console.error('Profile update error:', error);
-        showError('Update Failed', error.message);
         return { error, success: false };
       }
 
       await fetchProfile(user.id, true);
-      showSuccess('Profile Updated', 'Your profile has been updated successfully.');
       return { error: null, success: true };
     } catch (error: any) {
       console.error('Update error:', error);
-      showError('Update Error', error.message);
       return { error, success: false };
     }
   };

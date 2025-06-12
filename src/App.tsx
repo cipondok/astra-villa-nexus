@@ -16,8 +16,8 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <AuthProvider>
-      <AlertProvider>
+    <AlertProvider>
+      <AuthProvider>
         <ThemeSettingsProvider>
           <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
             <TooltipProvider>
@@ -33,8 +33,8 @@ const App = () => (
             </TooltipProvider>
           </ThemeProvider>
         </ThemeSettingsProvider>
-      </AlertProvider>
-    </AuthProvider>
+      </AuthProvider>
+    </AlertProvider>
   </QueryClientProvider>
 );
 
