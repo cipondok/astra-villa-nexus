@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Facebook, Twitter, Instagram, Linkedin, Mail, Phone, MapPin, Send, Home, Building, TreePine, Building2, Gavel, Video, Calculator, TrendingUp, Star, Award, Shield, Zap } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 interface ProfessionalFooterProps {
   language: "en" | "id";
@@ -66,7 +67,9 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
       privacy: "Privacy Policy",
       terms: "Terms of Service",
       certifications: "Certifications & Awards",
-      trustedBy: "Trusted by 50,000+ property seekers"
+      trustedBy: "Trusted by 50,000+ property seekers",
+      comingSoon: "Coming Soon!",
+      featureNotAvailable: "This feature is coming soon. Stay tuned!"
     },
     id: {
       company: "Astra Villa",
@@ -120,7 +123,9 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
       privacy: "Kebijakan Privasi",
       terms: "Syarat Layanan",
       certifications: "Sertifikasi & Penghargaan",
-      trustedBy: "Dipercaya oleh 50,000+ pencari properti"
+      trustedBy: "Dipercaya oleh 50,000+ pencari properti",
+      comingSoon: "Segera Hadir!",
+      featureNotAvailable: "Fitur ini akan segera hadir. Nantikan!"
     }
   };
 
@@ -129,12 +134,19 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
     console.log("Subscribing email:", email);
-    // Handle newsletter subscription
+    toast.success("Successfully subscribed to property updates!");
     setEmail("");
   };
 
-  const handleLinkClick = (path: string) => {
-    navigate(path);
+  const handleLinkClick = (path: string, label?: string) => {
+    // Handle existing routes
+    if (path === '/' || path === '/properties') {
+      navigate(path);
+      return;
+    }
+    
+    // For unimplemented routes, show a coming soon message
+    toast.info(`${label || 'Feature'} - ${currentText.featureNotAvailable}`);
   };
 
   return (
@@ -198,7 +210,7 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
             <ul className="space-y-2">
               <li>
                 <button 
-                  onClick={() => handleLinkClick('/buying-overview')}
+                  onClick={() => handleLinkClick('/buying-overview', currentText.buyingOverview)}
                   className="text-muted-foreground hover:text-ios-blue transition-colors text-sm text-left"
                 >
                   {currentText.buyingOverview}
@@ -209,7 +221,7 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
                 <ul className="space-y-1 ml-2">
                   <li>
                     <button 
-                      onClick={() => handleLinkClick('/properties?type=flat')}
+                      onClick={() => handleLinkClick('/properties', currentText.flats)}
                       className="text-muted-foreground hover:text-ios-blue transition-colors text-sm flex items-center gap-1"
                     >
                       <Building className="h-3 w-3" />
@@ -218,7 +230,7 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
                   </li>
                   <li>
                     <button 
-                      onClick={() => handleLinkClick('/properties?type=house')}
+                      onClick={() => handleLinkClick('/properties', currentText.houses)}
                       className="text-muted-foreground hover:text-ios-blue transition-colors text-sm flex items-center gap-1"
                     >
                       <Home className="h-3 w-3" />
@@ -227,7 +239,7 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
                   </li>
                   <li>
                     <button 
-                      onClick={() => handleLinkClick('/properties?type=land')}
+                      onClick={() => handleLinkClick('/properties', currentText.land)}
                       className="text-muted-foreground hover:text-ios-blue transition-colors text-sm flex items-center gap-1"
                     >
                       <TreePine className="h-3 w-3" />
@@ -236,7 +248,7 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
                   </li>
                   <li>
                     <button 
-                      onClick={() => handleLinkClick('/properties?type=commercial')}
+                      onClick={() => handleLinkClick('/properties', currentText.commercial)}
                       className="text-muted-foreground hover:text-ios-blue transition-colors text-sm flex items-center gap-1"
                     >
                       <Building2 className="h-3 w-3" />
@@ -257,7 +269,7 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
             <ul className="space-y-2">
               <li>
                 <button 
-                  onClick={() => handleLinkClick('/properties?location=jakarta')}
+                  onClick={() => handleLinkClick('/properties', currentText.jakarta)}
                   className="text-muted-foreground hover:text-ios-blue transition-colors text-sm"
                 >
                   {currentText.jakarta}
@@ -265,7 +277,7 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
               </li>
               <li>
                 <button 
-                  onClick={() => handleLinkClick('/properties?location=bali')}
+                  onClick={() => handleLinkClick('/properties', currentText.bali)}
                   className="text-muted-foreground hover:text-ios-blue transition-colors text-sm"
                 >
                   {currentText.bali}
@@ -273,7 +285,7 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
               </li>
               <li>
                 <button 
-                  onClick={() => handleLinkClick('/properties?location=surabaya')}
+                  onClick={() => handleLinkClick('/properties', currentText.surabaya)}
                   className="text-muted-foreground hover:text-ios-blue transition-colors text-sm"
                 >
                   {currentText.surabaya}
@@ -281,7 +293,7 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
               </li>
               <li>
                 <button 
-                  onClick={() => handleLinkClick('/properties?location=bandung')}
+                  onClick={() => handleLinkClick('/properties', currentText.bandung)}
                   className="text-muted-foreground hover:text-ios-blue transition-colors text-sm"
                 >
                   {currentText.bandung}
@@ -289,7 +301,7 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
               </li>
               <li>
                 <button 
-                  onClick={() => handleLinkClick('/properties?location=yogyakarta')}
+                  onClick={() => handleLinkClick('/properties', currentText.yogyakarta)}
                   className="text-muted-foreground hover:text-ios-blue transition-colors text-sm"
                 >
                   {currentText.yogyakarta}
@@ -297,7 +309,7 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
               </li>
               <li>
                 <button 
-                  onClick={() => handleLinkClick('/properties?location=medan')}
+                  onClick={() => handleLinkClick('/properties', currentText.medan)}
                   className="text-muted-foreground hover:text-ios-blue transition-colors text-sm"
                 >
                   {currentText.medan}
@@ -315,7 +327,7 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
             <ul className="space-y-2">
               <li>
                 <button 
-                  onClick={() => handleLinkClick('/live-auctions')}
+                  onClick={() => handleLinkClick('/live-auctions', currentText.liveAuctions)}
                   className="text-muted-foreground hover:text-red-500 transition-colors text-sm flex items-center gap-1"
                 >
                   <Zap className="h-3 w-3 text-red-500" />
@@ -324,7 +336,7 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
               </li>
               <li>
                 <button 
-                  onClick={() => handleLinkClick('/online-auctions')}
+                  onClick={() => handleLinkClick('/online-auctions', currentText.onlineAuctions)}
                   className="text-muted-foreground hover:text-ios-blue transition-colors text-sm flex items-center gap-1"
                 >
                   <Video className="h-3 w-3" />
@@ -333,7 +345,7 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
               </li>
               <li>
                 <button 
-                  onClick={() => handleLinkClick('/free-valuation')}
+                  onClick={() => handleLinkClick('/free-valuation', currentText.freeValuation)}
                   className="text-muted-foreground hover:text-green-500 transition-colors text-sm flex items-center gap-1"
                 >
                   <Calculator className="h-3 w-3 text-green-500" />
@@ -342,7 +354,7 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
               </li>
               <li>
                 <button 
-                  onClick={() => handleLinkClick('/auction-guide')}
+                  onClick={() => handleLinkClick('/auction-guide', currentText.auctionGuide)}
                   className="text-muted-foreground hover:text-ios-blue transition-colors text-sm"
                 >
                   {currentText.auctionGuide}
@@ -350,7 +362,7 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
               </li>
               <li>
                 <button 
-                  onClick={() => handleLinkClick('/bid-registration')}
+                  onClick={() => handleLinkClick('/bid-registration', currentText.bidRegistration)}
                   className="text-muted-foreground hover:text-ios-blue transition-colors text-sm"
                 >
                   {currentText.bidRegistration}
@@ -370,7 +382,7 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
               <ul className="space-y-2">
                 <li>
                   <button 
-                    onClick={() => handleLinkClick('/ai-matching')}
+                    onClick={() => handleLinkClick('/ai-matching', currentText.aiPropertyMatch)}
                     className="text-muted-foreground hover:text-purple-500 transition-colors text-sm"
                   >
                     {currentText.aiPropertyMatch}
@@ -378,7 +390,7 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
                 </li>
                 <li>
                   <button 
-                    onClick={() => handleLinkClick('/virtual-tours')}
+                    onClick={() => handleLinkClick('/virtual-tours', currentText.virtualTours)}
                     className="text-muted-foreground hover:text-ios-blue transition-colors text-sm"
                   >
                     {currentText.virtualTours}
@@ -386,7 +398,7 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
                 </li>
                 <li>
                   <button 
-                    onClick={() => handleLinkClick('/instant-valuation')}
+                    onClick={() => handleLinkClick('/instant-valuation', currentText.instantValuation)}
                     className="text-muted-foreground hover:text-green-500 transition-colors text-sm"
                   >
                     {currentText.instantValuation}
@@ -394,7 +406,7 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
                 </li>
                 <li>
                   <button 
-                    onClick={() => handleLinkClick('/mortgage-calculator')}
+                    onClick={() => handleLinkClick('/mortgage-calculator', currentText.mortgageCalculator)}
                     className="text-muted-foreground hover:text-ios-blue transition-colors text-sm"
                   >
                     {currentText.mortgageCalculator}
@@ -469,13 +481,13 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
             </p>
             <div className="flex space-x-6">
               <button 
-                onClick={() => handleLinkClick('/privacy')}
+                onClick={() => handleLinkClick('/privacy', currentText.privacy)}
                 className="text-muted-foreground hover:text-ios-blue transition-colors text-xs"
               >
                 {currentText.privacy}
               </button>
               <button 
-                onClick={() => handleLinkClick('/terms')}
+                onClick={() => handleLinkClick('/terms', currentText.terms)}
                 className="text-muted-foreground hover:text-ios-blue transition-colors text-xs"
               >
                 {currentText.terms}
