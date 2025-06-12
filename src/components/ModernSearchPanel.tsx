@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -260,36 +261,54 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
     return price.toLocaleString();
   };
 
+  const searchTypeOptions = [
+    { key: "buy", label: currentText.buy, icon: Home },
+    { key: "rent", label: currentText.rent, icon: KeyRound },
+    { key: "newProjects", label: currentText.newProjects, icon: Building },
+    { key: "commercial", label: currentText.commercial, icon: Building2 }
+  ];
+
   return (
     <div className="w-full max-w-5xl mx-auto">
-      {/* Search Type Tabs - More compact */}
+      {/* Search Type Tabs - iPhone style swappable buttons */}
       <div className="flex justify-center mb-4">
-        <div className="flex bg-white/10 backdrop-blur-md rounded-full p-1 border border-white/20 overflow-x-auto">
-          {[
-            { key: "buy", label: currentText.buy, icon: Home },
-            { key: "rent", label: currentText.rent, icon: KeyRound },
-            { key: "newProjects", label: currentText.newProjects, icon: Building },
-            { key: "preLaunching", label: currentText.preLaunching, icon: Rocket },
-            { key: "commercial", label: currentText.commercial, icon: Building2 }
-          ].map((type) => (
-            <Button
-              key={type.key}
-              variant={searchType === type.key ? "default" : "ghost"}
-              className={`flex items-center gap-1 rounded-full px-3 py-1.5 transition-all duration-300 text-xs whitespace-nowrap ${
-                searchType === type.key 
-                  ? "bg-primary text-primary-foreground shadow-lg" 
-                  : "text-foreground/70 hover:text-foreground hover:bg-white/10"
-              }`}
-              onClick={() => setSearchType(type.key)}
-            >
-              <type.icon className="h-3 w-3" />
-              {type.label}
-            </Button>
-          ))}
+        <div className="relative bg-white/20 backdrop-blur-md rounded-2xl p-2 border border-white/30 shadow-lg">
+          {/* Background slider indicator */}
+          <div 
+            className={`absolute top-2 h-10 bg-primary rounded-xl transition-all duration-300 ease-out shadow-md`}
+            style={{
+              width: `${100 / searchTypeOptions.length}%`,
+              left: `${(searchTypeOptions.findIndex(opt => opt.key === searchType) * 100) / searchTypeOptions.length}%`,
+            }}
+          />
+          
+          {/* Tab buttons */}
+          <div className="relative flex">
+            {searchTypeOptions.map((type, index) => (
+              <button
+                key={type.key}
+                className={`relative z-10 flex items-center justify-center gap-2 px-4 py-2 rounded-xl transition-all duration-300 ease-out font-medium text-sm min-w-[100px] touch-manipulation ${
+                  searchType === type.key 
+                    ? "text-primary-foreground scale-105" 
+                    : "text-foreground/70 hover:text-foreground hover:scale-102 active:scale-95"
+                }`}
+                onClick={() => setSearchType(type.key)}
+                style={{ 
+                  WebkitTapHighlightColor: 'transparent',
+                  userSelect: 'none'
+                }}
+              >
+                <type.icon className={`h-4 w-4 transition-all duration-300 ${
+                  searchType === type.key ? 'scale-110' : 'scale-100'
+                }`} />
+                <span className="whitespace-nowrap">{type.label}</span>
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
-      {/* Main Search Panel - Reduced padding */}
+      {/* Main Search Panel */}
       <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 shadow-2xl">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
           {/* Search Input */}
@@ -312,7 +331,8 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
               <SheetTrigger asChild>
                 <Button
                   variant="outline"
-                  className="w-full justify-between bg-white/20 border-white/30 text-foreground hover:bg-white/30 h-10"
+                  className="w-full justify-between bg-white/20 border-white/30 text-foreground hover:bg-white/30 h-10 touch-manipulation"
+                  style={{ WebkitTapHighlightColor: 'transparent' }}
                 >
                   <div className="flex items-center gap-2">
                     <Filter className="h-4 w-4" />
@@ -336,7 +356,8 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
                     <CollapsibleTrigger asChild>
                       <Button
                         variant="ghost"
-                        className="w-full justify-between p-4 h-auto border border-white/10 rounded-lg hover:bg-white/5"
+                        className="w-full justify-between p-4 h-auto border border-white/10 rounded-lg hover:bg-white/5 touch-manipulation"
+                        style={{ WebkitTapHighlightColor: 'transparent' }}
                       >
                         <div className="flex items-center gap-3">
                           <MapPinned className="h-5 w-5 text-primary" />
@@ -390,8 +411,9 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
                       <Button 
                         variant={userLocation ? "default" : "outline"} 
                         onClick={detectNearMe} 
-                        className="w-full"
+                        className="w-full touch-manipulation"
                         disabled={isDetectingLocation}
+                        style={{ WebkitTapHighlightColor: 'transparent' }}
                       >
                         {isDetectingLocation ? (
                           <>
@@ -416,7 +438,8 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
                             variant="ghost"
                             size="sm"
                             onClick={() => setUserLocation(null)}
-                            className="ml-auto h-6 w-6 p-0"
+                            className="ml-auto h-6 w-6 p-0 touch-manipulation"
+                            style={{ WebkitTapHighlightColor: 'transparent' }}
                           >
                             <X className="h-3 w-3" />
                           </Button>
@@ -430,7 +453,8 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
                     <CollapsibleTrigger asChild>
                       <Button
                         variant="ghost"
-                        className="w-full justify-between p-4 h-auto border border-white/10 rounded-lg hover:bg-white/5"
+                        className="w-full justify-between p-4 h-auto border border-white/10 rounded-lg hover:bg-white/5 touch-manipulation"
+                        style={{ WebkitTapHighlightColor: 'transparent' }}
                       >
                         <div className="flex items-center gap-3">
                           <span className="h-5 w-5 text-primary text-lg">💰</span>
@@ -462,7 +486,8 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
                     <CollapsibleTrigger asChild>
                       <Button
                         variant="ghost"
-                        className="w-full justify-between p-4 h-auto border border-white/10 rounded-lg hover:bg-white/5"
+                        className="w-full justify-between p-4 h-auto border border-white/10 rounded-lg hover:bg-white/5 touch-manipulation"
+                        style={{ WebkitTapHighlightColor: 'transparent' }}
                       >
                         <div className="flex items-center gap-3">
                           <Home className="h-5 w-5 text-primary" />
@@ -477,8 +502,9 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
                           <Button
                             key={type.value}
                             variant={propertyType === type.value ? "default" : "outline"}
-                            className="justify-start h-12"
+                            className="justify-start h-12 touch-manipulation"
                             onClick={() => setPropertyType(propertyType === type.value ? "" : type.value)}
+                            style={{ WebkitTapHighlightColor: 'transparent' }}
                           >
                             <type.icon className="h-4 w-4 mr-2" />
                             {type.label}
@@ -493,7 +519,8 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
                     <CollapsibleTrigger asChild>
                       <Button
                         variant="ghost"
-                        className="w-full justify-between p-4 h-auto border border-white/10 rounded-lg hover:bg-white/5"
+                        className="w-full justify-between p-4 h-auto border border-white/10 rounded-lg hover:bg-white/5 touch-manipulation"
+                        style={{ WebkitTapHighlightColor: 'transparent' }}
                       >
                         <div className="flex items-center gap-3">
                           <Bed className="h-5 w-5 text-primary" />
@@ -509,8 +536,9 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
                             key={num}
                             variant={bedrooms === num ? "default" : "outline"}
                             size="sm"
-                            className="min-w-[60px]"
+                            className="min-w-[60px] touch-manipulation"
                             onClick={() => setBedrooms(bedrooms === num ? "" : num)}
+                            style={{ WebkitTapHighlightColor: 'transparent' }}
                           >
                             <Bed className="h-4 w-4 mr-1" />
                             {num}
@@ -525,7 +553,8 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
                     <CollapsibleTrigger asChild>
                       <Button
                         variant="ghost"
-                        className="w-full justify-between p-4 h-auto border border-white/10 rounded-lg hover:bg-white/5"
+                        className="w-full justify-between p-4 h-auto border border-white/10 rounded-lg hover:bg-white/5 touch-manipulation"
+                        style={{ WebkitTapHighlightColor: 'transparent' }}
                       >
                         <div className="flex items-center gap-3">
                           <Bath className="h-5 w-5 text-primary" />
@@ -541,8 +570,9 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
                             key={num}
                             variant={bathrooms === num ? "default" : "outline"}
                             size="sm"
-                            className="min-w-[60px]"
+                            className="min-w-[60px] touch-manipulation"
                             onClick={() => setBathrooms(bathrooms === num ? "" : num)}
+                            style={{ WebkitTapHighlightColor: 'transparent' }}
                           >
                             <Bath className="h-4 w-4 mr-1" />
                             {num}
@@ -558,7 +588,8 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
                       setIsFiltersOpen(false);
                       handleSearch();
                     }}
-                    className="w-full bg-primary hover:bg-primary/90 h-12 text-base font-medium mt-6"
+                    className="w-full bg-primary hover:bg-primary/90 h-12 text-base font-medium mt-6 touch-manipulation"
+                    style={{ WebkitTapHighlightColor: 'transparent' }}
                   >
                     <Filter className="h-4 w-4 mr-2" />
                     {currentText.applyFilters}
@@ -569,11 +600,12 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
           </div>
         </div>
 
-        {/* Search Button - More compact */}
+        {/* Search Button */}
         <div className="flex justify-center">
           <Button 
             onClick={handleSearch}
-            className="bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-2 rounded-full text-base font-medium shadow-lg hover:shadow-xl transition-all duration-1000 hover:scale-105"
+            className="bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-2 rounded-full text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 touch-manipulation active:scale-95"
+            style={{ WebkitTapHighlightColor: 'transparent' }}
           >
             <Bot className="h-4 w-4 mr-2 animate-pulse" style={{ animationDuration: '3s' }} />
             {currentText.search}
@@ -581,7 +613,7 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
           </Button>
         </div>
 
-        {/* Active Filters - More compact */}
+        {/* Active Filters */}
         {(selectedState || userLocation || propertyType || bedrooms || bathrooms) && (
           <div className="flex flex-wrap gap-2 mt-3">
             {(selectedState || userLocation) && (
