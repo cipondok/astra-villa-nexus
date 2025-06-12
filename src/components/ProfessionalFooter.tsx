@@ -1,7 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Facebook, Twitter, Instagram, Linkedin, Mail, Phone, MapPin, Send, Home, Building, TreePine, Building2, Gavel, Video, Calculator, TrendingUp, Star, Award, Shield, Zap } from "lucide-react";
+import { Facebook, Twitter, Instagram, Linkedin, Mail, Phone, MapPin, Send, Home, Building, TreePine, Building2, Gavel, Video, Calculator, TrendingUp, Star, Award, Shield, Zap, FileText, AlertCircle, DollarSign, Scale, HelpCircle } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -22,6 +22,13 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
       // Main sections
       buyingGuide: "Buying Guide",
       buyingOverview: "Buying Overview",
+      guideAndFaq: "Guide & FAQ",
+      registerForAlerts: "Register for Alerts",
+      termsOfSale: "Terms of Sale",
+      whyBuyAtAstraVilla: "Why Buy at Astra Villa",
+      astraVillaFinance: "Astra Villa Finance",
+      solicitors: "Solicitors",
+      
       whatLookingFor: "What are you looking for?",
       flats: "Flats",
       houses: "Houses", 
@@ -78,6 +85,13 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
       // Main sections
       buyingGuide: "Panduan Beli",
       buyingOverview: "Ringkasan Pembelian",
+      guideAndFaq: "Panduan & FAQ",
+      registerForAlerts: "Daftar untuk Peringatan",
+      termsOfSale: "Syarat Penjualan",
+      whyBuyAtAstraVilla: "Mengapa Beli di Astra Villa",
+      astraVillaFinance: "Pembiayaan Astra Villa",
+      solicitors: "Pengacara",
+      
       whatLookingFor: "Apa yang Anda cari?",
       flats: "Apartemen",
       houses: "Rumah",
@@ -201,7 +215,7 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
             </div>
           </div>
 
-          {/* Buying Guide */}
+          {/* Buying Guide - Expanded */}
           <div className="space-y-4">
             <h4 className="font-semibold text-foreground text-sm flex items-center gap-2">
               <Home className="h-4 w-4 text-ios-blue" />
@@ -211,11 +225,67 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
               <li>
                 <button 
                   onClick={() => handleLinkClick('/buying-overview', currentText.buyingOverview)}
-                  className="text-muted-foreground hover:text-ios-blue transition-colors text-sm text-left"
+                  className="text-muted-foreground hover:text-ios-blue transition-colors text-sm text-left flex items-center gap-1"
                 >
+                  <FileText className="h-3 w-3" />
                   {currentText.buyingOverview}
                 </button>
               </li>
+              <li>
+                <button 
+                  onClick={() => handleLinkClick('/guide-faq', currentText.guideAndFaq)}
+                  className="text-muted-foreground hover:text-ios-blue transition-colors text-sm text-left flex items-center gap-1"
+                >
+                  <HelpCircle className="h-3 w-3" />
+                  {currentText.guideAndFaq}
+                </button>
+              </li>
+              <li>
+                <button 
+                  onClick={() => handleLinkClick('/register-alerts', currentText.registerForAlerts)}
+                  className="text-muted-foreground hover:text-ios-blue transition-colors text-sm text-left flex items-center gap-1"
+                >
+                  <AlertCircle className="h-3 w-3" />
+                  {currentText.registerForAlerts}
+                </button>
+              </li>
+              <li>
+                <button 
+                  onClick={() => handleLinkClick('/terms-of-sale', currentText.termsOfSale)}
+                  className="text-muted-foreground hover:text-ios-blue transition-colors text-sm text-left flex items-center gap-1"
+                >
+                  <Scale className="h-3 w-3" />
+                  {currentText.termsOfSale}
+                </button>
+              </li>
+              <li>
+                <button 
+                  onClick={() => handleLinkClick('/why-buy-astra-villa', currentText.whyBuyAtAstraVilla)}
+                  className="text-muted-foreground hover:text-ios-blue transition-colors text-sm text-left flex items-center gap-1"
+                >
+                  <Award className="h-3 w-3 text-purple-500" />
+                  {currentText.whyBuyAtAstraVilla}
+                </button>
+              </li>
+              <li>
+                <button 
+                  onClick={() => handleLinkClick('/astra-villa-finance', currentText.astraVillaFinance)}
+                  className="text-muted-foreground hover:text-ios-blue transition-colors text-sm text-left flex items-center gap-1"
+                >
+                  <DollarSign className="h-3 w-3 text-green-500" />
+                  {currentText.astraVillaFinance}
+                </button>
+              </li>
+              <li>
+                <button 
+                  onClick={() => handleLinkClick('/solicitors', currentText.solicitors)}
+                  className="text-muted-foreground hover:text-ios-blue transition-colors text-sm text-left flex items-center gap-1"
+                >
+                  <Scale className="h-3 w-3 text-blue-500" />
+                  {currentText.solicitors}
+                </button>
+              </li>
+              
               <li className="pt-2">
                 <div className="text-xs font-medium text-foreground mb-2">{currentText.whatLookingFor}</div>
                 <ul className="space-y-1 ml-2">
