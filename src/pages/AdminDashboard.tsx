@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Settings, Users, Home, List, Plus, Gift, Calendar, Database, Shield, FileText, Store, MessageSquare, Activity, BarChart3, Loader2 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -34,6 +35,7 @@ const AdminDashboard = () => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("system");
+  const [systemSettingsOpen, setSystemSettingsOpen] = useState(false);
 
   // Show loading state while checking authentication
   if (loading) {
@@ -85,31 +87,50 @@ const AdminDashboard = () => {
                 <p className="text-sm text-muted-foreground">System Administration Panel</p>
               </div>
             </div>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="h-8 w-8 p-0">
-                  <Avatar className="h-8 w-8">
-                    <AvatarImage src={user?.user_metadata?.avatar_url} alt={user?.user_metadata?.full_name} />
-                    <AvatarFallback>
-                      {user?.user_metadata?.full_name?.charAt(0) || user?.email?.charAt(0) || 'A'}
-                    </AvatarFallback>
-                  </Avatar>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Admin Account</DropdownMenuLabel>
-                <DropdownMenuItem onClick={() => navigate('/profile')}>Profile</DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => navigate('/')}>Back to Home</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <div className="flex items-center gap-4">
+              <Dialog open={systemSettingsOpen} onOpenChange={setSystemSettingsOpen}>
+                <DialogTrigger asChild>
+                  <Button variant="outline" size="sm">
+                    <Settings className="h-4 w-4 mr-2" />
+                    System Settings
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                  <DialogHeader>
+                    <DialogTitle>System Settings</DialogTitle>
+                  </DialogHeader>
+                  <Suspense fallback={<LoadingSpinner />}>
+                    <SystemSettings />
+                  </Suspense>
+                </DialogContent>
+              </Dialog>
+              
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="h-8 w-8 p-0">
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src={user?.user_metadata?.avatar_url} alt={user?.user_metadata?.full_name} />
+                      <AvatarFallback>
+                        {user?.user_metadata?.full_name?.charAt(0) || user?.email?.charAt(0) || 'A'}
+                      </AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuLabel>Admin Account</DropdownMenuLabel>
+                  <DropdownMenuItem onClick={() => navigate('/profile')}>Profile</DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => navigate('/')}>Back to Home</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
           </div>
         </div>
       </header>
       
       <main className="container mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5 lg:grid-cols-10">
+          <TabsList className="grid w-full grid-cols-4 lg:grid-cols-9">
             <TabsTrigger value="system" className="flex items-center gap-2">
               <Activity className="h-4 w-4" />
               <span className="hidden sm:inline">System</span>
@@ -146,19 +167,12 @@ const AdminDashboard = () => {
               <MessageSquare className="h-4 w-4" />
               <span className="hidden sm:inline">Feedback</span>
             </TabsTrigger>
-            <TabsTrigger value="astra-settings" className="flex items-center gap-2">
-              <Gift className="h-4 w-4" />
-              <span className="hidden sm:inline">ASTRA</span>
-            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="system">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="w-full">
               <Suspense fallback={<LoadingSpinner />}>
                 <SystemMonitor />
-              </Suspense>
-              <Suspense fallback={<LoadingSpinner />}>
-                <SystemSettings />
               </Suspense>
             </div>
           </TabsContent>
@@ -208,12 +222,6 @@ const AdminDashboard = () => {
           <TabsContent value="feedback">
             <Suspense fallback={<LoadingSpinner />}>
               <FeedbackManagement />
-            </Suspense>
-          </TabsContent>
-
-          <TabsContent value="astra-settings">
-            <Suspense fallback={<LoadingSpinner />}>
-              <AstraTokenSettings />
             </Suspense>
           </TabsContent>
         </Tabs>
