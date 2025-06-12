@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -88,9 +89,7 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
       trending: "Trending Searches",
       close: "Close",
       categories: "Categories",
-      applyFilters: "Apply Filters",
-      searchRequired: "Please enter a search term or select filters",
-      searchError: "Search Error"
+      applyFilters: "Apply Filters"
     },
     id: {
       buy: "Beli",
@@ -120,9 +119,7 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
       trending: "Pencarian Trending",
       close: "Tutup",
       categories: "Kategori",
-      applyFilters: "Terapkan Filter",
-      searchRequired: "Harap masukkan kata pencarian atau pilih filter",
-      searchError: "Error Pencarian"
+      applyFilters: "Terapkan Filter"
     }
   };
 
@@ -188,24 +185,8 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
     return () => clearInterval(interval);
   }, [trendingSearches.length]);
 
-  const validateSearch = () => {
-    const hasSearchQuery = searchValue.trim().length > 0;
-    const hasLocation = userLocation || selectedState || selectedCity || selectedArea;
-    const hasFilters = propertyType || bedrooms || bathrooms;
-    
-    return hasSearchQuery || hasLocation || hasFilters;
-  };
-
   const handleSearch = () => {
-    if (!validateSearch()) {
-      toast({
-        title: currentText.searchError,
-        description: currentText.searchRequired,
-        variant: "destructive",
-      });
-      return;
-    }
-
+    // Always allow search - no validation required
     const searchData = {
       type: searchType,
       location: userLocation ? 
@@ -651,7 +632,7 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
           </div>
         </div>
 
-        {/* Search Button with Validation */}
+        {/* Search Button - No validation required */}
         <div className="flex justify-center">
           <Button 
             onClick={handleSearch}
