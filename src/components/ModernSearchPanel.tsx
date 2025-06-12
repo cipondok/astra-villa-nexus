@@ -276,7 +276,7 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
     <div className="w-full max-w-5xl mx-auto">
       {/* Search Type Tabs - Clean iPhone style */}
       <div className="flex justify-center mb-6">
-        <div className="relative glass-ios rounded-2xl p-1.5 border border-border/20 shadow-sm">
+        <div className="relative bg-card/50 backdrop-blur-md rounded-2xl p-1.5 border border-border/30 shadow-sm">
           {/* Background slider indicator - smooth iOS style */}
           <div 
             className={`absolute top-1.5 h-10 bg-primary rounded-xl transition-all duration-300 ease-out shadow-sm`}
@@ -312,8 +312,8 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
         </div>
       </div>
 
-      {/* Main Search Panel - Clean glass design */}
-      <div className="glass-ios rounded-3xl p-6 border border-border/10 shadow-xl backdrop-blur-xl">
+      {/* Main Search Panel - Clean card design */}
+      <div className="bg-card/80 backdrop-blur-md rounded-3xl p-6 border border-border/20 shadow-lg">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
           {/* Search Input - Clean design */}
           <div className="md:col-span-2 relative">
@@ -321,7 +321,7 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
               <Input
                 placeholder={searchValue || `${currentText.searchPlaceholder} ${trendingSearches[currentTrendingIndex]}`}
-                className="pl-12 pr-12 glass-ios border-border/20 text-foreground placeholder:text-foreground/50 transition-all duration-200 h-12 rounded-2xl backdrop-blur-sm"
+                className="pl-12 pr-12 bg-background/50 backdrop-blur-sm border-border/30 text-foreground placeholder:text-muted-foreground transition-all duration-200 h-12 rounded-2xl"
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
               />
@@ -335,7 +335,7 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
               <SheetTrigger asChild>
                 <Button
                   variant="outline"
-                  className="w-full justify-between glass-ios border-border/20 text-foreground hover:bg-background/50 h-12 touch-manipulation backdrop-blur-sm rounded-2xl"
+                  className="w-full justify-between bg-background/50 backdrop-blur-sm border-border/30 text-foreground hover:bg-background/70 h-12 touch-manipulation rounded-2xl"
                   style={{ WebkitTapHighlightColor: 'transparent' }}
                 >
                   <div className="flex items-center gap-2">
@@ -346,7 +346,7 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
                 </Button>
               </SheetTrigger>
               
-              <SheetContent side="right" className="w-[400px] sm:w-[540px] glass-ios border-l border-border/20 backdrop-blur-2xl">
+              <SheetContent side="right" className="w-[400px] sm:w-[540px] bg-background/95 backdrop-blur-xl border-l border-border/30">
                 <SheetHeader className="pb-6">
                   <SheetTitle className="text-lg font-semibold flex items-center gap-2">
                     <Filter className="h-5 w-5" />
@@ -360,7 +360,7 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
                     <CollapsibleTrigger asChild>
                       <Button
                         variant="ghost"
-                        className="w-full justify-between p-4 h-auto bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 touch-manipulation"
+                        className="w-full justify-between p-4 h-auto bg-card/50 hover:bg-card/70 rounded-xl border border-border/20 touch-manipulation"
                         style={{ WebkitTapHighlightColor: 'transparent' }}
                       >
                         <div className="flex items-center gap-3">
@@ -379,10 +379,10 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
                       {!userLocation && (
                         <div className="space-y-3">
                           <Select value={selectedState} onValueChange={handleStateChange}>
-                            <SelectTrigger className="bg-white/10 border-white/20 rounded-xl">
+                            <SelectTrigger className="bg-background/50 border-border/30 rounded-xl">
                               <SelectValue placeholder={currentText.selectState} />
                             </SelectTrigger>
-                            <SelectContent className="bg-background/95 backdrop-blur-xl border-white/20">
+                            <SelectContent className="bg-background/95 backdrop-blur-xl border-border/30">
                               {states.map((state) => (
                                 <SelectItem key={state} value={state}>{state}</SelectItem>
                               ))}
@@ -391,10 +391,10 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
 
                           {selectedState && getAvailableCities().length > 0 && (
                             <Select value={selectedCity} onValueChange={handleCityChange}>
-                              <SelectTrigger className="bg-white/10 border-white/20 rounded-xl">
+                              <SelectTrigger className="bg-background/50 border-border/30 rounded-xl">
                                 <SelectValue placeholder={currentText.selectCity} />
                               </SelectTrigger>
-                              <SelectContent className="bg-background/95 backdrop-blur-xl border-white/20">
+                              <SelectContent className="bg-background/95 backdrop-blur-xl border-border/30">
                                 {getAvailableCities().map((city) => (
                                   <SelectItem key={city} value={city}>{city}</SelectItem>
                                 ))}
@@ -404,10 +404,10 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
 
                           {selectedCity && getAvailableAreas().length > 0 && (
                             <Select value={selectedArea} onValueChange={setSelectedArea}>
-                              <SelectTrigger className="bg-white/10 border-white/20 rounded-xl">
+                              <SelectTrigger className="bg-background/50 border-border/30 rounded-xl">
                                 <SelectValue placeholder={currentText.selectArea} />
                               </SelectTrigger>
-                              <SelectContent className="bg-background/95 backdrop-blur-xl border-white/20">
+                              <SelectContent className="bg-background/95 backdrop-blur-xl border-border/30">
                                 {getAvailableAreas().map((area) => (
                                   <SelectItem key={area} value={area}>{area}</SelectItem>
                                 ))}
@@ -420,7 +420,7 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
                       <Button 
                         variant={userLocation ? "default" : "outline"} 
                         onClick={detectNearMe} 
-                        className="w-full touch-manipulation rounded-xl bg-white/10 hover:bg-white/20 border-white/20"
+                        className="w-full touch-manipulation rounded-xl bg-background/50 hover:bg-background/70 border-border/30"
                         disabled={isDetectingLocation}
                         style={{ WebkitTapHighlightColor: 'transparent' }}
                       >
@@ -462,7 +462,7 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
                     <CollapsibleTrigger asChild>
                       <Button
                         variant="ghost"
-                        className="w-full justify-between p-4 h-auto bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 touch-manipulation"
+                        className="w-full justify-between p-4 h-auto bg-card/50 hover:bg-card/70 rounded-xl border border-border/20 touch-manipulation"
                         style={{ WebkitTapHighlightColor: 'transparent' }}
                       >
                         <div className="flex items-center gap-3">
@@ -478,7 +478,7 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
                       </Button>
                     </CollapsibleTrigger>
                     <CollapsibleContent className="mt-3 px-4">
-                      <div className="p-4 bg-white/5 rounded-xl">
+                      <div className="p-4 bg-card/30 rounded-xl">
                         <Slider
                           value={priceRange}
                           onValueChange={setPriceRange}
@@ -500,7 +500,7 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
                     <CollapsibleTrigger asChild>
                       <Button
                         variant="ghost"
-                        className="w-full justify-between p-4 h-auto bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 touch-manipulation"
+                        className="w-full justify-between p-4 h-auto bg-card/50 hover:bg-card/70 rounded-xl border border-border/20 touch-manipulation"
                         style={{ WebkitTapHighlightColor: 'transparent' }}
                       >
                         <div className="flex items-center gap-3">
@@ -523,7 +523,7 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
                           <Button
                             key={type.value}
                             variant={propertyType === type.value ? "default" : "outline"}
-                            className="justify-start h-12 touch-manipulation rounded-xl bg-white/5 hover:bg-white/10 border-white/20"
+                            className="justify-start h-12 touch-manipulation rounded-xl bg-background/30 hover:bg-background/50 border-border/30"
                             onClick={() => setPropertyType(propertyType === type.value ? "" : type.value)}
                             style={{ WebkitTapHighlightColor: 'transparent' }}
                           >
@@ -540,7 +540,7 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
                     <CollapsibleTrigger asChild>
                       <Button
                         variant="ghost"
-                        className="w-full justify-between p-4 h-auto bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 touch-manipulation"
+                        className="w-full justify-between p-4 h-auto bg-card/50 hover:bg-card/70 rounded-xl border border-border/20 touch-manipulation"
                         style={{ WebkitTapHighlightColor: 'transparent' }}
                       >
                         <div className="flex items-center gap-3">
@@ -562,7 +562,7 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
                             key={num}
                             variant={bedrooms === num ? "default" : "outline"}
                             size="sm"
-                            className="min-w-[60px] touch-manipulation rounded-xl bg-white/5 hover:bg-white/10 border-white/20"
+                            className="min-w-[60px] touch-manipulation rounded-xl bg-background/30 hover:bg-background/50 border-border/30"
                             onClick={() => setBedrooms(bedrooms === num ? "" : num)}
                             style={{ WebkitTapHighlightColor: 'transparent' }}
                           >
@@ -579,7 +579,7 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
                     <CollapsibleTrigger asChild>
                       <Button
                         variant="ghost"
-                        className="w-full justify-between p-4 h-auto bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 touch-manipulation"
+                        className="w-full justify-between p-4 h-auto bg-card/50 hover:bg-card/70 rounded-xl border border-border/20 touch-manipulation"
                         style={{ WebkitTapHighlightColor: 'transparent' }}
                       >
                         <div className="flex items-center gap-3">
@@ -601,7 +601,7 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
                             key={num}
                             variant={bathrooms === num ? "default" : "outline"}
                             size="sm"
-                            className="min-w-[60px] touch-manipulation rounded-xl bg-white/5 hover:bg-white/10 border-white/20"
+                            className="min-w-[60px] touch-manipulation rounded-xl bg-background/30 hover:bg-background/50 border-border/30"
                             onClick={() => setBathrooms(bathrooms === num ? "" : num)}
                             style={{ WebkitTapHighlightColor: 'transparent' }}
                           >
@@ -635,7 +635,7 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
         <div className="flex justify-center mt-6">
           <Button 
             onClick={handleSearch}
-            className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-3 rounded-2xl text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 touch-manipulation active:scale-95 backdrop-blur-sm"
+            className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-3 rounded-2xl text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 touch-manipulation active:scale-95"
             style={{ WebkitTapHighlightColor: 'transparent' }}
           >
             <Bot className="h-4 w-4 mr-2 animate-pulse" style={{ animationDuration: '3s' }} />
@@ -648,24 +648,24 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
         {(selectedState || userLocation || propertyType || bedrooms || bathrooms) && (
           <div className="flex flex-wrap gap-2 mt-4">
             {(selectedState || userLocation) && (
-              <Badge variant="secondary" className="glass-ios text-xs rounded-full border-border/20 backdrop-blur-sm">
+              <Badge variant="secondary" className="bg-secondary/50 backdrop-blur-sm text-xs rounded-full border-border/30">
                 <MapPin className="h-3 w-3 mr-1" />
                 {userLocation ? currentText.nearMe : (selectedArea || selectedCity || selectedState)}
               </Badge>
             )}
             {propertyType && (
-              <Badge variant="secondary" className="glass-ios text-xs rounded-full border-border/20 backdrop-blur-sm">
+              <Badge variant="secondary" className="bg-secondary/50 backdrop-blur-sm text-xs rounded-full border-border/30">
                 {propertyTypes.find(t => t.value === propertyType)?.label}
               </Badge>
             )}
             {bedrooms && (
-              <Badge variant="secondary" className="glass-ios text-xs rounded-full border-border/20 backdrop-blur-sm">
+              <Badge variant="secondary" className="bg-secondary/50 backdrop-blur-sm text-xs rounded-full border-border/30">
                 <Bed className="h-3 w-3 mr-1" />
                 {bedrooms} {currentText.bedrooms}
               </Badge>
             )}
             {bathrooms && (
-              <Badge variant="secondary" className="glass-ios text-xs rounded-full border-border/20 backdrop-blur-sm">
+              <Badge variant="secondary" className="bg-secondary/50 backdrop-blur-sm text-xs rounded-full border-border/30">
                 <Bath className="h-3 w-3 mr-1" />
                 {bathrooms} {currentText.bathrooms}
               </Badge>
