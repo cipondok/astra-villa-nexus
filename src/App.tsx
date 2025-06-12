@@ -10,6 +10,7 @@ import { ThemeSettingsProvider } from "@/contexts/ThemeSettingsContext";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import Index from "./pages/Index";
 import Properties from "./pages/Properties";
+import PropertyDetail from "./pages/PropertyDetail";
 import Dashboard from "./pages/Dashboard";
 import UserDashboard from "./pages/UserDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
@@ -33,6 +34,7 @@ const App = () => (
                 <Routes>
                   <Route path="/" element={<Index />} />
                   <Route path="/properties" element={<Properties />} />
+                  <Route path="/property/:id" element={<PropertyDetail />} />
                   <Route path="/dashboard" element={<Dashboard />} />
                   <Route path="/dashboard/user" element={<UserDashboard />} />
                   <Route path="/dashboard/admin" element={<AdminDashboard />} />
