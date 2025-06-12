@@ -38,13 +38,10 @@ const PropertyDetail = () => {
         
         console.log("Fetching property with ID:", id);
         
+        // Fetch property without foreign key joins
         const { data, error } = await supabase
           .from('properties')
-          .select(`
-            *,
-            owner:profiles!properties_owner_id_fkey(full_name, email),
-            agent:profiles!properties_agent_id_fkey(full_name, email)
-          `)
+          .select('*')
           .eq('id', id)
           .single();
 
@@ -78,10 +75,10 @@ const PropertyDetail = () => {
   // Mock data for features not yet in database
   const mockAgent = {
     id: 1,
-    name: property?.agent?.full_name || "Property Agent",
+    name: "Property Agent",
     title: "Senior Property Consultant",
     phone: "+62 821 1234 5678",
-    email: property?.agent?.email || "agent@realestate.com",
+    email: "agent@realestate.com",
     avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=200&h=200&fit=crop&auto=format",
     rating: 4.9,
     experience: "8 years",
