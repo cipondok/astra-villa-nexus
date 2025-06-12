@@ -1,9 +1,8 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-import { Star, TrendingUp, Zap, Clock, Eye, Loader2, Search } from "lucide-react";
+import { Star, TrendingUp, Zap, Clock, Eye, Loader2, Search, AlertCircle } from "lucide-react";
 import PropertyCard from "./PropertyCard";
 import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -27,6 +26,7 @@ const PropertyListingsSection = ({
   const [similarProperties, setSimilarProperties] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [debugInfo, setDebugInfo] = useState<any>(null);
 
   const text = {
     en: {
@@ -78,22 +78,62 @@ const PropertyListingsSection = ({
         
         console.log("Fetching properties from database...");
         
-        const { data: properties, error } = await supabase
+        // First, let's check how many properties exist in total
+        const { count: totalCount } = await supabase
+          .from('properties')
+          .select('*', { count: 'exact', head: true });
+        
+        console.log(`Total properties in database: ${totalCount}`);
+        
+        // Check how many have each status
+        const { data: statusBreakdown } = await supabase
+          .from('properties')
+          .select('status, approval_status')
+          .order('created_at', { ascending: false });
+        
+        console.log('Properties status breakdown:', statusBreakdown);
+        
+        // Now try to get approved properties
+        const { data: approvedProperties, error: approvedError } = await supabase
           .from('properties')
           .select('*')
           .eq('status', 'approved')
           .eq('approval_status', 'approved')
           .order('created_at', { ascending: false });
 
-        if (error) {
-          console.error('Error fetching properties:', error);
-          setError(error.message);
-        } else {
-          console.log(`Fetched ${properties?.length || 0} properties from database`);
+        console.log('Approved properties query result:', { data: approvedProperties, error: approvedError });
+
+        // If no approved properties, try to get any properties for testing
+        let propertiesToUse = approvedProperties;
+        
+        if (!approvedProperties || approvedProperties.length === 0) {
+          console.log("No approved properties found, fetching any properties for display...");
+          const { data: anyProperties, error: anyError } = await supabase
+            .from('properties')
+            .select('*')
+            .order('created_at', { ascending: false })
+            .limit(20);
           
-          if (properties && properties.length > 0) {
+          console.log('Any properties query result:', { data: anyProperties, error: anyError });
+          propertiesToUse = anyProperties;
+        }
+
+        setDebugInfo({
+          totalCount,
+          statusBreakdown,
+          approvedCount: approvedProperties?.length || 0,
+          anyPropertiesCount: propertiesToUse?.length || 0
+        });
+
+        if (approvedError) {
+          console.error('Error fetching approved properties:', approvedError);
+          setError(approvedError.message);
+        } else {
+          console.log(`Using ${propertiesToUse?.length || 0} properties for display`);
+          
+          if (propertiesToUse && propertiesToUse.length > 0) {
             // Transform database properties to match the expected format
-            const transformedProperties = properties.map(property => ({
+            const transformedProperties = propertiesToUse.map(property => ({
               id: property.id,
               title: property.title,
               location: `${property.area || ''}, ${property.city || ''}, ${property.state || ''}`.replace(/^,\s*|,\s*$/g, ''),
@@ -111,7 +151,7 @@ const PropertyListingsSection = ({
             setAllProperties(transformedProperties);
             setFeaturedProperties(transformedProperties.filter(p => p.featured).slice(0, 12));
           } else {
-            console.log("No properties found in database");
+            console.log("No properties found in database at all");
             setAllProperties([]);
             setFeaturedProperties([]);
           }
@@ -278,8 +318,25 @@ const PropertyListingsSection = ({
       <div className="space-y-8">
         <section className="p-4 md:p-6 lg:p-8">
           <div className="text-center py-12">
+            <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
             <p className="text-red-500 text-lg mb-4">{currentText.loadingError}</p>
-            <p className="text-muted-foreground">{error}</p>
+            <p className="text-muted-foreground mb-4">{error}</p>
+            
+            {/* Debug information for development */}
+            {debugInfo && (
+              <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg text-left text-sm">
+                <h4 className="font-semibold mb-2">Debug Information:</h4>
+                <p>Total properties in database: {debugInfo.totalCount}</p>
+                <p>Approved properties: {debugInfo.approvedCount}</p>
+                <p>Any properties found: {debugInfo.anyPropertiesCount}</p>
+                {debugInfo.statusBreakdown && (
+                  <div className="mt-2">
+                    <p className="font-medium">Status breakdown:</p>
+                    <pre className="text-xs mt-1">{JSON.stringify(debugInfo.statusBreakdown, null, 2)}</pre>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </section>
       </div>
@@ -289,6 +346,29 @@ const PropertyListingsSection = ({
   // Show default layout when no search has been performed
   return (
     <div className="space-y-12 lg:space-y-16 xl:space-y-20">
+      {/* Debug panel - remove this in production */}
+      {debugInfo && allProperties.length === 0 && (
+        <section className="p-4 md:p-6 lg:p-8 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
+          <div className="flex items-center gap-2 mb-4">
+            <AlertCircle className="h-5 w-5 text-yellow-600" />
+            <h3 className="font-semibold text-yellow-800 dark:text-yellow-200">Development Debug Info</h3>
+          </div>
+          <div className="text-sm text-yellow-700 dark:text-yellow-300">
+            <p>Total properties in database: {debugInfo.totalCount}</p>
+            <p>Approved properties: {debugInfo.approvedCount}</p>
+            <p>Properties being displayed: {debugInfo.anyPropertiesCount}</p>
+            {debugInfo.statusBreakdown && debugInfo.statusBreakdown.length > 0 && (
+              <details className="mt-2">
+                <summary className="cursor-pointer font-medium">View property statuses</summary>
+                <pre className="text-xs mt-1 bg-yellow-100 dark:bg-yellow-800/30 p-2 rounded overflow-auto">
+                  {JSON.stringify(debugInfo.statusBreakdown, null, 2)}
+                </pre>
+              </details>
+            )}
+          </div>
+        </section>
+      )}
+
       {/* Featured Properties Carousel */}
       {featuredProperties.length > 0 && (
         <section className="p-4 md:p-6 lg:p-8">
@@ -345,13 +425,20 @@ const PropertyListingsSection = ({
           </div>
         ) : (
           <div className="text-center py-12">
-            <p className="text-muted-foreground text-lg">{currentText.noPropertiesAvailable}</p>
+            <AlertCircle className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+            <p className="text-muted-foreground text-lg mb-4">{currentText.noPropertiesAvailable}</p>
+            <p className="text-sm text-muted-foreground">
+              {debugInfo?.totalCount === 0 
+                ? "The database appears to be empty. Add some properties to get started."
+                : "Properties exist but may need approval or have different status values."
+              }
+            </p>
           </div>
         )}
       </section>
 
-      {/* Popular Searches - Only show if we have properties */}
-      {allProperties.length > 0 && (
+      {/* Popular Searches - Only show if we have properties or if there are any properties in the database */}
+      {(allProperties.length > 0 || (debugInfo?.totalCount && debugInfo.totalCount > 0)) && (
         <section className="p-4 md:p-6 lg:p-8">
           <div className="flex items-center gap-2 md:gap-3 mb-6 md:mb-8">
             <TrendingUp className="h-6 w-6 md:h-8 md:w-8 text-green-500" />
