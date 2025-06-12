@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -9,22 +10,14 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Progress } from "@/components/ui/progress";
 import { useAuth } from "@/contexts/AuthContext";
-import { Plus, Home, MapPin, Camera, Sparkles, Bot, CheckCircle, AlertCircle, Eye, LogIn } from "lucide-react";
+import { Plus, Home, MapPin, Camera, Sparkles, Bot, CheckCircle, AlertCircle, Eye, LogIn, ChevronLeft, ChevronRight, X, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { formatIDR } from "@/utils/currency";
 import LocationSelector from "./LocationSelector";
 import PropertyImageUpload from "./PropertyImageUpload";
 import PropertyPreview from "./PropertyPreview";
-
-// Indonesian location data
-const indonesianStates = [
-  "Jawa Barat", "Jawa Tengah", "Jawa Timur", "DKI Jakarta", "Banten",
-  "Sumatera Utara", "Sumatera Barat", "Sumatera Selatan", "Lampung", "Riau",
-  "Kalimantan Barat", "Kalimantan Timur", "Kalimantan Selatan", "Kalimantan Tengah",
-  "Sulawesi Selatan", "Sulawesi Utara", "Sulawesi Tengah", "Sulawesi Tenggara",
-  "Bali", "Nusa Tenggara Barat", "Nusa Tenggara Timur", "Papua", "Papua Barat"
-];
 
 const PropertyInsertForm = () => {
   const [formData, setFormData] = useState({
@@ -59,6 +52,35 @@ const PropertyInsertForm = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
+  // Tab navigation
+  const tabs = ["basic", "location", "details", "media"];
+  const tabLabels = {
+    basic: "Informasi Dasar",
+    location: "Lokasi", 
+    details: "Detail & Fitur",
+    media: "Media & 3D"
+  };
+
+  const getCurrentTabIndex = () => tabs.indexOf(currentTab);
+  const getProgressPercentage = () => ((getCurrentTabIndex() + 1) / tabs.length) * 100;
+
+  const goToNextTab = () => {
+    const currentIndex = getCurrentTabIndex();
+    if (currentIndex < tabs.length - 1) {
+      setCurrentTab(tabs[currentIndex + 1]);
+    }
+  };
+
+  const goToPreviousTab = () => {
+    const currentIndex = getCurrentTabIndex();
+    if (currentIndex > 0) {
+      setCurrentTab(tabs[currentIndex - 1]);
+    }
+  };
+
+  const isLastTab = () => getCurrentTabIndex() === tabs.length - 1;
+  const isFirstTab = () => getCurrentTabIndex() === 0;
+
   const insertPropertyMutation = useMutation({
     mutationFn: async (propertyData: any) => {
       console.log('Attempting to insert property with user:', user?.id);
@@ -69,7 +91,6 @@ const PropertyInsertForm = () => {
         throw new Error('User not authenticated - no user ID available');
       }
 
-      // Ensure we have the required data
       const propertyToInsert = {
         title: propertyData.title,
         description: propertyData.description,
@@ -83,7 +104,7 @@ const PropertyInsertForm = () => {
         bedrooms: propertyData.bedrooms ? Number(propertyData.bedrooms) : null,
         bathrooms: propertyData.bathrooms ? Number(propertyData.bathrooms) : null,
         area_sqm: propertyData.area_sqm ? Number(propertyData.area_sqm) : null,
-        owner_id: user.id, // Explicitly set the current user as owner
+        owner_id: user.id,
         agent_id: profile?.role === 'agent' ? user.id : null,
         owner_type: profile?.role === 'property_owner' ? 'individual' : (profile?.role === 'agent' ? 'agent' : 'individual'),
         approval_status: 'pending',
@@ -140,22 +161,36 @@ const PropertyInsertForm = () => {
     }
   });
 
-  const validateForm = () => {
+  const validateCurrentTab = () => {
     const errors: string[] = [];
     
-    if (!formData.title) errors.push("Judul properti wajib diisi");
-    if (!formData.property_type) errors.push("Tipe properti wajib dipilih");
-    if (!formData.listing_type) errors.push("Tipe listing wajib dipilih");
-    if (!formData.state) errors.push("Provinsi wajib dipilih");
-    if (!formData.city) errors.push("Kota wajib dipilih");
-    if (!formData.area) errors.push("Area wajib dipilih");
+    switch (currentTab) {
+      case 'basic':
+        if (!formData.title) errors.push("Judul properti wajib diisi");
+        if (!formData.property_type) errors.push("Tipe properti wajib dipilih");
+        if (!formData.listing_type) errors.push("Tipe listing wajib dipilih");
+        break;
+      case 'location':
+        if (!formData.state) errors.push("Provinsi wajib dipilih");
+        if (!formData.city) errors.push("Kota wajib dipilih");
+        if (!formData.area) errors.push("Area wajib dipilih");
+        break;
+    }
     
     setValidationErrors(errors);
     return errors.length === 0;
   };
 
+  const handleNextTab = () => {
+    if (validateCurrentTab()) {
+      goToNextTab();
+    } else {
+      alert("Mohon lengkapi semua bidang yang wajib diisi di tab ini");
+    }
+  };
+
   const handlePreview = () => {
-    if (!validateForm()) {
+    if (!validateCurrentTab()) {
       alert("Mohon lengkapi semua bidang yang wajib diisi");
       return;
     }
@@ -175,7 +210,7 @@ const PropertyInsertForm = () => {
       return;
     }
 
-    if (!validateForm()) {
+    if (!validateCurrentTab()) {
       alert("Mohon lengkapi semua bidang yang wajib diisi");
       return;
     }
@@ -185,9 +220,14 @@ const PropertyInsertForm = () => {
 
   const handleInputChange = (field: string, value: string | boolean | string[]) => {
     setFormData(prev => ({ ...prev, [field]: value }));
-    // Clear validation errors when user starts typing
     if (validationErrors.length > 0) {
       setValidationErrors([]);
+    }
+  };
+
+  const handleClose = () => {
+    if (confirm("Apakah Anda yakin ingin menutup form? Data yang belum disimpan akan hilang.")) {
+      navigate('/');
     }
   };
 
@@ -205,15 +245,6 @@ const PropertyInsertForm = () => {
     setAiSuggestion(suggestions[Math.floor(Math.random() * suggestions.length)]);
   };
 
-  const formatPriceInput = (value: string) => {
-    const numericValue = value.replace(/[^0-9]/g, '');
-    if (numericValue) {
-      const formatted = formatIDR(Number(numericValue));
-      return formatted.replace('Rp', '').trim();
-    }
-    return '';
-  };
-
   // Show login required message if not authenticated
   if (!isAuthenticated || !user) {
     return (
@@ -223,11 +254,16 @@ const PropertyInsertForm = () => {
             <LogIn className="h-16 w-16 mx-auto mb-4 text-gray-400" />
             <h2 className="text-2xl font-bold mb-4 text-gray-900">Login Diperlukan</h2>
             <p className="text-gray-600 mb-6">
-              Anda perlu login untuk menambahkan listing properti.
+              Anda perlu login atau mendaftar terlebih dahulu untuk menambahkan listing properti.
             </p>
-            <Button onClick={() => navigate('/')} className="mr-4 bg-blue-600 hover:bg-blue-700 text-white">
-              Ke Halaman Login
-            </Button>
+            <div className="space-y-3">
+              <Button onClick={() => navigate('/')} className="w-full bg-blue-600 hover:bg-blue-700 text-white">
+                Ke Halaman Login / Daftar
+              </Button>
+              <p className="text-sm text-gray-500">
+                Belum punya akun? Daftar sebagai Property Owner atau Agent di halaman utama.
+              </p>
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -237,6 +273,74 @@ const PropertyInsertForm = () => {
   return (
     <>
       <div className="p-6">
+        {/* Header with Close Button */}
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-4">
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={() => navigate('/')}
+              className="text-gray-600 hover:text-gray-900"
+            >
+              <ArrowLeft className="h-4 w-4 mr-1" />
+              Kembali
+            </Button>
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+                <Plus className="h-6 w-6 text-blue-600" />
+                Tambah Listing Properti
+                {profile?.role === 'agent' && (
+                  <span className="text-sm bg-blue-100 text-blue-800 px-3 py-1 rounded-full border border-blue-200">
+                    Agen
+                  </span>
+                )}
+              </h2>
+              <p className="text-gray-600 mt-1">
+                Listingkan properti Anda untuk dijual atau disewakan
+                {profile?.role === 'agent' && (
+                  <span className="block text-blue-700 text-sm mt-1 font-medium">
+                    Anda login sebagai agen: {profile.full_name || profile.email}
+                  </span>
+                )}
+              </p>
+            </div>
+          </div>
+          
+          <div className="flex items-center gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={generateAiSuggestion}
+              className="flex items-center gap-2 bg-white border-blue-300 text-blue-700 hover:bg-blue-50"
+            >
+              <Bot className="h-4 w-4" />
+              Bantuan AI
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={handleClose}
+              className="text-gray-500 hover:text-gray-700"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+
+        {/* Progress Bar */}
+        <div className="mb-6">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm font-medium text-gray-700">
+              Langkah {getCurrentTabIndex() + 1} dari {tabs.length}: {tabLabels[currentTab as keyof typeof tabLabels]}
+            </span>
+            <span className="text-sm text-gray-500">{Math.round(getProgressPercentage())}%</span>
+          </div>
+          <Progress value={getProgressPercentage()} className="h-2" />
+        </div>
+
         {/* Validation Errors */}
         {validationErrors.length > 0 && (
           <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
@@ -253,40 +357,6 @@ const PropertyInsertForm = () => {
             </div>
           </div>
         )}
-
-        {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-              <Plus className="h-6 w-6 text-blue-600" />
-              Tambah Listing Properti
-              {profile?.role === 'agent' && (
-                <span className="text-sm bg-blue-100 text-blue-800 px-3 py-1 rounded-full border border-blue-200">
-                  Agen
-                </span>
-              )}
-            </h2>
-            <p className="text-gray-600 mt-1">
-              Listingkan properti Anda untuk dijual atau disewakan
-              {profile?.role === 'agent' && (
-                <span className="block text-blue-700 text-sm mt-1 font-medium">
-                  Anda login sebagai agen: {profile.full_name || profile.email}
-                </span>
-              )}
-            </p>
-          </div>
-          
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={generateAiSuggestion}
-            className="flex items-center gap-2 bg-white border-blue-300 text-blue-700 hover:bg-blue-50"
-          >
-            <Bot className="h-4 w-4" />
-            Bantuan AI
-          </Button>
-        </div>
 
         {/* AI Help Section */}
         {showAiHelp && aiSuggestion && (
@@ -517,7 +587,6 @@ const PropertyInsertForm = () => {
 
             <TabsContent value="media" className="space-y-6 mt-6">
               <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
-                {/* Property Image Upload Component with proper authentication */}
                 <PropertyImageUpload
                   images={formData.images}
                   onImagesChange={(images) => handleInputChange('images', images)}
@@ -572,33 +641,62 @@ const PropertyInsertForm = () => {
             </TabsContent>
           </Tabs>
 
-          <div className="flex gap-4 mt-8">
+          {/* Navigation Buttons */}
+          <div className="flex justify-between mt-8">
             <Button 
               type="button"
               variant="outline"
-              onClick={handlePreview}
-              className="flex-1 bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+              onClick={goToPreviousTab}
+              disabled={isFirstTab()}
+              className="flex items-center gap-2 bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
             >
-              <Eye className="h-4 w-4 mr-2" />
-              Preview Properti
+              <ChevronLeft className="h-4 w-4" />
+              Sebelumnya
             </Button>
-            <Button 
-              type="submit" 
-              className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg"
-              disabled={insertPropertyMutation.isPending}
-            >
-              {insertPropertyMutation.isPending ? (
+
+            <div className="flex gap-4">
+              {isLastTab() && (
                 <>
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                  Mengirim...
-                </>
-              ) : (
-                <>
-                  <CheckCircle className="h-4 w-4 mr-2" />
-                  Kirim untuk Review
+                  <Button 
+                    type="button"
+                    variant="outline"
+                    onClick={handlePreview}
+                    className="flex items-center gap-2 bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+                  >
+                    <Eye className="h-4 w-4" />
+                    Preview Properti
+                  </Button>
+                  <Button 
+                    type="submit" 
+                    className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg"
+                    disabled={insertPropertyMutation.isPending}
+                  >
+                    {insertPropertyMutation.isPending ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                        Mengirim...
+                      </>
+                    ) : (
+                      <>
+                        <CheckCircle className="h-4 w-4" />
+                        Kirim untuk Review
+                      </>
+                    )}
+                  </Button>
                 </>
               )}
-            </Button>
+              
+              {!isLastTab() && (
+                <Button 
+                  type="button"
+                  onClick={handleNextTab}
+                  className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white"
+                >
+                  Selanjutnya
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+              )}
+            </div>
           </div>
         </form>
       </div>
