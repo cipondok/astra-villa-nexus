@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useAuth } from "@/contexts/AuthContext";
-import { Plus, Home, MapPin, Camera, Sparkles, Bot, CheckCircle, AlertCircle, Eye } from "lucide-react";
+import { Plus, Home, MapPin, Camera, Sparkles, Bot, CheckCircle, AlertCircle, Eye, LogIn } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { formatIDR } from "@/utils/currency";
 import LocationSelector from "./LocationSelector";
@@ -55,40 +55,58 @@ const PropertyInsertForm = () => {
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
   const [showPreview, setShowPreview] = useState(false);
 
-  const { user, profile } = useAuth();
+  const { user, profile, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   const insertPropertyMutation = useMutation({
     mutationFn: async (propertyData: any) => {
-      if (!user) throw new Error('User not authenticated');
-
-      const { error } = await supabase
-        .from('properties')
-        .insert([{
-          title: propertyData.title,
-          description: propertyData.description,
-          price: propertyData.price ? Number(propertyData.price) : null,
-          property_type: propertyData.property_type,
-          listing_type: propertyData.listing_type,
-          location: propertyData.location || `${propertyData.area}, ${propertyData.city}, ${propertyData.state}`,
-          state: propertyData.state,
-          city: propertyData.city,
-          area: propertyData.area,
-          bedrooms: propertyData.bedrooms ? Number(propertyData.bedrooms) : null,
-          bathrooms: propertyData.bathrooms ? Number(propertyData.bathrooms) : null,
-          area_sqm: propertyData.area_sqm ? Number(propertyData.area_sqm) : null,
-          owner_id: user.id, // Ensure owner_id is set to current user
-          agent_id: profile?.role === 'agent' ? user.id : null,
-          owner_type: profile?.role === 'property_owner' ? 'individual' : 'agent',
-          approval_status: 'pending',
-          status: 'pending_approval',
-          image_urls: propertyData.images,
-          three_d_model_url: propertyData.three_d_model_url,
-          virtual_tour_url: propertyData.virtual_tour_url
-        }]);
+      console.log('Attempting to insert property with user:', user?.id);
+      console.log('User profile:', profile);
+      console.log('Is authenticated:', isAuthenticated);
       
-      if (error) throw error;
+      if (!user?.id) {
+        throw new Error('User not authenticated - no user ID available');
+      }
+
+      // Ensure we have the required data
+      const propertyToInsert = {
+        title: propertyData.title,
+        description: propertyData.description,
+        price: propertyData.price ? Number(propertyData.price) : null,
+        property_type: propertyData.property_type,
+        listing_type: propertyData.listing_type,
+        location: propertyData.location || `${propertyData.area}, ${propertyData.city}, ${propertyData.state}`,
+        state: propertyData.state,
+        city: propertyData.city,
+        area: propertyData.area,
+        bedrooms: propertyData.bedrooms ? Number(propertyData.bedrooms) : null,
+        bathrooms: propertyData.bathrooms ? Number(propertyData.bathrooms) : null,
+        area_sqm: propertyData.area_sqm ? Number(propertyData.area_sqm) : null,
+        owner_id: user.id, // Explicitly set the current user as owner
+        agent_id: profile?.role === 'agent' ? user.id : null,
+        owner_type: profile?.role === 'property_owner' ? 'individual' : (profile?.role === 'agent' ? 'agent' : 'individual'),
+        approval_status: 'pending',
+        status: 'pending_approval',
+        image_urls: propertyData.images || [],
+        three_d_model_url: propertyData.three_d_model_url || null,
+        virtual_tour_url: propertyData.virtual_tour_url || null
+      };
+
+      console.log('Property data to insert:', propertyToInsert);
+
+      const { data, error } = await supabase
+        .from('properties')
+        .insert([propertyToInsert])
+        .select();
+      
+      if (error) {
+        console.error('Insert error:', error);
+        throw error;
+      }
+
+      console.log('Property inserted successfully:', data);
+      return data;
     },
     onSuccess: () => {
       alert("Properti berhasil diajukan! Tim admin kami akan meninjau dalam 24 jam.");
@@ -147,8 +165,13 @@ const PropertyInsertForm = () => {
   const handleSubmit = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     
-    if (!user) {
-      alert("Silakan login untuk menambahkan properti");
+    console.log('Submit clicked, checking authentication...');
+    console.log('User:', user);
+    console.log('IsAuthenticated:', isAuthenticated);
+    
+    if (!isAuthenticated || !user) {
+      alert("Silakan login terlebih dahulu untuk menambahkan properti");
+      navigate('/');
       return;
     }
 
@@ -191,12 +214,13 @@ const PropertyInsertForm = () => {
     return '';
   };
 
-  if (!user) {
+  // Show login required message if not authenticated
+  if (!isAuthenticated || !user) {
     return (
       <div className="max-w-2xl mx-auto p-6 text-center">
         <Card className="bg-white border border-gray-200 shadow-lg">
           <CardContent className="p-8">
-            <Home className="h-16 w-16 mx-auto mb-4 text-gray-400" />
+            <LogIn className="h-16 w-16 mx-auto mb-4 text-gray-400" />
             <h2 className="text-2xl font-bold mb-4 text-gray-900">Login Diperlukan</h2>
             <p className="text-gray-600 mb-6">
               Anda perlu login untuk menambahkan listing properti.
@@ -493,7 +517,7 @@ const PropertyInsertForm = () => {
 
             <TabsContent value="media" className="space-y-6 mt-6">
               <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
-                {/* Property Image Upload Component */}
+                {/* Property Image Upload Component with proper authentication */}
                 <PropertyImageUpload
                   images={formData.images}
                   onImagesChange={(images) => handleInputChange('images', images)}
