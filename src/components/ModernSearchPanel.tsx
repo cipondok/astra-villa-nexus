@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -270,7 +269,7 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
 
   return (
     <div className="w-full max-w-5xl mx-auto">
-      {/* Search Type Tabs - iPhone style swappable buttons */}
+      {/* Search Type Tabs - Fixed alignment */}
       <div className="flex justify-center mb-4">
         <div className="relative bg-white/20 backdrop-blur-md rounded-2xl p-2 border border-white/30 shadow-lg">
           {/* Background slider indicator */}
@@ -282,12 +281,12 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
             }}
           />
           
-          {/* Tab buttons */}
+          {/* Tab buttons with fixed alignment */}
           <div className="relative flex">
             {searchTypeOptions.map((type, index) => (
               <button
                 key={type.key}
-                className={`relative z-10 flex items-center justify-center gap-2 px-4 py-2 rounded-xl transition-all duration-300 ease-out font-medium text-sm min-w-[100px] touch-manipulation ${
+                className={`relative z-10 flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-xl transition-all duration-300 ease-out font-medium text-xs min-w-[90px] h-10 touch-manipulation ${
                   searchType === type.key 
                     ? "text-primary-foreground scale-105" 
                     : "text-foreground/70 hover:text-foreground hover:scale-102 active:scale-95"
@@ -298,10 +297,10 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
                   userSelect: 'none'
                 }}
               >
-                <type.icon className={`h-4 w-4 transition-all duration-300 ${
+                <type.icon className={`h-3.5 w-3.5 transition-all duration-300 ${
                   searchType === type.key ? 'scale-110' : 'scale-100'
                 }`} />
-                <span className="whitespace-nowrap">{type.label}</span>
+                <span className="whitespace-nowrap text-[10px] leading-tight text-center">{type.label}</span>
               </button>
             ))}
           </div>
