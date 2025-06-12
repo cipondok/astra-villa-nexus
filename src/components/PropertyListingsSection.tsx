@@ -23,8 +23,10 @@ const PropertyListingsSection = ({
 }: PropertyListingsSectionProps) => {
   const gridRef = useRef<HTMLDivElement>(null);
   const [featuredProperties, setFeaturedProperties] = useState<any[]>([]);
+  const [allProperties, setAllProperties] = useState<any[]>([]);
   const [similarProperties, setSimilarProperties] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const text = {
     en: {
@@ -41,7 +43,9 @@ const PropertyListingsSection = ({
       searching: "Searching properties...",
       similarProperties: "Similar Properties You Might Like",
       tryAdjusting: "Try adjusting your search criteria or browse these similar properties:",
-      allProperties: "All Properties"
+      allProperties: "All Properties",
+      noPropertiesAvailable: "No properties are currently available. Please check back later.",
+      loadingError: "Error loading properties. Please try again."
     },
     id: {
       featured: "Properti Pilihan",
@@ -57,71 +61,38 @@ const PropertyListingsSection = ({
       searching: "Mencari properti...",
       similarProperties: "Properti Serupa yang Mungkin Anda Suka",
       tryAdjusting: "Coba sesuaikan kriteria pencarian Anda atau jelajahi properti serupa ini:",
-      allProperties: "Semua Properti"
+      allProperties: "Semua Properti",
+      noPropertiesAvailable: "Tidak ada properti yang tersedia saat ini. Silakan periksa kembali nanti.",
+      loadingError: "Error memuat properti. Silakan coba lagi."
     }
   };
 
   const currentText = text[language];
 
-  // Fetch featured properties from database
+  // Fetch all properties from database
   useEffect(() => {
-    const fetchFeaturedProperties = async () => {
+    const fetchProperties = async () => {
       try {
+        setLoading(true);
+        setError(null);
+        
+        console.log("Fetching properties from database...");
+        
         const { data: properties, error } = await supabase
           .from('properties')
           .select('*')
           .eq('status', 'approved')
           .eq('approval_status', 'approved')
-          .limit(12)
           .order('created_at', { ascending: false });
 
         if (error) {
           console.error('Error fetching properties:', error);
-        } else if (properties) {
-          // Transform database properties to match the expected format
-          const transformedProperties = properties.map(property => ({
-            id: property.id,
-            title: property.title,
-            location: `${property.area || ''}, ${property.city || ''}, ${property.state || ''}`.replace(/^,\s*|,\s*$/g, ''),
-            price: property.price ? `Rp ${property.price.toLocaleString()}` : 'Contact for price',
-            type: property.listing_type,
-            bedrooms: property.bedrooms || 0,
-            bathrooms: property.bathrooms || 0,
-            area: property.area_sqm || 0,
-            image: property.image_urls?.[0] || "https://images.unsplash.com/photo-1721322800607-8c38375eef04?w=400&h=300&fit=crop",
-            rating: 4.5 + Math.random() * 0.5, // Random rating between 4.5-5.0
-            featured: true,
-            isHotDeal: Math.random() > 0.7 // 30% chance of being a hot deal
-          }));
+          setError(error.message);
+        } else {
+          console.log(`Fetched ${properties?.length || 0} properties from database`);
           
-          setFeaturedProperties(transformedProperties);
-        }
-      } catch (error) {
-        console.error('Error fetching featured properties:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchFeaturedProperties();
-  }, []);
-
-  // Fetch similar properties when no search results found
-  useEffect(() => {
-    const fetchSimilarProperties = async () => {
-      if (hasSearched && searchResults.length === 0 && !isSearching) {
-        try {
-          const { data: properties, error } = await supabase
-            .from('properties')
-            .select('*')
-            .eq('status', 'approved')
-            .eq('approval_status', 'approved')
-            .limit(6)
-            .order('created_at', { ascending: false });
-
-          if (error) {
-            console.error('Error fetching similar properties:', error);
-          } else if (properties) {
+          if (properties && properties.length > 0) {
+            // Transform database properties to match the expected format
             const transformedProperties = properties.map(property => ({
               id: property.id,
               title: property.title,
@@ -132,21 +103,41 @@ const PropertyListingsSection = ({
               bathrooms: property.bathrooms || 0,
               area: property.area_sqm || 0,
               image: property.image_urls?.[0] || "https://images.unsplash.com/photo-1721322800607-8c38375eef04?w=400&h=300&fit=crop",
-              rating: 4.5 + Math.random() * 0.5,
-              featured: false,
-              isHotDeal: false
+              rating: 4.5 + Math.random() * 0.5, // Random rating between 4.5-5.0
+              featured: Math.random() > 0.5, // 50% chance of being featured
+              isHotDeal: Math.random() > 0.8 // 20% chance of being a hot deal
             }));
             
-            setSimilarProperties(transformedProperties);
+            setAllProperties(transformedProperties);
+            setFeaturedProperties(transformedProperties.filter(p => p.featured).slice(0, 12));
+          } else {
+            console.log("No properties found in database");
+            setAllProperties([]);
+            setFeaturedProperties([]);
           }
-        } catch (error) {
-          console.error('Error fetching similar properties:', error);
         }
+      } catch (error) {
+        console.error('Error fetching properties:', error);
+        setError('Failed to load properties');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProperties();
+  }, []);
+
+  // Fetch similar properties when no search results found
+  useEffect(() => {
+    const fetchSimilarProperties = async () => {
+      if (hasSearched && searchResults.length === 0 && !isSearching && allProperties.length > 0) {
+        // Use existing properties as similar properties
+        setSimilarProperties(allProperties.slice(0, 6));
       }
     };
 
     fetchSimilarProperties();
-  }, [hasSearched, searchResults.length, isSearching]);
+  }, [hasSearched, searchResults.length, isSearching, allProperties]);
 
   const popularSearches = language === "en" 
     ? ["Apartment Jakarta", "Villa Bali", "House Surabaya", "Boarding Bandung", "Office Space", "Landed House"]
@@ -170,47 +161,6 @@ const PropertyListingsSection = ({
     featured: false,
     isHotDeal: false
   }));
-
-  // Dynamic card height balancing for desktop
-  useEffect(() => {
-    const balanceCardHeights = () => {
-      if (!gridRef.current || window.innerWidth < 1024) return;
-
-      const cards = gridRef.current.querySelectorAll('.property-card');
-      const columns = window.innerWidth >= 1280 ? 4 : 3;
-      
-      // Reset heights
-      cards.forEach(card => {
-        (card as HTMLElement).style.height = 'auto';
-      });
-
-      // Calculate and apply balanced heights
-      for (let i = 0; i < cards.length; i += columns) {
-        const rowCards = Array.from(cards).slice(i, i + columns);
-        const maxHeight = Math.max(...rowCards.map(card => card.scrollHeight));
-        
-        rowCards.forEach(card => {
-          (card as HTMLElement).style.height = `${maxHeight}px`;
-        });
-      }
-    };
-
-    const debouncedBalance = debounce(balanceCardHeights, 150);
-    
-    balanceCardHeights();
-    window.addEventListener('resize', debouncedBalance);
-    
-    return () => window.removeEventListener('resize', debouncedBalance);
-  }, [featuredProperties, similarProperties, transformedSearchResults]);
-
-  // Debounce utility
-  const debounce = (func: Function, wait: number) => {
-    let timeout: NodeJS.Timeout;
-    return (...args: any[]) => {
-      clearTimeout(timeout);
-      timeout = setTimeout(() => func.apply(null, args), wait);
-    };
-  };
 
   // Show search results if user has searched
   if (hasSearched) {
@@ -278,19 +228,15 @@ const PropertyListingsSection = ({
         </section>
 
         {/* Always show featured properties below search results */}
-        <div className="border-t pt-8">
-          <div className="flex items-center gap-2 md:gap-3 mb-6 md:mb-8 px-4 md:px-6 lg:px-8">
-            <Star className="h-6 w-6 md:h-8 md:w-8 text-yellow-500" />
-            <h2 className="text-xl md:text-2xl lg:text-3xl font-bold">
-              {currentText.featured}
-            </h2>
-          </div>
-          
-          {loading ? (
-            <div className="flex items-center justify-center py-8">
-              <Loader2 className="h-6 w-6 animate-spin" />
+        {featuredProperties.length > 0 && (
+          <div className="border-t pt-8">
+            <div className="flex items-center gap-2 md:gap-3 mb-6 md:mb-8 px-4 md:px-6 lg:px-8">
+              <Star className="h-6 w-6 md:h-8 md:w-8 text-yellow-500" />
+              <h2 className="text-xl md:text-2xl lg:text-3xl font-bold">
+                {currentText.featured}
+              </h2>
             </div>
-          ) : (
+            
             <Carousel className="w-full px-4 md:px-6 lg:px-8">
               <CarouselContent className="-ml-2 md:-ml-4">
                 {featuredProperties.slice(0, 6).map((property) => (
@@ -304,8 +250,38 @@ const PropertyListingsSection = ({
               <CarouselPrevious className="hidden sm:flex" />
               <CarouselNext className="hidden sm:flex" />
             </Carousel>
-          )}
-        </div>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // Show loading state
+  if (loading) {
+    return (
+      <div className="space-y-8">
+        <section className="p-4 md:p-6 lg:p-8">
+          <div className="flex items-center justify-center py-12">
+            <div className="text-center">
+              <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-blue-500" />
+              <p className="text-muted-foreground">Loading properties...</p>
+            </div>
+          </div>
+        </section>
+      </div>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <div className="space-y-8">
+        <section className="p-4 md:p-6 lg:p-8">
+          <div className="text-center py-12">
+            <p className="text-red-500 text-lg mb-4">{currentText.loadingError}</p>
+            <p className="text-muted-foreground">{error}</p>
+          </div>
+        </section>
       </div>
     );
   }
@@ -314,27 +290,23 @@ const PropertyListingsSection = ({
   return (
     <div className="space-y-12 lg:space-y-16 xl:space-y-20">
       {/* Featured Properties Carousel */}
-      <section className="p-4 md:p-6 lg:p-8">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 md:mb-8 gap-4">
-          <div className="flex items-center gap-2 md:gap-3">
-            <Star className="h-6 w-6 md:h-8 md:w-8 text-yellow-500 animate-pulse" />
-            <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold bg-gradient-to-r from-blue-600 to-orange-500 bg-clip-text text-transparent">
-              {currentText.featured}
-            </h2>
+      {featuredProperties.length > 0 && (
+        <section className="p-4 md:p-6 lg:p-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 md:mb-8 gap-4">
+            <div className="flex items-center gap-2 md:gap-3">
+              <Star className="h-6 w-6 md:h-8 md:w-8 text-yellow-500 animate-pulse" />
+              <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold bg-gradient-to-r from-blue-600 to-orange-500 bg-clip-text text-transparent">
+                {currentText.featured}
+              </h2>
+            </div>
+            <Button 
+              variant="outline" 
+              className="w-full sm:w-auto hover:bg-blue-50 dark:hover:bg-blue-900 transition-all duration-300 hover:scale-105"
+            >
+              {currentText.viewAll}
+            </Button>
           </div>
-          <Button 
-            variant="outline" 
-            className="w-full sm:w-auto hover:bg-blue-50 dark:hover:bg-blue-900 transition-all duration-300 hover:scale-105"
-          >
-            {currentText.viewAll}
-          </Button>
-        </div>
-        
-        {loading ? (
-          <div className="flex items-center justify-center py-12">
-            <Loader2 className="h-8 w-8 animate-spin" />
-          </div>
-        ) : featuredProperties.length > 0 ? (
+          
           <Carousel className="w-full">
             <CarouselContent className="-ml-2 md:-ml-4">
               {featuredProperties.map((property) => (
@@ -348,12 +320,8 @@ const PropertyListingsSection = ({
             <CarouselPrevious className="hidden sm:flex" />
             <CarouselNext className="hidden sm:flex" />
           </Carousel>
-        ) : (
-          <div className="text-center py-12">
-            <p className="text-muted-foreground">No properties available at the moment.</p>
-          </div>
-        )}
-      </section>
+        </section>
+      )}
 
       {/* All Properties Grid */}
       <section className="p-4 md:p-6 lg:p-8">
@@ -364,16 +332,12 @@ const PropertyListingsSection = ({
           </h2>
         </div>
         
-        {loading ? (
-          <div className="flex items-center justify-center py-12">
-            <Loader2 className="h-8 w-8 animate-spin" />
-          </div>
-        ) : featuredProperties.length > 0 ? (
+        {allProperties.length > 0 ? (
           <div 
             ref={gridRef}
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 lg:gap-8"
           >
-            {featuredProperties.map((property) => (
+            {allProperties.map((property) => (
               <div key={property.id} className="property-card h-full">
                 <PropertyCard property={property} />
               </div>
@@ -381,52 +345,54 @@ const PropertyListingsSection = ({
           </div>
         ) : (
           <div className="text-center py-12">
-            <p className="text-muted-foreground">No properties available at the moment.</p>
+            <p className="text-muted-foreground text-lg">{currentText.noPropertiesAvailable}</p>
           </div>
         )}
       </section>
 
-      {/* Popular Searches - Adaptive Grid */}
-      <section className="p-4 md:p-6 lg:p-8">
-        <div className="flex items-center gap-2 md:gap-3 mb-6 md:mb-8">
-          <TrendingUp className="h-6 w-6 md:h-8 md:w-8 text-green-500" />
-          <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold">
-            {currentText.popular}
-          </h2>
-        </div>
-        
-        <div 
-          ref={gridRef}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 lg:gap-8"
-        >
-          {popularSearches.map((search, index) => (
-            <Card 
-              key={index} 
-              className="property-card group cursor-pointer hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border-0 shadow-md hover:shadow-2xl"
-            >
-              <CardContent className="p-4 md:p-6 h-full flex flex-col justify-between">
-                <div className="flex items-center justify-between">
-                  <div className="flex-1">
-                    <h3 className="text-base md:text-lg lg:text-xl font-semibold group-hover:text-blue-600 transition-colors duration-300 leading-tight">
-                      {search}
-                    </h3>
-                    <p className="text-muted-foreground text-xs md:text-sm mt-1">
-                      Popular choice
-                    </p>
+      {/* Popular Searches - Only show if we have properties */}
+      {allProperties.length > 0 && (
+        <section className="p-4 md:p-6 lg:p-8">
+          <div className="flex items-center gap-2 md:gap-3 mb-6 md:mb-8">
+            <TrendingUp className="h-6 w-6 md:h-8 md:w-8 text-green-500" />
+            <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold">
+              {currentText.popular}
+            </h2>
+          </div>
+          
+          <div 
+            ref={gridRef}
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 lg:gap-8"
+          >
+            {popularSearches.map((search, index) => (
+              <Card 
+                key={index} 
+                className="property-card group cursor-pointer hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border-0 shadow-md hover:shadow-2xl"
+              >
+                <CardContent className="p-4 md:p-6 h-full flex flex-col justify-between">
+                  <div className="flex items-center justify-between">
+                    <div className="flex-1">
+                      <h3 className="text-base md:text-lg lg:text-xl font-semibold group-hover:text-blue-600 transition-colors duration-300 leading-tight">
+                        {search}
+                      </h3>
+                      <p className="text-muted-foreground text-xs md:text-sm mt-1">
+                        Popular choice
+                      </p>
+                    </div>
+                    <Badge 
+                      variant="secondary" 
+                      className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 ml-2 shrink-0 hover:scale-110 transition-transform duration-300"
+                    >
+                      <TrendingUp className="h-3 w-3 mr-1" />
+                      <span className="hidden sm:inline">{currentText.trending}</span>
+                    </Badge>
                   </div>
-                  <Badge 
-                    variant="secondary" 
-                    className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 ml-2 shrink-0 hover:scale-110 transition-transform duration-300"
-                  >
-                    <TrendingUp className="h-3 w-3 mr-1" />
-                    <span className="hidden sm:inline">{currentText.trending}</span>
-                  </Badge>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </section>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Hot Deals - Only show if there are hot deals */}
       {hotDeals.length > 0 && (

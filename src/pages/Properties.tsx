@@ -17,12 +17,17 @@ const Properties = () => {
   const [theme, setTheme] = useState("light");
   const [properties, setProperties] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   // Fetch properties from database
   useEffect(() => {
     const fetchProperties = async () => {
       try {
         setLoading(true);
+        setError(null);
+        
+        console.log("Fetching properties for Properties page...");
+        
         const { data, error } = await supabase
           .from('properties')
           .select('*')
@@ -32,11 +37,14 @@ const Properties = () => {
 
         if (error) {
           console.error('Error fetching properties:', error);
+          setError(error.message);
         } else {
+          console.log(`Fetched ${data?.length || 0} properties for Properties page`);
           setProperties(data || []);
         }
       } catch (error) {
         console.error('Error fetching properties:', error);
+        setError('Failed to load properties');
       } finally {
         setLoading(false);
       }
@@ -66,7 +74,8 @@ const Properties = () => {
       loading: "Loading properties...",
       viewDetails: "View Details",
       forSale: "For Sale",
-      forRent: "For Rent"
+      forRent: "For Rent",
+      loadingError: "Error loading properties. Please try again."
     },
     id: {
       title: "Properti",
@@ -80,16 +89,20 @@ const Properties = () => {
       loading: "Memuat properti...",
       viewDetails: "Lihat Detail",
       forSale: "Dijual",
-      forRent: "Disewa"
+      forRent: "Disewa",
+      loadingError: "Error memuat properti. Silakan coba lagi."
     }
   };
 
   const currentText = text[language];
 
   const filteredProperties = properties.filter(property =>
-    property.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    property.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (property.description && property.description.toLowerCase().includes(searchTerm.toLowerCase()))
+    property.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    property.location?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (property.description && property.description.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    property.area?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    property.city?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    property.state?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -142,8 +155,16 @@ const Properties = () => {
             </div>
           )}
 
+          {/* Error State */}
+          {error && (
+            <div className="text-center py-12">
+              <p className="text-red-500 text-lg mb-4">{currentText.loadingError}</p>
+              <p className="text-gray-600 dark:text-gray-300">{error}</p>
+            </div>
+          )}
+
           {/* Properties Grid */}
-          {!loading && (
+          {!loading && !error && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredProperties.length > 0 ? (
                 filteredProperties.map((property) => (
@@ -170,7 +191,9 @@ const Properties = () => {
                       <CardTitle className="text-lg">{property.title}</CardTitle>
                       <div className="flex items-center text-gray-600 dark:text-gray-300">
                         <MapPin className="h-4 w-4 mr-1" />
-                        <span className="text-sm">{property.location}</span>
+                        <span className="text-sm">
+                          {`${property.area || ''}, ${property.city || ''}, ${property.state || ''}`.replace(/^,\s*|,\s*$/g, '')}
+                        </span>
                       </div>
                     </CardHeader>
                     
