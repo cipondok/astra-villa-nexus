@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -275,24 +274,24 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
 
   return (
     <div className="w-full max-w-5xl mx-auto">
-      {/* Search Type Tabs - Increased width */}
-      <div className="flex justify-center mb-4">
-        <div className="relative bg-white/20 backdrop-blur-md rounded-2xl p-2 border border-white/30 shadow-lg">
-          {/* Background slider indicator */}
+      {/* Search Type Tabs - Clean iPhone style */}
+      <div className="flex justify-center mb-6">
+        <div className="relative glass-ios rounded-2xl p-1.5 border border-border/20 shadow-sm">
+          {/* Background slider indicator - smooth iOS style */}
           <div 
-            className={`absolute top-2 h-10 bg-primary rounded-xl transition-all duration-300 ease-out shadow-md`}
+            className={`absolute top-1.5 h-10 bg-primary rounded-xl transition-all duration-300 ease-out shadow-sm`}
             style={{
               width: `${100 / searchTypeOptions.length}%`,
               left: `${(searchTypeOptions.findIndex(opt => opt.key === searchType) * 100) / searchTypeOptions.length}%`,
             }}
           />
           
-          {/* Tab buttons with increased width */}
+          {/* Tab buttons */}
           <div className="relative flex">
             {searchTypeOptions.map((type, index) => (
               <button
                 key={type.key}
-                className={`relative z-10 flex flex-col items-center justify-center gap-1 px-4 py-2 rounded-xl transition-all duration-300 ease-out font-medium text-xs min-w-[110px] h-10 touch-manipulation ${
+                className={`relative z-10 flex flex-col items-center justify-center gap-1 px-4 py-2 rounded-xl transition-all duration-300 ease-out font-medium text-xs min-w-[120px] h-10 touch-manipulation ${
                   searchType === type.key 
                     ? "text-primary-foreground scale-105" 
                     : "text-foreground/70 hover:text-foreground hover:scale-102 active:scale-95"
@@ -313,20 +312,20 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
         </div>
       </div>
 
-      {/* Main Search Panel */}
-      <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 shadow-2xl">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
-          {/* Search Input */}
+      {/* Main Search Panel - Clean glass design */}
+      <div className="glass-ios rounded-3xl p-6 border border-border/10 shadow-xl backdrop-blur-xl">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+          {/* Search Input - Clean design */}
           <div className="md:col-span-2 relative">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
               <Input
                 placeholder={searchValue || `${currentText.searchPlaceholder} ${trendingSearches[currentTrendingIndex]}`}
-                className="pl-10 pr-10 bg-white/20 border-white/30 text-foreground placeholder:text-foreground/50 transition-all duration-200 h-10"
+                className="pl-12 pr-12 glass-ios border-border/20 text-foreground placeholder:text-foreground/50 transition-all duration-200 h-12 rounded-2xl backdrop-blur-sm"
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
               />
-              <TrendingUp className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+              <TrendingUp className="absolute right-4 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
             </div>
           </div>
 
@@ -336,7 +335,7 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
               <SheetTrigger asChild>
                 <Button
                   variant="outline"
-                  className="w-full justify-between bg-white/20 border-white/30 text-foreground hover:bg-white/30 h-10 touch-manipulation backdrop-blur-md"
+                  className="w-full justify-between glass-ios border-border/20 text-foreground hover:bg-background/50 h-12 touch-manipulation backdrop-blur-sm rounded-2xl"
                   style={{ WebkitTapHighlightColor: 'transparent' }}
                 >
                   <div className="flex items-center gap-2">
@@ -347,7 +346,7 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
                 </Button>
               </SheetTrigger>
               
-              <SheetContent side="right" className="w-[400px] sm:w-[540px] bg-background/95 backdrop-blur-xl border-l border-white/20">
+              <SheetContent side="right" className="w-[400px] sm:w-[540px] glass-ios border-l border-border/20 backdrop-blur-2xl">
                 <SheetHeader className="pb-6">
                   <SheetTitle className="text-lg font-semibold flex items-center gap-2">
                     <Filter className="h-5 w-5" />
@@ -632,11 +631,11 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
           </div>
         </div>
 
-        {/* Search Button - No validation required */}
-        <div className="flex justify-center">
+        {/* Search Button - Clean design */}
+        <div className="flex justify-center mt-6">
           <Button 
             onClick={handleSearch}
-            className="bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-2 rounded-full text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 touch-manipulation active:scale-95"
+            className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-3 rounded-2xl text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 touch-manipulation active:scale-95 backdrop-blur-sm"
             style={{ WebkitTapHighlightColor: 'transparent' }}
           >
             <Bot className="h-4 w-4 mr-2 animate-pulse" style={{ animationDuration: '3s' }} />
@@ -645,28 +644,28 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
           </Button>
         </div>
 
-        {/* Active Filters */}
+        {/* Active Filters - Clean badges */}
         {(selectedState || userLocation || propertyType || bedrooms || bathrooms) && (
-          <div className="flex flex-wrap gap-2 mt-3">
+          <div className="flex flex-wrap gap-2 mt-4">
             {(selectedState || userLocation) && (
-              <Badge variant="secondary" className="bg-white/20 text-xs rounded-full">
+              <Badge variant="secondary" className="glass-ios text-xs rounded-full border-border/20 backdrop-blur-sm">
                 <MapPin className="h-3 w-3 mr-1" />
                 {userLocation ? currentText.nearMe : (selectedArea || selectedCity || selectedState)}
               </Badge>
             )}
             {propertyType && (
-              <Badge variant="secondary" className="bg-white/20 text-xs rounded-full">
+              <Badge variant="secondary" className="glass-ios text-xs rounded-full border-border/20 backdrop-blur-sm">
                 {propertyTypes.find(t => t.value === propertyType)?.label}
               </Badge>
             )}
             {bedrooms && (
-              <Badge variant="secondary" className="bg-white/20 text-xs rounded-full">
+              <Badge variant="secondary" className="glass-ios text-xs rounded-full border-border/20 backdrop-blur-sm">
                 <Bed className="h-3 w-3 mr-1" />
                 {bedrooms} {currentText.bedrooms}
               </Badge>
             )}
             {bathrooms && (
-              <Badge variant="secondary" className="bg-white/20 text-xs rounded-full">
+              <Badge variant="secondary" className="glass-ios text-xs rounded-full border-border/20 backdrop-blur-sm">
                 <Bath className="h-3 w-3 mr-1" />
                 {bathrooms} {currentText.bathrooms}
               </Badge>
