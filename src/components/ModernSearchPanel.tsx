@@ -25,8 +25,10 @@ import {
   Building2,
   Navigation,
   X,
-  ChevronRight
+  ChevronRight,
+  AlertCircle
 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 interface ModernSearchPanelProps {
   language: "en" | "id";
@@ -54,6 +56,8 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
   const [isPropertyTypeOpen, setIsPropertyTypeOpen] = useState(false);
   const [isBedroomsOpen, setIsBedroomsOpen] = useState(false);
   const [isBathroomsOpen, setIsBathroomsOpen] = useState(false);
+
+  const { toast } = useToast();
 
   const text = {
     en: {
@@ -84,7 +88,9 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
       trending: "Trending Searches",
       close: "Close",
       categories: "Categories",
-      applyFilters: "Apply Filters"
+      applyFilters: "Apply Filters",
+      searchRequired: "Please enter a search term or select filters",
+      searchError: "Search Error"
     },
     id: {
       buy: "Beli",
@@ -114,7 +120,9 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
       trending: "Pencarian Trending",
       close: "Tutup",
       categories: "Kategori",
-      applyFilters: "Terapkan Filter"
+      applyFilters: "Terapkan Filter",
+      searchRequired: "Harap masukkan kata pencarian atau pilih filter",
+      searchError: "Error Pencarian"
     }
   };
 
@@ -180,7 +188,24 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
     return () => clearInterval(interval);
   }, [trendingSearches.length]);
 
+  const validateSearch = () => {
+    const hasSearchQuery = searchValue.trim().length > 0;
+    const hasLocation = userLocation || selectedState || selectedCity || selectedArea;
+    const hasFilters = propertyType || bedrooms || bathrooms;
+    
+    return hasSearchQuery || hasLocation || hasFilters;
+  };
+
   const handleSearch = () => {
+    if (!validateSearch()) {
+      toast({
+        title: currentText.searchError,
+        description: currentText.searchRequired,
+        variant: "destructive",
+      });
+      return;
+    }
+
     const searchData = {
       type: searchType,
       location: userLocation ? 
@@ -324,13 +349,13 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
             </div>
           </div>
 
-          {/* Filters with Sheet */}
+          {/* Modern iPhone-style Filters */}
           <div className="relative">
             <Sheet open={isFiltersOpen} onOpenChange={setIsFiltersOpen}>
               <SheetTrigger asChild>
                 <Button
                   variant="outline"
-                  className="w-full justify-between bg-white/20 border-white/30 text-foreground hover:bg-white/30 h-10 touch-manipulation"
+                  className="w-full justify-between bg-white/20 border-white/30 text-foreground hover:bg-white/30 h-10 touch-manipulation backdrop-blur-md"
                   style={{ WebkitTapHighlightColor: 'transparent' }}
                 >
                   <div className="flex items-center gap-2">
@@ -341,7 +366,7 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
                 </Button>
               </SheetTrigger>
               
-              <SheetContent side="right" className="w-[400px] sm:w-[540px] bg-background/40 backdrop-blur-md border-l border-white/20">
+              <SheetContent side="right" className="w-[400px] sm:w-[540px] bg-background/95 backdrop-blur-xl border-l border-white/20">
                 <SheetHeader className="pb-6">
                   <SheetTitle className="text-lg font-semibold flex items-center gap-2">
                     <Filter className="h-5 w-5" />
@@ -349,30 +374,35 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
                   </SheetTitle>
                 </SheetHeader>
                 
-                <div className="space-y-4 overflow-y-auto max-h-[calc(100vh-150px)]">
-                  {/* Location Category - Collapsible */}
+                <div className="space-y-3 overflow-y-auto max-h-[calc(100vh-150px)]">
+                  {/* iPhone-style Location Filter */}
                   <Collapsible open={isLocationOpen} onOpenChange={setIsLocationOpen}>
                     <CollapsibleTrigger asChild>
                       <Button
                         variant="ghost"
-                        className="w-full justify-between p-4 h-auto border border-white/10 rounded-lg hover:bg-white/5 touch-manipulation"
+                        className="w-full justify-between p-4 h-auto bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 touch-manipulation"
                         style={{ WebkitTapHighlightColor: 'transparent' }}
                       >
                         <div className="flex items-center gap-3">
-                          <MapPinned className="h-5 w-5 text-primary" />
-                          <span className="font-medium">{currentText.location}</span>
+                          <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
+                            <MapPinned className="h-4 w-4 text-primary" />
+                          </div>
+                          <div className="text-left">
+                            <p className="font-medium">{currentText.location}</p>
+                            <p className="text-xs text-muted-foreground">{getLocationDisplayText()}</p>
+                          </div>
                         </div>
                         <ChevronRight className={`h-4 w-4 transition-transform ${isLocationOpen ? 'rotate-90' : ''}`} />
                       </Button>
                     </CollapsibleTrigger>
-                    <CollapsibleContent className="space-y-4 mt-4 ml-4">
+                    <CollapsibleContent className="space-y-3 mt-3 px-4">
                       {!userLocation && (
                         <div className="space-y-3">
                           <Select value={selectedState} onValueChange={handleStateChange}>
-                            <SelectTrigger>
+                            <SelectTrigger className="bg-white/10 border-white/20 rounded-xl">
                               <SelectValue placeholder={currentText.selectState} />
                             </SelectTrigger>
-                            <SelectContent>
+                            <SelectContent className="bg-background/95 backdrop-blur-xl border-white/20">
                               {states.map((state) => (
                                 <SelectItem key={state} value={state}>{state}</SelectItem>
                               ))}
@@ -381,10 +411,10 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
 
                           {selectedState && getAvailableCities().length > 0 && (
                             <Select value={selectedCity} onValueChange={handleCityChange}>
-                              <SelectTrigger>
+                              <SelectTrigger className="bg-white/10 border-white/20 rounded-xl">
                                 <SelectValue placeholder={currentText.selectCity} />
                               </SelectTrigger>
-                              <SelectContent>
+                              <SelectContent className="bg-background/95 backdrop-blur-xl border-white/20">
                                 {getAvailableCities().map((city) => (
                                   <SelectItem key={city} value={city}>{city}</SelectItem>
                                 ))}
@@ -394,10 +424,10 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
 
                           {selectedCity && getAvailableAreas().length > 0 && (
                             <Select value={selectedArea} onValueChange={setSelectedArea}>
-                              <SelectTrigger>
+                              <SelectTrigger className="bg-white/10 border-white/20 rounded-xl">
                                 <SelectValue placeholder={currentText.selectArea} />
                               </SelectTrigger>
-                              <SelectContent>
+                              <SelectContent className="bg-background/95 backdrop-blur-xl border-white/20">
                                 {getAvailableAreas().map((area) => (
                                   <SelectItem key={area} value={area}>{area}</SelectItem>
                                 ))}
@@ -410,7 +440,7 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
                       <Button 
                         variant={userLocation ? "default" : "outline"} 
                         onClick={detectNearMe} 
-                        className="w-full touch-manipulation"
+                        className="w-full touch-manipulation rounded-xl bg-white/10 hover:bg-white/20 border-white/20"
                         disabled={isDetectingLocation}
                         style={{ WebkitTapHighlightColor: 'transparent' }}
                       >
@@ -428,7 +458,7 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
                       </Button>
 
                       {userLocation && (
-                        <div className="flex items-center gap-2 p-3 bg-primary/10 rounded-lg">
+                        <div className="flex items-center gap-2 p-3 bg-primary/10 rounded-xl">
                           <Navigation className="h-4 w-4 text-primary" />
                           <span className="text-sm text-primary font-medium">
                             {currentText.nearMe} - Location detected
@@ -447,32 +477,37 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
                     </CollapsibleContent>
                   </Collapsible>
 
-                  {/* Price Range Category - Collapsible */}
+                  {/* iPhone-style Price Range Filter */}
                   <Collapsible open={isPriceOpen} onOpenChange={setIsPriceOpen}>
                     <CollapsibleTrigger asChild>
                       <Button
                         variant="ghost"
-                        className="w-full justify-between p-4 h-auto border border-white/10 rounded-lg hover:bg-white/5 touch-manipulation"
+                        className="w-full justify-between p-4 h-auto bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 touch-manipulation"
                         style={{ WebkitTapHighlightColor: 'transparent' }}
                       >
                         <div className="flex items-center gap-3">
-                          <span className="h-5 w-5 text-primary text-lg">💰</span>
-                          <span className="font-medium">{currentText.priceRange}</span>
+                          <div className="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center">
+                            <span className="text-green-500 text-sm">💰</span>
+                          </div>
+                          <div className="text-left">
+                            <p className="font-medium">{currentText.priceRange}</p>
+                            <p className="text-xs text-muted-foreground">Rp {formatPrice(priceRange[0])} - Rp {formatPrice(priceRange[1])}</p>
+                          </div>
                         </div>
                         <ChevronRight className={`h-4 w-4 transition-transform ${isPriceOpen ? 'rotate-90' : ''}`} />
                       </Button>
                     </CollapsibleTrigger>
-                    <CollapsibleContent className="mt-4 ml-4">
-                      <div className="px-3">
+                    <CollapsibleContent className="mt-3 px-4">
+                      <div className="p-4 bg-white/5 rounded-xl">
                         <Slider
                           value={priceRange}
                           onValueChange={setPriceRange}
-                          max={1000000000} // 1 milyar
-                          min={100000000}  // 100 juta
-                          step={10000000}  // 10 juta
+                          max={1000000000}
+                          min={100000000}
+                          step={10000000}
                           className="w-full"
                         />
-                        <div className="flex justify-between text-sm text-muted-foreground mt-2">
+                        <div className="flex justify-between text-sm text-muted-foreground mt-3">
                           <span>Rp {formatPrice(priceRange[0])}</span>
                           <span>Rp {formatPrice(priceRange[1])}</span>
                         </div>
@@ -480,28 +515,35 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
                     </CollapsibleContent>
                   </Collapsible>
 
-                  {/* Property Type Category - Collapsible */}
+                  {/* iPhone-style Property Type Filter */}
                   <Collapsible open={isPropertyTypeOpen} onOpenChange={setIsPropertyTypeOpen}>
                     <CollapsibleTrigger asChild>
                       <Button
                         variant="ghost"
-                        className="w-full justify-between p-4 h-auto border border-white/10 rounded-lg hover:bg-white/5 touch-manipulation"
+                        className="w-full justify-between p-4 h-auto bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 touch-manipulation"
                         style={{ WebkitTapHighlightColor: 'transparent' }}
                       >
                         <div className="flex items-center gap-3">
-                          <Home className="h-5 w-5 text-primary" />
-                          <span className="font-medium">{currentText.propertyType}</span>
+                          <div className="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center">
+                            <Home className="h-4 w-4 text-blue-500" />
+                          </div>
+                          <div className="text-left">
+                            <p className="font-medium">{currentText.propertyType}</p>
+                            <p className="text-xs text-muted-foreground">
+                              {propertyType ? propertyTypes.find(t => t.value === propertyType)?.label : 'Any type'}
+                            </p>
+                          </div>
                         </div>
                         <ChevronRight className={`h-4 w-4 transition-transform ${isPropertyTypeOpen ? 'rotate-90' : ''}`} />
                       </Button>
                     </CollapsibleTrigger>
-                    <CollapsibleContent className="mt-4 ml-4">
+                    <CollapsibleContent className="mt-3 px-4">
                       <div className="grid grid-cols-2 gap-2">
                         {propertyTypes.map((type) => (
                           <Button
                             key={type.value}
                             variant={propertyType === type.value ? "default" : "outline"}
-                            className="justify-start h-12 touch-manipulation"
+                            className="justify-start h-12 touch-manipulation rounded-xl bg-white/5 hover:bg-white/10 border-white/20"
                             onClick={() => setPropertyType(propertyType === type.value ? "" : type.value)}
                             style={{ WebkitTapHighlightColor: 'transparent' }}
                           >
@@ -513,29 +555,34 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
                     </CollapsibleContent>
                   </Collapsible>
 
-                  {/* Bedrooms Category - Collapsible */}
+                  {/* iPhone-style Bedrooms Filter */}
                   <Collapsible open={isBedroomsOpen} onOpenChange={setIsBedroomsOpen}>
                     <CollapsibleTrigger asChild>
                       <Button
                         variant="ghost"
-                        className="w-full justify-between p-4 h-auto border border-white/10 rounded-lg hover:bg-white/5 touch-manipulation"
+                        className="w-full justify-between p-4 h-auto bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 touch-manipulation"
                         style={{ WebkitTapHighlightColor: 'transparent' }}
                       >
                         <div className="flex items-center gap-3">
-                          <Bed className="h-5 w-5 text-primary" />
-                          <span className="font-medium">{currentText.bedrooms}</span>
+                          <div className="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center">
+                            <Bed className="h-4 w-4 text-purple-500" />
+                          </div>
+                          <div className="text-left">
+                            <p className="font-medium">{currentText.bedrooms}</p>
+                            <p className="text-xs text-muted-foreground">{bedrooms || 'Any'}</p>
+                          </div>
                         </div>
                         <ChevronRight className={`h-4 w-4 transition-transform ${isBedroomsOpen ? 'rotate-90' : ''}`} />
                       </Button>
                     </CollapsibleTrigger>
-                    <CollapsibleContent className="mt-4 ml-4">
+                    <CollapsibleContent className="mt-3 px-4">
                       <div className="flex flex-wrap gap-2">
                         {["1", "2", "3", "4", "5+"].map((num) => (
                           <Button
                             key={num}
                             variant={bedrooms === num ? "default" : "outline"}
                             size="sm"
-                            className="min-w-[60px] touch-manipulation"
+                            className="min-w-[60px] touch-manipulation rounded-xl bg-white/5 hover:bg-white/10 border-white/20"
                             onClick={() => setBedrooms(bedrooms === num ? "" : num)}
                             style={{ WebkitTapHighlightColor: 'transparent' }}
                           >
@@ -547,29 +594,34 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
                     </CollapsibleContent>
                   </Collapsible>
 
-                  {/* Bathrooms Category - Collapsible */}
+                  {/* iPhone-style Bathrooms Filter */}
                   <Collapsible open={isBathroomsOpen} onOpenChange={setIsBathroomsOpen}>
                     <CollapsibleTrigger asChild>
                       <Button
                         variant="ghost"
-                        className="w-full justify-between p-4 h-auto border border-white/10 rounded-lg hover:bg-white/5 touch-manipulation"
+                        className="w-full justify-between p-4 h-auto bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 touch-manipulation"
                         style={{ WebkitTapHighlightColor: 'transparent' }}
                       >
                         <div className="flex items-center gap-3">
-                          <Bath className="h-5 w-5 text-primary" />
-                          <span className="font-medium">{currentText.bathrooms}</span>
+                          <div className="w-8 h-8 rounded-full bg-orange-500/20 flex items-center justify-center">
+                            <Bath className="h-4 w-4 text-orange-500" />
+                          </div>
+                          <div className="text-left">
+                            <p className="font-medium">{currentText.bathrooms}</p>
+                            <p className="text-xs text-muted-foreground">{bathrooms || 'Any'}</p>
+                          </div>
                         </div>
                         <ChevronRight className={`h-4 w-4 transition-transform ${isBathroomsOpen ? 'rotate-90' : ''}`} />
                       </Button>
                     </CollapsibleTrigger>
-                    <CollapsibleContent className="mt-4 ml-4">
+                    <CollapsibleContent className="mt-3 px-4">
                       <div className="flex flex-wrap gap-2">
                         {["1", "2", "3", "4", "5+"].map((num) => (
                           <Button
                             key={num}
                             variant={bathrooms === num ? "default" : "outline"}
                             size="sm"
-                            className="min-w-[60px] touch-manipulation"
+                            className="min-w-[60px] touch-manipulation rounded-xl bg-white/5 hover:bg-white/10 border-white/20"
                             onClick={() => setBathrooms(bathrooms === num ? "" : num)}
                             style={{ WebkitTapHighlightColor: 'transparent' }}
                           >
@@ -587,7 +639,7 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
                       setIsFiltersOpen(false);
                       handleSearch();
                     }}
-                    className="w-full bg-primary hover:bg-primary/90 h-12 text-base font-medium mt-6 touch-manipulation"
+                    className="w-full bg-primary hover:bg-primary/90 h-12 text-base font-medium mt-6 touch-manipulation rounded-xl"
                     style={{ WebkitTapHighlightColor: 'transparent' }}
                   >
                     <Filter className="h-4 w-4 mr-2" />
@@ -599,7 +651,7 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
           </div>
         </div>
 
-        {/* Search Button */}
+        {/* Search Button with Validation */}
         <div className="flex justify-center">
           <Button 
             onClick={handleSearch}
@@ -616,24 +668,24 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
         {(selectedState || userLocation || propertyType || bedrooms || bathrooms) && (
           <div className="flex flex-wrap gap-2 mt-3">
             {(selectedState || userLocation) && (
-              <Badge variant="secondary" className="bg-white/20 text-xs">
+              <Badge variant="secondary" className="bg-white/20 text-xs rounded-full">
                 <MapPin className="h-3 w-3 mr-1" />
                 {userLocation ? currentText.nearMe : (selectedArea || selectedCity || selectedState)}
               </Badge>
             )}
             {propertyType && (
-              <Badge variant="secondary" className="bg-white/20 text-xs">
+              <Badge variant="secondary" className="bg-white/20 text-xs rounded-full">
                 {propertyTypes.find(t => t.value === propertyType)?.label}
               </Badge>
             )}
             {bedrooms && (
-              <Badge variant="secondary" className="bg-white/20 text-xs">
+              <Badge variant="secondary" className="bg-white/20 text-xs rounded-full">
                 <Bed className="h-3 w-3 mr-1" />
                 {bedrooms} {currentText.bedrooms}
               </Badge>
             )}
             {bathrooms && (
-              <Badge variant="secondary" className="bg-white/20 text-xs">
+              <Badge variant="secondary" className="bg-white/20 text-xs rounded-full">
                 <Bath className="h-3 w-3 mr-1" />
                 {bathrooms} {currentText.bathrooms}
               </Badge>
