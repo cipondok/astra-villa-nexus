@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -14,7 +13,9 @@ import {
   CheckCircle,
   Clock,
   TrendingUp,
-  RefreshCw
+  RefreshCw,
+  UserCheck,
+  UserPlus
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -62,17 +63,60 @@ const SystemMonitor = () => {
         .select('*', { count: 'exact', head: true })
         .eq('is_resolved', false);
 
+      // Get active members (users who have logged in within last 30 days)
+      const thirtyDaysAgo = new Date();
+      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+      
+      const { count: activeMembers } = await supabase
+        .from('user_sessions')
+        .select('user_id', { count: 'exact', head: true })
+        .gte('created_at', thirtyDaysAgo.toISOString())
+        .eq('is_active', true);
+
+      // Get currently active users (users with active sessions in last 24 hours)
+      const twentyFourHoursAgo = new Date();
+      twentyFourHoursAgo.setHours(twentyFourHoursAgo.getHours() - 24);
+      
+      const { count: activeUsers } = await supabase
+        .from('user_sessions')
+        .select('user_id', { count: 'exact', head: true })
+        .gte('created_at', twentyFourHoursAgo.toISOString())
+        .eq('is_active', true);
+
+      // Get total vendors
+      const { count: totalVendors } = await supabase
+        .from('profiles')
+        .select('*', { count: 'exact', head: true })
+        .eq('role', 'vendor');
+
+      // Get total property owners
+      const { count: totalPropertyOwners } = await supabase
+        .from('profiles')
+        .select('*', { count: 'exact', head: true })
+        .eq('role', 'property_owner');
+
+      // Get total agents
+      const { count: totalAgents } = await supabase
+        .from('profiles')
+        .select('*', { count: 'exact', head: true })
+        .eq('role', 'agent');
+
       return {
         totalUsers: totalUsers || 0,
         totalProperties: totalProperties || 0,
         activeListings: activeListings || 0,
         errorCount: errorCount || 0,
+        activeMembers: activeMembers || 0,
+        activeUsers: activeUsers || 0,
+        totalVendors: totalVendors || 0,
+        totalPropertyOwners: totalPropertyOwners || 0,
+        totalAgents: totalAgents || 0,
         uptime: '99.5%',
         responseTime: '120ms',
         throughput: '1.2k req/min'
       };
     },
-    refetchInterval: 60000, // Refresh every minute
+    refetchInterval: 30000, // Refresh every 30 seconds for live updates
   });
 
   const checkDatabaseHealth = async () => {
@@ -243,6 +287,41 @@ const SystemMonitor = () => {
         </Card>
       </div>
 
+      {/* Live User Metrics */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <Card className="glass-ios">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium flex items-center gap-2">
+              <UserCheck className="h-4 w-4" />
+              Active Members (30 days)
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-blue-600">{metrics?.activeMembers || 0}</div>
+            <div className="flex items-center text-xs text-muted-foreground">
+              <TrendingUp className="h-3 w-3 mr-1" />
+              Users active in last 30 days
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="glass-ios">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium flex items-center gap-2">
+              <UserPlus className="h-4 w-4" />
+              Active Users (24 hours)
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-green-600">{metrics?.activeUsers || 0}</div>
+            <div className="flex items-center text-xs text-muted-foreground">
+              <Clock className="h-3 w-3 mr-1" />
+              Currently active users
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
       {/* Performance Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card className="glass-ios">
@@ -253,7 +332,7 @@ const SystemMonitor = () => {
             <div className="text-2xl font-bold">{metrics?.totalUsers || 0}</div>
             <div className="flex items-center text-xs text-muted-foreground">
               <TrendingUp className="h-3 w-3 mr-1" />
-              Active system users
+              All registered users
             </div>
           </CardContent>
         </Card>
@@ -267,6 +346,48 @@ const SystemMonitor = () => {
             <div className="flex items-center text-xs text-muted-foreground">
               <Clock className="h-3 w-3 mr-1" />
               Total in database
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="glass-ios">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium">Vendors</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{metrics?.totalVendors || 0}</div>
+            <div className="flex items-center text-xs text-muted-foreground">
+              <Users className="h-3 w-3 mr-1" />
+              Registered vendors
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="glass-ios">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium">Property Owners</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{metrics?.totalPropertyOwners || 0}</div>
+            <div className="flex items-center text-xs text-muted-foreground">
+              <Users className="h-3 w-3 mr-1" />
+              Property owners
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Additional Metrics */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <Card className="glass-ios">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium">Agents</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{metrics?.totalAgents || 0}</div>
+            <div className="flex items-center text-xs text-muted-foreground">
+              <Users className="h-3 w-3 mr-1" />
+              Registered agents
             </div>
           </CardContent>
         </Card>
