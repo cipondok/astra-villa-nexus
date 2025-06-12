@@ -10,6 +10,11 @@ import { ThemeSettingsProvider } from "@/contexts/ThemeSettingsContext";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
+import UserDashboard from "./pages/UserDashboard";
+import AdminDashboard from "./pages/AdminDashboard";
+import AgentDashboard from "./pages/AgentDashboard";
+import PropertyOwnerDashboard from "./pages/PropertyOwnerDashboard";
+import VendorDashboard from "./pages/VendorDashboard";
 import AddProperty from "./pages/AddProperty";
 
 const queryClient = new QueryClient();
@@ -26,7 +31,12 @@ const App = () => (
               <BrowserRouter>
                 <Routes>
                   <Route path="/" element={<Index />} />
-                  <Route path="/dashboard/*" element={<Dashboard />} />
+                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/dashboard/user" element={<UserDashboard />} />
+                  <Route path="/dashboard/admin" element={<AdminDashboard />} />
+                  <Route path="/dashboard/agent" element={<AgentDashboard />} />
+                  <Route path="/dashboard/property-owner" element={<PropertyOwnerDashboard />} />
+                  <Route path="/dashboard/vendor" element={<VendorDashboard />} />
                   <Route path="/add-property" element={<AddProperty />} />
                 </Routes>
               </BrowserRouter>

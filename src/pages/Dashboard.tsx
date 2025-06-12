@@ -1,71 +1,141 @@
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
   const { user, profile, loading } = useAuth();
   const navigate = useNavigate();
+  const [redirectTimeout, setRedirectTimeout] = useState<NodeJS.Timeout | null>(null);
+  const [hasRedirected, setHasRedirected] = useState(false);
 
   useEffect(() => {
-    if (!loading) {
-      if (!user) {
-        console.log('No user found, redirecting to home');
-        navigate('/?auth=true');
-        return;
-      }
+    // Clear any existing timeout
+    if (redirectTimeout) {
+      clearTimeout(redirectTimeout);
+    }
 
-      if (profile) {
-        console.log('User logged in with role:', profile.role);
-        // Redirect based on user role
-        switch (profile.role) {
-          case 'admin':
-            console.log('Redirecting admin to admin dashboard');
-            navigate('/dashboard/admin', { replace: true });
-            break;
-          case 'agent':
-            console.log('Redirecting agent to agent dashboard');
-            navigate('/dashboard/agent', { replace: true });
-            break;
-          case 'vendor':
-            console.log('Redirecting vendor to vendor dashboard');
-            navigate('/dashboard/vendor', { replace: true });
-            break;
-          case 'property_owner':
-            console.log('Redirecting property owner to property owner dashboard');
-            navigate('/dashboard/property-owner', { replace: true });
-            break;
-          case 'general_user':
-          default:
-            console.log('Redirecting general user to user dashboard');
-            navigate('/dashboard/user', { replace: true });
-            break;
-        }
-      } else if (user) {
-        // If user exists but no profile, redirect to user dashboard with fallback
-        console.log('User exists but no profile, redirecting to user dashboard');
+    // Don't proceed if still loading or already redirected
+    if (loading || hasRedirected) {
+      return;
+    }
+
+    console.log('Dashboard redirect logic:', {
+      loading,
+      user: user?.email,
+      profile: profile?.role,
+      hasRedirected
+    });
+
+    // If no user, redirect to home with auth modal
+    if (!user) {
+      console.log('No user found, redirecting to home');
+      setHasRedirected(true);
+      navigate('/?auth=true', { replace: true });
+      return;
+    }
+
+    // Set a timeout to prevent infinite loading
+    const timeout = setTimeout(() => {
+      if (!hasRedirected) {
+        console.log('Timeout reached, defaulting to user dashboard');
+        setHasRedirected(true);
         navigate('/dashboard/user', { replace: true });
       }
+    }, 3000); // 3 second timeout
+
+    setRedirectTimeout(timeout);
+
+    // If we have a user but no profile, wait a bit for profile to load
+    if (user && !profile) {
+      console.log('User exists but no profile, waiting...');
+      const profileTimeout = setTimeout(() => {
+        if (!hasRedirected) {
+          console.log('Profile timeout, redirecting to user dashboard');
+          setHasRedirected(true);
+          navigate('/dashboard/user', { replace: true });
+        }
+      }, 2000);
+      
+      return () => clearTimeout(profileTimeout);
     }
-  }, [user, profile, loading, navigate]);
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-4 text-muted-foreground">Loading your dashboard...</p>
-        </div>
-      </div>
-    );
-  }
+    // If we have both user and profile, redirect based on role
+    if (user && profile && !hasRedirected) {
+      console.log('Redirecting based on role:', profile.role);
+      setHasRedirected(true);
+      
+      switch (profile.role) {
+        case 'admin':
+          navigate('/dashboard/admin', { replace: true });
+          break;
+        case 'agent':
+          navigate('/dashboard/agent', { replace: true });
+          break;
+        case 'vendor':
+          navigate('/dashboard/vendor', { replace: true });
+          break;
+        case 'property_owner':
+          navigate('/dashboard/property-owner', { replace: true });
+          break;
+        case 'general_user':
+        default:
+          navigate('/dashboard/user', { replace: true });
+          break;
+      }
+    }
 
-  // This component should redirect, so we show loading while redirect happens
+    // Cleanup timeout on unmount
+    return () => {
+      if (timeout) {
+        clearTimeout(timeout);
+      }
+    };
+  }, [user, profile, loading, navigate, hasRedirected]);
+
+  // Show loading with timeout indicator
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="text-center">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-background">
+      <div className="text-center space-y-4">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-        <p className="mt-4 text-muted-foreground">Redirecting to your dashboard...</p>
+        <div className="space-y-2">
+          <h2 className="text-lg font-semibold text-foreground">
+            {loading ? "Loading your dashboard..." : "Redirecting to your dashboard..."}
+          </h2>
+          <p className="text-sm text-muted-foreground">
+            {user ? `Welcome ${user.email}` : "Please wait..."}
+          </p>
+          {profile && (
+            <p className="text-xs text-muted-foreground">
+              Role: {profile.role}
+            </p>
+          )}
+        </div>
+        
+        {/* Manual navigation options after 2 seconds */}
+        <div className="mt-6 space-y-2">
+          <p className="text-xs text-muted-foreground">Taking too long?</p>
+          <div className="flex gap-2 justify-center">
+            <button
+              onClick={() => {
+                setHasRedirected(true);
+                navigate('/dashboard/user', { replace: true });
+              }}
+              className="px-4 py-2 text-sm bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
+            >
+              Go to Dashboard
+            </button>
+            <button
+              onClick={() => {
+                setHasRedirected(true);
+                navigate('/', { replace: true });
+              }}
+              className="px-4 py-2 text-sm bg-secondary text-secondary-foreground rounded-md hover:bg-secondary/90 transition-colors"
+            >
+              Back to Home
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
