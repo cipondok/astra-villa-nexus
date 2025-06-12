@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAlert } from "@/contexts/AlertContext";
+import { formatIDR } from "@/utils/currency";
 
 interface PropertyEditModalProps {
   property: any;
@@ -28,7 +29,7 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
     bathrooms: "",
     area_sqm: "",
     owner_id: "",
-    agent_id: ""
+    agent_id: "no-agent"
   });
 
   const { showSuccess, showError } = useAlert();
@@ -49,7 +50,8 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
   });
 
   useEffect(() => {
-    if (property) {
+    if (property && isOpen) {
+      console.log('Setting edit data for property:', property);
       setEditData({
         title: property.title || "",
         description: property.description || "",
@@ -64,10 +66,11 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
         agent_id: property.agent_id || "no-agent"
       });
     }
-  }, [property]);
+  }, [property, isOpen]);
 
   const updatePropertyMutation = useMutation({
     mutationFn: async (updates: any) => {
+      console.log('Updating property with data:', updates);
       const { error } = await supabase
         .from('properties')
         .update({
@@ -78,7 +81,10 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
           area_sqm: updates.area_sqm ? parseInt(updates.area_sqm) : null,
         })
         .eq('id', property.id);
-      if (error) throw error;
+      if (error) {
+        console.error('Update error:', error);
+        throw error;
+      }
     },
     onSuccess: () => {
       showSuccess("Property Updated", "Property has been updated successfully.");
@@ -86,6 +92,7 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
       onClose();
     },
     onError: (error: any) => {
+      console.error('Update mutation error:', error);
       showError("Update Failed", error.message);
     },
   });
@@ -95,6 +102,7 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
       ...editData,
       agent_id: editData.agent_id === "no-agent" ? null : editData.agent_id
     };
+    console.log('Submitting update data:', submitData);
     updatePropertyMutation.mutate(submitData);
   };
 
@@ -106,44 +114,53 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
     user.role === 'agent' || user.role === 'admin'
   ) || [];
 
+  // Format price display
+  const formatPriceDisplay = (price: string) => {
+    if (!price) return '';
+    const numPrice = parseFloat(price);
+    return isNaN(numPrice) ? price : `${formatIDR(numPrice)} (${price} IDR)`;
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto bg-white dark:bg-gray-50">
         <DialogHeader>
-          <DialogTitle>Edit Property</DialogTitle>
-          <DialogDescription>
+          <DialogTitle className="text-gray-900 dark:text-gray-800">Edit Property</DialogTitle>
+          <DialogDescription className="text-gray-600 dark:text-gray-700">
             Update property details and ownership
           </DialogDescription>
         </DialogHeader>
         
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="edit-title">Title</Label>
+            <Label htmlFor="edit-title" className="text-gray-900 dark:text-gray-800">Title</Label>
             <Input
               id="edit-title"
               value={editData.title}
               onChange={(e) => setEditData({ ...editData, title: e.target.value })}
               placeholder="Property title"
+              className="bg-white border-gray-300"
             />
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="edit-location">Location</Label>
+            <Label htmlFor="edit-location" className="text-gray-900 dark:text-gray-800">Location</Label>
             <Input
               id="edit-location"
               value={editData.location}
               onChange={(e) => setEditData({ ...editData, location: e.target.value })}
               placeholder="Property location"
+              className="bg-white border-gray-300"
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="edit-property-type">Property Type</Label>
+            <Label htmlFor="edit-property-type" className="text-gray-900 dark:text-gray-800">Property Type</Label>
             <Select value={editData.property_type} onValueChange={(value) => setEditData({ ...editData, property_type: value })}>
-              <SelectTrigger>
+              <SelectTrigger className="bg-white border-gray-300">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-white">
                 <SelectItem value="house">House</SelectItem>
                 <SelectItem value="apartment">Apartment</SelectItem>
                 <SelectItem value="villa">Villa</SelectItem>
@@ -155,12 +172,12 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="edit-listing-type">Listing Type</Label>
+            <Label htmlFor="edit-listing-type" className="text-gray-900 dark:text-gray-800">Listing Type</Label>
             <Select value={editData.listing_type} onValueChange={(value) => setEditData({ ...editData, listing_type: value })}>
-              <SelectTrigger>
+              <SelectTrigger className="bg-white border-gray-300">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-white">
                 <SelectItem value="sale">For Sale</SelectItem>
                 <SelectItem value="rent">For Rent</SelectItem>
                 <SelectItem value="lease">For Lease</SelectItem>
@@ -169,56 +186,67 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="edit-price">Price</Label>
+            <Label htmlFor="edit-price" className="text-gray-900 dark:text-gray-800">
+              Price (IDR)
+              {editData.price && (
+                <span className="text-sm text-green-600 ml-2">
+                  {formatPriceDisplay(editData.price)}
+                </span>
+              )}
+            </Label>
             <Input
               id="edit-price"
               type="number"
               value={editData.price}
               onChange={(e) => setEditData({ ...editData, price: e.target.value })}
-              placeholder="Property price"
+              placeholder="Enter price in IDR (e.g., 850000000)"
+              className="bg-white border-gray-300"
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="edit-area">Area (sqm)</Label>
+            <Label htmlFor="edit-area" className="text-gray-900 dark:text-gray-800">Area (sqm)</Label>
             <Input
               id="edit-area"
               type="number"
               value={editData.area_sqm}
               onChange={(e) => setEditData({ ...editData, area_sqm: e.target.value })}
               placeholder="Area in square meters"
+              className="bg-white border-gray-300"
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="edit-bedrooms">Bedrooms</Label>
+            <Label htmlFor="edit-bedrooms" className="text-gray-900 dark:text-gray-800">Bedrooms</Label>
             <Input
               id="edit-bedrooms"
               type="number"
               value={editData.bedrooms}
               onChange={(e) => setEditData({ ...editData, bedrooms: e.target.value })}
               placeholder="Number of bedrooms"
+              className="bg-white border-gray-300"
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="edit-bathrooms">Bathrooms</Label>
+            <Label htmlFor="edit-bathrooms" className="text-gray-900 dark:text-gray-800">Bathrooms</Label>
             <Input
               id="edit-bathrooms"
               type="number"
               value={editData.bathrooms}
               onChange={(e) => setEditData({ ...editData, bathrooms: e.target.value })}
               placeholder="Number of bathrooms"
+              className="bg-white border-gray-300"
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="edit-owner">Property Owner</Label>
+            <Label htmlFor="edit-owner" className="text-gray-900 dark:text-gray-800">Property Owner</Label>
             <Select value={editData.owner_id} onValueChange={(value) => setEditData({ ...editData, owner_id: value })}>
-              <SelectTrigger>
+              <SelectTrigger className="bg-white border-gray-300">
                 <SelectValue placeholder="Select owner" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-white">
                 {propertyOwners.map((user) => (
                   <SelectItem key={user.id} value={user.id}>
                     {user.full_name} ({user.email})
@@ -229,12 +257,12 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="edit-agent">Agent (Optional)</Label>
+            <Label htmlFor="edit-agent" className="text-gray-900 dark:text-gray-800">Agent (Optional)</Label>
             <Select value={editData.agent_id || "no-agent"} onValueChange={(value) => setEditData({ ...editData, agent_id: value === "no-agent" ? null : value })}>
-              <SelectTrigger>
+              <SelectTrigger className="bg-white border-gray-300">
                 <SelectValue placeholder="Select agent (optional)" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-white">
                 <SelectItem value="no-agent">No Agent</SelectItem>
                 {agents.map((user) => (
                   <SelectItem key={user.id} value={user.id}>
@@ -246,13 +274,14 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
           </div>
 
           <div className="col-span-2 space-y-2">
-            <Label htmlFor="edit-description">Description</Label>
+            <Label htmlFor="edit-description" className="text-gray-900 dark:text-gray-800">Description</Label>
             <Textarea
               id="edit-description"
               value={editData.description}
               onChange={(e) => setEditData({ ...editData, description: e.target.value })}
               placeholder="Property description"
               rows={3}
+              className="bg-white border-gray-300"
             />
           </div>
         </div>

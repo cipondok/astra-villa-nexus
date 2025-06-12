@@ -14,6 +14,7 @@ import { Building, Search, Plus, Edit, Trash2, Eye, MapPin, DollarSign, RefreshC
 import { useAlert } from "@/contexts/AlertContext";
 import PropertyEditModal from "./PropertyEditModal";
 import PropertyViewModal from "./PropertyViewModal";
+import { formatIDR } from "@/utils/currency";
 
 interface PropertyOwner {
   full_name: string;
@@ -497,9 +498,8 @@ const PropertyManagement = () => {
                       <TableCell>
                         <div className="space-y-1">
                           <Badge variant="outline">{property.property_type}</Badge>
-                          <div className="text-sm font-medium flex items-center gap-1">
-                            <DollarSign className="h-3 w-3" />
-                            {property.price ? property.price.toLocaleString() : 'N/A'}
+                          <div className="text-sm font-medium text-green-600">
+                            {property.price ? formatIDR(property.price) : 'Price not set'}
                           </div>
                           <div className="text-xs text-muted-foreground">
                             {property.listing_type}
