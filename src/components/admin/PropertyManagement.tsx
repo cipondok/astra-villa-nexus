@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -13,6 +12,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Building, Search, Plus, Edit, Trash2, Eye, MapPin, DollarSign, RefreshCw } from "lucide-react";
 import { useAlert } from "@/contexts/AlertContext";
+import PropertyEditModal from "./PropertyEditModal";
+import PropertyViewModal from "./PropertyViewModal";
 
 interface PropertyOwner {
   full_name: string;
@@ -44,6 +45,7 @@ const PropertyManagement = () => {
   const [statusFilter, setStatusFilter] = useState("all");
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [editingProperty, setEditingProperty] = useState<PropertyWithRelations | null>(null);
+  const [viewingProperty, setViewingProperty] = useState<PropertyWithRelations | null>(null);
   const [newProperty, setNewProperty] = useState({
     title: "",
     description: "",
@@ -543,11 +545,19 @@ const PropertyManagement = () => {
                         {property.created_at ? new Date(property.created_at).toLocaleDateString() : 'N/A'}
                       </TableCell>
                       <TableCell>
-                        <div className="flex items-center gap-2">
-                          <Button size="sm" variant="outline">
+                        <div className="flex items-center gap-1">
+                          <Button 
+                            size="sm" 
+                            variant="outline"
+                            onClick={() => setViewingProperty(property)}
+                          >
                             <Eye className="h-4 w-4" />
                           </Button>
-                          <Button size="sm" variant="outline">
+                          <Button 
+                            size="sm" 
+                            variant="outline"
+                            onClick={() => setEditingProperty(property)}
+                          >
                             <Edit className="h-4 w-4" />
                           </Button>
                           <Button 
@@ -567,6 +577,20 @@ const PropertyManagement = () => {
           </div>
         </CardContent>
       </Card>
+
+      {/* Edit Modal */}
+      <PropertyEditModal
+        property={editingProperty}
+        isOpen={!!editingProperty}
+        onClose={() => setEditingProperty(null)}
+      />
+
+      {/* View Modal */}
+      <PropertyViewModal
+        property={viewingProperty}
+        isOpen={!!viewingProperty}
+        onClose={() => setViewingProperty(null)}
+      />
     </div>
   );
 };
