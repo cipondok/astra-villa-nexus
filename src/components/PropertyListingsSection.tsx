@@ -40,7 +40,8 @@ const PropertyListingsSection = ({
       noResults: "No properties found matching your criteria",
       searching: "Searching properties...",
       similarProperties: "Similar Properties You Might Like",
-      tryAdjusting: "Try adjusting your search criteria or browse these similar properties:"
+      tryAdjusting: "Try adjusting your search criteria or browse these similar properties:",
+      allProperties: "All Properties"
     },
     id: {
       featured: "Properti Pilihan",
@@ -55,7 +56,8 @@ const PropertyListingsSection = ({
       noResults: "Tidak ada properti yang sesuai dengan kriteria Anda",
       searching: "Mencari properti...",
       similarProperties: "Properti Serupa yang Mungkin Anda Suka",
-      tryAdjusting: "Coba sesuaikan kriteria pencarian Anda atau jelajahi properti serupa ini:"
+      tryAdjusting: "Coba sesuaikan kriteria pencarian Anda atau jelajahi properti serupa ini:",
+      allProperties: "Semua Properti"
     }
   };
 
@@ -70,7 +72,7 @@ const PropertyListingsSection = ({
           .select('*')
           .eq('status', 'approved')
           .eq('approval_status', 'approved')
-          .limit(8)
+          .limit(12)
           .order('created_at', { ascending: false });
 
         if (error) {
@@ -346,6 +348,37 @@ const PropertyListingsSection = ({
             <CarouselPrevious className="hidden sm:flex" />
             <CarouselNext className="hidden sm:flex" />
           </Carousel>
+        ) : (
+          <div className="text-center py-12">
+            <p className="text-muted-foreground">No properties available at the moment.</p>
+          </div>
+        )}
+      </section>
+
+      {/* All Properties Grid */}
+      <section className="p-4 md:p-6 lg:p-8">
+        <div className="flex items-center gap-2 md:gap-3 mb-6 md:mb-8">
+          <Eye className="h-6 w-6 md:h-8 md:w-8 text-blue-500" />
+          <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold">
+            {currentText.allProperties}
+          </h2>
+        </div>
+        
+        {loading ? (
+          <div className="flex items-center justify-center py-12">
+            <Loader2 className="h-8 w-8 animate-spin" />
+          </div>
+        ) : featuredProperties.length > 0 ? (
+          <div 
+            ref={gridRef}
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 lg:gap-8"
+          >
+            {featuredProperties.map((property) => (
+              <div key={property.id} className="property-card h-full">
+                <PropertyCard property={property} />
+              </div>
+            ))}
+          </div>
         ) : (
           <div className="text-center py-12">
             <p className="text-muted-foreground">No properties available at the moment.</p>

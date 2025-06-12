@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import ParticleEffect from "@/components/ParticleEffect";
 import PropertyListingsSection from "@/components/PropertyListingsSection";
@@ -18,6 +18,7 @@ const Index = () => {
   const [isSearching, setIsSearching] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   const { isAuthenticated, user } = useAuth();
+  const navigate = useNavigate();
 
   // Check URL parameters for auth modal
   useEffect(() => {
@@ -38,6 +39,20 @@ const Index = () => {
       newParams.delete('confirmed');
       return newParams;
     });
+  };
+
+  const handleGetStarted = () => {
+    if (isAuthenticated) {
+      // If user is already logged in, redirect to dashboard
+      navigate('/dashboard');
+    } else {
+      // If not logged in, show auth modal
+      setAuthModalOpen(true);
+    }
+  };
+
+  const handleBrowseProperties = () => {
+    navigate('/properties');
   };
 
   const handleSearch = async (searchData: any) => {
@@ -149,12 +164,15 @@ const Index = () => {
         {/* CTA Buttons - Reduced spacing */}
         <div className="relative z-10 flex flex-col sm:flex-row gap-3 justify-center items-center animate-fade-in animation-delay-600">
           <button 
-            onClick={() => setAuthModalOpen(true)}
+            onClick={handleGetStarted}
             className="px-8 py-3 bg-gradient-to-r from-blue-600 to-orange-500 text-white rounded-lg font-semibold hover:shadow-lg transform hover:scale-105 transition-all duration-200 btn-ios btn-primary-ios"
           >
-            Get Started
+            {isAuthenticated ? 'Go to Dashboard' : 'Get Started'}
           </button>
-          <button className="px-8 py-3 border border-border rounded-lg font-semibold hover:bg-accent transition-colors btn-ios btn-secondary-ios">
+          <button 
+            onClick={handleBrowseProperties}
+            className="px-8 py-3 border border-border rounded-lg font-semibold hover:bg-accent transition-colors btn-ios btn-secondary-ios"
+          >
             Browse Properties
           </button>
         </div>

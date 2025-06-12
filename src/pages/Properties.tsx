@@ -1,58 +1,49 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Search, Filter, MapPin, Bed, Bath, Car, Heart } from "lucide-react";
+import { Search, Filter, MapPin, Bed, Bath, Car, Heart, Loader2 } from "lucide-react";
 import AuthenticatedNavigation from "@/components/navigation/AuthenticatedNavigation";
+import { supabase } from "@/integrations/supabase/client";
+import { formatIDR } from "@/utils/currency";
 
 const Properties = () => {
   const { isAuthenticated } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
   const [language, setLanguage] = useState<"en" | "id">("en");
   const [theme, setTheme] = useState("light");
+  const [properties, setProperties] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // Mock properties data
-  const properties = [
-    {
-      id: 1,
-      title: "Modern Villa in Seminyak",
-      location: "Seminyak, Bali",
-      price: "$450,000",
-      bedrooms: 3,
-      bathrooms: 2,
-      parking: 2,
-      image: "/placeholder.svg",
-      type: "Villa",
-      status: "For Sale"
-    },
-    {
-      id: 2,
-      title: "Luxury Apartment in Jakarta",
-      location: "Jakarta Pusat, Jakarta",
-      price: "$280,000",
-      bedrooms: 2,
-      bathrooms: 2,
-      parking: 1,
-      image: "/placeholder.svg",
-      type: "Apartment",
-      status: "For Sale"
-    },
-    {
-      id: 3,
-      title: "Beach House in Canggu",
-      location: "Canggu, Bali",
-      price: "$650,000",
-      bedrooms: 4,
-      bathrooms: 3,
-      parking: 3,
-      image: "/placeholder.svg",
-      type: "House",
-      status: "For Sale"
-    }
-  ];
+  // Fetch properties from database
+  useEffect(() => {
+    const fetchProperties = async () => {
+      try {
+        setLoading(true);
+        const { data, error } = await supabase
+          .from('properties')
+          .select('*')
+          .eq('status', 'approved')
+          .eq('approval_status', 'approved')
+          .order('created_at', { ascending: false });
+
+        if (error) {
+          console.error('Error fetching properties:', error);
+        } else {
+          setProperties(data || []);
+        }
+      } catch (error) {
+        console.error('Error fetching properties:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProperties();
+  }, []);
 
   const toggleLanguage = () => {
     setLanguage(prev => prev === "en" ? "id" : "en");
@@ -71,7 +62,11 @@ const Properties = () => {
       bedrooms: "Bedrooms",
       bathrooms: "Bathrooms",
       parking: "Parking",
-      noResults: "No properties found"
+      noResults: "No properties found",
+      loading: "Loading properties...",
+      viewDetails: "View Details",
+      forSale: "For Sale",
+      forRent: "For Rent"
     },
     id: {
       title: "Properti",
@@ -79,9 +74,13 @@ const Properties = () => {
       search: "Cari properti...",
       filter: "Filter",
       bedrooms: "Kamar Tidur",
-      bathrooms: "Kamar Mandi",
+      bathrooms: "Kamar Mandi", 
       parking: "Parkir",
-      noResults: "Tidak ada properti ditemukan"
+      noResults: "Tidak ada properti ditemukan",
+      loading: "Memuat properti...",
+      viewDetails: "Lihat Detail",
+      forSale: "Dijual",
+      forRent: "Disewa"
     }
   };
 
@@ -89,7 +88,8 @@ const Properties = () => {
 
   const filteredProperties = properties.filter(property =>
     property.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    property.location.toLowerCase().includes(searchTerm.toLowerCase())
+    property.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (property.description && property.description.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   return (
@@ -132,74 +132,86 @@ const Properties = () => {
             </Button>
           </div>
 
-          {/* Properties Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredProperties.length > 0 ? (
-              filteredProperties.map((property) => (
-                <Card key={property.id} className="overflow-hidden hover:shadow-lg transition-shadow">
-                  <div className="relative">
-                    <img
-                      src={property.image}
-                      alt={property.title}
-                      className="w-full h-48 object-cover"
-                    />
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      className="absolute top-2 right-2 bg-white/80 hover:bg-white"
-                    >
-                      <Heart className="h-4 w-4" />
-                    </Button>
-                    <Badge className="absolute top-2 left-2 bg-blue-600 text-white">
-                      {property.status}
-                    </Badge>
-                  </div>
-                  
-                  <CardHeader>
-                    <CardTitle className="text-lg">{property.title}</CardTitle>
-                    <div className="flex items-center text-gray-600 dark:text-gray-300">
-                      <MapPin className="h-4 w-4 mr-1" />
-                      <span className="text-sm">{property.location}</span>
-                    </div>
-                  </CardHeader>
-                  
-                  <CardContent>
-                    <div className="flex justify-between items-center mb-4">
-                      <span className="text-2xl font-bold text-blue-600">
-                        {property.price}
-                      </span>
-                      <Badge variant="outline">{property.type}</Badge>
-                    </div>
-                    
-                    <div className="flex justify-between text-sm text-gray-600 dark:text-gray-300">
-                      <div className="flex items-center">
-                        <Bed className="h-4 w-4 mr-1" />
-                        <span>{property.bedrooms} {currentText.bedrooms}</span>
-                      </div>
-                      <div className="flex items-center">
-                        <Bath className="h-4 w-4 mr-1" />
-                        <span>{property.bathrooms} {currentText.bathrooms}</span>
-                      </div>
-                      <div className="flex items-center">
-                        <Car className="h-4 w-4 mr-1" />
-                        <span>{property.parking} {currentText.parking}</span>
-                      </div>
-                    </div>
-                    
-                    <Button className="w-full mt-4">
-                      View Details
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))
-            ) : (
-              <div className="col-span-full text-center py-12">
-                <p className="text-gray-600 dark:text-gray-300 text-lg">
-                  {currentText.noResults}
-                </p>
+          {/* Loading State */}
+          {loading && (
+            <div className="flex items-center justify-center py-12">
+              <div className="text-center">
+                <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-blue-500" />
+                <p className="text-gray-600 dark:text-gray-300">{currentText.loading}</p>
               </div>
-            )}
-          </div>
+            </div>
+          )}
+
+          {/* Properties Grid */}
+          {!loading && (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredProperties.length > 0 ? (
+                filteredProperties.map((property) => (
+                  <Card key={property.id} className="overflow-hidden hover:shadow-lg transition-shadow">
+                    <div className="relative">
+                      <img
+                        src={property.image_urls?.[0] || "https://images.unsplash.com/photo-1721322800607-8c38375eef04?w=400&h=300&fit=crop"}
+                        alt={property.title}
+                        className="w-full h-48 object-cover"
+                      />
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="absolute top-2 right-2 bg-white/80 hover:bg-white"
+                      >
+                        <Heart className="h-4 w-4" />
+                      </Button>
+                      <Badge className="absolute top-2 left-2 bg-blue-600 text-white">
+                        {property.listing_type === 'sale' ? currentText.forSale : currentText.forRent}
+                      </Badge>
+                    </div>
+                    
+                    <CardHeader>
+                      <CardTitle className="text-lg">{property.title}</CardTitle>
+                      <div className="flex items-center text-gray-600 dark:text-gray-300">
+                        <MapPin className="h-4 w-4 mr-1" />
+                        <span className="text-sm">{property.location}</span>
+                      </div>
+                    </CardHeader>
+                    
+                    <CardContent>
+                      <div className="flex justify-between items-center mb-4">
+                        <span className="text-2xl font-bold text-blue-600">
+                          {property.price ? formatIDR(property.price) : 'Contact for price'}
+                        </span>
+                        <Badge variant="outline">{property.property_type}</Badge>
+                      </div>
+                      
+                      <div className="flex justify-between text-sm text-gray-600 dark:text-gray-300 mb-4">
+                        <div className="flex items-center">
+                          <Bed className="h-4 w-4 mr-1" />
+                          <span>{property.bedrooms || 0} {currentText.bedrooms}</span>
+                        </div>
+                        <div className="flex items-center">
+                          <Bath className="h-4 w-4 mr-1" />
+                          <span>{property.bathrooms || 0} {currentText.bathrooms}</span>
+                        </div>
+                        <div className="flex items-center">
+                          <Car className="h-4 w-4 mr-1" />
+                          <span>{property.area_sqm || 0} sqm</span>
+                        </div>
+                      </div>
+                      
+                      <Button className="w-full">
+                        {currentText.viewDetails}
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ))
+              ) : (
+                <div className="col-span-full text-center py-12">
+                  <p className="text-gray-600 dark:text-gray-300 text-lg">
+                    {currentText.noResults}
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>
