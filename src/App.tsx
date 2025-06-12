@@ -1,59 +1,41 @@
 
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
-import { ThemeProvider } from "@/components/ThemeProvider";
-import { ThemeSettingsProvider } from "@/contexts/ThemeSettingsContext";
+import { Toaster as Sonner } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { AlertProvider } from "@/contexts/AlertContext";
-import { useAnalyticsTracking } from "@/hooks/useAnalyticsTracking";
-import Index from "@/pages/Index";
-import Dashboard from "@/pages/Dashboard";
-import AdminDashboard from "@/pages/AdminDashboard";
-import UserDashboard from "@/pages/UserDashboard";
-import VendorDashboard from "@/pages/VendorDashboard";
-import AgentDashboard from "@/pages/AgentDashboard";
-import PropertyOwnerDashboard from "@/pages/PropertyOwnerDashboard";
-import Properties from "@/pages/Properties";
+import { ThemeSettingsProvider } from "@/contexts/ThemeSettingsContext";
+import { ThemeProvider } from "@/components/ThemeProvider";
+import Index from "./pages/Index";
+import Dashboard from "./pages/Dashboard";
+import AddProperty from "./pages/AddProperty";
 
 const queryClient = new QueryClient();
 
-// Analytics wrapper component
-const AnalyticsWrapper = ({ children }: { children: React.ReactNode }) => {
-  useAnalyticsTracking();
-  return <>{children}</>;
-};
-
-function App() {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider defaultTheme="system" storageKey="astra-villa-theme">
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <AuthProvider>
+      <AlertProvider>
         <ThemeSettingsProvider>
-          <AlertProvider>
-            <AuthProvider>
-              <Router>
-                <AnalyticsWrapper>
-                  <div className="min-h-screen bg-background">
-                    <Routes>
-                      <Route path="/" element={<Index />} />
-                      <Route path="/properties" element={<Properties />} />
-                      <Route path="/dashboard" element={<Dashboard />} />
-                      <Route path="/dashboard/admin" element={<AdminDashboard />} />
-                      <Route path="/dashboard/user" element={<UserDashboard />} />
-                      <Route path="/dashboard/vendor" element={<VendorDashboard />} />
-                      <Route path="/dashboard/agent" element={<AgentDashboard />} />
-                      <Route path="/dashboard/property-owner" element={<PropertyOwnerDashboard />} />
-                    </Routes>
-                    <Toaster />
-                  </div>
-                </AnalyticsWrapper>
-              </Router>
-            </AuthProvider>
-          </AlertProvider>
+          <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+            <TooltipProvider>
+              <Toaster />
+              <Sonner />
+              <BrowserRouter>
+                <Routes>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/dashboard/*" element={<Dashboard />} />
+                  <Route path="/add-property" element={<AddProperty />} />
+                </Routes>
+              </BrowserRouter>
+            </TooltipProvider>
+          </ThemeProvider>
         </ThemeSettingsProvider>
-      </ThemeProvider>
-    </QueryClientProvider>
-  );
-}
+      </AlertProvider>
+    </AuthProvider>
+  </QueryClientProvider>
+);
 
 export default App;

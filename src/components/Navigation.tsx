@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, User, LogOut, Globe, Bot } from "lucide-react";
+import { Menu, X, User, LogOut, Globe, Bot, Plus } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useThemeSettings } from "@/contexts/ThemeSettingsContext";
 import { useTheme } from "@/components/ThemeProvider";
@@ -68,6 +68,17 @@ const Navigation = () => {
                   {item.name}
                 </Link>
               ))}
+              
+              {/* Add Property Button - Only show if user is logged in */}
+              {user && (
+                <Link
+                  to="/add-property"
+                  className="flex items-center gap-2 px-4 py-2 bg-primary-dynamic text-white rounded-lg hover:bg-primary-dynamic/80 transition-colors"
+                >
+                  <Plus className="h-4 w-4" />
+                  Add Property
+                </Link>
+              )}
             </div>
 
             {/* Right side controls */}
@@ -154,6 +165,18 @@ const Navigation = () => {
                   {item.name}
                 </Link>
               ))}
+              
+              {/* Mobile Add Property Link */}
+              {user && (
+                <Link
+                  to="/add-property"
+                  className="flex items-center gap-2 px-3 py-2 text-base font-medium text-gray-300 hover:text-white hover:bg-white/5 transition-colors"
+                  onClick={() => setIsOpen(false)}
+                >
+                  <Plus className="h-4 w-4" />
+                  Add Property
+                </Link>
+              )}
               
               {/* Mobile Language Toggle */}
               <Button
