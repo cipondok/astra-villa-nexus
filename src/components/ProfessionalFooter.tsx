@@ -1,6 +1,7 @@
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Facebook, Twitter, Instagram, Linkedin, Mail, Phone, MapPin, Send, Home, Building, TreePine, Building2, Gavel, Video, Calculator, TrendingUp, Star, Award, Shield, Zap, FileText, AlertCircle, DollarSign, Scale, HelpCircle, Handshake, Users, Camera, BarChart3, Clock, Target, PiggyBank, Bell, Eye, Smartphone, Brain, HeadphonesIcon, MessageSquare, Gift, Trophy, Banknote, MapPinIcon, Building2Icon, Heart } from "lucide-react";
+import { Facebook, Twitter, Instagram, Linkedin, Mail, Phone, MapPin, Send, Home, Building, TreePine, Building2, Gavel, Video, Calculator, TrendingUp, Star, Award, Shield, Zap, FileText, AlertCircle, DollarSign, Scale, HelpCircle, Handshake, Users, Camera, BarChart3, Clock, Target, PiggyBank, Bell, Eye, Smartphone, Brain, HeadphonesIcon, MessageSquare, Gift, Trophy, Banknote, MapPinIcon, Building2Icon, Heart, UserCheck, Briefcase, Settings, BookOpen, PhoneCall, MessageCircle, Headphones, Tool, Wrench, CheckCircle2, UserPlus, Globe, Lightbulb, Rocket, Database, Cloud, Wifi, Smartphone as SmartphoneIcon, Tablet, Monitor, Server, Code, Bug, Cpu, HardDrive, Network, Radio, Bluetooth, Usb, Printer, Scan, Download, Upload, Share2, Link, QrCode, Fingerprint, Lock, Key, ShieldCheck, UserX, Activity, Pulse, Zap as ZapIcon, Battery, Power, Plug, Cable, Mic, MicOff, Volume2, VolumeX, Play, Pause, Square, SkipBack, SkipForward, Repeat, Shuffle, Music, Radio as RadioIcon, Disc, Tv, Film, Image, FileImage, FileVideo, FileAudio, FileCode, FilePlus, FileMinus, FileEdit, FileX, Folder, FolderOpen, FolderPlus, Archive, Package, Box, ShoppingCart, ShoppingBag, CreditCard, Wallet, Coins, Banknote as BanknoteIcon, Receipt, Tag, Bookmark, Flag, MapPin as MapPinIcon2, Map, Navigation, Compass, Route, Car, Truck, Bus, Bike, Train, Plane, Ship, Anchor, Fuel, Gauge, Speedometer, Timer, Stopwatch, AlarmClock, Calendar, CalendarDays, CalendarPlus, CalendarMinus, CalendarX, CalendarCheck, Clock as ClockIcon, Hourglass, Sunrise, Sunset, Sun, Moon, CloudRain, CloudSnow, CloudLightning, Thermometer, Droplets, Wind, Eye as EyeIcon, EyeOff, Search, SearchX, Filter, SortAsc, SortDesc, ArrowUp, ArrowDown, ArrowLeft, ArrowRight, ArrowUpDown, ArrowLeftRight, RotateCw, RotateCcw, Refresh, Loader, Loader2, Spinner, CircleDot, Circle, Square as SquareIcon, Triangle, Hexagon, Pentagon, Octagon, Diamond, Star as StarIcon, Heart as HeartIcon, ThumbsUp, ThumbsDown, Plus, Minus, X, Check, CheckCircle, XCircle, AlertTriangle, Info, QuestionMark } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -41,6 +42,30 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
       marketingPackages: "Premium Marketing Packages",
       sellersInsights: "Seller's Market Insights",
       fastTrackSale: "Fast-Track Sale Program",
+      
+      // Vendor Services Guide
+      vendorServicesGuide: "Vendor Services Guide",
+      vendorOverview: "Vendor Overview",
+      vendorRegistration: "Vendor Registration",
+      vendorGuideAndFaq: "Vendor Guide & FAQ",
+      serviceManagement: "Service Management",
+      vendorVerification: "Vendor Verification",
+      vendorPayments: "Vendor Payments",
+      vendorSupport: "Vendor Support",
+      vendorTraining: "Vendor Training",
+      vendorCertification: "Vendor Certification",
+      vendorAnalytics: "Vendor Analytics",
+      vendorTools: "Vendor Tools",
+      
+      // Vendor Help & Support
+      vendorHelp: "Vendor Help Center",
+      technicalSupport: "Technical Support",
+      accountHelp: "Account Help",
+      billingSupport: "Billing Support",
+      serviceIssues: "Service Issues",
+      customerDisputes: "Customer Disputes",
+      vendorPolicies: "Vendor Policies",
+      complianceHelp: "Compliance Help",
       
       // New Company Info sections
       aboutUs: "About Us",
@@ -159,6 +184,30 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
       sellersInsights: "Wawasan Pasar Penjual",
       fastTrackSale: "Program Penjualan Cepat",
       
+      // Vendor Services Guide
+      vendorServicesGuide: "Panduan Layanan Vendor",
+      vendorOverview: "Ringkasan Vendor",
+      vendorRegistration: "Registrasi Vendor",
+      vendorGuideAndFaq: "Panduan Vendor & FAQ",
+      serviceManagement: "Manajemen Layanan",
+      vendorVerification: "Verifikasi Vendor",
+      vendorPayments: "Pembayaran Vendor",
+      vendorSupport: "Dukungan Vendor",
+      vendorTraining: "Pelatihan Vendor",
+      vendorCertification: "Sertifikasi Vendor",
+      vendorAnalytics: "Analitik Vendor",
+      vendorTools: "Alat Vendor",
+      
+      // Vendor Help & Support
+      vendorHelp: "Pusat Bantuan Vendor",
+      technicalSupport: "Dukungan Teknis",
+      accountHelp: "Bantuan Akun",
+      billingSupport: "Dukungan Tagihan",
+      serviceIssues: "Masalah Layanan",
+      customerDisputes: "Sengketa Pelanggan",
+      vendorPolicies: "Kebijakan Vendor",
+      complianceHelp: "Bantuan Kepatuhan",
+      
       // New Company Info sections
       aboutUs: "Tentang Kami",
       ourStory: "Cerita Kami",
@@ -274,7 +323,7 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
     <footer className="glass-ios border-t border-border/30 mt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Main Footer Content */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-7 gap-8 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-8 gap-8 mb-8">
           {/* Company Info */}
           <div className="space-y-4">
             <div>
@@ -294,7 +343,7 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
               </div>
               <div className="flex items-center gap-1">
                 {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                  <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" key={i} />
                 ))}
                 <span className="text-xs text-muted-foreground ml-1">4.9/5</span>
               </div>
@@ -437,7 +486,7 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
             </ul>
           </div>
 
-          {/* NEW: Selling Guide - Comprehensive */}
+          {/* Selling Guide - Comprehensive */}
           <div className="space-y-4">
             <h4 className="font-semibold text-foreground text-sm flex items-center gap-2">
               <Handshake className="h-4 w-4 text-green-500" />
@@ -546,6 +595,211 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
                     >
                       <Clock className="h-3 w-3 text-red-500" />
                       {currentText.fastTrackSale}
+                    </button>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+
+          {/* NEW: Vendor Services Guide */}
+          <div className="space-y-4">
+            <h4 className="font-semibold text-foreground text-sm flex items-center gap-2">
+              <UserCheck className="h-4 w-4 text-orange-500" />
+              {currentText.vendorServicesGuide}
+            </h4>
+            <ul className="space-y-2">
+              <li>
+                <button 
+                  onClick={() => handleLinkClick('/vendor-overview', currentText.vendorOverview)}
+                  className="text-muted-foreground hover:text-orange-500 transition-colors text-sm text-left flex items-center gap-1"
+                >
+                  <FileText className="h-3 w-3" />
+                  {currentText.vendorOverview}
+                </button>
+              </li>
+              <li>
+                <button 
+                  onClick={() => handleLinkClick('/vendor-registration', currentText.vendorRegistration)}
+                  className="text-muted-foreground hover:text-orange-500 transition-colors text-sm text-left flex items-center gap-1"
+                >
+                  <UserPlus className="h-3 w-3 text-green-500" />
+                  {currentText.vendorRegistration}
+                </button>
+              </li>
+              <li>
+                <button 
+                  onClick={() => handleLinkClick('/vendor-guide-faq', currentText.vendorGuideAndFaq)}
+                  className="text-muted-foreground hover:text-orange-500 transition-colors text-sm text-left flex items-center gap-1"
+                >
+                  <HelpCircle className="h-3 w-3" />
+                  {currentText.vendorGuideAndFaq}
+                </button>
+              </li>
+              <li>
+                <button 
+                  onClick={() => handleLinkClick('/service-management', currentText.serviceManagement)}
+                  className="text-muted-foreground hover:text-orange-500 transition-colors text-sm text-left flex items-center gap-1"
+                >
+                  <Settings className="h-3 w-3 text-blue-500" />
+                  {currentText.serviceManagement}
+                </button>
+              </li>
+              <li>
+                <button 
+                  onClick={() => handleLinkClick('/vendor-verification', currentText.vendorVerification)}
+                  className="text-muted-foreground hover:text-orange-500 transition-colors text-sm text-left flex items-center gap-1"
+                >
+                  <ShieldCheck className="h-3 w-3 text-green-500" />
+                  {currentText.vendorVerification}
+                </button>
+              </li>
+              <li>
+                <button 
+                  onClick={() => handleLinkClick('/vendor-payments', currentText.vendorPayments)}
+                  className="text-muted-foreground hover:text-orange-500 transition-colors text-sm text-left flex items-center gap-1"
+                >
+                  <CreditCard className="h-3 w-3 text-green-500" />
+                  {currentText.vendorPayments}
+                </button>
+              </li>
+              
+              {/* Advanced Vendor Features */}
+              <li className="pt-2">
+                <div className="text-xs font-medium text-foreground mb-2">Advanced Tools</div>
+                <ul className="space-y-1 ml-2">
+                  <li>
+                    <button 
+                      onClick={() => handleLinkClick('/vendor-training', currentText.vendorTraining)}
+                      className="text-muted-foreground hover:text-orange-500 transition-colors text-sm flex items-center gap-1"
+                    >
+                      <BookOpen className="h-3 w-3 text-purple-500" />
+                      {currentText.vendorTraining}
+                    </button>
+                  </li>
+                  <li>
+                    <button 
+                      onClick={() => handleLinkClick('/vendor-certification', currentText.vendorCertification)}
+                      className="text-muted-foreground hover:text-orange-500 transition-colors text-sm flex items-center gap-1"
+                    >
+                      <Award className="h-3 w-3 text-yellow-500" />
+                      {currentText.vendorCertification}
+                    </button>
+                  </li>
+                  <li>
+                    <button 
+                      onClick={() => handleLinkClick('/vendor-analytics', currentText.vendorAnalytics)}
+                      className="text-muted-foreground hover:text-orange-500 transition-colors text-sm flex items-center gap-1"
+                    >
+                      <BarChart3 className="h-3 w-3 text-blue-500" />
+                      {currentText.vendorAnalytics}
+                    </button>
+                  </li>
+                  <li>
+                    <button 
+                      onClick={() => handleLinkClick('/vendor-tools', currentText.vendorTools)}
+                      className="text-muted-foreground hover:text-orange-500 transition-colors text-sm flex items-center gap-1"
+                    >
+                      <Tool className="h-3 w-3 text-gray-500" />
+                      {currentText.vendorTools}
+                    </button>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+
+          {/* NEW: Vendor Help & Support */}
+          <div className="space-y-4">
+            <h4 className="font-semibold text-foreground text-sm flex items-center gap-2">
+              <Headphones className="h-4 w-4 text-cyan-500" />
+              {currentText.vendorHelp}
+            </h4>
+            <ul className="space-y-2">
+              <li>
+                <button 
+                  onClick={() => handleLinkClick('/technical-support', currentText.technicalSupport)}
+                  className="text-muted-foreground hover:text-cyan-500 transition-colors text-sm text-left flex items-center gap-1"
+                >
+                  <Wrench className="h-3 w-3 text-red-500" />
+                  {currentText.technicalSupport}
+                </button>
+              </li>
+              <li>
+                <button 
+                  onClick={() => handleLinkClick('/account-help', currentText.accountHelp)}
+                  className="text-muted-foreground hover:text-cyan-500 transition-colors text-sm text-left flex items-center gap-1"
+                >
+                  <UserCheck className="h-3 w-3 text-blue-500" />
+                  {currentText.accountHelp}
+                </button>
+              </li>
+              <li>
+                <button 
+                  onClick={() => handleLinkClick('/billing-support', currentText.billingSupport)}
+                  className="text-muted-foreground hover:text-cyan-500 transition-colors text-sm text-left flex items-center gap-1"
+                >
+                  <CreditCard className="h-3 w-3 text-green-500" />
+                  {currentText.billingSupport}
+                </button>
+              </li>
+              <li>
+                <button 
+                  onClick={() => handleLinkClick('/service-issues', currentText.serviceIssues)}
+                  className="text-muted-foreground hover:text-cyan-500 transition-colors text-sm text-left flex items-center gap-1"
+                >
+                  <AlertTriangle className="h-3 w-3 text-yellow-500" />
+                  {currentText.serviceIssues}
+                </button>
+              </li>
+              <li>
+                <button 
+                  onClick={() => handleLinkClick('/customer-disputes', currentText.customerDisputes)}
+                  className="text-muted-foreground hover:text-cyan-500 transition-colors text-sm text-left flex items-center gap-1"
+                >
+                  <Scale className="h-3 w-3 text-purple-500" />
+                  {currentText.customerDisputes}
+                </button>
+              </li>
+              <li>
+                <button 
+                  onClick={() => handleLinkClick('/vendor-policies', currentText.vendorPolicies)}
+                  className="text-muted-foreground hover:text-cyan-500 transition-colors text-sm text-left flex items-center gap-1"
+                >
+                  <FileText className="h-3 w-3 text-gray-500" />
+                  {currentText.vendorPolicies}
+                </button>
+              </li>
+              <li>
+                <button 
+                  onClick={() => handleLinkClick('/compliance-help', currentText.complianceHelp)}
+                  className="text-muted-foreground hover:text-cyan-500 transition-colors text-sm text-left flex items-center gap-1"
+                >
+                  <CheckCircle2 className="h-3 w-3 text-green-500" />
+                  {currentText.complianceHelp}
+                </button>
+              </li>
+              
+              {/* Contact Methods */}
+              <li className="pt-2">
+                <div className="text-xs font-medium text-foreground mb-2">Get Help Now</div>
+                <ul className="space-y-1 ml-2">
+                  <li>
+                    <button 
+                      onClick={() => handleLinkClick('/vendor-phone-support')}
+                      className="text-muted-foreground hover:text-cyan-500 transition-colors text-sm flex items-center gap-1"
+                    >
+                      <PhoneCall className="h-3 w-3 text-green-500" />
+                      24/7 Phone Support
+                    </button>
+                  </li>
+                  <li>
+                    <button 
+                      onClick={() => handleLinkClick('/vendor-live-chat')}
+                      className="text-muted-foreground hover:text-cyan-500 transition-colors text-sm flex items-center gap-1"
+                    >
+                      <MessageCircle className="h-3 w-3 text-blue-500" />
+                      Live Chat Support
                     </button>
                   </li>
                 </ul>
