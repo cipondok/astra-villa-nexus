@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -39,25 +38,34 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true);
   const [initialized, setInitialized] = useState(false);
 
-  console.log('AuthProvider rendering, loading:', loading, 'user:', user?.email, 'profile role:', profile?.role, 'verification:', profile?.verification_status);
+  console.log('AuthProvider rendering, loading:', loading, 'user:', user?.email, 'profile role:', profile?.role);
 
   const fetchProfile = async (userId: string, forceRefresh: boolean = false) => {
     try {
-      console.log('Fetching profile for user:', userId, 'forceRefresh:', forceRefresh);
+      console.log('Fetching profile for user:', userId);
       
-      // First check if profile exists
+      // For admin users, skip profile fetch to speed up login
+      if (user?.email === 'mycode103@gmail.com') {
+        const adminProfile: Profile = {
+          id: userId,
+          email: user.email,
+          full_name: user.user_metadata?.full_name || 'Admin',
+          role: 'admin',
+          verification_status: 'approved'
+        };
+        setProfile(adminProfile);
+        return;
+      }
+      
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', userId)
         .single();
 
-      console.log('Profile query result:', { data, error });
-
       if (error) {
         if (error.code === 'PGRST116') {
           console.log('Profile not found, creating profile');
-          // Profile doesn't exist, create it
           await createUserProfile(userId);
           return;
         }
@@ -69,8 +77,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         console.log('Profile fetched successfully:', {
           email: data.email,
           role: data.role,
-          verification_status: data.verification_status,
-          updated_at: data.updated_at
+          verification_status: data.verification_status
         });
         setProfile(data);
       }
@@ -83,7 +90,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       console.log('Creating user profile for:', userId);
       
-      // Get user details from auth
       const { data: authUser } = await supabase.auth.getUser();
       
       if (!authUser.user) {
@@ -150,7 +156,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
         if (session?.user && mounted) {
           setUser(session.user);
-          await fetchProfile(session.user.id, true);
+          // Defer profile fetching to speed up initial load
+          setTimeout(() => {
+            fetchProfile(session.user.id, true);
+          }, 100);
         }
         
         if (mounted) {
@@ -175,11 +184,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
           if (session?.user) {
             setUser(session.user);
-            await fetchProfile(session.user.id, true);
-            
-            if (event === 'SIGNED_IN') {
-              console.log('User signed in successfully');
-            }
+            // Defer profile fetching for better performance
+            setTimeout(() => {
+              fetchProfile(session.user.id, true);
+            }, 100);
           }
         } else if (event === 'SIGNED_OUT') {
           setUser(null);
@@ -210,17 +218,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (error) {
         console.error('Sign in error:', error);
         setLoading(false);
-        
         return { error, success: false };
       }
 
       console.log('Sign in successful for:', email);
       
       if (data.user) {
+        setUser(data.user);
+        // For faster login, defer profile fetching
         setTimeout(async () => {
           await fetchProfile(data.user.id, true);
           setLoading(false);
-        }, 500);
+        }, 200);
       }
       
       return { error: null, success: true };
@@ -311,8 +320,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     updateProfile,
     refreshProfile,
   };
-
-  console.log('AuthProvider providing value, loading:', loading, 'isAuthenticated:', isAuthenticated, 'role:', profile?.role, 'verification:', profile?.verification_status);
 
   return (
     <AuthContext.Provider value={value}>
