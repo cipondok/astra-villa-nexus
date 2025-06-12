@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Facebook, Twitter, Instagram, Linkedin, Mail, Phone, MapPin, Send, Home, Building, TreePine, Building2, Gavel, Video, Calculator, TrendingUp, Star, Award, Shield, Zap, FileText, AlertCircle, DollarSign, Scale, HelpCircle, Handshake, Users, Camera, BarChart3, Clock, Target, PiggyBank } from "lucide-react";
+import { Facebook, Twitter, Instagram, Linkedin, Mail, Phone, MapPin, Send, Home, Building, TreePine, Building2, Gavel, Video, Calculator, TrendingUp, Star, Award, Shield, Zap, FileText, AlertCircle, DollarSign, Scale, HelpCircle, Handshake, Users, Camera, BarChart3, Clock, Target, PiggyBank, Bell, Eye, Smartphone, Brain, HeadphonesIcon, MessageSquare, Gift, Trophy, Banknote, MapPinIcon, Building2Icon, OfficeBuilding } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -42,6 +42,43 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
       sellersInsights: "Seller's Market Insights",
       fastTrackSale: "Fast-Track Sale Program",
       
+      // New Company Info sections
+      aboutUs: "About Us",
+      ourStory: "Our Story",
+      leadership: "Leadership Team",
+      careers: "Careers",
+      pressMedia: "Press & Media",
+      investorRelations: "Investor Relations",
+      corporateSocial: "Corporate Social Responsibility",
+      
+      // Office Information
+      ourOffices: "Our Offices",
+      jakartaOffice: "Jakarta Head Office",
+      baliOffice: "Bali Regional Office",
+      surabayaOffice: "Surabaya Branch",
+      bandungOffice: "Bandung Branch",
+      medanOffice: "Medan Branch",
+      
+      // Services & Tools
+      servicesTools: "Services & Tools",
+      freeAstraValuation: "FREE AstraVilla Valuation",
+      astraAlerts: "AstraVilla Property Alerts",
+      mortgageCalculator: "Mortgage Calculator",
+      propertyComparison: "Property Comparison Tool",
+      neighborhoodGuide: "Neighborhood Guide",
+      investmentCalculator: "Investment ROI Calculator",
+      
+      // Innovation Features
+      innovationHub: "Innovation Hub",
+      aiPropertyMatch: "AI Property Matching",
+      virtualTours: "360° Virtual Tours",
+      blockchainVerification: "Blockchain Property Verification",
+      smartContracts: "Smart Contract Integration",
+      cryptoPayments: "Cryptocurrency Payments",
+      voiceSearch: "Voice-Activated Search",
+      arVisualization: "AR Property Visualization",
+      predictiveAnalytics: "Predictive Market Analytics",
+      
       whatLookingFor: "What are you looking for?",
       flats: "Flats",
       houses: "Houses", 
@@ -64,16 +101,12 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
       bidRegistration: "Bid Registration",
       
       premiumServices: "Premium Services",
-      aiPropertyMatch: "AI Property Matching",
-      virtualTours: "Virtual Property Tours",  
+      virtualToursService: "Virtual Property Tours",  
       instantValuation: "Instant Valuation",
-      mortgageCalculator: "Mortgage Calculator",
-      investmentAnalysis: "Investment Analysis",
       conciergeService: "Property Concierge",
       
       quickLinks: "Quick Links",
       home: "Home",
-      aboutUs: "About Us",
       contact: "Contact Info",
       address: "123 Property Street, Jakarta, Indonesia",
       phone: "+62 21 1234 5678",
@@ -89,7 +122,14 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
       certifications: "Certifications & Awards",
       trustedBy: "Trusted by 50,000+ property seekers",
       comingSoon: "Coming Soon!",
-      featureNotAvailable: "This feature is coming soon. Stay tuned!"
+      featureNotAvailable: "This feature is coming soon. Stay tuned!",
+      
+      // Office addresses
+      jakartaAddress: "Menara Astra, Jl. Jend. Sudirman Kav. 5-6, Jakarta 10220",
+      baliAddress: "Jl. Raya Sanur No. 88, Denpasar, Bali 80228",
+      surabayaAddress: "Jl. Pemuda No. 118, Surabaya, East Java 60271",
+      bandungAddress: "Jl. Asia Afrika No. 8, Bandung, West Java 40111",
+      medanAddress: "Jl. Jend. Gatot Subroto No. 456, Medan, North Sumatra 20234"
     },
     id: {
       company: "Astra Villa",
@@ -119,6 +159,43 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
       sellersInsights: "Wawasan Pasar Penjual",
       fastTrackSale: "Program Penjualan Cepat",
       
+      // New Company Info sections
+      aboutUs: "Tentang Kami",
+      ourStory: "Cerita Kami",
+      leadership: "Tim Kepemimpinan",
+      careers: "Karir",
+      pressMedia: "Pers & Media",
+      investorRelations: "Hubungan Investor",
+      corporateSocial: "Tanggung Jawab Sosial Perusahaan",
+      
+      // Office Information
+      ourOffices: "Kantor Kami",
+      jakartaOffice: "Kantor Pusat Jakarta",
+      baliOffice: "Kantor Regional Bali",
+      surabayaOffice: "Cabang Surabaya",
+      bandungOffice: "Cabang Bandung",
+      medanOffice: "Cabang Medan",
+      
+      // Services & Tools
+      servicesTools: "Layanan & Alat",
+      freeAstraValuation: "Valuasi GRATIS AstraVilla",
+      astraAlerts: "Peringatan Properti AstraVilla",
+      mortgageCalculator: "Kalkulator KPR",
+      propertyComparison: "Alat Perbandingan Properti",
+      neighborhoodGuide: "Panduan Lingkungan",
+      investmentCalculator: "Kalkulator ROI Investasi",
+      
+      // Innovation Features
+      innovationHub: "Hub Inovasi",
+      aiPropertyMatch: "AI Pencocokan Properti",
+      virtualTours: "Tur Virtual 360°",
+      blockchainVerification: "Verifikasi Properti Blockchain",
+      smartContracts: "Integrasi Smart Contract",
+      cryptoPayments: "Pembayaran Mata Uang Kripto",
+      voiceSearch: "Pencarian Suara",
+      arVisualization: "Visualisasi AR Properti",
+      predictiveAnalytics: "Analitik Prediktif Pasar",
+      
       whatLookingFor: "Apa yang Anda cari?",
       flats: "Apartemen",
       houses: "Rumah",
@@ -141,16 +218,12 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
       bidRegistration: "Registrasi Penawaran",
       
       premiumServices: "Layanan Premium",
-      aiPropertyMatch: "AI Pencocokan Properti",
-      virtualTours: "Tur Virtual Properti",
+      virtualToursService: "Tur Virtual Properti",
       instantValuation: "Valuasi Instan", 
-      mortgageCalculator: "Kalkulator KPR",
-      investmentAnalysis: "Analisis Investasi",
       conciergeService: "Concierge Properti",
       
       quickLinks: "Tautan Cepat",
       home: "Beranda",
-      aboutUs: "Tentang Kami",
       contact: "Info Kontak",
       address: "Jl. Properti No. 123, Jakarta, Indonesia",
       phone: "+62 21 1234 5678", 
@@ -166,7 +239,14 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
       certifications: "Sertifikasi & Penghargaan",
       trustedBy: "Dipercaya oleh 50,000+ pencari properti",
       comingSoon: "Segera Hadir!",
-      featureNotAvailable: "Fitur ini akan segera hadir. Nantikan!"
+      featureNotAvailable: "Fitur ini akan segera hadir. Nantikan!",
+      
+      // Office addresses
+      jakartaAddress: "Menara Astra, Jl. Jend. Sudirman Kav. 5-6, Jakarta 10220",
+      baliAddress: "Jl. Raya Sanur No. 88, Denpasar, Bali 80228",
+      surabayaAddress: "Jl. Pemuda No. 118, Surabaya, Jawa Timur 60271",
+      bandungAddress: "Jl. Asia Afrika No. 8, Bandung, Jawa Barat 40111",
+      medanAddress: "Jl. Jend. Gatot Subroto No. 456, Medan, Sumatra Utara 20234"
     }
   };
 
@@ -181,7 +261,7 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
 
   const handleLinkClick = (path: string, label?: string) => {
     // Handle existing routes
-    if (path === '/' || path === '/properties') {
+    if (path === '/' || path === '/properties' || path === '/about') {
       navigate(path);
       return;
     }
@@ -194,7 +274,7 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
     <footer className="glass-ios border-t border-border/30 mt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Main Footer Content */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-7 gap-8 mb-8">
           {/* Company Info */}
           <div className="space-y-4">
             <div>
@@ -473,161 +553,288 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
             </ul>
           </div>
 
-          {/* Popular Places */}
+          {/* About Us & Company Info */}
           <div className="space-y-4">
             <h4 className="font-semibold text-foreground text-sm flex items-center gap-2">
-              <TrendingUp className="h-4 w-4 text-green-500" />
-              {currentText.popularPlaces}
+              <Building className="h-4 w-4 text-purple-500" />
+              {currentText.aboutUs}
             </h4>
             <ul className="space-y-2">
               <li>
                 <button 
-                  onClick={() => handleLinkClick('/properties', currentText.jakarta)}
-                  className="text-muted-foreground hover:text-ios-blue transition-colors text-sm"
+                  onClick={() => handleLinkClick('/about', currentText.ourStory)}
+                  className="text-muted-foreground hover:text-purple-500 transition-colors text-sm text-left flex items-center gap-1"
                 >
-                  {currentText.jakarta}
+                  <Heart className="h-3 w-3" />
+                  {currentText.ourStory}
                 </button>
               </li>
               <li>
                 <button 
-                  onClick={() => handleLinkClick('/properties', currentText.bali)}
-                  className="text-muted-foreground hover:text-ios-blue transition-colors text-sm"
+                  onClick={() => handleLinkClick('/leadership', currentText.leadership)}
+                  className="text-muted-foreground hover:text-purple-500 transition-colors text-sm text-left flex items-center gap-1"
                 >
-                  {currentText.bali}
+                  <Users className="h-3 w-3" />
+                  {currentText.leadership}
                 </button>
               </li>
               <li>
                 <button 
-                  onClick={() => handleLinkClick('/properties', currentText.surabaya)}
-                  className="text-muted-foreground hover:text-ios-blue transition-colors text-sm"
+                  onClick={() => handleLinkClick('/careers', currentText.careers)}
+                  className="text-muted-foreground hover:text-purple-500 transition-colors text-sm text-left flex items-center gap-1"
                 >
-                  {currentText.surabaya}
+                  <Target className="h-3 w-3 text-blue-500" />
+                  {currentText.careers}
                 </button>
               </li>
               <li>
                 <button 
-                  onClick={() => handleLinkClick('/properties', currentText.bandung)}
-                  className="text-muted-foreground hover:text-ios-blue transition-colors text-sm"
+                  onClick={() => handleLinkClick('/press-media', currentText.pressMedia)}
+                  className="text-muted-foreground hover:text-purple-500 transition-colors text-sm text-left flex items-center gap-1"
                 >
-                  {currentText.bandung}
+                  <MessageSquare className="h-3 w-3 text-green-500" />
+                  {currentText.pressMedia}
                 </button>
               </li>
               <li>
                 <button 
-                  onClick={() => handleLinkClick('/properties', currentText.yogyakarta)}
-                  className="text-muted-foreground hover:text-ios-blue transition-colors text-sm"
+                  onClick={() => handleLinkClick('/investor-relations', currentText.investorRelations)}
+                  className="text-muted-foreground hover:text-purple-500 transition-colors text-sm text-left flex items-center gap-1"
                 >
-                  {currentText.yogyakarta}
+                  <TrendingUp className="h-3 w-3 text-green-500" />
+                  {currentText.investorRelations}
                 </button>
               </li>
               <li>
                 <button 
-                  onClick={() => handleLinkClick('/properties', currentText.medan)}
-                  className="text-muted-foreground hover:text-ios-blue transition-colors text-sm"
+                  onClick={() => handleLinkClick('/corporate-social', currentText.corporateSocial)}
+                  className="text-muted-foreground hover:text-purple-500 transition-colors text-sm text-left flex items-center gap-1"
                 >
-                  {currentText.medan}
+                  <Award className="h-3 w-3 text-purple-500" />
+                  {currentText.corporateSocial}
                 </button>
               </li>
             </ul>
           </div>
 
-          {/* Auction Services */}
+          {/* Our Offices */}
           <div className="space-y-4">
             <h4 className="font-semibold text-foreground text-sm flex items-center gap-2">
-              <Gavel className="h-4 w-4 text-red-500" />
-              {currentText.auctionServices}
+              <Building2 className="h-4 w-4 text-blue-500" />
+              {currentText.ourOffices}
+            </h4>
+            <ul className="space-y-2">
+              <li>
+                <div className="space-y-1">
+                  <button 
+                    onClick={() => handleLinkClick('/offices/jakarta', currentText.jakartaOffice)}
+                    className="text-muted-foreground hover:text-blue-500 transition-colors text-sm font-medium flex items-center gap-1"
+                  >
+                    <MapPinIcon className="h-3 w-3 text-red-500" />
+                    {currentText.jakartaOffice}
+                  </button>
+                  <p className="text-xs text-muted-foreground ml-4">{currentText.jakartaAddress}</p>
+                </div>
+              </li>
+              <li>
+                <div className="space-y-1">
+                  <button 
+                    onClick={() => handleLinkClick('/offices/bali', currentText.baliOffice)}
+                    className="text-muted-foreground hover:text-blue-500 transition-colors text-sm font-medium flex items-center gap-1"
+                  >
+                    <MapPinIcon className="h-3 w-3 text-red-500" />
+                    {currentText.baliOffice}
+                  </button>
+                  <p className="text-xs text-muted-foreground ml-4">{currentText.baliAddress}</p>
+                </div>
+              </li>
+              <li>
+                <div className="space-y-1">
+                  <button 
+                    onClick={() => handleLinkClick('/offices/surabaya', currentText.surabayaOffice)}
+                    className="text-muted-foreground hover:text-blue-500 transition-colors text-sm font-medium flex items-center gap-1"
+                  >
+                    <MapPinIcon className="h-3 w-3 text-red-500" />
+                    {currentText.surabayaOffice}
+                  </button>
+                  <p className="text-xs text-muted-foreground ml-4">{currentText.surabayaAddress}</p>
+                </div>
+              </li>
+              <li>
+                <div className="space-y-1">
+                  <button 
+                    onClick={() => handleLinkClick('/offices/bandung', currentText.bandungOffice)}
+                    className="text-muted-foreground hover:text-blue-500 transition-colors text-sm font-medium flex items-center gap-1"
+                  >
+                    <MapPinIcon className="h-3 w-3 text-red-500" />
+                    {currentText.bandungOffice}
+                  </button>
+                  <p className="text-xs text-muted-foreground ml-4">{currentText.bandungAddress}</p>
+                </div>
+              </li>
+              <li>
+                <div className="space-y-1">
+                  <button 
+                    onClick={() => handleLinkClick('/offices/medan', currentText.medanOffice)}
+                    className="text-muted-foreground hover:text-blue-500 transition-colors text-sm font-medium flex items-center gap-1"
+                  >
+                    <MapPinIcon className="h-3 w-3 text-red-500" />
+                    {currentText.medanOffice}
+                  </button>
+                  <p className="text-xs text-muted-foreground ml-4">{currentText.medanAddress}</p>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          {/* Services & Tools */}
+          <div className="space-y-4">
+            <h4 className="font-semibold text-foreground text-sm flex items-center gap-2">
+              <Calculator className="h-4 w-4 text-green-500" />
+              {currentText.servicesTools}
             </h4>
             <ul className="space-y-2">
               <li>
                 <button 
-                  onClick={() => handleLinkClick('/live-auctions', currentText.liveAuctions)}
-                  className="text-muted-foreground hover:text-red-500 transition-colors text-sm flex items-center gap-1"
-                >
-                  <Zap className="h-3 w-3 text-red-500" />
-                  {currentText.liveAuctions}
-                </button>
-              </li>
-              <li>
-                <button 
-                  onClick={() => handleLinkClick('/online-auctions', currentText.onlineAuctions)}
-                  className="text-muted-foreground hover:text-ios-blue transition-colors text-sm flex items-center gap-1"
-                >
-                  <Video className="h-3 w-3" />
-                  {currentText.onlineAuctions}
-                </button>
-              </li>
-              <li>
-                <button 
-                  onClick={() => handleLinkClick('/auction-free-valuation', currentText.auctionFreeValuation)}
-                  className="text-muted-foreground hover:text-green-500 transition-colors text-sm flex items-center gap-1"
+                  onClick={() => handleLinkClick('/free-valuation', currentText.freeAstraValuation)}
+                  className="text-muted-foreground hover:text-green-500 transition-colors text-sm text-left flex items-center gap-1"
                 >
                   <Calculator className="h-3 w-3 text-green-500" />
-                  {currentText.auctionFreeValuation}
+                  {currentText.freeAstraValuation}
                 </button>
               </li>
               <li>
                 <button 
-                  onClick={() => handleLinkClick('/auction-guide', currentText.auctionGuide)}
-                  className="text-muted-foreground hover:text-ios-blue transition-colors text-sm"
+                  onClick={() => handleLinkClick('/property-alerts', currentText.astraAlerts)}
+                  className="text-muted-foreground hover:text-yellow-500 transition-colors text-sm text-left flex items-center gap-1"
                 >
-                  {currentText.auctionGuide}
+                  <Bell className="h-3 w-3 text-yellow-500" />
+                  {currentText.astraAlerts}
                 </button>
               </li>
               <li>
                 <button 
-                  onClick={() => handleLinkClick('/bid-registration', currentText.bidRegistration)}
-                  className="text-muted-foreground hover:text-ios-blue transition-colors text-sm"
+                  onClick={() => handleLinkClick('/mortgage-calculator', currentText.mortgageCalculator)}
+                  className="text-muted-foreground hover:text-blue-500 transition-colors text-sm text-left flex items-center gap-1"
                 >
-                  {currentText.bidRegistration}
+                  <PiggyBank className="h-3 w-3 text-blue-500" />
+                  {currentText.mortgageCalculator}
+                </button>
+              </li>
+              <li>
+                <button 
+                  onClick={() => handleLinkClick('/property-comparison', currentText.propertyComparison)}
+                  className="text-muted-foreground hover:text-purple-500 transition-colors text-sm text-left flex items-center gap-1"
+                >
+                  <BarChart3 className="h-3 w-3 text-purple-500" />
+                  {currentText.propertyComparison}
+                </button>
+              </li>
+              <li>
+                <button 
+                  onClick={() => handleLinkClick('/neighborhood-guide', currentText.neighborhoodGuide)}
+                  className="text-muted-foreground hover:text-indigo-500 transition-colors text-sm text-left flex items-center gap-1"
+                >
+                  <MapPin className="h-3 w-3 text-indigo-500" />
+                  {currentText.neighborhoodGuide}
+                </button>
+              </li>
+              <li>
+                <button 
+                  onClick={() => handleLinkClick('/investment-calculator', currentText.investmentCalculator)}
+                  className="text-muted-foreground hover:text-emerald-500 transition-colors text-sm text-left flex items-center gap-1"
+                >
+                  <TrendingUp className="h-3 w-3 text-emerald-500" />
+                  {currentText.investmentCalculator}
                 </button>
               </li>
             </ul>
           </div>
 
-          {/* Premium Services & Newsletter */}
-          <div className="space-y-6">
-            {/* Premium Services */}
-            <div className="space-y-4">
-              <h4 className="font-semibold text-foreground text-sm flex items-center gap-2">
-                <Award className="h-4 w-4 text-purple-500" />
-                {currentText.premiumServices}
-              </h4>
-              <ul className="space-y-2">
-                <li>
-                  <button 
-                    onClick={() => handleLinkClick('/ai-matching', currentText.aiPropertyMatch)}
-                    className="text-muted-foreground hover:text-purple-500 transition-colors text-sm"
-                  >
-                    {currentText.aiPropertyMatch}
-                  </button>
-                </li>
-                <li>
-                  <button 
-                    onClick={() => handleLinkClick('/virtual-tours', currentText.virtualTours)}
-                    className="text-muted-foreground hover:text-ios-blue transition-colors text-sm"
-                  >
-                    {currentText.virtualTours}
-                  </button>
-                </li>
-                <li>
-                  <button 
-                    onClick={() => handleLinkClick('/instant-valuation', currentText.instantValuation)}
-                    className="text-muted-foreground hover:text-green-500 transition-colors text-sm"
-                  >
-                    {currentText.instantValuation}
-                  </button>
-                </li>
-                <li>
-                  <button 
-                    onClick={() => handleLinkClick('/mortgage-calculator', currentText.mortgageCalculator)}
-                    className="text-muted-foreground hover:text-ios-blue transition-colors text-sm"
-                  >
-                    {currentText.mortgageCalculator}
-                  </button>
-                </li>
-              </ul>
-            </div>
+          {/* Innovation Hub */}
+          <div className="space-y-4">
+            <h4 className="font-semibold text-foreground text-sm flex items-center gap-2">
+              <Brain className="h-4 w-4 text-pink-500" />
+              {currentText.innovationHub}
+            </h4>
+            <ul className="space-y-2">
+              <li>
+                <button 
+                  onClick={() => handleLinkClick('/ai-property-match', currentText.aiPropertyMatch)}
+                  className="text-muted-foreground hover:text-pink-500 transition-colors text-sm text-left flex items-center gap-1"
+                >
+                  <Brain className="h-3 w-3 text-pink-500" />
+                  {currentText.aiPropertyMatch}
+                </button>
+              </li>
+              <li>
+                <button 
+                  onClick={() => handleLinkClick('/virtual-tours', currentText.virtualTours)}
+                  className="text-muted-foreground hover:text-blue-500 transition-colors text-sm text-left flex items-center gap-1"
+                >
+                  <Eye className="h-3 w-3 text-blue-500" />
+                  {currentText.virtualTours}
+                </button>
+              </li>
+              <li>
+                <button 
+                  onClick={() => handleLinkClick('/blockchain-verification', currentText.blockchainVerification)}
+                  className="text-muted-foreground hover:text-orange-500 transition-colors text-sm text-left flex items-center gap-1"
+                >
+                  <Shield className="h-3 w-3 text-orange-500" />
+                  {currentText.blockchainVerification}
+                </button>
+              </li>
+              <li>
+                <button 
+                  onClick={() => handleLinkClick('/smart-contracts', currentText.smartContracts)}
+                  className="text-muted-foreground hover:text-purple-500 transition-colors text-sm text-left flex items-center gap-1"
+                >
+                  <FileText className="h-3 w-3 text-purple-500" />
+                  {currentText.smartContracts}
+                </button>
+              </li>
+              <li>
+                <button 
+                  onClick={() => handleLinkClick('/crypto-payments', currentText.cryptoPayments)}
+                  className="text-muted-foreground hover:text-yellow-500 transition-colors text-sm text-left flex items-center gap-1"
+                >
+                  <Banknote className="h-3 w-3 text-yellow-500" />
+                  {currentText.cryptoPayments}
+                </button>
+              </li>
+              <li>
+                <button 
+                  onClick={() => handleLinkClick('/voice-search', currentText.voiceSearch)}
+                  className="text-muted-foreground hover:text-green-500 transition-colors text-sm text-left flex items-center gap-1"
+                >
+                  <Smartphone className="h-3 w-3 text-green-500" />
+                  {currentText.voiceSearch}
+                </button>
+              </li>
+              <li>
+                <button 
+                  onClick={() => handleLinkClick('/ar-visualization', currentText.arVisualization)}
+                  className="text-muted-foreground hover:text-red-500 transition-colors text-sm text-left flex items-center gap-1"
+                >
+                  <Camera className="h-3 w-3 text-red-500" />
+                  {currentText.arVisualization}
+                </button>
+              </li>
+              <li>
+                <button 
+                  onClick={() => handleLinkClick('/predictive-analytics', currentText.predictiveAnalytics)}
+                  className="text-muted-foreground hover:text-cyan-500 transition-colors text-sm text-left flex items-center gap-1"
+                >
+                  <BarChart3 className="h-3 w-3 text-cyan-500" />
+                  {currentText.predictiveAnalytics}
+                </button>
+              </li>
+            </ul>
+          </div>
 
+          {/* Newsletter & Contact Info - Combined */}
+          <div className="space-y-6">
             {/* Newsletter */}
             <div className="space-y-4">
               <h4 className="font-semibold text-foreground text-sm">
