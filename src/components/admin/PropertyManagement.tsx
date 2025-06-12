@@ -10,10 +10,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Building, Search, Plus, Edit, Trash2, Eye, MapPin, DollarSign, RefreshCw } from "lucide-react";
 import { useAlert } from "@/contexts/AlertContext";
 import PropertyEditModal from "./PropertyEditModal";
 import PropertyViewModal from "./PropertyViewModal";
+import PropertyBulkActions from "./PropertyBulkActions";
 import { formatIDR } from "@/utils/currency";
 
 interface PropertyOwner {
@@ -47,6 +49,7 @@ const PropertyManagement = () => {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [editingProperty, setEditingProperty] = useState<PropertyWithRelations | null>(null);
   const [viewingProperty, setViewingProperty] = useState<PropertyWithRelations | null>(null);
+  const [selectedProperties, setSelectedProperties] = useState<string[]>([]);
   const [newProperty, setNewProperty] = useState({
     title: "",
     description: "",
@@ -254,6 +257,26 @@ const PropertyManagement = () => {
     }
   };
 
+  const handleSelectAll = (checked: boolean) => {
+    if (checked) {
+      setSelectedProperties(properties?.map(p => p.id) || []);
+    } else {
+      setSelectedProperties([]);
+    }
+  };
+
+  const handleSelectProperty = (propertyId: string, checked: boolean) => {
+    if (checked) {
+      setSelectedProperties(prev => [...prev, propertyId]);
+    } else {
+      setSelectedProperties(prev => prev.filter(id => id !== propertyId));
+    }
+  };
+
+  const clearSelection = () => {
+    setSelectedProperties([]);
+  };
+
   return (
     <div className="space-y-6">
       <Card>
@@ -424,6 +447,12 @@ const PropertyManagement = () => {
             </Select>
           </div>
 
+          <PropertyBulkActions 
+            selectedProperties={selectedProperties}
+            onClearSelection={clearSelection}
+            totalProperties={properties?.length || 0}
+          />
+
           {error && (
             <div className="p-4 bg-destructive/10 border border-destructive rounded-lg">
               <p className="text-destructive">
@@ -436,6 +465,15 @@ const PropertyManagement = () => {
             <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead className="w-12">
+                    <Checkbox
+                      checked={
+                        properties?.length > 0 && 
+                        selectedProperties.length === properties.length
+                      }
+                      onCheckedChange={handleSelectAll}
+                    />
+                  </TableHead>
                   <TableHead>Property</TableHead>
                   <TableHead>Owner/Agent</TableHead>
                   <TableHead>Type & Price</TableHead>
@@ -448,13 +486,13 @@ const PropertyManagement = () => {
               <TableBody>
                 {isLoading ? (
                   <TableRow>
-                    <TableCell colSpan={7} className="text-center py-8">
+                    <TableCell colSpan={8} className="text-center py-8">
                       Loading properties...
                     </TableCell>
                   </TableRow>
                 ) : properties?.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={7} className="text-center py-8">
+                    <TableCell colSpan={8} className="text-center py-8">
                       <div className="space-y-2">
                         <p>No properties found</p>
                         <p className="text-sm text-muted-foreground">
@@ -466,6 +504,14 @@ const PropertyManagement = () => {
                 ) : (
                   properties?.map((property) => (
                     <TableRow key={property.id}>
+                      <TableCell>
+                        <Checkbox
+                          checked={selectedProperties.includes(property.id)}
+                          onCheckedChange={(checked) => 
+                            handleSelectProperty(property.id, checked as boolean)
+                          }
+                        />
+                      </TableCell>
                       <TableCell>
                         <div className="space-y-1">
                           <div className="font-medium">{property.title}</div>
