@@ -8,11 +8,15 @@ import ProfessionalFooter from "@/components/ProfessionalFooter";
 import RoleBasedAuthModal from "@/components/RoleBasedAuthModal";
 import ModernSearchPanel from "@/components/ModernSearchPanel";
 import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 
 const Index = () => {
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [language, setLanguage] = useState<"en" | "id">("en");
   const [searchParams, setSearchParams] = useSearchParams();
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [hasSearched, setHasSearched] = useState(false);
   const { isAuthenticated, user } = useAuth();
 
   // Check URL parameters for auth modal
@@ -36,9 +40,79 @@ const Index = () => {
     });
   };
 
-  const handleSearch = (searchData: any) => {
+  const handleSearch = async (searchData: any) => {
     console.log("Search data:", searchData);
-    // TODO: Implement search functionality
+    setIsSearching(true);
+    setHasSearched(true);
+    
+    try {
+      let query = supabase
+        .from('properties')
+        .select('*')
+        .eq('status', 'approved')
+        .eq('approval_status', 'approved');
+
+      // Apply search filters
+      if (searchData.searchQuery) {
+        query = query.or(`title.ilike.%${searchData.searchQuery}%,description.ilike.%${searchData.searchQuery}%,location.ilike.%${searchData.searchQuery}%`);
+      }
+
+      if (searchData.propertyType) {
+        query = query.eq('property_type', searchData.propertyType);
+      }
+
+      if (searchData.type && searchData.type !== 'buy') {
+        query = query.eq('listing_type', searchData.type);
+      }
+
+      if (searchData.bedrooms) {
+        const bedroomCount = parseInt(searchData.bedrooms.replace('+', ''));
+        if (searchData.bedrooms.includes('+')) {
+          query = query.gte('bedrooms', bedroomCount);
+        } else {
+          query = query.eq('bedrooms', bedroomCount);
+        }
+      }
+
+      if (searchData.bathrooms) {
+        const bathroomCount = parseInt(searchData.bathrooms.replace('+', ''));
+        if (searchData.bathrooms.includes('+')) {
+          query = query.gte('bathrooms', bathroomCount);
+        } else {
+          query = query.eq('bathrooms', bathroomCount);
+        }
+      }
+
+      if (searchData.priceRange && searchData.priceRange.length === 2) {
+        query = query.gte('price', searchData.priceRange[0]).lte('price', searchData.priceRange[1]);
+      }
+
+      // Location filters
+      if (searchData.location) {
+        if (searchData.location.state) {
+          query = query.eq('state', searchData.location.state);
+        }
+        if (searchData.location.city) {
+          query = query.eq('city', searchData.location.city);
+        }
+        if (searchData.location.area) {
+          query = query.eq('area', searchData.location.area);
+        }
+      }
+
+      const { data: properties, error } = await query.limit(50);
+
+      if (error) {
+        console.error('Error searching properties:', error);
+      } else {
+        setSearchResults(properties || []);
+        console.log(`Found ${properties?.length || 0} properties`);
+      }
+    } catch (error) {
+      console.error('Search error:', error);
+    } finally {
+      setIsSearching(false);
+    }
   };
 
   return (
@@ -89,7 +163,12 @@ const Index = () => {
       {/* Property Listings Section */}
       <div className="relative z-10 bg-background">
         <div className="container mx-auto px-4 py-8">
-          <PropertyListingsSection language={language} />
+          <PropertyListingsSection 
+            language={language} 
+            searchResults={searchResults}
+            isSearching={isSearching}
+            hasSearched={hasSearched}
+          />
         </div>
       </div>
 
