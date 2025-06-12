@@ -294,7 +294,7 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
 
   return (
     <div className="w-full max-w-5xl mx-auto">
-      {/* Search Type Tabs - Fixed alignment */}
+      {/* Search Type Tabs - Increased width */}
       <div className="flex justify-center mb-4">
         <div className="relative bg-white/20 backdrop-blur-md rounded-2xl p-2 border border-white/30 shadow-lg">
           {/* Background slider indicator */}
@@ -306,12 +306,12 @@ const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
             }}
           />
           
-          {/* Tab buttons with fixed alignment */}
+          {/* Tab buttons with increased width */}
           <div className="relative flex">
             {searchTypeOptions.map((type, index) => (
               <button
                 key={type.key}
-                className={`relative z-10 flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-xl transition-all duration-300 ease-out font-medium text-xs min-w-[90px] h-10 touch-manipulation ${
+                className={`relative z-10 flex flex-col items-center justify-center gap-1 px-4 py-2 rounded-xl transition-all duration-300 ease-out font-medium text-xs min-w-[110px] h-10 touch-manipulation ${
                   searchType === type.key 
                     ? "text-primary-foreground scale-105" 
                     : "text-foreground/70 hover:text-foreground hover:scale-102 active:scale-95"
