@@ -1,7 +1,6 @@
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Facebook, Twitter, Instagram, Linkedin, Mail, Phone, MapPin, Send, Home, Building, TreePine, Building2, Gavel, Video, Calculator, TrendingUp, Star, Award, Shield, Zap, FileText, AlertCircle, DollarSign, Scale, HelpCircle } from "lucide-react";
+import { Facebook, Twitter, Instagram, Linkedin, Mail, Phone, MapPin, Send, Home, Building, TreePine, Building2, Gavel, Video, Calculator, TrendingUp, Star, Award, Shield, Zap, FileText, AlertCircle, DollarSign, Scale, HelpCircle, Handshake, Users, Camera, BarChart3, Clock, Target, PiggyBank } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -29,6 +28,20 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
       astraVillaFinance: "Astra Villa Finance",
       solicitors: "Solicitors",
       
+      // New Selling Guide section
+      sellingGuide: "Selling Guide",
+      sellingOverview: "Selling Overview",
+      whySellWithFuture: "Why Sell with Astra Villa",
+      sellingGuideAndFaq: "Selling Guide & FAQ",
+      freeValuation: "FREE Property Valuation",
+      partnerAgents: "Partner Agents & Referral Fees",
+      homeReports: "Home Reports & Surveys",
+      sellingSolicitors: "Selling Solicitors",
+      instantPricing: "AI Instant Pricing",
+      marketingPackages: "Premium Marketing Packages",
+      sellersInsights: "Seller's Market Insights",
+      fastTrackSale: "Fast-Track Sale Program",
+      
       whatLookingFor: "What are you looking for?",
       flats: "Flats",
       houses: "Houses", 
@@ -46,7 +59,7 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
       auctionServices: "Auction Services",
       liveAuctions: "LIVE Auction Events",
       onlineAuctions: "ONLINE Auctions", 
-      freeValuation: "FREE Valuation",
+      auctionFreeValuation: "FREE Auction Valuation",
       auctionGuide: "Auction Guide",
       bidRegistration: "Bid Registration",
       
@@ -92,6 +105,20 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
       astraVillaFinance: "Pembiayaan Astra Villa",
       solicitors: "Pengacara",
       
+      // New Selling Guide section
+      sellingGuide: "Panduan Jual",
+      sellingOverview: "Ringkasan Penjualan",
+      whySellWithFuture: "Mengapa Jual dengan Astra Villa",
+      sellingGuideAndFaq: "Panduan Jual & FAQ",
+      freeValuation: "Valuasi Properti GRATIS",
+      partnerAgents: "Agen Mitra & Biaya Rujukan",
+      homeReports: "Laporan Rumah & Survei",
+      sellingSolicitors: "Pengacara Penjualan",
+      instantPricing: "Harga Instan AI",
+      marketingPackages: "Paket Pemasaran Premium",
+      sellersInsights: "Wawasan Pasar Penjual",
+      fastTrackSale: "Program Penjualan Cepat",
+      
       whatLookingFor: "Apa yang Anda cari?",
       flats: "Apartemen",
       houses: "Rumah",
@@ -109,7 +136,7 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
       auctionServices: "Layanan Lelang",
       liveAuctions: "Acara Lelang LANGSUNG",
       onlineAuctions: "Lelang ONLINE",
-      freeValuation: "Valuasi GRATIS", 
+      auctionFreeValuation: "Valuasi Lelang GRATIS", 
       auctionGuide: "Panduan Lelang",
       bidRegistration: "Registrasi Penawaran",
       
@@ -167,7 +194,7 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
     <footer className="glass-ios border-t border-border/30 mt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Main Footer Content */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8 mb-8">
           {/* Company Info */}
           <div className="space-y-4">
             <div>
@@ -330,6 +357,122 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
             </ul>
           </div>
 
+          {/* NEW: Selling Guide - Comprehensive */}
+          <div className="space-y-4">
+            <h4 className="font-semibold text-foreground text-sm flex items-center gap-2">
+              <Handshake className="h-4 w-4 text-green-500" />
+              {currentText.sellingGuide}
+            </h4>
+            <ul className="space-y-2">
+              <li>
+                <button 
+                  onClick={() => handleLinkClick('/selling-overview', currentText.sellingOverview)}
+                  className="text-muted-foreground hover:text-green-500 transition-colors text-sm text-left flex items-center gap-1"
+                >
+                  <FileText className="h-3 w-3" />
+                  {currentText.sellingOverview}
+                </button>
+              </li>
+              <li>
+                <button 
+                  onClick={() => handleLinkClick('/why-sell-astra-villa', currentText.whySellWithFuture)}
+                  className="text-muted-foreground hover:text-green-500 transition-colors text-sm text-left flex items-center gap-1"
+                >
+                  <Award className="h-3 w-3 text-green-500" />
+                  {currentText.whySellWithFuture}
+                </button>
+              </li>
+              <li>
+                <button 
+                  onClick={() => handleLinkClick('/selling-guide-faq', currentText.sellingGuideAndFaq)}
+                  className="text-muted-foreground hover:text-green-500 transition-colors text-sm text-left flex items-center gap-1"
+                >
+                  <HelpCircle className="h-3 w-3" />
+                  {currentText.sellingGuideAndFaq}
+                </button>
+              </li>
+              <li>
+                <button 
+                  onClick={() => handleLinkClick('/free-property-valuation', currentText.freeValuation)}
+                  className="text-muted-foreground hover:text-green-500 transition-colors text-sm text-left flex items-center gap-1"
+                >
+                  <Calculator className="h-3 w-3 text-green-500" />
+                  {currentText.freeValuation}
+                </button>
+              </li>
+              <li>
+                <button 
+                  onClick={() => handleLinkClick('/partner-agents', currentText.partnerAgents)}
+                  className="text-muted-foreground hover:text-green-500 transition-colors text-sm text-left flex items-center gap-1"
+                >
+                  <Users className="h-3 w-3 text-blue-500" />
+                  {currentText.partnerAgents}
+                </button>
+              </li>
+              <li>
+                <button 
+                  onClick={() => handleLinkClick('/home-reports', currentText.homeReports)}
+                  className="text-muted-foreground hover:text-green-500 transition-colors text-sm text-left flex items-center gap-1"
+                >
+                  <FileText className="h-3 w-3 text-purple-500" />
+                  {currentText.homeReports}
+                </button>
+              </li>
+              <li>
+                <button 
+                  onClick={() => handleLinkClick('/selling-solicitors', currentText.sellingSolicitors)}
+                  className="text-muted-foreground hover:text-green-500 transition-colors text-sm text-left flex items-center gap-1"
+                >
+                  <Scale className="h-3 w-3 text-blue-500" />
+                  {currentText.sellingSolicitors}
+                </button>
+              </li>
+              
+              {/* Innovative Selling Features */}
+              <li className="pt-2">
+                <div className="text-xs font-medium text-foreground mb-2">Premium Selling Tools</div>
+                <ul className="space-y-1 ml-2">
+                  <li>
+                    <button 
+                      onClick={() => handleLinkClick('/ai-instant-pricing', currentText.instantPricing)}
+                      className="text-muted-foreground hover:text-green-500 transition-colors text-sm flex items-center gap-1"
+                    >
+                      <Zap className="h-3 w-3 text-yellow-500" />
+                      {currentText.instantPricing}
+                    </button>
+                  </li>
+                  <li>
+                    <button 
+                      onClick={() => handleLinkClick('/marketing-packages', currentText.marketingPackages)}
+                      className="text-muted-foreground hover:text-green-500 transition-colors text-sm flex items-center gap-1"
+                    >
+                      <Camera className="h-3 w-3 text-pink-500" />
+                      {currentText.marketingPackages}
+                    </button>
+                  </li>
+                  <li>
+                    <button 
+                      onClick={() => handleLinkClick('/sellers-insights', currentText.sellersInsights)}
+                      className="text-muted-foreground hover:text-green-500 transition-colors text-sm flex items-center gap-1"
+                    >
+                      <BarChart3 className="h-3 w-3 text-blue-500" />
+                      {currentText.sellersInsights}
+                    </button>
+                  </li>
+                  <li>
+                    <button 
+                      onClick={() => handleLinkClick('/fast-track-sale', currentText.fastTrackSale)}
+                      className="text-muted-foreground hover:text-green-500 transition-colors text-sm flex items-center gap-1"
+                    >
+                      <Clock className="h-3 w-3 text-red-500" />
+                      {currentText.fastTrackSale}
+                    </button>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+
           {/* Popular Places */}
           <div className="space-y-4">
             <h4 className="font-semibold text-foreground text-sm flex items-center gap-2">
@@ -415,11 +558,11 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
               </li>
               <li>
                 <button 
-                  onClick={() => handleLinkClick('/free-valuation', currentText.freeValuation)}
+                  onClick={() => handleLinkClick('/auction-free-valuation', currentText.auctionFreeValuation)}
                   className="text-muted-foreground hover:text-green-500 transition-colors text-sm flex items-center gap-1"
                 >
                   <Calculator className="h-3 w-3 text-green-500" />
-                  {currentText.freeValuation}
+                  {currentText.auctionFreeValuation}
                 </button>
               </li>
               <li>
