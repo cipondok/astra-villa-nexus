@@ -53,82 +53,74 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
   };
 
   return (
-    <footer className="relative bg-background/95 backdrop-blur-sm border-t border-border/30 mt-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Main Footer Content - Comprehensive Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-8 mb-8">
-          {/* Company Brand */}
-          <div className="xl:col-span-1">
+    <footer className="relative bg-gradient-to-br from-background via-background/98 to-muted/30 border-t border-border/40 mt-20">
+      {/* Decorative gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-primary/5 pointer-events-none" />
+      
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        {/* Main Footer Content */}
+        <div className="grid grid-cols-1 lg:grid-cols-4 xl:grid-cols-5 gap-12 mb-12">
+          {/* Brand Column - Wider on larger screens */}
+          <div className="lg:col-span-1 xl:col-span-1">
             <FooterBrand language={language} />
           </div>
           
-          {/* Buying Guide */}
-          <div>
-            <FooterBuyingGuide language={language} onLinkClick={handleLinkClick} />
-          </div>
+          {/* Services Columns */}
+          <div className="lg:col-span-3 xl:col-span-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+              {/* Property Guides */}
+              <div className="space-y-8">
+                <FooterBuyingGuide language={language} onLinkClick={handleLinkClick} />
+                <FooterSellingGuide language={language} onLinkClick={handleLinkClick} />
+              </div>
 
-          {/* Selling Guide */}
-          <div>
-            <FooterSellingGuide language={language} onLinkClick={handleLinkClick} />
-          </div>
+              {/* Vendor Services */}
+              <div className="space-y-8">
+                <FooterVendorServices language={language} onLinkClick={handleLinkClick} />
+                <FooterVendorHelp language={language} onLinkClick={handleLinkClick} />
+              </div>
 
-          {/* Vendor Services */}
-          <div>
-            <FooterVendorServices language={language} onLinkClick={handleLinkClick} />
-          </div>
+              {/* Company & Tools */}
+              <div className="space-y-8">
+                <FooterCompanyInfo language={language} onLinkClick={handleLinkClick} />
+                <FooterServicesTools language={language} onLinkClick={handleLinkClick} />
+              </div>
 
-          {/* Company Info & About Us */}
-          <div>
-            <FooterCompanyInfo language={language} onLinkClick={handleLinkClick} />
-          </div>
-
-          {/* Vendor Help Center */}
-          <div>
-            <FooterVendorHelp language={language} onLinkClick={handleLinkClick} />
-          </div>
-
-          {/* Our Offices */}
-          <div>
-            <FooterOffices language={language} />
-          </div>
-
-          {/* Services & Tools */}
-          <div>
-            <FooterServicesTools language={language} onLinkClick={handleLinkClick} />
-          </div>
-
-          {/* Innovation Hub */}
-          <div>
-            <FooterInnovationHub language={language} onLinkClick={handleLinkClick} />
-          </div>
-
-          {/* Newsletter Subscription */}
-          <div>
-            <FooterNewsletter language={language} />
-          </div>
-
-          {/* Contact Information */}
-          <div>
-            <FooterContact language={language} />
+              {/* Innovation & Contact */}
+              <div className="space-y-8">
+                <FooterInnovationHub language={language} onLinkClick={handleLinkClick} />
+                <FooterNewsletter language={language} />
+              </div>
+            </div>
           </div>
         </div>
 
+        {/* Offices Section - Full Width */}
+        <div className="border-t border-border/30 pt-12 mb-12">
+          <FooterOffices language={language} />
+        </div>
+
+        {/* Contact Section */}
+        <div className="border-t border-border/30 pt-8 mb-8">
+          <FooterContact language={language} />
+        </div>
+
         {/* Bottom Footer */}
-        <div className="border-t border-border/30 pt-6">
+        <div className="border-t border-border/30 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <p className="text-muted-foreground text-sm">
               © 2024 {currentText.company}. {currentText.rights}
             </p>
-            <div className="flex space-x-6">
+            <div className="flex space-x-8">
               <button 
                 onClick={() => handleLinkClick('/privacy', currentText.privacy)}
-                className="text-muted-foreground hover:text-primary transition-colors text-sm"
+                className="text-muted-foreground hover:text-primary transition-colors text-sm hover:underline underline-offset-4"
               >
                 {currentText.privacy}
               </button>
               <button 
                 onClick={() => handleLinkClick('/terms', currentText.terms)}
-                className="text-muted-foreground hover:text-primary transition-colors text-sm"
+                className="text-muted-foreground hover:text-primary transition-colors text-sm hover:underline underline-offset-4"
               >
                 {currentText.terms}
               </button>
