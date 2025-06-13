@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
@@ -56,10 +57,8 @@ const Index = () => {
 
   const handleGetStarted = () => {
     if (isAuthenticated) {
-      // If user is already logged in, redirect to dashboard
       navigate('/dashboard');
     } else {
-      // If not logged in, show auth modal
       setAuthModalOpen(true);
     }
   };
@@ -69,34 +68,47 @@ const Index = () => {
   };
 
   const performSearch = async (searchData: any) => {
-    console.log("🔍 Starting search with:", searchData);
+    console.log("🔍 Starting comprehensive search with:", searchData);
     
     setIsSearching(true);
     
     try {
+      // Start with base query - get all approved properties
       let query = supabase
         .from('properties')
         .select('*')
-        .eq('status', 'approved')
-        .eq('approval_status', 'approved');
+        .eq('status', 'approved');
 
-      // Handle search query
+      // Build search conditions array
+      const searchConditions = [];
+
+      // Handle text search across multiple fields
       if (searchData.query && searchData.query.trim() !== '') {
-        const searchTerm = searchData.query.trim();
-        console.log("🎯 Searching for term:", searchTerm);
+        const searchTerm = searchData.query.trim().toLowerCase();
+        console.log("🎯 Searching for:", searchTerm);
         
-        // Use broader search approach
-        query = query.or(`title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%,location.ilike.%${searchTerm}%,area.ilike.%${searchTerm}%,city.ilike.%${searchTerm}%,state.ilike.%${searchTerm}%`);
+        // Add multiple search conditions
+        searchConditions.push(`title.ilike.%${searchTerm}%`);
+        searchConditions.push(`description.ilike.%${searchTerm}%`);
+        searchConditions.push(`location.ilike.%${searchTerm}%`);
+        searchConditions.push(`area.ilike.%${searchTerm}%`);
+        searchConditions.push(`city.ilike.%${searchTerm}%`);
+        searchConditions.push(`state.ilike.%${searchTerm}%`);
+        searchConditions.push(`address.ilike.%${searchTerm}%`);
+        
+        // Apply OR condition for text search
+        query = query.or(searchConditions.join(','));
       }
 
-      // Apply filters only if they have valid values
-      if (searchData.propertyType && searchData.propertyType !== 'all_types') {
+      // Apply filters with proper null checks
+      if (searchData.propertyType && searchData.propertyType !== 'all_types' && searchData.propertyType !== '') {
         console.log("🏠 Filtering by property type:", searchData.propertyType);
         query = query.eq('property_type', searchData.propertyType);
       }
 
-      if (searchData.bedrooms && searchData.bedrooms !== 'any_bedrooms') {
-        const bedroomCount = parseInt(searchData.bedrooms.replace('+', ''));
+      if (searchData.bedrooms && searchData.bedrooms !== 'any_bedrooms' && searchData.bedrooms !== '') {
+        const bedroomValue = searchData.bedrooms.replace('+', '');
+        const bedroomCount = parseInt(bedroomValue);
         if (!isNaN(bedroomCount)) {
           if (searchData.bedrooms.includes('+')) {
             query = query.gte('bedrooms', bedroomCount);
@@ -107,8 +119,9 @@ const Index = () => {
         }
       }
 
-      if (searchData.bathrooms && searchData.bathrooms !== 'any_bathrooms') {
-        const bathroomCount = parseInt(searchData.bathrooms.replace('+', ''));
+      if (searchData.bathrooms && searchData.bathrooms !== 'any_bathrooms' && searchData.bathrooms !== '') {
+        const bathroomValue = searchData.bathrooms.replace('+', '');
+        const bathroomCount = parseInt(bathroomValue);
         if (!isNaN(bathroomCount)) {
           if (searchData.bathrooms.includes('+')) {
             query = query.gte('bathrooms', bathroomCount);
@@ -119,18 +132,20 @@ const Index = () => {
         }
       }
 
-      if (searchData.location && searchData.location !== 'any_location') {
+      if (searchData.location && searchData.location !== 'any_location' && searchData.location !== '') {
         console.log("📍 Filtering by location:", searchData.location);
-        query = query.or(`city.ilike.%${searchData.location}%,state.ilike.%${searchData.location}%,area.ilike.%${searchData.location}%`);
+        query = query.or(`city.ilike.%${searchData.location}%,state.ilike.%${searchData.location}%,area.ilike.%${searchData.location}%,address.ilike.%${searchData.location}%`);
       }
 
-      const { data: properties, error } = await query.limit(50);
+      // Execute query with limit
+      const { data: properties, error } = await query.limit(50).order('created_at', { ascending: false });
 
       if (error) {
         console.error('❌ Search error:', error);
         setSearchResults([]);
       } else {
-        console.log(`✅ Found ${properties?.length || 0} properties`);
+        console.log(`✅ Search completed - Found ${properties?.length || 0} properties`);
+        console.log("📊 Sample results:", properties?.slice(0, 3));
         setSearchResults(properties || []);
       }
       
@@ -143,6 +158,7 @@ const Index = () => {
   };
 
   const handleSearch = async (searchData: any) => {
+    console.log("🚀 Manual search triggered:", searchData);
     setHasSearched(true);
     
     // Track search for AI recommendations
@@ -157,8 +173,9 @@ const Index = () => {
     await performSearch(searchData);
   };
 
-  // Simplified live search - less aggressive
   const handleLiveSearch = async (searchTerm: string) => {
+    console.log("⚡ Live search triggered:", searchTerm);
+    
     if (!searchTerm || searchTerm.trim() === '') {
       if (hasSearched) {
         setSearchResults([]);
@@ -167,7 +184,7 @@ const Index = () => {
       return;
     }
 
-    if (searchTerm.length >= 3) {
+    if (searchTerm.length >= 2) {
       setHasSearched(true);
       await performSearch({ query: searchTerm });
     }
@@ -177,14 +194,14 @@ const Index = () => {
     <div className="min-h-screen bg-background text-foreground">
       <Navigation />
 
-      {/* Hero Section with Particle Background - Streamlined */}
+      {/* Hero Section with Particle Background */}
       <section className="relative min-h-[70vh] flex flex-col items-center justify-center overflow-hidden pt-16">
         {/* Particle Effect Background */}
         <div className="absolute inset-0 z-0">
           <ParticleEffect />
         </div>
         
-        {/* Hero Content - Centered and focused */}
+        {/* Hero Content */}
         <div className="relative z-10 text-center max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 leading-tight animate-fade-in">
             <span className="inline-block animate-gradient bg-gradient-to-r from-blue-600 via-purple-500 to-orange-500 bg-clip-text text-transparent bg-[length:300%_300%] hover:scale-105 transition-transform duration-300">
@@ -196,7 +213,7 @@ const Index = () => {
           </p>
         </div>
 
-        {/* Search Panel - Primary focus */}
+        {/* Search Panel */}
         <div className="relative z-10 w-full px-4 sm:px-6 lg:px-8 animate-fade-in animation-delay-400">
           <ModernSearchPanel 
             language={language} 
@@ -206,7 +223,7 @@ const Index = () => {
         </div>
       </section>
 
-      {/* AI-Powered Recommendations Section */}
+      {/* Results and Recommendations Section */}
       {user && (
         <section className="relative z-10 bg-background py-8">
           <div className="container mx-auto px-4">
@@ -245,7 +262,7 @@ const Index = () => {
         </div>
       )}
 
-      {/* Enhanced Footer */}
+      {/* Footer */}
       <div className="relative z-10">
         <ProfessionalFooter language={language} />
       </div>

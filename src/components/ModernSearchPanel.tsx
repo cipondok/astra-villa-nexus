@@ -21,17 +21,14 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
   const [location, setLocation] = useState("");
   const [showAdvanced, setShowAdvanced] = useState(false);
 
-  // Debounced live search - only trigger after user stops typing
+  // Controlled live search with proper debouncing
   useEffect(() => {
     if (!onLiveSearch) return;
     
     const timeoutId = setTimeout(() => {
-      if (searchQuery.length >= 3) {
-        onLiveSearch(searchQuery);
-      } else if (searchQuery.length === 0) {
-        onLiveSearch("");
-      }
-    }, 800); // Increased debounce time to reduce excessive requests
+      console.log("🔍 Live search debounce triggered for:", searchQuery);
+      onLiveSearch(searchQuery);
+    }, 600); // Reduced frequency
     
     return () => clearTimeout(timeoutId);
   }, [searchQuery, onLiveSearch]);
@@ -97,20 +94,21 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
     ? ["Apartment Jakarta", "Villa Bali", "House Surabaya", "Boarding Bandung"]
     : ["Apartemen Jakarta", "Villa Bali", "Rumah Surabaya", "Kost Bandung"];
 
-  const handleSearch = () => {
+  const handleManualSearch = () => {
     const searchData = {
       query: searchQuery.trim(),
-      propertyType: propertyType && propertyType !== "all_types" ? propertyType : undefined,
-      bedrooms: bedrooms && bedrooms !== "any_bedrooms" ? bedrooms : undefined,
-      bathrooms: bathrooms && bathrooms !== "any_bathrooms" ? bathrooms : undefined,
-      location: location && location !== "any_location" ? location : undefined
+      propertyType: propertyType || undefined,
+      bedrooms: bedrooms || undefined,
+      bathrooms: bathrooms || undefined,
+      location: location || undefined
     };
     
-    console.log("Search triggered with:", searchData);
+    console.log("🔍 Manual search triggered with:", searchData);
     onSearch(searchData);
   };
 
   const handleClearFilters = () => {
+    console.log("🧹 Clearing all filters");
     setSearchQuery("");
     setPropertyType("");
     setBedrooms("");
@@ -122,16 +120,22 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
   };
 
   const handlePopularSearch = (term: string) => {
+    console.log("🔥 Popular search clicked:", term);
     setSearchQuery(term);
-    // Trigger immediate search for popular terms
     const searchData = {
       query: term,
       propertyType: undefined,
-      bedrooms: undefined,
+      bedrooms: undefined,  
       bathrooms: undefined,
       location: undefined
     };
     onSearch(searchData);
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleManualSearch();
+    }
   };
 
   return (
@@ -146,12 +150,11 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
                 placeholder={currentText.search}
                 className="pl-10 h-12 text-gray-700 dark:text-gray-200"
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    handleSearch();
-                  }
+                onChange={(e) => {
+                  console.log("🔤 Search input changed:", e.target.value);
+                  setSearchQuery(e.target.value);
                 }}
+                onKeyDown={handleKeyPress}
               />
             </div>
           </div>
@@ -161,7 +164,6 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
               <SelectValue placeholder={currentText.propertyType} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all_types">{currentText.allTypes}</SelectItem>
               <SelectItem value="apartment">{currentText.apartment}</SelectItem>
               <SelectItem value="house">{currentText.house}</SelectItem>
               <SelectItem value="villa">{currentText.villa}</SelectItem>
@@ -170,7 +172,7 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
           </Select>
           
           <Button 
-            onClick={handleSearch}
+            onClick={handleManualSearch}
             className="h-12 bg-blue-600 hover:bg-blue-700 text-white font-semibold transition-all duration-300"
           >
             <Search className="h-4 w-4 mr-2" />
@@ -210,7 +212,6 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
                 <SelectValue placeholder={currentText.bedrooms} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="any_bedrooms">{currentText.any}</SelectItem>
                 <SelectItem value="1">{currentText.onebed}</SelectItem>
                 <SelectItem value="2">{currentText.twobed}</SelectItem>
                 <SelectItem value="3">{currentText.threebed}</SelectItem>
@@ -223,7 +224,6 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
                 <SelectValue placeholder={currentText.bathrooms} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="any_bathrooms">{currentText.any}</SelectItem>
                 <SelectItem value="1">{currentText.onebed}</SelectItem>
                 <SelectItem value="2">{currentText.twobed}</SelectItem>
                 <SelectItem value="3">{currentText.threebed}</SelectItem>
@@ -236,7 +236,6 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
                 <SelectValue placeholder={currentText.location} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="any_location">{currentText.any}</SelectItem>
                 <SelectItem value="jakarta">{currentText.jakarta}</SelectItem>
                 <SelectItem value="bali">{currentText.bali}</SelectItem>
                 <SelectItem value="surabaya">{currentText.surabaya}</SelectItem>
