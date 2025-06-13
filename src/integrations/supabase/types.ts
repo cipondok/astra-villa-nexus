@@ -251,6 +251,36 @@ export type Database = {
           },
         ]
       }
+      ai_conversations: {
+        Row: {
+          content: string
+          conversation_id: string
+          created_at: string
+          function_call: Json | null
+          id: string
+          role: string
+          user_id: string | null
+        }
+        Insert: {
+          content: string
+          conversation_id: string
+          created_at?: string
+          function_call?: Json | null
+          id?: string
+          role: string
+          user_id?: string | null
+        }
+        Update: {
+          content?: string
+          conversation_id?: string
+          created_at?: string
+          function_call?: Json | null
+          id?: string
+          role?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       ai_vendor_suggestions: {
         Row: {
           ai_suggestion: Json
@@ -1250,6 +1280,30 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      user_interactions: {
+        Row: {
+          created_at: string
+          id: string
+          interaction_data: Json
+          interaction_type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          interaction_data?: Json
+          interaction_type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          interaction_data?: Json
+          interaction_type?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       user_notifications: {
         Row: {

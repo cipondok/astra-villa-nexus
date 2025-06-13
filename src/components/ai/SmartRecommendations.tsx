@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { useUserTracking } from "@/hooks/useUserTracking";
 import { 
   Sparkles, 
   Heart, 
@@ -37,6 +38,7 @@ const SmartRecommendations = ({ type = 'properties', limit = 4, className = "" }
   const [isLoading, setIsLoading] = useState(false);
   const [userPreferences, setUserPreferences] = useState<any>({});
   const { user } = useAuth();
+  const { trackInteraction } = useUserTracking();
 
   const fetchRecommendations = async () => {
     setIsLoading(true);
@@ -67,21 +69,13 @@ const SmartRecommendations = ({ type = 'properties', limit = 4, className = "" }
   const trackPropertyView = async (propertyId: string, property: Property) => {
     if (!user?.id) return;
 
-    try {
-      await supabase.from('user_interactions').insert([{
-        user_id: user.id,
-        interaction_type: 'property_view',
-        interaction_data: {
-          propertyId,
-          propertyType: property.property_type,
-          location: property.location,
-          price: property.price,
-          source: 'ai_recommendation'
-        }
-      }]);
-    } catch (error) {
-      console.error('Error tracking interaction:', error);
-    }
+    await trackInteraction('property_view', {
+      propertyId,
+      propertyType: property.property_type,
+      location: property.location,
+      price: property.price,
+      source: 'ai_recommendation'
+    });
   };
 
   if (!user) {

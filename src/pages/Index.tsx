@@ -10,6 +10,7 @@ import ModernSearchPanel from "@/components/ModernSearchPanel";
 import AIChatWidget from "@/components/ai/AIChatWidget";
 import SmartRecommendations from "@/components/ai/SmartRecommendations";
 import { useAuth } from "@/contexts/AuthContext";
+import { useUserTracking } from "@/hooks/useUserTracking";
 import { supabase } from "@/integrations/supabase/client";
 
 const Index = () => {
@@ -20,6 +21,7 @@ const Index = () => {
   const [isSearching, setIsSearching] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   const { isAuthenticated, user } = useAuth();
+  const { trackInteraction } = useUserTracking();
   const navigate = useNavigate();
 
   // Check URL parameters for auth modal
@@ -34,18 +36,12 @@ const Index = () => {
   // Track page view for AI recommendations
   useEffect(() => {
     if (user) {
-      supabase.from('user_interactions').insert([{
-        user_id: user.id,
-        interaction_type: 'page_view',
-        interaction_data: {
-          page: 'home',
-          timestamp: new Date().toISOString()
-        }
-      }]).then(() => {
-        console.log('Page view tracked for recommendations');
-      }).catch(console.error);
+      trackInteraction('page_view', {
+        page: 'home',
+        timestamp: new Date().toISOString()
+      });
     }
-  }, [user]);
+  }, [user, trackInteraction]);
 
   const handleAuthModalClose = () => {
     setAuthModalOpen(false);
@@ -80,16 +76,12 @@ const Index = () => {
     
     // Track search for AI recommendations
     if (user) {
-      supabase.from('user_interactions').insert([{
-        user_id: user.id,
-        interaction_type: 'search',
-        interaction_data: {
-          searchQuery: searchData.searchQuery,
-          propertyType: searchData.propertyType,
-          location: searchData.location,
-          priceRange: searchData.priceRange
-        }
-      }]).catch(console.error);
+      trackInteraction('search', {
+        searchQuery: searchData.searchQuery,
+        propertyType: searchData.propertyType,
+        location: searchData.location,
+        priceRange: searchData.priceRange
+      });
     }
     
     try {
