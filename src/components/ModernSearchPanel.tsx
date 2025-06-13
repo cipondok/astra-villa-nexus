@@ -1,679 +1,257 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { 
-  Search, 
-  MapPin, 
-  Filter, 
-  Home, 
-  Building, 
-  KeyRound, 
-  Bed,
-  Bath,
-  Square,
-  Bot,
-  Sparkles,
-  ChevronDown,
-  MapPinned,
-  TrendingUp,
-  Rocket,
-  Building2,
-  Navigation,
-  X,
-  ChevronRight,
-  AlertCircle
-} from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { Card, CardContent } from "@/components/ui/card";
+import { Search, MapPin, Home, Bed, Bath, Car, Filter, X } from "lucide-react";
 
 interface ModernSearchPanelProps {
   language: "en" | "id";
-  onSearch: (data: any) => void;
+  onSearch: (filters: any) => void;
+  onLiveSearch?: (searchTerm: string) => void;
 }
 
-const ModernSearchPanel = ({ language, onSearch }: ModernSearchPanelProps) => {
-  const [searchType, setSearchType] = useState("buy");
-  const [selectedState, setSelectedState] = useState("");
-  const [selectedCity, setSelectedCity] = useState("");
-  const [selectedArea, setSelectedArea] = useState("");
-  const [priceRange, setPriceRange] = useState([100000000, 1000000000]); // 100 juta to 1 milyar
+const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPanelProps) => {
+  const [searchQuery, setSearchQuery] = useState("");
   const [propertyType, setPropertyType] = useState("");
   const [bedrooms, setBedrooms] = useState("");
   const [bathrooms, setBathrooms] = useState("");
-  const [searchValue, setSearchValue] = useState("");
-  const [currentTrendingIndex, setCurrentTrendingIndex] = useState(0);
-  const [isFiltersOpen, setIsFiltersOpen] = useState(false);
-  const [userLocation, setUserLocation] = useState<{lat: number, lng: number} | null>(null);
-  const [isDetectingLocation, setIsDetectingLocation] = useState(false);
-  
-  // Collapsible states for filter categories
-  const [isLocationOpen, setIsLocationOpen] = useState(false);
-  const [isPriceOpen, setIsPriceOpen] = useState(false);
-  const [isPropertyTypeOpen, setIsPropertyTypeOpen] = useState(false);
-  const [isBedroomsOpen, setIsBedroomsOpen] = useState(false);
-  const [isBathroomsOpen, setIsBathroomsOpen] = useState(false);
+  const [location, setLocation] = useState("");
+  const [showAdvanced, setShowAdvanced] = useState(false);
 
-  const { toast } = useToast();
+  // Live search effect
+  useEffect(() => {
+    if (onLiveSearch && searchQuery.length > 2) {
+      const timeoutId = setTimeout(() => {
+        onLiveSearch(searchQuery);
+      }, 300); // 300ms debounce
+      
+      return () => clearTimeout(timeoutId);
+    } else if (onLiveSearch && searchQuery.length === 0) {
+      onLiveSearch("");
+    }
+  }, [searchQuery, onLiveSearch]);
 
   const text = {
     en: {
-      buy: "Buy",
-      rent: "Rent", 
-      newProjects: "New Projects",
-      preLaunching: "Pre-launching",
-      commercial: "Commercial",
-      searchPlaceholder: "Search properties...",
-      location: "Location",
-      nearMe: "Near Me",
-      priceRange: "Price Range",
+      search: "Search properties, location, or area...",
       propertyType: "Property Type",
       bedrooms: "Bedrooms",
       bathrooms: "Bathrooms",
-      filters: "Filters",
-      search: "AI Search",
-      detectLocation: "Detect My Location",
-      selectState: "Select State",
-      selectCity: "Select City",
-      selectArea: "Select Area",
-      villa: "Villa",
-      apartment: "Apartment", 
+      location: "Location",
+      searchBtn: "Search Properties",
+      advancedFilters: "Advanced Filters",
+      hideFilters: "Hide Filters",
+      allTypes: "All Types",
+      apartment: "Apartment",
       house: "House",
-      condo: "Condo",
+      villa: "Villa",
       townhouse: "Townhouse",
-      land: "Land",
-      trending: "Trending Searches",
-      close: "Close",
-      categories: "Categories",
-      applyFilters: "Apply Filters"
+      any: "Any",
+      onebed: "1",
+      twobed: "2",
+      threebed: "3",
+      fourbed: "4+",
+      jakarta: "Jakarta",
+      bali: "Bali",
+      surabaya: "Surabaya",
+      bandung: "Bandung",
+      popular: "Popular searches:",
+      clearFilters: "Clear all"
     },
     id: {
-      buy: "Beli",
-      rent: "Sewa",
-      newProjects: "Proyek Baru",
-      preLaunching: "Pra-Peluncuran",
-      commercial: "Komersial",
-      searchPlaceholder: "Cari properti...",
-      location: "Lokasi",
-      nearMe: "Dekat Saya",
-      priceRange: "Rentang Harga",
-      propertyType: "Tipe Properti",
+      search: "Cari properti, lokasi, atau area...",
+      propertyType: "Jenis Properti",
       bedrooms: "Kamar Tidur",
       bathrooms: "Kamar Mandi",
-      filters: "Filter",
-      search: "Pencarian AI",
-      detectLocation: "Deteksi Lokasi Saya",
-      selectState: "Pilih Provinsi",
-      selectCity: "Pilih Kota",
-      selectArea: "Pilih Area",
-      villa: "Villa",
+      location: "Lokasi",
+      searchBtn: "Cari Properti",
+      advancedFilters: "Filter Lanjutan",
+      hideFilters: "Sembunyikan Filter",
+      allTypes: "Semua Jenis",
       apartment: "Apartemen",
-      house: "Rumah", 
-      condo: "Kondominium",
-      townhouse: "Rumah Susun",
-      land: "Tanah",
-      trending: "Pencarian Trending",
-      close: "Tutup",
-      categories: "Kategori",
-      applyFilters: "Terapkan Filter"
+      house: "Rumah",
+      villa: "Villa",
+      townhouse: "Rumah Kota",
+      any: "Semua",
+      onebed: "1",
+      twobed: "2",
+      threebed: "3",
+      fourbed: "4+",
+      jakarta: "Jakarta",
+      bali: "Bali",
+      surabaya: "Surabaya",
+      bandung: "Bandung",
+      popular: "Pencarian populer:",
+      clearFilters: "Hapus semua"
     }
   };
 
   const currentText = text[language];
 
-  const trendingSearches = [
-    "Villa in Bali",
-    "Apartment Jakarta Selatan", 
-    "House in Bandung",
-    "Luxury Condo Surabaya",
-    "Land in Yogyakarta",
-    "Modern House Jakarta",
-    "Beachfront Villa Bali",
-    "Office Space Jakarta"
-  ];
-
-  const states = ["DKI Jakarta", "Jawa Barat", "Jawa Tengah", "Jawa Timur", "Bali"];
-  const cities = {
-    "DKI Jakarta": ["Jakarta Pusat", "Jakarta Selatan", "Jakarta Utara", "Jakarta Barat", "Jakarta Timur"],
-    "Jawa Barat": ["Bandung", "Bekasi", "Depok", "Bogor", "Tangerang"],
-    "Jawa Tengah": ["Semarang", "Solo", "Yogyakarta", "Magelang"],
-    "Jawa Timur": ["Surabaya", "Malang", "Sidoarjo", "Gresik"],
-    "Bali": ["Denpasar", "Ubud", "Sanur", "Canggu", "Seminyak"]
-  };
-
-  const areas = {
-    "Jakarta Pusat": ["Menteng", "Gambir", "Tanah Abang", "Kemayoran"],
-    "Jakarta Selatan": ["Kebayoran Baru", "Senayan", "Pondok Indah", "Kemang"],
-    "Jakarta Utara": ["Kelapa Gading", "Pantai Indah Kapuk", "Ancol", "Sunter"],
-    "Jakarta Barat": ["Grogol", "Kebon Jeruk", "Cengkareng", "Kalideres"],
-    "Jakarta Timur": ["Cakung", "Kramat Jati", "Jatinegara", "Duren Sawit"],
-    "Bandung": ["Dago", "Braga", "Cihampelas", "Pasteur"],
-    "Bekasi": ["Harapan Indah", "Galaxy", "Kemang Pratama", "Summarecon"],
-    "Depok": ["Margonda", "UI", "Cinere", "Limo"],
-    "Bogor": ["Bogor Tengah", "Tanah Sareal", "Dramaga", "Sentul"],
-    "Tangerang": ["BSD", "Alam Sutera", "Gading Serpong", "Karawaci"],
-    "Surabaya": ["Gubeng", "Wonokromo", "Tegalsari", "Genteng"],
-    "Malang": ["Klojen", "Blimbing", "Lowokwaru", "Sukun"],
-    "Sidoarjo": ["Waru", "Taman", "Gedangan", "Buduran"],
-    "Gresik": ["Kebomas", "Manyar", "Duduksampeyan", "Cerme"],
-    "Denpasar": ["Denpasar Barat", "Denpasar Timur", "Denpasar Selatan", "Denpasar Utara"],
-    "Ubud": ["Ubud Center", "Mas", "Peliatan", "Petulu"],
-    "Sanur": ["Sanur Kauh", "Sanur Kaja", "Renon", "Sesetan"],
-    "Canggu": ["Batu Bolong", "Echo Beach", "Berawa", "Pererenan"],
-    "Seminyak": ["Seminyak Center", "Petitenget", "Oberoi", "Laksmana"]
-  };
-
-  const propertyTypes = [
-    { value: "villa", label: currentText.villa, icon: Home },
-    { value: "apartment", label: currentText.apartment, icon: Building },
-    { value: "house", label: currentText.house, icon: Home },
-    { value: "condo", label: currentText.condo, icon: Building },
-    { value: "townhouse", label: currentText.townhouse, icon: Home },
-    { value: "land", label: currentText.land, icon: Square }
-  ];
-
-  // Auto-cycling trending searches
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentTrendingIndex((prev) => (prev + 1) % trendingSearches.length);
-    }, 3000);
-
-    return () => clearInterval(interval);
-  }, [trendingSearches.length]);
+  const popularSearches = language === "en" 
+    ? ["Apartment Jakarta", "Villa Bali", "House Surabaya", "Boarding Bandung"]
+    : ["Apartemen Jakarta", "Villa Bali", "Rumah Surabaya", "Kost Bandung"];
 
   const handleSearch = () => {
-    // Always allow search - no validation required
     const searchData = {
-      type: searchType,
-      location: userLocation ? 
-        { nearMe: true, coordinates: userLocation } : 
-        { state: selectedState, city: selectedCity, area: selectedArea },
-      priceRange,
+      query: searchQuery,
+      searchQuery: searchQuery,
       propertyType,
       bedrooms,
       bathrooms,
-      searchQuery: searchValue
+      location
     };
+    
+    console.log("ModernSearchPanel sending search data:", searchData);
     onSearch(searchData);
   };
 
-  const detectNearMe = async () => {
-    setIsDetectingLocation(true);
-    
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const location = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude
-          };
-          setUserLocation(location);
-          setSelectedState("");
-          setSelectedCity("");
-          setSelectedArea("");
-          console.log("Location detected:", location);
-          setIsDetectingLocation(false);
-        },
-        (error) => {
-          console.error("Error detecting location:", error);
-          setIsDetectingLocation(false);
-        }
-      );
-    } else {
-      console.error("Geolocation not supported");
-      setIsDetectingLocation(false);
+  const handleClearFilters = () => {
+    setSearchQuery("");
+    setPropertyType("");
+    setBedrooms("");
+    setBathrooms("");
+    setLocation("");
+    if (onLiveSearch) {
+      onLiveSearch("");
     }
   };
 
-  const handleStateChange = (value: string) => {
-    setSelectedState(value);
-    setSelectedCity("");
-    setSelectedArea("");
-    setUserLocation(null);
-  };
-
-  const handleCityChange = (value: string) => {
-    setSelectedCity(value);
-    setSelectedArea("");
-  };
-
-  const getAvailableCities = () => {
-    return selectedState ? cities[selectedState as keyof typeof cities] || [] : [];
-  };
-
-  const getAvailableAreas = () => {
-    return selectedCity ? areas[selectedCity as keyof typeof areas] || [] : [];
-  };
-
-  const getLocationDisplayText = () => {
-    if (userLocation) return currentText.nearMe;
-    if (selectedArea) return selectedArea;
-    if (selectedCity) return selectedCity;
-    if (selectedState) return selectedState;
-    return currentText.location;
-  };
-
-  const formatPrice = (price: number) => {
-    if (price >= 1000000000) {
-      return `${(price / 1000000000).toFixed(1)}M`; // Milyar
-    } else if (price >= 1000000) {
-      return `${Math.round(price / 1000000)}jt`; // Juta
+  const handlePopularSearch = (term: string) => {
+    setSearchQuery(term);
+    if (onLiveSearch) {
+      onLiveSearch(term);
     }
-    return price.toLocaleString();
   };
-
-  const searchTypeOptions = [
-    { key: "buy", label: currentText.buy, icon: Home },
-    { key: "rent", label: currentText.rent, icon: KeyRound },
-    { key: "newProjects", label: currentText.newProjects, icon: Building },
-    { key: "commercial", label: currentText.commercial, icon: Building2 }
-  ];
 
   return (
-    <div className="w-full max-w-5xl mx-auto">
-      {/* Search Type Tabs - Clean iPhone style */}
-      <div className="flex justify-center mb-6">
-        <div className="relative bg-card/50 backdrop-blur-md rounded-2xl p-1.5 border border-border/30 shadow-sm">
-          {/* Background slider indicator - smooth iOS style */}
-          <div 
-            className={`absolute top-1.5 h-10 bg-primary rounded-xl transition-all duration-300 ease-out shadow-sm`}
-            style={{
-              width: `${100 / searchTypeOptions.length}%`,
-              left: `${(searchTypeOptions.findIndex(opt => opt.key === searchType) * 100) / searchTypeOptions.length}%`,
-            }}
-          />
-          
-          {/* Tab buttons */}
-          <div className="relative flex">
-            {searchTypeOptions.map((type, index) => (
-              <button
-                key={type.key}
-                className={`relative z-10 flex flex-col items-center justify-center gap-1 px-4 py-2 rounded-xl transition-all duration-300 ease-out font-medium text-xs min-w-[120px] h-10 touch-manipulation ${
-                  searchType === type.key 
-                    ? "text-primary-foreground scale-105" 
-                    : "text-foreground/70 hover:text-foreground hover:scale-102 active:scale-95"
-                }`}
-                onClick={() => setSearchType(type.key)}
-                style={{ 
-                  WebkitTapHighlightColor: 'transparent',
-                  userSelect: 'none'
-                }}
-              >
-                <type.icon className={`h-3.5 w-3.5 transition-all duration-300 ${
-                  searchType === type.key ? 'scale-110' : 'scale-100'
-                }`} />
-                <span className="whitespace-nowrap text-[10px] leading-tight text-center">{type.label}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Main Search Panel - Clean card design */}
-      <div className="bg-card/80 backdrop-blur-md rounded-3xl p-6 border border-border/20 shadow-lg">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-          {/* Search Input - Clean design */}
-          <div className="md:col-span-2 relative">
+    <Card className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm shadow-2xl max-w-6xl mx-auto">
+      <CardContent className="p-6">
+        {/* Main Search Bar */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+          <div className="md:col-span-2">
             <div className="relative">
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+              <Search className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
               <Input
-                placeholder={searchValue || `${currentText.searchPlaceholder} ${trendingSearches[currentTrendingIndex]}`}
-                className="pl-12 pr-12 bg-background/50 backdrop-blur-sm border-border/30 text-foreground placeholder:text-muted-foreground transition-all duration-200 h-12 rounded-2xl"
-                value={searchValue}
-                onChange={(e) => setSearchValue(e.target.value)}
+                placeholder={currentText.search}
+                className="pl-10 h-12 text-gray-700 dark:text-gray-200"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
               />
-              <TrendingUp className="absolute right-4 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
             </div>
           </div>
-
-          {/* Modern iPhone-style Filters */}
-          <div className="relative">
-            <Sheet open={isFiltersOpen} onOpenChange={setIsFiltersOpen}>
-              <SheetTrigger asChild>
-                <Button
-                  variant="outline"
-                  className="w-full justify-between bg-background/50 backdrop-blur-sm border-border/30 text-foreground hover:bg-background/70 h-12 touch-manipulation rounded-2xl"
-                  style={{ WebkitTapHighlightColor: 'transparent' }}
-                >
-                  <div className="flex items-center gap-2">
-                    <Filter className="h-4 w-4" />
-                    {currentText.filters}
-                  </div>
-                  <ChevronDown className="h-4 w-4" />
-                </Button>
-              </SheetTrigger>
-              
-              <SheetContent side="right" className="w-[400px] sm:w-[540px] bg-background/95 backdrop-blur-xl border-l border-border/30">
-                <SheetHeader className="pb-6">
-                  <SheetTitle className="text-lg font-semibold flex items-center gap-2">
-                    <Filter className="h-5 w-5" />
-                    {currentText.filters}
-                  </SheetTitle>
-                </SheetHeader>
-                
-                <div className="space-y-3 overflow-y-auto max-h-[calc(100vh-150px)]">
-                  {/* iPhone-style Location Filter */}
-                  <Collapsible open={isLocationOpen} onOpenChange={setIsLocationOpen}>
-                    <CollapsibleTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        className="w-full justify-between p-4 h-auto bg-card/50 hover:bg-card/70 rounded-xl border border-border/20 touch-manipulation"
-                        style={{ WebkitTapHighlightColor: 'transparent' }}
-                      >
-                        <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
-                            <MapPinned className="h-4 w-4 text-primary" />
-                          </div>
-                          <div className="text-left">
-                            <p className="font-medium">{currentText.location}</p>
-                            <p className="text-xs text-muted-foreground">{getLocationDisplayText()}</p>
-                          </div>
-                        </div>
-                        <ChevronRight className={`h-4 w-4 transition-transform ${isLocationOpen ? 'rotate-90' : ''}`} />
-                      </Button>
-                    </CollapsibleTrigger>
-                    <CollapsibleContent className="space-y-3 mt-3 px-4">
-                      {!userLocation && (
-                        <div className="space-y-3">
-                          <Select value={selectedState} onValueChange={handleStateChange}>
-                            <SelectTrigger className="bg-background/50 border-border/30 rounded-xl">
-                              <SelectValue placeholder={currentText.selectState} />
-                            </SelectTrigger>
-                            <SelectContent className="bg-background/95 backdrop-blur-xl border-border/30">
-                              {states.map((state) => (
-                                <SelectItem key={state} value={state}>{state}</SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-
-                          {selectedState && getAvailableCities().length > 0 && (
-                            <Select value={selectedCity} onValueChange={handleCityChange}>
-                              <SelectTrigger className="bg-background/50 border-border/30 rounded-xl">
-                                <SelectValue placeholder={currentText.selectCity} />
-                              </SelectTrigger>
-                              <SelectContent className="bg-background/95 backdrop-blur-xl border-border/30">
-                                {getAvailableCities().map((city) => (
-                                  <SelectItem key={city} value={city}>{city}</SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                          )}
-
-                          {selectedCity && getAvailableAreas().length > 0 && (
-                            <Select value={selectedArea} onValueChange={setSelectedArea}>
-                              <SelectTrigger className="bg-background/50 border-border/30 rounded-xl">
-                                <SelectValue placeholder={currentText.selectArea} />
-                              </SelectTrigger>
-                              <SelectContent className="bg-background/95 backdrop-blur-xl border-border/30">
-                                {getAvailableAreas().map((area) => (
-                                  <SelectItem key={area} value={area}>{area}</SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                          )}
-                        </div>
-                      )}
-
-                      <Button 
-                        variant={userLocation ? "default" : "outline"} 
-                        onClick={detectNearMe} 
-                        className="w-full touch-manipulation rounded-xl bg-background/50 hover:bg-background/70 border-border/30"
-                        disabled={isDetectingLocation}
-                        style={{ WebkitTapHighlightColor: 'transparent' }}
-                      >
-                        {isDetectingLocation ? (
-                          <>
-                            <div className="animate-spin h-4 w-4 border-2 border-current border-t-transparent rounded-full mr-2" />
-                            Detecting...
-                          </>
-                        ) : (
-                          <>
-                            <Navigation className="h-4 w-4 mr-2" />
-                            {currentText.detectLocation}
-                          </>
-                        )}
-                      </Button>
-
-                      {userLocation && (
-                        <div className="flex items-center gap-2 p-3 bg-primary/10 rounded-xl">
-                          <Navigation className="h-4 w-4 text-primary" />
-                          <span className="text-sm text-primary font-medium">
-                            {currentText.nearMe} - Location detected
-                          </span>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => setUserLocation(null)}
-                            className="ml-auto h-6 w-6 p-0 touch-manipulation"
-                            style={{ WebkitTapHighlightColor: 'transparent' }}
-                          >
-                            <X className="h-3 w-3" />
-                          </Button>
-                        </div>
-                      )}
-                    </CollapsibleContent>
-                  </Collapsible>
-
-                  {/* iPhone-style Price Range Filter */}
-                  <Collapsible open={isPriceOpen} onOpenChange={setIsPriceOpen}>
-                    <CollapsibleTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        className="w-full justify-between p-4 h-auto bg-card/50 hover:bg-card/70 rounded-xl border border-border/20 touch-manipulation"
-                        style={{ WebkitTapHighlightColor: 'transparent' }}
-                      >
-                        <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center">
-                            <span className="text-green-500 text-sm">💰</span>
-                          </div>
-                          <div className="text-left">
-                            <p className="font-medium">{currentText.priceRange}</p>
-                            <p className="text-xs text-muted-foreground">Rp {formatPrice(priceRange[0])} - Rp {formatPrice(priceRange[1])}</p>
-                          </div>
-                        </div>
-                        <ChevronRight className={`h-4 w-4 transition-transform ${isPriceOpen ? 'rotate-90' : ''}`} />
-                      </Button>
-                    </CollapsibleTrigger>
-                    <CollapsibleContent className="mt-3 px-4">
-                      <div className="p-4 bg-card/30 rounded-xl">
-                        <Slider
-                          value={priceRange}
-                          onValueChange={setPriceRange}
-                          max={1000000000}
-                          min={100000000}
-                          step={10000000}
-                          className="w-full"
-                        />
-                        <div className="flex justify-between text-sm text-muted-foreground mt-3">
-                          <span>Rp {formatPrice(priceRange[0])}</span>
-                          <span>Rp {formatPrice(priceRange[1])}</span>
-                        </div>
-                      </div>
-                    </CollapsibleContent>
-                  </Collapsible>
-
-                  {/* iPhone-style Property Type Filter */}
-                  <Collapsible open={isPropertyTypeOpen} onOpenChange={setIsPropertyTypeOpen}>
-                    <CollapsibleTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        className="w-full justify-between p-4 h-auto bg-card/50 hover:bg-card/70 rounded-xl border border-border/20 touch-manipulation"
-                        style={{ WebkitTapHighlightColor: 'transparent' }}
-                      >
-                        <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center">
-                            <Home className="h-4 w-4 text-blue-500" />
-                          </div>
-                          <div className="text-left">
-                            <p className="font-medium">{currentText.propertyType}</p>
-                            <p className="text-xs text-muted-foreground">
-                              {propertyType ? propertyTypes.find(t => t.value === propertyType)?.label : 'Any type'}
-                            </p>
-                          </div>
-                        </div>
-                        <ChevronRight className={`h-4 w-4 transition-transform ${isPropertyTypeOpen ? 'rotate-90' : ''}`} />
-                      </Button>
-                    </CollapsibleTrigger>
-                    <CollapsibleContent className="mt-3 px-4">
-                      <div className="grid grid-cols-2 gap-2">
-                        {propertyTypes.map((type) => (
-                          <Button
-                            key={type.value}
-                            variant={propertyType === type.value ? "default" : "outline"}
-                            className="justify-start h-12 touch-manipulation rounded-xl bg-background/30 hover:bg-background/50 border-border/30"
-                            onClick={() => setPropertyType(propertyType === type.value ? "" : type.value)}
-                            style={{ WebkitTapHighlightColor: 'transparent' }}
-                          >
-                            <type.icon className="h-4 w-4 mr-2" />
-                            {type.label}
-                          </Button>
-                        ))}
-                      </div>
-                    </CollapsibleContent>
-                  </Collapsible>
-
-                  {/* iPhone-style Bedrooms Filter */}
-                  <Collapsible open={isBedroomsOpen} onOpenChange={setIsBedroomsOpen}>
-                    <CollapsibleTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        className="w-full justify-between p-4 h-auto bg-card/50 hover:bg-card/70 rounded-xl border border-border/20 touch-manipulation"
-                        style={{ WebkitTapHighlightColor: 'transparent' }}
-                      >
-                        <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center">
-                            <Bed className="h-4 w-4 text-purple-500" />
-                          </div>
-                          <div className="text-left">
-                            <p className="font-medium">{currentText.bedrooms}</p>
-                            <p className="text-xs text-muted-foreground">{bedrooms || 'Any'}</p>
-                          </div>
-                        </div>
-                        <ChevronRight className={`h-4 w-4 transition-transform ${isBedroomsOpen ? 'rotate-90' : ''}`} />
-                      </Button>
-                    </CollapsibleTrigger>
-                    <CollapsibleContent className="mt-3 px-4">
-                      <div className="flex flex-wrap gap-2">
-                        {["1", "2", "3", "4", "5+"].map((num) => (
-                          <Button
-                            key={num}
-                            variant={bedrooms === num ? "default" : "outline"}
-                            size="sm"
-                            className="min-w-[60px] touch-manipulation rounded-xl bg-background/30 hover:bg-background/50 border-border/30"
-                            onClick={() => setBedrooms(bedrooms === num ? "" : num)}
-                            style={{ WebkitTapHighlightColor: 'transparent' }}
-                          >
-                            <Bed className="h-4 w-4 mr-1" />
-                            {num}
-                          </Button>
-                        ))}
-                      </div>
-                    </CollapsibleContent>
-                  </Collapsible>
-
-                  {/* iPhone-style Bathrooms Filter */}
-                  <Collapsible open={isBathroomsOpen} onOpenChange={setIsBathroomsOpen}>
-                    <CollapsibleTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        className="w-full justify-between p-4 h-auto bg-card/50 hover:bg-card/70 rounded-xl border border-border/20 touch-manipulation"
-                        style={{ WebkitTapHighlightColor: 'transparent' }}
-                      >
-                        <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-full bg-orange-500/20 flex items-center justify-center">
-                            <Bath className="h-4 w-4 text-orange-500" />
-                          </div>
-                          <div className="text-left">
-                            <p className="font-medium">{currentText.bathrooms}</p>
-                            <p className="text-xs text-muted-foreground">{bathrooms || 'Any'}</p>
-                          </div>
-                        </div>
-                        <ChevronRight className={`h-4 w-4 transition-transform ${isBathroomsOpen ? 'rotate-90' : ''}`} />
-                      </Button>
-                    </CollapsibleTrigger>
-                    <CollapsibleContent className="mt-3 px-4">
-                      <div className="flex flex-wrap gap-2">
-                        {["1", "2", "3", "4", "5+"].map((num) => (
-                          <Button
-                            key={num}
-                            variant={bathrooms === num ? "default" : "outline"}
-                            size="sm"
-                            className="min-w-[60px] touch-manipulation rounded-xl bg-background/30 hover:bg-background/50 border-border/30"
-                            onClick={() => setBathrooms(bathrooms === num ? "" : num)}
-                            style={{ WebkitTapHighlightColor: 'transparent' }}
-                          >
-                            <Bath className="h-4 w-4 mr-1" />
-                            {num}
-                          </Button>
-                        ))}
-                      </div>
-                    </CollapsibleContent>
-                  </Collapsible>
-
-                  {/* Apply Button */}
-                  <Button 
-                    onClick={() => {
-                      setIsFiltersOpen(false);
-                      handleSearch();
-                    }}
-                    className="w-full bg-primary hover:bg-primary/90 h-12 text-base font-medium mt-6 touch-manipulation rounded-xl"
-                    style={{ WebkitTapHighlightColor: 'transparent' }}
-                  >
-                    <Filter className="h-4 w-4 mr-2" />
-                    {currentText.applyFilters}
-                  </Button>
-                </div>
-              </SheetContent>
-            </Sheet>
-          </div>
-        </div>
-
-        {/* Search Button - Clean design */}
-        <div className="flex justify-center mt-6">
+          
+          <Select value={propertyType} onValueChange={setPropertyType}>
+            <SelectTrigger className="h-12">
+              <SelectValue placeholder={currentText.propertyType} />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="">{currentText.allTypes}</SelectItem>
+              <SelectItem value="apartment">{currentText.apartment}</SelectItem>
+              <SelectItem value="house">{currentText.house}</SelectItem>
+              <SelectItem value="villa">{currentText.villa}</SelectItem>
+              <SelectItem value="townhouse">{currentText.townhouse}</SelectItem>
+            </SelectContent>
+          </Select>
+          
           <Button 
             onClick={handleSearch}
-            className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-3 rounded-2xl text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 touch-manipulation active:scale-95"
-            style={{ WebkitTapHighlightColor: 'transparent' }}
+            className="h-12 bg-blue-600 hover:bg-blue-700 text-white font-semibold transition-all duration-300"
           >
-            <Bot className="h-4 w-4 mr-2 animate-pulse" style={{ animationDuration: '3s' }} />
-            {currentText.search}
-            <Sparkles className="h-4 w-4 ml-2 animate-bounce" style={{ animationDuration: '2s' }} />
+            <Search className="h-4 w-4 mr-2" />
+            {currentText.searchBtn}
           </Button>
         </div>
 
-        {/* Active Filters - Clean badges */}
-        {(selectedState || userLocation || propertyType || bedrooms || bathrooms) && (
-          <div className="flex flex-wrap gap-2 mt-4">
-            {(selectedState || userLocation) && (
-              <Badge variant="secondary" className="bg-secondary/50 backdrop-blur-sm text-xs rounded-full border-border/30">
-                <MapPin className="h-3 w-3 mr-1" />
-                {userLocation ? currentText.nearMe : (selectedArea || selectedCity || selectedState)}
-              </Badge>
-            )}
-            {propertyType && (
-              <Badge variant="secondary" className="bg-secondary/50 backdrop-blur-sm text-xs rounded-full border-border/30">
-                {propertyTypes.find(t => t.value === propertyType)?.label}
-              </Badge>
-            )}
-            {bedrooms && (
-              <Badge variant="secondary" className="bg-secondary/50 backdrop-blur-sm text-xs rounded-full border-border/30">
-                <Bed className="h-3 w-3 mr-1" />
-                {bedrooms} {currentText.bedrooms}
-              </Badge>
-            )}
-            {bathrooms && (
-              <Badge variant="secondary" className="bg-secondary/50 backdrop-blur-sm text-xs rounded-full border-border/30">
-                <Bath className="h-3 w-3 mr-1" />
-                {bathrooms} {currentText.bathrooms}
-              </Badge>
-            )}
+        {/* Advanced Filters Toggle */}
+        <div className="flex items-center justify-between mb-4">
+          <Button
+            variant="ghost"
+            onClick={() => setShowAdvanced(!showAdvanced)}
+            className="text-gray-600 hover:text-gray-800"
+          >
+            <Filter className="h-4 w-4 mr-2" />
+            {showAdvanced ? currentText.hideFilters : currentText.advancedFilters}
+          </Button>
+          
+          {(searchQuery || propertyType || bedrooms || bathrooms || location) && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleClearFilters}
+              className="text-gray-600 hover:text-gray-800"
+            >
+              <X className="h-4 w-4 mr-1" />
+              {currentText.clearFilters}
+            </Button>
+          )}
+        </div>
+
+        {/* Advanced Filters */}
+        {showAdvanced && (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+            <Select value={bedrooms} onValueChange={setBedrooms}>
+              <SelectTrigger>
+                <SelectValue placeholder={currentText.bedrooms} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="">{currentText.any}</SelectItem>
+                <SelectItem value="1">{currentText.onebed}</SelectItem>
+                <SelectItem value="2">{currentText.twobed}</SelectItem>
+                <SelectItem value="3">{currentText.threebed}</SelectItem>
+                <SelectItem value="4+">{currentText.fourbed}</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Select value={bathrooms} onValueChange={setBathrooms}>
+              <SelectTrigger>
+                <SelectValue placeholder={currentText.bathrooms} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="">{currentText.any}</SelectItem>
+                <SelectItem value="1">{currentText.onebed}</SelectItem>
+                <SelectItem value="2">{currentText.twobed}</SelectItem>
+                <SelectItem value="3">{currentText.threebed}</SelectItem>
+                <SelectItem value="4+">{currentText.fourbed}</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Select value={location} onValueChange={setLocation}>
+              <SelectTrigger>
+                <SelectValue placeholder={currentText.location} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="">{currentText.any}</SelectItem>
+                <SelectItem value="jakarta">{currentText.jakarta}</SelectItem>
+                <SelectItem value="bali">{currentText.bali}</SelectItem>
+                <SelectItem value="surabaya">{currentText.surabaya}</SelectItem>
+                <SelectItem value="bandung">{currentText.bandung}</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         )}
-      </div>
-    </div>
+        
+        {/* Popular Searches */}
+        <div className="text-left">
+          <p className="text-gray-600 dark:text-gray-400 mb-3 font-medium">{currentText.popular}</p>
+          <div className="flex flex-wrap gap-2">
+            {popularSearches.map((term, index) => (
+              <Badge 
+                key={index} 
+                variant="secondary" 
+                className="cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-900 transition-colors"
+                onClick={() => handlePopularSearch(term)}
+              >
+                {term}
+              </Badge>
+            ))}
+          </div>
+        </div>
+      </CardContent>
+    </Card>
   );
 };
 

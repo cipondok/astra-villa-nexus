@@ -16,8 +16,10 @@ const Properties = () => {
   const [language, setLanguage] = useState<"en" | "id">("en");
   const [theme, setTheme] = useState("light");
   const [properties, setProperties] = useState<any[]>([]);
+  const [filteredProperties, setFilteredProperties] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isSearching, setIsSearching] = useState(false);
 
   // Fetch properties from database
   useEffect(() => {
@@ -41,6 +43,7 @@ const Properties = () => {
         } else {
           console.log(`Fetched ${data?.length || 0} properties for Properties page`);
           setProperties(data || []);
+          setFilteredProperties(data || []);
         }
       } catch (error) {
         console.error('Error fetching properties:', error);
@@ -52,6 +55,46 @@ const Properties = () => {
 
     fetchProperties();
   }, []);
+
+  // Live search effect
+  useEffect(() => {
+    const performLiveSearch = async () => {
+      if (!searchTerm || searchTerm.trim() === '') {
+        setFilteredProperties(properties);
+        setIsSearching(false);
+        return;
+      }
+
+      setIsSearching(true);
+      
+      try {
+        const { data, error } = await supabase
+          .from('properties')
+          .select('*')
+          .eq('status', 'approved')
+          .eq('approval_status', 'approved')
+          .or(`title.ilike.%${searchTerm.trim()}%,description.ilike.%${searchTerm.trim()}%,location.ilike.%${searchTerm.trim()}%,area.ilike.%${searchTerm.trim()}%,city.ilike.%${searchTerm.trim()}%,state.ilike.%${searchTerm.trim()}%`)
+          .order('created_at', { ascending: false });
+
+        if (error) {
+          console.error('Error searching properties:', error);
+          setFilteredProperties([]);
+        } else {
+          console.log(`Live search found ${data?.length || 0} properties`);
+          setFilteredProperties(data || []);
+        }
+      } catch (error) {
+        console.error('Live search error:', error);
+        setFilteredProperties([]);
+      } finally {
+        setIsSearching(false);
+      }
+    };
+
+    // Debounce the search
+    const timeoutId = setTimeout(performLiveSearch, 300);
+    return () => clearTimeout(timeoutId);
+  }, [searchTerm, properties]);
 
   const toggleLanguage = () => {
     setLanguage(prev => prev === "en" ? "id" : "en");
@@ -72,10 +115,12 @@ const Properties = () => {
       parking: "Parking",
       noResults: "No properties found",
       loading: "Loading properties...",
+      searching: "Searching...",
       viewDetails: "View Details",
       forSale: "For Sale",
       forRent: "For Rent",
-      loadingError: "Error loading properties. Please try again."
+      loadingError: "Error loading properties. Please try again.",
+      totalFound: "properties found"
     },
     id: {
       title: "Properti",
@@ -87,23 +132,16 @@ const Properties = () => {
       parking: "Parkir",
       noResults: "Tidak ada properti ditemukan",
       loading: "Memuat properti...",
+      searching: "Mencari...",
       viewDetails: "Lihat Detail",
       forSale: "Dijual",
       forRent: "Disewa",
-      loadingError: "Error memuat properti. Silakan coba lagi."
+      loadingError: "Error memuat properti. Silakan coba lagi.",
+      totalFound: "properti ditemukan"
     }
   };
 
   const currentText = text[language];
-
-  const filteredProperties = properties.filter(property =>
-    property.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    property.location?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (property.description && property.description.toLowerCase().includes(searchTerm.toLowerCase())) ||
-    property.area?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    property.city?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    property.state?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -138,12 +176,31 @@ const Properties = () => {
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10"
               />
+              {isSearching && (
+                <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                  <Loader2 className="h-4 w-4 animate-spin text-blue-500" />
+                </div>
+              )}
             </div>
             <Button variant="outline" className="flex items-center gap-2">
               <Filter className="h-4 w-4" />
               {currentText.filter}
             </Button>
           </div>
+
+          {/* Results Count */}
+          {!loading && (
+            <div className="mb-6">
+              <p className="text-gray-600 dark:text-gray-300">
+                {filteredProperties.length} {currentText.totalFound}
+                {searchTerm && (
+                  <span className="ml-2 text-blue-600 font-medium">
+                    for "{searchTerm}"
+                  </span>
+                )}
+              </p>
+            </div>
+          )}
 
           {/* Loading State */}
           {loading && (
@@ -229,8 +286,13 @@ const Properties = () => {
               ) : (
                 <div className="col-span-full text-center py-12">
                   <p className="text-gray-600 dark:text-gray-300 text-lg">
-                    {currentText.noResults}
+                    {searchTerm ? `No properties found for "${searchTerm}"` : currentText.noResults}
                   </p>
+                  {searchTerm && (
+                    <p className="text-gray-500 text-sm mt-2">
+                      Try adjusting your search terms or browse all properties
+                    </p>
+                  )}
                 </div>
               )}
             </div>

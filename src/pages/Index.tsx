@@ -69,22 +69,11 @@ const Index = () => {
     navigate('/properties');
   };
 
-  const handleSearch = async (searchData: any) => {
+  const performSearch = async (searchData: any) => {
     console.log("=== SEARCH DEBUG START ===");
     console.log("Raw search data received:", JSON.stringify(searchData, null, 2));
     
     setIsSearching(true);
-    setHasSearched(true);
-    
-    // Track search for AI recommendations
-    if (user) {
-      trackInteraction('search', {
-        searchQuery: searchData.query || searchData.searchQuery,
-        propertyType: searchData.propertyType,
-        location: searchData.location,
-        priceRange: searchData.priceRange
-      });
-    }
     
     try {
       let query = supabase
@@ -101,26 +90,7 @@ const Index = () => {
         const cleanSearchTerm = searchTerm.trim();
         console.log("Using clean search term:", cleanSearchTerm);
         
-        // First try exact matches
-        const { data: exactMatches, error: exactError } = await supabase
-          .from('properties')
-          .select('*')
-          .eq('status', 'approved')
-          .eq('approval_status', 'approved')
-          .or(`title.eq.${cleanSearchTerm},description.eq.${cleanSearchTerm},location.eq.${cleanSearchTerm}`);
-
-        console.log("Exact match results:", exactMatches);
-        console.log("Exact match error:", exactError);
-
-        if (exactMatches && exactMatches.length > 0) {
-          console.log("Found exact matches, using those");
-          setSearchResults(exactMatches);
-          setIsSearching(false);
-          return;
-        }
-
-        // If no exact matches, try partial matches
-        console.log("No exact matches, trying partial matches");
+        // Use text search across multiple fields - fixed the syntax
         query = query.or(`title.ilike.%${cleanSearchTerm}%,description.ilike.%${cleanSearchTerm}%,location.ilike.%${cleanSearchTerm}%,area.ilike.%${cleanSearchTerm}%,city.ilike.%${cleanSearchTerm}%,state.ilike.%${cleanSearchTerm}%`);
       }
 
@@ -172,23 +142,15 @@ const Index = () => {
       }
 
       // Handle location filter - more flexible approach
-      if (searchData.location) {
-        if (typeof searchData.location === 'string' && searchData.location.trim() !== '') {
-          // If location is a string, search across all location fields
-          const locationTerm = searchData.location.trim();
-          console.log("Filtering by location string:", locationTerm);
-          query = query.or(`state.ilike.%${locationTerm}%,city.ilike.%${locationTerm}%,area.ilike.%${locationTerm}%,location.ilike.%${locationTerm}%`);
-        } else if (typeof searchData.location === 'object' && searchData.location !== null) {
-          // If location is an object with specific fields
-          if (searchData.location.state) {
-            query = query.eq('state', searchData.location.state);
-          }
-          if (searchData.location.city) {
-            query = query.eq('city', searchData.location.city);
-          }
-          if (searchData.location.area) {
-            query = query.eq('area', searchData.location.area);
-          }
+      if (searchData.location && typeof searchData.location === 'object' && searchData.location !== null) {
+        if (searchData.location.state) {
+          query = query.eq('state', searchData.location.state);
+        }
+        if (searchData.location.city) {
+          query = query.eq('city', searchData.location.city);
+        }
+        if (searchData.location.area) {
+          query = query.eq('area', searchData.location.area);
         }
       }
 
@@ -212,6 +174,34 @@ const Index = () => {
     } finally {
       setIsSearching(false);
     }
+  };
+
+  const handleSearch = async (searchData: any) => {
+    setHasSearched(true);
+    
+    // Track search for AI recommendations
+    if (user) {
+      trackInteraction('search', {
+        searchQuery: searchData.query || searchData.searchQuery,
+        propertyType: searchData.propertyType,
+        location: searchData.location,
+        priceRange: searchData.priceRange
+      });
+    }
+    
+    await performSearch(searchData);
+  };
+
+  // Live search function for real-time search
+  const handleLiveSearch = async (searchTerm: string) => {
+    if (!searchTerm || searchTerm.trim() === '') {
+      setSearchResults([]);
+      setHasSearched(false);
+      return;
+    }
+
+    setHasSearched(true);
+    await performSearch({ query: searchTerm });
   };
 
   return (
@@ -242,6 +232,7 @@ const Index = () => {
           <ModernSearchPanel 
             language={language} 
             onSearch={handleSearch}
+            onLiveSearch={handleLiveSearch}
           />
         </div>
       </section>
