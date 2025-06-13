@@ -70,7 +70,9 @@ const Index = () => {
   };
 
   const handleSearch = async (searchData: any) => {
-    console.log("Raw search data received:", searchData);
+    console.log("=== SEARCH DEBUG START ===");
+    console.log("Raw search data received:", JSON.stringify(searchData, null, 2));
+    
     setIsSearching(true);
     setHasSearched(true);
     
@@ -91,13 +93,34 @@ const Index = () => {
         .eq('status', 'approved')
         .eq('approval_status', 'approved');
 
-      // Handle search query - check both 'query' and 'searchQuery' fields
-      const searchTerm = searchData.query || searchData.searchQuery || '';
+      // Extract search term from various possible fields
+      const searchTerm = searchData.query || searchData.searchQuery || searchData.location || '';
+      console.log("Extracted search term:", searchTerm);
+
       if (searchTerm && searchTerm.trim() !== '') {
         const cleanSearchTerm = searchTerm.trim();
-        console.log("Searching for exact term:", cleanSearchTerm);
+        console.log("Using clean search term:", cleanSearchTerm);
         
-        // Use ilike for case-insensitive search across multiple fields
+        // First try exact matches
+        const { data: exactMatches, error: exactError } = await supabase
+          .from('properties')
+          .select('*')
+          .eq('status', 'approved')
+          .eq('approval_status', 'approved')
+          .or(`title.eq.${cleanSearchTerm},description.eq.${cleanSearchTerm},location.eq.${cleanSearchTerm}`);
+
+        console.log("Exact match results:", exactMatches);
+        console.log("Exact match error:", exactError);
+
+        if (exactMatches && exactMatches.length > 0) {
+          console.log("Found exact matches, using those");
+          setSearchResults(exactMatches);
+          setIsSearching(false);
+          return;
+        }
+
+        // If no exact matches, try partial matches
+        console.log("No exact matches, trying partial matches");
         query = query.or(`title.ilike.%${cleanSearchTerm}%,description.ilike.%${cleanSearchTerm}%,location.ilike.%${cleanSearchTerm}%,area.ilike.%${cleanSearchTerm}%,city.ilike.%${cleanSearchTerm}%,state.ilike.%${cleanSearchTerm}%`);
       }
 
@@ -171,15 +194,18 @@ const Index = () => {
 
       const { data: properties, error } = await query.limit(50);
 
-      console.log("Search query executed, results:", { data: properties, error });
+      console.log("Final search query results:", { data: properties, error });
+      console.log("Number of results found:", properties?.length || 0);
 
       if (error) {
         console.error('Error searching properties:', error);
         setSearchResults([]);
       } else {
         setSearchResults(properties || []);
-        console.log(`Found ${properties?.length || 0} properties matching search criteria`);
+        console.log(`Successfully found ${properties?.length || 0} properties matching search criteria`);
       }
+      
+      console.log("=== SEARCH DEBUG END ===");
     } catch (error) {
       console.error('Search error:', error);
       setSearchResults([]);
