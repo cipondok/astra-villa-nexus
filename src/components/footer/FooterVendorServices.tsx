@@ -1,5 +1,5 @@
 
-import { Wrench, UserPlus, HelpCircle, Settings, Shield, CreditCard, Zap, Award, BarChart3, Tool } from "lucide-react";
+import { Wrench, UserPlus, HelpCircle, Settings, Shield, CreditCard, Zap, Award, BarChart3 } from "lucide-react";
 
 interface FooterVendorServicesProps {
   language: "en" | "id";
@@ -142,7 +142,7 @@ const FooterVendorServices = ({ language, onLinkClick }: FooterVendorServicesPro
             onClick={() => onLinkClick('/vendor-tools', currentText.vendorTools)}
             className="text-muted-foreground hover:text-primary transition-colors text-sm text-left flex items-center gap-2 w-full"
           >
-            <Tool className="h-3 w-3" />
+            <Settings className="h-3 w-3" />
             {currentText.vendorTools}
           </button>
         </li>
