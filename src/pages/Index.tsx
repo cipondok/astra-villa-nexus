@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
@@ -70,8 +69,7 @@ const Index = () => {
   };
 
   const performSearch = async (searchData: any) => {
-    console.log("=== SEARCH DEBUG START ===");
-    console.log("Raw search data received:", JSON.stringify(searchData, null, 2));
+    console.log("🔍 Starting search with:", searchData);
     
     setIsSearching(true);
     
@@ -82,32 +80,22 @@ const Index = () => {
         .eq('status', 'approved')
         .eq('approval_status', 'approved');
 
-      // Extract search term from various possible fields
-      const searchTerm = searchData.query || searchData.searchQuery || searchData.location || '';
-      console.log("Extracted search term:", searchTerm);
-
-      if (searchTerm && searchTerm.trim() !== '') {
-        const cleanSearchTerm = searchTerm.trim();
-        console.log("Using clean search term:", cleanSearchTerm);
+      // Handle search query
+      if (searchData.query && searchData.query.trim() !== '') {
+        const searchTerm = searchData.query.trim();
+        console.log("🎯 Searching for term:", searchTerm);
         
-        // Use text search across multiple fields
-        query = query.or(`title.ilike.%${cleanSearchTerm}%,description.ilike.%${cleanSearchTerm}%,location.ilike.%${cleanSearchTerm}%,area.ilike.%${cleanSearchTerm}%,city.ilike.%${cleanSearchTerm}%,state.ilike.%${cleanSearchTerm}%`);
+        // Use broader search approach
+        query = query.or(`title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%,location.ilike.%${searchTerm}%,area.ilike.%${searchTerm}%,city.ilike.%${searchTerm}%,state.ilike.%${searchTerm}%`);
       }
 
-      // Handle property type filter - fix the mapping
-      if (searchData.propertyType && searchData.propertyType !== 'all_types' && searchData.propertyType !== '') {
-        console.log("Filtering by property type:", searchData.propertyType);
+      // Apply filters only if they have valid values
+      if (searchData.propertyType && searchData.propertyType !== 'all_types') {
+        console.log("🏠 Filtering by property type:", searchData.propertyType);
         query = query.eq('property_type', searchData.propertyType);
       }
 
-      // Handle listing type (buy/rent/sell)
-      if (searchData.type && searchData.type !== 'buy' && searchData.type !== 'all' && searchData.type !== '') {
-        console.log("Filtering by listing type:", searchData.type);
-        query = query.eq('listing_type', searchData.type);
-      }
-
-      // Handle bedrooms filter - fix the mapping
-      if (searchData.bedrooms && searchData.bedrooms !== 'any_bedrooms' && searchData.bedrooms !== '') {
+      if (searchData.bedrooms && searchData.bedrooms !== 'any_bedrooms') {
         const bedroomCount = parseInt(searchData.bedrooms.replace('+', ''));
         if (!isNaN(bedroomCount)) {
           if (searchData.bedrooms.includes('+')) {
@@ -115,11 +103,11 @@ const Index = () => {
           } else {
             query = query.eq('bedrooms', bedroomCount);
           }
+          console.log("🛏️ Filtering by bedrooms:", searchData.bedrooms);
         }
       }
 
-      // Handle bathrooms filter - fix the mapping
-      if (searchData.bathrooms && searchData.bathrooms !== 'any_bathrooms' && searchData.bathrooms !== '') {
+      if (searchData.bathrooms && searchData.bathrooms !== 'any_bathrooms') {
         const bathroomCount = parseInt(searchData.bathrooms.replace('+', ''));
         if (!isNaN(bathroomCount)) {
           if (searchData.bathrooms.includes('+')) {
@@ -127,52 +115,27 @@ const Index = () => {
           } else {
             query = query.eq('bathrooms', bathroomCount);
           }
+          console.log("🚿 Filtering by bathrooms:", searchData.bathrooms);
         }
       }
 
-      // Handle price range filter
-      if (searchData.priceRange && Array.isArray(searchData.priceRange) && searchData.priceRange.length === 2) {
-        const [minPrice, maxPrice] = searchData.priceRange;
-        if (minPrice > 0) {
-          query = query.gte('price', minPrice);
-        }
-        if (maxPrice < 10000000000) {
-          query = query.lte('price', maxPrice);
-        }
-      }
-
-      // Handle location filter - fix the mapping
-      if (searchData.location && searchData.location !== 'any_location' && typeof searchData.location === 'string') {
-        console.log("Filtering by location:", searchData.location);
+      if (searchData.location && searchData.location !== 'any_location') {
+        console.log("📍 Filtering by location:", searchData.location);
         query = query.or(`city.ilike.%${searchData.location}%,state.ilike.%${searchData.location}%,area.ilike.%${searchData.location}%`);
-      } else if (searchData.location && typeof searchData.location === 'object' && searchData.location !== null) {
-        if (searchData.location.state) {
-          query = query.eq('state', searchData.location.state);
-        }
-        if (searchData.location.city) {
-          query = query.eq('city', searchData.location.city);
-        }
-        if (searchData.location.area) {
-          query = query.eq('area', searchData.location.area);
-        }
       }
 
       const { data: properties, error } = await query.limit(50);
 
-      console.log("Final search query results:", { data: properties, error });
-      console.log("Number of results found:", properties?.length || 0);
-
       if (error) {
-        console.error('Error searching properties:', error);
+        console.error('❌ Search error:', error);
         setSearchResults([]);
       } else {
+        console.log(`✅ Found ${properties?.length || 0} properties`);
         setSearchResults(properties || []);
-        console.log(`Successfully found ${properties?.length || 0} properties matching search criteria`);
       }
       
-      console.log("=== SEARCH DEBUG END ===");
     } catch (error) {
-      console.error('Search error:', error);
+      console.error('❌ Search exception:', error);
       setSearchResults([]);
     } finally {
       setIsSearching(false);
@@ -185,26 +148,29 @@ const Index = () => {
     // Track search for AI recommendations
     if (user) {
       trackInteraction('search', {
-        searchQuery: searchData.query || searchData.searchQuery,
+        searchQuery: searchData.query,
         propertyType: searchData.propertyType,
-        location: searchData.location,
-        priceRange: searchData.priceRange
+        location: searchData.location
       });
     }
     
     await performSearch(searchData);
   };
 
-  // Live search function for real-time search
+  // Simplified live search - less aggressive
   const handleLiveSearch = async (searchTerm: string) => {
     if (!searchTerm || searchTerm.trim() === '') {
-      setSearchResults([]);
-      setHasSearched(false);
+      if (hasSearched) {
+        setSearchResults([]);
+        setHasSearched(false);
+      }
       return;
     }
 
-    setHasSearched(true);
-    await performSearch({ query: searchTerm });
+    if (searchTerm.length >= 3) {
+      setHasSearched(true);
+      await performSearch({ query: searchTerm });
+    }
   };
 
   return (

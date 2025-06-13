@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { Search, MapPin, Home, Bed, Bath, Car, Filter, X } from "lucide-react";
+import { Search, Filter, X } from "lucide-react";
 
 interface ModernSearchPanelProps {
   language: "en" | "id";
@@ -21,17 +21,19 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
   const [location, setLocation] = useState("");
   const [showAdvanced, setShowAdvanced] = useState(false);
 
-  // Live search effect
+  // Debounced live search - only trigger after user stops typing
   useEffect(() => {
-    if (onLiveSearch && searchQuery.length > 2) {
-      const timeoutId = setTimeout(() => {
+    if (!onLiveSearch) return;
+    
+    const timeoutId = setTimeout(() => {
+      if (searchQuery.length >= 3) {
         onLiveSearch(searchQuery);
-      }, 300);
-      
-      return () => clearTimeout(timeoutId);
-    } else if (onLiveSearch && searchQuery.length === 0) {
-      onLiveSearch("");
-    }
+      } else if (searchQuery.length === 0) {
+        onLiveSearch("");
+      }
+    }, 800); // Increased debounce time to reduce excessive requests
+    
+    return () => clearTimeout(timeoutId);
   }, [searchQuery, onLiveSearch]);
 
   const text = {
@@ -97,15 +99,14 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
 
   const handleSearch = () => {
     const searchData = {
-      query: searchQuery,
-      searchQuery: searchQuery,
-      propertyType: propertyType || undefined,
-      bedrooms: bedrooms || undefined,
-      bathrooms: bathrooms || undefined,
-      location: location || undefined
+      query: searchQuery.trim(),
+      propertyType: propertyType && propertyType !== "all_types" ? propertyType : undefined,
+      bedrooms: bedrooms && bedrooms !== "any_bedrooms" ? bedrooms : undefined,
+      bathrooms: bathrooms && bathrooms !== "any_bathrooms" ? bathrooms : undefined,
+      location: location && location !== "any_location" ? location : undefined
     };
     
-    console.log("ModernSearchPanel sending search data:", searchData);
+    console.log("Search triggered with:", searchData);
     onSearch(searchData);
   };
 
@@ -122,9 +123,15 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
 
   const handlePopularSearch = (term: string) => {
     setSearchQuery(term);
-    if (onLiveSearch) {
-      onLiveSearch(term);
-    }
+    // Trigger immediate search for popular terms
+    const searchData = {
+      query: term,
+      propertyType: undefined,
+      bedrooms: undefined,
+      bathrooms: undefined,
+      location: undefined
+    };
+    onSearch(searchData);
   };
 
   return (
@@ -140,6 +147,11 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
                 className="pl-10 h-12 text-gray-700 dark:text-gray-200"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    handleSearch();
+                  }
+                }}
               />
             </div>
           </div>
