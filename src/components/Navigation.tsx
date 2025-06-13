@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X, User, LogOut, Globe, Bot, Plus, Home, Building, Info } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
@@ -14,6 +14,7 @@ const Navigation = () => {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [language, setLanguage] = useState<"en" | "id">("en");
   const location = useLocation();
+  const navigate = useNavigate();
   const { user, signOut } = useAuth();
   const { themeSettings } = useThemeSettings();
 
@@ -30,6 +31,15 @@ const Navigation = () => {
 
   const toggleLanguage = () => {
     setLanguage(prev => prev === "en" ? "id" : "en");
+  };
+
+  const handleAddPropertyClick = () => {
+    if (user) {
+      navigate('/add-property');
+    } else {
+      setShowAuthModal(true);
+    }
+    setIsOpen(false);
   };
 
   return (
@@ -70,16 +80,14 @@ const Navigation = () => {
                 </Link>
               ))}
               
-              {/* Add Property Button - Compact */}
-              {user && (
-                <Link
-                  to="/add-property"
-                  className="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl hover:from-blue-600 hover:to-purple-600 transition-all duration-300 text-sm shadow-lg hover:shadow-xl transform hover:scale-105"
-                >
-                  <Plus className="h-4 w-4" />
-                  <span className="hidden lg:inline">Add</span>
-                </Link>
-              )}
+              {/* Add Property Button - Always visible */}
+              <button
+                onClick={handleAddPropertyClick}
+                className="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl hover:from-blue-600 hover:to-purple-600 transition-all duration-300 text-sm shadow-lg hover:shadow-xl transform hover:scale-105"
+              >
+                <Plus className="h-4 w-4" />
+                <span className="hidden lg:inline">Add Property</span>
+              </button>
             </div>
 
             {/* Right side controls - More compact */}
@@ -168,17 +176,14 @@ const Navigation = () => {
                 </Link>
               ))}
               
-              {/* Mobile Add Property Link */}
-              {user && (
-                <Link
-                  to="/add-property"
-                  className="flex items-center gap-3 px-4 py-3 text-base font-medium text-white bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 transition-all duration-300 rounded-xl shadow-lg"
-                  onClick={() => setIsOpen(false)}
-                >
-                  <Plus className="h-5 w-5" />
-                  Add Property
-                </Link>
-              )}
+              {/* Mobile Add Property Button - Always visible */}
+              <button
+                onClick={handleAddPropertyClick}
+                className="flex items-center gap-3 px-4 py-3 text-base font-medium text-white bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 transition-all duration-300 rounded-xl shadow-lg w-full"
+              >
+                <Plus className="h-5 w-5" />
+                Add Property
+              </button>
               
               {/* Mobile Language Toggle */}
               <Button
