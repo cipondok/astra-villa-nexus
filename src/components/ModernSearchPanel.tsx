@@ -26,7 +26,7 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
     if (onLiveSearch && searchQuery.length > 2) {
       const timeoutId = setTimeout(() => {
         onLiveSearch(searchQuery);
-      }, 300); // 300ms debounce
+      }, 300);
       
       return () => clearTimeout(timeoutId);
     } else if (onLiveSearch && searchQuery.length === 0) {
@@ -99,10 +99,10 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
     const searchData = {
       query: searchQuery,
       searchQuery: searchQuery,
-      propertyType,
-      bedrooms,
-      bathrooms,
-      location
+      propertyType: propertyType || undefined,
+      bedrooms: bedrooms || undefined,
+      bathrooms: bathrooms || undefined,
+      location: location || undefined
     };
     
     console.log("ModernSearchPanel sending search data:", searchData);
@@ -149,7 +149,7 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
               <SelectValue placeholder={currentText.propertyType} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">{currentText.allTypes}</SelectItem>
+              <SelectItem value="all_types">{currentText.allTypes}</SelectItem>
               <SelectItem value="apartment">{currentText.apartment}</SelectItem>
               <SelectItem value="house">{currentText.house}</SelectItem>
               <SelectItem value="villa">{currentText.villa}</SelectItem>
@@ -198,7 +198,7 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
                 <SelectValue placeholder={currentText.bedrooms} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">{currentText.any}</SelectItem>
+                <SelectItem value="any_bedrooms">{currentText.any}</SelectItem>
                 <SelectItem value="1">{currentText.onebed}</SelectItem>
                 <SelectItem value="2">{currentText.twobed}</SelectItem>
                 <SelectItem value="3">{currentText.threebed}</SelectItem>
@@ -211,7 +211,7 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
                 <SelectValue placeholder={currentText.bathrooms} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">{currentText.any}</SelectItem>
+                <SelectItem value="any_bathrooms">{currentText.any}</SelectItem>
                 <SelectItem value="1">{currentText.onebed}</SelectItem>
                 <SelectItem value="2">{currentText.twobed}</SelectItem>
                 <SelectItem value="3">{currentText.threebed}</SelectItem>
@@ -224,7 +224,7 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
                 <SelectValue placeholder={currentText.location} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">{currentText.any}</SelectItem>
+                <SelectItem value="any_location">{currentText.any}</SelectItem>
                 <SelectItem value="jakarta">{currentText.jakarta}</SelectItem>
                 <SelectItem value="bali">{currentText.bali}</SelectItem>
                 <SelectItem value="surabaya">{currentText.surabaya}</SelectItem>

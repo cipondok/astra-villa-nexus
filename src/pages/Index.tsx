@@ -90,12 +90,12 @@ const Index = () => {
         const cleanSearchTerm = searchTerm.trim();
         console.log("Using clean search term:", cleanSearchTerm);
         
-        // Use text search across multiple fields - fixed the syntax
+        // Use text search across multiple fields
         query = query.or(`title.ilike.%${cleanSearchTerm}%,description.ilike.%${cleanSearchTerm}%,location.ilike.%${cleanSearchTerm}%,area.ilike.%${cleanSearchTerm}%,city.ilike.%${cleanSearchTerm}%,state.ilike.%${cleanSearchTerm}%`);
       }
 
-      // Handle property type filter
-      if (searchData.propertyType && searchData.propertyType !== 'all' && searchData.propertyType !== '') {
+      // Handle property type filter - fix the mapping
+      if (searchData.propertyType && searchData.propertyType !== 'all_types' && searchData.propertyType !== '') {
         console.log("Filtering by property type:", searchData.propertyType);
         query = query.eq('property_type', searchData.propertyType);
       }
@@ -106,8 +106,8 @@ const Index = () => {
         query = query.eq('listing_type', searchData.type);
       }
 
-      // Handle bedrooms filter
-      if (searchData.bedrooms && searchData.bedrooms !== 'any' && searchData.bedrooms !== '') {
+      // Handle bedrooms filter - fix the mapping
+      if (searchData.bedrooms && searchData.bedrooms !== 'any_bedrooms' && searchData.bedrooms !== '') {
         const bedroomCount = parseInt(searchData.bedrooms.replace('+', ''));
         if (!isNaN(bedroomCount)) {
           if (searchData.bedrooms.includes('+')) {
@@ -118,8 +118,8 @@ const Index = () => {
         }
       }
 
-      // Handle bathrooms filter
-      if (searchData.bathrooms && searchData.bathrooms !== 'any' && searchData.bathrooms !== '') {
+      // Handle bathrooms filter - fix the mapping
+      if (searchData.bathrooms && searchData.bathrooms !== 'any_bathrooms' && searchData.bathrooms !== '') {
         const bathroomCount = parseInt(searchData.bathrooms.replace('+', ''));
         if (!isNaN(bathroomCount)) {
           if (searchData.bathrooms.includes('+')) {
@@ -141,8 +141,11 @@ const Index = () => {
         }
       }
 
-      // Handle location filter - more flexible approach
-      if (searchData.location && typeof searchData.location === 'object' && searchData.location !== null) {
+      // Handle location filter - fix the mapping
+      if (searchData.location && searchData.location !== 'any_location' && typeof searchData.location === 'string') {
+        console.log("Filtering by location:", searchData.location);
+        query = query.or(`city.ilike.%${searchData.location}%,state.ilike.%${searchData.location}%,area.ilike.%${searchData.location}%`);
+      } else if (searchData.location && typeof searchData.location === 'object' && searchData.location !== null) {
         if (searchData.location.state) {
           query = query.eq('state', searchData.location.state);
         }
