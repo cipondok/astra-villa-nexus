@@ -1,7 +1,6 @@
 
-import { Shield, Star } from "lucide-react";
+import { Shield, Star, Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
 
 interface FooterBrandProps {
   language: "en" | "id";
@@ -25,10 +24,14 @@ const FooterBrand = ({ language }: FooterBrandProps) => {
 
   const currentText = text[language];
 
+  const handleSocialClick = (platform: string) => {
+    console.log(`Social media click: ${platform}`);
+  };
+
   return (
     <div className="space-y-4">
       <div>
-        <h3 className="text-2xl font-bold bg-gradient-to-r from-ios-blue to-ios-blue/80 bg-clip-text text-transparent">
+        <h3 className="text-2xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
           {currentText.company}
         </h3>
         <p className="text-muted-foreground text-sm mt-2">
@@ -56,16 +59,36 @@ const FooterBrand = ({ language }: FooterBrandProps) => {
           {currentText.followUs}
         </h4>
         <div className="flex space-x-3">
-          <Button variant="ghost" size="icon-sm" className="hover:bg-ios-blue/10 hover:text-ios-blue">
+          <Button 
+            variant="ghost" 
+            size="icon-sm" 
+            className="hover:bg-primary/10 hover:text-primary"
+            onClick={() => handleSocialClick('Facebook')}
+          >
             <Facebook className="h-4 w-4" />
           </Button>
-          <Button variant="ghost" size="icon-sm" className="hover:bg-ios-blue/10 hover:text-ios-blue">
+          <Button 
+            variant="ghost" 
+            size="icon-sm" 
+            className="hover:bg-primary/10 hover:text-primary"
+            onClick={() => handleSocialClick('Twitter')}
+          >
             <Twitter className="h-4 w-4" />
           </Button>
-          <Button variant="ghost" size="icon-sm" className="hover:bg-ios-blue/10 hover:text-ios-blue">
+          <Button 
+            variant="ghost" 
+            size="icon-sm" 
+            className="hover:bg-primary/10 hover:text-primary"
+            onClick={() => handleSocialClick('Instagram')}
+          >
             <Instagram className="h-4 w-4" />
           </Button>
-          <Button variant="ghost" size="icon-sm" className="hover:bg-ios-blue/10 hover:text-ios-blue">
+          <Button 
+            variant="ghost" 
+            size="icon-sm" 
+            className="hover:bg-primary/10 hover:text-primary"
+            onClick={() => handleSocialClick('LinkedIn')}
+          >
             <Linkedin className="h-4 w-4" />
           </Button>
         </div>

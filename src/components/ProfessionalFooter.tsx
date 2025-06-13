@@ -33,6 +33,8 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
   const currentText = text[language];
 
   const handleLinkClick = (path: string, label?: string) => {
+    console.log("Footer link clicked:", path, label);
+    
     // Handle existing routes
     if (path === '/' || path === '/properties' || path === '/about') {
       navigate(path);
@@ -44,44 +46,39 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
   };
 
   return (
-    <footer className="glass-ios border-t border-border/30 mt-20">
+    <footer className="relative bg-background/95 backdrop-blur-sm border-t border-border/30 mt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Main Footer Content */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
-          {/* Company Info */}
+          {/* Company Brand */}
           <FooterBrand language={language} />
           
-          {/* About Us & Company Info */}
+          {/* Company Info & About Us */}
           <FooterCompanyInfo language={language} onLinkClick={handleLinkClick} />
 
-          {/* Newsletter & Contact Info - Combined */}
-          <div className="space-y-6">
-            <FooterNewsletter language={language} />
-            <FooterContact language={language} />
-          </div>
+          {/* Newsletter Subscription */}
+          <FooterNewsletter language={language} />
 
-          {/* Additional space for future sections */}
-          <div className="space-y-4">
-            {/* This column can be used for additional footer sections in the future */}
-          </div>
+          {/* Contact Information */}
+          <FooterContact language={language} />
         </div>
 
         {/* Bottom Footer */}
         <div className="border-t border-border/30 pt-6">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <p className="text-muted-foreground text-xs">
+            <p className="text-muted-foreground text-sm">
               © 2024 {currentText.company}. {currentText.rights}
             </p>
             <div className="flex space-x-6">
               <button 
                 onClick={() => handleLinkClick('/privacy', currentText.privacy)}
-                className="text-muted-foreground hover:text-ios-blue transition-colors text-xs"
+                className="text-muted-foreground hover:text-primary transition-colors text-sm"
               >
                 {currentText.privacy}
               </button>
               <button 
                 onClick={() => handleLinkClick('/terms', currentText.terms)}
-                className="text-muted-foreground hover:text-ios-blue transition-colors text-xs"
+                className="text-muted-foreground hover:text-primary transition-colors text-sm"
               >
                 {currentText.terms}
               </button>
