@@ -5,6 +5,13 @@ import FooterBrand from "./footer/FooterBrand";
 import FooterCompanyInfo from "./footer/FooterCompanyInfo";
 import FooterNewsletter from "./footer/FooterNewsletter";
 import FooterContact from "./footer/FooterContact";
+import FooterBuyingGuide from "./footer/FooterBuyingGuide";
+import FooterSellingGuide from "./footer/FooterSellingGuide";
+import FooterVendorServices from "./footer/FooterVendorServices";
+import FooterOffices from "./footer/FooterOffices";
+import FooterServicesTools from "./footer/FooterServicesTools";
+import FooterInnovationHub from "./footer/FooterInnovationHub";
+import FooterVendorHelp from "./footer/FooterVendorHelp";
 
 interface ProfessionalFooterProps {
   language: "en" | "id";
@@ -36,7 +43,7 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
     console.log("Footer link clicked:", path, label);
     
     // Handle existing routes
-    if (path === '/' || path === '/properties' || path === '/about') {
+    if (path === '/' || path === '/properties' || path === '/about' || path === '/vendor-registration') {
       navigate(path);
       return;
     }
@@ -48,19 +55,62 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
   return (
     <footer className="relative bg-background/95 backdrop-blur-sm border-t border-border/30 mt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Main Footer Content */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+        {/* Main Footer Content - Comprehensive Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-8 mb-8">
           {/* Company Brand */}
-          <FooterBrand language={language} />
+          <div className="xl:col-span-1">
+            <FooterBrand language={language} />
+          </div>
           
+          {/* Buying Guide */}
+          <div>
+            <FooterBuyingGuide language={language} onLinkClick={handleLinkClick} />
+          </div>
+
+          {/* Selling Guide */}
+          <div>
+            <FooterSellingGuide language={language} onLinkClick={handleLinkClick} />
+          </div>
+
+          {/* Vendor Services */}
+          <div>
+            <FooterVendorServices language={language} onLinkClick={handleLinkClick} />
+          </div>
+
           {/* Company Info & About Us */}
-          <FooterCompanyInfo language={language} onLinkClick={handleLinkClick} />
+          <div>
+            <FooterCompanyInfo language={language} onLinkClick={handleLinkClick} />
+          </div>
+
+          {/* Vendor Help Center */}
+          <div>
+            <FooterVendorHelp language={language} onLinkClick={handleLinkClick} />
+          </div>
+
+          {/* Our Offices */}
+          <div>
+            <FooterOffices language={language} />
+          </div>
+
+          {/* Services & Tools */}
+          <div>
+            <FooterServicesTools language={language} onLinkClick={handleLinkClick} />
+          </div>
+
+          {/* Innovation Hub */}
+          <div>
+            <FooterInnovationHub language={language} onLinkClick={handleLinkClick} />
+          </div>
 
           {/* Newsletter Subscription */}
-          <FooterNewsletter language={language} />
+          <div>
+            <FooterNewsletter language={language} />
+          </div>
 
           {/* Contact Information */}
-          <FooterContact language={language} />
+          <div>
+            <FooterContact language={language} />
+          </div>
         </div>
 
         {/* Bottom Footer */}
