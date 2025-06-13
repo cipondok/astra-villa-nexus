@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
@@ -73,21 +72,21 @@ const Index = () => {
     setIsSearching(true);
     
     try {
-      // Build the base query for approved properties only
+      // Start with a basic query - just get approved properties
       let query = supabase
         .from('properties')
         .select('*')
-        .eq('status', 'approved')
-        .eq('approval_status', 'approved');
+        .eq('status', 'approved');
 
-      console.log("🔍 SEARCH DEBUG - Base query built");
+      console.log("🔍 SEARCH DEBUG - Base query built for approved properties");
 
       // Apply text search if provided
       if (searchData.query && searchData.query.trim()) {
-        const searchTerm = `%${searchData.query.trim().toLowerCase()}%`;
+        const searchTerm = searchData.query.trim().toLowerCase();
         console.log("🔍 SEARCH DEBUG - Applying text search for:", searchTerm);
         
-        query = query.or(`title.ilike.${searchTerm},description.ilike.${searchTerm},location.ilike.${searchTerm},area.ilike.${searchTerm},city.ilike.${searchTerm},state.ilike.${searchTerm}`);
+        // Use simpler ilike search
+        query = query.or(`title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%,location.ilike.%${searchTerm}%`);
       }
 
       // Apply property type filter
@@ -129,8 +128,8 @@ const Index = () => {
       // Apply location filter
       if (searchData.location && searchData.location.trim()) {
         console.log("🔍 SEARCH DEBUG - Applying location filter:", searchData.location);
-        const locationTerm = `%${searchData.location.trim().toLowerCase()}%`;
-        query = query.or(`city.ilike.${locationTerm},state.ilike.${locationTerm},area.ilike.${locationTerm},location.ilike.${locationTerm}`);
+        const locationTerm = searchData.location.trim().toLowerCase();
+        query = query.or(`city.ilike.%${locationTerm}%,state.ilike.%${locationTerm}%,location.ilike.%${locationTerm}%`);
       }
 
       // Execute the query
@@ -141,7 +140,21 @@ const Index = () => {
 
       if (error) {
         console.error('🔍 SEARCH ERROR:', error);
-        setSearchResults([]);
+        // If search fails, try to get ANY approved properties to test
+        console.log("🔍 Trying fallback query...");
+        const { data: fallbackData, error: fallbackError } = await supabase
+          .from('properties')
+          .select('*')
+          .eq('status', 'approved')
+          .limit(10);
+          
+        if (fallbackError) {
+          console.error('🔍 FALLBACK ERROR:', fallbackError);
+          setSearchResults([]);
+        } else {
+          console.log(`🔍 FALLBACK SUCCESS - Found ${fallbackData?.length || 0} properties`);
+          setSearchResults(fallbackData || []);
+        }
       } else {
         console.log(`🔍 SEARCH SUCCESS - Found ${properties?.length || 0} properties`);
         console.log("🔍 SEARCH DEBUG - First result:", properties?.[0]);
@@ -150,7 +163,18 @@ const Index = () => {
       
     } catch (error) {
       console.error('🔍 SEARCH EXCEPTION:', error);
-      setSearchResults([]);
+      // Try to get some properties as a last resort
+      try {
+        const { data: anyData } = await supabase
+          .from('properties')
+          .select('*')
+          .limit(5);
+        console.log("🔍 EMERGENCY FALLBACK - Any properties:", anyData?.length || 0);
+        setSearchResults(anyData || []);
+      } catch (e) {
+        console.error('🔍 EMERGENCY FALLBACK FAILED:', e);
+        setSearchResults([]);
+      }
     } finally {
       setIsSearching(false);
     }

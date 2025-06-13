@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,7 +20,7 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
   const [location, setLocation] = useState("");
   const [showAdvanced, setShowAdvanced] = useState(false);
 
-  // Live search with longer debouncing
+  // Live search with debouncing
   useEffect(() => {
     if (!onLiveSearch) return;
     
@@ -29,8 +28,11 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
       if (searchQuery.trim().length >= 3) {
         console.log("🔍 PANEL - Live search triggered for:", searchQuery);
         onLiveSearch(searchQuery);
+      } else if (searchQuery.trim().length === 0) {
+        console.log("🔍 PANEL - Clearing search");
+        onLiveSearch("");
       }
-    }, 1000);
+    }, 800);
     
     return () => clearTimeout(timeoutId);
   }, [searchQuery, onLiveSearch]);
