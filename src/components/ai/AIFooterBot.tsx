@@ -25,38 +25,17 @@ const AIFooterBot = () => {
 
   const aiChatMutation = useMutation({
     mutationFn: async (userMessage: string) => {
-      // Generate AI response (simple rule-based for now)
-      let aiResponse = "";
-      const lowerMessage = userMessage.toLowerCase();
-      
-      if (lowerMessage.includes('astra') || lowerMessage.includes('token') || lowerMessage.includes('coin')) {
-        aiResponse = "🪙 ASTRA Tokens are our platform's digital reward system! You can earn them by:\n\n• Completing your vendor profile (200 ASTRA)\n• Creating services (50 ASTRA each)\n• Completing transactions (2.5% of transaction value)\n• Achieving membership levels (up to 5000 ASTRA)\n\nUse tokens for platform features and unlock exclusive benefits!";
-      } else if (lowerMessage.includes('service') || lowerMessage.includes('booking')) {
-        aiResponse = "🛠️ To maximize your service success:\n\n• Write detailed descriptions with clear pricing\n• Upload high-quality images\n• Set competitive but fair rates\n• Respond quickly to inquiries\n• Maintain excellent customer service\n\nConsider offering package deals or seasonal promotions to attract more customers!";
-      } else if (lowerMessage.includes('profile') || lowerMessage.includes('complete')) {
-        aiResponse = "📋 Complete your vendor profile for maximum success:\n\n• Business information & description\n• Contact details & address\n• Professional photos & gallery\n• Service offerings & pricing\n• KYC verification\n\nA complete profile increases customer trust and booking rates by up to 300%!";
-      } else if (lowerMessage.includes('customer') || lowerMessage.includes('client')) {
-        aiResponse = "👥 Improve customer satisfaction:\n\n• Respond within 2 hours\n• Provide detailed project timelines\n• Send regular progress updates\n• Exceed expectations when possible\n• Follow up after completion\n\nHappy customers lead to 5-star reviews and repeat business!";
-      } else if (lowerMessage.includes('pricing') || lowerMessage.includes('price')) {
-        aiResponse = "💰 Smart pricing strategies:\n\n• Research competitor rates in your area\n• Consider your experience level\n• Factor in materials and travel time\n• Offer tiered pricing options\n• Provide clear breakdowns\n\nRemember: competitive pricing wins more jobs, but don't undervalue your work!";
-      } else {
-        aiResponse = "👋 Welcome to our platform! I'm here to help you succeed as a vendor.\n\nI can assist with:\n🎯 Profile optimization tips\n💡 Service improvement ideas\n🪙 ASTRA Token information\n📈 Business growth strategies\n🤝 Customer service best practices\n\nWhat would you like to know more about?";
-      }
-
-      // Log the chat
-      const { error } = await supabase
-        .from('ai_chat_logs')
-        .insert([{
-          user_id: user?.id,
-          user_type: user ? (user.user_metadata?.role || 'customer') : 'guest',
+      // Use the new AI assistant function
+      const { data, error } = await supabase.functions.invoke('ai-assistant', {
+        body: {
           message: userMessage,
-          ai_response: aiResponse,
-          session_id: sessionId
-        }]);
+          userId: user?.id,
+          conversationId: sessionId
+        }
+      });
 
-      if (error) console.error('Error logging chat:', error);
-
-      return aiResponse;
+      if (error) throw error;
+      return data.message;
     },
     onSuccess: (aiResponse) => {
       const newChat = {
@@ -84,7 +63,7 @@ const AIFooterBot = () => {
         setChatHistory([{
           id: 'welcome',
           message: 'Hi there!',
-          response: "👋 Welcome to our platform! I'm your AI assistant here to help you succeed.\n\nAs a new visitor, here are some quick tips:\n\n🚀 Complete your vendor profile to start earning ASTRA tokens\n💡 Check out our service categories for inspiration\n🎯 Our most successful vendors respond quickly and provide excellent service\n\nHow can I help you get started today?",
+          response: "👋 Welcome to Astra Villa! I'm your AI assistant powered by advanced AI.\n\nI can help you with:\n🏠 Property recommendations\n🛠️ Vendor services\n🎯 3D property tours\n💡 Real estate advice\n\nHow can I assist you today?",
           timestamp: new Date()
         }]);
         localStorage.setItem('ai_welcome_shown', 'true');
@@ -96,18 +75,18 @@ const AIFooterBot = () => {
     <>
       {/* AI Bot Trigger Button */}
       {!isOpen && (
-        <div className="fixed bottom-6 right-6 z-50">
+        <div className="fixed bottom-6 left-6 z-50">
           <Button
             onClick={() => setIsOpen(true)}
-            className="h-14 w-14 rounded-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 shadow-lg"
+            className="h-14 w-14 rounded-full bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700 shadow-lg"
             size="icon"
           >
             <Bot className="h-6 w-6 text-white" />
           </Button>
           <div className="absolute -top-2 -right-2">
-            <Badge className="bg-red-500 text-white animate-pulse">
+            <Badge className="bg-orange-500 text-white animate-pulse">
               <Sparkles className="h-3 w-3 mr-1" />
-              AI
+              Help
             </Badge>
           </div>
         </div>
@@ -115,13 +94,13 @@ const AIFooterBot = () => {
 
       {/* AI Chat Window */}
       {isOpen && (
-        <div className="fixed bottom-6 right-6 z-50 w-96 max-w-[calc(100vw-2rem)]">
-          <Card className="shadow-2xl border-2 border-purple-200">
-            <CardHeader className="bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-t-lg">
+        <div className="fixed bottom-6 left-6 z-50 w-96 max-w-[calc(100vw-2rem)]">
+          <Card className="shadow-2xl border-2 border-green-200">
+            <CardHeader className="bg-gradient-to-r from-green-600 to-teal-600 text-white rounded-t-lg">
               <div className="flex items-center justify-between">
                 <CardTitle className="flex items-center gap-2 text-white">
                   <Bot className="h-5 w-5" />
-                  AI Assistant
+                  Help Assistant
                 </CardTitle>
                 <Button
                   variant="ghost"
@@ -132,8 +111,8 @@ const AIFooterBot = () => {
                   <X className="h-4 w-4" />
                 </Button>
               </div>
-              <div className="text-sm text-purple-100">
-                Get instant help and business tips
+              <div className="text-sm text-green-100">
+                Get instant help and guidance
               </div>
             </CardHeader>
             <CardContent className="p-0">
@@ -142,15 +121,15 @@ const AIFooterBot = () => {
                 {chatHistory.map((chat) => (
                   <div key={chat.id} className="space-y-2">
                     <div className="flex justify-end">
-                      <div className="bg-blue-500 text-white p-2 rounded-lg max-w-xs">
+                      <div className="bg-green-500 text-white p-2 rounded-lg max-w-xs">
                         {chat.message}
                       </div>
                     </div>
                     <div className="flex justify-start">
                       <div className="bg-gray-100 p-2 rounded-lg max-w-xs">
                         <div className="flex items-center gap-2 mb-1">
-                          <Bot className="h-4 w-4 text-purple-600" />
-                          <span className="text-xs font-medium text-purple-600">AI Assistant</span>
+                          <Bot className="h-4 w-4 text-green-600" />
+                          <span className="text-xs font-medium text-green-600">Help Assistant</span>
                         </div>
                         <div className="text-sm whitespace-pre-line">{chat.response}</div>
                       </div>
@@ -161,7 +140,7 @@ const AIFooterBot = () => {
                   <div className="flex justify-start">
                     <div className="bg-gray-100 p-2 rounded-lg">
                       <div className="flex items-center gap-2">
-                        <Bot className="h-4 w-4 text-purple-600 animate-pulse" />
+                        <Bot className="h-4 w-4 text-green-600 animate-pulse" />
                         <span className="text-sm">AI is thinking...</span>
                       </div>
                     </div>
@@ -175,7 +154,7 @@ const AIFooterBot = () => {
                   <Input
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
-                    placeholder="Ask me anything about the platform..."
+                    placeholder="Ask me anything..."
                     onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
                     disabled={aiChatMutation.isPending}
                   />
@@ -183,7 +162,7 @@ const AIFooterBot = () => {
                     onClick={handleSendMessage}
                     disabled={aiChatMutation.isPending || !message.trim()}
                     size="icon"
-                    className="bg-purple-600 hover:bg-purple-700"
+                    className="bg-green-600 hover:bg-green-700"
                   >
                     <Send className="h-4 w-4" />
                   </Button>
@@ -192,9 +171,9 @@ const AIFooterBot = () => {
                 {/* Quick Suggestions */}
                 <div className="flex flex-wrap gap-1 mt-2">
                   {[
-                    "How to earn ASTRA tokens?",
-                    "Profile tips",
-                    "Pricing strategy"
+                    "Show me properties",
+                    "Find vendors",
+                    "How does this work?"
                   ].map((suggestion) => (
                     <Button
                       key={suggestion}

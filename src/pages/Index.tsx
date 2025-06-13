@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
@@ -6,6 +7,8 @@ import PropertyListingsSection from "@/components/PropertyListingsSection";
 import ProfessionalFooter from "@/components/ProfessionalFooter";
 import RoleBasedAuthModal from "@/components/RoleBasedAuthModal";
 import ModernSearchPanel from "@/components/ModernSearchPanel";
+import AIChatWidget from "@/components/ai/AIChatWidget";
+import SmartRecommendations from "@/components/ai/SmartRecommendations";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -27,6 +30,22 @@ const Index = () => {
       setAuthModalOpen(true);
     }
   }, [searchParams]);
+
+  // Track page view for AI recommendations
+  useEffect(() => {
+    if (user) {
+      supabase.from('user_interactions').insert([{
+        user_id: user.id,
+        interaction_type: 'page_view',
+        interaction_data: {
+          page: 'home',
+          timestamp: new Date().toISOString()
+        }
+      }]).then(() => {
+        console.log('Page view tracked for recommendations');
+      }).catch(console.error);
+    }
+  }, [user]);
 
   const handleAuthModalClose = () => {
     setAuthModalOpen(false);
@@ -58,6 +77,20 @@ const Index = () => {
     console.log("Search data:", searchData);
     setIsSearching(true);
     setHasSearched(true);
+    
+    // Track search for AI recommendations
+    if (user) {
+      supabase.from('user_interactions').insert([{
+        user_id: user.id,
+        interaction_type: 'search',
+        interaction_data: {
+          searchQuery: searchData.searchQuery,
+          propertyType: searchData.propertyType,
+          location: searchData.location,
+          priceRange: searchData.priceRange
+        }
+      }]).catch(console.error);
+    }
     
     try {
       let query = supabase
@@ -148,7 +181,7 @@ const Index = () => {
             </span>
           </h1>
           <p className="text-lg sm:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed animate-fade-in animation-delay-200">
-            Discover premium real estate opportunities in Indonesia's most sought-after locations.
+            Discover premium real estate opportunities with AI-powered recommendations and intelligent assistance.
           </p>
         </div>
 
@@ -161,22 +194,52 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Property Listings Section */}
-      <div className="relative z-10 bg-background">
-        <div className="container mx-auto px-4 py-8">
-          <PropertyListingsSection 
-            language={language} 
-            searchResults={searchResults}
-            isSearching={isSearching}
-            hasSearched={hasSearched}
-          />
+      {/* AI-Powered Recommendations Section */}
+      {user && (
+        <section className="relative z-10 bg-background py-8">
+          <div className="container mx-auto px-4">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2">
+                <PropertyListingsSection 
+                  language={language} 
+                  searchResults={searchResults}
+                  isSearching={isSearching}
+                  hasSearched={hasSearched}
+                />
+              </div>
+              <div className="lg:col-span-1">
+                <SmartRecommendations 
+                  type="properties"
+                  limit={6}
+                  className="sticky top-4"
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Property Listings Section for non-authenticated users */}
+      {!user && (
+        <div className="relative z-10 bg-background">
+          <div className="container mx-auto px-4 py-8">
+            <PropertyListingsSection 
+              language={language} 
+              searchResults={searchResults}
+              isSearching={isSearching}
+              hasSearched={hasSearched}
+            />
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Enhanced Footer */}
       <div className="relative z-10">
         <ProfessionalFooter language={language} />
       </div>
+
+      {/* AI Chat Widget */}
+      <AIChatWidget />
 
       {/* Auth Modal */}
       <RoleBasedAuthModal 
