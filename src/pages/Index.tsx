@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
@@ -69,14 +70,14 @@ const Index = () => {
   };
 
   const handleSearch = async (searchData: any) => {
-    console.log("Search data:", searchData);
+    console.log("Raw search data received:", searchData);
     setIsSearching(true);
     setHasSearched(true);
     
     // Track search for AI recommendations
     if (user) {
       trackInteraction('search', {
-        searchQuery: searchData.searchQuery,
+        searchQuery: searchData.query || searchData.searchQuery,
         propertyType: searchData.propertyType,
         location: searchData.location,
         priceRange: searchData.priceRange
@@ -90,41 +91,53 @@ const Index = () => {
         .eq('status', 'approved')
         .eq('approval_status', 'approved');
 
-      // Apply search filters - Fix the search query logic
-      if (searchData.searchQuery && searchData.searchQuery.trim() !== '') {
-        const searchTerm = searchData.searchQuery.trim();
-        console.log("Searching for:", searchTerm);
+      // Handle search query - check both 'query' and 'searchQuery' fields
+      const searchTerm = searchData.query || searchData.searchQuery || '';
+      if (searchTerm && searchTerm.trim() !== '') {
+        const cleanSearchTerm = searchTerm.trim();
+        console.log("Searching for exact term:", cleanSearchTerm);
         
-        // Use ilike for case-insensitive search and improve the search pattern
-        query = query.or(`title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%,location.ilike.%${searchTerm}%,area.ilike.%${searchTerm}%,city.ilike.%${searchTerm}%,state.ilike.%${searchTerm}%`);
+        // Use ilike for case-insensitive search across multiple fields
+        query = query.or(`title.ilike.%${cleanSearchTerm}%,description.ilike.%${cleanSearchTerm}%,location.ilike.%${cleanSearchTerm}%,area.ilike.%${cleanSearchTerm}%,city.ilike.%${cleanSearchTerm}%,state.ilike.%${cleanSearchTerm}%`);
       }
 
-      if (searchData.propertyType && searchData.propertyType !== 'all') {
+      // Handle property type filter
+      if (searchData.propertyType && searchData.propertyType !== 'all' && searchData.propertyType !== '') {
+        console.log("Filtering by property type:", searchData.propertyType);
         query = query.eq('property_type', searchData.propertyType);
       }
 
-      if (searchData.type && searchData.type !== 'buy' && searchData.type !== 'all') {
+      // Handle listing type (buy/rent/sell)
+      if (searchData.type && searchData.type !== 'buy' && searchData.type !== 'all' && searchData.type !== '') {
+        console.log("Filtering by listing type:", searchData.type);
         query = query.eq('listing_type', searchData.type);
       }
 
-      if (searchData.bedrooms && searchData.bedrooms !== 'any') {
+      // Handle bedrooms filter
+      if (searchData.bedrooms && searchData.bedrooms !== 'any' && searchData.bedrooms !== '') {
         const bedroomCount = parseInt(searchData.bedrooms.replace('+', ''));
-        if (searchData.bedrooms.includes('+')) {
-          query = query.gte('bedrooms', bedroomCount);
-        } else {
-          query = query.eq('bedrooms', bedroomCount);
+        if (!isNaN(bedroomCount)) {
+          if (searchData.bedrooms.includes('+')) {
+            query = query.gte('bedrooms', bedroomCount);
+          } else {
+            query = query.eq('bedrooms', bedroomCount);
+          }
         }
       }
 
-      if (searchData.bathrooms && searchData.bathrooms !== 'any') {
+      // Handle bathrooms filter
+      if (searchData.bathrooms && searchData.bathrooms !== 'any' && searchData.bathrooms !== '') {
         const bathroomCount = parseInt(searchData.bathrooms.replace('+', ''));
-        if (searchData.bathrooms.includes('+')) {
-          query = query.gte('bathrooms', bathroomCount);
-        } else {
-          query = query.eq('bathrooms', bathroomCount);
+        if (!isNaN(bathroomCount)) {
+          if (searchData.bathrooms.includes('+')) {
+            query = query.gte('bathrooms', bathroomCount);
+          } else {
+            query = query.eq('bathrooms', bathroomCount);
+          }
         }
       }
 
+      // Handle price range filter
       if (searchData.priceRange && Array.isArray(searchData.priceRange) && searchData.priceRange.length === 2) {
         const [minPrice, maxPrice] = searchData.priceRange;
         if (minPrice > 0) {
@@ -135,12 +148,14 @@ const Index = () => {
         }
       }
 
-      // Location filters - Fix the location search
+      // Handle location filter - more flexible approach
       if (searchData.location) {
-        if (typeof searchData.location === 'string') {
+        if (typeof searchData.location === 'string' && searchData.location.trim() !== '') {
           // If location is a string, search across all location fields
-          query = query.or(`state.ilike.%${searchData.location}%,city.ilike.%${searchData.location}%,area.ilike.%${searchData.location}%,location.ilike.%${searchData.location}%`);
-        } else if (typeof searchData.location === 'object') {
+          const locationTerm = searchData.location.trim();
+          console.log("Filtering by location string:", locationTerm);
+          query = query.or(`state.ilike.%${locationTerm}%,city.ilike.%${locationTerm}%,area.ilike.%${locationTerm}%,location.ilike.%${locationTerm}%`);
+        } else if (typeof searchData.location === 'object' && searchData.location !== null) {
           // If location is an object with specific fields
           if (searchData.location.state) {
             query = query.eq('state', searchData.location.state);
@@ -155,6 +170,8 @@ const Index = () => {
       }
 
       const { data: properties, error } = await query.limit(50);
+
+      console.log("Search query executed, results:", { data: properties, error });
 
       if (error) {
         console.error('Error searching properties:', error);
