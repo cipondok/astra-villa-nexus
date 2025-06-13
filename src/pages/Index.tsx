@@ -68,81 +68,88 @@ const Index = () => {
   };
 
   const performSearch = async (searchData: any) => {
-    console.log("🔍 Starting search with:", searchData);
+    console.log("🔍 SEARCH DEBUG - Starting search with:", searchData);
     
     setIsSearching(true);
     
     try {
-      // Start with base query - get all approved properties
+      // Build the base query for approved properties only
       let query = supabase
         .from('properties')
         .select('*')
-        .eq('status', 'approved');
+        .eq('status', 'approved')
+        .eq('approval_status', 'approved');
 
-      // Handle text search across existing fields only
-      if (searchData.query && searchData.query.trim() !== '') {
-        const searchTerm = searchData.query.trim().toLowerCase();
-        console.log("🎯 Searching for:", searchTerm);
+      console.log("🔍 SEARCH DEBUG - Base query built");
+
+      // Apply text search if provided
+      if (searchData.query && searchData.query.trim()) {
+        const searchTerm = `%${searchData.query.trim().toLowerCase()}%`;
+        console.log("🔍 SEARCH DEBUG - Applying text search for:", searchTerm);
         
-        // Search only in fields that actually exist in the database
-        query = query.or(`title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%,location.ilike.%${searchTerm}%,area.ilike.%${searchTerm}%,city.ilike.%${searchTerm}%,state.ilike.%${searchTerm}%`);
+        query = query.or(`title.ilike.${searchTerm},description.ilike.${searchTerm},location.ilike.${searchTerm},area.ilike.${searchTerm},city.ilike.${searchTerm},state.ilike.${searchTerm}`);
       }
 
       // Apply property type filter
-      if (searchData.propertyType && searchData.propertyType !== '') {
-        console.log("🏠 Filtering by property type:", searchData.propertyType);
+      if (searchData.propertyType && searchData.propertyType.trim()) {
+        console.log("🔍 SEARCH DEBUG - Applying property type filter:", searchData.propertyType);
         query = query.eq('property_type', searchData.propertyType);
       }
 
       // Apply bedroom filter
-      if (searchData.bedrooms && searchData.bedrooms !== '') {
+      if (searchData.bedrooms && searchData.bedrooms.trim()) {
+        console.log("🔍 SEARCH DEBUG - Applying bedroom filter:", searchData.bedrooms);
         const bedroomValue = searchData.bedrooms.replace('+', '');
         const bedroomCount = parseInt(bedroomValue);
+        
         if (!isNaN(bedroomCount)) {
           if (searchData.bedrooms.includes('+')) {
             query = query.gte('bedrooms', bedroomCount);
           } else {
             query = query.eq('bedrooms', bedroomCount);
           }
-          console.log("🛏️ Filtering by bedrooms:", searchData.bedrooms);
         }
       }
 
       // Apply bathroom filter
-      if (searchData.bathrooms && searchData.bathrooms !== '') {
+      if (searchData.bathrooms && searchData.bathrooms.trim()) {
+        console.log("🔍 SEARCH DEBUG - Applying bathroom filter:", searchData.bathrooms);
         const bathroomValue = searchData.bathrooms.replace('+', '');
         const bathroomCount = parseInt(bathroomValue);
+        
         if (!isNaN(bathroomCount)) {
           if (searchData.bathrooms.includes('+')) {
             query = query.gte('bathrooms', bathroomCount);
           } else {
             query = query.eq('bathrooms', bathroomCount);
           }
-          console.log("🚿 Filtering by bathrooms:", searchData.bathrooms);
         }
       }
 
       // Apply location filter
-      if (searchData.location && searchData.location !== '') {
-        console.log("📍 Filtering by location:", searchData.location);
-        query = query.or(`city.ilike.%${searchData.location}%,state.ilike.%${searchData.location}%,area.ilike.%${searchData.location}%,location.ilike.%${searchData.location}%`);
+      if (searchData.location && searchData.location.trim()) {
+        console.log("🔍 SEARCH DEBUG - Applying location filter:", searchData.location);
+        const locationTerm = `%${searchData.location.trim().toLowerCase()}%`;
+        query = query.or(`city.ilike.${locationTerm},state.ilike.${locationTerm},area.ilike.${locationTerm},location.ilike.${locationTerm}`);
       }
 
-      // Execute query
+      // Execute the query
+      console.log("🔍 SEARCH DEBUG - Executing query...");
       const { data: properties, error } = await query
         .order('created_at', { ascending: false })
         .limit(50);
 
       if (error) {
-        console.error('❌ Search error:', error);
+        console.error('🔍 SEARCH ERROR:', error);
         setSearchResults([]);
       } else {
-        console.log(`✅ Search completed - Found ${properties?.length || 0} properties`);
+        console.log(`🔍 SEARCH SUCCESS - Found ${properties?.length || 0} properties`);
+        console.log("🔍 SEARCH DEBUG - First result:", properties?.[0]);
         setSearchResults(properties || []);
       }
       
     } catch (error) {
-      console.error('❌ Search exception:', error);
+      console.error('🔍 SEARCH EXCEPTION:', error);
       setSearchResults([]);
     } finally {
       setIsSearching(false);
@@ -150,7 +157,7 @@ const Index = () => {
   };
 
   const handleSearch = async (searchData: any) => {
-    console.log("🚀 Manual search triggered:", searchData);
+    console.log("🚀 MANUAL SEARCH triggered:", searchData);
     setHasSearched(true);
     
     // Track search for AI recommendations
@@ -166,7 +173,7 @@ const Index = () => {
   };
 
   const handleLiveSearch = async (searchTerm: string) => {
-    console.log("⚡ Live search triggered:", searchTerm);
+    console.log("⚡ LIVE SEARCH triggered:", searchTerm);
     
     if (!searchTerm || searchTerm.trim() === '') {
       if (hasSearched) {
@@ -176,7 +183,7 @@ const Index = () => {
       return;
     }
 
-    if (searchTerm.length >= 2) {
+    if (searchTerm.length >= 3) {
       setHasSearched(true);
       await performSearch({ query: searchTerm });
     }

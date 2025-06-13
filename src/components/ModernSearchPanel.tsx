@@ -21,16 +21,16 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
   const [location, setLocation] = useState("");
   const [showAdvanced, setShowAdvanced] = useState(false);
 
-  // Live search with debouncing
+  // Live search with longer debouncing
   useEffect(() => {
     if (!onLiveSearch) return;
     
     const timeoutId = setTimeout(() => {
-      if (searchQuery.trim().length >= 2) {
-        console.log("🔍 Live search triggered for:", searchQuery);
+      if (searchQuery.trim().length >= 3) {
+        console.log("🔍 PANEL - Live search triggered for:", searchQuery);
         onLiveSearch(searchQuery);
       }
-    }, 800);
+    }, 1000);
     
     return () => clearTimeout(timeoutId);
   }, [searchQuery, onLiveSearch]);
@@ -105,12 +105,12 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
       location: location || ""
     };
     
-    console.log("🔍 Manual search triggered with:", searchData);
+    console.log("🔍 PANEL - Manual search triggered with:", searchData);
     onSearch(searchData);
   };
 
   const handleClearFilters = () => {
-    console.log("🧹 Clearing all filters");
+    console.log("🧹 PANEL - Clearing all filters");
     setSearchQuery("");
     setPropertyType("");
     setBedrooms("");
@@ -122,7 +122,7 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
   };
 
   const handlePopularSearch = (term: string) => {
-    console.log("🔥 Popular search clicked:", term);
+    console.log("🔥 PANEL - Popular search clicked:", term);
     setSearchQuery(term);
     const searchData = {
       query: term,
@@ -153,7 +153,7 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
                 className="pl-10 h-12 text-gray-700 dark:text-gray-200"
                 value={searchQuery}
                 onChange={(e) => {
-                  console.log("🔤 Search input changed:", e.target.value);
+                  console.log("🔤 PANEL - Search input changed:", e.target.value);
                   setSearchQuery(e.target.value);
                 }}
                 onKeyDown={handleKeyPress}
