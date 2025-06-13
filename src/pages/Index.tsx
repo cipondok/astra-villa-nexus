@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
@@ -91,20 +90,24 @@ const Index = () => {
         .eq('status', 'approved')
         .eq('approval_status', 'approved');
 
-      // Apply search filters
-      if (searchData.searchQuery) {
-        query = query.or(`title.ilike.%${searchData.searchQuery}%,description.ilike.%${searchData.searchQuery}%,location.ilike.%${searchData.searchQuery}%`);
+      // Apply search filters - Fix the search query logic
+      if (searchData.searchQuery && searchData.searchQuery.trim() !== '') {
+        const searchTerm = searchData.searchQuery.trim();
+        console.log("Searching for:", searchTerm);
+        
+        // Use ilike for case-insensitive search and improve the search pattern
+        query = query.or(`title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%,location.ilike.%${searchTerm}%,area.ilike.%${searchTerm}%,city.ilike.%${searchTerm}%,state.ilike.%${searchTerm}%`);
       }
 
-      if (searchData.propertyType) {
+      if (searchData.propertyType && searchData.propertyType !== 'all') {
         query = query.eq('property_type', searchData.propertyType);
       }
 
-      if (searchData.type && searchData.type !== 'buy') {
+      if (searchData.type && searchData.type !== 'buy' && searchData.type !== 'all') {
         query = query.eq('listing_type', searchData.type);
       }
 
-      if (searchData.bedrooms) {
+      if (searchData.bedrooms && searchData.bedrooms !== 'any') {
         const bedroomCount = parseInt(searchData.bedrooms.replace('+', ''));
         if (searchData.bedrooms.includes('+')) {
           query = query.gte('bedrooms', bedroomCount);
@@ -113,7 +116,7 @@ const Index = () => {
         }
       }
 
-      if (searchData.bathrooms) {
+      if (searchData.bathrooms && searchData.bathrooms !== 'any') {
         const bathroomCount = parseInt(searchData.bathrooms.replace('+', ''));
         if (searchData.bathrooms.includes('+')) {
           query = query.gte('bathrooms', bathroomCount);
@@ -122,20 +125,32 @@ const Index = () => {
         }
       }
 
-      if (searchData.priceRange && searchData.priceRange.length === 2) {
-        query = query.gte('price', searchData.priceRange[0]).lte('price', searchData.priceRange[1]);
+      if (searchData.priceRange && Array.isArray(searchData.priceRange) && searchData.priceRange.length === 2) {
+        const [minPrice, maxPrice] = searchData.priceRange;
+        if (minPrice > 0) {
+          query = query.gte('price', minPrice);
+        }
+        if (maxPrice < 10000000000) {
+          query = query.lte('price', maxPrice);
+        }
       }
 
-      // Location filters
+      // Location filters - Fix the location search
       if (searchData.location) {
-        if (searchData.location.state) {
-          query = query.eq('state', searchData.location.state);
-        }
-        if (searchData.location.city) {
-          query = query.eq('city', searchData.location.city);
-        }
-        if (searchData.location.area) {
-          query = query.eq('area', searchData.location.area);
+        if (typeof searchData.location === 'string') {
+          // If location is a string, search across all location fields
+          query = query.or(`state.ilike.%${searchData.location}%,city.ilike.%${searchData.location}%,area.ilike.%${searchData.location}%,location.ilike.%${searchData.location}%`);
+        } else if (typeof searchData.location === 'object') {
+          // If location is an object with specific fields
+          if (searchData.location.state) {
+            query = query.eq('state', searchData.location.state);
+          }
+          if (searchData.location.city) {
+            query = query.eq('city', searchData.location.city);
+          }
+          if (searchData.location.area) {
+            query = query.eq('area', searchData.location.area);
+          }
         }
       }
 
@@ -143,12 +158,14 @@ const Index = () => {
 
       if (error) {
         console.error('Error searching properties:', error);
+        setSearchResults([]);
       } else {
         setSearchResults(properties || []);
-        console.log(`Found ${properties?.length || 0} properties`);
+        console.log(`Found ${properties?.length || 0} properties matching search criteria`);
       }
     } catch (error) {
       console.error('Search error:', error);
+      setSearchResults([]);
     } finally {
       setIsSearching(false);
     }
