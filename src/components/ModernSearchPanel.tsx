@@ -21,14 +21,16 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
   const [location, setLocation] = useState("");
   const [showAdvanced, setShowAdvanced] = useState(false);
 
-  // Controlled live search with proper debouncing
+  // Live search with debouncing
   useEffect(() => {
     if (!onLiveSearch) return;
     
     const timeoutId = setTimeout(() => {
-      console.log("🔍 Live search debounce triggered for:", searchQuery);
-      onLiveSearch(searchQuery);
-    }, 600); // Reduced frequency
+      if (searchQuery.trim().length >= 2) {
+        console.log("🔍 Live search triggered for:", searchQuery);
+        onLiveSearch(searchQuery);
+      }
+    }, 800);
     
     return () => clearTimeout(timeoutId);
   }, [searchQuery, onLiveSearch]);
@@ -97,10 +99,10 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
   const handleManualSearch = () => {
     const searchData = {
       query: searchQuery.trim(),
-      propertyType: propertyType || undefined,
-      bedrooms: bedrooms || undefined,
-      bathrooms: bathrooms || undefined,
-      location: location || undefined
+      propertyType: propertyType || "",
+      bedrooms: bedrooms || "",
+      bathrooms: bathrooms || "",
+      location: location || ""
     };
     
     console.log("🔍 Manual search triggered with:", searchData);
@@ -124,10 +126,10 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
     setSearchQuery(term);
     const searchData = {
       query: term,
-      propertyType: undefined,
-      bedrooms: undefined,  
-      bathrooms: undefined,
-      location: undefined
+      propertyType: "",
+      bedrooms: "",  
+      bathrooms: "",
+      location: ""
     };
     onSearch(searchData);
   };

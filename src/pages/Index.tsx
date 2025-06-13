@@ -68,7 +68,7 @@ const Index = () => {
   };
 
   const performSearch = async (searchData: any) => {
-    console.log("🔍 Starting comprehensive search with:", searchData);
+    console.log("🔍 Starting search with:", searchData);
     
     setIsSearching(true);
     
@@ -79,34 +79,23 @@ const Index = () => {
         .select('*')
         .eq('status', 'approved');
 
-      // Build search conditions array
-      const searchConditions = [];
-
-      // Handle text search across multiple fields
+      // Handle text search across existing fields only
       if (searchData.query && searchData.query.trim() !== '') {
         const searchTerm = searchData.query.trim().toLowerCase();
         console.log("🎯 Searching for:", searchTerm);
         
-        // Add multiple search conditions
-        searchConditions.push(`title.ilike.%${searchTerm}%`);
-        searchConditions.push(`description.ilike.%${searchTerm}%`);
-        searchConditions.push(`location.ilike.%${searchTerm}%`);
-        searchConditions.push(`area.ilike.%${searchTerm}%`);
-        searchConditions.push(`city.ilike.%${searchTerm}%`);
-        searchConditions.push(`state.ilike.%${searchTerm}%`);
-        searchConditions.push(`address.ilike.%${searchTerm}%`);
-        
-        // Apply OR condition for text search
-        query = query.or(searchConditions.join(','));
+        // Search only in fields that actually exist in the database
+        query = query.or(`title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%,location.ilike.%${searchTerm}%,area.ilike.%${searchTerm}%,city.ilike.%${searchTerm}%,state.ilike.%${searchTerm}%`);
       }
 
-      // Apply filters with proper null checks
-      if (searchData.propertyType && searchData.propertyType !== 'all_types' && searchData.propertyType !== '') {
+      // Apply property type filter
+      if (searchData.propertyType && searchData.propertyType !== '') {
         console.log("🏠 Filtering by property type:", searchData.propertyType);
         query = query.eq('property_type', searchData.propertyType);
       }
 
-      if (searchData.bedrooms && searchData.bedrooms !== 'any_bedrooms' && searchData.bedrooms !== '') {
+      // Apply bedroom filter
+      if (searchData.bedrooms && searchData.bedrooms !== '') {
         const bedroomValue = searchData.bedrooms.replace('+', '');
         const bedroomCount = parseInt(bedroomValue);
         if (!isNaN(bedroomCount)) {
@@ -119,7 +108,8 @@ const Index = () => {
         }
       }
 
-      if (searchData.bathrooms && searchData.bathrooms !== 'any_bathrooms' && searchData.bathrooms !== '') {
+      // Apply bathroom filter
+      if (searchData.bathrooms && searchData.bathrooms !== '') {
         const bathroomValue = searchData.bathrooms.replace('+', '');
         const bathroomCount = parseInt(bathroomValue);
         if (!isNaN(bathroomCount)) {
@@ -132,20 +122,22 @@ const Index = () => {
         }
       }
 
-      if (searchData.location && searchData.location !== 'any_location' && searchData.location !== '') {
+      // Apply location filter
+      if (searchData.location && searchData.location !== '') {
         console.log("📍 Filtering by location:", searchData.location);
-        query = query.or(`city.ilike.%${searchData.location}%,state.ilike.%${searchData.location}%,area.ilike.%${searchData.location}%,address.ilike.%${searchData.location}%`);
+        query = query.or(`city.ilike.%${searchData.location}%,state.ilike.%${searchData.location}%,area.ilike.%${searchData.location}%,location.ilike.%${searchData.location}%`);
       }
 
-      // Execute query with limit
-      const { data: properties, error } = await query.limit(50).order('created_at', { ascending: false });
+      // Execute query
+      const { data: properties, error } = await query
+        .order('created_at', { ascending: false })
+        .limit(50);
 
       if (error) {
         console.error('❌ Search error:', error);
         setSearchResults([]);
       } else {
         console.log(`✅ Search completed - Found ${properties?.length || 0} properties`);
-        console.log("📊 Sample results:", properties?.slice(0, 3));
         setSearchResults(properties || []);
       }
       
