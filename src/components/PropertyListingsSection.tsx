@@ -141,6 +141,23 @@ const PropertyListingsSection = ({
                       className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300 cursor-pointer"
                       onClick={() => handleViewDetails(property.id)}
                     />
+
+                    {(property.three_d_model_url || property.virtual_tour_url) && (
+                      <div className="absolute inset-0 bg-black/40 transition-opacity duration-300 opacity-0 group-hover:opacity-100 flex items-center justify-center">
+                        <Button
+                          size="sm"
+                          className="bg-white/90 text-gray-800 hover:bg-white flex items-center gap-1"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setPropertyFor3DView(property);
+                          }}
+                        >
+                          <Box className="h-4 w-4 mr-1" />
+                          {currentText.view3D}
+                        </Button>
+                      </div>
+                    )}
+
                     <Button
                       size="sm"
                       variant="ghost"
@@ -161,19 +178,6 @@ const PropertyListingsSection = ({
                     <Badge className="absolute top-4 left-4 bg-blue-600 text-white">
                       {property.listing_type === 'sale' ? currentText.forSale : currentText.forRent}
                     </Badge>
-                    {(property.three_d_model_url || property.virtual_tour_url) && (
-                      <Button
-                        size="sm"
-                        className="absolute bottom-4 right-4 bg-purple-600 hover:bg-purple-700 text-white flex items-center gap-1"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setPropertyFor3DView(property);
-                        }}
-                      >
-                        <Box className="h-4 w-4 mr-1" />
-                        {currentText.view3D}
-                      </Button>
-                    )}
                   </div>
                   
                   <CardHeader className="pb-4 cursor-pointer" onClick={() => handleViewDetails(property.id)}>
