@@ -33,12 +33,12 @@ serve(async (req) => {
     if (propertyId) {
       const { data: property } = await supabase
         .from('properties')
-        .select('*')
+        .select('id, title, description, location, price, property_type')
         .eq('id', propertyId)
         .single();
       
       if (property) {
-        propertyContext = `Current property: ${property.title} - ${property.description}. Location: ${property.location}. Price: ${property.price}. Type: ${property.property_type}.`;
+        propertyContext = `Current property context: ID is ${property.id}, Title is "${property.title}", Description: "${property.description}". Location: ${property.location}. Price: ${property.price}. Type: ${property.property_type}.`;
       }
     }
 
@@ -51,6 +51,7 @@ serve(async (req) => {
 2. Booking vendor services (cleaning, maintenance, etc.)
 3. 3D property tour guidance
 4. General real estate questions
+5. Generating SEO content for property listings.
 
 Current context:
 - User preferences: ${JSON.stringify(userContext.preferences)}
@@ -61,7 +62,7 @@ Available functions:
 - control_3d_tour: Guide users through 3D property tours.
 - recommend_properties: Suggest properties based on preferences.
 - book_vendor_service: Books vendor services like cleaning or maintenance. It directly creates a booking with a suitable vendor.
-- get_property_info: Get detailed property information.
+- generate_seo_content: Generates SEO-optimized title and description for a property listing.
 
 Be helpful, concise, and professional. Always try to guide users toward taking action. When booking a service, confirm the action has been taken.`
       },
@@ -119,6 +120,17 @@ Be helpful, concise, and professional. Always try to guide users toward taking a
                 urgency: { type: 'string', enum: ['low', 'medium', 'high'], description: 'The urgency of the service request.' }
               },
               required: ['serviceType']
+            }
+          },
+          {
+            name: 'generate_seo_content',
+            description: 'Generates SEO-optimized title and description for a property listing.',
+            parameters: {
+              type: 'object',
+              properties: {
+                propertyId: { type: 'string', description: 'The ID of the property for which to generate content.' }
+              },
+              required: ['propertyId']
             }
           }
         ],
@@ -256,6 +268,8 @@ async function handleFunctionCall(supabase: any, functionCall: any, userId: stri
       return await createVendorBooking(supabase, parsedArgs, userId);
     case 'control_3d_tour':
       return `3D Tour: Focusing on ${parsedArgs.target}.`;
+    case 'generate_seo_content':
+      return await generateSeoContent(supabase, parsedArgs);
     default:
       return 'Function executed successfully.';
   }
@@ -350,6 +364,92 @@ async function createVendorBooking(supabase: any, args: any, userId: string) {
   
   const vendorName = service.vendor_business_profiles?.business_name || 'the vendor';
   return `Success! I've booked a "${service.service_name}" service for you with ${vendorName}. They will contact you shortly to confirm the details of your appointment. You can view your bookings in your dashboard.`;
+}
+
+async function generateSeoContent(supabase: any, args: { propertyId: string }) {
+  const { propertyId } = args;
+  if (!propertyId) {
+    return "I need a property to generate content for. Please specify which property you're referring to.";
+  }
+
+  // 1. Fetch property details
+  const { data: property, error: propertyError } = await supabase
+    .from('properties')
+    .select('title, description, property_type, listing_type, location, price, bedrooms, bathrooms, area_sqm')
+    .eq('id', propertyId)
+    .single();
+
+  if (propertyError || !property) {
+    console.error('Error fetching property for SEO generation:', propertyError);
+    return `I couldn't find the details for property ID ${propertyId}. Please check if the ID is correct.`;
+  }
+
+  const propertyDetails = `
+    - Title: ${property.title}
+    - Description: ${property.description}
+    - Type: ${property.property_type} (${property.listing_type})
+    - Location: ${property.location}
+    - Price: ${property.price}
+    - Specs: ${property.bedrooms} bed, ${property.bathrooms} bath, ${property.area_sqm} sqm
+  `;
+
+  // 2. Call OpenAI to generate content
+  try {
+    const seoPrompt = `You are a world-class real estate SEO expert. Your task is to generate an SEO-optimized title and meta description for a property listing.
+
+    Guidelines:
+    - The title must be compelling and under 60 characters.
+    - The description must be engaging, highlight key features, and be under 160 characters.
+    - Incorporate keywords naturally (e.g., property type, location, key features).
+    - Output MUST be a valid JSON object with two keys: "seo_title" and "seo_description". Do not include any other text or markdown formatting.
+
+    Property Details:
+    ${propertyDetails}
+    `;
+    
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${openAIApiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'gpt-4o',
+        messages: [{ role: 'user', content: seoPrompt }],
+        temperature: 0.7,
+        max_tokens: 200,
+        response_format: { type: 'json_object' }
+      }),
+    });
+
+    const aiResponse = await response.json();
+    if (!response.ok) {
+        throw new Error(aiResponse.error?.message || 'Failed to get response from OpenAI');
+    }
+
+    const generatedContent = JSON.parse(aiResponse.choices[0].message.content);
+    const { seo_title, seo_description } = generatedContent;
+
+    if (!seo_title || !seo_description) {
+      throw new Error("AI did not return the expected JSON format.");
+    }
+    
+    // 3. Update the property in the database
+    const { error: updateError } = await supabase
+      .from('properties')
+      .update({ seo_title, seo_description, updated_at: new Date().toISOString() })
+      .eq('id', propertyId);
+
+    if (updateError) {
+      throw updateError;
+    }
+
+    return `I've successfully generated and saved the new SEO content for "${property.title}". You can see the updates in the property details.`;
+
+  } catch (error) {
+    console.error('Error during SEO content generation:', error);
+    return "I'm sorry, I encountered an issue while generating the SEO content. Please try again later.";
+  }
 }
 
 function extractPreferences(interactions: any[]) {

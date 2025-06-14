@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -10,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAlert } from "@/contexts/AlertContext";
 import { formatIDR } from "@/utils/currency";
+import { Sparkles } from "lucide-react";
 
 interface PropertyEditModalProps {
   property: any;
@@ -29,7 +29,9 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
     bathrooms: "",
     area_sqm: "",
     owner_id: "",
-    agent_id: "no-agent"
+    agent_id: "no-agent",
+    seo_title: "",
+    seo_description: "",
   });
 
   const { showSuccess, showError } = useAlert();
@@ -63,7 +65,9 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
         bathrooms: property.bathrooms?.toString() || "",
         area_sqm: property.area_sqm?.toString() || "",
         owner_id: property.owner_id || "",
-        agent_id: property.agent_id || "no-agent"
+        agent_id: property.agent_id || "no-agent",
+        seo_title: property.seo_title || "",
+        seo_description: property.seo_description || "",
       });
     }
   }, [property, isOpen]);
@@ -97,6 +101,34 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
     },
   });
 
+  const generateSeoMutation = useMutation({
+    mutationFn: async ({ propertyId, title }: { propertyId: string; title: string }) => {
+      const { data, error } = await supabase.functions.invoke('ai-assistant', {
+        body: {
+          message: `Generate SEO content for property: ${title}`,
+          propertyId: propertyId,
+        },
+      });
+
+      if (error) throw error;
+      if (data.error) throw new Error(data.error);
+
+      return data;
+    },
+    onSuccess: (data) => {
+      showSuccess("AI Content Generated", data.message || "SEO content has been generated and saved.");
+      queryClient.invalidateQueries({ queryKey: ['admin-properties'] });
+    },
+    onError: (error: any) => {
+      showError("Generation Failed", error.message);
+    },
+  });
+
+  const handleGenerateSeo = () => {
+    if (!property?.id || !property?.title) return;
+    generateSeoMutation.mutate({ propertyId: property.id, title: property.title });
+  };
+
   const handleUpdate = () => {
     const submitData = {
       ...editData,
@@ -127,7 +159,7 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
         <DialogHeader>
           <DialogTitle className="text-gray-900 dark:text-gray-800">Edit Property</DialogTitle>
           <DialogDescription className="text-gray-600 dark:text-gray-700">
-            Update property details and ownership
+            Update property details, ownership, and generate SEO content with AI.
           </DialogDescription>
         </DialogHeader>
         
@@ -240,6 +272,54 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
             />
           </div>
 
+          <div className="col-span-2 space-y-2">
+            <Label htmlFor="edit-description" className="text-gray-900 dark:text-gray-800">Description</Label>
+            <Textarea
+              id="edit-description"
+              value={editData.description}
+              onChange={(e) => setEditData({ ...editData, description: e.target.value })}
+              placeholder="Property description"
+              rows={3}
+              className="bg-white border-gray-300"
+            />
+          </div>
+
+          <div className="col-span-2 space-y-4 p-4 border rounded-lg bg-gray-50 dark:bg-gray-100">
+            <div className="flex justify-between items-center">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-800">AI SEO Content</h3>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={handleGenerateSeo}
+                disabled={generateSeoMutation.isPending}
+              >
+                <Sparkles className="h-4 w-4 mr-2" />
+                {generateSeoMutation.isPending ? "Generating..." : "Generate with AI"}
+              </Button>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="seo-title" className="text-gray-900 dark:text-gray-800">SEO Title</Label>
+              <Input
+                id="seo-title"
+                value={editData.seo_title}
+                readOnly
+                placeholder="AI-generated SEO title will appear here."
+                className="bg-gray-200 dark:bg-gray-200"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="seo-description" className="text-gray-900 dark:text-gray-800">SEO Description</Label>
+              <Textarea
+                id="seo-description"
+                value={editData.seo_description}
+                readOnly
+                placeholder="AI-generated SEO description will appear here."
+                rows={2}
+                className="bg-gray-200 dark:bg-gray-200"
+              />
+            </div>
+          </div>
+
           <div className="space-y-2">
             <Label htmlFor="edit-owner" className="text-gray-900 dark:text-gray-800">Property Owner</Label>
             <Select value={editData.owner_id} onValueChange={(value) => setEditData({ ...editData, owner_id: value })}>
@@ -271,18 +351,6 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
                 ))}
               </SelectContent>
             </Select>
-          </div>
-
-          <div className="col-span-2 space-y-2">
-            <Label htmlFor="edit-description" className="text-gray-900 dark:text-gray-800">Description</Label>
-            <Textarea
-              id="edit-description"
-              value={editData.description}
-              onChange={(e) => setEditData({ ...editData, description: e.target.value })}
-              placeholder="Property description"
-              rows={3}
-              className="bg-white border-gray-300"
-            />
           </div>
         </div>
 

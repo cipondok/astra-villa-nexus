@@ -915,6 +915,8 @@ export type Database = {
           price: number | null
           property_features: Json | null
           property_type: string
+          seo_description: string | null
+          seo_title: string | null
           state: string | null
           status: string | null
           three_d_model_url: string | null
@@ -942,6 +944,8 @@ export type Database = {
           price?: number | null
           property_features?: Json | null
           property_type: string
+          seo_description?: string | null
+          seo_title?: string | null
           state?: string | null
           status?: string | null
           three_d_model_url?: string | null
@@ -969,6 +973,8 @@ export type Database = {
           price?: number | null
           property_features?: Json | null
           property_type?: string
+          seo_description?: string | null
+          seo_title?: string | null
           state?: string | null
           status?: string | null
           three_d_model_url?: string | null
