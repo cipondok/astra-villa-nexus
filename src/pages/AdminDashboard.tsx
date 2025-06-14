@@ -1,4 +1,3 @@
-
 import { useState, Suspense, lazy } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -6,7 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Settings, Users, Home, List, Plus, Gift, Calendar, Database, Shield, FileText, Store, MessageSquare, Activity, BarChart3, Loader2 } from "lucide-react";
+import { Settings, Users, Home, List, Plus, Gift, Calendar, Database, Shield, FileText, Store, MessageSquare, Activity, BarChart3, Loader2, Wifi } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Navigation from "@/components/Navigation";
@@ -23,6 +22,7 @@ const AdminVendorServiceManagement = lazy(() => import("@/components/admin/Admin
 const VendorServiceCategoryManagement = lazy(() => import("@/components/admin/VendorServiceCategoryManagement"));
 const FeedbackManagement = lazy(() => import("@/components/admin/FeedbackManagement"));
 const AstraTokenSettings = lazy(() => import("@/components/admin/AstraTokenSettings"));
+const LiveAgentStatusDashboard = lazy(() => import("@/components/admin/LiveAgentStatusDashboard"));
 
 const LoadingSpinner = () => (
   <div className="flex items-center justify-center p-8">
@@ -130,7 +130,7 @@ const AdminDashboard = () => {
       
       <main className="container mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 lg:grid-cols-9">
+          <TabsList className="grid w-full grid-cols-5 md:grid-cols-10">
             <TabsTrigger value="system" className="flex items-center gap-2">
               <Activity className="h-4 w-4" />
               <span className="hidden sm:inline">System</span>
@@ -166,6 +166,10 @@ const AdminDashboard = () => {
             <TabsTrigger value="feedback" className="flex items-center gap-2">
               <MessageSquare className="h-4 w-4" />
               <span className="hidden sm:inline">Feedback</span>
+            </TabsTrigger>
+            <TabsTrigger value="live-status" className="flex items-center gap-2">
+              <Wifi className="h-4 w-4" />
+              <span className="hidden sm:inline">Live Status</span>
             </TabsTrigger>
           </TabsList>
 
@@ -222,6 +226,12 @@ const AdminDashboard = () => {
           <TabsContent value="feedback">
             <Suspense fallback={<LoadingSpinner />}>
               <FeedbackManagement />
+            </Suspense>
+          </TabsContent>
+
+          <TabsContent value="live-status">
+            <Suspense fallback={<LoadingSpinner />}>
+              <LiveAgentStatusDashboard />
             </Suspense>
           </TabsContent>
         </Tabs>

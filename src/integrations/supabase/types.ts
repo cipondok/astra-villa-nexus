@@ -887,12 +887,14 @@ export type Database = {
       }
       profiles: {
         Row: {
+          availability_status: string | null
           avatar_url: string | null
           company_name: string | null
           created_at: string | null
           email: string
           full_name: string | null
           id: string
+          last_seen_at: string | null
           license_number: string | null
           phone: string | null
           role: Database["public"]["Enums"]["user_role"]
@@ -900,12 +902,14 @@ export type Database = {
           verification_status: string | null
         }
         Insert: {
+          availability_status?: string | null
           avatar_url?: string | null
           company_name?: string | null
           created_at?: string | null
           email: string
           full_name?: string | null
           id: string
+          last_seen_at?: string | null
           license_number?: string | null
           phone?: string | null
           role?: Database["public"]["Enums"]["user_role"]
@@ -913,12 +917,14 @@ export type Database = {
           verification_status?: string | null
         }
         Update: {
+          availability_status?: string | null
           avatar_url?: string | null
           company_name?: string | null
           created_at?: string | null
           email?: string
           full_name?: string | null
           id?: string
+          last_seen_at?: string | null
           license_number?: string | null
           phone?: string | null
           role?: Database["public"]["Enums"]["user_role"]
