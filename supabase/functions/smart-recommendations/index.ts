@@ -88,23 +88,21 @@ async function generatePropertyRecommendations(supabase: any, userProfile: any, 
     .select('*')
     .eq('status', 'approved');
 
-  // Apply preference-based filtering
-  if (preferences.propertyTypes && preferences.propertyTypes.length > 0) {
-    query = query.in('property_type', preferences.propertyTypes);
-  }
-
-  if (preferences.locations && preferences.locations.length > 0) {
-    query = query.in('city', preferences.locations);
-  }
-
+  // The previous filtering was too strict. We will remove filters for property type and location
+  // and rely on the scoring mechanism to rank a broader set of properties.
+  // A soft filter for price range can be kept.
   if (preferences.priceRange) {
-    query = query.gte('price', preferences.priceRange.min);
+    if (preferences.priceRange.min) {
+      query = query.gte('price', preferences.priceRange.min);
+    }
     if (preferences.priceRange.max) {
       query = query.lte('price', preferences.priceRange.max);
     }
   }
 
-  const { data: properties } = await query.limit(limit * 2); // Get more to rank
+  const { data: properties } = await query
+    .order('created_at', { ascending: false })
+    .limit(limit * 5); // Fetch a larger pool of properties for scoring
 
   if (!properties || properties.length === 0) {
     // Fallback to popular properties
