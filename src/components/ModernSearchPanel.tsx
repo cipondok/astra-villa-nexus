@@ -1,5 +1,5 @@
 
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -20,6 +20,10 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
   const [bathrooms, setBathrooms] = useState("");
   const [location, setLocation] = useState("");
   const [showAdvanced, setShowAdvanced] = useState(false);
+  
+  // Refs to track previous values and prevent duplicate searches
+  const lastSearchRef = useRef("");
+  const searchTimeoutRef = useRef<NodeJS.Timeout>();
 
   const text = useMemo(() => ({
     en: {
@@ -84,26 +88,44 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
       : ["Apartemen Jakarta", "Villa Bali", "Rumah Surabaya", "Kost Bandung"]
   , [language]);
 
-  // Stabilized debounced live search
+  // Improved debounced live search with duplicate prevention
   const debouncedLiveSearch = useCallback((searchTerm: string) => {
     if (!onLiveSearch) return;
     
-    if (searchTerm.trim().length >= 3) {
-      console.log("🔍 PANEL - Live search triggered for:", searchTerm);
-      onLiveSearch(searchTerm);
-    } else if (searchTerm.trim().length === 0) {
-      console.log("🔍 PANEL - Clearing search");
-      onLiveSearch("");
+    // Clear existing timeout
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
     }
+
+    // Prevent duplicate searches
+    if (lastSearchRef.current === searchTerm) {
+      console.log("🔍 PANEL - Skipping duplicate search for:", searchTerm);
+      return;
+    }
+
+    searchTimeoutRef.current = setTimeout(() => {
+      if (searchTerm.trim().length >= 3) {
+        console.log("🔍 PANEL - Live search triggered for:", searchTerm);
+        lastSearchRef.current = searchTerm;
+        onLiveSearch(searchTerm);
+      } else if (searchTerm.trim().length === 0) {
+        console.log("🔍 PANEL - Clearing search");
+        lastSearchRef.current = "";
+        onLiveSearch("");
+      }
+    }, 2000); // Increased debounce time to prevent rapid firing
   }, [onLiveSearch]);
 
-  // Debounced search effect with stable dependencies
+  // Effect for handling search input changes
   useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      debouncedLiveSearch(searchQuery);
-    }, 1000); // Increased debounce time for stability
+    debouncedLiveSearch(searchQuery);
     
-    return () => clearTimeout(timeoutId);
+    // Cleanup timeout on unmount
+    return () => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+    };
   }, [searchQuery, debouncedLiveSearch]);
 
   const handleManualSearch = useCallback(() => {
@@ -116,6 +138,7 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
     };
     
     console.log("🔍 PANEL - Manual search triggered with:", searchData);
+    lastSearchRef.current = searchQuery.trim();
     onSearch(searchData);
   }, [searchQuery, propertyType, bedrooms, bathrooms, location, onSearch]);
 
@@ -126,6 +149,7 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
     setBedrooms("");
     setBathrooms("");
     setLocation("");
+    lastSearchRef.current = "";
     if (onLiveSearch) {
       onLiveSearch("");
     }
@@ -134,6 +158,7 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
   const handlePopularSearch = useCallback((term: string) => {
     console.log("🔥 PANEL - Popular search clicked:", term);
     setSearchQuery(term);
+    lastSearchRef.current = term;
     const searchData = {
       query: term,
       propertyType: "",
@@ -150,6 +175,12 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
     }
   }, [handleManualSearch]);
 
+  const handleSearchInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    console.log("🔤 PANEL - Search input changed:", value);
+    setSearchQuery(value);
+  }, []);
+
   const hasActiveFilters = searchQuery || propertyType || bedrooms || bathrooms || location;
 
   return (
@@ -164,10 +195,7 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
                 placeholder={currentText.search}
                 className="pl-10 h-12 text-gray-700 dark:text-gray-200"
                 value={searchQuery}
-                onChange={(e) => {
-                  console.log("🔤 PANEL - Search input changed:", e.target.value);
-                  setSearchQuery(e.target.value);
-                }}
+                onChange={handleSearchInputChange}
                 onKeyDown={handleKeyPress}
               />
             </div>

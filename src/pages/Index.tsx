@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import ParticleEffect from "@/components/ParticleEffect";
@@ -24,6 +24,10 @@ const Index = () => {
   const { isAuthenticated, user } = useAuth();
   const { trackInteraction } = useUserTracking();
   const navigate = useNavigate();
+  
+  // Ref to prevent duplicate searches
+  const lastSearchQueryRef = useRef("");
+  const searchInProgressRef = useRef(false);
 
   // Check URL parameters for auth modal
   useEffect(() => {
@@ -96,8 +100,22 @@ const Index = () => {
   };
 
   const performSearch = async (searchData: any) => {
+    // Prevent duplicate searches
+    if (searchInProgressRef.current) {
+      console.log("🔍 SEARCH BLOCKED - Search already in progress");
+      return;
+    }
+
+    const searchKey = JSON.stringify(searchData);
+    if (lastSearchQueryRef.current === searchKey) {
+      console.log("🔍 SEARCH BLOCKED - Duplicate search prevented");
+      return;
+    }
+
     console.log("🔍 SEARCH DEBUG - Starting search with:", searchData);
     
+    searchInProgressRef.current = true;
+    lastSearchQueryRef.current = searchKey;
     setIsSearching(true);
     
     try {
@@ -170,7 +188,6 @@ const Index = () => {
         setSearchResults([]);
       } else {
         console.log(`🔍 SEARCH SUCCESS - Found ${properties?.length || 0} properties`);
-        console.log("🔍 SEARCH DEBUG - Sample results:", properties?.slice(0, 2));
         setSearchResults(properties || []);
       }
       
@@ -179,10 +196,11 @@ const Index = () => {
       setSearchResults([]);
     } finally {
       setIsSearching(false);
+      searchInProgressRef.current = false;
     }
   };
 
-  const handleSearch = async (searchData: any) => {
+  const handleSearch = useCallback(async (searchData: any) => {
     console.log("🚀 MANUAL SEARCH triggered:", searchData);
     setHasSearched(true);
     
@@ -196,9 +214,9 @@ const Index = () => {
     }
     
     await performSearch(searchData);
-  };
+  }, [user, trackInteraction]);
 
-  const handleLiveSearch = async (searchTerm: string) => {
+  const handleLiveSearch = useCallback(async (searchTerm: string) => {
     console.log("⚡ LIVE SEARCH triggered:", searchTerm);
     
     if (!searchTerm || searchTerm.trim() === '') {
@@ -206,6 +224,7 @@ const Index = () => {
         console.log("⚡ LIVE SEARCH - Clearing search, resetting to featured");
         setSearchResults([]);
         setHasSearched(false);
+        lastSearchQueryRef.current = "";
       }
       return;
     }
@@ -214,7 +233,7 @@ const Index = () => {
       setHasSearched(true);
       await performSearch({ query: searchTerm });
     }
-  };
+  }, [hasSearched]);
 
   // Determine which properties to show
   const propertiesToShow = hasSearched ? searchResults : featuredProperties;
