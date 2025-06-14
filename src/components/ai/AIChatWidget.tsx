@@ -187,7 +187,7 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
       {/* AI Chat Window */}
       {isOpen && (
         <div className="fixed bottom-6 right-6 z-50 w-96 max-w-[calc(100vw-2rem)]">
-          <Card className="shadow-2xl border-2 border-purple-200 bg-white">
+          <Card className="shadow-2xl border-2 border-purple-200/50 bg-white/60 backdrop-blur-md overflow-hidden">
             <CardHeader className="bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-t-lg">
               <div className="flex items-center justify-between">
                 <CardTitle className="flex items-center gap-2 text-white">
@@ -216,7 +216,7 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
                     <div className={`max-w-xs p-3 rounded-lg ${
                       msg.role === 'user' 
                         ? 'bg-blue-500 text-white' 
-                        : 'bg-gray-100 text-gray-900'
+                        : 'bg-white/70 text-gray-900'
                     }`}>
                       {msg.role === 'assistant' && (
                         <div className="flex items-center gap-2 mb-1">
@@ -236,7 +236,7 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
                 
                 {isLoading && (
                   <div className="flex justify-start">
-                    <div className="bg-gray-100 p-3 rounded-lg">
+                    <div className="bg-white/70 p-3 rounded-lg">
                       <div className="flex items-center gap-2">
                         <LoaderCircle className="h-5 w-5 text-purple-600 animate-spin" />
                         <span className="text-sm">AI is thinking...</span>
@@ -249,7 +249,7 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
 
               {/* Quick Actions */}
               {messages.length <= 1 && (
-                <div className="p-3 border-t bg-gray-50">
+                <div className="p-3 border-t bg-black/5">
                   <div className="text-xs text-gray-600 mb-2">Quick actions:</div>
                   <div className="flex flex-col gap-1">
                     {quickActions.map((action, index) => (
