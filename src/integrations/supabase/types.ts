@@ -795,6 +795,36 @@ export type Database = {
         }
         Relationships: []
       }
+      market_trends: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          location: string | null
+          property_type: string | null
+          trend_type: string
+          value: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          location?: string | null
+          property_type?: string | null
+          trend_type: string
+          value: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          location?: string | null
+          property_type?: string | null
+          trend_type?: string
+          value?: string
+        }
+        Relationships: []
+      }
       orders: {
         Row: {
           created_at: string | null
@@ -1015,6 +1045,45 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "property_images_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      property_revival_log: {
+        Row: {
+          created_at: string
+          id: string
+          market_trend_id: string
+          property_id: string
+          revival_details: Json | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          market_trend_id: string
+          property_id: string
+          revival_details?: Json | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          market_trend_id?: string
+          property_id?: string
+          revival_details?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "property_revival_log_market_trend_id_fkey"
+            columns: ["market_trend_id"]
+            isOneToOne: false
+            referencedRelation: "market_trends"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "property_revival_log_property_id_fkey"
             columns: ["property_id"]
             isOneToOne: false
             referencedRelation: "properties"
