@@ -81,7 +81,7 @@ const PropertyListingsSection = ({
     return colors[type as keyof typeof colors] || 'bg-gray-100 text-gray-800';
   };
 
-  // Memoize section title and subtitle to prevent unnecessary re-renders
+  // Stable section data to prevent flickering
   const sectionData = useMemo(() => {
     const sectionTitle = hasSearched ? currentText.searchResults : currentText.title;
     const sectionSubtitle = hasSearched 
@@ -127,9 +127,9 @@ const PropertyListingsSection = ({
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 transition-all duration-300 ease-in-out">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {searchResults.map((property) => (
-              <Card key={property.id} className="overflow-hidden hover:shadow-lg transition-all duration-300 group opacity-100">
+              <Card key={`${property.id}-${property.title}`} className="overflow-hidden hover:shadow-lg transition-shadow duration-300 group">
                 <div className="relative">
                   <img
                     src={property.image_urls?.[0] || property.images?.[0] || "https://images.unsplash.com/photo-1721322800607-8c38375eef04?w=400&h=300&fit=crop"}

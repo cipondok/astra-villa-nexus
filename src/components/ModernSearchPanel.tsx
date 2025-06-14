@@ -1,5 +1,5 @@
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -21,29 +21,7 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
   const [location, setLocation] = useState("");
   const [showAdvanced, setShowAdvanced] = useState(false);
 
-  // Debounced live search with useCallback to prevent unnecessary re-renders
-  const debouncedLiveSearch = useCallback((searchTerm: string) => {
-    if (!onLiveSearch) return;
-    
-    if (searchTerm.trim().length >= 3) {
-      console.log("🔍 PANEL - Live search triggered for:", searchTerm);
-      onLiveSearch(searchTerm);
-    } else if (searchTerm.trim().length === 0) {
-      console.log("🔍 PANEL - Clearing search");
-      onLiveSearch("");
-    }
-  }, [onLiveSearch]);
-
-  // Live search with debouncing
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      debouncedLiveSearch(searchQuery);
-    }, 800);
-    
-    return () => clearTimeout(timeoutId);
-  }, [searchQuery, debouncedLiveSearch]);
-
-  const text = {
+  const text = useMemo(() => ({
     en: {
       search: "Search properties, location, or area...",
       propertyType: "Property Type",
@@ -96,13 +74,37 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
       popular: "Pencarian populer:",
       clearFilters: "Hapus semua"
     }
-  };
+  }), []);
 
   const currentText = text[language];
 
-  const popularSearches = language === "en" 
-    ? ["Apartment Jakarta", "Villa Bali", "House Surabaya", "Boarding Bandung"]
-    : ["Apartemen Jakarta", "Villa Bali", "Rumah Surabaya", "Kost Bandung"];
+  const popularSearches = useMemo(() => 
+    language === "en" 
+      ? ["Apartment Jakarta", "Villa Bali", "House Surabaya", "Boarding Bandung"]
+      : ["Apartemen Jakarta", "Villa Bali", "Rumah Surabaya", "Kost Bandung"]
+  , [language]);
+
+  // Stabilized debounced live search
+  const debouncedLiveSearch = useCallback((searchTerm: string) => {
+    if (!onLiveSearch) return;
+    
+    if (searchTerm.trim().length >= 3) {
+      console.log("🔍 PANEL - Live search triggered for:", searchTerm);
+      onLiveSearch(searchTerm);
+    } else if (searchTerm.trim().length === 0) {
+      console.log("🔍 PANEL - Clearing search");
+      onLiveSearch("");
+    }
+  }, [onLiveSearch]);
+
+  // Debounced search effect with stable dependencies
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      debouncedLiveSearch(searchQuery);
+    }, 1000); // Increased debounce time for stability
+    
+    return () => clearTimeout(timeoutId);
+  }, [searchQuery, debouncedLiveSearch]);
 
   const handleManualSearch = useCallback(() => {
     const searchData = {
@@ -148,6 +150,8 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
     }
   }, [handleManualSearch]);
 
+  const hasActiveFilters = searchQuery || propertyType || bedrooms || bathrooms || location;
+
   return (
     <Card className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm shadow-2xl max-w-6xl mx-auto">
       <CardContent className="p-6">
@@ -183,7 +187,7 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
           
           <Button 
             onClick={handleManualSearch}
-            className="h-12 bg-blue-600 hover:bg-blue-700 text-white font-semibold transition-all duration-300"
+            className="h-12 bg-blue-600 hover:bg-blue-700 text-white font-semibold"
           >
             <Search className="h-4 w-4 mr-2" />
             {currentText.searchBtn}
@@ -201,7 +205,7 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
             {showAdvanced ? currentText.hideFilters : currentText.advancedFilters}
           </Button>
           
-          {(searchQuery || propertyType || bedrooms || bathrooms || location) && (
+          {hasActiveFilters && (
             <Button
               variant="outline"
               size="sm"
