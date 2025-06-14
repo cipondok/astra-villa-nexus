@@ -153,13 +153,19 @@ const EnhancedPropertyCard = ({
         )}
 
         {/* Top Badges */}
-        <div className="absolute top-3 left-3 flex gap-2 z-10">
+        <div className="absolute top-3 left-3 flex flex-wrap gap-2 z-10">
           <Badge variant="secondary" className="bg-background/90">
             {getListingTypeLabel(property.listing_type)}
           </Badge>
           <Badge variant="outline" className="bg-background/90 capitalize">
             {property.property_type}
           </Badge>
+          {(property.three_d_model_url || property.virtual_tour_url) && (
+            <Badge variant="secondary" className="bg-black/70 text-white backdrop-blur-sm border-none flex items-center gap-1">
+              <ViewIcon className="h-4 w-4" />
+              <span>3D</span>
+            </Badge>
+          )}
         </div>
 
         {/* Action Buttons */}

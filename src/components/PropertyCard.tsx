@@ -109,6 +109,10 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
                 🔥 Hot Deal
               </Badge>
             )}
+            <Badge variant="secondary" className="bg-black/70 text-white backdrop-blur-sm border-none flex items-center gap-1 w-fit">
+              <Box className="h-4 w-4" />
+              <span>3D</span>
+            </Badge>
           </div>
 
           <Button
