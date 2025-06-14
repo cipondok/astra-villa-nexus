@@ -7,6 +7,7 @@ import { useThemeSettings } from "@/contexts/ThemeSettingsContext";
 import { useTheme } from "@/components/ThemeProvider";
 import RoleBasedAuthModal from "./RoleBasedAuthModal";
 import ThemeToggleSwitch from "./ThemeToggleSwitch";
+import { toast } from "sonner";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -18,17 +19,22 @@ const Navigation = () => {
   const { themeSettings } = useThemeSettings();
 
   const navItems = [
-    { name: "Home", path: "/", icon: Home },
-    { name: "Properties", path: "/properties", icon: Building },
-    { name: "Buy", path: "/buy", icon: ShoppingCart },
-    { name: "Rent", path: "/rent", icon: KeyRound },
-    { name: "New Projects", path: "/new-projects", icon: Construction },
-    { name: "Pre-launching", path: "/pre-launching", icon: Rocket },
-    { name: "About", path: "/about", icon: Info },
+    { name: "Home", path: "/", icon: Home, isImplemented: true },
+    { name: "Properties", path: "/properties", icon: Building, isImplemented: true },
+    { name: "Buy", path: "/buy", icon: ShoppingCart, isImplemented: false },
+    { name: "Rent", path: "/rent", icon: KeyRound, isImplemented: false },
+    { name: "New Projects", path: "/new-projects", icon: Construction, isImplemented: false },
+    { name: "Pre-launching", path: "/pre-launching", icon: Rocket, isImplemented: false },
+    { name: "About", path: "/about", icon: Info, isImplemented: true },
   ];
 
   const handleSignOut = async () => {
     await signOut();
+    setIsOpen(false);
+  };
+
+  const handleComingSoon = (featureName: string) => {
+    toast.info(`${featureName} page is coming soon. Stay tuned!`);
     setIsOpen(false);
   };
 
@@ -68,20 +74,31 @@ const Navigation = () => {
 
             {/* Desktop Navigation - More compact */}
             <div className="hidden md:flex items-center space-x-2">
-              {navItems.map((item) => (
-                <Link
-                  key={item.name}
-                  to={item.path}
-                  className={`flex items-center gap-1 px-3 py-2 text-sm font-medium transition-all duration-300 rounded-xl ${
-                    location.pathname === item.path
-                      ? "text-primary-dynamic bg-primary-dynamic/10 border border-primary-dynamic/20"
-                      : "text-gray-600 dark:text-gray-300 hover:text-primary-dynamic hover:bg-gray-100 dark:hover:bg-gray-800"
-                  }`}
-                >
-                  <item.icon className="h-4 w-4" />
-                  <span className="hidden lg:inline">{item.name}</span>
-                </Link>
-              ))}
+              {navItems.map((item) =>
+                item.isImplemented ? (
+                  <Link
+                    key={item.name}
+                    to={item.path}
+                    className={`flex items-center gap-1 px-3 py-2 text-sm font-medium transition-all duration-300 rounded-xl ${
+                      location.pathname === item.path
+                        ? "text-primary-dynamic bg-primary-dynamic/10 border border-primary-dynamic/20"
+                        : "text-gray-600 dark:text-gray-300 hover:text-primary-dynamic hover:bg-gray-100 dark:hover:bg-gray-800"
+                    }`}
+                  >
+                    <item.icon className="h-4 w-4" />
+                    <span className="hidden lg:inline">{item.name}</span>
+                  </Link>
+                ) : (
+                  <button
+                    key={item.name}
+                    onClick={() => handleComingSoon(item.name)}
+                    className="flex items-center gap-1 px-3 py-2 text-sm font-medium transition-all duration-300 rounded-xl text-gray-600 dark:text-gray-300 hover:text-primary-dynamic hover:bg-gray-100 dark:hover:bg-gray-800"
+                  >
+                    <item.icon className="h-4 w-4" />
+                    <span className="hidden lg:inline">{item.name}</span>
+                  </button>
+                )
+              )}
               
               {/* Add Property Button - Always visible */}
               <button
@@ -163,21 +180,32 @@ const Navigation = () => {
         {isOpen && (
           <div className="md:hidden glass-card-dark border-t border-white/10 backdrop-blur-xl bg-white/90 dark:bg-gray-900/90">
             <div className="px-3 pt-2 pb-3 space-y-1">
-              {navItems.map((item) => (
-                <Link
-                  key={item.name}
-                  to={item.path}
-                  className={`flex items-center gap-3 px-4 py-3 text-base font-medium transition-all duration-300 rounded-xl ${
-                    location.pathname === item.path
-                      ? "text-primary-dynamic bg-primary-dynamic/10 border border-primary-dynamic/20"
-                      : "text-gray-600 dark:text-gray-300 hover:text-primary-dynamic hover:bg-gray-100 dark:hover:bg-gray-800"
-                  }`}
-                  onClick={() => setIsOpen(false)}
-                >
-                  <item.icon className="h-5 w-5" />
-                  <span>{item.name}</span>
-                </Link>
-              ))}
+              {navItems.map((item) =>
+                item.isImplemented ? (
+                  <Link
+                    key={item.name}
+                    to={item.path}
+                    className={`flex items-center gap-3 px-4 py-3 text-base font-medium transition-all duration-300 rounded-xl ${
+                      location.pathname === item.path
+                        ? "text-primary-dynamic bg-primary-dynamic/10 border border-primary-dynamic/20"
+                        : "text-gray-600 dark:text-gray-300 hover:text-primary-dynamic hover:bg-gray-100 dark:hover:bg-gray-800"
+                    }`}
+                    onClick={() => setIsOpen(false)}
+                  >
+                    <item.icon className="h-5 w-5" />
+                    <span>{item.name}</span>
+                  </Link>
+                ) : (
+                  <button
+                    key={item.name}
+                    onClick={() => handleComingSoon(item.name)}
+                    className="flex items-center gap-3 px-4 py-3 text-base font-medium text-gray-600 dark:text-gray-300 hover:text-primary-dynamic hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-300 rounded-xl w-full"
+                  >
+                    <item.icon className="h-5 w-5" />
+                    <span>{item.name}</span>
+                  </button>
+                )
+              )}
               
               {/* Mobile Add Property Button - Always visible */}
               <button
