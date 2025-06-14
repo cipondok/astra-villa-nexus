@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,6 +5,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Search, Filter, X } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 
 interface ModernSearchPanelProps {
   language: "en" | "id";
@@ -19,6 +20,7 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
   const [bedrooms, setBedrooms] = useState("");
   const [bathrooms, setBathrooms] = useState("");
   const [location, setLocation] = useState("");
+  const [has3D, setHas3D] = useState(false);
   const [showAdvanced, setShowAdvanced] = useState(false);
   
   // Refs to track previous values and prevent duplicate searches
@@ -50,7 +52,8 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
       surabaya: "Surabaya",
       bandung: "Bandung",
       popular: "Popular searches:",
-      clearFilters: "Clear all"
+      clearFilters: "Clear all",
+      has3D: "With 3D View"
     },
     id: {
       search: "Cari properti, lokasi, atau area...",
@@ -76,9 +79,10 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
       surabaya: "Surabaya",
       bandung: "Bandung",
       popular: "Pencarian populer:",
-      clearFilters: "Hapus semua"
+      clearFilters: "Hapus semua",
+      has3D: "Dengan Tampilan 3D"
     }
-  }), []);
+  }), [language]);
 
   const currentText = text[language];
 
@@ -134,13 +138,14 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
       propertyType: propertyType || "",
       bedrooms: bedrooms || "",
       bathrooms: bathrooms || "",
-      location: location || ""
+      location: location || "",
+      has3D,
     };
     
     console.log("🔍 PANEL - Manual search triggered with:", searchData);
     lastSearchRef.current = searchQuery.trim();
     onSearch(searchData);
-  }, [searchQuery, propertyType, bedrooms, bathrooms, location, onSearch]);
+  }, [searchQuery, propertyType, bedrooms, bathrooms, location, has3D, onSearch]);
 
   const handleClearFilters = useCallback(() => {
     console.log("🧹 PANEL - Clearing all filters");
@@ -149,6 +154,7 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
     setBedrooms("");
     setBathrooms("");
     setLocation("");
+    setHas3D(false);
     lastSearchRef.current = "";
     if (onLiveSearch) {
       onLiveSearch("");
@@ -158,13 +164,19 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
   const handlePopularSearch = useCallback((term: string) => {
     console.log("🔥 PANEL - Popular search clicked:", term);
     setSearchQuery(term);
+    setPropertyType("");
+    setBedrooms("");
+    setBathrooms("");
+    setLocation("");
+    setHas3D(false);
     lastSearchRef.current = term;
     const searchData = {
       query: term,
       propertyType: "",
       bedrooms: "",  
       bathrooms: "",
-      location: ""
+      location: "",
+      has3D: false
     };
     onSearch(searchData);
   }, [onSearch]);
@@ -181,7 +193,7 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
     setSearchQuery(value);
   }, []);
 
-  const hasActiveFilters = searchQuery || propertyType || bedrooms || bathrooms || location;
+  const hasActiveFilters = searchQuery || propertyType || bedrooms || bathrooms || location || has3D;
 
   return (
     <Card className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm shadow-2xl max-w-6xl mx-auto">
@@ -248,7 +260,7 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
 
         {/* Advanced Filters */}
         {showAdvanced && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
             <Select value={bedrooms} onValueChange={setBedrooms}>
               <SelectTrigger>
                 <SelectValue placeholder={currentText.bedrooms} />
@@ -284,6 +296,12 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
                 <SelectItem value="bandung">{currentText.bandung}</SelectItem>
               </SelectContent>
             </Select>
+            <div className="flex items-center space-x-2 justify-center pt-2">
+              <Checkbox id="has3D" checked={has3D} onCheckedChange={(checked) => setHas3D(!!checked)} />
+              <Label htmlFor="has3D" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                {currentText.has3D}
+              </Label>
+            </div>
           </div>
         )}
         

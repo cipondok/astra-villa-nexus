@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
@@ -178,6 +177,12 @@ const Index = () => {
         query = query.or(`city.ilike.%${locationTerm}%,state.ilike.%${locationTerm}%,location.ilike.%${locationTerm}%`);
       }
 
+      // Apply 3D view filter
+      if (searchData.has3D) {
+        console.log("🔍 SEARCH DEBUG - Applying 3D view filter");
+        query = query.or('three_d_model_url.not.is.null,virtual_tour_url.not.is.null');
+      }
+
       // Execute the query
       console.log("🔍 SEARCH DEBUG - Executing query...");
       const { data: properties, error } = await query
@@ -210,7 +215,8 @@ const Index = () => {
       trackInteraction('search', {
         searchQuery: searchData.query,
         propertyType: searchData.propertyType,
-        location: searchData.location
+        location: searchData.location,
+        has3D: searchData.has3D,
       });
     }
     
