@@ -13,7 +13,7 @@ const Rent = () => {
           <p>Rent page content will be here soon.</p>
         </div>
       </main>
-      <ProfessionalFooter />
+      <ProfessionalFooter language="en" />
     </div>
   );
 };

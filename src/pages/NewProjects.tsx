@@ -13,7 +13,7 @@ const NewProjects = () => {
           <p>New Projects page content will be here soon.</p>
         </div>
       </main>
-      <ProfessionalFooter />
+      <ProfessionalFooter language="en" />
     </div>
   );
 };
