@@ -720,6 +720,7 @@ export type Database = {
       }
       feedback_monitoring: {
         Row: {
+          admin_response: string | null
           content: string
           created_at: string | null
           feedback_type: string
@@ -731,6 +732,7 @@ export type Database = {
           user_id: string | null
         }
         Insert: {
+          admin_response?: string | null
           content: string
           created_at?: string | null
           feedback_type: string
@@ -742,6 +744,7 @@ export type Database = {
           user_id?: string | null
         }
         Update: {
+          admin_response?: string | null
           content?: string
           created_at?: string | null
           feedback_type?: string
