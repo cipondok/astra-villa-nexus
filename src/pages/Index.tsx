@@ -121,23 +121,21 @@ const Index = () => {
     try {
       let query = supabase
         .from('properties')
-        .select('*')
-        .eq('status', 'approved');
+        .select('*');
 
-      console.log("🔍 SEARCH DEBUG - Base query for approved properties");
+      const filters: string[] = ['status.eq.approved'];
 
       // Apply text search if provided
       if (searchData.query && searchData.query.trim()) {
         const searchTerm = searchData.query.trim().toLowerCase();
         console.log("🔍 SEARCH DEBUG - Applying text search for:", searchTerm);
-        
-        query = query.or(`title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%,location.ilike.%${searchTerm}%`);
+        filters.push(`or(title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%,location.ilike.%${searchTerm}%)`);
       }
 
       // Apply property type filter
       if (searchData.propertyType && searchData.propertyType.trim()) {
         console.log("🔍 SEARCH DEBUG - Applying property type filter:", searchData.propertyType);
-        query = query.eq('property_type', searchData.propertyType);
+        filters.push(`property_type.eq.${searchData.propertyType}`);
       }
 
       // Apply bedroom filter
@@ -148,9 +146,9 @@ const Index = () => {
         
         if (!isNaN(bedroomCount)) {
           if (searchData.bedrooms.includes('+')) {
-            query = query.gte('bedrooms', bedroomCount);
+            filters.push(`bedrooms.gte.${bedroomCount}`);
           } else {
-            query = query.eq('bedrooms', bedroomCount);
+            filters.push(`bedrooms.eq.${bedroomCount}`);
           }
         }
       }
@@ -163,9 +161,9 @@ const Index = () => {
         
         if (!isNaN(bathroomCount)) {
           if (searchData.bathrooms.includes('+')) {
-            query = query.gte('bathrooms', bathroomCount);
+            filters.push(`bathrooms.gte.${bathroomCount}`);
           } else {
-            query = query.eq('bathrooms', bathroomCount);
+            filters.push(`bathrooms.eq.${bathroomCount}`);
           }
         }
       }
@@ -174,17 +172,20 @@ const Index = () => {
       if (searchData.location && searchData.location.trim()) {
         console.log("🔍 SEARCH DEBUG - Applying location filter:", searchData.location);
         const locationTerm = searchData.location.trim().toLowerCase();
-        query = query.or(`city.ilike.%${locationTerm}%,state.ilike.%${locationTerm}%,location.ilike.%${locationTerm}%`);
+        filters.push(`or(city.ilike.%${locationTerm}%,state.ilike.%${locationTerm}%,location.ilike.%${locationTerm}%)`);
       }
 
       // Apply 3D view filter
       if (searchData.has3D) {
         console.log("🔍 SEARCH DEBUG - Applying 3D view filter");
-        query = query.or('three_d_model_url.not.is.null,virtual_tour_url.not.is.null');
+        filters.push('or(three_d_model_url.not.is.null,virtual_tour_url.not.is.null)');
       }
 
+      // Apply all filters together
+      console.log("🔍 SEARCH DEBUG - Executing with filters:", filters.join(','));
+      query = query.and(filters.join(','));
+
       // Execute the query
-      console.log("🔍 SEARCH DEBUG - Executing query...");
       const { data: properties, error } = await query
         .order('created_at', { ascending: false })
         .limit(50);
