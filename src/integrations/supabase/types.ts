@@ -904,6 +904,7 @@ export type Database = {
           city: string | null
           created_at: string | null
           description: string | null
+          development_status: string
           id: string
           image_urls: string[] | null
           images: string[] | null
@@ -930,6 +931,7 @@ export type Database = {
           city?: string | null
           created_at?: string | null
           description?: string | null
+          development_status?: string
           id?: string
           image_urls?: string[] | null
           images?: string[] | null
@@ -956,6 +958,7 @@ export type Database = {
           city?: string | null
           created_at?: string | null
           description?: string | null
+          development_status?: string
           id?: string
           image_urls?: string[] | null
           images?: string[] | null

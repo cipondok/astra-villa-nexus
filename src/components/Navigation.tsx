@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -21,10 +22,10 @@ const Navigation = () => {
   const navItems = [
     { name: "Home", path: "/", icon: Home, isImplemented: true },
     { name: "Properties", path: "/properties", icon: Building, isImplemented: true },
-    { name: "Buy", path: "/buy", icon: ShoppingCart, isImplemented: false },
-    { name: "Rent", path: "/rent", icon: KeyRound, isImplemented: false },
-    { name: "New Projects", path: "/new-projects", icon: Construction, isImplemented: false },
-    { name: "Pre-launching", path: "/pre-launching", icon: Rocket, isImplemented: false },
+    { name: "Buy", path: "/buy", icon: ShoppingCart, isImplemented: true },
+    { name: "Rent", path: "/rent", icon: KeyRound, isImplemented: true },
+    { name: "New Projects", path: "/new-projects", icon: Construction, isImplemented: true },
+    { name: "Pre-launching", path: "/pre-launching", icon: Rocket, isImplemented: true },
     { name: "About", path: "/about", icon: Info, isImplemented: true },
   ];
 

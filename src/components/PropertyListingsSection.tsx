@@ -12,6 +12,7 @@ interface PropertyListingsSectionProps {
   isSearching?: boolean;
   hasSearched?: boolean;
   fallbackResults?: any[];
+  hideTitle?: boolean;
 }
 
 const PropertyListingsSection = ({ 
@@ -19,7 +20,8 @@ const PropertyListingsSection = ({
   searchResults = [], 
   isSearching = false,
   hasSearched = false,
-  fallbackResults = []
+  fallbackResults = [],
+  hideTitle = false
 }: PropertyListingsSectionProps) => {
   const [favoriteProperties, setFavoriteProperties] = useState<Set<string>>(new Set());
   const [propertyFor3DView, setPropertyFor3DView] = useState<any | null>(null);
@@ -111,10 +113,12 @@ const PropertyListingsSection = ({
     <>
       <section className="py-12">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">{sectionData.sectionTitle}</h2>
-            {sectionData.sectionSubtitle && <p className="text-xl text-muted-foreground">{sectionData.sectionSubtitle}</p>}
-          </div>
+          {!hideTitle && (
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold mb-4">{sectionData.sectionTitle}</h2>
+              {sectionData.sectionSubtitle && <p className="text-xl text-muted-foreground">{sectionData.sectionSubtitle}</p>}
+            </div>
+          )}
 
           {noResultsFound ? (
             <div className="text-center py-12">
