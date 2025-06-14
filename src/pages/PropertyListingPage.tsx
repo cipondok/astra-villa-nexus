@@ -139,10 +139,10 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Navigation />
-      <main className="container mx-auto px-4 py-8 pt-24">
-        <h1 className="text-4xl font-bold mb-4">{title}</h1>
-        <p className="text-muted-foreground">{subtitle}</p>
-        <div className="mt-8">
+      <main className="container mx-auto px-4 py-6 pt-20">
+        <h1 className="text-4xl font-bold mb-2">{title}</h1>
+        <p className="text-muted-foreground mb-4">{subtitle}</p>
+        <div className="mt-6">
           {isLoading ? (
              <LoadingPopup 
                 isOpen={isLoading} 

@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import SearchLoadingAnimation from "@/components/SearchLoadingAnimation";
 import PropertyViewer3D from "@/components/PropertyViewer3D";
-import ListingCard from "./ListingCard";
+import EnhancedPropertyCard from "@/components/property/EnhancedPropertyCard";
 
 interface PropertyListingsSectionProps {
   language: "en" | "id";
@@ -111,7 +111,7 @@ const PropertyListingsSection = ({
 
   return (
     <>
-      <section className="py-12">
+      <section className="py-6">
         <div className="container mx-auto px-4">
           {!hideTitle && (
             <div className="text-center mb-12">
@@ -134,13 +134,13 @@ const PropertyListingsSection = ({
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {searchResults.map((property) => (
-                <ListingCard 
+                <EnhancedPropertyCard
                   key={`${property.id}-${property.title}`}
                   property={property}
-                  text={currentText}
-                  isFavorite={favoriteProperties.has(property.id)}
-                  onToggleFavorite={toggleFavorite}
-                  onViewDetails={handleViewDetails}
+                  language={language}
+                  isSaved={favoriteProperties.has(property.id)}
+                  onSave={() => toggleFavorite(property.id)}
+                  onView={() => handleViewDetails(property.id)}
                   onView3D={handleView3D}
                 />
               ))}
@@ -155,13 +155,13 @@ const PropertyListingsSection = ({
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {fallbackResults.map((property) => (
-                  <ListingCard
+                  <EnhancedPropertyCard
                     key={`fallback-${property.id}`}
                     property={property}
-                    text={currentText}
-                    isFavorite={favoriteProperties.has(property.id)}
-                    onToggleFavorite={toggleFavorite}
-                    onViewDetails={handleViewDetails}
+                    language={language}
+                    isSaved={favoriteProperties.has(property.id)}
+                    onSave={() => toggleFavorite(property.id)}
+                    onView={() => handleViewDetails(property.id)}
                     onView3D={handleView3D}
                   />
                 ))}

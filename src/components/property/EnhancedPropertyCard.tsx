@@ -2,7 +2,7 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Heart, MapPin, Bed, Bath, Square, Eye, Share2, Car } from 'lucide-react';
+import { Heart, MapPin, Bed, Bath, Square, Eye, Share2, Car, View as ViewIcon } from 'lucide-react';
 import { useState } from 'react';
 
 interface Property {
@@ -15,9 +15,11 @@ interface Property {
   area_sqm: number;
   property_type: string;
   listing_type: string;
-  images?: string[];
+  image_urls?: string[];
   description?: string;
   property_features?: any;
+  three_d_model_url?: string;
+  virtual_tour_url?: string;
 }
 
 interface EnhancedPropertyCardProps {
@@ -26,6 +28,8 @@ interface EnhancedPropertyCardProps {
   onView?: (id: string) => void;
   onSave?: (id: string) => void;
   onShare?: (id: string) => void;
+  isSaved?: boolean;
+  onView3D?: (property: any) => void;
 }
 
 const EnhancedPropertyCard = ({ 
@@ -33,9 +37,10 @@ const EnhancedPropertyCard = ({
   language, 
   onView, 
   onSave, 
-  onShare 
+  onShare,
+  isSaved = false,
+  onView3D
 }: EnhancedPropertyCardProps) => {
-  const [isLiked, setIsLiked] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   const text = {
@@ -49,7 +54,8 @@ const EnhancedPropertyCard = ({
       parking: "Parking",
       forSale: "For Sale",
       forRent: "For Rent",
-      forLease: "For Lease"
+      forLease: "For Lease",
+      view3D: "3D View"
     },
     id: {
       view: "Lihat Detail",
@@ -61,7 +67,8 @@ const EnhancedPropertyCard = ({
       parking: "Parkir",
       forSale: "Dijual",
       forRent: "Disewa",
-      forLease: "Disewakan"
+      forLease: "Disewakan",
+      view3D: "Tampilan 3D"
     }
   };
 
@@ -86,22 +93,21 @@ const EnhancedPropertyCard = ({
   };
 
   const handleLikeToggle = () => {
-    setIsLiked(!isLiked);
     if (onSave) {
       onSave(property.id);
     }
   };
 
   const handleImageNavigation = (direction: 'prev' | 'next') => {
-    if (!property.images?.length) return;
+    if (!property.image_urls?.length) return;
     
     if (direction === 'next') {
       setCurrentImageIndex((prev) => 
-        prev === property.images!.length - 1 ? 0 : prev + 1
+        prev === property.image_urls!.length - 1 ? 0 : prev + 1
       );
     } else {
       setCurrentImageIndex((prev) => 
-        prev === 0 ? property.images!.length - 1 : prev - 1
+        prev === 0 ? property.image_urls!.length - 1 : prev - 1
       );
     }
   };
@@ -111,30 +117,30 @@ const EnhancedPropertyCard = ({
       {/* Image Section */}
       <div className="relative aspect-[4/3] overflow-hidden">
         <img
-          src={property.images?.[currentImageIndex] || "/placeholder.svg"}
+          src={property.image_urls?.[currentImageIndex] || "/placeholder.svg"}
           alt={property.title}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
         />
         
         {/* Image Navigation */}
-        {property.images && property.images.length > 1 && (
+        {property.image_urls && property.image_urls.length > 1 && (
           <>
             <button
               onClick={() => handleImageNavigation('prev')}
-              className="absolute left-2 top-1/2 -translate-y-1/2 bg-background/80 p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+              className="absolute left-2 top-1/2 -translate-y-1/2 bg-background/80 p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-10"
             >
               ←
             </button>
             <button
               onClick={() => handleImageNavigation('next')}
-              className="absolute right-2 top-1/2 -translate-y-1/2 bg-background/80 p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+              className="absolute right-2 top-1/2 -translate-y-1/2 bg-background/80 p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-10"
             >
               →
             </button>
             
             {/* Image Indicators */}
-            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1">
-              {property.images.map((_, index) => (
+            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1 z-10">
+              {property.image_urls.map((_, index) => (
                 <div
                   key={index}
                   className={`w-2 h-2 rounded-full ${
@@ -147,7 +153,7 @@ const EnhancedPropertyCard = ({
         )}
 
         {/* Top Badges */}
-        <div className="absolute top-3 left-3 flex gap-2">
+        <div className="absolute top-3 left-3 flex gap-2 z-10">
           <Badge variant="secondary" className="bg-background/90">
             {getListingTypeLabel(property.listing_type)}
           </Badge>
@@ -157,14 +163,14 @@ const EnhancedPropertyCard = ({
         </div>
 
         {/* Action Buttons */}
-        <div className="absolute top-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="absolute top-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
           <Button
             size="sm"
             variant="outline"
             className="bg-background/90 p-2"
             onClick={handleLikeToggle}
           >
-            <Heart className={`h-4 w-4 ${isLiked ? 'fill-red-500 text-red-500' : ''}`} />
+            <Heart className={`h-4 w-4 ${isSaved ? 'fill-red-500 text-red-500' : ''}`} />
           </Button>
           <Button
             size="sm"
@@ -236,14 +242,26 @@ const EnhancedPropertyCard = ({
           </div>
         )}
 
-        {/* Action Button */}
-        <Button 
-          className="w-full mt-3" 
-          onClick={() => onView?.(property.id)}
-        >
-          <Eye className="h-4 w-4 mr-2" />
-          {currentText.view}
-        </Button>
+        {/* Action Buttons */}
+        <div className="flex w-full mt-3 gap-2 flex-wrap">
+          <Button 
+            className="flex-1" 
+            onClick={() => onView?.(property.id)}
+          >
+            <Eye className="h-4 w-4 mr-2" />
+            {currentText.view}
+          </Button>
+          {(property.three_d_model_url || property.virtual_tour_url) && (
+            <Button 
+               variant="outline"
+               className="flex-1"
+               onClick={() => onView3D?.(property)}
+             >
+               <ViewIcon className="h-4 w-4 mr-2" />
+               {currentText.view3D}
+           </Button>
+          )}
+        </div>
       </CardContent>
     </Card>
   );
