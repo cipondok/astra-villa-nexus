@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
@@ -47,7 +48,7 @@ const Index = () => {
   useEffect(() => {
     const fetchFeaturedProperties = async () => {
       try {
-        // Only approved properties, show as featured list
+        console.log("🏠 FETCHING featured properties...");
         const { data, error } = await supabase
           .from('properties')
           .select('*')
@@ -55,12 +56,15 @@ const Index = () => {
           .order('created_at', { ascending: false })
           .limit(12);
 
-        if (!error) {
-          setFeaturedProperties(data || []);
+        if (!error && data) {
+          console.log(`🏠 FEATURED properties loaded: ${data.length} items`);
+          setFeaturedProperties(data);
         } else {
+          console.error('🏠 FEATURED properties error:', error);
           setFeaturedProperties([]);
         }
       } catch (err) {
+        console.error('🏠 FEATURED properties exception:', err);
         setFeaturedProperties([]);
       }
     };
@@ -97,7 +101,6 @@ const Index = () => {
     setIsSearching(true);
     
     try {
-      // Simple query for approved properties only (no more duplicate approval_status)
       let query = supabase
         .from('properties')
         .select('*')
@@ -200,6 +203,7 @@ const Index = () => {
     
     if (!searchTerm || searchTerm.trim() === '') {
       if (hasSearched) {
+        console.log("⚡ LIVE SEARCH - Clearing search, resetting to featured");
         setSearchResults([]);
         setHasSearched(false);
       }
@@ -211,6 +215,17 @@ const Index = () => {
       await performSearch({ query: searchTerm });
     }
   };
+
+  // Determine which properties to show
+  const propertiesToShow = hasSearched ? searchResults : featuredProperties;
+  
+  console.log("🎯 DISPLAY DEBUG:", {
+    hasSearched,
+    featuredPropertiesCount: featuredProperties.length,
+    searchResultsCount: searchResults.length,
+    propertiesToShowCount: propertiesToShow.length,
+    isSearching
+  });
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -245,15 +260,15 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Results and Recommendations Section */}
-      {user && (
-        <section className="relative z-10 bg-background py-8">
-          <div className="container mx-auto px-4">
+      {/* Property Listings Section - ALWAYS VISIBLE */}
+      <section className="relative z-10 bg-background py-8">
+        <div className="container mx-auto px-4">
+          {user ? (
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <div className="lg:col-span-2">
                 <PropertyListingsSection 
                   language={language} 
-                  searchResults={hasSearched ? searchResults : featuredProperties}
+                  searchResults={propertiesToShow}
                   isSearching={isSearching}
                   hasSearched={hasSearched}
                 />
@@ -266,23 +281,16 @@ const Index = () => {
                 />
               </div>
             </div>
-          </div>
-        </section>
-      )}
-
-      {/* Property Listings Section for non-authenticated users */}
-      {!user && (
-        <div className="relative z-10 bg-background">
-          <div className="container mx-auto px-4 py-8">
+          ) : (
             <PropertyListingsSection 
               language={language} 
-              searchResults={hasSearched ? searchResults : featuredProperties}
+              searchResults={propertiesToShow}
               isSearching={isSearching}
               hasSearched={hasSearched}
             />
-          </div>
+          )}
         </div>
-      )}
+      </section>
 
       {/* Footer */}
       <div className="relative z-10">

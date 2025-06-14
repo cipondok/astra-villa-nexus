@@ -35,7 +35,8 @@ const PropertyListingsSection = ({
       bathrooms: "bath",
       area: "sqm",
       contactForPrice: "Contact for price",
-      searchMessage: "Try searching for properties in Jakarta, Bali, or other locations"
+      searchMessage: "Try searching for properties in Jakarta, Bali, or other locations",
+      noFeaturedProperties: "No properties available at the moment"
     },
     id: {
       title: "Properti Unggulan",
@@ -50,7 +51,8 @@ const PropertyListingsSection = ({
       bathrooms: "km",
       area: "m²",
       contactForPrice: "Hubungi untuk harga",
-      searchMessage: "Coba cari properti di Jakarta, Bali, atau lokasi lainnya"
+      searchMessage: "Coba cari properti di Jakarta, Bali, atau lokasi lainnya",
+      noFeaturedProperties: "Tidak ada properti tersedia saat ini"
     }
   };
 
@@ -95,12 +97,18 @@ const PropertyListingsSection = ({
     );
   }
 
-  // Show search results or featured properties
-  const properties = hasSearched ? searchResults : [];
+  // Determine section title and subtitle
   const sectionTitle = hasSearched ? currentText.searchResults : currentText.title;
   const sectionSubtitle = hasSearched 
-    ? `${properties.length} properties found` 
+    ? `${searchResults.length} properties found` 
     : currentText.subtitle;
+
+  console.log("🏠 PropertyListingsSection DEBUG:", {
+    hasSearched,
+    searchResultsLength: searchResults.length,
+    isSearching,
+    sectionTitle
+  });
 
   return (
     <section className="py-12">
@@ -110,18 +118,20 @@ const PropertyListingsSection = ({
           <p className="text-xl text-muted-foreground">{sectionSubtitle}</p>
         </div>
 
-        {hasSearched && properties.length === 0 ? (
+        {searchResults.length === 0 ? (
           <div className="text-center py-12">
             <div className="max-w-md mx-auto">
-              <h3 className="text-xl font-semibold mb-4">{currentText.noResults}</h3>
+              <h3 className="text-xl font-semibold mb-4">
+                {hasSearched ? currentText.noResults : currentText.noFeaturedProperties}
+              </h3>
               <p className="text-gray-600 dark:text-gray-300 mb-6">
-                {currentText.searchMessage}
+                {hasSearched ? currentText.searchMessage : "Please check back later for new listings."}
               </p>
             </div>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {properties.map((property) => (
+            {searchResults.map((property) => (
               <Card key={property.id} className="overflow-hidden hover:shadow-lg transition-shadow group">
                 <div className="relative">
                   <img
@@ -195,7 +205,7 @@ const PropertyListingsSection = ({
           </div>
         )}
 
-        {!hasSearched && (
+        {!hasSearched && searchResults.length > 0 && (
           <div className="text-center mt-12">
             <Button size="lg" variant="outline">
               View All Properties
