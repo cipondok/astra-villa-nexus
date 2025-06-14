@@ -204,7 +204,7 @@ const PropertyListingsSection = ({
           </div>
         )}
       </div>
-    </div>
+    </section>
   );
 };
 
