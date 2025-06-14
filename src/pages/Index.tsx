@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
@@ -18,6 +17,7 @@ const Index = () => {
   const [language, setLanguage] = useState<"en" | "id">("en");
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [featuredProperties, setFeaturedProperties] = useState<any[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   const { isAuthenticated, user } = useAuth();
@@ -42,6 +42,30 @@ const Index = () => {
       });
     }
   }, [user, trackInteraction]);
+
+  // Fetch featured properties on initial mount ONLY
+  useEffect(() => {
+    const fetchFeaturedProperties = async () => {
+      try {
+        // Only approved properties, show as featured list
+        const { data, error } = await supabase
+          .from('properties')
+          .select('*')
+          .eq('status', 'approved')
+          .order('created_at', { ascending: false })
+          .limit(12);
+
+        if (!error) {
+          setFeaturedProperties(data || []);
+        } else {
+          setFeaturedProperties([]);
+        }
+      } catch (err) {
+        setFeaturedProperties([]);
+      }
+    };
+    fetchFeaturedProperties();
+  }, []);
 
   const handleAuthModalClose = () => {
     setAuthModalOpen(false);
@@ -229,7 +253,7 @@ const Index = () => {
               <div className="lg:col-span-2">
                 <PropertyListingsSection 
                   language={language} 
-                  searchResults={searchResults}
+                  searchResults={hasSearched ? searchResults : featuredProperties}
                   isSearching={isSearching}
                   hasSearched={hasSearched}
                 />
@@ -252,7 +276,7 @@ const Index = () => {
           <div className="container mx-auto px-4 py-8">
             <PropertyListingsSection 
               language={language} 
-              searchResults={searchResults}
+              searchResults={hasSearched ? searchResults : featuredProperties}
               isSearching={isSearching}
               hasSearched={hasSearched}
             />
