@@ -34,6 +34,29 @@ function Loader() {
   );
 }
 
+interface SceneControllerProps {
+  controlsRef: React.RefObject<OrbitControlsImpl>;
+  isTopView: boolean;
+  measurementMode: boolean;
+}
+
+const SceneController = ({ controlsRef, isTopView, measurementMode }: SceneControllerProps) => {
+  useFrame((state) => {
+    if (controlsRef.current) {
+      if (isTopView) {
+        state.camera.position.lerp(new Vector3(0, 40, 0.1), 0.05);
+        controlsRef.current.target.lerp(new Vector3(0, 0, 0), 0.05);
+        controlsRef.current.enableRotate = false;
+      } else {
+        controlsRef.current.enableRotate = !measurementMode;
+      }
+      controlsRef.current.update();
+    }
+  });
+
+  return null;
+}
+
 const PropertyViewer3D = ({ isOpen, onClose, propertyId, propertyTitle }: PropertyViewer3DProps) => {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [activeTool, setActiveTool] = useState<'orbit' | 'measure' | 'staging' | 'lighting'>('orbit');
@@ -104,19 +127,6 @@ const PropertyViewer3D = ({ isOpen, onClose, propertyId, propertyTitle }: Proper
   };
 
   const lightingProps = getLightingProps(timeOfDay);
-  
-  useFrame((state) => {
-    if (controlsRef.current) {
-      if (isTopView) {
-        state.camera.position.lerp(new Vector3(0, 40, 0.1), 0.05);
-        controlsRef.current.target.lerp(new Vector3(0, 0, 0), 0.05);
-        controlsRef.current.enableRotate = false;
-      } else {
-        controlsRef.current.enableRotate = !measurementMode;
-      }
-      controlsRef.current.update();
-    }
-  });
   
   useEffect(() => {
     if (!isOpen && isTopView) {
@@ -297,6 +307,11 @@ const PropertyViewer3D = ({ isOpen, onClose, propertyId, propertyTitle }: Proper
             onPointerDown={() => { if(isTopView) setIsTopView(false) }}
           >
             <Suspense fallback={<Loader />}>
+              <SceneController
+                controlsRef={controlsRef}
+                isTopView={isTopView}
+                measurementMode={measurementMode}
+              />
               <Environment preset={lightingProps.environmentPreset} />
               <ambientLight intensity={lightingProps.ambientIntensity} />
               <directionalLight 
