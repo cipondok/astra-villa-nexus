@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
@@ -29,6 +28,9 @@ const PropertyListingForm = ({ onSuccess }: PropertyListingFormProps) => {
     bedrooms: "",
     bathrooms: "",
     area_sqm: "",
+    development_status: "completed",
+    three_d_model_url: "",
+    virtual_tour_url: "",
   });
 
   const createPropertyMutation = useMutation({
@@ -42,14 +44,13 @@ const PropertyListingForm = ({ onSuccess }: PropertyListingFormProps) => {
           bedrooms: data.bedrooms ? parseInt(data.bedrooms) : null,
           bathrooms: data.bathrooms ? parseInt(data.bathrooms) : null,
           area_sqm: data.area_sqm ? parseInt(data.area_sqm) : null,
-          status: 'draft',
-          approval_status: 'pending'
+          status: 'pending_approval',
         });
       
       if (error) throw error;
     },
     onSuccess: () => {
-      showSuccess("Property Created", "Your property has been created successfully and is pending approval.");
+      showSuccess("Property Submitted", "Your property has been submitted successfully and is pending approval.");
       queryClient.invalidateQueries({ queryKey: ['owner-properties'] });
       onSuccess();
       setFormData({
@@ -62,6 +63,9 @@ const PropertyListingForm = ({ onSuccess }: PropertyListingFormProps) => {
         bedrooms: "",
         bathrooms: "",
         area_sqm: "",
+        development_status: "completed",
+        three_d_model_url: "",
+        virtual_tour_url: "",
       });
     },
     onError: (error: any) => {
@@ -98,7 +102,7 @@ const PropertyListingForm = ({ onSuccess }: PropertyListingFormProps) => {
 
         <div>
           <Label htmlFor="property_type">Property Type *</Label>
-          <Select value={formData.property_type} onValueChange={(value) => handleChange('property_type', value)}>
+          <Select value={formData.property_type} onValueChange={(value) => handleChange('property_type', value)} required>
             <SelectTrigger>
               <SelectValue placeholder="Select type" />
             </SelectTrigger>
@@ -115,7 +119,7 @@ const PropertyListingForm = ({ onSuccess }: PropertyListingFormProps) => {
 
         <div>
           <Label htmlFor="listing_type">Listing Type *</Label>
-          <Select value={formData.listing_type} onValueChange={(value) => handleChange('listing_type', value)}>
+          <Select value={formData.listing_type} onValueChange={(value) => handleChange('listing_type', value)} required>
             <SelectTrigger>
               <SelectValue placeholder="Select listing type" />
             </SelectTrigger>
@@ -181,6 +185,20 @@ const PropertyListingForm = ({ onSuccess }: PropertyListingFormProps) => {
             placeholder="2"
           />
         </div>
+        
+        <div className="md:col-span-2">
+          <Label htmlFor="development_status">Development Status *</Label>
+          <Select value={formData.development_status} onValueChange={(value) => handleChange('development_status', value)} required>
+            <SelectTrigger>
+              <SelectValue placeholder="Select development status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="completed">Completed</SelectItem>
+              <SelectItem value="new_project">New Project</SelectItem>
+              <SelectItem value="pre_launching">Pre-launching</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       <div>
@@ -194,9 +212,29 @@ const PropertyListingForm = ({ onSuccess }: PropertyListingFormProps) => {
         />
       </div>
 
-      <div className="flex gap-2">
+      <div>
+        <Label htmlFor="three_d_model_url">3D Model URL</Label>
+        <Input
+          id="three_d_model_url"
+          value={formData.three_d_model_url}
+          onChange={(e) => handleChange('three_d_model_url', e.target.value)}
+          placeholder="e.g., https://example.com/model.glb"
+        />
+      </div>
+
+      <div>
+        <Label htmlFor="virtual_tour_url">Virtual Tour URL</Label>
+        <Input
+          id="virtual_tour_url"
+          value={formData.virtual_tour_url}
+          onChange={(e) => handleChange('virtual_tour_url', e.target.value)}
+          placeholder="e.g., https://example.com/tour"
+        />
+      </div>
+
+      <div className="flex gap-2 pt-4">
         <Button type="submit" disabled={createPropertyMutation.isPending}>
-          {createPropertyMutation.isPending ? 'Creating...' : 'Create Property'}
+          {createPropertyMutation.isPending ? 'Submitting...' : 'Submit Property'}
         </Button>
         <Button type="button" variant="outline" onClick={onSuccess}>
           Cancel

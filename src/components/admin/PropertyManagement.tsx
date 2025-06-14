@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -12,7 +11,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Building, Search, Plus, Edit, Trash2, Eye, MapPin, DollarSign, RefreshCw } from "lucide-react";
+import { Building, Search, Plus, Edit, Trash2, Eye, MapPin, DollarSign, RefreshCw, Axis3d } from "lucide-react";
 import { useAlert } from "@/contexts/AlertContext";
 import PropertyEditModal from "./PropertyEditModal";
 import PropertyViewModal from "./PropertyViewModal";
@@ -41,6 +40,9 @@ interface PropertyWithRelations {
   agent_id?: string;
   owner?: PropertyOwner;
   agent?: PropertyOwner;
+  development_status?: string;
+  three_d_model_url?: string;
+  virtual_tour_url?: string;
 }
 
 const PropertyManagement = () => {
@@ -59,7 +61,10 @@ const PropertyManagement = () => {
     location: "",
     bedrooms: "",
     bathrooms: "",
-    area_sqm: ""
+    area_sqm: "",
+    development_status: "completed",
+    three_d_model_url: "",
+    virtual_tour_url: "",
   });
 
   const { showSuccess, showError } = useAlert();
@@ -183,7 +188,10 @@ const PropertyManagement = () => {
         location: "",
         bedrooms: "",
         bathrooms: "",
-        area_sqm: ""
+        area_sqm: "",
+        development_status: "completed",
+        three_d_model_url: "",
+        virtual_tour_url: "",
       });
     },
     onError: (error: any) => {
@@ -289,14 +297,14 @@ const PropertyManagement = () => {
                     Add Property
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="max-w-2xl">
+                <DialogContent className="max-w-3xl">
                   <DialogHeader>
                     <DialogTitle>Add New Property</DialogTitle>
                     <DialogDescription>
-                      Create a new property listing
+                      Create a new property listing.
                     </DialogDescription>
                   </DialogHeader>
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-2 gap-4 py-4">
                     <div className="space-y-2">
                       <Label htmlFor="title">Title</Label>
                       <Input
@@ -384,6 +392,19 @@ const PropertyManagement = () => {
                         placeholder="Number of bathrooms"
                       />
                     </div>
+                    <div className="space-y-2 col-span-2">
+                      <Label htmlFor="development_status">Development Status</Label>
+                      <Select value={newProperty.development_status} onValueChange={(value) => setNewProperty({ ...newProperty, development_status: value })}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="completed">Completed</SelectItem>
+                          <SelectItem value="new_project">New Project</SelectItem>
+                          <SelectItem value="pre_launching">Pre-launching</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
                     <div className="col-span-2 space-y-2">
                       <Label htmlFor="description">Description</Label>
                       <Textarea
@@ -392,6 +413,24 @@ const PropertyManagement = () => {
                         onChange={(e) => setNewProperty({ ...newProperty, description: e.target.value })}
                         placeholder="Property description"
                         rows={3}
+                      />
+                    </div>
+                    <div className="col-span-2 space-y-2">
+                      <Label htmlFor="three_d_model_url">3D Model URL</Label>
+                      <Input
+                        id="three_d_model_url"
+                        value={newProperty.three_d_model_url}
+                        onChange={(e) => setNewProperty({ ...newProperty, three_d_model_url: e.target.value })}
+                        placeholder="e.g., https://example.com/model.glb"
+                      />
+                    </div>
+                    <div className="col-span-2 space-y-2">
+                      <Label htmlFor="virtual_tour_url">Virtual Tour URL</Label>
+                      <Input
+                        id="virtual_tour_url"
+                        value={newProperty.virtual_tour_url}
+                        onChange={(e) => setNewProperty({ ...newProperty, virtual_tour_url: e.target.value })}
+                        placeholder="e.g., https://example.com/tour"
                       />
                     </div>
                   </div>
@@ -462,7 +501,7 @@ const PropertyManagement = () => {
                   </TableHead>
                   <TableHead>Property</TableHead>
                   <TableHead>Owner/Agent</TableHead>
-                  <TableHead>Type & Price</TableHead>
+                  <TableHead>Details</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Created</TableHead>
                   <TableHead>Actions</TableHead>
@@ -499,7 +538,14 @@ const PropertyManagement = () => {
                       </TableCell>
                       <TableCell>
                         <div className="space-y-1">
-                          <div className="font-medium">{property.title}</div>
+                          <div className="font-medium flex items-center gap-2">
+                            {property.title}
+                            {(property.three_d_model_url || property.virtual_tour_url) && (
+                              <Badge variant="secondary" className="flex items-center gap-1 text-xs">
+                                <Axis3d className="h-3 w-3" /> 3D
+                              </Badge>
+                            )}
+                          </div>
                           <div className="text-sm text-muted-foreground flex items-center gap-1">
                             <MapPin className="h-3 w-3" />
                             {property.location}
@@ -528,11 +574,14 @@ const PropertyManagement = () => {
                       </TableCell>
                       <TableCell>
                         <div className="space-y-1">
-                          <Badge variant="outline">{property.property_type}</Badge>
+                          <Badge variant="outline" className="capitalize">{property.property_type}</Badge>
+                          <div className="text-xs text-muted-foreground capitalize">
+                            {property.development_status?.replace('_', ' ') || 'Completed'}
+                          </div>
                           <div className="text-sm font-medium text-green-600">
                             {property.price ? formatIDR(property.price) : 'Price not set'}
                           </div>
-                          <div className="text-xs text-muted-foreground">
+                          <div className="text-xs text-muted-foreground capitalize">
                             {property.listing_type}
                           </div>
                         </div>
