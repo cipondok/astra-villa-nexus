@@ -11,7 +11,7 @@ import { useAlert } from "@/contexts/AlertContext";
 import { Users, UserPlus, Search, Filter, Shield, Ban, Play, Pause, RefreshCw } from "lucide-react";
 import SimpleRegistrationModal from "@/components/auth/SimpleRegistrationModal";
 
-type UserRole = 'general_user' | 'property_owner' | 'agent' | 'vendor' | 'admin';
+type UserRole = 'general_user' | 'property_owner' | 'agent' | 'vendor' | 'admin' | 'customer_service';
 type UserStatus = 'active' | 'banned' | 'suspended';
 
 interface UserProfile {
@@ -148,6 +148,7 @@ const SimpleUserManagement = () => {
       agent: "bg-blue-100 text-blue-800",
       vendor: "bg-purple-100 text-purple-800",
       property_owner: "bg-green-100 text-green-800",
+      customer_service: "bg-orange-100 text-orange-800",
       general_user: "bg-gray-100 text-gray-800"
     };
 
@@ -211,6 +212,7 @@ const SimpleUserManagement = () => {
               <SelectItem value="general_user">General User</SelectItem>
               <SelectItem value="property_owner">Property Owner</SelectItem>
               <SelectItem value="agent">Agent</SelectItem>
+              <SelectItem value="customer_service">Customer Service</SelectItem>
               <SelectItem value="vendor">Vendor</SelectItem>
               <SelectItem value="admin">Admin</SelectItem>
             </SelectContent>
@@ -269,6 +271,7 @@ const SimpleUserManagement = () => {
                         <SelectItem value="general_user">General User</SelectItem>
                         <SelectItem value="property_owner">Property Owner</SelectItem>
                         <SelectItem value="agent">Agent</SelectItem>
+                        <SelectItem value="customer_service">Customer Service</SelectItem>
                         <SelectItem value="vendor">Vendor</SelectItem>
                         <SelectItem value="admin">Admin</SelectItem>
                       </SelectContent>
