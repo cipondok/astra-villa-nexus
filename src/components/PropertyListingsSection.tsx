@@ -1,9 +1,10 @@
 
 import { useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Bed, Bath, Square, Heart } from "lucide-react";
+import { MapPin, Bed, Bath, Square, Heart, Box } from "lucide-react";
 import { formatIDR } from "@/utils/currency";
 import SearchLoadingAnimation from "@/components/SearchLoadingAnimation";
 
@@ -21,6 +22,7 @@ const PropertyListingsSection = ({
   hasSearched = false 
 }: PropertyListingsSectionProps) => {
   const [favoriteProperties, setFavoriteProperties] = useState<Set<string>>(new Set());
+  const navigate = useNavigate();
 
   const text = {
     en: {
@@ -36,7 +38,8 @@ const PropertyListingsSection = ({
       area: "sqm",
       contactForPrice: "Contact for price",
       searchMessage: "Try searching for properties in Jakarta, Bali, or other locations",
-      noFeaturedProperties: "No properties available at the moment"
+      noFeaturedProperties: "No properties available at the moment",
+      view3D: "3D View",
     },
     id: {
       title: "Properti Unggulan",
@@ -51,7 +54,8 @@ const PropertyListingsSection = ({
       area: "m²",
       contactForPrice: "Hubungi untuk harga",
       searchMessage: "Coba cari properti di Jakarta, Bali, atau lokasi lainnya",
-      noFeaturedProperties: "Tidak ada properti tersedia saat ini"
+      noFeaturedProperties: "Tidak ada properti tersedia saat ini",
+      view3D: "Tampilan 3D",
     }
   };
 
@@ -67,6 +71,10 @@ const PropertyListingsSection = ({
       }
       return newFavorites;
     });
+  };
+
+  const handleViewDetails = (propertyId: string) => {
+    navigate(`/property/${propertyId}`);
   };
 
   const getPropertyTypeColor = (type: string) => {
@@ -128,13 +136,17 @@ const PropertyListingsSection = ({
                   <img
                     src={property.image_urls?.[0] || property.images?.[0] || "https://images.unsplash.com/photo-1721322800607-8c38375eef04?w=400&h=300&fit=crop"}
                     alt={property.title}
-                    className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
+                    className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300 cursor-pointer"
+                    onClick={() => handleViewDetails(property.id)}
                   />
                   <Button
                     size="sm"
                     variant="ghost"
                     className="absolute top-4 right-4 bg-white/80 hover:bg-white"
-                    onClick={() => toggleFavorite(property.id)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleFavorite(property.id);
+                    }}
                   >
                     <Heart 
                       className={`h-4 w-4 ${
@@ -147,9 +159,22 @@ const PropertyListingsSection = ({
                   <Badge className="absolute top-4 left-4 bg-blue-600 text-white">
                     {property.listing_type === 'sale' ? currentText.forSale : currentText.forRent}
                   </Badge>
+                  {(property.three_d_model_url || property.virtual_tour_url) && (
+                    <Button
+                      size="sm"
+                      className="absolute bottom-4 right-4 bg-purple-600 hover:bg-purple-700 text-white flex items-center gap-1"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleViewDetails(property.id);
+                      }}
+                    >
+                      <Box className="h-4 w-4 mr-1" />
+                      {currentText.view3D}
+                    </Button>
+                  )}
                 </div>
                 
-                <CardHeader className="pb-4">
+                <CardHeader className="pb-4 cursor-pointer" onClick={() => handleViewDetails(property.id)}>
                   <CardTitle className="text-xl line-clamp-2">{property.title}</CardTitle>
                   <div className="flex items-center text-gray-600 dark:text-gray-300">
                     <MapPin className="h-4 w-4 mr-2" />
@@ -187,7 +212,7 @@ const PropertyListingsSection = ({
                     </div>
                   </div>
                   
-                  <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white">
+                  <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white" onClick={() => handleViewDetails(property.id)}>
                     {currentText.viewDetails}
                   </Button>
                 </CardContent>
