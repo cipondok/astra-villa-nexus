@@ -12,7 +12,7 @@ interface AIChatMessagesProps {
 
 const AIChatMessages = ({ messages, isLoading, messagesEndRef }: AIChatMessagesProps) => {
   return (
-    <div className="h-80 overflow-y-auto p-4 space-y-4">
+    <div className="h-96 overflow-y-auto p-4 space-y-4">
       {messages.map((msg) => (
         <div key={msg.id} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
           <div className={`max-w-xs p-3 rounded-lg ${

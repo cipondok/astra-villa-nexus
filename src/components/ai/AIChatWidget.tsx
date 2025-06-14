@@ -152,8 +152,8 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
       {!isOpen && <AIChatTrigger onOpen={() => setIsOpen(true)} />}
 
       {isOpen && (
-        <div className="fixed bottom-6 right-6 z-50 w-96 max-w-[calc(100vw-2rem)]">
-          <Card className="shadow-2xl border-2 border-purple-200/50 bg-white/60 backdrop-blur-md overflow-hidden">
+        <div className="fixed bottom-6 right-6 z-50 w-[360px] max-w-[calc(100vw-2rem)]">
+          <Card className="shadow-2xl border-2 border-purple-200/50 bg-background/70 backdrop-blur-xl overflow-hidden">
             <AIChatHeader onClose={() => setIsOpen(false)} />
             <CardContent className="p-0">
               <AIChatMessages
