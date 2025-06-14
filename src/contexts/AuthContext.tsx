@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -16,6 +17,8 @@ interface Profile {
   avatar_url?: string;
   created_at?: string;
   updated_at?: string;
+  availability_status?: 'online' | 'busy' | 'offline';
+  last_seen_at?: string;
 }
 
 interface AuthContextType {
