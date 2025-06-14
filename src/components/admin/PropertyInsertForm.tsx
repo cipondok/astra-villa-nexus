@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -93,7 +94,6 @@ const PropertyInsertForm = () => {
           agent_id: propertyData.agent_id === "no-agent" ? null : propertyData.agent_id,
           owner_id: propertyData.owner_id,
           owner_type: propertyData.owner_type,
-          approval_status: 'pending',
           status: 'pending_approval',
           image_urls: propertyData.images,
           three_d_model_url: propertyData.three_d_model_url || null,

@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -35,7 +36,6 @@ interface PropertyWithRelations {
   bathrooms?: number;
   area_sqm?: number;
   status?: string;
-  approval_status?: string;
   created_at?: string;
   owner_id?: string;
   agent_id?: string;
@@ -166,8 +166,7 @@ const PropertyManagement = () => {
           bathrooms: propertyData.bathrooms ? parseInt(propertyData.bathrooms) : null,
           area_sqm: propertyData.area_sqm ? parseInt(propertyData.area_sqm) : null,
           owner_id: adminProfile.id,
-          status: 'active',
-          approval_status: 'approved'
+          status: 'approved'
         });
       if (error) throw error;
     },
@@ -230,29 +229,16 @@ const PropertyManagement = () => {
     updatePropertyMutation.mutate({ propertyId, updates: { status: newStatus } });
   };
 
-  const handleApprovalStatusChange = (propertyId: string, newStatus: string) => {
-    updatePropertyMutation.mutate({ propertyId, updates: { approval_status: newStatus } });
-  };
-
   const handleAddProperty = () => {
     createPropertyMutation.mutate(newProperty);
   };
 
   const getStatusBadgeVariant = (status: string) => {
     switch (status) {
-      case 'active': return 'default';
+      case 'approved': return 'default';
       case 'pending_approval': return 'secondary';
       case 'rejected': return 'destructive';
       case 'sold': return 'outline';
-      default: return 'secondary';
-    }
-  };
-
-  const getApprovalBadgeVariant = (status: string) => {
-    switch (status) {
-      case 'approved': return 'default';
-      case 'pending': return 'secondary';
-      case 'rejected': return 'destructive';
       default: return 'secondary';
     }
   };
@@ -439,7 +425,7 @@ const PropertyManagement = () => {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Status</SelectItem>
-                <SelectItem value="active">Active</SelectItem>
+                <SelectItem value="approved">Approved</SelectItem>
                 <SelectItem value="pending_approval">Pending Approval</SelectItem>
                 <SelectItem value="rejected">Rejected</SelectItem>
                 <SelectItem value="sold">Sold</SelectItem>
@@ -478,7 +464,6 @@ const PropertyManagement = () => {
                   <TableHead>Owner/Agent</TableHead>
                   <TableHead>Type & Price</TableHead>
                   <TableHead>Status</TableHead>
-                  <TableHead>Approval</TableHead>
                   <TableHead>Created</TableHead>
                   <TableHead>Actions</TableHead>
                 </TableRow>
@@ -486,13 +471,13 @@ const PropertyManagement = () => {
               <TableBody>
                 {isLoading ? (
                   <TableRow>
-                    <TableCell colSpan={8} className="text-center py-8">
+                    <TableCell colSpan={7} className="text-center py-8">
                       Loading properties...
                     </TableCell>
                   </TableRow>
                 ) : properties?.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={8} className="text-center py-8">
+                    <TableCell colSpan={7} className="text-center py-8">
                       <div className="space-y-2">
                         <p>No properties found</p>
                         <p className="text-sm text-muted-foreground">
@@ -563,27 +548,10 @@ const PropertyManagement = () => {
                             </Badge>
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="active">Active</SelectItem>
+                            <SelectItem value="approved">Approved</SelectItem>
                             <SelectItem value="pending_approval">Pending Approval</SelectItem>
                             <SelectItem value="rejected">Rejected</SelectItem>
                             <SelectItem value="sold">Sold</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </TableCell>
-                      <TableCell>
-                        <Select
-                          value={property.approval_status || 'pending'}
-                          onValueChange={(value) => handleApprovalStatusChange(property.id, value)}
-                        >
-                          <SelectTrigger className="w-28">
-                            <Badge variant={getApprovalBadgeVariant(property.approval_status || 'pending')}>
-                              {property.approval_status || 'pending'}
-                            </Badge>
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="pending">Pending</SelectItem>
-                            <SelectItem value="approved">Approved</SelectItem>
-                            <SelectItem value="rejected">Rejected</SelectItem>
                           </SelectContent>
                         </Select>
                       </TableCell>
