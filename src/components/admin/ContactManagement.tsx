@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -12,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Phone, Mail, MessageCircle, Eye, Reply, Clock } from "lucide-react";
 import { useAlert } from "@/contexts/AlertContext";
+import { useAuth } from "@/contexts/AuthContext";
 
 const ContactManagement = () => {
   const [selectedContact, setSelectedContact] = useState(null);
@@ -21,12 +21,11 @@ const ContactManagement = () => {
 
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
+  const { profile } = useAuth();
 
   const { data: contacts, isLoading } = useQuery({
     queryKey: ['contact-inquiries'],
     queryFn: async () => {
-      // Since there's no contact_inquiries table, we'll use feedback_monitoring 
-      // with contact type or create mock data for demo
       const { data, error } = await supabase
         .from('feedback_monitoring')
         .select(`
@@ -39,40 +38,25 @@ const ContactManagement = () => {
         .eq('feedback_type', 'contact')
         .order('created_at', { ascending: false });
       
-      if (error && error.code !== 'PGRST116') throw error;
+      if (error) throw error;
       
-      // Return mock data if no contacts found
-      return data || [
-        {
-          id: '1',
-          content: 'I need more information about your luxury villa properties in Bali.',
-          status: 'pending',
-          priority: 'medium',
-          created_at: new Date().toISOString(),
-          profiles: {
-            full_name: 'John Doe',
-            email: 'john@example.com'
-          }
-        },
-        {
-          id: '2',
-          content: 'Can you help me schedule a property viewing for next week?',
-          status: 'in_progress',
-          priority: 'high',
-          created_at: new Date(Date.now() - 86400000).toISOString(),
-          profiles: {
-            full_name: 'Jane Smith',
-            email: 'jane@example.com'
-          }
-        }
-      ];
+      return data;
     },
   });
 
   const updateContactMutation = useMutation({
     mutationFn: async ({ id, status, response }: { id: string; status: string; response?: string }) => {
-      // For demo purposes, we'll just show success
-      return Promise.resolve();
+      const updateData: any = { status };
+      if (response) {
+        updateData.admin_response = response;
+      }
+      
+      const { error } = await supabase
+        .from('feedback_monitoring')
+        .update(updateData)
+        .eq('id', id);
+        
+      if (error) throw error;
     },
     onSuccess: () => {
       showSuccess("Contact Updated", "Contact inquiry has been updated successfully.");
@@ -127,6 +111,20 @@ const ContactManagement = () => {
     contact.profiles?.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     contact.content?.toLowerCase().includes(searchTerm.toLowerCase())
   ) || [];
+
+  const authorizedRoles = ['admin', 'agent', 'customer_service'];
+  if (!profile || !authorizedRoles.includes(profile.role)) {
+    return (
+      <Card className="bg-white/10 backdrop-blur-md border-white/20">
+        <CardHeader>
+          <CardTitle className="text-white">Access Denied</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-gray-300">You do not have permission to view this page. Please contact an administrator.</p>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <div className="space-y-6">
