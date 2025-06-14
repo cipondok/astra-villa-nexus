@@ -48,6 +48,7 @@ interface PropertyWithRelations {
 const PropertyManagement = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [categoryFilter, setCategoryFilter] = useState("all");
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [editingProperty, setEditingProperty] = useState<PropertyWithRelations | null>(null);
   const [viewingProperty, setViewingProperty] = useState<PropertyWithRelations | null>(null);
@@ -71,7 +72,7 @@ const PropertyManagement = () => {
   const queryClient = useQueryClient();
 
   const { data: properties, isLoading, error, refetch } = useQuery({
-    queryKey: ['admin-properties', searchTerm, statusFilter],
+    queryKey: ['admin-properties', searchTerm, statusFilter, categoryFilter],
     queryFn: async () => {
       console.log('Fetching properties...');
       
@@ -86,6 +87,20 @@ const PropertyManagement = () => {
 
       if (statusFilter !== 'all') {
         query = query.eq('status', statusFilter);
+      }
+
+      if (categoryFilter !== 'all') {
+        if (categoryFilter === 'buy') {
+          query = query.eq('listing_type', 'sale').eq('development_status', 'completed');
+        } else if (categoryFilter === 'rent') {
+          query = query.eq('listing_type', 'rent').eq('development_status', 'completed');
+        } else if (categoryFilter === 'new_project') {
+          query = query.eq('development_status', 'new_project');
+        } else if (categoryFilter === 'pre_launching') {
+          query = query.eq('development_status', 'pre_launching');
+        } else if (categoryFilter === 'has_3d') {
+          query = query.or('three_d_model_url.is.not.null,virtual_tour_url.is.not.null');
+        }
       }
 
       const { data: propertiesData, error: propertiesError } = await query;
@@ -448,8 +463,8 @@ const PropertyManagement = () => {
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="flex gap-4">
-            <div className="relative flex-1">
+          <div className="flex flex-wrap gap-4">
+            <div className="relative flex-1 min-w-[200px]">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Search properties by title, location..."
@@ -459,7 +474,7 @@ const PropertyManagement = () => {
               />
             </div>
             <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-48">
+              <SelectTrigger className="w-full sm:w-48">
                 <SelectValue placeholder="Filter by status" />
               </SelectTrigger>
               <SelectContent>
@@ -468,6 +483,19 @@ const PropertyManagement = () => {
                 <SelectItem value="pending_approval">Pending Approval</SelectItem>
                 <SelectItem value="rejected">Rejected</SelectItem>
                 <SelectItem value="sold">Sold</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+              <SelectTrigger className="w-full sm:w-48">
+                <SelectValue placeholder="Filter by category" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Categories</SelectItem>
+                <SelectItem value="buy">For Sale</SelectItem>
+                <SelectItem value="rent">For Rent</SelectItem>
+                <SelectItem value="new_project">New Projects</SelectItem>
+                <SelectItem value="pre_launching">Pre-launching</SelectItem>
+                <SelectItem value="has_3d">Has 3D View</SelectItem>
               </SelectContent>
             </Select>
           </div>
