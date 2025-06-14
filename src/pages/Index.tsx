@@ -181,9 +181,12 @@ const Index = () => {
         filters.push('or(three_d_model_url.not.is.null,virtual_tour_url.not.is.null)');
       }
 
-      // Apply all filters together
-      console.log("🔍 SEARCH DEBUG - Executing with filters:", filters.join(','));
-      query = query.and(filters.join(','));
+      // Apply all filters together using a single filter string
+      if (filters.length > 0) {
+        const filterString = `and(${filters.join(',')})`;
+        console.log("🔍 SEARCH DEBUG - Executing with filter string:", filterString);
+        query = query.or(filterString);
+      }
 
       // Execute the query
       const { data: properties, error } = await query
