@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
@@ -43,6 +42,7 @@ const AIChatWidget = ({ propertyId, onTourControl }: AIChatWidgetProps) => {
         content: `👋 Hi! I'm your Astra Villa AI assistant. I can help you with:
 
 🏠 Property recommendations and details
+🏡 Neighborhood questions (e.g., "find a family-friendly house near a beach")
 🛠️ Vendor service bookings  
 🎯 3D property tour guidance
 💡 Real estate advice
@@ -65,13 +65,18 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
     };
 
     setMessages(prev => [...prev, userMessage]);
+    const currentMessage = message;
     setMessage("");
     setIsLoading(true);
 
     try {
-      const { data, error } = await supabase.functions.invoke('ai-assistant', {
+      const isNeighborhoodQuery = /neighborhood|area|around|walk to|safe at night|cafes nearby|near a|close to/i.test(currentMessage);
+      const functionName = isNeighborhoodQuery ? 'neighborhood-simulator' : 'ai-assistant';
+      console.log(`Routing AI query to: ${functionName}`);
+
+      const { data, error } = await supabase.functions.invoke(functionName, {
         body: {
-          message: message,
+          message: currentMessage,
           userId: user?.id,
           propertyId,
           conversationId
