@@ -84,7 +84,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           role: data.role,
           verification_status: data.verification_status
         });
-        setProfile(data);
+        setProfile(data as Profile);
       }
     } catch (error) {
       console.error('Profile fetch error:', error);
@@ -124,7 +124,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
 
       console.log('Profile created successfully:', data);
-      setProfile(data);
+      setProfile(data as Profile);
     } catch (error) {
       console.error('Create profile error:', error);
     }
