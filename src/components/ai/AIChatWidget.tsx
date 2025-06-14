@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { Home, Users, MapPin } from "lucide-react";
+import { Home, Users, MapPin, Handshake } from "lucide-react";
 import AIChatTrigger from "./AIChatTrigger";
 import AIChatHeader from "./AIChatHeader";
 import AIChatMessages from "./AIChatMessages";
@@ -42,17 +42,18 @@ const AIChatWidget = ({ propertyId, onTourControl }: AIChatWidgetProps) => {
         content: `👋 Hi! I'm your Astra Villa AI assistant. I can help you with:
 
 🏠 Property recommendations and details
+💰 Rental term negotiations (e.g. "Can we agree on a lower rent for a 2-year lease?")
 🏡 Neighborhood questions (e.g., "find a family-friendly house near a beach")
 🛠️ Vendor service bookings  
 🎯 3D property tour guidance
 💡 Real estate advice
 
-${propertyId ? "I see you're viewing a property. Feel free to ask me anything about it!" : "How can I assist you today?"}`,
+${propertyId ? "I see you're viewing a property. Feel free to ask me anything about it, or start a negotiation!" : "How can I assist you today?"}`,
         timestamp: new Date()
       };
       setMessages([welcomeMessage]);
     }
-  }, [isOpen, propertyId]);
+  }, [isOpen, propertyId, messages.length]);
 
   const handleSendMessage = async () => {
     if (!message.trim() || isLoading) return;
@@ -64,23 +65,38 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
       timestamp: new Date()
     };
 
-    setMessages(prev => [...prev, userMessage]);
+    const currentMessages = [...messages, userMessage];
+    setMessages(currentMessages);
     const currentMessage = message;
     setMessage("");
     setIsLoading(true);
 
     try {
       const isNeighborhoodQuery = /neighborhood|area|around|walk to|safe at night|cafes nearby|near a|close to/i.test(currentMessage);
-      const functionName = isNeighborhoodQuery ? 'neighborhood-simulator' : 'ai-assistant';
+      const isNegotiationQuery = /negotiate|lower the price|deposit|rent|deal|offer|lease/i.test(currentMessage);
+      
+      let functionName: string;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const body: { [key: string]: any } = {
+        message: currentMessage,
+        userId: user?.id,
+        propertyId,
+        conversationId
+      };
+
+      if (isNegotiationQuery && propertyId) {
+        functionName = 'rental-negotiator';
+        body.conversationHistory = currentMessages.slice(-10).map(m => ({ role: m.role, content: m.content }));
+      } else if (isNeighborhoodQuery) {
+        functionName = 'neighborhood-simulator';
+      } else {
+        functionName = 'ai-assistant';
+      }
+
       console.log(`Routing AI query to: ${functionName}`);
 
       const { data, error } = await supabase.functions.invoke(functionName, {
-        body: {
-          message: currentMessage,
-          userId: user?.id,
-          propertyId,
-          conversationId
-        }
+        body
       });
 
       if (error) throw error;
@@ -149,7 +165,12 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
   const quickActions: QuickAction[] = [
     { icon: Home, text: "Show me properties", action: "I'm looking for properties to buy or rent" },
     { icon: Users, text: "Find vendors", action: "I need vendor services for property maintenance" },
-    { icon: MapPin, text: "Tour this property", action: propertyId ? "Give me a guided tour of this property" : "Show me available properties" }
+    ...(propertyId
+      ? [
+          { icon: MapPin, text: "Tour this property", action: "Give me a guided tour of this property" },
+          { icon: Handshake, text: "Negotiate Rent", action: "I'd like to negotiate the rental terms." }
+        ]
+      : [{ icon: MapPin, text: "Find properties", action: "Show me available properties" }]),
   ];
 
   return (
