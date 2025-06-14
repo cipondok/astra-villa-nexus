@@ -1,4 +1,3 @@
-
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
@@ -19,14 +18,14 @@ serve(async (req) => {
 
   try {
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
-    const { message, userId, propertyId, conversationId } = await req.json();
+    const { message, userId, propertyId, conversationId: initialConversationId } = await req.json();
 
     console.log('AI Assistant request:', { message, userId, propertyId });
 
     // Get user context and conversation history
     const [userContext, conversationHistory] = await Promise.all([
       getUserContext(supabase, userId),
-      getConversationHistory(supabase, conversationId, userId)
+      getConversationHistory(supabase, initialConversationId, userId)
     ]);
 
     // Get property context if propertyId is provided
@@ -47,9 +46,9 @@ serve(async (req) => {
     const messages = [
       {
         role: 'system',
-        content: `You are Astra Villa's AI assistant. You help users with:
+        content: `You are Astra Villa's AI Concierge. You help users with:
 1. Property inquiries and recommendations
-2. Vendor service bookings (cleaning, maintenance, etc.)
+2. Booking vendor services (cleaning, maintenance, etc.)
 3. 3D property tour guidance
 4. General real estate questions
 
@@ -59,12 +58,12 @@ Current context:
 - User type: ${userContext.userType}
 
 Available functions:
-- control_3d_tour: Guide users through 3D property tours
-- recommend_properties: Suggest properties based on preferences
-- book_vendor_service: Help book vendor services
-- get_property_info: Get detailed property information
+- control_3d_tour: Guide users through 3D property tours.
+- recommend_properties: Suggest properties based on preferences.
+- book_vendor_service: Books vendor services like cleaning or maintenance. It directly creates a booking with a suitable vendor.
+- get_property_info: Get detailed property information.
 
-Be helpful, concise, and professional. Always try to guide users toward taking action.`
+Be helpful, concise, and professional. Always try to guide users toward taking action. When booking a service, confirm the action has been taken.`
       },
       ...conversationHistory.map(msg => ({
         role: msg.role,
@@ -111,14 +110,15 @@ Be helpful, concise, and professional. Always try to guide users toward taking a
           },
           {
             name: 'book_vendor_service',
-            description: 'Help book vendor services',
+            description: 'Books vendor services like cleaning or maintenance. It directly creates a booking with a suitable vendor.',
             parameters: {
               type: 'object',
               properties: {
-                serviceType: { type: 'string', description: 'Type of service needed' },
-                propertyId: { type: 'string' },
-                urgency: { type: 'string', enum: ['low', 'medium', 'high'] }
-              }
+                serviceType: { type: 'string', description: 'Type of service needed (e.g., "house cleaning", "plumbing repair")' },
+                propertyId: { type: 'string', description: 'The ID of the property needing the service, if applicable.' },
+                urgency: { type: 'string', enum: ['low', 'medium', 'high'], description: 'The urgency of the service request.' }
+              },
+              required: ['serviceType']
             }
           }
         ],
@@ -130,16 +130,16 @@ Be helpful, concise, and professional. Always try to guide users toward taking a
     const aiResponse = await response.json();
     let aiMessage = aiResponse.choices[0].message.content;
     let functionCall = null;
+    let conversationId = initialConversationId;
 
     // Handle function calls
     if (aiResponse.choices[0].message.function_call) {
       functionCall = aiResponse.choices[0].message.function_call;
-      const result = await handleFunctionCall(supabase, functionCall, userId);
-      aiMessage += `\n\n${result}`;
+      aiMessage = await handleFunctionCall(supabase, functionCall, userId);
     }
 
     // Save conversation
-    await saveConversation(supabase, conversationId, userId, message, aiMessage);
+    conversationId = await saveConversation(supabase, conversationId, userId, message, aiMessage);
 
     // Track user interaction for recommendations
     await trackUserInteraction(supabase, userId, {
@@ -207,6 +207,11 @@ async function getConversationHistory(supabase: any, conversationId: string, use
 async function saveConversation(supabase: any, conversationId: string, userId: string, userMessage: string, aiMessage: string) {
   const newConversationId = conversationId || `conv_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   
+  if (!aiMessage?.trim()) {
+    console.log("AI message is empty, not saving to conversation history.");
+    return newConversationId;
+  }
+
   await supabase.from('ai_conversations').insert([
     {
       conversation_id: newConversationId,
@@ -239,14 +244,18 @@ async function trackUserInteraction(supabase: any, userId: string, interaction: 
 async function handleFunctionCall(supabase: any, functionCall: any, userId: string) {
   const { name, arguments: args } = functionCall;
   const parsedArgs = JSON.parse(args);
+  
+  if (name === 'book_vendor_service' && !userId) {
+    return "You need to be logged in to book a service. Please log in or create an account first.";
+  }
 
   switch (name) {
     case 'recommend_properties':
       return await getPropertyRecommendations(supabase, parsedArgs, userId);
     case 'book_vendor_service':
-      return await getVendorRecommendations(supabase, parsedArgs);
+      return await createVendorBooking(supabase, parsedArgs, userId);
     case 'control_3d_tour':
-      return `3D Tour: Focusing on ${parsedArgs.target} for property ${parsedArgs.propertyId}`;
+      return `3D Tour: Focusing on ${parsedArgs.target}.`;
     default:
       return 'Function executed successfully.';
   }
@@ -274,20 +283,73 @@ async function getPropertyRecommendations(supabase: any, criteria: any, userId: 
   return "I couldn't find any properties matching those criteria. Would you like to adjust your search?";
 }
 
-async function getVendorRecommendations(supabase: any, criteria: any) {
-  const { data: vendors } = await supabase
-    .from('vendor_services')
-    .select('*, vendor_business_profiles(*)')
-    .ilike('service_name', `%${criteria.serviceType}%`)
-    .limit(3);
+async function createVendorBooking(supabase: any, args: any, userId: string) {
+  const { serviceType, propertyId, urgency } = args;
 
-  if (vendors && vendors.length > 0) {
-    return `I found ${vendors.length} vendors for ${criteria.serviceType}:\n\n${vendors.map(v => 
-      `• ${v.vendor_business_profiles?.business_name} - ${v.service_name} - $${v.price}`
-    ).join('\n')}`;
+  if (!userId) {
+    return "I'm sorry, you must be logged in to book a service.";
   }
 
-  return `I couldn't find vendors for ${criteria.serviceType}. Would you like me to search for something similar?`;
+  // 1. Find a suitable vendor service, picking the highest-rated one.
+  const { data: service, error: serviceError } = await supabase
+    .from('vendor_services')
+    .select(`
+      id,
+      vendor_id,
+      price,
+      service_name,
+      vendor_business_profiles ( business_name, rating )
+    `)
+    .ilike('service_name', `%${serviceType}%`)
+    .eq('is_active', true)
+    .order('vendor_business_profiles(rating)', { ascending: false, nullsFirst: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (serviceError || !service) {
+    console.error('Error finding service:', serviceError);
+    return `I'm sorry, I couldn't find any available vendors for "${serviceType}" right now. You can browse available vendors in the vendors section.`;
+  }
+  
+  // 2. Get property address if propertyId is provided.
+  let propertyAddress = 'User has not specified a property.';
+  if (propertyId) {
+    const { data: property, error: propertyError } = await supabase
+      .from('properties')
+      .select('location')
+      .eq('id', propertyId)
+      .single();
+      
+    if (property) {
+      propertyAddress = property.location;
+    } else {
+      console.log(`Could not find property with ID ${propertyId} for booking.`);
+    }
+  }
+
+  // 3. Create a booking record.
+  const bookingData = {
+    customer_id: userId,
+    vendor_id: service.vendor_id,
+    service_id: service.id,
+    booking_date: new Date().toISOString().split('T')[0], // Books for today. A real app would ask for a date.
+    total_amount: service.price,
+    status: 'pending',
+    customer_notes: `Booking created via AI Concierge. Urgency: ${urgency || 'medium'}.`,
+    location_address: propertyAddress,
+  };
+
+  const { error: bookingError } = await supabase
+    .from('vendor_bookings')
+    .insert(bookingData);
+
+  if (bookingError) {
+    console.error('Error creating booking:', bookingError);
+    return `I found a vendor for "${serviceType}" (${service.vendor_business_profiles.business_name}), but I encountered an error while trying to book it. Please try again later or contact support.`;
+  }
+  
+  const vendorName = service.vendor_business_profiles?.business_name || 'the vendor';
+  return `Success! I've booked a "${service.service_name}" service for you with ${vendorName}. They will contact you shortly to confirm the details of your appointment. You can view your bookings in your dashboard.`;
 }
 
 function extractPreferences(interactions: any[]) {
