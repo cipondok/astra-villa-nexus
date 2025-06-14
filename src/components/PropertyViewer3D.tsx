@@ -1,14 +1,17 @@
-import React, { useState, useRef, Suspense } from 'react';
-import { Canvas } from '@react-three/fiber';
+import React, { useState, useRef, Suspense, useEffect } from 'react';
+import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, Environment, Html, useProgress } from '@react-three/drei';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { X, Maximize, Minimize, Ruler, Eye, Palette, Map, Webcam } from 'lucide-react';
+import { X, Maximize, Minimize, Ruler, Eye, Palette, Map, Webcam, Sun, LayoutGrid } from 'lucide-react';
 import PropertyModel from './PropertyModel3D';
 import MeasurementTool from './MeasurementTool';
 import VirtualStagingPanel from './VirtualStagingPanel';
 import EmotionTracker from './EmotionTracker';
+import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
+import { Vector3, MathUtils } from 'three';
+import LightingPanel from './LightingPanel';
 
 interface PropertyViewer3DProps {
   isOpen: boolean;
@@ -33,7 +36,7 @@ function Loader() {
 
 const PropertyViewer3D = ({ isOpen, onClose, propertyId, propertyTitle }: PropertyViewer3DProps) => {
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [activeTool, setActiveTool] = useState<'orbit' | 'measure' | 'staging'>('orbit');
+  const [activeTool, setActiveTool] = useState<'orbit' | 'measure' | 'staging' | 'lighting'>('orbit');
   const [measurementMode, setMeasurementMode] = useState(false);
   const [stagingStyle, setStagingStyle] = useState<string>('modern');
   const [showNeighborhood, setShowNeighborhood] = useState(false);
@@ -42,6 +45,9 @@ const PropertyViewer3D = ({ isOpen, onClose, propertyId, propertyTitle }: Proper
   const [detectedEmotion, setDetectedEmotion] = useState<string | null>(null);
   const [emotionTrackingStatus, setEmotionTrackingStatus] = useState<'idle' | 'loading' | 'ready' | 'error'>('idle');
   const [emotionError, setEmotionError] = useState<string | null>(null);
+  const [isTopView, setIsTopView] = useState(false);
+  const [timeOfDay, setTimeOfDay] = useState(12); // Default to noon
+  const controlsRef = useRef<OrbitControlsImpl>(null);
 
   const toggleFullscreen = () => {
     if (!document.fullscreenElement) {
@@ -53,10 +59,70 @@ const PropertyViewer3D = ({ isOpen, onClose, propertyId, propertyTitle }: Proper
     }
   };
 
-  const handleToolChange = (tool: 'orbit' | 'measure' | 'staging') => {
+  const handleToolChange = (tool: 'orbit' | 'measure' | 'staging' | 'lighting') => {
     setActiveTool(tool);
     setMeasurementMode(tool === 'measure');
   };
+
+  const getLightingProps = (time: number) => {
+    const hour = time % 24;
+    const angle = (hour / 24) * 2 * Math.PI;
+
+    const sunX = 20 * Math.cos(angle - Math.PI / 2);
+    const sunY = 20 * Math.sin(angle - Math.PI / 2);
+    const sunPosition: [number, number, number] = [sunX, sunY, 10];
+
+    let sunIntensity = 0;
+    let ambientIntensity = 0.1;
+    let environmentPreset: 'dawn' | 'apartment' | 'sunset' | 'night' = 'night';
+
+    if (hour >= 5 && hour < 7) { // Dawn
+      sunIntensity = MathUtils.mapLinear(hour, 5, 7, 0, 0.8);
+      ambientIntensity = MathUtils.mapLinear(hour, 5, 7, 0.1, 0.3);
+      environmentPreset = 'dawn';
+    } else if (hour >= 7 && hour < 17) { // Day
+      sunIntensity = 1;
+      ambientIntensity = 0.4;
+      environmentPreset = 'apartment';
+    } else if (hour >= 17 && hour < 19) { // Sunset
+      sunIntensity = MathUtils.mapLinear(hour, 17, 19, 1, 0);
+      ambientIntensity = MathUtils.mapLinear(hour, 17, 19, 0.4, 0.2);
+      environmentPreset = 'sunset';
+    } else { // Night
+      sunIntensity = 0.1; // A little moonlight
+      ambientIntensity = 0.1;
+      environmentPreset = 'night';
+    }
+    
+    if (sunY < 0) {
+      sunIntensity *= Math.max(0, 1 + sunY / 20);
+    } else {
+      sunIntensity = Math.min(1.5, sunIntensity);
+    }
+
+    return { sunPosition, sunIntensity, ambientIntensity, environmentPreset };
+  };
+
+  const lightingProps = getLightingProps(timeOfDay);
+  
+  useFrame((state) => {
+    if (controlsRef.current) {
+      if (isTopView) {
+        state.camera.position.lerp(new Vector3(0, 40, 0.1), 0.05);
+        controlsRef.current.target.lerp(new Vector3(0, 0, 0), 0.05);
+        controlsRef.current.enableRotate = false;
+      } else {
+        controlsRef.current.enableRotate = !measurementMode;
+      }
+      controlsRef.current.update();
+    }
+  });
+  
+  useEffect(() => {
+    if (!isOpen && isTopView) {
+        setIsTopView(false);
+    }
+  }, [isOpen, isTopView])
 
   const stagingStyles = [
     { id: 'modern', name: 'Modern', color: 'bg-blue-500' },
@@ -130,6 +196,24 @@ const PropertyViewer3D = ({ isOpen, onClose, propertyId, propertyTitle }: Proper
                 Staging
               </Button>
               <Button
+                variant={activeTool === 'lighting' ? 'default' : 'ghost'}
+                size="sm"
+                onClick={() => handleToolChange('lighting')}
+                className="text-white hover:bg-white/20 justify-start"
+              >
+                <Sun className="h-4 w-4 mr-2" />
+                Lighting
+              </Button>
+              <Button
+                variant={isTopView ? 'default' : 'ghost'}
+                size="sm"
+                onClick={() => setIsTopView(!isTopView)}
+                className="text-white hover:bg-white/20 justify-start"
+              >
+                <LayoutGrid className="h-4 w-4 mr-2" />
+                Top View
+              </Button>
+              <Button
                 variant={showNeighborhood ? 'default' : 'ghost'}
                 size="sm"
                 onClick={() => setShowNeighborhood(!showNeighborhood)}
@@ -169,6 +253,14 @@ const PropertyViewer3D = ({ isOpen, onClose, propertyId, propertyTitle }: Proper
             />
           )}
 
+          {/* Lighting Panel */}
+          {activeTool === 'lighting' && (
+            <LightingPanel
+              timeOfDay={timeOfDay}
+              onTimeChange={setTimeOfDay}
+            />
+          )}
+
           {/* Status Badges */}
           <div className="absolute top-20 right-4 z-10 flex flex-col gap-2">
             <Badge className="bg-green-500/80 text-white backdrop-blur-sm">
@@ -202,11 +294,16 @@ const PropertyViewer3D = ({ isOpen, onClose, propertyId, propertyTitle }: Proper
             ref={canvasRef}
             camera={{ position: [0, 5, 10], fov: 75 }}
             className="w-full h-full"
+            onPointerDown={() => { if(isTopView) setIsTopView(false) }}
           >
             <Suspense fallback={<Loader />}>
-              <Environment preset="apartment" />
-              <ambientLight intensity={0.4} />
-              <directionalLight position={[10, 10, 5]} intensity={1} />
+              <Environment preset={lightingProps.environmentPreset} />
+              <ambientLight intensity={lightingProps.ambientIntensity} />
+              <directionalLight 
+                position={lightingProps.sunPosition} 
+                intensity={lightingProps.sunIntensity}
+                castShadow
+              />
               
               <PropertyModel 
                 propertyId={propertyId}
@@ -217,12 +314,13 @@ const PropertyViewer3D = ({ isOpen, onClose, propertyId, propertyTitle }: Proper
               {measurementMode && <MeasurementTool />}
               
               <OrbitControls
+                ref={controlsRef}
                 enabled={!measurementMode}
                 enablePan={true}
                 enableZoom={true}
                 enableRotate={true}
                 minDistance={2}
-                maxDistance={50}
+                maxDistance={80}
               />
             </Suspense>
           </Canvas>
