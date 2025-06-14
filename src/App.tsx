@@ -18,6 +18,10 @@ import AgentDashboard from "./pages/AgentDashboard";
 import PropertyOwnerDashboard from "./pages/PropertyOwnerDashboard";
 import VendorDashboard from "./pages/VendorDashboard";
 import AddProperty from "./pages/AddProperty";
+import Buy from "./pages/Buy";
+import Rent from "./pages/Rent";
+import NewProjects from "./pages/NewProjects";
+import PreLaunching from "./pages/PreLaunching";
 
 const queryClient = new QueryClient();
 
@@ -42,6 +46,10 @@ const App = () => (
                   <Route path="/dashboard/property-owner" element={<PropertyOwnerDashboard />} />
                   <Route path="/dashboard/vendor" element={<VendorDashboard />} />
                   <Route path="/add-property" element={<AddProperty />} />
+                  <Route path="/buy" element={<Buy />} />
+                  <Route path="/rent" element={<Rent />} />
+                  <Route path="/new-projects" element={<NewProjects />} />
+                  <Route path="/pre-launching" element={<PreLaunching />} />
                 </Routes>
               </BrowserRouter>
             </TooltipProvider>
