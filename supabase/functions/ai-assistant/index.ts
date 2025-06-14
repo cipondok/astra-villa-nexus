@@ -52,6 +52,7 @@ serve(async (req) => {
 3. 3D property tour guidance
 4. General real estate questions
 5. Generating SEO content for property listings.
+6. Handing over to a human customer service agent by creating a support ticket if you cannot help or if the user requests to speak to a person.
 
 Current context:
 - User preferences: ${JSON.stringify(userContext.preferences)}
@@ -63,8 +64,9 @@ Available functions:
 - recommend_properties: Suggest properties based on preferences.
 - book_vendor_service: Books vendor services like cleaning or maintenance. It directly creates a booking with a suitable vendor.
 - generate_seo_content: Generates SEO-optimized title and description for a property listing.
+- create_support_ticket: Creates a customer service support ticket. Use this when you cannot answer a question or when the user asks to talk to a human.
 
-Be helpful, concise, and professional. Always try to guide users toward taking action. When booking a service, confirm the action has been taken.`
+Be helpful, concise, and professional. Always try to guide users toward taking action. When booking a service, confirm the action has been taken. When creating a support ticket, confirm it and provide the ticket number.`
       },
       ...conversationHistory.map(msg => ({
         role: msg.role,
@@ -131,6 +133,19 @@ Be helpful, concise, and professional. Always try to guide users toward taking a
                 propertyId: { type: 'string', description: 'The ID of the property for which to generate content.' }
               },
               required: ['propertyId']
+            }
+          },
+          {
+            name: 'create_support_ticket',
+            description: "Creates a customer service support ticket when the user wants to talk to a human agent or has an issue the AI can't resolve. Gathers the user's issue and forwards it to the support team.",
+            parameters: {
+              type: 'object',
+              properties: {
+                subject: { type: 'string', description: "A short, descriptive title for the user's issue. e.g., 'Problem with my booking', 'Question about a property'." },
+                description: { type: 'string', description: "A detailed description of the user's problem or question. This should be the user's original message that prompted the ticket creation." },
+                priority: { type: 'string', enum: ['low', 'medium', 'high'], description: 'The urgency of the support request. Defaults to medium if not specified.' }
+              },
+              required: ['subject', 'description']
             }
           }
         ],
@@ -270,6 +285,8 @@ async function handleFunctionCall(supabase: any, functionCall: any, userId: stri
       return `3D Tour: Focusing on ${parsedArgs.target}.`;
     case 'generate_seo_content':
       return await generateSeoContent(supabase, parsedArgs);
+    case 'create_support_ticket':
+      return await createSupportTicket(supabase, parsedArgs, userId);
     default:
       return 'Function executed successfully.';
   }
@@ -450,6 +467,34 @@ async function generateSeoContent(supabase: any, args: { propertyId: string }) {
     console.error('Error during SEO content generation:', error);
     return "I'm sorry, I encountered an issue while generating the SEO content. Please try again later.";
   }
+}
+
+async function createSupportTicket(supabase: any, args: { subject: string, description: string, priority?: string }, userId: string) {
+  const { subject, description, priority } = args;
+
+  if (!userId) {
+    return "You need to be logged in to create a support ticket. Please log in or register, and then ask your question again.";
+  }
+
+  // Generate a unique ticket number
+  const ticket_number = `CS-${Date.now()}`;
+
+  const { data, error } = await supabase.from('customer_service_tickets').insert({
+    customer_id: userId,
+    subject: subject,
+    description: description,
+    status: 'open',
+    priority: priority || 'medium',
+    category: 'Chatbot Handover',
+    ticket_number,
+  }).select();
+
+  if (error) {
+    console.error('Error creating support ticket:', error);
+    return "I'm sorry, I encountered an error while creating your support ticket. Please try again later.";
+  }
+
+  return `I have successfully created a support ticket for you (Ticket #${ticket_number}). Our customer service team will review your request and get back to you via email shortly.`;
 }
 
 function extractPreferences(interactions: any[]) {
