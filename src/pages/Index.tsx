@@ -9,6 +9,7 @@ import RoleBasedAuthModal from "@/components/RoleBasedAuthModal";
 import ModernSearchPanel from "@/components/ModernSearchPanel";
 import AIChatWidget from "@/components/ai/AIChatWidget";
 import SmartRecommendations from "@/components/ai/SmartRecommendations";
+import LoadingPopup from "@/components/LoadingPopup";
 import { useAuth } from "@/contexts/AuthContext";
 import { useUserTracking } from "@/hooks/useUserTracking";
 import { supabase } from "@/integrations/supabase/client";
@@ -318,6 +319,13 @@ const Index = () => {
 
       {/* AI Chat Widget */}
       <AIChatWidget />
+
+      {/* Loading Popup */}
+      <LoadingPopup 
+        isOpen={isSearching} 
+        message={language === "en" ? "Searching properties..." : "Mencari properti..."}
+        language={language}
+      />
 
       {/* Auth Modal */}
       <RoleBasedAuthModal 
