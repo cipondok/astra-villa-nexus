@@ -183,7 +183,7 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
       <PropertyViewer3D
         isOpen={is3DViewOpen}
         onClose={() => setIs3DViewOpen(false)}
-        propertyId={property.id}
+        propertyId={String(property.id)}
         propertyTitle={property.title}
       />
     </>
