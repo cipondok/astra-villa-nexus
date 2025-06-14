@@ -1,8 +1,7 @@
-
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, User, LogOut, Globe, Bot, Plus, Home, Building, Info } from "lucide-react";
+import { Menu, X, User, LogOut, Globe, Bot, Plus, Home, Building, Info, ShoppingCart, KeyRound, Construction, Rocket } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useThemeSettings } from "@/contexts/ThemeSettingsContext";
 import { useTheme } from "@/components/ThemeProvider";
@@ -21,6 +20,10 @@ const Navigation = () => {
   const navItems = [
     { name: "Home", path: "/", icon: Home },
     { name: "Properties", path: "/properties", icon: Building },
+    { name: "Buy", path: "/buy", icon: ShoppingCart },
+    { name: "Rent", path: "/rent", icon: KeyRound },
+    { name: "New Projects", path: "/new-projects", icon: Construction },
+    { name: "Pre-launching", path: "/pre-launching", icon: Rocket },
     { name: "About", path: "/about", icon: Info },
   ];
 
@@ -64,7 +67,7 @@ const Navigation = () => {
             </div>
 
             {/* Desktop Navigation - More compact */}
-            <div className="hidden md:flex items-center space-x-4">
+            <div className="hidden md:flex items-center space-x-2">
               {navItems.map((item) => (
                 <Link
                   key={item.name}
