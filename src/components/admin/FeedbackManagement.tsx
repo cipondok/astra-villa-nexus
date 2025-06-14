@@ -119,7 +119,7 @@ const FeedbackManagement = () => {
     ));
   };
 
-  const authorizedRoles = ['admin', 'agent'];
+  const authorizedRoles = ['admin', 'agent', 'customer_service'];
   if (!profile || !authorizedRoles.includes(profile.role)) {
     return (
       <Card className="bg-white/10 backdrop-blur-md border-white/20">
