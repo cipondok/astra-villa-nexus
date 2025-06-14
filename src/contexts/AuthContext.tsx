@@ -44,12 +44,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       console.log('Fetching profile for user:', userId);
       
-      // For admin users, skip profile fetch to speed up login
-      if (user?.email === 'mycode103@gmail.com') {
+      // For admin users, check both auth.users email and profiles table
+      const { data: authUser } = await supabase.auth.getUser();
+      
+      if (authUser.user?.email === 'mycode103@gmail.com') {
         const adminProfile: Profile = {
           id: userId,
-          email: user.email,
-          full_name: user.user_metadata?.full_name || 'Admin',
+          email: authUser.user.email,
+          full_name: authUser.user.user_metadata?.full_name || 'Admin',
           role: 'admin',
           verification_status: 'approved'
         };

@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
@@ -72,20 +73,19 @@ const Index = () => {
     setIsSearching(true);
     
     try {
-      // Start with a basic query - just get approved properties
+      // Simple query for approved properties only (no more duplicate approval_status)
       let query = supabase
         .from('properties')
         .select('*')
         .eq('status', 'approved');
 
-      console.log("🔍 SEARCH DEBUG - Base query built for approved properties");
+      console.log("🔍 SEARCH DEBUG - Base query for approved properties");
 
       // Apply text search if provided
       if (searchData.query && searchData.query.trim()) {
         const searchTerm = searchData.query.trim().toLowerCase();
         console.log("🔍 SEARCH DEBUG - Applying text search for:", searchTerm);
         
-        // Use simpler ilike search
         query = query.or(`title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%,location.ilike.%${searchTerm}%`);
       }
 
@@ -140,41 +140,16 @@ const Index = () => {
 
       if (error) {
         console.error('🔍 SEARCH ERROR:', error);
-        // If search fails, try to get ANY approved properties to test
-        console.log("🔍 Trying fallback query...");
-        const { data: fallbackData, error: fallbackError } = await supabase
-          .from('properties')
-          .select('*')
-          .eq('status', 'approved')
-          .limit(10);
-          
-        if (fallbackError) {
-          console.error('🔍 FALLBACK ERROR:', fallbackError);
-          setSearchResults([]);
-        } else {
-          console.log(`🔍 FALLBACK SUCCESS - Found ${fallbackData?.length || 0} properties`);
-          setSearchResults(fallbackData || []);
-        }
+        setSearchResults([]);
       } else {
         console.log(`🔍 SEARCH SUCCESS - Found ${properties?.length || 0} properties`);
-        console.log("🔍 SEARCH DEBUG - First result:", properties?.[0]);
+        console.log("🔍 SEARCH DEBUG - Sample results:", properties?.slice(0, 2));
         setSearchResults(properties || []);
       }
       
     } catch (error) {
       console.error('🔍 SEARCH EXCEPTION:', error);
-      // Try to get some properties as a last resort
-      try {
-        const { data: anyData } = await supabase
-          .from('properties')
-          .select('*')
-          .limit(5);
-        console.log("🔍 EMERGENCY FALLBACK - Any properties:", anyData?.length || 0);
-        setSearchResults(anyData || []);
-      } catch (e) {
-        console.error('🔍 EMERGENCY FALLBACK FAILED:', e);
-        setSearchResults([]);
-      }
+      setSearchResults([]);
     } finally {
       setIsSearching(false);
     }

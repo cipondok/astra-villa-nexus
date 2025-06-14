@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -30,11 +29,11 @@ const Properties = () => {
         
         console.log("Fetching properties for Properties page...");
         
+        // Simplified query - only check status (no more approval_status)
         const { data, error } = await supabase
           .from('properties')
           .select('*')
           .eq('status', 'approved')
-          .eq('approval_status', 'approved')
           .order('created_at', { ascending: false });
 
         if (error) {
@@ -68,12 +67,12 @@ const Properties = () => {
       setIsSearching(true);
       
       try {
+        // Simplified query - only check status
         const { data, error } = await supabase
           .from('properties')
           .select('*')
           .eq('status', 'approved')
-          .eq('approval_status', 'approved')
-          .or(`title.ilike.%${searchTerm.trim()}%,description.ilike.%${searchTerm.trim()}%,location.ilike.%${searchTerm.trim()}%,area.ilike.%${searchTerm.trim()}%,city.ilike.%${searchTerm.trim()}%,state.ilike.%${searchTerm.trim()}%`)
+          .or(`title.ilike.%${searchTerm.trim()}%,description.ilike.%${searchTerm.trim()}%,location.ilike.%${searchTerm.trim()}%,city.ilike.%${searchTerm.trim()}%,state.ilike.%${searchTerm.trim()}%`)
           .order('created_at', { ascending: false });
 
         if (error) {
@@ -249,7 +248,7 @@ const Properties = () => {
                       <div className="flex items-center text-gray-600 dark:text-gray-300">
                         <MapPin className="h-4 w-4 mr-1" />
                         <span className="text-sm">
-                          {`${property.area || ''}, ${property.city || ''}, ${property.state || ''}`.replace(/^,\s*|,\s*$/g, '')}
+                          {`${property.city || ''}, ${property.state || ''}`.replace(/^,\s*|,\s*$/g, '')}
                         </span>
                       </div>
                     </CardHeader>
