@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -15,6 +14,7 @@ import FeedbackSection from "@/components/FeedbackSection";
 import ScheduleSurveyModal from "@/components/ScheduleSurveyModal";
 import { supabase } from "@/integrations/supabase/client";
 import { formatIDR } from "@/utils/currency";
+import PredictivePricingCard from '@/components/PredictivePricingCard';
 
 const PropertyDetail = () => {
   const { id } = useParams();
@@ -26,6 +26,8 @@ const PropertyDetail = () => {
   const [is3DViewOpen, setIs3DViewOpen] = useState(false);
   const [selectedStagingStyle, setSelectedStagingStyle] = useState('modern');
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
+  const [prediction, setPrediction] = useState<any>(null);
+  const [predictionLoading, setPredictionLoading] = useState(true);
 
   // Fetch property data from database
   useEffect(() => {
@@ -62,6 +64,37 @@ const PropertyDetail = () => {
 
     fetchProperty();
   }, [id]);
+
+  useEffect(() => {
+    const fetchPrediction = async () => {
+      if (!id) {
+        setPredictionLoading(false);
+        return;
+      }
+
+      setPredictionLoading(true);
+      try {
+        const { data, error } = await supabase.functions.invoke('predictive-pricing', {
+          body: { propertyId: id },
+        });
+
+        if (error) {
+          throw error;
+        }
+
+        setPrediction(data.prediction);
+      } catch (error) {
+        console.error("Error fetching price prediction:", error);
+        setPrediction(null);
+      } finally {
+        setPredictionLoading(false);
+      }
+    };
+
+    if (property) {
+      fetchPrediction();
+    }
+  }, [id, property]);
 
   const stagingStyles = [
     { id: 'modern', name: 'Modern', description: 'Clean lines and contemporary furniture' },
@@ -333,6 +366,9 @@ const PropertyDetail = () => {
                 </Button>
               </CardContent>
             </Card>
+
+            {/* Predictive Pricing */}
+            <PredictivePricingCard loading={predictionLoading} prediction={prediction} />
 
             {/* Property Summary */}
             <Card>
