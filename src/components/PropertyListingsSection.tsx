@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -81,6 +81,16 @@ const PropertyListingsSection = ({
     return colors[type as keyof typeof colors] || 'bg-gray-100 text-gray-800';
   };
 
+  // Memoize section title and subtitle to prevent unnecessary re-renders
+  const sectionData = useMemo(() => {
+    const sectionTitle = hasSearched ? currentText.searchResults : currentText.title;
+    const sectionSubtitle = hasSearched 
+      ? `${searchResults.length} properties found` 
+      : currentText.subtitle;
+    
+    return { sectionTitle, sectionSubtitle };
+  }, [hasSearched, searchResults.length, currentText]);
+
   // Show loading state
   if (isSearching) {
     return (
@@ -97,25 +107,12 @@ const PropertyListingsSection = ({
     );
   }
 
-  // Determine section title and subtitle
-  const sectionTitle = hasSearched ? currentText.searchResults : currentText.title;
-  const sectionSubtitle = hasSearched 
-    ? `${searchResults.length} properties found` 
-    : currentText.subtitle;
-
-  console.log("🏠 PropertyListingsSection DEBUG:", {
-    hasSearched,
-    searchResultsLength: searchResults.length,
-    isSearching,
-    sectionTitle
-  });
-
   return (
     <section className="py-12">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold mb-4">{sectionTitle}</h2>
-          <p className="text-xl text-muted-foreground">{sectionSubtitle}</p>
+          <h2 className="text-3xl font-bold mb-4">{sectionData.sectionTitle}</h2>
+          <p className="text-xl text-muted-foreground">{sectionData.sectionSubtitle}</p>
         </div>
 
         {searchResults.length === 0 ? (
@@ -130,9 +127,9 @@ const PropertyListingsSection = ({
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 transition-all duration-300 ease-in-out">
             {searchResults.map((property) => (
-              <Card key={property.id} className="overflow-hidden hover:shadow-lg transition-shadow group">
+              <Card key={property.id} className="overflow-hidden hover:shadow-lg transition-all duration-300 group opacity-100">
                 <div className="relative">
                   <img
                     src={property.image_urls?.[0] || property.images?.[0] || "https://images.unsplash.com/photo-1721322800607-8c38375eef04?w=400&h=300&fit=crop"}

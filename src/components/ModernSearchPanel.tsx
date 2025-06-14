@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+
+import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -20,22 +21,27 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
   const [location, setLocation] = useState("");
   const [showAdvanced, setShowAdvanced] = useState(false);
 
-  // Live search with debouncing
-  useEffect(() => {
+  // Debounced live search with useCallback to prevent unnecessary re-renders
+  const debouncedLiveSearch = useCallback((searchTerm: string) => {
     if (!onLiveSearch) return;
     
+    if (searchTerm.trim().length >= 3) {
+      console.log("🔍 PANEL - Live search triggered for:", searchTerm);
+      onLiveSearch(searchTerm);
+    } else if (searchTerm.trim().length === 0) {
+      console.log("🔍 PANEL - Clearing search");
+      onLiveSearch("");
+    }
+  }, [onLiveSearch]);
+
+  // Live search with debouncing
+  useEffect(() => {
     const timeoutId = setTimeout(() => {
-      if (searchQuery.trim().length >= 3) {
-        console.log("🔍 PANEL - Live search triggered for:", searchQuery);
-        onLiveSearch(searchQuery);
-      } else if (searchQuery.trim().length === 0) {
-        console.log("🔍 PANEL - Clearing search");
-        onLiveSearch("");
-      }
+      debouncedLiveSearch(searchQuery);
     }, 800);
     
     return () => clearTimeout(timeoutId);
-  }, [searchQuery, onLiveSearch]);
+  }, [searchQuery, debouncedLiveSearch]);
 
   const text = {
     en: {
@@ -98,7 +104,7 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
     ? ["Apartment Jakarta", "Villa Bali", "House Surabaya", "Boarding Bandung"]
     : ["Apartemen Jakarta", "Villa Bali", "Rumah Surabaya", "Kost Bandung"];
 
-  const handleManualSearch = () => {
+  const handleManualSearch = useCallback(() => {
     const searchData = {
       query: searchQuery.trim(),
       propertyType: propertyType || "",
@@ -109,9 +115,9 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
     
     console.log("🔍 PANEL - Manual search triggered with:", searchData);
     onSearch(searchData);
-  };
+  }, [searchQuery, propertyType, bedrooms, bathrooms, location, onSearch]);
 
-  const handleClearFilters = () => {
+  const handleClearFilters = useCallback(() => {
     console.log("🧹 PANEL - Clearing all filters");
     setSearchQuery("");
     setPropertyType("");
@@ -121,9 +127,9 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
     if (onLiveSearch) {
       onLiveSearch("");
     }
-  };
+  }, [onLiveSearch]);
 
-  const handlePopularSearch = (term: string) => {
+  const handlePopularSearch = useCallback((term: string) => {
     console.log("🔥 PANEL - Popular search clicked:", term);
     setSearchQuery(term);
     const searchData = {
@@ -134,13 +140,13 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
       location: ""
     };
     onSearch(searchData);
-  };
+  }, [onSearch]);
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
+  const handleKeyPress = useCallback((e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
       handleManualSearch();
     }
-  };
+  }, [handleManualSearch]);
 
   return (
     <Card className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm shadow-2xl max-w-6xl mx-auto">
