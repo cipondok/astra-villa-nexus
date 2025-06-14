@@ -14,7 +14,7 @@ import { useAlert } from "@/contexts/AlertContext";
 import { useAuth } from "@/contexts/AuthContext";
 import UserCreationModal from "./UserCreationModal";
 
-type UserRole = 'general_user' | 'property_owner' | 'agent' | 'vendor' | 'admin';
+type UserRole = 'general_user' | 'property_owner' | 'agent' | 'vendor' | 'admin' | 'customer_service';
 
 interface UserProfile {
   id: string;
@@ -176,10 +176,11 @@ const UserRolesManagement = () => {
       agent: { color: "bg-blue-500 text-white", label: "Agent" },
       property_owner: { color: "bg-green-500 text-white", label: "Property Owner" },
       vendor: { color: "bg-purple-500 text-white", label: "Vendor" },
+      customer_service: { color: "bg-orange-500 text-white", label: "Customer Service" },
       general_user: { color: "bg-gray-500 text-white", label: "General User" }
     };
     
-    const config = roleConfig[role];
+    const config = roleConfig[role] || roleConfig.general_user;
     return (
       <Badge className={config.color}>
         {config.label}
@@ -414,6 +415,7 @@ const UserRolesManagement = () => {
                   <SelectItem value="general_user" className="text-popover-foreground">General User</SelectItem>
                   <SelectItem value="property_owner" className="text-popover-foreground">Property Owner</SelectItem>
                   <SelectItem value="agent" className="text-popover-foreground">Agent</SelectItem>
+                  <SelectItem value="customer_service" className="text-popover-foreground">Customer Service</SelectItem>
                   <SelectItem value="vendor" className="text-popover-foreground">Vendor</SelectItem>
                   <SelectItem value="admin" className="text-popover-foreground">Admin</SelectItem>
                 </SelectContent>

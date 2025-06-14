@@ -32,7 +32,7 @@ import {
   XCircle
 } from "lucide-react";
 
-type UserRole = "general_user" | "property_owner" | "agent" | "vendor" | "admin";
+type UserRole = "general_user" | "property_owner" | "agent" | "vendor" | "admin" | "customer_service";
 
 interface DatabaseUser {
   id: string;
@@ -371,7 +371,8 @@ const DatabaseUserManagement = () => {
       agent: "default",
       vendor: "secondary", 
       property_owner: "outline",
-      general_user: "outline"
+      general_user: "outline",
+      customer_service: "outline"
     };
     
     return (
@@ -484,6 +485,7 @@ const DatabaseUserManagement = () => {
                 <SelectItem value="all">All Roles</SelectItem>
                 <SelectItem value="admin">Admin</SelectItem>
                 <SelectItem value="agent">Agent</SelectItem>
+                <SelectItem value="customer_service">Customer Service</SelectItem>
                 <SelectItem value="vendor">Vendor</SelectItem>
                 <SelectItem value="property_owner">Property Owner</SelectItem>
                 <SelectItem value="general_user">General User</SelectItem>
@@ -890,6 +892,7 @@ const DatabaseUserManagement = () => {
                       <SelectItem value="general_user">General User</SelectItem>
                       <SelectItem value="property_owner">Property Owner</SelectItem>
                       <SelectItem value="agent">Agent</SelectItem>
+                      <SelectItem value="customer_service">Customer Service</SelectItem>
                       <SelectItem value="vendor">Vendor</SelectItem>
                       <SelectItem value="admin">Admin</SelectItem>
                     </SelectContent>

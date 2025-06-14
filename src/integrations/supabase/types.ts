@@ -3140,6 +3140,7 @@ export type Database = {
         | "agent"
         | "vendor"
         | "admin"
+        | "customer_service"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -3266,7 +3267,14 @@ export const Constants = {
         "order_tracking",
         "ai_bot_management",
       ],
-      user_role: ["general_user", "property_owner", "agent", "vendor", "admin"],
+      user_role: [
+        "general_user",
+        "property_owner",
+        "agent",
+        "vendor",
+        "admin",
+        "customer_service",
+      ],
     },
   },
 } as const

@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -31,7 +32,7 @@ const LiveAgentStatusDashboard = () => {
       const { data, error } = await supabase
         .from('profiles')
         .select('id, full_name, email, avatar_url, availability_status, last_seen_at')
-        .in('role', ['agent', 'admin']);
+        .in('role', ['agent', 'admin', 'customer_service']);
       if (error) throw error;
       return data as AgentProfile[];
     },
