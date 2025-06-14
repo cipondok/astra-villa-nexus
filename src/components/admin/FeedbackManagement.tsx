@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -11,8 +10,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { MessageSquare, Star, Eye, CheckCircle, XCircle, Clock } from "lucide-react";
 import { useAlert } from "@/contexts/AlertContext";
+import { useAuth } from "@/contexts/AuthContext";
+import MajorTopicsDashboard from "./MajorTopicsDashboard";
 
 const FeedbackManagement = () => {
+  const { profile } = useAuth();
   const [selectedFeedback, setSelectedFeedback] = useState(null);
   const [showDetailDialog, setShowDetailDialog] = useState(false);
   const [response, setResponse] = useState("");
@@ -117,8 +119,24 @@ const FeedbackManagement = () => {
     ));
   };
 
+  const authorizedRoles = ['admin', 'agent'];
+  if (!profile || !authorizedRoles.includes(profile.role)) {
+    return (
+      <Card className="bg-white/10 backdrop-blur-md border-white/20">
+        <CardHeader>
+          <CardTitle className="text-white">Access Denied</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-gray-300">You do not have permission to view this page. Please contact an administrator.</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <div className="space-y-6">
+      <MajorTopicsDashboard />
+
       <Card className="bg-white/10 backdrop-blur-md border-white/20">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-white">
