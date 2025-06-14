@@ -4,7 +4,7 @@ import { useFrame } from '@react-three/fiber';
 import { Group } from 'three';
 
 interface PropertyModel3DProps {
-  propertyId: number;
+  propertyId: string;
   stagingStyle: string;
   showNeighborhood: boolean;
 }

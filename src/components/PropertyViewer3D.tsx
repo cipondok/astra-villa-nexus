@@ -13,7 +13,7 @@ import VirtualStagingPanel from './VirtualStagingPanel';
 interface PropertyViewer3DProps {
   isOpen: boolean;
   onClose: () => void;
-  propertyId: number;
+  propertyId: string;
   propertyTitle: string;
 }
 
