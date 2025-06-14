@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -16,7 +15,8 @@ import {
   Sparkles,
   Home,
   Users,
-  MapPin
+  MapPin,
+  LoaderCircle
 } from "lucide-react";
 
 interface Message {
@@ -170,7 +170,7 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
         <div className="fixed bottom-6 right-6 z-50">
           <Button
             onClick={() => setIsOpen(true)}
-            className="h-14 w-14 rounded-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 shadow-lg animate-pulse hover:animate-none transition-all"
+            className="h-14 w-14 rounded-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 shadow-lg hover:scale-110 transition-all"
             size="icon"
           >
             <Bot className="h-6 w-6 text-white" />
@@ -238,13 +238,8 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
                   <div className="flex justify-start">
                     <div className="bg-gray-100 p-3 rounded-lg">
                       <div className="flex items-center gap-2">
-                        <Bot className="h-4 w-4 text-purple-600 animate-pulse" />
+                        <LoaderCircle className="h-5 w-5 text-purple-600 animate-spin" />
                         <span className="text-sm">AI is thinking...</span>
-                        <div className="flex gap-1">
-                          <div className="w-2 h-2 bg-purple-600 rounded-full animate-bounce"></div>
-                          <div className="w-2 h-2 bg-purple-600 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-                          <div className="w-2 h-2 bg-purple-600 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
-                        </div>
                       </div>
                     </div>
                   </div>
