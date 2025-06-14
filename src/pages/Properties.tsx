@@ -1,16 +1,19 @@
+
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Search, Filter, MapPin, Bed, Bath, Car, Heart, Loader2 } from "lucide-react";
+import { Search, Filter, MapPin, Bed, Bath, Car, Heart, Loader2, Box } from "lucide-react";
 import AuthenticatedNavigation from "@/components/navigation/AuthenticatedNavigation";
 import { supabase } from "@/integrations/supabase/client";
 import { formatIDR } from "@/utils/currency";
 
 const Properties = () => {
   const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [language, setLanguage] = useState<"en" | "id">("en");
   const [theme, setTheme] = useState("light");
@@ -29,7 +32,6 @@ const Properties = () => {
         
         console.log("Fetching properties for Properties page...");
         
-        // Simplified query - only check status (no more approval_status)
         const { data, error } = await supabase
           .from('properties')
           .select('*')
@@ -67,7 +69,6 @@ const Properties = () => {
       setIsSearching(true);
       
       try {
-        // Simplified query - only check status
         const { data, error } = await supabase
           .from('properties')
           .select('*')
@@ -90,7 +91,6 @@ const Properties = () => {
       }
     };
 
-    // Debounce the search
     const timeoutId = setTimeout(performLiveSearch, 300);
     return () => clearTimeout(timeoutId);
   }, [searchTerm, properties]);
@@ -101,6 +101,10 @@ const Properties = () => {
 
   const toggleTheme = () => {
     setTheme(prev => prev === "light" ? "dark" : "light");
+  };
+
+  const handlePropertyClick = (propertyId: string) => {
+    navigate(`/property/${propertyId}`);
   };
 
   const text = {
@@ -116,6 +120,7 @@ const Properties = () => {
       loading: "Loading properties...",
       searching: "Searching...",
       viewDetails: "View Details",
+      view3D: "3D View",
       forSale: "For Sale",
       forRent: "For Rent",
       loadingError: "Error loading properties. Please try again.",
@@ -133,6 +138,7 @@ const Properties = () => {
       loading: "Memuat properti...",
       searching: "Mencari...",
       viewDetails: "Lihat Detail",
+      view3D: "Tampilan 3D",
       forSale: "Dijual",
       forRent: "Disewa",
       loadingError: "Error memuat properti. Silakan coba lagi.",
@@ -144,19 +150,30 @@ const Properties = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {isAuthenticated && (
-        <AuthenticatedNavigation
-          language={language}
-          onLanguageToggle={toggleLanguage}
-          theme={theme}
-          onThemeToggle={toggleTheme}
-        />
-      )}
+      {/* Fixed Header with proper Navigation */}
+      <div className="fixed top-0 left-0 right-0 z-50 bg-white dark:bg-gray-800 border-b shadow-sm">
+        {isAuthenticated ? (
+          <AuthenticatedNavigation
+            language={language}
+            onLanguageToggle={toggleLanguage}
+            theme={theme}
+            onThemeToggle={toggleTheme}
+          />
+        ) : (
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div className="flex items-center justify-between">
+              <h1 className="text-2xl font-bold text-blue-600">ASTRA Villa</h1>
+              <Button onClick={() => navigate('/')}>Back to Home</Button>
+            </div>
+          </div>
+        )}
+      </div>
       
-      <div className={`${isAuthenticated ? 'pt-16' : 'pt-8'} px-4 sm:px-6 lg:px-8`}>
+      {/* Main Content with proper top padding */}
+      <div className="pt-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          {/* Header */}
-          <div className="mb-8 text-center">
+          {/* Page Header */}
+          <div className="mb-8 text-center bg-white dark:bg-gray-800 rounded-lg p-8 shadow-sm">
             <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
               {currentText.title}
             </h1>
@@ -173,7 +190,7 @@ const Properties = () => {
                 placeholder={currentText.search}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
+                className="pl-10 bg-white dark:bg-gray-800"
               />
               {isSearching && (
                 <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
@@ -224,12 +241,13 @@ const Properties = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredProperties.length > 0 ? (
                 filteredProperties.map((property) => (
-                  <Card key={property.id} className="overflow-hidden hover:shadow-lg transition-shadow">
+                  <Card key={property.id} className="overflow-hidden hover:shadow-lg transition-shadow bg-white dark:bg-gray-800">
                     <div className="relative">
                       <img
                         src={property.image_urls?.[0] || "https://images.unsplash.com/photo-1721322800607-8c38375eef04?w=400&h=300&fit=crop"}
                         alt={property.title}
-                        className="w-full h-48 object-cover"
+                        className="w-full h-48 object-cover cursor-pointer"
+                        onClick={() => handlePropertyClick(property.id)}
                       />
                       <Button
                         size="sm"
@@ -241,9 +259,22 @@ const Properties = () => {
                       <Badge className="absolute top-2 left-2 bg-blue-600 text-white">
                         {property.listing_type === 'sale' ? currentText.forSale : currentText.forRent}
                       </Badge>
+                      {(property.three_d_model_url || property.virtual_tour_url) && (
+                        <Button
+                          size="sm"
+                          className="absolute bottom-2 right-2 bg-purple-600 hover:bg-purple-700 text-white"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handlePropertyClick(property.id);
+                          }}
+                        >
+                          <Box className="h-4 w-4 mr-1" />
+                          {currentText.view3D}
+                        </Button>
+                      )}
                     </div>
                     
-                    <CardHeader>
+                    <CardHeader className="cursor-pointer" onClick={() => handlePropertyClick(property.id)}>
                       <CardTitle className="text-lg">{property.title}</CardTitle>
                       <div className="flex items-center text-gray-600 dark:text-gray-300">
                         <MapPin className="h-4 w-4 mr-1" />
@@ -276,7 +307,10 @@ const Properties = () => {
                         </div>
                       </div>
                       
-                      <Button className="w-full">
+                      <Button 
+                        className="w-full"
+                        onClick={() => handlePropertyClick(property.id)}
+                      >
                         {currentText.viewDetails}
                       </Button>
                     </CardContent>
