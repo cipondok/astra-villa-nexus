@@ -1,14 +1,14 @@
-
 import React, { useState, useRef, Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Environment, Html, useProgress } from '@react-three/drei';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { X, Maximize, Minimize, Ruler, Eye, Palette, Map } from 'lucide-react';
+import { X, Maximize, Minimize, Ruler, Eye, Palette, Map, Webcam } from 'lucide-react';
 import PropertyModel from './PropertyModel3D';
 import MeasurementTool from './MeasurementTool';
 import VirtualStagingPanel from './VirtualStagingPanel';
+import EmotionTracker from './EmotionTracker';
 
 interface PropertyViewer3DProps {
   isOpen: boolean;
@@ -38,6 +38,10 @@ const PropertyViewer3D = ({ isOpen, onClose, propertyId, propertyTitle }: Proper
   const [stagingStyle, setStagingStyle] = useState<string>('modern');
   const [showNeighborhood, setShowNeighborhood] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [isEmotionTrackingEnabled, setIsEmotionTrackingEnabled] = useState(false);
+  const [detectedEmotion, setDetectedEmotion] = useState<string | null>(null);
+  const [emotionTrackingStatus, setEmotionTrackingStatus] = useState<'idle' | 'loading' | 'ready' | 'error'>('idle');
+  const [emotionError, setEmotionError] = useState<string | null>(null);
 
   const toggleFullscreen = () => {
     if (!document.fullscreenElement) {
@@ -134,6 +138,25 @@ const PropertyViewer3D = ({ isOpen, onClose, propertyId, propertyTitle }: Proper
                 <Map className="h-4 w-4 mr-2" />
                 Area
               </Button>
+              <Button
+                variant={emotionTrackingStatus !== 'idle' && emotionTrackingStatus !== 'error' ? 'default' : 'ghost'}
+                size="sm"
+                onClick={() => {
+                  if (isEmotionTrackingEnabled) {
+                    setIsEmotionTrackingEnabled(false);
+                    setDetectedEmotion(null);
+                    setEmotionTrackingStatus('idle');
+                    setEmotionError(null);
+                  } else {
+                    setIsEmotionTrackingEnabled(true);
+                    setEmotionTrackingStatus('loading');
+                  }
+                }}
+                className="text-white hover:bg-white/20 justify-start"
+              >
+                <Webcam className="h-4 w-4 mr-2" />
+                Emotion AI
+              </Button>
             </div>
           </div>
 
@@ -160,6 +183,19 @@ const PropertyViewer3D = ({ isOpen, onClose, propertyId, propertyTitle }: Proper
               </Badge>
             )}
           </div>
+
+          {/* Emotion Tracking UI */}
+          {isEmotionTrackingEnabled && (
+            <EmotionTracker
+              onReady={() => setEmotionTrackingStatus('ready')}
+              onEmotionChange={setDetectedEmotion}
+              onError={(error) => {
+                  setEmotionTrackingStatus('error');
+                  setEmotionError(error);
+                  setIsEmotionTrackingEnabled(false);
+              }}
+            />
+          )}
 
           {/* 3D Canvas */}
           <Canvas
@@ -191,15 +227,37 @@ const PropertyViewer3D = ({ isOpen, onClose, propertyId, propertyTitle }: Proper
             </Suspense>
           </Canvas>
 
-          {/* Instructions */}
-          <div className="absolute bottom-4 left-4 z-10 bg-black/50 backdrop-blur-sm rounded-lg p-3 text-white max-w-sm">
-            <h4 className="font-semibold mb-2">How to Navigate:</h4>
-            <ul className="text-sm space-y-1">
-              <li>• Click & drag to rotate view</li>
-              <li>• Scroll to zoom in/out</li>
-              <li>• Right-click & drag to pan</li>
-              {measurementMode && <li>• Click two points to measure distance</li>}
-            </ul>
+          {/* UI elements at bottom */}
+          <div className="absolute bottom-4 right-4 left-4 z-10 flex justify-between items-end">
+            {/* Instructions */}
+            <div className="bg-black/50 backdrop-blur-sm rounded-lg p-3 text-white max-w-sm">
+              <h4 className="font-semibold mb-2">How to Navigate:</h4>
+              <ul className="text-sm space-y-1">
+                <li>• Click & drag to rotate view</li>
+                <li>• Scroll to zoom in/out</li>
+                <li>• Right-click & drag to pan</li>
+                {measurementMode && <li>• Click two points to measure distance</li>}
+              </ul>
+            </div>
+            
+            {/* Emotion Status */}
+            <div className="flex flex-col items-end gap-2">
+              {emotionTrackingStatus === 'loading' && (
+                  <Badge className="bg-yellow-500/80 text-white backdrop-blur-sm">
+                      Loading Emotion AI...
+                  </Badge>
+              )}
+              {emotionTrackingStatus === 'ready' && detectedEmotion && (
+                  <Badge className="bg-purple-500/80 text-white backdrop-blur-sm capitalize">
+                      Emotion: {detectedEmotion}
+                  </Badge>
+              )}
+              {emotionTrackingStatus === 'error' && emotionError && (
+                  <Badge variant="destructive" className="backdrop-blur-sm max-w-[240px] text-wrap text-center">
+                    {emotionError}
+                  </Badge>
+              )}
+            </div>
           </div>
         </div>
       </DialogContent>
