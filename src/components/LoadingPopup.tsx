@@ -48,7 +48,7 @@ const LoadingPopup = ({ isOpen, message, language = "en" }: LoadingPopupProps) =
 
   return (
     <Dialog open={isOpen}>
-      <DialogContent className="max-w-md bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-none">
+      <DialogContent className="max-w-md bg-transparent border-none shadow-none">
         <div className="flex flex-col items-center justify-center py-8 space-y-6">
           {/* Animated ASTRA Villa Logo */}
           <div className="text-center">
