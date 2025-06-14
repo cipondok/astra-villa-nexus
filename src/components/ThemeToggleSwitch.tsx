@@ -6,9 +6,10 @@ import { useTheme } from "@/components/ThemeProvider";
 interface ThemeToggleSwitchProps {
   language?: "en" | "id";
   className?: string;
+  showLabel?: boolean;
 }
 
-const ThemeToggleSwitch = ({ language = "en", className = "" }: ThemeToggleSwitchProps) => {
+const ThemeToggleSwitch = ({ language = "en", className = "", showLabel = true }: ThemeToggleSwitchProps) => {
   const { theme, setTheme } = useTheme();
 
   const text = {
@@ -65,7 +66,7 @@ const ThemeToggleSwitch = ({ language = "en", className = "" }: ThemeToggleSwitc
       `}
     >
       <Icon className={`h-4 w-4 ${currentThemeData.color}`} />
-      <span className="text-sm font-medium text-foreground">{currentThemeData.label}</span>
+      {showLabel && <span className="text-sm font-medium text-foreground">{currentThemeData.label}</span>}
     </Button>
   );
 };
