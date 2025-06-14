@@ -19,17 +19,47 @@ import {
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
+// Type definitions for system services and metrics
+type ServiceStatus = {
+  status: 'healthy' | 'warning' | 'error' | string;
+  message: string;
+  responseTime?: number;
+  activeUsers?: number;
+  usage?: number;
+};
+type SystemStatus = {
+  database: ServiceStatus;
+  authentication: ServiceStatus;
+  storage: ServiceStatus;
+  overallHealth: number;
+  lastChecked: string;
+};
+
+type Metrics = {
+  totalUsers: number;
+  totalProperties: number;
+  activeListings: number;
+  errorCount: number;
+  activeMembers: number;
+  activeUsers: number;
+  totalVendors: number;
+  totalPropertyOwners: number;
+  totalAgents: number;
+  uptime: string;
+  responseTime: string;
+  throughput: string;
+};
+
 const SystemMonitor = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
 
-  const { data: systemStatus, refetch } = useQuery({
+  const { data: systemStatus, refetch } = useQuery<SystemStatus>({
     queryKey: ['system-status'],
     queryFn: async () => {
-      // Simulate system health checks
       const dbStatus = await checkDatabaseHealth();
       const authStatus = await checkAuthStatus();
       const storageStatus = await checkStorageStatus();
-      
+
       return {
         database: dbStatus,
         authentication: authStatus,
@@ -38,94 +68,90 @@ const SystemMonitor = () => {
         lastChecked: new Date().toISOString()
       };
     },
-    refetchInterval: 30000, // Refresh every 30 seconds
+    refetchInterval: 30000,
   });
 
-  const { data: metrics } = useQuery({
+  const { data: metrics } = useQuery<Metrics>({
     queryKey: ['system-metrics'],
     queryFn: async () => {
-      // Get basic metrics from database
-      const { count: totalUsers } = await supabase
+      // Explicitly type count queries for TypeScript compatibility
+      const { count: totalUsers = 0 } = await supabase
         .from('profiles')
-        .select('*', { count: 'exact', head: true });
+        .select('*', { count: 'exact', head: true }) as { count: number | null };
 
-      const { count: totalProperties } = await supabase
+      const { count: totalProperties = 0 } = await supabase
         .from('properties')
-        .select('*', { count: 'exact', head: true });
+        .select('*', { count: 'exact', head: true }) as { count: number | null };
 
-      const { count: activeListings } = await supabase
+      const { count: activeListings = 0 } = await supabase
         .from('properties')
         .select('*', { count: 'exact', head: true })
-        .eq('approval_status', 'approved');
+        .eq('approval_status', 'approved') as { count: number | null };
 
-      const { count: errorCount } = await supabase
+      const { count: errorCount = 0 } = await supabase
         .from('system_error_logs')
         .select('*', { count: 'exact', head: true })
-        .eq('is_resolved', false);
+        .eq('is_resolved', false) as { count: number | null };
 
-      // Get active members (users who have logged in within last 30 days)
       const thirtyDaysAgo = new Date();
       thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-      
-      const { count: activeMembers } = await supabase
+
+      const { count: activeMembers = 0 } = await supabase
         .from('user_sessions')
         .select('user_id', { count: 'exact', head: true })
         .gte('created_at', thirtyDaysAgo.toISOString())
-        .eq('is_active', true);
+        .eq('is_active', true) as { count: number | null };
 
-      // Get currently active users (users with active sessions in last 24 hours)
       const twentyFourHoursAgo = new Date();
       twentyFourHoursAgo.setHours(twentyFourHoursAgo.getHours() - 24);
-      
-      const { count: activeUsers } = await supabase
+
+      const { count: activeUsers = 0 } = await supabase
         .from('user_sessions')
         .select('user_id', { count: 'exact', head: true })
         .gte('created_at', twentyFourHoursAgo.toISOString())
-        .eq('is_active', true);
+        .eq('is_active', true) as { count: number | null };
 
-      // Get total vendors
-      const { count: totalVendors } = await supabase
+      const { count: totalVendors = 0 } = await supabase
         .from('profiles')
         .select('*', { count: 'exact', head: true })
-        .eq('role', 'vendor');
+        .eq('role', 'vendor') as { count: number | null };
 
-      // Get total property owners
-      const { count: totalPropertyOwners } = await supabase
+      const { count: totalPropertyOwners = 0 } = await supabase
         .from('profiles')
         .select('*', { count: 'exact', head: true })
-        .eq('role', 'property_owner');
+        .eq('role', 'property_owner') as { count: number | null };
 
-      // Get total agents
-      const { count: totalAgents } = await supabase
+      const { count: totalAgents = 0 } = await supabase
         .from('profiles')
         .select('*', { count: 'exact', head: true })
-        .eq('role', 'agent');
+        .eq('role', 'agent') as { count: number | null };
 
       return {
-        totalUsers: totalUsers || 0,
-        totalProperties: totalProperties || 0,
-        activeListings: activeListings || 0,
-        errorCount: errorCount || 0,
-        activeMembers: activeMembers || 0,
-        activeUsers: activeUsers || 0,
-        totalVendors: totalVendors || 0,
-        totalPropertyOwners: totalPropertyOwners || 0,
-        totalAgents: totalAgents || 0,
+        totalUsers,
+        totalProperties,
+        activeListings,
+        errorCount,
+        activeMembers,
+        activeUsers,
+        totalVendors,
+        totalPropertyOwners,
+        totalAgents,
         uptime: '99.5%',
         responseTime: '120ms',
         throughput: '1.2k req/min'
       };
     },
-    refetchInterval: 30000, // Refresh every 30 seconds for live updates
+    refetchInterval: 30000,
   });
 
-  const checkDatabaseHealth = async () => {
+  // Type the health-check helpers returns as ServiceStatus
+  const checkDatabaseHealth = async (): Promise<ServiceStatus> => {
     try {
       const { error } = await supabase.from('profiles').select('count').limit(1);
       return {
         status: error ? 'error' : 'healthy',
         message: error ? error.message : 'Connection stable',
-        responseTime: Math.floor(Math.random() * 50) + 20 // Simulated response time
+        responseTime: Math.floor(Math.random() * 50) + 20
       };
     } catch (error) {
       return {
@@ -136,13 +162,13 @@ const SystemMonitor = () => {
     }
   };
 
-  const checkAuthStatus = async () => {
+  const checkAuthStatus = async (): Promise<ServiceStatus> => {
     try {
-      const { data, error } = await supabase.auth.getSession();
+      const { error } = await supabase.auth.getSession();
       return {
         status: error ? 'warning' : 'healthy',
         message: error ? 'Auth service issues detected' : 'Service operational',
-        activeUsers: Math.floor(Math.random() * 100) + 50 // Simulated active users
+        activeUsers: Math.floor(Math.random() * 100) + 50
       };
     } catch (error) {
       return {
@@ -153,16 +179,15 @@ const SystemMonitor = () => {
     }
   };
 
-  const checkStorageStatus = async () => {
-    // Simulate storage check
+  const checkStorageStatus = async (): Promise<ServiceStatus> => {
     return {
       status: 'healthy',
       message: 'Storage available',
-      usage: Math.floor(Math.random() * 30) + 20 // Simulated usage percentage
+      usage: Math.floor(Math.random() * 30) + 20
     };
   };
 
-  const calculateOverallHealth = (services: any[]) => {
+  const calculateOverallHealth = (services: ServiceStatus[]): number => {
     const healthyServices = services.filter(service => service.status === 'healthy').length;
     return Math.floor((healthyServices / services.length) * 100);
   };
