@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Bed, Bath, Square, Heart, Box } from "lucide-react";
+import { MapPin, Bed, Bath, Square, Heart, Box, Axis3d } from "lucide-react";
 import { formatIDR } from "@/utils/currency";
 import SearchLoadingAnimation from "@/components/SearchLoadingAnimation";
 import PropertyViewer3D from "@/components/PropertyViewer3D";
@@ -178,6 +178,13 @@ const PropertyListingsSection = ({
                     <Badge className="absolute top-4 left-4 bg-blue-600 text-white">
                       {property.listing_type === 'sale' ? currentText.forSale : currentText.forRent}
                     </Badge>
+                    
+                    {(property.three_d_model_url || property.virtual_tour_url) && (
+                        <Badge className="absolute bottom-4 left-4 bg-black/70 text-white backdrop-blur-sm flex items-center gap-1">
+                            <Axis3d className="h-4 w-4" />
+                            <span>3D</span>
+                        </Badge>
+                    )}
                   </div>
                   
                   <CardHeader className="pb-4 cursor-pointer" onClick={() => handleViewDetails(property.id)}>
