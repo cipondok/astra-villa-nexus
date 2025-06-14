@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -19,23 +20,24 @@ import {
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
-// Type definitions for system services and metrics
-type ServiceStatus = {
-  status: 'healthy' | 'warning' | 'error' | string;
+// Simplified type definitions
+interface ServiceStatus {
+  status: 'healthy' | 'warning' | 'error';
   message: string;
   responseTime?: number;
   activeUsers?: number;
   usage?: number;
-};
-type SystemStatus = {
+}
+
+interface SystemStatus {
   database: ServiceStatus;
   authentication: ServiceStatus;
   storage: ServiceStatus;
   overallHealth: number;
   lastChecked: string;
-};
+}
 
-type Metrics = {
+interface Metrics {
   totalUsers: number;
   totalProperties: number;
   activeListings: number;
@@ -48,14 +50,14 @@ type Metrics = {
   uptime: string;
   responseTime: string;
   throughput: string;
-};
+}
 
 const SystemMonitor = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
 
-  const { data: systemStatus, refetch } = useQuery<SystemStatus>({
+  const { data: systemStatus, refetch } = useQuery({
     queryKey: ['system-status'],
-    queryFn: async () => {
+    queryFn: async (): Promise<SystemStatus> => {
       const dbStatus = await checkDatabaseHealth();
       const authStatus = await checkAuthStatus();
       const storageStatus = await checkStorageStatus();
@@ -71,71 +73,42 @@ const SystemMonitor = () => {
     refetchInterval: 30000,
   });
 
-  const { data: metrics } = useQuery<Metrics>({
+  const { data: metrics } = useQuery({
     queryKey: ['system-metrics'],
-    queryFn: async () => {
-      // Explicitly type count queries for TypeScript compatibility
-      const { count: totalUsers = 0 } = await supabase
-        .from('profiles')
-        .select('*', { count: 'exact', head: true }) as { count: number | null };
-
-      const { count: totalProperties = 0 } = await supabase
-        .from('properties')
-        .select('*', { count: 'exact', head: true }) as { count: number | null };
-
-      const { count: activeListings = 0 } = await supabase
-        .from('properties')
-        .select('*', { count: 'exact', head: true })
-        .eq('approval_status', 'approved') as { count: number | null };
-
-      const { count: errorCount = 0 } = await supabase
-        .from('system_error_logs')
-        .select('*', { count: 'exact', head: true })
-        .eq('is_resolved', false) as { count: number | null };
-
-      const thirtyDaysAgo = new Date();
-      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-
-      const { count: activeMembers = 0 } = await supabase
-        .from('user_sessions')
-        .select('user_id', { count: 'exact', head: true })
-        .gte('created_at', thirtyDaysAgo.toISOString())
-        .eq('is_active', true) as { count: number | null };
-
-      const twentyFourHoursAgo = new Date();
-      twentyFourHoursAgo.setHours(twentyFourHoursAgo.getHours() - 24);
-
-      const { count: activeUsers = 0 } = await supabase
-        .from('user_sessions')
-        .select('user_id', { count: 'exact', head: true })
-        .gte('created_at', twentyFourHoursAgo.toISOString())
-        .eq('is_active', true) as { count: number | null };
-
-      const { count: totalVendors = 0 } = await supabase
-        .from('profiles')
-        .select('*', { count: 'exact', head: true })
-        .eq('role', 'vendor') as { count: number | null };
-
-      const { count: totalPropertyOwners = 0 } = await supabase
-        .from('profiles')
-        .select('*', { count: 'exact', head: true })
-        .eq('role', 'property_owner') as { count: number | null };
-
-      const { count: totalAgents = 0 } = await supabase
-        .from('profiles')
-        .select('*', { count: 'exact', head: true })
-        .eq('role', 'agent') as { count: number | null };
+    queryFn: async (): Promise<Metrics> => {
+      // Use Promise.all to execute queries in parallel and avoid type inference issues
+      const [
+        totalUsersResult,
+        totalPropertiesResult,
+        activeListingsResult,
+        errorCountResult,
+        activeMembersResult,
+        activeUsersResult,
+        totalVendorsResult,
+        totalPropertyOwnersResult,
+        totalAgentsResult
+      ] = await Promise.all([
+        supabase.from('profiles').select('*', { count: 'exact', head: true }),
+        supabase.from('properties').select('*', { count: 'exact', head: true }),
+        supabase.from('properties').select('*', { count: 'exact', head: true }).eq('status', 'approved'),
+        supabase.from('system_error_logs').select('*', { count: 'exact', head: true }).eq('is_resolved', false),
+        supabase.from('user_sessions').select('user_id', { count: 'exact', head: true }).gte('created_at', new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()).eq('is_active', true),
+        supabase.from('user_sessions').select('user_id', { count: 'exact', head: true }).gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()).eq('is_active', true),
+        supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'vendor'),
+        supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'property_owner'),
+        supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'agent')
+      ]);
 
       return {
-        totalUsers,
-        totalProperties,
-        activeListings,
-        errorCount,
-        activeMembers,
-        activeUsers,
-        totalVendors,
-        totalPropertyOwners,
-        totalAgents,
+        totalUsers: totalUsersResult.count || 0,
+        totalProperties: totalPropertiesResult.count || 0,
+        activeListings: activeListingsResult.count || 0,
+        errorCount: errorCountResult.count || 0,
+        activeMembers: activeMembersResult.count || 0,
+        activeUsers: activeUsersResult.count || 0,
+        totalVendors: totalVendorsResult.count || 0,
+        totalPropertyOwners: totalPropertyOwnersResult.count || 0,
+        totalAgents: totalAgentsResult.count || 0,
         uptime: '99.5%',
         responseTime: '120ms',
         throughput: '1.2k req/min'
@@ -144,7 +117,6 @@ const SystemMonitor = () => {
     refetchInterval: 30000,
   });
 
-  // Type the health-check helpers returns as ServiceStatus
   const checkDatabaseHealth = async (): Promise<ServiceStatus> => {
     try {
       const { error } = await supabase.from('profiles').select('count').limit(1);
