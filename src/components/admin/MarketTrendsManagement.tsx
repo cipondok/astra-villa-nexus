@@ -56,7 +56,7 @@ const MarketTrendsManagement = () => {
             if (error) throw error;
         },
         onSuccess: () => {
-            showSuccess("Market Trend Deleted");
+            showSuccess("Market Trend Deleted", "The market trend has been successfully removed.");
             queryClient.invalidateQueries({ queryKey: ['market_trends'] });
         },
         onError: (error: any) => {
