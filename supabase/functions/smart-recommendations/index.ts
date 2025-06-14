@@ -1,4 +1,3 @@
-
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
@@ -87,8 +86,7 @@ async function generatePropertyRecommendations(supabase: any, userProfile: any, 
   let query = supabase
     .from('properties')
     .select('*')
-    .eq('status', 'approved')
-    .eq('approval_status', 'approved');
+    .eq('status', 'approved');
 
   // Apply preference-based filtering
   if (preferences.propertyTypes && preferences.propertyTypes.length > 0) {
@@ -114,7 +112,6 @@ async function generatePropertyRecommendations(supabase: any, userProfile: any, 
       .from('properties')
       .select('*')
       .eq('status', 'approved')
-      .eq('approval_status', 'approved')
       .order('created_at', { ascending: false })
       .limit(limit);
     
