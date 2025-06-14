@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -54,8 +55,8 @@ const PropertyOwnerOverview = () => {
 
   const stats = {
     totalProperties: properties?.length || 0,
-    activeListings: properties?.filter(p => p.status === 'active').length || 0,
-    pendingApproval: properties?.filter(p => p.approval_status === 'pending').length || 0,
+    activeListings: properties?.filter(p => p.status === 'approved').length || 0,
+    pendingApproval: properties?.filter(p => p.status === 'pending_approval').length || 0,
     totalViews: 0, // This would come from analytics
   };
 
@@ -88,18 +89,11 @@ const PropertyOwnerOverview = () => {
 
   const getStatusColor = (status: string) => {
     const colors = {
-      active: 'bg-green-100 text-green-800',
+      approved: 'bg-green-100 text-green-800',
+      pending_approval: 'bg-yellow-100 text-yellow-800',
+      rejected: 'bg-red-100 text-red-800',
       draft: 'bg-gray-100 text-gray-800',
       inactive: 'bg-red-100 text-red-800',
-    };
-    return colors[status as keyof typeof colors] || 'bg-gray-100 text-gray-800';
-  };
-
-  const getApprovalColor = (status: string) => {
-    const colors = {
-      approved: 'bg-green-100 text-green-800',
-      pending: 'bg-yellow-100 text-yellow-800',
-      rejected: 'bg-red-100 text-red-800',
     };
     return colors[status as keyof typeof colors] || 'bg-gray-100 text-gray-800';
   };
@@ -233,7 +227,7 @@ const PropertyOwnerOverview = () => {
                     )}
                     <div className="absolute top-2 right-2 flex gap-1">
                       <Badge className={getStatusColor(property.status)}>
-                        {property.status}
+                        {property.status === 'pending_approval' ? 'Pending' : property.status}
                       </Badge>
                     </div>
                   </div>
@@ -290,8 +284,9 @@ const PropertyOwnerOverview = () => {
                       )}
                       
                       <div className="flex justify-between items-center pt-2">
-                        <Badge variant="outline" className={getApprovalColor(property.approval_status)}>
-                          {property.approval_status}
+                        <Badge variant="outline" className={getStatusColor(property.status)}>
+                          {property.status === 'pending_approval' ? 'Pending Review' : 
+                           property.status === 'approved' ? 'Approved' : property.status}
                         </Badge>
                         <div className="flex gap-1">
                           <Button size="sm" variant="outline">
