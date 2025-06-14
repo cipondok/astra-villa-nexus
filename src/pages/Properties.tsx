@@ -1,5 +1,4 @@
-
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -10,6 +9,14 @@ import { Search, Filter, MapPin, Bed, Bath, Car, Heart, Loader2, Box } from "luc
 import AuthenticatedNavigation from "@/components/navigation/AuthenticatedNavigation";
 import { supabase } from "@/integrations/supabase/client";
 import { formatIDR } from "@/utils/currency";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import AdvancedFilters from "@/components/search/AdvancedFilters";
 
 const Properties = () => {
   const { isAuthenticated } = useAuth();
@@ -22,6 +29,8 @@ const Properties = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isSearching, setIsSearching] = useState(false);
+  const [isFilterSheetOpen, setIsFilterSheetOpen] = useState(false);
+  const justFilteredRef = useRef(false);
 
   // Fetch properties from database
   useEffect(() => {
@@ -59,6 +68,11 @@ const Properties = () => {
 
   // Live search effect
   useEffect(() => {
+    if (justFilteredRef.current) {
+      justFilteredRef.current = false;
+      return;
+    }
+      
     const performLiveSearch = async () => {
       if (!searchTerm || searchTerm.trim() === '') {
         setFilteredProperties(properties);
@@ -95,6 +109,84 @@ const Properties = () => {
     return () => clearTimeout(timeoutId);
   }, [searchTerm, properties]);
 
+  const handleFilterSearch = async (searchData: any) => {
+    console.log("Applying advanced filters:", searchData);
+    setIsFilterSheetOpen(false);
+    setLoading(true);
+    setError(null);
+    setIsSearching(true);
+  
+    justFilteredRef.current = true;
+    setSearchTerm(searchData.query || "");
+  
+    try {
+      let query = supabase
+        .from('properties')
+        .select('*')
+        .eq('status', 'approved');
+  
+      if (searchData.query) {
+        query = query.or(`title.ilike.%${searchData.query}%,description.ilike.%${searchData.query}%,location.ilike.%${searchData.query}%`);
+      }
+      if (searchData.propertyType && searchData.propertyType !== 'all') {
+        query = query.eq('property_type', searchData.propertyType);
+      }
+      if (searchData.listingType && searchData.listingType !== 'all') {
+        query = query.eq('listing_type', searchData.listingType);
+      }
+      if (searchData.location) {
+        query = query.or(`location.ilike.%${searchData.location}%,city.ilike.%${searchData.location}%,state.ilike.%${searchData.location}%`);
+      }
+      if (searchData.bedrooms && searchData.bedrooms !== 'all') {
+        query = query.gte('bedrooms', parseInt(searchData.bedrooms));
+      }
+      if (searchData.bathrooms && searchData.bathrooms !== 'all') {
+        query = query.gte('bathrooms', parseInt(searchData.bathrooms));
+      }
+      if (searchData.priceRange) {
+        if (searchData.priceRange[0] > 0) {
+          query = query.gte('price', searchData.priceRange[0]);
+        }
+        if (searchData.priceRange[1] < 10000000000) {
+          query = query.lte('price', searchData.priceRange[1]);
+        }
+      }
+      if (searchData.areaRange) {
+        if (searchData.areaRange[0] > 0) {
+          query = query.gte('area_sqm', searchData.areaRange[0]);
+        }
+        if (searchData.areaRange[1] < 1000) {
+          query = query.lte('area_sqm', searchData.areaRange[1]);
+        }
+      }
+      if (searchData.features && searchData.features.length > 0) {
+        const featuresObject = searchData.features.reduce((obj: any, feature: string) => {
+          obj[feature] = true;
+          return obj;
+        }, {});
+        query = query.contains('property_features', featuresObject);
+      }
+  
+      const { data, error } = await query.order('created_at', { ascending: false });
+  
+      if (error) {
+        console.error('Error filtering properties:', error);
+        setError(error.message);
+        setFilteredProperties([]);
+      } else {
+        console.log(`Filtered search found ${data?.length || 0} properties`);
+        setFilteredProperties(data || []);
+      }
+    } catch (error) {
+      console.error('Error filtering properties:', error);
+      setError('Failed to filter properties');
+      setFilteredProperties([]);
+    } finally {
+      setLoading(false);
+      setIsSearching(false);
+    }
+  };
+
   const toggleLanguage = () => {
     setLanguage(prev => prev === "en" ? "id" : "en");
   };
@@ -124,7 +216,8 @@ const Properties = () => {
       forSale: "For Sale",
       forRent: "For Rent",
       loadingError: "Error loading properties. Please try again.",
-      totalFound: "properties found"
+      totalFound: "properties found",
+      advancedFilters: "Advanced Filters",
     },
     id: {
       title: "Properti",
@@ -142,7 +235,8 @@ const Properties = () => {
       forSale: "Dijual",
       forRent: "Disewa",
       loadingError: "Error memuat properti. Silakan coba lagi.",
-      totalFound: "properti ditemukan"
+      totalFound: "properti ditemukan",
+      advancedFilters: "Filter Lanjutan",
     }
   };
 
@@ -198,10 +292,26 @@ const Properties = () => {
                 </div>
               )}
             </div>
-            <Button variant="outline" className="flex items-center gap-2">
-              <Filter className="h-4 w-4" />
-              {currentText.filter}
-            </Button>
+            <Sheet open={isFilterSheetOpen} onOpenChange={setIsFilterSheetOpen}>
+              <SheetTrigger asChild>
+                <Button variant="outline" className="flex items-center gap-2">
+                  <Filter className="h-4 w-4" />
+                  {currentText.filter}
+                </Button>
+              </SheetTrigger>
+              <SheetContent className="w-full sm:max-w-xl overflow-y-auto">
+                <SheetHeader>
+                  <SheetTitle>{currentText.advancedFilters}</SheetTitle>
+                </SheetHeader>
+                <div className="py-4">
+                  <AdvancedFilters
+                    language={language}
+                    onFiltersChange={() => {}}
+                    onSearch={handleFilterSearch}
+                  />
+                </div>
+              </SheetContent>
+            </Sheet>
           </div>
 
           {/* Results Count */}
