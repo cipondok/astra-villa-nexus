@@ -123,19 +123,21 @@ const Index = () => {
         .from('properties')
         .select('*');
 
-      const filters: string[] = ['status.eq.approved'];
+      // Always filter by approved status
+      query = query.eq('status', 'approved');
 
       // Apply text search if provided
       if (searchData.query && searchData.query.trim()) {
         const searchTerm = searchData.query.trim().toLowerCase();
         console.log("🔍 SEARCH DEBUG - Applying text search for:", searchTerm);
-        filters.push(`or(title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%,location.ilike.%${searchTerm}%)`);
+        const textSearchFilter = `title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%,location.ilike.%${searchTerm}%`;
+        query = query.or(textSearchFilter);
       }
 
       // Apply property type filter
       if (searchData.propertyType && searchData.propertyType.trim()) {
         console.log("🔍 SEARCH DEBUG - Applying property type filter:", searchData.propertyType);
-        filters.push(`property_type.eq.${searchData.propertyType}`);
+        query = query.eq('property_type', searchData.propertyType);
       }
 
       // Apply bedroom filter
@@ -146,9 +148,9 @@ const Index = () => {
         
         if (!isNaN(bedroomCount)) {
           if (searchData.bedrooms.includes('+')) {
-            filters.push(`bedrooms.gte.${bedroomCount}`);
+            query = query.gte('bedrooms', bedroomCount);
           } else {
-            filters.push(`bedrooms.eq.${bedroomCount}`);
+            query = query.eq('bedrooms', bedroomCount);
           }
         }
       }
@@ -161,9 +163,9 @@ const Index = () => {
         
         if (!isNaN(bathroomCount)) {
           if (searchData.bathrooms.includes('+')) {
-            filters.push(`bathrooms.gte.${bathroomCount}`);
+            query = query.gte('bathrooms', bathroomCount);
           } else {
-            filters.push(`bathrooms.eq.${bathroomCount}`);
+            query = query.eq('bathrooms', bathroomCount);
           }
         }
       }
@@ -172,20 +174,15 @@ const Index = () => {
       if (searchData.location && searchData.location.trim()) {
         console.log("🔍 SEARCH DEBUG - Applying location filter:", searchData.location);
         const locationTerm = searchData.location.trim().toLowerCase();
-        filters.push(`or(city.ilike.%${locationTerm}%,state.ilike.%${locationTerm}%,location.ilike.%${locationTerm}%)`);
+        // Assuming location is a direct match on city or state for dropdowns
+        query = query.or(`city.ilike.%${locationTerm}%,state.ilike.%${locationTerm}%`);
       }
 
       // Apply 3D view filter
       if (searchData.has3D) {
         console.log("🔍 SEARCH DEBUG - Applying 3D view filter");
-        filters.push('or(three_d_model_url.not.is.null,virtual_tour_url.not.is.null)');
-      }
-
-      // Apply all filters together using a single filter string
-      if (filters.length > 0) {
-        const filterString = `and(${filters.join(',')})`;
-        console.log("🔍 SEARCH DEBUG - Executing with filter string:", filterString);
-        query = query.or(filterString);
+        const threeDFilter = 'three_d_model_url.not.is.null,virtual_tour_url.not.is.null';
+        query = query.or(threeDFilter);
       }
 
       // Execute the query
@@ -301,6 +298,7 @@ const Index = () => {
                   searchResults={propertiesToShow}
                   isSearching={isSearching}
                   hasSearched={hasSearched}
+                  fallbackResults={featuredProperties}
                 />
               </div>
               <div className="lg:col-span-1">
@@ -317,6 +315,7 @@ const Index = () => {
               searchResults={propertiesToShow}
               isSearching={isSearching}
               hasSearched={hasSearched}
+              fallbackResults={featuredProperties}
             />
           )}
         </div>

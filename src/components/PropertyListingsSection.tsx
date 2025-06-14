@@ -1,25 +1,25 @@
+
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { MapPin, Bed, Bath, Square, Heart, Box, Axis3d } from "lucide-react";
-import { formatIDR } from "@/utils/currency";
 import SearchLoadingAnimation from "@/components/SearchLoadingAnimation";
 import PropertyViewer3D from "@/components/PropertyViewer3D";
+import ListingCard from "./ListingCard";
 
 interface PropertyListingsSectionProps {
   language: "en" | "id";
   searchResults?: any[];
   isSearching?: boolean;
   hasSearched?: boolean;
+  fallbackResults?: any[];
 }
 
 const PropertyListingsSection = ({ 
   language, 
   searchResults = [], 
   isSearching = false,
-  hasSearched = false 
+  hasSearched = false,
+  fallbackResults = []
 }: PropertyListingsSectionProps) => {
   const [favoriteProperties, setFavoriteProperties] = useState<Set<string>>(new Set());
   const [propertyFor3DView, setPropertyFor3DView] = useState<any | null>(null);
@@ -38,9 +38,11 @@ const PropertyListingsSection = ({
       bathrooms: "bath",
       area: "sqm",
       contactForPrice: "Contact for price",
-      searchMessage: "Try searching for properties in Jakarta, Bali, or other locations",
+      searchMessage: "Try adjusting your search filters or browse our featured properties below.",
       noFeaturedProperties: "No properties available at the moment",
       view3D: "3D View",
+      youMightLike: "You might also like",
+      featuredSubtitle: "Here are some of our featured properties"
     },
     id: {
       title: "Properti Unggulan",
@@ -54,9 +56,11 @@ const PropertyListingsSection = ({
       bathrooms: "km",
       area: "m²",
       contactForPrice: "Hubungi untuk harga",
-      searchMessage: "Coba cari properti di Jakarta, Bali, atau lokasi lainnya",
+      searchMessage: "Coba sesuaikan filter pencarian Anda atau lihat properti unggulan kami di bawah.",
       noFeaturedProperties: "Tidak ada properti tersedia saat ini",
       view3D: "Tampilan 3D",
+      youMightLike: "Anda mungkin juga suka",
+      featuredSubtitle: "Berikut adalah beberapa properti unggulan kami"
     }
   };
 
@@ -78,28 +82,19 @@ const PropertyListingsSection = ({
     navigate(`/property/${propertyId}`);
   };
 
-  const getPropertyTypeColor = (type: string) => {
-    const colors = {
-      villa: 'bg-purple-100 text-purple-800',
-      apartment: 'bg-blue-100 text-blue-800',
-      house: 'bg-green-100 text-green-800',
-      commercial: 'bg-orange-100 text-orange-800',
-      land: 'bg-yellow-100 text-yellow-800',
-    };
-    return colors[type as keyof typeof colors] || 'bg-gray-100 text-gray-800';
-  };
+  const handleView3D = (property: any) => {
+    setPropertyFor3DView(property);
+  }
 
-  // Stable section data to prevent flickering
   const sectionData = useMemo(() => {
     const sectionTitle = hasSearched ? currentText.searchResults : currentText.title;
-    const sectionSubtitle = hasSearched 
+    const sectionSubtitle = hasSearched && searchResults.length > 0
       ? `${searchResults.length} properties found` 
-      : currentText.subtitle;
+      : hasSearched ? "" : currentText.subtitle;
     
     return { sectionTitle, sectionSubtitle };
   }, [hasSearched, searchResults.length, currentText]);
 
-  // Show loading animation with ASTRA Villa branding
   if (isSearching) {
     return (
       <section className="py-12">
@@ -109,6 +104,8 @@ const PropertyListingsSection = ({
       </section>
     );
   }
+  
+  const noResultsFound = searchResults.length === 0;
 
   return (
     <>
@@ -116,10 +113,10 @@ const PropertyListingsSection = ({
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold mb-4">{sectionData.sectionTitle}</h2>
-            <p className="text-xl text-muted-foreground">{sectionData.sectionSubtitle}</p>
+            {sectionData.sectionSubtitle && <p className="text-xl text-muted-foreground">{sectionData.sectionSubtitle}</p>}
           </div>
 
-          {searchResults.length === 0 ? (
+          {noResultsFound ? (
             <div className="text-center py-12">
               <div className="max-w-md mx-auto">
                 <h3 className="text-xl font-semibold mb-4">
@@ -133,110 +130,44 @@ const PropertyListingsSection = ({
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {searchResults.map((property) => (
-                <Card key={`${property.id}-${property.title}`} className="overflow-hidden hover:shadow-lg transition-shadow duration-300 group">
-                  <div className="relative">
-                    <img
-                      src={property.image_urls?.[0] || property.images?.[0] || "https://images.unsplash.com/photo-1721322800607-8c38375eef04?w=400&h=300&fit=crop"}
-                      alt={property.title}
-                      className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300 cursor-pointer"
-                      onClick={() => handleViewDetails(property.id)}
-                    />
-
-                    {(property.three_d_model_url || property.virtual_tour_url) && (
-                      <div className="absolute inset-0 bg-black/40 transition-opacity duration-300 opacity-0 group-hover:opacity-100 flex items-center justify-center">
-                        <Button
-                          size="sm"
-                          className="bg-white/90 text-gray-800 hover:bg-white flex items-center gap-1"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setPropertyFor3DView(property);
-                          }}
-                        >
-                          <Box className="h-4 w-4 mr-1" />
-                          {currentText.view3D}
-                        </Button>
-                      </div>
-                    )}
-
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      className="absolute top-4 right-4 bg-white/80 hover:bg-white"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        toggleFavorite(property.id);
-                      }}
-                    >
-                      <Heart 
-                        className={`h-4 w-4 ${
-                          favoriteProperties.has(property.id) 
-                            ? 'fill-red-500 text-red-500' 
-                            : 'text-gray-600'
-                        }`} 
-                      />
-                    </Button>
-                    <Badge className="absolute top-4 left-4 bg-blue-600 text-white">
-                      {property.listing_type === 'sale' ? currentText.forSale : currentText.forRent}
-                    </Badge>
-                    
-                    {(property.three_d_model_url || property.virtual_tour_url) && (
-                        <Badge className="absolute bottom-4 left-4 bg-black/70 text-white backdrop-blur-sm flex items-center gap-1">
-                            <Axis3d className="h-4 w-4" />
-                            <span>3D</span>
-                        </Badge>
-                    )}
-                  </div>
-                  
-                  <CardHeader className="pb-4 cursor-pointer" onClick={() => handleViewDetails(property.id)}>
-                    <CardTitle className="text-xl line-clamp-2">{property.title}</CardTitle>
-                    <div className="flex items-center text-gray-600 dark:text-gray-300">
-                      <MapPin className="h-4 w-4 mr-2" />
-                      <span className="text-sm line-clamp-1">
-                        {property.location || `${property.city || ''}, ${property.state || ''}`.replace(/^,\s*|,\s*$/g, '')}
-                      </span>
-                    </div>
-                  </CardHeader>
-                  
-                  <CardContent className="pt-0">
-                    <div className="flex justify-between items-center mb-4">
-                      <span className="text-2xl font-bold text-blue-600">
-                        {property.price ? formatIDR(property.price) : currentText.contactForPrice}
-                      </span>
-                      <Badge 
-                        variant="outline" 
-                        className={getPropertyTypeColor(property.property_type)}
-                      >
-                        {property.property_type}
-                      </Badge>
-                    </div>
-                    
-                    <div className="flex justify-between text-sm text-gray-600 dark:text-gray-300 mb-6">
-                      <div className="flex items-center">
-                        <Bed className="h-4 w-4 mr-1" />
-                        <span>{property.bedrooms || 0} {currentText.bedrooms}</span>
-                      </div>
-                      <div className="flex items-center">
-                        <Bath className="h-4 w-4 mr-1" />
-                        <span>{property.bathrooms || 0} {currentText.bathrooms}</span>
-                      </div>
-                      <div className="flex items-center">
-                        <Square className="h-4 w-4 mr-1" />
-                        <span>{property.area_sqm || 0} {currentText.area}</span>
-                      </div>
-                    </div>
-                    
-                    <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white" onClick={() => handleViewDetails(property.id)}>
-                      {currentText.viewDetails}
-                    </Button>
-                  </CardContent>
-                </Card>
+                <ListingCard 
+                  key={`${property.id}-${property.title}`}
+                  property={property}
+                  text={currentText}
+                  isFavorite={favoriteProperties.has(property.id)}
+                  onToggleFavorite={toggleFavorite}
+                  onViewDetails={handleViewDetails}
+                  onView3D={handleView3D}
+                />
               ))}
             </div>
           )}
 
+          {noResultsFound && hasSearched && fallbackResults.length > 0 && (
+            <>
+              <div className="text-center my-12">
+                <h2 className="text-3xl font-bold mb-4">{currentText.youMightLike}</h2>
+                <p className="text-xl text-muted-foreground">{currentText.featuredSubtitle}</p>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {fallbackResults.map((property) => (
+                  <ListingCard
+                    key={`fallback-${property.id}`}
+                    property={property}
+                    text={currentText}
+                    isFavorite={favoriteProperties.has(property.id)}
+                    onToggleFavorite={toggleFavorite}
+                    onViewDetails={handleViewDetails}
+                    onView3D={handleView3D}
+                  />
+                ))}
+              </div>
+            </>
+          )}
+
           {!hasSearched && searchResults.length > 0 && (
             <div className="text-center mt-12">
-              <Button size="lg" variant="outline">
+              <Button size="lg" variant="outline" onClick={() => navigate('/properties')}>
                 View All Properties
               </Button>
             </div>
