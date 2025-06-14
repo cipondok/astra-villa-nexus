@@ -3,8 +3,9 @@ import { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Bed, Bath, Square, Heart, Loader2 } from "lucide-react";
+import { MapPin, Bed, Bath, Square, Heart } from "lucide-react";
 import { formatIDR } from "@/utils/currency";
+import SearchLoadingAnimation from "@/components/SearchLoadingAnimation";
 
 interface PropertyListingsSectionProps {
   language: "en" | "id";
@@ -30,7 +31,6 @@ const PropertyListingsSection = ({
       forRent: "For Rent",
       noResults: "No properties found",
       searchResults: "Search Results",
-      loading: "Searching properties...",
       bedrooms: "bed",
       bathrooms: "bath",
       area: "sqm",
@@ -46,7 +46,6 @@ const PropertyListingsSection = ({
       forRent: "Disewa",
       noResults: "Tidak ada properti ditemukan",
       searchResults: "Hasil Pencarian",
-      loading: "Mencari properti...",
       bedrooms: "kmr",
       bathrooms: "km",
       area: "m²",
@@ -91,17 +90,12 @@ const PropertyListingsSection = ({
     return { sectionTitle, sectionSubtitle };
   }, [hasSearched, searchResults.length, currentText]);
 
-  // Show loading state
+  // Show loading animation with ASTRA Villa branding
   if (isSearching) {
     return (
       <section className="py-12">
         <div className="container mx-auto px-4">
-          <div className="flex items-center justify-center py-12">
-            <div className="text-center">
-              <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-blue-500" />
-              <p className="text-gray-600 dark:text-gray-300">{currentText.loading}</p>
-            </div>
-          </div>
+          <SearchLoadingAnimation language={language} />
         </div>
       </section>
     );
@@ -210,7 +204,7 @@ const PropertyListingsSection = ({
           </div>
         )}
       </div>
-    </section>
+    </div>
   );
 };
 
