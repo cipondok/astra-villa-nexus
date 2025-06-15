@@ -7,6 +7,7 @@ import { useThemeSettings } from "@/contexts/ThemeSettingsContext";
 import { useTheme } from "@/components/ThemeProvider";
 import RoleBasedAuthModal from "./RoleBasedAuthModal";
 import ThemeToggleSwitch from "./ThemeToggleSwitch";
+import LanguageToggleSwitch from "./LanguageToggleSwitch";
 import { toast } from "sonner";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -158,45 +159,10 @@ const Navigation = () => {
                 </Tooltip>
               </div>
 
-              {/* Right side controls - Icon only */}
-              <div className="hidden md:flex items-center space-x-1">
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant={language === "en" ? "default" : "outline"}
-                      size="icon"
-                      onClick={() => setLanguage("en")}
-                      className={`rounded-xl transform hover:scale-110 transition-transform ${language === "en" ? "font-bold ring-2 ring-primary" : "text-gray-600 dark:text-gray-300"}`}
-                      aria-pressed={language === "en"}
-                    >
-                      <Globe className="h-5 w-5" />
-                      <span className="sr-only">EN</span>
-                      {language === "en" && <span className="ml-1 text-xs text-primary">EN</span>}
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>English</p>
-                  </TooltipContent>
-                </Tooltip>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant={language === "id" ? "default" : "outline"}
-                      size="icon"
-                      onClick={() => setLanguage("id")}
-                      className={`rounded-xl transform hover:scale-110 transition-transform ${language === "id" ? "font-bold ring-2 ring-primary" : "text-gray-600 dark:text-gray-300"}`}
-                      aria-pressed={language === "id"}
-                    >
-                      <Globe className="h-5 w-5" />
-                      <span className="sr-only">ID</span>
-                      {language === "id" && <span className="ml-1 text-xs text-primary">ID</span>}
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Bahasa Indonesia</p>
-                  </TooltipContent>
-                </Tooltip>
-
+              {/* Right side controls - Replace language buttons with iPhone-style switch */}
+              <div className="hidden md:flex items-center space-x-3">
+                {/* iPhone-style language toggle */}
+                <LanguageToggleSwitch />
                 <ThemeToggleSwitch language={language} showLabel={false} className="bg-transparent border-transparent hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl" />
 
                 {user ? (
