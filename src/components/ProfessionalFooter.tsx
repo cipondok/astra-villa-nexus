@@ -1,3 +1,4 @@
+
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import FooterBrand from "./footer/FooterBrand";
@@ -71,27 +72,27 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
     <footer className="bg-secondary text-secondary-foreground border-t border-border/20 mt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         {/* Main Footer Content */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 mb-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-x-8 gap-y-12 mb-12">
           {/* Brand & Newsletter Column */}
           <div className="lg:col-span-2 space-y-8">
             <FooterBrand language={language} />
             <FooterNewsletter language={language} />
           </div>
           
-          {/* Property Guides */}
+          {/* Guides & Company Info */}
           <div className="space-y-4">
             <FooterBuyingGuide language={language} onLinkClick={handleLinkClick} />
             <FooterSellingGuide language={language} onLinkClick={handleLinkClick} />
-          </div>
-
-          {/* Vendor & Company */}
-          <div className="space-y-4">
-            <FooterVendorServices language={language} onLinkClick={handleLinkClick} />
-            <FooterVendorHelp language={language} onLinkClick={handleLinkClick} />
             <FooterCompanyInfo language={language} onLinkClick={handleLinkClick} />
           </div>
 
-          {/* Services & Innovation */}
+          {/* Vendor Services */}
+          <div className="space-y-4">
+            <FooterVendorServices language={language} onLinkClick={handleLinkClick} />
+            <FooterVendorHelp language={language} onLinkClick={handleLinkClick} />
+          </div>
+
+          {/* Tools & Innovation */}
           <div className="space-y-4">
             <FooterServicesTools language={language} onLinkClick={handleLinkClick} />
             <FooterInnovationHub language={language} onLinkClick={handleLinkClick} />
@@ -135,3 +136,4 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
 };
 
 export default ProfessionalFooter;
+
