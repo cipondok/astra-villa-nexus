@@ -29,9 +29,8 @@ const CustomerServiceTicketManagement = () => {
         .from('customer_service_tickets')
         .select(`
           *,
-          customer:customer_id ( full_name, email ),
-          vendor:vendor_id ( business_name ),
-          agent:assigned_to ( full_name )
+          customer:profiles!customer_id ( full_name, email ),
+          agent:profiles!assigned_to ( full_name )
         `)
         .order('created_at', { ascending: false });
 
