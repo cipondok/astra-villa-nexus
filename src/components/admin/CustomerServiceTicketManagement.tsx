@@ -8,7 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { LifeBuoy, Eye, CheckCircle, XCircle, Clock } from "lucide-react";
+import { LifeBuoy, Eye, CheckCircle, XCircle, Clock, User, Mail } from "lucide-react";
 import { useAlert } from "@/contexts/AlertContext";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -200,34 +200,94 @@ const CustomerServiceTicketManagement = () => {
 
       <Dialog open={showDetailDialog} onOpenChange={setShowDetailDialog}>
         <DialogContent className="max-w-2xl">
-          <DialogHeader><DialogTitle>Ticket Details</DialogTitle></DialogHeader>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <LifeBuoy className="h-5 w-5" />
+              <span>Ticket Details</span>
+            </DialogTitle>
+            <DialogDescription>
+              Review ticket details and communicate with the customer.
+            </DialogDescription>
+          </DialogHeader>
           {selectedTicket && (
-            <div className="space-y-4 py-4">
+            <div className="space-y-6 py-4 max-h-[60vh] overflow-y-auto pr-4">
               <div className="grid grid-cols-2 gap-4 text-sm">
-                <div><label className="font-medium text-muted-foreground">Ticket #:</label><p>{selectedTicket.ticket_number}</p></div>
-                <div><label className="font-medium text-muted-foreground">Customer:</label><p>{selectedTicket.customer?.full_name || 'N/A'}</p></div>
-                <div><label className="font-medium text-muted-foreground">Status:</label><div>{getStatusBadge(selectedTicket.status)}</div></div>
-                <div><label className="font-medium text-muted-foreground">Priority:</label><div>{getPriorityBadge(selectedTicket.priority)}</div></div>
+                <div>
+                  <label className="font-medium text-muted-foreground">Ticket #:</label>
+                  <p>{selectedTicket.ticket_number}</p>
+                </div>
+                <div>
+                  <label className="font-medium text-muted-foreground">Customer:</label>
+                  <p className="flex items-center gap-2"><User className="h-4 w-4" /> {selectedTicket.customer?.full_name || 'N/A'}</p>
+                </div>
+                <div>
+                  <label className="font-medium text-muted-foreground">Status:</label>
+                  <div>{getStatusBadge(selectedTicket.status)}</div>
+                </div>
+                <div>
+                  <label className="font-medium text-muted-foreground">Priority:</label>
+                  <div>{getPriorityBadge(selectedTicket.priority)}</div>
+                </div>
               </div>
-              <div>
-                <label className="font-medium text-muted-foreground">Subject:</label>
-                <p>{selectedTicket.subject}</p>
+
+              {/* Conversation */}
+              <div className="space-y-4">
+                <h3 className="text-sm font-medium text-gray-500 border-b pb-2">Conversation History</h3>
+                
+                {/* User's Message */}
+                <div className="flex gap-3">
+                   <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold text-sm shrink-0">
+                     {selectedTicket.customer?.full_name?.charAt(0) || 'U'}
+                   </div>
+                   <div className="flex-1">
+                     <div className="font-semibold">{selectedTicket.subject}</div>
+                     <div className="bg-gray-100 dark:bg-gray-800 p-3 rounded-lg rounded-tl-none mt-1">
+                       <p className="text-sm text-gray-800 dark:text-gray-200">{selectedTicket.description}</p>
+                     </div>
+                     <p className="text-xs text-gray-500 mt-1">
+                       {new Date(selectedTicket.created_at).toLocaleString()}
+                     </p>
+                   </div>
+                 </div>
+
+                {/* Admin's Response */}
+                {selectedTicket.resolution && (
+                   <div className="flex gap-3 justify-end">
+                     <div className="flex-1 max-w-[85%] text-right">
+                        <div className="bg-blue-100 dark:bg-blue-900/50 inline-block p-3 rounded-lg rounded-br-none text-left">
+                          <p className="font-semibold text-sm text-blue-800 dark:text-blue-200">Our response:</p>
+                          <p className="text-sm text-gray-800 dark:text-gray-200">{selectedTicket.resolution}</p>
+                        </div>
+                        <p className="text-xs text-gray-500 mt-1">
+                          {selectedTicket.resolved_at ? new Date(selectedTicket.resolved_at).toLocaleString() : ''}
+                        </p>
+                     </div>
+                      <div className="w-8 h-8 rounded-full bg-gray-500 flex items-center justify-center text-white font-bold text-sm shrink-0">
+                        S
+                      </div>
+                   </div>
+                 )}
               </div>
-              <div>
-                <label className="font-medium text-muted-foreground">Description:</label>
-                <p className="border p-2 rounded bg-muted">{selectedTicket.description}</p>
-              </div>
-              <div>
-                <label className="font-medium text-muted-foreground">Resolution Notes:</label>
-                <Textarea value={resolution} onChange={(e) => setResolution(e.target.value)} placeholder="Enter resolution notes..." rows={3}/>
-              </div>
+              
+              {selectedTicket.status !== 'resolved' && selectedTicket.status !== 'closed' && (
+                <div>
+                  <Label htmlFor="resolution" className="font-medium text-muted-foreground">Your Response / Resolution Notes:</Label>
+                  <Textarea id="resolution" value={resolution} onChange={(e) => setResolution(e.target.value)} placeholder="Enter response or internal resolution notes here..." rows={4}/>
+                </div>
+              )}
             </div>
           )}
-          <DialogFooter className="gap-2">
+          <DialogFooter className="gap-2 pt-4 border-t">
             <Button variant="outline" onClick={() => setShowDetailDialog(false)}>Cancel</Button>
-            <Button onClick={() => handleStatusUpdate('in_progress')} disabled={updateTicketMutation.isPending} className="bg-yellow-500 hover:bg-yellow-600">Take Ownership &amp; Start</Button>
-            <Button onClick={() => handleStatusUpdate('resolved')} disabled={updateTicketMutation.isPending} className="bg-green-600 hover:bg-green-700">Mark Resolved</Button>
-            <Button variant="destructive" onClick={() => handleStatusUpdate('closed')} disabled={updateTicketMutation.isPending}>Close Ticket</Button>
+            {selectedTicket?.status === 'open' && (
+              <Button onClick={() => handleStatusUpdate('in_progress')} disabled={updateTicketMutation.isPending} className="bg-yellow-500 hover:bg-yellow-600">Take Ownership &amp; Start</Button>
+            )}
+            {selectedTicket?.status !== 'resolved' && selectedTicket?.status !== 'closed' && (
+              <Button onClick={() => handleStatusUpdate('resolved')} disabled={updateTicketMutation.isPending || !resolution.trim()} className="bg-green-600 hover:bg-green-700">Mark Resolved &amp; Send Response</Button>
+            )}
+            {selectedTicket?.status !== 'closed' && (
+              <Button variant="destructive" onClick={() => handleStatusUpdate('closed')} disabled={updateTicketMutation.isPending}>Close Ticket</Button>
+            )}
           </DialogFooter>
         </DialogContent>
       </Dialog>

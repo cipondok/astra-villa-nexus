@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Phone, Mail, MessageCircle, Eye, Reply, Clock } from "lucide-react";
+import { Phone, Mail, MessageCircle, Eye, Reply, Clock, User } from "lucide-react";
 import { useAlert } from "@/contexts/AlertContext";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -275,48 +275,90 @@ const ContactManagement = () => {
       <Dialog open={showDetailDialog} onOpenChange={setShowDetailDialog}>
         <DialogContent className="max-w-2xl bg-gray-900/95 backdrop-blur-md border-gray-700">
           <DialogHeader>
-            <DialogTitle className="text-white">Contact Inquiry Details</DialogTitle>
+            <DialogTitle className="text-white flex items-center gap-2">
+              <MessageCircle className="h-5 w-5" />
+              <span>Contact Inquiry</span>
+            </DialogTitle>
             <DialogDescription className="text-gray-300">
-              Review and respond to customer inquiry
+              Review and respond to the customer's message.
             </DialogDescription>
           </DialogHeader>
           {selectedContact && (
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4 text-sm">
+            <div className="space-y-6 py-4 max-h-[60vh] overflow-y-auto pr-4">
+              {/* Contact Info */}
+              <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
                 <div>
-                  <label className="text-gray-300 font-medium">Name:</label>
-                  <p className="text-white">{selectedContact.profiles?.full_name || 'Anonymous'}</p>
+                  <label className="text-gray-400 font-medium">Name:</label>
+                  <p className="text-white flex items-center gap-2"><User className="h-4 w-4" />{selectedContact.profiles?.full_name || 'Anonymous'}</p>
                 </div>
                 <div>
-                  <label className="text-gray-300 font-medium">Email:</label>
-                  <p className="text-white">{selectedContact.profiles?.email || 'N/A'}</p>
+                  <label className="text-gray-400 font-medium">Email:</label>
+                  <p className="text-white flex items-center gap-2"><Mail className="h-4 w-4" />{selectedContact.profiles?.email || 'N/A'}</p>
                 </div>
                 <div>
-                  <label className="text-gray-300 font-medium">Priority:</label>
-                  {getPriorityBadge(selectedContact.priority)}
+                  <label className="text-gray-400 font-medium">Priority:</label>
+                  <div>{getPriorityBadge(selectedContact.priority)}</div>
                 </div>
                 <div>
-                  <label className="text-gray-300 font-medium">Status:</label>
-                  {getStatusBadge(selectedContact.status)}
+                  <label className="text-gray-400 font-medium">Status:</label>
+                  <div>{getStatusBadge(selectedContact.status)}</div>
                 </div>
               </div>
-              <div>
-                <label className="text-gray-300 font-medium">Message:</label>
-                <p className="text-white bg-gray-800 p-3 rounded mt-2">{selectedContact.content}</p>
+
+              {/* Conversation Thread */}
+              <div className="space-y-4">
+                <h3 className="text-sm font-medium text-gray-400 border-b border-gray-700 pb-2">Conversation History</h3>
+                
+                {/* User's Message */}
+                <div className="flex gap-3">
+                  <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold text-sm shrink-0">
+                    {selectedContact.profiles?.full_name?.charAt(0) || 'U'}
+                  </div>
+                  <div className="flex-1">
+                    <div className="bg-gray-800 p-3 rounded-lg rounded-tl-none">
+                      <p className="text-white text-sm">{selectedContact.content}</p>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">
+                      {new Date(selectedContact.created_at).toLocaleString()}
+                    </p>
+                  </div>
+                </div>
+                
+                {/* Admin's Response */}
+                {selectedContact.admin_response && (
+                  <div className="flex gap-3 justify-end">
+                    <div className="flex-1 max-w-[85%] text-right">
+                       <div className="bg-green-800 inline-block p-3 rounded-lg rounded-br-none text-left">
+                         <p className="text-white text-sm">{selectedContact.admin_response}</p>
+                       </div>
+                       <p className="text-xs text-gray-500 mt-1">
+                         Replied
+                       </p>
+                    </div>
+                     <div className="w-8 h-8 rounded-full bg-green-600 flex items-center justify-center text-white font-bold text-sm shrink-0">
+                       A
+                     </div>
+                  </div>
+                )}
               </div>
-              <div>
-                <Label className="text-gray-300 font-medium">Your Response:</Label>
-                <Textarea
-                  value={response}
-                  onChange={(e) => setResponse(e.target.value)}
-                  placeholder="Type your response here..."
-                  className="mt-2 bg-gray-800 border-gray-700 text-white"
-                  rows={4}
-                />
-              </div>
+
+              {/* Response Form */}
+              {!selectedContact.admin_response && selectedContact.status !== 'resolved' && (
+                <div>
+                  <Label htmlFor="response" className="text-gray-300 font-medium">Your Response:</Label>
+                  <Textarea
+                    id="response"
+                    value={response}
+                    onChange={(e) => setResponse(e.target.value)}
+                    placeholder="Type your response here... This will be sent to the user."
+                    className="mt-2 bg-gray-800 border-gray-700 text-white"
+                    rows={4}
+                  />
+                </div>
+              )}
             </div>
           )}
-          <DialogFooter className="gap-2">
+          <DialogFooter className="gap-2 sm:justify-between pt-4 border-t border-gray-700">
             <Button 
               variant="outline" 
               onClick={() => setShowDetailDialog(false)}
@@ -324,14 +366,16 @@ const ContactManagement = () => {
             >
               Close
             </Button>
-            <Button 
-              onClick={handleSendResponse}
-              disabled={updateContactMutation.isPending || !response.trim()}
-              className="bg-blue-600 hover:bg-blue-700"
-            >
-              <Reply className="h-4 w-4 mr-2" />
-              Send Response
-            </Button>
+            {!selectedContact?.admin_response && selectedContact?.status !== 'resolved' && (
+              <Button 
+                onClick={handleSendResponse}
+                disabled={updateContactMutation.isPending || !response.trim()}
+                className="bg-blue-600 hover:bg-blue-700"
+              >
+                <Reply className="h-4 w-4 mr-2" />
+                Send Response
+              </Button>
+            )}
           </DialogFooter>
         </DialogContent>
       </Dialog>
