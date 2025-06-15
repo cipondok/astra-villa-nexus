@@ -1,10 +1,8 @@
-
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import FooterBrand from "./footer/FooterBrand";
 import FooterCompanyInfo from "./footer/FooterCompanyInfo";
 import FooterNewsletter from "./footer/FooterNewsletter";
-import FooterContact from "./footer/FooterContact";
 import FooterBuyingGuide from "./footer/FooterBuyingGuide";
 import FooterSellingGuide from "./footer/FooterSellingGuide";
 import FooterVendorServices from "./footer/FooterVendorServices";
@@ -93,11 +91,6 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
         {/* Offices Section - Full Width */}
         <div className="border-t border-border/20 pt-12 mb-12">
           <FooterOffices language={language} />
-        </div>
-
-        {/* Contact Section */}
-        <div className="border-t border-border/20 pt-8 mb-8">
-          <FooterContact language={language} />
         </div>
 
         {/* Bottom Footer */}
