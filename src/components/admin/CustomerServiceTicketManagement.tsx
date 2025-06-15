@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -31,8 +30,8 @@ const CustomerServiceTicketManagement = () => {
         .from('customer_service_tickets')
         .select(`
           *,
-          customer:profiles!customer_id ( full_name, email ),
-          agent:profiles!assigned_to ( full_name )
+          customer:profiles!customer_id ( id, full_name, email, availability_status ),
+          agent:profiles!assigned_to ( id, full_name, availability_status )
         `)
         .order('created_at', { ascending: false });
 
@@ -121,6 +120,20 @@ const CustomerServiceTicketManagement = () => {
     return <Badge className={colors[priority] || 'bg-gray-500'}>{priority?.toUpperCase()}</Badge>;
   };
   
+  const getAvailabilityBadge = (status: string | null | undefined) => {
+    if (!status) return null;
+    const badgeClasses = {
+      online: "border-green-500 text-green-500",
+      busy: "border-yellow-500 text-yellow-500",
+      offline: "border-gray-500 text-gray-500",
+    };
+    const text = status.charAt(0).toUpperCase() + status.slice(1);
+    
+    const className = badgeClasses[status as keyof typeof badgeClasses] || "border-gray-400 text-gray-400";
+
+    return <Badge variant="outline" className={`${className} text-xs`}>{text}</Badge>;
+  };
+  
   const authorizedRoles = ['admin', 'customer_service'];
   if (!profile || !authorizedRoles.includes(profile.role)) {
     return (
@@ -181,10 +194,18 @@ const CustomerServiceTicketManagement = () => {
                       <TableRow key={item.id}>
                         <TableCell>{item.ticket_number}</TableCell>
                         <TableCell>{item.subject}</TableCell>
-                        <TableCell>{item.customer?.full_name || 'N/A'}</TableCell>
+                        <TableCell>
+                          <div className="font-medium">{item.customer?.full_name || 'N/A'}</div>
+                          {item.customer?.id && <div className="text-xs text-muted-foreground font-mono">{item.customer.id}</div>}
+                          <div className="mt-1">{getAvailabilityBadge(item.customer?.availability_status)}</div>
+                        </TableCell>
                         <TableCell>{getPriorityBadge(item.priority)}</TableCell>
                         <TableCell>{getStatusBadge(item.status)}</TableCell>
-                        <TableCell>{item.agent?.full_name || 'Unassigned'}</TableCell>
+                        <TableCell>
+                          <div className="font-medium">{item.agent?.full_name || 'Unassigned'}</div>
+                          {item.agent?.id && <div className="text-xs text-muted-foreground font-mono">{item.agent.id}</div>}
+                          {item.agent && <div className="mt-1">{getAvailabilityBadge(item.agent?.availability_status)}</div>}
+                        </TableCell>
                         <TableCell>
                           <Button size="sm" variant="outline" onClick={() => handleViewDetails(item)}>
                             <Eye className="h-4 w-4 mr-1" /> View
@@ -221,6 +242,7 @@ const CustomerServiceTicketManagement = () => {
                 <div>
                   <label className="font-medium text-muted-foreground">Customer:</label>
                   <p className="flex items-center gap-2"><User className="h-4 w-4" /> {selectedTicket.customer?.full_name || 'N/A'}</p>
+                  {selectedTicket.customer?.id && <p className="text-xs text-muted-foreground pl-6 font-mono">{selectedTicket.customer.id}</p>}
                 </div>
                 <div>
                   <label className="font-medium text-muted-foreground">Status:</label>
@@ -229,6 +251,19 @@ const CustomerServiceTicketManagement = () => {
                 <div>
                   <label className="font-medium text-muted-foreground">Priority:</label>
                   <div>{getPriorityBadge(selectedTicket.priority)}</div>
+                </div>
+                <div>
+                  <label className="font-medium text-muted-foreground">Assigned to:</label>
+                  {selectedTicket.agent ? (
+                    <div>
+                      <p className="flex items-center gap-2"><User className="h-4 w-4" /> {selectedTicket.agent.full_name}</p>
+                      {selectedTicket.agent.id && <p className="text-xs text-muted-foreground pl-6 font-mono">{selectedTicket.agent.id}</p>}
+                    </div>
+                  ) : <p>Unassigned</p>}
+                </div>
+                <div>
+                  <label className="font-medium text-muted-foreground">Customer Status:</label>
+                  <div>{getAvailabilityBadge(selectedTicket.customer?.availability_status)}</div>
                 </div>
               </div>
 
