@@ -16,21 +16,21 @@ import { useAlert } from "@/contexts/AlertContext";
 
 interface SearchFilter {
   id: string;
-  name: string;
-  type: string;
-  options: string;
+  filter_name: string;
+  filter_type: string;
+  filter_options: any;
   category: string;
-  description: string;
-  status: string;
+  display_order: number;
+  is_active: boolean;
   created_at: string;
+  updated_at: string;
 }
 
 interface NewFilterData {
-  name: string;
-  type: string;
-  options: string;
+  filter_name: string;
+  filter_type: string;
+  filter_options: any;
   category: string;
-  description: string;
 }
 
 const SearchFiltersManagement = () => {
@@ -39,11 +39,10 @@ const SearchFiltersManagement = () => {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [editingFilter, setEditingFilter] = useState<SearchFilter | null>(null);
   const [newFilter, setNewFilter] = useState<NewFilterData>({
-    name: "",
-    type: "select",
-    options: "",
+    filter_name: "",
+    filter_type: "select",
+    filter_options: "",
     category: "property",
-    description: "",
   });
 
   const { showSuccess, showError } = useAlert();
@@ -60,11 +59,12 @@ const SearchFiltersManagement = () => {
         .order('created_at', { ascending: false });
 
       if (searchTerm) {
-        query = query.or(`name.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%`);
+        query = query.or(`filter_name.ilike.%${searchTerm}%`);
       }
 
       if (statusFilter !== 'all') {
-        query = query.eq('status', statusFilter);
+        const isActive = statusFilter === 'active';
+        query = query.eq('is_active', isActive);
       }
 
       const { data, error } = await query;
@@ -86,7 +86,7 @@ const SearchFiltersManagement = () => {
         .from('search_filters')
         .insert({
           ...filterData,
-          status: 'active'
+          is_active: true
         });
       if (error) throw error;
     },
@@ -95,11 +95,10 @@ const SearchFiltersManagement = () => {
       queryClient.invalidateQueries({ queryKey: ['search-filters'] });
       setIsAddDialogOpen(false);
       setNewFilter({
-        name: "",
-        type: "select",
-        options: "",
+        filter_name: "",
+        filter_type: "select",
+        filter_options: "",
         category: "property",
-        description: "",
       });
     },
     onError: (error: Error) => {
@@ -142,19 +141,16 @@ const SearchFiltersManagement = () => {
   });
 
   const handleStatusChange = (filterId: string, newStatus: string) => {
-    updateFilterMutation.mutate({ filterId, updates: { status: newStatus } });
+    const isActive = newStatus === 'active';
+    updateFilterMutation.mutate({ filterId, updates: { is_active: isActive } });
   };
 
   const handleAddFilter = () => {
     createFilterMutation.mutate(newFilter);
   };
 
-  const getStatusBadgeVariant = (status: string): "default" | "secondary" | "destructive" | "outline" => {
-    switch (status) {
-      case 'active': return 'default';
-      case 'inactive': return 'secondary';
-      default: return 'secondary';
-    }
+  const getStatusBadgeVariant = (isActive: boolean): "default" | "secondary" | "destructive" | "outline" => {
+    return isActive ? 'default' : 'secondary';
   };
 
   return (
@@ -192,17 +188,17 @@ const SearchFiltersManagement = () => {
                   </DialogHeader>
                   <div className="grid grid-cols-2 gap-4 py-4">
                     <div className="space-y-2">
-                      <Label htmlFor="name">Filter Name</Label>
+                      <Label htmlFor="filter_name">Filter Name</Label>
                       <Input
-                        id="name"
-                        value={newFilter.name}
-                        onChange={(e) => setNewFilter({ ...newFilter, name: e.target.value })}
+                        id="filter_name"
+                        value={newFilter.filter_name}
+                        onChange={(e) => setNewFilter({ ...newFilter, filter_name: e.target.value })}
                         placeholder="Filter name"
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="type">Filter Type</Label>
-                      <Select value={newFilter.type} onValueChange={(value) => setNewFilter({ ...newFilter, type: value })}>
+                      <Label htmlFor="filter_type">Filter Type</Label>
+                      <Select value={newFilter.filter_type} onValueChange={(value) => setNewFilter({ ...newFilter, filter_type: value })}>
                         <SelectTrigger>
                           <SelectValue placeholder="Select type" />
                         </SelectTrigger>
@@ -229,22 +225,12 @@ const SearchFiltersManagement = () => {
                       </Select>
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="options">Options (comma-separated)</Label>
+                      <Label htmlFor="filter_options">Options (comma-separated)</Label>
                       <Input
-                        id="options"
-                        value={newFilter.options}
-                        onChange={(e) => setNewFilter({ ...newFilter, options: e.target.value })}
+                        id="filter_options"
+                        value={newFilter.filter_options}
+                        onChange={(e) => setNewFilter({ ...newFilter, filter_options: e.target.value })}
                         placeholder="Option1, Option2, Option3"
-                      />
-                    </div>
-                    <div className="col-span-2 space-y-2">
-                      <Label htmlFor="description">Description</Label>
-                      <Textarea
-                        id="description"
-                        value={newFilter.description}
-                        onChange={(e) => setNewFilter({ ...newFilter, description: e.target.value })}
-                        placeholder="Filter description"
-                        rows={3}
                       />
                     </div>
                   </div>
@@ -327,18 +313,11 @@ const SearchFiltersManagement = () => {
                   filters?.map((filter) => (
                     <TableRow key={filter.id}>
                       <TableCell>
-                        <div className="space-y-1">
-                          <div className="font-medium">{filter.name}</div>
-                          {filter.description && (
-                            <div className="text-sm text-muted-foreground">
-                              {filter.description}
-                            </div>
-                          )}
-                        </div>
+                        <div className="font-medium">{filter.filter_name}</div>
                       </TableCell>
                       <TableCell>
                         <Badge variant="outline" className="capitalize">
-                          {filter.type}
+                          {filter.filter_type}
                         </Badge>
                       </TableCell>
                       <TableCell>
@@ -348,17 +327,23 @@ const SearchFiltersManagement = () => {
                       </TableCell>
                       <TableCell>
                         <div className="text-sm">
-                          {filter.options ? filter.options.substring(0, 50) + '...' : 'No options'}
+                          {filter.filter_options ? 
+                            (typeof filter.filter_options === 'string' ? 
+                              filter.filter_options.substring(0, 50) + '...' : 
+                              JSON.stringify(filter.filter_options).substring(0, 50) + '...'
+                            ) : 
+                            'No options'
+                          }
                         </div>
                       </TableCell>
                       <TableCell>
                         <Select
-                          value={filter.status || 'active'}
+                          value={filter.is_active ? 'active' : 'inactive'}
                           onValueChange={(value) => handleStatusChange(filter.id, value)}
                         >
                           <SelectTrigger className="w-32">
-                            <Badge variant={getStatusBadgeVariant(filter.status || 'active')}>
-                              {filter.status || 'active'}
+                            <Badge variant={getStatusBadgeVariant(filter.is_active)}>
+                              {filter.is_active ? 'active' : 'inactive'}
                             </Badge>
                           </SelectTrigger>
                           <SelectContent>
