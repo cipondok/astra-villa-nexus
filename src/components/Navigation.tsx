@@ -140,7 +140,7 @@ const Navigation = () => {
                     </TooltipContent>
                   </Tooltip>
                 ))}
-                
+
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <button
@@ -155,50 +155,49 @@ const Navigation = () => {
                     <p>{navLabels["Add Property"]}</p>
                   </TooltipContent>
                 </Tooltip>
-              </Tooltip>
-            </div>
+              </div>
 
-            {/* Right side controls - Icon only */}
-            <div className="hidden md:flex items-center space-x-1">
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant={language === "en" ? "default" : "outline"}
-                    size="icon"
-                    onClick={() => setLanguage("en")}
-                    className={`rounded-xl transform hover:scale-110 transition-transform ${language === "en" ? "font-bold ring-2 ring-primary" : "text-gray-600 dark:text-gray-300"}`}
-                    aria-pressed={language === "en"}
-                  >
-                    <Globe className="h-5 w-5" />
-                    <span className="sr-only">EN</span>
-                    {language === "en" && <span className="ml-1 text-xs text-primary">EN</span>}
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>English</p>
-                </TooltipContent>
-              </Tooltip>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant={language === "id" ? "default" : "outline"}
-                    size="icon"
-                    onClick={() => setLanguage("id")}
-                    className={`rounded-xl transform hover:scale-110 transition-transform ${language === "id" ? "font-bold ring-2 ring-primary" : "text-gray-600 dark:text-gray-300"}`}
-                    aria-pressed={language === "id"}
-                  >
-                    <Globe className="h-5 w-5" />
-                    <span className="sr-only">ID</span>
-                    {language === "id" && <span className="ml-1 text-xs text-primary">ID</span>}
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Bahasa Indonesia</p>
-                </TooltipContent>
-              </Tooltip>
+              {/* Right side controls - Icon only */}
+              <div className="hidden md:flex items-center space-x-1">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant={language === "en" ? "default" : "outline"}
+                      size="icon"
+                      onClick={() => setLanguage("en")}
+                      className={`rounded-xl transform hover:scale-110 transition-transform ${language === "en" ? "font-bold ring-2 ring-primary" : "text-gray-600 dark:text-gray-300"}`}
+                      aria-pressed={language === "en"}
+                    >
+                      <Globe className="h-5 w-5" />
+                      <span className="sr-only">EN</span>
+                      {language === "en" && <span className="ml-1 text-xs text-primary">EN</span>}
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>English</p>
+                  </TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant={language === "id" ? "default" : "outline"}
+                      size="icon"
+                      onClick={() => setLanguage("id")}
+                      className={`rounded-xl transform hover:scale-110 transition-transform ${language === "id" ? "font-bold ring-2 ring-primary" : "text-gray-600 dark:text-gray-300"}`}
+                      aria-pressed={language === "id"}
+                    >
+                      <Globe className="h-5 w-5" />
+                      <span className="sr-only">ID</span>
+                      {language === "id" && <span className="ml-1 text-xs text-primary">ID</span>}
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Bahasa Indonesia</p>
+                  </TooltipContent>
+                </Tooltip>
 
-              <ThemeToggleSwitch language={language} showLabel={false} className="bg-transparent border-transparent hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl" />
-                
+                <ThemeToggleSwitch language={language} showLabel={false} className="bg-transparent border-transparent hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl" />
+
                 {user ? (
                   <div className="flex items-center space-x-1">
                     <Tooltip>
@@ -231,7 +230,7 @@ const Navigation = () => {
                 ) : (
                   <Tooltip>
                     <TooltipTrigger asChild>
-                       <Button
+                      <Button
                         onClick={() => setShowAuthModal(true)}
                         size="icon"
                         className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-xl p-2.5 shadow-lg hover:shadow-xl transform hover:scale-110 transition-all duration-300"
@@ -251,7 +250,7 @@ const Navigation = () => {
                 <div className="bg-transparent">
                   <ThemeToggleSwitch language={language} className="scale-90 bg-transparent border-transparent hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg" />
                 </div>
-                
+
                 <Button
                   variant="ghost"
                   size="sm"
@@ -294,16 +293,16 @@ const Navigation = () => {
                     </button>
                   )
                 )}
-                
+
                 {/* Mobile Add Property Button - Always visible */}
                 <button
                   onClick={handleAddPropertyClick}
                   className="flex items-center gap-3 px-4 py-3 text-base font-medium text-white bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 transition-all duration-300 rounded-xl shadow-lg w-full"
                 >
                   <Plus className="h-5 w-5" />
-                  Add Property
+                  {navLabels["Add Property"]}
                 </button>
-                
+
                 {/* Mobile Language Toggle */}
                 <Button
                   variant="ghost"
@@ -313,7 +312,7 @@ const Navigation = () => {
                   <Globe className="h-5 w-5 mr-3" />
                   Language: {language.toUpperCase()}
                 </Button>
-                
+
                 {user ? (
                   <>
                     <Link
@@ -321,15 +320,15 @@ const Navigation = () => {
                       className="flex items-center gap-3 px-4 py-3 text-base font-medium text-gray-600 dark:text-gray-300 hover:text-primary-dynamic hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-300 rounded-xl"
                       onClick={() => setIsOpen(false)}
                     >
-                      <User className="w-5 h-5" />
-                      Dashboard
+                      <User className="h-5 w-5" />
+                      {navLabels.Dashboard}
                     </Link>
                     <button
                       onClick={handleSignOut}
                       className="flex items-center gap-3 w-full px-4 py-3 text-base font-medium text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-300 rounded-xl"
                     >
                       <LogOut className="w-5 h-5" />
-                      Sign Out
+                      {navLabels["Sign Out"]}
                     </button>
                   </>
                 ) : (
@@ -340,7 +339,7 @@ const Navigation = () => {
                     }}
                     className="w-full mt-2 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-xl py-3 shadow-lg"
                   >
-                    Sign In
+                    {navLabels["Sign In"]}
                   </Button>
                 )}
               </div>
