@@ -82,6 +82,7 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
             <div className="absolute inset-0 flex items-center justify-center">
               <Button
                 size="sm"
+                variant="ios"
                 className="bg-white/90 text-gray-800 hover:bg-white"
                 onClick={(e) => {
                   e.stopPropagation();
@@ -172,7 +173,9 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
           </div>
 
           <Button 
-            className="w-full bg-gradient-to-r from-blue-600 to-orange-500 hover:from-blue-700 hover:to-orange-600 text-white font-medium transition-all duration-300 transform group-hover:scale-105"
+            className="w-full font-medium transition-all duration-300 transform group-hover:scale-105"
+            variant="ios"
+            size="lg"
             onClick={(e) => {
               e.stopPropagation();
               handleViewDetails();
@@ -195,3 +198,4 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
 };
 
 export default PropertyCard;
+

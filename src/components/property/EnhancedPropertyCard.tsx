@@ -137,7 +137,6 @@ const EnhancedPropertyCard = ({
             >
               →
             </button>
-            
             {/* Image Indicators */}
             <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1 z-10">
               {property.image_urls.map((_, index) => (
@@ -172,16 +171,15 @@ const EnhancedPropertyCard = ({
         <div className="absolute top-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
           <Button
             size="sm"
-            variant="outline"
-            className="bg-background/90 p-2"
+            variant={isSaved ? "ios" : "ghost"}
+            className={isSaved ? "ring-2 ring-green-400" : ""}
             onClick={handleLikeToggle}
           >
             <Heart className={`h-4 w-4 ${isSaved ? 'fill-red-500 text-red-500' : ''}`} />
           </Button>
           <Button
             size="sm"
-            variant="outline"
-            className="bg-background/90 p-2"
+            variant="ghost"
             onClick={() => onShare?.(property.id)}
           >
             <Share2 className="h-4 w-4" />
@@ -251,7 +249,9 @@ const EnhancedPropertyCard = ({
         {/* Action Buttons */}
         <div className="flex w-full mt-3 gap-2 flex-wrap">
           <Button 
-            className="flex-1" 
+            className="flex-1"
+            variant="ios"
+            size="lg"
             onClick={() => onView?.(property.id)}
           >
             <Eye className="h-4 w-4 mr-2" />
@@ -259,7 +259,8 @@ const EnhancedPropertyCard = ({
           </Button>
           {(property.three_d_model_url || property.virtual_tour_url) && (
             <Button 
-               variant="outline"
+               variant="ios"
+               size="lg"
                className="flex-1"
                onClick={() => onView3D?.(property)}
              >
@@ -274,3 +275,4 @@ const EnhancedPropertyCard = ({
 };
 
 export default EnhancedPropertyCard;
+
