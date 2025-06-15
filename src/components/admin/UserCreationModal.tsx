@@ -10,7 +10,7 @@ import { useAlert } from "@/contexts/AlertContext";
 import { UserPlus, Eye, EyeOff, Loader2, AlertTriangle } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
-type UserRole = 'general_user' | 'property_owner' | 'agent' | 'vendor' | 'admin';
+type UserRole = 'general_user' | 'property_owner' | 'agent' | 'vendor' | 'admin' | 'customer_service';
 
 interface UserCreationModalProps {
   isOpen: boolean;
@@ -175,7 +175,8 @@ const UserCreationModal = ({ isOpen, onClose }: UserCreationModalProps) => {
       property_owner: "Can list and manage properties",
       agent: "Real estate agent with client management tools",
       vendor: "Service provider with booking management",
-      admin: "Full system administration access"
+      admin: "Full system administration access",
+      customer_service: "Can manage feedback and support tickets"
     };
     return descriptions[role];
   };
@@ -287,6 +288,7 @@ const UserCreationModal = ({ isOpen, onClose }: UserCreationModalProps) => {
                 <SelectItem value="agent" className="text-popover-foreground">Agent</SelectItem>
                 <SelectItem value="vendor" className="text-popover-foreground">Vendor</SelectItem>
                 <SelectItem value="admin" className="text-popover-foreground">Admin</SelectItem>
+                <SelectItem value="customer_service" className="text-popover-foreground">Customer Service</SelectItem>
               </SelectContent>
             </Select>
             <p className="text-xs text-muted-foreground mt-1">{getRoleDescription(role)}</p>

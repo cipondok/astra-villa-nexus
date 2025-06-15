@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -36,7 +35,8 @@ const AuthModal = ({ isOpen, onClose, language }: AuthModalProps) => {
       generalUser: "General User",
       propertyOwner: "Property Owner",
       agent: "Real Estate Agent",
-      vendor: "Service Vendor"
+      vendor: "Service Vendor",
+      customerService: "Customer Service"
     },
     id: {
       login: "Masuk",
@@ -51,7 +51,8 @@ const AuthModal = ({ isOpen, onClose, language }: AuthModalProps) => {
       generalUser: "Pengguna Umum",
       propertyOwner: "Pemilik Properti",
       agent: "Agen Real Estat",
-      vendor: "Vendor Layanan"
+      vendor: "Vendor Layanan",
+      customerService: "Layanan Pelanggan"
     }
   };
 
@@ -179,6 +180,7 @@ const AuthModal = ({ isOpen, onClose, language }: AuthModalProps) => {
                     <SelectItem value="property_owner">{currentText.propertyOwner}</SelectItem>
                     <SelectItem value="agent">{currentText.agent}</SelectItem>
                     <SelectItem value="vendor">{currentText.vendor}</SelectItem>
+                    <SelectItem value="customer_service">{currentText.customerService}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

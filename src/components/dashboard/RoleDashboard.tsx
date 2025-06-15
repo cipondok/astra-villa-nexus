@@ -1,4 +1,3 @@
-
 import { useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -16,7 +15,9 @@ import {
   Wrench,
   UserCheck,
   Crown,
-  RefreshCw
+  RefreshCw,
+  LifeBuoy,
+  MessageSquare
 } from "lucide-react";
 
 interface RoleDashboardProps {
@@ -105,6 +106,14 @@ const RoleDashboard = ({ language }: RoleDashboardProps) => {
           { label: "Verification Requests", icon: UserCheck },
           { label: "System Settings", icon: Settings }
         ]
+      },
+      customer_service: {
+        title: "Customer Service Dashboard",
+        description: "Manage support tickets and user feedback.",
+        actions: [
+          { label: "Manage Tickets", icon: LifeBuoy, path: "/admin/customer-service-tickets" },
+          { label: "Manage Feedback", icon: MessageSquare, path: "/admin/feedback-management" }
+        ]
       }
     },
     id: {
@@ -161,6 +170,14 @@ const RoleDashboard = ({ language }: RoleDashboardProps) => {
           { label: "Permintaan Verifikasi", icon: UserCheck },
           { label: "Pengaturan Sistem", icon: Settings }
         ]
+      },
+      customer_service: {
+        title: "Dashboard Layanan Pelanggan",
+        description: "Kelola tiket dukungan dan umpan balik pengguna.",
+        actions: [
+          { label: "Kelola Tiket", icon: LifeBuoy, path: "/admin/customer-service-tickets" },
+          { label: "Kelola Umpan Balik", icon: MessageSquare, path: "/admin/feedback-management" }
+        ]
       }
     }
   };
@@ -192,6 +209,8 @@ const RoleDashboard = ({ language }: RoleDashboardProps) => {
         return currentText.vendor;
       case 'admin':
         return currentText.admin;
+      case 'customer_service':
+        return currentText.customer_service;
       case 'general_user':
       default:
         return currentText.generalUser;
@@ -210,6 +229,8 @@ const RoleDashboard = ({ language }: RoleDashboardProps) => {
         return Wrench;
       case 'admin':
         return Crown;
+      case 'customer_service':
+        return LifeBuoy;
       case 'general_user':
       default:
         return Home;
@@ -225,6 +246,8 @@ const RoleDashboard = ({ language }: RoleDashboardProps) => {
     switch (userRole) {
       case 'admin':
         return 'bg-purple-100 text-purple-800';
+      case 'customer_service':
+        return 'bg-cyan-100 text-cyan-800';
       case 'agent':
         return 'bg-blue-100 text-blue-800';
       case 'property_owner':
@@ -311,8 +334,9 @@ const RoleDashboard = ({ language }: RoleDashboardProps) => {
                       variant="outline"
                       className="h-auto p-4 flex flex-col items-center space-y-2 hover:bg-blue-50"
                       onClick={() => {
-                        // Handle navigation based on action
-                        if (action.label.includes("Properties") || action.label.includes("Properti")) {
+                        if (action.path) {
+                          navigate(action.path);
+                        } else if (action.label.includes("Properties") || action.label.includes("Properti")) {
                           navigate('/properties');
                         } else {
                           console.log(`Navigate to ${action.label}`);
