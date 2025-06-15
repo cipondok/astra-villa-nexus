@@ -5,7 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Settings, Users, Home, List, Plus, Gift, Calendar, Database, Shield, FileText, Store, MessageSquare, Activity, BarChart3, Loader2, Wifi, Mail, Building2 } from "lucide-react";
+import { Settings, Users, Home, List, Plus, Gift, Calendar, Database, Shield, FileText, Store, MessageSquare, Activity, BarChart3, Loader2, Wifi, Mail, Building2, LifeBuoy } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Navigation from "@/components/Navigation";
@@ -25,6 +25,7 @@ const ContactManagement = lazy(() => import("@/components/admin/ContactManagemen
 const AstraTokenSettings = lazy(() => import("@/components/admin/AstraTokenSettings"));
 const LiveAgentStatusDashboard = lazy(() => import("@/components/admin/LiveAgentStatusDashboard"));
 const OfficeManagement = lazy(() => import("@/components/admin/OfficeManagement"));
+const CustomerServiceTicketManagement = lazy(() => import("@/components/admin/CustomerServiceTicketManagement"));
 
 const LoadingSpinner = () => (
   <div className="flex items-center justify-center p-8">
@@ -46,7 +47,7 @@ const AdminDashboard = () => {
   useEffect(() => {
     if (isSupportStaff && !isAdmin) {
       if (activeTab === 'system') {
-        setActiveTab("feedback");
+        setActiveTab("support");
       }
     }
   }, [profile, isSupportStaff, isAdmin, activeTab]);
@@ -95,6 +96,7 @@ const AdminDashboard = () => {
     { value: "vendor-services", icon: Settings, label: "Services", component: AdminVendorServiceManagement, adminOnly: true },
     { value: "service-categories", icon: List, label: "Categories", component: VendorServiceCategoryManagement, adminOnly: true },
     { value: "content", icon: FileText, label: "Content", component: ContentManagement, adminOnly: true },
+    { value: "support", icon: LifeBuoy, label: "Support", component: CustomerServiceTicketManagement, adminOnly: false },
     { value: "feedback", icon: MessageSquare, label: "Feedback", component: FeedbackManagement, adminOnly: false },
     { value: "contact", icon: Mail, label: "Contacts", component: ContactManagement, adminOnly: false },
     { value: "live-status", icon: Wifi, label: "Live Status", component: LiveAgentStatusDashboard, adminOnly: false },
@@ -161,7 +163,7 @@ const AdminDashboard = () => {
       
       <main className="container mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className={`grid w-full ${isAdmin ? 'grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-12' : 'grid-cols-3'}`}>
+          <TabsList className={`grid w-full ${isAdmin ? 'grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-12' : 'grid-cols-4'}`}>
             {visibleTabs.map(tab => (
               <TabsTrigger key={tab.value} value={tab.value} className="flex items-center gap-2">
                 <tab.icon className="h-4 w-4" />
