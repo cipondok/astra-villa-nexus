@@ -1,3 +1,4 @@
+
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import FooterBrand from "./footer/FooterBrand";
@@ -10,6 +11,14 @@ import FooterOffices from "./footer/FooterOffices";
 import FooterServicesTools from "./footer/FooterServicesTools";
 import FooterInnovationHub from "./footer/FooterInnovationHub";
 import FooterVendorHelp from "./footer/FooterVendorHelp";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { ChevronDown } from "lucide-react";
 
 interface ProfessionalFooterProps {
   language: "en" | "id";
@@ -25,6 +34,7 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
       privacy: "Privacy Policy",
       terms: "Terms of Service",
       featureNotAvailable: "This feature is coming soon. Stay tuned!",
+      legal: "Legal",
     },
     id: {
       company: "Astra Villa",
@@ -32,6 +42,7 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
       privacy: "Kebijakan Privasi",
       terms: "Syarat Layanan",
       featureNotAvailable: "Fitur ini akan segera hadir. Nantikan!",
+      legal: "Hukum",
     }
   };
 
@@ -100,18 +111,22 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
               © 2024 {currentText.company}. {currentText.rights}
             </p>
             <div className="flex space-x-8">
-              <button 
-                onClick={() => handleLinkClick('/privacy', currentText.privacy)}
-                className="text-muted-foreground hover:text-primary transition-colors text-sm hover:underline underline-offset-4"
-              >
-                {currentText.privacy}
-              </button>
-              <button 
-                onClick={() => handleLinkClick('/terms', currentText.terms)}
-                className="text-muted-foreground hover:text-primary transition-colors text-sm hover:underline underline-offset-4"
-              >
-                {currentText.terms}
-              </button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="text-muted-foreground hover:text-primary transition-colors text-sm flex items-center gap-1 hover:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0">
+                    {currentText.legal}
+                    <ChevronDown className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onSelect={() => handleLinkClick('/privacy', currentText.privacy)}>
+                    {currentText.privacy}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onSelect={() => handleLinkClick('/terms', currentText.terms)}>
+                    {currentText.terms}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </div>
