@@ -1,4 +1,3 @@
-
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -121,10 +120,11 @@ const EnhancedPropertyCard = ({
           alt={property.title}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
         />
-        
+
         {/* Image Navigation */}
         {property.image_urls && property.image_urls.length > 1 && (
           <>
+            {/* Arrow buttons */}
             <button
               onClick={() => handleImageNavigation('prev')}
               className="absolute left-2 top-1/2 -translate-y-1/2 bg-background/80 p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-10"
@@ -167,20 +167,39 @@ const EnhancedPropertyCard = ({
           )}
         </div>
 
-        {/* Action Buttons */}
-        <div className="absolute top-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+        {/* Top-right: Favorite & DIRECT 3D View */}
+        <div className="absolute top-3 right-3 flex gap-2 z-20">
+          {/* Favorite button */}
           <Button
             size="sm"
             variant={isSaved ? "ios" : "ghost"}
             className={isSaved ? "ring-2 ring-green-400" : ""}
             onClick={handleLikeToggle}
+            aria-label={isSaved ? "Remove from favorites" : "Save property"}
           >
             <Heart className={`h-4 w-4 ${isSaved ? 'fill-red-500 text-red-500' : ''}`} />
           </Button>
+          {/* Direct 3D View button - only if available */}
+          {(property.three_d_model_url || property.virtual_tour_url) && (
+            <Button
+              size="sm"
+              variant="ghost"
+              className="rounded-full bg-white/90 hover:bg-white text-blue-500 transition-all duration-300"
+              onClick={(e) => {
+                e.stopPropagation();
+                onView3D?.(property);
+              }}
+              aria-label="Open 3D View"
+            >
+              <ViewIcon className="h-4 w-4" />
+            </Button>
+          )}
+          {/* Share button */}
           <Button
             size="sm"
             variant="ghost"
             onClick={() => onShare?.(property.id)}
+            aria-label="Share property"
           >
             <Share2 className="h-4 w-4" />
           </Button>
@@ -199,8 +218,8 @@ const EnhancedPropertyCard = ({
           )}
         </div>
 
-        {/* Title */}
-        <h4 className="font-semibold text-foreground line-clamp-2 min-h-[3rem]">
+        {/* Title - allow more lines if needed, shift other content down */}
+        <h4 className="font-semibold text-foreground line-clamp-2 min-h-[3rem] mb-1">
           {property.title}
         </h4>
 
@@ -275,4 +294,3 @@ const EnhancedPropertyCard = ({
 };
 
 export default EnhancedPropertyCard;
-

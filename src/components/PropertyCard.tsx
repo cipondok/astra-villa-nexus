@@ -76,7 +76,7 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
             alt={property.title}
             className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-700"
           />
-          
+
           {/* Hover Overlay */}
           <div className={`absolute inset-0 bg-black/40 transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
             <div className="absolute inset-0 flex items-center justify-center">
@@ -96,7 +96,7 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
           </div>
           
           {/* Badges */}
-          <div className="absolute top-4 left-4 flex flex-col gap-2">
+          <div className="absolute top-4 left-4 flex flex-col gap-2 z-10">
             <Badge className={getTypeColor(property.type)}>
               {getTypeLabel(property.type)}
             </Badge>
@@ -116,25 +116,45 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
             </Badge>
           </div>
 
-          <Button
-            variant="ghost"
-            size="sm"
-            className={`absolute top-4 right-4 h-8 w-8 rounded-full bg-white/90 hover:bg-white transition-all duration-300 ${
-              isLiked ? 'text-red-500 scale-110' : 'text-gray-600'
-            }`}
-            onClick={(e) => {
-              e.stopPropagation();
-              setIsLiked(!isLiked);
-            }}
-          >
-            <Heart className={`h-4 w-4 transition-all duration-300 ${isLiked ? 'fill-current scale-110' : ''}`} />
-          </Button>
+          {/* Top-right action icons (heart + DIRECT 3D view) */}
+          <div className="absolute top-4 right-4 flex flex-col items-end gap-2 z-20">
+            <div className="flex gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                className={`h-8 w-8 rounded-full bg-white/90 hover:bg-white transition-all duration-300 ${
+                  isLiked ? 'text-red-500 scale-110' : 'text-gray-600'
+                }`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsLiked(!isLiked);
+                }}
+                aria-label={isLiked ? "Remove from favorites" : "Add to favorites"}
+              >
+                <Heart className={`h-4 w-4 transition-all duration-300 ${isLiked ? 'fill-current scale-110' : ''}`} />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-8 w-8 rounded-full bg-white/90 hover:bg-white text-blue-500 transition-all duration-300"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIs3DViewOpen(true);
+                }}
+                aria-label="Open 3D View"
+              >
+                <Box className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
 
+          {/* Bottom-right: Rating */}
           <div className="absolute bottom-4 right-4 bg-black/70 text-white px-2 py-1 rounded-lg flex items-center gap-1 backdrop-blur-sm">
             <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
             <span className="text-sm font-medium">{property.rating}</span>
           </div>
 
+          {/* Bottom-left: Views */}
           <div className="absolute bottom-4 left-4 bg-black/70 text-white px-2 py-1 rounded-lg flex items-center gap-1 backdrop-blur-sm">
             <Eye className="h-3 w-3" />
             <span className="text-xs">{Math.floor(Math.random() * 100) + 20}</span>
@@ -142,7 +162,7 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
         </div>
 
         <CardContent className="p-6">
-          <h3 className="text-xl font-bold mb-2 group-hover:text-blue-600 transition-colors duration-300 line-clamp-1">
+          <h3 className="text-xl font-bold mb-2 group-hover:text-blue-600 transition-colors duration-300 line-clamp-2">
             {property.title}
           </h3>
           
