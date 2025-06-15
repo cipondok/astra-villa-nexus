@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -9,9 +10,11 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { LifeBuoy, Eye, CheckCircle, XCircle, Clock, User, Mail } from "lucide-react";
+import { LifeBuoy, Eye, CheckCircle, XCircle, Clock, User, Mail, MessageSquare } from "lucide-react";
 import { useAlert } from "@/contexts/AlertContext";
 import { useAuth } from "@/contexts/AuthContext";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import LiveChatManagement from "./LiveChatManagement";
 
 const CustomerServiceTicketManagement = () => {
   const { profile } = useAuth();
@@ -150,74 +153,89 @@ const CustomerServiceTicketManagement = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <LifeBuoy className="h-5 w-5" />
-            Customer Service Tickets
+            Support Center
           </CardTitle>
           <CardDescription>
-            Manage and resolve customer and vendor support tickets.
+            Manage customer support tickets and live chat inquiries.
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="space-y-6">
-            <div className="flex gap-4">
-              <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="w-48"><SelectValue placeholder="Filter by status" /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Tickets</SelectItem>
-                  <SelectItem value="open">Open</SelectItem>
-                  <SelectItem value="in_progress">In Progress</SelectItem>
-                  <SelectItem value="resolved">Resolved</SelectItem>
-                  <SelectItem value="closed">Closed</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+          <Tabs defaultValue="tickets" className="w-full">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="tickets" className="flex items-center gap-2">
+                <LifeBuoy className="h-4 w-4" /> Tickets
+              </TabsTrigger>
+              <TabsTrigger value="live-chat" className="flex items-center gap-2">
+                <MessageSquare className="h-4 w-4" /> Live Chat
+              </TabsTrigger>
+            </TabsList>
+            <TabsContent value="tickets" className="mt-4">
+              <div className="space-y-6">
+                <div className="flex gap-4">
+                  <Select value={statusFilter} onValueChange={setStatusFilter}>
+                    <SelectTrigger className="w-48"><SelectValue placeholder="Filter by status" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Tickets</SelectItem>
+                      <SelectItem value="open">Open</SelectItem>
+                      <SelectItem value="in_progress">In Progress</SelectItem>
+                      <SelectItem value="resolved">Resolved</SelectItem>
+                      <SelectItem value="closed">Closed</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
 
-            <div className="border rounded-lg">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Ticket #</TableHead>
-                    <TableHead>Subject</TableHead>
-                    <TableHead>Customer</TableHead>
-                    <TableHead>Priority</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Assigned To</TableHead>
-                    <TableHead>Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {isLoading ? (
-                    <TableRow><TableCell colSpan={7} className="text-center py-8">Loading tickets...</TableCell></TableRow>
-                  ) : tickets?.length === 0 ? (
-                    <TableRow><TableCell colSpan={7} className="text-center py-8">No tickets found.</TableCell></TableRow>
-                  ) : (
-                    tickets?.map((item) => (
-                      <TableRow key={item.id}>
-                        <TableCell>{item.ticket_number}</TableCell>
-                        <TableCell>{item.subject}</TableCell>
-                        <TableCell>
-                          <div className="font-medium">{item.customer?.full_name || 'N/A'}</div>
-                          {item.customer?.id && <div className="text-xs text-muted-foreground font-mono">{item.customer.id}</div>}
-                          <div className="mt-1">{getAvailabilityBadge(item.customer?.availability_status)}</div>
-                        </TableCell>
-                        <TableCell>{getPriorityBadge(item.priority)}</TableCell>
-                        <TableCell>{getStatusBadge(item.status)}</TableCell>
-                        <TableCell>
-                          <div className="font-medium">{item.agent?.full_name || 'Unassigned'}</div>
-                          {item.agent?.id && <div className="text-xs text-muted-foreground font-mono">{item.agent.id}</div>}
-                          {item.agent && <div className="mt-1">{getAvailabilityBadge(item.agent?.availability_status)}</div>}
-                        </TableCell>
-                        <TableCell>
-                          <Button size="sm" variant="outline" onClick={() => handleViewDetails(item)}>
-                            <Eye className="h-4 w-4 mr-1" /> View
-                          </Button>
-                        </TableCell>
+                <div className="border rounded-lg">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Ticket #</TableHead>
+                        <TableHead>Subject</TableHead>
+                        <TableHead>Customer</TableHead>
+                        <TableHead>Priority</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Assigned To</TableHead>
+                        <TableHead>Actions</TableHead>
                       </TableRow>
-                    ))
-                  )}
-                </TableBody>
-              </Table>
-            </div>
-          </div>
+                    </TableHeader>
+                    <TableBody>
+                      {isLoading ? (
+                        <TableRow><TableCell colSpan={7} className="text-center py-8">Loading tickets...</TableCell></TableRow>
+                      ) : tickets?.length === 0 ? (
+                        <TableRow><TableCell colSpan={7} className="text-center py-8">No tickets found.</TableCell></TableRow>
+                      ) : (
+                        tickets?.map((item) => (
+                          <TableRow key={item.id}>
+                            <TableCell>{item.ticket_number}</TableCell>
+                            <TableCell>{item.subject}</TableCell>
+                            <TableCell>
+                              <div className="font-medium">{item.customer?.full_name || 'N/A'}</div>
+                              {item.customer?.id && <div className="text-xs text-muted-foreground font-mono">{item.customer.id}</div>}
+                              <div className="mt-1">{getAvailabilityBadge(item.customer?.availability_status)}</div>
+                            </TableCell>
+                            <TableCell>{getPriorityBadge(item.priority)}</TableCell>
+                            <TableCell>{getStatusBadge(item.status)}</TableCell>
+                            <TableCell>
+                              <div className="font-medium">{item.agent?.full_name || 'Unassigned'}</div>
+                              {item.agent?.id && <div className="text-xs text-muted-foreground font-mono">{item.agent.id}</div>}
+                              {item.agent && <div className="mt-1">{getAvailabilityBadge(item.agent?.availability_status)}</div>}
+                            </TableCell>
+                            <TableCell>
+                              <Button size="sm" variant="outline" onClick={() => handleViewDetails(item)}>
+                                <Eye className="h-4 w-4 mr-1" /> View
+                              </Button>
+                            </TableCell>
+                          </TableRow>
+                        ))
+                      )}
+                    </TableBody>
+                  </Table>
+                </div>
+              </div>
+            </TabsContent>
+            <TabsContent value="live-chat" className="mt-4">
+              <LiveChatManagement />
+            </TabsContent>
+          </Tabs>
         </CardContent>
       </Card>
 
