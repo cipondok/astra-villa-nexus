@@ -1,4 +1,3 @@
-
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
@@ -156,6 +155,14 @@ Be helpful, concise, and professional. Always try to guide users toward taking a
     });
 
     const aiResponse = await response.json();
+
+    if (!response.ok || !aiResponse.choices || aiResponse.choices.length === 0) {
+      console.error('Error from OpenAI API:', aiResponse);
+      const errorMessage = aiResponse.error?.message || 'Failed to get a valid response from OpenAI.';
+      // We are inside the main try-catch, so we can just throw. The catch block will handle it.
+      throw new Error(errorMessage);
+    }
+
     let aiMessage = aiResponse.choices[0].message.content;
     let functionCall = null;
     let conversationId = initialConversationId;
