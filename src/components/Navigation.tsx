@@ -55,7 +55,7 @@ const Navigation = () => {
   return (
     <>
       <TooltipProvider delayDuration={100}>
-        <nav className="glass-dark border-b border-white/10 sticky top-0 z-50 backdrop-blur-xl bg-white/80 dark:bg-gray-900/80">
+        <nav className="nav-ios sticky top-0 z-50">
           <div className="max-w-7xl mx-auto px-3 sm:px-4">
             <div className="flex justify-between h-14">
               <div className="flex items-center">
