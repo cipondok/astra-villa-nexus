@@ -1,78 +1,48 @@
 
 import { MapPin, Building, Phone, Clock } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface FooterOfficesProps {
   language: "en" | "id";
 }
 
+type OfficeLocation = {
+  id: string;
+  name_en: string;
+  name_id: string;
+  address_en: string;
+  address_id: string;
+  phone: string | null;
+  business_hours_en: string | null;
+  business_hours_id: string | null;
+  is_main_office: boolean;
+};
+
 const FooterOffices = ({ language }: FooterOfficesProps) => {
-  const text = {
-    en: {
-      offices: "Our Offices",
-      jakartaHead: "Jakarta Head Office",
-      jakartaAddress: "Menara Astra, Jl. Jend. Sudirman Kav. 5-6, Jakarta 10220",
-      baliRegional: "Bali Regional Office",
-      baliAddress: "Jl. Raya Sanur No. 88, Denpasar, Bali 80228",
-      surabayaBranch: "Surabaya Branch",
-      surabayaAddress: "Jl. Pemuda No. 118, Surabaya, East Java 60271",
-      bandungBranch: "Bandung Branch",
-      bandungAddress: "Jl. Asia Afrika No. 8, Bandung, West Java 40111",
-      medanBranch: "Medan Branch",
-      medanAddress: "Jl. Jend. Gatot Subroto No. 456, Medan, North Sumatra 20234",
-      businessHours: "Mon-Fri: 9:00 AM - 6:00 PM",
-      phone: "Phone",
+  const { data: offices, isLoading } = useQuery<OfficeLocation[]>({
+    queryKey: ["office_locations_active"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("office_locations")
+        .select("*")
+        .eq("is_active", true)
+        .order("display_order", { ascending: true });
+      if (error) {
+        console.error("Error fetching office locations:", error);
+        return [];
+      }
+      return data || [];
     },
-    id: {
-      offices: "Kantor Kami",
-      jakartaHead: "Kantor Pusat Jakarta",
-      jakartaAddress: "Menara Astra, Jl. Jend. Sudirman Kav. 5-6, Jakarta 10220",
-      baliRegional: "Kantor Regional Bali",
-      baliAddress: "Jl. Raya Sanur No. 88, Denpasar, Bali 80228",
-      surabayaBranch: "Cabang Surabaya",
-      surabayaAddress: "Jl. Pemuda No. 118, Surabaya, Jawa Timur 60271",
-      bandungBranch: "Cabang Bandung",
-      bandungAddress: "Jl. Asia Afrika No. 8, Bandung, Jawa Barat 40111",
-      medanBranch: "Cabang Medan",
-      medanAddress: "Jl. Jend. Gatot Subroto No. 456, Medan, Sumatera Utara 20234",
-      businessHours: "Sen-Jum: 09:00 - 18:00",
-      phone: "Telepon",
-    }
+  });
+
+  const text = {
+    en: { offices: "Our Offices" },
+    id: { offices: "Kantor Kami" },
   };
 
   const currentText = text[language];
-
-  const offices = [
-    { 
-      name: currentText.jakartaHead, 
-      address: currentText.jakartaAddress,
-      phone: "+62 21 1234 5678",
-      isMain: true
-    },
-    { 
-      name: currentText.baliRegional, 
-      address: currentText.baliAddress,
-      phone: "+62 361 234 567",
-      isMain: false
-    },
-    { 
-      name: currentText.surabayaBranch, 
-      address: currentText.surabayaAddress,
-      phone: "+62 31 345 678",
-      isMain: false
-    },
-    { 
-      name: currentText.bandungBranch, 
-      address: currentText.bandungAddress,
-      phone: "+62 22 456 789",
-      isMain: false
-    },
-    { 
-      name: currentText.medanBranch, 
-      address: currentText.medanAddress,
-      phone: "+62 61 567 890",
-      isMain: false
-    },
-  ];
 
   return (
     <div className="space-y-6">
@@ -86,50 +56,66 @@ const FooterOffices = ({ language }: FooterOfficesProps) => {
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
-        {offices.map((office, index) => (
-          <div 
-            key={index} 
-            className={`p-4 rounded-lg border transition-all duration-200 hover:shadow-md ${
-              office.isMain 
-                ? 'bg-primary/5 border-primary/20 hover:border-primary/30' 
-                : 'bg-muted/30 border-border/30 hover:border-border/50'
-            }`}
-          >
-            <div className="space-y-3">
-              <div className="flex items-start gap-2">
-                {office.isMain && (
-                  <div className="p-1 bg-primary/20 rounded text-primary">
-                    <Building className="h-3 w-3" />
+        {isLoading ? (
+          Array.from({ length: 5 }).map((_, index) => (
+            <Skeleton key={index} className="h-48 w-full rounded-lg bg-muted/40" />
+          ))
+        ) : (
+          offices?.map((office) => {
+            const officeName = language === 'id' ? office.name_id : office.name_en;
+            const officeAddress = language === 'id' ? office.address_id : office.address_en;
+            const businessHours = language === 'id' ? office.business_hours_id : office.business_hours_en;
+
+            return (
+              <div 
+                key={office.id} 
+                className={`p-4 rounded-lg border transition-all duration-200 hover:shadow-md ${
+                  office.is_main_office
+                    ? 'bg-primary/5 border-primary/20 hover:border-primary/30' 
+                    : 'bg-muted/30 border-border/30 hover:border-border/50'
+                }`}
+              >
+                <div className="space-y-3">
+                  <div className="flex items-start gap-2 h-10">
+                    {office.is_main_office && (
+                      <div className="p-1 bg-primary/20 rounded text-primary mt-0.5">
+                        <Building className="h-3 w-3" />
+                      </div>
+                    )}
+                    <div className="font-semibold text-foreground text-sm leading-tight">
+                      {officeName}
+                    </div>
                   </div>
-                )}
-                <div className="font-semibold text-foreground text-sm leading-tight">
-                  {office.name}
+                  
+                  <div className="flex items-start gap-2">
+                    <MapPin className="h-3 w-3 text-primary mt-0.5 flex-shrink-0" />
+                    <span className="text-muted-foreground text-xs leading-relaxed">
+                      {officeAddress}
+                    </span>
+                  </div>
+                  
+                  {office.phone && (
+                    <div className="flex items-center gap-2 pt-2 border-t border-border/20">
+                      <Phone className="h-3 w-3 text-primary flex-shrink-0" />
+                      <span className="text-foreground text-xs font-medium">
+                        {office.phone}
+                      </span>
+                    </div>
+                  )}
+                  
+                  {businessHours && (
+                    <div className="flex items-center gap-2 pt-2 border-t border-border/20">
+                      <Clock className="h-3 w-3 text-muted-foreground flex-shrink-0" />
+                      <span className="text-muted-foreground text-xs">
+                        {businessHours}
+                      </span>
+                    </div>
+                  )}
                 </div>
               </div>
-              
-              <div className="flex items-start gap-2">
-                <MapPin className="h-3 w-3 text-primary mt-0.5 flex-shrink-0" />
-                <span className="text-muted-foreground text-xs leading-relaxed">
-                  {office.address}
-                </span>
-              </div>
-              
-              <div className="flex items-center gap-2">
-                <Phone className="h-3 w-3 text-primary flex-shrink-0" />
-                <span className="text-foreground text-xs font-medium">
-                  {office.phone}
-                </span>
-              </div>
-              
-              <div className="flex items-center gap-2 pt-1 border-t border-border/20">
-                <Clock className="h-3 w-3 text-muted-foreground flex-shrink-0" />
-                <span className="text-muted-foreground text-xs">
-                  {currentText.businessHours}
-                </span>
-              </div>
-            </div>
-          </div>
-        ))}
+            );
+          })
+        )}
       </div>
     </div>
   );

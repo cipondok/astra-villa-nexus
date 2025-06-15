@@ -828,6 +828,54 @@ export type Database = {
         }
         Relationships: []
       }
+      office_locations: {
+        Row: {
+          address_en: string
+          address_id: string
+          business_hours_en: string | null
+          business_hours_id: string | null
+          created_at: string | null
+          display_order: number | null
+          id: string
+          is_active: boolean
+          is_main_office: boolean
+          name_en: string
+          name_id: string
+          phone: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          address_en: string
+          address_id: string
+          business_hours_en?: string | null
+          business_hours_id?: string | null
+          created_at?: string | null
+          display_order?: number | null
+          id?: string
+          is_active?: boolean
+          is_main_office?: boolean
+          name_en: string
+          name_id: string
+          phone?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          address_en?: string
+          address_id?: string
+          business_hours_en?: string | null
+          business_hours_id?: string | null
+          created_at?: string | null
+          display_order?: number | null
+          id?: string
+          is_active?: boolean
+          is_main_office?: boolean
+          name_en?: string
+          name_id?: string
+          phone?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       orders: {
         Row: {
           created_at: string | null
