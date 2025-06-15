@@ -117,12 +117,24 @@ const OfficeManagement = () => {
         const { error } = await supabase.from('office_locations').update(updateData).eq('id', id);
         if (error) throw error;
       } else {
-        const { error } = await supabase.from('office_locations').insert(officeData);
+        const insertData = {
+          name_en: officeData.name_en!,
+          name_id: officeData.name_id!,
+          address_en: officeData.address_en!,
+          address_id: officeData.address_id!,
+          phone: officeData.phone || null,
+          business_hours_en: officeData.business_hours_en || null,
+          business_hours_id: officeData.business_hours_id || null,
+          is_main_office: officeData.is_main_office || false,
+          is_active: typeof officeData.is_active === 'boolean' ? officeData.is_active : true,
+          display_order: typeof officeData.display_order === 'number' ? officeData.display_order : null,
+        };
+        const { error } = await supabase.from('office_locations').insert(insertData);
         if (error) throw error;
       }
     },
     onSuccess: () => {
-      showSuccess(`Office ${selectedOffice?.id ? 'updated' : 'created'} successfully.`);
+      showSuccess("Success", `Office ${selectedOffice?.id ? 'updated' : 'created'} successfully.`);
       queryClient.invalidateQueries({ queryKey: ['office_locations'] });
       setIsDialogOpen(false);
       setSelectedOffice(null);
@@ -138,7 +150,7 @@ const OfficeManagement = () => {
       if (error) throw error;
     },
     onSuccess: () => {
-      showSuccess("Office deleted successfully.");
+      showSuccess("Success", "Office deleted successfully.");
       queryClient.invalidateQueries({ queryKey: ['office_locations'] });
     },
     onError: (error: any) => {
