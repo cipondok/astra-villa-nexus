@@ -180,24 +180,64 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
   ];
 
   // Smart filter options
-  const smartFilterOptions = [
-    { value: "nearby", label: language === "id" ? "Sekitar" : "Nearby" },
-    { value: "indoor", label: language === "id" ? "Fasilitas Dalam" : "Indoor Facilities" },
-    { value: "security", label: language === "id" ? "Keamanan" : "Security" },
-    { value: "public-transport", label: language === "id" ? "Transportasi Umum" : "Public Transport" },
-    { value: "public-area", label: language === "id" ? "Area Publik" : "Public Area" },
-    { value: "public-school", label: language === "id" ? "Sekolah Umum" : "Public School" },
-    { value: "airport", label: language === "id" ? "Bandara" : "Airport" },
-    { value: "lrt", label: "LRT" },
-    { value: "mrt", label: "MRT" },
-    { value: "mall", label: language === "id" ? "Mall" : "Shopping Mall" },
+  const smartFilterCategories = [
+    {
+      label: language === "id" ? "Dekat Sini" : "Nearby",
+      key: "nearby",
+      options: [
+        { value: "nearby-airport", label: language === "id" ? "Bandara" : "Airport" },
+        { value: "nearby-mall", label: language === "id" ? "Mall" : "Shopping Mall" },
+        { value: "nearby-hospital", label: language === "id" ? "Rumah Sakit" : "Hospital" },
+        { value: "nearby-school", label: language === "id" ? "Sekolah Umum" : "Public School" }
+      ]
+    },
+    {
+      label: language === "id" ? "Fasilitas Dalam" : "Indoor Facilities",
+      key: "facility",
+      options: [
+        { value: "gym", label: "Gym" },
+        { value: "kolam-renang", label: language === "id" ? "Kolam Renang" : "Swimming Pool" },
+        { value: "parkir", label: language === "id" ? "Area Parkir" : "Parking" },
+        { value: "keamanan", label: language === "id" ? "Keamanan 24 Jam" : "24h Security" }
+      ]
+    },
+    {
+      label: language === "id" ? "Transportasi Umum" : "Transportation",
+      key: "transport",
+      options: [
+        { value: "lrt", label: "LRT" },
+        { value: "mrt", label: "MRT" },
+        { value: "bus", label: "Bus" },
+        { value: "kereta", label: language === "id" ? "KRL" : "Commuter Line" }
+      ]
+    },
+    {
+      label: language === "id" ? "Pusat Belanja" : "Shopping",
+      key: "shopping",
+      options: [
+        { value: "mall", label: language === "id" ? "Mall" : "Shopping Mall" },
+        { value: "supermarket", label: "Supermarket" },
+      ]
+    },
+    {
+      label: language === "id" ? "Area Publik" : "Public Area",
+      key: "public",
+      options: [
+        { value: "public-park", label: language === "id" ? "Taman Kota" : "Park" },
+        { value: "public-area", label: language === "id" ? "Fasilitas Umum" : "Facilities" }
+      ]
+    }
   ];
 
-  const popularSearches = useMemo(() => 
-    language === "en" 
-      ? ["Apartment Jakarta", "Villa Bali", "House Surabaya", "Boarding Bandung"]
-      : ["Apartemen Jakarta", "Villa Bali", "Rumah Surabaya", "Kost Bandung"]
-  , [language]);
+  // Smart filter multi-select grouping logic
+  // Maintain selection state per subcategory
+  const [selectedSmartFacilities, setSelectedSmartFacilities] = useState<string[]>([]);
+
+  const handleSmartFacilityToggle = (val: string) => {
+    setSelectedSmartFacilities((prev) =>
+      prev.includes(val) ? prev.filter((f) => f !== val) : [...prev, val]
+    );
+  };
 
   // Improved debounced live search with duplicate prevention
   const debouncedLiveSearch = useCallback((searchTerm: string) => {
@@ -473,16 +513,10 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
                     onStateChange={setSelectedState}
                     onCityChange={setSelectedCity}
                     onAreaChange={setSelectedArea}
-                    onLocationChange={(loc) => setLocation(loc)}
+                    onLocationChange={setLocation}
                   />
-                  {/* Show current selections inline for clarity */}
-                  <div className="mt-2 flex gap-2 text-xs text-gray-500">
-                    {selectedState && <span>{selectedState}</span>}
-                    {selectedCity && <span>{selectedCity}</span>}
-                    {selectedArea && <span>{selectedArea}</span>}
-                  </div>
                 </div>
-                {/* Bedrooms */}
+                {/* Bedrooms mini pills */}
                 <div>
                   <label className="block mb-1 text-gray-700 dark:text-gray-300 text-sm font-medium">
                     {language === "id" ? "Kamar Tidur" : "Bedrooms"}
@@ -499,7 +533,7 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
                     multiple={false}
                   />
                 </div>
-                {/* Bathrooms */}
+                {/* Bathrooms mini pills */}
                 <div>
                   <label className="block mb-1 text-gray-700 dark:text-gray-300 text-sm font-medium">
                     {language === "id" ? "Kamar Mandi" : "Bathrooms"}
@@ -516,28 +550,33 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
                     multiple={false}
                   />
                 </div>
-                {/* Smart Filters */}
-                <div className="md:col-span-2">
+                {/* Smart Filter grouped pills */}
+                <div className="md:col-span-2 space-y-3">
                   <label className="block mb-1 text-gray-700 dark:text-gray-300 text-sm font-medium">
                     {language === "id" ? "Filter Pintar" : "Smart Filters"}
                   </label>
-                  <PillToggleGroup
-                    options={[
-                      { value: "nearby", label: language === "id" ? "Sekitar" : "Nearby" },
-                      { value: "indoor", label: language === "id" ? "Fasilitas Dalam" : "Indoor" },
-                      { value: "security", label: language === "id" ? "Keamanan" : "Security" },
-                      { value: "public-transport", label: language === "id" ? "Transportasi Umum" : "Public Transport" },
-                      { value: "public-area", label: language === "id" ? "Area Publik" : "Public Area" },
-                      { value: "public-school", label: language === "id" ? "Sekolah Umum" : "Public School" },
-                      { value: "airport", label: language === "id" ? "Bandara" : "Airport" },
-                      { value: "lrt", label: "LRT" },
-                      { value: "mrt", label: "MRT" },
-                      { value: "mall", label: language === "id" ? "Mall" : "Shopping Mall" },
-                    ]}
-                    value={smartFacilities}
-                    onChange={handleSmartFacilitiesChange}
-                    multiple={true}
-                  />
+                  {smartFilterCategories.map((cat) => (
+                    <div key={cat.key} className="mb-1">
+                      <div className="text-xs font-semibold text-gray-500 mb-1">{cat.label}</div>
+                      <div className="flex flex-wrap gap-2">
+                        {cat.options.map((option) => (
+                          <button
+                            type="button"
+                            key={option.value}
+                            onClick={() => handleSmartFacilityToggle(option.value)}
+                            className={`px-3 py-1 rounded-full border text-xs font-medium transition 
+                              ${selectedSmartFacilities.includes(option.value)
+                                ? "bg-blue-600 text-white shadow scale-105"
+                                : "bg-gray-100 dark:bg-gray-800 text-gray-500 hover:bg-blue-50 dark:hover:bg-gray-700"}
+                            `}
+                            aria-pressed={selectedSmartFacilities.includes(option.value)}
+                          >
+                            {option.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             )}

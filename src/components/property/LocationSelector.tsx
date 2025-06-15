@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -101,8 +100,6 @@ const LocationSelector = ({
     if (selectedState) {
       const cities = citiesData[selectedState] || [];
       setAvailableCities(cities);
-      
-      // Reset city and area if current selections are not available
       if (!cities.includes(selectedCity)) {
         onCityChange("");
         onAreaChange("");
@@ -114,13 +111,11 @@ const LocationSelector = ({
     }
   }, [selectedState]);
 
-  // Update areas when city changes
+  // Update areas (Kecamatan) when city changes
   useEffect(() => {
     if (selectedCity) {
       const areas = areasData[selectedCity] || [];
       setAvailableAreas(areas);
-      
-      // Reset area if current selection is not available
       if (!areas.includes(selectedArea)) {
         onAreaChange("");
       }
@@ -130,7 +125,7 @@ const LocationSelector = ({
     }
   }, [selectedCity]);
 
-  // Update location string when selections change
+  // Update location string
   useEffect(() => {
     if (selectedArea && selectedCity && selectedState && onLocationChange) {
       onLocationChange(`${selectedArea}, ${selectedCity}, ${selectedState}`);
@@ -165,7 +160,6 @@ const LocationSelector = ({
             </SelectContent>
           </Select>
         </div>
-
         {/* City Selection */}
         <div>
           <Label htmlFor="city" className="text-gray-700 font-medium">Kota/Kabupaten *</Label>
@@ -190,8 +184,7 @@ const LocationSelector = ({
             </SelectContent>
           </Select>
         </div>
-
-        {/* Area Selection */}
+        {/* Area (Kecamatan) Selection */}
         <div>
           <Label htmlFor="area" className="text-gray-700 font-medium">Kecamatan/Area *</Label>
           <Select 
@@ -216,7 +209,7 @@ const LocationSelector = ({
           </Select>
         </div>
       </div>
-
+      {/* Show active selection */}
       {selectedState && selectedCity && selectedArea && (
         <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
           <p className="text-sm text-blue-800">
