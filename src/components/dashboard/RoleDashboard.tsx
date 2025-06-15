@@ -101,20 +101,20 @@ const RoleDashboard = ({ language }: RoleDashboardProps) => {
         title: "Admin Dashboard",
         description: "Full system administration",
         actions: [
-          { label: "User Management", icon: Users },
-          { label: "System Analytics", icon: BarChart3 },
-          { label: "Verification Requests", icon: UserCheck },
-          { label: "Manage Tickets", icon: LifeBuoy, path: "/admin/customer-service-tickets" },
-          { label: "Manage Feedback", icon: MessageSquare, path: "/admin/feedback-management" },
-          { label: "System Settings", icon: Settings }
+          { label: "User Management", icon: Users, path: "/admin", tab: "users" },
+          { label: "System Analytics", icon: BarChart3, path: "/admin", tab: "analytics" },
+          { label: "Verification Requests", icon: UserCheck, path: "/admin" },
+          { label: "Manage Tickets", icon: LifeBuoy, path: "/admin", tab: "support" },
+          { label: "Manage Feedback", icon: MessageSquare, path: "/admin", tab: "feedback" },
+          { label: "System Settings", icon: Settings, path: "/admin" }
         ]
       },
       customer_service: {
         title: "Customer Service Dashboard",
         description: "Manage support tickets and user feedback.",
         actions: [
-          { label: "Manage Tickets", icon: LifeBuoy, path: "/admin/customer-service-tickets" },
-          { label: "Manage Feedback", icon: MessageSquare, path: "/admin/feedback-management" }
+          { label: "Manage Tickets", icon: LifeBuoy, path: "/admin", tab: "support" },
+          { label: "Manage Feedback", icon: MessageSquare, path: "/admin", tab: "feedback" }
         ]
       }
     },
@@ -167,20 +167,20 @@ const RoleDashboard = ({ language }: RoleDashboardProps) => {
         title: "Dashboard Admin",
         description: "Administrasi sistem penuh",
         actions: [
-          { label: "Manajemen Pengguna", icon: Users },
-          { label: "Analitik Sistem", icon: BarChart3 },
-          { label: "Permintaan Verifikasi", icon: UserCheck },
-          { label: "Kelola Tiket", icon: LifeBuoy, path: "/admin/customer-service-tickets" },
-          { label: "Kelola Umpan Balik", icon: MessageSquare, path: "/admin/feedback-management" },
-          { label: "Pengaturan Sistem", icon: Settings }
+          { label: "Manajemen Pengguna", icon: Users, path: "/admin", tab: "users" },
+          { label: "Analitik Sistem", icon: BarChart3, path: "/admin", tab: "analytics" },
+          { label: "Permintaan Verifikasi", icon: UserCheck, path: "/admin" },
+          { label: "Kelola Tiket", icon: LifeBuoy, path: "/admin", tab: "support" },
+          { label: "Kelola Umpan Balik", icon: MessageSquare, path: "/admin", tab: "feedback" },
+          { label: "Pengaturan Sistem", icon: Settings, path: "/admin" }
         ]
       },
       customer_service: {
         title: "Dashboard Layanan Pelanggan",
         description: "Kelola tiket dukungan dan umpan balik pengguna.",
         actions: [
-          { label: "Kelola Tiket", icon: LifeBuoy, path: "/admin/customer-service-tickets" },
-          { label: "Kelola Umpan Balik", icon: MessageSquare, path: "/admin/feedback-management" }
+          { label: "Kelola Tiket", icon: LifeBuoy, path: "/admin", tab: "support" },
+          { label: "Kelola Umpan Balik", icon: MessageSquare, path: "/admin", tab: "feedback" }
         ]
       }
     }
@@ -339,10 +339,15 @@ const RoleDashboard = ({ language }: RoleDashboardProps) => {
                       className="h-auto p-4 flex flex-col items-center space-y-2 hover:bg-blue-50"
                       onClick={() => {
                         if ('path' in action && action.path) {
-                          navigate(action.path);
+                          const navState = ('tab' in action && action.tab) ? { state: { defaultTab: action.tab } } : {};
+                          navigate(action.path, navState);
                         } else if (action.label.includes("Properties") || action.label.includes("Properti")) {
                           navigate('/properties');
                         } else {
+                          // Fallback for actions without a path, you might want to handle this.
+                          // For now, we are navigating to admin for some of them.
+                          if(action.label.includes("User Management")) navigate("/admin", { state: { defaultTab: 'users' } });
+                          if(action.label.includes("System Settings")) navigate("/admin", { state: { defaultTab: 'system' } });
                           console.log(`Navigate to ${action.label}`);
                         }
                       }}

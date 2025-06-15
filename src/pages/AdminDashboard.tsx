@@ -1,5 +1,5 @@
 import { useState, Suspense, lazy, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -37,7 +37,8 @@ const LoadingSpinner = () => (
 const AdminDashboard = () => {
   const { user, profile, loading } = useAuth();
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState("system");
+  const location = useLocation();
+  const [activeTab, setActiveTab] = useState(location.state?.defaultTab || "system");
   const [systemSettingsOpen, setSystemSettingsOpen] = useState(false);
 
   const isAdmin = profile?.role === 'admin';
