@@ -1,5 +1,4 @@
-
-import { MapPin, Building, Phone, Clock } from "lucide-react";
+import { MapPin, Building, Phone, Clock, Mail } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -15,6 +14,7 @@ type OfficeLocation = {
   address_en: string;
   address_id: string;
   phone: string | null;
+  email: string | null;
   business_hours_en: string | null;
   business_hours_id: string | null;
   is_main_office: boolean;
@@ -100,6 +100,15 @@ const FooterOffices = ({ language }: FooterOfficesProps) => {
                       <span className="text-foreground text-xs font-medium">
                         {office.phone}
                       </span>
+                    </div>
+                  )}
+                  
+                  {office.email && (
+                    <div className="flex items-center gap-2 pt-2 border-t border-border/20">
+                      <Mail className="h-3 w-3 text-primary flex-shrink-0" />
+                      <a href={`mailto:${office.email}`} className="text-foreground text-xs font-medium hover:underline">
+                        {office.email}
+                      </a>
                     </div>
                   )}
                   

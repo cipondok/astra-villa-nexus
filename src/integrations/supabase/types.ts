@@ -836,6 +836,7 @@ export type Database = {
           business_hours_id: string | null
           created_at: string | null
           display_order: number | null
+          email: string | null
           id: string
           is_active: boolean
           is_main_office: boolean
@@ -851,6 +852,7 @@ export type Database = {
           business_hours_id?: string | null
           created_at?: string | null
           display_order?: number | null
+          email?: string | null
           id?: string
           is_active?: boolean
           is_main_office?: boolean
@@ -866,6 +868,7 @@ export type Database = {
           business_hours_id?: string | null
           created_at?: string | null
           display_order?: number | null
+          email?: string | null
           id?: string
           is_active?: boolean
           is_main_office?: boolean

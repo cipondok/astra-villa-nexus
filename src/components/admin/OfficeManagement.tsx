@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -21,6 +20,7 @@ type OfficeLocation = {
   address_en: string;
   address_id: string;
   phone: string | null;
+  email: string | null;
   business_hours_en: string | null;
   business_hours_id: string | null;
   is_main_office: boolean;
@@ -66,6 +66,11 @@ const OfficeForm = ({ office, onSave, onCancel }: { office: Partial<OfficeLocati
           <Label htmlFor="display_order">Display Order</Label>
           <Input id="display_order" type="number" {...register("display_order", { valueAsNumber: true })} />
         </div>
+      </div>
+      <div>
+        <Label htmlFor="email">Email</Label>
+        <Input id="email" type="email" {...register("email", { pattern: { value: /^\S+@\S+$/i, message: "Invalid email address" }})} />
+        {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>}
       </div>
       <div>
         <Label htmlFor="business_hours_en">Business Hours (EN)</Label>
@@ -123,6 +128,7 @@ const OfficeManagement = () => {
           address_en: officeData.address_en!,
           address_id: officeData.address_id!,
           phone: officeData.phone || null,
+          email: officeData.email || null,
           business_hours_en: officeData.business_hours_en || null,
           business_hours_id: officeData.business_hours_id || null,
           is_main_office: officeData.is_main_office || false,
