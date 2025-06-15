@@ -12,10 +12,13 @@ import LoadingPopup from "@/components/LoadingPopup";
 import { useAuth } from "@/contexts/AuthContext";
 import { useUserTracking } from "@/hooks/useUserTracking";
 import { supabase } from "@/integrations/supabase/client";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const Index = () => {
   const [authModalOpen, setAuthModalOpen] = useState(false);
-  const [language, setLanguage] = useState<"en" | "id">("en");
+  // Remove local language state:
+  // const [language, setLanguage] = useState<"en" | "id">("en");
+  const { language } = useLanguage();
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [featuredProperties, setFeaturedProperties] = useState<any[]>([]);

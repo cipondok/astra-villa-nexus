@@ -9,15 +9,16 @@ import RoleBasedAuthModal from "./RoleBasedAuthModal";
 import ThemeToggleSwitch from "./ThemeToggleSwitch";
 import { toast } from "sonner";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
-  const [language, setLanguage] = useState<"en" | "id">("en");
   const location = useLocation();
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
   const { themeSettings } = useThemeSettings();
+  const { language, setLanguage } = useLanguage();
 
   const labels = {
     en: {
@@ -74,7 +75,7 @@ const Navigation = () => {
   };
 
   const toggleLanguage = () => {
-    setLanguage(prev => prev === "en" ? "id" : "en");
+    setLanguage(language === "en" ? "id" : "en");
   };
 
   const handleAddPropertyClick = () => {
