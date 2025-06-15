@@ -104,6 +104,8 @@ const RoleDashboard = ({ language }: RoleDashboardProps) => {
           { label: "User Management", icon: Users },
           { label: "System Analytics", icon: BarChart3 },
           { label: "Verification Requests", icon: UserCheck },
+          { label: "Manage Tickets", icon: LifeBuoy, path: "/admin/customer-service-tickets" },
+          { label: "Manage Feedback", icon: MessageSquare, path: "/admin/feedback-management" },
           { label: "System Settings", icon: Settings }
         ]
       },
@@ -168,6 +170,8 @@ const RoleDashboard = ({ language }: RoleDashboardProps) => {
           { label: "Manajemen Pengguna", icon: Users },
           { label: "Analitik Sistem", icon: BarChart3 },
           { label: "Permintaan Verifikasi", icon: UserCheck },
+          { label: "Kelola Tiket", icon: LifeBuoy, path: "/admin/customer-service-tickets" },
+          { label: "Kelola Umpan Balik", icon: MessageSquare, path: "/admin/feedback-management" },
           { label: "Pengaturan Sistem", icon: Settings }
         ]
       },
