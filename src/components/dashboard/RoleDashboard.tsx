@@ -334,7 +334,7 @@ const RoleDashboard = ({ language }: RoleDashboardProps) => {
                       variant="outline"
                       className="h-auto p-4 flex flex-col items-center space-y-2 hover:bg-blue-50"
                       onClick={() => {
-                        if (action.path) {
+                        if ('path' in action && action.path) {
                           navigate(action.path);
                         } else if (action.label.includes("Properties") || action.label.includes("Properti")) {
                           navigate('/properties');
