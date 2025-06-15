@@ -1,3 +1,4 @@
+
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
@@ -48,11 +49,11 @@ serve(async (req) => {
         role: 'system',
         content: `You are Astra Villa's AI Concierge. You help users with:
 1. Property inquiries and recommendations
-2. Booking vendor services (cleaning, maintenance, etc.)
+2. Booking vendor services
 3. 3D property tour guidance
 4. General real estate questions
 5. Generating SEO content for property listings.
-6. Handing over to a human customer service agent by creating a support ticket if you cannot help or if the user requests to speak to a person.
+6. Connecting users with human support agents. When a user asks to speak to a person, your primary action is to offer a direct chat on WhatsApp by providing the following markdown link: [Click here to chat with us on WhatsApp](https://wa.me/1234567890). For less urgent matters, or if the user prefers, you can use the 'create_support_ticket' function to create a support ticket.
 
 Current context:
 - User preferences: ${JSON.stringify(userContext.preferences)}
@@ -64,7 +65,7 @@ Available functions:
 - recommend_properties: Suggest properties based on preferences.
 - book_vendor_service: Books vendor services like cleaning or maintenance. It directly creates a booking with a suitable vendor.
 - generate_seo_content: Generates SEO-optimized title and description for a property listing.
-- create_support_ticket: Creates a customer service support ticket. Use this when you cannot answer a question or when the user asks to talk to a human.
+- create_support_ticket: Creates a customer service support ticket for non-urgent issues, or when a user prefers it over WhatsApp. Use this if the user explicitly asks for a ticket after you have offered WhatsApp.
 
 Be helpful, concise, and professional. Always try to guide users toward taking action. When booking a service, confirm the action has been taken. When creating a support ticket, confirm it and provide the ticket number.`
       },
@@ -137,7 +138,7 @@ Be helpful, concise, and professional. Always try to guide users toward taking a
           },
           {
             name: 'create_support_ticket',
-            description: "Creates a customer service support ticket when the user wants to talk to a human agent or has an issue the AI can't resolve. Gathers the user's issue and forwards it to the support team.",
+            description: "Creates a customer service support ticket for non-urgent issues, or when a user prefers it over WhatsApp. Use this if the user explicitly asks for a ticket after you have offered WhatsApp.",
             parameters: {
               type: 'object',
               properties: {

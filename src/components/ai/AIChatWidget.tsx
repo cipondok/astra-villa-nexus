@@ -9,6 +9,7 @@ import AIChatMessages from "./AIChatMessages";
 import AIChatQuickActions from "./AIChatQuickActions";
 import AIChatInput from "./AIChatInput";
 import { Message, QuickAction } from "./types";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface AIChatWidgetProps {
   propertyId?: string;
@@ -178,31 +179,39 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
       {!isOpen && <AIChatTrigger onOpen={() => setIsOpen(true)} />}
 
       {isOpen && (
-        <div className="fixed bottom-6 right-6 z-50 w-[360px] max-w-[calc(100vw-2rem)]">
-          <Card className="shadow-2xl border-2 border-purple-200/50 bg-background/70 backdrop-blur-xl overflow-hidden">
+        <div className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-50 w-[calc(100vw-2rem)] max-w-md h-[70vh] max-h-[650px] animate-fade-in">
+          <Card className="h-full w-full flex flex-col shadow-2xl border-primary/20 bg-background/80 backdrop-blur-xl overflow-hidden rounded-2xl">
             <AIChatHeader onClose={() => setIsOpen(false)} />
-            <CardContent className="p-0">
-              <AIChatMessages
-                messages={messages}
-                isLoading={isLoading}
-                messagesEndRef={messagesEndRef}
-              />
+            <CardContent className="p-0 flex-1 flex flex-col min-h-0">
+              <ScrollArea className="flex-1">
+                <div className="p-4 space-y-4">
+                  <AIChatMessages
+                    messages={messages}
+                    isLoading={isLoading}
+                    messagesEndRef={messagesEndRef}
+                  />
+                </div>
+              </ScrollArea>
 
               {messages.length <= 1 && (
-                <AIChatQuickActions
-                  quickActions={quickActions}
-                  onActionClick={setMessage}
-                />
+                <div className="px-4 pb-2">
+                  <AIChatQuickActions
+                    quickActions={quickActions}
+                    onActionClick={setMessage}
+                  />
+                </div>
               )}
 
-              <AIChatInput
-                message={message}
-                setMessage={setMessage}
-                onSendMessage={handleSendMessage}
-                onVoiceInput={handleVoiceInput}
-                isLoading={isLoading}
-                isListening={isListening}
-              />
+              <div className="p-4 border-t border-primary/10">
+                <AIChatInput
+                  message={message}
+                  setMessage={setMessage}
+                  onSendMessage={handleSendMessage}
+                  onVoiceInput={handleVoiceInput}
+                  isLoading={isLoading}
+                  isListening={isListening}
+                />
+              </div>
             </CardContent>
           </Card>
         </div>
