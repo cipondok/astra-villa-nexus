@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Search, Filter, X } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import IPhoneToggleGroup from "./ui/IPhoneToggleGroup";
 
 interface ModernSearchPanelProps {
   language: "en" | "id";
@@ -85,6 +86,15 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
   }), [language]);
 
   const currentText = text[language];
+
+  // Define propertyType options for the toggle group and keep the existing text usage
+  const propertyTypeOptions = [
+    { value: "", label: currentText.allTypes, colorClass: "bg-gradient-to-r from-blue-400 to-blue-600 text-white" },
+    { value: "apartment", label: currentText.apartment, colorClass: "bg-gradient-to-r from-purple-400 to-purple-600 text-white" },
+    { value: "house", label: currentText.house, colorClass: "bg-gradient-to-r from-pink-400 to-pink-600 text-white" },
+    { value: "villa", label: currentText.villa, colorClass: "bg-gradient-to-r from-orange-400 to-orange-600 text-white" },
+    { value: "townhouse", label: currentText.townhouse, colorClass: "bg-gradient-to-r from-green-400 to-green-600 text-white" },
+  ];
 
   const popularSearches = useMemo(() => 
     language === "en" 
@@ -198,8 +208,17 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
   return (
     <Card className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm shadow-2xl max-w-6xl mx-auto">
       <CardContent className="p-6">
+        {/* Move Property Type above Search Input as colorful iPhone-style buttons */}
+        <IPhoneToggleGroup
+          options={propertyTypeOptions}
+          value={propertyType}
+          onChange={setPropertyType}
+          className="mb-3"
+        />
+
         {/* Main Search Bar */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+          {/* Only Search input and button remain; propertyType Select removed */}
           <div className="md:col-span-2">
             <div className="relative">
               <Search className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
@@ -213,17 +232,8 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
             </div>
           </div>
           
-          <Select value={propertyType} onValueChange={setPropertyType}>
-            <SelectTrigger className="h-12">
-              <SelectValue placeholder={currentText.propertyType} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="apartment">{currentText.apartment}</SelectItem>
-              <SelectItem value="house">{currentText.house}</SelectItem>
-              <SelectItem value="villa">{currentText.villa}</SelectItem>
-              <SelectItem value="townhouse">{currentText.townhouse}</SelectItem>
-            </SelectContent>
-          </Select>
+          {/* Remove propertyType Select: these 2 columns now are empty (keep grid alignment) */}
+          <div />
           
           <Button 
             onClick={handleManualSearch}
