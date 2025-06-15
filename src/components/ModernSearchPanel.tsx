@@ -10,6 +10,8 @@ import { Label } from "@/components/ui/label";
 import IPhoneToggleGroup from "./ui/IPhoneToggleGroup";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Progress } from "@/components/ui/progress";
+import LocationSelector from "./property/LocationSelector";
+import PillToggleGroup from "./ui/PillToggleGroup";
 
 // Mock: These should ideally be passed as props or lifted up to parent. For now for demo UX only.
 const useSearchUIState = () => {
@@ -90,6 +92,14 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
   const [has3D, setHas3D] = useState(false);
   const [showAdvanced, setShowAdvanced] = useState(false);
   
+  // Add state for new filters
+  const [selectedState, setSelectedState] = useState("");
+  const [selectedCity, setSelectedCity] = useState("");
+  const [selectedArea, setSelectedArea] = useState("");
+  const [bedPills, setBedPills] = useState("");
+  const [bathPills, setBathPills] = useState("");
+  const [smartFacilities, setSmartFacilities] = useState<string[]>([]);
+  
   // Refs to track previous values and prevent duplicate searches
   const lastSearchRef = useRef("");
   const searchTimeoutRef = useRef<NodeJS.Timeout>();
@@ -160,6 +170,20 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
     { value: "house", label: currentText.house, colorClass: "bg-gradient-to-r from-pink-400 to-pink-600 text-white" },
     { value: "villa", label: currentText.villa, colorClass: "bg-gradient-to-r from-orange-400 to-orange-600 text-white" },
     { value: "townhouse", label: currentText.townhouse, colorClass: "bg-gradient-to-r from-green-400 to-green-600 text-white" },
+  ];
+
+  // Smart filter options
+  const smartFilterOptions = [
+    { value: "nearby", label: language === "id" ? "Sekitar" : "Nearby" },
+    { value: "indoor", label: language === "id" ? "Fasilitas Dalam" : "Indoor Facilities" },
+    { value: "security", label: language === "id" ? "Keamanan" : "Security" },
+    { value: "public-transport", label: language === "id" ? "Transportasi Umum" : "Public Transport" },
+    { value: "public-area", label: language === "id" ? "Area Publik" : "Public Area" },
+    { value: "public-school", label: language === "id" ? "Sekolah Umum" : "Public School" },
+    { value: "airport", label: language === "id" ? "Bandara" : "Airport" },
+    { value: "lrt", label: "LRT" },
+    { value: "mrt", label: "MRT" },
+    { value: "mall", label: language === "id" ? "Mall" : "Shopping Mall" },
   ];
 
   const popularSearches = useMemo(() => 
@@ -339,30 +363,27 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
             className="mb-3"
           />
 
-          {/* Main Search Bar: wider layout, button also wide on desktop */}
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-4">
-            <div className="md:col-span-3">
+          {/* Main Search Bar */}
+          <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-2 mb-4">
+            <div>
               <div className="relative w-full">
                 <Search className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
                 <Input
-                  placeholder={language === "id"
-                    ? "Cari properti, lokasi, atau area..."
-                    : "Search properties, location, or area..."}
+                  placeholder={currentText.search}
                   className="pl-10 h-12 text-gray-700 dark:text-gray-200"
                   value={searchQuery}
-                  onChange={e => setSearchQuery(e.target.value)}
-                  onKeyDown={e => e.key === "Enter" && handleManualSearch()}
+                  onChange={handleSearchInputChange}
+                  onKeyDown={handleKeyPress}
                 />
               </div>
             </div>
-            <div />
-            <div className="md:col-span-1 flex">
+            <div className="flex">
               <Button
                 onClick={handleManualSearch}
-                className="h-12 w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold flex-1"
+                className="h-12 w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold"
               >
                 <Search className="h-4 w-4 mr-2" />
-                {language === "id" ? "Cari Properti" : "Search Properties"}
+                {currentText.searchBtn}
               </Button>
             </div>
           </div>
@@ -400,53 +421,62 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
               </Button>
             )}
           </div>
-          {/* Advanced Filters, now easier layout and with "More filters" dropdown */}
+          
           {showAdvanced && (
             <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-4 p-4 bg-gray-50/80 dark:bg-gray-800/80 rounded-lg">
-              <Select value={bedrooms} onValueChange={setBedrooms}>
-                <SelectTrigger>
-                  <SelectValue placeholder={language === "id" ? "Kamar Tidur" : "Bedrooms"} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="1">1</SelectItem>
-                  <SelectItem value="2">2</SelectItem>
-                  <SelectItem value="3">3</SelectItem>
-                  <SelectItem value="4+">4+</SelectItem>
-                </SelectContent>
-              </Select>
-
-              <Select value={bathrooms} onValueChange={setBathrooms}>
-                <SelectTrigger>
-                  <SelectValue placeholder={language === "id" ? "Kamar Mandi" : "Bathrooms"} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="1">1</SelectItem>
-                  <SelectItem value="2">2</SelectItem>
-                  <SelectItem value="3">3</SelectItem>
-                  <SelectItem value="4+">4+</SelectItem>
-                </SelectContent>
-              </Select>
-
-              <Select value={location} onValueChange={setLocation}>
-                <SelectTrigger>
-                  <SelectValue placeholder={language === "id" ? "Lokasi" : "Location"} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="jakarta">{language === "id" ? "Jakarta" : "Jakarta"}</SelectItem>
-                  <SelectItem value="bali">{language === "id" ? "Bali" : "Bali"}</SelectItem>
-                  <SelectItem value="surabaya">{language === "id" ? "Surabaya" : "Surabaya"}</SelectItem>
-                  <SelectItem value="bandung">{language === "id" ? "Bandung" : "Bandung"}</SelectItem>
-                </SelectContent>
-              </Select>
-
-              <div className="flex items-center space-x-2 justify-center pt-2">
-                <Checkbox id="has3D" checked={has3D} onCheckedChange={val => setHas3D(!!val)} />
-                <Label htmlFor="has3D" className="text-sm font-medium">{language === "id" ? "Dengan Tampilan 3D" : "With 3D View"}</Label>
+              {/* Location Selector */}
+              <div className="md:col-span-3">
+                <LocationSelector
+                  selectedState={selectedState}
+                  selectedCity={selectedCity}
+                  selectedArea={selectedArea}
+                  onStateChange={setSelectedState}
+                  onCityChange={setSelectedCity}
+                  onAreaChange={setSelectedArea}
+                  onLocationChange={(location) => setLocation(location)}
+                />
               </div>
-
-              {/* NEW Additional Filters */}
-              <div className="flex justify-center pt-2">
-                <AdditionalFilters language={language} />
+              {/* Bedrooms */}
+              <div>
+                <label className="block mb-1 text-gray-700 dark:text-gray-300 text-sm font-medium">{currentText.bedrooms}</label>
+                <PillToggleGroup
+                  options={[
+                    { value: "1", label: "1" },
+                    { value: "2", label: "2" },
+                    { value: "3", label: "3" },
+                    { value: "4+", label: "4+" },
+                  ]}
+                  value={bedPills}
+                  onChange={setBedPills}
+                  multiple={false}
+                />
+              </div>
+              {/* Bathrooms */}
+              <div>
+                <label className="block mb-1 text-gray-700 dark:text-gray-300 text-sm font-medium">{currentText.bathrooms}</label>
+                <PillToggleGroup
+                  options={[
+                    { value: "1", label: "1" },
+                    { value: "2", label: "2" },
+                    { value: "3", label: "3" },
+                    { value: "4+", label: "4+" },
+                  ]}
+                  value={bathPills}
+                  onChange={setBathPills}
+                  multiple={false}
+                />
+              </div>
+              {/* Smart Filters */}
+              <div className="md:col-span-2">
+                <label className="block mb-1 text-gray-700 dark:text-gray-300 text-sm font-medium">
+                  {language === "id" ? "Filter Pintar" : "Smart Filters"}
+                </label>
+                <PillToggleGroup
+                  options={smartFilterOptions}
+                  value={smartFacilities}
+                  onChange={setSmartFacilities}
+                  multiple={true}
+                />
               </div>
             </div>
           )}
