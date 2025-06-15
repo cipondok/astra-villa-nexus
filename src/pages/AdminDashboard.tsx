@@ -5,7 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Settings, Users, Home, List, Plus, Gift, Calendar, Database, Shield, FileText, Store, MessageSquare, Activity, BarChart3, Loader2, Wifi, Mail, Building2, LifeBuoy } from "lucide-react";
+import { Settings, Users, Home, List, Plus, Gift, Calendar, Database, Shield, FileText, Store, MessageSquare, Activity, BarChart3, Loader2, Wifi, Mail, Building2, LifeBuoy, Filter } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Navigation from "@/components/Navigation";
@@ -26,6 +26,7 @@ const AstraTokenSettings = lazy(() => import("@/components/admin/AstraTokenSetti
 const LiveAgentStatusDashboard = lazy(() => import("@/components/admin/LiveAgentStatusDashboard"));
 const OfficeManagement = lazy(() => import("@/components/admin/OfficeManagement"));
 const CustomerServiceTicketManagement = lazy(() => import("@/components/admin/CustomerServiceTicketManagement"));
+const SearchFiltersManagement = lazy(() => import("@/components/admin/SearchFiltersManagement"));
 
 const LoadingSpinner = () => (
   <div className="flex items-center justify-center p-8">
@@ -92,6 +93,7 @@ const AdminDashboard = () => {
     { value: "analytics", icon: BarChart3, label: "Analytics", component: WebTrafficAnalytics, adminOnly: true },
     { value: "users", icon: Users, label: "Users", component: SimpleUserManagement, adminOnly: true },
     { value: "properties", icon: Home, label: "Properties", component: PropertyManagement, adminOnly: true },
+    { value: "search-filters", icon: Filter, label: "Search Filters", component: SearchFiltersManagement, adminOnly: true },
     { value: "offices", icon: Building2, label: "Offices", component: OfficeManagement, adminOnly: true },
     { value: "vendors", icon: Store, label: "Vendors", component: VendorManagement, adminOnly: true },
     { value: "vendor-services", icon: Settings, label: "Services", component: AdminVendorServiceManagement, adminOnly: true },
