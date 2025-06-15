@@ -25,6 +25,8 @@ const SearchFiltersManagement = () => {
     is_active: true,
     display_order: 0
   });
+  // New: Manage subcategories state for UI only
+  const [subCategory, setSubCategory] = useState("");
 
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
@@ -110,6 +112,28 @@ const SearchFiltersManagement = () => {
     },
   });
 
+  // New: Helpers to extract category and subcategory logic
+  const parseCategory = (category?: string) => {
+    if (!category) return { main: "", sub: "" };
+    const [main, ...rest] = category.split("/");
+    return { main, sub: rest.join("/") };
+  };
+
+  // Precomputed list of main categories for selection
+  const mainCategories = Array.from(
+    new Set(filters?.map((f: any) => parseCategory(f.category).main).filter(Boolean) || [])
+  );
+
+  // Precomputed list of subcategories for current main category
+  const subCategories = Array.from(
+    new Set(
+      filters
+        ?.filter((f: any) => parseCategory(f.category).main === formData.category)
+        .map((f: any) => parseCategory(f.category).sub)
+        .filter((sc) => sc && sc.length > 0) || []
+    )
+  );
+
   const resetForm = () => {
     setFormData({
       filter_name: '',
@@ -179,13 +203,13 @@ const SearchFiltersManagement = () => {
                 Search Filters Management
               </CardTitle>
               <CardDescription className="text-gray-300">
-                Configure search filters, categories, and display options
+                Configure search filters, categories, sub-categories and display options
               </CardDescription>
             </div>
             <Dialog open={showForm} onOpenChange={setShowForm}>
               <DialogTrigger asChild>
                 <Button 
-                  onClick={() => { resetForm(); setEditingFilter(null); }}
+                  onClick={() => { resetForm(); setEditingFilter(null); setSubCategory(""); }}
                   className="bg-blue-600 hover:bg-blue-700"
                 >
                   <Plus className="h-4 w-4 mr-2" />
@@ -228,7 +252,71 @@ const SearchFiltersManagement = () => {
                       </Select>
                     </div>
                   </div>
-                  
+                  {/* New: Grouped category & subcategory select */}
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="grid gap-2">
+                      <Label htmlFor="category" className="text-white">Main Category</Label>
+                      <Select
+                        value={formData.category}
+                        onValueChange={(value) => {
+                          setFormData({ ...formData, category: value });
+                          setSubCategory("");
+                        }}
+                      >
+                        <SelectTrigger className="bg-gray-800 border-gray-700 text-white">
+                          <SelectValue placeholder="Select or create category" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-gray-800 border-gray-700">
+                          {mainCategories.map((mc) =>
+                            <SelectItem key={mc} value={mc}>{mc}</SelectItem>
+                          )}
+                          <SelectItem value="">New Category…</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      {/* Enter new category if blank */}
+                      {!formData.category && (
+                        <Input
+                          className="mt-2 bg-gray-800 border-gray-700 text-white"
+                          placeholder="Enter new main category"
+                          value={formData.category}
+                          onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                        />
+                      )}
+                    </div>
+                    <div className="grid gap-2">
+                      <Label htmlFor="subcategory" className="text-white">Subcategory</Label>
+                      <Select
+                        value={subCategory}
+                        onValueChange={(value) => {
+                          setSubCategory(value);
+                          setFormData({ ...formData, category: formData.category ? `${formData.category}${value ? "/" + value : ""}` : "" });
+                        }}
+                        disabled={!formData.category}
+                      >
+                        <SelectTrigger className="bg-gray-800 border-gray-700 text-white">
+                          <SelectValue placeholder="Select or create subcategory" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-gray-800 border-gray-700">
+                          {subCategories.map((sc) =>
+                            <SelectItem key={sc} value={sc}>{sc}</SelectItem>
+                          )}
+                          <SelectItem value="">New Subcategory…</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      {/* Enter new subcategory if blank */}
+                      {formData.category && !subCategory && (
+                        <Input
+                          className="mt-2 bg-gray-800 border-gray-700 text-white"
+                          placeholder="Enter new subcategory"
+                          value={subCategory}
+                          onChange={(e) => {
+                            setSubCategory(e.target.value);
+                            setFormData({ ...formData, category: formData.category ? `${formData.category}/${e.target.value}` : "" });
+                          }}
+                        />
+                      )}
+                    </div>
+                  </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="grid gap-2">
                       <Label htmlFor="category" className="text-white">Category</Label>
@@ -252,7 +340,6 @@ const SearchFiltersManagement = () => {
                       />
                     </div>
                   </div>
-                  
                   <div className="grid gap-2">
                     <Label htmlFor="filter_options" className="text-white">Filter Options (JSON)</Label>
                     <Textarea
@@ -276,7 +363,6 @@ const SearchFiltersManagement = () => {
                       For range: {"{"}"min": 0, "max": 1000, "step": 10{"}"}
                     </p>
                   </div>
-                  
                   <div className="flex items-center space-x-2">
                     <Switch
                       id="is_active"
