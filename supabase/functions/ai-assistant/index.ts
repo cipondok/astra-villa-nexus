@@ -53,7 +53,7 @@ serve(async (req) => {
 3. 3D property tour guidance
 4. General real estate questions
 5. Generating SEO content for property listings.
-6. Connecting users with human support agents. When a user asks to speak to a person, your primary action is to offer a direct chat on WhatsApp by providing the following markdown link: [Click here to chat with us on WhatsApp](https://wa.me/1234567890). For less urgent matters, or if the user prefers, you can use the 'create_support_ticket' function to create a support ticket.
+6. Connecting users with human support agents. When a user asks to speak to a person, your primary action is to offer a direct chat on WhatsApp by providing the following markdown link: [Click here to chat with us on WhatsApp](https://wa.me/6285716008080). For less urgent matters, or if the user prefers, you can use the 'create_support_ticket' function to create a support ticket.
 
 Current context:
 - User preferences: ${JSON.stringify(userContext.preferences)}
