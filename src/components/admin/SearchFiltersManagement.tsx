@@ -14,12 +14,31 @@ import { Textarea } from "@/components/ui/textarea";
 import { Filter, Search, Plus, Edit, Trash2, RefreshCw } from "lucide-react";
 import { useAlert } from "@/contexts/AlertContext";
 
+interface SearchFilter {
+  id: string;
+  name: string;
+  type: string;
+  options: string;
+  category: string;
+  description: string;
+  status: string;
+  created_at: string;
+}
+
+interface NewFilterData {
+  name: string;
+  type: string;
+  options: string;
+  category: string;
+  description: string;
+}
+
 const SearchFiltersManagement = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
-  const [editingFilter, setEditingFilter] = useState<any>(null);
-  const [newFilter, setNewFilter] = useState({
+  const [editingFilter, setEditingFilter] = useState<SearchFilter | null>(null);
+  const [newFilter, setNewFilter] = useState<NewFilterData>({
     name: "",
     type: "select",
     options: "",
@@ -32,7 +51,7 @@ const SearchFiltersManagement = () => {
 
   const { data: filters, isLoading, error, refetch } = useQuery({
     queryKey: ['search-filters', searchTerm, statusFilter],
-    queryFn: async () => {
+    queryFn: async (): Promise<SearchFilter[]> => {
       console.log('Fetching search filters...');
       
       let query = supabase
@@ -62,7 +81,7 @@ const SearchFiltersManagement = () => {
   });
 
   const createFilterMutation = useMutation({
-    mutationFn: async (filterData: any) => {
+    mutationFn: async (filterData: NewFilterData) => {
       const { error } = await supabase
         .from('search_filters')
         .insert({
@@ -83,13 +102,13 @@ const SearchFiltersManagement = () => {
         description: "",
       });
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       showError("Add Failed", error.message);
     },
   });
 
   const updateFilterMutation = useMutation({
-    mutationFn: async ({ filterId, updates }: { filterId: string; updates: any }) => {
+    mutationFn: async ({ filterId, updates }: { filterId: string; updates: Partial<SearchFilter> }) => {
       const { error } = await supabase
         .from('search_filters')
         .update(updates)
@@ -100,7 +119,7 @@ const SearchFiltersManagement = () => {
       showSuccess("Filter Updated", "Search filter has been updated successfully.");
       queryClient.invalidateQueries({ queryKey: ['search-filters'] });
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       showError("Update Failed", error.message);
     },
   });
@@ -117,7 +136,7 @@ const SearchFiltersManagement = () => {
       showSuccess("Filter Deleted", "Search filter has been deleted successfully.");
       queryClient.invalidateQueries({ queryKey: ['search-filters'] });
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       showError("Delete Failed", error.message);
     },
   });
@@ -130,7 +149,7 @@ const SearchFiltersManagement = () => {
     createFilterMutation.mutate(newFilter);
   };
 
-  const getStatusBadgeVariant = (status: string) => {
+  const getStatusBadgeVariant = (status: string): "default" | "secondary" | "destructive" | "outline" => {
     switch (status) {
       case 'active': return 'default';
       case 'inactive': return 'secondary';
@@ -305,7 +324,7 @@ const SearchFiltersManagement = () => {
                     </TableCell>
                   </TableRow>
                 ) : (
-                  filters?.map((filter: any) => (
+                  filters?.map((filter) => (
                     <TableRow key={filter.id}>
                       <TableCell>
                         <div className="space-y-1">
