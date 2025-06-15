@@ -1,4 +1,3 @@
-
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import FooterBrand from "./footer/FooterBrand";
@@ -80,20 +79,20 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
           </div>
           
           {/* Property Guides */}
-          <div className="space-y-8">
+          <div className="space-y-4">
             <FooterBuyingGuide language={language} onLinkClick={handleLinkClick} />
             <FooterSellingGuide language={language} onLinkClick={handleLinkClick} />
           </div>
 
           {/* Vendor & Company */}
-          <div className="space-y-8">
+          <div className="space-y-4">
             <FooterVendorServices language={language} onLinkClick={handleLinkClick} />
             <FooterVendorHelp language={language} onLinkClick={handleLinkClick} />
             <FooterCompanyInfo language={language} onLinkClick={handleLinkClick} />
           </div>
 
           {/* Services & Innovation */}
-          <div className="space-y-8">
+          <div className="space-y-4">
             <FooterServicesTools language={language} onLinkClick={handleLinkClick} />
             <FooterInnovationHub language={language} onLinkClick={handleLinkClick} />
           </div>
