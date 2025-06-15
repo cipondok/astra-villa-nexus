@@ -17,6 +17,7 @@ import PropertyEditModal from "./PropertyEditModal";
 import PropertyViewModal from "./PropertyViewModal";
 import PropertyBulkActions from "./PropertyBulkActions";
 import { formatIDR } from "@/utils/currency";
+import SearchFiltersManagement from "./SearchFiltersManagement";
 
 interface PropertyOwner {
   full_name: string;
@@ -682,6 +683,14 @@ const PropertyManagement = () => {
         isOpen={!!viewingProperty}
         onClose={() => setViewingProperty(null)}
       />
+
+      {/* --- ADD SEARCH FILTER MANAGEMENT HERE --- */}
+      <div className="mt-12">
+        <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+          <span className="text-blue-700">Search Filters Management</span>
+        </h2>
+        <SearchFiltersManagement />
+      </div>
     </div>
   );
 };
