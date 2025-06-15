@@ -99,7 +99,14 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
   const [bedPills, setBedPills] = useState("");
   const [bathPills, setBathPills] = useState("");
   const [smartFacilities, setSmartFacilities] = useState<string[]>([]);
-  
+
+  // Animation state
+  const [filtersMounted, setFiltersMounted] = useState(false);
+
+  useEffect(() => {
+    if (showAdvanced) setFiltersMounted(true);
+  }, [showAdvanced]);
+
   // Refs to track previous values and prevent duplicate searches
   const lastSearchRef = useRef("");
   const searchTimeoutRef = useRef<NodeJS.Timeout>();
@@ -259,13 +266,19 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
   }, [searchQuery, propertyType, bedrooms, bathrooms, location, has3D, onSearch, triggerSearch]);
 
   const handleClearFilters = useCallback(() => {
-    console.log("🧹 PANEL - Clearing all filters");
+    // This will reset all filter values
     setSearchQuery("");
     setPropertyType("");
     setBedrooms("");
     setBathrooms("");
     setLocation("");
     setHas3D(false);
+    setSelectedState("");
+    setSelectedCity("");
+    setSelectedArea("");
+    setBedPills("");
+    setBathPills("");
+    setSmartFacilities([]);
     lastSearchRef.current = "";
     if (onLiveSearch) {
       onLiveSearch("");
@@ -304,7 +317,34 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
     setSearchQuery(value);
   }, []);
 
-  const hasActiveFilters = searchQuery || propertyType || bedrooms || bathrooms || location || has3D;
+  const hasActiveFilters = searchQuery || propertyType || bedrooms || bathrooms || location || has3D || selectedState || selectedCity || selectedArea || bedPills || bathPills || smartFacilities.length;
+
+  // Pill group change handlers for toggle-off by clicking again
+  const handleBedPillsChange = (val: string | string[]) => {
+    // If reselecting the same one, clear
+    if (bedPills === val) setBedPills("");
+    else setBedPills(typeof val === "string" ? val : "");
+  };
+  const handleBathPillsChange = (val: string | string[]) => {
+    if (bathPills === val) setBathPills("");
+    else setBathPills(typeof val === "string" ? val : "");
+  };
+
+  // Smart facility multi-select
+  const handleSmartFacilitiesChange = (val: string | string[]) => {
+    setSmartFacilities(Array.isArray(val) ? val : [val]);
+  };
+
+  // Smooth filter panel transition classes
+  const filterAnimBase =
+    "transition-all duration-300 ease-[cubic-bezier(0.55,0,0.1,1)]";
+  const filterAnimVisible =
+    "opacity-100 translate-y-0 pointer-events-auto scale-100";
+  const filterAnimHidden =
+    "opacity-0 -translate-y-3 pointer-events-none scale-95";
+
+  // Pull kecamatan from selectedArea (handled in LocationSelector via onAreaChange)
+  // Confirmed props: onStateChange, onCityChange, onAreaChange
 
   return (
     <>
@@ -392,28 +432,20 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
           <div className="flex items-center justify-between mb-4">
             <Button
               variant="ghost"
-              onClick={() => setShowAdvanced(!showAdvanced)}
+              onClick={() => setShowAdvanced(v => !v)}
               className="text-gray-600 hover:text-gray-800"
             >
               <Filter className="h-4 w-4 mr-2" />
               {showAdvanced
                 ? (language === "id" ? "Sembunyikan Filter" : "Hide Filters")
-                : (language === "id" ? "Filter Lanjutan" : "Advanced Filters")
-              }
+                : (language === "id" ? "Filter Lanjutan" : "Advanced Filters")}
             </Button>
-            {(searchQuery || propertyType || bedrooms || bathrooms || location || has3D) && (
+            {/* Improved clear all, always visible when anything set */}
+            {(searchQuery || propertyType || bedrooms || bathrooms || location || has3D || selectedState || selectedCity || selectedArea || bedPills || bathPills || smartFacilities.length) && (
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => {
-                  setSearchQuery("");
-                  setPropertyType("");
-                  setBedrooms("");
-                  setBathrooms("");
-                  setLocation("");
-                  setHas3D(false);
-                  // also: clear advanced filter state, if any
-                }}
+                onClick={handleClearFilters}
                 className="text-gray-600 hover:text-gray-800"
               >
                 <X className="h-4 w-4 mr-1" />
@@ -422,64 +454,94 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
             )}
           </div>
           
-          {showAdvanced && (
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-4 p-4 bg-gray-50/80 dark:bg-gray-800/80 rounded-lg">
-              {/* Location Selector */}
-              <div className="md:col-span-3">
-                <LocationSelector
-                  selectedState={selectedState}
-                  selectedCity={selectedCity}
-                  selectedArea={selectedArea}
-                  onStateChange={setSelectedState}
-                  onCityChange={setSelectedCity}
-                  onAreaChange={setSelectedArea}
-                  onLocationChange={(location) => setLocation(location)}
-                />
+          {/* Animated Advanced Filters Section */}
+          <div
+            className={`overflow-hidden ${filterAnimBase} ${showAdvanced ? filterAnimVisible : filterAnimHidden}`}
+            style={{ minHeight: showAdvanced ? 220 : 0, maxHeight: showAdvanced ? 600 : 0 }}
+            onTransitionEnd={() => {
+              if (!showAdvanced) setFiltersMounted(false);
+            }}
+          >
+            {filtersMounted && (
+              <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-4 p-4 bg-gray-50/80 dark:bg-gray-800/80 rounded-lg">
+                {/* Location Selector */}
+                <div className="md:col-span-3">
+                  <LocationSelector
+                    selectedState={selectedState}
+                    selectedCity={selectedCity}
+                    selectedArea={selectedArea}
+                    onStateChange={setSelectedState}
+                    onCityChange={setSelectedCity}
+                    onAreaChange={setSelectedArea}
+                    onLocationChange={(loc) => setLocation(loc)}
+                  />
+                  {/* Show current selections inline for clarity */}
+                  <div className="mt-2 flex gap-2 text-xs text-gray-500">
+                    {selectedState && <span>{selectedState}</span>}
+                    {selectedCity && <span>{selectedCity}</span>}
+                    {selectedArea && <span>{selectedArea}</span>}
+                  </div>
+                </div>
+                {/* Bedrooms */}
+                <div>
+                  <label className="block mb-1 text-gray-700 dark:text-gray-300 text-sm font-medium">
+                    {language === "id" ? "Kamar Tidur" : "Bedrooms"}
+                  </label>
+                  <PillToggleGroup
+                    options={[
+                      { value: "1", label: "1" },
+                      { value: "2", label: "2" },
+                      { value: "3", label: "3" },
+                      { value: "4+", label: "4+" },
+                    ]}
+                    value={bedPills}
+                    onChange={handleBedPillsChange}
+                    multiple={false}
+                  />
+                </div>
+                {/* Bathrooms */}
+                <div>
+                  <label className="block mb-1 text-gray-700 dark:text-gray-300 text-sm font-medium">
+                    {language === "id" ? "Kamar Mandi" : "Bathrooms"}
+                  </label>
+                  <PillToggleGroup
+                    options={[
+                      { value: "1", label: "1" },
+                      { value: "2", label: "2" },
+                      { value: "3", label: "3" },
+                      { value: "4+", label: "4+" },
+                    ]}
+                    value={bathPills}
+                    onChange={handleBathPillsChange}
+                    multiple={false}
+                  />
+                </div>
+                {/* Smart Filters */}
+                <div className="md:col-span-2">
+                  <label className="block mb-1 text-gray-700 dark:text-gray-300 text-sm font-medium">
+                    {language === "id" ? "Filter Pintar" : "Smart Filters"}
+                  </label>
+                  <PillToggleGroup
+                    options={[
+                      { value: "nearby", label: language === "id" ? "Sekitar" : "Nearby" },
+                      { value: "indoor", label: language === "id" ? "Fasilitas Dalam" : "Indoor" },
+                      { value: "security", label: language === "id" ? "Keamanan" : "Security" },
+                      { value: "public-transport", label: language === "id" ? "Transportasi Umum" : "Public Transport" },
+                      { value: "public-area", label: language === "id" ? "Area Publik" : "Public Area" },
+                      { value: "public-school", label: language === "id" ? "Sekolah Umum" : "Public School" },
+                      { value: "airport", label: language === "id" ? "Bandara" : "Airport" },
+                      { value: "lrt", label: "LRT" },
+                      { value: "mrt", label: "MRT" },
+                      { value: "mall", label: language === "id" ? "Mall" : "Shopping Mall" },
+                    ]}
+                    value={smartFacilities}
+                    onChange={handleSmartFacilitiesChange}
+                    multiple={true}
+                  />
+                </div>
               </div>
-              {/* Bedrooms */}
-              <div>
-                <label className="block mb-1 text-gray-700 dark:text-gray-300 text-sm font-medium">{currentText.bedrooms}</label>
-                <PillToggleGroup
-                  options={[
-                    { value: "1", label: "1" },
-                    { value: "2", label: "2" },
-                    { value: "3", label: "3" },
-                    { value: "4+", label: "4+" },
-                  ]}
-                  value={bedPills}
-                  onChange={setBedPills}
-                  multiple={false}
-                />
-              </div>
-              {/* Bathrooms */}
-              <div>
-                <label className="block mb-1 text-gray-700 dark:text-gray-300 text-sm font-medium">{currentText.bathrooms}</label>
-                <PillToggleGroup
-                  options={[
-                    { value: "1", label: "1" },
-                    { value: "2", label: "2" },
-                    { value: "3", label: "3" },
-                    { value: "4+", label: "4+" },
-                  ]}
-                  value={bathPills}
-                  onChange={setBathPills}
-                  multiple={false}
-                />
-              </div>
-              {/* Smart Filters */}
-              <div className="md:col-span-2">
-                <label className="block mb-1 text-gray-700 dark:text-gray-300 text-sm font-medium">
-                  {language === "id" ? "Filter Pintar" : "Smart Filters"}
-                </label>
-                <PillToggleGroup
-                  options={smartFilterOptions}
-                  value={smartFacilities}
-                  onChange={setSmartFacilities}
-                  multiple={true}
-                />
-              </div>
-            </div>
-          )}
+            )}
+          </div>
 
           {/* Popular Searches */}
           <div className="text-left">
