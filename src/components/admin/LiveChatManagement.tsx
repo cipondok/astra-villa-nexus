@@ -36,37 +36,37 @@ const LiveChatManagement = () => {
   const [selectedSession, setSelectedSession] = useState<ChatSession | null>(null);
   const [message, setMessage] = useState("");
 
-  const { data: sessions, isLoading: isLoadingSessions } = useQuery({
+  const { data: sessions, isLoading: isLoadingSessions } = useQuery<ChatSession[]>({
     queryKey: ['live-chat-sessions'],
     queryFn: async () => {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from('live_chat_sessions')
         .select(`*, customer:profiles!customer_id ( full_name, email, avatar_url )`)
         .in('status', ['pending', 'active'])
         .order('created_at', { ascending: true });
       if (error) throw error;
-      return data;
+      return data || [];
     },
   });
 
-  const { data: messages, isLoading: isLoadingMessages } = useQuery({
+  const { data: messages, isLoading: isLoadingMessages } = useQuery<ChatMessage[]>({
     queryKey: ['live-chat-messages', selectedSession?.id],
     queryFn: async () => {
       if (!selectedSession) return [];
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from('live_chat_messages')
         .select(`*, sender:profiles!sender_id ( full_name, avatar_url )`)
         .eq('session_id', selectedSession.id)
         .order('created_at', { ascending: true });
       if (error) throw error;
-      return data;
+      return data || [];
     },
     enabled: !!selectedSession,
   });
   
   const takeChatMutation = useMutation({
     mutationFn: async (sessionId: string) => {
-      const { error } = await supabase
+      const { error } = await (supabase as any)
         .from('live_chat_sessions')
         .update({ agent_id: profile?.id, status: 'active' })
         .eq('id', sessionId);
@@ -77,7 +77,7 @@ const LiveChatManagement = () => {
       queryClient.invalidateQueries({ queryKey: ['live-chat-sessions'] });
       const newSelectedSession = sessions?.find(s => s.id === sessionId);
       if(newSelectedSession) {
-        setSelectedSession({...newSelectedSession, agent_id: profile?.id, status: 'active'});
+        setSelectedSession({...newSelectedSession, agent_id: profile?.id || null, status: 'active'});
       }
     },
     onError: (error: any) => showError("Error", error.message),
@@ -85,9 +85,10 @@ const LiveChatManagement = () => {
 
   const sendMessageMutation = useMutation({
     mutationFn: async (newMessage: { session_id: string, content: string }) => {
-      const { error } = await supabase
+      if (!profile?.id) throw new Error("User not authenticated.");
+      const { error } = await (supabase as any)
         .from('live_chat_messages')
-        .insert({ session_id: newMessage.session_id, content: newMessage.content, sender_id: profile?.id });
+        .insert({ session_id: newMessage.session_id, content: newMessage.content, sender_id: profile.id });
       if (error) throw error;
     },
     onSuccess: () => {
@@ -181,8 +182,8 @@ const LiveChatManagement = () => {
             </ScrollArea>
             <div className="p-4 border-t">
               <form onSubmit={handleSendMessage} className="flex gap-2">
-                <Input value={message} onChange={e => setMessage(e.target.value)} placeholder="Type a message..." disabled={sendMessageMutation.isPending}/>
-                <Button type="submit" disabled={sendMessageMutation.isPending}><Send className="h-4 w-4" /></Button>
+                <Input value={message} onChange={e => setMessage(e.target.value)} placeholder="Type a message..." disabled={sendMessageMutation.isPending || !profile?.id}/>
+                <Button type="submit" disabled={sendMessageMutation.isPending || !profile?.id}><Send className="h-4 w-4" /></Button>
               </form>
             </div>
           </>
