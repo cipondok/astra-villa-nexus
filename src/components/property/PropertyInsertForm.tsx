@@ -12,7 +12,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Progress } from "@/components/ui/progress";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useAuth } from "@/contexts/AuthContext";
-import { Plus, Home, MapPin, Camera, Sparkles, Bot, CheckCircle, AlertCircle, Eye, LogIn, ChevronLeft, ChevronRight, X, ArrowLeft, Filter } from "lucide-react";
+import { Plus, Home, MapPin, Camera, Sparkles, Bot, CheckCircle, AlertCircle, Eye, LogIn, ChevronLeft, ChevronRight, X, ArrowLeft, Filter, Heart, Leaf, TrendingUp, Volume2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { formatIDR } from "@/utils/currency";
 import LocationSelector from "./LocationSelector";
@@ -370,6 +370,36 @@ const PropertyInsertForm = () => {
     }
   };
 
+  const getCategoryIcon = (category: string) => {
+    switch (category) {
+      case 'lifestyle':
+        return <Heart className="h-5 w-5 text-pink-600" />;
+      case 'sustainability':
+        return <Leaf className="h-5 w-5 text-green-600" />;
+      case 'investment':
+        return <TrendingUp className="h-5 w-5 text-blue-600" />;
+      case 'neighborhood':
+        return <Volume2 className="h-5 w-5 text-purple-600" />;
+      default:
+        return <Filter className="h-5 w-5 text-gray-600" />;
+    }
+  };
+
+  const getCategoryTitle = (category: string) => {
+    switch (category) {
+      case 'lifestyle':
+        return 'Gaya Hidup & Kenyamanan';
+      case 'sustainability':
+        return 'Keberlanjutan & Ramah Lingkungan';
+      case 'investment':
+        return 'Potensi Investasi';
+      case 'neighborhood':
+        return 'Lingkungan & Suasana';
+      default:
+        return 'Fitur Properti';
+    }
+  };
+
   // Show login required message if not authenticated
   if (!isAuthenticated || !user) {
     return (
@@ -717,7 +747,7 @@ const PropertyInsertForm = () => {
 
             <TabsContent value="filters" className="space-y-6 mt-6">
               <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
-                <div className="mb-4">
+                <div className="mb-6">
                   <h3 className="text-lg font-medium text-gray-900 mb-2 flex items-center gap-2">
                     <Filter className="h-5 w-5 text-blue-600" />
                     Spesifikasi & Fitur Properti
@@ -730,21 +760,88 @@ const PropertyInsertForm = () => {
                 {searchFilters && searchFilters.length > 0 ? (
                   <div className="space-y-8">
                     {/* Property Specifications */}
-                    <div>
-                      <h4 className="text-md font-medium text-gray-900 mb-4 flex items-center gap-2">
-                        🏠 Spesifikasi Properti
-                      </h4>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {searchFilters
-                          .filter((filter: any) => 
-                            filter.category === 'property' && 
-                            filter.filter_type !== 'range' &&
-                            !filter.filter_name.toLowerCase().includes('harga') &&
-                            !filter.filter_name.toLowerCase().includes('price')
-                          )
-                          .map((filter: any) => renderFilterField(filter))}
+                    {searchFilters.some((f: any) => 
+                      f.category === 'property' && 
+                      f.filter_type !== 'range' &&
+                      !f.filter_name.toLowerCase().includes('harga') &&
+                      !f.filter_name.toLowerCase().includes('price')
+                    ) && (
+                      <div>
+                        <h4 className="text-md font-medium text-gray-900 mb-4 flex items-center gap-2">
+                          🏠 Spesifikasi Properti
+                        </h4>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          {searchFilters
+                            .filter((filter: any) => 
+                              filter.category === 'property' && 
+                              filter.filter_type !== 'range' &&
+                              !filter.filter_name.toLowerCase().includes('harga') &&
+                              !filter.filter_name.toLowerCase().includes('price')
+                            )
+                            .map((filter: any) => renderFilterField(filter))}
+                        </div>
                       </div>
-                    </div>
+                    )}
+
+                    {/* Lifestyle & Comfort */}
+                    {searchFilters.some((f: any) => f.category === 'lifestyle') && (
+                      <div className="pt-6 border-t border-gray-200">
+                        <h4 className="text-md font-medium text-gray-900 mb-4 flex items-center gap-2">
+                          {getCategoryIcon('lifestyle')}
+                          {getCategoryTitle('lifestyle')}
+                        </h4>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          {searchFilters
+                            .filter((filter: any) => filter.category === 'lifestyle')
+                            .map((filter: any) => renderFilterField(filter))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Sustainability & Eco-Friendly */}
+                    {searchFilters.some((f: any) => f.category === 'sustainability') && (
+                      <div className="pt-6 border-t border-gray-200">
+                        <h4 className="text-md font-medium text-gray-900 mb-4 flex items-center gap-2">
+                          {getCategoryIcon('sustainability')}
+                          {getCategoryTitle('sustainability')}
+                        </h4>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          {searchFilters
+                            .filter((filter: any) => filter.category === 'sustainability')
+                            .map((filter: any) => renderFilterField(filter))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Investment Potential */}
+                    {searchFilters.some((f: any) => f.category === 'investment') && (
+                      <div className="pt-6 border-t border-gray-200">
+                        <h4 className="text-md font-medium text-gray-900 mb-4 flex items-center gap-2">
+                          {getCategoryIcon('investment')}
+                          {getCategoryTitle('investment')}
+                        </h4>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          {searchFilters
+                            .filter((filter: any) => filter.category === 'investment')
+                            .map((filter: any) => renderFilterField(filter))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Neighborhood & Ambiance */}
+                    {searchFilters.some((f: any) => f.category === 'neighborhood') && (
+                      <div className="pt-6 border-t border-gray-200">
+                        <h4 className="text-md font-medium text-gray-900 mb-4 flex items-center gap-2">
+                          {getCategoryIcon('neighborhood')}
+                          {getCategoryTitle('neighborhood')}
+                        </h4>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          {searchFilters
+                            .filter((filter: any) => filter.category === 'neighborhood')
+                            .map((filter: any) => renderFilterField(filter))}
+                        </div>
+                      </div>
+                    )}
 
                     {/* Amenities & Features */}
                     {searchFilters.some((f: any) => f.category === 'amenities') && (
@@ -779,7 +876,7 @@ const PropertyInsertForm = () => {
 
                     {/* Other Property Features */}
                     {searchFilters.some((f: any) => 
-                      !['property', 'amenities', 'location', 'price'].includes(f.category) &&
+                      !['property', 'amenities', 'location', 'price', 'lifestyle', 'sustainability', 'investment', 'neighborhood'].includes(f.category) &&
                       f.filter_type !== 'range'
                     ) && (
                       <div className="pt-6 border-t border-gray-200">
@@ -789,7 +886,7 @@ const PropertyInsertForm = () => {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                           {searchFilters
                             .filter((filter: any) => 
-                              !['property', 'amenities', 'location', 'price'].includes(filter.category) &&
+                              !['property', 'amenities', 'location', 'price', 'lifestyle', 'sustainability', 'investment', 'neighborhood'].includes(filter.category) &&
                               filter.filter_type !== 'range' &&
                               !filter.filter_name.toLowerCase().includes('harga') &&
                               !filter.filter_name.toLowerCase().includes('price')
