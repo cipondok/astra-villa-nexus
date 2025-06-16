@@ -74,7 +74,7 @@ const PropertyInsertForm = () => {
     basic: "Informasi Dasar",
     location: "Lokasi", 
     details: "Detail & Fitur",
-    filters: "Filter Properti",
+    filters: "Spesifikasi & Fitur Properti",
     media: "Media & 3D"
   };
 
@@ -361,36 +361,9 @@ const PropertyInsertForm = () => {
           </div>
         );
 
+      // Skip range filters for property listing since they're mainly for search
       case 'range':
-        return (
-          <div key={filter.id}>
-            <Label htmlFor={filter.id} className="text-gray-700 font-medium">
-              {filter.filter_name}
-            </Label>
-            <div className="grid grid-cols-2 gap-2">
-              <Input
-                placeholder="Min"
-                type="number"
-                value={filterValue?.min || ''}
-                onChange={(e) => handleFilterChange(filter.id, { 
-                  ...filterValue, 
-                  min: e.target.value 
-                })}
-                className="bg-white border-gray-300 text-gray-900"
-              />
-              <Input
-                placeholder="Max"
-                type="number"
-                value={filterValue?.max || ''}
-                onChange={(e) => handleFilterChange(filter.id, { 
-                  ...filterValue, 
-                  max: e.target.value 
-                })}
-                className="bg-white border-gray-300 text-gray-900"
-              />
-            </div>
-          </div>
-        );
+        return null;
 
       default:
         return null;
@@ -543,8 +516,8 @@ const PropertyInsertForm = () => {
               </TabsTrigger>
               <TabsTrigger value="filters" className="flex items-center gap-2 text-gray-700 data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 data-[state=active]:border-blue-200">
                 <Filter className="h-4 w-4" />
-                <span className="hidden sm:inline">Filter Properti</span>
-                <span className="sm:hidden">Filter</span>
+                <span className="hidden sm:inline">Spesifikasi & Fitur Properti</span>
+                <span className="sm:hidden">Spesifikasi</span>
               </TabsTrigger>
               <TabsTrigger value="media" className="flex items-center gap-2 text-gray-700 data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 data-[state=active]:border-blue-200">
                 <Camera className="h-4 w-4" />
@@ -747,18 +720,84 @@ const PropertyInsertForm = () => {
                 <div className="mb-4">
                   <h3 className="text-lg font-medium text-gray-900 mb-2 flex items-center gap-2">
                     <Filter className="h-5 w-5 text-blue-600" />
-                    Filter Properti Tambahan
+                    Spesifikasi & Fitur Properti
                   </h3>
                   <p className="text-sm text-gray-600">
-                    Isi filter tambahan untuk membantu calon pembeli/penyewa menemukan properti Anda dengan mudah.
+                    Tambahkan spesifikasi dan fitur properti untuk informasi yang lebih detail kepada calon pembeli/penyewa.
                   </p>
                 </div>
 
                 {searchFilters && searchFilters.length > 0 ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {searchFilters
-                      .filter((filter: any) => filter.category === 'property')
-                      .map((filter: any) => renderFilterField(filter))}
+                  <div className="space-y-8">
+                    {/* Property Specifications */}
+                    <div>
+                      <h4 className="text-md font-medium text-gray-900 mb-4 flex items-center gap-2">
+                        🏠 Spesifikasi Properti
+                      </h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {searchFilters
+                          .filter((filter: any) => 
+                            filter.category === 'property' && 
+                            filter.filter_type !== 'range' &&
+                            !filter.filter_name.toLowerCase().includes('harga') &&
+                            !filter.filter_name.toLowerCase().includes('price')
+                          )
+                          .map((filter: any) => renderFilterField(filter))}
+                      </div>
+                    </div>
+
+                    {/* Amenities & Features */}
+                    {searchFilters.some((f: any) => f.category === 'amenities') && (
+                      <div className="pt-6 border-t border-gray-200">
+                        <h4 className="text-md font-medium text-gray-900 mb-4 flex items-center gap-2">
+                          ✨ Fasilitas & Amenities
+                        </h4>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          {searchFilters
+                            .filter((filter: any) => filter.category === 'amenities')
+                            .map((filter: any) => renderFilterField(filter))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Location Features */}
+                    {searchFilters.some((f: any) => f.category === 'location' && f.filter_type !== 'range') && (
+                      <div className="pt-6 border-t border-gray-200">
+                        <h4 className="text-md font-medium text-gray-900 mb-4 flex items-center gap-2">
+                          📍 Fitur Lokasi & Lingkungan
+                        </h4>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          {searchFilters
+                            .filter((filter: any) => 
+                              filter.category === 'location' && 
+                              filter.filter_type !== 'range'
+                            )
+                            .map((filter: any) => renderFilterField(filter))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Other Property Features */}
+                    {searchFilters.some((f: any) => 
+                      !['property', 'amenities', 'location', 'price'].includes(f.category) &&
+                      f.filter_type !== 'range'
+                    ) && (
+                      <div className="pt-6 border-t border-gray-200">
+                        <h4 className="text-md font-medium text-gray-900 mb-4 flex items-center gap-2">
+                          🔧 Fitur Tambahan
+                        </h4>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          {searchFilters
+                            .filter((filter: any) => 
+                              !['property', 'amenities', 'location', 'price'].includes(filter.category) &&
+                              filter.filter_type !== 'range' &&
+                              !filter.filter_name.toLowerCase().includes('harga') &&
+                              !filter.filter_name.toLowerCase().includes('price')
+                            )
+                            .map((filter: any) => renderFilterField(filter))}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 ) : (
                   <div className="text-center py-8">
@@ -768,19 +807,6 @@ const PropertyInsertForm = () => {
                       Admin dapat menambahkan filter di panel administrasi.
                     </p>
                   </div>
-                )}
-
-                {searchFilters && searchFilters.some((f: any) => f.category !== 'property') && (
-                  <>
-                    <div className="mt-8 pt-6 border-t border-gray-200">
-                      <h4 className="text-md font-medium text-gray-900 mb-4">Filter Lainnya</h4>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {searchFilters
-                          .filter((filter: any) => filter.category !== 'property')
-                          .map((filter: any) => renderFilterField(filter))}
-                      </div>
-                    </div>
-                  </>
                 )}
               </div>
             </TabsContent>
