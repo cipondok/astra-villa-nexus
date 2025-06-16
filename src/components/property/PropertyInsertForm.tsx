@@ -1,5 +1,6 @@
+
 import { useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -10,8 +11,9 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Progress } from "@/components/ui/progress";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useAuth } from "@/contexts/AuthContext";
-import { Plus, Home, MapPin, Camera, Sparkles, Bot, CheckCircle, AlertCircle, Eye, LogIn, ChevronLeft, ChevronRight, X, ArrowLeft } from "lucide-react";
+import { Plus, Home, MapPin, Camera, Sparkles, Bot, CheckCircle, AlertCircle, Eye, LogIn, ChevronLeft, ChevronRight, X, ArrowLeft, Heart, Leaf, TrendingUp, Volume2, Building2, Filter } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { formatIDR } from "@/utils/currency";
 import LocationSelector from "./LocationSelector";
