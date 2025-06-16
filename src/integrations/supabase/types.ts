@@ -1565,6 +1565,172 @@ export type Database = {
           },
         ]
       }
+      vendor_ai_alerts: {
+        Row: {
+          action_required: boolean | null
+          ai_recommendation: string | null
+          alert_message: string
+          alert_type: string
+          created_at: string | null
+          id: string
+          is_resolved: boolean | null
+          resolved_at: string | null
+          resolved_by: string | null
+          severity: string | null
+          vendor_id: string | null
+        }
+        Insert: {
+          action_required?: boolean | null
+          ai_recommendation?: string | null
+          alert_message: string
+          alert_type: string
+          created_at?: string | null
+          id?: string
+          is_resolved?: boolean | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          severity?: string | null
+          vendor_id?: string | null
+        }
+        Update: {
+          action_required?: boolean | null
+          ai_recommendation?: string | null
+          alert_message?: string
+          alert_type?: string
+          created_at?: string | null
+          id?: string
+          is_resolved?: boolean | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          severity?: string | null
+          vendor_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendor_ai_alerts_resolved_by_fkey"
+            columns: ["resolved_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vendor_ai_alerts_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vendor_ai_matching: {
+        Row: {
+          availability_score: number | null
+          created_at: string | null
+          experience_score: number | null
+          explanation: string | null
+          id: string
+          matching_score: number | null
+          proximity_score: number | null
+          rating_score: number | null
+          recommendation_rank: number | null
+          request_id: string
+          specialization_match: number | null
+          vendor_id: string | null
+        }
+        Insert: {
+          availability_score?: number | null
+          created_at?: string | null
+          experience_score?: number | null
+          explanation?: string | null
+          id?: string
+          matching_score?: number | null
+          proximity_score?: number | null
+          rating_score?: number | null
+          recommendation_rank?: number | null
+          request_id: string
+          specialization_match?: number | null
+          vendor_id?: string | null
+        }
+        Update: {
+          availability_score?: number | null
+          created_at?: string | null
+          experience_score?: number | null
+          explanation?: string | null
+          id?: string
+          matching_score?: number | null
+          proximity_score?: number | null
+          rating_score?: number | null
+          recommendation_rank?: number | null
+          request_id?: string
+          specialization_match?: number | null
+          vendor_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendor_ai_matching_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vendor_ai_verification: {
+        Row: {
+          ai_confidence_score: number | null
+          biometric_verification: Json | null
+          created_at: string | null
+          document_verification: Json | null
+          financial_health_score: number | null
+          id: string
+          trust_score: number | null
+          updated_at: string | null
+          vendor_id: string | null
+          verification_notes: string | null
+          verification_status: string | null
+          verification_type: string
+          verified_at: string | null
+        }
+        Insert: {
+          ai_confidence_score?: number | null
+          biometric_verification?: Json | null
+          created_at?: string | null
+          document_verification?: Json | null
+          financial_health_score?: number | null
+          id?: string
+          trust_score?: number | null
+          updated_at?: string | null
+          vendor_id?: string | null
+          verification_notes?: string | null
+          verification_status?: string | null
+          verification_type: string
+          verified_at?: string | null
+        }
+        Update: {
+          ai_confidence_score?: number | null
+          biometric_verification?: Json | null
+          created_at?: string | null
+          document_verification?: Json | null
+          financial_health_score?: number | null
+          id?: string
+          trust_score?: number | null
+          updated_at?: string | null
+          vendor_id?: string | null
+          verification_notes?: string | null
+          verification_status?: string | null
+          verification_type?: string
+          verified_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendor_ai_verification_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       vendor_astra_balances: {
         Row: {
           balance: number | null
@@ -2091,6 +2257,63 @@ export type Database = {
           },
         ]
       }
+      vendor_fraud_detection: {
+        Row: {
+          action_taken: string | null
+          created_at: string | null
+          detection_details: Json | null
+          detection_type: string
+          fraud_probability: number | null
+          id: string
+          model_version: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          risk_level: string | null
+          vendor_id: string | null
+        }
+        Insert: {
+          action_taken?: string | null
+          created_at?: string | null
+          detection_details?: Json | null
+          detection_type: string
+          fraud_probability?: number | null
+          id?: string
+          model_version?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          risk_level?: string | null
+          vendor_id?: string | null
+        }
+        Update: {
+          action_taken?: string | null
+          created_at?: string | null
+          detection_details?: Json | null
+          detection_type?: string
+          fraud_probability?: number | null
+          id?: string
+          model_version?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          risk_level?: string | null
+          vendor_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendor_fraud_detection_reviewed_by_fkey"
+            columns: ["reviewed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vendor_fraud_detection_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       vendor_holidays: {
         Row: {
           affected_service_ids: string[] | null
@@ -2434,6 +2657,62 @@ export type Database = {
           },
         ]
       }
+      vendor_performance_analytics: {
+        Row: {
+          ai_insights: Json | null
+          alerts_generated: Json | null
+          booking_count: number | null
+          completion_rate: number | null
+          created_at: string | null
+          customer_satisfaction: number | null
+          id: string
+          metric_date: string
+          performance_score: number | null
+          rating_trend: number | null
+          response_time_avg: number | null
+          revenue_generated: number | null
+          vendor_id: string | null
+        }
+        Insert: {
+          ai_insights?: Json | null
+          alerts_generated?: Json | null
+          booking_count?: number | null
+          completion_rate?: number | null
+          created_at?: string | null
+          customer_satisfaction?: number | null
+          id?: string
+          metric_date: string
+          performance_score?: number | null
+          rating_trend?: number | null
+          response_time_avg?: number | null
+          revenue_generated?: number | null
+          vendor_id?: string | null
+        }
+        Update: {
+          ai_insights?: Json | null
+          alerts_generated?: Json | null
+          booking_count?: number | null
+          completion_rate?: number | null
+          created_at?: string | null
+          customer_satisfaction?: number | null
+          id?: string
+          metric_date?: string
+          performance_score?: number | null
+          rating_trend?: number | null
+          response_time_avg?: number | null
+          revenue_generated?: number | null
+          vendor_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendor_performance_analytics_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       vendor_project_progress: {
         Row: {
           booking_id: string | null
@@ -2725,6 +3004,50 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      vendor_service_categories_ai: {
+        Row: {
+          ai_keywords: Json | null
+          category_name: string
+          classification_confidence: number | null
+          created_at: string | null
+          id: string
+          is_hybrid: boolean | null
+          nlp_tags: Json | null
+          parent_category_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          ai_keywords?: Json | null
+          category_name: string
+          classification_confidence?: number | null
+          created_at?: string | null
+          id?: string
+          is_hybrid?: boolean | null
+          nlp_tags?: Json | null
+          parent_category_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          ai_keywords?: Json | null
+          category_name?: string
+          classification_confidence?: number | null
+          created_at?: string | null
+          id?: string
+          is_hybrid?: boolean | null
+          nlp_tags?: Json | null
+          parent_category_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendor_service_categories_ai_parent_category_id_fkey"
+            columns: ["parent_category_id"]
+            isOneToOne: false
+            referencedRelation: "vendor_service_categories_ai"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       vendor_service_items: {
         Row: {

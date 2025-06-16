@@ -1,12 +1,31 @@
 
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import React, { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { BarChart3, Users, Shield, Database, Home, FileText, Store, MessageSquare, Activity, Settings, Crown, ArrowLeft, Award, CreditCard } from "lucide-react";
-import { useAuth } from "@/contexts/AuthContext";
-import ThemeToggleSwitch from "@/components/ThemeToggleSwitch";
+import { 
+  LayoutDashboard,
+  Users, 
+  Building2, 
+  MessageSquare, 
+  BarChart3, 
+  Settings, 
+  Shield, 
+  FileText, 
+  Mail,
+  Globe,
+  Database,
+  Zap,
+  Brain,
+  TrendingUp,
+  Search,
+  List,
+  Store,
+  Bot,
+  CreditCard,
+  UserCheck,
+  Award,
+  Calendar
+} from "lucide-react";
 
 interface AdminNavigationProps {
   activeSection: string;
@@ -14,107 +33,212 @@ interface AdminNavigationProps {
 }
 
 const AdminNavigation = ({ activeSection, onSectionChange }: AdminNavigationProps) => {
-  const { user } = useAuth();
-  const isSuperAdmin = user?.email === 'mycode103@gmail.com';
+  const navigationSections = [
+    // Core Admin
+    {
+      id: 'overview',
+      label: 'Dashboard Overview',
+      icon: LayoutDashboard,
+      description: 'System overview and key metrics',
+      category: 'Core'
+    },
+    {
+      id: 'user-management',
+      label: 'User Management',
+      icon: Users,
+      description: 'Manage users, roles, and permissions',
+      category: 'Core'
+    },
+    {
+      id: 'property-management',
+      label: 'Property Management',
+      icon: Building2,
+      description: 'Property listings and approvals',
+      category: 'Core'
+    },
+    
+    // AI & Vendor Management
+    {
+      id: 'ai-vendor-management',
+      label: 'AI Vendor Management',
+      icon: Brain,
+      description: 'Complete AI-powered vendor system',
+      category: 'AI & Vendors',
+      badge: 'NEW'
+    },
+    {
+      id: 'vendor-management',
+      label: 'Vendor Requests',
+      icon: Store,
+      description: 'Vendor registration and approval',
+      category: 'AI & Vendors'
+    },
+    {
+      id: 'vendor-service-categories',
+      label: 'Service Categories',
+      icon: List,
+      description: 'Manage vendor service categories',
+      category: 'AI & Vendors'
+    },
+    {
+      id: 'vendor-services',
+      label: 'Vendor Services',
+      icon: Settings,
+      description: 'Service management and pricing',
+      category: 'AI & Vendors'
+    },
+    {
+      id: 'kyc-management',
+      label: 'KYC Verification',
+      icon: UserCheck,
+      description: 'Identity verification management',
+      category: 'AI & Vendors'
+    },
+    {
+      id: 'membership-management',
+      label: 'Membership Levels',
+      icon: Award,
+      description: 'Vendor membership system',
+      category: 'AI & Vendors'
+    },
 
-  if (!user) {
-    return (
-      <Card className="card-ios">
-        <CardContent className="p-6">
-          <p className="text-muted-foreground">Please log in to view this page.</p>
-        </CardContent>
-      </Card>
-    );
-  }
+    // Analytics & Monitoring
+    {
+      id: 'analytics',
+      label: 'Web Analytics',
+      icon: BarChart3,
+      description: 'Traffic and user behavior analytics',
+      category: 'Analytics'
+    },
+    {
+      id: 'ai-bot-management',
+      label: 'AI Bot Management',
+      icon: Bot,
+      description: 'AI assistant configuration',
+      category: 'Analytics'
+    },
+    {
+      id: 'feedback-management',
+      label: 'Feedback Management',
+      icon: MessageSquare,
+      description: 'User feedback and reviews',
+      category: 'Analytics'
+    },
+    {
+      id: 'daily-checkin',
+      label: 'Daily Check-in',
+      icon: Calendar,
+      description: 'User engagement tracking',
+      category: 'Analytics'
+    },
 
-  if (!isSuperAdmin) {
-    return (
-      <Card className="card-ios">
-        <CardContent className="p-6">
-          <p className="text-muted-foreground">You do not have permission to view this page.</p>
-        </CardContent>
-      </Card>
-    );
-  }
+    // Content & Settings
+    {
+      id: 'content-management',
+      label: 'Content Management',
+      icon: FileText,
+      description: 'CMS and content editing',
+      category: 'Content'
+    },
+    {
+      id: 'search-filters',
+      label: 'Search Filters',
+      icon: Search,
+      description: 'Property search configuration',
+      category: 'Content'
+    },
+    {
+      id: 'system-settings',
+      label: 'System Settings',
+      icon: Settings,
+      description: 'Application configuration',
+      category: 'Settings'
+    },
+    {
+      id: 'billing-management',
+      label: 'Billing Management',
+      icon: CreditCard,
+      description: 'Subscription and payment management',
+      category: 'Settings'
+    },
+    {
+      id: 'astra-tokens',
+      label: 'ASTRA Tokens',
+      icon: Zap,
+      description: 'Token system management',
+      category: 'Settings'
+    },
 
-  const navigationItems = [
-    { id: 'overview', label: 'Dashboard Overview', icon: BarChart3, color: 'text-ios-blue' },
-    { id: 'simple-users', label: 'User Management', icon: Users, color: 'text-ios-green' },
-    { id: 'user-roles', label: 'Advanced Roles', icon: Shield, color: 'text-ios-purple' },
-    { id: 'database-users', label: 'Database Users', icon: Database, color: 'text-ios-orange' },
-    { id: 'properties', label: 'Property Management', icon: Home, color: 'text-ios-blue' },
-    { id: 'content', label: 'Content Management', icon: FileText, color: 'text-ios-pink' },
-    { id: 'vendors', label: 'Vendor Management', icon: Store, color: 'text-ios-green' },
-    { id: 'vendor-services', label: 'Vendor Services', icon: Settings, color: 'text-ios-cyan', badge: 'New' },
-    { id: 'kyc-management', label: 'KYC Verification', icon: CreditCard, color: 'text-ios-indigo', badge: 'New' },
-    { id: 'membership-levels', label: 'Membership Levels', icon: Award, color: 'text-ios-purple', badge: 'New' },
-    { id: 'feedback', label: 'Feedback & Reports', icon: MessageSquare, color: 'text-ios-yellow' },
-    { id: 'system-monitor', label: 'System Monitor', icon: Activity, color: 'text-ios-red' },
-    { id: 'settings', label: 'System Settings', icon: Settings, color: 'text-muted-foreground' },
+    // Technical
+    {
+      id: 'database-management',
+      label: 'Database Management',
+      icon: Database,
+      description: 'Database tables and data',
+      category: 'Technical'
+    },
+    {
+      id: 'security-monitoring',
+      label: 'Security Monitoring',
+      icon: Shield,
+      description: 'Security logs and monitoring',
+      category: 'Technical'
+    },
+    {
+      id: 'system-reports',
+      label: 'System Reports',
+      icon: TrendingUp,
+      description: 'System health and reports',
+      category: 'Technical'
+    }
   ];
 
+  const categories = ['Core', 'AI & Vendors', 'Analytics', 'Content', 'Settings', 'Technical'];
+
   return (
-    <Card className="card-ios sticky top-6">
-      <CardHeader className="pb-4">
-        <div className="flex items-center justify-between mb-2">
-          <Link to="/">
-            <Button variant="ghost" size="sm" className="btn-ios flex items-center gap-2 text-muted-foreground hover:text-foreground">
-              <ArrowLeft className="h-4 w-4" />
-              <span className="text-sm">Back to Home</span>
-            </Button>
-          </Link>
-          <ThemeToggleSwitch language="en" className="scale-90" />
+    <div className="space-y-6">
+      {categories.map((category) => (
+        <div key={category}>
+          <h3 className="text-lg font-semibold mb-3 text-gray-700">{category}</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {navigationSections
+              .filter(section => section.category === category)
+              .map((section) => {
+                const Icon = section.icon;
+                const isActive = activeSection === section.id;
+                
+                return (
+                  <Card 
+                    key={section.id}
+                    className={`cursor-pointer transition-all hover:shadow-md ${
+                      isActive 
+                        ? 'ring-2 ring-blue-500 bg-blue-50' 
+                        : 'hover:bg-gray-50'
+                    }`}
+                    onClick={() => onSectionChange(section.id)}
+                  >
+                    <CardHeader className="pb-2">
+                      <CardTitle className="flex items-center gap-2 text-sm">
+                        <Icon className={`h-4 w-4 ${isActive ? 'text-blue-600' : 'text-gray-600'}`} />
+                        <span className="flex-1">{section.label}</span>
+                        {section.badge && (
+                          <Badge variant="secondary" className="text-xs">
+                            {section.badge}
+                          </Badge>
+                        )}
+                        {isActive && <Badge variant="default" className="text-xs">Active</Badge>}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="pt-0">
+                      <p className="text-xs text-muted-foreground">{section.description}</p>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+          </div>
         </div>
-        <CardTitle className="flex items-center gap-2 text-lg text-foreground">
-          <Shield className="h-5 w-5 text-primary" />
-          Admin Control Panel
-          {isSuperAdmin && (
-            <Badge variant="destructive" className="text-xs">
-              <Crown className="h-3 w-3 mr-1" />
-              Super Admin
-            </Badge>
-          )}
-        </CardTitle>
-        <CardDescription className="text-muted-foreground">
-          {isSuperAdmin ? 'Full System Control Access' : 'Administrator Dashboard'}
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="p-0">
-        <nav className="space-y-1">
-          {navigationItems.map((item) => {
-            const Icon = item.icon;
-            const isActive = activeSection === item.id;
-            return (
-              <button
-                key={item.id}
-                onClick={() => onSectionChange(item.id)}
-                className={`
-                  w-full flex items-center gap-3 px-4 py-3 text-left rounded-none 
-                  transition-all duration-200 ease-out group
-                  ${isActive 
-                    ? 'bg-primary/10 border-r-2 border-primary text-primary' 
-                    : 'text-muted-foreground hover:text-foreground hover:bg-accent/50'
-                  }
-                `}
-              >
-                <Icon className={`h-4 w-4 transition-colors ${isActive ? 'text-primary' : item.color}`} />
-                <span className="text-sm font-medium flex-1">{item.label}</span>
-                {item.badge && (
-                  <Badge variant="secondary" className="text-xs">
-                    {item.badge}
-                  </Badge>
-                )}
-                {isActive && (
-                  <Badge variant="secondary" className="text-xs">
-                    Active
-                  </Badge>
-                )}
-              </button>
-            );
-          })}
-        </nav>
-      </CardContent>
-    </Card>
+      ))}
+    </div>
   );
 };
 
