@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -260,23 +259,7 @@ const VendorDashboard = () => {
                 </TabsContent>
 
                 <TabsContent value="analytics">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Business Analytics</CardTitle>
-                      <CardDescription>Track your service performance and business metrics</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-center py-12">
-                        <BarChart3 className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                        <h3 className="text-lg font-medium mb-2">Analytics Dashboard</h3>
-                        <p className="text-muted-foreground mb-4">View detailed insights about your service performance and customer trends</p>
-                        <Button>
-                          <TrendingUp className="h-4 w-4 mr-2" />
-                          View Analytics
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
+                  <VendorAnalytics />
                 </TabsContent>
 
                 <TabsContent value="payouts">
