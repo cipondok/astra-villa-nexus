@@ -1,6 +1,5 @@
-
 import { useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -11,8 +10,9 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Progress } from "@/components/ui/progress";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useAuth } from "@/contexts/AuthContext";
-import { Plus, Home, MapPin, Camera, Sparkles, Bot, CheckCircle, AlertCircle, Eye, LogIn, ChevronLeft, ChevronRight, X, ArrowLeft } from "lucide-react";
+import { Plus, Home, MapPin, Camera, Sparkles, Bot, CheckCircle, AlertCircle, Eye, LogIn, ChevronLeft, ChevronRight, X, ArrowLeft, Filter } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { formatIDR } from "@/utils/currency";
 import LocationSelector from "./LocationSelector";
@@ -39,7 +39,8 @@ const PropertyInsertForm = () => {
     has_3d_tour: false,
     furnishing: "",
     parking: "",
-    facilities: [] as string[]
+    facilities: [] as string[],
+    property_filters: {} as Record<string, any>
   });
 
   const [currentTab, setCurrentTab] = useState("basic");
@@ -52,12 +53,28 @@ const PropertyInsertForm = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
+  // Fetch active search filters
+  const { data: searchFilters } = useQuery({
+    queryKey: ['active-search-filters'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('search_filters')
+        .select('*')
+        .eq('is_active', true)
+        .order('display_order', { ascending: true });
+      
+      if (error) throw error;
+      return data || [];
+    }
+  });
+
   // Tab navigation
-  const tabs = ["basic", "location", "details", "media"];
+  const tabs = ["basic", "location", "details", "filters", "media"];
   const tabLabels = {
     basic: "Informasi Dasar",
     location: "Lokasi", 
     details: "Detail & Fitur",
+    filters: "Filter Properti",
     media: "Media & 3D"
   };
 
@@ -84,8 +101,6 @@ const PropertyInsertForm = () => {
   const insertPropertyMutation = useMutation({
     mutationFn: async (propertyData: any) => {
       console.log('Attempting to insert property with user:', user?.id);
-      console.log('User profile:', profile);
-      console.log('Is authenticated:', isAuthenticated);
       
       if (!user?.id) {
         throw new Error('User not authenticated - no user ID available');
@@ -111,7 +126,13 @@ const PropertyInsertForm = () => {
         status: 'pending_approval',
         image_urls: propertyData.images || [],
         three_d_model_url: propertyData.three_d_model_url || null,
-        virtual_tour_url: propertyData.virtual_tour_url || null
+        virtual_tour_url: propertyData.virtual_tour_url || null,
+        property_features: {
+          ...propertyData.property_filters,
+          furnishing: propertyData.furnishing,
+          parking: propertyData.parking,
+          facilities: propertyData.facilities
+        }
       };
 
       console.log('Property data to insert:', propertyToInsert);
@@ -152,7 +173,8 @@ const PropertyInsertForm = () => {
         has_3d_tour: false,
         furnishing: "",
         parking: "",
-        facilities: []
+        facilities: [],
+        property_filters: {}
       });
     },
     onError: (error) => {
@@ -201,8 +223,6 @@ const PropertyInsertForm = () => {
     if (e) e.preventDefault();
     
     console.log('Submit clicked, checking authentication...');
-    console.log('User:', user);
-    console.log('IsAuthenticated:', isAuthenticated);
     
     if (!isAuthenticated || !user) {
       alert("Silakan login terlebih dahulu untuk menambahkan properti");
@@ -218,11 +238,21 @@ const PropertyInsertForm = () => {
     insertPropertyMutation.mutate(formData);
   };
 
-  const handleInputChange = (field: string, value: string | boolean | string[]) => {
+  const handleInputChange = (field: string, value: string | boolean | string[] | Record<string, any>) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     if (validationErrors.length > 0) {
       setValidationErrors([]);
     }
+  };
+
+  const handleFilterChange = (filterId: string, value: any) => {
+    setFormData(prev => ({
+      ...prev,
+      property_filters: {
+        ...prev.property_filters,
+        [filterId]: value
+      }
+    }));
   };
 
   const handleClose = () => {
@@ -243,6 +273,128 @@ const PropertyInsertForm = () => {
       "Properti dengan 3D tour mendapat 2x lebih banyak views"
     ];
     setAiSuggestion(suggestions[Math.floor(Math.random() * suggestions.length)]);
+  };
+
+  const renderFilterField = (filter: any) => {
+    const filterValue = formData.property_filters[filter.id] || '';
+    
+    switch (filter.filter_type) {
+      case 'select':
+        const options = typeof filter.filter_options === 'string' 
+          ? filter.filter_options.split(',').map((opt: string) => opt.trim())
+          : Array.isArray(filter.filter_options) 
+          ? filter.filter_options 
+          : [];
+
+        return (
+          <div key={filter.id}>
+            <Label htmlFor={filter.id} className="text-gray-700 font-medium">
+              {filter.filter_name}
+            </Label>
+            <Select 
+              value={filterValue} 
+              onValueChange={(value) => handleFilterChange(filter.id, value)}
+            >
+              <SelectTrigger className="bg-white border-gray-300 text-gray-900">
+                <SelectValue placeholder={`Pilih ${filter.filter_name}`} />
+              </SelectTrigger>
+              <SelectContent className="bg-white border border-gray-200 shadow-lg z-50">
+                {options.map((option: string, index: number) => (
+                  <SelectItem key={index} value={option} className="text-gray-900 hover:bg-blue-50">
+                    {option}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        );
+
+      case 'checkbox':
+        const checkboxOptions = typeof filter.filter_options === 'string' 
+          ? filter.filter_options.split(',').map((opt: string) => opt.trim())
+          : Array.isArray(filter.filter_options) 
+          ? filter.filter_options 
+          : [];
+
+        return (
+          <div key={filter.id}>
+            <Label className="text-gray-700 font-medium mb-2 block">
+              {filter.filter_name}
+            </Label>
+            <div className="space-y-2">
+              {checkboxOptions.map((option: string, index: number) => (
+                <div key={index} className="flex items-center space-x-2">
+                  <Checkbox
+                    id={`${filter.id}-${index}`}
+                    checked={(filterValue as string[])?.includes(option) || false}
+                    onCheckedChange={(checked) => {
+                      const currentValues = (filterValue as string[]) || [];
+                      if (checked) {
+                        handleFilterChange(filter.id, [...currentValues, option]);
+                      } else {
+                        handleFilterChange(filter.id, currentValues.filter(v => v !== option));
+                      }
+                    }}
+                  />
+                  <Label htmlFor={`${filter.id}-${index}`} className="text-sm text-gray-900">
+                    {option}
+                  </Label>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+
+      case 'input':
+        return (
+          <div key={filter.id}>
+            <Label htmlFor={filter.id} className="text-gray-700 font-medium">
+              {filter.filter_name}
+            </Label>
+            <Input
+              id={filter.id}
+              value={filterValue}
+              onChange={(e) => handleFilterChange(filter.id, e.target.value)}
+              placeholder={`Masukkan ${filter.filter_name}`}
+              className="bg-white border-gray-300 text-gray-900"
+            />
+          </div>
+        );
+
+      case 'range':
+        return (
+          <div key={filter.id}>
+            <Label htmlFor={filter.id} className="text-gray-700 font-medium">
+              {filter.filter_name}
+            </Label>
+            <div className="grid grid-cols-2 gap-2">
+              <Input
+                placeholder="Min"
+                type="number"
+                value={filterValue?.min || ''}
+                onChange={(e) => handleFilterChange(filter.id, { 
+                  ...filterValue, 
+                  min: e.target.value 
+                })}
+                className="bg-white border-gray-300 text-gray-900"
+              />
+              <Input
+                placeholder="Max"
+                type="number"
+                value={filterValue?.max || ''}
+                onChange={(e) => handleFilterChange(filter.id, { 
+                  ...filterValue, 
+                  max: e.target.value 
+                })}
+                className="bg-white border-gray-300 text-gray-900"
+              />
+            </div>
+          </div>
+        );
+
+      default:
+        return null;
+    }
   };
 
   // Show login required message if not authenticated
@@ -373,7 +525,7 @@ const PropertyInsertForm = () => {
 
         <form onSubmit={handleSubmit}>
           <Tabs value={currentTab} onValueChange={setCurrentTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-4 bg-white border border-gray-200 shadow-sm">
+            <TabsList className="grid w-full grid-cols-5 bg-white border border-gray-200 shadow-sm">
               <TabsTrigger value="basic" className="flex items-center gap-2 text-gray-700 data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 data-[state=active]:border-blue-200">
                 <Home className="h-4 w-4" />
                 <span className="hidden sm:inline">Informasi Dasar</span>
@@ -388,6 +540,11 @@ const PropertyInsertForm = () => {
                 <CheckCircle className="h-4 w-4" />
                 <span className="hidden sm:inline">Detail & Fitur</span>
                 <span className="sm:hidden">Detail</span>
+              </TabsTrigger>
+              <TabsTrigger value="filters" className="flex items-center gap-2 text-gray-700 data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 data-[state=active]:border-blue-200">
+                <Filter className="h-4 w-4" />
+                <span className="hidden sm:inline">Filter Properti</span>
+                <span className="sm:hidden">Filter</span>
               </TabsTrigger>
               <TabsTrigger value="media" className="flex items-center gap-2 text-gray-700 data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 data-[state=active]:border-blue-200">
                 <Camera className="h-4 w-4" />
@@ -582,6 +739,49 @@ const PropertyInsertForm = () => {
                     </Select>
                   </div>
                 </div>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="filters" className="space-y-6 mt-6">
+              <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+                <div className="mb-4">
+                  <h3 className="text-lg font-medium text-gray-900 mb-2 flex items-center gap-2">
+                    <Filter className="h-5 w-5 text-blue-600" />
+                    Filter Properti Tambahan
+                  </h3>
+                  <p className="text-sm text-gray-600">
+                    Isi filter tambahan untuk membantu calon pembeli/penyewa menemukan properti Anda dengan mudah.
+                  </p>
+                </div>
+
+                {searchFilters && searchFilters.length > 0 ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {searchFilters
+                      .filter((filter: any) => filter.category === 'property')
+                      .map((filter: any) => renderFilterField(filter))}
+                  </div>
+                ) : (
+                  <div className="text-center py-8">
+                    <Filter className="h-12 w-12 text-gray-400 mx-auto mb-3" />
+                    <p className="text-gray-500">Belum ada filter properti yang tersedia.</p>
+                    <p className="text-sm text-gray-400 mt-1">
+                      Admin dapat menambahkan filter di panel administrasi.
+                    </p>
+                  </div>
+                )}
+
+                {searchFilters && searchFilters.some((f: any) => f.category !== 'property') && (
+                  <>
+                    <div className="mt-8 pt-6 border-t border-gray-200">
+                      <h4 className="text-md font-medium text-gray-900 mb-4">Filter Lainnya</h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {searchFilters
+                          .filter((filter: any) => filter.category !== 'property')
+                          .map((filter: any) => renderFilterField(filter))}
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
             </TabsContent>
 
