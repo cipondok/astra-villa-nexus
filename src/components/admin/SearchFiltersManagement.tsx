@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -26,10 +25,10 @@ interface SearchFilter {
   updated_at: string;
 }
 
-interface NewFilterData {
+interface FilterFormData {
   filter_name: string;
   filter_type: string;
-  filter_options: any;
+  filter_options: string;
   category: string;
 }
 
@@ -37,8 +36,9 @@ const SearchFiltersManagement = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [editingFilter, setEditingFilter] = useState<SearchFilter | null>(null);
-  const [newFilter, setNewFilter] = useState<NewFilterData>({
+  const [newFilter, setNewFilter] = useState<FilterFormData>({
     filter_name: "",
     filter_type: "select",
     filter_options: "",
@@ -81,7 +81,7 @@ const SearchFiltersManagement = () => {
   });
 
   const createFilterMutation = useMutation({
-    mutationFn: async (filterData: NewFilterData) => {
+    mutationFn: async (filterData: FilterFormData) => {
       const { error } = await supabase
         .from('search_filters')
         .insert({
@@ -117,6 +117,8 @@ const SearchFiltersManagement = () => {
     onSuccess: () => {
       showSuccess("Filter Updated", "Search filter has been updated successfully.");
       queryClient.invalidateQueries({ queryKey: ['search-filters'] });
+      setIsEditDialogOpen(false);
+      setEditingFilter(null);
     },
     onError: (error: Error) => {
       showError("Update Failed", error.message);
@@ -149,9 +151,90 @@ const SearchFiltersManagement = () => {
     createFilterMutation.mutate(newFilter);
   };
 
+  const handleEditFilter = () => {
+    if (!editingFilter) return;
+    
+    const updates = {
+      filter_name: editingFilter.filter_name,
+      filter_type: editingFilter.filter_type,
+      filter_options: editingFilter.filter_options,
+      category: editingFilter.category,
+    };
+    
+    updateFilterMutation.mutate({ filterId: editingFilter.id, updates });
+  };
+
+  const handleDeleteFilter = (filterId: string) => {
+    if (window.confirm('Are you sure you want to delete this filter?')) {
+      deleteFilterMutation.mutate(filterId);
+    }
+  };
+
+  const openEditDialog = (filter: SearchFilter) => {
+    setEditingFilter(filter);
+    setIsEditDialogOpen(true);
+  };
+
   const getStatusBadgeVariant = (isActive: boolean): "default" | "secondary" | "destructive" | "outline" => {
     return isActive ? 'default' : 'secondary';
   };
+
+  const FilterFormFields = ({ 
+    formData, 
+    setFormData 
+  }: { 
+    formData: FilterFormData; 
+    setFormData: (data: FilterFormData) => void;
+  }) => (
+    <div className="grid grid-cols-2 gap-4 py-4">
+      <div className="space-y-2">
+        <Label htmlFor="filter_name">Filter Name</Label>
+        <Input
+          id="filter_name"
+          value={formData.filter_name}
+          onChange={(e) => setFormData({ ...formData, filter_name: e.target.value })}
+          placeholder="Filter name"
+        />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="filter_type">Filter Type</Label>
+        <Select value={formData.filter_type} onValueChange={(value) => setFormData({ ...formData, filter_type: value })}>
+          <SelectTrigger>
+            <SelectValue placeholder="Select type" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="select">Select Dropdown</SelectItem>
+            <SelectItem value="range">Range Slider</SelectItem>
+            <SelectItem value="checkbox">Checkbox</SelectItem>
+            <SelectItem value="input">Text Input</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="category">Category</Label>
+        <Select value={formData.category} onValueChange={(value) => setFormData({ ...formData, category: value })}>
+          <SelectTrigger>
+            <SelectValue placeholder="Select category" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="property">Property</SelectItem>
+            <SelectItem value="location">Location</SelectItem>
+            <SelectItem value="price">Price</SelectItem>
+            <SelectItem value="amenities">Amenities</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="filter_options">Options (comma-separated)</Label>
+        <Input
+          id="filter_options"
+          value={formData.filter_options}
+          onChange={(e) => setFormData({ ...formData, filter_options: e.target.value })}
+          placeholder="Option1, Option2, Option3"
+        />
+      </div>
+    </div>
+  );
 
   return (
     <div className="space-y-6">
@@ -186,54 +269,7 @@ const SearchFiltersManagement = () => {
                       Create a new search filter for property listings.
                     </DialogDescription>
                   </DialogHeader>
-                  <div className="grid grid-cols-2 gap-4 py-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="filter_name">Filter Name</Label>
-                      <Input
-                        id="filter_name"
-                        value={newFilter.filter_name}
-                        onChange={(e) => setNewFilter({ ...newFilter, filter_name: e.target.value })}
-                        placeholder="Filter name"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="filter_type">Filter Type</Label>
-                      <Select value={newFilter.filter_type} onValueChange={(value) => setNewFilter({ ...newFilter, filter_type: value })}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select type" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="select">Select Dropdown</SelectItem>
-                          <SelectItem value="range">Range Slider</SelectItem>
-                          <SelectItem value="checkbox">Checkbox</SelectItem>
-                          <SelectItem value="input">Text Input</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="category">Category</Label>
-                      <Select value={newFilter.category} onValueChange={(value) => setNewFilter({ ...newFilter, category: value })}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select category" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="property">Property</SelectItem>
-                          <SelectItem value="location">Location</SelectItem>
-                          <SelectItem value="price">Price</SelectItem>
-                          <SelectItem value="amenities">Amenities</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="filter_options">Options (comma-separated)</Label>
-                      <Input
-                        id="filter_options"
-                        value={newFilter.filter_options}
-                        onChange={(e) => setNewFilter({ ...newFilter, filter_options: e.target.value })}
-                        placeholder="Option1, Option2, Option3"
-                      />
-                    </div>
-                  </div>
+                  <FilterFormFields formData={newFilter} setFormData={setNewFilter} />
                   <DialogFooter>
                     <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
                       Cancel
@@ -360,14 +396,14 @@ const SearchFiltersManagement = () => {
                           <Button 
                             size="sm" 
                             variant="outline"
-                            onClick={() => setEditingFilter(filter)}
+                            onClick={() => openEditDialog(filter)}
                           >
                             <Edit className="h-4 w-4" />
                           </Button>
                           <Button 
                             size="sm" 
                             variant="outline"
-                            onClick={() => deleteFilterMutation.mutate(filter.id)}
+                            onClick={() => handleDeleteFilter(filter.id)}
                           >
                             <Trash2 className="h-4 w-4" />
                           </Button>
@@ -381,6 +417,43 @@ const SearchFiltersManagement = () => {
           </div>
         </CardContent>
       </Card>
+
+      {/* Edit Dialog */}
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Edit Search Filter</DialogTitle>
+            <DialogDescription>
+              Update the search filter details.
+            </DialogDescription>
+          </DialogHeader>
+          {editingFilter && (
+            <FilterFormFields 
+              formData={{
+                filter_name: editingFilter.filter_name,
+                filter_type: editingFilter.filter_type,
+                filter_options: typeof editingFilter.filter_options === 'string' ? editingFilter.filter_options : JSON.stringify(editingFilter.filter_options),
+                category: editingFilter.category,
+              }}
+              setFormData={(data) => setEditingFilter({
+                ...editingFilter,
+                filter_name: data.filter_name,
+                filter_type: data.filter_type,
+                filter_options: data.filter_options,
+                category: data.category,
+              })}
+            />
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleEditFilter}>
+              Update Filter
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
