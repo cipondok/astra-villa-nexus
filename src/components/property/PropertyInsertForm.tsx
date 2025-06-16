@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -10,13 +10,13 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Progress } from "@/components/ui/progress";
-import { Checkbox } from "@/components/ui/checkbox";
 import { useAuth } from "@/contexts/AuthContext";
-import { Plus, Home, MapPin, Camera, Sparkles, Bot, CheckCircle, AlertCircle, Eye, LogIn, ChevronLeft, ChevronRight, X, ArrowLeft, Filter, Heart, Leaf, TrendingUp, Volume2, Building2 } from "lucide-react";
+import { Plus, Home, MapPin, Camera, Sparkles, Bot, CheckCircle, AlertCircle, Eye, LogIn, ChevronLeft, ChevronRight, X, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { formatIDR } from "@/utils/currency";
 import LocationSelector from "./LocationSelector";
-import PropertyImageUpload from "./PropertyImageUpload";
+import EnhancedImageUpload from "./EnhancedImageUpload";
+import PropertySpecifications from "./PropertySpecifications";
 import PropertyPreview from "./PropertyPreview";
 
 const PropertyInsertForm = () => {
@@ -34,6 +34,7 @@ const PropertyInsertForm = () => {
     bathrooms: "",
     area_sqm: "",
     images: [] as string[],
+    thumbnailIndex: 0,
     three_d_model_url: "",
     virtual_tour_url: "",
     has_3d_tour: false,
@@ -69,12 +70,12 @@ const PropertyInsertForm = () => {
   });
 
   // Tab navigation
-  const tabs = ["basic", "location", "details", "filters", "media"];
+  const tabs = ["basic", "location", "details", "specifications", "media"];
   const tabLabels = {
     basic: "Informasi Dasar",
     location: "Lokasi", 
     details: "Detail & Fitur",
-    filters: "Spesifikasi & Fitur Properti",
+    specifications: "Spesifikasi & Fitur Properti",
     media: "Media & 3D"
   };
 
@@ -131,7 +132,8 @@ const PropertyInsertForm = () => {
           ...propertyData.property_filters,
           furnishing: propertyData.furnishing,
           parking: propertyData.parking,
-          facilities: propertyData.facilities
+          facilities: propertyData.facilities,
+          thumbnailIndex: propertyData.thumbnailIndex
         }
       };
 
@@ -168,6 +170,7 @@ const PropertyInsertForm = () => {
         bathrooms: "",
         area_sqm: "",
         images: [],
+        thumbnailIndex: 0,
         three_d_model_url: "",
         virtual_tour_url: "",
         has_3d_tour: false,
@@ -238,7 +241,7 @@ const PropertyInsertForm = () => {
     insertPropertyMutation.mutate(formData);
   };
 
-  const handleInputChange = (field: string, value: string | boolean | string[] | Record<string, any>) => {
+  const handleInputChange = (field: string, value: string | boolean | string[] | Record<string, any> | number) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     if (validationErrors.length > 0) {
       setValidationErrors([]);
@@ -548,10 +551,10 @@ const PropertyInsertForm = () => {
                 <span className="hidden sm:inline">Detail & Fitur</span>
                 <span className="sm:hidden">Detail</span>
               </TabsTrigger>
-              <TabsTrigger value="filters" className="flex items-center gap-2 text-gray-700 data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 data-[state=active]:border-blue-200">
-                <Filter className="h-4 w-4" />
-                <span className="hidden sm:inline">Spesifikasi & Fitur Properti</span>
-                <span className="sm:hidden">Spesifikasi</span>
+              <TabsTrigger value="specifications" className="flex items-center gap-2 text-gray-700 data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 data-[state=active]:border-blue-200">
+                <CheckCircle className="h-4 w-4" />
+                <span className="hidden sm:inline">Spesifikasi</span>
+                <span className="sm:hidden">Spec</span>
               </TabsTrigger>
               <TabsTrigger value="media" className="flex items-center gap-2 text-gray-700 data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 data-[state=active]:border-blue-200">
                 <Camera className="h-4 w-4" />
@@ -749,236 +752,74 @@ const PropertyInsertForm = () => {
               </div>
             </TabsContent>
 
-            <TabsContent value="filters" className="space-y-6 mt-6">
-              <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
-                <div className="mb-6">
-                  <h3 className="text-lg font-medium text-gray-900 mb-2 flex items-center gap-2">
-                    <Filter className="h-5 w-5 text-blue-600" />
-                    Spesifikasi & Fitur Properti
-                  </h3>
-                  <p className="text-sm text-gray-600">
-                    Tambahkan spesifikasi dan fitur properti untuk informasi yang lebih detail kepada calon pembeli/penyewa.
-                  </p>
-                </div>
-
-                {searchFilters && searchFilters.length > 0 ? (
-                  <div className="space-y-8">
-                    {/* Property Specifications */}
-                    {searchFilters.some((f: any) => 
-                      f.category === 'property' && 
-                      f.filter_type !== 'range' &&
-                      !f.filter_name.toLowerCase().includes('harga') &&
-                      !f.filter_name.toLowerCase().includes('price')
-                    ) && (
-                      <div>
-                        <h4 className="text-md font-medium text-gray-900 mb-4 flex items-center gap-2">
-                          🏠 Spesifikasi Properti
-                        </h4>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                          {searchFilters
-                            .filter((filter: any) => 
-                              filter.category === 'property' && 
-                              filter.filter_type !== 'range' &&
-                              !filter.filter_name.toLowerCase().includes('harga') &&
-                              !filter.filter_name.toLowerCase().includes('price')
-                            )
-                            .map((filter: any) => renderFilterField(filter))}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Developer Information & Project Details */}
-                    {searchFilters.some((f: any) => f.category === 'developer') && (
-                      <div className="pt-6 border-t border-gray-200">
-                        <h4 className="text-md font-medium text-gray-900 mb-4 flex items-center gap-2">
-                          {getCategoryIcon('developer')}
-                          {getCategoryTitle('developer')}
-                        </h4>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                          {searchFilters
-                            .filter((filter: any) => filter.category === 'developer')
-                            .map((filter: any) => renderFilterField(filter))}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Lifestyle & Comfort */}
-                    {searchFilters.some((f: any) => f.category === 'lifestyle') && (
-                      <div className="pt-6 border-t border-gray-200">
-                        <h4 className="text-md font-medium text-gray-900 mb-4 flex items-center gap-2">
-                          {getCategoryIcon('lifestyle')}
-                          {getCategoryTitle('lifestyle')}
-                        </h4>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                          {searchFilters
-                            .filter((filter: any) => filter.category === 'lifestyle')
-                            .map((filter: any) => renderFilterField(filter))}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Sustainability & Eco-Friendly */}
-                    {searchFilters.some((f: any) => f.category === 'sustainability') && (
-                      <div className="pt-6 border-t border-gray-200">
-                        <h4 className="text-md font-medium text-gray-900 mb-4 flex items-center gap-2">
-                          {getCategoryIcon('sustainability')}
-                          {getCategoryTitle('sustainability')}
-                        </h4>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                          {searchFilters
-                            .filter((filter: any) => filter.category === 'sustainability')
-                            .map((filter: any) => renderFilterField(filter))}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Investment Potential */}
-                    {searchFilters.some((f: any) => f.category === 'investment') && (
-                      <div className="pt-6 border-t border-gray-200">
-                        <h4 className="text-md font-medium text-gray-900 mb-4 flex items-center gap-2">
-                          {getCategoryIcon('investment')}
-                          {getCategoryTitle('investment')}
-                        </h4>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                          {searchFilters
-                            .filter((filter: any) => filter.category === 'investment')
-                            .map((filter: any) => renderFilterField(filter))}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Neighborhood & Ambiance */}
-                    {searchFilters.some((f: any) => f.category === 'neighborhood') && (
-                      <div className="pt-6 border-t border-gray-200">
-                        <h4 className="text-md font-medium text-gray-900 mb-4 flex items-center gap-2">
-                          {getCategoryIcon('neighborhood')}
-                          {getCategoryTitle('neighborhood')}
-                        </h4>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                          {searchFilters
-                            .filter((filter: any) => filter.category === 'neighborhood')
-                            .map((filter: any) => renderFilterField(filter))}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Amenities & Features */}
-                    {searchFilters.some((f: any) => f.category === 'amenities') && (
-                      <div className="pt-6 border-t border-gray-200">
-                        <h4 className="text-md font-medium text-gray-900 mb-4 flex items-center gap-2">
-                          ✨ Fasilitas & Amenities
-                        </h4>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                          {searchFilters
-                            .filter((filter: any) => filter.category === 'amenities')
-                            .map((filter: any) => renderFilterField(filter))}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Location Features */}
-                    {searchFilters.some((f: any) => f.category === 'location' && f.filter_type !== 'range') && (
-                      <div className="pt-6 border-t border-gray-200">
-                        <h4 className="text-md font-medium text-gray-900 mb-4 flex items-center gap-2">
-                          📍 Fitur Lokasi & Lingkungan
-                        </h4>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                          {searchFilters
-                            .filter((filter: any) => 
-                              filter.category === 'location' && 
-                              filter.filter_type !== 'range'
-                            )
-                            .map((filter: any) => renderFilterField(filter))}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Other Property Features */}
-                    {searchFilters.some((f: any) => 
-                      !['property', 'amenities', 'location', 'price', 'lifestyle', 'sustainability', 'investment', 'neighborhood', 'developer'].includes(f.category) &&
-                      f.filter_type !== 'range'
-                    ) && (
-                      <div className="pt-6 border-t border-gray-200">
-                        <h4 className="text-md font-medium text-gray-900 mb-4 flex items-center gap-2">
-                          🔧 Fitur Tambahan
-                        </h4>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                          {searchFilters
-                            .filter((filter: any) => 
-                              !['property', 'amenities', 'location', 'price', 'lifestyle', 'sustainability', 'investment', 'neighborhood', 'developer'].includes(filter.category) &&
-                              filter.filter_type !== 'range' &&
-                              !filter.filter_name.toLowerCase().includes('harga') &&
-                              !filter.filter_name.toLowerCase().includes('price')
-                            )
-                            .map((filter: any) => renderFilterField(filter))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                ) : (
-                  <div className="text-center py-8">
-                    <Filter className="h-12 w-12 text-gray-400 mx-auto mb-3" />
-                    <p className="text-gray-500">Belum ada filter properti yang tersedia.</p>
-                    <p className="text-sm text-gray-400 mt-1">
-                      Admin dapat menambahkan filter di panel administrasi.
-                    </p>
-                  </div>
-                )}
-              </div>
+            {/* New Specifications Tab */}
+            <TabsContent value="specifications" className="space-y-6 mt-6">
+              <PropertySpecifications
+                propertyFilters={formData.property_filters}
+                onFilterChange={handleFilterChange}
+              />
             </TabsContent>
 
             <TabsContent value="media" className="space-y-6 mt-6">
-              <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
-                <PropertyImageUpload
+              <div className="space-y-6">
+                {/* Enhanced Image Upload */}
+                <EnhancedImageUpload
                   images={formData.images}
                   onImagesChange={(images) => handleInputChange('images', images)}
+                  thumbnailIndex={formData.thumbnailIndex}
+                  onThumbnailChange={(index) => handleInputChange('thumbnailIndex', index)}
                 />
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
-                  <div>
-                    <Label className="text-gray-700 font-medium">🥽 Virtual Tour 3D</Label>
-                    <RadioGroup 
-                      value={formData.has_3d_tour.toString()} 
-                      onValueChange={(value) => handleInputChange('has_3d_tour', value === 'true')}
-                      className="flex flex-row space-x-6 mt-2"
-                    >
-                      <div className="flex items-center space-x-2 bg-white border border-gray-200 rounded-lg px-3 py-2 shadow-sm">
-                        <RadioGroupItem value="true" id="has_3d" />
-                        <Label htmlFor="has_3d" className="text-sm text-gray-900">✅ Ada 3D Tour</Label>
+                {/* 3D Virtual Tour */}
+                <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+                  <h3 className="text-lg font-medium text-gray-900 mb-4">🥽 Virtual Tour 3D</h3>
+                  
+                  <div className="space-y-4">
+                    <div>
+                      <Label className="text-gray-700 font-medium">Apakah properti memiliki virtual tour 3D?</Label>
+                      <RadioGroup 
+                        value={formData.has_3d_tour.toString()} 
+                        onValueChange={(value) => handleInputChange('has_3d_tour', value === 'true')}
+                        className="flex flex-row space-x-6 mt-2"
+                      >
+                        <div className="flex items-center space-x-2 bg-white border border-gray-200 rounded-lg px-3 py-2 shadow-sm">
+                          <RadioGroupItem value="true" id="has_3d" />
+                          <Label htmlFor="has_3d" className="text-sm text-gray-900">✅ Ada 3D Tour</Label>
+                        </div>
+                        <div className="flex items-center space-x-2 bg-white border border-gray-200 rounded-lg px-3 py-2 shadow-sm">
+                          <RadioGroupItem value="false" id="no_3d" />
+                          <Label htmlFor="no_3d" className="text-sm text-gray-900">❌ Tidak Ada</Label>
+                        </div>
+                      </RadioGroup>
+                    </div>
+
+                    {formData.has_3d_tour && (
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label htmlFor="three_d_model_url" className="text-gray-700 font-medium">🔗 URL Model 3D</Label>
+                          <Input
+                            id="three_d_model_url"
+                            value={formData.three_d_model_url}
+                            onChange={(e) => handleInputChange('three_d_model_url', e.target.value)}
+                            placeholder="https://example.com/3d-model"
+                            className="bg-white border-gray-300 text-gray-900"
+                          />
+                        </div>
+
+                        <div>
+                          <Label htmlFor="virtual_tour_url" className="text-gray-700 font-medium">🌐 URL Virtual Tour</Label>
+                          <Input
+                            id="virtual_tour_url"
+                            value={formData.virtual_tour_url}
+                            onChange={(e) => handleInputChange('virtual_tour_url', e.target.value)}
+                            placeholder="https://example.com/virtual-tour"
+                            className="bg-white border-gray-300 text-gray-900"
+                          />
+                        </div>
                       </div>
-                      <div className="flex items-center space-x-2 bg-white border border-gray-200 rounded-lg px-3 py-2 shadow-sm">
-                        <RadioGroupItem value="false" id="no_3d" />
-                        <Label htmlFor="no_3d" className="text-sm text-gray-900">❌ Tidak Ada</Label>
-                      </div>
-                    </RadioGroup>
+                    )}
                   </div>
                 </div>
-
-                {formData.has_3d_tour && (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                    <div>
-                      <Label htmlFor="three_d_model_url" className="text-gray-700 font-medium">🔗 URL Model 3D</Label>
-                      <Input
-                        id="three_d_model_url"
-                        value={formData.three_d_model_url}
-                        onChange={(e) => handleInputChange('three_d_model_url', e.target.value)}
-                        placeholder="https://example.com/3d-model"
-                        className="bg-white border-gray-300 text-gray-900"
-                      />
-                    </div>
-
-                    <div>
-                      <Label htmlFor="virtual_tour_url" className="text-gray-700 font-medium">🌐 URL Virtual Tour</Label>
-                      <Input
-                        id="virtual_tour_url"
-                        value={formData.virtual_tour_url}
-                        onChange={(e) => handleInputChange('virtual_tour_url', e.target.value)}
-                        placeholder="https://example.com/virtual-tour"
-                        className="bg-white border-gray-300 text-gray-900"
-                      />
-                    </div>
-                  </div>
-                )}
               </div>
             </TabsContent>
           </Tabs>
