@@ -201,7 +201,7 @@ const EnhancedImageUpload = ({
         {/* Error Alert */}
         {uploadError && (
           <Alert variant="destructive">
-            <AlertDescription>{uploadError}</Alert>
+            <AlertDescription>{uploadError}</AlertDescription>
           </Alert>
         )}
 
