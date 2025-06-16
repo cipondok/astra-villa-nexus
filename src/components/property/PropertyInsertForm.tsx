@@ -12,7 +12,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Progress } from "@/components/ui/progress";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useAuth } from "@/contexts/AuthContext";
-import { Plus, Home, MapPin, Camera, Sparkles, Bot, CheckCircle, AlertCircle, Eye, LogIn, ChevronLeft, ChevronRight, X, ArrowLeft, Filter, Heart, Leaf, TrendingUp, Volume2 } from "lucide-react";
+import { Plus, Home, MapPin, Camera, Sparkles, Bot, CheckCircle, AlertCircle, Eye, LogIn, ChevronLeft, ChevronRight, X, ArrowLeft, Filter, Heart, Leaf, TrendingUp, Volume2, Building2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { formatIDR } from "@/utils/currency";
 import LocationSelector from "./LocationSelector";
@@ -380,6 +380,8 @@ const PropertyInsertForm = () => {
         return <TrendingUp className="h-5 w-5 text-blue-600" />;
       case 'neighborhood':
         return <Volume2 className="h-5 w-5 text-purple-600" />;
+      case 'developer':
+        return <Building2 className="h-5 w-5 text-orange-600" />;
       default:
         return <Filter className="h-5 w-5 text-gray-600" />;
     }
@@ -395,6 +397,8 @@ const PropertyInsertForm = () => {
         return 'Potensi Investasi';
       case 'neighborhood':
         return 'Lingkungan & Suasana';
+      case 'developer':
+        return 'Informasi Developer & Proyek';
       default:
         return 'Fitur Properti';
     }
@@ -783,6 +787,21 @@ const PropertyInsertForm = () => {
                       </div>
                     )}
 
+                    {/* Developer Information & Project Details */}
+                    {searchFilters.some((f: any) => f.category === 'developer') && (
+                      <div className="pt-6 border-t border-gray-200">
+                        <h4 className="text-md font-medium text-gray-900 mb-4 flex items-center gap-2">
+                          {getCategoryIcon('developer')}
+                          {getCategoryTitle('developer')}
+                        </h4>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          {searchFilters
+                            .filter((filter: any) => filter.category === 'developer')
+                            .map((filter: any) => renderFilterField(filter))}
+                        </div>
+                      </div>
+                    )}
+
                     {/* Lifestyle & Comfort */}
                     {searchFilters.some((f: any) => f.category === 'lifestyle') && (
                       <div className="pt-6 border-t border-gray-200">
@@ -876,7 +895,7 @@ const PropertyInsertForm = () => {
 
                     {/* Other Property Features */}
                     {searchFilters.some((f: any) => 
-                      !['property', 'amenities', 'location', 'price', 'lifestyle', 'sustainability', 'investment', 'neighborhood'].includes(f.category) &&
+                      !['property', 'amenities', 'location', 'price', 'lifestyle', 'sustainability', 'investment', 'neighborhood', 'developer'].includes(f.category) &&
                       f.filter_type !== 'range'
                     ) && (
                       <div className="pt-6 border-t border-gray-200">
@@ -886,7 +905,7 @@ const PropertyInsertForm = () => {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                           {searchFilters
                             .filter((filter: any) => 
-                              !['property', 'amenities', 'location', 'price', 'lifestyle', 'sustainability', 'investment', 'neighborhood'].includes(filter.category) &&
+                              !['property', 'amenities', 'location', 'price', 'lifestyle', 'sustainability', 'investment', 'neighborhood', 'developer'].includes(filter.category) &&
                               filter.filter_type !== 'range' &&
                               !filter.filter_name.toLowerCase().includes('harga') &&
                               !filter.filter_name.toLowerCase().includes('price')
