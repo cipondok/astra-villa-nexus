@@ -31,7 +31,7 @@ const VendorPerformanceAnalytics = () => {
         .from('vendor_performance_analytics')
         .select(`
           *,
-          vendor_profiles:vendor_id (
+          vendor_profile:profiles!vendor_performance_analytics_vendor_id_fkey (
             full_name,
             email
           )
@@ -52,7 +52,7 @@ const VendorPerformanceAnalytics = () => {
         .from('vendor_ai_alerts')
         .select(`
           *,
-          vendor_profiles:vendor_id (
+          vendor_profile:profiles!vendor_ai_alerts_vendor_id_fkey (
             full_name,
             email
           )
@@ -217,7 +217,7 @@ const VendorPerformanceAnalytics = () => {
                   <div key={metric.id} className="border rounded-lg p-4">
                     <div className="flex items-center justify-between mb-3">
                       <div>
-                        <h3 className="font-semibold">{metric.vendor_profiles?.full_name || 'Unknown Vendor'}</h3>
+                        <h3 className="font-semibold">{metric.vendor_profile?.full_name || 'Unknown Vendor'}</h3>
                         <p className="text-sm text-muted-foreground">
                           {new Date(metric.metric_date).toLocaleDateString('id-ID')}
                         </p>
@@ -279,7 +279,7 @@ const VendorPerformanceAnalytics = () => {
                       {getAlertIcon(alert.alert_type)}
                       <div className="flex-1">
                         <div className="flex items-center justify-between mb-2">
-                          <h3 className="font-semibold">{alert.vendor_profiles?.full_name || 'Unknown Vendor'}</h3>
+                          <h3 className="font-semibold">{alert.vendor_profile?.full_name || 'Unknown Vendor'}</h3>
                           <Badge className={getAlertSeverityColor(alert.severity)}>
                             {alert.severity.toUpperCase()}
                           </Badge>
@@ -313,7 +313,7 @@ const VendorPerformanceAnalytics = () => {
                 {analytics?.filter(a => a.ai_insights && Object.keys(a.ai_insights).length > 0).map((metric) => (
                   <div key={metric.id} className="border rounded-lg p-4">
                     <div className="flex items-center justify-between mb-3">
-                      <h3 className="font-semibold">{metric.vendor_profiles?.full_name || 'Unknown Vendor'}</h3>
+                      <h3 className="font-semibold">{metric.vendor_profile?.full_name || 'Unknown Vendor'}</h3>
                       <p className="text-sm text-muted-foreground">
                         {new Date(metric.metric_date).toLocaleDateString('id-ID')}
                       </p>

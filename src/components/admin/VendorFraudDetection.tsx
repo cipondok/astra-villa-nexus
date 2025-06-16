@@ -38,11 +38,11 @@ const VendorFraudDetection = () => {
         .from('vendor_fraud_detection')
         .select(`
           *,
-          vendor_profiles:vendor_id (
+          vendor_profile:profiles!vendor_fraud_detection_vendor_id_fkey (
             full_name,
             email
           ),
-          reviewed_by_profile:reviewed_by (
+          reviewer_profile:profiles!vendor_fraud_detection_reviewed_by_fkey (
             full_name
           )
         `)
@@ -209,8 +209,8 @@ const VendorFraudDetection = () => {
                       <div className="flex items-center gap-3">
                         {getDetectionTypeIcon(fraudCase.detection_type)}
                         <div>
-                          <h3 className="font-semibold">{fraudCase.vendor_profiles?.full_name || 'Unknown Vendor'}</h3>
-                          <p className="text-sm text-muted-foreground">{fraudCase.vendor_profiles?.email}</p>
+                          <h3 className="font-semibold">{fraudCase.vendor_profile?.full_name || 'Unknown Vendor'}</h3>
+                          <p className="text-sm text-muted-foreground">{fraudCase.vendor_profile?.email}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
@@ -268,13 +268,12 @@ const VendorFraudDetection = () => {
               <div className="space-y-4">
                 {fraudCases?.filter(c => c.risk_level === 'high' || c.risk_level === 'critical').map((fraudCase) => (
                   <div key={fraudCase.id} className="border-2 border-red-200 rounded-lg p-4 bg-red-50">
-                    {/* Same content structure as above */}
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-3">
                         {getDetectionTypeIcon(fraudCase.detection_type)}
                         <div>
-                          <h3 className="font-semibold">{fraudCase.vendor_profiles?.full_name || 'Unknown Vendor'}</h3>
-                          <p className="text-sm text-muted-foreground">{fraudCase.vendor_profiles?.email}</p>
+                          <h3 className="font-semibold">{fraudCase.vendor_profile?.full_name || 'Unknown Vendor'}</h3>
+                          <p className="text-sm text-muted-foreground">{fraudCase.vendor_profile?.email}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
@@ -310,7 +309,7 @@ const VendorFraudDetection = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label>Vendor</Label>
-                  <p className="font-medium">{selectedCase.vendor_profiles?.full_name}</p>
+                  <p className="font-medium">{selectedCase.vendor_profile?.full_name}</p>
                 </div>
                 <div>
                   <Label>Risk Level</Label>
