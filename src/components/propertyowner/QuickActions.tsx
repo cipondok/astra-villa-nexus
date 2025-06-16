@@ -14,6 +14,21 @@ import {
 const QuickActions = () => {
   const navigate = useNavigate();
 
+  const handleUploadPhotos = () => {
+    // Navigate to add property page where photos can be uploaded
+    navigate('/add-property');
+  };
+
+  const handleScheduleTour = () => {
+    // For now, we'll show an alert. In the future, this could open a scheduling modal
+    alert('Schedule Tour feature - This will open a tour scheduling interface');
+  };
+
+  const handleMessages = () => {
+    // For now, we'll show an alert. In the future, this could navigate to a messages page
+    alert('Messages feature - This will open your messages inbox');
+  };
+
   const actions = [
     {
       title: "Add Property",
@@ -34,21 +49,21 @@ const QuickActions = () => {
       description: "Reply to inquiries",
       icon: MessageSquare,
       color: "bg-orange-500 hover:bg-orange-600",
-      onClick: () => console.log('Messages feature coming soon')
+      onClick: handleMessages
     },
     {
       title: "Schedule Tour",
       description: "Set up viewing",
       icon: Calendar,
       color: "bg-purple-500 hover:bg-purple-600",
-      onClick: () => console.log('Schedule tour feature coming soon')
+      onClick: handleScheduleTour
     },
     {
       title: "Upload Photos",
       description: "Add new images",
       icon: Camera,
       color: "bg-pink-500 hover:bg-pink-600",
-      onClick: () => console.log('Photo upload feature coming soon')
+      onClick: handleUploadPhotos
     },
     {
       title: "Settings",
