@@ -1,4 +1,3 @@
-
 import { useState, useCallback, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { Camera, Upload, X, Star, Edit, Trash2, Image as ImageIcon } from "lucide-react";
+import { Camera, Upload, X, Star } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface EnhancedImageUploadProps {
