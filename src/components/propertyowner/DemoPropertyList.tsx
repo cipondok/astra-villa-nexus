@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -162,8 +161,7 @@ const DemoPropertyList = () => {
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="text-2xl font-bold text-green-600 flex items-center">
-                          <DollarSign className="h-5 w-5 mr-1" />
+                        <div className="text-2xl font-bold text-green-600">
                           {property.listing_type === 'rent' 
                             ? `${formatIDR(property.price)}/bulan`
                             : formatIDR(property.price)
