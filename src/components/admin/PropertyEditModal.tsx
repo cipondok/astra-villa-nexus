@@ -53,6 +53,11 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
 
+  // Early return if property is null/undefined
+  if (!property) {
+    return null;
+  }
+
   // Fetch all users for owner/agent selection
   const { data: users } = useQuery({
     queryKey: ['all-users'],
@@ -132,6 +137,9 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
         text_opacity: 0.70,
         text_size: 24,
         text_font: 'Arial',
+        watermark_image_url: null,
+        image_opacity: 0.70,
+        image_scale: 1.00,
         position_x: 'center',
         position_y: 'center',
         offset_x: 0,
@@ -164,14 +172,14 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
           if (settings.position_y === 'top') y = img.height * 0.1;
           if (settings.position_y === 'bottom') y = img.height * 0.9;
           
-          x += settings.offset_x;
-          y += settings.offset_y;
+          x += settings.offset_x || 0;
+          y += settings.offset_y || 0;
 
           // Apply text watermark
           if (settings.watermark_type === 'text' || settings.watermark_type === 'both') {
-            ctx.globalAlpha = settings.text_opacity;
-            ctx.fillStyle = settings.text_color;
-            ctx.font = `${Math.max(settings.text_size, img.width / 40)}px ${settings.text_font}`;
+            ctx.globalAlpha = settings.text_opacity || 0.70;
+            ctx.fillStyle = settings.text_color || '#FFFFFF';
+            ctx.font = `${Math.max(settings.text_size || 24, img.width / 40)}px ${settings.text_font || 'Arial'}`;
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
             
@@ -181,7 +189,7 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
             ctx.shadowOffsetX = 2;
             ctx.shadowOffsetY = 2;
             
-            ctx.fillText(settings.text_content, x, y);
+            ctx.fillText(settings.text_content || 'VillaAstra', x, y);
           }
 
           // Apply image watermark if available
@@ -189,7 +197,7 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
             const watermarkImg = new Image();
             watermarkImg.crossOrigin = 'anonymous';
             watermarkImg.onload = () => {
-              ctx.globalAlpha = settings.image_opacity;
+              ctx.globalAlpha = settings.image_opacity || 0.70;
               const scale = settings.image_scale || 1;
               const scaledWidth = watermarkImg.width * scale;
               const scaledHeight = watermarkImg.height * scale;
