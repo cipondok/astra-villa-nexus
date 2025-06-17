@@ -12,13 +12,14 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Building, Search, Plus, Edit, Trash2, Eye, MapPin, DollarSign, RefreshCw, Axis3d, Filter } from "lucide-react";
+import { Building, Search, Plus, Edit, Trash2, Eye, MapPin, DollarSign, RefreshCw, Axis3d, Filter, Droplets } from "lucide-react";
 import { useAlert } from "@/contexts/AlertContext";
 import PropertyEditModal from "./PropertyEditModal";
 import PropertyViewModal from "./PropertyViewModal";
 import PropertyBulkActions from "./PropertyBulkActions";
 import { formatIDR } from "@/utils/currency";
 import SearchFiltersManagement from "./SearchFiltersManagement";
+import PropertyWatermarkSettings from "./PropertyWatermarkSettings";
 
 interface PropertyOwner {
   full_name: string;
@@ -299,14 +300,14 @@ const PropertyManagement = () => {
                 Property Management Hub
               </CardTitle>
               <CardDescription>
-                Manage properties, search filters, and all property-related settings
+                Manage properties, search filters, watermark settings, and all property-related configurations
               </CardDescription>
             </div>
           </div>
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="properties" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-2">
+            <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="properties" className="flex items-center gap-2">
                 <Building className="h-4 w-4" />
                 Properties
@@ -314,6 +315,10 @@ const PropertyManagement = () => {
               <TabsTrigger value="search-filters" className="flex items-center gap-2">
                 <Filter className="h-4 w-4" />
                 Search Filters
+              </TabsTrigger>
+              <TabsTrigger value="watermark-settings" className="flex items-center gap-2">
+                <Droplets className="h-4 w-4" />
+                Watermark Settings
               </TabsTrigger>
             </TabsList>
 
@@ -694,6 +699,10 @@ const PropertyManagement = () => {
 
             <TabsContent value="search-filters">
               <SearchFiltersManagement />
+            </TabsContent>
+
+            <TabsContent value="watermark-settings">
+              <PropertyWatermarkSettings />
             </TabsContent>
           </Tabs>
         </CardContent>
