@@ -1,3 +1,4 @@
+
 import { useState, Suspense, lazy, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -5,7 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Settings, Users, Home, Plus, Gift, Calendar, Database, Shield, FileText, Store, MessageSquare, Activity, BarChart3, Loader2, Wifi, Mail, Building2, LifeBuoy, Filter } from "lucide-react";
+import { Settings, Users, Home, Plus, Gift, Calendar, Database, Shield, FileText, Store, MessageSquare, Activity, BarChart3, Loader2, Wifi, Mail, Building2, LifeBuoy } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Navigation from "@/components/Navigation";
@@ -23,7 +24,6 @@ const AstraTokenSettings = lazy(() => import("@/components/admin/AstraTokenSetti
 const LiveAgentStatusDashboard = lazy(() => import("@/components/admin/LiveAgentStatusDashboard"));
 const OfficeManagement = lazy(() => import("@/components/admin/OfficeManagement"));
 const CustomerServiceTicketManagement = lazy(() => import("@/components/admin/CustomerServiceTicketManagement"));
-const SearchFiltersManagement = lazy(() => import("@/components/admin/SearchFiltersManagement"));
 
 // Add the new consolidated vendor management hub
 const VendorManagementHub = lazy(() => import("@/components/admin/VendorManagementHub"));
@@ -93,7 +93,6 @@ const AdminDashboard = () => {
     { value: "analytics", icon: BarChart3, label: "Analytics", component: WebTrafficAnalytics, adminOnly: true },
     { value: "users", icon: Users, label: "Users", component: SimpleUserManagement, adminOnly: true },
     { value: "properties", icon: Home, label: "Properties", component: PropertyManagement, adminOnly: true },
-    { value: "search-filters", icon: Filter, label: "Search Filters", component: SearchFiltersManagement, adminOnly: true },
     { value: "offices", icon: Building2, label: "Offices", component: OfficeManagement, adminOnly: true },
     { value: "vendors", icon: Store, label: "Vendors", component: VendorManagementHub, adminOnly: true },
     { value: "content", icon: FileText, label: "Content", component: ContentManagement, adminOnly: true },
@@ -164,7 +163,7 @@ const AdminDashboard = () => {
       
       <main className="container mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className={`grid w-full ${isAdmin ? 'grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-12' : 'grid-cols-4'}`}>
+          <TabsList className={`grid w-full ${isAdmin ? 'grid-cols-4 sm:grid-cols-5 md:grid-cols-7 lg:grid-cols-11' : 'grid-cols-4'}`}>
             {visibleTabs.map(tab => (
               <TabsTrigger key={tab.value} value={tab.value} className="flex items-center gap-2">
                 <tab.icon className="h-4 w-4" />
