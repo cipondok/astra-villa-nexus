@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -12,7 +13,6 @@ import { formatIDR } from "@/utils/currency";
 import { Sparkles, Upload, X, Image as ImageIcon, Star, Wand2, Filter, Eye } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import WatermarkSettings from "./WatermarkSettings";
 
 interface PropertyEditModalProps {
   property: any;
@@ -21,11 +21,6 @@ interface PropertyEditModalProps {
 }
 
 const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps) => {
-  // Early return if property is null/undefined
-  if (!property) {
-    return null;
-  }
-
   const [editData, setEditData] = useState({
     title: "",
     description: "",
@@ -520,6 +515,11 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
 
   const totalImages = existingImages.length + imageFiles.length;
 
+  // Early return if property is null/undefined - AFTER all hooks
+  if (!property) {
+    return null;
+  }
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-6xl max-h-[95vh] overflow-y-auto bg-white dark:bg-gray-50">
@@ -529,7 +529,7 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
             Edit Property - Advanced Mode
           </DialogTitle>
           <DialogDescription className="text-gray-600 dark:text-gray-700">
-            Complete property management with images, SEO, and AI tools. Watermark settings are managed globally in Admin > System Settings.
+            Complete property management with images, SEO, and AI tools. Watermark settings are managed globally in Admin &gt; System Settings.
           </DialogDescription>
         </DialogHeader>
         
