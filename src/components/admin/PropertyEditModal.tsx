@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -13,6 +12,7 @@ import { formatIDR } from "@/utils/currency";
 import { Sparkles, Upload, X, Image as ImageIcon, Star, Wand2, Filter, Eye } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useThemeSettings } from "@/contexts/ThemeSettingsContext";
 
 interface PropertyEditModalProps {
   property: any;
@@ -52,6 +52,7 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
 
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
+  const { themeSettings } = useThemeSettings();
 
   // Fetch all users for owner/agent selection
   const { data: users } = useQuery({
@@ -83,7 +84,6 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
     enabled: isOpen,
   });
 
-  // ALWAYS call useEffect hooks
   useEffect(() => {
     if (property && isOpen) {
       console.log('Setting edit data for property:', property);
@@ -124,7 +124,6 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
     }
   }, [property, isOpen]);
 
-  // ALWAYS define mutations - they don't execute until called
   const updatePropertyMutation = useMutation({
     mutationFn: async (updates: any) => {
       if (!property?.id) {
@@ -157,7 +156,7 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
       const updatePayload = {
         ...updates,
         images: finalImageUrls,
-        image_urls: finalImageUrls, // Update both fields for compatibility
+        image_urls: finalImageUrls,
         thumbnail_url: thumbnailUrl,
         price: updates.price ? parseFloat(updates.price) : null,
         bedrooms: updates.bedrooms ? parseInt(updates.bedrooms) : null,
@@ -183,29 +182,25 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
     onSuccess: (updatedData) => {
       showSuccess("Property Updated", "Property has been updated successfully with all changes.");
       
-      // Invalidate all relevant queries with specific refetching
       const queriesToInvalidate = [
         ['admin-properties'],
         ['properties'],
         ['property', property?.id],
         ['all-properties'],
-        ['all-users'], // In case owner/agent changed
+        ['all-users'],
       ];
 
       queriesToInvalidate.forEach(queryKey => {
         queryClient.invalidateQueries({ queryKey });
       });
       
-      // Clear form state
       setImageFiles([]);
       
-      // Force immediate refetch of admin properties
       setTimeout(() => {
         queryClient.refetchQueries({ queryKey: ['admin-properties'] });
         queryClient.refetchQueries({ queryKey: ['properties'] });
       }, 100);
       
-      // Close modal
       onClose();
     },
     onError: (error: any) => {
@@ -226,7 +221,6 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
       return data.image;
     },
     onSuccess: (imageData) => {
-      // Convert base64 to blob and add to existing images
       const base64Data = imageData.replace(/^data:image\/[a-z]+;base64,/, '');
       const byteCharacters = atob(base64Data);
       const byteNumbers = new Array(byteCharacters.length);
@@ -261,7 +255,6 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
       return data;
     },
     onSuccess: (data) => {
-      // Update the form with generated SEO content
       if (data.seo_title && data.seo_description) {
         setEditData(prev => ({
           ...prev,
@@ -276,7 +269,6 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
     },
   });
 
-  // Generate AV filename with 15 random digits
   const generateAVFilename = (originalFile: File): string => {
     const extension = originalFile.name.split('.').pop();
     const randomDigits = Math.random().toString().slice(2, 17).padStart(15, '0');
@@ -286,12 +278,12 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
   // Function to add watermark to image using global settings
   const addWatermarkToImage = async (file: File): Promise<File> => {
     return new Promise(async (resolve) => {
-      // Use global watermark settings instead of property-specific ones
+      // Use global watermark settings with theme integration
       const settings = {
         is_enabled: true,
         watermark_type: 'text',
         text_content: 'VillaAstra',
-        text_color: '#FFFFFF',
+        text_color: themeSettings.primaryColor, // Use theme primary color
         text_opacity: 0.70,
         text_size: 24,
         text_font: 'Arial',
@@ -304,12 +296,17 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
         offset_y: 0
       };
 
-      // Load settings from global watermark settings
+      // Load settings from global watermark settings and apply theme colors
       if (globalWatermarkSettings && globalWatermarkSettings.length > 0) {
         globalWatermarkSettings.forEach((setting: any) => {
           const key = setting.key.replace('watermark_', '');
           if (key in settings) {
             let value = setting.value?.value || setting.value;
+            
+            // Apply theme color for text_color if not specifically set
+            if (key === 'text_color' && (!value || value === '#FFFFFF')) {
+              value = themeSettings.primaryColor;
+            }
             
             if (typeof (settings as any)[key] === 'boolean') {
               value = Boolean(value === true || value === 'true' || value === 1);
@@ -353,16 +350,16 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
           x += settings.offset_x || 0;
           y += settings.offset_y || 0;
 
-          // Apply text watermark
+          // Apply text watermark with theme color
           if (settings.watermark_type === 'text' || settings.watermark_type === 'both') {
             ctx.globalAlpha = settings.text_opacity || 0.70;
-            ctx.fillStyle = settings.text_color || '#FFFFFF';
+            ctx.fillStyle = settings.text_color || themeSettings.primaryColor;
             ctx.font = `${Math.max(settings.text_size || 24, img.width / 40)}px ${settings.text_font || 'Arial'}`;
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
             
-            // Add text shadow for better visibility
-            ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+            // Add text shadow for better visibility with theme-aware shadow
+            ctx.shadowColor = themeSettings.isDarkMode ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.5)';
             ctx.shadowBlur = 4;
             ctx.shadowOffsetX = 2;
             ctx.shadowOffsetY = 2;
@@ -423,7 +420,6 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
     const uploadedUrls: string[] = [];
     
     for (const file of files) {
-      // Add watermark to image with comprehensive settings
       const watermarkedFile = await addWatermarkToImage(file);
       
       const fileName = `${property.id}/${generateAVFilename(watermarkedFile)}`;
@@ -477,7 +473,6 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
     const imageToRemove = existingImages[index];
     setExistingImages(prev => prev.filter((_, i) => i !== index));
     
-    // If the removed image was the selected thumbnail, reset thumbnail selection
     if (selectedThumbnail === imageToRemove) {
       const remainingImages = existingImages.filter((_, i) => i !== index);
       setSelectedThumbnail(remainingImages.length > 0 ? remainingImages[0] : "");
@@ -506,7 +501,6 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
     user.role === 'agent' || user.role === 'admin'
   ) || [];
 
-  // Format price display
   const formatPriceDisplay = (price: string) => {
     if (!price) return '';
     const numPrice = parseFloat(price);
@@ -515,7 +509,6 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
 
   const totalImages = existingImages.length + imageFiles.length;
 
-  // Early return if property is null/undefined - AFTER all hooks
   if (!property) {
     return null;
   }
