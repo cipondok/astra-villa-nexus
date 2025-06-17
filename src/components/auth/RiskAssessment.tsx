@@ -22,7 +22,18 @@ export const RiskAssessment = ({ riskLevel, factors, className }: RiskAssessment
     }
   };
 
-  const getRiskVariant = () => {
+  const getAlertVariant = (): "default" | "destructive" => {
+    switch (riskLevel) {
+      case "low":
+        return "default";
+      case "medium":
+        return "default";
+      case "high":
+        return "destructive";
+    }
+  };
+
+  const getBadgeVariant = () => {
     switch (riskLevel) {
       case "low":
         return "default" as const;
@@ -46,12 +57,12 @@ export const RiskAssessment = ({ riskLevel, factors, className }: RiskAssessment
 
   return (
     <div className={className}>
-      <Alert variant={getRiskVariant()}>
+      <Alert variant={getAlertVariant()}>
         {getRiskIcon()}
         <AlertDescription>
           <div className="flex items-center justify-between mb-2">
             <span className="font-medium">Security Assessment</span>
-            <Badge variant={getRiskVariant()}>
+            <Badge variant={getBadgeVariant()}>
               {riskLevel.toUpperCase()} RISK
             </Badge>
           </div>
