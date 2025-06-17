@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAlert } from "@/contexts/AlertContext";
 import { formatIDR } from "@/utils/currency";
-import { Sparkles } from "lucide-react";
+import { Sparkles, Upload, X, Image as ImageIcon } from "lucide-react";
 
 interface PropertyEditModalProps {
   property: any;
@@ -33,6 +33,10 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
     seo_title: "",
     seo_description: "",
   });
+
+  const [imageFiles, setImageFiles] = useState<File[]>([]);
+  const [existingImages, setExistingImages] = useState<string[]>([]);
+  const [imageUploading, setImageUploading] = useState(false);
 
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
@@ -69,29 +73,75 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
         seo_title: property.seo_title || "",
         seo_description: property.seo_description || "",
       });
+      setExistingImages(property.images || []);
+      setImageFiles([]);
     }
   }, [property, isOpen]);
+
+  const uploadImages = async (files: File[]): Promise<string[]> => {
+    const uploadedUrls: string[] = [];
+    
+    for (const file of files) {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${property.id}/${Date.now()}-${Math.random()}.${fileExt}`;
+      
+      const { error: uploadError } = await supabase.storage
+        .from('property-images')
+        .upload(fileName, file);
+
+      if (uploadError) {
+        console.error('Upload error:', uploadError);
+        throw new Error(`Failed to upload ${file.name}`);
+      }
+
+      const { data: urlData } = supabase.storage
+        .from('property-images')
+        .getPublicUrl(fileName);
+
+      uploadedUrls.push(urlData.publicUrl);
+    }
+    
+    return uploadedUrls;
+  };
 
   const updatePropertyMutation = useMutation({
     mutationFn: async (updates: any) => {
       console.log('Updating property with data:', updates);
+      
+      let finalImageUrls = [...existingImages];
+      
+      // Upload new images if any
+      if (imageFiles.length > 0) {
+        setImageUploading(true);
+        try {
+          const newImageUrls = await uploadImages(imageFiles);
+          finalImageUrls = [...finalImageUrls, ...newImageUrls];
+        } catch (error) {
+          throw new Error(`Image upload failed: ${error}`);
+        } finally {
+          setImageUploading(false);
+        }
+      }
+
       const { error } = await supabase
         .from('properties')
         .update({
           ...updates,
+          images: finalImageUrls,
           price: updates.price ? parseFloat(updates.price) : null,
           bedrooms: updates.bedrooms ? parseInt(updates.bedrooms) : null,
           bathrooms: updates.bathrooms ? parseInt(updates.bathrooms) : null,
           area_sqm: updates.area_sqm ? parseInt(updates.area_sqm) : null,
         })
         .eq('id', property.id);
+
       if (error) {
         console.error('Update error:', error);
         throw error;
       }
     },
     onSuccess: () => {
-      showSuccess("Property Updated", "Property has been updated successfully.");
+      showSuccess("Property Updated", "Property has been updated successfully with images.");
       queryClient.invalidateQueries({ queryKey: ['admin-properties'] });
       onClose();
     },
@@ -129,6 +179,31 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
     generateSeoMutation.mutate({ propertyId: property.id, title: property.title });
   };
 
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    const imageFiles = files.filter(file => file.type.startsWith('image/'));
+    
+    if (imageFiles.length !== files.length) {
+      showError("Invalid Files", "Please select only image files.");
+      return;
+    }
+    
+    if (imageFiles.length + existingImages.length > 10) {
+      showError("Too Many Images", "Maximum 10 images allowed per property.");
+      return;
+    }
+    
+    setImageFiles(prev => [...prev, ...imageFiles]);
+  };
+
+  const removeNewImage = (index: number) => {
+    setImageFiles(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const removeExistingImage = (index: number) => {
+    setExistingImages(prev => prev.filter((_, i) => i !== index));
+  };
+
   const handleUpdate = () => {
     const submitData = {
       ...editData,
@@ -155,11 +230,11 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto bg-white dark:bg-gray-50">
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-white dark:bg-gray-50">
         <DialogHeader>
           <DialogTitle className="text-gray-900 dark:text-gray-800">Edit Property</DialogTitle>
           <DialogDescription className="text-gray-600 dark:text-gray-700">
-            Update property details, ownership, and generate SEO content with AI.
+            Update property details, images, ownership, and generate SEO content with AI.
           </DialogDescription>
         </DialogHeader>
         
@@ -284,6 +359,92 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
             />
           </div>
 
+          {/* Image Upload Section */}
+          <div className="col-span-2 space-y-4 p-4 border rounded-lg bg-blue-50 dark:bg-blue-100">
+            <div className="flex justify-between items-center">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-800">Property Images</h3>
+              <div className="flex items-center gap-2">
+                <input
+                  type="file"
+                  multiple
+                  accept="image/*"
+                  onChange={handleImageSelect}
+                  className="hidden"
+                  id="image-upload"
+                />
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => document.getElementById('image-upload')?.click()}
+                  disabled={imageUploading}
+                >
+                  <Upload className="h-4 w-4 mr-2" />
+                  {imageUploading ? "Uploading..." : "Add Images"}
+                </Button>
+              </div>
+            </div>
+
+            {/* Existing Images */}
+            {existingImages.length > 0 && (
+              <div>
+                <p className="text-sm font-medium text-gray-700 mb-2">Current Images ({existingImages.length})</p>
+                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
+                  {existingImages.map((imageUrl, index) => (
+                    <div key={`existing-${index}`} className="relative group">
+                      <img
+                        src={imageUrl}
+                        alt={`Property ${index + 1}`}
+                        className="w-full h-20 object-cover rounded border"
+                      />
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        className="absolute -top-2 -right-2 h-6 w-6 p-0 opacity-0 group-hover:opacity-100"
+                        onClick={() => removeExistingImage(index)}
+                      >
+                        <X className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* New Images Preview */}
+            {imageFiles.length > 0 && (
+              <div>
+                <p className="text-sm font-medium text-gray-700 mb-2">New Images ({imageFiles.length})</p>
+                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
+                  {imageFiles.map((file, index) => (
+                    <div key={`new-${index}`} className="relative group">
+                      <img
+                        src={URL.createObjectURL(file)}
+                        alt={`New ${index + 1}`}
+                        className="w-full h-20 object-cover rounded border border-blue-300"
+                      />
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        className="absolute -top-2 -right-2 h-6 w-6 p-0 opacity-0 group-hover:opacity-100"
+                        onClick={() => removeNewImage(index)}
+                      >
+                        <X className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {existingImages.length === 0 && imageFiles.length === 0 && (
+              <div className="text-center py-8 border-2 border-dashed border-gray-300 rounded">
+                <ImageIcon className="h-12 w-12 text-gray-400 mx-auto mb-2" />
+                <p className="text-gray-500">No images uploaded yet</p>
+              </div>
+            )}
+          </div>
+
+          {/* AI SEO Content Section */}
           <div className="col-span-2 space-y-4 p-4 border rounded-lg bg-gray-50 dark:bg-gray-100">
             <div className="flex justify-between items-center">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-800">AI SEO Content</h3>
@@ -358,8 +519,11 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
           <Button variant="outline" onClick={onClose}>
             Cancel
           </Button>
-          <Button onClick={handleUpdate} disabled={updatePropertyMutation.isPending}>
-            {updatePropertyMutation.isPending ? "Updating..." : "Update Property"}
+          <Button 
+            onClick={handleUpdate} 
+            disabled={updatePropertyMutation.isPending || imageUploading}
+          >
+            {updatePropertyMutation.isPending ? "Updating..." : imageUploading ? "Uploading Images..." : "Update Property"}
           </Button>
         </DialogFooter>
       </DialogContent>
