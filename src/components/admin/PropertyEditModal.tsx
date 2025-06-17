@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -74,8 +75,16 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
         seo_title: property.seo_title || "",
         seo_description: property.seo_description || "",
       });
-      setExistingImages(property.images || []);
-      setSelectedThumbnail(property.thumbnail_url || (property.images && property.images[0]) || "");
+      
+      // Handle both images and image_urls arrays
+      const currentImages = property.images || property.image_urls || [];
+      console.log('Current images from property:', currentImages);
+      setExistingImages(currentImages);
+      
+      // Set thumbnail - check thumbnail_url first, then first image
+      const thumbnailUrl = property.thumbnail_url || (currentImages.length > 0 ? currentImages[0] : "");
+      console.log('Setting thumbnail URL:', thumbnailUrl);
+      setSelectedThumbnail(thumbnailUrl);
       setImageFiles([]);
     }
   }, [property, isOpen]);
@@ -178,43 +187,59 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
         thumbnailUrl = finalImageUrls[0];
       }
 
+      const updatePayload = {
+        ...updates,
+        images: finalImageUrls,
+        image_urls: finalImageUrls, // Update both fields for compatibility
+        thumbnail_url: thumbnailUrl,
+        price: updates.price ? parseFloat(updates.price) : null,
+        bedrooms: updates.bedrooms ? parseInt(updates.bedrooms) : null,
+        bathrooms: updates.bathrooms ? parseInt(updates.bathrooms) : null,
+        area_sqm: updates.area_sqm ? parseInt(updates.area_sqm) : null,
+        updated_at: new Date().toISOString(),
+      };
+
+      console.log('Final update payload:', updatePayload);
+
       const { error } = await supabase
         .from('properties')
-        .update({
-          ...updates,
-          images: finalImageUrls,
-          thumbnail_url: thumbnailUrl,
-          price: updates.price ? parseFloat(updates.price) : null,
-          bedrooms: updates.bedrooms ? parseInt(updates.bedrooms) : null,
-          bathrooms: updates.bathrooms ? parseInt(updates.bathrooms) : null,
-          area_sqm: updates.area_sqm ? parseInt(updates.area_sqm) : null,
-        })
+        .update(updatePayload)
         .eq('id', property.id);
 
       if (error) {
         console.error('Update error:', error);
         throw error;
       }
+
+      return updatePayload;
     },
-    onSuccess: () => {
+    onSuccess: (updatedData) => {
       showSuccess("Property Updated", "Property has been updated successfully with images.");
       
-      // Invalidate all relevant queries to refresh data
-      queryClient.invalidateQueries({ queryKey: ['admin-properties'] });
-      queryClient.invalidateQueries({ queryKey: ['properties'] });
-      queryClient.invalidateQueries({ queryKey: ['property', property.id] });
-      queryClient.invalidateQueries({ queryKey: ['all-properties'] });
+      // Invalidate all relevant queries with specific refetching
+      const queriesToInvalidate = [
+        ['admin-properties'],
+        ['properties'],
+        ['property', property.id],
+        ['all-properties'],
+        ['all-users'], // In case owner/agent changed
+      ];
+
+      queriesToInvalidate.forEach(queryKey => {
+        queryClient.invalidateQueries({ queryKey });
+      });
       
       // Clear form state
       setImageFiles([]);
       
-      // Close modal
-      onClose();
-      
-      // Force a brief delay then refetch to ensure data is fresh
+      // Force immediate refetch of admin properties
       setTimeout(() => {
         queryClient.refetchQueries({ queryKey: ['admin-properties'] });
-      }, 500);
+        queryClient.refetchQueries({ queryKey: ['properties'] });
+      }, 100);
+      
+      // Close modal
+      onClose();
     },
     onError: (error: any) => {
       console.error('Update mutation error:', error);
@@ -290,6 +315,7 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
   };
 
   const handleThumbnailSelect = (imageUrl: string) => {
+    console.log('Selected thumbnail:', imageUrl);
     setSelectedThumbnail(imageUrl);
   };
 
