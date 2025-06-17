@@ -31,8 +31,7 @@ const AdminAlertSystem = lazy(() => import("./AdminAlertSystem"));
 
 export const tabCategories = {
   overview: {
-    title: "Dashboard Overview",
-    icon: BarChart3,
+    label: "Dashboard Overview",
     items: [
       {
         value: "overview",
@@ -44,8 +43,7 @@ export const tabCategories = {
     ]
   },
   alerts: {
-    title: "Alert Management",
-    icon: Bell,
+    label: "Alert Management",
     items: [
       {
         value: "alerts",
@@ -58,8 +56,7 @@ export const tabCategories = {
     ]
   },
   management: {
-    title: "Core Management",
-    icon: Users,
+    label: "Core Management",
     items: [
       {
         value: "users",
@@ -85,8 +82,7 @@ export const tabCategories = {
     ]
   },
   communication: {
-    title: "Communication & Support",
-    icon: MessageSquare,
+    label: "Communication & Support",
     items: [
       {
         value: "communication",
@@ -107,8 +103,7 @@ export const tabCategories = {
     ]
   },
   system: {
-    title: "System & Security",
-    icon: Settings,
+    label: "System & Security",
     items: [
       {
         value: "system",
