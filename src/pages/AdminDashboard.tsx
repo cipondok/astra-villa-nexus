@@ -8,6 +8,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { Settings, Users, Home, Plus, Gift, Calendar, Database, Shield, FileText, Store, MessageSquare, Activity, BarChart3, Loader2, Wifi, Mail, Building2, LifeBuoy } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import Navigation from "@/components/Navigation";
 import AdminDashboardStats from "@/components/admin/AdminDashboardStats";
 import AdminQuickActions from "@/components/admin/AdminQuickActions";
@@ -89,24 +90,37 @@ const AdminDashboard = () => {
     );
   }
 
-  const allTabs = [
-    { value: "overview", icon: Activity, label: "Overview", component: null, adminOnly: true },
-    { value: "communication", icon: MessageSquare, label: "Communication Hub", component: CommunicationHub, adminOnly: false },
-    { value: "vendor-directory", icon: Store, label: "Vendor Directory", component: EnhancedVendorDirectory, adminOnly: false },
-    { value: "system", icon: Activity, label: "System", component: SystemMonitor, adminOnly: true },
-    { value: "analytics", icon: BarChart3, label: "Analytics", component: WebTrafficAnalytics, adminOnly: true },
-    { value: "users", icon: Users, label: "Users", component: SimpleUserManagement, adminOnly: true },
-    { value: "properties", icon: Home, label: "Properties", component: PropertyManagement, adminOnly: true },
-    { value: "offices", icon: Building2, label: "Offices", component: OfficeManagement, adminOnly: true },
-    { value: "vendors", icon: Store, label: "Vendors", component: VendorManagementHub, adminOnly: true },
-    { value: "content", icon: FileText, label: "Content", component: ContentManagement, adminOnly: true },
-    { value: "support", icon: LifeBuoy, label: "Support", component: CustomerServiceTicketManagement, adminOnly: false },
-    { value: "feedback", icon: MessageSquare, label: "Feedback", component: FeedbackManagement, adminOnly: false },
-    { value: "contact", icon: Mail, label: "Contacts", component: ContactManagement, adminOnly: false },
-    { value: "live-status", icon: Wifi, label: "Live Status", component: LiveAgentStatusDashboard, adminOnly: false },
-  ];
+  const tabCategories = {
+    core: [
+      { value: "overview", icon: Activity, label: "Overview", component: null, adminOnly: true },
+      { value: "analytics", icon: BarChart3, label: "Analytics", component: WebTrafficAnalytics, adminOnly: true },
+      { value: "system", icon: Database, label: "System", component: SystemMonitor, adminOnly: true },
+    ],
+    management: [
+      { value: "users", icon: Users, label: "Users", component: SimpleUserManagement, adminOnly: true },
+      { value: "properties", icon: Home, label: "Properties", component: PropertyManagement, adminOnly: true },
+      { value: "offices", icon: Building2, label: "Offices", component: OfficeManagement, adminOnly: true },
+      { value: "content", icon: FileText, label: "Content", component: ContentManagement, adminOnly: true },
+    ],
+    communication: [
+      { value: "communication", icon: MessageSquare, label: "Communication", component: CommunicationHub, adminOnly: false },
+      { value: "vendor-directory", icon: Store, label: "Vendor Directory", component: EnhancedVendorDirectory, adminOnly: false },
+      { value: "contact", icon: Mail, label: "Contacts", component: ContactManagement, adminOnly: false },
+      { value: "live-status", icon: Wifi, label: "Live Status", component: LiveAgentStatusDashboard, adminOnly: false },
+    ],
+    support: [
+      { value: "support", icon: LifeBuoy, label: "Support", component: CustomerServiceTicketManagement, adminOnly: false },
+      { value: "feedback", icon: MessageSquare, label: "Feedback", component: FeedbackManagement, adminOnly: false },
+      { value: "vendors", icon: Store, label: "Vendors", component: VendorManagementHub, adminOnly: true },
+    ]
+  };
 
-  const visibleTabs = isAdmin ? allTabs : allTabs.filter(tab => !tab.adminOnly);
+  const getVisibleTabs = () => {
+    const allTabs = Object.values(tabCategories).flat();
+    return isAdmin ? allTabs : allTabs.filter(tab => !tab.adminOnly);
+  };
+
+  const visibleTabs = getVisibleTabs();
 
   const DashboardOverview = () => (
     <div className="space-y-6">
@@ -174,14 +188,41 @@ const AdminDashboard = () => {
       
       <main className="container mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className={`grid w-full ${isAdmin ? 'grid-cols-4 sm:grid-cols-5 md:grid-cols-7 lg:grid-cols-12' : 'grid-cols-4'}`}>
-            {visibleTabs.map(tab => (
-              <TabsTrigger key={tab.value} value={tab.value} className="flex items-center gap-2">
-                <tab.icon className="h-4 w-4" />
-                <span className="hidden sm:inline">{tab.label}</span>
-              </TabsTrigger>
-            ))}
-          </TabsList>
+          <TooltipProvider>
+            <TabsList className="flex flex-wrap gap-1 p-2 bg-muted/30 rounded-xl">
+              {Object.entries(tabCategories).map(([category, tabs]) => {
+                const categoryTabs = tabs.filter(tab => !tab.adminOnly || isAdmin);
+                if (categoryTabs.length === 0) return null;
+                
+                return (
+                  <div key={category} className="flex gap-1">
+                    {categoryTabs.map(tab => (
+                      <Tooltip key={tab.value}>
+                        <TooltipTrigger asChild>
+                          <TabsTrigger 
+                            value={tab.value} 
+                            className="group relative h-12 w-12 p-0 rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground hover:w-auto hover:px-3 transition-all duration-300 ease-in-out overflow-hidden"
+                          >
+                            <div className="flex items-center gap-2 whitespace-nowrap">
+                              <tab.icon className="h-5 w-5 group-hover:h-6 group-hover:w-6 transition-all duration-300" />
+                              <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-sm font-medium">
+                                {tab.label}
+                              </span>
+                            </div>
+                          </TabsTrigger>
+                        </TooltipTrigger>
+                        <TooltipContent side="bottom" className="bg-popover text-popover-foreground">
+                          <p className="text-sm font-medium">{tab.label}</p>
+                          <p className="text-xs text-muted-foreground capitalize">{category}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    ))}
+                    {category !== 'support' && <div className="w-px h-8 bg-border/50 self-center mx-1" />}
+                  </div>
+                );
+              })}
+            </TabsList>
+          </TooltipProvider>
 
           <TabsContent value="overview">
             <DashboardOverview />
