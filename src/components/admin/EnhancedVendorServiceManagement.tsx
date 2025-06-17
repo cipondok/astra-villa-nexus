@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -338,7 +337,6 @@ const EnhancedVendorServiceManagement = () => {
                             onCheckedChange={(checked) => 
                               toggleServiceMutation.mutate({ serviceId: service.id, isActive: checked })
                             }
-                            size="sm"
                           />
                         </div>
                       </TableCell>
