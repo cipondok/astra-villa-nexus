@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -61,7 +61,7 @@ const PropertyWatermarkSettings = () => {
   });
 
   // Update local settings when data loads
-  useState(() => {
+  useEffect(() => {
     if (watermarkSettings) {
       setLocalSettings(watermarkSettings);
     }
@@ -71,7 +71,9 @@ const PropertyWatermarkSettings = () => {
     mutationFn: async (settings: any) => {
       const updates = Object.entries(settings).map(([key, value]) => ({
         key: `watermark_${key}`,
-        value: value
+        value: value as any,
+        category: 'watermark',
+        description: `Watermark ${key} setting`
       }));
 
       for (const update of updates) {
@@ -80,6 +82,8 @@ const PropertyWatermarkSettings = () => {
           .upsert({
             key: update.key,
             value: update.value,
+            category: update.category,
+            description: update.description,
             updated_at: new Date().toISOString()
           });
         
@@ -106,8 +110,8 @@ const PropertyWatermarkSettings = () => {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-8">
-        <RefreshCw className="h-6 w-6 animate-spin" />
-        <span className="ml-2">Loading watermark settings...</span>
+        <RefreshCw className="h-6 w-6 animate-spin" style={{ color: themeSettings.primaryColor }} />
+        <span className="ml-2 text-muted-foreground">Loading watermark settings...</span>
       </div>
     );
   }
@@ -116,7 +120,9 @@ const PropertyWatermarkSettings = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-semibold">Property Watermark Settings</h3>
+          <h3 className="text-lg font-semibold" style={{ color: themeSettings.primaryColor }}>
+            Property Watermark Settings
+          </h3>
           <p className="text-sm text-muted-foreground">
             Configure watermarks for property images and virtual tours
           </p>
@@ -125,29 +131,29 @@ const PropertyWatermarkSettings = () => {
           onClick={handleSave}
           disabled={updateWatermarkMutation.isPending}
           style={{ backgroundColor: themeSettings.primaryColor }}
-          className="hover:opacity-90"
+          className="hover:opacity-90 text-white"
         >
           <Save className="h-4 w-4 mr-2" />
-          Save Settings
+          {updateWatermarkMutation.isPending ? 'Saving...' : 'Save Settings'}
         </Button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+        <Card className="border shadow-sm hover:shadow-md transition-shadow">
+          <CardHeader className="pb-4">
+            <CardTitle className="flex items-center gap-2 text-base">
               <Droplets className="h-5 w-5" style={{ color: themeSettings.primaryColor }} />
               Watermark Configuration
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="text-sm">
               Basic watermark settings for property images
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
-            <div className="flex items-center justify-between">
-              <div className="space-y-0.5">
-                <Label htmlFor="watermark-enabled">Enable Watermark</Label>
-                <p className="text-sm text-muted-foreground">
+            <div className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
+              <div className="space-y-1">
+                <Label htmlFor="watermark-enabled" className="text-sm font-medium">Enable Watermark</Label>
+                <p className="text-xs text-muted-foreground">
                   Add watermark to all property images
                 </p>
               </div>
@@ -159,22 +165,27 @@ const PropertyWatermarkSettings = () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="watermark-text">Watermark Text</Label>
+              <Label htmlFor="watermark-text" className="text-sm font-medium">Watermark Text</Label>
               <Input
                 id="watermark-text"
                 value={localSettings.text}
                 onChange={(e) => handleSettingChange('text', e.target.value)}
                 placeholder="Enter watermark text"
+                className="border-2 focus-visible:ring-2"
+                style={{ 
+                  borderColor: `${themeSettings.primaryColor}20`,
+                  '--tw-ring-color': `${themeSettings.primaryColor}40`
+                } as React.CSSProperties}
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="watermark-position">Position</Label>
+              <Label htmlFor="watermark-position" className="text-sm font-medium">Position</Label>
               <Select 
                 value={localSettings.position} 
                 onValueChange={(value) => handleSettingChange('position', value)}
               >
-                <SelectTrigger>
+                <SelectTrigger className="border-2" style={{ borderColor: `${themeSettings.primaryColor}20` }}>
                   <SelectValue placeholder="Select position" />
                 </SelectTrigger>
                 <SelectContent>
@@ -190,37 +201,39 @@ const PropertyWatermarkSettings = () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="watermark-color">Watermark Color</Label>
+              <Label htmlFor="watermark-color" className="text-sm font-medium">Watermark Color</Label>
               <div className="flex gap-2">
                 <Input
                   id="watermark-color"
                   type="color"
                   value={localSettings.color}
                   onChange={(e) => handleSettingChange('color', e.target.value)}
-                  className="w-20 h-10"
+                  className="w-16 h-10 p-1 border-2"
+                  style={{ borderColor: `${themeSettings.primaryColor}40` }}
                 />
                 <Input
                   value={localSettings.color}
                   onChange={(e) => handleSettingChange('color', e.target.value)}
                   placeholder="#000000"
-                  className="flex-1"
+                  className="flex-1 border-2"
+                  style={{ borderColor: `${themeSettings.primaryColor}20` }}
                 />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Appearance Settings</CardTitle>
-            <CardDescription>
+        <Card className="border shadow-sm hover:shadow-md transition-shadow">
+          <CardHeader className="pb-4">
+            <CardTitle className="text-base">Appearance Settings</CardTitle>
+            <CardDescription className="text-sm">
               Fine-tune watermark appearance and visibility
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
-            <div className="space-y-2">
-              <Label htmlFor="watermark-opacity">
-                Opacity: {localSettings.opacity}%
+            <div className="space-y-3">
+              <Label htmlFor="watermark-opacity" className="text-sm font-medium">
+                Opacity: <span style={{ color: themeSettings.primaryColor }}>{localSettings.opacity}%</span>
               </Label>
               <Slider
                 id="watermark-opacity"
@@ -233,9 +246,9 @@ const PropertyWatermarkSettings = () => {
               />
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="watermark-size">
-                Font Size: {localSettings.size}px
+            <div className="space-y-3">
+              <Label htmlFor="watermark-size" className="text-sm font-medium">
+                Font Size: <span style={{ color: themeSettings.primaryColor }}>{localSettings.size}px</span>
               </Label>
               <Slider
                 id="watermark-size"
@@ -248,10 +261,12 @@ const PropertyWatermarkSettings = () => {
               />
             </div>
 
-            <div className="p-4 bg-muted rounded-lg">
-              <h4 className="font-medium mb-2">Preview</h4>
-              <div className="relative bg-gray-200 h-32 rounded border overflow-hidden">
-                <div className="absolute inset-0 flex items-center justify-center text-gray-400">
+            <div className="p-4 bg-muted/30 rounded-lg border" style={{ borderColor: `${themeSettings.primaryColor}20` }}>
+              <h4 className="font-medium mb-3 text-sm" style={{ color: themeSettings.primaryColor }}>
+                Live Preview
+              </h4>
+              <div className="relative bg-gradient-to-br from-gray-100 to-gray-200 h-32 rounded-md border overflow-hidden">
+                <div className="absolute inset-0 flex items-center justify-center text-gray-500 text-sm">
                   Property Image Preview
                 </div>
                 {localSettings.enabled && (
