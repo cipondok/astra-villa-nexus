@@ -13,7 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Settings, Save, RefreshCw, Check, X, Globe, Mail, Shield, Database, Palette } from "lucide-react";
 import { useAlert } from "@/contexts/AlertContext";
 import AstraTokenSettings from "./AstraTokenSettings";
-import WatermarkSettings from "./WatermarkSettings";
+import PropertyWatermarkSettings from "./PropertyWatermarkSettings";
 
 interface SettingsState {
   // Authentication Settings
@@ -649,7 +649,7 @@ const SystemSettings = () => {
               </TabsContent>
 
               <TabsContent value="appearance" className="space-y-6">
-                <WatermarkSettings />
+                <PropertyWatermarkSettings />
               </TabsContent>
 
               <TabsContent value="tokens" className="space-y-6">
