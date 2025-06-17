@@ -35,26 +35,65 @@ const FilterEditModal = ({ filter, isOpen, onClose, onSave }: FilterEditModalPro
   const [previewValue, setPreviewValue] = useState<any>("");
   const [optionsList, setOptionsList] = useState<string[]>([]);
 
+  // Helper function to safely convert filter_options to string
+  const convertFilterOptionsToString = (filterOptions: any): string => {
+    if (!filterOptions) return "";
+    
+    if (Array.isArray(filterOptions)) {
+      return filterOptions.join(", ");
+    }
+    
+    if (typeof filterOptions === 'string') {
+      return filterOptions;
+    }
+    
+    if (typeof filterOptions === 'object') {
+      // If it's an object, try to extract values or stringify
+      const values = Object.values(filterOptions);
+      if (values.length > 0 && typeof values[0] === 'string') {
+        return values.join(", ");
+      }
+    }
+    
+    return "";
+  };
+
+  // Helper function to safely convert filter_options to array
+  const convertFilterOptionsToArray = (filterOptions: any): string[] => {
+    if (!filterOptions) return [];
+    
+    if (Array.isArray(filterOptions)) {
+      return filterOptions.map(opt => String(opt));
+    }
+    
+    if (typeof filterOptions === 'string') {
+      return filterOptions.split(",").map(opt => opt.trim()).filter(opt => opt);
+    }
+    
+    if (typeof filterOptions === 'object') {
+      const values = Object.values(filterOptions);
+      return values.map(val => String(val)).filter(val => val);
+    }
+    
+    return [];
+  };
+
   useEffect(() => {
     if (filter) {
+      const optionsString = convertFilterOptionsToString(filter.filter_options);
+      const optionsArray = convertFilterOptionsToArray(filter.filter_options);
+      
       setFilterData({
         filter_name: filter.filter_name || "",
         filter_type: filter.filter_type || "select",
         category: filter.category || "property",
-        filter_options: Array.isArray(filter.filter_options) 
-          ? filter.filter_options.join(", ") 
-          : filter.filter_options || "",
+        filter_options: optionsString,
         is_active: filter.is_active ?? true,
         display_order: filter.display_order || 0,
         description: filter.description || "",
       });
       
-      if (filter.filter_options) {
-        const options = Array.isArray(filter.filter_options) 
-          ? filter.filter_options 
-          : filter.filter_options.split(",").map((opt: string) => opt.trim());
-        setOptionsList(options);
-      }
+      setOptionsList(optionsArray);
     } else {
       // Reset for new filter
       setFilterData({
