@@ -12,7 +12,7 @@ import { formatIDR } from "@/utils/currency";
 import { Sparkles, Upload, X, Image as ImageIcon, Star, Wand2, Filter, Eye } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Checkbox } from "@/components/ui/checkbox";
+import WatermarkSettings from "./WatermarkSettings";
 
 interface PropertyEditModalProps {
   property: any;
@@ -49,7 +49,6 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
   const [existingImages, setExistingImages] = useState<string[]>([]);
   const [selectedThumbnail, setSelectedThumbnail] = useState<string>("");
   const [imageUploading, setImageUploading] = useState(false);
-  const [generateDefaultImage, setGenerateDefaultImage] = useState(false);
 
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
@@ -108,46 +107,47 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
     }
   }, [property, isOpen]);
 
-  // Generate default image with AI
-  const generateDefaultImageMutation = useMutation({
-    mutationFn: async () => {
-      const prompt = `Create a professional real estate default image with elegant design featuring the text "VillaAstra" as a watermark. The image should have a modern, clean aesthetic with a gradient background in blue and white tones, suitable for property listings. Include subtle architectural elements like building silhouettes or property icons. Make it look professional and trustworthy.`;
-      
-      const { data, error } = await supabase.functions.invoke('ai-image-generator', {
-        body: { prompt }
-      });
+  // Generate AV filename with 15 random digits
+  const generateAVFilename = (originalFile: File): string => {
+    const extension = originalFile.name.split('.').pop();
+    const randomDigits = Math.random().toString().slice(2, 17).padStart(15, '0');
+    return `AV${randomDigits}.${extension}`;
+  };
 
-      if (error) throw error;
-      return data.image;
-    },
-    onSuccess: (imageData) => {
-      // Convert base64 to blob and add to existing images
-      const base64Data = imageData.replace(/^data:image\/[a-z]+;base64,/, '');
-      const byteCharacters = atob(base64Data);
-      const byteNumbers = new Array(byteCharacters.length);
-      for (let i = 0; i < byteCharacters.length; i++) {
-        byteNumbers[i] = byteCharacters.charCodeAt(i);
-      }
-      const byteArray = new Uint8Array(byteNumbers);
-      const blob = new Blob([byteArray], { type: 'image/png' });
-      const file = new File([blob], 'villa-astra-default.png', { type: 'image/png' });
-      
-      setImageFiles(prev => [file, ...prev]);
-      showSuccess("Default Image Generated", "VillaAstra default image has been generated and added to the property.");
-    },
-    onError: (error: any) => {
-      showError("Generation Failed", error.message);
-    },
-  });
-
-  // Function to add watermark to image
+  // Function to add watermark to image with comprehensive settings
   const addWatermarkToImage = async (file: File): Promise<File> => {
-    return new Promise((resolve) => {
+    return new Promise(async (resolve) => {
+      // Get watermark settings for this property
+      const { data: watermarkSettings } = await supabase
+        .from('property_watermark_settings')
+        .select('*')
+        .eq('property_id', property.id)
+        .maybeSingle();
+
+      const settings = watermarkSettings || {
+        is_enabled: true,
+        watermark_type: 'text',
+        text_content: 'VillaAstra',
+        text_color: '#FFFFFF',
+        text_opacity: 0.70,
+        text_size: 24,
+        text_font: 'Arial',
+        position_x: 'center',
+        position_y: 'center',
+        offset_x: 0,
+        offset_y: 0
+      };
+
+      if (!settings.is_enabled) {
+        resolve(file);
+        return;
+      }
+
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
       const img = new Image();
       
-      img.onload = () => {
+      img.onload = async () => {
         canvas.width = img.width;
         canvas.height = img.height;
         
@@ -155,26 +155,75 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
         ctx?.drawImage(img, 0, 0);
         
         if (ctx) {
-          // Set watermark text properties
-          ctx.globalAlpha = 0.3; // 70% transparency
-          ctx.fillStyle = '#FFFFFF';
-          ctx.font = `${Math.max(20, img.width / 20)}px Arial`;
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
+          // Calculate position
+          let x = img.width / 2;
+          let y = img.height / 2;
           
-          // Add watermark text in center
-          const text = 'VillaAstra';
-          ctx.fillText(text, img.width / 2, img.height / 2);
+          if (settings.position_x === 'left') x = img.width * 0.1;
+          if (settings.position_x === 'right') x = img.width * 0.9;
+          if (settings.position_y === 'top') y = img.height * 0.1;
+          if (settings.position_y === 'bottom') y = img.height * 0.9;
           
-          // Convert canvas back to file
-          canvas.toBlob((blob) => {
-            if (blob) {
-              const watermarkedFile = new File([blob], file.name, { type: file.type });
-              resolve(watermarkedFile);
-            } else {
-              resolve(file);
-            }
-          }, file.type);
+          x += settings.offset_x;
+          y += settings.offset_y;
+
+          // Apply text watermark
+          if (settings.watermark_type === 'text' || settings.watermark_type === 'both') {
+            ctx.globalAlpha = settings.text_opacity;
+            ctx.fillStyle = settings.text_color;
+            ctx.font = `${Math.max(settings.text_size, img.width / 40)}px ${settings.text_font}`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            
+            // Add text shadow for better visibility
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+            ctx.shadowBlur = 4;
+            ctx.shadowOffsetX = 2;
+            ctx.shadowOffsetY = 2;
+            
+            ctx.fillText(settings.text_content, x, y);
+          }
+
+          // Apply image watermark if available
+          if ((settings.watermark_type === 'image' || settings.watermark_type === 'both') && settings.watermark_image_url) {
+            const watermarkImg = new Image();
+            watermarkImg.crossOrigin = 'anonymous';
+            watermarkImg.onload = () => {
+              ctx.globalAlpha = settings.image_opacity;
+              const scale = settings.image_scale || 1;
+              const scaledWidth = watermarkImg.width * scale;
+              const scaledHeight = watermarkImg.height * scale;
+              
+              ctx.drawImage(
+                watermarkImg, 
+                x - scaledWidth / 2, 
+                y - scaledHeight / 2, 
+                scaledWidth, 
+                scaledHeight
+              );
+              
+              // Convert canvas back to file
+              canvas.toBlob((blob) => {
+                if (blob) {
+                  const watermarkedFile = new File([blob], generateAVFilename(file), { type: file.type });
+                  resolve(watermarkedFile);
+                } else {
+                  resolve(file);
+                }
+              }, file.type);
+            };
+            watermarkImg.src = settings.watermark_image_url;
+          } else {
+            // Convert canvas back to file
+            canvas.toBlob((blob) => {
+              if (blob) {
+                const watermarkedFile = new File([blob], generateAVFilename(file), { type: file.type });
+                resolve(watermarkedFile);
+              } else {
+                resolve(file);
+              }
+            }, file.type);
+          }
         } else {
           resolve(file);
         }
@@ -188,11 +237,10 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
     const uploadedUrls: string[] = [];
     
     for (const file of files) {
-      // Add watermark to image
+      // Add watermark to image with comprehensive settings
       const watermarkedFile = await addWatermarkToImage(file);
       
-      const fileExt = watermarkedFile.name.split('.').pop();
-      const fileName = `${property.id}/${Date.now()}-${Math.random()}.${fileExt}`;
+      const fileName = `${property.id}/${generateAVFilename(watermarkedFile)}`;
       
       const { error: uploadError } = await supabase.storage
         .from('property-images')
@@ -295,6 +343,38 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
     onError: (error: any) => {
       console.error('Update mutation error:', error);
       showError("Update Failed", error.message);
+    },
+  });
+
+  const generateDefaultImageMutation = useMutation({
+    mutationFn: async () => {
+      const prompt = `Create a professional real estate default image with elegant design featuring the text "VillaAstra" as a watermark. The image should have a modern, clean aesthetic with a gradient background in blue and white tones, suitable for property listings. Include subtle architectural elements like building silhouettes or property icons. Make it look professional and trustworthy.`;
+      
+      const { data, error } = await supabase.functions.invoke('ai-image-generator', {
+        body: { prompt }
+      });
+
+      if (error) throw error;
+      return data.image;
+    },
+    onSuccess: (imageData) => {
+      // Convert base64 to blob and add to existing images
+      const base64Data = imageData.replace(/^data:image\/[a-z]+;base64,/, '');
+      const byteCharacters = atob(base64Data);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], { type: 'image/png' });
+      const fileName = generateAVFilename({ name: 'villa-astra-default.png' } as File);
+      const file = new File([blob], fileName, { type: 'image/png' });
+      
+      setImageFiles(prev => [file, ...prev]);
+      showSuccess("Default Image Generated", "VillaAstra default image has been generated and added to the property.");
+    },
+    onError: (error: any) => {
+      showError("Generation Failed", error.message);
     },
   });
 
@@ -405,14 +485,15 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
             Edit Property - Advanced Mode
           </DialogTitle>
           <DialogDescription className="text-gray-600 dark:text-gray-700">
-            Complete property management with images, SEO, filters, and AI tools.
+            Complete property management with images, SEO, watermark settings, and AI tools.
           </DialogDescription>
         </DialogHeader>
         
         <Tabs defaultValue="basic" className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="basic">Basic Info</TabsTrigger>
             <TabsTrigger value="images">Images & Media</TabsTrigger>
+            <TabsTrigger value="watermark">Watermark</TabsTrigger>
             <TabsTrigger value="seo">SEO & Filters</TabsTrigger>
             <TabsTrigger value="admin">Admin Controls</TabsTrigger>
           </TabsList>
@@ -644,7 +725,6 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
           </TabsContent>
 
           <TabsContent value="images" className="space-y-4">
-            {/* Image Upload Section */}
             <div className="space-y-4 p-4 border rounded-lg bg-blue-50 dark:bg-blue-100">
               <div className="flex justify-between items-center">
                 <div>
@@ -684,7 +764,6 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
                 </div>
               </div>
 
-              {/* Thumbnail Selection Instructions */}
               {totalImages > 1 && (
                 <div className="bg-yellow-50 border border-yellow-200 rounded p-3">
                   <p className="text-sm text-yellow-800 flex items-center gap-2">
@@ -694,7 +773,6 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
                 </div>
               )}
 
-              {/* Existing Images */}
               {existingImages.length > 0 && (
                 <div>
                   <p className="text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
@@ -751,7 +829,6 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
                 </div>
               )}
 
-              {/* New Images Preview */}
               {imageFiles.length > 0 && (
                 <div>
                   <p className="text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
@@ -793,8 +870,11 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
             </div>
           </TabsContent>
 
+          <TabsContent value="watermark" className="space-y-4">
+            <WatermarkSettings propertyId={property.id} />
+          </TabsContent>
+
           <TabsContent value="seo" className="space-y-4">
-            {/* AI SEO Content Section */}
             <div className="space-y-4 p-4 border rounded-lg bg-gray-50 dark:bg-gray-100">
               <div className="flex justify-between items-center">
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-800 flex items-center gap-2">
@@ -836,7 +916,6 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
           </TabsContent>
 
           <TabsContent value="admin" className="space-y-4">
-            {/* Admin Controls Section */}
             <div className="space-y-4 p-4 border rounded-lg bg-red-50 dark:bg-red-100">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-800 flex items-center gap-2">
                 <Filter className="h-5 w-5" />

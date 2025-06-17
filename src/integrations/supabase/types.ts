@@ -1199,6 +1199,80 @@ export type Database = {
           },
         ]
       }
+      property_watermark_settings: {
+        Row: {
+          applies_to_all: boolean | null
+          created_at: string | null
+          id: string
+          image_opacity: number | null
+          image_scale: number | null
+          is_enabled: boolean | null
+          offset_x: number | null
+          offset_y: number | null
+          position_x: string | null
+          position_y: string | null
+          property_id: string | null
+          text_color: string | null
+          text_content: string | null
+          text_font: string | null
+          text_opacity: number | null
+          text_size: number | null
+          updated_at: string | null
+          watermark_image_url: string | null
+          watermark_type: string | null
+        }
+        Insert: {
+          applies_to_all?: boolean | null
+          created_at?: string | null
+          id?: string
+          image_opacity?: number | null
+          image_scale?: number | null
+          is_enabled?: boolean | null
+          offset_x?: number | null
+          offset_y?: number | null
+          position_x?: string | null
+          position_y?: string | null
+          property_id?: string | null
+          text_color?: string | null
+          text_content?: string | null
+          text_font?: string | null
+          text_opacity?: number | null
+          text_size?: number | null
+          updated_at?: string | null
+          watermark_image_url?: string | null
+          watermark_type?: string | null
+        }
+        Update: {
+          applies_to_all?: boolean | null
+          created_at?: string | null
+          id?: string
+          image_opacity?: number | null
+          image_scale?: number | null
+          is_enabled?: boolean | null
+          offset_x?: number | null
+          offset_y?: number | null
+          position_x?: string | null
+          position_y?: string | null
+          property_id?: string | null
+          text_color?: string | null
+          text_content?: string | null
+          text_font?: string | null
+          text_opacity?: number | null
+          text_size?: number | null
+          updated_at?: string | null
+          watermark_image_url?: string | null
+          watermark_type?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "property_watermark_settings_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       search_analytics: {
         Row: {
           clicked_result_id: string | null

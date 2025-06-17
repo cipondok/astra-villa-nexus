@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -27,16 +28,13 @@ interface SettingsState {
   max_file_size: string;
   session_timeout: string;
   api_rate_limit: string;
-  // SEO & Analytics
   google_analytics_id: string;
   meta_keywords: string;
   meta_description: string;
-  // Social Media
   facebook_url: string;
   twitter_url: string;
   instagram_url: string;
   linkedin_url: string;
-  // Property Management
   auto_approve_properties: boolean;
   max_property_images: string;
   property_listing_duration: string;
@@ -60,16 +58,13 @@ const SystemSettings = () => {
     max_file_size: "10",
     session_timeout: "30",
     api_rate_limit: "1000",
-    // SEO & Analytics
     google_analytics_id: "",
     meta_keywords: "",
     meta_description: "",
-    // Social Media
     facebook_url: "",
     twitter_url: "",
     instagram_url: "",
     linkedin_url: "",
-    // Property Management
     auto_approve_properties: false,
     max_property_images: "20",
     property_listing_duration: "90"
@@ -79,25 +74,31 @@ const SystemSettings = () => {
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
 
-  // Fetch system settings
+  // Fetch system settings with better error handling
   const { data: systemSettings, isLoading, refetch } = useQuery({
     queryKey: ['system-settings'],
     queryFn: async () => {
-      console.log('Fetching system settings from database...');
-      
-      const { data, error } = await supabase
-        .from('system_settings')
-        .select('*');
-      
-      if (error) {
-        console.error('Error fetching system settings:', error);
-        throw new Error(`Failed to fetch settings: ${error.message}`);
+      try {
+        console.log('Fetching system settings from database...');
+        
+        const { data, error } = await supabase
+          .from('system_settings')
+          .select('*');
+        
+        if (error) {
+          console.error('Error fetching system settings:', error);
+          // Don't throw error, return empty array instead
+          return [];
+        }
+        
+        console.log('Fetched system settings:', data?.length || 0, 'settings');
+        return data || [];
+      } catch (error) {
+        console.error('Unexpected error fetching settings:', error);
+        return [];
       }
-      
-      console.log('Fetched system settings:', data?.length || 0, 'settings');
-      return data || [];
     },
-    retry: 2,
+    retry: 1,
     retryDelay: 1000,
   });
 
@@ -110,11 +111,25 @@ const SystemSettings = () => {
         try {
           const key = setting.key as keyof SettingsState;
           if (key in loadedSettings) {
-            // Handle different value formats
             let value = setting.value;
+            
+            // Handle different value formats more safely
             if (typeof value === 'object' && value !== null) {
-              value = value.value || value;
+              if ('value' in value) {
+                value = value.value;
+              } else if (typeof value === 'object') {
+                // If it's still an object, try to extract a meaningful value
+                value = JSON.stringify(value);
+              }
             }
+            
+            // Ensure the value is the correct type for the setting
+            if (typeof loadedSettings[key] === 'boolean') {
+              value = Boolean(value === true || value === 'true' || value === 1);
+            } else if (typeof loadedSettings[key] === 'string') {
+              value = String(value || '');
+            }
+            
             (loadedSettings as any)[key] = value;
           }
         } catch (error) {
@@ -126,38 +141,65 @@ const SystemSettings = () => {
     }
   }, [systemSettings]);
 
-  // Individual setting mutation with improved error handling
+  // Individual setting mutation with improved error handling and conflict resolution
   const saveSettingMutation = useMutation({
     mutationFn: async ({ key, value, category }: { key: string; value: any; category: string }) => {
-      console.log('Saving setting:', key, '=', value, 'category:', category);
-      
-      const settingData = {
-        key,
-        value: typeof value === 'object' ? value : { value },
-        category,
-        description: `System setting for ${key.replace(/_/g, ' ')}`
-      };
-      
-      const { data, error } = await supabase
-        .from('system_settings')
-        .upsert(settingData, { 
-          onConflict: 'key',
-          ignoreDuplicates: false 
-        })
-        .select();
-      
-      if (error) {
-        console.error('Save error:', error);
-        throw new Error(`Failed to save ${key}: ${error.message}`);
+      try {
+        console.log('Saving setting:', key, '=', value, 'category:', category);
+        
+        // Prepare the setting data with proper structure
+        const settingData = {
+          key,
+          value: { value }, // Always wrap in object for consistency
+          category,
+          description: `System setting for ${key.replace(/_/g, ' ')}`,
+          is_public: false,
+          updated_at: new Date().toISOString()
+        };
+        
+        // First try to update existing setting
+        const { data: existingData, error: selectError } = await supabase
+          .from('system_settings')
+          .select('id')
+          .eq('key', key)
+          .maybeSingle();
+        
+        let result;
+        if (existingData) {
+          // Update existing setting
+          const { data, error } = await supabase
+            .from('system_settings')
+            .update(settingData)
+            .eq('key', key)
+            .select();
+          
+          result = { data, error };
+        } else {
+          // Insert new setting
+          const { data, error } = await supabase
+            .from('system_settings')
+            .insert(settingData)
+            .select();
+          
+          result = { data, error };
+        }
+        
+        if (result.error) {
+          console.error('Save error:', result.error);
+          throw new Error(`Failed to save ${key}: ${result.error.message}`);
+        }
+        
+        console.log('Successfully saved:', result.data);
+        return { key, value, category };
+      } catch (error) {
+        console.error('Mutation error:', error);
+        throw error;
       }
-      
-      console.log('Successfully saved:', data);
-      return { key, value, category };
     },
     onMutate: ({ key }) => {
       setSavingStates(prev => ({ ...prev, [key]: 'saving' }));
     },
-    onSuccess: ({ key, value }) => {
+    onSuccess: ({ key }) => {
       setSavingStates(prev => ({ ...prev, [key]: 'success' }));
       showSuccess("Setting Saved", `${key.replace(/_/g, ' ')} has been updated successfully.`);
       setTimeout(() => {
@@ -196,6 +238,12 @@ const SystemSettings = () => {
       category = 'website';
     } else if (['max_file_size', 'session_timeout', 'api_rate_limit'].includes(key)) {
       category = 'performance';
+    } else if (['google_analytics_id', 'meta_keywords', 'meta_description'].includes(key)) {
+      category = 'seo';
+    } else if (['facebook_url', 'twitter_url', 'instagram_url', 'linkedin_url'].includes(key)) {
+      category = 'social';
+    } else if (['auto_approve_properties', 'max_property_images', 'property_listing_duration'].includes(key)) {
+      category = 'properties';
     }
 
     saveSettingMutation.mutate({ key, value, category });
@@ -211,6 +259,8 @@ const SystemSettings = () => {
       category = 'notifications';
     } else if (['data_backup', 'auto_updates', 'maintenance_mode'].includes(key)) {
       category = 'system';
+    } else if (['auto_approve_properties'].includes(key)) {
+      category = 'properties';
     }
 
     // Auto-save switches
