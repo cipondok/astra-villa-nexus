@@ -1,3 +1,4 @@
+
 import { useState, Suspense, lazy, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -189,23 +190,23 @@ const AdminDashboard = () => {
       <main className="container mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TooltipProvider>
-            <TabsList className="flex flex-wrap gap-1 p-2 bg-muted/30 rounded-xl">
+            <TabsList className="flex flex-wrap gap-2 p-3 bg-muted/30 rounded-xl h-auto">
               {Object.entries(tabCategories).map(([category, tabs]) => {
                 const categoryTabs = tabs.filter(tab => !tab.adminOnly || isAdmin);
                 if (categoryTabs.length === 0) return null;
                 
                 return (
-                  <div key={category} className="flex gap-1">
+                  <div key={category} className="flex gap-2 items-center">
                     {categoryTabs.map(tab => (
                       <Tooltip key={tab.value}>
                         <TooltipTrigger asChild>
                           <TabsTrigger 
                             value={tab.value} 
-                            className="group relative h-12 w-12 p-0 rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground hover:w-auto hover:px-3 transition-all duration-300 ease-in-out overflow-hidden"
+                            className="group relative h-12 w-12 p-0 rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground hover:w-auto hover:px-4 transition-all duration-300 ease-in-out overflow-hidden bg-background/60 hover:bg-accent hover:text-accent-foreground shadow-sm hover:shadow-md"
                           >
-                            <div className="flex items-center gap-2 whitespace-nowrap">
-                              <tab.icon className="h-5 w-5 group-hover:h-6 group-hover:w-6 transition-all duration-300" />
-                              <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-sm font-medium">
+                            <div className="flex items-center gap-3 whitespace-nowrap">
+                              <tab.icon className="h-5 w-5 group-hover:h-6 group-hover:w-6 transition-all duration-300 flex-shrink-0" />
+                              <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-sm font-medium max-w-0 group-hover:max-w-[120px] overflow-hidden">
                                 {tab.label}
                               </span>
                             </div>
@@ -217,7 +218,7 @@ const AdminDashboard = () => {
                         </TooltipContent>
                       </Tooltip>
                     ))}
-                    {category !== 'support' && <div className="w-px h-8 bg-border/50 self-center mx-1" />}
+                    {category !== 'support' && <div className="w-px h-8 bg-border/50 mx-1" />}
                   </div>
                 );
               })}
