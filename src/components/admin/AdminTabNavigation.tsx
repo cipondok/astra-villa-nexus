@@ -1,7 +1,8 @@
+
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { TabsTrigger } from "@/components/ui/tabs";
+import { TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { ChevronDown } from "lucide-react";
 
@@ -40,7 +41,7 @@ const AdminTabNavigation = ({ tabCategories, activeTab, setActiveTab, isAdmin }:
       </div>
       
       <div className="p-2">
-        <nav className="flex flex-wrap items-center gap-1">
+        <TabsList className="h-auto p-1 bg-transparent">
           {Object.entries(tabCategories).map(([categoryKey, category]) => {
             const categoryTabs = category.items.filter(tab => !tab.adminOnly || isAdmin);
             if (categoryTabs.length === 0) return null;
@@ -127,7 +128,7 @@ const AdminTabNavigation = ({ tabCategories, activeTab, setActiveTab, isAdmin }:
               </div>
             );
           })}
-        </nav>
+        </TabsList>
       </div>
     </div>
   );
