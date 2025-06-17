@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -28,6 +27,19 @@ interface SettingsState {
   max_file_size: string;
   session_timeout: string;
   api_rate_limit: string;
+  // SEO & Analytics
+  google_analytics_id: string;
+  meta_keywords: string;
+  meta_description: string;
+  // Social Media
+  facebook_url: string;
+  twitter_url: string;
+  instagram_url: string;
+  linkedin_url: string;
+  // Property Management
+  auto_approve_properties: boolean;
+  max_property_images: string;
+  property_listing_duration: string;
 }
 
 const SystemSettings = () => {
@@ -47,7 +59,20 @@ const SystemSettings = () => {
     support_phone: "+1-555-0123",
     max_file_size: "10",
     session_timeout: "30",
-    api_rate_limit: "1000"
+    api_rate_limit: "1000",
+    // SEO & Analytics
+    google_analytics_id: "",
+    meta_keywords: "",
+    meta_description: "",
+    // Social Media
+    facebook_url: "",
+    twitter_url: "",
+    instagram_url: "",
+    linkedin_url: "",
+    // Property Management
+    auto_approve_properties: false,
+    max_property_images: "20",
+    property_listing_duration: "90"
   });
 
   const [savingStates, setSavingStates] = useState<{[key: string]: 'idle' | 'saving' | 'success' | 'error'}>({});
@@ -545,7 +570,7 @@ const SystemSettings = () => {
                     id="auto_approve_properties"
                     label="Auto-approve Properties"
                     description="Automatically approve new property listings"
-                    checked={settings.auto_approve_properties || false}
+                    checked={settings.auto_approve_properties}
                     onChange={(checked) => handleSwitchChange('auto_approve_properties', checked)}
                   />
                   

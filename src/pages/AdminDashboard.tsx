@@ -28,9 +28,6 @@ const SearchFiltersManagement = lazy(() => import("@/components/admin/SearchFilt
 // Add the new consolidated vendor management hub
 const VendorManagementHub = lazy(() => import("@/components/admin/VendorManagementHub"));
 
-// Add the new search filters management import
-const SearchFiltersManagement = lazy(() => import("@/components/admin/SearchFiltersManagement"));
-
 const LoadingSpinner = () => (
   <div className="flex items-center justify-center p-8">
     <Loader2 className="h-8 w-8 animate-spin" />
