@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -11,7 +10,10 @@ import {
   Plus,
   AlertTriangle,
   Clock,
-  CheckCircle
+  CheckCircle,
+  Phone,
+  Mail,
+  Wifi
 } from "lucide-react";
 
 interface QuickActionProps {
@@ -20,6 +22,24 @@ interface QuickActionProps {
 
 const AdminQuickActions = ({ onTabChange }: QuickActionProps) => {
   const quickActions = [
+    {
+      title: "Communication Hub",
+      count: 23,
+      action: "Manage",
+      tab: "communication",
+      icon: MessageSquare,
+      variant: "default" as const,
+      description: "Active conversations and channels"
+    },
+    {
+      title: "Vendor Directory",
+      count: 8,
+      action: "Contact",
+      tab: "vendor-directory",
+      icon: Phone,
+      variant: "secondary" as const,
+      description: "Available vendors by service type"
+    },
     {
       title: "Pending User Approvals",
       count: 12,
@@ -43,7 +63,7 @@ const AdminQuickActions = ({ onTabChange }: QuickActionProps) => {
       count: 5,
       action: "Handle",
       tab: "support",
-      icon: MessageSquare,
+      icon: Mail,
       variant: "default" as const,
       description: "Open support tickets requiring response"
     },
@@ -60,25 +80,39 @@ const AdminQuickActions = ({ onTabChange }: QuickActionProps) => {
 
   const recentActivities = [
     {
+      action: "WhatsApp message received",
+      user: "Villa #12 Guest",
+      time: "2 min ago",
+      icon: MessageSquare,
+      type: "info"
+    },
+    {
+      action: "Vendor responded",
+      user: "CleanPro Services",
+      time: "5 min ago",
+      icon: CheckCircle,
+      type: "success"
+    },
+    {
+      action: "Emergency call",
+      user: "Villa #7 - AC Repair",
+      time: "10 min ago",
+      icon: Phone,
+      type: "warning"
+    },
+    {
       action: "User registered",
       user: "john.doe@example.com",
-      time: "5 min ago",
+      time: "15 min ago",
       icon: Users,
       type: "info"
     },
     {
       action: "Property approved",
       user: "Villa Sunset Beach",
-      time: "15 min ago",
+      time: "1 hour ago",
       icon: CheckCircle,
       type: "success"
-    },
-    {
-      action: "Vendor application",
-      user: "CleanPro Services",
-      time: "1 hour ago",
-      icon: Clock,
-      type: "warning"
     }
   ];
 

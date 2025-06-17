@@ -1,4 +1,3 @@
-
 import { useState, Suspense, lazy, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -27,6 +26,8 @@ const LiveAgentStatusDashboard = lazy(() => import("@/components/admin/LiveAgent
 const OfficeManagement = lazy(() => import("@/components/admin/OfficeManagement"));
 const CustomerServiceTicketManagement = lazy(() => import("@/components/admin/CustomerServiceTicketManagement"));
 const VendorManagementHub = lazy(() => import("@/components/admin/VendorManagementHub"));
+const CommunicationHub = lazy(() => import("@/components/admin/CommunicationHub"));
+const EnhancedVendorDirectory = lazy(() => import("@/components/admin/EnhancedVendorDirectory"));
 
 const LoadingSpinner = () => (
   <div className="flex items-center justify-center p-8">
@@ -90,6 +91,8 @@ const AdminDashboard = () => {
 
   const allTabs = [
     { value: "overview", icon: Activity, label: "Overview", component: null, adminOnly: true },
+    { value: "communication", icon: MessageSquare, label: "Communication Hub", component: CommunicationHub, adminOnly: false },
+    { value: "vendor-directory", icon: Store, label: "Vendor Directory", component: EnhancedVendorDirectory, adminOnly: false },
     { value: "system", icon: Activity, label: "System", component: SystemMonitor, adminOnly: true },
     { value: "analytics", icon: BarChart3, label: "Analytics", component: WebTrafficAnalytics, adminOnly: true },
     { value: "users", icon: Users, label: "Users", component: SimpleUserManagement, adminOnly: true },
