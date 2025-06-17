@@ -436,6 +436,10 @@ const PropertyInsertForm = () => {
     );
   }
 
+  const handleCelebrationClose = () => {
+    setShowCelebration(false);
+  };
+
   return (
     <>
       <div className="p-6">
