@@ -28,6 +28,9 @@ const OfficeManagement = lazy(() => import("@/components/admin/OfficeManagement"
 const CustomerServiceTicketManagement = lazy(() => import("@/components/admin/CustomerServiceTicketManagement"));
 const SearchFiltersManagement = lazy(() => import("@/components/admin/SearchFiltersManagement"));
 
+// Add the new enhanced component to lazy loading
+const EnhancedVendorServiceManagement = lazy(() => import("@/components/admin/EnhancedVendorServiceManagement"));
+
 const LoadingSpinner = () => (
   <div className="flex items-center justify-center p-8">
     <Loader2 className="h-8 w-8 animate-spin" />
@@ -96,7 +99,7 @@ const AdminDashboard = () => {
     { value: "search-filters", icon: Filter, label: "Search Filters", component: SearchFiltersManagement, adminOnly: true },
     { value: "offices", icon: Building2, label: "Offices", component: OfficeManagement, adminOnly: true },
     { value: "vendors", icon: Store, label: "Vendors", component: VendorManagement, adminOnly: true },
-    { value: "vendor-services", icon: Settings, label: "Services", component: AdminVendorServiceManagement, adminOnly: true },
+    { value: "vendor-services", icon: Settings, label: "Services", component: EnhancedVendorServiceManagement, adminOnly: true },
     { value: "service-categories", icon: List, label: "Categories", component: VendorServiceCategoryManagement, adminOnly: true },
     { value: "content", icon: FileText, label: "Content", component: ContentManagement, adminOnly: true },
     { value: "support", icon: LifeBuoy, label: "Support", component: CustomerServiceTicketManagement, adminOnly: false },
