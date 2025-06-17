@@ -10,6 +10,8 @@ import { Settings, Users, Home, Plus, Gift, Calendar, Database, Shield, FileText
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Navigation from "@/components/Navigation";
+import AdminDashboardStats from "@/components/admin/AdminDashboardStats";
+import AdminQuickActions from "@/components/admin/AdminQuickActions";
 
 // Lazy load heavy components
 const SystemMonitor = lazy(() => import("@/components/admin/SystemMonitor"));
@@ -24,8 +26,6 @@ const AstraTokenSettings = lazy(() => import("@/components/admin/AstraTokenSetti
 const LiveAgentStatusDashboard = lazy(() => import("@/components/admin/LiveAgentStatusDashboard"));
 const OfficeManagement = lazy(() => import("@/components/admin/OfficeManagement"));
 const CustomerServiceTicketManagement = lazy(() => import("@/components/admin/CustomerServiceTicketManagement"));
-
-// Add the new consolidated vendor management hub
 const VendorManagementHub = lazy(() => import("@/components/admin/VendorManagementHub"));
 
 const LoadingSpinner = () => (
@@ -39,7 +39,7 @@ const AdminDashboard = () => {
   const { user, profile, loading } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const [activeTab, setActiveTab] = useState(location.state?.defaultTab || "system");
+  const [activeTab, setActiveTab] = useState(location.state?.defaultTab || "overview");
   const [systemSettingsOpen, setSystemSettingsOpen] = useState(false);
 
   const isAdmin = profile?.role === 'admin';
@@ -48,7 +48,7 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     if (isSupportStaff && !isAdmin) {
-      if (activeTab === 'system') {
+      if (activeTab === 'system' || activeTab === 'overview') {
         setActiveTab("support");
       }
     }
@@ -89,6 +89,7 @@ const AdminDashboard = () => {
   }
 
   const allTabs = [
+    { value: "overview", icon: Activity, label: "Overview", component: null, adminOnly: true },
     { value: "system", icon: Activity, label: "System", component: SystemMonitor, adminOnly: true },
     { value: "analytics", icon: BarChart3, label: "Analytics", component: WebTrafficAnalytics, adminOnly: true },
     { value: "users", icon: Users, label: "Users", component: SimpleUserManagement, adminOnly: true },
@@ -103,6 +104,13 @@ const AdminDashboard = () => {
   ];
 
   const visibleTabs = isAdmin ? allTabs : allTabs.filter(tab => !tab.adminOnly);
+
+  const DashboardOverview = () => (
+    <div className="space-y-6">
+      <AdminDashboardStats />
+      <AdminQuickActions onTabChange={setActiveTab} />
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-background">
@@ -163,7 +171,7 @@ const AdminDashboard = () => {
       
       <main className="container mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className={`grid w-full ${isAdmin ? 'grid-cols-4 sm:grid-cols-5 md:grid-cols-7 lg:grid-cols-11' : 'grid-cols-4'}`}>
+          <TabsList className={`grid w-full ${isAdmin ? 'grid-cols-4 sm:grid-cols-5 md:grid-cols-7 lg:grid-cols-12' : 'grid-cols-4'}`}>
             {visibleTabs.map(tab => (
               <TabsTrigger key={tab.value} value={tab.value} className="flex items-center gap-2">
                 <tab.icon className="h-4 w-4" />
@@ -172,7 +180,11 @@ const AdminDashboard = () => {
             ))}
           </TabsList>
 
-          {visibleTabs.map(tab => (
+          <TabsContent value="overview">
+            <DashboardOverview />
+          </TabsContent>
+
+          {visibleTabs.filter(tab => tab.component).map(tab => (
              <TabsContent key={tab.value} value={tab.value}>
                 <Suspense fallback={<LoadingSpinner />}>
                   <tab.component />
