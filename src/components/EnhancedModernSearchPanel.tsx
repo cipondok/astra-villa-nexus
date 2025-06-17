@@ -36,40 +36,59 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
   
   const [showFilters, setShowFilters] = useState(false);
   const [activeFilters, setActiveFilters] = useState(0);
-  const filterRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const isMobile = useIsMobile();
 
-  // Close filters when clicking outside
+  // Enhanced click outside handler
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (filterRef.current && !filterRef.current.contains(event.target as Node)) {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        setShowFilters(false);
+      }
+    };
+
+    const handleEscapeKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
         setShowFilters(false);
       }
     };
 
     if (showFilters) {
       document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('keydown', handleEscapeKey);
+      // Prevent body scroll when filters are open on mobile
+      if (isMobile) {
+        document.body.style.overflow = 'hidden';
+      }
     }
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleEscapeKey);
+      document.body.style.overflow = 'unset';
     };
-  }, [showFilters]);
+  }, [showFilters, isMobile]);
 
-  // Close filters on route change/page refresh
+  // Auto-close filters on route change or page refresh
   useEffect(() => {
-    const handleBeforeUnload = () => {
-      setShowFilters(false);
+    const handleBeforeUnload = () => setShowFilters(false);
+    const handleVisibilityChange = () => {
+      if (document.hidden) setShowFilters(false);
     };
 
     window.addEventListener('beforeunload', handleBeforeUnload);
-    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
   }, []);
 
   // Count active filters
   useEffect(() => {
     const count = Object.entries(searchData).filter(([key, value]) => {
-      if (key === 'query') return false; // Don't count query as filter
+      if (key === 'query') return false;
       if (key === 'has3D') return value === true;
       return value !== "";
     }).length;
@@ -80,7 +99,6 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
     const newSearchData = { ...searchData, [field]: value };
     setSearchData(newSearchData);
     
-    // Live search for query field
     if (field === 'query' && typeof value === 'string') {
       onLiveSearch(value);
     }
@@ -99,7 +117,7 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
 
   const clearAllFilters = () => {
     setSearchData({
-      query: searchData.query, // Keep search query
+      query: searchData.query,
       propertyType: "",
       location: "",
       bedrooms: "",
@@ -128,12 +146,19 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
   const bathroomOptions = ["1", "2", "3", "4+"];
 
   return (
-    <div className="w-full max-w-6xl mx-auto" ref={filterRef}>
+    <div className="w-full max-w-6xl mx-auto" ref={containerRef}>
+      {/* Backdrop for mobile */}
+      {showFilters && isMobile && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-40"
+          onClick={() => setShowFilters(false)}
+        />
+      )}
+
       {/* Main Search Bar */}
       <Card className="bg-white/95 backdrop-blur-sm shadow-xl border-0 overflow-hidden">
         <CardContent className="p-3 sm:p-4 lg:p-6">
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-            {/* Search Input */}
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4 z-10" />
               <Input
@@ -144,7 +169,6 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
               />
             </div>
 
-            {/* Filter Toggle */}
             <div className="flex gap-2">
               <Button
                 variant={showFilters ? "default" : "outline"}
@@ -212,8 +236,17 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
 
       {/* Advanced Filters Panel */}
       {showFilters && (
-        <Card className="mt-4 bg-white/98 backdrop-blur-sm shadow-xl border-0 animate-fade-in">
+        <Card className={`mt-4 bg-white/98 backdrop-blur-sm shadow-xl border-0 animate-fade-in ${isMobile ? 'fixed inset-x-2 top-32 z-50 max-h-[70vh] overflow-y-auto' : ''}`}>
           <CardContent className="p-4 sm:p-6">
+            {isMobile && (
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-semibold">{language === "en" ? "Filters" : "Filter"}</h3>
+                <Button variant="ghost" size="sm" onClick={() => setShowFilters(false)}>
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+            )}
+
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {/* Property Type */}
               <div className="space-y-2">
@@ -309,7 +342,6 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
 
             <Separator className="my-4" />
 
-            {/* Additional Options */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="flex items-center space-x-2">
                 <input

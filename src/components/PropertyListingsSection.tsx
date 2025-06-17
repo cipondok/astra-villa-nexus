@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import SearchLoadingAnimation from "@/components/SearchLoadingAnimation";
 import PropertyViewer3D from "@/components/PropertyViewer3D";
-import EnhancedPropertyCard from "@/components/property/EnhancedPropertyCard";
+import CompactPropertyCard from "@/components/property/CompactPropertyCard";
 
 interface PropertyListingsSectionProps {
   language: "en" | "id";
@@ -44,7 +44,8 @@ const PropertyListingsSection = ({
       noFeaturedProperties: "No properties available at the moment",
       view3D: "3D View",
       youMightLike: "You might also like",
-      featuredSubtitle: "Here are some of our featured properties"
+      featuredSubtitle: "Here are some of our featured properties",
+      showingResults: "Showing"
     },
     id: {
       title: "Properti Unggulan",
@@ -62,7 +63,8 @@ const PropertyListingsSection = ({
       noFeaturedProperties: "Tidak ada properti tersedia saat ini",
       view3D: "Tampilan 3D",
       youMightLike: "Anda mungkin juga suka",
-      featuredSubtitle: "Berikut adalah beberapa properti unggulan kami"
+      featuredSubtitle: "Berikut adalah beberapa properti unggulan kami",
+      showingResults: "Menampilkan"
     }
   };
 
@@ -91,7 +93,7 @@ const PropertyListingsSection = ({
   const sectionData = useMemo(() => {
     const sectionTitle = hasSearched ? currentText.searchResults : currentText.title;
     const sectionSubtitle = hasSearched && searchResults.length > 0
-      ? `${searchResults.length} properties found` 
+      ? `${currentText.showingResults} ${searchResults.length} properties` 
       : hasSearched ? "" : currentText.subtitle;
     
     return { sectionTitle, sectionSubtitle };
@@ -99,7 +101,7 @@ const PropertyListingsSection = ({
 
   if (isSearching) {
     return (
-      <section className="py-12">
+      <section className="py-8">
         <div className="container mx-auto px-4">
           <SearchLoadingAnimation language={language} />
         </div>
@@ -111,12 +113,14 @@ const PropertyListingsSection = ({
 
   return (
     <>
-      <section className="py-6">
+      <section className="py-4">
         <div className="container mx-auto px-4">
           {!hideTitle && (
-            <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold mb-4">{sectionData.sectionTitle}</h2>
-              {sectionData.sectionSubtitle && <p className="text-xl text-muted-foreground">{sectionData.sectionSubtitle}</p>}
+            <div className="text-center mb-8">
+              <h2 className="text-2xl lg:text-3xl font-bold mb-2">{sectionData.sectionTitle}</h2>
+              {sectionData.sectionSubtitle && (
+                <p className="text-lg text-muted-foreground">{sectionData.sectionSubtitle}</p>
+              )}
             </div>
           )}
 
@@ -132,9 +136,10 @@ const PropertyListingsSection = ({
               </div>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            // Updated grid for more compact layout
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-6">
               {searchResults.map((property) => (
-                <EnhancedPropertyCard
+                <CompactPropertyCard
                   key={`${property.id}-${property.title}`}
                   property={property}
                   language={language}
@@ -150,12 +155,12 @@ const PropertyListingsSection = ({
           {noResultsFound && hasSearched && fallbackResults.length > 0 && (
             <>
               <div className="text-center my-12">
-                <h2 className="text-3xl font-bold mb-4">{currentText.youMightLike}</h2>
-                <p className="text-xl text-muted-foreground">{currentText.featuredSubtitle}</p>
+                <h2 className="text-2xl lg:text-3xl font-bold mb-4">{currentText.youMightLike}</h2>
+                <p className="text-lg text-muted-foreground">{currentText.featuredSubtitle}</p>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-6">
                 {fallbackResults.map((property) => (
-                  <EnhancedPropertyCard
+                  <CompactPropertyCard
                     key={`fallback-${property.id}`}
                     property={property}
                     language={language}
@@ -170,7 +175,7 @@ const PropertyListingsSection = ({
           )}
 
           {!hasSearched && searchResults.length > 0 && (
-            <div className="text-center mt-12">
+            <div className="text-center mt-8">
               <Button size="lg" variant="outline" onClick={() => navigate('/properties')}>
                 View All Properties
               </Button>
@@ -178,6 +183,7 @@ const PropertyListingsSection = ({
           )}
         </div>
       </section>
+      
       {propertyFor3DView && (
         <PropertyViewer3D
           isOpen={!!propertyFor3DView}
