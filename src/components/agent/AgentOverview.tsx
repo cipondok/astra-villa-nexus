@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -164,21 +165,67 @@ const AgentOverview = () => {
   };
 
   const handleAddListing = () => {
-    alert("Add new listing - This feature will be implemented soon");
+    navigate('/add-property');
   };
 
   const CurrentIcon = agentMembership.currentLevel.icon;
 
   return (
     <div className="space-y-6">
-      {/* Welcome Section */}
-      <div className="bg-gradient-to-r from-blue-600 to-orange-500 text-white p-6 rounded-lg">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold">Agent Dashboard</h1>
-            <p className="text-blue-100 mt-2">Welcome back! Manage your listings and track your performance</p>
+      {/* Optimized Welcome Section with better space utilization */}
+      <div className="bg-gradient-to-r from-blue-600 to-orange-500 text-white rounded-lg overflow-hidden">
+        <div className="p-6">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+            <div className="flex-1">
+              <div className="flex items-center gap-3 mb-3">
+                <Users className="h-8 w-8" />
+                <h1 className="text-2xl lg:text-3xl font-bold">Agent Dashboard</h1>
+              </div>
+              <p className="text-blue-100 text-lg">Welcome back! Manage your listings and track your performance</p>
+            </div>
+            
+            {/* Quick Action Buttons in Header */}
+            <div className="flex flex-col sm:flex-row gap-3 lg:min-w-fit">
+              <Button 
+                onClick={handleAddListing}
+                size="lg"
+                className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm"
+                variant="outline"
+              >
+                <PlusCircle className="h-5 w-5 mr-2" />
+                Add New Listing
+              </Button>
+              <Button 
+                onClick={() => navigate('/properties')}
+                size="lg"
+                className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm"
+                variant="outline"
+              >
+                <Building className="h-5 w-5 mr-2" />
+                View All Properties
+              </Button>
+            </div>
           </div>
-          <Users className="h-8 w-8" />
+          
+          {/* Quick Stats in Header */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-6 pt-6 border-t border-white/20">
+            <div className="text-center">
+              <div className="text-2xl font-bold">{stats.totalListings}</div>
+              <div className="text-blue-100 text-sm">Total Listings</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold">{stats.activeListings}</div>
+              <div className="text-blue-100 text-sm">Active</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold">{stats.pendingListings}</div>
+              <div className="text-blue-100 text-sm">Pending</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold">{stats.totalClients}</div>
+              <div className="text-blue-100 text-sm">Clients</div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -224,53 +271,6 @@ const AgentOverview = () => {
         </CardContent>
       </Card>
 
-      {/* Quick Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Listings</CardTitle>
-            <Building className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.totalListings}</div>
-            <p className="text-xs text-muted-foreground">Properties you manage</p>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Listings</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.activeListings}</div>
-            <p className="text-xs text-muted-foreground">Currently available</p>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Pending Approval</CardTitle>
-            <Calendar className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.pendingListings}</div>
-            <p className="text-xs text-muted-foreground">Awaiting review</p>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Clients</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.totalClients}</div>
-            <p className="text-xs text-muted-foreground">Active clients</p>
-          </CardContent>
-        </Card>
-      </div>
-
       {/* Main Content */}
       <Tabs defaultValue="listings" className="space-y-4">
         <TabsList className="grid w-full grid-cols-6">
@@ -283,11 +283,14 @@ const AgentOverview = () => {
         </TabsList>
 
         <TabsContent value="listings" className="space-y-4">
-          <div className="flex justify-between items-center">
-            <h2 className="text-xl font-semibold">Property Listings</h2>
-            <Button onClick={handleAddListing}>
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div>
+              <h2 className="text-xl font-semibold">Property Listings</h2>
+              <p className="text-muted-foreground">Manage and track your property portfolio</p>
+            </div>
+            <Button onClick={handleAddListing} size="lg">
               <PlusCircle className="h-4 w-4 mr-2" />
-              Add Listing
+              Add New Property Listing
             </Button>
           </div>
 
