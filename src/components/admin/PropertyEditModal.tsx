@@ -21,6 +21,11 @@ interface PropertyEditModalProps {
 }
 
 const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps) => {
+  // Early return if property is null/undefined
+  if (!property) {
+    return null;
+  }
+
   const [editData, setEditData] = useState({
     title: "",
     description: "",
@@ -53,7 +58,7 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
 
-  // Fetch all users for owner/agent selection - ALWAYS call this hook
+  // Fetch all users for owner/agent selection
   const { data: users } = useQuery({
     queryKey: ['all-users'],
     queryFn: async () => {
@@ -65,7 +70,22 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
       if (error) throw error;
       return data;
     },
-    enabled: !!property, // Only fetch when property exists
+    enabled: !!property && isOpen,
+  });
+
+  // Fetch global watermark settings
+  const { data: globalWatermarkSettings } = useQuery({
+    queryKey: ['global-watermark-settings'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('system_settings')
+        .select('*')
+        .eq('category', 'watermark');
+      
+      if (error) throw error;
+      return data || [];
+    },
+    enabled: isOpen,
   });
 
   // ALWAYS call useEffect hooks
@@ -261,11 +281,6 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
     },
   });
 
-  // Early return AFTER all hooks have been declared
-  if (!property) {
-    return null;
-  }
-
   // Generate AV filename with 15 random digits
   const generateAVFilename = (originalFile: File): string => {
     const extension = originalFile.name.split('.').pop();
@@ -273,17 +288,11 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
     return `AV${randomDigits}.${extension}`;
   };
 
-  // Function to add watermark to image with comprehensive settings
+  // Function to add watermark to image using global settings
   const addWatermarkToImage = async (file: File): Promise<File> => {
     return new Promise(async (resolve) => {
-      // Get watermark settings for this property
-      const { data: watermarkSettings } = await supabase
-        .from('property_watermark_settings')
-        .select('*')
-        .eq('property_id', property.id)
-        .maybeSingle();
-
-      const settings = watermarkSettings || {
+      // Use global watermark settings instead of property-specific ones
+      const settings = {
         is_enabled: true,
         watermark_type: 'text',
         text_content: 'VillaAstra',
@@ -299,6 +308,26 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
         offset_x: 0,
         offset_y: 0
       };
+
+      // Load settings from global watermark settings
+      if (globalWatermarkSettings && globalWatermarkSettings.length > 0) {
+        globalWatermarkSettings.forEach((setting: any) => {
+          const key = setting.key.replace('watermark_', '');
+          if (key in settings) {
+            let value = setting.value?.value || setting.value;
+            
+            if (typeof (settings as any)[key] === 'boolean') {
+              value = Boolean(value === true || value === 'true' || value === 1);
+            } else if (typeof (settings as any)[key] === 'number') {
+              value = parseFloat(value) || 0;
+            } else {
+              value = String(value || '');
+            }
+            
+            (settings as any)[key] = value;
+          }
+        });
+      }
 
       if (!settings.is_enabled) {
         resolve(file);
@@ -500,15 +529,14 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
             Edit Property - Advanced Mode
           </DialogTitle>
           <DialogDescription className="text-gray-600 dark:text-gray-700">
-            Complete property management with images, SEO, watermark settings, and AI tools.
+            Complete property management with images, SEO, and AI tools. Watermark settings are managed globally in Admin > System Settings.
           </DialogDescription>
         </DialogHeader>
         
         <Tabs defaultValue="basic" className="w-full">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="basic">Basic Info</TabsTrigger>
             <TabsTrigger value="images">Images & Media</TabsTrigger>
-            <TabsTrigger value="watermark">Watermark</TabsTrigger>
             <TabsTrigger value="seo">SEO & Filters</TabsTrigger>
             <TabsTrigger value="admin">Admin Controls</TabsTrigger>
           </TabsList>
@@ -747,7 +775,7 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
                     <ImageIcon className="h-5 w-5" />
                     Property Images ({totalImages}/15)
                   </h3>
-                  <p className="text-sm text-gray-600">Auto-watermarked with VillaAstra logo</p>
+                  <p className="text-sm text-gray-600">Auto-watermarked using global watermark settings</p>
                 </div>
                 <div className="flex items-center gap-2">
                   <input
@@ -883,10 +911,6 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
                 </div>
               )}
             </div>
-          </TabsContent>
-
-          <TabsContent value="watermark" className="space-y-4">
-            <WatermarkSettings propertyId={property.id} />
           </TabsContent>
 
           <TabsContent value="seo" className="space-y-4">
