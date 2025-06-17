@@ -1,55 +1,136 @@
 
-import { Users, Home, Database, BarChart3, Building2, FileText, MessageSquare, Store, Mail, Wifi, LifeBuoy, Activity } from "lucide-react";
 import { lazy } from "react";
+import { 
+  BarChart3, 
+  Users, 
+  Building2, 
+  MessageSquare, 
+  Settings, 
+  Shield,
+  Store,
+  FileText,
+  Bell,
+  Activity,
+  Database,
+  Wifi,
+  Mail,
+  Phone
+} from "lucide-react";
 
-// Lazy load heavy components
-const SystemMonitor = lazy(() => import("@/components/admin/SystemMonitor"));
-const WebTrafficAnalytics = lazy(() => import("@/components/admin/WebTrafficAnalytics"));
-const SimpleUserManagement = lazy(() => import("@/components/admin/SimpleUserManagement"));
-const PropertyManagement = lazy(() => import("@/components/admin/PropertyManagement"));
-const ContentManagement = lazy(() => import("@/components/admin/ContentManagement"));
-const FeedbackManagement = lazy(() => import("@/components/admin/FeedbackManagement"));
-const ContactManagement = lazy(() => import("@/components/admin/ContactManagement"));
-const LiveAgentStatusDashboard = lazy(() => import("@/components/admin/LiveAgentStatusDashboard"));
-const OfficeManagement = lazy(() => import("@/components/admin/OfficeManagement"));
-const CustomerServiceTicketManagement = lazy(() => import("@/components/admin/CustomerServiceTicketManagement"));
-const VendorManagementHub = lazy(() => import("@/components/admin/VendorManagementHub"));
-const CommunicationHub = lazy(() => import("@/components/admin/CommunicationHub"));
-const EnhancedVendorDirectory = lazy(() => import("@/components/admin/EnhancedVendorDirectory"));
+// Lazy load components for better performance
+const AdminOverview = lazy(() => import("./AdminOverview"));
+const UserManagement = lazy(() => import("./UserManagement"));
+const PropertyManagement = lazy(() => import("./PropertyManagement"));
+const VendorManagementHub = lazy(() => import("./VendorManagementHub"));
+const CommunicationHub = lazy(() => import("./CommunicationHub"));
+const CustomerServiceTicketManagement = lazy(() => import("./CustomerServiceTicketManagement"));
+const SystemSettings = lazy(() => import("./SystemSettings"));
+const SecurityMonitoring = lazy(() => import("./SecurityMonitoring"));
+const SystemReports = lazy(() => import("./SystemReports"));
+const AdminAlertSystem = lazy(() => import("./AdminAlertSystem"));
 
 export const tabCategories = {
-  core: {
-    label: "Core",
+  overview: {
+    title: "Dashboard Overview",
+    icon: BarChart3,
     items: [
-      { value: "overview", icon: Activity, label: "Overview", component: null, adminOnly: true },
-      { value: "analytics", icon: BarChart3, label: "Analytics", component: WebTrafficAnalytics, adminOnly: true },
-      { value: "system", icon: Database, label: "System", component: SystemMonitor, adminOnly: true },
+      {
+        value: "overview",
+        label: "Dashboard",
+        icon: BarChart3,
+        component: AdminOverview,
+        adminOnly: false
+      }
+    ]
+  },
+  alerts: {
+    title: "Alert Management",
+    icon: Bell,
+    items: [
+      {
+        value: "alerts",
+        label: "Admin Alerts",
+        icon: Bell,
+        component: AdminAlertSystem,
+        adminOnly: false,
+        description: "Monitor system alerts and notifications"
+      }
     ]
   },
   management: {
-    label: "Management",
+    title: "Core Management",
+    icon: Users,
     items: [
-      { value: "users", icon: Users, label: "Users", component: SimpleUserManagement, adminOnly: true },
-      { value: "properties", icon: Home, label: "Properties", component: PropertyManagement, adminOnly: true },
-      { value: "offices", icon: Building2, label: "Offices", component: OfficeManagement, adminOnly: true },
-      { value: "content", icon: FileText, label: "Content", component: ContentManagement, adminOnly: true },
+      {
+        value: "users",
+        label: "User Management", 
+        icon: Users,
+        component: UserManagement,
+        adminOnly: true
+      },
+      {
+        value: "properties",
+        label: "Property Management",
+        icon: Building2, 
+        component: PropertyManagement,
+        adminOnly: false
+      },
+      {
+        value: "vendors",
+        label: "Vendor Hub",
+        icon: Store,
+        component: VendorManagementHub,
+        adminOnly: false
+      }
     ]
   },
   communication: {
-    label: "Communication",
+    title: "Communication & Support",
+    icon: MessageSquare,
     items: [
-      { value: "communication", icon: MessageSquare, label: "Communication", component: CommunicationHub, adminOnly: false },
-      { value: "vendor-directory", icon: Store, label: "Vendor Directory", component: EnhancedVendorDirectory, adminOnly: false },
-      { value: "contact", icon: Mail, label: "Contacts", component: ContactManagement, adminOnly: false },
-      { value: "live-status", icon: Wifi, label: "Live Status", component: LiveAgentStatusDashboard, adminOnly: false },
+      {
+        value: "communication",
+        label: "Communication Hub",
+        icon: MessageSquare,
+        component: CommunicationHub,
+        adminOnly: false,
+        description: "WhatsApp, SMS, email communication"
+      },
+      {
+        value: "support",
+        label: "Support Tickets",
+        icon: Mail,
+        component: CustomerServiceTicketManagement,
+        adminOnly: false,
+        description: "Customer support and ticket management"
+      }
     ]
   },
-  support: {
-    label: "Support",
+  system: {
+    title: "System & Security",
+    icon: Settings,
     items: [
-      { value: "support", icon: LifeBuoy, label: "Support", component: CustomerServiceTicketManagement, adminOnly: false },
-      { value: "feedback", icon: MessageSquare, label: "Feedback", component: FeedbackManagement, adminOnly: false },
-      { value: "vendors", icon: Store, label: "Vendors", component: VendorManagementHub, adminOnly: true },
+      {
+        value: "system",
+        label: "System Settings",
+        icon: Settings,
+        component: SystemSettings,
+        adminOnly: true
+      },
+      {
+        value: "security",
+        label: "Security Monitor",
+        icon: Shield,
+        component: SecurityMonitoring,
+        adminOnly: true
+      },
+      {
+        value: "reports",
+        label: "System Reports",
+        icon: FileText,
+        component: SystemReports,
+        adminOnly: true
+      }
     ]
   }
 };

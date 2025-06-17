@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -11,6 +10,7 @@ import AdminDashboardHeader from "@/components/admin/AdminDashboardHeader";
 import AdminTabNavigation from "@/components/admin/AdminTabNavigation";
 import AdminDashboardContent from "@/components/admin/AdminDashboardContent";
 import { tabCategories } from "@/components/admin/AdminTabCategories";
+import { useAdminAlerts } from "@/hooks/useAdminAlerts";
 
 const AdminDashboard = () => {
   const { user, profile, loading } = useAuth();
@@ -21,6 +21,9 @@ const AdminDashboard = () => {
   const isAdmin = profile?.role === 'admin';
   const isSupportStaff = profile?.role === 'agent' || profile?.role === 'customer_service';
   const canAccess = isAdmin || isSupportStaff;
+
+  // Initialize admin alerts hook
+  useAdminAlerts();
 
   useEffect(() => {
     if (isSupportStaff && !isAdmin) {
