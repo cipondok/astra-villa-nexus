@@ -6,15 +6,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Progress } from "@/components/ui/progress";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/contexts/AuthContext";
-import { Eye, EyeOff, Shield, Smartphone, Clock, AlertTriangle, CheckCircle } from "lucide-react";
+import { Eye, EyeOff, Shield, Mail, User, Lock, CheckCircle, XCircle, AlertTriangle } from "lucide-react";
 import { PasswordStrengthMeter } from "./PasswordStrengthMeter";
 import { MFASetup } from "./MFASetup";
 import { BiometricAuth } from "./BiometricAuth";
 import { RiskAssessment } from "./RiskAssessment";
+import { useSecurityMonitoring } from "@/hooks/useSecurityMonitoring";
 
 interface SecureAuthModalProps {
   isOpen: boolean;
@@ -28,6 +27,13 @@ interface BehavioralMetrics {
   typingPattern: number[];
 }
 
+interface EmailValidation {
+  isValid: boolean;
+  isChecking: boolean;
+  message: string;
+  type: "success" | "error" | "warning" | null;
+}
+
 const SecureAuthModal = ({ isOpen, onClose, language }: SecureAuthModalProps) => {
   const [activeTab, setActiveTab] = useState("login");
   const [loginData, setLoginData] = useState({ email: "", password: "" });
@@ -38,25 +44,31 @@ const SecureAuthModal = ({ isOpen, onClose, language }: SecureAuthModalProps) =>
     fullName: "" 
   });
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [showMFA, setShowMFA] = useState(false);
   const [mfaRequired, setMfaRequired] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
-  const [errors, setErrors] = useState<{[key: string]: string}>({});
+  const [emailValidation, setEmailValidation] = useState<EmailValidation>({
+    isValid: false,
+    isChecking: false,
+    message: "",
+    type: null
+  });
+  const [passwordsMatch, setPasswordsMatch] = useState(true);
   const [riskLevel, setRiskLevel] = useState<"low" | "medium" | "high">("low");
   const [behavioralMetrics, setBehavioralMetrics] = useState<BehavioralMetrics>({
     keystrokes: [],
     mouseMovements: [],
     typingPattern: []
   });
-  const [breachStatus, setBreachStatus] = useState<"checking" | "safe" | "breached" | null>(null);
-  const [rateLimitWarning, setRateLimitWarning] = useState(false);
-  const [loginAttempts, setLoginAttempts] = useState(0);
   
   const { signIn, signUp } = useAuth();
+  const { logSecurityEvent, calculateRiskScore, checkBreachStatus } = useSecurityMonitoring();
   const mouseTrackingRef = useRef<HTMLDivElement>(null);
   const lastKeystrokeRef = useRef(0);
+  const emailCheckTimeoutRef = useRef<NodeJS.Timeout>();
 
   const text = {
     en: {
@@ -67,12 +79,13 @@ const SecureAuthModal = ({ isOpen, onClose, language }: SecureAuthModalProps) =>
       confirmPassword: "Confirm Password",
       fullName: "Full Name",
       rememberMe: "Remember me for 30 days",
-      mfaRequired: "Multi-Factor Authentication Required",
-      riskDetected: "Suspicious activity detected",
-      breachDetected: "Email found in data breach",
-      rateLimited: "Too many attempts. Please wait",
-      biometricAuth: "Use Biometric Authentication",
-      passwordStrength: "Password Strength",
+      emailValid: "Email is valid",
+      emailInvalid: "Please enter a valid email address",
+      emailExists: "Email already registered",
+      emailChecking: "Checking email...",
+      passwordsMatch: "Passwords match",
+      passwordsDontMatch: "Passwords don't match",
+      weakPassword: "Password too weak (minimum strength: Good)",
       gdprConsent: "I agree to data processing for security purposes"
     },
     id: {
@@ -83,17 +96,112 @@ const SecureAuthModal = ({ isOpen, onClose, language }: SecureAuthModalProps) =>
       confirmPassword: "Konfirmasi Kata Sandi",
       fullName: "Nama Lengkap",
       rememberMe: "Ingat saya selama 30 hari",
-      mfaRequired: "Autentikasi Multi-Faktor Diperlukan",
-      riskDetected: "Aktivitas mencurigakan terdeteksi",
-      breachDetected: "Email ditemukan dalam kebocoran data",
-      rateLimited: "Terlalu banyak percobaan. Silakan tunggu",
-      biometricAuth: "Gunakan Autentikasi Biometrik",
-      passwordStrength: "Kekuatan Kata Sandi",
+      emailValid: "Email valid",
+      emailInvalid: "Silakan masukkan alamat email yang valid",
+      emailExists: "Email sudah terdaftar",
+      emailChecking: "Memeriksa email...",
+      passwordsMatch: "Kata sandi cocok",
+      passwordsDontMatch: "Kata sandi tidak cocok",
+      weakPassword: "Kata sandi terlalu lemah (minimum: Baik)",
       gdprConsent: "Saya setuju dengan pemrosesan data untuk tujuan keamanan"
     }
   };
 
   const currentText = text[language];
+
+  // Email validation function
+  const validateEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  // Check email availability and format
+  const checkEmail = async (email: string) => {
+    if (!email) {
+      setEmailValidation({ isValid: false, isChecking: false, message: "", type: null });
+      return;
+    }
+
+    if (!validateEmail(email)) {
+      setEmailValidation({
+        isValid: false,
+        isChecking: false,
+        message: currentText.emailInvalid,
+        type: "error"
+      });
+      return;
+    }
+
+    setEmailValidation({
+      isValid: false,
+      isChecking: true,
+      message: currentText.emailChecking,
+      type: null
+    });
+
+    try {
+      // Check for data breaches
+      const breachData = await checkBreachStatus(email);
+      
+      // For demonstration - in real app, you'd check if email exists in your database
+      const emailExists = Math.random() > 0.8; // 20% chance email exists for demo
+      
+      if (emailExists && activeTab === "register") {
+        setEmailValidation({
+          isValid: false,
+          isChecking: false,
+          message: currentText.emailExists,
+          type: "error"
+        });
+      } else {
+        const message = breachData.breached 
+          ? "Email valid but found in data breach"
+          : currentText.emailValid;
+        
+        setEmailValidation({
+          isValid: true,
+          isChecking: false,
+          message,
+          type: breachData.breached ? "warning" : "success"
+        });
+      }
+    } catch (error) {
+      setEmailValidation({
+        isValid: true,
+        isChecking: false,
+        message: currentText.emailValid,
+        type: "success"
+      });
+    }
+  };
+
+  // Debounced email checking
+  useEffect(() => {
+    const email = activeTab === "login" ? loginData.email : registerData.email;
+    
+    if (emailCheckTimeoutRef.current) {
+      clearTimeout(emailCheckTimeoutRef.current);
+    }
+
+    emailCheckTimeoutRef.current = setTimeout(() => {
+      checkEmail(email);
+    }, 500);
+
+    return () => {
+      if (emailCheckTimeoutRef.current) {
+        clearTimeout(emailCheckTimeoutRef.current);
+      }
+    };
+  }, [registerData.email, loginData.email, activeTab]);
+
+  // Password confirmation validation
+  useEffect(() => {
+    if (registerData.confirmPassword) {
+      setPasswordsMatch(registerData.password === registerData.confirmPassword);
+    } else {
+      setPasswordsMatch(true);
+    }
+  }, [registerData.password, registerData.confirmPassword]);
 
   // Behavioral biometrics tracking
   useEffect(() => {
@@ -131,107 +239,35 @@ const SecureAuthModal = ({ isOpen, onClose, language }: SecureAuthModalProps) =>
     };
   }, [isOpen]);
 
-  // Check email against breach database
-  const checkEmailBreach = async (email: string) => {
-    if (!email.includes('@')) return;
-    
-    setBreachStatus("checking");
-    try {
-      // Simulate HaveIBeenPwned API check
-      const response = await fetch(`/api/check-breach`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email })
-      });
-      
-      if (response.ok) {
-        const data = await response.json();
-        setBreachStatus(data.breached ? "breached" : "safe");
-      }
-    } catch (error) {
-      setBreachStatus("safe"); // Fail safe
-    }
-  };
-
-  // Risk assessment based on behavioral metrics and device fingerprinting
-  const assessRisk = () => {
-    const metrics = behavioralMetrics;
-    let risk = 0;
-    
-    // Check typing pattern consistency
-    if (metrics.typingPattern.length > 10) {
-      const avgTypingSpeed = metrics.typingPattern.reduce((a, b) => a + b, 0) / metrics.typingPattern.length;
-      const variance = metrics.typingPattern.reduce((sum, time) => sum + Math.pow(time - avgTypingSpeed, 2), 0) / metrics.typingPattern.length;
-      
-      if (variance > 10000) risk += 1; // High variance = suspicious
-    }
-    
-    // Check mouse movement patterns
-    if (metrics.mouseMovements.length > 20) {
-      const movements = metrics.mouseMovements;
-      const isBot = movements.every((move, i) => 
-        i === 0 || Math.abs(move.x - movements[i-1].x) < 5 && Math.abs(move.y - movements[i-1].y) < 5
-      );
-      if (isBot) risk += 2;
-    }
-    
-    // Device fingerprinting (simplified)
-    const isNewDevice = !localStorage.getItem('device_fingerprint');
-    if (isNewDevice) risk += 1;
-    
-    const riskLevel = risk >= 3 ? "high" : risk >= 2 ? "medium" : "low";
-    setRiskLevel(riskLevel);
-    
-    if (riskLevel === "high") {
-      setMfaRequired(true);
-    }
-  };
-
-  // Rate limiting
-  const handleRateLimit = () => {
-    const attempts = loginAttempts + 1;
-    setLoginAttempts(attempts);
-    
-    if (attempts >= 5) {
-      setRateLimitWarning(true);
-      setTimeout(() => {
-        setRateLimitWarning(false);
-        setLoginAttempts(0);
-      }, 15 * 60 * 1000); // 15 minutes
-    }
-  };
-
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (rateLimitWarning) return;
+    
+    if (!emailValidation.isValid && activeTab === "login") {
+      await checkEmail(loginData.email);
+      return;
+    }
     
     setIsLoading(true);
-    assessRisk();
+    
+    // Calculate risk score
+    const riskScore = calculateRiskScore(behavioralMetrics);
+    const riskLevel = riskScore >= 70 ? "high" : riskScore >= 40 ? "medium" : "low";
+    setRiskLevel(riskLevel);
+    
+    logSecurityEvent({
+      type: "login_attempt",
+      details: { email: loginData.email, riskScore, riskLevel }
+    });
     
     try {
       const result = await signIn(loginData.email, loginData.password);
       
       if (result.success) {
-        // Store device fingerprint
-        localStorage.setItem('device_fingerprint', Date.now().toString());
-        
-        // Handle remember me
-        if (rememberMe) {
-          const expiryDate = new Date();
-          expiryDate.setDate(expiryDate.getDate() + 30);
-          localStorage.setItem('remember_token', JSON.stringify({
-            email: loginData.email,
-            expires: expiryDate.toISOString()
-          }));
-        }
-        
-        if (mfaRequired || riskLevel === "high") {
+        if (riskLevel === "high") {
           setShowMFA(true);
         } else {
           onClose();
         }
-      } else {
-        handleRateLimit();
       }
     } finally {
       setIsLoading(false);
@@ -240,6 +276,11 @@ const SecureAuthModal = ({ isOpen, onClose, language }: SecureAuthModalProps) =>
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!emailValidation.isValid || !passwordsMatch || passwordStrength < 3) {
+      return;
+    }
+    
     setIsLoading(true);
     
     try {
@@ -252,19 +293,21 @@ const SecureAuthModal = ({ isOpen, onClose, language }: SecureAuthModalProps) =>
     }
   };
 
-  // Auto-fill remembered credentials
-  useEffect(() => {
-    const remembered = localStorage.getItem('remember_token');
-    if (remembered) {
-      const data = JSON.parse(remembered);
-      if (new Date(data.expires) > new Date()) {
-        setLoginData(prev => ({ ...prev, email: data.email }));
-        setRememberMe(true);
-      } else {
-        localStorage.removeItem('remember_token');
-      }
+  const getEmailIcon = () => {
+    if (emailValidation.isChecking) {
+      return <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />;
     }
-  }, [isOpen]);
+    if (emailValidation.type === "success") {
+      return <CheckCircle className="h-4 w-4 text-green-500" />;
+    }
+    if (emailValidation.type === "error") {
+      return <XCircle className="h-4 w-4 text-red-500" />;
+    }
+    if (emailValidation.type === "warning") {
+      return <AlertTriangle className="h-4 w-4 text-yellow-500" />;
+    }
+    return <Mail className="h-4 w-4 text-gray-400" />;
+  };
 
   if (!isOpen) return null;
 
@@ -274,7 +317,7 @@ const SecureAuthModal = ({ isOpen, onClose, language }: SecureAuthModalProps) =>
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Shield className="h-5 w-5 text-blue-600" />
-            {currentText.login}
+            Astra Villa
           </DialogTitle>
           <DialogDescription>
             Enterprise-grade security for your account
@@ -283,22 +326,10 @@ const SecureAuthModal = ({ isOpen, onClose, language }: SecureAuthModalProps) =>
 
         {/* Risk Assessment Alert */}
         {riskLevel !== "low" && (
-          <Alert variant={riskLevel === "high" ? "destructive" : "default"}>
-            <AlertTriangle className="h-4 w-4" />
-            <AlertDescription>
-              {currentText.riskDetected} - {riskLevel.toUpperCase()} risk detected
-            </AlertDescription>
-          </Alert>
-        )}
-
-        {/* Rate Limit Warning */}
-        {rateLimitWarning && (
-          <Alert variant="destructive">
-            <Clock className="h-4 w-4" />
-            <AlertDescription>
-              {currentText.rateLimited} (15 minutes remaining)
-            </AlertDescription>
-          </Alert>
+          <RiskAssessment 
+            riskLevel={riskLevel}
+            factors={["New device detected", "Unusual typing pattern"]}
+          />
         )}
 
         {/* MFA Flow */}
@@ -318,36 +349,30 @@ const SecureAuthModal = ({ isOpen, onClose, language }: SecureAuthModalProps) =>
               <form onSubmit={handleLogin} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="email">{currentText.email}</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={loginData.email}
-                    onChange={(e) => {
-                      setLoginData(prev => ({ ...prev, email: e.target.value }));
-                      checkEmailBreach(e.target.value);
-                    }}
-                    className="transition-all duration-200 focus:ring-2 focus:ring-blue-500"
-                    disabled={isLoading}
-                  />
-                  
-                  {/* Breach Status */}
-                  {breachStatus === "checking" && (
-                    <div className="flex items-center gap-2 text-sm text-yellow-600">
-                      <div className="w-3 h-3 border-2 border-yellow-600 border-t-transparent rounded-full animate-spin" />
-                      Checking security status...
+                  <div className="relative">
+                    <Input
+                      id="email"
+                      type="email"
+                      value={loginData.email}
+                      onChange={(e) => setLoginData(prev => ({ ...prev, email: e.target.value }))}
+                      className="pl-10 pr-10 transition-all duration-200 focus:ring-2 focus:ring-blue-500"
+                      disabled={isLoading}
+                      placeholder="Enter your email"
+                    />
+                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                      {getEmailIcon()}
                     </div>
-                  )}
-                  {breachStatus === "breached" && (
-                    <Alert variant="destructive">
-                      <AlertTriangle className="h-4 w-4" />
-                      <AlertDescription>{currentText.breachDetected}</AlertDescription>
-                    </Alert>
-                  )}
-                  {breachStatus === "safe" && (
-                    <div className="flex items-center gap-2 text-sm text-green-600">
-                      <CheckCircle className="h-4 w-4" />
-                      Email security verified
-                    </div>
+                  </div>
+                  {emailValidation.message && (
+                    <p className={`text-xs ${
+                      emailValidation.type === "error" ? "text-red-500" :
+                      emailValidation.type === "warning" ? "text-yellow-500" :
+                      emailValidation.type === "success" ? "text-green-500" :
+                      "text-gray-500"
+                    }`}>
+                      {emailValidation.message}
+                    </p>
                   )}
                 </div>
 
@@ -359,9 +384,11 @@ const SecureAuthModal = ({ isOpen, onClose, language }: SecureAuthModalProps) =>
                       type={showPassword ? "text" : "password"}
                       value={loginData.password}
                       onChange={(e) => setLoginData(prev => ({ ...prev, password: e.target.value }))}
-                      className="pr-10 transition-all duration-200 focus:ring-2 focus:ring-blue-500"
+                      className="pl-10 pr-10 transition-all duration-200 focus:ring-2 focus:ring-blue-500"
                       disabled={isLoading}
+                      placeholder="Enter your password"
                     />
+                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                     <Button
                       type="button"
                       variant="ghost"
@@ -388,7 +415,7 @@ const SecureAuthModal = ({ isOpen, onClose, language }: SecureAuthModalProps) =>
                 <Button 
                   type="submit" 
                   className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 transition-all duration-200"
-                  disabled={isLoading || rateLimitWarning}
+                  disabled={isLoading || !emailValidation.isValid}
                 >
                   {isLoading ? (
                     <div className="flex items-center gap-2">
@@ -400,7 +427,6 @@ const SecureAuthModal = ({ isOpen, onClose, language }: SecureAuthModalProps) =>
                   )}
                 </Button>
 
-                {/* Biometric Authentication Option */}
                 <BiometricAuth onSuccess={() => onClose()} />
               </form>
             </TabsContent>
@@ -409,28 +435,46 @@ const SecureAuthModal = ({ isOpen, onClose, language }: SecureAuthModalProps) =>
               <form onSubmit={handleRegister} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="fullName">{currentText.fullName}</Label>
-                  <Input
-                    id="fullName"
-                    value={registerData.fullName}
-                    onChange={(e) => setRegisterData(prev => ({ ...prev, fullName: e.target.value }))}
-                    className="transition-all duration-200 focus:ring-2 focus:ring-blue-500"
-                    disabled={isLoading}
-                  />
+                  <div className="relative">
+                    <Input
+                      id="fullName"
+                      value={registerData.fullName}
+                      onChange={(e) => setRegisterData(prev => ({ ...prev, fullName: e.target.value }))}
+                      className="pl-10 transition-all duration-200 focus:ring-2 focus:ring-blue-500"
+                      disabled={isLoading}
+                      placeholder="Enter your full name"
+                    />
+                    <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                  </div>
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="register-email">{currentText.email}</Label>
-                  <Input
-                    id="register-email"
-                    type="email"
-                    value={registerData.email}
-                    onChange={(e) => {
-                      setRegisterData(prev => ({ ...prev, email: e.target.value }));
-                      checkEmailBreach(e.target.value);
-                    }}
-                    className="transition-all duration-200 focus:ring-2 focus:ring-blue-500"
-                    disabled={isLoading}
-                  />
+                  <div className="relative">
+                    <Input
+                      id="register-email"
+                      type="email"
+                      value={registerData.email}
+                      onChange={(e) => setRegisterData(prev => ({ ...prev, email: e.target.value }))}
+                      className="pl-10 pr-10 transition-all duration-200 focus:ring-2 focus:ring-blue-500"
+                      disabled={isLoading}
+                      placeholder="Enter your email"
+                    />
+                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                      {getEmailIcon()}
+                    </div>
+                  </div>
+                  {emailValidation.message && (
+                    <p className={`text-xs ${
+                      emailValidation.type === "error" ? "text-red-500" :
+                      emailValidation.type === "warning" ? "text-yellow-500" :
+                      emailValidation.type === "success" ? "text-green-500" :
+                      "text-gray-500"
+                    }`}>
+                      {emailValidation.message}
+                    </p>
+                  )}
                 </div>
 
                 <div className="space-y-2">
@@ -441,9 +485,11 @@ const SecureAuthModal = ({ isOpen, onClose, language }: SecureAuthModalProps) =>
                       type={showPassword ? "text" : "password"}
                       value={registerData.password}
                       onChange={(e) => setRegisterData(prev => ({ ...prev, password: e.target.value }))}
-                      className="pr-10 transition-all duration-200 focus:ring-2 focus:ring-blue-500"
+                      className="pl-10 pr-10 transition-all duration-200 focus:ring-2 focus:ring-blue-500"
                       disabled={isLoading}
+                      placeholder="Create a strong password"
                     />
+                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                     <Button
                       type="button"
                       variant="ghost"
@@ -458,18 +504,47 @@ const SecureAuthModal = ({ isOpen, onClose, language }: SecureAuthModalProps) =>
                     password={registerData.password} 
                     onStrengthChange={setPasswordStrength}
                   />
+                  {passwordStrength < 3 && registerData.password && (
+                    <p className="text-xs text-red-500">{currentText.weakPassword}</p>
+                  )}
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="confirmPassword">{currentText.confirmPassword}</Label>
-                  <Input
-                    id="confirmPassword"
-                    type="password"
-                    value={registerData.confirmPassword}
-                    onChange={(e) => setRegisterData(prev => ({ ...prev, confirmPassword: e.target.value }))}
-                    className="transition-all duration-200 focus:ring-2 focus:ring-blue-500"
-                    disabled={isLoading}
-                  />
+                  <div className="relative">
+                    <Input
+                      id="confirmPassword"
+                      type={showConfirmPassword ? "text" : "password"}
+                      value={registerData.confirmPassword}
+                      onChange={(e) => setRegisterData(prev => ({ ...prev, confirmPassword: e.target.value }))}
+                      className="pl-10 pr-10 transition-all duration-200 focus:ring-2 focus:ring-blue-500"
+                      disabled={isLoading}
+                      placeholder="Confirm your password"
+                    />
+                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
+                      {registerData.confirmPassword && (
+                        passwordsMatch ? 
+                          <CheckCircle className="h-4 w-4 text-green-500" /> :
+                          <XCircle className="h-4 w-4 text-red-500" />
+                      )}
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="h-full px-0"
+                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      >
+                        {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      </Button>
+                    </div>
+                  </div>
+                  {registerData.confirmPassword && !passwordsMatch && (
+                    <p className="text-xs text-red-500">{currentText.passwordsDontMatch}</p>
+                  )}
+                  {registerData.confirmPassword && passwordsMatch && (
+                    <p className="text-xs text-green-500">{currentText.passwordsMatch}</p>
+                  )}
                 </div>
 
                 <div className="flex items-center space-x-2">
@@ -481,8 +556,8 @@ const SecureAuthModal = ({ isOpen, onClose, language }: SecureAuthModalProps) =>
 
                 <Button 
                   type="submit" 
-                  className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 transition-all duration-200"
-                  disabled={isLoading || passwordStrength < 3}
+                  className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 transition-all duration-200 disabled:opacity-50"
+                  disabled={isLoading || !emailValidation.isValid || !passwordsMatch || passwordStrength < 3}
                 >
                   {isLoading ? (
                     <div className="flex items-center gap-2">
@@ -498,15 +573,20 @@ const SecureAuthModal = ({ isOpen, onClose, language }: SecureAuthModalProps) =>
           </Tabs>
         )}
 
-        {/* Security Status */}
+        {/* Security Status Footer */}
         <div className="flex items-center justify-between text-xs text-gray-500 pt-4 border-t">
           <div className="flex items-center gap-2">
             <Shield className="h-3 w-3" />
             <span>256-bit encryption</span>
           </div>
-          <Badge variant={riskLevel === "low" ? "default" : riskLevel === "medium" ? "secondary" : "destructive"}>
-            {riskLevel.toUpperCase()} RISK
-          </Badge>
+          <div className="flex items-center gap-1">
+            <div className={`w-2 h-2 rounded-full ${
+              riskLevel === "low" ? "bg-green-500" :
+              riskLevel === "medium" ? "bg-yellow-500" :
+              "bg-red-500"
+            }`} />
+            <span>{riskLevel.toUpperCase()} RISK</span>
+          </div>
         </div>
       </DialogContent>
     </Dialog>
