@@ -2,7 +2,7 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Heart, MapPin, Bed, Bath, Square, Eye, Share2, Car, View as ViewIcon } from 'lucide-react';
+import { Heart, MapPin, Bed, Bath, Square, Eye, View as ViewIcon } from 'lucide-react';
 import { useState } from 'react';
 
 interface Property {
@@ -77,6 +77,8 @@ const CompactPropertyCard = ({
   const currentText = text[language];
 
   const formatPrice = (price: number) => {
+    if (!price) return "Contact for price";
+    
     if (price >= 1000000000) {
       return `${(price / 1000000000).toFixed(1)}B`;
     } else if (price >= 1000000) {
@@ -111,12 +113,15 @@ const CompactPropertyCard = ({
     }
   };
 
+  // Use first image or placeholder
+  const currentImage = property.image_urls?.[currentImageIndex] || "/placeholder.svg";
+
   return (
     <Card className="group hover:shadow-lg transition-all duration-300 overflow-hidden cursor-pointer border-0 shadow-md bg-white">
       {/* Compact Image Section */}
       <div className="relative aspect-[16/10] overflow-hidden">
         <img
-          src={property.image_urls?.[currentImageIndex] || "/placeholder.svg"}
+          src={currentImage}
           alt={property.title}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           onClick={() => onView?.(property.id)}
@@ -225,15 +230,15 @@ const CompactPropertyCard = ({
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-1">
               <Bed className="h-3 w-3" />
-              <span>{property.bedrooms}</span>
+              <span>{property.bedrooms || 0}</span>
             </div>
             <div className="flex items-center gap-1">
               <Bath className="h-3 w-3" />
-              <span>{property.bathrooms}</span>
+              <span>{property.bathrooms || 0}</span>
             </div>
             <div className="flex items-center gap-1">
               <Square className="h-3 w-3" />
-              <span>{property.area_sqm}</span>
+              <span>{property.area_sqm || 0}</span>
             </div>
           </div>
         </div>

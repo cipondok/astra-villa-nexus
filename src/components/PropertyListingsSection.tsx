@@ -111,6 +111,10 @@ const PropertyListingsSection = ({
   
   const noResultsFound = searchResults.length === 0;
 
+  console.log("PropertyListingsSection - searchResults:", searchResults);
+  console.log("PropertyListingsSection - hasSearched:", hasSearched);
+  console.log("PropertyListingsSection - noResultsFound:", noResultsFound);
+
   return (
     <>
       <section className="py-4">
