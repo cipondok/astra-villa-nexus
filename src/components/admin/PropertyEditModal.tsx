@@ -53,11 +53,6 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
 
-  // Early return if property is null/undefined
-  if (!property) {
-    return null;
-  }
-
   // Fetch all users for owner/agent selection
   const { data: users } = useQuery({
     queryKey: ['all-users'],
@@ -71,6 +66,11 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
       return data;
     },
   });
+
+  // Early return AFTER hooks but before any conditional logic
+  if (!property) {
+    return null;
+  }
 
   useEffect(() => {
     if (property && isOpen) {
