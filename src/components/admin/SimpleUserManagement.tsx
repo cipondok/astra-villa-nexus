@@ -7,26 +7,34 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
 import { useAlert } from "@/contexts/AlertContext";
-import { Users, UserPlus, Search, Filter, Shield, Ban, Play, Pause, RefreshCw } from "lucide-react";
+import { Users, UserPlus, Search, Filter, Shield, Ban, Play, Pause, RefreshCw, Edit, Eye } from "lucide-react";
 import SimpleRegistrationModal from "@/components/auth/SimpleRegistrationModal";
 
 type UserRole = 'general_user' | 'property_owner' | 'agent' | 'vendor' | 'admin' | 'customer_service';
-type UserStatus = 'active' | 'banned' | 'suspended';
 
 interface UserProfile {
   id: string;
   email: string;
-  full_name: string;
+  full_name: string | null;
   role: UserRole;
   verification_status: string;
   created_at: string;
+  phone: string | null;
+  company_name: string | null;
+  license_number: string | null;
 }
 
 const SimpleUserManagement = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [roleFilter, setRoleFilter] = useState<UserRole | "all">("all");
   const [isRegistrationModalOpen, setIsRegistrationModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<UserProfile | null>(null);
+  const [editingUser, setEditingUser] = useState<Partial<UserProfile>>({});
   
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
@@ -59,11 +67,10 @@ const SimpleUserManagement = () => {
       console.log('Users fetched successfully:', data?.length);
       return data || [];
     },
-    refetchInterval: 10000, // Refresh every 10 seconds
-    staleTime: 5000, // Data is fresh for 5 seconds
+    refetchInterval: 10000,
+    staleTime: 5000,
   });
 
-  // Auto-refresh when modal closes
   useEffect(() => {
     if (!isRegistrationModalOpen) {
       const timer = setTimeout(() => {
@@ -79,7 +86,15 @@ const SimpleUserManagement = () => {
       
       const { error } = await supabase
         .from('profiles')
-        .update(updates)
+        .update({
+          full_name: updates.full_name,
+          phone: updates.phone,
+          role: updates.role,
+          verification_status: updates.verification_status,
+          company_name: updates.company_name,
+          license_number: updates.license_number,
+          updated_at: new Date().toISOString()
+        })
         .eq('id', userId);
 
       if (error) {
@@ -92,6 +107,9 @@ const SimpleUserManagement = () => {
     onSuccess: (userId) => {
       showSuccess("User Updated", "User information has been updated successfully.");
       queryClient.invalidateQueries({ queryKey: ['admin-users-management'] });
+      setIsEditModalOpen(false);
+      setSelectedUser(null);
+      setEditingUser({});
       refetch();
     },
     onError: (error: any) => {
@@ -99,6 +117,34 @@ const SimpleUserManagement = () => {
       showError("Update Failed", error.message || "Failed to update user");
     },
   });
+
+  const handleEditUser = (user: UserProfile) => {
+    setSelectedUser(user);
+    setEditingUser({
+      id: user.id,
+      full_name: user.full_name,
+      phone: user.phone,
+      role: user.role,
+      verification_status: user.verification_status,
+      company_name: user.company_name,
+      license_number: user.license_number
+    });
+    setIsEditModalOpen(true);
+  };
+
+  const handleViewUser = (user: UserProfile) => {
+    setSelectedUser(user);
+    setIsViewModalOpen(true);
+  };
+
+  const handleSaveUser = () => {
+    if (editingUser.id) {
+      updateUserMutation.mutate({
+        userId: editingUser.id,
+        updates: editingUser
+      });
+    }
+  };
 
   const handleRoleChange = (userId: string, newRole: UserRole) => {
     updateUserMutation.mutate({
@@ -259,6 +305,24 @@ const SimpleUserManagement = () => {
                   </div>
                   
                   <div className="flex flex-col sm:flex-row gap-2">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => handleViewUser(user)}
+                    >
+                      <Eye className="h-4 w-4 mr-1" />
+                      View
+                    </Button>
+                    
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => handleEditUser(user)}
+                    >
+                      <Edit className="h-4 w-4 mr-1" />
+                      Edit
+                    </Button>
+
                     <Select
                       value={user.role}
                       onValueChange={(value: UserRole) => handleRoleChange(user.id, value)}
@@ -315,10 +379,161 @@ const SimpleUserManagement = () => {
           </div>
         )}
 
+        {/* Registration Modal */}
         <SimpleRegistrationModal
           isOpen={isRegistrationModalOpen}
           onClose={() => setIsRegistrationModalOpen(false)}
         />
+
+        {/* View User Modal */}
+        <Dialog open={isViewModalOpen} onOpenChange={setIsViewModalOpen}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>User Details</DialogTitle>
+            </DialogHeader>
+            {selectedUser && (
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label>Full Name</Label>
+                    <p className="font-medium">{selectedUser.full_name || 'Not provided'}</p>
+                  </div>
+                  <div>
+                    <Label>Email</Label>
+                    <p className="font-medium">{selectedUser.email}</p>
+                  </div>
+                  <div>
+                    <Label>Phone</Label>
+                    <p className="font-medium">{selectedUser.phone || 'Not provided'}</p>
+                  </div>
+                  <div>
+                    <Label>Role</Label>
+                    <div className="mt-1">{getRoleBadge(selectedUser.role)}</div>
+                  </div>
+                  <div>
+                    <Label>Status</Label>
+                    <div className="mt-1">{getStatusBadge(selectedUser.verification_status)}</div>
+                  </div>
+                  <div>
+                    <Label>Joined</Label>
+                    <p className="font-medium">{new Date(selectedUser.created_at).toLocaleDateString()}</p>
+                  </div>
+                </div>
+                {(selectedUser.company_name || selectedUser.license_number) && (
+                  <div className="border-t pt-4">
+                    <h3 className="font-semibold mb-2">Professional Information</h3>
+                    <div className="grid grid-cols-2 gap-4">
+                      {selectedUser.company_name && (
+                        <div>
+                          <Label>Company</Label>
+                          <p className="font-medium">{selectedUser.company_name}</p>
+                        </div>
+                      )}
+                      {selectedUser.license_number && (
+                        <div>
+                          <Label>License</Label>
+                          <p className="font-medium">{selectedUser.license_number}</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
+
+        {/* Edit User Modal */}
+        <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>Edit User</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label>Full Name</Label>
+                  <Input
+                    value={editingUser.full_name || ''}
+                    onChange={(e) => setEditingUser(prev => ({ ...prev, full_name: e.target.value }))}
+                    placeholder="Enter full name"
+                  />
+                </div>
+                <div>
+                  <Label>Phone</Label>
+                  <Input
+                    value={editingUser.phone || ''}
+                    onChange={(e) => setEditingUser(prev => ({ ...prev, phone: e.target.value }))}
+                    placeholder="Enter phone number"
+                  />
+                </div>
+                <div>
+                  <Label>Role</Label>
+                  <Select 
+                    value={editingUser.role || ''} 
+                    onValueChange={(value: UserRole) => setEditingUser(prev => ({ ...prev, role: value }))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select role" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="general_user">General User</SelectItem>
+                      <SelectItem value="property_owner">Property Owner</SelectItem>
+                      <SelectItem value="agent">Agent</SelectItem>
+                      <SelectItem value="customer_service">Customer Service</SelectItem>
+                      <SelectItem value="vendor">Vendor</SelectItem>
+                      <SelectItem value="admin">Admin</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>Status</Label>
+                  <Select 
+                    value={editingUser.verification_status || ''} 
+                    onValueChange={(value) => setEditingUser(prev => ({ ...prev, verification_status: value }))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="approved">Approved</SelectItem>
+                      <SelectItem value="pending">Pending</SelectItem>
+                      <SelectItem value="suspended">Suspended</SelectItem>
+                      <SelectItem value="banned">Banned</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>Company Name</Label>
+                  <Input
+                    value={editingUser.company_name || ''}
+                    onChange={(e) => setEditingUser(prev => ({ ...prev, company_name: e.target.value }))}
+                    placeholder="Enter company name"
+                  />
+                </div>
+                <div>
+                  <Label>License Number</Label>
+                  <Input
+                    value={editingUser.license_number || ''}
+                    onChange={(e) => setEditingUser(prev => ({ ...prev, license_number: e.target.value }))}
+                    placeholder="Enter license number"
+                  />
+                </div>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setIsEditModalOpen(false)}>
+                Cancel
+              </Button>
+              <Button 
+                onClick={handleSaveUser}
+                disabled={updateUserMutation.isPending}
+              >
+                {updateUserMutation.isPending ? 'Saving...' : 'Save Changes'}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </CardContent>
     </Card>
   );
