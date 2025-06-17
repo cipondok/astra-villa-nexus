@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -190,8 +189,23 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
     },
     onSuccess: () => {
       showSuccess("Property Updated", "Property has been updated successfully with images.");
+      
+      // Invalidate all relevant queries to refresh data
       queryClient.invalidateQueries({ queryKey: ['admin-properties'] });
+      queryClient.invalidateQueries({ queryKey: ['properties'] });
+      queryClient.invalidateQueries({ queryKey: ['property', property.id] });
+      queryClient.invalidateQueries({ queryKey: ['all-properties'] });
+      
+      // Clear form state
+      setImageFiles([]);
+      
+      // Close modal
       onClose();
+      
+      // Force a brief delay then refetch to ensure data is fresh
+      setTimeout(() => {
+        queryClient.refetchQueries({ queryKey: ['admin-properties'] });
+      }, 500);
     },
     onError: (error: any) => {
       console.error('Update mutation error:', error);
