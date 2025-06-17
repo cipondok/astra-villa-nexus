@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
@@ -340,7 +339,7 @@ const Index = () => {
           language={language}
         />
 
-        {/* Enhanced Secure Auth Modal */}
+        {/* Enhanced Secure Auth Modal - THIS IS THE NEW MODAL WITH ALL FEATURES */}
         <EnhancedSecureAuthModal 
           isOpen={authModalOpen} 
           onClose={handleAuthModalClose}

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -7,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useAuth } from "@/contexts/AuthContext";
-import { Eye, EyeOff, Shield, Mail, User, Lock, CheckCircle, XCircle, AlertTriangle } from "lucide-react";
+import { Eye, EyeOff, Shield, Mail, User, Lock, CheckCircle, XCircle, AlertTriangle, Loader2 } from "lucide-react";
 import { EnhancedPasswordStrengthMeter } from "./EnhancedPasswordStrengthMeter";
 import { MFASetup } from "./MFASetup";
 import { BiometricAuth } from "./BiometricAuth";
@@ -81,14 +80,14 @@ const EnhancedSecureAuthModal = ({ isOpen, onClose, language }: EnhancedSecureAu
       confirmPassword: "Confirm Password",
       fullName: "Full Name",
       rememberMe: "Remember me for 30 days",
-      emailValid: "Email is available",
-      emailInvalid: "Invalid email format",
-      emailTaken: "Email already registered",
-      emailChecking: "Checking availability...",
-      passwordsMatch: "Passwords match",
-      passwordsDontMatch: "Passwords don't match",
+      emailValid: "✅ Email is available",
+      emailInvalid: "❌ Invalid email format",
+      emailTaken: "⚠️ Email already registered",
+      emailChecking: "🔄 Checking availability...",
+      passwordsMatch: "✅ Passwords match",
+      passwordsDontMatch: "❌ Passwords don't match",
       weakPassword: "Password strength insufficient",
-      createAccount: "Create your account",
+      createAccount: "Create your secure account",
       signInAccount: "Sign in to your account",
       alreadyHaveAccount: "Already have an account?",
       needAccount: "Need an account?",
@@ -103,14 +102,14 @@ const EnhancedSecureAuthModal = ({ isOpen, onClose, language }: EnhancedSecureAu
       confirmPassword: "Konfirmasi Kata Sandi",
       fullName: "Nama Lengkap",
       rememberMe: "Ingat saya selama 30 hari",
-      emailValid: "Email tersedia",
-      emailInvalid: "Format email tidak valid",
-      emailTaken: "Email sudah terdaftar",
-      emailChecking: "Memeriksa ketersediaan...",
-      passwordsMatch: "Kata sandi cocok",
-      passwordsDontMatch: "Kata sandi tidak cocok",
+      emailValid: "✅ Email tersedia",
+      emailInvalid: "❌ Format email tidak valid",
+      emailTaken: "⚠️ Email sudah terdaftar",
+      emailChecking: "🔄 Memeriksa ketersediaan...",
+      passwordsMatch: "✅ Kata sandi cocok",
+      passwordsDontMatch: "❌ Kata sandi tidak cocok",
       weakPassword: "Kekuatan kata sandi tidak cukup",
-      createAccount: "Buat akun Anda",
+      createAccount: "Buat akun aman Anda",
       signInAccount: "Masuk ke akun Anda",
       alreadyHaveAccount: "Sudah punya akun?",
       needAccount: "Perlu akun?",
@@ -129,6 +128,8 @@ const EnhancedSecureAuthModal = ({ isOpen, onClose, language }: EnhancedSecureAu
 
   // Check email availability and format
   const checkEmailAvailability = async (email: string) => {
+    console.log("🔍 Checking email:", email);
+    
     if (!email) {
       setEmailValidation({ 
         isValid: false, 
@@ -142,6 +143,7 @@ const EnhancedSecureAuthModal = ({ isOpen, onClose, language }: EnhancedSecureAu
 
     // First check format
     if (!validateEmail(email)) {
+      console.log("❌ Invalid email format");
       setEmailValidation({
         isValid: false,
         isChecking: false,
@@ -153,6 +155,7 @@ const EnhancedSecureAuthModal = ({ isOpen, onClose, language }: EnhancedSecureAu
     }
 
     // Show checking state
+    console.log("🔄 Checking email availability...");
     setEmailValidation({
       isValid: true,
       isChecking: true,
@@ -175,6 +178,7 @@ const EnhancedSecureAuthModal = ({ isOpen, onClose, language }: EnhancedSecureAu
       const emailExists = existingProfiles && existingProfiles.length > 0;
       
       if (emailExists && activeTab === "register") {
+        console.log("⚠️ Email already registered");
         setEmailValidation({
           isValid: true,
           isChecking: false,
@@ -187,10 +191,11 @@ const EnhancedSecureAuthModal = ({ isOpen, onClose, language }: EnhancedSecureAu
         let type: "success" | "warning" = "success";
         
         if (breachData.breached) {
-          message = "Email available but found in data breach";
+          message = "⚠️ Email available but found in data breach";
           type = "warning";
         }
         
+        console.log("✅ Email is available");
         setEmailValidation({
           isValid: true,
           isChecking: false,
@@ -222,7 +227,7 @@ const EnhancedSecureAuthModal = ({ isOpen, onClose, language }: EnhancedSecureAu
     if (email) {
       emailCheckTimeoutRef.current = setTimeout(() => {
         checkEmailAvailability(email);
-      }, 800); // Increased delay for better UX
+      }, 800);
     }
 
     return () => {
@@ -235,7 +240,9 @@ const EnhancedSecureAuthModal = ({ isOpen, onClose, language }: EnhancedSecureAu
   // Password confirmation validation
   useEffect(() => {
     if (registerData.confirmPassword) {
-      setPasswordsMatch(registerData.password === registerData.confirmPassword);
+      const matches = registerData.password === registerData.confirmPassword;
+      setPasswordsMatch(matches);
+      console.log("🔒 Password match check:", matches ? "✅ Match" : "❌ No match");
     } else {
       setPasswordsMatch(true);
     }
@@ -321,13 +328,23 @@ const EnhancedSecureAuthModal = ({ isOpen, onClose, language }: EnhancedSecureAu
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    console.log("🚀 Registration attempt:", {
+      email: registerData.email,
+      emailValid: emailValidation.isValid,
+      emailAvailable: emailValidation.isAvailable,
+      passwordsMatch,
+      passwordStrength,
+      honeypot: registerData.honeypot
+    });
+    
     // Bot detection - check honeypot
     if (registerData.honeypot) {
-      console.log('Bot detected');
+      console.log('🤖 Bot detected via honeypot');
       return;
     }
     
     if (!emailValidation.isValid || !emailValidation.isAvailable || !passwordsMatch || passwordStrength < 3) {
+      console.log("❌ Registration validation failed");
       return;
     }
     
@@ -336,6 +353,7 @@ const EnhancedSecureAuthModal = ({ isOpen, onClose, language }: EnhancedSecureAu
     try {
       const result = await signUp(registerData.email, registerData.password, registerData.fullName);
       if (result.success) {
+        console.log("✅ Registration successful");
         onClose();
       }
     } finally {
@@ -345,7 +363,7 @@ const EnhancedSecureAuthModal = ({ isOpen, onClose, language }: EnhancedSecureAu
 
   const getEmailIcon = () => {
     if (emailValidation.isChecking) {
-      return <div className="w-4 h-4 border-2 border-[#2A5C8A] border-t-transparent rounded-full animate-spin" />;
+      return <Loader2 className="w-4 h-4 animate-spin text-[#2A5C8A]" />;
     }
     if (emailValidation.type === "success") {
       return <CheckCircle className="h-4 w-4 text-[#2ECC71]" />;
@@ -436,7 +454,7 @@ const EnhancedSecureAuthModal = ({ isOpen, onClose, language }: EnhancedSecureAu
                     </div>
                   </div>
                   {emailValidation.message && (
-                    <p className={`text-xs flex items-center gap-1 ${
+                    <p className={`text-xs flex items-center gap-1 font-medium ${
                       emailValidation.type === "error" ? "text-[#E74C3C]" :
                       emailValidation.type === "warning" ? "text-[#F39C12]" :
                       emailValidation.type === "success" ? "text-[#2ECC71]" :
@@ -506,7 +524,7 @@ const EnhancedSecureAuthModal = ({ isOpen, onClose, language }: EnhancedSecureAu
                 >
                   {isLoading ? (
                     <div className="flex items-center gap-2">
-                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      <Loader2 className="w-4 h-4 animate-spin" />
                       Signing in...
                     </div>
                   ) : (
@@ -570,7 +588,7 @@ const EnhancedSecureAuthModal = ({ isOpen, onClose, language }: EnhancedSecureAu
                     </div>
                   </div>
                   {emailValidation.message && (
-                    <p className={`text-xs flex items-center gap-1 ${
+                    <p className={`text-xs flex items-center gap-1 font-medium ${
                       emailValidation.type === "error" ? "text-[#E74C3C]" :
                       emailValidation.type === "warning" ? "text-[#F39C12]" :
                       emailValidation.type === "success" ? "text-[#2ECC71]" :
@@ -642,7 +660,7 @@ const EnhancedSecureAuthModal = ({ isOpen, onClose, language }: EnhancedSecureAu
                     </Button>
                   </div>
                   {registerData.confirmPassword && (
-                    <p className={`text-xs flex items-center gap-1 ${
+                    <p className={`text-xs flex items-center gap-1 font-medium ${
                       passwordsMatch ? "text-[#2ECC71]" : "text-[#E74C3C]"
                     }`}>
                       {passwordsMatch ? currentText.passwordsMatch : currentText.passwordsDontMatch}
@@ -676,7 +694,7 @@ const EnhancedSecureAuthModal = ({ isOpen, onClose, language }: EnhancedSecureAu
                 >
                   {isLoading ? (
                     <div className="flex items-center gap-2">
-                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      <Loader2 className="w-4 h-4 animate-spin" />
                       Creating Account...
                     </div>
                   ) : (
