@@ -63,7 +63,7 @@ export const useAdminAlerts = () => {
           const newUser = payload.new as any;
           
           // Create alert for new user registration
-          await supabase.from('admin_alerts').insert({
+          await (supabase as any).from('admin_alerts').insert({
             type: 'user_registration',
             title: 'New User Registration',
             message: `New user registered: ${newUser.full_name || newUser.email} with role ${newUser.role}`,
@@ -85,7 +85,7 @@ export const useAdminAlerts = () => {
           const newProperty = payload.new as any;
           
           // Create alert for new property listing
-          await supabase.from('admin_alerts').insert({
+          await (supabase as any).from('admin_alerts').insert({
             type: 'property_listing',
             title: 'New Property Listed',
             message: `New property "${newProperty.title}" listed for ${newProperty.listing_type} in ${newProperty.location}`,
@@ -107,7 +107,7 @@ export const useAdminAlerts = () => {
           const newRequest = payload.new as any;
           
           // Create alert for new agent registration request
-          await supabase.from('admin_alerts').insert({
+          await (supabase as any).from('admin_alerts').insert({
             type: 'agent_request',
             title: 'New Agent Registration Request',
             message: `${newRequest.full_name} applied to become an agent for ${newRequest.company_name}`,

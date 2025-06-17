@@ -8,7 +8,7 @@ const AdminAlertBadge = () => {
   const { data: unreadCount = 0 } = useQuery({
     queryKey: ['admin-alerts-count'],
     queryFn: async () => {
-      const { count, error } = await supabase
+      const { count, error } = await (supabase as any)
         .from('admin_alerts')
         .select('*', { count: 'exact', head: true })
         .eq('is_read', false);

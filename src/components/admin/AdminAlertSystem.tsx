@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,8 +13,7 @@ import {
   Building2, 
   UserPlus, 
   AlertCircle, 
-  Check, 
-  X,
+  Check,
   Eye,
   Clock,
   CheckCircle
@@ -44,7 +43,7 @@ const AdminAlertSystem = () => {
   const { data: alerts = [], refetch } = useQuery({
     queryKey: ['admin-alerts'],
     queryFn: async () => {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from('admin_alerts')
         .select('*')
         .order('created_at', { ascending: false })
@@ -59,7 +58,7 @@ const AdminAlertSystem = () => {
   // Mark alert as read
   const markAsReadMutation = useMutation({
     mutationFn: async (alertId: string) => {
-      const { error } = await supabase
+      const { error } = await (supabase as any)
         .from('admin_alerts')
         .update({ is_read: true })
         .eq('id', alertId);
@@ -68,9 +67,10 @@ const AdminAlertSystem = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-alerts'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-alerts-count'] });
       showSuccess("Alert Marked", "Alert marked as read");
     },
-    onError: (error) => {
+    onError: (error: any) => {
       showError("Error", `Failed to mark alert as read: ${error.message}`);
     }
   });
@@ -78,7 +78,7 @@ const AdminAlertSystem = () => {
   // Mark all alerts as read
   const markAllAsReadMutation = useMutation({
     mutationFn: async () => {
-      const { error } = await supabase
+      const { error } = await (supabase as any)
         .from('admin_alerts')
         .update({ is_read: true })
         .eq('is_read', false);
@@ -87,6 +87,7 @@ const AdminAlertSystem = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-alerts'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-alerts-count'] });
       showSuccess("All Alerts Read", "All alerts marked as read");
     }
   });
@@ -137,7 +138,6 @@ const AdminAlertSystem = () => {
   const handleActionRequired = (alert: AdminAlert) => {
     // Navigate to the relevant management section based on alert type
     if (alert.reference_type && alert.reference_id) {
-      // This would be handled by the parent component to change tabs
       console.log(`Navigate to ${alert.reference_type} with ID ${alert.reference_id}`);
     }
   };

@@ -9,6 +9,48 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      admin_alerts: {
+        Row: {
+          action_required: boolean
+          created_at: string
+          id: string
+          is_read: boolean
+          message: string
+          priority: string
+          reference_id: string | null
+          reference_type: string | null
+          title: string
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          action_required?: boolean
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          message: string
+          priority?: string
+          reference_id?: string | null
+          reference_type?: string | null
+          title: string
+          type: string
+          updated_at?: string
+        }
+        Update: {
+          action_required?: boolean
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          message?: string
+          priority?: string
+          reference_id?: string | null
+          reference_type?: string | null
+          title?: string
+          type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       admin_roles: {
         Row: {
           created_at: string | null
