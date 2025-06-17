@@ -102,7 +102,6 @@ const SearchFiltersManagement = () => {
         filter_options: filter.filter_options,
         is_active: false,
         display_order: (filters?.length || 0) + 1,
-        description: filter.description,
       };
       
       const { error } = await supabase
@@ -170,6 +169,22 @@ const SearchFiltersManagement = () => {
       developer: "Developer Info",
     };
     return categories[category] || category;
+  };
+
+  // Helper function to safely handle filter options
+  const getFilterOptionsDisplay = (filterOptions: any) => {
+    if (!filterOptions) return "No options";
+    
+    if (Array.isArray(filterOptions)) {
+      return `${filterOptions.length} options`;
+    }
+    
+    if (typeof filterOptions === 'string') {
+      const options = filterOptions.split(',').filter(opt => opt.trim());
+      return `${options.length} options`;
+    }
+    
+    return "No options";
   };
 
   const filteredFilters = filters?.filter(filter =>
@@ -249,12 +264,7 @@ const SearchFiltersManagement = () => {
                   filteredFilters.map((filter) => (
                     <TableRow key={filter.id}>
                       <TableCell>
-                        <div>
-                          <div className="font-medium">{filter.filter_name}</div>
-                          {filter.description && (
-                            <div className="text-sm text-muted-foreground">{filter.description}</div>
-                          )}
-                        </div>
+                        <div className="font-medium">{filter.filter_name}</div>
                       </TableCell>
                       <TableCell>
                         <Badge variant="outline">{getFilterTypeLabel(filter.filter_type)}</Badge>
@@ -263,16 +273,9 @@ const SearchFiltersManagement = () => {
                         <Badge variant="secondary">{getCategoryLabel(filter.category)}</Badge>
                       </TableCell>
                       <TableCell>
-                        {filter.filter_options && (
-                          <div className="text-sm">
-                            {Array.isArray(filter.filter_options) 
-                              ? `${filter.filter_options.length} options`
-                              : filter.filter_options.split(',').length > 1 
-                                ? `${filter.filter_options.split(',').length} options`
-                                : filter.filter_options
-                            }
-                          </div>
-                        )}
+                        <div className="text-sm">
+                          {getFilterOptionsDisplay(filter.filter_options)}
+                        </div>
                       </TableCell>
                       <TableCell>
                         <Badge variant={filter.is_active ? "default" : "secondary"}>
