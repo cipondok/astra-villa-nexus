@@ -261,27 +261,22 @@ const Index = () => {
       <div className="min-h-screen bg-background text-foreground">
         <Navigation />
 
-        {/* Hero Section with Particle Background */}
-        <section className="relative min-h-[70vh] flex flex-col items-center justify-center overflow-hidden pt-16">
+        {/* Compact Hero Section */}
+        <section className="relative min-h-[40vh] sm:min-h-[50vh] flex flex-col items-center justify-center overflow-hidden pt-16">
           {/* Particle Effect Background */}
           <div className="absolute inset-0 z-0">
             <ParticleEffect />
           </div>
           
-          {/* Hero Content */}
-          <div className="relative z-10 text-center max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 leading-tight animate-fade-in">
-              <span className="inline-block animate-gradient bg-gradient-to-r from-blue-600 via-purple-500 to-orange-500 bg-clip-text text-transparent bg-[length:300%_300%] hover:scale-105 transition-transform duration-300">
-                Astra Villa
-              </span>
-            </h1>
-            <p className="text-lg sm:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed animate-fade-in animation-delay-200">
+          {/* Hero Content - Removed ASTRA Villa text */}
+          <div className="relative z-10 text-center max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mb-6">
+            <p className="text-base sm:text-lg lg:text-xl text-muted-foreground mb-6 max-w-2xl mx-auto leading-relaxed animate-fade-in">
               Discover premium real estate opportunities with AI-powered recommendations and intelligent assistance.
             </p>
           </div>
 
           {/* Search Panel */}
-          <div className="relative z-10 w-full px-4 sm:px-6 lg:px-8 animate-fade-in animation-delay-400">
+          <div className="relative z-10 w-full px-2 sm:px-4 lg:px-8 animate-fade-in animation-delay-400">
             <ModernSearchPanel 
               language={language} 
               onSearch={handleSearch}
@@ -290,11 +285,11 @@ const Index = () => {
           </div>
         </section>
 
-        {/* Property Listings Section - ALWAYS VISIBLE */}
-        <section className="relative z-10 bg-background py-8">
-          <div className="container mx-auto px-4">
+        {/* Property Listings Section - Improved spacing */}
+        <section className="relative z-10 bg-background py-4 sm:py-6 lg:py-8">
+          <div className="container mx-auto px-2 sm:px-4 lg:px-6">
             {user ? (
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
                 <div className="lg:col-span-2">
                   <PropertyListingsSection 
                     language={language} 
@@ -329,8 +324,10 @@ const Index = () => {
           <ProfessionalFooter language={language} />
         </div>
 
-        {/* AI Chat Widget */}
-        <AIChatWidget />
+        {/* Enhanced AI Chat Widget with responsive sizing */}
+        <div className="fixed bottom-2 right-2 sm:bottom-4 sm:right-4 md:bottom-6 md:right-6 z-50">
+          <AIChatWidget />
+        </div>
 
         {/* Loading Popup */}
         <LoadingPopup 
