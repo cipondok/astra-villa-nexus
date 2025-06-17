@@ -24,7 +24,8 @@ import {
   CreditCard,
   UserCheck,
   Award,
-  Calendar
+  Calendar,
+  Image
 } from "lucide-react";
 
 interface AdminNavigationProps {
@@ -54,6 +55,13 @@ const AdminNavigation = ({ activeSection, onSectionChange }: AdminNavigationProp
       label: 'Property Management',
       icon: Building2,
       description: 'Property listings and approvals',
+      category: 'Core'
+    },
+    {
+      id: 'system-settings',
+      label: 'System Settings',
+      icon: Settings,
+      description: 'Application configuration & watermark settings',
       category: 'Core'
     },
     
@@ -146,13 +154,6 @@ const AdminNavigation = ({ activeSection, onSectionChange }: AdminNavigationProp
       icon: Search,
       description: 'Property search configuration',
       category: 'Content'
-    },
-    {
-      id: 'system-settings',
-      label: 'System Settings',
-      icon: Settings,
-      description: 'Application configuration',
-      category: 'Settings'
     },
     {
       id: 'billing-management',
