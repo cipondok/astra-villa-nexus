@@ -484,6 +484,16 @@ const SystemSettings = () => {
     }
   };
 
+  const handleWatermarkSettingChange = (key: string, value: any) => {
+    setWatermarkSettings(prev => ({
+      ...prev,
+      [key]: value
+    }));
+    
+    // Auto-save watermark settings
+    saveWatermarkSettingMutation.mutate({ key, value });
+  };
+
   return (
     <div className="space-y-6">
       <Card>
