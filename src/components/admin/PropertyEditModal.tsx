@@ -53,7 +53,7 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
 
-  // Fetch all users for owner/agent selection
+  // Fetch all users for owner/agent selection - ALWAYS call this hook
   const { data: users } = useQuery({
     queryKey: ['all-users'],
     queryFn: async () => {
@@ -65,13 +65,10 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
       if (error) throw error;
       return data;
     },
+    enabled: !!property, // Only fetch when property exists
   });
 
-  // Early return AFTER hooks but before any conditional logic
-  if (!property) {
-    return null;
-  }
-
+  // ALWAYS call useEffect hooks
   useEffect(() => {
     if (property && isOpen) {
       console.log('Setting edit data for property:', property);
@@ -111,6 +108,163 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
       setImageFiles([]);
     }
   }, [property, isOpen]);
+
+  // ALWAYS define mutations - they don't execute until called
+  const updatePropertyMutation = useMutation({
+    mutationFn: async (updates: any) => {
+      if (!property?.id) {
+        throw new Error("Property ID is required");
+      }
+
+      console.log('Updating property with data:', updates);
+      
+      let finalImageUrls = [...existingImages];
+      
+      // Upload new images if any
+      if (imageFiles.length > 0) {
+        setImageUploading(true);
+        try {
+          const newImageUrls = await uploadImages(imageFiles);
+          finalImageUrls = [...finalImageUrls, ...newImageUrls];
+        } catch (error) {
+          throw new Error(`Image upload failed: ${error}`);
+        } finally {
+          setImageUploading(false);
+        }
+      }
+
+      // Set thumbnail - if no thumbnail selected and we have images, use first image
+      let thumbnailUrl = selectedThumbnail;
+      if (!thumbnailUrl && finalImageUrls.length > 0) {
+        thumbnailUrl = finalImageUrls[0];
+      }
+
+      const updatePayload = {
+        ...updates,
+        images: finalImageUrls,
+        image_urls: finalImageUrls, // Update both fields for compatibility
+        thumbnail_url: thumbnailUrl,
+        price: updates.price ? parseFloat(updates.price) : null,
+        bedrooms: updates.bedrooms ? parseInt(updates.bedrooms) : null,
+        bathrooms: updates.bathrooms ? parseInt(updates.bathrooms) : null,
+        area_sqm: updates.area_sqm ? parseInt(updates.area_sqm) : null,
+        updated_at: new Date().toISOString(),
+      };
+
+      console.log('Final update payload:', updatePayload);
+
+      const { error } = await supabase
+        .from('properties')
+        .update(updatePayload)
+        .eq('id', property.id);
+
+      if (error) {
+        console.error('Update error:', error);
+        throw error;
+      }
+
+      return updatePayload;
+    },
+    onSuccess: (updatedData) => {
+      showSuccess("Property Updated", "Property has been updated successfully with all changes.");
+      
+      // Invalidate all relevant queries with specific refetching
+      const queriesToInvalidate = [
+        ['admin-properties'],
+        ['properties'],
+        ['property', property?.id],
+        ['all-properties'],
+        ['all-users'], // In case owner/agent changed
+      ];
+
+      queriesToInvalidate.forEach(queryKey => {
+        queryClient.invalidateQueries({ queryKey });
+      });
+      
+      // Clear form state
+      setImageFiles([]);
+      
+      // Force immediate refetch of admin properties
+      setTimeout(() => {
+        queryClient.refetchQueries({ queryKey: ['admin-properties'] });
+        queryClient.refetchQueries({ queryKey: ['properties'] });
+      }, 100);
+      
+      // Close modal
+      onClose();
+    },
+    onError: (error: any) => {
+      console.error('Update mutation error:', error);
+      showError("Update Failed", error.message);
+    },
+  });
+
+  const generateDefaultImageMutation = useMutation({
+    mutationFn: async () => {
+      const prompt = `Create a professional real estate default image with elegant design featuring the text "VillaAstra" as a watermark. The image should have a modern, clean aesthetic with a gradient background in blue and white tones, suitable for property listings. Include subtle architectural elements like building silhouettes or property icons. Make it look professional and trustworthy.`;
+      
+      const { data, error } = await supabase.functions.invoke('ai-image-generator', {
+        body: { prompt }
+      });
+
+      if (error) throw error;
+      return data.image;
+    },
+    onSuccess: (imageData) => {
+      // Convert base64 to blob and add to existing images
+      const base64Data = imageData.replace(/^data:image\/[a-z]+;base64,/, '');
+      const byteCharacters = atob(base64Data);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], { type: 'image/png' });
+      const fileName = generateAVFilename({ name: 'villa-astra-default.png' } as File);
+      const file = new File([blob], fileName, { type: 'image/png' });
+      
+      setImageFiles(prev => [file, ...prev]);
+      showSuccess("Default Image Generated", "VillaAstra default image has been generated and added to the property.");
+    },
+    onError: (error: any) => {
+      showError("Generation Failed", error.message);
+    },
+  });
+
+  const generateSeoMutation = useMutation({
+    mutationFn: async ({ propertyId, title }: { propertyId: string; title: string }) => {
+      const { data, error } = await supabase.functions.invoke('ai-assistant', {
+        body: {
+          message: `Generate SEO content for property: ${title}`,
+          propertyId: propertyId,
+        },
+      });
+
+      if (error) throw error;
+      if (data.error) throw new Error(data.error);
+
+      return data;
+    },
+    onSuccess: (data) => {
+      // Update the form with generated SEO content
+      if (data.seo_title && data.seo_description) {
+        setEditData(prev => ({
+          ...prev,
+          seo_title: data.seo_title,
+          seo_description: data.seo_description
+        }));
+      }
+      showSuccess("AI Content Generated", "SEO content has been generated and populated in the form.");
+    },
+    onError: (error: any) => {
+      showError("Generation Failed", error.message);
+    },
+  });
+
+  // Early return AFTER all hooks have been declared
+  if (!property) {
+    return null;
+  }
 
   // Generate AV filename with 15 random digits
   const generateAVFilename = (originalFile: File): string => {
@@ -268,153 +422,6 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
     
     return uploadedUrls;
   };
-
-  const updatePropertyMutation = useMutation({
-    mutationFn: async (updates: any) => {
-      console.log('Updating property with data:', updates);
-      
-      let finalImageUrls = [...existingImages];
-      
-      // Upload new images if any
-      if (imageFiles.length > 0) {
-        setImageUploading(true);
-        try {
-          const newImageUrls = await uploadImages(imageFiles);
-          finalImageUrls = [...finalImageUrls, ...newImageUrls];
-        } catch (error) {
-          throw new Error(`Image upload failed: ${error}`);
-        } finally {
-          setImageUploading(false);
-        }
-      }
-
-      // Set thumbnail - if no thumbnail selected and we have images, use first image
-      let thumbnailUrl = selectedThumbnail;
-      if (!thumbnailUrl && finalImageUrls.length > 0) {
-        thumbnailUrl = finalImageUrls[0];
-      }
-
-      const updatePayload = {
-        ...updates,
-        images: finalImageUrls,
-        image_urls: finalImageUrls, // Update both fields for compatibility
-        thumbnail_url: thumbnailUrl,
-        price: updates.price ? parseFloat(updates.price) : null,
-        bedrooms: updates.bedrooms ? parseInt(updates.bedrooms) : null,
-        bathrooms: updates.bathrooms ? parseInt(updates.bathrooms) : null,
-        area_sqm: updates.area_sqm ? parseInt(updates.area_sqm) : null,
-        updated_at: new Date().toISOString(),
-      };
-
-      console.log('Final update payload:', updatePayload);
-
-      const { error } = await supabase
-        .from('properties')
-        .update(updatePayload)
-        .eq('id', property.id);
-
-      if (error) {
-        console.error('Update error:', error);
-        throw error;
-      }
-
-      return updatePayload;
-    },
-    onSuccess: (updatedData) => {
-      showSuccess("Property Updated", "Property has been updated successfully with all changes.");
-      
-      // Invalidate all relevant queries with specific refetching
-      const queriesToInvalidate = [
-        ['admin-properties'],
-        ['properties'],
-        ['property', property.id],
-        ['all-properties'],
-        ['all-users'], // In case owner/agent changed
-      ];
-
-      queriesToInvalidate.forEach(queryKey => {
-        queryClient.invalidateQueries({ queryKey });
-      });
-      
-      // Clear form state
-      setImageFiles([]);
-      
-      // Force immediate refetch of admin properties
-      setTimeout(() => {
-        queryClient.refetchQueries({ queryKey: ['admin-properties'] });
-        queryClient.refetchQueries({ queryKey: ['properties'] });
-      }, 100);
-      
-      // Close modal
-      onClose();
-    },
-    onError: (error: any) => {
-      console.error('Update mutation error:', error);
-      showError("Update Failed", error.message);
-    },
-  });
-
-  const generateDefaultImageMutation = useMutation({
-    mutationFn: async () => {
-      const prompt = `Create a professional real estate default image with elegant design featuring the text "VillaAstra" as a watermark. The image should have a modern, clean aesthetic with a gradient background in blue and white tones, suitable for property listings. Include subtle architectural elements like building silhouettes or property icons. Make it look professional and trustworthy.`;
-      
-      const { data, error } = await supabase.functions.invoke('ai-image-generator', {
-        body: { prompt }
-      });
-
-      if (error) throw error;
-      return data.image;
-    },
-    onSuccess: (imageData) => {
-      // Convert base64 to blob and add to existing images
-      const base64Data = imageData.replace(/^data:image\/[a-z]+;base64,/, '');
-      const byteCharacters = atob(base64Data);
-      const byteNumbers = new Array(byteCharacters.length);
-      for (let i = 0; i < byteCharacters.length; i++) {
-        byteNumbers[i] = byteCharacters.charCodeAt(i);
-      }
-      const byteArray = new Uint8Array(byteNumbers);
-      const blob = new Blob([byteArray], { type: 'image/png' });
-      const fileName = generateAVFilename({ name: 'villa-astra-default.png' } as File);
-      const file = new File([blob], fileName, { type: 'image/png' });
-      
-      setImageFiles(prev => [file, ...prev]);
-      showSuccess("Default Image Generated", "VillaAstra default image has been generated and added to the property.");
-    },
-    onError: (error: any) => {
-      showError("Generation Failed", error.message);
-    },
-  });
-
-  const generateSeoMutation = useMutation({
-    mutationFn: async ({ propertyId, title }: { propertyId: string; title: string }) => {
-      const { data, error } = await supabase.functions.invoke('ai-assistant', {
-        body: {
-          message: `Generate SEO content for property: ${title}`,
-          propertyId: propertyId,
-        },
-      });
-
-      if (error) throw error;
-      if (data.error) throw new Error(data.error);
-
-      return data;
-    },
-    onSuccess: (data) => {
-      // Update the form with generated SEO content
-      if (data.seo_title && data.seo_description) {
-        setEditData(prev => ({
-          ...prev,
-          seo_title: data.seo_title,
-          seo_description: data.seo_description
-        }));
-      }
-      showSuccess("AI Content Generated", "SEO content has been generated and populated in the form.");
-    },
-    onError: (error: any) => {
-      showError("Generation Failed", error.message);
-    },
-  });
 
   const handleGenerateSeo = () => {
     if (!property?.id || !editData.title) return;
