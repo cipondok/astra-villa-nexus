@@ -11,7 +11,8 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Building, Search, Plus, Edit, Trash2, Eye, MapPin, DollarSign, RefreshCw, Axis3d } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Building, Search, Plus, Edit, Trash2, Eye, MapPin, DollarSign, RefreshCw, Axis3d, Filter } from "lucide-react";
 import { useAlert } from "@/contexts/AlertContext";
 import PropertyEditModal from "./PropertyEditModal";
 import PropertyViewModal from "./PropertyViewModal";
@@ -295,378 +296,406 @@ const PropertyManagement = () => {
             <div>
               <CardTitle className="flex items-center gap-2">
                 <Building className="h-5 w-5" />
-                Property Management
+                Property Management Hub
               </CardTitle>
               <CardDescription>
-                Manage property listings, approvals, and content
+                Manage properties, search filters, and all property-related settings
               </CardDescription>
-            </div>
-            <div className="flex gap-2">
-              <Button variant="outline" onClick={() => refetch()}>
-                <RefreshCw className="h-4 w-4 mr-2" />
-                Refresh
-              </Button>
-              <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-                <DialogTrigger asChild>
-                  <Button>
-                    <Plus className="h-4 w-4 mr-2" />
-                    Add Property
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="max-w-3xl">
-                  <DialogHeader>
-                    <DialogTitle>Add New Property</DialogTitle>
-                    <DialogDescription>
-                      Create a new property listing.
-                    </DialogDescription>
-                  </DialogHeader>
-                  <div className="grid grid-cols-2 gap-4 py-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="title">Title</Label>
-                      <Input
-                        id="title"
-                        value={newProperty.title}
-                        onChange={(e) => setNewProperty({ ...newProperty, title: e.target.value })}
-                        placeholder="Property title"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="location">Location</Label>
-                      <Input
-                        id="location"
-                        value={newProperty.location}
-                        onChange={(e) => setNewProperty({ ...newProperty, location: e.target.value })}
-                        placeholder="Property location"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="property_type">Property Type</Label>
-                      <Select value={newProperty.property_type} onValueChange={(value) => setNewProperty({ ...newProperty, property_type: value })}>
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="house">House</SelectItem>
-                          <SelectItem value="apartment">Apartment</SelectItem>
-                          <SelectItem value="villa">Villa</SelectItem>
-                          <SelectItem value="townhouse">Townhouse</SelectItem>
-                          <SelectItem value="land">Land</SelectItem>
-                          <SelectItem value="commercial">Commercial</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="listing_type">Listing Type</Label>
-                      <Select value={newProperty.listing_type} onValueChange={(value) => setNewProperty({ ...newProperty, listing_type: value })}>
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="sale">For Sale</SelectItem>
-                          <SelectItem value="rent">For Rent</SelectItem>
-                          <SelectItem value="lease">For Lease</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="price">Price</Label>
-                      <Input
-                        id="price"
-                        type="number"
-                        value={newProperty.price}
-                        onChange={(e) => setNewProperty({ ...newProperty, price: e.target.value })}
-                        placeholder="Property price"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="area_sqm">Area (sqm)</Label>
-                      <Input
-                        id="area_sqm"
-                        type="number"
-                        value={newProperty.area_sqm}
-                        onChange={(e) => setNewProperty({ ...newProperty, area_sqm: e.target.value })}
-                        placeholder="Area in square meters"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="bedrooms">Bedrooms</Label>
-                      <Input
-                        id="bedrooms"
-                        type="number"
-                        value={newProperty.bedrooms}
-                        onChange={(e) => setNewProperty({ ...newProperty, bedrooms: e.target.value })}
-                        placeholder="Number of bedrooms"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="bathrooms">Bathrooms</Label>
-                      <Input
-                        id="bathrooms"
-                        type="number"
-                        value={newProperty.bathrooms}
-                        onChange={(e) => setNewProperty({ ...newProperty, bathrooms: e.target.value })}
-                        placeholder="Number of bathrooms"
-                      />
-                    </div>
-                    <div className="space-y-2 col-span-2">
-                      <Label htmlFor="development_status">Development Status</Label>
-                      <Select value={newProperty.development_status} onValueChange={(value) => setNewProperty({ ...newProperty, development_status: value })}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select status" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="completed">Completed</SelectItem>
-                          <SelectItem value="new_project">New Project</SelectItem>
-                          <SelectItem value="pre_launching">Pre-launching</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="col-span-2 space-y-2">
-                      <Label htmlFor="description">Description</Label>
-                      <Textarea
-                        id="description"
-                        value={newProperty.description}
-                        onChange={(e) => setNewProperty({ ...newProperty, description: e.target.value })}
-                        placeholder="Property description"
-                        rows={3}
-                      />
-                    </div>
-                    <div className="col-span-2 space-y-2">
-                      <Label htmlFor="three_d_model_url">3D Model URL</Label>
-                      <Input
-                        id="three_d_model_url"
-                        value={newProperty.three_d_model_url}
-                        onChange={(e) => setNewProperty({ ...newProperty, three_d_model_url: e.target.value })}
-                        placeholder="e.g., https://example.com/model.glb"
-                      />
-                    </div>
-                    <div className="col-span-2 space-y-2">
-                      <Label htmlFor="virtual_tour_url">Virtual Tour URL</Label>
-                      <Input
-                        id="virtual_tour_url"
-                        value={newProperty.virtual_tour_url}
-                        onChange={(e) => setNewProperty({ ...newProperty, virtual_tour_url: e.target.value })}
-                        placeholder="e.g., https://example.com/tour"
-                      />
-                    </div>
-                  </div>
-                  <DialogFooter>
-                    <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
-                      Cancel
-                    </Button>
-                    <Button onClick={handleAddProperty}>
-                      Add Property
-                    </Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
             </div>
           </div>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex flex-wrap gap-4">
-            <div className="relative flex-1 min-w-[200px]">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Search properties by title, location..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
-              />
-            </div>
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-full sm:w-48">
-                <SelectValue placeholder="Filter by status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Status</SelectItem>
-                <SelectItem value="approved">Approved</SelectItem>
-                <SelectItem value="pending_approval">Pending Approval</SelectItem>
-                <SelectItem value="rejected">Rejected</SelectItem>
-                <SelectItem value="sold">Sold</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-              <SelectTrigger className="w-full sm:w-48">
-                <SelectValue placeholder="Filter by category" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Categories</SelectItem>
-                <SelectItem value="buy">For Sale</SelectItem>
-                <SelectItem value="rent">For Rent</SelectItem>
-                <SelectItem value="new_project">New Projects</SelectItem>
-                <SelectItem value="pre_launching">Pre-launching</SelectItem>
-                <SelectItem value="has_3d">Has 3D View</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+        <CardContent>
+          <Tabs defaultValue="properties" className="space-y-6">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="properties" className="flex items-center gap-2">
+                <Building className="h-4 w-4" />
+                Properties
+              </TabsTrigger>
+              <TabsTrigger value="search-filters" className="flex items-center gap-2">
+                <Filter className="h-4 w-4" />
+                Search Filters
+              </TabsTrigger>
+            </TabsList>
 
-          <PropertyBulkActions 
-            selectedProperties={selectedProperties}
-            onClearSelection={clearSelection}
-            totalProperties={properties?.length || 0}
-          />
-
-          {error && (
-            <div className="p-4 bg-destructive/10 border border-destructive rounded-lg">
-              <p className="text-destructive">
-                Error loading properties: {error.message}
-              </p>
-            </div>
-          )}
-
-          <div className="border rounded-lg">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-12">
-                    <Checkbox
-                      checked={
-                        properties?.length > 0 && 
-                        selectedProperties.length === properties.length
-                      }
-                      onCheckedChange={handleSelectAll}
-                    />
-                  </TableHead>
-                  <TableHead>Property</TableHead>
-                  <TableHead>Owner/Agent</TableHead>
-                  <TableHead>Details</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Created</TableHead>
-                  <TableHead>Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {isLoading ? (
-                  <TableRow>
-                    <TableCell colSpan={7} className="text-center py-8">
-                      Loading properties...
-                    </TableCell>
-                  </TableRow>
-                ) : properties?.length === 0 ? (
-                  <TableRow>
-                    <TableCell colSpan={7} className="text-center py-8">
-                      <div className="space-y-2">
-                        <p>No properties found</p>
-                        <p className="text-sm text-muted-foreground">
-                          Click "Add Property" to create your first property listing
-                        </p>
+            <TabsContent value="properties" className="space-y-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-lg font-semibold">Property Listings</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Manage property listings, approvals, and content
+                  </p>
+                </div>
+                <div className="flex gap-2">
+                  <Button variant="outline" onClick={() => refetch()}>
+                    <RefreshCw className="h-4 w-4 mr-2" />
+                    Refresh
+                  </Button>
+                  <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+                    <DialogTrigger asChild>
+                      <Button>
+                        <Plus className="h-4 w-4 mr-2" />
+                        Add Property
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-3xl">
+                      <DialogHeader>
+                        <DialogTitle>Add New Property</DialogTitle>
+                        <DialogDescription>
+                          Create a new property listing.
+                        </DialogDescription>
+                      </DialogHeader>
+                      <div className="grid grid-cols-2 gap-4 py-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="title">Title</Label>
+                          <Input
+                            id="title"
+                            value={newProperty.title}
+                            onChange={(e) => setNewProperty({ ...newProperty, title: e.target.value })}
+                            placeholder="Property title"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="location">Location</Label>
+                          <Input
+                            id="location"
+                            value={newProperty.location}
+                            onChange={(e) => setNewProperty({ ...newProperty, location: e.target.value })}
+                            placeholder="Property location"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="property_type">Property Type</Label>
+                          <Select value={newProperty.property_type} onValueChange={(value) => setNewProperty({ ...newProperty, property_type: value })}>
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="house">House</SelectItem>
+                              <SelectItem value="apartment">Apartment</SelectItem>
+                              <SelectItem value="villa">Villa</SelectItem>
+                              <SelectItem value="townhouse">Townhouse</SelectItem>
+                              <SelectItem value="land">Land</SelectItem>
+                              <SelectItem value="commercial">Commercial</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="listing_type">Listing Type</Label>
+                          <Select value={newProperty.listing_type} onValueChange={(value) => setNewProperty({ ...newProperty, listing_type: value })}>
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="sale">For Sale</SelectItem>
+                              <SelectItem value="rent">For Rent</SelectItem>
+                              <SelectItem value="lease">For Lease</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="price">Price</Label>
+                          <Input
+                            id="price"
+                            type="number"
+                            value={newProperty.price}
+                            onChange={(e) => setNewProperty({ ...newProperty, price: e.target.value })}
+                            placeholder="Property price"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="area_sqm">Area (sqm)</Label>
+                          <Input
+                            id="area_sqm"
+                            type="number"
+                            value={newProperty.area_sqm}
+                            onChange={(e) => setNewProperty({ ...newProperty, area_sqm: e.target.value })}
+                            placeholder="Area in square meters"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="bedrooms">Bedrooms</Label>
+                          <Input
+                            id="bedrooms"
+                            type="number"
+                            value={newProperty.bedrooms}
+                            onChange={(e) => setNewProperty({ ...newProperty, bedrooms: e.target.value })}
+                            placeholder="Number of bedrooms"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="bathrooms">Bathrooms</Label>
+                          <Input
+                            id="bathrooms"
+                            type="number"
+                            value={newProperty.bathrooms}
+                            onChange={(e) => setNewProperty({ ...newProperty, bathrooms: e.target.value })}
+                            placeholder="Number of bathrooms"
+                          />
+                        </div>
+                        <div className="space-y-2 col-span-2">
+                          <Label htmlFor="development_status">Development Status</Label>
+                          <Select value={newProperty.development_status} onValueChange={(value) => setNewProperty({ ...newProperty, development_status: value })}>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select status" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="completed">Completed</SelectItem>
+                              <SelectItem value="new_project">New Project</SelectItem>
+                              <SelectItem value="pre_launching">Pre-launching</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="col-span-2 space-y-2">
+                          <Label htmlFor="description">Description</Label>
+                          <Textarea
+                            id="description"
+                            value={newProperty.description}
+                            onChange={(e) => setNewProperty({ ...newProperty, description: e.target.value })}
+                            placeholder="Property description"
+                            rows={3}
+                          />
+                        </div>
+                        <div className="col-span-2 space-y-2">
+                          <Label htmlFor="three_d_model_url">3D Model URL</Label>
+                          <Input
+                            id="three_d_model_url"
+                            value={newProperty.three_d_model_url}
+                            onChange={(e) => setNewProperty({ ...newProperty, three_d_model_url: e.target.value })}
+                            placeholder="e.g., https://example.com/model.glb"
+                          />
+                        </div>
+                        <div className="col-span-2 space-y-2">
+                          <Label htmlFor="virtual_tour_url">Virtual Tour URL</Label>
+                          <Input
+                            id="virtual_tour_url"
+                            value={newProperty.virtual_tour_url}
+                            onChange={(e) => setNewProperty({ ...newProperty, virtual_tour_url: e.target.value })}
+                            placeholder="e.g., https://example.com/tour"
+                          />
+                        </div>
                       </div>
-                    </TableCell>
-                  </TableRow>
-                ) : (
-                  properties?.map((property) => (
-                    <TableRow key={property.id}>
-                      <TableCell>
+                      <DialogFooter>
+                        <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
+                          Cancel
+                        </Button>
+                        <Button onClick={handleAddProperty}>
+                          Add Property
+                        </Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                </div>
+              </div>
+
+              <div className="flex flex-wrap gap-4">
+                <div className="relative flex-1 min-w-[200px]">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder="Search properties by title, location..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-10"
+                  />
+                </div>
+                <Select value={statusFilter} onValueChange={setStatusFilter}>
+                  <SelectTrigger className="w-full sm:w-48">
+                    <SelectValue placeholder="Filter by status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Status</SelectItem>
+                    <SelectItem value="approved">Approved</SelectItem>
+                    <SelectItem value="pending_approval">Pending Approval</SelectItem>
+                    <SelectItem value="rejected">Rejected</SelectItem>
+                    <SelectItem value="sold">Sold</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+                  <SelectTrigger className="w-full sm:w-48">
+                    <SelectValue placeholder="Filter by category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Categories</SelectItem>
+                    <SelectItem value="buy">For Sale</SelectItem>
+                    <SelectItem value="rent">For Rent</SelectItem>
+                    <SelectItem value="new_project">New Projects</SelectItem>
+                    <SelectItem value="pre_launching">Pre-launching</SelectItem>
+                    <SelectItem value="has_3d">Has 3D View</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <PropertyBulkActions 
+                selectedProperties={selectedProperties}
+                onClearSelection={clearSelection}
+                totalProperties={properties?.length || 0}
+              />
+
+              {error && (
+                <div className="p-4 bg-destructive/10 border border-destructive rounded-lg">
+                  <p className="text-destructive">
+                    Error loading properties: {error.message}
+                  </p>
+                </div>
+              )}
+
+              <div className="border rounded-lg">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="w-12">
                         <Checkbox
-                          checked={selectedProperties.includes(property.id)}
-                          onCheckedChange={(checked) => 
-                            handleSelectProperty(property.id, checked as boolean)
+                          checked={
+                            properties?.length > 0 && 
+                            selectedProperties.length === properties.length
                           }
+                          onCheckedChange={handleSelectAll}
                         />
-                      </TableCell>
-                      <TableCell>
-                        <div className="space-y-1">
-                          <div className="font-medium flex items-center gap-2">
-                            {property.title}
-                            {(property.three_d_model_url || property.virtual_tour_url) && (
-                              <Badge variant="secondary" className="flex items-center gap-1 text-xs">
-                                <Axis3d className="h-3 w-3" /> 3D
-                              </Badge>
-                            )}
-                          </div>
-                          <div className="text-sm text-muted-foreground flex items-center gap-1">
-                            <MapPin className="h-3 w-3" />
-                            {property.location}
-                          </div>
-                          {property.bedrooms || property.bathrooms ? (
-                            <div className="text-xs text-muted-foreground">
-                              {property.bedrooms}BR • {property.bathrooms}BA • {property.area_sqm}sqm
-                            </div>
-                          ) : null}
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="space-y-1">
-                          <div className="text-sm font-medium">
-                            {property.owner?.full_name || 'Unknown Owner'}
-                          </div>
-                          <div className="text-xs text-muted-foreground">
-                            {property.owner?.email}
-                          </div>
-                          {property.agent && (
-                            <div className="text-xs text-blue-600">
-                              Agent: {property.agent.full_name}
-                            </div>
-                          )}
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="space-y-1">
-                          <Badge variant="outline" className="capitalize">{property.property_type}</Badge>
-                          <div className="text-xs text-muted-foreground capitalize">
-                            {property.development_status?.replace('_', ' ') || 'Completed'}
-                          </div>
-                          <div className="text-sm font-medium text-green-600">
-                            {property.price ? formatIDR(property.price) : 'Price not set'}
-                          </div>
-                          <div className="text-xs text-muted-foreground capitalize">
-                            {property.listing_type}
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <Select
-                          value={property.status || 'pending_approval'}
-                          onValueChange={(value) => handleStatusChange(property.id, value)}
-                        >
-                          <SelectTrigger className="w-36">
-                            <Badge variant={getStatusBadgeVariant(property.status || 'pending_approval')}>
-                              {property.status || 'pending_approval'}
-                            </Badge>
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="approved">Approved</SelectItem>
-                            <SelectItem value="pending_approval">Pending Approval</SelectItem>
-                            <SelectItem value="rejected">Rejected</SelectItem>
-                            <SelectItem value="sold">Sold</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </TableCell>
-                      <TableCell>
-                        {property.created_at ? new Date(property.created_at).toLocaleDateString() : 'N/A'}
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-1">
-                          <Button 
-                            size="sm" 
-                            variant="outline"
-                            onClick={() => setViewingProperty(property)}
-                          >
-                            <Eye className="h-4 w-4" />
-                          </Button>
-                          <Button 
-                            size="sm" 
-                            variant="outline"
-                            onClick={() => setEditingProperty(property)}
-                          >
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                          <Button 
-                            size="sm" 
-                            variant="outline"
-                            onClick={() => deletePropertyMutation.mutate(property.id)}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </TableCell>
+                      </TableHead>
+                      <TableHead>Property</TableHead>
+                      <TableHead>Owner/Agent</TableHead>
+                      <TableHead>Details</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Created</TableHead>
+                      <TableHead>Actions</TableHead>
                     </TableRow>
-                  ))
-                )}
-              </TableBody>
-            </Table>
-          </div>
+                  </TableHeader>
+                  <TableBody>
+                    {isLoading ? (
+                      <TableRow>
+                        <TableCell colSpan={7} className="text-center py-8">
+                          Loading properties...
+                        </TableCell>
+                      </TableRow>
+                    ) : properties?.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={7} className="text-center py-8">
+                          <div className="space-y-2">
+                            <p>No properties found</p>
+                            <p className="text-sm text-muted-foreground">
+                              Click "Add Property" to create your first property listing
+                            </p>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ) : (
+                      properties?.map((property) => (
+                        <TableRow key={property.id}>
+                          <TableCell>
+                            <Checkbox
+                              checked={selectedProperties.includes(property.id)}
+                              onCheckedChange={(checked) => 
+                                handleSelectProperty(property.id, checked as boolean)
+                              }
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <div className="space-y-1">
+                              <div className="font-medium flex items-center gap-2">
+                                {property.title}
+                                {(property.three_d_model_url || property.virtual_tour_url) && (
+                                  <Badge variant="secondary" className="flex items-center gap-1 text-xs">
+                                    <Axis3d className="h-3 w-3" /> 3D
+                                  </Badge>
+                                )}
+                              </div>
+                              <div className="text-sm text-muted-foreground flex items-center gap-1">
+                                <MapPin className="h-3 w-3" />
+                                {property.location}
+                              </div>
+                              {property.bedrooms || property.bathrooms ? (
+                                <div className="text-xs text-muted-foreground">
+                                  {property.bedrooms}BR • {property.bathrooms}BA • {property.area_sqm}sqm
+                                </div>
+                              ) : null}
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="space-y-1">
+                              <div className="text-sm font-medium">
+                                {property.owner?.full_name || 'Unknown Owner'}
+                              </div>
+                              <div className="text-xs text-muted-foreground">
+                                {property.owner?.email}
+                              </div>
+                              {property.agent && (
+                                <div className="text-xs text-blue-600">
+                                  Agent: {property.agent.full_name}
+                                </div>
+                              )}
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="space-y-1">
+                              <Badge variant="outline" className="capitalize">{property.property_type}</Badge>
+                              <div className="text-xs text-muted-foreground capitalize">
+                                {property.development_status?.replace('_', ' ') || 'Completed'}
+                              </div>
+                              <div className="text-sm font-medium text-green-600">
+                                {property.price ? formatIDR(property.price) : 'Price not set'}
+                              </div>
+                              <div className="text-xs text-muted-foreground capitalize">
+                                {property.listing_type}
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <Select
+                              value={property.status || 'pending_approval'}
+                              onValueChange={(value) => handleStatusChange(property.id, value)}
+                            >
+                              <SelectTrigger className="w-36">
+                                <Badge variant={getStatusBadgeVariant(property.status || 'pending_approval')}>
+                                  {property.status || 'pending_approval'}
+                                </Badge>
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="approved">Approved</SelectItem>
+                                <SelectItem value="pending_approval">Pending Approval</SelectItem>
+                                <SelectItem value="rejected">Rejected</SelectItem>
+                                <SelectItem value="sold">Sold</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </TableCell>
+                          <TableCell>
+                            {property.created_at ? new Date(property.created_at).toLocaleDateString() : 'N/A'}
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex items-center gap-1">
+                              <Button 
+                                size="sm" 
+                                variant="outline"
+                                onClick={() => setViewingProperty(property)}
+                              >
+                                <Eye className="h-4 w-4" />
+                              </Button>
+                              <Button 
+                                size="sm" 
+                                variant="outline"
+                                onClick={() => setEditingProperty(property)}
+                              >
+                                <Edit className="h-4 w-4" />
+                              </Button>
+                              <Button 
+                                size="sm" 
+                                variant="outline"
+                                onClick={() => deletePropertyMutation.mutate(property.id)}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="search-filters">
+              <SearchFiltersManagement />
+            </TabsContent>
+          </Tabs>
         </CardContent>
       </Card>
 
@@ -683,14 +712,6 @@ const PropertyManagement = () => {
         isOpen={!!viewingProperty}
         onClose={() => setViewingProperty(null)}
       />
-
-      {/* --- ADD SEARCH FILTER MANAGEMENT HERE --- */}
-      <div className="mt-12">
-        <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-          <span className="text-blue-700">Search Filters Management</span>
-        </h2>
-        <SearchFiltersManagement />
-      </div>
     </div>
   );
 };
