@@ -27,7 +27,9 @@ import {
   Crown,
   ChevronRight,
   Eye,
-  Edit
+  Edit,
+  Activity,
+  Target
 } from "lucide-react";
 
 const AgentOverview = () => {
@@ -160,7 +162,6 @@ const AgentOverview = () => {
   };
 
   const handleEditProperty = (propertyId: string) => {
-    // For now, we'll show an alert. In the future, this could navigate to an edit page
     alert(`Edit property ${propertyId} - This feature will be implemented soon`);
   };
 
@@ -172,165 +173,230 @@ const AgentOverview = () => {
 
   return (
     <div className="space-y-6">
-      {/* Optimized Welcome Section with better space utilization */}
-      <div className="bg-gradient-to-r from-blue-600 to-orange-500 text-white rounded-lg overflow-hidden">
-        <div className="p-6">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-            <div className="flex-1">
-              <div className="flex items-center gap-3 mb-3">
-                <Users className="h-8 w-8" />
-                <h1 className="text-2xl lg:text-3xl font-bold">Agent Dashboard</h1>
+      {/* Professional Agent Header */}
+      <div className="bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 text-white rounded-2xl overflow-hidden shadow-2xl">
+        <div className="relative p-8">
+          {/* Background Pattern */}
+          <div className="absolute inset-0 bg-grid-white/5 [mask-image:radial-gradient(ellipse_at_center,white,transparent_75%)]"></div>
+          
+          <div className="relative z-10">
+            {/* Header Content */}
+            <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6 mb-8">
+              <div className="flex-1">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center backdrop-blur-sm">
+                    <Users className="h-8 w-8" />
+                  </div>
+                  <div>
+                    <h1 className="text-3xl lg:text-4xl font-bold mb-2">Agent Control Panel</h1>
+                    <p className="text-blue-100 text-lg">Professional Property Management Dashboard</p>
+                  </div>
+                </div>
+                
+                {/* Agent Status */}
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="flex items-center gap-2 bg-green-500/20 px-4 py-2 rounded-full border border-green-400/30">
+                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                    <span className="text-green-100 text-sm font-medium">Online & Active</span>
+                  </div>
+                  <div className={`flex items-center gap-2 ${agentMembership.currentLevel.color} px-4 py-2 rounded-full`}>
+                    <CurrentIcon className="h-4 w-4 text-white" />
+                    <span className="text-white text-sm font-medium">{agentMembership.currentLevel.name} Agent</span>
+                  </div>
+                </div>
               </div>
-              <p className="text-blue-100 text-lg">Welcome back! Manage your listings and track your performance</p>
+              
+              {/* Main Action Button */}
+              <div className="flex flex-col sm:flex-row gap-3">
+                <Button 
+                  onClick={handleAddListing}
+                  size="lg"
+                  className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white border-0 shadow-lg shadow-orange-500/25 hover:shadow-xl hover:shadow-orange-500/30"
+                >
+                  <PlusCircle className="h-5 w-5 mr-2" />
+                  Add New Property
+                </Button>
+                <Button 
+                  onClick={() => navigate('/properties')}
+                  size="lg"
+                  variant="outline"
+                  className="bg-white/10 hover:bg-white/20 text-white border-white/30 backdrop-blur-sm"
+                >
+                  <Building className="h-5 w-5 mr-2" />
+                  View Portfolio
+                </Button>
+              </div>
             </div>
             
-            {/* Quick Action Buttons in Header */}
-            <div className="flex flex-col sm:flex-row gap-3 lg:min-w-fit">
-              <Button 
-                onClick={handleAddListing}
-                size="lg"
-                className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm"
-                variant="outline"
-              >
-                <PlusCircle className="h-5 w-5 mr-2" />
-                Add New Listing
-              </Button>
-              <Button 
-                onClick={() => navigate('/properties')}
-                size="lg"
-                className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm"
-                variant="outline"
-              >
-                <Building className="h-5 w-5 mr-2" />
-                View All Properties
-              </Button>
-            </div>
-          </div>
-          
-          {/* Quick Stats in Header */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-6 pt-6 border-t border-white/20">
-            <div className="text-center">
-              <div className="text-2xl font-bold">{stats.totalListings}</div>
-              <div className="text-blue-100 text-sm">Total Listings</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold">{stats.activeListings}</div>
-              <div className="text-blue-100 text-sm">Active</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold">{stats.pendingListings}</div>
-              <div className="text-blue-100 text-sm">Pending</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold">{stats.totalClients}</div>
-              <div className="text-blue-100 text-sm">Clients</div>
+            {/* Performance Stats Grid */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                    <Building className="h-5 w-5 text-blue-300" />
+                  </div>
+                  <div>
+                    <div className="text-2xl font-bold">{stats.totalListings}</div>
+                    <div className="text-blue-100 text-sm">Total Properties</div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
+                    <Activity className="h-5 w-5 text-green-300" />
+                  </div>
+                  <div>
+                    <div className="text-2xl font-bold">{stats.activeListings}</div>
+                    <div className="text-blue-100 text-sm">Active Listings</div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-yellow-500/20 rounded-lg flex items-center justify-center">
+                    <Target className="h-5 w-5 text-yellow-300" />
+                  </div>
+                  <div>
+                    <div className="text-2xl font-bold">{stats.pendingListings}</div>
+                    <div className="text-blue-100 text-sm">Pending Review</div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                    <Users className="h-5 w-5 text-purple-300" />
+                  </div>
+                  <div>
+                    <div className="text-2xl font-bold">{stats.totalClients}</div>
+                    <div className="text-blue-100 text-sm">Active Clients</div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Agent Membership Card */}
-      <Card className="border-l-4 border-l-yellow-500">
+      {/* Agent Membership Progress Card */}
+      <Card className="border-l-4 border-l-yellow-500 shadow-lg">
         <CardHeader>
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className={`w-12 h-12 rounded-full ${agentMembership.currentLevel.color} flex items-center justify-center`}>
-                <CurrentIcon className="h-6 w-6 text-white" />
+            <div className="flex items-center gap-4">
+              <div className={`w-14 h-14 rounded-2xl ${agentMembership.currentLevel.color} flex items-center justify-center shadow-lg`}>
+                <CurrentIcon className="h-7 w-7 text-white" />
               </div>
               <div>
-                <CardTitle className="text-lg">
+                <CardTitle className="text-xl">
                   Level {agentMembership.currentLevel.level}: {agentMembership.currentLevel.name} Agent
                 </CardTitle>
-                <CardDescription>
-                  Progress to {agentMembership.nextLevel.name}: {agentMembership.progress.current}/{agentMembership.progress.required}
+                <CardDescription className="text-base">
+                  Progress to {agentMembership.nextLevel.name}: {agentMembership.progress.current}/{agentMembership.progress.required} properties
                 </CardDescription>
               </div>
             </div>
-            <Badge className={agentMembership.currentLevel.color} variant="secondary">
+            <Badge className={`${agentMembership.currentLevel.color} text-white px-4 py-2 text-sm`}>
               {agentMembership.currentLevel.name}
             </Badge>
           </div>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
+          <div className="space-y-6">
             <div>
-              <div className="flex justify-between text-sm mb-2">
-                <span>Progress to next level</span>
-                <span>{agentMembership.progress.percentage}%</span>
+              <div className="flex justify-between text-sm mb-3">
+                <span className="font-medium">Progress to next level</span>
+                <span className="font-bold">{agentMembership.progress.percentage}%</span>
               </div>
-              <Progress value={agentMembership.progress.percentage} className="h-2" />
+              <Progress value={agentMembership.progress.percentage} className="h-3" />
+              <p className="text-xs text-muted-foreground mt-2">
+                {agentMembership.progress.required - agentMembership.progress.current} more properties needed for {agentMembership.nextLevel.name} level
+              </p>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
-              {agentMembership.benefits.map((benefit, index) => (
-                <Badge key={index} variant="outline" className="text-xs">
-                  {benefit}
-                </Badge>
-              ))}
+            <div>
+              <h4 className="font-semibold mb-3">Current Benefits</h4>
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
+                {agentMembership.benefits.map((benefit, index) => (
+                  <Badge key={index} variant="outline" className="text-xs justify-center py-2">
+                    {benefit}
+                  </Badge>
+                ))}
+              </div>
             </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* Main Content */}
-      <Tabs defaultValue="listings" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-6">
-          <TabsTrigger value="listings">My Listings</TabsTrigger>
-          <TabsTrigger value="clients">Clients</TabsTrigger>
-          <TabsTrigger value="analytics">Analytics</TabsTrigger>
-          <TabsTrigger value="tools">Tools</TabsTrigger>
-          <TabsTrigger value="notifications">Notifications</TabsTrigger>
-          <TabsTrigger value="settings">Settings</TabsTrigger>
+      {/* Main Dashboard Tabs */}
+      <Tabs defaultValue="listings" className="space-y-6">
+        <TabsList className="grid w-full grid-cols-6 h-14 p-1 bg-muted/50">
+          <TabsTrigger value="listings" className="text-sm font-medium">My Properties</TabsTrigger>
+          <TabsTrigger value="clients" className="text-sm font-medium">Clients</TabsTrigger>
+          <TabsTrigger value="analytics" className="text-sm font-medium">Analytics</TabsTrigger>
+          <TabsTrigger value="tools" className="text-sm font-medium">Tools</TabsTrigger>
+          <TabsTrigger value="notifications" className="text-sm font-medium">Notifications</TabsTrigger>
+          <TabsTrigger value="settings" className="text-sm font-medium">Settings</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="listings" className="space-y-4">
+        <TabsContent value="listings" className="space-y-6">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
-              <h2 className="text-xl font-semibold">Property Listings</h2>
-              <p className="text-muted-foreground">Manage and track your property portfolio</p>
+              <h2 className="text-2xl font-bold">Property Portfolio</h2>
+              <p className="text-muted-foreground">Manage your property listings and track performance</p>
             </div>
-            <Button onClick={handleAddListing} size="lg">
-              <PlusCircle className="h-4 w-4 mr-2" />
-              Add New Property Listing
-            </Button>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {sampleProperties.map((property) => (
-              <Card key={property.id} className="overflow-hidden hover:shadow-lg transition-shadow">
-                <div className="aspect-video relative">
+              <Card key={property.id} className="overflow-hidden hover:shadow-xl transition-all duration-300 group border-0 shadow-lg">
+                <div className="aspect-video relative overflow-hidden">
                   <img 
                     src={property.image_url} 
                     alt={property.title}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
-                  <div className="absolute top-2 right-2 flex gap-2">
-                    <Badge variant={property.status === 'active' ? 'default' : 'secondary'}>
+                  <div className="absolute top-3 right-3 flex gap-2">
+                    <Badge variant={property.status === 'active' ? 'default' : 'secondary'} className="shadow-lg">
                       {property.status}
                     </Badge>
                   </div>
+                  <div className="absolute bottom-3 left-3">
+                    <Badge variant="outline" className="bg-white/90 backdrop-blur-sm">
+                      {property.property_type}
+                    </Badge>
+                  </div>
                 </div>
-                <CardContent className="p-4">
-                  <div className="space-y-3">
+                <CardContent className="p-5">
+                  <div className="space-y-4">
                     <div>
-                      <h3 className="font-semibold text-lg line-clamp-1">{property.title}</h3>
-                      <p className="text-sm text-muted-foreground flex items-center gap-1">
+                      <h3 className="font-bold text-lg line-clamp-1 group-hover:text-primary transition-colors">
+                        {property.title}
+                      </h3>
+                      <p className="text-sm text-muted-foreground flex items-center gap-1 mt-1">
                         <MapPin className="h-3 w-3" />
                         {property.location}
                       </p>
                     </div>
                     
                     <div className="flex justify-between items-center">
-                      <div className="text-lg font-bold text-primary">
+                      <div className="text-xl font-bold text-primary">
                         {formatPrice(property.price, property.listing_type)}
                       </div>
-                      <Badge variant="outline">
-                        {property.property_type}
-                      </Badge>
                     </div>
                     
-                    <div className="flex justify-between text-sm text-muted-foreground">
-                      <span>{property.bedrooms}BR • {property.bathrooms}BA</span>
-                      <span>{property.area_sqm}m²</span>
+                    <div className="flex justify-between text-sm text-muted-foreground bg-muted/50 rounded-lg p-3">
+                      <span className="flex items-center gap-1">
+                        <strong>{property.bedrooms}</strong>BR
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <strong>{property.bathrooms}</strong>BA
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <strong>{property.area_sqm}</strong>m²
+                      </span>
                     </div>
                     
                     <div className="flex gap-2 pt-2">
@@ -361,18 +427,22 @@ const AgentOverview = () => {
         </TabsContent>
 
         <TabsContent value="clients">
-          <Card>
+          <Card className="shadow-lg">
             <CardHeader>
-              <CardTitle>Client Management</CardTitle>
+              <CardTitle className="text-xl">Client Management</CardTitle>
               <CardDescription>Manage your client relationships and track interactions</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-center py-12">
-                <Users className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                <h3 className="text-lg font-medium mb-2">Client Management System</h3>
-                <p className="text-muted-foreground mb-4">Track your clients, their preferences, and communication history</p>
-                <Button>
-                  <PlusCircle className="h-4 w-4 mr-2" />
+              <div className="text-center py-16">
+                <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <Users className="h-8 w-8 text-primary" />
+                </div>
+                <h3 className="text-xl font-semibold mb-2">Client Management System</h3>
+                <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+                  Track your clients, their preferences, and communication history in one centralized location
+                </p>
+                <Button size="lg">
+                  <PlusCircle className="h-5 w-5 mr-2" />
                   Add New Client
                 </Button>
               </div>
@@ -381,18 +451,22 @@ const AgentOverview = () => {
         </TabsContent>
 
         <TabsContent value="analytics">
-          <Card>
+          <Card className="shadow-lg">
             <CardHeader>
-              <CardTitle>Performance Analytics</CardTitle>
+              <CardTitle className="text-xl">Performance Analytics</CardTitle>
               <CardDescription>Track your sales and listing performance metrics</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-center py-12">
-                <BarChart3 className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                <h3 className="text-lg font-medium mb-2">Analytics Dashboard</h3>
-                <p className="text-muted-foreground mb-4">View detailed insights about your performance and market trends</p>
-                <Button>
-                  <TrendingUp className="h-4 w-4 mr-2" />
+              <div className="text-center py-16">
+                <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <BarChart3 className="h-8 w-8 text-primary" />
+                </div>
+                <h3 className="text-xl font-semibold mb-2">Analytics Dashboard</h3>
+                <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+                  View detailed insights about your performance, market trends, and client engagement
+                </p>
+                <Button size="lg">
+                  <TrendingUp className="h-5 w-5 mr-2" />
                   View Analytics
                 </Button>
               </div>
