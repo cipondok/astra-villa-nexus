@@ -1053,6 +1053,7 @@ export type Database = {
           state: string | null
           status: string | null
           three_d_model_url: string | null
+          thumbnail_url: string | null
           title: string
           updated_at: string | null
           virtual_tour_url: string | null
@@ -1083,6 +1084,7 @@ export type Database = {
           state?: string | null
           status?: string | null
           three_d_model_url?: string | null
+          thumbnail_url?: string | null
           title: string
           updated_at?: string | null
           virtual_tour_url?: string | null
@@ -1113,6 +1115,7 @@ export type Database = {
           state?: string | null
           status?: string | null
           three_d_model_url?: string | null
+          thumbnail_url?: string | null
           title?: string
           updated_at?: string | null
           virtual_tour_url?: string | null
