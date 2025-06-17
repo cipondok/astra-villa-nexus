@@ -3574,6 +3574,10 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: boolean
       }
+      check_super_admin_email: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
       claim_profile_completion_bonus: {
         Args: { vendor_id: string }
         Returns: undefined
@@ -3581,10 +3585,6 @@ export type Database = {
       claim_signup_bonus: {
         Args: { vendor_id: string }
         Returns: undefined
-      }
-      get_current_user_admin_status: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
       }
       is_admin_user: {
         Args: Record<PropertyKey, never>
@@ -3595,14 +3595,6 @@ export type Database = {
         Returns: boolean
       }
       is_current_user_admin: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
-      is_current_user_super_admin: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
-      is_current_user_super_admin_safe: {
         Args: Record<PropertyKey, never>
         Returns: boolean
       }
