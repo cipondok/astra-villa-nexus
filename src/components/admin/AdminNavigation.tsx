@@ -24,7 +24,9 @@ import {
   CreditCard,
   UserCheck,
   Award,
-  Calendar
+  Calendar,
+  LifeBuoy,
+  Phone
 } from "lucide-react";
 
 interface AdminNavigationProps {
@@ -56,6 +58,23 @@ const AdminNavigation = ({ activeSection, onSectionChange }: AdminNavigationProp
       description: 'Property listings and approvals',
       category: 'Core'
     },
+
+    // Customer Service
+    {
+      id: 'customer-service',
+      label: 'Customer Service',
+      icon: LifeBuoy,
+      description: 'Support tickets and live chat management',
+      category: 'Customer Service',
+      badge: 'NEW'
+    },
+    {
+      id: 'contact-management',
+      label: 'Contact Management',
+      icon: Phone,
+      description: 'Contact us inquiries and responses',
+      category: 'Customer Service'
+    },
     
     // AI & Vendor Management
     {
@@ -64,7 +83,7 @@ const AdminNavigation = ({ activeSection, onSectionChange }: AdminNavigationProp
       icon: Brain,
       description: 'Complete AI-powered vendor system',
       category: 'AI & Vendors',
-      badge: 'NEW'
+      badge: 'AI'
     },
     {
       id: 'vendor-management',
@@ -193,7 +212,7 @@ const AdminNavigation = ({ activeSection, onSectionChange }: AdminNavigationProp
     }
   ];
 
-  const categories = ['Core', 'AI & Vendors', 'Analytics', 'Content', 'Settings', 'Technical'];
+  const categories = ['Core', 'Customer Service', 'AI & Vendors', 'Analytics', 'Content', 'Settings', 'Technical'];
 
   return (
     <div className="space-y-6">

@@ -21,6 +21,8 @@ import AdminKYCManagement from "./AdminKYCManagement";
 import AdminMembershipManagement from "./AdminMembershipManagement";
 import DailyCheckInManagement from "./DailyCheckInManagement";
 import ComprehensiveVendorManagement from "./ComprehensiveVendorManagement";
+import CustomerServiceTicketManagement from "./CustomerServiceTicketManagement";
+import ContactManagement from "./ContactManagement";
 
 const AdminOverview = () => {
   const [activeSection, setActiveSection] = useState('overview');
@@ -45,6 +47,10 @@ const AdminOverview = () => {
         return <AdminKYCManagement />;
       case 'membership-management':
         return <AdminMembershipManagement />;
+      case 'customer-service':
+        return <CustomerServiceTicketManagement />;
+      case 'contact-management':
+        return <ContactManagement />;
       case 'analytics':
         return <WebTrafficAnalytics />;
       case 'content-management':
