@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
-import { Droplets, Save, RefreshCw, Eye } from "lucide-react";
+import { Droplets, Save, RefreshCw, Eye, Settings } from "lucide-react";
 import { useAlert } from "@/contexts/AlertContext";
 import { useThemeSettings } from "@/contexts/ThemeSettingsContext";
 
@@ -142,11 +142,11 @@ const PropertyWatermarkSettings = () => {
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
         {/* Basic Configuration Card */}
-        <Card className="border-2 hover:shadow-lg transition-all duration-200" style={{ borderColor: `${themeSettings.primaryColor}15` }}>
-          <CardHeader className="pb-4" style={{ backgroundColor: `${themeSettings.primaryColor}05` }}>
+        <Card className="border hover:shadow-lg transition-all duration-200" style={{ borderColor: `${themeSettings.primaryColor}20` }}>
+          <CardHeader className="pb-4" style={{ backgroundColor: `${themeSettings.primaryColor}08` }}>
             <CardTitle className="flex items-center gap-3 text-lg">
-              <div className="p-2 rounded-lg" style={{ backgroundColor: `${themeSettings.primaryColor}20` }}>
-                <Droplets className="h-5 w-5" style={{ color: themeSettings.primaryColor }} />
+              <div className="p-2 rounded-lg" style={{ backgroundColor: `${themeSettings.primaryColor}15` }}>
+                <Settings className="h-5 w-5" style={{ color: themeSettings.primaryColor }} />
               </div>
               Basic Configuration
             </CardTitle>
@@ -156,7 +156,7 @@ const PropertyWatermarkSettings = () => {
           </CardHeader>
           <CardContent className="space-y-6">
             {/* Enable Watermark */}
-            <div className="flex items-center justify-between p-4 rounded-lg border-2" style={{ borderColor: `${themeSettings.primaryColor}15`, backgroundColor: `${themeSettings.primaryColor}05` }}>
+            <div className="flex items-center justify-between p-4 rounded-lg border" style={{ borderColor: `${themeSettings.primaryColor}20`, backgroundColor: `${themeSettings.primaryColor}05` }}>
               <div className="space-y-1">
                 <Label htmlFor="watermark-enabled" className="font-medium">Enable Watermark</Label>
                 <p className="text-sm text-muted-foreground">
@@ -178,7 +178,7 @@ const PropertyWatermarkSettings = () => {
                 value={localSettings.text}
                 onChange={(e) => handleSettingChange('text', e.target.value)}
                 placeholder="Enter watermark text"
-                className="border-2 focus:ring-2 transition-all"
+                className="border focus:ring-2 transition-all"
                 style={{ 
                   borderColor: `${themeSettings.primaryColor}30`,
                   '--tw-ring-color': `${themeSettings.primaryColor}40`
@@ -193,13 +193,13 @@ const PropertyWatermarkSettings = () => {
                 value={localSettings.position} 
                 onValueChange={(value) => handleSettingChange('position', value)}
               >
-                <SelectTrigger className="border-2 focus:ring-2" style={{ 
+                <SelectTrigger className="border focus:ring-2" style={{ 
                   borderColor: `${themeSettings.primaryColor}30`,
                   '--tw-ring-color': `${themeSettings.primaryColor}40`
                 } as React.CSSProperties}>
                   <SelectValue placeholder="Select position" />
                 </SelectTrigger>
-                <SelectContent className="border-2" style={{ borderColor: `${themeSettings.primaryColor}20` }}>
+                <SelectContent className="border" style={{ borderColor: `${themeSettings.primaryColor}20` }}>
                   <SelectItem value="top-left">Top Left</SelectItem>
                   <SelectItem value="top-center">Top Center</SelectItem>
                   <SelectItem value="top-right">Top Right</SelectItem>
@@ -220,14 +220,14 @@ const PropertyWatermarkSettings = () => {
                   type="color"
                   value={localSettings.color}
                   onChange={(e) => handleSettingChange('color', e.target.value)}
-                  className="w-20 h-12 p-1 border-2 rounded-lg cursor-pointer"
+                  className="w-20 h-12 p-1 border rounded-lg cursor-pointer"
                   style={{ borderColor: `${themeSettings.primaryColor}40` }}
                 />
                 <Input
                   value={localSettings.color}
                   onChange={(e) => handleSettingChange('color', e.target.value)}
                   placeholder="#000000"
-                  className="flex-1 border-2 focus:ring-2"
+                  className="flex-1 border focus:ring-2"
                   style={{ 
                     borderColor: `${themeSettings.primaryColor}30`,
                     '--tw-ring-color': `${themeSettings.primaryColor}40`
@@ -239,10 +239,10 @@ const PropertyWatermarkSettings = () => {
         </Card>
 
         {/* Appearance & Preview Card */}
-        <Card className="border-2 hover:shadow-lg transition-all duration-200" style={{ borderColor: `${themeSettings.primaryColor}15` }}>
-          <CardHeader className="pb-4" style={{ backgroundColor: `${themeSettings.primaryColor}05` }}>
+        <Card className="border hover:shadow-lg transition-all duration-200" style={{ borderColor: `${themeSettings.primaryColor}20` }}>
+          <CardHeader className="pb-4" style={{ backgroundColor: `${themeSettings.primaryColor}08` }}>
             <CardTitle className="flex items-center gap-3 text-lg">
-              <div className="p-2 rounded-lg" style={{ backgroundColor: `${themeSettings.primaryColor}20` }}>
+              <div className="p-2 rounded-lg" style={{ backgroundColor: `${themeSettings.primaryColor}15` }}>
                 <Eye className="h-5 w-5" style={{ color: themeSettings.primaryColor }} />
               </div>
               Appearance & Preview
@@ -256,7 +256,10 @@ const PropertyWatermarkSettings = () => {
             <div className="space-y-3">
               <Label className="font-medium flex items-center justify-between">
                 <span>Opacity</span>
-                <span className="font-bold" style={{ color: themeSettings.primaryColor }}>
+                <span className="font-bold text-sm px-2 py-1 rounded" style={{ 
+                  color: themeSettings.primaryColor,
+                  backgroundColor: `${themeSettings.primaryColor}10`
+                }}>
                   {localSettings.opacity}%
                 </span>
               </Label>
@@ -276,7 +279,10 @@ const PropertyWatermarkSettings = () => {
             <div className="space-y-3">
               <Label className="font-medium flex items-center justify-between">
                 <span>Font Size</span>
-                <span className="font-bold" style={{ color: themeSettings.primaryColor }}>
+                <span className="font-bold text-sm px-2 py-1 rounded" style={{ 
+                  color: themeSettings.primaryColor,
+                  backgroundColor: `${themeSettings.primaryColor}10`
+                }}>
                   {localSettings.size}px
                 </span>
               </Label>
@@ -294,11 +300,12 @@ const PropertyWatermarkSettings = () => {
 
             {/* Live Preview */}
             <div className="space-y-3">
-              <Label className="font-medium" style={{ color: themeSettings.primaryColor }}>
+              <Label className="font-medium flex items-center gap-2" style={{ color: themeSettings.primaryColor }}>
+                <Droplets className="h-4 w-4" />
                 Live Preview
               </Label>
               <div 
-                className="relative bg-gradient-to-br from-gray-50 to-gray-150 h-40 rounded-xl border-2 overflow-hidden shadow-inner"
+                className="relative bg-gradient-to-br from-gray-50 to-gray-100 h-40 rounded-xl border overflow-hidden shadow-inner"
                 style={{ borderColor: `${themeSettings.primaryColor}20` }}
               >
                 <div className="absolute inset-0 flex items-center justify-center">
