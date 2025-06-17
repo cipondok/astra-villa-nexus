@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -16,6 +15,7 @@ import PropertyPreview from "@/components/property/PropertyPreview";
 import LocationSelector from "@/components/property/LocationSelector";
 import Property3DViewer from "@/components/property/Property3DViewer";
 import AgentRegistrationModal from "@/components/agent/AgentRegistrationModal";
+import CelebrationPopup from "@/components/CelebrationPopup";
 
 const PropertyInsertForm = () => {
   const [formData, setFormData] = useState({
@@ -41,6 +41,7 @@ const PropertyInsertForm = () => {
 
   const [showPreview, setShowPreview] = useState(false);
   const [showAgentRegistration, setShowAgentRegistration] = useState(false);
+  const [showCelebration, setShowCelebration] = useState(false);
 
   const { showSuccess, showError } = useAlert();
   const { profile } = useAuth();
@@ -103,9 +104,12 @@ const PropertyInsertForm = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-properties'] });
-      showSuccess("Success", "Property submitted for admin approval. You'll be notified once it's reviewed.");
+      
+      // Show celebration popup instead of showSuccess alert
+      setShowCelebration(true);
       setShowPreview(false);
-      // Reset form
+      
+      // Reset form after celebration
       setFormData({
         title: "",
         description: "",
@@ -131,6 +135,11 @@ const PropertyInsertForm = () => {
       showError("Error", `Failed to submit property: ${error.message}`);
     }
   });
+
+  const handleCelebrationClose = () => {
+    setShowCelebration(false);
+    showSuccess("Success", "Property submitted for admin approval. You'll be notified once it's reviewed.");
+  };
 
   const handlePreview = () => {
     if (!formData.title || !formData.property_type || !formData.listing_type || !formData.owner_id) {
@@ -482,6 +491,14 @@ const PropertyInsertForm = () => {
       <AgentRegistrationModal
         isOpen={showAgentRegistration}
         onClose={() => setShowAgentRegistration(false)}
+      />
+
+      {/* Celebration Popup */}
+      <CelebrationPopup
+        isOpen={showCelebration}
+        onClose={handleCelebrationClose}
+        title="🎉 Properti Berhasil Diajukan!"
+        message="Selamat! Properti telah berhasil disubmit ke sistem. Admin akan melakukan review dalam 24 jam ke depan."
       />
     </>
   );

@@ -19,6 +19,7 @@ import LocationSelector from "./LocationSelector";
 import EnhancedImageUpload from "./EnhancedImageUpload";
 import PropertySpecifications from "./PropertySpecifications";
 import PropertyPreview from "./PropertyPreview";
+import CelebrationPopup from "@/components/CelebrationPopup";
 
 const PropertyInsertForm = () => {
   const [formData, setFormData] = useState({
@@ -50,6 +51,7 @@ const PropertyInsertForm = () => {
   const [showAiHelp, setShowAiHelp] = useState(false);
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
   const [showPreview, setShowPreview] = useState(false);
+  const [showCelebration, setShowCelebration] = useState(false);
 
   const { user, profile, isAuthenticated } = useAuth();
   const navigate = useNavigate();
@@ -153,8 +155,10 @@ const PropertyInsertForm = () => {
       return data;
     },
     onSuccess: () => {
-      alert("Properti berhasil diajukan! Tim admin kami akan meninjau dalam 24 jam.");
-      navigate('/');
+      // Show celebration popup instead of alert
+      setShowCelebration(true);
+      setShowPreview(false);
+      
       // Reset form
       setFormData({
         title: "",
@@ -891,6 +895,14 @@ const PropertyInsertForm = () => {
         onConfirm={handleSubmit}
         propertyData={formData}
         isSubmitting={insertPropertyMutation.isPending}
+      />
+
+      {/* Celebration Popup */}
+      <CelebrationPopup
+        isOpen={showCelebration}
+        onClose={handleCelebrationClose}
+        title="🎉 Properti Berhasil Diajukan!"
+        message="Selamat! Properti Anda telah berhasil diajukan ke sistem kami. Tim admin akan meninjau dan memverifikasi dalam waktu 24 jam."
       />
     </>
   );
