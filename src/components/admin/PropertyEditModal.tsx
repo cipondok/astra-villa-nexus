@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAlert } from "@/contexts/AlertContext";
 import { formatIDR } from "@/utils/currency";
-import { Sparkles, Upload, X, Image as ImageIcon } from "lucide-react";
+import { Sparkles, Upload, X, Image as ImageIcon, Star } from "lucide-react";
 
 interface PropertyEditModalProps {
   property: any;
@@ -36,6 +36,7 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
 
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [existingImages, setExistingImages] = useState<string[]>([]);
+  const [selectedThumbnail, setSelectedThumbnail] = useState<string>("");
   const [imageUploading, setImageUploading] = useState(false);
 
   const { showSuccess, showError } = useAlert();
@@ -74,6 +75,7 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
         seo_description: property.seo_description || "",
       });
       setExistingImages(property.images || []);
+      setSelectedThumbnail(property.thumbnail_url || (property.images && property.images[0]) || "");
       setImageFiles([]);
     }
   }, [property, isOpen]);
@@ -170,11 +172,18 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
         }
       }
 
+      // Set thumbnail - if no thumbnail selected and we have images, use first image
+      let thumbnailUrl = selectedThumbnail;
+      if (!thumbnailUrl && finalImageUrls.length > 0) {
+        thumbnailUrl = finalImageUrls[0];
+      }
+
       const { error } = await supabase
         .from('properties')
         .update({
           ...updates,
           images: finalImageUrls,
+          thumbnail_url: thumbnailUrl,
           price: updates.price ? parseFloat(updates.price) : null,
           bedrooms: updates.bedrooms ? parseInt(updates.bedrooms) : null,
           bathrooms: updates.bathrooms ? parseInt(updates.bathrooms) : null,
@@ -270,7 +279,18 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
   };
 
   const removeExistingImage = (index: number) => {
+    const imageToRemove = existingImages[index];
     setExistingImages(prev => prev.filter((_, i) => i !== index));
+    
+    // If the removed image was the selected thumbnail, reset thumbnail selection
+    if (selectedThumbnail === imageToRemove) {
+      const remainingImages = existingImages.filter((_, i) => i !== index);
+      setSelectedThumbnail(remainingImages.length > 0 ? remainingImages[0] : "");
+    }
+  };
+
+  const handleThumbnailSelect = (imageUrl: string) => {
+    setSelectedThumbnail(imageUrl);
   };
 
   const handleUpdate = () => {
@@ -456,26 +476,56 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
             {/* Existing Images */}
             {existingImages.length > 0 && (
               <div>
-                <p className="text-sm font-medium text-gray-700 mb-2">Current Images ({existingImages.length})</p>
+                <p className="text-sm font-medium text-gray-700 mb-2">
+                  Current Images ({existingImages.length}) - Click star to set as thumbnail
+                </p>
                 <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
                   {existingImages.map((imageUrl, index) => (
                     <div key={`existing-${index}`} className="relative group">
                       <img
                         src={imageUrl}
                         alt={`Property ${index + 1}`}
-                        className="w-full h-20 object-cover rounded border"
+                        className={`w-full h-20 object-cover rounded border cursor-pointer transition-all ${
+                          selectedThumbnail === imageUrl 
+                            ? 'border-2 border-blue-500 ring-2 ring-blue-200' 
+                            : 'border-gray-300 hover:border-blue-300'
+                        }`}
+                        onClick={() => handleThumbnailSelect(imageUrl)}
                       />
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className={`absolute top-0 left-0 h-6 w-6 p-0 ${
+                          selectedThumbnail === imageUrl 
+                            ? 'text-yellow-500' 
+                            : 'text-gray-400 opacity-0 group-hover:opacity-100'
+                        }`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleThumbnailSelect(imageUrl);
+                        }}
+                      >
+                        <Star className={`h-3 w-3 ${selectedThumbnail === imageUrl ? 'fill-current' : ''}`} />
+                      </Button>
                       <Button
                         variant="destructive"
                         size="sm"
                         className="absolute -top-2 -right-2 h-6 w-6 p-0 opacity-0 group-hover:opacity-100"
-                        onClick={() => removeExistingImage(index)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          removeExistingImage(index);
+                        }}
                       >
                         <X className="h-3 w-3" />
                       </Button>
                     </div>
                   ))}
                 </div>
+                {selectedThumbnail && (
+                  <p className="text-sm text-blue-600 mt-2">
+                    Selected thumbnail: {existingImages.findIndex(img => img === selectedThumbnail) + 1}
+                  </p>
+                )}
               </div>
             )}
 
