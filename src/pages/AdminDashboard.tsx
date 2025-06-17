@@ -6,7 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Settings, Users, Home, Plus, Gift, Calendar, Database, Shield, FileText, Store, MessageSquare, Activity, BarChart3, Loader2, Wifi, Mail, Building2, LifeBuoy } from "lucide-react";
+import { Settings, Users, Home, Plus, Gift, Calendar, Database, Shield, FileText, Store, MessageSquare, Activity, BarChart3, Loader2, Wifi, Mail, Building2, LifeBuoy, ChevronDown } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -44,6 +44,7 @@ const AdminDashboard = () => {
   const location = useLocation();
   const [activeTab, setActiveTab] = useState(location.state?.defaultTab || "overview");
   const [systemSettingsOpen, setSystemSettingsOpen] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 
   const isAdmin = profile?.role === 'admin';
   const isSupportStaff = profile?.role === 'agent' || profile?.role === 'customer_service';
@@ -92,32 +93,44 @@ const AdminDashboard = () => {
   }
 
   const tabCategories = {
-    core: [
-      { value: "overview", icon: Activity, label: "Overview", component: null, adminOnly: true },
-      { value: "analytics", icon: BarChart3, label: "Analytics", component: WebTrafficAnalytics, adminOnly: true },
-      { value: "system", icon: Database, label: "System", component: SystemMonitor, adminOnly: true },
-    ],
-    management: [
-      { value: "users", icon: Users, label: "Users", component: SimpleUserManagement, adminOnly: true },
-      { value: "properties", icon: Home, label: "Properties", component: PropertyManagement, adminOnly: true },
-      { value: "offices", icon: Building2, label: "Offices", component: OfficeManagement, adminOnly: true },
-      { value: "content", icon: FileText, label: "Content", component: ContentManagement, adminOnly: true },
-    ],
-    communication: [
-      { value: "communication", icon: MessageSquare, label: "Communication", component: CommunicationHub, adminOnly: false },
-      { value: "vendor-directory", icon: Store, label: "Vendor Directory", component: EnhancedVendorDirectory, adminOnly: false },
-      { value: "contact", icon: Mail, label: "Contacts", component: ContactManagement, adminOnly: false },
-      { value: "live-status", icon: Wifi, label: "Live Status", component: LiveAgentStatusDashboard, adminOnly: false },
-    ],
-    support: [
-      { value: "support", icon: LifeBuoy, label: "Support", component: CustomerServiceTicketManagement, adminOnly: false },
-      { value: "feedback", icon: MessageSquare, label: "Feedback", component: FeedbackManagement, adminOnly: false },
-      { value: "vendors", icon: Store, label: "Vendors", component: VendorManagementHub, adminOnly: true },
-    ]
+    core: {
+      label: "Core",
+      items: [
+        { value: "overview", icon: Activity, label: "Overview", component: null, adminOnly: true },
+        { value: "analytics", icon: BarChart3, label: "Analytics", component: WebTrafficAnalytics, adminOnly: true },
+        { value: "system", icon: Database, label: "System", component: SystemMonitor, adminOnly: true },
+      ]
+    },
+    management: {
+      label: "Management",
+      items: [
+        { value: "users", icon: Users, label: "Users", component: SimpleUserManagement, adminOnly: true },
+        { value: "properties", icon: Home, label: "Properties", component: PropertyManagement, adminOnly: true },
+        { value: "offices", icon: Building2, label: "Offices", component: OfficeManagement, adminOnly: true },
+        { value: "content", icon: FileText, label: "Content", component: ContentManagement, adminOnly: true },
+      ]
+    },
+    communication: {
+      label: "Communication",
+      items: [
+        { value: "communication", icon: MessageSquare, label: "Communication", component: CommunicationHub, adminOnly: false },
+        { value: "vendor-directory", icon: Store, label: "Vendor Directory", component: EnhancedVendorDirectory, adminOnly: false },
+        { value: "contact", icon: Mail, label: "Contacts", component: ContactManagement, adminOnly: false },
+        { value: "live-status", icon: Wifi, label: "Live Status", component: LiveAgentStatusDashboard, adminOnly: false },
+      ]
+    },
+    support: {
+      label: "Support",
+      items: [
+        { value: "support", icon: LifeBuoy, label: "Support", component: CustomerServiceTicketManagement, adminOnly: false },
+        { value: "feedback", icon: MessageSquare, label: "Feedback", component: FeedbackManagement, adminOnly: false },
+        { value: "vendors", icon: Store, label: "Vendors", component: VendorManagementHub, adminOnly: true },
+      ]
+    }
   };
 
   const getVisibleTabs = () => {
-    const allTabs = Object.values(tabCategories).flat();
+    const allTabs = Object.values(tabCategories).flatMap(category => category.items);
     return isAdmin ? allTabs : allTabs.filter(tab => !tab.adminOnly);
   };
 
@@ -129,6 +142,10 @@ const AdminDashboard = () => {
       <AdminQuickActions onTabChange={setActiveTab} />
     </div>
   );
+
+  const handleDropdownToggle = (categoryKey: string) => {
+    setOpenDropdown(openDropdown === categoryKey ? null : categoryKey);
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -189,48 +206,114 @@ const AdminDashboard = () => {
       
       <main className="container mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TooltipProvider>
-            <TabsList className="flex flex-wrap gap-2 p-3 bg-muted/30 rounded-xl h-auto">
-              {Object.entries(tabCategories).map(([category, tabs]) => {
-                const categoryTabs = tabs.filter(tab => !tab.adminOnly || isAdmin);
-                if (categoryTabs.length === 0) return null;
-                
-                return (
-                  <div key={category} className="flex gap-2 items-center">
-                    {categoryTabs.map(tab => (
-                      <Tooltip key={tab.value}>
-                        <TooltipTrigger asChild>
-                          <TabsTrigger 
-                            value={tab.value} 
-                            className="group relative h-12 w-12 p-0 rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground hover:w-auto hover:px-4 transition-all duration-300 ease-in-out overflow-hidden bg-background/60 hover:bg-accent hover:text-accent-foreground shadow-sm hover:shadow-md"
+          {/* Enhanced Navigation Menu */}
+          <div className="bg-card border rounded-xl shadow-sm">
+            <div className="flex items-center justify-between p-4 border-b">
+              <h3 className="text-lg font-semibold">Admin Dashboard</h3>
+              <div className="text-sm text-muted-foreground">
+                {Object.values(tabCategories).flatMap(cat => cat.items).find(tab => tab.value === activeTab)?.label}
+              </div>
+            </div>
+            
+            <div className="p-2">
+              <nav className="flex flex-wrap items-center gap-1">
+                {Object.entries(tabCategories).map(([categoryKey, category]) => {
+                  const categoryTabs = category.items.filter(tab => !tab.adminOnly || isAdmin);
+                  if (categoryTabs.length === 0) return null;
+                  
+                  // Check if any tab in this category is active
+                  const hasActiveTab = categoryTabs.some(tab => tab.value === activeTab);
+                  
+                  return (
+                    <div key={categoryKey} className="relative">
+                      {categoryTabs.length === 1 ? (
+                        // Single item - direct tab
+                        <TooltipProvider key={categoryTabs[0].value}>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <TabsTrigger 
+                                value={categoryTabs[0].value}
+                                className={`group relative flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:bg-accent hover:text-accent-foreground ${
+                                  activeTab === categoryTabs[0].value 
+                                    ? 'bg-primary text-primary-foreground shadow-sm' 
+                                    : 'text-muted-foreground hover:text-foreground'
+                                }`}
+                                onClick={() => setActiveTab(categoryTabs[0].value)}
+                              >
+                                <categoryTabs[0].icon className="h-4 w-4 group-hover:scale-110 transition-transform duration-200" />
+                                <span className="hidden sm:block">{categoryTabs[0].label}</span>
+                              </TabsTrigger>
+                            </TooltipTrigger>
+                            <TooltipContent side="bottom">
+                              <p className="text-sm">{categoryTabs[0].label}</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      ) : (
+                        // Multiple items - dropdown
+                        <DropdownMenu 
+                          open={openDropdown === categoryKey} 
+                          onOpenChange={(open) => setOpenDropdown(open ? categoryKey : null)}
+                        >
+                          <DropdownMenuTrigger asChild>
+                            <Button 
+                              variant="ghost" 
+                              className={`group flex items-center gap-2 px-4 py-2 h-auto rounded-lg text-sm font-medium transition-all duration-200 hover:bg-accent hover:text-accent-foreground ${
+                                hasActiveTab 
+                                  ? 'bg-primary text-primary-foreground shadow-sm' 
+                                  : 'text-muted-foreground hover:text-foreground'
+                              }`}
+                            >
+                              <span className="hidden sm:block">{category.label}</span>
+                              <span className="sm:hidden">{category.label.slice(0, 1)}</span>
+                              <ChevronDown className={`h-3 w-3 transition-transform duration-200 ${
+                                openDropdown === categoryKey ? 'rotate-180' : ''
+                              }`} />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent 
+                            align="start" 
+                            className="w-56 bg-popover/95 backdrop-blur-sm border shadow-lg"
                           >
-                            <div className="flex items-center gap-3 whitespace-nowrap">
-                              <tab.icon className="h-5 w-5 group-hover:h-6 group-hover:w-6 transition-all duration-300 flex-shrink-0" />
-                              <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-sm font-medium max-w-0 group-hover:max-w-[120px] overflow-hidden">
-                                {tab.label}
-                              </span>
-                            </div>
-                          </TabsTrigger>
-                        </TooltipTrigger>
-                        <TooltipContent side="bottom" className="bg-popover text-popover-foreground">
-                          <p className="text-sm font-medium">{tab.label}</p>
-                          <p className="text-xs text-muted-foreground capitalize">{category}</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    ))}
-                    {category !== 'support' && <div className="w-px h-8 bg-border/50 mx-1" />}
-                  </div>
-                );
-              })}
-            </TabsList>
-          </TooltipProvider>
+                            <DropdownMenuLabel className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                              {category.label}
+                            </DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            {categoryTabs.map(tab => (
+                              <DropdownMenuItem 
+                                key={tab.value}
+                                className={`flex items-center gap-3 px-3 py-2 cursor-pointer transition-colors ${
+                                  activeTab === tab.value ? 'bg-accent text-accent-foreground' : ''
+                                }`}
+                                onClick={() => {
+                                  setActiveTab(tab.value);
+                                  setOpenDropdown(null);
+                                }}
+                              >
+                                <tab.icon className="h-4 w-4" />
+                                <span className="font-medium">{tab.label}</span>
+                                {activeTab === tab.value && (
+                                  <div className="ml-auto h-2 w-2 rounded-full bg-primary" />
+                                )}
+                              </DropdownMenuItem>
+                            ))}
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      )}
+                    </div>
+                  );
+                })}
+              </nav>
+            </div>
+          </div>
 
-          <TabsContent value="overview">
+          {/* Tab Content */}
+          <TabsContent value="overview" className="space-y-0">
             <DashboardOverview />
           </TabsContent>
 
           {visibleTabs.filter(tab => tab.component).map(tab => (
-             <TabsContent key={tab.value} value={tab.value}>
+             <TabsContent key={tab.value} value={tab.value} className="space-y-0">
                 <Suspense fallback={<LoadingSpinner />}>
                   <tab.component />
                 </Suspense>
