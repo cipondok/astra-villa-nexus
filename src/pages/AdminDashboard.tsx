@@ -1,3 +1,4 @@
+
 import { useState, Suspense, lazy, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -5,7 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Settings, Users, Home, List, Plus, Gift, Calendar, Database, Shield, FileText, Store, MessageSquare, Activity, BarChart3, Loader2, Wifi, Mail, Building2, LifeBuoy, Filter } from "lucide-react";
+import { Settings, Users, Home, Plus, Gift, Calendar, Database, Shield, FileText, Store, MessageSquare, Activity, BarChart3, Loader2, Wifi, Mail, Building2, LifeBuoy, Filter } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Navigation from "@/components/Navigation";
@@ -17,9 +18,6 @@ const WebTrafficAnalytics = lazy(() => import("@/components/admin/WebTrafficAnal
 const SimpleUserManagement = lazy(() => import("@/components/admin/SimpleUserManagement"));
 const PropertyManagement = lazy(() => import("@/components/admin/PropertyManagement"));
 const ContentManagement = lazy(() => import("@/components/admin/ContentManagement"));
-const VendorManagement = lazy(() => import("@/components/admin/VendorManagement"));
-const AdminVendorServiceManagement = lazy(() => import("@/components/admin/AdminVendorServiceManagement"));
-const VendorServiceCategoryManagement = lazy(() => import("@/components/admin/VendorServiceCategoryManagement"));
 const FeedbackManagement = lazy(() => import("@/components/admin/FeedbackManagement"));
 const ContactManagement = lazy(() => import("@/components/admin/ContactManagement"));
 const AstraTokenSettings = lazy(() => import("@/components/admin/AstraTokenSettings"));
@@ -28,8 +26,8 @@ const OfficeManagement = lazy(() => import("@/components/admin/OfficeManagement"
 const CustomerServiceTicketManagement = lazy(() => import("@/components/admin/CustomerServiceTicketManagement"));
 const SearchFiltersManagement = lazy(() => import("@/components/admin/SearchFiltersManagement"));
 
-// Add the new enhanced component to lazy loading
-const EnhancedVendorServiceManagement = lazy(() => import("@/components/admin/EnhancedVendorServiceManagement"));
+// Add the new consolidated vendor management hub
+const VendorManagementHub = lazy(() => import("@/components/admin/VendorManagementHub"));
 
 const LoadingSpinner = () => (
   <div className="flex items-center justify-center p-8">
@@ -98,9 +96,7 @@ const AdminDashboard = () => {
     { value: "properties", icon: Home, label: "Properties", component: PropertyManagement, adminOnly: true },
     { value: "search-filters", icon: Filter, label: "Search Filters", component: SearchFiltersManagement, adminOnly: true },
     { value: "offices", icon: Building2, label: "Offices", component: OfficeManagement, adminOnly: true },
-    { value: "vendors", icon: Store, label: "Vendors", component: VendorManagement, adminOnly: true },
-    { value: "vendor-services", icon: Settings, label: "Services", component: EnhancedVendorServiceManagement, adminOnly: true },
-    { value: "service-categories", icon: List, label: "Categories", component: VendorServiceCategoryManagement, adminOnly: true },
+    { value: "vendors", icon: Store, label: "Vendors", component: VendorManagementHub, adminOnly: true },
     { value: "content", icon: FileText, label: "Content", component: ContentManagement, adminOnly: true },
     { value: "support", icon: LifeBuoy, label: "Support", component: CustomerServiceTicketManagement, adminOnly: false },
     { value: "feedback", icon: MessageSquare, label: "Feedback", component: FeedbackManagement, adminOnly: false },
