@@ -2,7 +2,6 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { ChevronDown } from "lucide-react";
 
@@ -41,7 +40,7 @@ const AdminTabNavigation = ({ tabCategories, activeTab, setActiveTab, isAdmin }:
       </div>
       
       <div className="p-2">
-        <TabsList className="h-auto p-1 bg-transparent">
+        <div className="flex flex-wrap items-center gap-2">
           {Object.entries(tabCategories).map(([categoryKey, category]) => {
             const categoryTabs = category.items.filter(tab => !tab.adminOnly || isAdmin);
             if (categoryTabs.length === 0) return null;
@@ -52,12 +51,13 @@ const AdminTabNavigation = ({ tabCategories, activeTab, setActiveTab, isAdmin }:
             return (
               <div key={categoryKey} className="relative">
                 {categoryTabs.length === 1 ? (
-                  // Single item - direct tab
+                  // Single item - direct button
                   <TooltipProvider key={categoryTabs[0].value}>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <TabsTrigger 
-                          value={categoryTabs[0].value}
+                        <Button
+                          variant={activeTab === categoryTabs[0].value ? "default" : "ghost"}
+                          size="sm"
                           className={`group relative flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:bg-accent hover:text-accent-foreground ${
                             activeTab === categoryTabs[0].value 
                               ? 'bg-primary text-primary-foreground shadow-sm' 
@@ -67,7 +67,7 @@ const AdminTabNavigation = ({ tabCategories, activeTab, setActiveTab, isAdmin }:
                         >
                           {React.createElement(categoryTabs[0].icon, { className: "h-4 w-4 group-hover:scale-110 transition-transform duration-200" })}
                           <span className="hidden sm:block">{categoryTabs[0].label}</span>
-                        </TabsTrigger>
+                        </Button>
                       </TooltipTrigger>
                       <TooltipContent side="bottom">
                         <p className="text-sm">{categoryTabs[0].label}</p>
@@ -83,6 +83,7 @@ const AdminTabNavigation = ({ tabCategories, activeTab, setActiveTab, isAdmin }:
                     <DropdownMenuTrigger asChild>
                       <Button 
                         variant="ghost" 
+                        size="sm"
                         className={`group flex items-center gap-2 px-4 py-2 h-auto rounded-lg text-sm font-medium transition-all duration-200 hover:bg-accent hover:text-accent-foreground ${
                           hasActiveTab 
                             ? 'bg-primary text-primary-foreground shadow-sm' 
@@ -128,7 +129,7 @@ const AdminTabNavigation = ({ tabCategories, activeTab, setActiveTab, isAdmin }:
               </div>
             );
           })}
-        </TabsList>
+        </div>
       </div>
     </div>
   );
