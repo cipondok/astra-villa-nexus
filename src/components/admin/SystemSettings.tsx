@@ -468,6 +468,106 @@ const SystemSettings = () => {
                   />
                 </div>
               </div>
+
+              {/* SEO & Analytics Settings */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">SEO & Analytics</h3>
+                <div className="space-y-4">
+                  <InputWithSave
+                    id="google_analytics_id"
+                    label="Google Analytics ID"
+                    value={settings.google_analytics_id || ''}
+                    onChange={(value) => handleSettingChange('google_analytics_id', value)}
+                    onSave={() => handleSaveSetting('google_analytics_id')}
+                  />
+                  
+                  <InputWithSave
+                    id="meta_keywords"
+                    label="Default Meta Keywords"
+                    value={settings.meta_keywords || ''}
+                    onChange={(value) => handleSettingChange('meta_keywords', value)}
+                    onSave={() => handleSaveSetting('meta_keywords')}
+                  />
+                  
+                  <InputWithSave
+                    id="meta_description"
+                    label="Default Meta Description"
+                    value={settings.meta_description || ''}
+                    onChange={(value) => handleSettingChange('meta_description', value)}
+                    onSave={() => handleSaveSetting('meta_description')}
+                  />
+                </div>
+              </div>
+
+              {/* Social Media Settings */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Social Media Integration</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <InputWithSave
+                    id="facebook_url"
+                    label="Facebook Page URL"
+                    value={settings.facebook_url || ''}
+                    onChange={(value) => handleSettingChange('facebook_url', value)}
+                    onSave={() => handleSaveSetting('facebook_url')}
+                  />
+                  
+                  <InputWithSave
+                    id="twitter_url"
+                    label="Twitter Profile URL"
+                    value={settings.twitter_url || ''}
+                    onChange={(value) => handleSettingChange('twitter_url', value)}
+                    onSave={() => handleSaveSetting('twitter_url')}
+                  />
+                  
+                  <InputWithSave
+                    id="instagram_url"
+                    label="Instagram Profile URL"
+                    value={settings.instagram_url || ''}
+                    onChange={(value) => handleSettingChange('instagram_url', value)}
+                    onSave={() => handleSaveSetting('instagram_url')}
+                  />
+                  
+                  <InputWithSave
+                    id="linkedin_url"
+                    label="LinkedIn Profile URL"
+                    value={settings.linkedin_url || ''}
+                    onChange={(value) => handleSettingChange('linkedin_url', value)}
+                    onSave={() => handleSaveSetting('linkedin_url')}
+                  />
+                </div>
+              </div>
+
+              {/* Property Settings */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Property Management</h3>
+                <div className="space-y-4">
+                  <SwitchWithLabel
+                    id="auto_approve_properties"
+                    label="Auto-approve Properties"
+                    description="Automatically approve new property listings"
+                    checked={settings.auto_approve_properties || false}
+                    onChange={(checked) => handleSwitchChange('auto_approve_properties', checked)}
+                  />
+                  
+                  <InputWithSave
+                    id="max_property_images"
+                    label="Max Property Images"
+                    type="number"
+                    value={settings.max_property_images || '20'}
+                    onChange={(value) => handleSettingChange('max_property_images', value)}
+                    onSave={() => handleSaveSetting('max_property_images')}
+                  />
+                  
+                  <InputWithSave
+                    id="property_listing_duration"
+                    label="Property Listing Duration (days)"
+                    type="number"
+                    value={settings.property_listing_duration || '90'}
+                    onChange={(value) => handleSettingChange('property_listing_duration', value)}
+                    onSave={() => handleSaveSetting('property_listing_duration')}
+                  />
+                </div>
+              </div>
             </>
           )}
         </CardContent>

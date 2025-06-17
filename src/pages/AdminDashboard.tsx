@@ -1,4 +1,3 @@
-
 import { useState, Suspense, lazy, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -28,6 +27,9 @@ const SearchFiltersManagement = lazy(() => import("@/components/admin/SearchFilt
 
 // Add the new consolidated vendor management hub
 const VendorManagementHub = lazy(() => import("@/components/admin/VendorManagementHub"));
+
+// Add the new search filters management import
+const SearchFiltersManagement = lazy(() => import("@/components/admin/SearchFiltersManagement"));
 
 const LoadingSpinner = () => (
   <div className="flex items-center justify-center p-8">

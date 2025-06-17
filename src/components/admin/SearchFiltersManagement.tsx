@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -262,14 +263,17 @@ const SearchFiltersManagement = () => {
                     Add Filter
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="max-w-2xl">
+                <DialogContent>
                   <DialogHeader>
                     <DialogTitle>Add New Search Filter</DialogTitle>
                     <DialogDescription>
-                      Create a new search filter for property listings.
+                      Create a new search filter for property listings
                     </DialogDescription>
                   </DialogHeader>
-                  <FilterFormFields formData={newFilter} setFormData={setNewFilter} />
+                  <FilterFormFields
+                    formData={newFilter}
+                    setFormData={setNewFilter}
+                  />
                   <DialogFooter>
                     <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
                       Cancel
@@ -283,20 +287,22 @@ const SearchFiltersManagement = () => {
             </div>
           </div>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex flex-wrap gap-4">
-            <div className="relative flex-1 min-w-[200px]">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Search filters by name..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
-              />
+        <CardContent>
+          <div className="flex flex-col sm:flex-row gap-4 mb-6">
+            <div className="flex-1">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search filters..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
             </div>
             <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-full sm:w-48">
-                <SelectValue placeholder="Filter by status" />
+              <SelectTrigger className="w-48">
+                <SelectValue placeholder="Filter by Status" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Status</SelectItem>
@@ -306,15 +312,11 @@ const SearchFiltersManagement = () => {
             </Select>
           </div>
 
-          {error && (
-            <div className="p-4 bg-destructive/10 border border-destructive rounded-lg">
-              <p className="text-destructive">
-                Error loading search filters: {error.message}
-              </p>
-            </div>
-          )}
-
-          <div className="border rounded-lg">
+          {isLoading ? (
+            <div className="text-center py-8">Loading filters...</div>
+          ) : error ? (
+            <div className="text-center py-8 text-red-500">Error loading filters</div>
+          ) : (
             <Table>
               <TableHeader>
                 <TableRow>
@@ -323,116 +325,87 @@ const SearchFiltersManagement = () => {
                   <TableHead>Category</TableHead>
                   <TableHead>Options</TableHead>
                   <TableHead>Status</TableHead>
-                  <TableHead>Created</TableHead>
                   <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {isLoading ? (
-                  <TableRow>
-                    <TableCell colSpan={7} className="text-center py-8">
-                      Loading search filters...
+                {filters?.map((filter) => (
+                  <TableRow key={filter.id}>
+                    <TableCell className="font-medium">{filter.filter_name}</TableCell>
+                    <TableCell>
+                      <Badge variant="outline">{filter.filter_type}</Badge>
                     </TableCell>
-                  </TableRow>
-                ) : filters?.length === 0 ? (
-                  <TableRow>
-                    <TableCell colSpan={7} className="text-center py-8">
-                      <div className="space-y-2">
-                        <p>No search filters found</p>
-                        <p className="text-sm text-muted-foreground">
-                          Click "Add Filter" to create your first search filter
-                        </p>
-                      </div>
+                    <TableCell>
+                      <Badge variant="secondary">{filter.category}</Badge>
                     </TableCell>
-                  </TableRow>
-                ) : (
-                  filters?.map((filter) => (
-                    <TableRow key={filter.id}>
-                      <TableCell>
-                        <div className="font-medium">{filter.filter_name}</div>
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline" className="capitalize">
-                          {filter.filter_type}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="secondary" className="capitalize">
-                          {filter.category}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <div className="text-sm">
-                          {filter.filter_options ? 
-                            (typeof filter.filter_options === 'string' ? 
-                              filter.filter_options.substring(0, 50) + '...' : 
-                              JSON.stringify(filter.filter_options).substring(0, 50) + '...'
-                            ) : 
-                            'No options'
-                          }
-                        </div>
-                      </TableCell>
-                      <TableCell>
+                    <TableCell className="max-w-xs truncate">
+                      {Array.isArray(filter.filter_options) 
+                        ? filter.filter_options.join(', ')
+                        : typeof filter.filter_options === 'string'
+                        ? filter.filter_options
+                        : JSON.stringify(filter.filter_options)
+                      }
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant={getStatusBadgeVariant(filter.is_active)}>
+                        {filter.is_active ? 'Active' : 'Inactive'}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => openEditDialog(filter)}
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => handleDeleteFilter(filter.id)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
                         <Select
                           value={filter.is_active ? 'active' : 'inactive'}
                           onValueChange={(value) => handleStatusChange(filter.id, value)}
                         >
-                          <SelectTrigger className="w-32">
-                            <Badge variant={getStatusBadgeVariant(filter.is_active)}>
-                              {filter.is_active ? 'active' : 'inactive'}
-                            </Badge>
+                          <SelectTrigger className="w-24">
+                            <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="active">Active</SelectItem>
                             <SelectItem value="inactive">Inactive</SelectItem>
                           </SelectContent>
                         </Select>
-                      </TableCell>
-                      <TableCell>
-                        {filter.created_at ? new Date(filter.created_at).toLocaleDateString() : 'N/A'}
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-1">
-                          <Button 
-                            size="sm" 
-                            variant="outline"
-                            onClick={() => openEditDialog(filter)}
-                          >
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                          <Button 
-                            size="sm" 
-                            variant="outline"
-                            onClick={() => handleDeleteFilter(filter.id)}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))
-                )}
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
               </TableBody>
             </Table>
-          </div>
+          )}
         </CardContent>
       </Card>
 
       {/* Edit Dialog */}
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent>
           <DialogHeader>
             <DialogTitle>Edit Search Filter</DialogTitle>
             <DialogDescription>
-              Update the search filter details.
+              Update the search filter configuration
             </DialogDescription>
           </DialogHeader>
           {editingFilter && (
-            <FilterFormFields 
+            <FilterFormFields
               formData={{
                 filter_name: editingFilter.filter_name,
                 filter_type: editingFilter.filter_type,
-                filter_options: typeof editingFilter.filter_options === 'string' ? editingFilter.filter_options : JSON.stringify(editingFilter.filter_options),
+                filter_options: Array.isArray(editingFilter.filter_options) 
+                  ? editingFilter.filter_options.join(', ')
+                  : editingFilter.filter_options || '',
                 category: editingFilter.category,
               }}
               setFormData={(data) => setEditingFilter({
