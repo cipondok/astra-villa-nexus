@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -78,20 +79,67 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
     }
   }, [property, isOpen]);
 
+  // Function to add watermark to image
+  const addWatermarkToImage = async (file: File): Promise<File> => {
+    return new Promise((resolve) => {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const img = new Image();
+      
+      img.onload = () => {
+        canvas.width = img.width;
+        canvas.height = img.height;
+        
+        // Draw the original image
+        ctx?.drawImage(img, 0, 0);
+        
+        if (ctx) {
+          // Set watermark text properties
+          ctx.globalAlpha = 0.3; // 70% transparency
+          ctx.fillStyle = '#FFFFFF';
+          ctx.font = `${Math.max(20, img.width / 20)}px Arial`;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          
+          // Add watermark text in center
+          const text = 'REALESTATE.ID';
+          ctx.fillText(text, img.width / 2, img.height / 2);
+          
+          // Convert canvas back to file
+          canvas.toBlob((blob) => {
+            if (blob) {
+              const watermarkedFile = new File([blob], file.name, { type: file.type });
+              resolve(watermarkedFile);
+            } else {
+              resolve(file);
+            }
+          }, file.type);
+        } else {
+          resolve(file);
+        }
+      };
+      
+      img.src = URL.createObjectURL(file);
+    });
+  };
+
   const uploadImages = async (files: File[]): Promise<string[]> => {
     const uploadedUrls: string[] = [];
     
     for (const file of files) {
-      const fileExt = file.name.split('.').pop();
+      // Add watermark to image
+      const watermarkedFile = await addWatermarkToImage(file);
+      
+      const fileExt = watermarkedFile.name.split('.').pop();
       const fileName = `${property.id}/${Date.now()}-${Math.random()}.${fileExt}`;
       
       const { error: uploadError } = await supabase.storage
         .from('property-images')
-        .upload(fileName, file);
+        .upload(fileName, watermarkedFile);
 
       if (uploadError) {
         console.error('Upload error:', uploadError);
-        throw new Error(`Failed to upload ${file.name}`);
+        throw new Error(`Failed to upload ${watermarkedFile.name}`);
       }
 
       const { data: urlData } = supabase.storage
@@ -166,8 +214,15 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
       return data;
     },
     onSuccess: (data) => {
-      showSuccess("AI Content Generated", data.message || "SEO content has been generated and saved.");
-      queryClient.invalidateQueries({ queryKey: ['admin-properties'] });
+      // Update the form with generated SEO content
+      if (data.seo_title && data.seo_description) {
+        setEditData(prev => ({
+          ...prev,
+          seo_title: data.seo_title,
+          seo_description: data.seo_description
+        }));
+      }
+      showSuccess("AI Content Generated", "SEO content has been generated and populated in the form.");
     },
     onError: (error: any) => {
       showError("Generation Failed", error.message);
@@ -175,8 +230,8 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
   });
 
   const handleGenerateSeo = () => {
-    if (!property?.id || !property?.title) return;
-    generateSeoMutation.mutate({ propertyId: property.id, title: property.title });
+    if (!property?.id || !editData.title) return;
+    generateSeoMutation.mutate({ propertyId: property.id, title: editData.title });
   };
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -362,7 +417,7 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
           {/* Image Upload Section */}
           <div className="col-span-2 space-y-4 p-4 border rounded-lg bg-blue-50 dark:bg-blue-100">
             <div className="flex justify-between items-center">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-800">Property Images</h3>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-800">Property Images (Auto-watermarked)</h3>
               <div className="flex items-center gap-2">
                 <input
                   type="file"
@@ -413,7 +468,7 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
             {/* New Images Preview */}
             {imageFiles.length > 0 && (
               <div>
-                <p className="text-sm font-medium text-gray-700 mb-2">New Images ({imageFiles.length})</p>
+                <p className="text-sm font-medium text-gray-700 mb-2">New Images ({imageFiles.length}) - Will be watermarked on upload</p>
                 <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
                   {imageFiles.map((file, index) => (
                     <div key={`new-${index}`} className="relative group">
@@ -463,9 +518,9 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
               <Input
                 id="seo-title"
                 value={editData.seo_title}
-                readOnly
+                onChange={(e) => setEditData({ ...editData, seo_title: e.target.value })}
                 placeholder="AI-generated SEO title will appear here."
-                className="bg-gray-200 dark:bg-gray-200"
+                className="bg-white border-gray-300"
               />
             </div>
             <div className="space-y-2">
@@ -473,10 +528,10 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
               <Textarea
                 id="seo-description"
                 value={editData.seo_description}
-                readOnly
+                onChange={(e) => setEditData({ ...editData, seo_description: e.target.value })}
                 placeholder="AI-generated SEO description will appear here."
                 rows={2}
-                className="bg-gray-200 dark:bg-gray-200"
+                className="bg-white border-gray-300"
               />
             </div>
           </div>
