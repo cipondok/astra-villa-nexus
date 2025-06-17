@@ -65,7 +65,7 @@ const AdminTabNavigation = ({ tabCategories, activeTab, setActiveTab, isAdmin }:
                           }`}
                           onClick={() => setActiveTab(categoryTabs[0].value)}
                         >
-                          <categoryTabs[0].icon className="h-4 w-4 group-hover:scale-110 transition-transform duration-200" />
+                          {React.createElement(categoryTabs[0].icon, { className: "h-4 w-4 group-hover:scale-110 transition-transform duration-200" })}
                           <span className="hidden sm:block">{categoryTabs[0].label}</span>
                         </TabsTrigger>
                       </TooltipTrigger>
@@ -115,7 +115,7 @@ const AdminTabNavigation = ({ tabCategories, activeTab, setActiveTab, isAdmin }:
                             setOpenDropdown(null);
                           }}
                         >
-                          <tab.icon className="h-4 w-4" />
+                          {React.createElement(tab.icon, { className: "h-4 w-4" })}
                           <span className="font-medium">{tab.label}</span>
                           {activeTab === tab.value && (
                             <div className="ml-auto h-2 w-2 rounded-full bg-primary" />
