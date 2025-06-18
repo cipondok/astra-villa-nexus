@@ -45,6 +45,10 @@ const AdminDashboardContent = ({ isAdmin, setActiveTab }: AdminDashboardContentP
         <AdminOverview isAdmin={isAdmin} setActiveTab={setActiveTab} />
       </TabsContent>
 
+      <TabsContent value="seo-settings">
+        <SEOSettings />
+      </TabsContent>
+
       {/* Core Management */}
       <TabsContent value="user-management">
         <UserManagement />
@@ -112,10 +116,6 @@ const AdminDashboardContent = ({ isAdmin, setActiveTab }: AdminDashboardContentP
 
       <TabsContent value="search-filters">
         <SearchFiltersManagement />
-      </TabsContent>
-
-      <TabsContent value="seo-settings">
-        <SEOSettings />
       </TabsContent>
 
       {/* System Settings */}
