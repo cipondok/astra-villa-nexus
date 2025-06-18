@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -13,17 +14,47 @@ import { tabCategories } from "@/components/admin/AdminTabCategories";
 import { useAdminAlerts } from "@/hooks/useAdminAlerts";
 
 const AdminDashboard = () => {
-  const { user, profile, loading } = useAuth();
+  const { user, profile, loading, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [activeTab, setActiveTab] = useState(location.state?.defaultTab || "overview");
+  const [authChecked, setAuthChecked] = useState(false);
 
   const isAdmin = profile?.role === 'admin';
   const isSupportStaff = profile?.role === 'agent' || profile?.role === 'customer_service';
   const canAccess = isAdmin || isSupportStaff;
 
-  // Initialize admin alerts hook
+  // Initialize admin alerts hook only if user has access
   useAdminAlerts();
+
+  // Enhanced authentication check
+  useEffect(() => {
+    console.log('AdminDashboard - Auth state:', { 
+      loading, 
+      isAuthenticated, 
+      user: !!user, 
+      profile: !!profile, 
+      role: profile?.role 
+    });
+
+    if (!loading) {
+      setAuthChecked(true);
+      
+      // Redirect to login if not authenticated
+      if (!isAuthenticated || !user) {
+        console.log('AdminDashboard - Redirecting to login: not authenticated');
+        navigate('/?auth=true', { replace: true });
+        return;
+      }
+
+      // Redirect if user doesn't have admin access
+      if (profile && !canAccess) {
+        console.log('AdminDashboard - Redirecting to home: insufficient permissions');
+        navigate('/', { replace: true });
+        return;
+      }
+    }
+  }, [loading, isAuthenticated, user, profile, canAccess, navigate]);
 
   useEffect(() => {
     if (isSupportStaff && !isAdmin) {
@@ -34,7 +65,7 @@ const AdminDashboard = () => {
   }, [profile, isSupportStaff, isAdmin, activeTab]);
 
   // Show loading state while checking authentication
-  if (loading) {
+  if (loading || !authChecked) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
@@ -45,7 +76,12 @@ const AdminDashboard = () => {
     );
   }
 
-  // Check if user is admin (simplified check for better performance)
+  // Don't render anything if not authenticated (will redirect)
+  if (!isAuthenticated || !user || !profile) {
+    return null;
+  }
+
+  // Check if user has admin access
   if (!canAccess) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">

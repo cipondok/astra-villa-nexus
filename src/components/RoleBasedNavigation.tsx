@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Sun, Moon, Globe, Menu, User, LogOut, Settings, Home } from "lucide-react";
 import { useState, useEffect } from "react";
@@ -29,18 +30,19 @@ const RoleBasedNavigation = ({
   onThemeToggle 
 }: RoleBasedNavigationProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { user, profile, signOut } = useAuth();
+  const { user, profile, signOut, isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
   // Debug logging
   useEffect(() => {
     console.log('RoleBasedNavigation - Auth state changed:', { 
+      isAuthenticated,
       user: !!user, 
       profile: !!profile, 
       userEmail: user?.email,
       profileRole: profile?.role 
     });
-  }, [user, profile]);
+  }, [isAuthenticated, user, profile]);
 
   const text = {
     en: {
@@ -184,7 +186,7 @@ const RoleBasedNavigation = ({
             </Button>
 
             {/* Auth Section */}
-            {user && profile ? (
+            {isAuthenticated && user && profile ? (
               <>
                 {/* Desktop User Menu */}
                 <div className="flex items-center space-x-2">
@@ -224,189 +226,145 @@ const RoleBasedNavigation = ({
                           {item.label}
                         </DropdownMenuItem>
                       ))}
-                      <DropdownMenuItem onClick={() => navigate('/profile')} className="text-foreground hover:bg-ios-blue/10">
-                        <User className="h-4 w-4 mr-2" />
-                        {currentText.profile}
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => navigate('/settings')} className="text-foreground hover:bg-ios-blue/10">
-                        <Settings className="h-4 w-4 mr-2" />
-                        {currentText.settings}
-                      </DropdownMenuItem>
                       <DropdownMenuSeparator className="border-border/30" />
-                      <DropdownMenuItem onClick={handleSignOut} className="text-ios-red hover:bg-ios-red/10">
+                      <DropdownMenuItem onClick={handleSignOut} className="text-red-600 hover:bg-red-50">
                         <LogOut className="h-4 w-4 mr-2" />
                         {currentText.logout}
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
-                  
-                  {/* Quick Logout Button */}
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={handleSignOut}
-                    className="flex items-center space-x-1 text-ios-red hover:text-ios-red/80 hover:bg-ios-red/10 border-ios-red/30 glass-ios"
-                  >
-                    <LogOut className="h-4 w-4" />
-                    <span>{currentText.logout}</span>
-                  </Button>
                 </div>
               </>
             ) : (
-              <div className="flex items-center">
-                <Button 
-                  variant="ios"
-                  onClick={onLoginClick}
-                >
-                  {currentText.loginRegister}
-                </Button>
-              </div>
-            )}
-
-            {/* Mobile menu button */}
-            <Button
-              variant="ghost"
-              size="sm"
-              className="md:hidden glass-ios border border-border/30 text-foreground hover:bg-ios-blue/10"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-            >
-              <Menu className="h-5 w-5" />
-            </Button>
-          </div>
-
-          {/* Mobile controls */}
-          <div className="md:hidden flex items-center space-x-2">
-            {/* Language Toggle */}
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={onLanguageToggle}
-              className="glass-ios border border-border/30 text-foreground hover:bg-ios-blue/10"
-            >
-              <Globe className="h-4 w-4" />
-            </Button>
-
-            {/* Theme Toggle */}
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={onThemeToggle}
-              className="glass-ios border border-border/30 text-foreground hover:bg-ios-blue/10"
-            >
-              {theme === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
-            </Button>
-
-            {/* Auth Button or User Menu */}
-            {user && profile ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="p-2 glass-ios border border-border/30">
-                    <Avatar className="h-8 w-8">
-                      <AvatarImage src={profile.avatar_url || undefined} alt={profile.full_name || 'User'} />
-                      <AvatarFallback className="text-sm bg-ios-blue/10 text-ios-blue">
-                        {getUserInitials()}
-                      </AvatarFallback>
-                    </Avatar>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56 glass-ios border border-border/30">
-                  <DropdownMenuLabel>
-                    <div className="flex flex-col space-y-1">
-                      <p className="text-sm font-medium text-foreground">{profile.full_name || 'User'}</p>
-                      <p className="text-xs text-muted-foreground">{profile.email}</p>
-                      <p className="text-xs text-muted-foreground capitalize">{profile.role.replace('_', ' ')}</p>
-                    </div>
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator className="border-border/30" />
-                  <DropdownMenuItem onClick={() => navigate(getDashboardRoute())} className="text-foreground hover:bg-ios-blue/10">
-                    {currentText.dashboard}
-                  </DropdownMenuItem>
-                  {getVendorMenuItems().map((item, index) => (
-                    <DropdownMenuItem key={`vendor-mobile-${index}`} onClick={() => navigate(item.route)} className="text-foreground hover:bg-ios-blue/10">
-                      {item.label}
-                    </DropdownMenuItem>
-                  ))}
-                  <DropdownMenuItem onClick={() => navigate('/profile')} className="text-foreground hover:bg-ios-blue/10">
-                    <User className="h-4 w-4 mr-2" />
-                    {currentText.profile}
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={handleSignOut} className="text-ios-red hover:bg-ios-red/10">
-                    <LogOut className="h-4 w-4 mr-2" />
-                    {currentText.logout}
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            ) : (
               <Button 
-                variant="ios"
-                size="sm"
-                onClick={onLoginClick}
+                onClick={onLoginClick} 
+                className="glass-ios border border-border/30 text-foreground hover:bg-ios-blue/10 hover:text-ios-blue hover:border-ios-blue/30"
               >
+                <User className="h-4 w-4 mr-2" />
                 {currentText.loginRegister}
               </Button>
             )}
+          </div>
 
-            {/* Mobile menu button */}
+          {/* Mobile menu button */}
+          <div className="md:hidden">
             <Button
               variant="ghost"
               size="sm"
-              className="glass-ios border border-border/30 text-foreground hover:bg-ios-blue/10"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="glass-ios border border-border/30"
             >
               <Menu className="h-5 w-5" />
             </Button>
           </div>
         </div>
 
-        {/* Mobile Navigation - Simplified */}
+        {/* Mobile Navigation Menu */}
         {isMenuOpen && (
-          <div className="md:hidden border-t border-border/30 glass-ios">
+          <div className="md:hidden absolute top-16 left-0 right-0 glass-ios border-t border-border/30 shadow-lg">
             <div className="px-2 pt-2 pb-3 space-y-1">
-              {!user || !profile ? (
-                <div className="px-3 py-2">
-                  <Button onClick={onLoginClick} variant="ios" className="w-full">
-                    {currentText.loginRegister}
-                  </Button>
-                </div>
-              ) : (
-                <div className="px-3 py-2 space-y-2 border-t border-border/30 mt-2 pt-2">
-                  <div className="flex items-center space-x-3 mb-2">
-                    <Avatar className="h-8 w-8">
-                      <AvatarImage src={profile.avatar_url || undefined} alt={profile.full_name || 'User'} />
-                      <AvatarFallback className="text-sm bg-ios-blue/10 text-ios-blue">
-                        {getUserInitials()}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <p className="text-sm font-medium text-foreground">{profile.full_name || 'User'}</p>
-                      <p className="text-xs text-muted-foreground capitalize">{profile.role.replace('_', ' ')}</p>
+              {/* Theme and Language toggles for mobile */}
+              <div className="flex justify-between items-center p-2 border-b border-border/30">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={onLanguageToggle}
+                  className="flex-1 mr-2"
+                >
+                  <Globe className="h-4 w-4 mr-1" />
+                  {language.toUpperCase()}
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={onThemeToggle}
+                  className="flex-1"
+                >
+                  {theme === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+                </Button>
+              </div>
+
+              {/* Auth Section for Mobile */}
+              {isAuthenticated && user && profile ? (
+                <div className="space-y-1">
+                  <div className="px-3 py-2 border-b border-border/30">
+                    <div className="flex items-center space-x-2">
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage src={profile.avatar_url || undefined} alt={profile.full_name || 'User'} />
+                        <AvatarFallback className="text-sm">
+                          {getUserInitials()}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <p className="text-sm font-medium">{profile.full_name || 'User'}</p>
+                        <p className="text-xs text-muted-foreground">{profile.email}</p>
+                      </div>
                     </div>
                   </div>
-                  <Button variant="ghost" onClick={() => navigate(getDashboardRoute())} className="w-full justify-start text-foreground hover:bg-ios-blue/10">
+                  
+                  <Button
+                    variant="ghost"
+                    onClick={() => {
+                      navigate(getDashboardRoute());
+                      setIsMenuOpen(false);
+                    }}
+                    className="w-full justify-start"
+                  >
                     {currentText.dashboard}
                   </Button>
-                  {getVendorMenuItems().map((item, index) => (
-                    <Button key={`vendor-mobile-nav-${index}`} variant="ghost" onClick={() => navigate(item.route)} className="w-full justify-start text-foreground hover:bg-ios-blue/10">
+                  
+                  {getRoleSpecificMenuItems().map((item, index) => (
+                    <Button
+                      key={index}
+                      variant="ghost"
+                      onClick={() => {
+                        navigate(item.route);
+                        setIsMenuOpen(false);
+                      }}
+                      className="w-full justify-start"
+                    >
                       {item.label}
                     </Button>
                   ))}
-                  <Button variant="ghost" onClick={() => navigate('/profile')} className="w-full justify-start text-foreground hover:bg-ios-blue/10">
-                    <User className="h-4 w-4 mr-2" />
-                    {currentText.profile}
-                  </Button>
-                  <Button variant="ghost" onClick={() => navigate('/settings')} className="w-full justify-start text-foreground hover:bg-ios-blue/10">
-                    <Settings className="h-4 w-4 mr-2" />
-                    {currentText.settings}
-                  </Button>
-                  <Button 
-                    variant="ghost" 
-                    onClick={handleSignOut} 
-                    className="w-full justify-start text-ios-red hover:bg-ios-red/10"
+                  
+                  {getVendorMenuItems().map((item, index) => (
+                    <Button
+                      key={`vendor-mobile-${index}`}
+                      variant="ghost"
+                      onClick={() => {
+                        navigate(item.route);
+                        setIsMenuOpen(false);
+                      }}
+                      className="w-full justify-start"
+                    >
+                      {item.label}
+                    </Button>
+                  ))}
+                  
+                  <Button
+                    variant="ghost"
+                    onClick={() => {
+                      handleSignOut();
+                      setIsMenuOpen(false);
+                    }}
+                    className="w-full justify-start text-red-600"
                   >
                     <LogOut className="h-4 w-4 mr-2" />
                     {currentText.logout}
                   </Button>
                 </div>
+              ) : (
+                <Button 
+                  onClick={() => {
+                    onLoginClick();
+                    setIsMenuOpen(false);
+                  }}
+                  className="w-full justify-start"
+                  variant="ghost"
+                >
+                  <User className="h-4 w-4 mr-2" />
+                  {currentText.loginRegister}
+                </Button>
               )}
             </div>
           </div>

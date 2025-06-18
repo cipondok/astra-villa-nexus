@@ -312,7 +312,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const isAuthenticated = !!user;
+  // Enhanced isAuthenticated check
+  const isAuthenticated = !!user && !!profile;
 
   const value = {
     user,

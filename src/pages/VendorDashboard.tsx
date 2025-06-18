@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -32,12 +33,14 @@ import {
   Crown,
   PlusCircle,
   BarChart3,
-  Wrench
+  Wrench,
+  Loader2
 } from "lucide-react";
 
 const VendorDashboard = () => {
   const navigate = useNavigate();
   const { user, signOut, profile, isAuthenticated, loading } = useAuth();
+  const [authChecked, setAuthChecked] = useState(false);
 
   const { data: vendorProfile, isLoading } = useQuery({
     queryKey: ['vendor-profile', user?.id],
@@ -56,27 +59,54 @@ const VendorDashboard = () => {
     enabled: !!user?.id,
   });
 
+  // Enhanced authentication check
   useEffect(() => {
-    if (!loading && !isAuthenticated) {
-      navigate('/?auth=true');
-    }
-    if (!loading && isAuthenticated && profile?.role !== 'vendor') {
-      navigate('/dashboard');
-    }
-  }, [isAuthenticated, loading, profile, navigate]);
+    console.log('VendorDashboard - Auth state:', { 
+      loading, 
+      isAuthenticated, 
+      user: !!user, 
+      profile: !!profile, 
+      role: profile?.role 
+    });
 
-  if (loading) {
+    if (!loading) {
+      setAuthChecked(true);
+      
+      // Redirect to login if not authenticated
+      if (!isAuthenticated || !user) {
+        console.log('VendorDashboard - Redirecting to login: not authenticated');
+        navigate('/?auth=true', { replace: true });
+        return;
+      }
+
+      // Redirect if user is not a vendor
+      if (profile && profile.role !== 'vendor') {
+        console.log('VendorDashboard - Redirecting to dashboard: not a vendor');
+        navigate('/dashboard', { replace: true });
+        return;
+      }
+    }
+  }, [loading, isAuthenticated, user, profile, navigate]);
+
+  // Show loading state while checking authentication
+  if (loading || !authChecked) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <Loader2 className="h-12 w-12 animate-spin mx-auto mb-4 text-primary" />
           <h2 className="text-lg font-semibold text-foreground">Loading...</h2>
         </div>
       </div>
     );
   }
 
-  if (!isAuthenticated || profile?.role !== 'vendor') {
+  // Don't render anything if not authenticated (will redirect)
+  if (!isAuthenticated || !user || !profile) {
+    return null;
+  }
+
+  // Don't render if not a vendor (will redirect)
+  if (profile.role !== 'vendor') {
     return null;
   }
 
@@ -143,7 +173,6 @@ const VendorDashboard = () => {
                 </div>
               </div>
 
-              {/* Vendor Membership Card */}
               <Card className="border-l-4 border-l-gray-500">
                 <CardHeader>
                   <div className="flex items-center justify-between">
@@ -185,7 +214,6 @@ const VendorDashboard = () => {
                 </CardContent>
               </Card>
 
-              {/* Quick Stats */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -232,7 +260,6 @@ const VendorDashboard = () => {
                 </Card>
               </div>
 
-              {/* Main Content */}
               <Tabs defaultValue="services" className="space-y-4">
                 <TabsList className="grid w-full grid-cols-6">
                   <TabsTrigger value="services">My Services</TabsTrigger>
