@@ -294,30 +294,40 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
         />
       )}
 
-      {/* Main Search Bar */}
-      <Card className="bg-white/95 backdrop-blur-sm shadow-xl border-0 overflow-visible">
-        <CardContent className="p-3 sm:p-4 lg:p-6">
-          {/* Buy/Rent Tabs */}
-          <div className="mb-4">
+      {/* Main Search Bar - iPhone Style */}
+      <Card className="card-ios shadow-2xl border-0 overflow-visible rounded-3xl">
+        <CardContent className="p-4 sm:p-6 lg:p-8">
+          {/* Buy/Rent Tabs - iPhone Style */}
+          <div className="mb-6">
             <Tabs value={searchData.listingType} onValueChange={(value) => handleInputChange('listingType', value)}>
-              <TabsList className="grid w-full grid-cols-2 max-w-md">
-                <TabsTrigger value="buy">{language === "en" ? "Buy" : "Beli"}</TabsTrigger>
-                <TabsTrigger value="rent">{language === "en" ? "Rent" : "Sewa"}</TabsTrigger>
+              <TabsList className="grid w-full grid-cols-2 max-w-md glass-ios rounded-2xl p-1 h-12">
+                <TabsTrigger 
+                  value="buy" 
+                  className="rounded-xl h-10 font-semibold text-sm transition-all duration-200 data-[state=active]:bg-ios-blue data-[state=active]:text-white data-[state=active]:shadow-lg"
+                >
+                  {language === "en" ? "Buy" : "Beli"}
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="rent"
+                  className="rounded-xl h-10 font-semibold text-sm transition-all duration-200 data-[state=active]:bg-ios-blue data-[state=active]:text-white data-[state=active]:shadow-lg"
+                >
+                  {language === "en" ? "Rent" : "Sewa"}
+                </TabsTrigger>
               </TabsList>
             </Tabs>
           </div>
 
-          {/* Search Input Row */}
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-4">
+          {/* Search Input Row - iPhone Style */}
+          <div className="flex flex-col sm:flex-row gap-4 sm:gap-4 mb-6">
             <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4 z-10" />
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-ios-blue h-5 w-5 z-10" />
               <Input
                 ref={searchInputRef}
                 placeholder={language === "en" ? "Search properties, locations..." : "Cari properti, lokasi..."}
                 value={searchData.query}
                 onChange={(e) => handleInputChange('query', e.target.value)}
                 onFocus={() => setShowSuggestions(searchData.query.length >= 2)}
-                className="pl-10 h-12 border-0 bg-gray-50 focus:bg-white text-base"
+                className="pl-12 h-14 border-0 glass-ios rounded-2xl focus:ring-2 focus:ring-ios-blue focus:ring-offset-0 text-base font-medium placeholder:text-gray-500"
               />
               
               {/* Search Suggestions */}
@@ -329,46 +339,53 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
               />
             </div>
 
-            <div className="flex gap-2">
+            <div className="flex gap-3">
               <Button
                 variant={showFilters ? "default" : "outline"}
                 onClick={() => setShowFilters(!showFilters)}
-                className={`h-12 px-4 relative ${showFilters ? 'bg-primary text-primary-foreground' : ''}`}
+                className={`h-14 px-6 relative rounded-2xl font-semibold transition-all duration-200 ${
+                  showFilters 
+                    ? 'bg-ios-blue hover:bg-ios-blue/90 text-white shadow-lg' 
+                    : 'glass-ios border-2 border-ios-blue/20 text-ios-blue hover:bg-ios-blue/10'
+                }`}
               >
-                <SlidersHorizontal className="h-4 w-4 mr-2" />
+                <SlidersHorizontal className="h-5 w-5 mr-2" />
                 {language === "en" ? "Filters" : "Filter"}
                 {activeFilters > 0 && (
-                  <Badge variant="secondary" className="ml-2 bg-red-500 text-white">
+                  <Badge variant="secondary" className="ml-2 bg-ios-red text-white rounded-full min-w-[20px] h-5">
                     {activeFilters}
                   </Badge>
                 )}
               </Button>
 
-              <Button onClick={handleSearch} className="h-12 px-6 bg-primary hover:bg-primary/90">
-                <Search className="h-4 w-4 mr-2" />
+              <Button 
+                onClick={handleSearch} 
+                className="h-14 px-8 bg-gradient-to-r from-ios-blue to-ios-purple hover:from-ios-blue/90 hover:to-ios-purple/90 text-white rounded-2xl font-semibold shadow-lg transition-all duration-200 hover:shadow-xl"
+              >
+                <Search className="h-5 w-5 mr-2" />
                 {language === "en" ? "Search" : "Cari"}
               </Button>
             </div>
           </div>
 
-          {/* Location Selection Row */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
+          {/* Location Selection Row - iPhone Style */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
             {/* State Selection */}
-            <div className="space-y-2">
-              <label className="text-sm font-medium flex items-center gap-2">
-                <MapPin className="h-4 w-4" />
+            <div className="space-y-3">
+              <label className="text-sm font-semibold flex items-center gap-2 text-gray-700">
+                <MapPin className="h-4 w-4 text-ios-blue" />
                 {language === "en" ? "State" : "Provinsi"}
               </label>
               <Select
                 value={searchData.state}
                 onValueChange={(value) => handleInputChange('state', value)}
               >
-                <SelectTrigger className="h-10">
+                <SelectTrigger className="h-12 glass-ios rounded-xl border-0 font-medium">
                   <SelectValue placeholder={language === "en" ? "Select state" : "Pilih provinsi"} />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="dropdown-ios rounded-xl">
                   {indonesianProvinces.map((province) => (
-                    <SelectItem key={province} value={province}>
+                    <SelectItem key={province} value={province} className="rounded-lg">
                       {province}
                     </SelectItem>
                   ))}
@@ -377,8 +394,8 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
             </div>
 
             {/* City Selection */}
-            <div className="space-y-2">
-              <label className="text-sm font-medium">
+            <div className="space-y-3">
+              <label className="text-sm font-semibold text-gray-700">
                 {language === "en" ? "City" : "Kota"}
               </label>
               <Select
@@ -386,12 +403,12 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
                 onValueChange={(value) => handleInputChange('city', value)}
                 disabled={!searchData.state}
               >
-                <SelectTrigger className="h-10">
+                <SelectTrigger className="h-12 glass-ios rounded-xl border-0 font-medium disabled:opacity-50">
                   <SelectValue placeholder={language === "en" ? "Select city" : "Pilih kota"} />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="dropdown-ios rounded-xl">
                   {availableCities.map((city) => (
-                    <SelectItem key={city} value={city}>
+                    <SelectItem key={city} value={city} className="rounded-lg">
                       {city}
                     </SelectItem>
                   ))}
@@ -400,8 +417,8 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
             </div>
 
             {/* Area Selection */}
-            <div className="space-y-2">
-              <label className="text-sm font-medium">
+            <div className="space-y-3">
+              <label className="text-sm font-semibold text-gray-700">
                 {language === "en" ? "Area" : "Area"}
               </label>
               <Select
@@ -409,12 +426,12 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
                 onValueChange={(value) => handleInputChange('area', value)}
                 disabled={!searchData.city}
               >
-                <SelectTrigger className="h-10">
+                <SelectTrigger className="h-12 glass-ios rounded-xl border-0 font-medium disabled:opacity-50">
                   <SelectValue placeholder={language === "en" ? "Select area" : "Pilih area"} />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="dropdown-ios rounded-xl">
                   {availableAreas.map((area) => (
-                    <SelectItem key={area} value={area}>
+                    <SelectItem key={area} value={area} className="rounded-lg">
                       {area}
                     </SelectItem>
                   ))}
@@ -423,23 +440,23 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
             </div>
           </div>
 
-          {/* Property Type, Bedrooms, Bathrooms Row - Modified grid for smaller bedroom/bathroom dropdowns */}
-          <div className="grid grid-cols-1 sm:grid-cols-12 gap-3">
-            <div className="sm:col-span-6 space-y-2">
-              <label className="text-sm font-medium flex items-center gap-2">
-                <Home className="h-4 w-4" />
+          {/* Property Type, Bedrooms, Bathrooms Row - iPhone Style */}
+          <div className="grid grid-cols-1 sm:grid-cols-12 gap-4">
+            <div className="sm:col-span-6 space-y-3">
+              <label className="text-sm font-semibold flex items-center gap-2 text-gray-700">
+                <Home className="h-4 w-4 text-ios-blue" />
                 {language === "en" ? "Property Type" : "Tipe Properti"}
               </label>
               <Select
                 value={searchData.propertyType}
                 onValueChange={(value) => handleInputChange('propertyType', value)}
               >
-                <SelectTrigger className="h-10">
+                <SelectTrigger className="h-12 glass-ios rounded-xl border-0 font-medium">
                   <SelectValue placeholder={language === "en" ? "Any type" : "Semua tipe"} />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="dropdown-ios rounded-xl">
                   {propertyTypes.map((type) => (
-                    <SelectItem key={type.value} value={type.value}>
+                    <SelectItem key={type.value} value={type.value} className="rounded-lg">
                       {type.label}
                     </SelectItem>
                   ))}
@@ -447,20 +464,20 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
               </Select>
             </div>
 
-            <div className="sm:col-span-3 space-y-2">
-              <label className="text-sm font-medium flex items-center gap-2">
-                <Building className="h-4 w-4" />
+            <div className="sm:col-span-3 space-y-3">
+              <label className="text-sm font-semibold flex items-center gap-2 text-gray-700">
+                <Building className="h-4 w-4 text-ios-blue" />
               </label>
               <Select
                 value={searchData.bedrooms}
                 onValueChange={(value) => handleInputChange('bedrooms', value)}
               >
-                <SelectTrigger className="h-10">
+                <SelectTrigger className="h-12 glass-ios rounded-xl border-0 font-medium">
                   <SelectValue placeholder={language === "en" ? "Bedrooms" : "Kamar Tidur"} />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="dropdown-ios rounded-xl">
                   {bedroomOptions.map((option) => (
-                    <SelectItem key={option} value={option}>
+                    <SelectItem key={option} value={option} className="rounded-lg">
                       {option}
                     </SelectItem>
                   ))}
@@ -468,20 +485,20 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
               </Select>
             </div>
 
-            <div className="sm:col-span-3 space-y-2">
-              <label className="text-sm font-medium flex items-center gap-2">
-                <Bath className="h-4 w-4" />
+            <div className="sm:col-span-3 space-y-3">
+              <label className="text-sm font-semibold flex items-center gap-2 text-gray-700">
+                <Bath className="h-4 w-4 text-ios-blue" />
               </label>
               <Select
                 value={searchData.bathrooms}
                 onValueChange={(value) => handleInputChange('bathrooms', value)}
               >
-                <SelectTrigger className="h-10">
+                <SelectTrigger className="h-12 glass-ios rounded-xl border-0 font-medium">
                   <SelectValue placeholder={language === "en" ? "Bathrooms" : "Kamar Mandi"} />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="dropdown-ios rounded-xl">
                   {bathroomOptions.map((option) => (
-                    <SelectItem key={option} value={option}>
+                    <SelectItem key={option} value={option} className="rounded-lg">
                       {option}
                     </SelectItem>
                   ))}
@@ -490,56 +507,56 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
             </div>
           </div>
 
-          {/* Active Filters Display */}
+          {/* Active Filters Display - iPhone Style */}
           {activeFilters > 0 && (
-            <div className="flex flex-wrap gap-2 mt-3 pt-3 border-t">
+            <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-gray-200">
               {searchData.propertyType && (
-                <Badge variant="secondary" className="flex items-center gap-1">
+                <Badge variant="secondary" className="flex items-center gap-2 px-3 py-1 bg-ios-blue/10 text-ios-blue rounded-full border border-ios-blue/20">
                   <Home className="h-3 w-3" />
                   {propertyTypes.find(t => t.value === searchData.propertyType)?.label}
-                  <X className="h-3 w-3 cursor-pointer" onClick={() => clearFilter('propertyType')} />
+                  <X className="h-3 w-3 cursor-pointer hover:text-ios-red transition-colors" onClick={() => clearFilter('propertyType')} />
                 </Badge>
               )}
               {searchData.state && (
-                <Badge variant="secondary" className="flex items-center gap-1">
+                <Badge variant="secondary" className="flex items-center gap-2 px-3 py-1 bg-ios-green/10 text-ios-green rounded-full border border-ios-green/20">
                   <MapPin className="h-3 w-3" />
                   {searchData.area ? `${searchData.area}, ${searchData.city}` : searchData.city ? `${searchData.city}, ${searchData.state}` : searchData.state}
-                  <X className="h-3 w-3 cursor-pointer" onClick={() => clearFilter('state')} />
+                  <X className="h-3 w-3 cursor-pointer hover:text-ios-red transition-colors" onClick={() => clearFilter('state')} />
                 </Badge>
               )}
               {searchData.priceRange && (
-                <Badge variant="secondary" className="flex items-center gap-1">
+                <Badge variant="secondary" className="flex items-center gap-2 px-3 py-1 bg-ios-orange/10 text-ios-orange rounded-full border border-ios-orange/20">
                   {priceRanges.find(p => p.value === searchData.priceRange)?.label}
-                  <X className="h-3 w-3 cursor-pointer" onClick={() => clearFilter('priceRange')} />
+                  <X className="h-3 w-3 cursor-pointer hover:text-ios-red transition-colors" onClick={() => clearFilter('priceRange')} />
                 </Badge>
               )}
               {searchData.bedrooms && (
-                <Badge variant="secondary" className="flex items-center gap-1">
+                <Badge variant="secondary" className="flex items-center gap-2 px-3 py-1 bg-ios-purple/10 text-ios-purple rounded-full border border-ios-purple/20">
                   <Building className="h-3 w-3" />
                   {searchData.bedrooms}
-                  <X className="h-3 w-3 cursor-pointer" onClick={() => clearFilter('bedrooms')} />
+                  <X className="h-3 w-3 cursor-pointer hover:text-ios-red transition-colors" onClick={() => clearFilter('bedrooms')} />
                 </Badge>
               )}
               {searchData.bathrooms && (
-                <Badge variant="secondary" className="flex items-center gap-1">
+                <Badge variant="secondary" className="flex items-center gap-2 px-3 py-1 bg-ios-teal/10 text-ios-teal rounded-full border border-ios-teal/20">
                   <Bath className="h-3 w-3" />
                   {searchData.bathrooms}
-                  <X className="h-3 w-3 cursor-pointer" onClick={() => clearFilter('bathrooms')} />
+                  <X className="h-3 w-3 cursor-pointer hover:text-ios-red transition-colors" onClick={() => clearFilter('bathrooms')} />
                 </Badge>
               )}
               {searchData.furnishing && (
-                <Badge variant="secondary" className="flex items-center gap-1">
+                <Badge variant="secondary" className="flex items-center gap-2 px-3 py-1 bg-ios-indigo/10 text-ios-indigo rounded-full border border-ios-indigo/20">
                   {furnishingOptions.find(f => f.value === searchData.furnishing)?.label}
-                  <X className="h-3 w-3 cursor-pointer" onClick={() => clearFilter('furnishing')} />
+                  <X className="h-3 w-3 cursor-pointer hover:text-ios-red transition-colors" onClick={() => clearFilter('furnishing')} />
                 </Badge>
               )}
               {searchData.has3D && (
-                <Badge variant="secondary" className="flex items-center gap-1">
+                <Badge variant="secondary" className="flex items-center gap-2 px-3 py-1 bg-ios-cyan/10 text-ios-cyan rounded-full border border-ios-cyan/20">
                   {language === "en" ? "3D View" : "Tampilan 3D"}
-                  <X className="h-3 w-3 cursor-pointer" onClick={() => clearFilter('has3D')} />
+                  <X className="h-3 w-3 cursor-pointer hover:text-ios-red transition-colors" onClick={() => clearFilter('has3D')} />
                 </Badge>
               )}
-              <Button variant="ghost" size="sm" onClick={clearAllFilters} className="h-6 text-xs">
+              <Button variant="ghost" size="sm" onClick={clearAllFilters} className="h-7 text-xs text-ios-red hover:bg-ios-red/10 rounded-full">
                 {language === "en" ? "Clear all" : "Hapus semua"}
               </Button>
             </div>
@@ -547,35 +564,35 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
         </CardContent>
       </Card>
 
-      {/* Advanced Filters Panel */}
+      {/* Advanced Filters Panel - iPhone Style */}
       {showFilters && (
-        <Card className={`mt-4 bg-white/98 backdrop-blur-sm shadow-xl border-0 animate-fade-in ${isMobile ? 'fixed inset-x-2 top-32 z-50 max-h-[70vh] overflow-y-auto' : ''}`}>
-          <CardContent className="p-4 sm:p-6">
+        <Card className={`mt-4 card-ios shadow-2xl border-0 animate-fade-in rounded-3xl ${isMobile ? 'fixed inset-x-2 top-32 z-50 max-h-[70vh] overflow-y-auto' : ''}`}>
+          <CardContent className="p-6 sm:p-8">
             {isMobile && (
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-semibold">{language === "en" ? "Filters" : "Filter"}</h3>
-                <Button variant="ghost" size="sm" onClick={() => setShowFilters(false)}>
-                  <X className="h-4 w-4" />
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-xl font-bold text-gray-800">{language === "en" ? "Filters" : "Filter"}</h3>
+                <Button variant="ghost" size="sm" onClick={() => setShowFilters(false)} className="rounded-full">
+                  <X className="h-5 w-5" />
                 </Button>
               </div>
             )}
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               {/* Price Range */}
-              <div className="space-y-2">
-                <label className="text-sm font-medium">
+              <div className="space-y-3">
+                <label className="text-sm font-semibold text-gray-700">
                   {language === "en" ? "Price Range" : "Range Harga"}
                 </label>
                 <Select
                   value={searchData.priceRange}
                   onValueChange={(value) => handleInputChange('priceRange', value)}
                 >
-                  <SelectTrigger className="h-10">
+                  <SelectTrigger className="h-12 glass-ios rounded-xl border-0 font-medium">
                     <SelectValue placeholder={language === "en" ? "Any price" : "Semua harga"} />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="dropdown-ios rounded-xl">
                     {priceRanges.map((range) => (
-                      <SelectItem key={range.value} value={range.value}>
+                      <SelectItem key={range.value} value={range.value} className="rounded-lg">
                         {range.label}
                       </SelectItem>
                     ))}
@@ -584,20 +601,20 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
               </div>
 
               {/* Furnishing */}
-              <div className="space-y-2">
-                <label className="text-sm font-medium">
+              <div className="space-y-3">
+                <label className="text-sm font-semibold text-gray-700">
                   {language === "en" ? "Furnishing" : "Perabotan"}
                 </label>
                 <Select
                   value={searchData.furnishing}
                   onValueChange={(value) => handleInputChange('furnishing', value)}
                 >
-                  <SelectTrigger className="h-10">
+                  <SelectTrigger className="h-12 glass-ios rounded-xl border-0 font-medium">
                     <SelectValue placeholder={language === "en" ? "Any" : "Semua"} />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="dropdown-ios rounded-xl">
                     {furnishingOptions.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
+                      <SelectItem key={option.value} value={option.value} className="rounded-lg">
                         {option.label}
                       </SelectItem>
                     ))}
@@ -606,27 +623,27 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
               </div>
             </div>
 
-            <Separator className="my-4" />
+            <Separator className="my-6 bg-gray-200" />
 
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div className="flex items-center space-x-2">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+              <div className="flex items-center space-x-3">
                 <input
                   type="checkbox"
                   id="has3D"
                   checked={searchData.has3D}
                   onChange={(e) => handleInputChange('has3D', e.target.checked)}
-                  className="rounded"
+                  className="w-5 h-5 text-ios-blue bg-gray-100 border-gray-300 rounded focus:ring-ios-blue focus:ring-2"
                 />
-                <label htmlFor="has3D" className="text-sm font-medium">
+                <label htmlFor="has3D" className="text-sm font-semibold text-gray-700">
                   {language === "en" ? "3D Virtual Tour Available" : "Tersedia Tur Virtual 3D"}
                 </label>
               </div>
 
-              <div className="flex gap-2">
-                <Button variant="outline" onClick={clearAllFilters} className="flex-1 sm:flex-none">
+              <div className="flex gap-3">
+                <Button variant="outline" onClick={clearAllFilters} className="flex-1 sm:flex-none h-12 rounded-xl border-2 border-gray-300 font-semibold">
                   {language === "en" ? "Reset" : "Reset"}
                 </Button>
-                <Button onClick={handleSearch} className="flex-1 sm:flex-none">
+                <Button onClick={handleSearch} className="flex-1 sm:flex-none h-12 bg-gradient-to-r from-ios-blue to-ios-purple hover:from-ios-blue/90 hover:to-ios-purple/90 text-white rounded-xl font-semibold shadow-lg">
                   {language === "en" ? "Apply Filters" : "Terapkan Filter"}
                 </Button>
               </div>
