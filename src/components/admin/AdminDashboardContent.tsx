@@ -1,52 +1,155 @@
-
-import { Suspense } from "react";
+import React from "react";
 import { TabsContent } from "@/components/ui/tabs";
-import { Loader2 } from "lucide-react";
-import AdminDashboardStats from "@/components/admin/AdminDashboardStats";
-import AdminQuickActions from "@/components/admin/AdminQuickActions";
-import { tabCategories } from "./AdminTabCategories";
-
-const LoadingSpinner = () => (
-  <div className="flex items-center justify-center p-8">
-    <Loader2 className="h-8 w-8 animate-spin" />
-    <span className="ml-2">Loading...</span>
-  </div>
-);
+import AdminOverview from "./AdminOverview";
+import UserManagement from "./UserManagement";
+import PropertyManagement from "./PropertyManagement";
+import CustomerServiceTicketManagement from "./CustomerServiceTicketManagement";
+import ContactManagement from "./ContactManagement";
+import ComprehensiveVendorManagement from "./ComprehensiveVendorManagement";
+import VendorManagement from "./VendorManagement";
+import VendorServiceCategoryManagement from "./VendorServiceCategoryManagement";
+import AdminVendorServiceManagement from "./AdminVendorServiceManagement";
+import AdminKYCManagement from "./AdminKYCManagement";
+import AdminMembershipManagement from "./AdminMembershipManagement";
+import WebTrafficAnalytics from "./WebTrafficAnalytics";
+import AIBotManagement from "./AIBotManagement";
+import FeedbackManagement from "./FeedbackManagement";
+import DailyCheckInManagement from "./DailyCheckInManagement";
+import ContentManagement from "./ContentManagement";
+import SearchFiltersManagement from "./SearchFiltersManagement";
+import SystemSettings from "./SystemSettings";
+import BillingManagement from "./BillingManagement";
+import AstraTokenManagement from "./AstraTokenManagement";
+import DatabaseTableManagement from "./DatabaseTableManagement";
+import SecurityMonitoring from "./SecurityMonitoring";
+import SystemReports from "./SystemReports";
+import SEOSettings from "./SEOSettings";
 
 interface AdminDashboardContentProps {
   isAdmin: boolean;
   setActiveTab: (tab: string) => void;
 }
 
+const UnauthorizedAccess = () => (
+  <div className="text-center p-6">
+    <h2 className="text-2xl font-semibold mb-4">Unauthorized Access</h2>
+    <p className="text-gray-600">You do not have permission to view this content.</p>
+  </div>
+);
+
 const AdminDashboardContent = ({ isAdmin, setActiveTab }: AdminDashboardContentProps) => {
-  const getVisibleTabs = () => {
-    const allTabs = Object.values(tabCategories).flatMap(category => category.items);
-    return isAdmin ? allTabs : allTabs.filter(tab => !tab.adminOnly);
-  };
-
-  const visibleTabs = getVisibleTabs();
-
-  const DashboardOverview = () => (
-    <div className="space-y-6">
-      <AdminDashboardStats />
-      <AdminQuickActions onTabChange={setActiveTab} />
-    </div>
-  );
-
   return (
     <>
-      {/* Tab Content */}
-      <TabsContent value="overview" className="space-y-0">
-        <DashboardOverview />
+      <TabsContent value="overview">
+        <AdminOverview isAdmin={isAdmin} setActiveTab={setActiveTab} />
       </TabsContent>
 
-      {visibleTabs.filter(tab => tab.component).map(tab => (
-         <TabsContent key={tab.value} value={tab.value} className="space-y-0">
-            <Suspense fallback={<LoadingSpinner />}>
-              <tab.component />
-            </Suspense>
-         </TabsContent>
-      ))}
+      {/* Core Management */}
+      <TabsContent value="user-management">
+        <UserManagement />
+      </TabsContent>
+
+      <TabsContent value="property-management">
+        <PropertyManagement />
+      </TabsContent>
+
+      {/* Customer Service */}
+      <TabsContent value="customer-service">
+        <CustomerServiceTicketManagement />
+      </TabsContent>
+
+      <TabsContent value="contact-management">
+        <ContactManagement />
+      </TabsContent>
+
+      {/* AI & Vendor Management */}
+      <TabsContent value="ai-vendor-management">
+        <ComprehensiveVendorManagement />
+      </TabsContent>
+
+      <TabsContent value="vendor-management">
+        <VendorManagement />
+      </TabsContent>
+
+      <TabsContent value="vendor-service-categories">
+        <VendorServiceCategoryManagement />
+      </TabsContent>
+
+      <TabsContent value="vendor-services">
+        <AdminVendorServiceManagement />
+      </TabsContent>
+
+      <TabsContent value="kyc-management">
+        <AdminKYCManagement />
+      </TabsContent>
+
+      <TabsContent value="membership-management">
+        <AdminMembershipManagement />
+      </TabsContent>
+
+      {/* Analytics & Monitoring */}
+      <TabsContent value="analytics">
+        <WebTrafficAnalytics />
+      </TabsContent>
+
+      <TabsContent value="ai-bot-management">
+        <AIBotManagement />
+      </TabsContent>
+
+      <TabsContent value="feedback-management">
+        <FeedbackManagement />
+      </TabsContent>
+
+      <TabsContent value="daily-checkin">
+        <DailyCheckInManagement />
+      </TabsContent>
+
+      {/* Content & Settings */}
+      <TabsContent value="content-management">
+        <ContentManagement />
+      </TabsContent>
+
+      <TabsContent value="search-filters">
+        <SearchFiltersManagement />
+      </TabsContent>
+
+      <TabsContent value="seo-settings">
+        <SEOSettings />
+      </TabsContent>
+
+      {/* System Settings */}
+      <TabsContent value="system-settings">
+        {isAdmin ? <SystemSettings /> : <UnauthorizedAccess />}
+      </TabsContent>
+
+      <TabsContent value="billing-management">
+        <BillingManagement />
+      </TabsContent>
+
+      <TabsContent value="astra-tokens">
+        <AstraTokenManagement />
+      </TabsContent>
+
+      {/* Technical */}
+      <TabsContent value="database-management">
+        {isAdmin ? <DatabaseTableManagement /> : <UnauthorizedAccess />}
+      </TabsContent>
+
+      <TabsContent value="security-monitoring">
+        <SecurityMonitoring />
+      </TabsContent>
+
+      <TabsContent value="system-reports">
+        <SystemReports />
+      </TabsContent>
+
+      {/* Support tab for non-admin users */}
+      <TabsContent value="support">
+        <div className="grid gap-4 md:grid-cols-2">
+          <CustomerServiceTicketManagement />
+          <ContactManagement />
+        </div>
+      </TabsContent>
     </>
   );
 };

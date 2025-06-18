@@ -167,6 +167,14 @@ const AdminNavigation = ({ activeSection, onSectionChange }: AdminNavigationProp
       category: 'Content'
     },
     {
+      id: 'seo-settings',
+      label: 'SEO Settings',
+      icon: Search,
+      description: 'Search engine optimization settings',
+      category: 'Content',
+      badge: 'NEW'
+    },
+    {
       id: 'system-settings',
       label: 'System Settings',
       icon: Settings,
