@@ -423,9 +423,9 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
             </div>
           </div>
 
-          {/* Property Type, Bedrooms, Bathrooms Row */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div className="space-y-2">
+          {/* Property Type, Bedrooms, Bathrooms Row - Modified grid for smaller bedroom/bathroom dropdowns */}
+          <div className="grid grid-cols-1 sm:grid-cols-12 gap-3">
+            <div className="sm:col-span-6 space-y-2">
               <label className="text-sm font-medium flex items-center gap-2">
                 <Home className="h-4 w-4" />
                 {language === "en" ? "Property Type" : "Tipe Properti"}
@@ -447,7 +447,7 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
               </Select>
             </div>
 
-            <div className="space-y-2">
+            <div className="sm:col-span-3 space-y-2">
               <label className="text-sm font-medium flex items-center gap-2">
                 <Building className="h-4 w-4" />
               </label>
@@ -468,7 +468,7 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
               </Select>
             </div>
 
-            <div className="space-y-2">
+            <div className="sm:col-span-3 space-y-2">
               <label className="text-sm font-medium flex items-center gap-2">
                 <Bath className="h-4 w-4" />
               </label>
