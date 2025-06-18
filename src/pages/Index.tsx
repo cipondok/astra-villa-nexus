@@ -15,7 +15,18 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useUserTracking } from "@/hooks/useUserTracking";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { SearchData } from "@/types/search";
+
+interface SearchParams {
+  query?: string;
+  state?: string;
+  city?: string;
+  propertyType?: string;
+  priceRange?: string;
+  bedrooms?: string;
+  bathrooms?: string;
+  furnishing?: string;
+  has3D?: boolean;
+}
 
 const Index = () => {
   const [authModalOpen, setAuthModalOpen] = useState(false);
@@ -35,7 +46,6 @@ const Index = () => {
   // Check URL parameters for auth modal
   useEffect(() => {
     const authParam = searchParams.get('auth');
-    
     if (authParam === 'true') {
       setAuthModalOpen(true);
     }
@@ -51,7 +61,7 @@ const Index = () => {
     }
   }, [user, trackInteraction]);
 
-  // Fetch featured properties on initial mount ONLY
+  // Fetch featured properties on initial mount
   useEffect(() => {
     const fetchFeaturedProperties = async () => {
       try {
@@ -97,12 +107,8 @@ const Index = () => {
     }
   };
 
-  const handleBrowseProperties = () => {
-    navigate('/properties');
-  };
-
-  // Simplified search function
-  const performSearch = async (searchData: SearchData) => {
+  // Main search function
+  const performSearch = async (searchData: SearchParams) => {
     if (searchInProgressRef.current) {
       console.log("🔍 SEARCH BLOCKED - Search already in progress");
       return;
@@ -123,39 +129,28 @@ const Index = () => {
     try {
       let query = supabase
         .from('properties')
-        .select('*');
+        .select('*')
+        .eq('status', 'approved');
 
-      query = query.eq('status', 'approved');
-
-      // Handle text search
+      // Apply filters based on search data
       if (searchData.query && searchData.query.trim()) {
         const searchTerm = searchData.query.trim().toLowerCase();
-        console.log("🔍 SEARCH DEBUG - Applying text search for:", searchTerm);
-        const textSearchFilter = `title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%,location.ilike.%${searchTerm}%`;
-        query = query.or(textSearchFilter);
+        query = query.or(`title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%,location.ilike.%${searchTerm}%`);
       }
 
-      // Handle property type filter
       if (searchData.propertyType && searchData.propertyType.trim()) {
-        console.log("🔍 SEARCH DEBUG - Applying property type filter:", searchData.propertyType);
         query = query.eq('property_type', searchData.propertyType);
       }
 
-      // Handle state filter
       if (searchData.state && searchData.state.trim()) {
-        console.log("🔍 SEARCH DEBUG - Applying state filter:", searchData.state);
         query = query.ilike('state', `%${searchData.state}%`);
       }
 
-      // Handle city filter
       if (searchData.city && searchData.city.trim()) {
-        console.log("🔍 SEARCH DEBUG - Applying city filter:", searchData.city);
         query = query.ilike('city', `%${searchData.city}%`);
       }
 
-      // Handle bedrooms filter
       if (searchData.bedrooms && searchData.bedrooms.trim()) {
-        console.log("🔍 SEARCH DEBUG - Applying bedroom filter:", searchData.bedrooms);
         const bedroomValue = searchData.bedrooms.replace('+', '');
         const bedroomCount = parseInt(bedroomValue);
         
@@ -168,9 +163,7 @@ const Index = () => {
         }
       }
 
-      // Handle bathrooms filter
       if (searchData.bathrooms && searchData.bathrooms.trim()) {
-        console.log("🔍 SEARCH DEBUG - Applying bathroom filter:", searchData.bathrooms);
         const bathroomValue = searchData.bathrooms.replace('+', '');
         const bathroomCount = parseInt(bathroomValue);
         
@@ -183,15 +176,11 @@ const Index = () => {
         }
       }
 
-      // Handle furnishing filter
       if (searchData.furnishing && searchData.furnishing.trim()) {
-        console.log("🔍 SEARCH DEBUG - Applying furnishing filter:", searchData.furnishing);
         query = query.eq('furnishing', searchData.furnishing);
       }
 
-      // Handle price range filter
       if (searchData.priceRange && searchData.priceRange.trim()) {
-        console.log("🔍 SEARCH DEBUG - Applying price range filter:", searchData.priceRange);
         const priceRange = searchData.priceRange;
         
         if (priceRange === '0-1b') {
@@ -203,18 +192,8 @@ const Index = () => {
         }
       }
 
-      // Handle location filter (fallback for general location)
-      if (searchData.location && searchData.location.trim()) {
-        console.log("🔍 SEARCH DEBUG - Applying location filter:", searchData.location);
-        const locationTerm = searchData.location.trim().toLowerCase();
-        query = query.or(`city.ilike.%${locationTerm}%,state.ilike.%${locationTerm}%`);
-      }
-
-      // Handle 3D view filter
       if (searchData.has3D) {
-        console.log("🔍 SEARCH DEBUG - Applying 3D view filter");
-        const threeDFilter = 'three_d_model_url.not.is.null,virtual_tour_url.not.is.null';
-        query = query.or(threeDFilter);
+        query = query.or('three_d_model_url.not.is.null,virtual_tour_url.not.is.null');
       }
 
       const { data: properties, error } = await query
@@ -238,8 +217,8 @@ const Index = () => {
     }
   };
 
-  // Handle search from main search panel
-  const handleSearch = (searchData: SearchData) => {
+  // Handle search from search panel
+  const handleSearch = (searchData: any) => {
     console.log("🚀 MANUAL SEARCH triggered:", searchData);
     setHasSearched(true);
     
@@ -247,7 +226,6 @@ const Index = () => {
       trackInteraction('search', {
         searchQuery: searchData.query,
         propertyType: searchData.propertyType,
-        location: searchData.location,
         state: searchData.state,
         city: searchData.city,
         bedrooms: searchData.bedrooms,
@@ -255,14 +233,13 @@ const Index = () => {
         furnishing: searchData.furnishing,
         priceRange: searchData.priceRange,
         has3D: searchData.has3D,
-        amenities: searchData.amenities,
       });
     }
     
     performSearch(searchData);
   };
 
-  // Handle live search from main search panel
+  // Handle live search from search panel
   const handleLiveSearch = (searchTerm: string) => {
     console.log("⚡ LIVE SEARCH triggered:", searchTerm);
     
@@ -289,6 +266,7 @@ const Index = () => {
       <div className="min-h-screen bg-background text-foreground">
         <Navigation />
 
+        {/* Hero Section with Search */}
         <section className="relative min-h-[35vh] sm:min-h-[40vh] flex flex-col items-center justify-center overflow-hidden pt-16">
           <div className="absolute inset-0 z-0">
             <ParticleEffect />
@@ -309,6 +287,7 @@ const Index = () => {
           </div>
         </section>
 
+        {/* Properties Section */}
         <section className="relative z-10 bg-background py-2 sm:py-4 lg:py-6">
           <div className="container mx-auto px-2 sm:px-4 lg:px-6">
             {user ? (
@@ -348,20 +327,24 @@ const Index = () => {
           </div>
         </section>
 
+        {/* Footer */}
         <div className="relative z-10">
           <ProfessionalFooter language={language} />
         </div>
 
+        {/* AI Chat Widget */}
         <div className="fixed bottom-2 right-2 sm:bottom-4 sm:right-4 md:bottom-6 md:right-6 z-50">
           <ResponsiveAIChatWidget />
         </div>
 
+        {/* Loading Popup */}
         <LoadingPopup 
           isOpen={isSearching} 
           message={language === "en" ? "Searching properties..." : "Mencari properti..."}
           language={language}
         />
 
+        {/* Auth Modal */}
         <EnhancedSecureAuthModal 
           isOpen={authModalOpen} 
           onClose={handleAuthModalClose}
