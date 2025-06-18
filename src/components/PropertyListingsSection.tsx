@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import SearchLoadingAnimation from "@/components/SearchLoadingAnimation";
 import PropertyViewer3D from "@/components/PropertyViewer3D";
 import CompactPropertyCard from "@/components/property/CompactPropertyCard";
+import ModernSearchFilters from "@/components/search/ModernSearchFilters";
 
 interface PropertyListingsSectionProps {
   language: "en" | "id";
@@ -13,6 +14,9 @@ interface PropertyListingsSectionProps {
   hasSearched?: boolean;
   fallbackResults?: any[];
   hideTitle?: boolean;
+  showSearchFilters?: boolean;
+  onSearch?: (searchData: any) => void;
+  onLiveSearch?: (searchTerm: string) => void;
 }
 
 const PropertyListingsSection = ({ 
@@ -21,7 +25,10 @@ const PropertyListingsSection = ({
   isSearching = false,
   hasSearched = false,
   fallbackResults = [],
-  hideTitle = false
+  hideTitle = false,
+  showSearchFilters = false,
+  onSearch,
+  onLiveSearch
 }: PropertyListingsSectionProps) => {
   const [favoriteProperties, setFavoriteProperties] = useState<Set<string>>(new Set());
   const [propertyFor3DView, setPropertyFor3DView] = useState<any | null>(null);
@@ -119,6 +126,17 @@ const PropertyListingsSection = ({
     <>
       <section className="py-4">
         <div className="container mx-auto px-4">
+          {/* Modern Search Filters */}
+          {showSearchFilters && onSearch && (
+            <div className="mb-8">
+              <ModernSearchFilters
+                language={language}
+                onSearch={onSearch}
+                onLiveSearch={onLiveSearch}
+              />
+            </div>
+          )}
+
           {!hideTitle && (
             <div className="text-center mb-8">
               <h2 className="text-2xl lg:text-3xl font-bold mb-2">{sectionData.sectionTitle}</h2>
@@ -140,7 +158,6 @@ const PropertyListingsSection = ({
               </div>
             </div>
           ) : (
-            // Updated grid for more compact layout
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-6">
               {searchResults.map((property) => (
                 <CompactPropertyCard

@@ -4,7 +4,7 @@ import { TabsContent } from "@/components/ui/tabs";
 import AdminOverview from "./AdminOverview";
 import UserManagement from "./UserManagement";
 import PropertyManagement from "./PropertyManagement";
-import CustomerServiceTicketManagement from "./CustomerServiceTicketManagement";
+import CustomerServiceTicketMan from "./CustomerServiceTicketManagement";
 import ContactManagement from "./ContactManagement";
 import ComprehensiveVendorManagement from "./ComprehensiveVendorManagement";
 import VendorManagement from "./VendorManagement";
