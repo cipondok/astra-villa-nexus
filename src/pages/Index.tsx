@@ -1,5 +1,4 @@
-
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import ParticleEffect from "@/components/ParticleEffect";
@@ -15,6 +14,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useUserTracking } from "@/hooks/useUserTracking";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/contexts/LanguageContext";
+import type { SearchData } from "@/types/search";
 
 const Index = () => {
   const [authModalOpen, setAuthModalOpen] = useState(false);
@@ -101,7 +101,7 @@ const Index = () => {
   };
 
   // Simplified performSearch function without complex dependencies
-  const performSearch = async (searchData: any) => {
+  const performSearch = async (searchData: SearchData): Promise<void> => {
     if (searchInProgressRef.current) {
       console.log("🔍 SEARCH BLOCKED - Search already in progress");
       return;
@@ -238,7 +238,7 @@ const Index = () => {
   };
 
   // Simplified handleSearch without complex useCallback dependencies
-  const handleSearch = (searchData: any) => {
+  const handleSearch = (searchData: SearchData): void => {
     console.log("🚀 MANUAL SEARCH triggered:", searchData);
     setHasSearched(true);
     
@@ -262,7 +262,7 @@ const Index = () => {
   };
 
   // Simplified handleLiveSearch without complex useCallback dependencies
-  const handleLiveSearch = (searchTerm: string) => {
+  const handleLiveSearch = (searchTerm: string): void => {
     console.log("⚡ LIVE SEARCH triggered:", searchTerm);
     
     if (!searchTerm || searchTerm.trim() === '') {
