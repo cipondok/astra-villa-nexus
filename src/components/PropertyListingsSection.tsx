@@ -113,7 +113,7 @@ const PropertyListingsSection = ({
           <SearchLoadingAnimation language={language} />
         </div>
       </section>
-    );
+    );  
   }
   
   const noResultsFound = searchResults.length === 0;

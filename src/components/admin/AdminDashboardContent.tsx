@@ -42,7 +42,7 @@ const AdminDashboardContent = ({ isAdmin, setActiveTab }: AdminDashboardContentP
   return (
     <>
       <TabsContent value="overview">
-        <AdminOverview isAdmin={isAdmin} setActiveTab={setActiveTab} />
+        <AdminOverview />
       </TabsContent>
 
       <TabsContent value="seo-settings">
