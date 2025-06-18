@@ -129,13 +129,17 @@ const ModernSearchFilters = ({ language, onSearch, onLiveSearch }: SearchFilters
     setActiveFilters(filters);
   }, [selectedState, selectedCity, propertyType, priceRange, bedrooms, bathrooms, furnishing, amenities]);
 
-  // Live search effect
+  // Improved live search effect with better debouncing
   useEffect(() => {
-    if (onLiveSearch && searchQuery) {
+    if (onLiveSearch && searchQuery.length >= 2) {
       const timeoutId = setTimeout(() => {
+        console.log("🔍 LIVE SEARCH - Triggering for:", searchQuery);
         onLiveSearch(searchQuery);
-      }, 300);
+      }, 500); // Reduced from 300ms to 500ms for better typing experience
       return () => clearTimeout(timeoutId);
+    } else if (onLiveSearch && searchQuery.length === 0) {
+      // Clear search immediately when input is empty
+      onLiveSearch("");
     }
   }, [searchQuery, onLiveSearch]);
 
@@ -219,6 +223,7 @@ const ModernSearchFilters = ({ language, onSearch, onLiveSearch }: SearchFilters
       {/* Main Search Card */}
       <Card className="bg-white/95 backdrop-blur-sm shadow-xl border-0">
         <CardContent className="p-4">
+
           {/* Primary Search Bar */}
           <div className="flex flex-col sm:flex-row gap-3">
             <div className="flex-1 relative">
@@ -227,7 +232,10 @@ const ModernSearchFilters = ({ language, onSearch, onLiveSearch }: SearchFilters
                 placeholder={currentText.search}
                 className="pl-10 h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500"
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => {
+                  console.log("🔤 SEARCH INPUT CHANGED:", e.target.value);
+                  setSearchQuery(e.target.value);
+                }}
               />
             </div>
             

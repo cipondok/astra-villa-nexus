@@ -124,6 +124,7 @@ const Index = () => {
 
       query = query.eq('status', 'approved');
 
+      // Handle text search
       if (searchData.query && searchData.query.trim()) {
         const searchTerm = searchData.query.trim().toLowerCase();
         console.log("🔍 SEARCH DEBUG - Applying text search for:", searchTerm);
@@ -131,11 +132,25 @@ const Index = () => {
         query = query.or(textSearchFilter);
       }
 
+      // Handle property type filter
       if (searchData.propertyType && searchData.propertyType.trim()) {
         console.log("🔍 SEARCH DEBUG - Applying property type filter:", searchData.propertyType);
         query = query.eq('property_type', searchData.propertyType);
       }
 
+      // Handle state filter
+      if (searchData.state && searchData.state.trim()) {
+        console.log("🔍 SEARCH DEBUG - Applying state filter:", searchData.state);
+        query = query.ilike('state', `%${searchData.state}%`);
+      }
+
+      // Handle city filter
+      if (searchData.city && searchData.city.trim()) {
+        console.log("🔍 SEARCH DEBUG - Applying city filter:", searchData.city);
+        query = query.ilike('city', `%${searchData.city}%`);
+      }
+
+      // Handle bedrooms filter
       if (searchData.bedrooms && searchData.bedrooms.trim()) {
         console.log("🔍 SEARCH DEBUG - Applying bedroom filter:", searchData.bedrooms);
         const bedroomValue = searchData.bedrooms.replace('+', '');
@@ -150,6 +165,7 @@ const Index = () => {
         }
       }
 
+      // Handle bathrooms filter
       if (searchData.bathrooms && searchData.bathrooms.trim()) {
         console.log("🔍 SEARCH DEBUG - Applying bathroom filter:", searchData.bathrooms);
         const bathroomValue = searchData.bathrooms.replace('+', '');
@@ -164,16 +180,45 @@ const Index = () => {
         }
       }
 
+      // Handle furnishing filter
+      if (searchData.furnishing && searchData.furnishing.trim()) {
+        console.log("🔍 SEARCH DEBUG - Applying furnishing filter:", searchData.furnishing);
+        query = query.eq('furnishing', searchData.furnishing);
+      }
+
+      // Handle price range filter
+      if (searchData.priceRange && searchData.priceRange.trim()) {
+        console.log("🔍 SEARCH DEBUG - Applying price range filter:", searchData.priceRange);
+        const priceRange = searchData.priceRange;
+        
+        if (priceRange === '0-1b') {
+          query = query.lt('price', 1000000000);
+        } else if (priceRange === '1b-5b') {
+          query = query.gte('price', 1000000000).lt('price', 5000000000);
+        } else if (priceRange === '5b+') {
+          query = query.gte('price', 5000000000);
+        }
+      }
+
+      // Handle location filter (fallback for general location)
       if (searchData.location && searchData.location.trim()) {
         console.log("🔍 SEARCH DEBUG - Applying location filter:", searchData.location);
         const locationTerm = searchData.location.trim().toLowerCase();
         query = query.or(`city.ilike.%${locationTerm}%,state.ilike.%${locationTerm}%`);
       }
 
+      // Handle 3D view filter
       if (searchData.has3D) {
         console.log("🔍 SEARCH DEBUG - Applying 3D view filter");
         const threeDFilter = 'three_d_model_url.not.is.null,virtual_tour_url.not.is.null';
         query = query.or(threeDFilter);
+      }
+
+      // Handle amenities filter
+      if (searchData.amenities && Array.isArray(searchData.amenities) && searchData.amenities.length > 0) {
+        console.log("🔍 SEARCH DEBUG - Applying amenities filter:", searchData.amenities);
+        // This would need to be implemented based on your amenities data structure
+        // For now, we'll skip this as the properties table structure isn't clear for amenities
       }
 
       const { data: properties, error } = await query
@@ -206,7 +251,14 @@ const Index = () => {
         searchQuery: searchData.query,
         propertyType: searchData.propertyType,
         location: searchData.location,
+        state: searchData.state,
+        city: searchData.city,
+        bedrooms: searchData.bedrooms,
+        bathrooms: searchData.bathrooms,
+        furnishing: searchData.furnishing,
+        priceRange: searchData.priceRange,
         has3D: searchData.has3D,
+        amenities: searchData.amenities,
       });
     }
     
@@ -226,7 +278,7 @@ const Index = () => {
       return;
     }
 
-    if (searchTerm.length >= 3) {
+    if (searchTerm.length >= 2) { // Reduced from 3 to 2 for faster response
       setHasSearched(true);
       await performSearch({ query: searchTerm });
     }
@@ -270,6 +322,9 @@ const Index = () => {
                     isSearching={isSearching}
                     hasSearched={hasSearched}
                     fallbackResults={featuredProperties}
+                    showSearchFilters={true}
+                    onSearch={handleSearch}
+                    onLiveSearch={handleLiveSearch}
                   />
                 </div>
                 <div className="lg:col-span-1">
@@ -287,6 +342,9 @@ const Index = () => {
                 isSearching={isSearching}
                 hasSearched={hasSearched}
                 fallbackResults={featuredProperties}
+                showSearchFilters={true}
+                onSearch={handleSearch}
+                onLiveSearch={handleLiveSearch}
               />
             )}
           </div>

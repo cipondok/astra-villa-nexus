@@ -97,6 +97,20 @@ const PropertyListingsSection = ({
     setPropertyFor3DView(property);
   }
 
+  const handleSearchWithFilters = (searchData: any) => {
+    console.log("🔍 SEARCH WITH FILTERS:", searchData);
+    if (onSearch) {
+      onSearch(searchData);
+    }
+  };
+
+  const handleLiveSearchWithFilters = (searchTerm: string) => {
+    console.log("⚡ LIVE SEARCH WITH FILTERS:", searchTerm);
+    if (onLiveSearch) {
+      onLiveSearch(searchTerm);
+    }
+  };
+
   const sectionData = useMemo(() => {
     const sectionTitle = hasSearched ? currentText.searchResults : currentText.title;
     const sectionSubtitle = hasSearched && searchResults.length > 0
@@ -127,12 +141,12 @@ const PropertyListingsSection = ({
       <section className="py-4">
         <div className="container mx-auto px-4">
           {/* Modern Search Filters */}
-          {showSearchFilters && onSearch && (
+          {showSearchFilters && (
             <div className="mb-8">
               <ModernSearchFilters
                 language={language}
-                onSearch={onSearch}
-                onLiveSearch={onLiveSearch}
+                onSearch={handleSearchWithFilters}
+                onLiveSearch={handleLiveSearchWithFilters}
               />
             </div>
           )}
