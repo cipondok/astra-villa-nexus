@@ -1,9 +1,9 @@
-
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Search, SlidersHorizontal, X, Home, Building, MapPin } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -13,6 +13,7 @@ import SearchSuggestions from "@/components/search/SearchSuggestions";
 
 interface SearchData {
   query: string;
+  listingType: string; // Buy or Rent
   propertyType: string;
   state: string;
   city: string;
@@ -33,6 +34,7 @@ interface EnhancedModernSearchPanelProps {
 const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: EnhancedModernSearchPanelProps) => {
   const [searchData, setSearchData] = useState<SearchData>({
     query: "",
+    listingType: "buy", // Default to buy
     propertyType: "",
     state: "",
     city: "",
@@ -179,7 +181,7 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
     
     // Check each filter and count non-empty values
     Object.entries(searchData).forEach(([key, value]) => {
-      if (key === 'query') return; // Don't count query as a filter
+      if (key === 'query' || key === 'listingType') return; // Don't count query as a filter
       
       if (key === 'has3D') {
         if (value === true) count++;
@@ -245,6 +247,7 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
     console.log("🧹 CLEARING ALL FILTERS");
     setSearchData({
       query: searchData.query, // Keep search query
+      listingType: searchData.listingType, // Keep listing type
       propertyType: "",
       state: "",
       city: "",
@@ -294,7 +297,18 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
       {/* Main Search Bar */}
       <Card className="bg-white/95 backdrop-blur-sm shadow-xl border-0 overflow-visible">
         <CardContent className="p-3 sm:p-4 lg:p-6">
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+          {/* Buy/Rent Tabs */}
+          <div className="mb-4">
+            <Tabs value={searchData.listingType} onValueChange={(value) => handleInputChange('listingType', value)}>
+              <TabsList className="grid w-full grid-cols-2 max-w-md">
+                <TabsTrigger value="buy">{language === "en" ? "Buy" : "Beli"}</TabsTrigger>
+                <TabsTrigger value="rent">{language === "en" ? "Rent" : "Sewa"}</TabsTrigger>
+              </TabsList>
+            </Tabs>
+          </div>
+
+          {/* Search Input Row */}
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-4">
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4 z-10" />
               <Input
@@ -338,7 +352,7 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
           </div>
 
           {/* Location Selection Row */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
             {/* State Selection */}
             <div className="space-y-2">
               <label className="text-sm font-medium flex items-center gap-2">
@@ -402,6 +416,74 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
                   {availableAreas.map((area) => (
                     <SelectItem key={area} value={area}>
                       {area}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          {/* Property Type, Bedrooms, Bathrooms Row */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div className="space-y-2">
+              <label className="text-sm font-medium flex items-center gap-2">
+                <Home className="h-4 w-4" />
+                {language === "en" ? "Property Type" : "Tipe Properti"}
+              </label>
+              <Select
+                value={searchData.propertyType}
+                onValueChange={(value) => handleInputChange('propertyType', value)}
+              >
+                <SelectTrigger className="h-10">
+                  <SelectValue placeholder={language === "en" ? "Any type" : "Semua tipe"} />
+                </SelectTrigger>
+                <SelectContent>
+                  {propertyTypes.map((type) => (
+                    <SelectItem key={type.value} value={type.value}>
+                      {type.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium flex items-center gap-2">
+                <Building className="h-4 w-4" />
+                {language === "en" ? "Bedrooms" : "Kamar Tidur"}
+              </label>
+              <Select
+                value={searchData.bedrooms}
+                onValueChange={(value) => handleInputChange('bedrooms', value)}
+              >
+                <SelectTrigger className="h-10">
+                  <SelectValue placeholder={language === "en" ? "Any" : "Semua"} />
+                </SelectTrigger>
+                <SelectContent>
+                  {bedroomOptions.map((option) => (
+                    <SelectItem key={option} value={option}>
+                      {option} {language === "en" ? "Bedroom" : "Kamar"}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium">
+                {language === "en" ? "Bathrooms" : "Kamar Mandi"}
+              </label>
+              <Select
+                value={searchData.bathrooms}
+                onValueChange={(value) => handleInputChange('bathrooms', value)}
+              >
+                <SelectTrigger className="h-10">
+                  <SelectValue placeholder={language === "en" ? "Any" : "Semua"} />
+                </SelectTrigger>
+                <SelectContent>
+                  {bathroomOptions.map((option) => (
+                    <SelectItem key={option} value={option}>
+                      {option} {language === "en" ? "Bathroom" : "Kamar Mandi"}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -477,30 +559,7 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
               </div>
             )}
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {/* Property Type */}
-              <div className="space-y-2">
-                <label className="text-sm font-medium flex items-center gap-2">
-                  <Home className="h-4 w-4" />
-                  {language === "en" ? "Property Type" : "Tipe Properti"}
-                </label>
-                <Select
-                  value={searchData.propertyType}
-                  onValueChange={(value) => handleInputChange('propertyType', value)}
-                >
-                  <SelectTrigger className="h-10">
-                    <SelectValue placeholder={language === "en" ? "Any type" : "Semua tipe"} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {propertyTypes.map((type) => (
-                      <SelectItem key={type.value} value={type.value}>
-                        {type.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {/* Price Range */}
               <div className="space-y-2">
                 <label className="text-sm font-medium">
@@ -539,51 +598,6 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
                     {furnishingOptions.map((option) => (
                       <SelectItem key={option.value} value={option.value}>
                         {option.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Bedrooms */}
-              <div className="space-y-2">
-                <label className="text-sm font-medium flex items-center gap-2">
-                  <Building className="h-4 w-4" />
-                  {language === "en" ? "Bedrooms" : "Kamar Tidur"}
-                </label>
-                <Select
-                  value={searchData.bedrooms}
-                  onValueChange={(value) => handleInputChange('bedrooms', value)}
-                >
-                  <SelectTrigger className="h-10">
-                    <SelectValue placeholder={language === "en" ? "Any" : "Semua"} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {bedroomOptions.map((option) => (
-                      <SelectItem key={option} value={option}>
-                        {option} {language === "en" ? "Bedroom" : "Kamar"}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Bathrooms */}
-              <div className="space-y-2">
-                <label className="text-sm font-medium">
-                  {language === "en" ? "Bathrooms" : "Kamar Mandi"}
-                </label>
-                <Select
-                  value={searchData.bathrooms}
-                  onValueChange={(value) => handleInputChange('bathrooms', value)}
-                >
-                  <SelectTrigger className="h-10">
-                    <SelectValue placeholder={language === "en" ? "Any" : "Semua"} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {bathroomOptions.map((option) => (
-                      <SelectItem key={option} value={option}>
-                        {option} {language === "en" ? "Bathroom" : "Kamar Mandi"}
                       </SelectItem>
                     ))}
                   </SelectContent>

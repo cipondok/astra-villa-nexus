@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
@@ -18,6 +19,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 // Simple interface to avoid type complexity
 interface BasicSearchParams {
   query?: string;
+  listingType?: string;
   state?: string;
   city?: string;
   propertyType?: string;
@@ -51,7 +53,6 @@ const Index = () => {
     }
   }, [searchParams]);
 
-  // Track page view for AI recommendations
   useEffect(() => {
     if (user) {
       trackInteraction('page_view', {
@@ -61,7 +62,6 @@ const Index = () => {
     }
   }, [user, trackInteraction]);
 
-  // Fetch featured properties on initial mount
   useEffect(() => {
     const fetchFeaturedProperties = async () => {
       try {
@@ -127,11 +127,15 @@ const Index = () => {
     setIsSearching(true);
     
     try {
-      // Use a simplified approach with type assertion to avoid deep types
       let queryBuilder: any = supabase
         .from('properties')
         .select('*')
         .eq('status', 'approved');
+
+      // Apply listing type filter
+      if (searchData.listingType?.trim()) {
+        queryBuilder = queryBuilder.eq('listing_type', searchData.listingType === 'buy' ? 'sale' : 'rent');
+      }
 
       // Apply filters one by one with type assertions
       if (searchData.query?.trim()) {
@@ -197,7 +201,6 @@ const Index = () => {
         queryBuilder = queryBuilder.or('three_d_model_url.not.is.null,virtual_tour_url.not.is.null');
       }
 
-      // Execute the query with type assertion
       const { data: properties, error } = await queryBuilder
         .order('created_at', { ascending: false })
         .limit(50);
@@ -227,6 +230,7 @@ const Index = () => {
     if (user) {
       trackInteraction('search', {
         searchQuery: searchData.query,
+        listingType: searchData.listingType,
         propertyType: searchData.propertyType,
         location: searchData.location,
         bedrooms: searchData.bedrooms,
@@ -238,7 +242,7 @@ const Index = () => {
     // Convert to BasicSearchParams with proper field mapping
     const basicSearchData: BasicSearchParams = {
       query: searchData.query,
-      // Map location to both state and city for broader search
+      listingType: searchData.listingType,
       state: searchData.location || searchData.state,
       city: searchData.location || searchData.city,
       propertyType: searchData.propertyType,
@@ -253,9 +257,7 @@ const Index = () => {
     performSearch(basicSearchData);
   };
 
-  // Disable live search - only handle manual search button clicks
   const handleLiveSearch = (searchTerm: string) => {
-    // Do nothing - disable live search functionality
     console.log("⚡ LIVE SEARCH DISABLED - Only manual search allowed");
   };
 
