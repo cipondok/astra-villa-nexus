@@ -56,7 +56,7 @@ const AdminDashboardContent = ({ isAdmin, setActiveTab }: AdminDashboardContentP
 
       {/* Customer Service */}
       <TabsContent value="customer-service">
-        <CustomerServiceTicketManagement />
+        <CustomerServiceTicketMan />
       </TabsContent>
 
       <TabsContent value="contact-management">
@@ -147,7 +147,7 @@ const AdminDashboardContent = ({ isAdmin, setActiveTab }: AdminDashboardContentP
       {/* Support tab for non-admin users */}
       <TabsContent value="support">
         <div className="grid gap-4 md:grid-cols-2">
-          <CustomerServiceTicketManagement />
+          <CustomerServiceTicketMan />
           <ContactManagement />
         </div>
       </TabsContent>
