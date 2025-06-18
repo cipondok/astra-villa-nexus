@@ -16,6 +16,21 @@ import { useUserTracking } from "@/hooks/useUserTracking";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/contexts/LanguageContext";
 
+// Simple interface to avoid type complexity
+interface SimpleSearchData {
+  query?: string;
+  state?: string;
+  city?: string;
+  location?: string;
+  propertyType?: string;
+  priceRange?: string;
+  bedrooms?: string;
+  bathrooms?: string;
+  furnishing?: string;
+  amenities?: string[];
+  has3D?: boolean;
+}
+
 const Index = () => {
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const { language } = useLanguage();
@@ -100,8 +115,8 @@ const Index = () => {
     navigate('/properties');
   };
 
-  // Simple search function
-  const performSearch = async (searchData: any) => {
+  // Simplified search function with explicit typing
+  const performSearch = async (searchData: SimpleSearchData): Promise<void> => {
     if (searchInProgressRef.current) {
       console.log("🔍 SEARCH BLOCKED - Search already in progress");
       return;
@@ -238,7 +253,7 @@ const Index = () => {
   };
 
   // Handle search from main search panel
-  const handleSearch = (searchData: any) => {
+  const handleSearch = (searchData: SimpleSearchData): void => {
     console.log("🚀 MANUAL SEARCH triggered:", searchData);
     setHasSearched(true);
     
@@ -262,7 +277,7 @@ const Index = () => {
   };
 
   // Handle live search from main search panel
-  const handleLiveSearch = (searchTerm: string) => {
+  const handleLiveSearch = (searchTerm: string): void => {
     console.log("⚡ LIVE SEARCH triggered:", searchTerm);
     
     if (!searchTerm || searchTerm.trim() === '') {
@@ -277,7 +292,8 @@ const Index = () => {
 
     if (searchTerm.length >= 2) {
       setHasSearched(true);
-      performSearch({ query: searchTerm });
+      const simpleSearchData: SimpleSearchData = { query: searchTerm };
+      performSearch(simpleSearchData);
     }
   };
 
