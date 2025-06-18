@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
@@ -99,6 +100,7 @@ const Index = () => {
     navigate('/properties');
   };
 
+  // Simplified performSearch function without complex dependencies
   const performSearch = async (searchData: any) => {
     if (searchInProgressRef.current) {
       console.log("🔍 SEARCH BLOCKED - Search already in progress");
@@ -214,13 +216,6 @@ const Index = () => {
         query = query.or(threeDFilter);
       }
 
-      // Handle amenities filter
-      if (searchData.amenities && Array.isArray(searchData.amenities) && searchData.amenities.length > 0) {
-        console.log("🔍 SEARCH DEBUG - Applying amenities filter:", searchData.amenities);
-        // This would need to be implemented based on your amenities data structure
-        // For now, we'll skip this as the properties table structure isn't clear for amenities
-      }
-
       const { data: properties, error } = await query
         .order('created_at', { ascending: false })
         .limit(50);
@@ -242,7 +237,8 @@ const Index = () => {
     }
   };
 
-  const handleSearch = useCallback(async (searchData: any) => {
+  // Simplified handleSearch without complex useCallback dependencies
+  const handleSearch = (searchData: any) => {
     console.log("🚀 MANUAL SEARCH triggered:", searchData);
     setHasSearched(true);
     
@@ -262,10 +258,11 @@ const Index = () => {
       });
     }
     
-    await performSearch(searchData);
-  }, [user, trackInteraction]);
+    performSearch(searchData);
+  };
 
-  const handleLiveSearch = useCallback(async (searchTerm: string) => {
+  // Simplified handleLiveSearch without complex useCallback dependencies
+  const handleLiveSearch = (searchTerm: string) => {
     console.log("⚡ LIVE SEARCH triggered:", searchTerm);
     
     if (!searchTerm || searchTerm.trim() === '') {
@@ -278,11 +275,11 @@ const Index = () => {
       return;
     }
 
-    if (searchTerm.length >= 2) { // Reduced from 3 to 2 for faster response
+    if (searchTerm.length >= 2) {
       setHasSearched(true);
-      await performSearch({ query: searchTerm });
+      performSearch({ query: searchTerm });
     }
-  }, [hasSearched]);
+  };
 
   const propertiesToShow = hasSearched ? searchResults : featuredProperties;
 
