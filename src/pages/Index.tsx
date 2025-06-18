@@ -253,24 +253,10 @@ const Index = () => {
     performSearch(basicSearchData);
   };
 
-  // Handle live search from search panel - simplified type
+  // Disable live search - only handle manual search button clicks
   const handleLiveSearch = (searchTerm: string) => {
-    console.log("⚡ LIVE SEARCH triggered:", searchTerm);
-    
-    if (!searchTerm || searchTerm.trim() === '') {
-      if (hasSearched) {
-        console.log("⚡ LIVE SEARCH - Clearing search, resetting to featured");
-        setSearchResults([]);
-        setHasSearched(false);
-        lastSearchQueryRef.current = "";
-      }
-      return;
-    }
-
-    if (searchTerm.length >= 2) {
-      setHasSearched(true);
-      performSearch({ query: searchTerm });
-    }
+    // Do nothing - disable live search functionality
+    console.log("⚡ LIVE SEARCH DISABLED - Only manual search allowed");
   };
 
   const propertiesToShow = hasSearched ? searchResults : featuredProperties;

@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -88,17 +89,38 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
     };
   }, []);
 
-  // Count active filters - FIXED to properly count non-empty values
+  // Count active filters - Fixed to properly count non-empty values and 3D checkbox
   useEffect(() => {
     let count = 0;
     
-    if (searchData.propertyType && searchData.propertyType.trim() !== "") count++;
-    if (searchData.location && searchData.location.trim() !== "") count++;
-    if (searchData.priceRange && searchData.priceRange.trim() !== "") count++;
-    if (searchData.bedrooms && searchData.bedrooms.trim() !== "") count++;
-    if (searchData.bathrooms && searchData.bathrooms.trim() !== "") count++;
-    if (searchData.furnishing && searchData.furnishing.trim() !== "") count++;
-    if (searchData.has3D === true) count++;
+    if (searchData.propertyType && searchData.propertyType.trim() !== "") {
+      console.log("✅ Property Type selected:", searchData.propertyType);
+      count++;
+    }
+    if (searchData.location && searchData.location.trim() !== "") {
+      console.log("✅ Location selected:", searchData.location);
+      count++;
+    }
+    if (searchData.priceRange && searchData.priceRange.trim() !== "") {
+      console.log("✅ Price Range selected:", searchData.priceRange);
+      count++;
+    }
+    if (searchData.bedrooms && searchData.bedrooms.trim() !== "") {
+      console.log("✅ Bedrooms selected:", searchData.bedrooms);
+      count++;
+    }
+    if (searchData.bathrooms && searchData.bathrooms.trim() !== "") {
+      console.log("✅ Bathrooms selected:", searchData.bathrooms);
+      count++;
+    }
+    if (searchData.furnishing && searchData.furnishing.trim() !== "") {
+      console.log("✅ Furnishing selected:", searchData.furnishing);
+      count++;
+    }
+    if (searchData.has3D === true) {
+      console.log("✅ 3D Tour selected:", searchData.has3D);
+      count++;
+    }
 
     console.log("🔢 ACTIVE FILTERS COUNT:", count, "Filter data:", searchData);
     setActiveFilters(count);
@@ -109,8 +131,9 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
     const newSearchData = { ...searchData, [field]: value };
     setSearchData(newSearchData);
     
+    // Remove live search - only update query in state
     if (field === 'query' && typeof value === 'string') {
-      onLiveSearch(value);
+      console.log("📝 Query updated but not searching automatically");
     }
   };
 
