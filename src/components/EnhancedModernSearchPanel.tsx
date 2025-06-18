@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,7 +14,9 @@ import SearchSuggestions from "@/components/search/SearchSuggestions";
 interface SearchData {
   query: string;
   propertyType: string;
-  location: string;
+  state: string;
+  city: string;
+  area: string;
   priceRange: string;
   bedrooms: string;
   bathrooms: string;
@@ -31,7 +34,9 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
   const [searchData, setSearchData] = useState<SearchData>({
     query: "",
     propertyType: "",
-    location: "",
+    state: "",
+    city: "",
+    area: "",
     priceRange: "",
     bedrooms: "",
     bathrooms: "",
@@ -42,12 +47,78 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
   const [showFilters, setShowFilters] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [activeFilters, setActiveFilters] = useState(0);
+  const [availableCities, setAvailableCities] = useState<string[]>([]);
+  const [availableAreas, setAvailableAreas] = useState<string[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const isMobile = useIsMobile();
 
   // Debounce search query for suggestions
   const debouncedQuery = useDebounce(searchData.query, 300);
+
+  // Indonesian provinces data
+  const indonesianProvinces = [
+    "Aceh", "Sumatera Utara", "Sumatera Barat", "Riau", "Kepulauan Riau", "Jambi", 
+    "Sumatera Selatan", "Bangka Belitung", "Bengkulu", "Lampung",
+    "DKI Jakarta", "Jawa Barat", "Banten", "Jawa Tengah", "DI Yogyakarta", "Jawa Timur",
+    "Bali", "Nusa Tenggara Barat", "Nusa Tenggara Timur",
+    "Kalimantan Barat", "Kalimantan Tengah", "Kalimantan Selatan", "Kalimantan Timur", "Kalimantan Utara",
+    "Sulawesi Utara", "Gorontalo", "Sulawesi Tengah", "Sulawesi Barat", "Sulawesi Selatan", "Sulawesi Tenggara",
+    "Maluku", "Maluku Utara", "Papua Barat", "Papua"
+  ];
+
+  // Cities data for major provinces
+  const citiesData: Record<string, string[]> = {
+    "DKI Jakarta": ["Jakarta Pusat", "Jakarta Utara", "Jakarta Barat", "Jakarta Selatan", "Jakarta Timur", "Kepulauan Seribu"],
+    "Jawa Barat": ["Bandung", "Bekasi", "Bogor", "Depok", "Cirebon", "Sukabumi", "Tasikmalaya", "Karawang", "Purwakarta", "Subang"],
+    "Jawa Tengah": ["Semarang", "Solo", "Magelang", "Salatiga", "Pekalongan", "Tegal", "Surakarta", "Klaten", "Boyolali"],
+    "Jawa Timur": ["Surabaya", "Malang", "Kediri", "Blitar", "Madiun", "Mojokerto", "Pasuruan", "Probolinggo", "Jember"],
+    "Banten": ["Tangerang", "Tangerang Selatan", "Serang", "Cilegon", "Lebak", "Pandeglang"],
+    "Bali": ["Denpasar", "Badung", "Gianyar", "Tabanan", "Klungkung", "Bangli", "Karangasem", "Buleleng"],
+    "Sumatera Utara": ["Medan", "Binjai", "Tebing Tinggi", "Pematangsiantar", "Tanjung Balai", "Sibolga"],
+    "Sumatera Barat": ["Padang", "Bukittinggi", "Padang Panjang", "Payakumbuh", "Sawahlunto", "Solok"],
+  };
+
+  // Areas data for major cities
+  const areasData: Record<string, string[]> = {
+    "Jakarta Pusat": ["Menteng", "Gambir", "Tanah Abang", "Senen", "Cempaka Putih", "Johar Baru", "Kemayoran"],
+    "Jakarta Selatan": ["Kebayoran Baru", "Kebayoran Lama", "Pesanggrahan", "Cilandak", "Pasar Minggu", "Jagakarsa"],
+    "Jakarta Barat": ["Kebon Jeruk", "Palmerah", "Grogol Petamburan", "Tambora", "Taman Sari", "Cengkareng"],
+    "Jakarta Utara": ["Penjaringan", "Pademangan", "Tanjung Priok", "Koja", "Kelapa Gading", "Cilincing"],
+    "Jakarta Timur": ["Matraman", "Pulogadung", "Jatinegara", "Cakung", "Duren Sawit", "Kramat Jati"],
+    "Bandung": ["Coblong", "Bandung Wetan", "Sumur Bandung", "Andir", "Cicendo", "Cidadap", "Sukajadi"],
+    "Surabaya": ["Wonokromo", "Gubeng", "Tegalsari", "Genteng", "Bubutan", "Simokerto", "Pabean Cantian"],
+    "Bekasi": ["Bekasi Timur", "Bekasi Barat", "Bekasi Utara", "Bekasi Selatan", "Medan Satria", "Bantargebang"],
+    "Tangerang": ["Tangerang Kota", "Karawaci", "Lippo Village", "Gading Serpong", "BSD City", "Alam Sutera"],
+  };
+
+  // Update cities when state changes
+  useEffect(() => {
+    if (searchData.state) {
+      const cities = citiesData[searchData.state] || [];
+      setAvailableCities(cities);
+      if (!cities.includes(searchData.city)) {
+        setSearchData(prev => ({ ...prev, city: "", area: "" }));
+      }
+    } else {
+      setAvailableCities([]);
+      setSearchData(prev => ({ ...prev, city: "", area: "" }));
+    }
+  }, [searchData.state]);
+
+  // Update areas when city changes
+  useEffect(() => {
+    if (searchData.city) {
+      const areas = areasData[searchData.city] || [];
+      setAvailableAreas(areas);
+      if (!areas.includes(searchData.area)) {
+        setSearchData(prev => ({ ...prev, area: "" }));
+      }
+    } else {
+      setAvailableAreas([]);
+      setSearchData(prev => ({ ...prev, area: "" }));
+    }
+  }, [searchData.city]);
 
   // Enhanced click outside handler
   useEffect(() => {
@@ -141,7 +212,16 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
   const handleSearch = () => {
     console.log("🔍 ENHANCED SEARCH PANEL - Sending search data:", searchData);
     setShowSuggestions(false);
-    onSearch(searchData);
+    
+    // Convert to the expected format for the backend
+    const searchDataForBackend = {
+      ...searchData,
+      location: searchData.area ? `${searchData.area}, ${searchData.city}, ${searchData.state}` : 
+                searchData.city ? `${searchData.city}, ${searchData.state}` : 
+                searchData.state || ""
+    };
+    
+    onSearch(searchDataForBackend);
     if (isMobile) {
       setShowFilters(false);
     }
@@ -166,7 +246,9 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
     setSearchData({
       query: searchData.query, // Keep search query
       propertyType: "",
-      location: "",
+      state: "",
+      city: "",
+      area: "",
       priceRange: "",
       bedrooms: "",
       bathrooms: "",
@@ -182,15 +264,6 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
     { value: "villa", label: language === "en" ? "Villa" : "Villa" },
     { value: "condo", label: language === "en" ? "Condo" : "Kondominium" },
     { value: "townhouse", label: language === "en" ? "Townhouse" : "Ruko" }
-  ];
-
-  const locations = [
-    { value: "DKI Jakarta", label: "DKI Jakarta" },
-    { value: "West Java", label: "West Java" },
-    { value: "East Java", label: "East Java" },
-    { value: "Central Java", label: "Central Java" },
-    { value: "Bali", label: "Bali" },
-    { value: "North Sumatra", label: "North Sumatra" }
   ];
 
   const priceRanges = [
@@ -264,6 +337,78 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
             </div>
           </div>
 
+          {/* Location Selection Row */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-4">
+            {/* State Selection */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium flex items-center gap-2">
+                <MapPin className="h-4 w-4" />
+                {language === "en" ? "State" : "Provinsi"}
+              </label>
+              <Select
+                value={searchData.state}
+                onValueChange={(value) => handleInputChange('state', value)}
+              >
+                <SelectTrigger className="h-10">
+                  <SelectValue placeholder={language === "en" ? "Select state" : "Pilih provinsi"} />
+                </SelectTrigger>
+                <SelectContent>
+                  {indonesianProvinces.map((province) => (
+                    <SelectItem key={province} value={province}>
+                      {province}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* City Selection */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium">
+                {language === "en" ? "City" : "Kota"}
+              </label>
+              <Select
+                value={searchData.city}
+                onValueChange={(value) => handleInputChange('city', value)}
+                disabled={!searchData.state}
+              >
+                <SelectTrigger className="h-10">
+                  <SelectValue placeholder={language === "en" ? "Select city" : "Pilih kota"} />
+                </SelectTrigger>
+                <SelectContent>
+                  {availableCities.map((city) => (
+                    <SelectItem key={city} value={city}>
+                      {city}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Area Selection */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium">
+                {language === "en" ? "Area" : "Area"}
+              </label>
+              <Select
+                value={searchData.area}
+                onValueChange={(value) => handleInputChange('area', value)}
+                disabled={!searchData.city}
+              >
+                <SelectTrigger className="h-10">
+                  <SelectValue placeholder={language === "en" ? "Select area" : "Pilih area"} />
+                </SelectTrigger>
+                <SelectContent>
+                  {availableAreas.map((area) => (
+                    <SelectItem key={area} value={area}>
+                      {area}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
           {/* Active Filters Display */}
           {activeFilters > 0 && (
             <div className="flex flex-wrap gap-2 mt-3 pt-3 border-t">
@@ -274,11 +419,11 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
                   <X className="h-3 w-3 cursor-pointer" onClick={() => clearFilter('propertyType')} />
                 </Badge>
               )}
-              {searchData.location && (
+              {searchData.state && (
                 <Badge variant="secondary" className="flex items-center gap-1">
                   <MapPin className="h-3 w-3" />
-                  {locations.find(l => l.value === searchData.location)?.label || searchData.location}
-                  <X className="h-3 w-3 cursor-pointer" onClick={() => clearFilter('location')} />
+                  {searchData.area ? `${searchData.area}, ${searchData.city}` : searchData.city ? `${searchData.city}, ${searchData.state}` : searchData.state}
+                  <X className="h-3 w-3 cursor-pointer" onClick={() => clearFilter('state')} />
                 </Badge>
               )}
               {searchData.priceRange && (
@@ -350,29 +495,6 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
                     {propertyTypes.map((type) => (
                       <SelectItem key={type.value} value={type.value}>
                         {type.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Location */}
-              <div className="space-y-2">
-                <label className="text-sm font-medium flex items-center gap-2">
-                  <MapPin className="h-4 w-4" />
-                  {language === "en" ? "Location" : "Lokasi"}
-                </label>
-                <Select
-                  value={searchData.location}
-                  onValueChange={(value) => handleInputChange('location', value)}
-                >
-                  <SelectTrigger className="h-10">
-                    <SelectValue placeholder={language === "en" ? "Any location" : "Semua lokasi"} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {locations.map((location) => (
-                      <SelectItem key={location.value} value={location.value}>
-                        {location.label}
                       </SelectItem>
                     ))}
                   </SelectContent>
