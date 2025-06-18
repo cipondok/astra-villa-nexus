@@ -108,7 +108,7 @@ const Index = () => {
     }
   };
 
-  // Main search function with simplified parameters and explicit typing
+  // Main search function with type assertion to avoid deep instantiation
   const performSearch = async (searchData: BasicSearchParams) => {
     if (searchInProgressRef.current) {
       console.log("🔍 SEARCH BLOCKED - Search already in progress");
@@ -128,88 +128,78 @@ const Index = () => {
     setIsSearching(true);
     
     try {
-      // Build the base query with explicit typing
-      const baseQuery = supabase
+      // Use a simplified approach with type assertion to avoid deep types
+      let queryBuilder: any = supabase
         .from('properties')
         .select('*')
         .eq('status', 'approved');
 
-      // Apply filters step by step to avoid deep type nesting
-      let finalQuery = baseQuery;
-
-      // Text search filter
+      // Apply filters one by one with type assertions
       if (searchData.query?.trim()) {
         const searchTerm = searchData.query.trim().toLowerCase();
-        finalQuery = finalQuery.or(`title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%,location.ilike.%${searchTerm}%`);
+        queryBuilder = queryBuilder.or(`title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%,location.ilike.%${searchTerm}%`);
       }
 
-      // Property type filter
       if (searchData.propertyType?.trim()) {
-        finalQuery = finalQuery.eq('property_type', searchData.propertyType);
+        queryBuilder = queryBuilder.eq('property_type', searchData.propertyType);
       }
 
-      // Location filters
       if (searchData.state?.trim()) {
-        finalQuery = finalQuery.ilike('state', `%${searchData.state}%`);
+        queryBuilder = queryBuilder.ilike('state', `%${searchData.state}%`);
       }
 
       if (searchData.city?.trim()) {
-        finalQuery = finalQuery.ilike('city', `%${searchData.city}%`);
+        queryBuilder = queryBuilder.ilike('city', `%${searchData.city}%`);
       }
 
-      // Bedroom filter
       if (searchData.bedrooms?.trim()) {
         const bedroomValue = searchData.bedrooms.replace('+', '');
         const bedroomCount = parseInt(bedroomValue);
         
         if (!isNaN(bedroomCount)) {
           if (searchData.bedrooms.includes('+')) {
-            finalQuery = finalQuery.gte('bedrooms', bedroomCount);
+            queryBuilder = queryBuilder.gte('bedrooms', bedroomCount);
           } else {
-            finalQuery = finalQuery.eq('bedrooms', bedroomCount);
+            queryBuilder = queryBuilder.eq('bedrooms', bedroomCount);
           }
         }
       }
 
-      // Bathroom filter
       if (searchData.bathrooms?.trim()) {
         const bathroomValue = searchData.bathrooms.replace('+', '');
         const bathroomCount = parseInt(bathroomValue);
         
         if (!isNaN(bathroomCount)) {
           if (searchData.bathrooms.includes('+')) {
-            finalQuery = finalQuery.gte('bathrooms', bathroomCount);
+            queryBuilder = queryBuilder.gte('bathrooms', bathroomCount);
           } else {
-            finalQuery = finalQuery.eq('bathrooms', bathroomCount);
+            queryBuilder = queryBuilder.eq('bathrooms', bathroomCount);
           }
         }
       }
 
-      // Furnishing filter
       if (searchData.furnishing?.trim()) {
-        finalQuery = finalQuery.eq('furnishing', searchData.furnishing);
+        queryBuilder = queryBuilder.eq('furnishing', searchData.furnishing);
       }
 
-      // Price range filter
       if (searchData.priceRange?.trim()) {
         const priceRange = searchData.priceRange;
         
         if (priceRange === '0-1b') {
-          finalQuery = finalQuery.lt('price', 1000000000);
+          queryBuilder = queryBuilder.lt('price', 1000000000);
         } else if (priceRange === '1b-5b') {
-          finalQuery = finalQuery.gte('price', 1000000000).lt('price', 5000000000);
+          queryBuilder = queryBuilder.gte('price', 1000000000).lt('price', 5000000000);
         } else if (priceRange === '5b+') {
-          finalQuery = finalQuery.gte('price', 5000000000);
+          queryBuilder = queryBuilder.gte('price', 5000000000);
         }
       }
 
-      // 3D filter
       if (searchData.has3D) {
-        finalQuery = finalQuery.or('three_d_model_url.not.is.null,virtual_tour_url.not.is.null');
+        queryBuilder = queryBuilder.or('three_d_model_url.not.is.null,virtual_tour_url.not.is.null');
       }
 
-      // Execute the final query
-      const { data: properties, error } = await finalQuery
+      // Execute the query with type assertion
+      const { data: properties, error } = await queryBuilder
         .order('created_at', { ascending: false })
         .limit(50);
 
