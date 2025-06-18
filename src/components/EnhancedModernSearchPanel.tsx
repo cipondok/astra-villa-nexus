@@ -88,17 +88,24 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
     };
   }, []);
 
-  // Count active filters
+  // Count active filters - FIXED to properly count non-empty values
   useEffect(() => {
-    const count = Object.entries(searchData).filter(([key, value]) => {
-      if (key === 'query') return false;
-      if (key === 'has3D') return value === true;
-      return value !== "";
-    }).length;
+    let count = 0;
+    
+    if (searchData.propertyType && searchData.propertyType.trim() !== "") count++;
+    if (searchData.location && searchData.location.trim() !== "") count++;
+    if (searchData.priceRange && searchData.priceRange.trim() !== "") count++;
+    if (searchData.bedrooms && searchData.bedrooms.trim() !== "") count++;
+    if (searchData.bathrooms && searchData.bathrooms.trim() !== "") count++;
+    if (searchData.furnishing && searchData.furnishing.trim() !== "") count++;
+    if (searchData.has3D === true) count++;
+
+    console.log("🔢 ACTIVE FILTERS COUNT:", count, "Filter data:", searchData);
     setActiveFilters(count);
   }, [searchData]);
 
   const handleInputChange = (field: keyof SearchData, value: string | boolean) => {
+    console.log(`🔄 FILTER CHANGE - ${field}:`, value);
     const newSearchData = { ...searchData, [field]: value };
     setSearchData(newSearchData);
     
@@ -116,12 +123,14 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
   };
 
   const clearFilter = (field: keyof SearchData) => {
+    console.log(`🧹 CLEARING FILTER: ${field}`);
     handleInputChange(field, field === 'has3D' ? false : "");
   };
 
   const clearAllFilters = () => {
+    console.log("🧹 CLEARING ALL FILTERS");
     setSearchData({
-      query: searchData.query,
+      query: searchData.query, // Keep search query
       propertyType: "",
       location: "",
       priceRange: "",
@@ -197,7 +206,7 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
                 <SlidersHorizontal className="h-4 w-4 mr-2" />
                 {language === "en" ? "Filters" : "Filter"}
                 {activeFilters > 0 && (
-                  <Badge variant="secondary" className="ml-2">
+                  <Badge variant="secondary" className="ml-2 bg-red-500 text-white">
                     {activeFilters}
                   </Badge>
                 )}
@@ -287,7 +296,10 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
                 </label>
                 <Select
                   value={searchData.propertyType}
-                  onValueChange={(value) => handleInputChange('propertyType', value)}
+                  onValueChange={(value) => {
+                    console.log("🏠 Property Type selected:", value);
+                    handleInputChange('propertyType', value);
+                  }}
                 >
                   <SelectTrigger className="h-10">
                     <SelectValue placeholder={language === "en" ? "Any type" : "Semua tipe"} />
@@ -310,7 +322,10 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
                 </label>
                 <Select
                   value={searchData.location}
-                  onValueChange={(value) => handleInputChange('location', value)}
+                  onValueChange={(value) => {
+                    console.log("📍 Location selected:", value);
+                    handleInputChange('location', value);
+                  }}
                 >
                   <SelectTrigger className="h-10">
                     <SelectValue placeholder={language === "en" ? "Any location" : "Semua lokasi"} />
@@ -332,7 +347,10 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
                 </label>
                 <Select
                   value={searchData.priceRange}
-                  onValueChange={(value) => handleInputChange('priceRange', value)}
+                  onValueChange={(value) => {
+                    console.log("💰 Price Range selected:", value);
+                    handleInputChange('priceRange', value);
+                  }}
                 >
                   <SelectTrigger className="h-10">
                     <SelectValue placeholder={language === "en" ? "Any price" : "Semua harga"} />
@@ -354,7 +372,10 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
                 </label>
                 <Select
                   value={searchData.furnishing}
-                  onValueChange={(value) => handleInputChange('furnishing', value)}
+                  onValueChange={(value) => {
+                    console.log("🪑 Furnishing selected:", value);
+                    handleInputChange('furnishing', value);
+                  }}
                 >
                   <SelectTrigger className="h-10">
                     <SelectValue placeholder={language === "en" ? "Any" : "Semua"} />
@@ -377,7 +398,10 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
                 </label>
                 <Select
                   value={searchData.bedrooms}
-                  onValueChange={(value) => handleInputChange('bedrooms', value)}
+                  onValueChange={(value) => {
+                    console.log("🛏️ Bedrooms selected:", value);
+                    handleInputChange('bedrooms', value);
+                  }}
                 >
                   <SelectTrigger className="h-10">
                     <SelectValue placeholder={language === "en" ? "Any" : "Semua"} />
@@ -399,7 +423,10 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
                 </label>
                 <Select
                   value={searchData.bathrooms}
-                  onValueChange={(value) => handleInputChange('bathrooms', value)}
+                  onValueChange={(value) => {
+                    console.log("🚿 Bathrooms selected:", value);
+                    handleInputChange('bathrooms', value);
+                  }}
                 >
                   <SelectTrigger className="h-10">
                     <SelectValue placeholder={language === "en" ? "Any" : "Semua"} />
@@ -423,7 +450,10 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
                   type="checkbox"
                   id="has3D"
                   checked={searchData.has3D}
-                  onChange={(e) => handleInputChange('has3D', e.target.checked)}
+                  onChange={(e) => {
+                    console.log("🏢 3D Tour selected:", e.target.checked);
+                    handleInputChange('has3D', e.target.checked);
+                  }}
                   className="rounded"
                 />
                 <label htmlFor="has3D" className="text-sm font-medium">
