@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,8 +12,10 @@ interface SearchData {
   query: string;
   propertyType: string;
   location: string;
+  priceRange: string;
   bedrooms: string;
   bathrooms: string;
+  furnishing: string;
   has3D: boolean;
 }
 
@@ -29,8 +30,10 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
     query: "",
     propertyType: "",
     location: "",
+    priceRange: "",
     bedrooms: "",
     bathrooms: "",
+    furnishing: "",
     has3D: false
   });
   
@@ -105,6 +108,7 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
   };
 
   const handleSearch = () => {
+    console.log("🔍 ENHANCED SEARCH PANEL - Sending search data:", searchData);
     onSearch(searchData);
     if (isMobile) {
       setShowFilters(false);
@@ -120,8 +124,10 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
       query: searchData.query,
       propertyType: "",
       location: "",
+      priceRange: "",
       bedrooms: "",
       bathrooms: "",
+      furnishing: "",
       has3D: false
     });
   };
@@ -135,11 +141,24 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
   ];
 
   const locations = [
-    { value: "jakarta", label: "Jakarta" },
-    { value: "surabaya", label: "Surabaya" },
-    { value: "bandung", label: "Bandung" },
-    { value: "medan", label: "Medan" },
-    { value: "bali", label: "Bali" }
+    { value: "DKI Jakarta", label: "DKI Jakarta" },
+    { value: "West Java", label: "West Java" },
+    { value: "East Java", label: "East Java" },
+    { value: "Central Java", label: "Central Java" },
+    { value: "Bali", label: "Bali" },
+    { value: "North Sumatra", label: "North Sumatra" }
+  ];
+
+  const priceRanges = [
+    { value: "0-1b", label: language === "en" ? "Under Rp 1B" : "Di bawah Rp 1M" },
+    { value: "1b-5b", label: language === "en" ? "Rp 1B - 5B" : "Rp 1M - 5M" },
+    { value: "5b+", label: language === "en" ? "Rp 5B+" : "Rp 5M+" }
+  ];
+
+  const furnishingOptions = [
+    { value: "furnished", label: language === "en" ? "Furnished" : "Berperabotan" },
+    { value: "unfurnished", label: language === "en" ? "Unfurnished" : "Tidak Berperabotan" },
+    { value: "partial", label: language === "en" ? "Partially Furnished" : "Sebagian Berperabotan" }
   ];
 
   const bedroomOptions = ["1", "2", "3", "4", "5+"];
@@ -204,8 +223,14 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
               {searchData.location && (
                 <Badge variant="secondary" className="flex items-center gap-1">
                   <MapPin className="h-3 w-3" />
-                  {locations.find(l => l.value === searchData.location)?.label}
+                  {locations.find(l => l.value === searchData.location)?.label || searchData.location}
                   <X className="h-3 w-3 cursor-pointer" onClick={() => clearFilter('location')} />
+                </Badge>
+              )}
+              {searchData.priceRange && (
+                <Badge variant="secondary" className="flex items-center gap-1">
+                  {priceRanges.find(p => p.value === searchData.priceRange)?.label}
+                  <X className="h-3 w-3 cursor-pointer" onClick={() => clearFilter('priceRange')} />
                 </Badge>
               )}
               {searchData.bedrooms && (
@@ -218,6 +243,12 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
                 <Badge variant="secondary" className="flex items-center gap-1">
                   {searchData.bathrooms} {language === "en" ? "Bath" : "KM"}
                   <X className="h-3 w-3 cursor-pointer" onClick={() => clearFilter('bathrooms')} />
+                </Badge>
+              )}
+              {searchData.furnishing && (
+                <Badge variant="secondary" className="flex items-center gap-1">
+                  {furnishingOptions.find(f => f.value === searchData.furnishing)?.label}
+                  <X className="h-3 w-3 cursor-pointer" onClick={() => clearFilter('furnishing')} />
                 </Badge>
               )}
               {searchData.has3D && (
@@ -288,6 +319,50 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
                     {locations.map((location) => (
                       <SelectItem key={location.value} value={location.value}>
                         {location.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Price Range */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium">
+                  {language === "en" ? "Price Range" : "Range Harga"}
+                </label>
+                <Select
+                  value={searchData.priceRange}
+                  onValueChange={(value) => handleInputChange('priceRange', value)}
+                >
+                  <SelectTrigger className="h-10">
+                    <SelectValue placeholder={language === "en" ? "Any price" : "Semua harga"} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {priceRanges.map((range) => (
+                      <SelectItem key={range.value} value={range.value}>
+                        {range.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Furnishing */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium">
+                  {language === "en" ? "Furnishing" : "Perabotan"}
+                </label>
+                <Select
+                  value={searchData.furnishing}
+                  onValueChange={(value) => handleInputChange('furnishing', value)}
+                >
+                  <SelectTrigger className="h-10">
+                    <SelectValue placeholder={language === "en" ? "Any" : "Semua"} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {furnishingOptions.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
                       </SelectItem>
                     ))}
                   </SelectContent>

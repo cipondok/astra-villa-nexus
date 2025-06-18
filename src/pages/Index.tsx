@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
@@ -220,7 +219,7 @@ const Index = () => {
     }
   };
 
-  // Handle search from search panel - simplified type
+  // Handle search from search panel - fix field mapping
   const handleSearch = (searchData: Record<string, any>) => {
     console.log("🚀 MANUAL SEARCH triggered:", searchData);
     setHasSearched(true);
@@ -229,21 +228,19 @@ const Index = () => {
       trackInteraction('search', {
         searchQuery: searchData.query,
         propertyType: searchData.propertyType,
-        state: searchData.state,
-        city: searchData.city,
+        location: searchData.location,
         bedrooms: searchData.bedrooms,
         bathrooms: searchData.bathrooms,
-        furnishing: searchData.furnishing,
-        priceRange: searchData.priceRange,
         has3D: searchData.has3D,
       });
     }
     
-    // Convert to BasicSearchParams
+    // Convert to BasicSearchParams with proper field mapping
     const basicSearchData: BasicSearchParams = {
       query: searchData.query,
-      state: searchData.state,
-      city: searchData.city,
+      // Map location to both state and city for broader search
+      state: searchData.location || searchData.state,
+      city: searchData.location || searchData.city,
       propertyType: searchData.propertyType,
       priceRange: searchData.priceRange,
       bedrooms: searchData.bedrooms,
@@ -252,6 +249,7 @@ const Index = () => {
       has3D: searchData.has3D,
     };
     
+    console.log("🔄 CONVERTED search data:", basicSearchData);
     performSearch(basicSearchData);
   };
 
