@@ -108,7 +108,7 @@ const Index = () => {
     }
   };
 
-  // Main search function with simplified parameters
+  // Main search function with simplified parameters and explicit typing
   const performSearch = async (searchData: BasicSearchParams) => {
     if (searchInProgressRef.current) {
       console.log("🔍 SEARCH BLOCKED - Search already in progress");
@@ -128,76 +128,88 @@ const Index = () => {
     setIsSearching(true);
     
     try {
-      let query = supabase
+      // Build the base query with explicit typing
+      const baseQuery = supabase
         .from('properties')
         .select('*')
         .eq('status', 'approved');
 
-      // Apply filters based on search data
-      if (searchData.query && searchData.query.trim()) {
+      // Apply filters step by step to avoid deep type nesting
+      let finalQuery = baseQuery;
+
+      // Text search filter
+      if (searchData.query?.trim()) {
         const searchTerm = searchData.query.trim().toLowerCase();
-        query = query.or(`title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%,location.ilike.%${searchTerm}%`);
+        finalQuery = finalQuery.or(`title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%,location.ilike.%${searchTerm}%`);
       }
 
-      if (searchData.propertyType && searchData.propertyType.trim()) {
-        query = query.eq('property_type', searchData.propertyType);
+      // Property type filter
+      if (searchData.propertyType?.trim()) {
+        finalQuery = finalQuery.eq('property_type', searchData.propertyType);
       }
 
-      if (searchData.state && searchData.state.trim()) {
-        query = query.ilike('state', `%${searchData.state}%`);
+      // Location filters
+      if (searchData.state?.trim()) {
+        finalQuery = finalQuery.ilike('state', `%${searchData.state}%`);
       }
 
-      if (searchData.city && searchData.city.trim()) {
-        query = query.ilike('city', `%${searchData.city}%`);
+      if (searchData.city?.trim()) {
+        finalQuery = finalQuery.ilike('city', `%${searchData.city}%`);
       }
 
-      if (searchData.bedrooms && searchData.bedrooms.trim()) {
+      // Bedroom filter
+      if (searchData.bedrooms?.trim()) {
         const bedroomValue = searchData.bedrooms.replace('+', '');
         const bedroomCount = parseInt(bedroomValue);
         
         if (!isNaN(bedroomCount)) {
           if (searchData.bedrooms.includes('+')) {
-            query = query.gte('bedrooms', bedroomCount);
+            finalQuery = finalQuery.gte('bedrooms', bedroomCount);
           } else {
-            query = query.eq('bedrooms', bedroomCount);
+            finalQuery = finalQuery.eq('bedrooms', bedroomCount);
           }
         }
       }
 
-      if (searchData.bathrooms && searchData.bathrooms.trim()) {
+      // Bathroom filter
+      if (searchData.bathrooms?.trim()) {
         const bathroomValue = searchData.bathrooms.replace('+', '');
         const bathroomCount = parseInt(bathroomValue);
         
         if (!isNaN(bathroomCount)) {
           if (searchData.bathrooms.includes('+')) {
-            query = query.gte('bathrooms', bathroomCount);
+            finalQuery = finalQuery.gte('bathrooms', bathroomCount);
           } else {
-            query = query.eq('bathrooms', bathroomCount);
+            finalQuery = finalQuery.eq('bathrooms', bathroomCount);
           }
         }
       }
 
-      if (searchData.furnishing && searchData.furnishing.trim()) {
-        query = query.eq('furnishing', searchData.furnishing);
+      // Furnishing filter
+      if (searchData.furnishing?.trim()) {
+        finalQuery = finalQuery.eq('furnishing', searchData.furnishing);
       }
 
-      if (searchData.priceRange && searchData.priceRange.trim()) {
+      // Price range filter
+      if (searchData.priceRange?.trim()) {
         const priceRange = searchData.priceRange;
         
         if (priceRange === '0-1b') {
-          query = query.lt('price', 1000000000);
+          finalQuery = finalQuery.lt('price', 1000000000);
         } else if (priceRange === '1b-5b') {
-          query = query.gte('price', 1000000000).lt('price', 5000000000);
+          finalQuery = finalQuery.gte('price', 1000000000).lt('price', 5000000000);
         } else if (priceRange === '5b+') {
-          query = query.gte('price', 5000000000);
+          finalQuery = finalQuery.gte('price', 5000000000);
         }
       }
 
+      // 3D filter
       if (searchData.has3D) {
-        query = query.or('three_d_model_url.not.is.null,virtual_tour_url.not.is.null');
+        finalQuery = finalQuery.or('three_d_model_url.not.is.null,virtual_tour_url.not.is.null');
       }
 
-      const { data: properties, error } = await query
+      // Execute the final query
+      const { data: properties, error } = await finalQuery
         .order('created_at', { ascending: false })
         .limit(50);
 
