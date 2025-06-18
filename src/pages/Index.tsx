@@ -15,21 +15,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useUserTracking } from "@/hooks/useUserTracking";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/contexts/LanguageContext";
-
-// Simple interface to avoid type complexity
-interface SimpleSearchData {
-  query?: string;
-  state?: string;
-  city?: string;
-  location?: string;
-  propertyType?: string;
-  priceRange?: string;
-  bedrooms?: string;
-  bathrooms?: string;
-  furnishing?: string;
-  amenities?: string[];
-  has3D?: boolean;
-}
+import { SearchData } from "@/types/search";
 
 const Index = () => {
   const [authModalOpen, setAuthModalOpen] = useState(false);
@@ -115,8 +101,8 @@ const Index = () => {
     navigate('/properties');
   };
 
-  // Simplified search function with explicit typing
-  const performSearch = async (searchData: SimpleSearchData): Promise<void> => {
+  // Simplified search function
+  const performSearch = async (searchData: SearchData) => {
     if (searchInProgressRef.current) {
       console.log("🔍 SEARCH BLOCKED - Search already in progress");
       return;
@@ -253,7 +239,7 @@ const Index = () => {
   };
 
   // Handle search from main search panel
-  const handleSearch = (searchData: SimpleSearchData): void => {
+  const handleSearch = (searchData: SearchData) => {
     console.log("🚀 MANUAL SEARCH triggered:", searchData);
     setHasSearched(true);
     
@@ -277,7 +263,7 @@ const Index = () => {
   };
 
   // Handle live search from main search panel
-  const handleLiveSearch = (searchTerm: string): void => {
+  const handleLiveSearch = (searchTerm: string) => {
     console.log("⚡ LIVE SEARCH triggered:", searchTerm);
     
     if (!searchTerm || searchTerm.trim() === '') {
@@ -292,8 +278,7 @@ const Index = () => {
 
     if (searchTerm.length >= 2) {
       setHasSearched(true);
-      const simpleSearchData: SimpleSearchData = { query: searchTerm };
-      performSearch(simpleSearchData);
+      performSearch({ query: searchTerm });
     }
   };
 
