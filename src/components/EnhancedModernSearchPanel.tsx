@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,6 +7,8 @@ import { Search, SlidersHorizontal, X, Home, Building, MapPin } from "lucide-rea
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useDebounce } from "@/hooks/useDebounce";
+import SearchSuggestions from "@/components/search/SearchSuggestions";
 
 interface SearchData {
   query: string;
@@ -39,21 +40,28 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
   });
   
   const [showFilters, setShowFilters] = useState(false);
+  const [showSuggestions, setShowSuggestions] = useState(false);
   const [activeFilters, setActiveFilters] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
   const isMobile = useIsMobile();
+
+  // Debounce search query for suggestions
+  const debouncedQuery = useDebounce(searchData.query, 300);
 
   // Enhanced click outside handler
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
         setShowFilters(false);
+        setShowSuggestions(false);
       }
     };
 
     const handleEscapeKey = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         setShowFilters(false);
+        setShowSuggestions(false);
       }
     };
 
@@ -74,9 +82,15 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
 
   // Auto-close filters on route change or page refresh
   useEffect(() => {
-    const handleBeforeUnload = () => setShowFilters(false);
+    const handleBeforeUnload = () => {
+      setShowFilters(false);
+      setShowSuggestions(false);
+    };
     const handleVisibilityChange = () => {
-      if (document.hidden) setShowFilters(false);
+      if (document.hidden) {
+        setShowFilters(false);
+        setShowSuggestions(false);
+      }
     };
 
     window.addEventListener('beforeunload', handleBeforeUnload);
@@ -92,34 +106,16 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
   useEffect(() => {
     let count = 0;
     
-    if (searchData.propertyType && searchData.propertyType.trim() !== "") {
-      console.log("✅ Property Type selected:", searchData.propertyType);
-      count++;
-    }
-    if (searchData.location && searchData.location.trim() !== "") {
-      console.log("✅ Location selected:", searchData.location);
-      count++;
-    }
-    if (searchData.priceRange && searchData.priceRange.trim() !== "") {
-      console.log("✅ Price Range selected:", searchData.priceRange);
-      count++;
-    }
-    if (searchData.bedrooms && searchData.bedrooms.trim() !== "") {
-      console.log("✅ Bedrooms selected:", searchData.bedrooms);
-      count++;
-    }
-    if (searchData.bathrooms && searchData.bathrooms.trim() !== "") {
-      console.log("✅ Bathrooms selected:", searchData.bathrooms);
-      count++;
-    }
-    if (searchData.furnishing && searchData.furnishing.trim() !== "") {
-      console.log("✅ Furnishing selected:", searchData.furnishing);
-      count++;
-    }
-    if (searchData.has3D === true) {
-      console.log("✅ 3D Tour selected:", searchData.has3D);
-      count++;
-    }
+    // Check each filter and count non-empty values
+    Object.entries(searchData).forEach(([key, value]) => {
+      if (key === 'query') return; // Don't count query as a filter
+      
+      if (key === 'has3D') {
+        if (value === true) count++;
+      } else {
+        if (value && String(value).trim() !== "") count++;
+      }
+    });
 
     console.log("🔢 ACTIVE FILTERS COUNT:", count, "Filter data:", searchData);
     setActiveFilters(count);
@@ -127,20 +123,36 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
 
   const handleInputChange = (field: keyof SearchData, value: string | boolean) => {
     console.log(`🔄 FILTER CHANGE - ${field}:`, value);
-    const newSearchData = { ...searchData, [field]: value };
-    setSearchData(newSearchData);
     
-    // NO LIVE SEARCH - Query changes only update state
-    if (field === 'query') {
-      console.log("📝 Query updated - no automatic search");
+    // Update search data immediately
+    setSearchData(prev => {
+      const newData = { ...prev, [field]: value };
+      console.log("📊 NEW SEARCH DATA:", newData);
+      return newData;
+    });
+    
+    // Handle query input for suggestions
+    if (field === 'query' && typeof value === 'string') {
+      setShowSuggestions(value.length >= 2);
+      console.log("📝 Query updated - showing suggestions:", value.length >= 2);
     }
   };
 
   const handleSearch = () => {
     console.log("🔍 ENHANCED SEARCH PANEL - Sending search data:", searchData);
+    setShowSuggestions(false);
     onSearch(searchData);
     if (isMobile) {
       setShowFilters(false);
+    }
+  };
+
+  const handleSuggestionSelect = (suggestion: any) => {
+    console.log("💡 SUGGESTION SELECTED:", suggestion);
+    setSearchData(prev => ({ ...prev, query: suggestion.value }));
+    setShowSuggestions(false);
+    if (searchInputRef.current) {
+      searchInputRef.current.blur();
     }
   };
 
@@ -163,6 +175,7 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
     });
   };
 
+  // ... keep existing code (propertyTypes, locations, priceRanges, furnishingOptions, bedroomOptions, bathroomOptions arrays)
   const propertyTypes = [
     { value: "apartment", label: language === "en" ? "Apartment" : "Apartemen" },
     { value: "house", label: language === "en" ? "House" : "Rumah" },
@@ -206,16 +219,26 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
       )}
 
       {/* Main Search Bar */}
-      <Card className="bg-white/95 backdrop-blur-sm shadow-xl border-0 overflow-hidden">
+      <Card className="bg-white/95 backdrop-blur-sm shadow-xl border-0 overflow-visible">
         <CardContent className="p-3 sm:p-4 lg:p-6">
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4 z-10" />
               <Input
+                ref={searchInputRef}
                 placeholder={language === "en" ? "Search properties, locations..." : "Cari properti, lokasi..."}
                 value={searchData.query}
                 onChange={(e) => handleInputChange('query', e.target.value)}
+                onFocus={() => setShowSuggestions(searchData.query.length >= 2)}
                 className="pl-10 h-12 border-0 bg-gray-50 focus:bg-white text-base"
+              />
+              
+              {/* Search Suggestions */}
+              <SearchSuggestions
+                query={debouncedQuery}
+                onSelect={handleSuggestionSelect}
+                isVisible={showSuggestions}
+                language={language}
               />
             </div>
 
