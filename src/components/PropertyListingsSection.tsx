@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import SearchLoadingAnimation from "@/components/SearchLoadingAnimation";
 import PropertyViewer3D from "@/components/PropertyViewer3D";
 import CompactPropertyCard from "@/components/property/CompactPropertyCard";
-import ModernSearchFilters from "@/components/search/ModernSearchFilters";
 
 interface PropertyListingsSectionProps {
   language: "en" | "id";
@@ -97,20 +96,6 @@ const PropertyListingsSection = ({
     setPropertyFor3DView(property);
   }
 
-  const handleSearchWithFilters = (searchData: any) => {
-    console.log("🔍 SEARCH WITH FILTERS:", searchData);
-    if (onSearch) {
-      onSearch(searchData);
-    }
-  };
-
-  const handleLiveSearchWithFilters = (searchTerm: string) => {
-    console.log("⚡ LIVE SEARCH WITH FILTERS:", searchTerm);
-    if (onLiveSearch) {
-      onLiveSearch(searchTerm);
-    }
-  };
-
   const sectionData = useMemo(() => {
     const sectionTitle = hasSearched ? currentText.searchResults : currentText.title;
     const sectionSubtitle = hasSearched && searchResults.length > 0
@@ -140,17 +125,6 @@ const PropertyListingsSection = ({
     <>
       <section className="py-4">
         <div className="container mx-auto px-4">
-          {/* Modern Search Filters */}
-          {showSearchFilters && (
-            <div className="mb-8">
-              <ModernSearchFilters
-                language={language}
-                onSearch={handleSearchWithFilters}
-                onLiveSearch={handleLiveSearchWithFilters}
-              />
-            </div>
-          )}
-
           {!hideTitle && (
             <div className="text-center mb-8">
               <h2 className="text-2xl lg:text-3xl font-bold mb-2">{sectionData.sectionTitle}</h2>

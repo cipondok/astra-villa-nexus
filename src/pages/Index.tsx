@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
@@ -14,7 +15,6 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useUserTracking } from "@/hooks/useUserTracking";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/contexts/LanguageContext";
-import type { SearchData } from "@/types/search";
 
 const Index = () => {
   const [authModalOpen, setAuthModalOpen] = useState(false);
@@ -100,8 +100,8 @@ const Index = () => {
     navigate('/properties');
   };
 
-  // Simplified performSearch function without complex dependencies
-  const performSearch = async (searchData: SearchData): Promise<void> => {
+  // Simple search function
+  const performSearch = async (searchData: any) => {
     if (searchInProgressRef.current) {
       console.log("🔍 SEARCH BLOCKED - Search already in progress");
       return;
@@ -237,8 +237,8 @@ const Index = () => {
     }
   };
 
-  // Simplified handleSearch without complex useCallback dependencies
-  const handleSearch = (searchData: SearchData): void => {
+  // Handle search from main search panel
+  const handleSearch = (searchData: any) => {
     console.log("🚀 MANUAL SEARCH triggered:", searchData);
     setHasSearched(true);
     
@@ -261,8 +261,8 @@ const Index = () => {
     performSearch(searchData);
   };
 
-  // Simplified handleLiveSearch without complex useCallback dependencies
-  const handleLiveSearch = (searchTerm: string): void => {
+  // Handle live search from main search panel
+  const handleLiveSearch = (searchTerm: string) => {
     console.log("⚡ LIVE SEARCH triggered:", searchTerm);
     
     if (!searchTerm || searchTerm.trim() === '') {
@@ -319,7 +319,7 @@ const Index = () => {
                     isSearching={isSearching}
                     hasSearched={hasSearched}
                     fallbackResults={featuredProperties}
-                    showSearchFilters={true}
+                    showSearchFilters={false}
                     onSearch={handleSearch}
                     onLiveSearch={handleLiveSearch}
                   />
@@ -339,7 +339,7 @@ const Index = () => {
                 isSearching={isSearching}
                 hasSearched={hasSearched}
                 fallbackResults={featuredProperties}
-                showSearchFilters={true}
+                showSearchFilters={false}
                 onSearch={handleSearch}
                 onLiveSearch={handleLiveSearch}
               />
