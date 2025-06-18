@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -175,24 +176,18 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
     };
   }, []);
 
-  // Count active filters - Fixed to properly count non-empty values and 3D checkbox
+  // Count active filters - Only count essential filters
   useEffect(() => {
     let count = 0;
     
-    // Check each filter and count non-empty values
-    Object.entries(searchData).forEach(([key, value]) => {
-      if (key === 'query' || key === 'listingType') return; // Don't count query as a filter
-      
-      if (key === 'has3D') {
-        if (value === true) count++;
-      } else {
-        if (value && String(value).trim() !== "") count++;
-      }
-    });
+    if (searchData.state && searchData.state.trim() !== "") count++;
+    if (searchData.propertyType && searchData.propertyType.trim() !== "") count++;
+    if (searchData.bedrooms && searchData.bedrooms.trim() !== "") count++;
+    if (searchData.bathrooms && searchData.bathrooms.trim() !== "") count++;
 
     console.log("🔢 ACTIVE FILTERS COUNT:", count, "Filter data:", searchData);
     setActiveFilters(count);
-  }, [searchData]);
+  }, [searchData.state, searchData.propertyType, searchData.bedrooms, searchData.bathrooms]);
 
   const handleInputChange = (field: keyof SearchData, value: string | boolean) => {
     console.log(`🔄 FILTER CHANGE - ${field}:`, value);
@@ -269,18 +264,6 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
     { value: "townhouse", label: language === "en" ? "Townhouse" : "Ruko" }
   ];
 
-  const priceRanges = [
-    { value: "0-1b", label: language === "en" ? "Under Rp 1B" : "Di bawah Rp 1M" },
-    { value: "1b-5b", label: language === "en" ? "Rp 1B - 5B" : "Rp 1M - 5M" },
-    { value: "5b+", label: language === "en" ? "Rp 5B+" : "Rp 5M+" }
-  ];
-
-  const furnishingOptions = [
-    { value: "furnished", label: language === "en" ? "Furnished" : "Berperabotan" },
-    { value: "unfurnished", label: language === "en" ? "Unfurnished" : "Tidak Berperabotan" },
-    { value: "partial", label: language === "en" ? "Partially Furnished" : "Sebagian Berperabotan" }
-  ];
-
   const bedroomOptions = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
   const bathroomOptions = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
 
@@ -343,14 +326,13 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
               <Button
                 variant={showFilters ? "default" : "outline"}
                 onClick={() => setShowFilters(!showFilters)}
-                className={`h-14 px-6 relative rounded-2xl font-semibold transition-all duration-200 ${
+                className={`h-14 px-4 relative rounded-2xl font-semibold transition-all duration-200 ${
                   showFilters 
                     ? 'bg-ios-blue hover:bg-ios-blue/90 text-white shadow-lg' 
                     : 'glass-ios border-2 border-ios-blue/20 text-ios-blue hover:bg-ios-blue/10'
                 }`}
               >
-                <SlidersHorizontal className="h-5 w-5 mr-2" />
-                {language === "en" ? "Filters" : "Filter"}
+                <SlidersHorizontal className="h-5 w-5" />
                 {activeFilters > 0 && (
                   <Badge variant="secondary" className="ml-2 bg-ios-red text-white rounded-full min-w-[20px] h-5">
                     {activeFilters}
@@ -368,148 +350,9 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
             </div>
           </div>
 
-          {/* Location Selection Row - iPhone Style */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-            {/* State Selection */}
-            <div className="space-y-3">
-              <label className="text-sm font-semibold flex items-center gap-2 text-gray-700">
-                <MapPin className="h-4 w-4 text-ios-blue" />
-                {language === "en" ? "State" : "Provinsi"}
-              </label>
-              <Select
-                value={searchData.state}
-                onValueChange={(value) => handleInputChange('state', value)}
-              >
-                <SelectTrigger className="h-12 glass-ios rounded-xl border-0 font-medium">
-                  <SelectValue placeholder={language === "en" ? "Select state" : "Pilih provinsi"} />
-                </SelectTrigger>
-                <SelectContent className="dropdown-ios rounded-xl">
-                  {indonesianProvinces.map((province) => (
-                    <SelectItem key={province} value={province} className="rounded-lg">
-                      {province}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* City Selection */}
-            <div className="space-y-3">
-              <label className="text-sm font-semibold text-gray-700">
-                {language === "en" ? "City" : "Kota"}
-              </label>
-              <Select
-                value={searchData.city}
-                onValueChange={(value) => handleInputChange('city', value)}
-                disabled={!searchData.state}
-              >
-                <SelectTrigger className="h-12 glass-ios rounded-xl border-0 font-medium disabled:opacity-50">
-                  <SelectValue placeholder={language === "en" ? "Select city" : "Pilih kota"} />
-                </SelectTrigger>
-                <SelectContent className="dropdown-ios rounded-xl">
-                  {availableCities.map((city) => (
-                    <SelectItem key={city} value={city} className="rounded-lg">
-                      {city}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Area Selection */}
-            <div className="space-y-3">
-              <label className="text-sm font-semibold text-gray-700">
-                {language === "en" ? "Area" : "Area"}
-              </label>
-              <Select
-                value={searchData.area}
-                onValueChange={(value) => handleInputChange('area', value)}
-                disabled={!searchData.city}
-              >
-                <SelectTrigger className="h-12 glass-ios rounded-xl border-0 font-medium disabled:opacity-50">
-                  <SelectValue placeholder={language === "en" ? "Select area" : "Pilih area"} />
-                </SelectTrigger>
-                <SelectContent className="dropdown-ios rounded-xl">
-                  {availableAreas.map((area) => (
-                    <SelectItem key={area} value={area} className="rounded-lg">
-                      {area}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          {/* Property Type, Bedrooms, Bathrooms Row - iPhone Style */}
-          <div className="grid grid-cols-1 sm:grid-cols-12 gap-4">
-            <div className="sm:col-span-6 space-y-3">
-              <label className="text-sm font-semibold flex items-center gap-2 text-gray-700">
-                <Home className="h-4 w-4 text-ios-blue" />
-                {language === "en" ? "Property Type" : "Tipe Properti"}
-              </label>
-              <Select
-                value={searchData.propertyType}
-                onValueChange={(value) => handleInputChange('propertyType', value)}
-              >
-                <SelectTrigger className="h-12 glass-ios rounded-xl border-0 font-medium">
-                  <SelectValue placeholder={language === "en" ? "Any type" : "Semua tipe"} />
-                </SelectTrigger>
-                <SelectContent className="dropdown-ios rounded-xl">
-                  {propertyTypes.map((type) => (
-                    <SelectItem key={type.value} value={type.value} className="rounded-lg">
-                      {type.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="sm:col-span-3 space-y-3">
-              <label className="text-sm font-semibold flex items-center gap-2 text-gray-700">
-                <Building className="h-4 w-4 text-ios-blue" />
-              </label>
-              <Select
-                value={searchData.bedrooms}
-                onValueChange={(value) => handleInputChange('bedrooms', value)}
-              >
-                <SelectTrigger className="h-12 glass-ios rounded-xl border-0 font-medium">
-                  <SelectValue placeholder={language === "en" ? "Bedrooms" : "Kamar Tidur"} />
-                </SelectTrigger>
-                <SelectContent className="dropdown-ios rounded-xl">
-                  {bedroomOptions.map((option) => (
-                    <SelectItem key={option} value={option} className="rounded-lg">
-                      {option}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="sm:col-span-3 space-y-3">
-              <label className="text-sm font-semibold flex items-center gap-2 text-gray-700">
-                <Bath className="h-4 w-4 text-ios-blue" />
-              </label>
-              <Select
-                value={searchData.bathrooms}
-                onValueChange={(value) => handleInputChange('bathrooms', value)}
-              >
-                <SelectTrigger className="h-12 glass-ios rounded-xl border-0 font-medium">
-                  <SelectValue placeholder={language === "en" ? "Bathrooms" : "Kamar Mandi"} />
-                </SelectTrigger>
-                <SelectContent className="dropdown-ios rounded-xl">
-                  {bathroomOptions.map((option) => (
-                    <SelectItem key={option} value={option} className="rounded-lg">
-                      {option}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
           {/* Active Filters Display - iPhone Style */}
           {activeFilters > 0 && (
-            <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-gray-200">
+            <div className="flex flex-wrap gap-2 pt-4 border-t border-gray-200">
               {searchData.propertyType && (
                 <Badge variant="secondary" className="flex items-center gap-2 px-3 py-1 bg-ios-blue/10 text-ios-blue rounded-full border border-ios-blue/20">
                   <Home className="h-3 w-3" />
@@ -522,12 +365,6 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
                   <MapPin className="h-3 w-3" />
                   {searchData.area ? `${searchData.area}, ${searchData.city}` : searchData.city ? `${searchData.city}, ${searchData.state}` : searchData.state}
                   <X className="h-3 w-3 cursor-pointer hover:text-ios-red transition-colors" onClick={() => clearFilter('state')} />
-                </Badge>
-              )}
-              {searchData.priceRange && (
-                <Badge variant="secondary" className="flex items-center gap-2 px-3 py-1 bg-ios-orange/10 text-ios-orange rounded-full border border-ios-orange/20">
-                  {priceRanges.find(p => p.value === searchData.priceRange)?.label}
-                  <X className="h-3 w-3 cursor-pointer hover:text-ios-red transition-colors" onClick={() => clearFilter('priceRange')} />
                 </Badge>
               )}
               {searchData.bedrooms && (
@@ -544,18 +381,6 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
                   <X className="h-3 w-3 cursor-pointer hover:text-ios-red transition-colors" onClick={() => clearFilter('bathrooms')} />
                 </Badge>
               )}
-              {searchData.furnishing && (
-                <Badge variant="secondary" className="flex items-center gap-2 px-3 py-1 bg-ios-indigo/10 text-ios-indigo rounded-full border border-ios-indigo/20">
-                  {furnishingOptions.find(f => f.value === searchData.furnishing)?.label}
-                  <X className="h-3 w-3 cursor-pointer hover:text-ios-red transition-colors" onClick={() => clearFilter('furnishing')} />
-                </Badge>
-              )}
-              {searchData.has3D && (
-                <Badge variant="secondary" className="flex items-center gap-2 px-3 py-1 bg-ios-cyan/10 text-ios-cyan rounded-full border border-ios-cyan/20">
-                  {language === "en" ? "3D View" : "Tampilan 3D"}
-                  <X className="h-3 w-3 cursor-pointer hover:text-ios-red transition-colors" onClick={() => clearFilter('has3D')} />
-                </Badge>
-              )}
               <Button variant="ghost" size="sm" onClick={clearAllFilters} className="h-7 text-xs text-ios-red hover:bg-ios-red/10 rounded-full">
                 {language === "en" ? "Clear all" : "Hapus semua"}
               </Button>
@@ -564,7 +389,7 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
         </CardContent>
       </Card>
 
-      {/* Advanced Filters Panel - iPhone Style */}
+      {/* Compact Filters Panel - iPhone Style */}
       {showFilters && (
         <Card className={`mt-4 card-ios shadow-2xl border-0 animate-fade-in rounded-3xl ${isMobile ? 'fixed inset-x-2 top-32 z-50 max-h-[70vh] overflow-y-auto' : ''}`}>
           <CardContent className="p-6 sm:p-8">
@@ -577,45 +402,138 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
               </div>
             )}
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              {/* Price Range */}
+            {/* Location Selection - iPhone Style */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+              {/* State Selection */}
               <div className="space-y-3">
-                <label className="text-sm font-semibold text-gray-700">
-                  {language === "en" ? "Price Range" : "Range Harga"}
+                <label className="text-sm font-semibold flex items-center gap-2 text-gray-700">
+                  <MapPin className="h-4 w-4 text-ios-blue" />
+                  {language === "en" ? "State" : "Provinsi"}
                 </label>
                 <Select
-                  value={searchData.priceRange}
-                  onValueChange={(value) => handleInputChange('priceRange', value)}
+                  value={searchData.state}
+                  onValueChange={(value) => handleInputChange('state', value)}
                 >
                   <SelectTrigger className="h-12 glass-ios rounded-xl border-0 font-medium">
-                    <SelectValue placeholder={language === "en" ? "Any price" : "Semua harga"} />
+                    <SelectValue placeholder={language === "en" ? "Select state" : "Pilih provinsi"} />
                   </SelectTrigger>
-                  <SelectContent className="dropdown-ios rounded-xl">
-                    {priceRanges.map((range) => (
-                      <SelectItem key={range.value} value={range.value} className="rounded-lg">
-                        {range.label}
+                  <SelectContent className="dropdown-ios rounded-xl bg-white z-50">
+                    {indonesianProvinces.map((province) => (
+                      <SelectItem key={province} value={province} className="rounded-lg">
+                        {province}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
 
-              {/* Furnishing */}
+              {/* City Selection */}
               <div className="space-y-3">
                 <label className="text-sm font-semibold text-gray-700">
-                  {language === "en" ? "Furnishing" : "Perabotan"}
+                  {language === "en" ? "City" : "Kota"}
                 </label>
                 <Select
-                  value={searchData.furnishing}
-                  onValueChange={(value) => handleInputChange('furnishing', value)}
+                  value={searchData.city}
+                  onValueChange={(value) => handleInputChange('city', value)}
+                  disabled={!searchData.state}
+                >
+                  <SelectTrigger className="h-12 glass-ios rounded-xl border-0 font-medium disabled:opacity-50">
+                    <SelectValue placeholder={language === "en" ? "Select city" : "Pilih kota"} />
+                  </SelectTrigger>
+                  <SelectContent className="dropdown-ios rounded-xl bg-white z-50">
+                    {availableCities.map((city) => (
+                      <SelectItem key={city} value={city} className="rounded-lg">
+                        {city}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Area Selection */}
+              <div className="space-y-3">
+                <label className="text-sm font-semibold text-gray-700">
+                  {language === "en" ? "Area" : "Area"}
+                </label>
+                <Select
+                  value={searchData.area}
+                  onValueChange={(value) => handleInputChange('area', value)}
+                  disabled={!searchData.city}
+                >
+                  <SelectTrigger className="h-12 glass-ios rounded-xl border-0 font-medium disabled:opacity-50">
+                    <SelectValue placeholder={language === "en" ? "Select area" : "Pilih area"} />
+                  </SelectTrigger>
+                  <SelectContent className="dropdown-ios rounded-xl bg-white z-50">
+                    {availableAreas.map((area) => (
+                      <SelectItem key={area} value={area} className="rounded-lg">
+                        {area}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            {/* Property Type, Bedrooms, Bathrooms Row - iPhone Style */}
+            <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 mb-6">
+              <div className="sm:col-span-6 space-y-3">
+                <label className="text-sm font-semibold flex items-center gap-2 text-gray-700">
+                  <Home className="h-4 w-4 text-ios-blue" />
+                  {language === "en" ? "Property Type" : "Tipe Properti"}
+                </label>
+                <Select
+                  value={searchData.propertyType}
+                  onValueChange={(value) => handleInputChange('propertyType', value)}
                 >
                   <SelectTrigger className="h-12 glass-ios rounded-xl border-0 font-medium">
-                    <SelectValue placeholder={language === "en" ? "Any" : "Semua"} />
+                    <SelectValue placeholder={language === "en" ? "Any type" : "Semua tipe"} />
                   </SelectTrigger>
-                  <SelectContent className="dropdown-ios rounded-xl">
-                    {furnishingOptions.map((option) => (
-                      <SelectItem key={option.value} value={option.value} className="rounded-lg">
-                        {option.label}
+                  <SelectContent className="dropdown-ios rounded-xl bg-white z-50">
+                    {propertyTypes.map((type) => (
+                      <SelectItem key={type.value} value={type.value} className="rounded-lg">
+                        {type.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="sm:col-span-3 space-y-3">
+                <label className="text-sm font-semibold flex items-center gap-2 text-gray-700">
+                  <Building className="h-4 w-4 text-ios-blue" />
+                </label>
+                <Select
+                  value={searchData.bedrooms}
+                  onValueChange={(value) => handleInputChange('bedrooms', value)}
+                >
+                  <SelectTrigger className="h-12 glass-ios rounded-xl border-0 font-medium">
+                    <SelectValue placeholder={language === "en" ? "Bedrooms" : "Kamar Tidur"} />
+                  </SelectTrigger>
+                  <SelectContent className="dropdown-ios rounded-xl bg-white z-50">
+                    {bedroomOptions.map((option) => (
+                      <SelectItem key={option} value={option} className="rounded-lg">
+                        {option}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="sm:col-span-3 space-y-3">
+                <label className="text-sm font-semibold flex items-center gap-2 text-gray-700">
+                  <Bath className="h-4 w-4 text-ios-blue" />
+                </label>
+                <Select
+                  value={searchData.bathrooms}
+                  onValueChange={(value) => handleInputChange('bathrooms', value)}
+                >
+                  <SelectTrigger className="h-12 glass-ios rounded-xl border-0 font-medium">
+                    <SelectValue placeholder={language === "en" ? "Bathrooms" : "Kamar Mandi"} />
+                  </SelectTrigger>
+                  <SelectContent className="dropdown-ios rounded-xl bg-white z-50">
+                    {bathroomOptions.map((option) => (
+                      <SelectItem key={option} value={option} className="rounded-lg">
+                        {option}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -626,19 +544,6 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
             <Separator className="my-6 bg-gray-200" />
 
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-              <div className="flex items-center space-x-3">
-                <input
-                  type="checkbox"
-                  id="has3D"
-                  checked={searchData.has3D}
-                  onChange={(e) => handleInputChange('has3D', e.target.checked)}
-                  className="w-5 h-5 text-ios-blue bg-gray-100 border-gray-300 rounded focus:ring-ios-blue focus:ring-2"
-                />
-                <label htmlFor="has3D" className="text-sm font-semibold text-gray-700">
-                  {language === "en" ? "3D Virtual Tour Available" : "Tersedia Tur Virtual 3D"}
-                </label>
-              </div>
-
               <div className="flex gap-3">
                 <Button variant="outline" onClick={clearAllFilters} className="flex-1 sm:flex-none h-12 rounded-xl border-2 border-gray-300 font-semibold">
                   {language === "en" ? "Reset" : "Reset"}
