@@ -16,7 +16,8 @@ import { useUserTracking } from "@/hooks/useUserTracking";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/contexts/LanguageContext";
 
-interface SearchParams {
+// Simple interface to avoid type complexity
+interface BasicSearchParams {
   query?: string;
   state?: string;
   city?: string;
@@ -107,8 +108,8 @@ const Index = () => {
     }
   };
 
-  // Main search function
-  const performSearch = async (searchData: SearchParams) => {
+  // Main search function with simplified parameters
+  const performSearch = async (searchData: BasicSearchParams) => {
     if (searchInProgressRef.current) {
       console.log("🔍 SEARCH BLOCKED - Search already in progress");
       return;
@@ -217,8 +218,8 @@ const Index = () => {
     }
   };
 
-  // Handle search from search panel
-  const handleSearch = (searchData: any) => {
+  // Handle search from search panel - simplified type
+  const handleSearch = (searchData: Record<string, any>) => {
     console.log("🚀 MANUAL SEARCH triggered:", searchData);
     setHasSearched(true);
     
@@ -236,10 +237,23 @@ const Index = () => {
       });
     }
     
-    performSearch(searchData);
+    // Convert to BasicSearchParams
+    const basicSearchData: BasicSearchParams = {
+      query: searchData.query,
+      state: searchData.state,
+      city: searchData.city,
+      propertyType: searchData.propertyType,
+      priceRange: searchData.priceRange,
+      bedrooms: searchData.bedrooms,
+      bathrooms: searchData.bathrooms,
+      furnishing: searchData.furnishing,
+      has3D: searchData.has3D,
+    };
+    
+    performSearch(basicSearchData);
   };
 
-  // Handle live search from search panel
+  // Handle live search from search panel - simplified type
   const handleLiveSearch = (searchTerm: string) => {
     console.log("⚡ LIVE SEARCH triggered:", searchTerm);
     
