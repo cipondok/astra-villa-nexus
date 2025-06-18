@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Search, SlidersHorizontal, X, Home, Building, MapPin } from "lucide-react";
+import { Search, SlidersHorizontal, X, Home, Building, MapPin, Bath } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -260,7 +260,7 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
     });
   };
 
-  // ... keep existing code (propertyTypes, locations, priceRanges, furnishingOptions, bedroomOptions, bathroomOptions arrays)
+  // Updated options for bedrooms and bathrooms (1-10 only)
   const propertyTypes = [
     { value: "apartment", label: language === "en" ? "Apartment" : "Apartemen" },
     { value: "house", label: language === "en" ? "House" : "Rumah" },
@@ -281,8 +281,8 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
     { value: "partial", label: language === "en" ? "Partially Furnished" : "Sebagian Berperabotan" }
   ];
 
-  const bedroomOptions = ["1", "2", "3", "4", "5+"];
-  const bathroomOptions = ["1", "2", "3", "4+"];
+  const bedroomOptions = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
+  const bathroomOptions = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
 
   return (
     <div className="w-full max-w-6xl mx-auto" ref={containerRef}>
@@ -450,19 +450,18 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
             <div className="space-y-2">
               <label className="text-sm font-medium flex items-center gap-2">
                 <Building className="h-4 w-4" />
-                {language === "en" ? "Bedrooms" : "Kamar Tidur"}
               </label>
               <Select
                 value={searchData.bedrooms}
                 onValueChange={(value) => handleInputChange('bedrooms', value)}
               >
                 <SelectTrigger className="h-10">
-                  <SelectValue placeholder={language === "en" ? "Any" : "Semua"} />
+                  <SelectValue placeholder={language === "en" ? "Bedrooms" : "Kamar Tidur"} />
                 </SelectTrigger>
                 <SelectContent>
                   {bedroomOptions.map((option) => (
                     <SelectItem key={option} value={option}>
-                      {option} {language === "en" ? "Bedroom" : "Kamar"}
+                      {option}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -470,20 +469,20 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium">
-                {language === "en" ? "Bathrooms" : "Kamar Mandi"}
+              <label className="text-sm font-medium flex items-center gap-2">
+                <Bath className="h-4 w-4" />
               </label>
               <Select
                 value={searchData.bathrooms}
                 onValueChange={(value) => handleInputChange('bathrooms', value)}
               >
                 <SelectTrigger className="h-10">
-                  <SelectValue placeholder={language === "en" ? "Any" : "Semua"} />
+                  <SelectValue placeholder={language === "en" ? "Bathrooms" : "Kamar Mandi"} />
                 </SelectTrigger>
                 <SelectContent>
                   {bathroomOptions.map((option) => (
                     <SelectItem key={option} value={option}>
-                      {option} {language === "en" ? "Bathroom" : "Kamar Mandi"}
+                      {option}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -516,13 +515,15 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
               )}
               {searchData.bedrooms && (
                 <Badge variant="secondary" className="flex items-center gap-1">
-                  {searchData.bedrooms} {language === "en" ? "Bed" : "KT"}
+                  <Building className="h-3 w-3" />
+                  {searchData.bedrooms}
                   <X className="h-3 w-3 cursor-pointer" onClick={() => clearFilter('bedrooms')} />
                 </Badge>
               )}
               {searchData.bathrooms && (
                 <Badge variant="secondary" className="flex items-center gap-1">
-                  {searchData.bathrooms} {language === "en" ? "Bath" : "KM"}
+                  <Bath className="h-3 w-3" />
+                  {searchData.bathrooms}
                   <X className="h-3 w-3 cursor-pointer" onClick={() => clearFilter('bathrooms')} />
                 </Badge>
               )}
