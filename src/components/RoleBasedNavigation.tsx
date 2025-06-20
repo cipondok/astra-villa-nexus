@@ -1,6 +1,5 @@
-
 import { Button } from "@/components/ui/button";
-import { Sun, Moon, Globe, Menu, User, LogOut, Settings, Home } from "lucide-react";
+import { Sun, Moon, Globe, Menu, User, LogOut, Settings, Home, Wallet } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -56,7 +55,8 @@ const RoleBasedNavigation = ({
       myServices: "My Services",
       adminPanel: "Admin Panel",
       vendorDashboard: "Vendor Dashboard",
-      becomeVendor: "Become a Vendor"
+      becomeVendor: "Become a Vendor",
+      wallet: "Wallet"
     },
     id: {
       loginRegister: "Masuk / Daftar",
@@ -69,7 +69,8 @@ const RoleBasedNavigation = ({
       myServices: "Layanan Saya",
       adminPanel: "Panel Admin",
       vendorDashboard: "Dashboard Vendor",
-      becomeVendor: "Jadi Vendor"
+      becomeVendor: "Jadi Vendor",
+      wallet: "Dompet"
     }
   };
 
@@ -216,6 +217,10 @@ const RoleBasedNavigation = ({
                       <DropdownMenuItem onClick={() => navigate(getDashboardRoute())} className="text-foreground hover:bg-ios-blue/10">
                         {currentText.dashboard}
                       </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => navigate('/wallet')} className="text-foreground hover:bg-ios-blue/10">
+                        <Wallet className="h-4 w-4 mr-2" />
+                        {currentText.wallet}
+                      </DropdownMenuItem>
                       {getRoleSpecificMenuItems().map((item, index) => (
                         <DropdownMenuItem key={index} onClick={() => navigate(item.route)} className="text-foreground hover:bg-ios-blue/10">
                           {item.label}
@@ -311,6 +316,18 @@ const RoleBasedNavigation = ({
                     className="w-full justify-start"
                   >
                     {currentText.dashboard}
+                  </Button>
+                  
+                  <Button
+                    variant="ghost"
+                    onClick={() => {
+                      navigate('/wallet');
+                      setIsMenuOpen(false);
+                    }}
+                    className="w-full justify-start"
+                  >
+                    <Wallet className="h-4 w-4 mr-2" />
+                    {currentText.wallet}
                   </Button>
                   
                   {getRoleSpecificMenuItems().map((item, index) => (
