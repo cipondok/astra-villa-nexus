@@ -27,6 +27,7 @@ import NotFound from "./pages/NotFound";
 import WalletPage from "./pages/WalletPage";
 import { AuthProvider } from "./contexts/AuthContext";
 import { LanguageProvider } from "./contexts/LanguageContext";
+import { AlertProvider } from "./contexts/AlertContext";
 import { Web3ModalProvider } from "./components/wallet/Web3ModalProvider";
 import { WalletProvider } from "./contexts/WalletContext";
 import "./App.css";
@@ -41,34 +42,36 @@ function App() {
           <LanguageProvider>
             <AuthProvider>
               <WalletProvider>
-                <TooltipProvider>
-                  <Toaster />
-                  <BrowserRouter>
-                    <Routes>
-                      <Route path="/" element={<Index />} />
-                      <Route path="/dashboard" element={<Dashboard />} />
-                      <Route path="/dashboard/user" element={<UserDashboard />} />
-                      <Route path="/user-dashboard" element={<UserDashboardPage />} />
-                      <Route path="/dashboard/owner" element={<PropertyOwnerDashboard />} />
-                      <Route path="/dashboard/agent" element={<AgentDashboard />} />
-                      <Route path="/dashboard/vendor" element={<VendorDashboard />} />
-                      <Route path="/dashboard/admin" element={<AdminDashboard />} />
-                      <Route path="/vendor/register" element={<VendorRegistration />} />
-                      <Route path="/properties" element={<Properties />} />
-                      <Route path="/property/:id" element={<PropertyDetail />} />
-                      <Route path="/add-property" element={<AddProperty />} />
-                      <Route path="/buy" element={<Buy />} />
-                      <Route path="/rent" element={<Rent />} />
-                      <Route path="/new-projects" element={<NewProjects />} />
-                      <Route path="/pre-launching" element={<PreLaunching />} />
-                      <Route path="/about" element={<About />} />
-                      <Route path="/help" element={<Help />} />
-                      <Route path="/profile" element={<Profile />} />
-                      <Route path="/wallet" element={<WalletPage />} />
-                      <Route path="*" element={<NotFound />} />
-                    </Routes>
-                  </BrowserRouter>
-                </TooltipProvider>
+                <AlertProvider>
+                  <TooltipProvider>
+                    <Toaster />
+                    <BrowserRouter>
+                      <Routes>
+                        <Route path="/" element={<Index />} />
+                        <Route path="/dashboard" element={<Dashboard />} />
+                        <Route path="/dashboard/user" element={<UserDashboard />} />
+                        <Route path="/user-dashboard" element={<UserDashboardPage />} />
+                        <Route path="/dashboard/owner" element={<PropertyOwnerDashboard />} />
+                        <Route path="/dashboard/agent" element={<AgentDashboard />} />
+                        <Route path="/dashboard/vendor" element={<VendorDashboard />} />
+                        <Route path="/dashboard/admin" element={<AdminDashboard />} />
+                        <Route path="/vendor/register" element={<VendorRegistration />} />
+                        <Route path="/properties" element={<Properties />} />
+                        <Route path="/property/:id" element={<PropertyDetail />} />
+                        <Route path="/add-property" element={<AddProperty />} />
+                        <Route path="/buy" element={<Buy />} />
+                        <Route path="/rent" element={<Rent />} />
+                        <Route path="/new-projects" element={<NewProjects />} />
+                        <Route path="/pre-launching" element={<PreLaunching />} />
+                        <Route path="/about" element={<About />} />
+                        <Route path="/help" element={<Help />} />
+                        <Route path="/profile" element={<Profile />} />
+                        <Route path="/wallet" element={<WalletPage />} />
+                        <Route path="*" element={<NotFound />} />
+                      </Routes>
+                    </BrowserRouter>
+                  </TooltipProvider>
+                </AlertProvider>
               </WalletProvider>
             </AuthProvider>
           </LanguageProvider>
