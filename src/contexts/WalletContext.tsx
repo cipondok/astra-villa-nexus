@@ -2,9 +2,9 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useAccount, useBalance, useDisconnect } from 'wagmi';
 import { formatUnits } from 'viem';
-import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './AuthContext';
 import { ASTRA_TOKEN_ADDRESS } from '@/lib/web3';
+import { checkWalletConnection, linkWalletToUser } from '@/lib/wallet-utils';
 
 interface WalletContextType {
   isConnected: boolean;
@@ -49,14 +49,8 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       }
 
       try {
-        const { data, error } = await supabase
-          .from('wallet_connections')
-          .select('id')
-          .eq('user_id', user.id)
-          .eq('wallet_address', address.toLowerCase())
-          .single();
-
-        setIsWalletLinked(!!data && !error);
+        const isLinked = await checkWalletConnection(user.id, address);
+        setIsWalletLinked(isLinked);
       } catch (error) {
         console.error('Error checking wallet link:', error);
         setIsWalletLinked(false);
@@ -92,17 +86,7 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     }
 
     try {
-      const { error } = await supabase
-        .from('wallet_connections')
-        .upsert({
-          user_id: user.id,
-          wallet_address: address.toLowerCase(),
-          chain_id: 56, // BSC Mainnet
-          is_primary: true,
-        });
-
-      if (error) throw error;
-
+      await linkWalletToUser(user.id, address, 56);
       setIsWalletLinked(true);
       console.log('Wallet linked successfully');
     } catch (error) {
