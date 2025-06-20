@@ -21,7 +21,7 @@ interface RentPaymentState {
 }
 
 export const useRentPayment = () => {
-  const { address } = useAccount();
+  const { address, chain } = useAccount();
   const { user } = useAuth();
   const { showSuccess, showError } = useAlert();
   const [state, setState] = useState<RentPaymentState>({
@@ -36,7 +36,7 @@ export const useRentPayment = () => {
   });
 
   const processRentPayment = async (paymentData: RentPaymentData) => {
-    if (!user || !address) {
+    if (!user || !address || !chain) {
       showError('Authentication Required', 'Please sign in and connect your wallet');
       return;
     }
@@ -53,6 +53,8 @@ export const useRentPayment = () => {
         abi: ASTRA_TOKEN_ABI,
         functionName: 'transfer',
         args: [paymentData.contractAddress, tokenAmountWei],
+        chain,
+        account: address,
       });
 
       // 3. Create pending record in Supabase
@@ -67,7 +69,7 @@ export const useRentPayment = () => {
           property_id: paymentData.propertyId,
           wallet_address: address.toLowerCase(),
           transaction_hash: hash || 'pending',
-          token_amount: paymentData.tokenAmount,
+          token_amount: parseFloat(paymentData.tokenAmount),
           rental_duration_days: paymentData.durationDays,
           rental_start_date: startDate.toISOString(),
           rental_end_date: endDate.toISOString(),

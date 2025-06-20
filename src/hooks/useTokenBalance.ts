@@ -22,7 +22,9 @@ export const useTokenBalance = (): TokenBalanceState => {
   } = useBalance({
     address,
     token: ASTRA_TOKEN_ADDRESS,
-    enabled: isConnected && !!address,
+    query: {
+      enabled: isConnected && !!address,
+    },
   });
 
   useEffect(() => {
