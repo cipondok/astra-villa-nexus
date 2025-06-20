@@ -1041,6 +1041,7 @@ export type Database = {
           id: string
           image_urls: string[] | null
           images: string[] | null
+          is_premium: boolean | null
           listing_type: string
           location: string
           owner_id: string
@@ -1048,6 +1049,7 @@ export type Database = {
           price: number | null
           property_features: Json | null
           property_type: string
+          required_token_balance: number | null
           seo_description: string | null
           seo_title: string | null
           state: string | null
@@ -1072,6 +1074,7 @@ export type Database = {
           id?: string
           image_urls?: string[] | null
           images?: string[] | null
+          is_premium?: boolean | null
           listing_type: string
           location: string
           owner_id: string
@@ -1079,6 +1082,7 @@ export type Database = {
           price?: number | null
           property_features?: Json | null
           property_type: string
+          required_token_balance?: number | null
           seo_description?: string | null
           seo_title?: string | null
           state?: string | null
@@ -1103,6 +1107,7 @@ export type Database = {
           id?: string
           image_urls?: string[] | null
           images?: string[] | null
+          is_premium?: boolean | null
           listing_type?: string
           location?: string
           owner_id?: string
@@ -1110,6 +1115,7 @@ export type Database = {
           price?: number | null
           property_features?: Json | null
           property_type?: string
+          required_token_balance?: number | null
           seo_description?: string | null
           seo_title?: string | null
           state?: string | null
@@ -1269,6 +1275,78 @@ export type Database = {
             columns: ["property_id"]
             isOneToOne: false
             referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      rent_payments: {
+        Row: {
+          block_number: number | null
+          contract_address: string
+          created_at: string
+          gas_price: number | null
+          gas_used: number | null
+          id: string
+          property_id: string
+          rental_duration_days: number
+          rental_end_date: string
+          rental_start_date: string
+          status: string
+          token_amount: number
+          transaction_hash: string
+          updated_at: string
+          user_id: string
+          wallet_address: string
+        }
+        Insert: {
+          block_number?: number | null
+          contract_address: string
+          created_at?: string
+          gas_price?: number | null
+          gas_used?: number | null
+          id?: string
+          property_id: string
+          rental_duration_days: number
+          rental_end_date: string
+          rental_start_date: string
+          status?: string
+          token_amount: number
+          transaction_hash: string
+          updated_at?: string
+          user_id: string
+          wallet_address: string
+        }
+        Update: {
+          block_number?: number | null
+          contract_address?: string
+          created_at?: string
+          gas_price?: number | null
+          gas_used?: number | null
+          id?: string
+          property_id?: string
+          rental_duration_days?: number
+          rental_end_date?: string
+          rental_start_date?: string
+          status?: string
+          token_amount?: number
+          transaction_hash?: string
+          updated_at?: string
+          user_id?: string
+          wallet_address?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rent_payments_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rent_payments_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
