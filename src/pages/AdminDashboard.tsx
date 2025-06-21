@@ -5,7 +5,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Tabs } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2, AlertCircle } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import AdminDashboardHeader from "@/components/admin/AdminDashboardHeader";
 import AdminTabNavigation from "@/components/admin/AdminTabNavigation";
@@ -19,6 +19,7 @@ const AdminDashboard = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [activeTab, setActiveTab] = useState(location.state?.defaultTab || "overview");
+  const [accessCheckComplete, setAccessCheckComplete] = useState(false);
 
   console.log('AdminDashboard - Current state:', { 
     loading, 
@@ -29,30 +30,53 @@ const AdminDashboard = () => {
     userEmail: user?.email
   });
 
-  // Check access permissions - simplified logic
-  const isAdmin = profile?.role === 'admin' || user?.email === 'mycode103@gmail.com';
-  const isSupportStaff = profile?.role === 'agent' || profile?.role === 'customer_service';
-  const canAccess = isAdmin || isSupportStaff;
-
-  // Initialize admin alerts hook only if user has access
+  // Initialize admin alerts hook
   useAdminAlerts();
 
-  // Redirect if not authenticated
+  // Check access permissions with timeout and fallback
   useEffect(() => {
-    if (!loading && !isAuthenticated) {
-      navigate('/?auth=true', { replace: true });
-    }
-  }, [loading, isAuthenticated, navigate]);
+    const checkAccess = async () => {
+      // Wait for auth to complete
+      if (loading) return;
 
-  // Redirect support staff to appropriate tab
-  useEffect(() => {
-    if (isSupportStaff && !isAdmin && activeTab === 'overview') {
-      setActiveTab("support");
-    }
-  }, [isSupportStaff, isAdmin, activeTab]);
+      console.log('Checking admin access...');
+      
+      // If not authenticated, redirect immediately
+      if (!isAuthenticated || !user) {
+        console.log('Not authenticated, redirecting...');
+        navigate('/?auth=true', { replace: true });
+        return;
+      }
 
-  // Show loading state only while auth is loading
-  if (loading) {
+      // Check admin access with multiple conditions
+      const isAdmin = profile?.role === 'admin' || user?.email === 'mycode103@gmail.com';
+      const isSupportStaff = profile?.role === 'agent' || profile?.role === 'customer_service';
+      const hasAccess = isAdmin || isSupportStaff;
+
+      console.log('Access check:', { isAdmin, isSupportStaff, hasAccess, email: user?.email, role: profile?.role });
+
+      if (!hasAccess) {
+        console.log('Access denied, redirecting...');
+        navigate('/', { replace: true });
+        return;
+      }
+
+      // Redirect support staff to appropriate tab
+      if (isSupportStaff && !isAdmin && activeTab === 'overview') {
+        setActiveTab("support");
+      }
+
+      setAccessCheckComplete(true);
+    };
+
+    // Add a small delay to ensure auth state is settled
+    const timeoutId = setTimeout(checkAccess, 100);
+    
+    return () => clearTimeout(timeoutId);
+  }, [loading, isAuthenticated, user, profile, navigate, activeTab]);
+
+  // Show loading state while checking access
+  if (loading || !accessCheckComplete) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
@@ -63,12 +87,11 @@ const AdminDashboard = () => {
     );
   }
 
-  // Redirect if not authenticated
-  if (!isAuthenticated || !user) {
-    return null;
-  }
+  // Final access check
+  const isAdmin = profile?.role === 'admin' || user?.email === 'mycode103@gmail.com';
+  const isSupportStaff = profile?.role === 'agent' || profile?.role === 'customer_service';
+  const canAccess = isAdmin || isSupportStaff;
 
-  // Check if user has admin access
   if (!canAccess) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">

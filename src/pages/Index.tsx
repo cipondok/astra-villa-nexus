@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Navigation from "@/components/Navigation";
@@ -15,11 +16,59 @@ const Index = () => {
   const [hasSearched, setHasSearched] = useState(false);
 
   // Fetch featured properties for the homepage
-  const { data: featuredProperties = [], isLoading: isFeaturedLoading } = useQuery({
+  const { data: featuredProperties = [], isLoading: isFeaturedLoading, refetch: refetchProperties } = useQuery({
     queryKey: ['featured-properties'],
     queryFn: async () => {
       console.log('Fetching featured properties...');
-      const { data, error } = await supabase
+      
+      try {
+        const { data, error } = await supabase
+          .from('properties')
+          .select(`
+            id,
+            title,
+            description,
+            price,
+            property_type,
+            location,
+            bedrooms,
+            bathrooms,
+            area_sqm,
+            images,
+            status,
+            created_at,
+            state,
+            city,
+            area,
+            listing_type
+          `)
+          .eq('status', 'active')
+          .order('created_at', { ascending: false })
+          .limit(12);
+
+        if (error) {
+          console.error('Error fetching featured properties:', error);
+          throw error;
+        }
+
+        console.log('Featured properties fetched:', data?.length || 0, data);
+        return data || [];
+      } catch (error) {
+        console.error('Failed to fetch properties:', error);
+        return [];
+      }
+    },
+    retry: 3,
+    retryDelay: 1000,
+  });
+
+  const handleSearch = async (searchData: any) => {
+    console.log('Search initiated:', searchData);
+    setIsSearching(true);
+    setHasSearched(true);
+    
+    try {
+      let query = supabase
         .from('properties')
         .select(`
           id,
@@ -33,34 +82,62 @@ const Index = () => {
           area_sqm,
           images,
           status,
-          created_at
+          created_at,
+          state,
+          city,
+          area,
+          listing_type
         `)
-        .eq('status', 'active')
-        .order('created_at', { ascending: false })
-        .limit(8);
+        .eq('status', 'active');
 
-      if (error) {
-        console.error('Error fetching featured properties:', error);
-        return [];
+      // Apply search filters
+      if (searchData.query) {
+        query = query.or(
+          `title.ilike.%${searchData.query}%,description.ilike.%${searchData.query}%,location.ilike.%${searchData.query}%`
+        );
       }
 
-      console.log('Featured properties fetched:', data?.length || 0);
-      return data || [];
-    },
-  });
+      if (searchData.state) {
+        query = query.eq('state', searchData.state);
+      }
 
-  const handleSearch = async (searchData: any) => {
-    console.log('Search initiated:', searchData);
-    setIsSearching(true);
-    setHasSearched(true);
-    
-    try {
-      // Simulate search delay
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // For now, return featured properties as search results
-      // In a real app, this would filter based on search criteria
-      setSearchResults(featuredProperties);
+      if (searchData.city) {
+        query = query.eq('city', searchData.city);
+      }
+
+      if (searchData.propertyType && searchData.propertyType !== 'all') {
+        query = query.eq('listing_type', searchData.propertyType);
+      }
+
+      if (searchData.bedrooms && searchData.bedrooms !== 'any') {
+        const bedroomCount = searchData.bedrooms === '4+' ? 4 : parseInt(searchData.bedrooms);
+        if (searchData.bedrooms === '4+') {
+          query = query.gte('bedrooms', bedroomCount);
+        } else {
+          query = query.eq('bedrooms', bedroomCount);
+        }
+      }
+
+      if (searchData.bathrooms && searchData.bathrooms !== 'any') {
+        const bathroomCount = searchData.bathrooms === '4+' ? 4 : parseInt(searchData.bathrooms);
+        if (searchData.bathrooms === '4+') {
+          query = query.gte('bathrooms', bathroomCount);
+        } else {
+          query = query.eq('bathrooms', bathroomCount);
+        }
+      }
+
+      query = query.order('created_at', { ascending: false }).limit(20);
+
+      const { data, error } = await query;
+
+      if (error) {
+        console.error('Search error:', error);
+        setSearchResults([]);
+      } else {
+        console.log('Search results:', data?.length || 0);
+        setSearchResults(data || []);
+      }
     } catch (error) {
       console.error('Search error:', error);
       setSearchResults([]);
@@ -81,17 +158,39 @@ const Index = () => {
     setHasSearched(true);
 
     try {
-      // Simulate live search delay
-      await new Promise(resolve => setTimeout(resolve, 800));
-      
-      // Filter properties based on search term
-      const filtered = featuredProperties.filter(property =>
-        property.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        property.location?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        property.description?.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      
-      setSearchResults(filtered);
+      const { data, error } = await supabase
+        .from('properties')
+        .select(`
+          id,
+          title,
+          description,
+          price,
+          property_type,
+          location,
+          bedrooms,
+          bathrooms,
+          area_sqm,
+          images,
+          status,
+          created_at,
+          state,
+          city,
+          area,
+          listing_type
+        `)
+        .eq('status', 'active')
+        .or(
+          `title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%,location.ilike.%${searchTerm}%`
+        )
+        .order('created_at', { ascending: false })
+        .limit(10);
+
+      if (error) {
+        console.error('Live search error:', error);
+        setSearchResults([]);
+      } else {
+        setSearchResults(data || []);
+      }
     } catch (error) {
       console.error('Live search error:', error);
       setSearchResults([]);
@@ -103,6 +202,14 @@ const Index = () => {
   // Use search results if available, otherwise show featured properties
   const displayProperties = hasSearched ? searchResults : featuredProperties;
   const isLoading = hasSearched ? isSearching : isFeaturedLoading;
+
+  // Force refetch if no properties are loaded initially
+  useEffect(() => {
+    if (!isFeaturedLoading && featuredProperties.length === 0) {
+      console.log('No properties found, attempting refetch...');
+      setTimeout(() => refetchProperties(), 1000);
+    }
+  }, [featuredProperties.length, isFeaturedLoading, refetchProperties]);
 
   return (
     <div className="min-h-screen bg-background">

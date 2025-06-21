@@ -47,11 +47,12 @@ const PropertyListingsSection = ({
       area: "sqm",
       contactForPrice: "Contact for price",
       searchMessage: "Try adjusting your search filters or browse our featured properties below.",
-      noFeaturedProperties: "Loading properties...",
+      noFeaturedProperties: "No properties available at the moment",
       view3D: "3D View",
       youMightLike: "You might also like",
       featuredSubtitle: "Here are some of our featured properties",
-      showingResults: "Showing"
+      showingResults: "Showing",
+      loadingProperties: "Loading properties..."
     },
     id: {
       title: "Properti Unggulan",
@@ -66,11 +67,12 @@ const PropertyListingsSection = ({
       area: "m²",
       contactForPrice: "Hubungi untuk harga",
       searchMessage: "Coba sesuaikan filter pencarian Anda atau lihat properti unggulan kami di bawah.",
-      noFeaturedProperties: "Memuat properti...",
+      noFeaturedProperties: "Belum ada properti tersedia saat ini",
       view3D: "Tampilan 3D",
       youMightLike: "Anda mungkin juga suka",
       featuredSubtitle: "Berikut adalah beberapa properti unggulan kami",
-      showingResults: "Menampilkan"
+      showingResults: "Menampilkan",
+      loadingProperties: "Memuat properti..."
     }
   };
 
@@ -115,12 +117,12 @@ const PropertyListingsSection = ({
     );  
   }
   
-  const noResultsFound = searchResults.length === 0;
-  const displayProperties = noResultsFound && !hasSearched ? fallbackResults : searchResults;
+  const displayProperties = hasSearched ? searchResults : fallbackResults;
+  const noPropertiesFound = displayProperties.length === 0;
 
   console.log("PropertyListingsSection - displayProperties:", displayProperties);
   console.log("PropertyListingsSection - hasSearched:", hasSearched);
-  console.log("PropertyListingsSection - noResultsFound:", noResultsFound);
+  console.log("PropertyListingsSection - noPropertiesFound:", noPropertiesFound);
 
   return (
     <>
@@ -135,14 +137,16 @@ const PropertyListingsSection = ({
             </div>
           )}
 
-          {displayProperties.length === 0 ? (
+          {noPropertiesFound ? (
             <div className="text-center py-12">
               <div className="max-w-md mx-auto">
                 <h3 className="text-xl font-semibold mb-4">
                   {hasSearched ? currentText.noResults : currentText.noFeaturedProperties}
                 </h3>
                 <p className="text-gray-600 dark:text-gray-300 mb-6">
-                  {hasSearched ? currentText.searchMessage : "Please check back later for new listings."}
+                  {hasSearched 
+                    ? currentText.searchMessage 
+                    : "We're working on adding new properties. Please check back later."}
                 </p>
                 {!hasSearched && (
                   <Button onClick={() => window.location.reload()}>
