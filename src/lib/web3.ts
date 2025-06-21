@@ -3,19 +3,19 @@ import { createConfig, http } from 'wagmi';
 import { bsc, bscTestnet } from 'wagmi/chains';
 import { walletConnect, injected, coinbaseWallet } from 'wagmi/connectors';
 
-// Web3Modal project ID - you'll need to get this from WalletConnect Cloud
-const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || 'your-project-id-here';
+// Web3Modal project ID - using environment variable or fallback
+const projectId = 'your-project-id-here';
 
 export const config = createConfig({
   chains: [bsc, bscTestnet],
   connectors: [
     walletConnect({ projectId }),
     injected(),
-    coinbaseWallet({ appName: 'ASTRA Villa' }),
+    coinbaseWallet({ appName: 'ASTRA Villa Realty' }),
   ],
   transports: {
     [bsc.id]: http(),
-    [bscTestnet.id]: http(),
+    [bscTestnet.id]: http('https://data-seed-prebsc-1-s1.binance.org:8545/'),
   },
 });
 
@@ -23,7 +23,7 @@ export const config = createConfig({
 export const ASTRA_TOKEN_CONFIG = {
   // BSC Mainnet (update with your actual deployed contract address)
   mainnet: {
-    address: '0x0000000000000000000000000000000000000000' as `0x${string}`, // Your ASTRA token contract address on BSC Mainnet
+    address: '0x0000000000000000000000000000000000000000' as `0x${string}`,
     chainId: 56,
     name: 'ASTRA Token',
     symbol: 'ASTRA',
@@ -31,7 +31,7 @@ export const ASTRA_TOKEN_CONFIG = {
   },
   // BSC Testnet (for development)
   testnet: {
-    address: '0x0000000000000000000000000000000000000000' as `0x${string}`, // Your ASTRA token contract address on BSC Testnet
+    address: '0x0000000000000000000000000000000000000000' as `0x${string}`,
     chainId: 97,
     name: 'ASTRA Token (Testnet)',
     symbol: 'ASTRA',
