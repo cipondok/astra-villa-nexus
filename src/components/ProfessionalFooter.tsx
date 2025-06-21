@@ -78,14 +78,14 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
 
   return (
     <footer className="bg-gray-900 text-white">
-      <div className="container mx-auto px-4 py-6">
+      <div className="container mx-auto px-4 py-4">
         {/* Main Footer Content */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 mb-3">
           {/* Company Info */}
           <div className="space-y-2">
             <div className="flex items-center space-x-2">
-              <Rocket className="w-5 h-5 text-blue-400" />
-              <span className="text-lg font-bold bg-gradient-to-r from-blue-400 to-orange-400 bg-clip-text text-transparent">
+              <Rocket className="w-4 h-4 text-blue-400" />
+              <span className="text-base font-bold bg-gradient-to-r from-blue-400 to-orange-400 bg-clip-text text-transparent">
                 {currentText.company}
               </span>
             </div>
@@ -151,8 +151,8 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
         </div>
 
         {/* Social Media & Bottom Bar */}
-        <div className="border-t border-gray-800 pt-3">
-          <div className="flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
+        <div className="border-t border-gray-800 pt-2">
+          <div className="flex flex-col md:flex-row justify-between items-center space-y-1 md:space-y-0">
             {/* Social Media */}
             <div className="flex space-x-3">
               <a href="#" className="text-gray-400 hover:text-blue-400 transition-colors">

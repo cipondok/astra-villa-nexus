@@ -20,6 +20,7 @@ const AdminDashboard = () => {
   const location = useLocation();
   const [activeTab, setActiveTab] = useState(location.state?.defaultTab || "overview");
   const [accessCheckComplete, setAccessCheckComplete] = useState(false);
+  const [accessTimeout, setAccessTimeout] = useState(false);
 
   console.log('AdminDashboard - Current state:', { 
     loading, 
@@ -33,14 +34,30 @@ const AdminDashboard = () => {
   // Initialize admin alerts hook
   useAdminAlerts();
 
-  // Check access permissions with timeout and fallback
+  // Timeout for access check
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (!accessCheckComplete && !loading) {
+        console.log('Access check timeout reached');
+        setAccessTimeout(true);
+        setAccessCheckComplete(true);
+      }
+    }, 5000); // 5 second timeout
+
+    return () => clearTimeout(timeout);
+  }, [accessCheckComplete, loading]);
+
+  // Check access permissions
   useEffect(() => {
     const checkAccess = async () => {
-      // Wait for auth to complete
-      if (loading) return;
-
-      console.log('Checking admin access...');
+      console.log('Checking admin access...', { loading, isAuthenticated, user: !!user, profile: !!profile });
       
+      // Wait for auth to complete
+      if (loading) {
+        console.log('Still loading, waiting...');
+        return;
+      }
+
       // If not authenticated, redirect immediately
       if (!isAuthenticated || !user) {
         console.log('Not authenticated, redirecting...');
@@ -53,7 +70,13 @@ const AdminDashboard = () => {
       const isSupportStaff = profile?.role === 'agent' || profile?.role === 'customer_service';
       const hasAccess = isAdmin || isSupportStaff;
 
-      console.log('Access check:', { isAdmin, isSupportStaff, hasAccess, email: user?.email, role: profile?.role });
+      console.log('Access check result:', { 
+        isAdmin, 
+        isSupportStaff, 
+        hasAccess, 
+        email: user?.email, 
+        role: profile?.role 
+      });
 
       if (!hasAccess) {
         console.log('Access denied, redirecting...');
@@ -63,26 +86,57 @@ const AdminDashboard = () => {
 
       // Redirect support staff to appropriate tab
       if (isSupportStaff && !isAdmin && activeTab === 'overview') {
+        console.log('Redirecting support staff to support tab');
         setActiveTab("support");
       }
 
+      console.log('Access granted, completing check');
       setAccessCheckComplete(true);
     };
 
-    // Add a small delay to ensure auth state is settled
-    const timeoutId = setTimeout(checkAccess, 100);
-    
-    return () => clearTimeout(timeoutId);
-  }, [loading, isAuthenticated, user, profile, navigate, activeTab]);
+    // Only run check if not already complete and not timed out
+    if (!accessCheckComplete && !accessTimeout) {
+      checkAccess();
+    }
+  }, [loading, isAuthenticated, user, profile, navigate, activeTab, accessCheckComplete, accessTimeout]);
 
   // Show loading state while checking access
-  if (loading || !accessCheckComplete) {
+  if ((loading || !accessCheckComplete) && !accessTimeout) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-primary" />
           <p className="text-muted-foreground">Loading admin dashboard...</p>
+          <p className="text-xs text-muted-foreground mt-2">
+            This may take a few seconds to verify your permissions
+          </p>
         </div>
+      </div>
+    );
+  }
+
+  // Handle timeout case
+  if (accessTimeout) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Card className="w-full max-w-md">
+          <CardHeader>
+            <CardTitle className="text-center text-destructive">Loading Timeout</CardTitle>
+          </CardHeader>
+          <CardContent className="text-center">
+            <p className="text-muted-foreground mb-6">
+              The dashboard is taking longer than expected to load.
+            </p>
+            <div className="space-y-2">
+              <Button onClick={() => window.location.reload()} className="w-full">
+                Reload Page
+              </Button>
+              <Button variant="outline" onClick={() => navigate('/')} className="w-full">
+                Return to Home
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     );
   }
