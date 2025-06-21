@@ -19,8 +19,6 @@ const AdminDashboard = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [activeTab, setActiveTab] = useState(location.state?.defaultTab || "overview");
-  const [authCheckComplete, setAuthCheckComplete] = useState(false);
-  const [accessDenied, setAccessDenied] = useState(false);
 
   console.log('AdminDashboard - Current state:', { 
     loading, 
@@ -28,11 +26,10 @@ const AdminDashboard = () => {
     user: !!user, 
     profile: !!profile, 
     role: profile?.role,
-    userEmail: user?.email,
-    authCheckComplete
+    userEmail: user?.email
   });
 
-  // Check access permissions
+  // Check access permissions - simplified logic
   const isAdmin = profile?.role === 'admin' || user?.email === 'mycode103@gmail.com';
   const isSupportStaff = profile?.role === 'agent' || profile?.role === 'customer_service';
   const canAccess = isAdmin || isSupportStaff;
@@ -40,124 +37,39 @@ const AdminDashboard = () => {
   // Initialize admin alerts hook only if user has access
   useAdminAlerts();
 
-  // Handle forced logout
-  const handleForceLogout = async () => {
-    try {
-      console.log('Force logout initiated');
-      await signOut();
-      // Clear any local storage items
-      localStorage.clear();
-      sessionStorage.clear();
-      // Force reload to clear any cached state
-      window.location.href = '/?auth=true';
-    } catch (error) {
-      console.error('Force logout error:', error);
-      // If signOut fails, force redirect anyway
-      window.location.href = '/?auth=true';
-    }
-  };
-
-  // Enhanced authentication check
+  // Redirect if not authenticated
   useEffect(() => {
-    const checkAuth = async () => {
-      console.log('AdminDashboard - Auth check starting');
-      
-      // Wait a maximum of 5 seconds for auth to load
-      const timeout = setTimeout(() => {
-        if (!authCheckComplete) {
-          console.log('AdminDashboard - Auth check timeout');
-          setAuthCheckComplete(true);
-        }
-      }, 5000);
-
-      // If loading is complete
-      if (!loading) {
-        clearTimeout(timeout);
-        console.log('AdminDashboard - Loading complete, checking auth');
-        
-        // Check if user is authenticated
-        if (!isAuthenticated || !user) {
-          console.log('AdminDashboard - Not authenticated, redirecting');
-          navigate('/?auth=true', { replace: true });
-          return;
-        }
-
-        // If we have a user but no profile, wait a bit more
-        if (!profile) {
-          console.log('AdminDashboard - No profile found, waiting...');
-          setTimeout(() => {
-            if (!profile) {
-              console.log('AdminDashboard - Still no profile, checking access');
-              // If still no profile after waiting, check if super admin by email
-              if (user.email === 'mycode103@gmail.com') {
-                console.log('AdminDashboard - Super admin access granted by email');
-                setAuthCheckComplete(true);
-              } else {
-                console.log('AdminDashboard - No profile and not super admin');
-                setAccessDenied(true);
-                setAuthCheckComplete(true);
-              }
-            } else {
-              setAuthCheckComplete(true);
-            }
-          }, 2000);
-          return;
-        }
-
-        // Check access permissions
-        if (!canAccess) {
-          console.log('AdminDashboard - Access denied');
-          setAccessDenied(true);
-        }
-
-        setAuthCheckComplete(true);
-      }
-
-      return () => clearTimeout(timeout);
-    };
-
-    checkAuth();
-  }, [loading, isAuthenticated, user, profile, canAccess, navigate]);
+    if (!loading && !isAuthenticated) {
+      navigate('/?auth=true', { replace: true });
+    }
+  }, [loading, isAuthenticated, navigate]);
 
   // Redirect support staff to appropriate tab
   useEffect(() => {
-    if (authCheckComplete && isSupportStaff && !isAdmin) {
-      if (activeTab === 'system' || activeTab === 'overview') {
-        setActiveTab("support");
-      }
+    if (isSupportStaff && !isAdmin && activeTab === 'overview') {
+      setActiveTab("support");
     }
-  }, [authCheckComplete, isSupportStaff, isAdmin, activeTab]);
+  }, [isSupportStaff, isAdmin, activeTab]);
 
-  // Show loading state
-  if (loading || !authCheckComplete) {
+  // Show loading state only while auth is loading
+  if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-primary" />
-          <p className="text-muted-foreground mb-2">Loading admin dashboard...</p>
-          <p className="text-xs text-muted-foreground mb-4">
-            Checking authentication and permissions...
-          </p>
-          <Button 
-            variant="outline" 
-            onClick={handleForceLogout}
-            className="mt-4"
-          >
-            Force Logout & Retry
-          </Button>
+          <p className="text-muted-foreground">Loading admin dashboard...</p>
         </div>
       </div>
     );
   }
 
-  // Don't render if not authenticated
+  // Redirect if not authenticated
   if (!isAuthenticated || !user) {
-    console.log('AdminDashboard - Rendering auth redirect');
     return null;
   }
 
   // Check if user has admin access
-  if (accessDenied || (!canAccess && user?.email !== 'mycode103@gmail.com')) {
+  if (!canAccess) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <Card className="w-full max-w-md">
@@ -170,8 +82,8 @@ const AdminDashboard = () => {
             </p>
             <div className="space-y-2">
               <Button onClick={() => navigate('/')} className="w-full">Return to Home</Button>
-              <Button variant="outline" onClick={handleForceLogout} className="w-full">
-                Logout & Retry
+              <Button variant="outline" onClick={signOut} className="w-full">
+                Logout
               </Button>
             </div>
           </CardContent>

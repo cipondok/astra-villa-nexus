@@ -47,7 +47,7 @@ const PropertyListingsSection = ({
       area: "sqm",
       contactForPrice: "Contact for price",
       searchMessage: "Try adjusting your search filters or browse our featured properties below.",
-      noFeaturedProperties: "No properties available at the moment",
+      noFeaturedProperties: "Loading properties...",
       view3D: "3D View",
       youMightLike: "You might also like",
       featuredSubtitle: "Here are some of our featured properties",
@@ -66,7 +66,7 @@ const PropertyListingsSection = ({
       area: "m²",
       contactForPrice: "Hubungi untuk harga",
       searchMessage: "Coba sesuaikan filter pencarian Anda atau lihat properti unggulan kami di bawah.",
-      noFeaturedProperties: "Tidak ada properti tersedia saat ini",
+      noFeaturedProperties: "Memuat properti...",
       view3D: "Tampilan 3D",
       youMightLike: "Anda mungkin juga suka",
       featuredSubtitle: "Berikut adalah beberapa properti unggulan kami",
@@ -116,14 +116,15 @@ const PropertyListingsSection = ({
   }
   
   const noResultsFound = searchResults.length === 0;
+  const displayProperties = noResultsFound && !hasSearched ? fallbackResults : searchResults;
 
-  console.log("PropertyListingsSection - searchResults:", searchResults);
+  console.log("PropertyListingsSection - displayProperties:", displayProperties);
   console.log("PropertyListingsSection - hasSearched:", hasSearched);
   console.log("PropertyListingsSection - noResultsFound:", noResultsFound);
 
   return (
     <>
-      <section className="py-4">
+      <section className="py-8">
         <div className="container mx-auto px-4">
           {!hideTitle && (
             <div className="text-center mb-8">
@@ -134,7 +135,7 @@ const PropertyListingsSection = ({
             </div>
           )}
 
-          {noResultsFound ? (
+          {displayProperties.length === 0 ? (
             <div className="text-center py-12">
               <div className="max-w-md mx-auto">
                 <h3 className="text-xl font-semibold mb-4">
@@ -143,13 +144,18 @@ const PropertyListingsSection = ({
                 <p className="text-gray-600 dark:text-gray-300 mb-6">
                   {hasSearched ? currentText.searchMessage : "Please check back later for new listings."}
                 </p>
+                {!hasSearched && (
+                  <Button onClick={() => window.location.reload()}>
+                    Refresh Page
+                  </Button>
+                )}
               </div>
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-6">
-              {searchResults.map((property) => (
+              {displayProperties.map((property, index) => (
                 <CompactPropertyCard
-                  key={`${property.id}-${property.title}`}
+                  key={`${property.id}-${index}`}
                   property={property}
                   language={language}
                   isSaved={favoriteProperties.has(property.id)}
@@ -161,29 +167,7 @@ const PropertyListingsSection = ({
             </div>
           )}
 
-          {noResultsFound && hasSearched && fallbackResults.length > 0 && (
-            <>
-              <div className="text-center my-12">
-                <h2 className="text-2xl lg:text-3xl font-bold mb-4">{currentText.youMightLike}</h2>
-                <p className="text-lg text-muted-foreground">{currentText.featuredSubtitle}</p>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-6">
-                {fallbackResults.map((property) => (
-                  <CompactPropertyCard
-                    key={`fallback-${property.id}`}
-                    property={property}
-                    language={language}
-                    isSaved={favoriteProperties.has(property.id)}
-                    onSave={() => toggleFavorite(property.id)}
-                    onView={() => handleViewDetails(property.id)}
-                    onView3D={handleView3D}
-                  />
-                ))}
-              </div>
-            </>
-          )}
-
-          {!hasSearched && searchResults.length > 0 && (
+          {!hasSearched && displayProperties.length > 0 && (
             <div className="text-center mt-8">
               <Button size="lg" variant="outline" onClick={() => navigate('/properties')}>
                 View All Properties
