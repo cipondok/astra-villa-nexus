@@ -29,7 +29,7 @@ const Navigation = () => {
   };
 
   return (
-    <>
+    <div className="w-full">
       <RoleBasedNavigation
         onLoginClick={handleLoginClick}
         language={language as "en" | "id"}
@@ -42,7 +42,7 @@ const Navigation = () => {
         isOpen={authModalOpen} 
         onClose={handleAuthModalClose}
       />
-    </>
+    </div>
   );
 };
 
