@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Navigation from "@/components/Navigation";
@@ -144,7 +143,7 @@ const Index = () => {
       <ResponsiveAIChatWidget />
 
       {/* Footer */}
-      <ProfessionalFooter />
+      <ProfessionalFooter language={language} />
     </div>
   );
 };
