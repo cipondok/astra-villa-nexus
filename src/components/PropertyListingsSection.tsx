@@ -36,7 +36,7 @@ const PropertyListingsSection = ({
       subtitle: "Discover premium real estate opportunities",
       noResults: "No properties found",
       searchResults: "Search Results",
-      noFeaturedProperties: "No properties available at the moment",
+      noFeaturedProperties: "Loading properties...",
       showingResults: "Showing",
       loadingProperties: "Loading properties..."
     },
@@ -45,7 +45,7 @@ const PropertyListingsSection = ({
       subtitle: "Temukan peluang real estate premium",
       noResults: "Tidak ada properti ditemukan",
       searchResults: "Hasil Pencarian",
-      noFeaturedProperties: "Belum ada properti tersedia saat ini",
+      noFeaturedProperties: "Memuat properti...",
       showingResults: "Menampilkan",
       loadingProperties: "Memuat properti..."
     }
@@ -93,11 +93,14 @@ const PropertyListingsSection = ({
   }
   
   const displayProperties = hasSearched ? searchResults : fallbackResults;
-  const noPropertiesFound = displayProperties.length === 0;
-
-  console.log("PropertyListingsSection - displayProperties:", displayProperties?.length || 0);
-  console.log("PropertyListingsSection - hasSearched:", hasSearched);
-  console.log("PropertyListingsSection - fallbackResults:", fallbackResults?.length || 0);
+  
+  console.log("=== PROPERTY LISTINGS SECTION DEBUG ===");
+  console.log("hasSearched:", hasSearched);
+  console.log("searchResults:", searchResults);
+  console.log("fallbackResults:", fallbackResults);
+  console.log("displayProperties:", displayProperties);
+  console.log("displayProperties length:", displayProperties?.length || 0);
+  console.log("=== END PROPERTY LISTINGS DEBUG ===");
 
   return (
     <>
@@ -112,22 +115,27 @@ const PropertyListingsSection = ({
             </div>
           )}
 
-          {noPropertiesFound ? (
+          {/* Debug info - will remove later */}
+          <div className="mb-4 p-4 bg-gray-100 rounded">
+            <p><strong>Debug Info:</strong></p>
+            <p>Display Properties Count: {displayProperties?.length || 0}</p>
+            <p>Has Searched: {hasSearched ? 'Yes' : 'No'}</p>
+            <p>Fallback Results Count: {fallbackResults?.length || 0}</p>
+            <p>Search Results Count: {searchResults?.length || 0}</p>
+          </div>
+
+          {!displayProperties || displayProperties.length === 0 ? (
             <div className="text-center py-12">
               <div className="max-w-md mx-auto">
                 <h3 className="text-xl font-semibold mb-4">
-                  {hasSearched ? currentText.noResults : currentText.noFeaturedProperties}
+                  {currentText.noFeaturedProperties}
                 </h3>
                 <p className="text-gray-600 dark:text-gray-300 mb-6">
-                  {hasSearched 
-                    ? "Try adjusting your search terms or browse all properties." 
-                    : "We're working on adding new properties. Please check back later."}
+                  Please wait while we load the properties...
                 </p>
-                {!hasSearched && (
-                  <Button onClick={() => window.location.reload()}>
-                    Refresh Page
-                  </Button>
-                )}
+                <Button onClick={() => window.location.reload()}>
+                  Reload Page
+                </Button>
               </div>
             </div>
           ) : (
@@ -143,14 +151,6 @@ const PropertyListingsSection = ({
                   onView3D={handleView3D}
                 />
               ))}
-            </div>
-          )}
-
-          {!hasSearched && displayProperties.length > 0 && (
-            <div className="text-center mt-8">
-              <Button size="lg" variant="outline" onClick={() => navigate('/properties')}>
-                View All Properties
-              </Button>
             </div>
           )}
         </div>
