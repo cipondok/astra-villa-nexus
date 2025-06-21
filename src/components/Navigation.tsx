@@ -32,7 +32,7 @@ const Navigation = () => {
     <div className="w-full">
       <RoleBasedNavigation
         onLoginClick={handleLoginClick}
-        language={language as "en" | "id"}
+        language={language}
         onLanguageToggle={handleLanguageToggle}
         theme={theme || "light"}
         onThemeToggle={handleThemeToggle}

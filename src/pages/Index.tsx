@@ -1,11 +1,9 @@
-
 import { useState, useEffect, useRef } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import ParticleEffect from "@/components/ParticleEffect";
 import PropertyListingsSection from "@/components/PropertyListingsSection";
 import ProfessionalFooter from "@/components/ProfessionalFooter";
-import EnhancedSecureAuthModal from "@/components/auth/EnhancedSecureAuthModal";
 import SimpleAuthModal from "@/components/auth/SimpleAuthModal";
 import EnhancedModernSearchPanel from "@/components/EnhancedModernSearchPanel";
 import ResponsiveAIChatWidget from "@/components/ai/ResponsiveAIChatWidget";
