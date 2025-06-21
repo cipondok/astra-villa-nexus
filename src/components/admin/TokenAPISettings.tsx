@@ -32,6 +32,7 @@ interface APISettings {
   enabled: boolean;
   webhook_url?: string;
   webhook_secret?: string;
+  [key: string]: any; // Add index signature for Json compatibility
 }
 
 const TokenAPISettings = () => {
@@ -66,7 +67,7 @@ const TokenAPISettings = () => {
       if (error && error.code !== 'PGRST116') throw error;
 
       if (data && data.setting_value) {
-        const apiConfig = data.setting_value as any;
+        const apiConfig = data.setting_value as Record<string, any>;
         setSettings({
           base_url: apiConfig.base_url || settings.base_url,
           api_key: apiConfig.api_key || '',
@@ -92,7 +93,7 @@ const TokenAPISettings = () => {
         .from('astra_token_settings')
         .upsert({
           setting_key: 'api_configuration',
-          setting_value: settings,
+          setting_value: settings as any, // Cast to any for Json compatibility
           description: 'ASTRA Token API configuration and settings'
         });
 
