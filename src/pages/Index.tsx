@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Navigation from "@/components/Navigation";
@@ -8,6 +7,7 @@ import ProfessionalFooter from "@/components/ProfessionalFooter";
 import { useLanguage } from "@/contexts/LanguageContext";
 import ResponsiveAIChatWidget from "@/components/ai/ResponsiveAIChatWidget";
 import { supabase } from "@/integrations/supabase/client";
+import RecommendedProperties from "@/components/property/RecommendedProperties";
 
 const Index = () => {
   const { language } = useLanguage();
@@ -239,6 +239,17 @@ const Index = () => {
         hasSearched={hasSearched}
         fallbackResults={featuredProperties}
       />
+
+      {/* Recommended Properties Section */}
+      <section className="py-8 bg-gray-50 dark:bg-gray-900">
+        <div className="container mx-auto px-4">
+          <RecommendedProperties
+            title={language === "en" ? "AI Recommended For You" : "Rekomendasi AI Untuk Anda"}
+            limit={8}
+            showAIBadge={true}
+          />
+        </div>
+      </section>
 
       {/* AI Chat Widget */}
       <ResponsiveAIChatWidget />

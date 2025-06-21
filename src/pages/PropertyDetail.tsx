@@ -1,406 +1,359 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+
+import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, Heart, Share2, MapPin, Bed, Bath, Square, Star, Phone, Mail, MessageSquare, Calendar, Box, Loader2, AlertCircle } from 'lucide-react';
+import { Separator } from "@/components/ui/separator";
+import { 
+  MapPin, 
+  Bed, 
+  Bath, 
+  Square, 
+  ArrowLeft, 
+  Share2, 
+  Heart,
+  Phone,
+  Mail,
+  Calendar,
+  Star,
+  Eye,
+  Box
+} from "lucide-react";
+import Navigation from "@/components/Navigation";
+import ProfessionalFooter from "@/components/ProfessionalFooter";
 import PropertyViewer3D from "@/components/PropertyViewer3D";
-import VirtualStagingSelector from "@/components/VirtualStagingSelector";
-import AgentContactCard from "@/components/AgentContactCard";
-import NeighborhoodInsights from "@/components/NeighborhoodInsights";
-import PropertyAmenities from "@/components/PropertyAmenities";
-import FeedbackSection from "@/components/FeedbackSection";
-import ScheduleSurveyModal from "@/components/ScheduleSurveyModal";
+import SimilarProperties from "@/components/property/SimilarProperties";
+import RecommendedProperties from "@/components/property/RecommendedProperties";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
-import { formatIDR } from "@/utils/currency";
-import PredictivePricingCard from '@/components/PredictivePricingCard';
 
 const PropertyDetail = () => {
   const { id } = useParams();
-  const [property, setProperty] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [isLiked, setIsLiked] = useState(false);
+  const navigate = useNavigate();
+  const { language } = useLanguage();
+  const [isFavorite, setIsFavorite] = useState(false);
   const [is3DViewOpen, setIs3DViewOpen] = useState(false);
-  const [selectedStagingStyle, setSelectedStagingStyle] = useState('modern');
-  const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
-  const [prediction, setPrediction] = useState<any>(null);
-  const [predictionLoading, setPredictionLoading] = useState(true);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-  // Fetch property data from database
-  useEffect(() => {
-    const fetchProperty = async () => {
-      if (!id) return;
+  const { data: property, isLoading, error } = useQuery({
+    queryKey: ['property', id],
+    queryFn: async () => {
+      if (!id) throw new Error('Property ID is required');
       
-      try {
-        setLoading(true);
-        setError(null);
-        
-        console.log("Fetching property with ID:", id);
-        
-        // Fetch property without foreign key joins
-        const { data, error } = await supabase
-          .from('properties')
-          .select('*')
-          .eq('id', id)
-          .single();
+      const { data, error } = await supabase
+        .from('properties')
+        .select('*')
+        .eq('id', id)
+        .single();
 
-        if (error) {
-          console.error('Error fetching property:', error);
-          setError(error.message);
-        } else {
-          console.log('Fetched property:', data);
-          setProperty(data);
-        }
-      } catch (error) {
-        console.error('Error fetching property:', error);
-        setError('Failed to load property');
-      } finally {
-        setLoading(false);
-      }
-    };
+      if (error) throw error;
+      if (!data) throw new Error('Property not found');
 
-    fetchProperty();
-  }, [id]);
+      return data;
+    },
+    enabled: !!id,
+  });
 
-  useEffect(() => {
-    const fetchPrediction = async () => {
-      if (!id) {
-        setPredictionLoading(false);
-        return;
-      }
-
-      setPredictionLoading(true);
-      try {
-        const { data, error } = await supabase.functions.invoke('predictive-pricing', {
-          body: { propertyId: id },
-        });
-
-        if (error) {
-          throw error;
-        }
-
-        setPrediction(data.prediction);
-      } catch (error) {
-        console.error("Error fetching price prediction:", error);
-        setPrediction(null);
-      } finally {
-        setPredictionLoading(false);
-      }
-    };
-
-    if (property) {
-      fetchPrediction();
+  const formatPrice = (price: number) => {
+    if (price >= 1000000000) {
+      return `Rp ${(price / 1000000000).toFixed(1)}B`;
+    } else if (price >= 1000000) {
+      return `Rp ${(price / 1000000).toFixed(1)}M`;
+    } else {
+      return `Rp ${price.toLocaleString()}`;
     }
-  }, [id, property]);
-
-  const stagingStyles = [
-    { id: 'modern', name: 'Modern', description: 'Clean lines and contemporary furniture' },
-    { id: 'minimalist', name: 'Minimalist', description: 'Simple, functional design with neutral colors' },
-    { id: 'traditional', name: 'Traditional', description: 'Classic and timeless furniture pieces' },
-    { id: 'industrial', name: 'Industrial', description: 'Raw materials and urban aesthetics' },
-    { id: 'scandinavian', name: 'Scandinavian', description: 'Light woods and cozy textiles' },
-    { id: 'tropical', name: 'Tropical', description: 'Natural materials and tropical elements' }
-  ];
-
-  // Mock data for features not yet in database
-  const mockAgent = {
-    id: 1,
-    name: "Property Agent",
-    title: "Senior Property Consultant",
-    phone: "+62 821 1234 5678",
-    email: "agent@realestate.com",
-    avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=200&h=200&fit=crop&auto=format",
-    rating: 4.9,
-    experience: "8 years",
-    properties: 156
   };
 
-  const defaultAmenities = [
-    "Swimming Pool", "Ocean View", "Private Beach Access", "Parking Garage", 
-    "Garden", "Security System", "Air Conditioning", "Modern Kitchen", "Wifi", "Gym/Fitness Center"
-  ];
-
-  const mockNeighborhood = {
-    walkScore: 85,
-    transitScore: 72,
-    bikeScore: 78,
-    nearbyPlaces: [
-      { name: "Local Market", distance: "200m", type: "Shopping" },
-      { name: "Restaurant", distance: "500m", type: "Restaurant" },
-      { name: "Shopping Mall", distance: "1.2km", type: "Shopping" },
-      { name: "Airport", distance: "8km", type: "Airport" }
-    ]
+  const getPropertyImages = () => {
+    if (property?.image_urls && property.image_urls.length > 0) {
+      return property.image_urls;
+    }
+    if (property?.images && property.images.length > 0) {
+      return property.images;
+    }
+    return ['https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=600&fit=crop'];
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
-        <div className="text-center">
-          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-blue-500" />
-          <p className="text-muted-foreground">Loading property details...</p>
+      <div className="min-h-screen bg-background">
+        <Navigation />
+        <div className="container mx-auto px-4 py-8">
+          <div className="animate-pulse space-y-6">
+            <div className="h-8 bg-gray-200 rounded w-1/4"></div>
+            <div className="h-96 bg-gray-200 rounded-lg"></div>
+            <div className="h-32 bg-gray-200 rounded"></div>
+          </div>
         </div>
+        <ProfessionalFooter language={language} />
       </div>
     );
   }
 
   if (error || !property) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
-        <div className="text-center">
-          <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Property Not Found</h1>
-          <p className="text-muted-foreground mb-4">{error || "The property you're looking for doesn't exist."}</p>
-          <Link to="/properties">
-            <Button>
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Properties
-            </Button>
-          </Link>
+      <div className="min-h-screen bg-background">
+        <Navigation />
+        <div className="container mx-auto px-4 py-8 text-center">
+          <h1 className="text-2xl font-bold mb-4">Property not found</h1>
+          <Button onClick={() => navigate('/')}>
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to Home
+          </Button>
         </div>
+        <ProfessionalFooter language={language} />
       </div>
     );
   }
 
-  const propertyImages = property.image_urls && property.image_urls.length > 0 
-    ? property.image_urls 
-    : ["https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&h=600&fit=crop&auto=format"];
-
-  const propertyLocation = `${property.area || ''}, ${property.city || ''}, ${property.state || ''}`.replace(/^,\s*|,\s*$/g, '') || property.location;
+  const images = getPropertyImages();
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Header */}
-      <div className="bg-white dark:bg-gray-800 border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <Link to="/properties">
-              <Button variant="ghost">
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Back to Listings
-              </Button>
-            </Link>
-            <div className="flex items-center gap-2">
-              <Button variant="ghost" size="sm">
-                <Share2 className="h-4 w-4" />
-              </Button>
-              <Button 
-                variant="ghost" 
-                size="sm"
-                onClick={() => setIsLiked(!isLiked)}
-                className={isLiked ? 'text-red-500' : ''}
-              >
-                <Heart className={`h-4 w-4 ${isLiked ? 'fill-current' : ''}`} />
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
+    <div className="min-h-screen bg-background">
+      <Navigation />
+      
+      <div className="container mx-auto px-4 py-8">
+        {/* Back Button */}
+        <Button 
+          variant="ghost" 
+          onClick={() => navigate(-1)}
+          className="mb-6"
+        >
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Back
+        </Button>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
-          <div className="lg:col-span-2 space-y-8">
+          <div className="lg:col-span-2 space-y-6">
             {/* Image Gallery */}
-            <Card>
-              <CardContent className="p-0">
-                <div className="relative">
-                  <img
-                    src={propertyImages[currentImageIndex]}
-                    alt={property.title}
-                    className="w-full h-96 object-cover rounded-t-lg"
-                  />
-                  <div className="absolute top-4 left-4 flex flex-col gap-2">
-                    <Badge className="bg-green-500 text-white">
-                      {property.listing_type === 'sale' ? 'For Sale' : 'For Rent'}
-                    </Badge>
-                  </div>
-                  {(property.three_d_model_url || property.virtual_tour_url) && (
-                    <div className="absolute top-4 right-4">
-                      <Button
-                        onClick={() => setIs3DViewOpen(true)}
-                        className="bg-white/90 text-gray-800 hover:bg-white"
-                      >
-                        <Box className="h-4 w-4 mr-2" />
-                        3D View
-                      </Button>
-                    </div>
-                  )}
+            <div className="relative">
+              <img
+                src={images[currentImageIndex]}
+                alt={property.title}
+                className="w-full h-96 object-cover rounded-lg"
+              />
+              
+              {/* Image Controls */}
+              {images.length > 1 && (
+                <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2">
+                  {images.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentImageIndex(index)}
+                      className={`w-3 h-3 rounded-full ${
+                        index === currentImageIndex ? 'bg-white' : 'bg-white/50'
+                      }`}
+                    />
+                  ))}
                 </div>
-                {propertyImages.length > 1 && (
-                  <div className="flex gap-2 p-4 overflow-x-auto">
-                    {propertyImages.map((image, index) => (
-                      <img
-                        key={index}
-                        src={image}
-                        alt={`Property ${index + 1}`}
-                        className={`w-20 h-16 object-cover rounded cursor-pointer border-2 ${
-                          currentImageIndex === index ? 'border-blue-500' : 'border-gray-200'
-                        }`}
-                        onClick={() => setCurrentImageIndex(index)}
-                      />
-                    ))}
-                  </div>
+              )}
+
+              {/* Action Buttons */}
+              <div className="absolute top-4 right-4 flex gap-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="bg-white/90 hover:bg-white"
+                  onClick={() => setIsFavorite(!isFavorite)}
+                >
+                  <Heart className={`h-4 w-4 ${isFavorite ? 'fill-red-500 text-red-500' : ''}`} />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="bg-white/90 hover:bg-white"
+                  onClick={() => setIs3DViewOpen(true)}
+                >
+                  <Box className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="bg-white/90 hover:bg-white"
+                >
+                  <Share2 className="h-4 w-4" />
+                </Button>
+              </div>
+
+              {/* Badges */}
+              <div className="absolute top-4 left-4 flex flex-col gap-2">
+                <Badge className="bg-blue-600 text-white">
+                  {property.listing_type === 'sale' ? 'For Sale' : 'For Rent'}
+                </Badge>
+                {property.is_premium && (
+                  <Badge className="bg-gradient-to-r from-purple-600 to-blue-600 text-white">
+                    Premium
+                  </Badge>
                 )}
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
             {/* Property Details */}
-            <Card>
-              <CardContent className="p-6">
-                <div className="space-y-4">
-                  <div>
-                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                      {property.title}
-                    </h1>
-                    <div className="flex items-center text-gray-600 dark:text-gray-400 mt-2">
-                      <MapPin className="h-4 w-4 mr-1" />
-                      <span>{propertyLocation}</span>
-                    </div>
-                  </div>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h1 className="text-3xl font-bold">{property.title}</h1>
+                <div className="flex items-center gap-2">
+                  <Eye className="h-4 w-4 text-gray-500" />
+                  <span className="text-sm text-gray-500">
+                    {Math.floor(Math.random() * 150) + 50} views
+                  </span>
+                </div>
+              </div>
 
-                  <div className="text-3xl font-bold text-blue-600">
-                    {property.price ? formatIDR(property.price) : 'Contact for price'}
-                  </div>
+              <div className="flex items-center text-gray-600">
+                <MapPin className="h-4 w-4 mr-2" />
+                <span>{property.location}</span>
+              </div>
 
-                  <div className="flex items-center gap-6 text-gray-600 dark:text-gray-400">
-                    {property.bedrooms && (
-                      <div className="flex items-center gap-1">
-                        <Bed className="h-4 w-4" />
-                        <span>{property.bedrooms} Bedrooms</span>
-                      </div>
-                    )}
-                    {property.bathrooms && (
-                      <div className="flex items-center gap-1">
-                        <Bath className="h-4 w-4" />
-                        <span>{property.bathrooms} Bathrooms</span>
-                      </div>
-                    )}
-                    {property.area_sqm && (
-                      <div className="flex items-center gap-1">
-                        <Square className="h-4 w-4" />
-                        <span>{property.area_sqm}m²</span>
-                      </div>
-                    )}
-                  </div>
+              <div className="text-3xl font-bold text-blue-600">
+                {formatPrice(property.price)}
+              </div>
 
-                  <div className="flex items-center gap-2">
-                    <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                    <span className="font-medium">4.8</span>
-                    <span className="text-gray-500">(126 reviews)</span>
+              {/* Property Stats */}
+              <div className="flex items-center gap-6 text-gray-600">
+                <div className="flex items-center gap-2">
+                  <Bed className="h-4 w-4" />
+                  <span>{property.bedrooms} Bedrooms</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Bath className="h-4 w-4" />
+                  <span>{property.bathrooms} Bathrooms</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Square className="h-4 w-4" />
+                  <span>{property.area_sqm} m²</span>
+                </div>
+              </div>
+
+              <Separator />
+
+              {/* Description */}
+              <div>
+                <h3 className="text-xl font-semibold mb-3">Description</h3>
+                <p className="text-gray-600 leading-relaxed">
+                  {property.description || 'No description available for this property.'}
+                </p>
+              </div>
+
+              {/* Property Features */}
+              {property.property_features && Object.keys(property.property_features).length > 0 && (
+                <div>
+                  <h3 className="text-xl font-semibold mb-3">Features & Amenities</h3>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                    {Object.entries(property.property_features).map(([key, value]) => (
+                      <div key={key} className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
+                        <span className="text-sm text-gray-600">{key}: {String(value)}</span>
+                      </div>
+                    ))}
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-
-            {/* Tabs for different sections */}
-            <Tabs defaultValue="description" className="w-full">
-              <TabsList className="grid w-full grid-cols-5">
-                <TabsTrigger value="description">Description</TabsTrigger>
-                <TabsTrigger value="amenities">Amenities</TabsTrigger>
-                <TabsTrigger value="staging">Virtual Staging</TabsTrigger>
-                <TabsTrigger value="neighborhood">Neighborhood</TabsTrigger>
-                <TabsTrigger value="feedback">Reviews</TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="description" className="mt-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Property Description</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-                      {property.description || "This is a beautiful property with excellent features and great location."}
-                    </p>
-                  </CardContent>
-                </Card>
-              </TabsContent>
-
-              <TabsContent value="amenities" className="mt-6">
-                <PropertyAmenities amenities={defaultAmenities} />
-              </TabsContent>
-
-              <TabsContent value="staging" className="mt-6">
-                <VirtualStagingSelector
-                  styles={stagingStyles}
-                  selectedStyle={selectedStagingStyle}
-                  onStyleChange={setSelectedStagingStyle}
-                  onOpen3DView={() => setIs3DViewOpen(true)}
-                />
-              </TabsContent>
-
-              <TabsContent value="neighborhood" className="mt-6">
-                <NeighborhoodInsights neighborhood={mockNeighborhood} />
-              </TabsContent>
-
-              <TabsContent value="feedback" className="mt-6">
-                <FeedbackSection propertyId={property.id} />
-              </TabsContent>
-            </Tabs>
+              )}
+            </div>
           </div>
 
           {/* Sidebar */}
           <div className="space-y-6">
-            {/* Agent Contact */}
-            <AgentContactCard agent={mockAgent} />
-
-            {/* Quick Actions */}
+            {/* Contact Agent Card */}
             <Card>
               <CardHeader>
-                <CardTitle>Actions</CardTitle>
+                <CardTitle>Contact Agent</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-3">
-                <Button className="w-full" onClick={() => setIsScheduleModalOpen(true)}>
-                  <Calendar className="h-4 w-4 mr-2" />
-                  Schedule Survey
-                </Button>
-                <Button variant="outline" className="w-full">
-                  <MessageSquare className="h-4 w-4 mr-2" />
-                  Send Message
-                </Button>
-                <Button variant="outline" className="w-full">
-                  <Phone className="h-4 w-4 mr-2" />
-                  Call Agent
-                </Button>
+              <CardContent className="space-y-4">
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <span className="text-white font-semibold">AG</span>
+                  </div>
+                  <h4 className="font-semibold">Property Agent</h4>
+                  <p className="text-sm text-gray-600">Licensed Real Estate Professional</p>
+                  <div className="flex items-center justify-center gap-1 mt-2">
+                    <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                    <span className="text-sm">4.8 (127 reviews)</span>
+                  </div>
+                </div>
+                
+                <div className="space-y-3">
+                  <Button className="w-full" size="lg">
+                    <Phone className="h-4 w-4 mr-2" />
+                    Call Agent
+                  </Button>
+                  <Button variant="outline" className="w-full" size="lg">
+                    <Mail className="h-4 w-4 mr-2" />
+                    Send Message
+                  </Button>
+                  <Button variant="outline" className="w-full" size="lg">
+                    <Calendar className="h-4 w-4 mr-2" />
+                    Schedule Tour
+                  </Button>
+                </div>
               </CardContent>
             </Card>
 
-            {/* Predictive Pricing */}
-            <PredictivePricingCard loading={predictionLoading} prediction={prediction} />
-
-            {/* Property Summary */}
+            {/* Property Stats */}
             <Card>
               <CardHeader>
-                <CardTitle>Property Summary</CardTitle>
+                <CardTitle>Property Information</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-2">
+              <CardContent className="space-y-3">
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Property Type:</span>
+                  <span className="text-gray-600">Property Type</span>
                   <span className="font-medium capitalize">{property.property_type}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Listing Type:</span>
-                  <span className="font-medium capitalize">{property.listing_type}</span>
+                  <span className="text-gray-600">Status</span>
+                  <Badge variant="outline" className="capitalize">
+                    {property.status}
+                  </Badge>
                 </div>
-                {property.area_sqm && (
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Area:</span>
-                    <span className="font-medium">{property.area_sqm}m²</span>
-                  </div>
-                )}
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Status:</span>
-                  <span className="font-medium capitalize">{property.status}</span>
+                  <span className="text-gray-600">Listed</span>
+                  <span className="font-medium">
+                    {new Date(property.created_at).toLocaleDateString()}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">ID</span>
+                  <span className="font-medium text-xs">{property.id.slice(0, 8)}...</span>
                 </div>
               </CardContent>
             </Card>
           </div>
         </div>
+
+        {/* Similar Properties Section */}
+        {property && (
+          <div className="mt-12">
+            <SimilarProperties 
+              currentProperty={{
+                id: property.id,
+                property_type: property.property_type,
+                price: property.price,
+                bedrooms: property.bedrooms,
+                city: property.city || '',
+                state: property.state || '',
+                listing_type: property.listing_type
+              }}
+            />
+          </div>
+        )}
+
+        {/* Recommended Properties Section */}
+        <div className="mt-8">
+          <RecommendedProperties
+            currentPropertyId={property.id}
+            propertyType={property.property_type}
+            location={property.city}
+            title="You Might Also Like"
+            limit={6}
+            showAIBadge={false}
+          />
+        </div>
       </div>
 
-      {/* 3D Property Viewer Modal */}
+      {/* 3D Property Viewer */}
       <PropertyViewer3D
         isOpen={is3DViewOpen}
         onClose={() => setIs3DViewOpen(false)}
@@ -408,13 +361,7 @@ const PropertyDetail = () => {
         propertyTitle={property.title}
       />
 
-      {/* Schedule Survey Modal */}
-      <ScheduleSurveyModal
-        isOpen={isScheduleModalOpen}
-        onClose={() => setIsScheduleModalOpen(false)}
-        propertyTitle={property.title}
-        agentName={mockAgent.name}
-      />
+      <ProfessionalFooter language={language} />
     </div>
   );
 };
