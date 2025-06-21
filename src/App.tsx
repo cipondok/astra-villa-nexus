@@ -5,7 +5,7 @@ import { ThemeProvider } from 'next-themes';
 import { AuthProvider } from './contexts/AuthContext';
 import { WalletProvider } from './contexts/WalletContext';
 import { AlertProvider } from './contexts/AlertContext';
-import { LanguageProvider } from './contexts/LanguageContext';
+import { LanguageProvider, useLanguage } from './contexts/LanguageContext';
 import { Web3ModalProvider } from './components/wallet/Web3ModalProvider';
 import Navigation from './components/Navigation';
 import ProfessionalFooter from './components/ProfessionalFooter';
@@ -20,6 +20,31 @@ import AdminDashboard from './pages/AdminDashboard';
 import WalletDashboard from './components/wallet/WalletDashboard';
 import TokenConfiguration from './pages/TokenConfiguration';
 
+const AppContent = () => {
+  const { language } = useLanguage();
+
+  return (
+    <div className="min-h-screen bg-background">
+      <Navigation />
+      <main className="flex-1">
+        <Routes>
+          <Route path="/" element={<Index />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/properties" element={<Properties />} />
+          <Route path="/help" element={<Help />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/dashboard/admin" element={<AdminDashboard />} />
+          <Route path="/wallet" element={<WalletDashboard />} />
+          <Route path="/token-config" element={<TokenConfiguration />} />
+        </Routes>
+      </main>
+      <ProfessionalFooter language={language} />
+      <ResponsiveAIChatWidget />
+      <Toaster />
+    </div>
+  );
+};
+
 function App() {
   return (
     <Router>
@@ -29,24 +54,7 @@ function App() {
             <WalletProvider>
               <AlertProvider>
                 <LanguageProvider>
-                  <div className="min-h-screen bg-background">
-                    <Navigation />
-                    <main className="flex-1">
-                      <Routes>
-                        <Route path="/" element={<Index />} />
-                        <Route path="/about" element={<About />} />
-                        <Route path="/properties" element={<Properties />} />
-                        <Route path="/help" element={<Help />} />
-                        <Route path="/dashboard" element={<Dashboard />} />
-                        <Route path="/dashboard/admin" element={<AdminDashboard />} />
-                        <Route path="/wallet" element={<WalletDashboard />} />
-                        <Route path="/token-config" element={<TokenConfiguration />} />
-                      </Routes>
-                    </main>
-                    <ProfessionalFooter />
-                    <ResponsiveAIChatWidget />
-                    <Toaster />
-                  </div>
+                  <AppContent />
                 </LanguageProvider>
               </AlertProvider>
             </WalletProvider>
