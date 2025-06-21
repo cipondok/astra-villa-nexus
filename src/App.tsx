@@ -1,20 +1,21 @@
+
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { ThemeProvider } from './contexts/ThemeContext';
+import { ThemeProvider } from 'next-themes';
 import { AuthProvider } from './contexts/AuthContext';
 import { WalletProvider } from './contexts/WalletContext';
 import { AlertProvider } from './contexts/AlertContext';
 import { LanguageProvider } from './contexts/LanguageContext';
-import { Web3ModalProvider } from './contexts/Web3ModalContext';
-import EnhancedNavigation from './components/layout/EnhancedNavigation';
-import ProfessionalFooter from './components/layout/ProfessionalFooter';
+import { Web3ModalProvider } from './components/wallet/Web3ModalProvider';
+import Navigation from './components/Navigation';
+import ProfessionalFooter from './components/ProfessionalFooter';
 import ResponsiveAIChatWidget from './components/ai/ResponsiveAIChatWidget';
 import { Toaster } from 'sonner';
-import HomePage from './pages/HomePage';
-import AboutPage from './pages/AboutPage';
-import ServicesPage from './pages/ServicesPage';
-import ContactPage from './pages/ContactPage';
-import DashboardPage from './pages/DashboardPage';
+import Index from './pages/Index';
+import About from './pages/About';
+import Properties from './pages/Properties';
+import Help from './pages/Help';
+import Dashboard from './pages/Dashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import WalletDashboard from './components/wallet/WalletDashboard';
 import TokenConfiguration from './pages/TokenConfiguration';
@@ -22,21 +23,21 @@ import TokenConfiguration from './pages/TokenConfiguration';
 function App() {
   return (
     <Router>
-      <ThemeProvider>
-        <AuthProvider>
-          <WalletProvider>
-            <AlertProvider>
-              <LanguageProvider>
-                <Web3ModalProvider>
+      <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+        <Web3ModalProvider>
+          <AuthProvider>
+            <WalletProvider>
+              <AlertProvider>
+                <LanguageProvider>
                   <div className="min-h-screen bg-background">
-                    <EnhancedNavigation />
+                    <Navigation />
                     <main className="flex-1">
                       <Routes>
-                        <Route path="/" element={<HomePage />} />
-                        <Route path="/about" element={<AboutPage />} />
-                        <Route path="/services" element={<ServicesPage />} />
-                        <Route path="/contact" element={<ContactPage />} />
-                        <Route path="/dashboard" element={<DashboardPage />} />
+                        <Route path="/" element={<Index />} />
+                        <Route path="/about" element={<About />} />
+                        <Route path="/properties" element={<Properties />} />
+                        <Route path="/help" element={<Help />} />
+                        <Route path="/dashboard" element={<Dashboard />} />
                         <Route path="/dashboard/admin" element={<AdminDashboard />} />
                         <Route path="/wallet" element={<WalletDashboard />} />
                         <Route path="/token-config" element={<TokenConfiguration />} />
@@ -46,11 +47,11 @@ function App() {
                     <ResponsiveAIChatWidget />
                     <Toaster />
                   </div>
-                </Web3ModalProvider>
-              </LanguageProvider>
-            </AlertProvider>
-          </WalletProvider>
-        </AuthProvider>
+                </LanguageProvider>
+              </AlertProvider>
+            </WalletProvider>
+          </AuthProvider>
+        </Web3ModalProvider>
       </ThemeProvider>
     </Router>
   );

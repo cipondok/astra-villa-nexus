@@ -4,7 +4,6 @@ import { useAccount, useBalance, useDisconnect } from 'wagmi';
 import { formatUnits } from 'viem';
 import { useAuth } from './AuthContext';
 import { ASTRA_TOKEN_ADDRESS } from '@/lib/web3';
-import { checkWalletConnection, linkWalletToUser } from '@/lib/wallet-utils';
 
 interface WalletContextType {
   isConnected: boolean;
@@ -23,7 +22,7 @@ const WalletContext = createContext<WalletContextType | undefined>(undefined);
 export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { address, isConnected } = useAccount();
   const { disconnect } = useDisconnect();
-  const { user, profile } = useAuth();
+  const { user } = useAuth();
   const [isWalletLinked, setIsWalletLinked] = useState(false);
   const [astraBalance, setAstraBalance] = useState<string | null>(null);
 
@@ -52,8 +51,9 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       }
 
       try {
-        const isLinked = await checkWalletConnection(user.id, address);
-        setIsWalletLinked(isLinked);
+        // TODO: Implement actual wallet link checking when backend is ready
+        console.log('Checking wallet link for user:', user.id, 'address:', address);
+        setIsWalletLinked(false);
       } catch (error) {
         console.error('Error checking wallet link:', error);
         setIsWalletLinked(false);
@@ -89,7 +89,8 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     }
 
     try {
-      await linkWalletToUser(user.id, address, 56);
+      // TODO: Implement actual wallet linking when backend is ready
+      console.log('Linking wallet for user:', user.id, 'address:', address);
       setIsWalletLinked(true);
       console.log('Wallet linked successfully');
     } catch (error) {

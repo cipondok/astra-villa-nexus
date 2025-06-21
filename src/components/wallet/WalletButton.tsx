@@ -5,7 +5,6 @@ import { Wallet, LogOut, Link } from 'lucide-react';
 import { useWeb3Modal } from '@web3modal/wagmi/react';
 import { useAccount, useDisconnect } from 'wagmi';
 import { useAuth } from '@/contexts/AuthContext';
-import { useWallet } from '@/contexts/WalletContext';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,7 +20,6 @@ const WalletButton = () => {
   const { address, isConnected } = useAccount();
   const { disconnect } = useDisconnect();
   const { user, isAuthenticated } = useAuth();
-  const { isWalletLinked, linkWalletToProfile } = useWallet();
 
   // Only show wallet button for authenticated users
   if (!isAuthenticated || !user) {
@@ -34,8 +32,9 @@ const WalletButton = () => {
 
   const handleLinkWallet = async () => {
     try {
-      await linkWalletToProfile();
-      toast.success('Wallet linked successfully!');
+      // Note: We'll implement wallet linking when WalletProvider is available
+      console.log('Wallet linking feature will be implemented');
+      toast.success('Wallet linking feature coming soon!');
     } catch (error) {
       console.error('Error linking wallet:', error);
       toast.error('Failed to link wallet. Please try again.');
@@ -68,19 +67,14 @@ const WalletButton = () => {
           <div className="flex flex-col space-y-1">
             <p className="text-sm font-medium">Wallet Connected</p>
             <p className="text-xs text-muted-foreground">{formatAddress(address || '')}</p>
-            {isWalletLinked && (
-              <p className="text-xs text-green-600">✓ Linked to Profile</p>
-            )}
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         
-        {!isWalletLinked && (
-          <DropdownMenuItem onClick={handleLinkWallet}>
-            <Link className="h-4 w-4 mr-2" />
-            Link to Profile
-          </DropdownMenuItem>
-        )}
+        <DropdownMenuItem onClick={handleLinkWallet}>
+          <Link className="h-4 w-4 mr-2" />
+          Link to Profile
+        </DropdownMenuItem>
         
         <DropdownMenuItem onClick={() => open({ view: 'Account' })}>
           <Wallet className="h-4 w-4 mr-2" />
