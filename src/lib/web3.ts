@@ -165,7 +165,8 @@ export const parseAstraAmount = (amount: string, decimals: number = 18): bigint 
 
 // Helper function to check if token address is configured
 export const isTokenConfigured = (): boolean => {
-  return ASTRA_TOKEN_ADDRESS !== 'YOUR_TESTNET_CONTRACT_ADDRESS' && 
-         ASTRA_TOKEN_ADDRESS !== 'YOUR_MAINNET_CONTRACT_ADDRESS' &&
-         ASTRA_TOKEN_ADDRESS !== '0x0000000000000000000000000000000000000000';
+  const address = ASTRA_TOKEN_ADDRESS as string;
+  return address !== 'YOUR_TESTNET_CONTRACT_ADDRESS' && 
+         address !== 'YOUR_MAINNET_CONTRACT_ADDRESS' &&
+         address !== '0x0000000000000000000000000000000000000000';
 };
