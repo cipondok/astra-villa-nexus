@@ -2,10 +2,9 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Wallet, LogOut, Link, ExternalLink } from 'lucide-react';
-import { useWeb3Modal } from '@web3modal/wagmi/react';
-import { useAccount, useDisconnect } from 'wagmi';
+import { Wallet, LogOut, User, Coins } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useWallet } from '@/contexts/WalletContext';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,53 +16,40 @@ import {
 import { toast } from 'sonner';
 
 const WalletButton = () => {
-  const { open } = useWeb3Modal();
-  const { address, isConnected, isConnecting } = useAccount();
-  const { disconnect } = useDisconnect();
   const { user, isAuthenticated } = useAuth();
+  const { address, isConnected, astraBalance, connectWallet, disconnectWallet } = useWallet();
 
   const formatAddress = (addr: string) => {
-    return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
+    return `${addr.slice(0, 8)}...${addr.slice(-6)}`;
   };
 
-  const handleConnectWallet = () => {
-    try {
-      open();
-    } catch (error) {
-      console.error('Error opening wallet modal:', error);
-      toast.error('Failed to open wallet connection');
-    }
+  const formatBalance = (balance: string | null) => {
+    if (!balance) return '0.00';
+    return parseFloat(balance).toFixed(2);
   };
 
-  const handleLinkWallet = async () => {
-    try {
-      console.log('Linking wallet for user:', user?.id, 'address:', address);
-      toast.success('Wallet linking feature will be implemented soon!');
-    } catch (error) {
-      console.error('Error linking wallet:', error);
-      toast.error('Failed to link wallet. Please try again.');
-    }
-  };
-
-  // Show for all users, not just authenticated ones
-  if (!isConnected && !isConnecting) {
+  if (!isAuthenticated) {
     return (
       <Button
-        onClick={handleConnectWallet}
+        onClick={() => toast.info('Please sign in first to access your ASTRA wallet')}
         size="sm"
-        className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white"
+        variant="outline"
       >
         <Wallet className="h-4 w-4 mr-2" />
-        Connect Wallet
+        ASTRA Wallet
       </Button>
     );
   }
 
-  if (isConnecting) {
+  if (!isConnected) {
     return (
-      <Button size="sm" disabled>
-        <Wallet className="h-4 w-4 mr-2 animate-spin" />
-        Connecting...
+      <Button
+        onClick={connectWallet}
+        size="sm"
+        className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white"
+      >
+        <Wallet className="h-4 w-4 mr-2" />
+        Connect ASTRA Wallet
       </Button>
     );
   }
@@ -71,9 +57,9 @@ const WalletButton = () => {
   if (isConnected && address) {
     return (
       <div className="flex items-center gap-2">
-        <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
-          <div className="w-2 h-2 bg-green-500 rounded-full mr-2" />
-          Connected
+        <Badge variant="outline" className="bg-orange-50 text-orange-700 border-orange-200">
+          <Coins className="h-3 w-3 mr-1" />
+          {formatBalance(astraBalance)} ASTRA
         </Badge>
         
         <DropdownMenu>
@@ -86,39 +72,35 @@ const WalletButton = () => {
           <DropdownMenuContent align="end" className="w-56">
             <DropdownMenuLabel>
               <div className="flex flex-col space-y-1">
-                <p className="text-sm font-medium">Wallet Connected</p>
+                <p className="text-sm font-medium">ASTRA Wallet</p>
                 <p className="text-xs text-muted-foreground">{formatAddress(address)}</p>
-                <p className="text-xs text-blue-600">BSC Testnet</p>
+                <div className="flex items-center gap-1 text-xs text-orange-600">
+                  <Coins className="h-3 w-3" />
+                  {formatBalance(astraBalance)} ASTRA
+                </div>
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             
-            {isAuthenticated && (
-              <>
-                <DropdownMenuItem onClick={handleLinkWallet}>
-                  <Link className="h-4 w-4 mr-2" />
-                  Link to Profile
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-              </>
-            )}
-            
-            <DropdownMenuItem onClick={() => open({ view: 'Account' })}>
-              <ExternalLink className="h-4 w-4 mr-2" />
-              Manage Wallet
+            <DropdownMenuItem onClick={() => window.open('/astra-marketplace', '_blank')}>
+              <Coins className="h-4 w-4 mr-2" />
+              ASTRA Marketplace
             </DropdownMenuItem>
             
-            <DropdownMenuItem onClick={() => window.open('/wallet', '_blank')}>
-              <Wallet className="h-4 w-4 mr-2" />
-              ASTRA Dashboard
+            <DropdownMenuItem onClick={() => {
+              navigator.clipboard.writeText(address);
+              toast.success('Wallet address copied');
+            }}>
+              <User className="h-4 w-4 mr-2" />
+              Copy Address
             </DropdownMenuItem>
             
             <DropdownMenuSeparator />
             
             <DropdownMenuItem 
               onClick={() => {
-                disconnect();
-                toast.success('Wallet disconnected');
+                disconnectWallet();
+                toast.success('ASTRA wallet disconnected');
               }}
               className="text-red-600 hover:bg-red-50"
             >

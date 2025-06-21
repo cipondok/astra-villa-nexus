@@ -1,9 +1,7 @@
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { useAccount, useBalance, useDisconnect } from 'wagmi';
-import { formatUnits } from 'viem';
 import { useAuth } from './AuthContext';
-import { ASTRA_TOKEN_ADDRESS } from '@/lib/web3';
+import { useAstraToken } from '@/hooks/useAstraToken';
 
 interface WalletContextType {
   isConnected: boolean;
@@ -20,91 +18,55 @@ interface WalletContextType {
 const WalletContext = createContext<WalletContextType | undefined>(undefined);
 
 export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { address, isConnected } = useAccount();
-  const { disconnect } = useDisconnect();
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
+  const { balance } = useAstraToken();
+  const [isConnected, setIsConnected] = useState(false);
+  const [address, setAddress] = useState<string | undefined>(undefined);
   const [isWalletLinked, setIsWalletLinked] = useState(false);
-  const [astraBalance, setAstraBalance] = useState<string | null>(null);
 
-  // Get BNB balance
-  const { data: balance, isLoading: balanceLoading } = useBalance({
-    address,
-  });
-
-  // Get ASTRA token balance - only if we have a valid token address
-  const { data: tokenBalance, isLoading: tokenLoading } = useBalance({
-    address,
-    token: ASTRA_TOKEN_ADDRESS !== '0x0000000000000000000000000000000000000000' ? ASTRA_TOKEN_ADDRESS : undefined,
-    query: {
-      enabled: isConnected && !!address && ASTRA_TOKEN_ADDRESS !== '0x0000000000000000000000000000000000000000',
-    },
-  });
-
-  const isLoading = balanceLoading || tokenLoading;
-
-  // Check if wallet is linked to current user profile
+  // Auto-connect for authenticated users
   useEffect(() => {
-    const checkWalletLink = async () => {
-      if (!user || !address) {
-        setIsWalletLinked(false);
-        return;
-      }
-
-      try {
-        // TODO: Implement actual wallet link checking when backend is ready
-        console.log('Checking wallet link for user:', user.id, 'address:', address);
-        setIsWalletLinked(false);
-      } catch (error) {
-        console.error('Error checking wallet link:', error);
-        setIsWalletLinked(false);
-      }
-    };
-
-    checkWalletLink();
-  }, [user, address]);
-
-  // Update ASTRA balance when token balance changes
-  useEffect(() => {
-    if (tokenBalance) {
-      setAstraBalance(formatUnits(tokenBalance.value, tokenBalance.decimals));
+    if (isAuthenticated && user) {
+      // Generate a simple wallet address based on user ID
+      const walletAddress = `0xastra${user.id.replace(/-/g, '').slice(0, 32)}`;
+      setAddress(walletAddress);
+      setIsConnected(true);
+      setIsWalletLinked(true);
     } else {
-      setAstraBalance(null);
+      setAddress(undefined);
+      setIsConnected(false);
+      setIsWalletLinked(false);
     }
-  }, [tokenBalance]);
+  }, [isAuthenticated, user]);
 
   const connectWallet = () => {
-    // This will be handled by the Web3Modal component
-    console.log('Connect wallet triggered');
+    if (isAuthenticated && user) {
+      const walletAddress = `0xastra${user.id.replace(/-/g, '').slice(0, 32)}`;
+      setAddress(walletAddress);
+      setIsConnected(true);
+      setIsWalletLinked(true);
+    }
   };
 
   const disconnectWallet = () => {
-    disconnect();
+    setAddress(undefined);
+    setIsConnected(false);
     setIsWalletLinked(false);
-    setAstraBalance(null);
   };
 
   const linkWalletToProfile = async () => {
-    if (!user || !address) {
-      throw new Error('User not authenticated or wallet not connected');
+    if (!user) {
+      throw new Error('User not authenticated');
     }
-
-    try {
-      // TODO: Implement actual wallet linking when backend is ready
-      console.log('Linking wallet for user:', user.id, 'address:', address);
-      setIsWalletLinked(true);
-      console.log('Wallet linked successfully');
-    } catch (error) {
-      console.error('Error linking wallet:', error);
-      throw error;
-    }
+    setIsWalletLinked(true);
   };
 
   const value = {
     isConnected,
     address,
-    balance: balance ? formatUnits(balance.value, balance.decimals) : null,
-    astraBalance,
-    isLoading,
+    balance: null, // Not using native currency
+    astraBalance: balance?.toString() || null,
+    isLoading: false,
     connectWallet,
     disconnectWallet,
     linkWalletToProfile,

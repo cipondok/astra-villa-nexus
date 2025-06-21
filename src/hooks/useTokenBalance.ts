@@ -1,7 +1,6 @@
 
 import { useState, useEffect } from 'react';
-import { useAccount, useBalance } from 'wagmi';
-import { ASTRA_TOKEN_ADDRESS } from '@/lib/web3';
+import { useAstraToken } from './useAstraToken';
 
 export interface TokenBalanceState {
   balance: string | null;
@@ -11,44 +10,30 @@ export interface TokenBalanceState {
 }
 
 export const useTokenBalance = (): TokenBalanceState => {
-  const { address, isConnected } = useAccount();
-  const [balance, setBalance] = useState<string | null>(null);
-
-  // Get ASTRA token balance - only if we have a valid token address
-  const { 
-    data: tokenBalance, 
-    isLoading, 
-    refetch 
-  } = useBalance({
-    address,
-    token: ASTRA_TOKEN_ADDRESS !== '0x0000000000000000000000000000000000000000' ? ASTRA_TOKEN_ADDRESS : undefined,
-    query: {
-      enabled: isConnected && !!address && ASTRA_TOKEN_ADDRESS !== '0x0000000000000000000000000000000000000000',
-    },
-  });
+  const { balance, isLoading, fetchBalance } = useAstraToken();
+  const [balanceString, setBalanceString] = useState<string | null>(null);
 
   useEffect(() => {
-    if (tokenBalance) {
-      const balanceString = tokenBalance.formatted;
-      setBalance(balanceString);
+    if (balance !== undefined) {
+      setBalanceString(balance.toString());
     } else {
-      setBalance(null);
+      setBalanceString(null);
     }
-  }, [tokenBalance]);
+  }, [balance]);
 
   const hasMinimumBalance = (requiredAmount: string): boolean => {
-    if (!balance || !requiredAmount) return false;
-    const balanceNum = parseFloat(balance);
+    if (!balanceString || !requiredAmount) return false;
+    const balanceNum = parseFloat(balanceString);
     const requiredNum = parseFloat(requiredAmount);
     return balanceNum >= requiredNum;
   };
 
   const refresh = () => {
-    refetch();
+    fetchBalance();
   };
 
   return {
-    balance,
+    balance: balanceString,
     isLoading,
     hasMinimumBalance,
     refresh,
