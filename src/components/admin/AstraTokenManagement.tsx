@@ -11,20 +11,26 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Coins, Users, Settings, AlertTriangle, CheckCircle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 
+interface TokenSetting {
+  amount: number;
+  enabled: boolean;
+}
+
 interface TokenSettings {
-  signup_bonus: { amount: number; enabled: boolean };
-  daily_checkin: { amount: number; enabled: boolean };
-  profile_completion: { amount: number; enabled: boolean };
-  minimum_rent_payment: { amount: number; enabled: boolean };
+  signup_bonus: TokenSetting;
+  daily_checkin: TokenSetting;
+  profile_completion: TokenSetting;
+  minimum_rent_payment: TokenSetting;
 }
 
 interface UserWalletInfo {
   id: string;
-  full_name: string;
+  full_name: string | null;
   email: string;
   wallet_address?: string;
   wallet_verified: boolean;
   is_admin: boolean;
+  role: string;
 }
 
 const AstraTokenManagement = () => {
@@ -56,7 +62,14 @@ const AstraTokenManagement = () => {
         const newSettings = { ...settings };
         data.forEach(setting => {
           if (newSettings[setting.setting_key as keyof TokenSettings]) {
-            newSettings[setting.setting_key as keyof TokenSettings] = setting.setting_value;
+            // Properly cast the Json type to our TokenSetting interface
+            const settingValue = setting.setting_value as any;
+            if (typeof settingValue === 'object' && settingValue !== null) {
+              newSettings[setting.setting_key as keyof TokenSettings] = {
+                amount: Number(settingValue.amount) || 0,
+                enabled: Boolean(settingValue.enabled)
+              };
+            }
           }
         });
         setSettings(newSettings);
@@ -68,20 +81,43 @@ const AstraTokenManagement = () => {
 
   const loadUsers = async () => {
     try {
-      const { data, error } = await supabase
+      // Get users with their wallet connections
+      const { data: profilesData, error: profilesError } = await supabase
         .from('profiles')
         .select(`
           id,
           full_name,
           email,
-          wallet_address,
-          wallet_verified,
-          is_admin
+          role
         `)
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
-      setUsers(data || []);
+      if (profilesError) throw profilesError;
+
+      // Get wallet connections separately
+      const { data: walletsData, error: walletsError } = await supabase
+        .from('wallet_connections')
+        .select('user_id, wallet_address, is_verified');
+
+      if (walletsError) {
+        console.error('Error loading wallet connections:', walletsError);
+      }
+
+      // Combine the data
+      const usersWithWallets: UserWalletInfo[] = (profilesData || []).map(profile => {
+        const walletConnection = walletsData?.find(w => w.user_id === profile.id);
+        return {
+          id: profile.id,
+          full_name: profile.full_name,
+          email: profile.email,
+          role: profile.role,
+          wallet_address: walletConnection?.wallet_address,
+          wallet_verified: walletConnection?.is_verified || false,
+          is_admin: profile.role === 'admin'
+        };
+      });
+
+      setUsers(usersWithWallets);
     } catch (error) {
       console.error('Error loading users:', error);
     } finally {
@@ -116,9 +152,9 @@ const AstraTokenManagement = () => {
   const toggleWalletVerification = async (userId: string, currentStatus: boolean) => {
     try {
       const { error } = await supabase
-        .from('profiles')
-        .update({ wallet_verified: !currentStatus })
-        .eq('id', userId);
+        .from('wallet_connections')
+        .update({ is_verified: !currentStatus })
+        .eq('user_id', userId);
 
       if (error) throw error;
       
@@ -135,16 +171,17 @@ const AstraTokenManagement = () => {
 
   const toggleAdminStatus = async (userId: string, currentStatus: boolean) => {
     try {
+      const newRole = currentStatus ? 'general_user' : 'admin';
       const { error } = await supabase
         .from('profiles')
-        .update({ is_admin: !currentStatus })
+        .update({ role: newRole })
         .eq('id', userId);
 
       if (error) throw error;
       
       setUsers(users.map(user => 
         user.id === userId 
-          ? { ...user, is_admin: !currentStatus }
+          ? { ...user, is_admin: !currentStatus, role: newRole }
           : user
       ));
     } catch (error) {
