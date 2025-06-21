@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, User, LogOut, Globe, Bot, Plus, Home, Building, Info, ShoppingCart, KeyRound, Construction, Rocket, LogIn } from "lucide-react";
+import { Menu, X, User, LogOut, Globe, Bot, Plus, Home, Building, Info, ShoppingCart, KeyRound, Construction, Rocket, LogIn, Coins } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useThemeSettings } from "@/contexts/ThemeSettingsContext";
 import { useTheme } from "@/components/ThemeProvider";
@@ -9,6 +9,7 @@ import RoleBasedAuthModal from "./RoleBasedAuthModal";
 import ThemeToggleSwitch from "./ThemeToggleSwitch";
 import LanguageToggleSwitch from "./LanguageToggleSwitch";
 import WalletButton from "./wallet/WalletButton";
+import AstraBalanceDisplay from "./astra/AstraBalanceDisplay";
 import { toast } from "sonner";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -32,6 +33,7 @@ const Navigation = () => {
       "Pre-launching": "Pre-launching",
       About: "About",
       "Add Property": "Add Property",
+      "ASTRA Marketplace": "ASTRA Marketplace",
       "Switch Language": "Switch to Indonesian",
       "Sign In": "Sign In",
       "Sign Out": "Sign Out",
@@ -46,6 +48,7 @@ const Navigation = () => {
       "Pre-launching": "Pra-luncur",
       About: "Tentang",
       "Add Property": "Tambah Properti",
+      "ASTRA Marketplace": "Pasar ASTRA",
       "Switch Language": "Ganti ke Inggris",
       "Sign In": "Masuk",
       "Sign Out": "Keluar",
@@ -63,6 +66,7 @@ const Navigation = () => {
     { name: navLabels.Rent, path: "/rent", icon: KeyRound, isImplemented: true },
     { name: navLabels["New Projects"], path: "/new-projects", icon: Construction, isImplemented: true },
     { name: navLabels["Pre-launching"], path: "/pre-launching", icon: Rocket, isImplemented: true },
+    { name: navLabels["ASTRA Marketplace"], path: "/astra-marketplace", icon: Coins, isImplemented: true },
     { name: navLabels.About, path: "/about", icon: Info, isImplemented: true },
   ];
 
@@ -161,10 +165,15 @@ const Navigation = () => {
                 </Tooltip>
               </div>
 
-              {/* Right side controls - Only show wallet for authenticated users */}
+              {/* Right side controls - ASTRA balance and other controls */}
               <div className="hidden md:flex items-center space-x-3">
                 <LanguageToggleSwitch />
                 <ThemeToggleSwitch language={language} showLabel={false} className="bg-transparent border-transparent hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl" />
+
+                {/* ASTRA Balance Display - Only for authenticated users */}
+                {user && (
+                  <AstraBalanceDisplay variant="header" />
+                )}
 
                 {/* Web3 Wallet Button - Only for authenticated users */}
                 {user && <WalletButton />}
@@ -263,6 +272,13 @@ const Navigation = () => {
                       <span>{item.name}</span>
                     </button>
                   )
+                )}
+
+                {/* Mobile ASTRA Balance */}
+                {user && (
+                  <div className="px-4 py-2">
+                    <AstraBalanceDisplay variant="card" />
+                  </div>
                 )}
 
                 {/* Mobile Add Property Button - Always visible */}
