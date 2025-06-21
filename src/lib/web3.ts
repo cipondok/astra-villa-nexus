@@ -31,18 +31,19 @@ export const config = createConfig({
 });
 
 // ASTRA Token Contract Configuration
+// TODO: Replace with your actual deployed ASTRA token contract addresses
 export const ASTRA_TOKEN_CONFIG = {
   // BSC Mainnet (update with your actual deployed contract address)
   mainnet: {
-    address: '0x0000000000000000000000000000000000000000' as `0x${string}`,
+    address: 'YOUR_MAINNET_CONTRACT_ADDRESS' as `0x${string}`,
     chainId: 56,
     name: 'ASTRA Token',
     symbol: 'ASTRA',
     decimals: 18,
   },
-  // BSC Testnet (for development)
+  // BSC Testnet (for development - replace with your testnet contract)
   testnet: {
-    address: '0x0000000000000000000000000000000000000000' as `0x${string}`,
+    address: 'YOUR_TESTNET_CONTRACT_ADDRESS' as `0x${string}`,
     chainId: 97,
     name: 'ASTRA Token (Testnet)',
     symbol: 'ASTRA',
@@ -51,9 +52,10 @@ export const ASTRA_TOKEN_CONFIG = {
 };
 
 // Current ASTRA Token Address (use testnet for development, mainnet for production)
+// TODO: Update this with your actual contract address
 export const ASTRA_TOKEN_ADDRESS = ASTRA_TOKEN_CONFIG.testnet.address;
 
-// Enhanced ASTRA Token ABI with more functionality
+// Enhanced ASTRA Token ABI - Update this with your actual contract ABI
 export const ASTRA_TOKEN_ABI = [
   // Basic ERC20 functions
   {
@@ -133,6 +135,8 @@ export const ASTRA_TOKEN_ABI = [
     outputs: [{ name: '', type: 'bool' }],
     type: 'function',
   },
+  // Add any custom functions from your ASTRA token contract here
+  // Example: if your token has minting, burning, or other special functions
 ];
 
 // Utility functions for ASTRA token
@@ -157,4 +161,11 @@ export const parseAstraAmount = (amount: string, decimals: number = 18): bigint 
   const fractionBigInt = BigInt(fraction.padEnd(decimals, '0').slice(0, decimals));
   
   return wholeBigInt * BigInt(10 ** decimals) + fractionBigInt;
+};
+
+// Helper function to check if token address is configured
+export const isTokenConfigured = (): boolean => {
+  return ASTRA_TOKEN_ADDRESS !== 'YOUR_TESTNET_CONTRACT_ADDRESS' && 
+         ASTRA_TOKEN_ADDRESS !== 'YOUR_MAINNET_CONTRACT_ADDRESS' &&
+         ASTRA_TOKEN_ADDRESS !== '0x0000000000000000000000000000000000000000';
 };
