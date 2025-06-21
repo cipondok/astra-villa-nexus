@@ -3,18 +3,29 @@ import { createConfig, http } from 'wagmi';
 import { bsc, bscTestnet } from 'wagmi/chains';
 import { walletConnect, injected, coinbaseWallet } from 'wagmi/connectors';
 
-// Web3Modal project ID - using environment variable or fallback
-const projectId = 'your-project-id-here';
+// Web3Modal project ID - you should replace this with your actual project ID
+const projectId = 'demo-project-id-replace-with-real-one';
 
 export const config = createConfig({
-  chains: [bsc, bscTestnet],
+  chains: [bscTestnet, bsc], // Put testnet first for development
   connectors: [
-    walletConnect({ projectId }),
-    injected(),
-    coinbaseWallet({ appName: 'ASTRA Villa Realty' }),
+    injected(), // MetaMask, Brave, etc.
+    walletConnect({ 
+      projectId,
+      metadata: {
+        name: 'ASTRA Villa Realty',
+        description: 'Real Estate Platform with ASTRA Tokens',
+        url: 'https://astra-villa-realty.com',
+        icons: ['https://astra-villa-realty.com/favicon.ico']
+      }
+    }),
+    coinbaseWallet({ 
+      appName: 'ASTRA Villa Realty',
+      appLogoUrl: 'https://astra-villa-realty.com/favicon.ico'
+    }),
   ],
   transports: {
-    [bsc.id]: http(),
+    [bsc.id]: http('https://bsc-dataseed1.binance.org/'),
     [bscTestnet.id]: http('https://data-seed-prebsc-1-s1.binance.org:8545/'),
   },
 });
