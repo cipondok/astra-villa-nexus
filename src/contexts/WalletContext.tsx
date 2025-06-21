@@ -32,10 +32,13 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     address,
   });
 
-  // Get ASTRA token balance
+  // Get ASTRA token balance - only if we have a valid token address
   const { data: tokenBalance, isLoading: tokenLoading } = useBalance({
     address,
-    token: ASTRA_TOKEN_ADDRESS,
+    token: ASTRA_TOKEN_ADDRESS !== '0x0000000000000000000000000000000000000000' ? ASTRA_TOKEN_ADDRESS : undefined,
+    query: {
+      enabled: isConnected && !!address && ASTRA_TOKEN_ADDRESS !== '0x0000000000000000000000000000000000000000',
+    },
   });
 
   const isLoading = balanceLoading || tokenLoading;

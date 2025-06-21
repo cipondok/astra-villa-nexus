@@ -23,7 +23,7 @@ export const config = createConfig({
 export const ASTRA_TOKEN_CONFIG = {
   // BSC Mainnet (update with your actual deployed contract address)
   mainnet: {
-    address: '0x...', // Your ASTRA token contract address on BSC Mainnet
+    address: '0x0000000000000000000000000000000000000000' as `0x${string}`, // Your ASTRA token contract address on BSC Mainnet
     chainId: 56,
     name: 'ASTRA Token',
     symbol: 'ASTRA',
@@ -31,7 +31,7 @@ export const ASTRA_TOKEN_CONFIG = {
   },
   // BSC Testnet (for development)
   testnet: {
-    address: '0x...', // Your ASTRA token contract address on BSC Testnet
+    address: '0x0000000000000000000000000000000000000000' as `0x${string}`, // Your ASTRA token contract address on BSC Testnet
     chainId: 97,
     name: 'ASTRA Token (Testnet)',
     symbol: 'ASTRA',

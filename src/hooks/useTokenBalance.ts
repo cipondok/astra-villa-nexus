@@ -14,16 +14,16 @@ export const useTokenBalance = (): TokenBalanceState => {
   const { address, isConnected } = useAccount();
   const [balance, setBalance] = useState<string | null>(null);
 
-  // Get ASTRA token balance
+  // Get ASTRA token balance - only if we have a valid token address
   const { 
     data: tokenBalance, 
     isLoading, 
     refetch 
   } = useBalance({
     address,
-    token: ASTRA_TOKEN_ADDRESS,
+    token: ASTRA_TOKEN_ADDRESS !== '0x0000000000000000000000000000000000000000' ? ASTRA_TOKEN_ADDRESS : undefined,
     query: {
-      enabled: isConnected && !!address,
+      enabled: isConnected && !!address && ASTRA_TOKEN_ADDRESS !== '0x0000000000000000000000000000000000000000',
     },
   });
 
