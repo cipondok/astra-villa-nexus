@@ -31,7 +31,7 @@ const ProjectIntegration = () => {
   }
 
   const handleOpenRealty = () => {
-    const realtyUrl = getRealtyProjectUrl('https://your-realty-project-url.lovableproject.com');
+    const realtyUrl = getRealtyProjectUrl('https://preview--astra-villa-realty.lovable.app');
     window.open(realtyUrl, '_blank');
   };
 
