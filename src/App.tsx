@@ -6,6 +6,7 @@ import { WalletProvider } from "@/contexts/WalletContext";
 import { ThemeSettingsProvider } from "@/contexts/ThemeSettingsContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { AlertProvider } from "@/contexts/AlertContext";
+import { Web3ModalProvider } from "@/components/wallet/Web3ModalProvider";
 import Index from "@/pages/Index";
 import Properties from "@/pages/Properties";
 import PropertyDetail from "@/pages/PropertyDetail";
@@ -22,31 +23,33 @@ const queryClient = new QueryClient();
 function App() {
   return (
     <BrowserRouter>
-      <QueryClientProvider client={queryClient}>
-        <AuthProvider>
-          <WalletProvider>
-            <ThemeSettingsProvider>
-              <LanguageProvider>
-                <AlertProvider>
-                  <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
-                    <Routes>
-                      <Route path="/" element={<Index />} />
-                      <Route path="/properties" element={<Properties />} />
-                      <Route path="/property/:id" element={<PropertyDetail />} />
-                      <Route path="/add-property" element={<AddProperty />} />
-                      <Route path="/dashboard" element={<UserDashboard />} />
-                      <Route path="/admin/*" element={<AdminDashboard />} />
-                      <Route path="/about" element={<About />} />
-                      <Route path="/astra-marketplace" element={<AstraMarketplace />} />
-                    </Routes>
-                    <Toaster />
-                  </ThemeProvider>
-                </AlertProvider>
-              </LanguageProvider>
-            </ThemeSettingsProvider>
-          </WalletProvider>
-        </AuthProvider>
-      </QueryClientProvider>
+      <Web3ModalProvider>
+        <QueryClientProvider client={queryClient}>
+          <AuthProvider>
+            <WalletProvider>
+              <ThemeSettingsProvider>
+                <LanguageProvider>
+                  <AlertProvider>
+                    <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
+                      <Routes>
+                        <Route path="/" element={<Index />} />
+                        <Route path="/properties" element={<Properties />} />
+                        <Route path="/property/:id" element={<PropertyDetail />} />
+                        <Route path="/add-property" element={<AddProperty />} />
+                        <Route path="/dashboard" element={<UserDashboard />} />
+                        <Route path="/admin/*" element={<AdminDashboard />} />
+                        <Route path="/about" element={<About />} />
+                        <Route path="/astra-marketplace" element={<AstraMarketplace />} />
+                      </Routes>
+                      <Toaster />
+                    </ThemeProvider>
+                  </AlertProvider>
+                </LanguageProvider>
+              </ThemeSettingsProvider>
+            </WalletProvider>
+          </AuthProvider>
+        </QueryClientProvider>
+      </Web3ModalProvider>
     </BrowserRouter>
   );
 }
