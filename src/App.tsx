@@ -1,3 +1,4 @@
+
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { AuthProvider } from "@/contexts/AuthContext";
@@ -5,22 +6,23 @@ import { WalletProvider } from "@/contexts/WalletContext";
 import { ThemeSettingsProvider } from "@/contexts/ThemeSettingsContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { AlertProvider } from "@/contexts/AlertContext";
-import Home from "@/pages/Home";
+import Index from "@/pages/Index";
 import Properties from "@/pages/Properties";
-import PropertyDetails from "@/pages/PropertyDetails";
+import PropertyDetail from "@/pages/PropertyDetail";
 import AddProperty from "@/pages/AddProperty";
 import UserDashboard from "@/pages/UserDashboard";
 import AdminDashboard from "@/pages/AdminDashboard";
-import Contact from "@/pages/Contact";
 import About from "@/pages/About";
 import { Toaster } from "@/components/ui/toaster"
-import { QueryClient } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import AstraMarketplace from "@/pages/AstraMarketplace";
+
+const queryClient = new QueryClient();
 
 function App() {
   return (
     <BrowserRouter>
-      <QueryClient>
+      <QueryClientProvider client={queryClient}>
         <AuthProvider>
           <WalletProvider>
             <ThemeSettingsProvider>
@@ -28,13 +30,12 @@ function App() {
                 <AlertProvider>
                   <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
                     <Routes>
-                      <Route path="/" element={<Home />} />
+                      <Route path="/" element={<Index />} />
                       <Route path="/properties" element={<Properties />} />
-                      <Route path="/property/:id" element={<PropertyDetails />} />
+                      <Route path="/property/:id" element={<PropertyDetail />} />
                       <Route path="/add-property" element={<AddProperty />} />
                       <Route path="/dashboard" element={<UserDashboard />} />
                       <Route path="/admin/*" element={<AdminDashboard />} />
-                      <Route path="/contact" element={<Contact />} />
                       <Route path="/about" element={<About />} />
                       <Route path="/astra-marketplace" element={<AstraMarketplace />} />
                     </Routes>
@@ -45,7 +46,7 @@ function App() {
             </ThemeSettingsProvider>
           </WalletProvider>
         </AuthProvider>
-      </QueryClient>
+      </QueryClientProvider>
     </BrowserRouter>
   );
 }
