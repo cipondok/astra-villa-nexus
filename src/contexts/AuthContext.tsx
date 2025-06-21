@@ -2,6 +2,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 type UserRole = 'general_user' | 'property_owner' | 'agent' | 'vendor' | 'admin' | 'customer_service';
 
@@ -189,16 +190,31 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (error) {
         console.error('Sign in error:', error);
         setLoading(false);
-        return { error, success: false };
+        
+        // Handle specific error types
+        if (error.message?.includes('Invalid login credentials')) {
+          return { error: { message: 'Invalid email or password. Please check your credentials.' }, success: false };
+        } else if (error.message?.includes('Load failed') || error.name === 'AuthRetryableFetchError') {
+          return { error: { message: 'Network connection failed. Please check your internet connection and try again.' }, success: false };
+        } else {
+          return { error: { message: error.message || 'Login failed. Please try again.' }, success: false };
+        }
       }
 
       console.log('Sign in successful for:', email);
+      toast.success('Login successful! Welcome back.');
       // Don't set loading to false here, let the auth state change handle it
       return { error: null, success: true };
     } catch (error: any) {
       console.error('Sign in error:', error);
       setLoading(false);
-      return { error, success: false };
+      
+      // Handle network errors
+      if (error.name === 'AuthRetryableFetchError' || error.message?.includes('Load failed')) {
+        return { error: { message: 'Network connection failed. Please check your internet connection and try again.' }, success: false };
+      }
+      
+      return { error: { message: 'An unexpected error occurred. Please try again.' }, success: false };
     }
   };
 
@@ -219,14 +235,29 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       if (error) {
         console.error('Sign up error:', error);
-        return { error, success: false };
+        
+        // Handle specific error types
+        if (error.message?.includes('User already registered')) {
+          return { error: { message: 'An account with this email already exists. Please try logging in instead.' }, success: false };
+        } else if (error.message?.includes('Load failed') || error.name === 'AuthRetryableFetchError') {
+          return { error: { message: 'Network connection failed. Please check your internet connection and try again.' }, success: false };
+        } else {
+          return { error: { message: error.message || 'Registration failed. Please try again.' }, success: false };
+        }
       }
 
       console.log('Sign up successful for:', email);
+      toast.success('Account created successfully! You can now log in.');
       return { error: null, success: true };
     } catch (error: any) {
       console.error('Sign up error:', error);
-      return { error, success: false };
+      
+      // Handle network errors
+      if (error.name === 'AuthRetryableFetchError' || error.message?.includes('Load failed')) {
+        return { error: { message: 'Network connection failed. Please check your internet connection and try again.' }, success: false };
+      }
+      
+      return { error: { message: 'An unexpected error occurred. Please try again.' }, success: false };
     }
   };
 
@@ -239,8 +270,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser(null);
       setProfile(null);
       setSession(null);
+      toast.success('Logged out successfully.');
     } catch (error: any) {
       console.error('Sign out error:', error);
+      toast.error('Error signing out. Please try again.');
     }
   };
 

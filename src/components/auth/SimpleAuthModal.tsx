@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useAuth } from "@/contexts/AuthContext";
-import { X, Eye, EyeOff } from "lucide-react";
+import { X, Eye, EyeOff, Wifi, WifiOff } from "lucide-react";
 import { toast } from "sonner";
 
 interface SimpleAuthModalProps {
@@ -53,14 +53,9 @@ const SimpleAuthModal = ({ isOpen, onClose }: SimpleAuthModalProps) => {
       
       if (result.error) {
         console.error("Login error:", result.error);
-        if (result.error.message?.includes("Invalid login credentials")) {
-          setError("Invalid email or password. Please check your credentials and try again.");
-        } else {
-          setError(result.error.message || "Login failed. Please try again.");
-        }
+        setError(result.error.message || "Login failed. Please try again.");
       } else if (result.success) {
         console.log("Login successful");
-        toast.success("Login successful! Welcome back.");
         onClose();
         setLoginData({ email: "", password: "" });
         setError("");
@@ -105,14 +100,9 @@ const SimpleAuthModal = ({ isOpen, onClose }: SimpleAuthModalProps) => {
       
       if (result.error) {
         console.error("Registration error:", result.error);
-        if (result.error.message?.includes("User already registered")) {
-          setError("An account with this email already exists. Please try logging in instead.");
-        } else {
-          setError(result.error.message || "Registration failed. Please try again.");
-        }
+        setError(result.error.message || "Registration failed. Please try again.");
       } else if (result.success) {
         console.log("Registration successful");
-        toast.success("Account created successfully! You can now log in.");
         setActiveTab("login");
         setRegisterData({ email: "", password: "", fullName: "", confirmPassword: "" });
         setError("");
@@ -130,14 +120,19 @@ const SimpleAuthModal = ({ isOpen, onClose }: SimpleAuthModalProps) => {
     setRegisterData({ email: "", password: "", fullName: "", confirmPassword: "" });
     setError("");
     setActiveTab("login");
+    setIsLoading(false);
   };
 
   const handleClose = () => {
-    resetForms();
-    onClose();
+    if (!isLoading) {
+      resetForms();
+      onClose();
+    }
   };
 
   if (!isOpen) return null;
+
+  const isNetworkError = error.includes('Network connection failed') || error.includes('Load failed');
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
@@ -154,7 +149,15 @@ const SimpleAuthModal = ({ isOpen, onClose }: SimpleAuthModalProps) => {
         <CardContent>
           {error && (
             <Alert variant="destructive" className="mb-4">
-              <AlertDescription>{error}</AlertDescription>
+              <div className="flex items-center gap-2">
+                {isNetworkError ? <WifiOff className="h-4 w-4" /> : null}
+                <AlertDescription>{error}</AlertDescription>
+              </div>
+              {isNetworkError && (
+                <div className="mt-2 text-sm text-muted-foreground">
+                  Please check your internet connection and try again.
+                </div>
+              )}
             </Alert>
           )}
 
@@ -210,7 +213,14 @@ const SimpleAuthModal = ({ isOpen, onClose }: SimpleAuthModalProps) => {
                   className="w-full bg-gradient-to-r from-blue-600 to-orange-500"
                   disabled={isLoading}
                 >
-                  {isLoading ? "Signing in..." : "Sign In"}
+                  {isLoading ? (
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      Signing in...
+                    </div>
+                  ) : (
+                    "Sign In"
+                  )}
                 </Button>
               </form>
             </TabsContent>
@@ -301,7 +311,14 @@ const SimpleAuthModal = ({ isOpen, onClose }: SimpleAuthModalProps) => {
                   className="w-full bg-gradient-to-r from-blue-600 to-orange-500"
                   disabled={isLoading}
                 >
-                  {isLoading ? "Creating account..." : "Create Account"}
+                  {isLoading ? (
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      Creating account...
+                    </div>
+                  ) : (
+                    "Create Account"
+                  )}
                 </Button>
               </form>
             </TabsContent>
