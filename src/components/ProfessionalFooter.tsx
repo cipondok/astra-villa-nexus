@@ -1,132 +1,184 @@
 
-import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
-import FooterBrand from "./footer/FooterBrand";
-import FooterCompanyInfo from "./footer/FooterCompanyInfo";
-import FooterNewsletter from "./footer/FooterNewsletter";
-import FooterBuyingGuide from "./footer/FooterBuyingGuide";
-import FooterSellingGuide from "./footer/FooterSellingGuide";
-import FooterVendorServices from "./footer/FooterVendorServices";
-import FooterOffices from "./footer/FooterOffices";
-import FooterServicesTools from "./footer/FooterServicesTools";
-import FooterInnovationHub from "./footer/FooterInnovationHub";
-import FooterVendorHelp from "./footer/FooterVendorHelp";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import { ChevronDown } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Rocket, Phone, Mail, MapPin, Facebook, Twitter, Instagram, Youtube } from "lucide-react";
 
 interface ProfessionalFooterProps {
   language: "en" | "id";
 }
 
 const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
-  const navigate = useNavigate();
-
   const text = {
     en: {
       company: "Astra Villa",
-      rights: "All rights reserved.",
+      tagline: "Your trusted real estate partner",
+      quickLinks: "Quick Links",
+      services: "Services",
+      support: "Support",
+      contact: "Contact Info",
+      newsletter: "Newsletter",
+      newsletterText: "Subscribe to get the latest property updates",
+      emailPlaceholder: "Enter your email",
+      subscribe: "Subscribe",
+      allRights: "All rights reserved.",
       privacy: "Privacy Policy",
       terms: "Terms of Service",
-      featureNotAvailable: "This feature is coming soon. Stay tuned!",
-      legal: "Legal",
+      cookies: "Cookie Policy",
+      // Navigation links
+      home: "Home",
+      properties: "Properties",
+      buy: "Buy",
+      rent: "Rent",
+      about: "About",
+      // Services
+      propertySearch: "Property Search",
+      consultation: "Consultation",
+      valuation: "Property Valuation",
+      investment: "Investment Advisory",
+      // Support
+      help: "Help Center",
+      faq: "FAQ",
+      contact: "Contact Us",
+      feedback: "Feedback"
     },
     id: {
       company: "Astra Villa",
-      rights: "Semua hak dilindungi.",
+      tagline: "Mitra real estate terpercaya Anda",
+      quickLinks: "Tautan Cepat",
+      services: "Layanan",
+      support: "Dukungan",
+      contact: "Info Kontak",
+      newsletter: "Newsletter",
+      newsletterText: "Berlangganan untuk mendapat update properti terbaru",
+      emailPlaceholder: "Masukkan email Anda",
+      subscribe: "Berlangganan",
+      allRights: "Semua hak dilindungi.",
       privacy: "Kebijakan Privasi",
       terms: "Syarat Layanan",
-      featureNotAvailable: "Fitur ini akan segera hadir. Nantikan!",
-      legal: "Hukum",
+      cookies: "Kebijakan Cookie",
+      // Navigation links
+      home: "Beranda",
+      properties: "Properti",
+      buy: "Beli",
+      rent: "Sewa",
+      about: "Tentang",
+      // Services
+      propertySearch: "Pencarian Properti",
+      consultation: "Konsultasi",
+      valuation: "Valuasi Properti",
+      investment: "Konsultan Investasi",
+      // Support
+      help: "Pusat Bantuan",
+      faq: "FAQ",
+      contact: "Hubungi Kami",
+      feedback: "Masukan"
     }
   };
 
   const currentText = text[language];
 
-  const handleLinkClick = (path: string, label?: string) => {
-    console.log("Footer link clicked:", path, label);
-
-    const propertyTypePaths = ['/flats', '/houses', '/land', '/commercial'];
-    if (propertyTypePaths.includes(path)) {
-      const type = path.substring(1);
-      navigate(`/properties?type=${type}`);
-      return;
-    }
-    
-    // Handle existing routes
-    if (path === '/' || path === '/properties' || path === '/about' || path === '/vendor-registration') {
-      navigate(path);
-      return;
-    }
-    
-    // For unimplemented routes, show a coming soon message
-    toast.info(`${label || 'Feature'} - ${currentText.featureNotAvailable}`);
-  };
-
   return (
-    <footer className="bg-secondary text-secondary-foreground border-t border-border/20 mt-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <footer className="bg-gray-900 text-white">
+      <div className="container mx-auto px-4 py-8">
         {/* Main Footer Content */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-x-8 gap-y-12 mb-12">
-          {/* Brand & Newsletter Column */}
-          <div className="lg:col-span-2 space-y-8">
-            <FooterBrand language={language} />
-            <FooterNewsletter language={language} />
-          </div>
-          
-          {/* Guides & Company Info */}
-          <div className="space-y-4">
-            <FooterBuyingGuide language={language} onLinkClick={handleLinkClick} />
-            <FooterSellingGuide language={language} onLinkClick={handleLinkClick} />
-            <FooterCompanyInfo language={language} onLinkClick={handleLinkClick} />
-          </div>
-
-          {/* Vendor Services */}
-          <div className="space-y-4">
-            <FooterVendorServices language={language} onLinkClick={handleLinkClick} />
-            <FooterVendorHelp language={language} onLinkClick={handleLinkClick} />
-          </div>
-
-          {/* Tools & Innovation */}
-          <div className="space-y-4">
-            <FooterServicesTools language={language} onLinkClick={handleLinkClick} />
-            <FooterInnovationHub language={language} onLinkClick={handleLinkClick} />
-          </div>
-        </div>
-
-        {/* Offices Section - Full Width */}
-        <div className="border-t border-border/20 pt-12 mb-12">
-          <FooterOffices language={language} />
-        </div>
-
-        {/* Bottom Footer */}
-        <div className="border-t border-border/20 pt-8">
-          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <p className="text-muted-foreground text-sm">
-              © 2024 {currentText.company}. {currentText.rights}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+          {/* Company Info */}
+          <div className="space-y-3">
+            <div className="flex items-center space-x-2">
+              <Rocket className="w-6 h-6 text-blue-400" />
+              <span className="text-xl font-bold bg-gradient-to-r from-blue-400 to-orange-400 bg-clip-text text-transparent">
+                {currentText.company}
+              </span>
+            </div>
+            <p className="text-gray-300 text-sm leading-relaxed">
+              {currentText.tagline}
             </p>
-            <div className="flex space-x-8">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="text-muted-foreground hover:text-primary transition-colors text-sm flex items-center gap-1 hover:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0">
-                    {currentText.legal}
-                    <ChevronDown className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem onSelect={() => handleLinkClick('/privacy', currentText.privacy)}>
-                    {currentText.privacy}
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onSelect={() => handleLinkClick('/terms', currentText.terms)}>
-                    {currentText.terms}
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+            
+            {/* Contact Info */}
+            <div className="space-y-2 text-sm">
+              <div className="flex items-center space-x-2 text-gray-300">
+                <Phone className="w-4 h-4" />
+                <span>+62 21 1234 5678</span>
+              </div>
+              <div className="flex items-center space-x-2 text-gray-300">
+                <Mail className="w-4 h-4" />
+                <span>info@astravilla.com</span>
+              </div>
+              <div className="flex items-center space-x-2 text-gray-300">
+                <MapPin className="w-4 h-4" />
+                <span>Jakarta, Indonesia</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Quick Links */}
+          <div className="space-y-3">
+            <h3 className="text-lg font-semibold">{currentText.quickLinks}</h3>
+            <ul className="space-y-2 text-sm">
+              <li><Link to="/" className="text-gray-300 hover:text-blue-400 transition-colors">{currentText.home}</Link></li>
+              <li><Link to="/properties" className="text-gray-300 hover:text-blue-400 transition-colors">{currentText.properties}</Link></li>
+              <li><Link to="/buy" className="text-gray-300 hover:text-blue-400 transition-colors">{currentText.buy}</Link></li>
+              <li><Link to="/rent" className="text-gray-300 hover:text-blue-400 transition-colors">{currentText.rent}</Link></li>
+              <li><Link to="/about" className="text-gray-300 hover:text-blue-400 transition-colors">{currentText.about}</Link></li>
+            </ul>
+          </div>
+
+          {/* Services */}
+          <div className="space-y-3">
+            <h3 className="text-lg font-semibold">{currentText.services}</h3>
+            <ul className="space-y-2 text-sm">
+              <li><span className="text-gray-300">{currentText.propertySearch}</span></li>
+              <li><span className="text-gray-300">{currentText.consultation}</span></li>
+              <li><span className="text-gray-300">{currentText.valuation}</span></li>
+              <li><span className="text-gray-300">{currentText.investment}</span></li>
+            </ul>
+          </div>
+
+          {/* Newsletter */}
+          <div className="space-y-3">
+            <h3 className="text-lg font-semibold">{currentText.newsletter}</h3>
+            <p className="text-gray-300 text-sm">{currentText.newsletterText}</p>
+            <div className="space-y-2">
+              <input
+                type="email"
+                placeholder={currentText.emailPlaceholder}
+                className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white placeholder-gray-400 focus:outline-none focus:border-blue-400 text-sm"
+              />
+              <button className="w-full bg-gradient-to-r from-blue-600 to-orange-500 text-white py-2 px-4 rounded-md hover:from-blue-700 hover:to-orange-600 transition-all duration-300 text-sm font-medium">
+                {currentText.subscribe}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Social Media & Bottom Bar */}
+        <div className="border-t border-gray-800 pt-4">
+          <div className="flex flex-col md:flex-row justify-between items-center space-y-3 md:space-y-0">
+            {/* Social Media */}
+            <div className="flex space-x-4">
+              <a href="#" className="text-gray-400 hover:text-blue-400 transition-colors">
+                <Facebook className="w-5 h-5" />
+              </a>
+              <a href="#" className="text-gray-400 hover:text-blue-400 transition-colors">
+                <Twitter className="w-5 h-5" />
+              </a>
+              <a href="#" className="text-gray-400 hover:text-blue-400 transition-colors">
+                <Instagram className="w-5 h-5" />
+              </a>
+              <a href="#" className="text-gray-400 hover:text-blue-400 transition-colors">
+                <Youtube className="w-5 h-5" />
+              </a>
+            </div>
+
+            {/* Copyright */}
+            <div className="text-center md:text-right">
+              <p className="text-gray-400 text-sm">
+                © {new Date().getFullYear()} {currentText.company}. {currentText.allRights}
+              </p>
+              <div className="flex flex-wrap justify-center md:justify-end space-x-4 mt-1 text-xs">
+                <a href="#" className="text-gray-400 hover:text-blue-400 transition-colors">{currentText.privacy}</a>
+                <a href="#" className="text-gray-400 hover:text-blue-400 transition-colors">{currentText.terms}</a>
+                <a href="#" className="text-gray-400 hover:text-blue-400 transition-colors">{currentText.cookies}</a>
+              </div>
             </div>
           </div>
         </div>
@@ -136,4 +188,3 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
 };
 
 export default ProfessionalFooter;
-

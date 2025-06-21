@@ -1,562 +1,287 @@
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Card, CardContent } from "@/components/ui/card";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Search, SlidersHorizontal, X, Home, Building, MapPin, Bath } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { Card, CardContent } from "@/components/ui/card";
+import { Search, MapPin, Home, Bed, Bath, Filter, X } from "lucide-react";
 import { useDebounce } from "@/hooks/useDebounce";
-import SearchSuggestions from "@/components/search/SearchSuggestions";
 
-interface SearchData {
+interface SearchFilters {
   query: string;
-  listingType: string; // Buy or Rent
-  propertyType: string;
   state: string;
   city: string;
-  area: string;
-  priceRange: string;
+  propertyType: string;
   bedrooms: string;
   bathrooms: string;
-  furnishing: string;
-  has3D: boolean;
+  priceRange: string;
 }
 
 interface EnhancedModernSearchPanelProps {
-  language: string;
-  onSearch: (searchData: SearchData) => void;
-  onLiveSearch: (searchTerm: string) => void;
+  language: "en" | "id";
+  onSearch: (searchData: SearchFilters) => void;
+  onLiveSearch?: (searchTerm: string) => void;
 }
 
-const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: EnhancedModernSearchPanelProps) => {
-  const [searchData, setSearchData] = useState<SearchData>({
-    query: "",
-    listingType: "buy", // Default to buy
-    propertyType: "",
-    state: "",
-    city: "",
-    area: "",
-    priceRange: "",
-    bedrooms: "",
-    bathrooms: "",
-    furnishing: "",
-    has3D: false
-  });
-  
-  const [showFilters, setShowFilters] = useState(false);
-  const [showSuggestions, setShowSuggestions] = useState(false);
-  const [activeFilters, setActiveFilters] = useState(0);
-  const [availableCities, setAvailableCities] = useState<string[]>([]);
-  const [availableAreas, setAvailableAreas] = useState<string[]>([]);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const searchInputRef = useRef<HTMLInputElement>(null);
-  const isMobile = useIsMobile();
+const EnhancedModernSearchPanel = ({ 
+  language, 
+  onSearch, 
+  onLiveSearch 
+}: EnhancedModernSearchPanelProps) => {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedState, setSelectedState] = useState("");
+  const [selectedCity, setSelectedCity] = useState("");
+  const [propertyType, setPropertyType] = useState("");
+  const [bedrooms, setBedrooms] = useState("");
+  const [bathrooms, setBathrooms] = useState("");
+  const [priceRange, setPriceRange] = useState("");
+  const [showAdvanced, setShowAdvanced] = useState(false);
 
-  // Debounce search query for suggestions
-  const debouncedQuery = useDebounce(searchData.query, 300);
+  const debouncedSearchQuery = useDebounce(searchQuery, 500);
 
-  // Indonesian provinces data
-  const indonesianProvinces = [
-    "Aceh", "Sumatera Utara", "Sumatera Barat", "Riau", "Kepulauan Riau", "Jambi", 
-    "Sumatera Selatan", "Bangka Belitung", "Bengkulu", "Lampung",
-    "DKI Jakarta", "Jawa Barat", "Banten", "Jawa Tengah", "DI Yogyakarta", "Jawa Timur",
-    "Bali", "Nusa Tenggara Barat", "Nusa Tenggara Timur",
-    "Kalimantan Barat", "Kalimantan Tengah", "Kalimantan Selatan", "Kalimantan Timur", "Kalimantan Utara",
-    "Sulawesi Utara", "Gorontalo", "Sulawesi Tengah", "Sulawesi Barat", "Sulawesi Selatan", "Sulawesi Tenggara",
-    "Maluku", "Maluku Utara", "Papua Barat", "Papua"
+  const text = {
+    en: {
+      search: "Search properties, location, or area...",
+      state: "Select State",
+      city: "Select City",
+      type: "Property Type",
+      bedrooms: "Bedrooms",
+      bathrooms: "Bathrooms",
+      priceRange: "Price Range",
+      searchBtn: "Search Properties",
+      advancedFilters: "Advanced Filters",
+      hideFilters: "Hide Filters",
+      clearFilters: "Clear All",
+      trending: "Popular Searches",
+      allTypes: "All Types",
+      buy: "Buy",
+      rent: "Rent",
+      newProject: "New Project",
+      anyBedroom: "Any",
+      anyBathroom: "Any",
+      anyPrice: "Any Price"
+    },
+    id: {
+      search: "Cari properti, lokasi, atau area...",
+      state: "Pilih Provinsi",
+      city: "Pilih Kota",
+      type: "Jenis Properti",
+      bedrooms: "Kamar Tidur",
+      bathrooms: "Kamar Mandi",
+      priceRange: "Range Harga",
+      searchBtn: "Cari Properti",
+      advancedFilters: "Filter Lanjutan",
+      hideFilters: "Sembunyikan Filter",
+      clearFilters: "Hapus Semua",
+      trending: "Pencarian Populer",
+      allTypes: "Semua Jenis",
+      buy: "Beli",
+      rent: "Sewa",
+      newProject: "Proyek Baru",
+      anyBedroom: "Semua",
+      anyBathroom: "Semua",
+      anyPrice: "Semua Harga"
+    }
+  };
+
+  const currentText = text[language];
+
+  const indonesianStates = [
+    "DKI Jakarta", "West Java", "East Java", "Central Java", "Bali", 
+    "North Sumatra", "South Sumatra", "West Sumatra", "Riau", 
+    "South Kalimantan", "East Kalimantan", "North Sulawesi", 
+    "South Sulawesi", "West Nusa Tenggara", "East Nusa Tenggara"
   ];
 
-  // Cities data for major provinces
-  const citiesData: Record<string, string[]> = {
-    "DKI Jakarta": ["Jakarta Pusat", "Jakarta Utara", "Jakarta Barat", "Jakarta Selatan", "Jakarta Timur", "Kepulauan Seribu"],
-    "Jawa Barat": ["Bandung", "Bekasi", "Bogor", "Depok", "Cirebon", "Sukabumi", "Tasikmalaya", "Karawang", "Purwakarta", "Subang"],
-    "Jawa Tengah": ["Semarang", "Solo", "Magelang", "Salatiga", "Pekalongan", "Tegal", "Surakarta", "Klaten", "Boyolali"],
-    "Jawa Timur": ["Surabaya", "Malang", "Kediri", "Blitar", "Madiun", "Mojokerto", "Pasuruan", "Probolinggo", "Jember"],
-    "Banten": ["Tangerang", "Tangerang Selatan", "Serang", "Cilegon", "Lebak", "Pandeglang"],
-    "Bali": ["Denpasar", "Badung", "Gianyar", "Tabanan", "Klungkung", "Bangli", "Karangasem", "Buleleng"],
-    "Sumatera Utara": ["Medan", "Binjai", "Tebing Tinggi", "Pematangsiantar", "Tanjung Balai", "Sibolga"],
-    "Sumatera Barat": ["Padang", "Bukittinggi", "Padang Panjang", "Payakumbuh", "Sawahlunto", "Solok"],
-  };
+  const trendingSearches = language === "en" 
+    ? ["Jakarta Apartment", "Bali Villa", "Surabaya House", "Bandung Boarding House"]
+    : ["Apartemen Jakarta", "Villa Bali", "Rumah Surabaya", "Kost Bandung"];
 
-  // Areas data for major cities
-  const areasData: Record<string, string[]> = {
-    "Jakarta Pusat": ["Menteng", "Gambir", "Tanah Abang", "Senen", "Cempaka Putih", "Johar Baru", "Kemayoran"],
-    "Jakarta Selatan": ["Kebayoran Baru", "Kebayoran Lama", "Pesanggrahan", "Cilandak", "Pasar Minggu", "Jagakarsa"],
-    "Jakarta Barat": ["Kebon Jeruk", "Palmerah", "Grogol Petamburan", "Tambora", "Taman Sari", "Cengkareng"],
-    "Jakarta Utara": ["Penjaringan", "Pademangan", "Tanjung Priok", "Koja", "Kelapa Gading", "Cilincing"],
-    "Jakarta Timur": ["Matraman", "Pulogadung", "Jatinegara", "Cakung", "Duren Sawit", "Kramat Jati"],
-    "Bandung": ["Coblong", "Bandung Wetan", "Sumur Bandung", "Andir", "Cicendo", "Cidadap", "Sukajadi"],
-    "Surabaya": ["Wonokromo", "Gubeng", "Tegalsari", "Genteng", "Bubutan", "Simokerto", "Pabean Cantian"],
-    "Bekasi": ["Bekasi Timur", "Bekasi Barat", "Bekasi Utara", "Bekasi Selatan", "Medan Satria", "Bantargebang"],
-    "Tangerang": ["Tangerang Kota", "Karawaci", "Lippo Village", "Gading Serpong", "BSD City", "Alam Sutera"],
-  };
-
-  // Update cities when state changes
+  // Live search effect
   useEffect(() => {
-    if (searchData.state) {
-      const cities = citiesData[searchData.state] || [];
-      setAvailableCities(cities);
-      if (!cities.includes(searchData.city)) {
-        setSearchData(prev => ({ ...prev, city: "", area: "" }));
-      }
-    } else {
-      setAvailableCities([]);
-      setSearchData(prev => ({ ...prev, city: "", area: "" }));
+    if (debouncedSearchQuery && onLiveSearch) {
+      onLiveSearch(debouncedSearchQuery);
     }
-  }, [searchData.state]);
+  }, [debouncedSearchQuery, onLiveSearch]);
 
-  // Update areas when city changes
-  useEffect(() => {
-    if (searchData.city) {
-      const areas = areasData[searchData.city] || [];
-      setAvailableAreas(areas);
-      if (!areas.includes(searchData.area)) {
-        setSearchData(prev => ({ ...prev, area: "" }));
-      }
-    } else {
-      setAvailableAreas([]);
-      setSearchData(prev => ({ ...prev, area: "" }));
-    }
-  }, [searchData.city]);
-
-  // Enhanced click outside handler
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
-        setShowFilters(false);
-        setShowSuggestions(false);
-      }
-    };
-
-    const handleEscapeKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        setShowFilters(false);
-        setShowSuggestions(false);
-      }
-    };
-
-    if (showFilters) {
-      document.addEventListener('mousedown', handleClickOutside);
-      document.addEventListener('keydown', handleEscapeKey);
-      if (isMobile) {
-        document.body.style.overflow = 'hidden';
-      }
-    }
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('keydown', handleEscapeKey);
-      document.body.style.overflow = 'unset';
-    };
-  }, [showFilters, isMobile]);
-
-  // Auto-close filters on route change or page refresh
-  useEffect(() => {
-    const handleBeforeUnload = () => {
-      setShowFilters(false);
-      setShowSuggestions(false);
-    };
-    const handleVisibilityChange = () => {
-      if (document.hidden) {
-        setShowFilters(false);
-        setShowSuggestions(false);
-      }
-    };
-
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    
-    return () => {
-      window.removeEventListener('beforeunload', handleBeforeUnload);
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-    };
-  }, []);
-
-  // Count active filters - Only count essential filters
-  useEffect(() => {
-    let count = 0;
-    
-    if (searchData.state && searchData.state.trim() !== "") count++;
-    if (searchData.propertyType && searchData.propertyType.trim() !== "") count++;
-    if (searchData.bedrooms && searchData.bedrooms.trim() !== "") count++;
-    if (searchData.bathrooms && searchData.bathrooms.trim() !== "") count++;
-
-    console.log("🔢 ACTIVE FILTERS COUNT:", count, "Filter data:", searchData);
-    setActiveFilters(count);
-  }, [searchData.state, searchData.propertyType, searchData.bedrooms, searchData.bathrooms]);
-
-  const handleInputChange = (field: keyof SearchData, value: string | boolean) => {
-    console.log(`🔄 FILTER CHANGE - ${field}:`, value);
-    
-    // Update search data immediately
-    setSearchData(prev => {
-      const newData = { ...prev, [field]: value };
-      console.log("📊 NEW SEARCH DATA:", newData);
-      return newData;
-    });
-    
-    // Handle query input for suggestions
-    if (field === 'query' && typeof value === 'string') {
-      setShowSuggestions(value.length >= 2);
-      console.log("📝 Query updated - showing suggestions:", value.length >= 2);
-    }
-  };
-
-  const handleSearch = () => {
-    console.log("🔍 ENHANCED SEARCH PANEL - Sending search data:", searchData);
-    setShowSuggestions(false);
-    
-    // Convert to the expected format for the backend
-    const searchDataForBackend = {
-      ...searchData,
-      location: searchData.area ? `${searchData.area}, ${searchData.city}, ${searchData.state}` : 
-                searchData.city ? `${searchData.city}, ${searchData.state}` : 
-                searchData.state || ""
+  const handleSearch = useCallback(() => {
+    const searchData: SearchFilters = {
+      query: searchQuery,
+      state: selectedState,
+      city: selectedCity,
+      propertyType,
+      bedrooms,
+      bathrooms,
+      priceRange
     };
     
-    onSearch(searchDataForBackend);
-    if (isMobile) {
-      setShowFilters(false);
-    }
-  };
-
-  const handleSuggestionSelect = (suggestion: any) => {
-    console.log("💡 SUGGESTION SELECTED:", suggestion);
-    setSearchData(prev => ({ ...prev, query: suggestion.value }));
-    setShowSuggestions(false);
-    if (searchInputRef.current) {
-      searchInputRef.current.blur();
-    }
-  };
-
-  const clearFilter = (field: keyof SearchData) => {
-    console.log(`🧹 CLEARING FILTER: ${field}`);
-    handleInputChange(field, field === 'has3D' ? false : "");
-  };
+    console.log('Search initiated with filters:', searchData);
+    onSearch(searchData);
+  }, [searchQuery, selectedState, selectedCity, propertyType, bedrooms, bathrooms, priceRange, onSearch]);
 
   const clearAllFilters = () => {
-    console.log("🧹 CLEARING ALL FILTERS");
-    setSearchData({
-      query: searchData.query, // Keep search query
-      listingType: searchData.listingType, // Keep listing type
-      propertyType: "",
-      state: "",
-      city: "",
-      area: "",
-      priceRange: "",
-      bedrooms: "",
-      bathrooms: "",
-      furnishing: "",
-      has3D: false
-    });
+    setSearchQuery("");
+    setSelectedState("");
+    setSelectedCity("");
+    setPropertyType("");
+    setBedrooms("");
+    setBathrooms("");
+    setPriceRange("");
   };
 
-  // Updated options for bedrooms and bathrooms (1-10 only)
-  const propertyTypes = [
-    { value: "apartment", label: language === "en" ? "Apartment" : "Apartemen" },
-    { value: "house", label: language === "en" ? "House" : "Rumah" },
-    { value: "villa", label: language === "en" ? "Villa" : "Villa" },
-    { value: "condo", label: language === "en" ? "Condo" : "Kondominium" },
-    { value: "townhouse", label: language === "en" ? "Townhouse" : "Ruko" }
-  ];
-
-  const bedroomOptions = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
-  const bathroomOptions = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
+  const hasActiveFilters = searchQuery || selectedState || selectedCity || propertyType || bedrooms || bathrooms || priceRange;
 
   return (
-    <div className="w-full max-w-6xl mx-auto" ref={containerRef}>
-      {/* Backdrop for mobile */}
-      {showFilters && isMobile && (
-        <div 
-          className="fixed inset-0 bg-black/50 z-40"
-          onClick={() => setShowFilters(false)}
-        />
-      )}
-
-      {/* Main Search Bar - iPhone Style */}
-      <Card className="card-ios shadow-2xl border-0 overflow-visible rounded-3xl">
-        <CardContent className="p-4 sm:p-6 lg:p-8">
-          {/* Buy/Rent Tabs - iPhone Style */}
-          <div className="mb-6">
-            <Tabs value={searchData.listingType} onValueChange={(value) => handleInputChange('listingType', value)}>
-              <TabsList className="grid w-full grid-cols-2 max-w-md glass-ios rounded-2xl p-1 h-12">
-                <TabsTrigger 
-                  value="buy" 
-                  className="rounded-xl h-10 font-semibold text-sm transition-all duration-200 data-[state=active]:bg-ios-blue data-[state=active]:text-white data-[state=active]:shadow-lg"
-                >
-                  {language === "en" ? "Buy" : "Beli"}
-                </TabsTrigger>
-                <TabsTrigger 
-                  value="rent"
-                  className="rounded-xl h-10 font-semibold text-sm transition-all duration-200 data-[state=active]:bg-ios-blue data-[state=active]:text-white data-[state=active]:shadow-lg"
-                >
-                  {language === "en" ? "Rent" : "Sewa"}
-                </TabsTrigger>
-              </TabsList>
-            </Tabs>
-          </div>
-
-          {/* Search Input Row - iPhone Style */}
-          <div className="flex flex-col sm:flex-row gap-4 sm:gap-4 mb-6">
-            <div className="flex-1 relative">
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-ios-blue h-5 w-5 z-10" />
+    <Card className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm shadow-2xl border-0">
+      <CardContent className="p-4 sm:p-6">
+        {/* Main Search Row */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-3 mb-4">
+          {/* Search Input */}
+          <div className="md:col-span-5">
+            <div className="relative">
+              <Search className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
               <Input
-                ref={searchInputRef}
-                placeholder={language === "en" ? "Search properties, locations..." : "Cari properti, lokasi..."}
-                value={searchData.query}
-                onChange={(e) => handleInputChange('query', e.target.value)}
-                onFocus={() => setShowSuggestions(searchData.query.length >= 2)}
-                className="pl-12 h-14 border-0 glass-ios rounded-2xl focus:ring-2 focus:ring-ios-blue focus:ring-offset-0 text-base font-medium placeholder:text-gray-500"
+                placeholder={currentText.search}
+                className="pl-10 h-12 text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
               />
-              
-              {/* Search Suggestions */}
-              <SearchSuggestions
-                query={debouncedQuery}
-                onSelect={handleSuggestionSelect}
-                isVisible={showSuggestions}
-                language={language}
-              />
-            </div>
-
-            <div className="flex gap-3">
-              <Button
-                variant={showFilters ? "default" : "outline"}
-                onClick={() => setShowFilters(!showFilters)}
-                className={`h-14 px-4 relative rounded-2xl font-semibold transition-all duration-200 ${
-                  showFilters 
-                    ? 'bg-ios-blue hover:bg-ios-blue/90 text-white shadow-lg' 
-                    : 'glass-ios border-2 border-ios-blue/20 text-ios-blue hover:bg-ios-blue/10'
-                }`}
-              >
-                <SlidersHorizontal className="h-5 w-5" />
-                {activeFilters > 0 && (
-                  <Badge variant="secondary" className="ml-2 bg-ios-red text-white rounded-full min-w-[20px] h-5">
-                    {activeFilters}
-                  </Badge>
-                )}
-              </Button>
-
-              <Button 
-                onClick={handleSearch} 
-                className="h-14 px-8 bg-gradient-to-r from-ios-blue to-ios-purple hover:from-ios-blue/90 hover:to-ios-purple/90 text-white rounded-2xl font-semibold shadow-lg transition-all duration-200 hover:shadow-xl"
-              >
-                <Search className="h-5 w-5 mr-2" />
-                {language === "en" ? "Search" : "Cari"}
-              </Button>
             </div>
           </div>
+          
+          {/* State Selector */}
+          <div className="md:col-span-2">
+            <Select value={selectedState} onValueChange={setSelectedState}>
+              <SelectTrigger className="h-12 bg-white dark:bg-gray-800">
+                <SelectValue placeholder={currentText.state} />
+              </SelectTrigger>
+              <SelectContent>
+                {indonesianStates.map((state) => (
+                  <SelectItem key={state} value={state}>{state}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          
+          {/* Property Type */}
+          <div className="md:col-span-2">
+            <Select value={propertyType} onValueChange={setPropertyType}>
+              <SelectTrigger className="h-12 bg-white dark:bg-gray-800">
+                <SelectValue placeholder={currentText.type} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{currentText.allTypes}</SelectItem>
+                <SelectItem value="buy">{currentText.buy}</SelectItem>
+                <SelectItem value="rent">{currentText.rent}</SelectItem>
+                <SelectItem value="new-project">{currentText.newProject}</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          
+          {/* Search Button */}
+          <div className="md:col-span-2">
+            <Button 
+              onClick={handleSearch}
+              className="w-full h-12 bg-gradient-to-r from-blue-600 to-orange-500 hover:from-blue-700 hover:to-orange-600 text-white font-semibold transition-all duration-300"
+            >
+              <Search className="h-4 w-4 mr-2" />
+              {currentText.searchBtn}
+            </Button>
+          </div>
+          
+          {/* Advanced Filter Toggle */}
+          <div className="md:col-span-1">
+            <Button
+              variant="outline"
+              onClick={() => setShowAdvanced(!showAdvanced)}
+              className="w-full h-12"
+            >
+              <Filter className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
 
-          {/* Active Filters Display - iPhone Style */}
-          {activeFilters > 0 && (
-            <div className="flex flex-wrap gap-2 pt-4 border-t border-gray-200">
-              {searchData.propertyType && (
-                <Badge variant="secondary" className="flex items-center gap-2 px-3 py-1 bg-ios-blue/10 text-ios-blue rounded-full border border-ios-blue/20">
-                  <Home className="h-3 w-3" />
-                  {propertyTypes.find(t => t.value === searchData.propertyType)?.label}
-                  <X className="h-3 w-3 cursor-pointer hover:text-ios-red transition-colors" onClick={() => clearFilter('propertyType')} />
-                </Badge>
-              )}
-              {searchData.state && (
-                <Badge variant="secondary" className="flex items-center gap-2 px-3 py-1 bg-ios-green/10 text-ios-green rounded-full border border-ios-green/20">
-                  <MapPin className="h-3 w-3" />
-                  {searchData.area ? `${searchData.area}, ${searchData.city}` : searchData.city ? `${searchData.city}, ${searchData.state}` : searchData.state}
-                  <X className="h-3 w-3 cursor-pointer hover:text-ios-red transition-colors" onClick={() => clearFilter('state')} />
-                </Badge>
-              )}
-              {searchData.bedrooms && (
-                <Badge variant="secondary" className="flex items-center gap-2 px-3 py-1 bg-ios-purple/10 text-ios-purple rounded-full border border-ios-purple/20">
-                  <Building className="h-3 w-3" />
-                  {searchData.bedrooms}
-                  <X className="h-3 w-3 cursor-pointer hover:text-ios-red transition-colors" onClick={() => clearFilter('bedrooms')} />
-                </Badge>
-              )}
-              {searchData.bathrooms && (
-                <Badge variant="secondary" className="flex items-center gap-2 px-3 py-1 bg-ios-teal/10 text-ios-teal rounded-full border border-ios-teal/20">
-                  <Bath className="h-3 w-3" />
-                  {searchData.bathrooms}
-                  <X className="h-3 w-3 cursor-pointer hover:text-ios-red transition-colors" onClick={() => clearFilter('bathrooms')} />
-                </Badge>
-              )}
-              <Button variant="ghost" size="sm" onClick={clearAllFilters} className="h-7 text-xs text-ios-red hover:bg-ios-red/10 rounded-full">
-                {language === "en" ? "Clear all" : "Hapus semua"}
-              </Button>
-            </div>
-          )}
-        </CardContent>
-      </Card>
+        {/* Advanced Filters */}
+        {showAdvanced && (
+          <div className="border-t pt-4 mt-4">
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-3 mb-4">
+              {/* Bedrooms */}
+              <Select value={bedrooms} onValueChange={setBedrooms}>
+                <SelectTrigger className="h-10 bg-white dark:bg-gray-800">
+                  <SelectValue placeholder={currentText.bedrooms} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="any">{currentText.anyBedroom}</SelectItem>
+                  <SelectItem value="1">1</SelectItem>
+                  <SelectItem value="2">2</SelectItem>
+                  <SelectItem value="3">3</SelectItem>
+                  <SelectItem value="4+">4+</SelectItem>
+                </SelectContent>
+              </Select>
 
-      {/* Compact Filters Panel - iPhone Style */}
-      {showFilters && (
-        <Card className={`mt-4 card-ios shadow-2xl border-0 animate-fade-in rounded-3xl ${isMobile ? 'fixed inset-x-2 top-32 z-50 max-h-[70vh] overflow-y-auto' : ''}`}>
-          <CardContent className="p-6 sm:p-8">
-            {isMobile && (
-              <div className="flex justify-between items-center mb-6">
-                <h3 className="text-xl font-bold text-gray-800">{language === "en" ? "Filters" : "Filter"}</h3>
-                <Button variant="ghost" size="sm" onClick={() => setShowFilters(false)} className="rounded-full">
-                  <X className="h-5 w-5" />
+              {/* Bathrooms */}
+              <Select value={bathrooms} onValueChange={setBathrooms}>
+                <SelectTrigger className="h-10 bg-white dark:bg-gray-800">
+                  <SelectValue placeholder={currentText.bathrooms} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="any">{currentText.anyBathroom}</SelectItem>
+                  <SelectItem value="1">1</SelectItem>
+                  <SelectItem value="2">2</SelectItem>
+                  <SelectItem value="3">3</SelectItem>
+                  <SelectItem value="4+">4+</SelectItem>
+                </SelectContent>
+              </Select>
+
+              {/* Price Range */}
+              <Select value={priceRange} onValueChange={setPriceRange}>
+                <SelectTrigger className="h-10 bg-white dark:bg-gray-800">
+                  <SelectValue placeholder={currentText.priceRange} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="any">{currentText.anyPrice}</SelectItem>
+                  <SelectItem value="0-1b">Under Rp 1B</SelectItem>
+                  <SelectItem value="1b-5b">Rp 1B - 5B</SelectItem>
+                  <SelectItem value="5b+">Rp 5B+</SelectItem>
+                </SelectContent>
+              </Select>
+
+              {/* Clear Filters */}
+              {hasActiveFilters && (
+                <Button
+                  variant="outline"
+                  onClick={clearAllFilters}
+                  className="h-10"
+                >
+                  <X className="h-4 w-4 mr-2" />
+                  {currentText.clearFilters}
                 </Button>
-              </div>
-            )}
-
-            {/* Location Selection - iPhone Style */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-              {/* State Selection */}
-              <div className="space-y-3">
-                <label className="text-sm font-semibold flex items-center gap-2 text-gray-700">
-                  <MapPin className="h-4 w-4 text-ios-blue" />
-                  {language === "en" ? "State" : "Provinsi"}
-                </label>
-                <Select
-                  value={searchData.state}
-                  onValueChange={(value) => handleInputChange('state', value)}
-                >
-                  <SelectTrigger className="h-12 glass-ios rounded-xl border-0 font-medium">
-                    <SelectValue placeholder={language === "en" ? "Select state" : "Pilih provinsi"} />
-                  </SelectTrigger>
-                  <SelectContent className="dropdown-ios rounded-xl bg-white z-50">
-                    {indonesianProvinces.map((province) => (
-                      <SelectItem key={province} value={province} className="rounded-lg">
-                        {province}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* City Selection */}
-              <div className="space-y-3">
-                <label className="text-sm font-semibold text-gray-700">
-                  {language === "en" ? "City" : "Kota"}
-                </label>
-                <Select
-                  value={searchData.city}
-                  onValueChange={(value) => handleInputChange('city', value)}
-                  disabled={!searchData.state}
-                >
-                  <SelectTrigger className="h-12 glass-ios rounded-xl border-0 font-medium disabled:opacity-50">
-                    <SelectValue placeholder={language === "en" ? "Select city" : "Pilih kota"} />
-                  </SelectTrigger>
-                  <SelectContent className="dropdown-ios rounded-xl bg-white z-50">
-                    {availableCities.map((city) => (
-                      <SelectItem key={city} value={city} className="rounded-lg">
-                        {city}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Area Selection */}
-              <div className="space-y-3">
-                <label className="text-sm font-semibold text-gray-700">
-                  {language === "en" ? "Area" : "Area"}
-                </label>
-                <Select
-                  value={searchData.area}
-                  onValueChange={(value) => handleInputChange('area', value)}
-                  disabled={!searchData.city}
-                >
-                  <SelectTrigger className="h-12 glass-ios rounded-xl border-0 font-medium disabled:opacity-50">
-                    <SelectValue placeholder={language === "en" ? "Select area" : "Pilih area"} />
-                  </SelectTrigger>
-                  <SelectContent className="dropdown-ios rounded-xl bg-white z-50">
-                    {availableAreas.map((area) => (
-                      <SelectItem key={area} value={area} className="rounded-lg">
-                        {area}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+              )}
             </div>
-
-            {/* Property Type, Bedrooms, Bathrooms Row - iPhone Style */}
-            <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 mb-6">
-              <div className="sm:col-span-6 space-y-3">
-                <label className="text-sm font-semibold flex items-center gap-2 text-gray-700">
-                  <Home className="h-4 w-4 text-ios-blue" />
-                  {language === "en" ? "Property Type" : "Tipe Properti"}
-                </label>
-                <Select
-                  value={searchData.propertyType}
-                  onValueChange={(value) => handleInputChange('propertyType', value)}
-                >
-                  <SelectTrigger className="h-12 glass-ios rounded-xl border-0 font-medium">
-                    <SelectValue placeholder={language === "en" ? "Any type" : "Semua tipe"} />
-                  </SelectTrigger>
-                  <SelectContent className="dropdown-ios rounded-xl bg-white z-50">
-                    {propertyTypes.map((type) => (
-                      <SelectItem key={type.value} value={type.value} className="rounded-lg">
-                        {type.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="sm:col-span-3 space-y-3">
-                <label className="text-sm font-semibold flex items-center gap-2 text-gray-700">
-                  <Building className="h-4 w-4 text-ios-blue" />
-                </label>
-                <Select
-                  value={searchData.bedrooms}
-                  onValueChange={(value) => handleInputChange('bedrooms', value)}
-                >
-                  <SelectTrigger className="h-12 glass-ios rounded-xl border-0 font-medium">
-                    <SelectValue placeholder={language === "en" ? "Bedrooms" : "Kamar Tidur"} />
-                  </SelectTrigger>
-                  <SelectContent className="dropdown-ios rounded-xl bg-white z-50">
-                    {bedroomOptions.map((option) => (
-                      <SelectItem key={option} value={option} className="rounded-lg">
-                        {option}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="sm:col-span-3 space-y-3">
-                <label className="text-sm font-semibold flex items-center gap-2 text-gray-700">
-                  <Bath className="h-4 w-4 text-ios-blue" />
-                </label>
-                <Select
-                  value={searchData.bathrooms}
-                  onValueChange={(value) => handleInputChange('bathrooms', value)}
-                >
-                  <SelectTrigger className="h-12 glass-ios rounded-xl border-0 font-medium">
-                    <SelectValue placeholder={language === "en" ? "Bathrooms" : "Kamar Mandi"} />
-                  </SelectTrigger>
-                  <SelectContent className="dropdown-ios rounded-xl bg-white z-50">
-                    {bathroomOptions.map((option) => (
-                      <SelectItem key={option} value={option} className="rounded-lg">
-                        {option}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-
-            <Separator className="my-6 bg-gray-200" />
-
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-              <div className="flex gap-3">
-                <Button variant="outline" onClick={clearAllFilters} className="flex-1 sm:flex-none h-12 rounded-xl border-2 border-gray-300 font-semibold">
-                  {language === "en" ? "Reset" : "Reset"}
-                </Button>
-                <Button onClick={handleSearch} className="flex-1 sm:flex-none h-12 bg-gradient-to-r from-ios-blue to-ios-purple hover:from-ios-blue/90 hover:to-ios-purple/90 text-white rounded-xl font-semibold shadow-lg">
-                  {language === "en" ? "Apply Filters" : "Terapkan Filter"}
-                </Button>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-    </div>
+          </div>
+        )}
+        
+        {/* Trending Searches */}
+        <div className="text-left">
+          <p className="text-gray-600 dark:text-gray-400 mb-3 font-medium text-sm">
+            {currentText.trending}:
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {trendingSearches.map((term, index) => (
+              <Badge 
+                key={index} 
+                variant="secondary" 
+                className="cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-900 transition-colors text-xs"
+                onClick={() => setSearchQuery(term)}
+              >
+                {term}
+              </Badge>
+            ))}
+          </div>
+        </div>
+      </CardContent>
+    </Card>
   );
 };
 
