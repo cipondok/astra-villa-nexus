@@ -161,13 +161,13 @@ const Navigation = () => {
                 </Tooltip>
               </div>
 
-              {/* Right side controls - Updated with WalletButton */}
+              {/* Right side controls - Only show wallet for authenticated users */}
               <div className="hidden md:flex items-center space-x-3">
                 <LanguageToggleSwitch />
                 <ThemeToggleSwitch language={language} showLabel={false} className="bg-transparent border-transparent hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl" />
 
-                {/* Web3 Wallet Button */}
-                <WalletButton />
+                {/* Web3 Wallet Button - Only for authenticated users */}
+                {user && <WalletButton />}
 
                 {user ? (
                   <div className="flex items-center space-x-1">
@@ -274,10 +274,12 @@ const Navigation = () => {
                   {navLabels["Add Property"]}
                 </button>
 
-                {/* Mobile Wallet Button */}
-                <div className="px-4 py-2">
-                  <WalletButton />
-                </div>
+                {/* Mobile Wallet Button - Only for authenticated users */}
+                {user && (
+                  <div className="px-4 py-2">
+                    <WalletButton />
+                  </div>
+                )}
 
                 {/* Mobile Language Toggle */}
                 <Button

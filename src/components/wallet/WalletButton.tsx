@@ -2,8 +2,10 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Wallet, LogOut, Link } from 'lucide-react';
-import { useWeb3Auth } from '@/hooks/useWeb3Auth';
+import { useWeb3Modal } from '@web3modal/wagmi/react';
+import { useAccount, useDisconnect } from 'wagmi';
 import { useAuth } from '@/contexts/AuthContext';
+import { useWallet } from '@/contexts/WalletContext';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,99 +14,88 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { toast } from 'sonner';
 
 const WalletButton = () => {
-  const { 
-    address, 
-    isConnected, 
-    isConnecting, 
-    isWalletLinked,
-    connectWallet, 
-    disconnectWallet, 
-    linkWalletToProfile,
-    formatAddress,
-    connectors 
-  } = useWeb3Auth();
-  
-  const { user, signOut } = useAuth();
+  const { open } = useWeb3Modal();
+  const { address, isConnected } = useAccount();
+  const { disconnect } = useDisconnect();
+  const { user, isAuthenticated } = useAuth();
+  const { isWalletLinked, linkWalletToProfile } = useWallet();
+
+  // Only show wallet button for authenticated users
+  if (!isAuthenticated || !user) {
+    return null;
+  }
+
+  const formatAddress = (addr: string) => {
+    return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
+  };
+
+  const handleLinkWallet = async () => {
+    try {
+      await linkWalletToProfile();
+      toast.success('Wallet linked successfully!');
+    } catch (error) {
+      console.error('Error linking wallet:', error);
+      toast.error('Failed to link wallet. Please try again.');
+    }
+  };
 
   if (!isConnected) {
     return (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button 
-            variant="outline" 
-            disabled={isConnecting}
-            className="bg-gradient-to-r from-blue-600 to-purple-600 text-white border-0 hover:from-blue-700 hover:to-purple-700"
-          >
-            <Wallet className="h-4 w-4 mr-2" />
-            {isConnecting ? 'Connecting...' : 'Connect Wallet'}
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-56">
-          <DropdownMenuLabel>Choose Wallet</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          {connectors.map((connector) => (
-            <DropdownMenuItem
-              key={connector.id}
-              onClick={() => connectWallet(connector.id)}
-              className="cursor-pointer"
-            >
-              <Wallet className="h-4 w-4 mr-2" />
-              {connector.name}
-            </DropdownMenuItem>
-          ))}
-        </DropdownMenuContent>
-      </DropdownMenu>
+      <Button
+        onClick={() => open()}
+        size="sm"
+        className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white"
+      >
+        <Wallet className="h-4 w-4 mr-2" />
+        Connect Wallet
+      </Button>
     );
   }
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" className="bg-green-50 border-green-200 text-green-700 hover:bg-green-100">
-          <Wallet className="h-4 w-4 mr-2" />
-          {formatAddress(address!)}
+        <Button variant="outline" size="sm" className="flex items-center gap-2">
+          <Wallet className="h-4 w-4" />
+          <span className="hidden sm:inline">{formatAddress(address || '')}</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">
         <DropdownMenuLabel>
-          <div className="flex flex-col">
-            <span>Wallet Connected</span>
-            <span className="text-xs text-muted-foreground font-normal">
-              {formatAddress(address!)}
-            </span>
+          <div className="flex flex-col space-y-1">
+            <p className="text-sm font-medium">Wallet Connected</p>
+            <p className="text-xs text-muted-foreground">{formatAddress(address || '')}</p>
+            {isWalletLinked && (
+              <p className="text-xs text-green-600">✓ Linked to Profile</p>
+            )}
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         
-        {user && !isWalletLinked && (
-          <DropdownMenuItem onClick={linkWalletToProfile} className="cursor-pointer">
+        {!isWalletLinked && (
+          <DropdownMenuItem onClick={handleLinkWallet}>
             <Link className="h-4 w-4 mr-2" />
             Link to Profile
           </DropdownMenuItem>
         )}
         
-        {isWalletLinked && (
-          <DropdownMenuItem disabled>
-            <Link className="h-4 w-4 mr-2 text-green-600" />
-            <span className="text-green-600">Linked to Profile</span>
-          </DropdownMenuItem>
-        )}
+        <DropdownMenuItem onClick={() => open({ view: 'Account' })}>
+          <Wallet className="h-4 w-4 mr-2" />
+          Manage Wallet
+        </DropdownMenuItem>
         
         <DropdownMenuSeparator />
         
-        <DropdownMenuItem onClick={disconnectWallet} className="cursor-pointer text-red-600">
+        <DropdownMenuItem 
+          onClick={() => disconnect()}
+          className="text-red-600 hover:bg-red-50"
+        >
           <LogOut className="h-4 w-4 mr-2" />
           Disconnect
         </DropdownMenuItem>
-        
-        {user && (
-          <DropdownMenuItem onClick={signOut} className="cursor-pointer">
-            <LogOut className="h-4 w-4 mr-2" />
-            Sign Out
-          </DropdownMenuItem>
-        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );
