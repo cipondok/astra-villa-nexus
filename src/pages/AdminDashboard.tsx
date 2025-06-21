@@ -10,6 +10,7 @@ import Navigation from "@/components/Navigation";
 import AdminDashboardHeader from "@/components/admin/AdminDashboardHeader";
 import AdminTabNavigation from "@/components/admin/AdminTabNavigation";
 import AdminDashboardContent from "@/components/admin/AdminDashboardContent";
+import TokenManagementHub from "@/components/admin/TokenManagementHub";
 import { tabCategories } from "@/components/admin/AdminTabCategories";
 import { useAdminAlerts } from "@/hooks/useAdminAlerts";
 
@@ -122,10 +123,25 @@ const AdminDashboard = () => {
             isAdmin={isAdmin}
           />
 
-          <AdminDashboardContent
-            isAdmin={isAdmin}
-            setActiveTab={setActiveTab}
-          />
+          {/* Add ASTRA Token Management as a dedicated tab */}
+          {activeTab === "astra-tokens" && (
+            <div className="space-y-6">
+              <div>
+                <h2 className="text-2xl font-bold">ASTRA Token Management</h2>
+                <p className="text-muted-foreground">
+                  Configure and manage the ASTRA token system
+                </p>
+              </div>
+              <TokenManagementHub />
+            </div>
+          )}
+
+          {activeTab !== "astra-tokens" && (
+            <AdminDashboardContent
+              isAdmin={isAdmin}
+              setActiveTab={setActiveTab}
+            />
+          )}
         </Tabs>
       </main>
     </div>
