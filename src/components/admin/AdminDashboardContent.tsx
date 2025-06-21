@@ -1,4 +1,3 @@
-
 import React from "react";
 import { TabsContent } from "@/components/ui/tabs";
 import AdminOverview from "./AdminOverview";
@@ -36,7 +35,7 @@ const AdminDashboardContent = ({ isAdmin, setActiveTab }: AdminDashboardContentP
   return (
     <>
       <TabsContent value="overview">
-        <AdminOverview setActiveTab={setActiveTab} />
+        <AdminOverview />
       </TabsContent>
 
       <TabsContent value="user-management">
