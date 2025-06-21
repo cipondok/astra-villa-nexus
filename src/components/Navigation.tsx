@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -9,7 +10,6 @@ import RoleBasedAuthModal from "./RoleBasedAuthModal";
 import ThemeToggleSwitch from "./ThemeToggleSwitch";
 import LanguageToggleSwitch from "./LanguageToggleSwitch";
 import WalletButton from "./wallet/WalletButton";
-import AstraBalanceDisplay from "./astra/AstraBalanceDisplay";
 import { toast } from "sonner";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -19,9 +19,12 @@ const Navigation = () => {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  const { user, signOut } = useAuth();
+  const { user, signOut, profile } = useAuth();
   const { themeSettings } = useThemeSettings();
   const { language, setLanguage } = useLanguage();
+
+  // Check if user is admin
+  const isAdmin = profile?.role === 'admin' || user?.email === 'mycode103@gmail.com';
 
   const labels = {
     en: {
@@ -37,7 +40,8 @@ const Navigation = () => {
       "Switch Language": "Switch to Indonesian",
       "Sign In": "Sign In",
       "Sign Out": "Sign Out",
-      Dashboard: "Dashboard"
+      Dashboard: "Dashboard",
+      "Admin Panel": "Admin Panel"
     },
     id: {
       Home: "Beranda",
@@ -52,7 +56,8 @@ const Navigation = () => {
       "Switch Language": "Ganti ke Inggris",
       "Sign In": "Masuk",
       "Sign Out": "Keluar",
-      Dashboard: "Dashboard"
+      Dashboard: "Dashboard",
+      "Admin Panel": "Panel Admin"
     }
   };
 
@@ -165,17 +170,12 @@ const Navigation = () => {
                 </Tooltip>
               </div>
 
-              {/* Right side controls - ASTRA balance and other controls */}
+              {/* Right side controls - Single wallet button and other controls */}
               <div className="hidden md:flex items-center space-x-3">
                 <LanguageToggleSwitch />
                 <ThemeToggleSwitch language={language} showLabel={false} className="bg-transparent border-transparent hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl" />
 
-                {/* ASTRA Balance Display - Only for authenticated users */}
-                {user && (
-                  <AstraBalanceDisplay variant="header" />
-                )}
-
-                {/* Web3 Wallet Button - Only for authenticated users */}
+                {/* Single ASTRA Wallet Button - Only for authenticated users */}
                 {user && <WalletButton />}
 
                 {user ? (
@@ -190,8 +190,25 @@ const Navigation = () => {
                           <span className="sr-only">Dashboard</span>
                         </Link>
                       </TooltipTrigger>
-                      <TooltipContent><p>Dashboard</p></TooltipContent>
+                      <TooltipContent><p>{navLabels.Dashboard}</p></TooltipContent>
                     </Tooltip>
+
+                    {/* Admin Panel Link - Only for admins */}
+                    {isAdmin && (
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Link
+                            to="/admin"
+                            className="flex items-center p-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-primary-dynamic hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-300 rounded-xl transform hover:scale-110"
+                          >
+                            <Bot className="w-5 h-5" />
+                            <span className="sr-only">Admin Panel</span>
+                          </Link>
+                        </TooltipTrigger>
+                        <TooltipContent><p>{navLabels["Admin Panel"]}</p></TooltipContent>
+                      </Tooltip>
+                    )}
+
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <Button
@@ -274,13 +291,6 @@ const Navigation = () => {
                   )
                 )}
 
-                {/* Mobile ASTRA Balance */}
-                {user && (
-                  <div className="px-4 py-2">
-                    <AstraBalanceDisplay variant="card" />
-                  </div>
-                )}
-
                 {/* Mobile Add Property Button - Always visible */}
                 <button
                   onClick={handleAddPropertyClick}
@@ -317,6 +327,19 @@ const Navigation = () => {
                       <User className="h-5 w-5" />
                       {navLabels.Dashboard}
                     </Link>
+
+                    {/* Mobile Admin Panel Link - Only for admins */}
+                    {isAdmin && (
+                      <Link
+                        to="/admin"
+                        className="flex items-center gap-3 px-4 py-3 text-base font-medium text-gray-600 dark:text-gray-300 hover:text-primary-dynamic hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-300 rounded-xl"
+                        onClick={() => setIsOpen(false)}
+                      >
+                        <Bot className="h-5 w-5" />
+                        {navLabels["Admin Panel"]}
+                      </Link>
+                    )}
+
                     <button
                       onClick={handleSignOut}
                       className="flex items-center gap-3 w-full px-4 py-3 text-base font-medium text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-300 rounded-xl"
