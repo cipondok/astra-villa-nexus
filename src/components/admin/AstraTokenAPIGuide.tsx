@@ -1,11 +1,10 @@
-
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Code, Lightbulb, Rocket, Shield, Zap, Api, Database } from 'lucide-react';
+import { Code, Lightbulb, Rocket, Shield, Zap, Server, Database } from 'lucide-react';
 
 const AstraTokenAPIGuide = () => {
   const aiPrompt = `Create a comprehensive ASTRA Token API system for ASTRA Villa Realty with the following requirements:
@@ -102,7 +101,7 @@ Please implement a production-ready API system with proper error handling, secur
       description: "Premium property access based on token holdings"
     },
     {
-      icon: Api,
+      icon: Server,
       title: "RESTful API Design",
       description: "Clean, documented endpoints following REST principles"
     }
