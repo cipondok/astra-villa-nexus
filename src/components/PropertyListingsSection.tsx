@@ -24,10 +24,7 @@ const PropertyListingsSection = ({
   isSearching = false,
   hasSearched = false,
   fallbackResults = [],
-  hideTitle = false,
-  showSearchFilters = false,
-  onSearch,
-  onLiveSearch
+  hideTitle = false
 }: PropertyListingsSectionProps) => {
   const [favoriteProperties, setFavoriteProperties] = useState<Set<string>>(new Set());
   const [propertyFor3DView, setPropertyFor3DView] = useState<any | null>(null);
@@ -37,40 +34,18 @@ const PropertyListingsSection = ({
     en: {
       title: "Featured Properties",
       subtitle: "Discover premium real estate opportunities",
-      viewDetails: "View Details",
-      forSale: "For Sale",
-      forRent: "For Rent",
       noResults: "No properties found",
       searchResults: "Search Results",
-      bedrooms: "bed",
-      bathrooms: "bath",
-      area: "sqm",
-      contactForPrice: "Contact for price",
-      searchMessage: "Try adjusting your search filters or browse our featured properties below.",
       noFeaturedProperties: "No properties available at the moment",
-      view3D: "3D View",
-      youMightLike: "You might also like",
-      featuredSubtitle: "Here are some of our featured properties",
       showingResults: "Showing",
       loadingProperties: "Loading properties..."
     },
     id: {
       title: "Properti Unggulan",
       subtitle: "Temukan peluang real estate premium",
-      viewDetails: "Lihat Detail",
-      forSale: "Dijual",
-      forRent: "Disewa",
       noResults: "Tidak ada properti ditemukan",
       searchResults: "Hasil Pencarian",
-      bedrooms: "kmr",
-      bathrooms: "km",
-      area: "m²",
-      contactForPrice: "Hubungi untuk harga",
-      searchMessage: "Coba sesuaikan filter pencarian Anda atau lihat properti unggulan kami di bawah.",
       noFeaturedProperties: "Belum ada properti tersedia saat ini",
-      view3D: "Tampilan 3D",
-      youMightLike: "Anda mungkin juga suka",
-      featuredSubtitle: "Berikut adalah beberapa properti unggulan kami",
       showingResults: "Menampilkan",
       loadingProperties: "Memuat properti..."
     }
@@ -120,9 +95,9 @@ const PropertyListingsSection = ({
   const displayProperties = hasSearched ? searchResults : fallbackResults;
   const noPropertiesFound = displayProperties.length === 0;
 
-  console.log("PropertyListingsSection - displayProperties:", displayProperties);
+  console.log("PropertyListingsSection - displayProperties:", displayProperties?.length || 0);
   console.log("PropertyListingsSection - hasSearched:", hasSearched);
-  console.log("PropertyListingsSection - noPropertiesFound:", noPropertiesFound);
+  console.log("PropertyListingsSection - fallbackResults:", fallbackResults?.length || 0);
 
   return (
     <>
@@ -145,7 +120,7 @@ const PropertyListingsSection = ({
                 </h3>
                 <p className="text-gray-600 dark:text-gray-300 mb-6">
                   {hasSearched 
-                    ? currentText.searchMessage 
+                    ? "Try adjusting your search terms or browse all properties." 
                     : "We're working on adding new properties. Please check back later."}
                 </p>
                 {!hasSearched && (

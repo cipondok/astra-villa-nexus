@@ -16,7 +16,7 @@ const Index = () => {
   const [hasSearched, setHasSearched] = useState(false);
 
   // Fetch featured properties for the homepage
-  const { data: featuredProperties = [], isLoading: isFeaturedLoading, refetch: refetchProperties } = useQuery({
+  const { data: featuredProperties = [], isLoading: isFeaturedLoading, error } = useQuery({
     queryKey: ['featured-properties'],
     queryFn: async () => {
       console.log('Fetching featured properties...');
@@ -24,24 +24,7 @@ const Index = () => {
       try {
         const { data, error } = await supabase
           .from('properties')
-          .select(`
-            id,
-            title,
-            description,
-            price,
-            property_type,
-            location,
-            bedrooms,
-            bathrooms,
-            area_sqm,
-            images,
-            status,
-            created_at,
-            state,
-            city,
-            area,
-            listing_type
-          `)
+          .select('*')
           .eq('status', 'active')
           .order('created_at', { ascending: false })
           .limit(12);
@@ -51,14 +34,14 @@ const Index = () => {
           throw error;
         }
 
-        console.log('Featured properties fetched:', data?.length || 0, data);
+        console.log('Featured properties fetched:', data?.length || 0);
         return data || [];
       } catch (error) {
         console.error('Failed to fetch properties:', error);
         return [];
       }
     },
-    retry: 3,
+    retry: 2,
     retryDelay: 1000,
   });
 
@@ -70,27 +53,10 @@ const Index = () => {
     try {
       let query = supabase
         .from('properties')
-        .select(`
-          id,
-          title,
-          description,
-          price,
-          property_type,
-          location,
-          bedrooms,
-          bathrooms,
-          area_sqm,
-          images,
-          status,
-          created_at,
-          state,
-          city,
-          area,
-          listing_type
-        `)
+        .select('*')
         .eq('status', 'active');
 
-      // Apply search filters with better logic
+      // Apply search filters
       if (searchData.query && searchData.query.trim()) {
         query = query.or(
           `title.ilike.%${searchData.query}%,description.ilike.%${searchData.query}%,location.ilike.%${searchData.query}%,city.ilike.%${searchData.query}%,state.ilike.%${searchData.query}%`
@@ -175,24 +141,7 @@ const Index = () => {
     try {
       const { data, error } = await supabase
         .from('properties')
-        .select(`
-          id,
-          title,
-          description,
-          price,
-          property_type,
-          location,
-          bedrooms,
-          bathrooms,
-          area_sqm,
-          images,
-          status,
-          created_at,
-          state,
-          city,
-          area,
-          listing_type
-        `)
+        .select('*')
         .eq('status', 'active')
         .or(
           `title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%,location.ilike.%${searchTerm}%,city.ilike.%${searchTerm}%,state.ilike.%${searchTerm}%`
@@ -215,17 +164,17 @@ const Index = () => {
     }
   };
 
-  // Use search results if available, otherwise show featured properties
-  const displayProperties = hasSearched ? searchResults : featuredProperties;
-  const isLoading = hasSearched ? isSearching : isFeaturedLoading;
-
-  // Force refetch if no properties are loaded initially
+  // Debug logging
   useEffect(() => {
-    if (!isFeaturedLoading && featuredProperties.length === 0) {
-      console.log('No properties found, attempting refetch...');
-      setTimeout(() => refetchProperties(), 1000);
-    }
-  }, [featuredProperties.length, isFeaturedLoading, refetchProperties]);
+    console.log('Index page state:', {
+      featuredProperties: featuredProperties?.length || 0,
+      searchResults: searchResults?.length || 0,
+      hasSearched,
+      isSearching,
+      isFeaturedLoading,
+      error
+    });
+  }, [featuredProperties, searchResults, hasSearched, isSearching, isFeaturedLoading, error]);
 
   return (
     <div className="min-h-screen bg-background">
