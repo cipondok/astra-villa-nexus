@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -26,6 +25,7 @@ import ProfessionalFooter from "@/components/ProfessionalFooter";
 import PropertyViewer3D from "@/components/PropertyViewer3D";
 import SimilarProperties from "@/components/property/SimilarProperties";
 import RecommendedProperties from "@/components/property/RecommendedProperties";
+import AgentPropertyCarousel from "@/components/property/AgentPropertyCarousel";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -322,6 +322,19 @@ const PropertyDetail = () => {
             </Card>
           </div>
         </div>
+
+        {/* Agent/Owner Property Carousel Section */}
+        {property && (
+          <div className="mt-12">
+            <AgentPropertyCarousel
+              currentPropertyId={property.id}
+              ownerId={property.owner_id}
+              agentId={property.agent_id}
+              ownerType={property.owner_type}
+              limit={8}
+            />
+          </div>
+        )}
 
         {/* Similar Properties Section */}
         {property && (
