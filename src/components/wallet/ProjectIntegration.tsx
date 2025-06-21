@@ -3,7 +3,7 @@ import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ExternalLink, Sync, Building, Wallet, ArrowRight } from 'lucide-react';
+import { ExternalLink, RefreshCw, Building, Wallet, ArrowRight } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useWallet } from '@/contexts/WalletContext';
 import { useRealtyIntegration } from '@/hooks/useRealtyIntegration';
@@ -123,7 +123,7 @@ const ProjectIntegration = () => {
             disabled={isLoading}
             className="flex-1"
           >
-            <Sync className={`h-4 w-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
+            <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
             {isLoading ? 'Syncing...' : 'Sync Data'}
           </Button>
         </div>
