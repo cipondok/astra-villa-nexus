@@ -15,11 +15,12 @@ import { tabCategories } from "@/components/admin/AdminTabCategories";
 import { useAdminAlerts } from "@/hooks/useAdminAlerts";
 
 const AdminDashboard = () => {
-  const { user, profile, loading, isAuthenticated } = useAuth();
+  const { user, profile, loading, isAuthenticated, signOut } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [activeTab, setActiveTab] = useState(location.state?.defaultTab || "overview");
-  const [loadingError, setLoadingError] = useState<string | null>(null);
+  const [authCheckComplete, setAuthCheckComplete] = useState(false);
+  const [accessDenied, setAccessDenied] = useState(false);
 
   console.log('AdminDashboard - Current state:', { 
     loading, 
@@ -27,7 +28,8 @@ const AdminDashboard = () => {
     user: !!user, 
     profile: !!profile, 
     role: profile?.role,
-    userEmail: user?.email
+    userEmail: user?.email,
+    authCheckComplete
   });
 
   // Check access permissions
@@ -38,43 +40,77 @@ const AdminDashboard = () => {
   // Initialize admin alerts hook only if user has access
   useAdminAlerts();
 
-  // Enhanced authentication check with timeout
+  // Handle forced logout
+  const handleForceLogout = async () => {
+    try {
+      console.log('Force logout initiated');
+      await signOut();
+      // Clear any local storage items
+      localStorage.clear();
+      sessionStorage.clear();
+      // Force reload to clear any cached state
+      window.location.href = '/?auth=true';
+    } catch (error) {
+      console.error('Force logout error:', error);
+      // If signOut fails, force redirect anyway
+      window.location.href = '/?auth=true';
+    }
+  };
+
+  // Enhanced authentication check
   useEffect(() => {
     const checkAuth = async () => {
       console.log('AdminDashboard - Auth check starting');
       
-      // Set a timeout for loading
+      // Wait a maximum of 5 seconds for auth to load
       const timeout = setTimeout(() => {
-        if (loading) {
-          setLoadingError('Authentication check timed out. Please refresh the page.');
+        if (!authCheckComplete) {
+          console.log('AdminDashboard - Auth check timeout');
+          setAuthCheckComplete(true);
         }
-      }, 10000); // 10 second timeout
+      }, 5000);
 
+      // If loading is complete
       if (!loading) {
         clearTimeout(timeout);
+        console.log('AdminDashboard - Loading complete, checking auth');
         
         // Check if user is authenticated
         if (!isAuthenticated || !user) {
-          console.log('AdminDashboard - Not authenticated, redirecting to login');
+          console.log('AdminDashboard - Not authenticated, redirecting');
           navigate('/?auth=true', { replace: true });
           return;
         }
 
-        // Check if profile exists and user has access
-        if (profile && !canAccess) {
-          console.log('AdminDashboard - Insufficient permissions');
-          navigate('/', { replace: true });
+        // If we have a user but no profile, wait a bit more
+        if (!profile) {
+          console.log('AdminDashboard - No profile found, waiting...');
+          setTimeout(() => {
+            if (!profile) {
+              console.log('AdminDashboard - Still no profile, checking access');
+              // If still no profile after waiting, check if super admin by email
+              if (user.email === 'mycode103@gmail.com') {
+                console.log('AdminDashboard - Super admin access granted by email');
+                setAuthCheckComplete(true);
+              } else {
+                console.log('AdminDashboard - No profile and not super admin');
+                setAccessDenied(true);
+                setAuthCheckComplete(true);
+              }
+            } else {
+              setAuthCheckComplete(true);
+            }
+          }, 2000);
           return;
         }
 
-        // If profile is null but user exists, there might be a profile loading issue
-        if (!profile && user) {
-          console.log('AdminDashboard - Profile not found, but user exists');
-          setLoadingError('Profile not found. Please contact support if this persists.');
-          return;
+        // Check access permissions
+        if (!canAccess) {
+          console.log('AdminDashboard - Access denied');
+          setAccessDenied(true);
         }
 
-        console.log('AdminDashboard - Authentication successful');
+        setAuthCheckComplete(true);
       }
 
       return () => clearTimeout(timeout);
@@ -85,62 +121,43 @@ const AdminDashboard = () => {
 
   // Redirect support staff to appropriate tab
   useEffect(() => {
-    if (isSupportStaff && !isAdmin) {
+    if (authCheckComplete && isSupportStaff && !isAdmin) {
       if (activeTab === 'system' || activeTab === 'overview') {
         setActiveTab("support");
       }
     }
-  }, [profile, isSupportStaff, isAdmin, activeTab]);
+  }, [authCheckComplete, isSupportStaff, isAdmin, activeTab]);
 
   // Show loading state
-  if (loading) {
+  if (loading || !authCheckComplete) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-primary" />
-          <p className="text-muted-foreground">Loading admin dashboard...</p>
-          <p className="text-xs text-muted-foreground mt-2">
-            If this takes too long, please refresh the page
+          <p className="text-muted-foreground mb-2">Loading admin dashboard...</p>
+          <p className="text-xs text-muted-foreground mb-4">
+            Checking authentication and permissions...
           </p>
+          <Button 
+            variant="outline" 
+            onClick={handleForceLogout}
+            className="mt-4"
+          >
+            Force Logout & Retry
+          </Button>
         </div>
-      </div>
-    );
-  }
-
-  // Show loading error
-  if (loadingError) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <Card className="w-full max-w-md">
-          <CardHeader>
-            <CardTitle className="text-center text-destructive flex items-center gap-2 justify-center">
-              <AlertCircle className="h-5 w-5" />
-              Loading Error
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="text-center">
-            <p className="text-muted-foreground mb-6">{loadingError}</p>
-            <div className="space-y-2">
-              <Button onClick={() => window.location.reload()} className="w-full">
-                Refresh Page
-              </Button>
-              <Button variant="outline" onClick={() => navigate('/')} className="w-full">
-                Return to Home
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
       </div>
     );
   }
 
   // Don't render if not authenticated
   if (!isAuthenticated || !user) {
+    console.log('AdminDashboard - Rendering auth redirect');
     return null;
   }
 
   // Check if user has admin access
-  if (!canAccess) {
+  if (accessDenied || (!canAccess && user?.email !== 'mycode103@gmail.com')) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <Card className="w-full max-w-md">
@@ -153,8 +170,8 @@ const AdminDashboard = () => {
             </p>
             <div className="space-y-2">
               <Button onClick={() => navigate('/')} className="w-full">Return to Home</Button>
-              <Button variant="outline" onClick={() => window.location.reload()} className="w-full">
-                Refresh Page
+              <Button variant="outline" onClick={handleForceLogout} className="w-full">
+                Logout & Retry
               </Button>
             </div>
           </CardContent>

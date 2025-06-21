@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -155,7 +154,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
         
         if (event === 'SIGNED_OUT') {
+          console.log('User signed out, clearing state');
           setProfile(null);
+          setUser(null);
+          setSession(null);
         }
         
         setLoading(false);
@@ -234,14 +236,30 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signOut = async () => {
     try {
       console.log('Signing out user...');
-      const { error } = await supabase.auth.signOut();
-      if (error) throw error;
       
+      // Clear state immediately
       setUser(null);
       setProfile(null);
       setSession(null);
+      
+      // Sign out from Supabase
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        console.error('Supabase signOut error:', error);
+        // Even if Supabase signOut fails, we've cleared local state
+      }
+      
+      // Clear any cached data
+      localStorage.removeItem('supabase.auth.token');
+      sessionStorage.clear();
+      
+      console.log('User signed out successfully');
     } catch (error: any) {
       console.error('Sign out error:', error);
+      // Force clear state even if there's an error
+      setUser(null);
+      setProfile(null);
+      setSession(null);
     }
   };
 
