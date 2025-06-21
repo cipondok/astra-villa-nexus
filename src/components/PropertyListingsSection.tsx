@@ -36,18 +36,22 @@ const PropertyListingsSection = ({
       subtitle: "Discover premium real estate opportunities",
       noResults: "No properties found",
       searchResults: "Search Results",
-      noFeaturedProperties: "Loading properties...",
+      noFeaturedProperties: "No properties available at the moment",
       showingResults: "Showing",
-      loadingProperties: "Loading properties..."
+      loadingProperties: "Loading properties...",
+      databaseIssue: "We're working on adding new properties. Please check back later.",
+      troubleshooting: "If this persists, there might be a database connection issue."
     },
     id: {
       title: "Properti Unggulan",
       subtitle: "Temukan peluang real estate premium",
       noResults: "Tidak ada properti ditemukan",
       searchResults: "Hasil Pencarian",
-      noFeaturedProperties: "Memuat properti...",
+      noFeaturedProperties: "Tidak ada properti tersedia saat ini",
       showingResults: "Menampilkan",
-      loadingProperties: "Memuat properti..."
+      loadingProperties: "Memuat properti...",
+      databaseIssue: "Kami sedang menambahkan properti baru. Silakan cek kembali nanti.",
+      troubleshooting: "Jika masalah berlanjut, mungkin ada masalah koneksi database."
     }
   };
 
@@ -115,27 +119,33 @@ const PropertyListingsSection = ({
             </div>
           )}
 
-          {/* Debug info - will remove later */}
-          <div className="mb-4 p-4 bg-gray-100 rounded">
-            <p><strong>Debug Info:</strong></p>
-            <p>Display Properties Count: {displayProperties?.length || 0}</p>
-            <p>Has Searched: {hasSearched ? 'Yes' : 'No'}</p>
-            <p>Fallback Results Count: {fallbackResults?.length || 0}</p>
-            <p>Search Results Count: {searchResults?.length || 0}</p>
-          </div>
-
           {!displayProperties || displayProperties.length === 0 ? (
             <div className="text-center py-12">
               <div className="max-w-md mx-auto">
+                <div className="mb-6">
+                  <div className="w-24 h-24 mx-auto mb-4 bg-gray-200 rounded-full flex items-center justify-center">
+                    <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                    </svg>
+                  </div>
+                </div>
                 <h3 className="text-xl font-semibold mb-4">
                   {currentText.noFeaturedProperties}
                 </h3>
-                <p className="text-gray-600 dark:text-gray-300 mb-6">
-                  Please wait while we load the properties...
+                <p className="text-gray-600 dark:text-gray-300 mb-4">
+                  {currentText.databaseIssue}
                 </p>
-                <Button onClick={() => window.location.reload()}>
-                  Reload Page
-                </Button>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
+                  {currentText.troubleshooting}
+                </p>
+                <div className="space-y-2">
+                  <Button onClick={() => window.location.reload()} className="w-full">
+                    Reload Page
+                  </Button>
+                  <Button variant="outline" onClick={() => navigate('/properties')} className="w-full">
+                    Browse All Properties
+                  </Button>
+                </div>
               </div>
             </div>
           ) : (
