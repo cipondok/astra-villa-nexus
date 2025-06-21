@@ -1,7 +1,7 @@
+
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTheme } from 'next-themes';
-import { MoonIcon, SunIcon } from '@radix-ui/react-icons';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { languages } from '@/config/i18n';
