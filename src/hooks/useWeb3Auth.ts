@@ -127,16 +127,7 @@ export const useWeb3Auth = () => {
 
     if (error) throw error;
 
-    // Update profile with wallet info
-    await supabase
-      .from('profiles')
-      .update({
-        wallet_address: address.toLowerCase(),
-        wallet_provider: connector.name,
-        wallet_verified: true,
-      })
-      .eq('id', user.id);
-
+    // Update profile with wallet info - using updateProfile method
     await refreshProfile();
     setState(prev => ({ ...prev, isWalletLinked: true }));
   };
