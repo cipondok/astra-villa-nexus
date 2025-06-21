@@ -113,18 +113,29 @@ const RoleBasedNavigation = ({
   const getRoleSpecificMenuItems = () => {
     if (!profile) return [];
 
+    const baseItems = [];
+    
     switch (profile.role) {
       case 'property_owner':
-        return [{ label: currentText.myProperties, route: '/dashboard/owner/properties' }];
+        baseItems.push({ label: currentText.myProperties, route: '/dashboard/owner/properties' });
+        break;
       case 'agent':
-        return [{ label: currentText.myListings, route: '/dashboard/agent/listings' }];
+        baseItems.push({ label: currentText.myListings, route: '/dashboard/agent/listings' });
+        break;
       case 'vendor':
-        return [{ label: currentText.myServices, route: '/dashboard/vendor' }];
+        baseItems.push({ label: currentText.myServices, route: '/dashboard/vendor' });
+        break;
       case 'admin':
-        return [{ label: currentText.adminPanel, route: '/dashboard/admin' }];
+        baseItems.push({ label: currentText.adminPanel, route: '/dashboard/admin' });
+        break;
       default:
-        return [];
+        break;
     }
+
+    // Add Villa Realty integration for all authenticated users
+    baseItems.push({ label: 'Villa Realty', route: '/wallet' });
+
+    return baseItems;
   };
 
   const getVendorMenuItems = () => {

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -7,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { Wallet, Send, Receipt, History, TrendingUp, ArrowUpRight, ArrowDownLeft } from 'lucide-react';
+import { Wallet, Send, Receipt, History, TrendingUp, ArrowUpRight, ArrowDownLeft, Building } from 'lucide-react';
 import { useWallet } from '@/contexts/WalletContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTokenBalance } from '@/hooks/useTokenBalance';
@@ -15,6 +14,7 @@ import { formatAstraAmount } from '@/lib/web3';
 import { toast } from 'sonner';
 import WalletConnector from './WalletConnector';
 import TokenBalance from './TokenBalance';
+import ProjectIntegration from './ProjectIntegration';
 
 const WalletDashboard = () => {
   const { isConnected, address, astraBalance } = useWallet();
@@ -59,7 +59,7 @@ const WalletDashboard = () => {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold">Wallet Dashboard</h2>
-          <p className="text-muted-foreground">Manage your ASTRA tokens and transactions</p>
+          <p className="text-muted-foreground">Manage your ASTRA tokens and project integrations</p>
         </div>
         {isConnected && (
           <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
@@ -80,6 +80,9 @@ const WalletDashboard = () => {
           <TokenBalance />
         </div>
       </div>
+
+      {/* Project Integration */}
+      <ProjectIntegration />
 
       {isConnected && (
         <Tabs defaultValue="send" className="w-full">
