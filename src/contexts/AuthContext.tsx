@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -106,8 +107,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         full_name: authUser.user.user_metadata?.full_name || 'New User',
         role: 'general_user' as UserRole,
         verification_status: 'approved',
-        is_admin: false,
-        wallet_verified: false,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
       };
@@ -138,7 +137,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   useEffect(() => {
-    // Set up auth state listener
+    // Set up auth state listener first
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         console.log('Auth state changed:', event, session?.user?.email || 'No user');
@@ -169,8 +168,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       
       if (session?.user) {
         fetchProfile(session.user.id);
+      } else {
+        setLoading(false);
       }
-      setLoading(false);
     });
 
     return () => subscription.unsubscribe();

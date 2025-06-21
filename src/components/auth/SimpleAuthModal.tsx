@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useAuth } from "@/contexts/AuthContext";
 import { X, Eye, EyeOff } from "lucide-react";
+import { toast } from "sonner";
 
 interface SimpleAuthModalProps {
   isOpen: boolean;
@@ -59,6 +60,7 @@ const SimpleAuthModal = ({ isOpen, onClose }: SimpleAuthModalProps) => {
         }
       } else if (result.success) {
         console.log("Login successful");
+        toast.success("Login successful! Welcome back.");
         onClose();
         setLoginData({ email: "", password: "" });
         setError("");
@@ -110,7 +112,8 @@ const SimpleAuthModal = ({ isOpen, onClose }: SimpleAuthModalProps) => {
         }
       } else if (result.success) {
         console.log("Registration successful");
-        onClose();
+        toast.success("Account created successfully! You can now log in.");
+        setActiveTab("login");
         setRegisterData({ email: "", password: "", fullName: "", confirmPassword: "" });
         setError("");
       }
@@ -126,6 +129,7 @@ const SimpleAuthModal = ({ isOpen, onClose }: SimpleAuthModalProps) => {
     setLoginData({ email: "", password: "" });
     setRegisterData({ email: "", password: "", fullName: "", confirmPassword: "" });
     setError("");
+    setActiveTab("login");
   };
 
   const handleClose = () => {
@@ -156,8 +160,8 @@ const SimpleAuthModal = ({ isOpen, onClose }: SimpleAuthModalProps) => {
 
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="login">Sign In</TabsTrigger>
-              <TabsTrigger value="register">Sign Up</TabsTrigger>
+              <TabsTrigger value="login" disabled={isLoading}>Sign In</TabsTrigger>
+              <TabsTrigger value="register" disabled={isLoading}>Sign Up</TabsTrigger>
             </TabsList>
 
             <TabsContent value="login" className="space-y-4">
@@ -194,6 +198,7 @@ const SimpleAuthModal = ({ isOpen, onClose }: SimpleAuthModalProps) => {
                       size="sm"
                       className="absolute right-0 top-0 h-full px-3"
                       onClick={() => setShowPassword(!showPassword)}
+                      disabled={isLoading}
                     >
                       {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </Button>
@@ -258,6 +263,7 @@ const SimpleAuthModal = ({ isOpen, onClose }: SimpleAuthModalProps) => {
                       size="sm"
                       className="absolute right-0 top-0 h-full px-3"
                       onClick={() => setShowPassword(!showPassword)}
+                      disabled={isLoading}
                     >
                       {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </Button>
@@ -283,6 +289,7 @@ const SimpleAuthModal = ({ isOpen, onClose }: SimpleAuthModalProps) => {
                       size="sm"
                       className="absolute right-0 top-0 h-full px-3"
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      disabled={isLoading}
                     >
                       {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </Button>

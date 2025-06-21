@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
@@ -346,11 +345,10 @@ const Index = () => {
           language={language}
         />
 
-        {/* Auth Modal */}
-        <EnhancedSecureAuthModal 
+        {/* Auth Modal - Use SimpleAuthModal for better functionality */}
+        <SimpleAuthModal 
           isOpen={authModalOpen} 
           onClose={handleAuthModalClose}
-          language={language}
         />
       </div>
     </SessionManager>
