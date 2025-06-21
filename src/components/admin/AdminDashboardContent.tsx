@@ -4,7 +4,7 @@ import { TabsContent } from "@/components/ui/tabs";
 import AdminOverview from "./AdminOverview";
 import UserManagement from "./UserManagement";
 import PropertyManagement from "./PropertyManagement";
-import CustomerServiceTicketMan from "./CustomerServiceTicketManagement";
+import CustomerServiceTicketManagement from "./CustomerServiceTicketManagement";
 import ContactManagement from "./ContactManagement";
 import ComprehensiveVendorManagement from "./ComprehensiveVendorManagement";
 import VendorManagement from "./VendorManagement";
@@ -16,40 +16,29 @@ import WebTrafficAnalytics from "./WebTrafficAnalytics";
 import AIBotManagement from "./AIBotManagement";
 import FeedbackManagement from "./FeedbackManagement";
 import DailyCheckInManagement from "./DailyCheckInManagement";
-import ContentManagement from "./ContentManagement";
+import EnhancedContentManagement from "./EnhancedContentManagement";
 import SearchFiltersManagement from "./SearchFiltersManagement";
+import SEOSettings from "./SEOSettings";
 import SystemSettings from "./SystemSettings";
 import BillingManagement from "./BillingManagement";
 import AstraTokenManagement from "./AstraTokenManagement";
+import AstraTokenAPIConfiguration from "./AstraTokenAPIConfiguration";
 import DatabaseTableManagement from "./DatabaseTableManagement";
 import SecurityMonitoring from "./SecurityMonitoring";
 import SystemReports from "./SystemReports";
-import SEOSettings from "./SEOSettings";
 
 interface AdminDashboardContentProps {
   isAdmin: boolean;
   setActiveTab: (tab: string) => void;
 }
 
-const UnauthorizedAccess = () => (
-  <div className="text-center p-6">
-    <h2 className="text-2xl font-semibold mb-4">Unauthorized Access</h2>
-    <p className="text-gray-600">You do not have permission to view this content.</p>
-  </div>
-);
-
 const AdminDashboardContent = ({ isAdmin, setActiveTab }: AdminDashboardContentProps) => {
   return (
     <>
       <TabsContent value="overview">
-        <AdminOverview />
+        <AdminOverview setActiveTab={setActiveTab} />
       </TabsContent>
 
-      <TabsContent value="seo-settings">
-        <SEOSettings />
-      </TabsContent>
-
-      {/* Core Management */}
       <TabsContent value="user-management">
         <UserManagement />
       </TabsContent>
@@ -58,16 +47,14 @@ const AdminDashboardContent = ({ isAdmin, setActiveTab }: AdminDashboardContentP
         <PropertyManagement />
       </TabsContent>
 
-      {/* Customer Service */}
       <TabsContent value="customer-service">
-        <CustomerServiceTicketMan />
+        <CustomerServiceTicketManagement />
       </TabsContent>
 
       <TabsContent value="contact-management">
         <ContactManagement />
       </TabsContent>
 
-      {/* AI & Vendor Management */}
       <TabsContent value="ai-vendor-management">
         <ComprehensiveVendorManagement />
       </TabsContent>
@@ -92,7 +79,6 @@ const AdminDashboardContent = ({ isAdmin, setActiveTab }: AdminDashboardContentP
         <AdminMembershipManagement />
       </TabsContent>
 
-      {/* Analytics & Monitoring */}
       <TabsContent value="analytics">
         <WebTrafficAnalytics />
       </TabsContent>
@@ -109,18 +95,20 @@ const AdminDashboardContent = ({ isAdmin, setActiveTab }: AdminDashboardContentP
         <DailyCheckInManagement />
       </TabsContent>
 
-      {/* Content & Settings */}
       <TabsContent value="content-management">
-        <ContentManagement />
+        <EnhancedContentManagement />
       </TabsContent>
 
       <TabsContent value="search-filters">
         <SearchFiltersManagement />
       </TabsContent>
 
-      {/* System Settings */}
+      <TabsContent value="seo-settings">
+        <SEOSettings />
+      </TabsContent>
+
       <TabsContent value="system-settings">
-        {isAdmin ? <SystemSettings /> : <UnauthorizedAccess />}
+        <SystemSettings />
       </TabsContent>
 
       <TabsContent value="billing-management">
@@ -131,9 +119,12 @@ const AdminDashboardContent = ({ isAdmin, setActiveTab }: AdminDashboardContentP
         <AstraTokenManagement />
       </TabsContent>
 
-      {/* Technical */}
+      <TabsContent value="astra-token-api">
+        <AstraTokenAPIConfiguration />
+      </TabsContent>
+
       <TabsContent value="database-management">
-        {isAdmin ? <DatabaseTableManagement /> : <UnauthorizedAccess />}
+        <DatabaseTableManagement />
       </TabsContent>
 
       <TabsContent value="security-monitoring">
@@ -142,14 +133,6 @@ const AdminDashboardContent = ({ isAdmin, setActiveTab }: AdminDashboardContentP
 
       <TabsContent value="system-reports">
         <SystemReports />
-      </TabsContent>
-
-      {/* Support tab for non-admin users */}
-      <TabsContent value="support">
-        <div className="grid gap-4 md:grid-cols-2">
-          <CustomerServiceTicketMan />
-          <ContactManagement />
-        </div>
       </TabsContent>
     </>
   );

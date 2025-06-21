@@ -26,7 +26,8 @@ import {
   Award,
   Calendar,
   LifeBuoy,
-  Phone
+  Phone,
+  Api
 } from "lucide-react";
 
 interface AdminNavigationProps {
@@ -194,6 +195,14 @@ const AdminNavigation = ({ activeSection, onSectionChange }: AdminNavigationProp
       icon: Zap,
       description: 'Token system management',
       category: 'Settings'
+    },
+    {
+      id: 'astra-token-api',
+      label: 'ASTRA Token API',
+      icon: Api,
+      description: 'API configuration and management',
+      category: 'Settings',
+      badge: 'API'
     },
 
     // Technical

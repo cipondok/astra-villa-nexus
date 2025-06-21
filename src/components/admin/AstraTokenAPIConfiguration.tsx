@@ -8,9 +8,10 @@ import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { CheckCircle, AlertCircle, Settings, Save, TestTube } from 'lucide-react';
+import { CheckCircle, AlertCircle, Settings, Save, TestTube, BookOpen } from 'lucide-react';
 import { astraTokenAPI, AstraTokenConfig } from '@/services/astraTokenAPI';
 import { toast } from 'sonner';
+import AstraTokenAPIGuide from './AstraTokenAPIGuide';
 
 const AstraTokenAPIConfiguration = () => {
   const [config, setConfig] = useState<AstraTokenConfig>({
@@ -125,9 +126,10 @@ const AstraTokenAPIConfiguration = () => {
       </Alert>
 
       <Tabs defaultValue="configure" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-2">
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="configure">Configuration</TabsTrigger>
           <TabsTrigger value="test">Test & Validate</TabsTrigger>
+          <TabsTrigger value="guide">Development Guide</TabsTrigger>
         </TabsList>
 
         <TabsContent value="configure" className="space-y-6">
@@ -236,6 +238,10 @@ const AstraTokenAPIConfiguration = () => {
               )}
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="guide" className="space-y-6">
+          <AstraTokenAPIGuide />
         </TabsContent>
       </Tabs>
     </div>
