@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -25,8 +26,7 @@ import {
   Award,
   Calendar,
   LifeBuoy,
-  Phone,
-  Server
+  Phone
 } from "lucide-react";
 
 interface AdminNavigationProps {
@@ -194,14 +194,6 @@ const AdminNavigation = ({ activeSection, onSectionChange }: AdminNavigationProp
       icon: Zap,
       description: 'Token system management',
       category: 'Settings'
-    },
-    {
-      id: 'astra-token-api',
-      label: 'ASTRA Token API',
-      icon: Server,
-      description: 'API configuration and management',
-      category: 'Settings',
-      badge: 'API'
     },
 
     // Technical

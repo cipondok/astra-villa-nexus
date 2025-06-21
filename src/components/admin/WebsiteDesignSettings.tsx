@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,110 +6,47 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Palette, Layout, Type, Image, Settings, Sparkles, Zap, Bot } from "lucide-react";
+import { Palette, Layout, Type, Image, Settings } from "lucide-react";
 import ThemeToggleSwitch from "@/components/ThemeToggleSwitch";
 
 const WebsiteDesignSettings = () => {
-  const [primaryColor, setPrimaryColor] = useState("#8B5CF6");
-  const [secondaryColor, setSecondaryColor] = useState("#06B6D4");
-  const [backgroundColor, setBackgroundColor] = useState("#0F172A");
-  const [textColor, setTextColor] = useState("#FFFFFF");
+  const [primaryColor, setPrimaryColor] = useState("#007AFF");
+  const [secondaryColor, setSecondaryColor] = useState("#FF6B35");
+  const [backgroundColor, setBackgroundColor] = useState("#FFFFFF");
+  const [textColor, setTextColor] = useState("#1A1A1A");
   const [borderRadius, setBorderRadius] = useState([12]);
   const [spacing, setSpacing] = useState([16]);
-  const [fontFamily, setFontFamily] = useState("Inter");
+  const [fontFamily, setFontFamily] = useState("SF Pro Display");
   const [fontSize, setFontSize] = useState([16]);
-  const [template, setTemplate] = useState("ai-futuristic");
-  const [darkMode, setDarkMode] = useState(true);
+  const [template, setTemplate] = useState("modern");
+  const [darkMode, setDarkMode] = useState(false);
   const [animations, setAnimations] = useState(true);
   const [glassMorphism, setGlassMorphism] = useState(true);
-  const [aiEffects, setAiEffects] = useState(true);
 
   const colorPresets = [
-    { 
-      name: "AI Futuristic", 
-      primary: "#8B5CF6", 
-      secondary: "#06B6D4",
-      background: "#0F172A",
-      gradient: "from-purple-500 to-blue-500"
-    },
-    { 
-      name: "Cyber Purple", 
-      primary: "#A855F7", 
-      secondary: "#3B82F6",
-      background: "#1E1B4B",
-      gradient: "from-purple-600 to-blue-600"
-    },
-    { 
-      name: "Matrix Green", 
-      primary: "#10B981", 
-      secondary: "#06B6D4",
-      background: "#0C1A14",
-      gradient: "from-green-500 to-cyan-500"
-    },
-    { 
-      name: "Neural Blue", 
-      primary: "#3B82F6", 
-      secondary: "#8B5CF6",
-      background: "#0F1419",
-      gradient: "from-blue-500 to-purple-500"
-    },
-    { 
-      name: "Quantum Pink", 
-      primary: "#EC4899", 
-      secondary: "#A855F7",
-      background: "#1E0F1A",
-      gradient: "from-pink-500 to-purple-500"
-    }
+    { name: "Blue Ocean", primary: "#007AFF", secondary: "#FF6B35" },
+    { name: "Purple Sunset", primary: "#8B5CF6", secondary: "#F59E0B" },
+    { name: "Green Forest", primary: "#10B981", secondary: "#EF4444" },
+    { name: "Rose Gold", primary: "#F43F5E", secondary: "#F59E0B" },
+    { name: "Dark Professional", primary: "#1F2937", secondary: "#3B82F6" }
   ];
 
   const templates = [
-    { 
-      id: "ai-futuristic", 
-      name: "AI Futuristic", 
-      preview: "🤖",
-      description: "Dark theme with purple/cyan gradients and AI effects"
-    },
-    { 
-      id: "cyberpunk", 
-      name: "Cyberpunk", 
-      preview: "⚡",
-      description: "Neon colors with glitch effects and holographic elements"
-    },
-    { 
-      id: "neural-network", 
-      name: "Neural Network", 
-      preview: "🧠",
-      description: "Animated connections with neural network visualizations"
-    },
-    { 
-      id: "quantum", 
-      name: "Quantum", 
-      preview: "🌌",
-      description: "Particle effects with quantum-inspired animations"
-    },
-    { 
-      id: "matrix", 
-      name: "Matrix", 
-      preview: "💚",
-      description: "Green matrix rain with code-like backgrounds"
-    },
-    { 
-      id: "holographic", 
-      name: "Holographic", 
-      preview: "✨",
-      description: "Iridescent colors with hologram-style interfaces"
-    }
+    { id: "modern", name: "Modern Glass", preview: "🏢" },
+    { id: "classic", name: "Classic Professional", preview: "🏛️" },
+    { id: "minimal", name: "Minimal Clean", preview: "⚪" },
+    { id: "vibrant", name: "Vibrant Creative", preview: "🌈" },
+    { id: "dark", name: "Dark Elegant", preview: "🌑" }
   ];
 
   const fontOptions = [
+    "SF Pro Display",
     "Inter",
-    "SF Pro Display", 
-    "JetBrains Mono",
-    "Fira Code",
-    "Space Mono",
-    "Orbitron",
-    "Exo 2",
-    "Rajdhani"
+    "Roboto",
+    "Open Sans",
+    "Lato",
+    "Montserrat",
+    "Poppins"
   ];
 
   const handleSaveSettings = () => {
@@ -133,181 +69,140 @@ const WebsiteDesignSettings = () => {
         template,
         darkMode,
         animations,
-        glassMorphism,
-        aiEffects
+        glassMorphism
       }
     };
 
-    // Apply settings to CSS custom properties
-    const root = document.documentElement;
-    root.style.setProperty('--primary-color', primaryColor);
-    root.style.setProperty('--secondary-color', secondaryColor);
-    root.style.setProperty('--background-color', backgroundColor);
-    root.style.setProperty('--text-color', textColor);
-
-    console.log("Saving AI design settings:", settings);
-    // Save to localStorage for persistence
-    localStorage.setItem('astra-design-settings', JSON.stringify(settings));
-  };
-
-  const applyPreset = (preset: typeof colorPresets[0]) => {
-    setPrimaryColor(preset.primary);
-    setSecondaryColor(preset.secondary);
-    setBackgroundColor(preset.background);
+    console.log("Saving design settings:", settings);
+    // Here you would save to your backend/database
   };
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between p-6 bg-gradient-to-r from-purple-500/20 to-blue-500/20 rounded-2xl border border-purple-500/30 backdrop-blur-sm">
-        <div className="flex items-center gap-4">
-          <div className="p-3 bg-gradient-to-r from-purple-600 to-blue-600 rounded-xl">
-            <Bot className="h-6 w-6 text-white" />
-          </div>
-          <div>
-            <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
-              AI Website Design Studio
-            </h2>
-            <p className="text-gray-300">Customize your futuristic AI-themed interface</p>
-          </div>
+      <div className="flex items-center justify-between p-4 glass-ios rounded-2xl border border-border/30">
+        <div>
+          <h2 className="text-2xl font-bold text-foreground">Website Design Settings</h2>
+          <p className="text-muted-foreground">Customize your website's appearance and theme</p>
         </div>
         <div className="flex items-center gap-3">
           <ThemeToggleSwitch language="en" />
-          <Button 
-            onClick={handleSaveSettings} 
-            className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-lg shadow-purple-500/25"
-          >
-            <Sparkles className="h-4 w-4 mr-2" />
-            Save AI Theme
+          <Button onClick={handleSaveSettings} className="btn-primary-ios">
+            Save Changes
           </Button>
         </div>
       </div>
 
       <Tabs defaultValue="colors" className="space-y-4">
-        <TabsList className="bg-black/40 backdrop-blur-sm border border-white/10">
-          <TabsTrigger value="colors" className="flex items-center gap-2 text-gray-300 data-[state=active]:text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600">
+        <TabsList className="glass-ios border border-border/30">
+          <TabsTrigger value="colors" className="flex items-center gap-2 text-muted-foreground data-[state=active]:text-foreground">
             <Palette className="h-4 w-4" />
-            AI Colors
+            Colors
           </TabsTrigger>
-          <TabsTrigger value="typography" className="flex items-center gap-2 text-gray-300 data-[state=active]:text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600">
+          <TabsTrigger value="typography" className="flex items-center gap-2 text-muted-foreground data-[state=active]:text-foreground">
             <Type className="h-4 w-4" />
             Typography
           </TabsTrigger>
-          <TabsTrigger value="layout" className="flex items-center gap-2 text-gray-300 data-[state=active]:text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600">
+          <TabsTrigger value="layout" className="flex items-center gap-2 text-muted-foreground data-[state=active]:text-foreground">
             <Layout className="h-4 w-4" />
             Layout
           </TabsTrigger>
-          <TabsTrigger value="templates" className="flex items-center gap-2 text-gray-300 data-[state=active]:text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600">
+          <TabsTrigger value="templates" className="flex items-center gap-2 text-muted-foreground data-[state=active]:text-foreground">
             <Image className="h-4 w-4" />
-            AI Templates
+            Templates
           </TabsTrigger>
         </TabsList>
 
         <TabsContent value="colors" className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card className="bg-black/20 backdrop-blur-sm border border-white/10">
+            <Card className="card-ios">
               <CardHeader>
-                <CardTitle className="text-white flex items-center gap-2">
-                  <Zap className="h-5 w-5 text-cyan-400" />
-                  AI Color Palette
-                </CardTitle>
-                <CardDescription className="text-gray-300">Configure your futuristic color scheme</CardDescription>
+                <CardTitle className="text-foreground">Color Palette</CardTitle>
+                <CardDescription className="text-muted-foreground">Choose your brand colors</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-white">Primary Purple</label>
+                  <label className="text-sm font-medium text-foreground">Primary Color</label>
                   <div className="flex items-center gap-2">
                     <Input
                       type="color"
                       value={primaryColor}
                       onChange={(e) => setPrimaryColor(e.target.value)}
-                      className="w-16 h-10 p-1 border border-purple-500/30 rounded bg-black/40"
+                      className="w-16 h-10 p-1 border rounded glass-ios"
                     />
                     <Input
                       value={primaryColor}
                       onChange={(e) => setPrimaryColor(e.target.value)}
-                      placeholder="#8B5CF6"
-                      className="bg-black/40 border-purple-500/30 text-white"
+                      placeholder="#007AFF"
+                      className="glass-ios text-foreground"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-white">Secondary Cyan</label>
+                  <label className="text-sm font-medium">Secondary Color</label>
                   <div className="flex items-center gap-2">
                     <Input
                       type="color"
                       value={secondaryColor}
                       onChange={(e) => setSecondaryColor(e.target.value)}
-                      className="w-16 h-10 p-1 border border-cyan-500/30 rounded bg-black/40"
+                      className="w-16 h-10 p-1 border rounded"
                     />
                     <Input
                       value={secondaryColor}
                       onChange={(e) => setSecondaryColor(e.target.value)}
-                      placeholder="#06B6D4"
-                      className="bg-black/40 border-cyan-500/30 text-white"
+                      placeholder="#FF6B35"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-white">Background</label>
+                  <label className="text-sm font-medium">Background Color</label>
                   <div className="flex items-center gap-2">
                     <Input
                       type="color"
                       value={backgroundColor}
                       onChange={(e) => setBackgroundColor(e.target.value)}
-                      className="w-16 h-10 p-1 border border-white/20 rounded bg-black/40"
+                      className="w-16 h-10 p-1 border rounded"
                     />
                     <Input
                       value={backgroundColor}
                       onChange={(e) => setBackgroundColor(e.target.value)}
-                      placeholder="#0F172A"
-                      className="bg-black/40 border-white/20 text-white"
+                      placeholder="#FFFFFF"
                     />
                   </div>
-                </div>
-
-                <div className="p-4 rounded-lg bg-gradient-to-r from-purple-500/20 to-cyan-500/20 border border-purple-500/30">
-                  <p className="text-sm text-white">Preview Gradient</p>
-                  <div 
-                    className="w-full h-8 rounded mt-2"
-                    style={{
-                      background: `linear-gradient(to right, ${primaryColor}, ${secondaryColor})`
-                    }}
-                  />
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="bg-black/20 backdrop-blur-sm border border-white/10">
+            <Card className="card-ios">
               <CardHeader>
-                <CardTitle className="text-white">AI Color Presets</CardTitle>
-                <CardDescription className="text-gray-300">Pre-configured AI themes</CardDescription>
+                <CardTitle className="text-foreground">Color Presets</CardTitle>
+                <CardDescription className="text-muted-foreground">Quick color combinations</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 gap-3">
+                <div className="grid grid-cols-1 gap-2">
                   {colorPresets.map((preset) => (
                     <Button
                       key={preset.name}
                       variant="outline"
-                      className="justify-start h-16 bg-black/20 border-white/10 hover:bg-white/5 text-white"
-                      onClick={() => applyPreset(preset)}
+                      className="justify-start h-12 btn-secondary-ios text-foreground"
+                      onClick={() => {
+                        setPrimaryColor(preset.primary);
+                        setSecondaryColor(preset.secondary);
+                      }}
                     >
-                      <div className="flex items-center gap-3 w-full">
+                      <div className="flex items-center gap-3">
                         <div className="flex gap-1">
                           <div 
-                            className="w-6 h-6 rounded-full border border-white/20" 
+                            className="w-4 h-4 rounded-full" 
                             style={{ backgroundColor: preset.primary }}
                           />
                           <div 
-                            className="w-6 h-6 rounded-full border border-white/20" 
+                            className="w-4 h-4 rounded-full" 
                             style={{ backgroundColor: preset.secondary }}
                           />
                         </div>
-                        <div className="text-left">
-                          <div className="font-medium">{preset.name}</div>
-                          <div className="text-xs text-gray-400">{preset.gradient}</div>
-                        </div>
+                        <span>{preset.name}</span>
                       </div>
                     </Button>
                   ))}
@@ -318,21 +213,21 @@ const WebsiteDesignSettings = () => {
         </TabsContent>
 
         <TabsContent value="typography" className="space-y-6">
-          <Card className="bg-black/20 backdrop-blur-sm border border-white/10">
+          <Card>
             <CardHeader>
-              <CardTitle className="text-white">AI Typography</CardTitle>
-              <CardDescription className="text-gray-300">Futuristic fonts and text styles</CardDescription>
+              <CardTitle>Typography Settings</CardTitle>
+              <CardDescription>Customize fonts and text styles</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-white">Font Family</label>
+                <label className="text-sm font-medium">Font Family</label>
                 <Select value={fontFamily} onValueChange={setFontFamily}>
-                  <SelectTrigger className="bg-black/40 border-white/20 text-white">
+                  <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent className="bg-black/90 border-white/20">
+                  <SelectContent>
                     {fontOptions.map((font) => (
-                      <SelectItem key={font} value={font} className="text-white hover:bg-white/10" style={{ fontFamily: font }}>
+                      <SelectItem key={font} value={font} style={{ fontFamily: font }}>
                         {font}
                       </SelectItem>
                     ))}
@@ -341,24 +236,21 @@ const WebsiteDesignSettings = () => {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-white">Base Font Size: {fontSize[0]}px</label>
+                <label className="text-sm font-medium">Base Font Size: {fontSize[0]}px</label>
                 <Slider
                   value={fontSize}
                   onValueChange={setFontSize}
                   max={24}
                   min={12}
                   step={1}
-                  className="[&_[role=slider]]:bg-gradient-to-r [&_[role=slider]]:from-purple-500 [&_[role=slider]]:to-cyan-500"
                 />
               </div>
 
-              <div className="p-6 border rounded-lg bg-gradient-to-r from-purple-500/10 to-cyan-500/10 border-purple-500/30" style={{ fontFamily }}>
-                <h3 className="text-xl font-bold mb-2 bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
-                  AI Preview Text
-                </h3>
-                <p className="text-gray-300">
-                  This is how your futuristic AI interface will look with the selected typography settings.
-                  Experience the future of real estate technology.
+              <div className="p-4 border rounded-lg" style={{ fontFamily }}>
+                <h3 className="text-xl font-bold mb-2">Preview Text</h3>
+                <p className="text-muted-foreground">
+                  This is how your website text will look with the selected typography settings.
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                 </p>
               </div>
             </CardContent>
@@ -366,55 +258,48 @@ const WebsiteDesignSettings = () => {
         </TabsContent>
 
         <TabsContent value="layout" className="space-y-6">
-          <Card className="bg-black/20 backdrop-blur-sm border border-white/10">
+          <Card>
             <CardHeader>
-              <CardTitle className="text-white">AI Layout Settings</CardTitle>
-              <CardDescription className="text-gray-300">Configure spatial and visual elements</CardDescription>
+              <CardTitle>Layout Settings</CardTitle>
+              <CardDescription>Adjust spacing and visual elements</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-white">Border Radius: {borderRadius[0]}px</label>
+                <label className="text-sm font-medium">Border Radius: {borderRadius[0]}px</label>
                 <Slider
                   value={borderRadius}
                   onValueChange={setBorderRadius}
                   max={24}
                   min={0}
                   step={2}
-                  className="[&_[role=slider]]:bg-gradient-to-r [&_[role=slider]]:from-purple-500 [&_[role=slider]]:to-cyan-500"
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-white">Base Spacing: {spacing[0]}px</label>
+                <label className="text-sm font-medium">Base Spacing: {spacing[0]}px</label>
                 <Slider
                   value={spacing}
                   onValueChange={setSpacing}
                   max={32}
                   min={8}
                   step={2}
-                  className="[&_[role=slider]]:bg-gradient-to-r [&_[role=slider]]:from-purple-500 [&_[role=slider]]:to-cyan-500"
                 />
               </div>
 
               <div className="space-y-4">
-                <div className="flex items-center justify-between p-3 bg-black/20 rounded-lg border border-white/10">
-                  <label className="text-sm font-medium text-white">Dark Mode</label>
+                <div className="flex items-center justify-between">
+                  <label className="text-sm font-medium">Dark Mode</label>
                   <Switch checked={darkMode} onCheckedChange={setDarkMode} />
                 </div>
 
-                <div className="flex items-center justify-between p-3 bg-black/20 rounded-lg border border-white/10">
-                  <label className="text-sm font-medium text-white">AI Animations</label>
+                <div className="flex items-center justify-between">
+                  <label className="text-sm font-medium">Enable Animations</label>
                   <Switch checked={animations} onCheckedChange={setAnimations} />
                 </div>
 
-                <div className="flex items-center justify-between p-3 bg-black/20 rounded-lg border border-white/10">
-                  <label className="text-sm font-medium text-white">Glass Morphism</label>
+                <div className="flex items-center justify-between">
+                  <label className="text-sm font-medium">Glass Morphism Effect</label>
                   <Switch checked={glassMorphism} onCheckedChange={setGlassMorphism} />
-                </div>
-
-                <div className="flex items-center justify-between p-3 bg-black/20 rounded-lg border border-white/10">
-                  <label className="text-sm font-medium text-white">Neural Effects</label>
-                  <Switch checked={aiEffects} onCheckedChange={setAiEffects} />
                 </div>
               </div>
             </CardContent>
@@ -422,10 +307,10 @@ const WebsiteDesignSettings = () => {
         </TabsContent>
 
         <TabsContent value="templates" className="space-y-6">
-          <Card className="bg-black/20 backdrop-blur-sm border border-white/10">
+          <Card>
             <CardHeader>
-              <CardTitle className="text-white">AI Website Templates</CardTitle>
-              <CardDescription className="text-gray-300">Choose your futuristic design theme</CardDescription>
+              <CardTitle>Website Templates</CardTitle>
+              <CardDescription>Choose a pre-designed template</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -433,16 +318,11 @@ const WebsiteDesignSettings = () => {
                   <Button
                     key={temp.id}
                     variant={template === temp.id ? "default" : "outline"}
-                    className={`h-32 flex flex-col items-center justify-center p-4 ${
-                      template === temp.id 
-                        ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white' 
-                        : 'bg-black/20 border-white/10 text-white hover:bg-white/5'
-                    }`}
+                    className="h-24 flex flex-col items-center justify-center"
                     onClick={() => setTemplate(temp.id)}
                   >
-                    <div className="text-3xl mb-2">{temp.preview}</div>
-                    <span className="text-sm font-medium">{temp.name}</span>
-                    <span className="text-xs text-gray-400 mt-1 text-center">{temp.description}</span>
+                    <div className="text-2xl mb-2">{temp.preview}</div>
+                    <span className="text-sm">{temp.name}</span>
                   </Button>
                 ))}
               </div>
