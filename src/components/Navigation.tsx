@@ -8,6 +8,7 @@ import { useTheme } from "@/components/ThemeProvider";
 import RoleBasedAuthModal from "./RoleBasedAuthModal";
 import ThemeToggleSwitch from "./ThemeToggleSwitch";
 import LanguageToggleSwitch from "./LanguageToggleSwitch";
+import WalletButton from "./wallet/WalletButton";
 import { toast } from "sonner";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -94,6 +95,7 @@ const Navigation = () => {
         <nav className="nav-ios sticky top-0 z-50">
           <div className="max-w-7xl mx-auto px-3 sm:px-4">
             <div className="flex justify-between h-14">
+              {/* Logo */}
               <div className="flex items-center">
                 <Link to="/" className="flex-shrink-0 flex items-center group">
                   <div className="flex items-center space-x-2">
@@ -159,11 +161,13 @@ const Navigation = () => {
                 </Tooltip>
               </div>
 
-              {/* Right side controls - Replace language buttons with iPhone-style switch */}
+              {/* Right side controls - Updated with WalletButton */}
               <div className="hidden md:flex items-center space-x-3">
-                {/* iPhone-style language toggle */}
                 <LanguageToggleSwitch />
                 <ThemeToggleSwitch language={language} showLabel={false} className="bg-transparent border-transparent hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl" />
+
+                {/* Web3 Wallet Button */}
+                <WalletButton />
 
                 {user ? (
                   <div className="flex items-center space-x-1">
@@ -269,6 +273,11 @@ const Navigation = () => {
                   <Plus className="h-5 w-5" />
                   {navLabels["Add Property"]}
                 </button>
+
+                {/* Mobile Wallet Button */}
+                <div className="px-4 py-2">
+                  <WalletButton />
+                </div>
 
                 {/* Mobile Language Toggle */}
                 <Button

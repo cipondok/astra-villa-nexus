@@ -19,6 +19,10 @@ interface Profile {
   updated_at?: string;
   availability_status?: 'online' | 'busy' | 'offline';
   last_seen_at?: string;
+  is_admin?: boolean;
+  wallet_verified?: boolean;
+  wallet_address?: string;
+  wallet_provider?: string;
 }
 
 interface AuthContextType {
@@ -56,7 +60,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           email: authUser.user.email,
           full_name: authUser.user.user_metadata?.full_name || 'Admin',
           role: 'admin',
-          verification_status: 'approved'
+          verification_status: 'approved',
+          is_admin: true
         };
         setProfile(adminProfile);
         return;
@@ -102,6 +107,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         full_name: authUser.user.user_metadata?.full_name || 'New User',
         role: 'general_user' as UserRole,
         verification_status: 'approved',
+        is_admin: false,
+        wallet_verified: false,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
       };
