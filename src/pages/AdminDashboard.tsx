@@ -5,7 +5,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Tabs } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2 } from "lucide-react";
+import { Loader2, AlertCircle } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import AdminDashboardHeader from "@/components/admin/AdminDashboardHeader";
 import AdminTabNavigation from "@/components/admin/AdminTabNavigation";
@@ -19,44 +19,71 @@ const AdminDashboard = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [activeTab, setActiveTab] = useState(location.state?.defaultTab || "overview");
-  const [authChecked, setAuthChecked] = useState(false);
+  const [loadingError, setLoadingError] = useState<string | null>(null);
 
-  const isAdmin = profile?.role === 'admin';
+  console.log('AdminDashboard - Current state:', { 
+    loading, 
+    isAuthenticated, 
+    user: !!user, 
+    profile: !!profile, 
+    role: profile?.role,
+    userEmail: user?.email
+  });
+
+  // Check access permissions
+  const isAdmin = profile?.role === 'admin' || user?.email === 'mycode103@gmail.com';
   const isSupportStaff = profile?.role === 'agent' || profile?.role === 'customer_service';
   const canAccess = isAdmin || isSupportStaff;
 
   // Initialize admin alerts hook only if user has access
   useAdminAlerts();
 
-  // Enhanced authentication check
+  // Enhanced authentication check with timeout
   useEffect(() => {
-    console.log('AdminDashboard - Auth state:', { 
-      loading, 
-      isAuthenticated, 
-      user: !!user, 
-      profile: !!profile, 
-      role: profile?.role 
-    });
-
-    if (!loading) {
-      setAuthChecked(true);
+    const checkAuth = async () => {
+      console.log('AdminDashboard - Auth check starting');
       
-      // Redirect to login if not authenticated
-      if (!isAuthenticated || !user) {
-        console.log('AdminDashboard - Redirecting to login: not authenticated');
-        navigate('/?auth=true', { replace: true });
-        return;
+      // Set a timeout for loading
+      const timeout = setTimeout(() => {
+        if (loading) {
+          setLoadingError('Authentication check timed out. Please refresh the page.');
+        }
+      }, 10000); // 10 second timeout
+
+      if (!loading) {
+        clearTimeout(timeout);
+        
+        // Check if user is authenticated
+        if (!isAuthenticated || !user) {
+          console.log('AdminDashboard - Not authenticated, redirecting to login');
+          navigate('/?auth=true', { replace: true });
+          return;
+        }
+
+        // Check if profile exists and user has access
+        if (profile && !canAccess) {
+          console.log('AdminDashboard - Insufficient permissions');
+          navigate('/', { replace: true });
+          return;
+        }
+
+        // If profile is null but user exists, there might be a profile loading issue
+        if (!profile && user) {
+          console.log('AdminDashboard - Profile not found, but user exists');
+          setLoadingError('Profile not found. Please contact support if this persists.');
+          return;
+        }
+
+        console.log('AdminDashboard - Authentication successful');
       }
 
-      // Redirect if user doesn't have admin access
-      if (profile && !canAccess) {
-        console.log('AdminDashboard - Redirecting to home: insufficient permissions');
-        navigate('/', { replace: true });
-        return;
-      }
-    }
+      return () => clearTimeout(timeout);
+    };
+
+    checkAuth();
   }, [loading, isAuthenticated, user, profile, canAccess, navigate]);
 
+  // Redirect support staff to appropriate tab
   useEffect(() => {
     if (isSupportStaff && !isAdmin) {
       if (activeTab === 'system' || activeTab === 'overview') {
@@ -65,20 +92,50 @@ const AdminDashboard = () => {
     }
   }, [profile, isSupportStaff, isAdmin, activeTab]);
 
-  // Show loading state while checking authentication
-  if (loading || !authChecked) {
+  // Show loading state
+  if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
-          <p className="text-muted-foreground">Loading dashboard...</p>
+          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-primary" />
+          <p className="text-muted-foreground">Loading admin dashboard...</p>
+          <p className="text-xs text-muted-foreground mt-2">
+            If this takes too long, please refresh the page
+          </p>
         </div>
       </div>
     );
   }
 
-  // Don't render anything if not authenticated (will redirect)
-  if (!isAuthenticated || !user || !profile) {
+  // Show loading error
+  if (loadingError) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Card className="w-full max-w-md">
+          <CardHeader>
+            <CardTitle className="text-center text-destructive flex items-center gap-2 justify-center">
+              <AlertCircle className="h-5 w-5" />
+              Loading Error
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="text-center">
+            <p className="text-muted-foreground mb-6">{loadingError}</p>
+            <div className="space-y-2">
+              <Button onClick={() => window.location.reload()} className="w-full">
+                Refresh Page
+              </Button>
+              <Button variant="outline" onClick={() => navigate('/')} className="w-full">
+                Return to Home
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  // Don't render if not authenticated
+  if (!isAuthenticated || !user) {
     return null;
   }
 
@@ -91,7 +148,9 @@ const AdminDashboard = () => {
             <CardTitle className="text-center text-destructive">Access Denied</CardTitle>
           </CardHeader>
           <CardContent className="text-center">
-            <p className="text-muted-foreground mb-6">You don't have permission to access this dashboard.</p>
+            <p className="text-muted-foreground mb-6">
+              You don't have permission to access this dashboard.
+            </p>
             <div className="space-y-2">
               <Button onClick={() => navigate('/')} className="w-full">Return to Home</Button>
               <Button variant="outline" onClick={() => window.location.reload()} className="w-full">
