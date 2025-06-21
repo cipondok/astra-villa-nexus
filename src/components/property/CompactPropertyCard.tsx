@@ -66,26 +66,41 @@ const CompactPropertyCard = ({
 
   const currentText = text[language];
 
-  // Handle different image formats
+  // Enhanced image handling function
   const getPropertyImage = () => {
+    // Default fallback image
+    const defaultImage = "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400&h=300&fit=crop";
+    
     if (!property.images) {
-      return "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400&h=300&fit=crop";
+      console.log('No images found for property:', property.id);
+      return defaultImage;
     }
     
+    // Handle array format
     if (Array.isArray(property.images)) {
-      return property.images[0] || "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400&h=300&fit=crop";
+      const firstImage = property.images[0];
+      console.log('Using first image from array:', firstImage);
+      return firstImage || defaultImage;
     }
     
+    // Handle string format (could be JSON or URL)
     if (typeof property.images === 'string') {
       try {
+        // Try to parse as JSON
         const parsed = JSON.parse(property.images);
-        return Array.isArray(parsed) ? parsed[0] : property.images;
-      } catch {
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          console.log('Parsed JSON images, using first:', parsed[0]);
+          return parsed[0];
+        }
+      } catch (e) {
+        // If not JSON, treat as direct URL
+        console.log('Using image as direct URL:', property.images);
         return property.images;
       }
     }
     
-    return "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400&h=300&fit=crop";
+    console.log('Falling back to default image for property:', property.id);
+    return defaultImage;
   };
 
   const getTypeColor = (type: string) => {
@@ -129,7 +144,11 @@ const CompactPropertyCard = ({
     }
   };
 
-  const displayLocation = property.location || `${property.city || ''}, ${property.state || ''}`.trim().replace(/^,|,$/, '') || 'Location not specified';
+  const displayLocation = property.location || 
+    `${property.city || ''}, ${property.state || ''}`.trim().replace(/^,|,$/, '') || 
+    'Location not specified';
+
+  const propertyImage = getPropertyImage();
 
   return (
     <Card 
@@ -138,10 +157,11 @@ const CompactPropertyCard = ({
     >
       <div className="relative overflow-hidden">
         <img
-          src={getPropertyImage()}
+          src={propertyImage}
           alt={property.title}
-          className="w-full h-32 sm:h-36 object-cover group-hover:scale-105 transition-transform duration-300"
+          className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
           onError={(e) => {
+            console.log('Image failed to load, using fallback');
             e.currentTarget.src = "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400&h=300&fit=crop";
           }}
         />
@@ -193,32 +213,32 @@ const CompactPropertyCard = ({
         </div>
       </div>
 
-      <CardContent className="p-3">
-        <h3 className="text-sm font-semibold mb-1 group-hover:text-blue-600 transition-colors duration-300 line-clamp-1">
+      <CardContent className="p-4">
+        <h3 className="text-lg font-semibold mb-2 group-hover:text-blue-600 transition-colors duration-300 line-clamp-2">
           {property.title}
         </h3>
         
-        <div className="flex items-center text-gray-500 dark:text-gray-400 mb-2">
-          <MapPin className="h-3 w-3 mr-1 flex-shrink-0" />
-          <span className="text-xs line-clamp-1">{displayLocation}</span>
+        <div className="flex items-center text-gray-500 dark:text-gray-400 mb-3">
+          <MapPin className="h-4 w-4 mr-1 flex-shrink-0" />
+          <span className="text-sm line-clamp-1">{displayLocation}</span>
         </div>
 
-        <div className="text-lg font-bold text-blue-600 mb-2 line-clamp-1">
+        <div className="text-xl font-bold text-blue-600 mb-3">
           {formatPrice(property.price)}
         </div>
 
-        <div className="flex items-center justify-between text-xs text-gray-600 dark:text-gray-400 mb-3">
-          <div className="flex items-center gap-3">
+        <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400 mb-4">
+          <div className="flex items-center gap-4">
             <div className="flex items-center gap-1">
-              <Bed className="h-3 w-3" />
+              <Bed className="h-4 w-4" />
               <span>{property.bedrooms || 0}</span>
             </div>
             <div className="flex items-center gap-1">
-              <Bath className="h-3 w-3" />
+              <Bath className="h-4 w-4" />
               <span>{property.bathrooms || 0}</span>
             </div>
             <div className="flex items-center gap-1">
-              <Square className="h-3 w-3" />
+              <Square className="h-4 w-4" />
               <span>{property.area_sqm || 0}m²</span>
             </div>
           </div>
@@ -226,13 +246,13 @@ const CompactPropertyCard = ({
 
         <Button 
           size="sm"
-          className="w-full h-8 bg-gradient-to-r from-blue-600 to-orange-500 hover:from-blue-700 hover:to-orange-600 text-white font-medium transition-all duration-300 text-xs rounded-xl"
+          className="w-full bg-gradient-to-r from-blue-600 to-orange-500 hover:from-blue-700 hover:to-orange-600 text-white font-medium transition-all duration-300 rounded-xl"
           onClick={(e) => {
             e.stopPropagation();
             handleViewDetails();
           }}
         >
-          <Eye className="h-3 w-3 mr-1" />
+          <Eye className="h-4 w-4 mr-2" />
           {currentText.viewDetails}
         </Button>
       </CardContent>

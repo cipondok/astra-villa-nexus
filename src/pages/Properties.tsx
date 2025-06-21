@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -9,14 +10,7 @@ import { Search, Filter, MapPin, Bed, Bath, Car, Heart, Loader2, Box } from "luc
 import AuthenticatedNavigation from "@/components/navigation/AuthenticatedNavigation";
 import { supabase } from "@/integrations/supabase/client";
 import { formatIDR } from "@/utils/currency";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-import AdvancedFilters from "@/components/search/AdvancedFilters";
+import CompactPropertyCard from "@/components/property/CompactPropertyCard";
 
 const Properties = () => {
   const { isAuthenticated } = useAuth();
@@ -29,8 +23,6 @@ const Properties = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isSearching, setIsSearching] = useState(false);
-  const [isFilterSheetOpen, setIsFilterSheetOpen] = useState(false);
-  const justFilteredRef = useRef(false);
 
   // Fetch properties from database
   useEffect(() => {
@@ -43,8 +35,25 @@ const Properties = () => {
         
         const { data, error } = await supabase
           .from('properties')
-          .select('*')
-          .eq('status', 'approved')
+          .select(`
+            id,
+            title,
+            description,
+            price,
+            property_type,
+            location,
+            bedrooms,
+            bathrooms,
+            area_sqm,
+            images,
+            status,
+            created_at,
+            state,
+            city,
+            area,
+            listing_type
+          `)
+          .eq('status', 'active')
           .order('created_at', { ascending: false });
 
         if (error) {
@@ -68,11 +77,6 @@ const Properties = () => {
 
   // Live search effect
   useEffect(() => {
-    if (justFilteredRef.current) {
-      justFilteredRef.current = false;
-      return;
-    }
-      
     const performLiveSearch = async () => {
       if (!searchTerm || searchTerm.trim() === '') {
         setFilteredProperties(properties);
@@ -85,8 +89,25 @@ const Properties = () => {
       try {
         const { data, error } = await supabase
           .from('properties')
-          .select('*')
-          .eq('status', 'approved')
+          .select(`
+            id,
+            title,
+            description,
+            price,
+            property_type,
+            location,
+            bedrooms,
+            bathrooms,
+            area_sqm,
+            images,
+            status,
+            created_at,
+            state,
+            city,
+            area,
+            listing_type
+          `)
+          .eq('status', 'active')
           .or(`title.ilike.%${searchTerm.trim()}%,description.ilike.%${searchTerm.trim()}%,location.ilike.%${searchTerm.trim()}%,city.ilike.%${searchTerm.trim()}%,state.ilike.%${searchTerm.trim()}%`)
           .order('created_at', { ascending: false });
 
@@ -108,84 +129,6 @@ const Properties = () => {
     const timeoutId = setTimeout(performLiveSearch, 300);
     return () => clearTimeout(timeoutId);
   }, [searchTerm, properties]);
-
-  const handleFilterSearch = async (searchData: any) => {
-    console.log("Applying advanced filters:", searchData);
-    setIsFilterSheetOpen(false);
-    setLoading(true);
-    setError(null);
-    setIsSearching(true);
-  
-    justFilteredRef.current = true;
-    setSearchTerm(searchData.query || "");
-  
-    try {
-      let query = supabase
-        .from('properties')
-        .select('*')
-        .eq('status', 'approved');
-  
-      if (searchData.query) {
-        query = query.or(`title.ilike.%${searchData.query}%,description.ilike.%${searchData.query}%,location.ilike.%${searchData.query}%`);
-      }
-      if (searchData.propertyType && searchData.propertyType !== 'all') {
-        query = query.eq('property_type', searchData.propertyType);
-      }
-      if (searchData.listingType && searchData.listingType !== 'all') {
-        query = query.eq('listing_type', searchData.listingType);
-      }
-      if (searchData.location) {
-        query = query.or(`location.ilike.%${searchData.location}%,city.ilike.%${searchData.location}%,state.ilike.%${searchData.location}%`);
-      }
-      if (searchData.bedrooms && searchData.bedrooms !== 'all') {
-        query = query.gte('bedrooms', parseInt(searchData.bedrooms));
-      }
-      if (searchData.bathrooms && searchData.bathrooms !== 'all') {
-        query = query.gte('bathrooms', parseInt(searchData.bathrooms));
-      }
-      if (searchData.priceRange) {
-        if (searchData.priceRange[0] > 0) {
-          query = query.gte('price', searchData.priceRange[0]);
-        }
-        if (searchData.priceRange[1] < 10000000000) {
-          query = query.lte('price', searchData.priceRange[1]);
-        }
-      }
-      if (searchData.areaRange) {
-        if (searchData.areaRange[0] > 0) {
-          query = query.gte('area_sqm', searchData.areaRange[0]);
-        }
-        if (searchData.areaRange[1] < 1000) {
-          query = query.lte('area_sqm', searchData.areaRange[1]);
-        }
-      }
-      if (searchData.features && searchData.features.length > 0) {
-        const featuresObject = searchData.features.reduce((obj: any, feature: string) => {
-          obj[feature] = true;
-          return obj;
-        }, {});
-        query = query.contains('property_features', featuresObject);
-      }
-  
-      const { data, error } = await query.order('created_at', { ascending: false });
-  
-      if (error) {
-        console.error('Error filtering properties:', error);
-        setError(error.message);
-        setFilteredProperties([]);
-      } else {
-        console.log(`Filtered search found ${data?.length || 0} properties`);
-        setFilteredProperties(data || []);
-      }
-    } catch (error) {
-      console.error('Error filtering properties:', error);
-      setError('Failed to filter properties');
-      setFilteredProperties([]);
-    } finally {
-      setLoading(false);
-      setIsSearching(false);
-    }
-  };
 
   const toggleLanguage = () => {
     setLanguage(prev => prev === "en" ? "id" : "en");
@@ -276,9 +219,9 @@ const Properties = () => {
             </p>
           </div>
 
-          {/* Search and Filter */}
-          <div className="mb-8 flex flex-col sm:flex-row gap-4">
-            <div className="flex-1 relative">
+          {/* Search */}
+          <div className="mb-8">
+            <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
               <Input
                 placeholder={currentText.search}
@@ -292,26 +235,6 @@ const Properties = () => {
                 </div>
               )}
             </div>
-            <Sheet open={isFilterSheetOpen} onOpenChange={setIsFilterSheetOpen}>
-              <SheetTrigger asChild>
-                <Button variant="outline" className="flex items-center gap-2">
-                  <Filter className="h-4 w-4" />
-                  {currentText.filter}
-                </Button>
-              </SheetTrigger>
-              <SheetContent className="w-full sm:max-w-xl overflow-y-auto">
-                <SheetHeader>
-                  <SheetTitle>{currentText.advancedFilters}</SheetTitle>
-                </SheetHeader>
-                <div className="py-4">
-                  <AdvancedFilters
-                    language={language}
-                    onFiltersChange={() => {}}
-                    onSearch={handleFilterSearch}
-                  />
-                </div>
-              </SheetContent>
-            </Sheet>
           </div>
 
           {/* Results Count */}
@@ -343,88 +266,26 @@ const Properties = () => {
             <div className="text-center py-12">
               <p className="text-red-500 text-lg mb-4">{currentText.loadingError}</p>
               <p className="text-gray-600 dark:text-gray-300">{error}</p>
+              <Button 
+                onClick={() => window.location.reload()} 
+                className="mt-4"
+              >
+                Reload Page
+              </Button>
             </div>
           )}
 
           {/* Properties Grid */}
           {!loading && !error && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {filteredProperties.length > 0 ? (
                 filteredProperties.map((property) => (
-                  <Card key={property.id} className="overflow-hidden hover:shadow-lg transition-shadow bg-white dark:bg-gray-800">
-                    <div className="relative">
-                      <img
-                        src={property.image_urls?.[0] || "https://images.unsplash.com/photo-1721322800607-8c38375eef04?w=400&h=300&fit=crop"}
-                        alt={property.title}
-                        className="w-full h-48 object-cover cursor-pointer"
-                        onClick={() => handlePropertyClick(property.id)}
-                      />
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        className="absolute top-2 right-2 bg-white/80 hover:bg-white"
-                      >
-                        <Heart className="h-4 w-4" />
-                      </Button>
-                      <Badge className="absolute top-2 left-2 bg-blue-600 text-white">
-                        {property.listing_type === 'sale' ? currentText.forSale : currentText.forRent}
-                      </Badge>
-                      {(property.three_d_model_url || property.virtual_tour_url) && (
-                        <Button
-                          size="sm"
-                          className="absolute bottom-2 right-2 bg-purple-600 hover:bg-purple-700 text-white"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handlePropertyClick(property.id);
-                          }}
-                        >
-                          <Box className="h-4 w-4 mr-1" />
-                          {currentText.view3D}
-                        </Button>
-                      )}
-                    </div>
-                    
-                    <CardHeader className="cursor-pointer" onClick={() => handlePropertyClick(property.id)}>
-                      <CardTitle className="text-lg">{property.title}</CardTitle>
-                      <div className="flex items-center text-gray-600 dark:text-gray-300">
-                        <MapPin className="h-4 w-4 mr-1" />
-                        <span className="text-sm">
-                          {`${property.city || ''}, ${property.state || ''}`.replace(/^,\s*|,\s*$/g, '')}
-                        </span>
-                      </div>
-                    </CardHeader>
-                    
-                    <CardContent>
-                      <div className="flex justify-between items-center mb-4">
-                        <span className="text-2xl font-bold text-blue-600">
-                          {property.price ? formatIDR(property.price) : 'Contact for price'}
-                        </span>
-                        <Badge variant="outline">{property.property_type}</Badge>
-                      </div>
-                      
-                      <div className="flex justify-between text-sm text-gray-600 dark:text-gray-300 mb-4">
-                        <div className="flex items-center">
-                          <Bed className="h-4 w-4 mr-1" />
-                          <span>{property.bedrooms || 0} {currentText.bedrooms}</span>
-                        </div>
-                        <div className="flex items-center">
-                          <Bath className="h-4 w-4 mr-1" />
-                          <span>{property.bathrooms || 0} {currentText.bathrooms}</span>
-                        </div>
-                        <div className="flex items-center">
-                          <Car className="h-4 w-4 mr-1" />
-                          <span>{property.area_sqm || 0} sqm</span>
-                        </div>
-                      </div>
-                      
-                      <Button 
-                        className="w-full"
-                        onClick={() => handlePropertyClick(property.id)}
-                      >
-                        {currentText.viewDetails}
-                      </Button>
-                    </CardContent>
-                  </Card>
+                  <CompactPropertyCard
+                    key={property.id}
+                    property={property}
+                    language={language}
+                    onView={() => handlePropertyClick(property.id)}
+                  />
                 ))
               ) : (
                 <div className="col-span-full text-center py-12">
