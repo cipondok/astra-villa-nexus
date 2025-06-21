@@ -15,7 +15,6 @@ import AdminDashboard from "@/pages/AdminDashboard";
 import About from "@/pages/About";
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import AstraMarketplace from "@/pages/AstraMarketplace";
 
 const queryClient = new QueryClient();
 
@@ -37,7 +36,6 @@ function App() {
                       <Route path="/dashboard" element={<UserDashboard />} />
                       <Route path="/admin/*" element={<AdminDashboard />} />
                       <Route path="/about" element={<About />} />
-                      <Route path="/astra-marketplace" element={<AstraMarketplace />} />
                     </Routes>
                     <Toaster />
                   </ThemeProvider>

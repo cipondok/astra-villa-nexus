@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, User, LogOut, Globe, Bot, Plus, Home, Building, Info, ShoppingCart, KeyRound, Construction, Rocket, LogIn, Coins } from "lucide-react";
+import { Menu, X, User, LogOut, Globe, Bot, Plus, Home, Building, Info, ShoppingCart, KeyRound, Construction, Rocket, LogIn } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useThemeSettings } from "@/contexts/ThemeSettingsContext";
 import { useTheme } from "@/components/ThemeProvider";
@@ -36,7 +36,6 @@ const Navigation = () => {
       "Pre-launching": "Pre-launching",
       About: "About",
       "Add Property": "Add Property",
-      "ASTRA Marketplace": "ASTRA Marketplace",
       "Switch Language": "Switch to Indonesian",
       "Sign In": "Sign In",
       "Sign Out": "Sign Out",
@@ -52,7 +51,6 @@ const Navigation = () => {
       "Pre-launching": "Pra-luncur",
       About: "Tentang",
       "Add Property": "Tambah Properti",
-      "ASTRA Marketplace": "Pasar ASTRA",
       "Switch Language": "Ganti ke Inggris",
       "Sign In": "Masuk",
       "Sign Out": "Keluar",
@@ -61,7 +59,6 @@ const Navigation = () => {
     }
   };
 
-  // Assign according to active language
   const navLabels = labels[language];
 
   const navItems = [
@@ -71,7 +68,6 @@ const Navigation = () => {
     { name: navLabels.Rent, path: "/rent", icon: KeyRound, isImplemented: true },
     { name: navLabels["New Projects"], path: "/new-projects", icon: Construction, isImplemented: true },
     { name: navLabels["Pre-launching"], path: "/pre-launching", icon: Rocket, isImplemented: true },
-    { name: navLabels["ASTRA Marketplace"], path: "/astra-marketplace", icon: Coins, isImplemented: true },
     { name: navLabels.About, path: "/about", icon: Info, isImplemented: true },
   ];
 
@@ -170,12 +166,12 @@ const Navigation = () => {
                 </Tooltip>
               </div>
 
-              {/* Right side controls - Single wallet button and other controls */}
+              {/* Right side controls */}
               <div className="hidden md:flex items-center space-x-3">
                 <LanguageToggleSwitch />
                 <ThemeToggleSwitch language={language} showLabel={false} className="bg-transparent border-transparent hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl" />
 
-                {/* Single ASTRA Wallet Button - Only for authenticated users */}
+                {/* ASTRA Wallet Button - Only for authenticated users */}
                 {user && <WalletButton />}
 
                 {user ? (
@@ -243,7 +239,6 @@ const Navigation = () => {
 
               {/* Mobile menu button */}
               <div className="md:hidden flex items-center space-x-2">
-                {/* Mobile Theme Toggle - Compact */}
                 <div className="bg-transparent">
                   <ThemeToggleSwitch language={language} className="scale-90 bg-transparent border-transparent hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg" />
                 </div>
@@ -260,7 +255,7 @@ const Navigation = () => {
             </div>
           </div>
 
-          {/* Mobile Navigation - iPhone style */}
+          {/* Mobile Navigation */}
           {isOpen && (
             <div className="md:hidden glass-card-dark border-t border-white/10 backdrop-blur-xl bg-white/90 dark:bg-gray-900/90">
               <div className="px-3 pt-2 pb-3 space-y-1">
@@ -291,7 +286,7 @@ const Navigation = () => {
                   )
                 )}
 
-                {/* Mobile Add Property Button - Always visible */}
+                {/* Mobile Add Property Button */}
                 <button
                   onClick={handleAddPropertyClick}
                   className="flex items-center gap-3 px-4 py-3 text-base font-medium text-white bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 transition-all duration-300 rounded-xl shadow-lg w-full"
