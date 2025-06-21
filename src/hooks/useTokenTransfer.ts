@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { useAccount, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
 import { parseUnits } from 'viem';
+import { bscTestnet } from 'wagmi/chains';
 import { ASTRA_TOKEN_ADDRESS, ASTRA_TOKEN_ABI } from '@/lib/web3';
 import { toast } from 'sonner';
 
@@ -41,6 +42,8 @@ export const useTokenTransfer = () => {
         abi: ASTRA_TOKEN_ABI,
         functionName: 'transfer',
         args: [to as `0x${string}`, parsedAmount],
+        chain: bscTestnet,
+        account: address,
       });
 
       toast.success('Transfer initiated');
