@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Sun, Moon, Globe, Menu, User, LogOut, Settings, Home, Wallet } from "lucide-react";
 import { useState, useEffect } from "react";
@@ -151,7 +150,7 @@ const RoleBasedNavigation = ({
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-200 dark:bg-gray-900/90 dark:border-gray-700">
+    <nav className="fixed top-0 left-0 right-0 z-50 glass-ios border-b border-border/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo - Clickable to go home */}
@@ -159,19 +158,19 @@ const RoleBasedNavigation = ({
             className="flex-shrink-0 cursor-pointer hover:opacity-80 transition-opacity" 
             onClick={handleHomeClick}
           >
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-orange-500 bg-clip-text text-transparent">
+            <h1 className="text-2xl font-bold bg-gradient-to-r from-ios-blue to-ios-blue/80 bg-clip-text text-transparent">
               Astra Villa
             </h1>
           </div>
 
-          {/* Desktop Navigation */}
+          {/* Desktop Navigation - Removed navigation links, kept only controls */}
           <div className="hidden md:flex items-center space-x-4">
             {/* Language Toggle */}
             <Button
-              variant="outline"
+              variant="ghost"
               size="sm"
               onClick={onLanguageToggle}
-              className="border border-gray-300 text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-800"
+              className="glass-ios border border-border/30 text-foreground hover:bg-ios-blue/10 hover:text-ios-blue hover:border-ios-blue/30"
             >
               <Globe className="h-4 w-4 mr-1" />
               <span className="text-sm font-medium">{language.toUpperCase()}</span>
@@ -179,10 +178,10 @@ const RoleBasedNavigation = ({
 
             {/* Theme Toggle */}
             <Button
-              variant="outline"
+              variant="ghost"
               size="sm"
               onClick={onThemeToggle}
-              className="border border-gray-300 text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-800"
+              className="glass-ios border border-border/30 text-foreground hover:bg-ios-blue/10 hover:text-ios-blue hover:border-ios-blue/30"
             >
               {theme === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
             </Button>
@@ -194,46 +193,46 @@ const RoleBasedNavigation = ({
                 <div className="flex items-center space-x-2">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="outline" className="flex items-center space-x-2 p-2 border border-gray-300 hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-800">
+                      <Button variant="ghost" className="flex items-center space-x-2 p-2 glass-ios border border-border/30 hover:bg-ios-blue/10 hover:border-ios-blue/30">
                         <Avatar className="h-8 w-8">
                           <AvatarImage src={profile.avatar_url || undefined} alt={profile.full_name || 'User'} />
-                          <AvatarFallback className="text-sm bg-blue-50 text-blue-600 border border-blue-200 dark:bg-blue-900 dark:text-blue-300 dark:border-blue-700">
+                          <AvatarFallback className="text-sm bg-ios-blue/10 text-ios-blue border border-ios-blue/20">
                             {getUserInitials()}
                           </AvatarFallback>
                         </Avatar>
-                        <span className="hidden md:block text-sm font-medium text-gray-900 dark:text-gray-100">
+                        <span className="hidden md:block text-sm font-medium text-foreground">
                           {profile.full_name || profile.email}
                         </span>
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-56 bg-white border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+                    <DropdownMenuContent align="end" className="w-56 glass-ios border border-border/30">
                       <DropdownMenuLabel>
                         <div className="flex flex-col space-y-1">
-                          <p className="text-sm font-medium text-gray-900 dark:text-gray-100">{profile.full_name || 'User'}</p>
-                          <p className="text-xs text-gray-500 dark:text-gray-400">{profile.email}</p>
-                          <p className="text-xs text-gray-500 dark:text-gray-400 capitalize">{profile.role.replace('_', ' ')}</p>
+                          <p className="text-sm font-medium text-foreground">{profile.full_name || 'User'}</p>
+                          <p className="text-xs text-muted-foreground">{profile.email}</p>
+                          <p className="text-xs text-muted-foreground capitalize">{profile.role.replace('_', ' ')}</p>
                         </div>
                       </DropdownMenuLabel>
-                      <DropdownMenuSeparator className="border-gray-200 dark:border-gray-600" />
-                      <DropdownMenuItem onClick={() => navigate(getDashboardRoute())} className="text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700">
+                      <DropdownMenuSeparator className="border-border/30" />
+                      <DropdownMenuItem onClick={() => navigate(getDashboardRoute())} className="text-foreground hover:bg-ios-blue/10">
                         {currentText.dashboard}
                       </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => navigate('/wallet')} className="text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700">
+                      <DropdownMenuItem onClick={() => navigate('/wallet')} className="text-foreground hover:bg-ios-blue/10">
                         <Wallet className="h-4 w-4 mr-2" />
                         {currentText.wallet}
                       </DropdownMenuItem>
                       {getRoleSpecificMenuItems().map((item, index) => (
-                        <DropdownMenuItem key={index} onClick={() => navigate(item.route)} className="text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700">
+                        <DropdownMenuItem key={index} onClick={() => navigate(item.route)} className="text-foreground hover:bg-ios-blue/10">
                           {item.label}
                         </DropdownMenuItem>
                       ))}
                       {getVendorMenuItems().map((item, index) => (
-                        <DropdownMenuItem key={`vendor-${index}`} onClick={() => navigate(item.route)} className="text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700">
+                        <DropdownMenuItem key={`vendor-${index}`} onClick={() => navigate(item.route)} className="text-foreground hover:bg-ios-blue/10">
                           {item.label}
                         </DropdownMenuItem>
                       ))}
-                      <DropdownMenuSeparator className="border-gray-200 dark:border-gray-600" />
-                      <DropdownMenuItem onClick={handleSignOut} className="text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20">
+                      <DropdownMenuSeparator className="border-border/30" />
+                      <DropdownMenuItem onClick={handleSignOut} className="text-red-600 hover:bg-red-50">
                         <LogOut className="h-4 w-4 mr-2" />
                         {currentText.logout}
                       </DropdownMenuItem>
@@ -244,7 +243,7 @@ const RoleBasedNavigation = ({
             ) : (
               <Button 
                 onClick={onLoginClick} 
-                className="bg-blue-600 text-white hover:bg-blue-700 border-0"
+                className="glass-ios border border-border/30 text-foreground hover:bg-ios-blue/10 hover:text-ios-blue hover:border-ios-blue/30"
               >
                 <User className="h-4 w-4 mr-2" />
                 {currentText.loginRegister}
@@ -255,10 +254,10 @@ const RoleBasedNavigation = ({
           {/* Mobile menu button */}
           <div className="md:hidden">
             <Button
-              variant="outline"
+              variant="ghost"
               size="sm"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="border border-gray-300 dark:border-gray-600"
+              className="glass-ios border border-border/30"
             >
               <Menu className="h-5 w-5" />
             </Button>
@@ -267,12 +266,12 @@ const RoleBasedNavigation = ({
 
         {/* Mobile Navigation Menu */}
         {isMenuOpen && (
-          <div className="md:hidden absolute top-16 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-gray-200 shadow-lg dark:bg-gray-900/95 dark:border-gray-700">
+          <div className="md:hidden absolute top-16 left-0 right-0 glass-ios border-t border-border/30 shadow-lg">
             <div className="px-2 pt-2 pb-3 space-y-1">
               {/* Theme and Language toggles for mobile */}
-              <div className="flex justify-between items-center p-2 border-b border-gray-200 dark:border-gray-600">
+              <div className="flex justify-between items-center p-2 border-b border-border/30">
                 <Button
-                  variant="outline"
+                  variant="ghost"
                   size="sm"
                   onClick={onLanguageToggle}
                   className="flex-1 mr-2"
@@ -281,7 +280,7 @@ const RoleBasedNavigation = ({
                   {language.toUpperCase()}
                 </Button>
                 <Button
-                  variant="outline"
+                  variant="ghost"
                   size="sm"
                   onClick={onThemeToggle}
                   className="flex-1"
@@ -293,7 +292,7 @@ const RoleBasedNavigation = ({
               {/* Auth Section for Mobile */}
               {isAuthenticated && user && profile ? (
                 <div className="space-y-1">
-                  <div className="px-3 py-2 border-b border-gray-200 dark:border-gray-600">
+                  <div className="px-3 py-2 border-b border-border/30">
                     <div className="flex items-center space-x-2">
                       <Avatar className="h-8 w-8">
                         <AvatarImage src={profile.avatar_url || undefined} alt={profile.full_name || 'User'} />
@@ -303,7 +302,7 @@ const RoleBasedNavigation = ({
                       </Avatar>
                       <div>
                         <p className="text-sm font-medium">{profile.full_name || 'User'}</p>
-                        <p className="text-xs text-gray-500">{profile.email}</p>
+                        <p className="text-xs text-muted-foreground">{profile.email}</p>
                       </div>
                     </div>
                   </div>
@@ -377,8 +376,8 @@ const RoleBasedNavigation = ({
                     onLoginClick();
                     setIsMenuOpen(false);
                   }}
-                  className="w-full justify-start bg-blue-600 text-white hover:bg-blue-700"
-                  variant="default"
+                  className="w-full justify-start"
+                  variant="ghost"
                 >
                   <User className="h-4 w-4 mr-2" />
                   {currentText.loginRegister}

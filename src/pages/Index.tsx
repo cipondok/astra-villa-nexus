@@ -1,10 +1,11 @@
+
 import { useState, useEffect, useRef } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import ParticleEffect from "@/components/ParticleEffect";
 import PropertyListingsSection from "@/components/PropertyListingsSection";
 import ProfessionalFooter from "@/components/ProfessionalFooter";
-import SimpleAuthModal from "@/components/auth/SimpleAuthModal";
+import EnhancedSecureAuthModal from "@/components/auth/EnhancedSecureAuthModal";
 import EnhancedModernSearchPanel from "@/components/EnhancedModernSearchPanel";
 import ResponsiveAIChatWidget from "@/components/ai/ResponsiveAIChatWidget";
 import SmartRecommendations from "@/components/ai/SmartRecommendations";
@@ -345,10 +346,11 @@ const Index = () => {
           language={language}
         />
 
-        {/* Auth Modal - Use SimpleAuthModal for better functionality */}
-        <SimpleAuthModal 
+        {/* Auth Modal */}
+        <EnhancedSecureAuthModal 
           isOpen={authModalOpen} 
           onClose={handleAuthModalClose}
+          language={language}
         />
       </div>
     </SessionManager>

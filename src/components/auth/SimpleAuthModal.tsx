@@ -7,8 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useAuth } from "@/contexts/AuthContext";
-import { X, Eye, EyeOff, Wifi, WifiOff } from "lucide-react";
-import { toast } from "sonner";
+import { X, Eye, EyeOff } from "lucide-react";
 
 interface SimpleAuthModalProps {
   isOpen: boolean;
@@ -53,7 +52,11 @@ const SimpleAuthModal = ({ isOpen, onClose }: SimpleAuthModalProps) => {
       
       if (result.error) {
         console.error("Login error:", result.error);
-        setError(result.error.message || "Login failed. Please try again.");
+        if (result.error.message?.includes("Invalid login credentials")) {
+          setError("Invalid email or password. Please check your credentials and try again.");
+        } else {
+          setError(result.error.message || "Login failed. Please try again.");
+        }
       } else if (result.success) {
         console.log("Login successful");
         onClose();
@@ -100,10 +103,14 @@ const SimpleAuthModal = ({ isOpen, onClose }: SimpleAuthModalProps) => {
       
       if (result.error) {
         console.error("Registration error:", result.error);
-        setError(result.error.message || "Registration failed. Please try again.");
+        if (result.error.message?.includes("User already registered")) {
+          setError("An account with this email already exists. Please try logging in instead.");
+        } else {
+          setError(result.error.message || "Registration failed. Please try again.");
+        }
       } else if (result.success) {
         console.log("Registration successful");
-        setActiveTab("login");
+        onClose();
         setRegisterData({ email: "", password: "", fullName: "", confirmPassword: "" });
         setError("");
       }
@@ -119,20 +126,14 @@ const SimpleAuthModal = ({ isOpen, onClose }: SimpleAuthModalProps) => {
     setLoginData({ email: "", password: "" });
     setRegisterData({ email: "", password: "", fullName: "", confirmPassword: "" });
     setError("");
-    setActiveTab("login");
-    setIsLoading(false);
   };
 
   const handleClose = () => {
-    if (!isLoading) {
-      resetForms();
-      onClose();
-    }
+    resetForms();
+    onClose();
   };
 
   if (!isOpen) return null;
-
-  const isNetworkError = error.includes('Network connection failed') || error.includes('Load failed');
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
@@ -149,22 +150,14 @@ const SimpleAuthModal = ({ isOpen, onClose }: SimpleAuthModalProps) => {
         <CardContent>
           {error && (
             <Alert variant="destructive" className="mb-4">
-              <div className="flex items-center gap-2">
-                {isNetworkError ? <WifiOff className="h-4 w-4" /> : null}
-                <AlertDescription>{error}</AlertDescription>
-              </div>
-              {isNetworkError && (
-                <div className="mt-2 text-sm text-muted-foreground">
-                  Please check your internet connection and try again.
-                </div>
-              )}
+              <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
 
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="login" disabled={isLoading}>Sign In</TabsTrigger>
-              <TabsTrigger value="register" disabled={isLoading}>Sign Up</TabsTrigger>
+              <TabsTrigger value="login">Sign In</TabsTrigger>
+              <TabsTrigger value="register">Sign Up</TabsTrigger>
             </TabsList>
 
             <TabsContent value="login" className="space-y-4">
@@ -201,7 +194,6 @@ const SimpleAuthModal = ({ isOpen, onClose }: SimpleAuthModalProps) => {
                       size="sm"
                       className="absolute right-0 top-0 h-full px-3"
                       onClick={() => setShowPassword(!showPassword)}
-                      disabled={isLoading}
                     >
                       {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </Button>
@@ -213,14 +205,7 @@ const SimpleAuthModal = ({ isOpen, onClose }: SimpleAuthModalProps) => {
                   className="w-full bg-gradient-to-r from-blue-600 to-orange-500"
                   disabled={isLoading}
                 >
-                  {isLoading ? (
-                    <div className="flex items-center gap-2">
-                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      Signing in...
-                    </div>
-                  ) : (
-                    "Sign In"
-                  )}
+                  {isLoading ? "Signing in..." : "Sign In"}
                 </Button>
               </form>
             </TabsContent>
@@ -273,7 +258,6 @@ const SimpleAuthModal = ({ isOpen, onClose }: SimpleAuthModalProps) => {
                       size="sm"
                       className="absolute right-0 top-0 h-full px-3"
                       onClick={() => setShowPassword(!showPassword)}
-                      disabled={isLoading}
                     >
                       {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </Button>
@@ -299,7 +283,6 @@ const SimpleAuthModal = ({ isOpen, onClose }: SimpleAuthModalProps) => {
                       size="sm"
                       className="absolute right-0 top-0 h-full px-3"
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                      disabled={isLoading}
                     >
                       {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </Button>
@@ -311,14 +294,7 @@ const SimpleAuthModal = ({ isOpen, onClose }: SimpleAuthModalProps) => {
                   className="w-full bg-gradient-to-r from-blue-600 to-orange-500"
                   disabled={isLoading}
                 >
-                  {isLoading ? (
-                    <div className="flex items-center gap-2">
-                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      Creating account...
-                    </div>
-                  ) : (
-                    "Create Account"
-                  )}
+                  {isLoading ? "Creating account..." : "Create Account"}
                 </Button>
               </form>
             </TabsContent>
