@@ -3586,27 +3586,36 @@ export type Database = {
           created_at: string
           id: string
           is_primary: boolean
+          is_verified: boolean
+          last_used_at: string | null
           updated_at: string
           user_id: string
           wallet_address: string
+          wallet_provider: string | null
         }
         Insert: {
           chain_id?: number
           created_at?: string
           id?: string
           is_primary?: boolean
+          is_verified?: boolean
+          last_used_at?: string | null
           updated_at?: string
           user_id: string
           wallet_address: string
+          wallet_provider?: string | null
         }
         Update: {
           chain_id?: number
           created_at?: string
           id?: string
           is_primary?: boolean
+          is_verified?: boolean
+          last_used_at?: string | null
           updated_at?: string
           user_id?: string
           wallet_address?: string
+          wallet_provider?: string | null
         }
         Relationships: [
           {

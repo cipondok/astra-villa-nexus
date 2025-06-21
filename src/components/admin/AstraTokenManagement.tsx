@@ -103,21 +103,23 @@ const AstraTokenManagement = () => {
         console.error('Error loading wallet connections:', walletsError);
       }
 
-      // Combine the data
-      const usersWithWallets: UserWalletInfo[] = (profilesData || []).map(profile => {
-        const walletConnection = walletsData?.find(w => w.user_id === profile.id);
-        return {
-          id: profile.id,
-          full_name: profile.full_name,
-          email: profile.email,
-          role: profile.role,
-          wallet_address: walletConnection?.wallet_address,
-          wallet_verified: walletConnection?.is_verified || false,
-          is_admin: profile.role === 'admin'
-        };
-      });
+      // Combine the data - only proceed if profilesData exists
+      if (profilesData) {
+        const usersWithWallets: UserWalletInfo[] = profilesData.map(profile => {
+          const walletConnection = walletsData?.find(w => w.user_id === profile.id);
+          return {
+            id: profile.id,
+            full_name: profile.full_name,
+            email: profile.email,
+            role: profile.role,
+            wallet_address: walletConnection?.wallet_address,
+            wallet_verified: walletConnection?.is_verified || false,
+            is_admin: profile.role === 'admin'
+          };
+        });
 
-      setUsers(usersWithWallets);
+        setUsers(usersWithWallets);
+      }
     } catch (error) {
       console.error('Error loading users:', error);
     } finally {
