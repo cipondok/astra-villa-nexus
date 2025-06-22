@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Navigation from "@/components/Navigation";
@@ -15,31 +16,18 @@ const Index = () => {
   const [isSearching, setIsSearching] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
 
-  // Fetch featured properties with comprehensive error handling
+  // Fetch featured properties with better error handling
   const { data: featuredProperties = [], isLoading: isFeaturedLoading, error } = useQuery({
     queryKey: ['featured-properties'],
     queryFn: async () => {
       console.log('=== STARTING PROPERTY FETCH ===');
       
       try {
-        // Test basic connection first
-        console.log('Testing Supabase connection...');
-        const { data: testData, error: testError } = await supabase
-          .from('properties')
-          .select('count', { count: 'exact', head: true });
-
-        if (testError) {
-          console.error('Connection test failed:', testError);
-          throw testError;
-        }
-        
-        console.log('Connection successful. Total properties in DB:', testData);
-
-        // Now try to fetch actual data with minimal query
-        console.log('Fetching properties...');
+        console.log('Fetching properties from database...');
         const { data, error } = await supabase
           .from('properties')
           .select('*')
+          .eq('status', 'active')
           .limit(20);
 
         if (error) {
@@ -47,107 +35,24 @@ const Index = () => {
           throw error;
         }
 
-        console.log('Raw query result:', data);
-        console.log('Properties found:', data?.length || 0);
-
-        // If we got properties, return them
+        console.log('Properties fetched from database:', data?.length || 0);
+        
         if (data && data.length > 0) {
-          console.log('Returning actual properties:', data.length);
+          console.log('Returning database properties:', data.length);
           return data;
         }
 
-        // If no properties in database, create test data
-        console.log('No properties found, creating test data...');
-        const testProperties = [
-          {
-            id: 'test-1',
-            title: 'Beautiful Modern Villa',
-            description: 'A stunning 4-bedroom villa with ocean views',
-            location: 'Bali, Indonesia',
-            price: 5000000000,
-            bedrooms: 4,
-            bathrooms: 3,
-            area_sqm: 300,
-            property_type: 'villa',
-            listing_type: 'sale',
-            images: ['https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=600&h=400&fit=crop'],
-            state: 'Bali',
-            city: 'Denpasar',
-            area: 'Sanur',
-            status: 'active',
-            created_at: new Date().toISOString()
-          },
-          {
-            id: 'test-2',
-            title: 'Luxury Apartment Downtown',
-            description: 'Premium apartment in the heart of the city',
-            location: 'Jakarta, Indonesia',
-            price: 3500000000,
-            bedrooms: 2,
-            bathrooms: 2,
-            area_sqm: 120,
-            property_type: 'apartment',
-            listing_type: 'rent',
-            images: ['https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=600&h=400&fit=crop'],
-            state: 'DKI Jakarta',
-            city: 'Jakarta',
-            area: 'Central Jakarta',
-            status: 'active',
-            created_at: new Date().toISOString()
-          },
-          {
-            id: 'test-3',
-            title: 'Family House with Garden',
-            description: 'Comfortable family home with beautiful garden',
-            location: 'Surabaya, Indonesia',
-            price: 2500000000,
-            bedrooms: 3,
-            bathrooms: 2,
-            area_sqm: 200,
-            property_type: 'house',
-            listing_type: 'sale',
-            images: ['https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=600&h=400&fit=crop'],
-            state: 'East Java',
-            city: 'Surabaya',
-            area: 'Surabaya Timur',
-            status: 'active',
-            created_at: new Date().toISOString()
-          }
-        ];
-
-        console.log('Returning test properties:', testProperties.length);
-        return testProperties;
+        // If no properties in database, return empty array instead of test data
+        console.log('No properties found in database, returning empty array');
+        return [];
 
       } catch (error) {
-        console.error('Complete fetch failed:', error);
-        
-        // Return minimal fallback data even on complete failure
-        const fallbackProperties = [
-          {
-            id: 'fallback-1',
-            title: 'Sample Property (Fallback)',
-            description: 'This is sample data displayed due to connection issues',
-            location: 'Indonesia',
-            price: 1000000000,
-            bedrooms: 2,
-            bathrooms: 1,
-            area_sqm: 100,
-            property_type: 'house',
-            listing_type: 'sale',
-            images: ['https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&h=400&fit=crop'],
-            state: 'Sample State',
-            city: 'Sample City',
-            area: 'Sample Area',
-            status: 'active',
-            created_at: new Date().toISOString()
-          }
-        ];
-        
-        console.log('Returning fallback properties due to error');
-        return fallbackProperties;
+        console.error('Property fetch failed:', error);
+        // Return empty array on error instead of fallback data
+        return [];
       }
     },
-    retry: false, // Don't retry to see errors immediately
+    retry: 1,
     refetchOnWindowFocus: false,
   });
 
@@ -159,21 +64,26 @@ const Index = () => {
     setHasSearched(true);
     
     try {
-      // For now, just filter the featured properties
-      const filtered = featuredProperties.filter(property => {
-        if (!searchData.query) return true;
-        
+      // Search in database
+      let query = supabase
+        .from('properties')
+        .select('*')
+        .eq('status', 'active');
+
+      if (searchData.query) {
         const searchTerm = searchData.query.toLowerCase();
-        return (
-          property.title?.toLowerCase().includes(searchTerm) ||
-          property.location?.toLowerCase().includes(searchTerm) ||
-          property.city?.toLowerCase().includes(searchTerm) ||
-          property.state?.toLowerCase().includes(searchTerm)
-        );
-      });
-      
-      console.log('Filtered results:', filtered.length);
-      setSearchResults(filtered);
+        query = query.or(`title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%,location.ilike.%${searchTerm}%,city.ilike.%${searchTerm}%,state.ilike.%${searchTerm}%`);
+      }
+
+      const { data, error } = await query.limit(50);
+
+      if (error) {
+        console.error('Search error:', error);
+        setSearchResults([]);
+      } else {
+        console.log('Search results found:', data?.length || 0);
+        setSearchResults(data || []);
+      }
     } catch (error) {
       console.error('Search error:', error);
       setSearchResults([]);
@@ -240,16 +150,18 @@ const Index = () => {
         fallbackResults={featuredProperties}
       />
 
-      {/* Recommended Properties Section */}
-      <section className="py-8 bg-gray-50 dark:bg-gray-900">
-        <div className="container mx-auto px-4">
-          <RecommendedProperties
-            title={language === "en" ? "AI Recommended For You" : "Rekomendasi AI Untuk Anda"}
-            limit={8}
-            showAIBadge={true}
-          />
-        </div>
-      </section>
+      {/* Recommended Properties Section - only show if we have properties */}
+      {featuredProperties.length > 0 && (
+        <section className="py-8 bg-gray-50 dark:bg-gray-900">
+          <div className="container mx-auto px-4">
+            <RecommendedProperties
+              title={language === "en" ? "AI Recommended For You" : "Rekomendasi AI Untuk Anda"}
+              limit={8}
+              showAIBadge={true}
+            />
+          </div>
+        </section>
+      )}
 
       {/* AI Chat Widget */}
       <ResponsiveAIChatWidget />
