@@ -25,7 +25,11 @@ export const useAstraPayment = () => {
         setPaymentMethods(response.data);
       } else {
         console.error('Payment methods fetch failed:', response.error);
-        toast.error('Failed to fetch payment methods: ' + response.error);
+        
+        // Don't show error toast for auth issues - the API service will handle it
+        if (!response.error?.includes('login') && !response.error?.includes('Authentication')) {
+          toast.error('Failed to fetch payment methods: ' + response.error);
+        }
       }
     } catch (error) {
       console.error('Payment methods fetch error:', error);
@@ -49,7 +53,11 @@ export const useAstraPayment = () => {
         setTransactions(response.data);
       } else {
         console.error('Transactions fetch failed:', response.error);
-        toast.error('Failed to fetch transactions: ' + response.error);
+        
+        // Don't show error toast for auth issues - the API service will handle it
+        if (!response.error?.includes('login') && !response.error?.includes('Authentication')) {
+          toast.error('Failed to fetch transactions: ' + response.error);
+        }
       }
     } catch (error) {
       console.error('Transactions fetch error:', error);
