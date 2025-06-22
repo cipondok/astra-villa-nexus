@@ -1,6 +1,8 @@
+
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 type UserRole = 'general_user' | 'property_owner' | 'agent' | 'vendor' | 'admin' | 'customer_service';
 
@@ -44,8 +46,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true);
   const [session, setSession] = useState<Session | null>(null);
 
-  console.log('AuthProvider - user:', user?.email, 'loading:', loading, 'profile role:', profile?.role);
-
   const fetchProfile = async (userId: string) => {
     try {
       console.log('Fetching profile for user:', userId);
@@ -74,7 +74,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       if (error) {
         if (error.code === 'PGRST116') {
-          console.log('Profile not found, user needs to create profile');
+          // Profile not found, create default profile
+          console.log('Profile not found, creating default profile');
+          const defaultProfile: Profile = {
+            id: userId,
+            email: authUser.user?.email || '',
+            full_name: authUser.user?.user_metadata?.full_name || '',
+            role: 'general_user',
+            verification_status: 'pending'
+          };
+          setProfile(defaultProfile);
           return;
         }
         console.error('Error fetching profile:', error);
@@ -98,7 +107,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     let mounted = true;
     
-    // Set up auth state change listener FIRST
+    // Set up auth state change listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, currentSession) => {
         console.log('Auth state changed:', event, currentSession?.user?.email || 'No user');
@@ -125,12 +134,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     );
 
-    // Initialize auth state AFTER setting up listener
+    // Get initial session
     const initializeAuth = async () => {
       try {
-        console.log('Initializing auth state...');
-        
-        // Get initial session
         const { data: { session: initialSession }, error } = await supabase.auth.getSession();
         
         if (error) {
@@ -169,13 +175,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       if (error) {
         console.error('Sign in error:', error);
+        toast.error(error.message || 'Login failed');
         return { error: error.message, success: false };
       }
 
       console.log('Sign in successful for:', email);
+      toast.success('Successfully logged in!');
       return { error: null, success: true };
     } catch (error: any) {
       console.error('Sign in error:', error);
+      toast.error('Login failed. Please try again.');
       return { error: error.message || 'An unexpected error occurred', success: false };
     }
   };
@@ -197,13 +206,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       if (error) {
         console.error('Sign up error:', error);
+        toast.error(error.message || 'Sign up failed');
         return { error: error.message, success: false };
       }
 
       console.log('Sign up successful for:', email);
+      toast.success('Account created successfully!');
       return { error: null, success: true };
     } catch (error: any) {
       console.error('Sign up error:', error);
+      toast.error('Sign up failed. Please try again.');
       return { error: error.message || 'An unexpected error occurred', success: false };
     }
   };
@@ -212,35 +224,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       console.log('Signing out user...');
       
-      // Clear state immediately to prevent any race conditions
       setUser(null);
       setProfile(null);
       setSession(null);
       
-      // Clear all possible storage locations
-      localStorage.removeItem('supabase.auth.token');
-      localStorage.removeItem('sb-zymrajuuyyfkzdmptebl-auth-token');
-      sessionStorage.clear();
-      
-      // Sign out from Supabase
       const { error } = await supabase.auth.signOut();
       if (error) {
         console.error('Supabase signOut error:', error);
-        // Even if Supabase signOut fails, we've cleared local state
       }
       
+      toast.success('Successfully logged out');
       console.log('User signed out successfully');
     } catch (error: any) {
       console.error('Sign out error:', error);
-      // Ensure state is cleared even if there's an error
       setUser(null);
       setProfile(null);
       setSession(null);
-      
-      // Clear storage as fallback
-      localStorage.removeItem('supabase.auth.token');
-      localStorage.removeItem('sb-zymrajuuyyfkzdmptebl-auth-token');
-      sessionStorage.clear();
     }
   };
 
