@@ -145,6 +145,16 @@ const VendorProfileProgress = () => {
         });
 
       if (error) throw error;
+
+      // Also update the vendor business profile with completion percentage
+      if (profileData?.businessProfile) {
+        const { error: updateError } = await supabase
+          .from('vendor_business_profiles')
+          .update({ profile_completion_percentage: percentage })
+          .eq('vendor_id', user?.id);
+
+        if (updateError) console.error('Error updating profile completion:', updateError);
+      }
     } catch (error) {
       console.error('Error updating completion percentage:', error);
     }

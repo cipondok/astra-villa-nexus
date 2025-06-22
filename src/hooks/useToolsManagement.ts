@@ -10,6 +10,11 @@ export interface Tool {
   category: string;
   enabled: boolean;
   configuration?: Record<string, any>;
+  version: string;
+  status: 'healthy' | 'warning' | 'error' | 'disabled';
+  lastChecked: string;
+  dependencies?: string[];
+  errorMessage?: string;
 }
 
 export const useToolsManagement = () => {
@@ -32,7 +37,11 @@ export const useToolsManagement = () => {
         description: setting.description || '',
         category: setting.category,
         enabled: setting.value === true,
-        configuration: typeof setting.value === 'object' ? setting.value : {}
+        configuration: typeof setting.value === 'object' ? setting.value : {},
+        version: '1.0.0',
+        status: setting.value === true ? 'healthy' : 'disabled' as const,
+        lastChecked: setting.updated_at || new Date().toISOString(),
+        dependencies: []
       }));
     },
   });
@@ -80,11 +89,39 @@ export const useToolsManagement = () => {
     },
   });
 
+  const checkToolHealth = async (toolId: string) => {
+    // Mock health check
+    console.log('Checking health for tool:', toolId);
+    queryClient.invalidateQueries({ queryKey: ['tools'] });
+  };
+
+  const runAllHealthChecks = async () => {
+    // Mock health check for all tools
+    console.log('Running health checks for all tools');
+    queryClient.invalidateQueries({ queryKey: ['tools'] });
+  };
+
+  const getToolsStats = () => {
+    const total = tools.length;
+    const enabled = tools.filter(tool => tool.enabled).length;
+    const healthy = tools.filter(tool => tool.status === 'healthy').length;
+    const warning = tools.filter(tool => tool.status === 'warning').length;
+    const error = tools.filter(tool => tool.status === 'error').length;
+    const disabled = tools.filter(tool => tool.status === 'disabled').length;
+
+    return { total, enabled, healthy, warning, error, disabled };
+  };
+
   return {
     tools,
     isLoading,
+    loading: isLoading, // Add alias for compatibility
+    lastUpdate: new Date().toISOString(),
     toggleTool: toggleToolMutation.mutate,
     updateToolConfig: updateToolConfigMutation.mutate,
+    checkToolHealth,
+    runAllHealthChecks,
+    getToolsStats,
     isToggling: toggleToolMutation.isPending,
     isUpdatingConfig: updateToolConfigMutation.isPending,
   };

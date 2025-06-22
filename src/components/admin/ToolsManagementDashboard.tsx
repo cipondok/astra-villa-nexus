@@ -24,14 +24,12 @@ import {
   FileText,
   Globe
 } from 'lucide-react';
-import { useToolsManagement } from '@/hooks/useToolsManagement';
-import { Tool } from '@/types/tools';
+import { useToolsManagement, Tool } from '@/hooks/useToolsManagement';
 
 const ToolsManagementDashboard = () => {
   const { 
     tools, 
-    loading, 
-    lastUpdate, 
+    isLoading, 
     toggleTool, 
     checkToolHealth, 
     runAllHealthChecks, 
@@ -52,6 +50,7 @@ const ToolsManagementDashboard = () => {
     content: FileText,
     security: Shield,
     integration: Globe,
+    tools: Settings,
     other: Settings
   };
 
@@ -80,8 +79,8 @@ const ToolsManagementDashboard = () => {
 
   const categories = [...new Set(tools.map(tool => tool.category))];
 
-  const handleToolToggle = async (toolId: string) => {
-    await toggleTool(toolId);
+  const handleToolToggle = async (toolId: string, currentEnabled: boolean) => {
+    toggleTool({ toolId, enabled: !currentEnabled });
   };
 
   const handleHealthCheck = async (toolId: string) => {
@@ -89,7 +88,7 @@ const ToolsManagementDashboard = () => {
   };
 
   const ToolCard = ({ tool }: { tool: Tool }) => {
-    const CategoryIcon = categoryIcons[tool.category];
+    const CategoryIcon = categoryIcons[tool.category] || Settings;
     const StatusIcon = statusIcons[tool.status];
 
     return (
@@ -154,8 +153,8 @@ const ToolsManagementDashboard = () => {
               <Button
                 size="sm"
                 variant={tool.enabled ? "destructive" : "default"}
-                onClick={() => handleToolToggle(tool.id)}
-                disabled={loading}
+                onClick={() => handleToolToggle(tool.id, tool.enabled)}
+                disabled={isLoading}
                 className="flex-1"
               >
                 {tool.enabled ? (
@@ -176,7 +175,7 @@ const ToolsManagementDashboard = () => {
                   size="sm"
                   variant="outline"
                   onClick={() => handleHealthCheck(tool.id)}
-                  disabled={loading}
+                  disabled={isLoading}
                 >
                   <RefreshCw className="h-4 w-4" />
                 </Button>
@@ -197,8 +196,8 @@ const ToolsManagementDashboard = () => {
           <p className="text-muted-foreground">Monitor and control all system tools and integrations</p>
         </div>
         <div className="flex gap-2">
-          <Button onClick={runAllHealthChecks} disabled={loading}>
-            <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+          <Button onClick={runAllHealthChecks} disabled={isLoading}>
+            <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
             Run Health Checks
           </Button>
         </div>
@@ -355,8 +354,8 @@ const ToolsManagementDashboard = () => {
                               <Button
                                 size="sm"
                                 variant={tool.enabled ? "destructive" : "default"}
-                                onClick={() => handleToolToggle(tool.id)}
-                                disabled={loading}
+                                onClick={() => handleToolToggle(tool.id, tool.enabled)}
+                                disabled={isLoading}
                               >
                                 {tool.enabled ? 'Disable' : 'Enable'}
                               </Button>
@@ -365,7 +364,7 @@ const ToolsManagementDashboard = () => {
                                   size="sm"
                                   variant="outline"
                                   onClick={() => handleHealthCheck(tool.id)}
-                                  disabled={loading}
+                                  disabled={isLoading}
                                 >
                                   <RefreshCw className="h-4 w-4" />
                                 </Button>
@@ -385,7 +384,7 @@ const ToolsManagementDashboard = () => {
 
       {/* Last Update Info */}
       <div className="text-center text-sm text-muted-foreground">
-        Last updated: {new Date(lastUpdate).toLocaleString()}
+        Last updated: {new Date().toLocaleString()}
       </div>
     </div>
   );

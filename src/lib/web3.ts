@@ -25,3 +25,14 @@ export const ASTRA_TOKEN_ABI = [
 ] as const;
 
 export const DEFAULT_CHAIN_ID = 1; // Ethereum mainnet
+
+// Mock config for compatibility
+export const config = {
+  chains: [],
+  connectors: [],
+  transports: {}
+};
+
+export const formatAstraAmount = (amount: string | number): string => {
+  return `${amount} ASTRA`;
+};
