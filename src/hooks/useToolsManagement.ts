@@ -39,7 +39,7 @@ export const useToolsManagement = () => {
         enabled: setting.value === true,
         configuration: typeof setting.value === 'object' ? setting.value : {},
         version: '1.0.0',
-        status: (setting.value === true ? 'healthy' : 'disabled') as 'healthy' | 'disabled',
+        status: (setting.value === true ? 'healthy' : 'disabled') as 'healthy' | 'warning' | 'error' | 'disabled',
         lastChecked: setting.updated_at || new Date().toISOString(),
         dependencies: []
       }));
