@@ -24,8 +24,12 @@ const PaymentMethodSelector: React.FC<PaymentMethodSelectorProps> = ({
 }) => {
   const { paymentMethods, addPaymentMethod, isLoading } = useAstraPayment();
   const [showAddDialog, setShowAddDialog] = useState(false);
-  const [newPaymentMethod, setNewPaymentMethod] = useState({
-    type: 'card' as const,
+  const [newPaymentMethod, setNewPaymentMethod] = useState<{
+    type: 'card' | 'bank_transfer' | 'digital_wallet';
+    provider: string;
+    last_four: string;
+  }>({
+    type: 'card',
     provider: '',
     last_four: '',
   });
