@@ -64,8 +64,8 @@ const AdminDashboard = () => {
       icon: BarChart3,
       description: 'System overview and key metrics',
       tabs: [
-        { id: 'dashboard', label: 'Dashboard', component: () => <AdminOverview /> },
-        { id: 'analytics', label: 'Analytics', component: () => <AdminAnalytics /> }
+        { id: 'dashboard', label: 'Dashboard', component: AdminOverview },
+        { id: 'analytics', label: 'Analytics', component: AdminAnalytics }
       ]
     },
     users: {
@@ -74,9 +74,9 @@ const AdminDashboard = () => {
       icon: Users,
       description: 'Manage users, vendors, and permissions',
       tabs: [
-        { id: 'all-users', label: 'All Users', component: () => <UserManagement /> },
-        { id: 'vendors', label: 'Vendors', component: () => <VendorManagement /> },
-        { id: 'verification', label: 'Verification', component: () => <UserVerification /> }
+        { id: 'all-users', label: 'All Users', component: UserManagement },
+        { id: 'vendors', label: 'Vendors', component: VendorManagement },
+        { id: 'verification', label: 'Verification', component: UserVerification }
       ]
     },
     system: {
@@ -86,8 +86,8 @@ const AdminDashboard = () => {
       description: 'Configure system settings and tools',
       tabs: [
         { id: 'tools', label: 'Tools Management', component: ToolsManagementDashboard },
-        { id: 'settings', label: 'Site Settings', component: () => <SystemSettings /> },
-        { id: 'content', label: 'Content Management', component: () => <ContentManagement /> }
+        { id: 'settings', label: 'Site Settings', component: SystemSettings },
+        { id: 'content', label: 'Content Management', component: ContentManagement }
       ]
     },
     security: {
@@ -96,9 +96,9 @@ const AdminDashboard = () => {
       icon: Shield,
       description: 'Security logs and monitoring',
       tabs: [
-        { id: 'logs', label: 'System Logs', component: () => <SecurityLogs /> },
-        { id: 'alerts', label: 'Alerts', component: () => <SecurityAlerts /> },
-        { id: 'monitoring', label: 'Monitoring', component: () => <SystemMonitoring /> }
+        { id: 'logs', label: 'System Logs', component: SecurityLogs },
+        { id: 'alerts', label: 'Alerts', component: SecurityAlerts },
+        { id: 'monitoring', label: 'Monitoring', component: SystemMonitoring }
       ]
     }
   };
