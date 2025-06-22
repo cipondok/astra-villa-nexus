@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -52,17 +51,17 @@ const AutoScrollCarousel = ({
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const carouselRef = useRef<HTMLDivElement>(null);
 
-  // Responsive items per view
+  // Responsive items per view - increased for smaller cards
   useEffect(() => {
     const updateItemsPerView = () => {
       if (window.innerWidth < 640) {
-        setItemsPerView(1);
+        setItemsPerView(2); // Show 2 items on mobile instead of 1
       } else if (window.innerWidth < 768) {
-        setItemsPerView(2);
+        setItemsPerView(3); // Show 3 items on small tablets
       } else if (window.innerWidth < 1024) {
-        setItemsPerView(3);
+        setItemsPerView(4); // Show 4 items on tablets
       } else {
-        setItemsPerView(4);
+        setItemsPerView(5); // Show 5 items on desktop for smaller cards
       }
     };
 
@@ -81,12 +80,13 @@ const AutoScrollCarousel = ({
     }
   }, [currentPropertyId, queryType, ownerId, propertyData, propertyType, location, customProperties]);
 
-  // Auto-scroll functionality
+  // Auto-scroll functionality with looping
   useEffect(() => {
     if (isAutoScrolling && properties.length > itemsPerView) {
       intervalRef.current = setInterval(() => {
         setCurrentIndex(prev => {
-          const maxIndex = Math.max(0, properties.length - itemsPerView);
+          const maxIndex = properties.length - itemsPerView;
+          // Loop back to the beginning when reaching the end
           return prev >= maxIndex ? 0 : prev + 1;
         });
       }, autoScrollInterval);
@@ -170,12 +170,19 @@ const AutoScrollCarousel = ({
   };
 
   const handlePrevious = () => {
-    setCurrentIndex(prev => Math.max(0, prev - 1));
+    setCurrentIndex(prev => {
+      const maxIndex = properties.length - itemsPerView;
+      // Loop to end when going back from the beginning
+      return prev <= 0 ? maxIndex : prev - 1;
+    });
   };
 
   const handleNext = () => {
-    const maxIndex = Math.max(0, properties.length - itemsPerView);
-    setCurrentIndex(prev => Math.min(maxIndex, prev + 1));
+    setCurrentIndex(prev => {
+      const maxIndex = properties.length - itemsPerView;
+      // Loop to beginning when reaching the end
+      return prev >= maxIndex ? 0 : prev + 1;
+    });
   };
 
   const toggleAutoScroll = () => {
@@ -207,12 +214,12 @@ const AutoScrollCarousel = ({
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {[...Array(4)].map((_, i) => (
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+            {[...Array(5)].map((_, i) => (
               <div key={i} className="animate-pulse">
-                <div className="h-40 bg-gray-200 rounded-lg mb-3"></div>
-                <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-                <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+                <div className="h-32 bg-gray-200 rounded-lg mb-2"></div>
+                <div className="h-3 bg-gray-200 rounded w-3/4 mb-1"></div>
+                <div className="h-2 bg-gray-200 rounded w-1/2"></div>
               </div>
             ))}
           </div>
@@ -226,8 +233,6 @@ const AutoScrollCarousel = ({
   }
 
   const maxIndex = Math.max(0, properties.length - itemsPerView);
-  const canScrollLeft = currentIndex > 0;
-  const canScrollRight = currentIndex < maxIndex;
 
   return (
     <Card>
@@ -267,7 +272,6 @@ const AutoScrollCarousel = ({
                   variant="outline"
                   size="sm"
                   onClick={handlePrevious}
-                  disabled={!canScrollLeft}
                   className="h-8 w-8 p-0"
                 >
                   <ChevronLeft className="h-4 w-4" />
@@ -276,7 +280,6 @@ const AutoScrollCarousel = ({
                   variant="outline"
                   size="sm"
                   onClick={handleNext}
-                  disabled={!canScrollRight}
                   className="h-8 w-8 p-0"
                 >
                   <ChevronRight className="h-4 w-4" />
@@ -291,7 +294,7 @@ const AutoScrollCarousel = ({
         <div className="relative overflow-hidden">
           <div 
             ref={carouselRef}
-            className="flex transition-transform duration-500 ease-in-out gap-4"
+            className="flex transition-transform duration-500 ease-in-out gap-3"
             style={{
               transform: `translateX(-${currentIndex * (100 / itemsPerView)}%)`,
               width: `${(properties.length / itemsPerView) * 100}%`
@@ -303,14 +306,16 @@ const AutoScrollCarousel = ({
                 className="flex-shrink-0"
                 style={{ width: `${100 / properties.length}%` }}
               >
-                <CompactPropertyCard
-                  property={property}
-                  language="en"
-                  isSaved={false}
-                  onSave={() => {}}
-                  onView={() => window.open(`/property/${property.id}`, '_blank')}
-                  onView3D={() => {}}
-                />
+                <div className="transform scale-90 origin-center">
+                  <CompactPropertyCard
+                    property={property}
+                    language="en"
+                    isSaved={false}
+                    onSave={() => {}}
+                    onView={() => window.open(`/property/${property.id}`, '_blank')}
+                    onView3D={() => {}}
+                  />
+                </div>
               </div>
             ))}
           </div>
@@ -356,7 +361,6 @@ const AutoScrollCarousel = ({
                 variant="outline"
                 size="sm"
                 onClick={handlePrevious}
-                disabled={!canScrollLeft}
                 className="h-8 w-8 p-0"
               >
                 <ChevronLeft className="h-4 w-4" />
@@ -365,7 +369,6 @@ const AutoScrollCarousel = ({
                 variant="outline"
                 size="sm"
                 onClick={handleNext}
-                disabled={!canScrollRight}
                 className="h-8 w-8 p-0"
               >
                 <ChevronRight className="h-4 w-4" />
