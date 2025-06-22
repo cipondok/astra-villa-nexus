@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -6,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { MapPin, Bed, Bath, Square, CreditCard, ShoppingCart, LogIn } from 'lucide-react';
 import { Property } from '@/services/astraPaymentAPI';
 import { useAuth } from '@/contexts/AuthContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import PaymentPurchaseModal from '@/components/modals/PaymentPurchaseModal';
 import EnhancedAuthModal from '@/components/auth/EnhancedAuthModal';
 
@@ -15,6 +15,7 @@ interface AstraPaymentPropertyCardProps {
 
 const AstraPaymentPropertyCard: React.FC<AstraPaymentPropertyCardProps> = ({ property }) => {
   const { isAuthenticated } = useAuth();
+  const { language } = useLanguage();
   const [showPurchaseModal, setShowPurchaseModal] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
 
@@ -156,6 +157,7 @@ const AstraPaymentPropertyCard: React.FC<AstraPaymentPropertyCardProps> = ({ pro
       <EnhancedAuthModal
         isOpen={showAuthModal}
         onClose={() => setShowAuthModal(false)}
+        language={language}
       />
     </>
   );

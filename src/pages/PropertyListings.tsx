@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -12,12 +11,14 @@ import { astraPaymentAPI, Property } from '@/services/astraPaymentAPI';
 import AstraPaymentPropertyCard from '@/components/astra/AstraPaymentPropertyCard';
 import RoleBasedNavigation from '@/components/RoleBasedNavigation';
 import { useAuth } from '@/contexts/AuthContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { useState as useAuthModal } from 'react';
 import EnhancedAuthModal from '@/components/auth/EnhancedAuthModal';
 import { toast } from 'sonner';
 
 const PropertyListings = () => {
   const { isAuthenticated } = useAuth();
+  const { language } = useLanguage();
   const [searchQuery, setSearchQuery] = useState('');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -353,6 +354,7 @@ const PropertyListings = () => {
       <EnhancedAuthModal 
         isOpen={showAuthModal} 
         onClose={() => setShowAuthModal(false)} 
+        language={language}
       />
     </>
   );
