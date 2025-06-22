@@ -1,88 +1,70 @@
 
-import React from "react";
-import { Shield, AlertTriangle, Info } from "lucide-react";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Badge } from "@/components/ui/badge";
+import React from 'react';
+import { AlertTriangle, Shield, AlertCircle } from 'lucide-react';
 
 interface RiskAssessmentProps {
-  riskLevel: "low" | "medium" | "high";
+  riskLevel: 'low' | 'medium' | 'high';
   factors: string[];
   className?: string;
 }
 
-export const RiskAssessment = ({ riskLevel, factors, className }: RiskAssessmentProps) => {
-  const getRiskIcon = () => {
+export const RiskAssessment: React.FC<RiskAssessmentProps> = ({ 
+  riskLevel, 
+  factors, 
+  className = '' 
+}) => {
+  const getRiskConfig = () => {
     switch (riskLevel) {
-      case "low":
-        return <Shield className="h-4 w-4 text-green-600" />;
-      case "medium":
-        return <Info className="h-4 w-4 text-yellow-600" />;
-      case "high":
-        return <AlertTriangle className="h-4 w-4 text-red-600" />;
+      case 'high':
+        return {
+          icon: AlertTriangle,
+          bgColor: 'bg-red-50',
+          borderColor: 'border-red-200',
+          iconColor: 'text-red-500',
+          textColor: 'text-red-700',
+          title: 'High Risk Detected'
+        };
+      case 'medium':
+        return {
+          icon: AlertCircle,
+          bgColor: 'bg-orange-50',
+          borderColor: 'border-orange-200',
+          iconColor: 'text-orange-500',
+          textColor: 'text-orange-700',
+          title: 'Medium Risk Activity'
+        };
+      default:
+        return {
+          icon: Shield,
+          bgColor: 'bg-green-50',
+          borderColor: 'border-green-200',
+          iconColor: 'text-green-500',
+          textColor: 'text-green-700',
+          title: 'Low Risk'
+        };
     }
   };
 
-  const getAlertVariant = (): "default" | "destructive" => {
-    switch (riskLevel) {
-      case "low":
-        return "default";
-      case "medium":
-        return "default";
-      case "high":
-        return "destructive";
-    }
-  };
-
-  const getBadgeVariant = () => {
-    switch (riskLevel) {
-      case "low":
-        return "default" as const;
-      case "medium":
-        return "secondary" as const;
-      case "high":
-        return "destructive" as const;
-    }
-  };
-
-  const getRiskDescription = () => {
-    switch (riskLevel) {
-      case "low":
-        return "Normal security behavior detected";
-      case "medium":
-        return "Some unusual activity detected - additional verification recommended";
-      case "high":
-        return "High-risk activity detected - multi-factor authentication required";
-    }
-  };
+  const config = getRiskConfig();
+  const Icon = config.icon;
 
   return (
-    <div className={className}>
-      <Alert variant={getAlertVariant()}>
-        {getRiskIcon()}
-        <AlertDescription>
-          <div className="flex items-center justify-between mb-2">
-            <span className="font-medium">Security Assessment</span>
-            <Badge variant={getBadgeVariant()}>
-              {riskLevel.toUpperCase()} RISK
-            </Badge>
-          </div>
-          <p className="text-sm mb-3">{getRiskDescription()}</p>
-          
+    <div className={`p-3 ${config.bgColor} border ${config.borderColor} rounded-lg ${className}`}>
+      <div className="flex items-start gap-2">
+        <Icon className={`h-4 w-4 ${config.iconColor} flex-shrink-0 mt-0.5`} />
+        <div className="flex-1">
+          <h4 className={`text-sm font-medium ${config.textColor}`}>
+            {config.title}
+          </h4>
           {factors.length > 0 && (
-            <div>
-              <p className="text-xs font-medium mb-1">Risk Factors:</p>
-              <ul className="text-xs space-y-1">
-                {factors.map((factor, index) => (
-                  <li key={index} className="flex items-center gap-2">
-                    <span className="w-1 h-1 bg-current rounded-full" />
-                    {factor}
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <ul className={`text-xs ${config.textColor} mt-1 space-y-0.5`}>
+              {factors.map((factor, index) => (
+                <li key={index}>• {factor}</li>
+              ))}
+            </ul>
           )}
-        </AlertDescription>
-      </Alert>
+        </div>
+      </div>
     </div>
   );
 };

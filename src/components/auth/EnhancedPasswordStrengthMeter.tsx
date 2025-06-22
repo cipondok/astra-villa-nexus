@@ -1,114 +1,116 @@
 
-import React, { useEffect, useState } from "react";
-import { Progress } from "@/components/ui/progress";
-import { CheckCircle, XCircle, Info } from "lucide-react";
+import React, { useEffect, useState } from 'react';
+import { Progress } from '@/components/ui/progress';
+import { Check, X, AlertTriangle } from 'lucide-react';
 
-interface EnhancedPasswordStrengthMeterProps {
+interface PasswordStrengthMeterProps {
   password: string;
   onStrengthChange: (strength: number) => void;
 }
 
-interface StrengthCriteria {
+interface PasswordRequirement {
+  id: string;
   label: string;
   test: (password: string) => boolean;
   met: boolean;
 }
 
-export const EnhancedPasswordStrengthMeter = ({ password, onStrengthChange }: EnhancedPasswordStrengthMeterProps) => {
-  const [strength, setStrength] = useState(0);
-  const [criteria, setCriteria] = useState<StrengthCriteria[]>([
-    { label: "At least 8 characters", test: (p) => p.length >= 8, met: false },
-    { label: "One uppercase letter", test: (p) => /[A-Z]/.test(p), met: false },
-    { label: "One lowercase letter", test: (p) => /[a-z]/.test(p), met: false },
-    { label: "One number", test: (p) => /\d/.test(p), met: false },
-    { label: "One special character", test: (p) => /[!@#$%^&*(),.?":{}|<>]/.test(p), met: false },
+export const EnhancedPasswordStrengthMeter: React.FC<PasswordStrengthMeterProps> = ({
+  password,
+  onStrengthChange
+}) => {
+  const [requirements, setRequirements] = useState<PasswordRequirement[]>([
+    { id: 'length', label: 'At least 8 characters', test: (p) => p.length >= 8, met: false },
+    { id: 'uppercase', label: 'One uppercase letter', test: (p) => /[A-Z]/.test(p), met: false },
+    { id: 'lowercase', label: 'One lowercase letter', test: (p) => /[a-z]/.test(p), met: false },
+    { id: 'number', label: 'One number', test: (p) => /\d/.test(p), met: false },
+    { id: 'special', label: 'One special character', test: (p) => /[!@#$%^&*(),.?":{}|<>]/.test(p), met: false }
   ]);
 
+  const [strength, setStrength] = useState(0);
+  const [strengthText, setStrengthText] = useState('');
+  const [strengthColor, setStrengthColor] = useState('');
+
   useEffect(() => {
-    const updatedCriteria = criteria.map(criterion => ({
-      ...criterion,
-      met: criterion.test(password)
+    const updatedRequirements = requirements.map(req => ({
+      ...req,
+      met: req.test(password)
     }));
     
-    setCriteria(updatedCriteria);
+    setRequirements(updatedRequirements);
     
-    const metCount = updatedCriteria.filter(c => c.met).length;
-    const newStrength = Math.min(metCount, 5);
-    setStrength(newStrength);
-    onStrengthChange(newStrength);
+    const metCount = updatedRequirements.filter(req => req.met).length;
+    const strengthValue = metCount;
+    setStrength(strengthValue);
+    
+    // Update strength text and color
+    if (strengthValue === 0) {
+      setStrengthText('');
+      setStrengthColor('');
+    } else if (strengthValue <= 2) {
+      setStrengthText('Weak');
+      setStrengthColor('text-red-500');
+    } else if (strengthValue <= 3) {
+      setStrengthText('Fair');
+      setStrengthColor('text-orange-500');
+    } else if (strengthValue <= 4) {
+      setStrengthText('Good');
+      setStrengthColor('text-yellow-500');
+    } else {
+      setStrengthText('Strong');
+      setStrengthColor('text-green-500');
+    }
+    
+    onStrengthChange(strengthValue);
   }, [password, onStrengthChange]);
-
-  const getStrengthColor = () => {
-    if (strength <= 2) return "#E74C3C"; // Red
-    if (strength <= 3) return "#F39C12"; // Orange
-    if (strength <= 4) return "#3498DB"; // Blue
-    return "#2ECC71"; // Green
-  };
-
-  const getStrengthLabel = () => {
-    if (strength <= 2) return "Weak";
-    if (strength <= 3) return "Fair";
-    if (strength <= 4) return "Good";
-    return "Strong";
-  };
-
-  const getStrengthPercentage = () => {
-    return (strength / 5) * 100;
-  };
 
   if (!password) return null;
 
+  const progressValue = (strength / 5) * 100;
+
   return (
-    <div className="space-y-3 mt-2">
-      <div className="flex items-center justify-between">
-        <span className="text-sm font-medium text-gray-700">Password Strength</span>
-        <div className="flex items-center gap-2">
-          <div 
-            className="w-2 h-2 rounded-full"
-            style={{ backgroundColor: getStrengthColor() }}
-          />
-          <span 
-            className="text-xs font-medium"
-            style={{ color: getStrengthColor() }}
-          >
-            {getStrengthLabel()}
+    <div className="space-y-3">
+      <div className="space-y-2">
+        <div className="flex items-center justify-between">
+          <span className="text-xs font-medium text-gray-600">Password Strength</span>
+          <span className={`text-xs font-medium ${strengthColor}`}>
+            {strengthText}
           </span>
         </div>
+        
+        <Progress 
+          value={progressValue} 
+          className={`h-2 ${
+            strength <= 2 ? '[&>div]:bg-red-500' :
+            strength <= 3 ? '[&>div]:bg-orange-500' :
+            strength <= 4 ? '[&>div]:bg-yellow-500' :
+            '[&>div]:bg-green-500'
+          }`}
+        />
       </div>
       
-      <div className="space-y-2">
-        <div className="w-full bg-gray-200 rounded-full h-2">
-          <div 
-            className="h-2 rounded-full transition-all duration-300 ease-out"
-            style={{ 
-              width: `${getStrengthPercentage()}%`,
-              backgroundColor: getStrengthColor()
-            }}
-          />
-        </div>
-      </div>
-      
-      <div className="grid grid-cols-1 gap-1">
-        {criteria.map((criterion, index) => (
-          <div key={index} className="flex items-center gap-2 text-xs">
-            {criterion.met ? (
-              <CheckCircle className="h-3 w-3 text-[#2ECC71] flex-shrink-0" />
+      <div className="space-y-1">
+        {requirements.map((req) => (
+          <div key={req.id} className="flex items-center gap-2 text-xs">
+            {req.met ? (
+              <Check className="h-3 w-3 text-green-500 flex-shrink-0" />
             ) : (
-              <XCircle className="h-3 w-3 text-gray-400 flex-shrink-0" />
+              <X className="h-3 w-3 text-gray-400 flex-shrink-0" />
             )}
-            <span className={`${criterion.met ? "text-[#2ECC71]" : "text-gray-500"} transition-colors duration-200`}>
-              {criterion.label}
+            <span className={req.met ? 'text-green-700' : 'text-gray-600'}>
+              {req.label}
             </span>
           </div>
         ))}
       </div>
-
-      {strength >= 3 && (
-        <div className="flex items-center gap-2 p-2 bg-[#2ECC71]/10 rounded-lg border border-[#2ECC71]/20">
-          <Info className="h-4 w-4 text-[#2ECC71]" />
-          <span className="text-xs text-[#2ECC71] font-medium">
-            Password meets security requirements
-          </span>
+      
+      {password.length > 0 && strength < 3 && (
+        <div className="flex items-start gap-2 p-2 bg-amber-50 border border-amber-200 rounded-md">
+          <AlertTriangle className="h-4 w-4 text-amber-500 flex-shrink-0 mt-0.5" />
+          <div className="text-xs text-amber-700">
+            <p className="font-medium">Weak Password</p>
+            <p>Consider using a stronger password for better security.</p>
+          </div>
         </div>
       )}
     </div>

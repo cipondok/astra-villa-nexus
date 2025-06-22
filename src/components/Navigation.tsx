@@ -1,4 +1,5 @@
 
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, User, LogOut, Search, MessageSquare, Bell } from "lucide-react";
@@ -7,7 +8,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import LanguageToggleSwitch from "./LanguageToggleSwitch";
 import ThemeToggleSwitch from "./ThemeToggleSwitch";
-import EnhancedAuthModal from "./auth/EnhancedAuthModal";
+import EnhancedSecureAuthModal from "./auth/EnhancedSecureAuthModal";
 
 const Navigation = () => {
   const { language } = useLanguage();
@@ -184,8 +185,8 @@ const Navigation = () => {
         </div>
       </nav>
 
-      {/* Enhanced Auth Modal */}
-      <EnhancedAuthModal
+      {/* Enhanced Secure Auth Modal */}
+      <EnhancedSecureAuthModal
         isOpen={authModalOpen}
         onClose={() => setAuthModalOpen(false)}
         language={language}
