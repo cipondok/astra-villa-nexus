@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -99,32 +98,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     let mounted = true;
     
-    // Initialize auth state
-    const initializeAuth = async () => {
-      try {
-        console.log('Initializing auth state...');
-        
-        // Get initial session
-        const { data: { session: initialSession }, error } = await supabase.auth.getSession();
-        
-        if (error) {
-          console.error('Error getting initial session:', error);
-        } else if (initialSession && mounted) {
-          console.log('Found initial session for:', initialSession.user.email);
-          setSession(initialSession);
-          setUser(initialSession.user);
-          await fetchProfile(initialSession.user.id);
-        }
-      } catch (error) {
-        console.error('Auth initialization error:', error);
-      } finally {
-        if (mounted) {
-          setLoading(false);
-        }
-      }
-    };
-
-    // Set up auth state change listener
+    // Set up auth state change listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, currentSession) => {
         console.log('Auth state changed:', event, currentSession?.user?.email || 'No user');
@@ -151,7 +125,31 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     );
 
-    // Initialize auth
+    // Initialize auth state AFTER setting up listener
+    const initializeAuth = async () => {
+      try {
+        console.log('Initializing auth state...');
+        
+        // Get initial session
+        const { data: { session: initialSession }, error } = await supabase.auth.getSession();
+        
+        if (error) {
+          console.error('Error getting initial session:', error);
+        } else if (initialSession && mounted) {
+          console.log('Found initial session for:', initialSession.user.email);
+          setSession(initialSession);
+          setUser(initialSession.user);
+          await fetchProfile(initialSession.user.id);
+        }
+      } catch (error) {
+        console.error('Auth initialization error:', error);
+      } finally {
+        if (mounted) {
+          setLoading(false);
+        }
+      }
+    };
+
     initializeAuth();
 
     return () => {
@@ -214,24 +212,35 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       console.log('Signing out user...');
       
+      // Clear state immediately to prevent any race conditions
       setUser(null);
       setProfile(null);
       setSession(null);
       
+      // Clear all possible storage locations
+      localStorage.removeItem('supabase.auth.token');
+      localStorage.removeItem('sb-zymrajuuyyfkzdmptebl-auth-token');
+      sessionStorage.clear();
+      
+      // Sign out from Supabase
       const { error } = await supabase.auth.signOut();
       if (error) {
         console.error('Supabase signOut error:', error);
+        // Even if Supabase signOut fails, we've cleared local state
       }
-      
-      localStorage.removeItem('supabase.auth.token');
-      sessionStorage.clear();
       
       console.log('User signed out successfully');
     } catch (error: any) {
       console.error('Sign out error:', error);
+      // Ensure state is cleared even if there's an error
       setUser(null);
       setProfile(null);
       setSession(null);
+      
+      // Clear storage as fallback
+      localStorage.removeItem('supabase.auth.token');
+      localStorage.removeItem('sb-zymrajuuyyfkzdmptebl-auth-token');
+      sessionStorage.clear();
     }
   };
 
