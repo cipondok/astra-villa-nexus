@@ -43,7 +43,7 @@ export interface APIResponse<T> {
 
 class ASTRATokenAPI {
   private baseURL = 'https://cerdnikfqijyqugguryx.supabase.co/functions/v1/astra-api';
-  private apiKey = 'astra_zyk4azof3tgklpffykik';
+  private apiKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNlcmRuaWtmcWlqeXF1Z2d1cnl4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ2MjEyMjcsImV4cCI6MjA1MDE5NzIyN30.IwqZ0TUwgFKnhMR5gJwPhHUXPRjGkfbA7vUi7XJBrMU';
   private requestCount = 0;
   private requestResetTime = Date.now() + 3600000; // 1 hour from now
 
@@ -62,24 +62,44 @@ class ASTRATokenAPI {
     }
 
     try {
+      console.log('Making ASTRA API request to:', `${this.baseURL}${endpoint}`);
+      console.log('Request headers:', {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${this.apiKey}`,
+        'apikey': this.apiKey,
+      });
+
       const response = await fetch(`${this.baseURL}${endpoint}`, {
         ...options,
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${this.apiKey}`,
-          'x-api-key': this.apiKey,
+          'apikey': this.apiKey,
           ...options.headers,
         },
       });
 
       this.requestCount++;
 
+      console.log('Response status:', response.status);
+      console.log('Response headers:', Object.fromEntries(response.headers.entries()));
+
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
+        const errorText = await response.text();
+        console.error('API Error Response:', errorText);
+        
+        let errorData;
+        try {
+          errorData = JSON.parse(errorText);
+        } catch {
+          errorData = { message: errorText };
+        }
+        
         throw new Error(errorData.message || `HTTP ${response.status}: ${response.statusText}`);
       }
 
       const data = await response.json();
+      console.log('API Success Response:', data);
       return { success: true, data };
     } catch (error) {
       console.error('API Request failed:', error);
@@ -109,7 +129,6 @@ class ASTRATokenAPI {
     });
   }
 
-  // Property operations
   async getProperties(limit?: number, filters?: any): Promise<APIResponse<Property[]>> {
     const params = new URLSearchParams();
     if (limit) params.append('limit', limit.toString());
@@ -133,7 +152,6 @@ class ASTRATokenAPI {
     });
   }
 
-  // Transactions
   async purchaseProperty(
     propertyId: string, 
     buyerId: string, 
@@ -160,7 +178,6 @@ class ASTRATokenAPI {
     return this.makeRequest<Transaction[]>(`/transactions?${params}`);
   }
 
-  // Balance operations
   async addBalance(
     userId: string, 
     amount: number, 
