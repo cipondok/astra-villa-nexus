@@ -5,7 +5,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 
 export const useAstraToken = () => {
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const [balance, setBalance] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(false);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -13,18 +13,25 @@ export const useAstraToken = () => {
 
   // Fetch user balance
   const fetchBalance = useCallback(async () => {
-    if (!user?.id) return;
+    if (!user?.id || !isAuthenticated) {
+      console.log('No authenticated user, skipping balance fetch');
+      return;
+    }
 
     setIsLoading(true);
     try {
-      console.log('Fetching balance for user:', user.id);
+      console.log('Fetching balance for authenticated user:', user.id);
       const response = await astraAPI.getUserBalance(user.id);
       console.log('Balance response:', response);
       if (response.success && response.data) {
         setBalance(response.data.balance);
       } else {
         console.error('Balance fetch failed:', response.error);
-        toast.error('Failed to fetch balance: ' + response.error);
+        if (response.error?.includes('No valid session')) {
+          toast.error('Please login to access your balance');
+        } else {
+          toast.error('Failed to fetch balance: ' + response.error);
+        }
       }
     } catch (error) {
       console.error('Balance fetch error:', error);
@@ -32,22 +39,29 @@ export const useAstraToken = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [user?.id]);
+  }, [user?.id, isAuthenticated]);
 
   // Fetch transaction history
   const fetchTransactions = useCallback(async (limit?: number) => {
-    if (!user?.id) return;
+    if (!user?.id || !isAuthenticated) {
+      console.log('No authenticated user, skipping transactions fetch');
+      return;
+    }
 
     setIsLoading(true);
     try {
-      console.log('Fetching transactions for user:', user.id);
+      console.log('Fetching transactions for authenticated user:', user.id);
       const response = await astraAPI.getTransactionHistory(user.id, limit);
       console.log('Transactions response:', response);
       if (response.success && response.data) {
         setTransactions(response.data);
       } else {
         console.error('Transactions fetch failed:', response.error);
-        toast.error('Failed to fetch transactions: ' + response.error);
+        if (response.error?.includes('No valid session')) {
+          toast.error('Please login to access your transactions');
+        } else {
+          toast.error('Failed to fetch transactions: ' + response.error);
+        }
       }
     } catch (error) {
       console.error('Transactions fetch error:', error);
@@ -55,7 +69,7 @@ export const useAstraToken = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [user?.id]);
+  }, [user?.id, isAuthenticated]);
 
   // Fetch properties
   const fetchProperties = useCallback(async (limit?: number) => {
@@ -65,7 +79,11 @@ export const useAstraToken = () => {
       if (response.success && response.data) {
         setProperties(response.data);
       } else {
-        toast.error('Failed to fetch properties: ' + response.error);
+        if (response.error?.includes('No valid session')) {
+          toast.error('Please login to access properties');
+        } else {
+          toast.error('Failed to fetch properties: ' + response.error);
+        }
       }
     } catch (error) {
       toast.error('Error fetching properties');
@@ -76,7 +94,7 @@ export const useAstraToken = () => {
 
   // Purchase property
   const purchaseProperty = useCallback(async (property: Property) => {
-    if (!user?.id) {
+    if (!user?.id || !isAuthenticated) {
       toast.error('Please log in to purchase properties');
       return false;
     }
@@ -110,11 +128,11 @@ export const useAstraToken = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [user?.id, balance, fetchBalance, fetchTransactions, fetchProperties]);
+  }, [user?.id, isAuthenticated, balance, fetchBalance, fetchTransactions, fetchProperties]);
 
   // Add balance (admin function)
   const addBalance = useCallback(async (amount: number, reason: string) => {
-    if (!user?.id) return false;
+    if (!user?.id || !isAuthenticated) return false;
 
     setIsLoading(true);
     try {
@@ -133,16 +151,20 @@ export const useAstraToken = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [user?.id, fetchBalance]);
+  }, [user?.id, isAuthenticated, fetchBalance]);
 
   // Load initial data
   useEffect(() => {
-    if (user?.id) {
+    if (user?.id && isAuthenticated) {
       console.log('User authenticated, fetching data for:', user.id);
       fetchBalance();
       fetchTransactions(10); // Last 10 transactions
+    } else {
+      console.log('User not authenticated, clearing data');
+      setBalance(0);
+      setTransactions([]);
     }
-  }, [user?.id, fetchBalance, fetchTransactions]);
+  }, [user?.id, isAuthenticated, fetchBalance, fetchTransactions]);
 
   useEffect(() => {
     fetchProperties();

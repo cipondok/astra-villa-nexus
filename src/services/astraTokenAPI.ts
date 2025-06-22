@@ -1,4 +1,5 @@
 
+import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
 export interface User {
@@ -43,9 +44,22 @@ export interface APIResponse<T> {
 
 class ASTRATokenAPI {
   private baseURL = 'https://cerdnikfqijyqugguryx.supabase.co/functions/v1/astra-api';
-  private apiKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNlcmRuaWtmcWlqeXF1Z2d1cnl4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ2MjEyMjcsImV4cCI6MjA1MDE5NzIyN30.IwqZ0TUwgFKnhMR5gJwPhHUXPRjGkfbA7vUi7XJBrMU';
   private requestCount = 0;
   private requestResetTime = Date.now() + 3600000; // 1 hour from now
+
+  private async getAuthHeaders(): Promise<Record<string, string>> {
+    const { data: { session } } = await supabase.auth.getSession();
+    
+    if (!session?.access_token) {
+      throw new Error('No valid session found. Please login first.');
+    }
+
+    return {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${session.access_token}`,
+      'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNlcmRuaWtmcWlqeXF1Z2d1cnl4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ2MjEyMjcsImV4cCI6MjA1MDE5NzIyN30.IwqZ0TUwgFKnhMR5gJwPhHUXPRjGkfbA7vUi7XJBrMU',
+    };
+  }
 
   private async makeRequest<T>(
     endpoint: string, 
@@ -62,19 +76,15 @@ class ASTRATokenAPI {
     }
 
     try {
+      const headers = await this.getAuthHeaders();
+      
       console.log('Making ASTRA API request to:', `${this.baseURL}${endpoint}`);
-      console.log('Request headers:', {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${this.apiKey}`,
-        'apikey': this.apiKey,
-      });
+      console.log('Request headers:', headers);
 
       const response = await fetch(`${this.baseURL}${endpoint}`, {
         ...options,
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${this.apiKey}`,
-          'apikey': this.apiKey,
+          ...headers,
           ...options.headers,
         },
       });
