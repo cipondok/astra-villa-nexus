@@ -13,10 +13,8 @@ import {
   MessageSquare,
   User,
   Bell,
-  Wallet,
   Settings
 } from "lucide-react";
-import WalletDashboard from "@/components/wallet/WalletDashboard";
 
 const UserDashboard = () => {
   const { isAuthenticated, loading, profile } = useAuth();
@@ -53,7 +51,7 @@ const UserDashboard = () => {
             <div className="flex items-center justify-between">
               <div>
                 <h1 className="text-2xl font-bold">Welcome, {profile?.full_name || 'User'}!</h1>
-                <p className="text-blue-100 mt-2">Manage your profile, properties, and ASTRA wallet</p>
+                <p className="text-blue-100 mt-2">Manage your profile and properties</p>
               </div>
               <User className="h-8 w-8" />
             </div>
@@ -61,14 +59,10 @@ const UserDashboard = () => {
 
           {/* Dashboard Tabs */}
           <Tabs defaultValue="overview" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-3">
+            <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="overview" className="flex items-center gap-2">
                 <Home className="h-4 w-4" />
                 Overview
-              </TabsTrigger>
-              <TabsTrigger value="wallet" className="flex items-center gap-2">
-                <Wallet className="h-4 w-4" />
-                ASTRA Wallet
               </TabsTrigger>
               <TabsTrigger value="settings" className="flex items-center gap-2">
                 <Settings className="h-4 w-4" />
@@ -127,10 +121,6 @@ const UserDashboard = () => {
                   </div>
                 </CardContent>
               </Card>
-            </TabsContent>
-
-            <TabsContent value="wallet" className="space-y-6">
-              <WalletDashboard />
             </TabsContent>
 
             <TabsContent value="settings" className="space-y-6">
