@@ -1,6 +1,7 @@
 
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import EnhancedNavigation from "@/components/navigation/EnhancedNavigation";
 import PropertyListingsSection from "@/components/PropertyListingsSection";
 import ProfessionalFooter from "@/components/ProfessionalFooter";
@@ -81,13 +82,21 @@ const LiveListingsSection = () => {
 
 const Index = () => {
   const { user, profile } = useAuth();
+  const { language, setLanguage } = useLanguage();
   
   // Check if user is admin
   const isAdmin = profile?.role === 'admin' || user?.email === 'mycode103@gmail.com';
 
+  const handleLanguageToggle = () => {
+    setLanguage(language === "en" ? "id" : "en");
+  };
+
   return (
     <div className="min-h-screen">
-      <EnhancedNavigation />
+      <EnhancedNavigation 
+        language={language}
+        onLanguageToggle={handleLanguageToggle}
+      />
       
       {/* Quick Admin Access for Testing */}
       {isAdmin && (
@@ -100,9 +109,9 @@ const Index = () => {
       
       <Hero />
       <Features />
-      <PropertyListingsSection language="en" />
+      <PropertyListingsSection language={language} />
       <LiveListingsSection />
-      <ProfessionalFooter language="en" />
+      <ProfessionalFooter language={language} />
     </div>
   );
 };
