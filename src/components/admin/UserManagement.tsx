@@ -23,10 +23,10 @@ const UserManagement = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Users className="h-5 w-5" />
-            Advanced User Management System
+            Complete User Management System
           </CardTitle>
           <CardDescription>
-            Comprehensive user management with roles, levels, security tracking, and role-specific management
+            Comprehensive user management with all user-related settings, roles, levels, security tracking, and specialized management for different user types
           </CardDescription>
         </CardHeader>
       </Card>
