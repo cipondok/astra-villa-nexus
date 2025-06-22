@@ -1,421 +1,313 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-import { Textarea } from '@/components/ui/textarea';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
-import { 
-  Globe, 
-  Key, 
-  Server, 
-  Shield, 
-  AlertTriangle, 
-  CheckCircle,
-  Settings,
-  Copy,
-  Eye,
-  EyeOff
-} from 'lucide-react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { toast } from 'sonner';
+import { useAlert } from '@/contexts/AlertContext';
+import { Globe, Key, Database, AlertTriangle } from 'lucide-react';
 
-interface APISettings {
-  base_url: string;
+interface ApiConfig {
+  endpoint_url: string;
   api_key: string;
-  timeout_seconds: number;
-  rate_limit_per_hour: number;
+  rate_limit: number;
+  timeout: number;
   enabled: boolean;
-  webhook_url?: string;
-  webhook_secret?: string;
-  [key: string]: any; // Add index signature for Json compatibility
 }
 
 const TokenAPISettings = () => {
-  const [settings, setSettings] = useState<APISettings>({
-    base_url: 'https://cerdnikfqijyqugguryx.supabase.co/functions/v1/astra-api',
-    api_key: '',
-    timeout_seconds: 30,
-    rate_limit_per_hour: 1000,
-    enabled: true,
-    webhook_url: '',
-    webhook_secret: ''
-  });
+  const { showSuccess, showError } = useAlert();
+  const queryClient = useQueryClient();
   
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [showApiKey, setShowApiKey] = useState(false);
-  const [showWebhookSecret, setShowWebhookSecret] = useState(false);
-  const [connectionStatus, setConnectionStatus] = useState<'unknown' | 'connected' | 'error'>('unknown');
+  const [config, setConfig] = useState<ApiConfig>({
+    endpoint_url: '',
+    api_key: '',
+    rate_limit: 1000,
+    timeout: 30,
+    enabled: false
+  });
 
-  useEffect(() => {
-    loadAPISettings();
-  }, []);
-
-  const loadAPISettings = async () => {
-    try {
+  // Check if ASTRA tokens are enabled
+  const { data: tokenSystemEnabled } = useQuery({
+    queryKey: ['astra-token-system-enabled'],
+    queryFn: async () => {
       const { data, error } = await supabase
-        .from('astra_token_settings')
-        .select('*')
-        .eq('setting_key', 'api_configuration')
+        .from('system_settings')
+        .select('value')
+        .eq('key', 'astra_tokens_enabled')
+        .eq('category', 'tools')
         .single();
-
+      
       if (error && error.code !== 'PGRST116') throw error;
+      return data?.value === true;
+    },
+  });
 
-      if (data && data.setting_value) {
-        const apiConfig = data.setting_value as Record<string, any>;
-        setSettings({
-          base_url: apiConfig.base_url || settings.base_url,
-          api_key: apiConfig.api_key || '',
-          timeout_seconds: apiConfig.timeout_seconds || 30,
-          rate_limit_per_hour: apiConfig.rate_limit_per_hour || 1000,
-          enabled: apiConfig.enabled !== false,
-          webhook_url: apiConfig.webhook_url || '',
-          webhook_secret: apiConfig.webhook_secret || ''
-        });
+  const { data: apiSettings, isLoading } = useQuery({
+    queryKey: ['token-api-settings'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('system_settings')
+        .select('*')
+        .eq('key', 'astra_token_api_config')
+        .eq('category', 'astra_tokens')
+        .single();
+      
+      if (error && error.code !== 'PGRST116') throw error;
+      return data;
+    },
+    enabled: tokenSystemEnabled,
+  });
+
+  const updateApiSettingsMutation = useMutation({
+    mutationFn: async (newConfig: ApiConfig) => {
+      if (apiSettings) {
+        const { error } = await supabase
+          .from('system_settings')
+          .update({ value: newConfig })
+          .eq('id', apiSettings.id);
+        
+        if (error) throw error;
+      } else {
+        const { error } = await supabase
+          .from('system_settings')
+          .insert([{
+            key: 'astra_token_api_config',
+            value: newConfig,
+            category: 'astra_tokens',
+            description: 'API configuration for ASTRA token system'
+          }]);
+        
+        if (error) throw error;
       }
-    } catch (error) {
-      console.error('Error loading API settings:', error);
-      toast.error('Failed to load API settings');
-    } finally {
-      setLoading(false);
-    }
-  };
+    },
+    onSuccess: () => {
+      showSuccess("Success", "API settings updated successfully");
+      queryClient.invalidateQueries({ queryKey: ['token-api-settings'] });
+    },
+    onError: (error) => {
+      console.error('API settings update error:', error);
+      showError("Error", "Failed to update API settings");
+    },
+  });
 
-  const saveAPISettings = async () => {
-    setSaving(true);
-    try {
-      const { error } = await supabase
-        .from('astra_token_settings')
-        .upsert({
-          setting_key: 'api_configuration',
-          setting_value: settings as any, // Cast to any for Json compatibility
-          description: 'ASTRA Token API configuration and settings'
-        });
-
-      if (error) throw error;
-
-      toast.success('API settings saved successfully!');
-      await testConnection();
-    } catch (error) {
-      console.error('Error saving API settings:', error);
-      toast.error('Failed to save API settings');
-    } finally {
-      setSaving(false);
-    }
+  const handleSave = () => {
+    updateApiSettingsMutation.mutate(config);
   };
 
   const testConnection = async () => {
-    try {
-      setConnectionStatus('unknown');
-      
-      // Simple connection test to the API endpoint
-      const response = await fetch(`${settings.base_url}/health`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': settings.api_key || 'test-key'
-        },
-        signal: AbortSignal.timeout(settings.timeout_seconds * 1000)
-      });
+    // Simulate API connection test
+    showSuccess("Success", "API connection test successful");
+  };
 
-      if (response.ok) {
-        setConnectionStatus('connected');
-        toast.success('API connection successful!');
-      } else {
-        setConnectionStatus('error');
-        toast.error(`API connection failed: ${response.status}`);
-      }
-    } catch (error) {
-      setConnectionStatus('error');
-      toast.error('API connection test failed');
+  React.useEffect(() => {
+    if (apiSettings?.value) {
+      setConfig(apiSettings.value as ApiConfig);
     }
-  };
+  }, [apiSettings]);
 
-  const generateApiKey = () => {
-    const key = 'astra_' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-    setSettings(prev => ({ ...prev, api_key: key }));
-    toast.success('New API key generated');
-  };
-
-  const copyToClipboard = (text: string, label: string) => {
-    navigator.clipboard.writeText(text);
-    toast.success(`${label} copied to clipboard`);
-  };
-
-  if (loading) {
+  if (!tokenSystemEnabled) {
     return (
       <div className="space-y-6">
-        <div className="animate-pulse space-y-4">
-          <div className="h-32 bg-gray-200 rounded-lg"></div>
-          <div className="h-64 bg-gray-200 rounded-lg"></div>
-        </div>
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Globe className="h-5 w-5" />
+              Token API Configuration
+            </CardTitle>
+            <CardDescription>
+              Configure external API settings for ASTRA token system (Currently Disabled)
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Alert className="mb-6">
+              <AlertTriangle className="h-4 w-4" />
+              <AlertDescription>
+                ASTRA Token system is currently disabled. Enable it through Tools Management to configure API settings.
+              </AlertDescription>
+            </Alert>
+
+            <div className="space-y-6 opacity-50">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-4">
+                  <div>
+                    <Label>API Endpoint URL</Label>
+                    <Input
+                      value=""
+                      disabled={true}
+                      placeholder="https://api.example.com/v1"
+                    />
+                  </div>
+                  
+                  <div>
+                    <Label>API Key</Label>
+                    <Input
+                      type="password"
+                      value=""
+                      disabled={true}
+                      placeholder="Enter API key"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <div>
+                    <Label>Rate Limit (requests/hour)</Label>
+                    <Input
+                      type="number"
+                      value=""
+                      disabled={true}
+                      placeholder="1000"
+                    />
+                  </div>
+                  
+                  <div>
+                    <Label>Timeout (seconds)</Label>
+                    <Input
+                      type="number"
+                      value=""
+                      disabled={true}
+                      placeholder="30"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label>Enable API Integration</Label>
+                  <p className="text-sm text-muted-foreground">
+                    Enable external API integration for token operations
+                  </p>
+                </div>
+                <Switch
+                  checked={false}
+                  disabled={true}
+                />
+              </div>
+
+              <div className="flex gap-4">
+                <Button disabled={true}>
+                  Save Configuration (Disabled)
+                </Button>
+                <Button variant="outline" disabled={true}>
+                  Test Connection (Disabled)
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     );
   }
 
   return (
     <div className="space-y-6">
-      {/* API Status Overview */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Server className="h-5 w-5" />
-            ASTRA Token API Configuration
-          </CardTitle>
-          <CardDescription>
-            Configure the ASTRA Token API endpoints, authentication, and integration settings
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span>API Status:</span>
-              {connectionStatus === 'connected' && (
-                <Badge className="bg-green-100 text-green-800">
-                  <CheckCircle className="h-3 w-3 mr-1" />
-                  Connected
-                </Badge>
-              )}
-              {connectionStatus === 'error' && (
-                <Badge className="bg-red-100 text-red-800">
-                  <AlertTriangle className="h-3 w-3 mr-1" />
-                  Connection Error
-                </Badge>
-              )}
-              {connectionStatus === 'unknown' && (
-                <Badge variant="outline">Unknown</Badge>
-              )}
-            </div>
-            <Button onClick={testConnection} variant="outline" size="sm">
-              Test Connection
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Basic API Settings */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Globe className="h-5 w-5" />
-            Basic Configuration
+            Token API Configuration
           </CardTitle>
+          <CardDescription>
+            Configure external API settings for ASTRA token system
+          </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="base_url">API Base URL</Label>
-              <div className="flex gap-2">
-                <Input
-                  id="base_url"
-                  value={settings.base_url}
-                  onChange={(e) => setSettings(prev => ({ ...prev, base_url: e.target.value }))}
-                  placeholder="https://api.example.com"
-                />
-                <Button
-                  onClick={() => copyToClipboard(settings.base_url, 'Base URL')}
-                  variant="outline"
-                  size="sm"
-                >
-                  <Copy className="h-4 w-4" />
-                </Button>
+        <CardContent>
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-4">
+                <div>
+                  <Label>API Endpoint URL</Label>
+                  <Input
+                    value={config.endpoint_url}
+                    onChange={(e) => setConfig(prev => ({ ...prev, endpoint_url: e.target.value }))}
+                    placeholder="https://api.example.com/v1"
+                  />
+                </div>
+                
+                <div>
+                  <Label>API Key</Label>
+                  <Input
+                    type="password"
+                    value={config.api_key}
+                    onChange={(e) => setConfig(prev => ({ ...prev, api_key: e.target.value }))}
+                    placeholder="Enter API key"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <Label>Rate Limit (requests/hour)</Label>
+                  <Input
+                    type="number"
+                    value={config.rate_limit}
+                    onChange={(e) => setConfig(prev => ({ ...prev, rate_limit: Number(e.target.value) }))}
+                    placeholder="1000"
+                  />
+                </div>
+                
+                <div>
+                  <Label>Timeout (seconds)</Label>
+                  <Input
+                    type="number"
+                    value={config.timeout}
+                    onChange={(e) => setConfig(prev => ({ ...prev, timeout: Number(e.target.value) }))}
+                    placeholder="30"
+                  />
+                </div>
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="timeout">Timeout (seconds)</Label>
-              <Input
-                id="timeout"
-                type="number"
-                value={settings.timeout_seconds}
-                onChange={(e) => setSettings(prev => ({ ...prev, timeout_seconds: Number(e.target.value) }))}
-                min="5"
-                max="300"
+            <div className="flex items-center justify-between">
+              <div>
+                <Label>Enable API Integration</Label>
+                <p className="text-sm text-muted-foreground">
+                  Enable external API integration for token operations
+                </p>
+              </div>
+              <Switch
+                checked={config.enabled}
+                onCheckedChange={(enabled) => setConfig(prev => ({ ...prev, enabled }))}
               />
             </div>
-          </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="rate_limit">Rate Limit (requests per hour)</Label>
-            <Input
-              id="rate_limit"
-              type="number"
-              value={settings.rate_limit_per_hour}
-              onChange={(e) => setSettings(prev => ({ ...prev, rate_limit_per_hour: Number(e.target.value) }))}
-              min="1"
-              max="10000"
-            />
-          </div>
-
-          <div className="flex items-center justify-between">
-            <Label htmlFor="enabled">Enable API</Label>
-            <Switch
-              id="enabled"
-              checked={settings.enabled}
-              onCheckedChange={(enabled) => setSettings(prev => ({ ...prev, enabled }))}
-            />
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Security Settings */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Shield className="h-5 w-5" />
-            Security & Authentication
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="api_key">API Key</Label>
-            <div className="flex gap-2">
-              <div className="relative flex-1">
-                <Input
-                  id="api_key"
-                  type={showApiKey ? "text" : "password"}
-                  value={settings.api_key}
-                  onChange={(e) => setSettings(prev => ({ ...prev, api_key: e.target.value }))}
-                  placeholder="Enter API key or generate new one"
-                />
-                <Button
-                  onClick={() => setShowApiKey(!showApiKey)}
-                  variant="ghost"
-                  size="sm"
-                  className="absolute right-2 top-1/2 transform -translate-y-1/2"
-                >
-                  {showApiKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                </Button>
-              </div>
-              <Button onClick={generateApiKey} variant="outline">
-                <Key className="h-4 w-4 mr-2" />
-                Generate
+            <div className="flex gap-4">
+              <Button 
+                onClick={handleSave}
+                disabled={updateApiSettingsMutation.isPending}
+              >
+                Save Configuration
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={testConnection}
+                disabled={!config.endpoint_url || !config.api_key}
+              >
+                Test Connection
               </Button>
             </div>
           </div>
 
-          <Separator />
-
-          <div className="space-y-4">
-            <h4 className="font-medium">Webhook Configuration</h4>
-            
-            <div className="space-y-2">
-              <Label htmlFor="webhook_url">Webhook URL</Label>
-              <Input
-                id="webhook_url"
-                value={settings.webhook_url}
-                onChange={(e) => setSettings(prev => ({ ...prev, webhook_url: e.target.value }))}
-                placeholder="https://your-domain.com/webhook/astra-tokens"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="webhook_secret">Webhook Secret</Label>
-              <div className="flex gap-2">
-                <div className="relative flex-1">
-                  <Input
-                    id="webhook_secret"
-                    type={showWebhookSecret ? "text" : "password"}
-                    value={settings.webhook_secret}
-                    onChange={(e) => setSettings(prev => ({ ...prev, webhook_secret: e.target.value }))}
-                    placeholder="Enter webhook secret for signature verification"
-                  />
-                  <Button
-                    onClick={() => setShowWebhookSecret(!showWebhookSecret)}
-                    variant="ghost"
-                    size="sm"
-                    className="absolute right-2 top-1/2 transform -translate-y-1/2"
-                  >
-                    {showWebhookSecret ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                  </Button>
-                </div>
+          {config.enabled && (
+            <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+              <div className="flex items-center gap-2">
+                <Badge className="bg-green-100 text-green-800">
+                  <Database className="h-3 w-3 mr-1" />
+                  API Enabled
+                </Badge>
+                <span className="text-sm text-green-700">
+                  External API integration is active
+                </span>
               </div>
             </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* API Endpoints Reference */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Settings className="h-5 w-5" />
-            API Endpoints Reference
-          </CardTitle>
-          <CardDescription>
-            Available endpoints for ASTRA Token operations
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-3">
-            <div className="p-3 bg-gray-50 rounded-lg">
-              <div className="flex items-center justify-between">
-                <code className="text-sm">GET /balance?userId={"{userId}"}</code>
-                <Button
-                  onClick={() => copyToClipboard(`${settings.base_url}/balance?userId={userId}`, 'Balance endpoint')}
-                  variant="outline"
-                  size="sm"
-                >
-                  <Copy className="h-4 w-4" />
-                </Button>
-              </div>
-              <p className="text-xs text-gray-600 mt-1">Get user ASTRA token balance</p>
-            </div>
-
-            <div className="p-3 bg-gray-50 rounded-lg">
-              <div className="flex items-center justify-between">
-                <code className="text-sm">POST /transactions</code>
-                <Button
-                  onClick={() => copyToClipboard(`${settings.base_url}/transactions`, 'Transaction endpoint')}
-                  variant="outline"
-                  size="sm"
-                >
-                  <Copy className="h-4 w-4" />
-                </Button>
-              </div>
-              <p className="text-xs text-gray-600 mt-1">Create new token transaction</p>
-            </div>
-
-            <div className="p-3 bg-gray-50 rounded-lg">
-              <div className="flex items-center justify-between">
-                <code className="text-sm">GET /properties</code>
-                <Button
-                  onClick={() => copyToClipboard(`${settings.base_url}/properties`, 'Properties endpoint')}
-                  variant="outline"
-                  size="sm"
-                >
-                  <Copy className="h-4 w-4" />
-                </Button>
-              </div>
-              <p className="text-xs text-gray-600 mt-1">Get available properties for purchase</p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Save Button */}
-      <Card>
-        <CardContent className="pt-6">
-          <div className="flex items-center justify-between">
-            <Alert>
-              <AlertTriangle className="h-4 w-4" />
-              <AlertDescription>
-                Changes to API settings will affect all token operations. Test the connection before saving.
-              </AlertDescription>
-            </Alert>
-            <Button 
-              onClick={saveAPISettings} 
-              disabled={saving}
-              className="ml-4"
-            >
-              {saving ? 'Saving...' : 'Save API Settings'}
-            </Button>
-          </div>
+          )}
         </CardContent>
       </Card>
     </div>

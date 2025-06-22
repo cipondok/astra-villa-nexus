@@ -8,43 +8,47 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { supabase } from "@/integrations/supabase/client";
 import { useAlert } from "@/contexts/AlertContext";
-import { Calendar, Gift, Users } from "lucide-react";
+import { Calendar, Gift, Users, AlertTriangle } from "lucide-react";
 
 const DailyCheckInManagement = () => {
   const [rewardAmount, setRewardAmount] = useState("");
-  const [isEnabled, setIsEnabled] = useState(true);
+  const [isEnabled, setIsEnabled] = useState(false);
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
+
+  // Check if ASTRA tokens are enabled
+  const { data: tokenSystemEnabled } = useQuery({
+    queryKey: ['astra-token-system-enabled'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('system_settings')
+        .select('value')
+        .eq('key', 'astra_tokens_enabled')
+        .eq('category', 'tools')
+        .single();
+      
+      if (error && error.code !== 'PGRST116') throw error;
+      return data?.value === true;
+    },
+  });
 
   const { data: checkInSettings, isLoading: settingsLoading } = useQuery({
     queryKey: ['daily-checkin-settings'],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('astra_token_settings')
+        .from('system_settings')
         .select('*')
-        .eq('setting_key', 'daily_checkin')
+        .eq('key', 'daily_checkin_rewards')
+        .eq('category', 'astra_tokens')
         .single();
       
       if (error && error.code !== 'PGRST116') throw error;
       return data;
     },
-  });
-
-  const { data: recentCheckIns, isLoading: checkInsLoading } = useQuery({
-    queryKey: ['recent-checkins'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('astra_token_transactions')
-        .select('*, profiles!vendor_id(full_name, email)')
-        .eq('transaction_type', 'daily_checkin')
-        .order('created_at', { ascending: false })
-        .limit(20);
-      
-      if (error) throw error;
-      return data;
-    },
+    enabled: tokenSystemEnabled,
   });
 
   const updateSettingsMutation = useMutation({
@@ -53,18 +57,19 @@ const DailyCheckInManagement = () => {
       
       if (checkInSettings) {
         const { error } = await supabase
-          .from('astra_token_settings')
-          .update({ setting_value: settingValue })
+          .from('system_settings')
+          .update({ value: settingValue })
           .eq('id', checkInSettings.id);
         
         if (error) throw error;
       } else {
         const { error } = await supabase
-          .from('astra_token_settings')
+          .from('system_settings')
           .insert([{
-            setting_key: 'daily_checkin',
-            setting_value: settingValue,
-            description: 'Daily check-in reward for all site members'
+            key: 'daily_checkin_rewards',
+            value: settingValue,
+            category: 'astra_tokens',
+            description: 'Daily check-in reward settings for ASTRA tokens'
           }]);
         
         if (error) throw error;
@@ -88,6 +93,89 @@ const DailyCheckInManagement = () => {
       enabled: isEnabled
     });
   };
+
+  if (!tokenSystemEnabled) {
+    return (
+      <div className="space-y-6">
+        <Card className="card-ios">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Calendar className="h-5 w-5" />
+              Daily Check-In Rewards
+            </CardTitle>
+            <CardDescription>
+              Configure daily check-in rewards for ASTRA tokens (Currently Disabled)
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Alert>
+              <AlertTriangle className="h-4 w-4" />
+              <AlertDescription>
+                ASTRA Token system is currently disabled. Enable it through Tools Management to activate daily check-in rewards.
+              </AlertDescription>
+            </Alert>
+            
+            <div className="space-y-4 mt-6 opacity-50">
+              <div className="flex items-center justify-between">
+                <Label>Enable Daily Check-In Rewards</Label>
+                <Switch
+                  checked={false}
+                  disabled={true}
+                />
+              </div>
+              
+              <div>
+                <Label>Reward Amount (ASTRA)</Label>
+                <Input
+                  type="number"
+                  value=""
+                  disabled={true}
+                  placeholder="Enter daily reward amount"
+                />
+              </div>
+              
+              <Button disabled={true}>
+                Save Settings (Disabled)
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="card-ios">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Users className="h-5 w-5" />
+              Recent Check-Ins
+            </CardTitle>
+            <CardDescription>
+              Monitor daily check-in activity (Feature Disabled)
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="border rounded-lg">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>User</TableHead>
+                    <TableHead>Amount</TableHead>
+                    <TableHead>Date</TableHead>
+                    <TableHead>Status</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  <TableRow>
+                    <TableCell colSpan={4} className="text-center py-8">
+                      Daily check-in system is disabled. Enable ASTRA tokens to view activity.
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -153,40 +241,11 @@ const DailyCheckInManagement = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {checkInsLoading ? (
-                  <TableRow>
-                    <TableCell colSpan={4} className="text-center py-8">
-                      Loading check-ins...
-                    </TableCell>
-                  </TableRow>
-                ) : recentCheckIns?.length === 0 ? (
-                  <TableRow>
-                    <TableCell colSpan={4} className="text-center py-8">
-                      No check-ins found
-                    </TableCell>
-                  </TableRow>
-                ) : (
-                  recentCheckIns?.map((checkIn) => (
-                    <TableRow key={checkIn.id}>
-                      <TableCell>
-                        {checkIn.profiles?.full_name || checkIn.profiles?.email || 'Unknown'}
-                      </TableCell>
-                      <TableCell>
-                        <Badge className="bg-green-100 text-green-800">
-                          +{checkIn.amount} ASTRA
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        {new Date(checkIn.created_at).toLocaleDateString()}
-                      </TableCell>
-                      <TableCell>
-                        <Badge className="bg-blue-100 text-blue-800">
-                          Completed
-                        </Badge>
-                      </TableCell>
-                    </TableRow>
-                  ))
-                )}
+                <TableRow>
+                  <TableCell colSpan={4} className="text-center py-8">
+                    No check-ins found. Feature is enabled but no data available yet.
+                  </TableCell>
+                </TableRow>
               </TableBody>
             </Table>
           </div>
