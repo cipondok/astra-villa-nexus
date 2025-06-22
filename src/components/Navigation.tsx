@@ -8,7 +8,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import LanguageToggleSwitch from "./LanguageToggleSwitch";
 import ThemeToggleSwitch from "./ThemeToggleSwitch";
-import EnhancedSecureAuthModal from "./auth/EnhancedSecureAuthModal";
+import { EnhancedSecureAuthModal } from "./auth/EnhancedSecureAuthModal";
 
 const Navigation = () => {
   const { language } = useLanguage();
