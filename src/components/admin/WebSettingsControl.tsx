@@ -56,11 +56,13 @@ const WebSettingsControl = () => {
 
       if (data && data.length > 0) {
         const settingsObj = data.reduce((acc, setting) => {
-          // Handle different JSON value types properly
           let value = setting.value;
-          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-            // If it's an object, try to extract a 'value' property or use the object itself
-            value = (value as any).value !== undefined ? (value as any).value : value;
+          if (typeof value === 'string') {
+            try {
+              value = JSON.parse(value);
+            } catch {
+              // Keep as string if not valid JSON
+            }
           }
           acc[setting.key] = value;
           return acc;
@@ -76,18 +78,25 @@ const WebSettingsControl = () => {
   const saveSettings = async () => {
     setLoading(true);
     try {
-      for (const [key, value] of Object.entries(settings)) {
+      const settingsArray = Object.entries(settings).map(([key, value]) => ({
+        key,
+        value: value,
+        category: 'web_settings',
+        description: `Web setting for ${key}`,
+        is_public: false
+      }));
+
+      for (const setting of settingsArray) {
         const { error } = await supabase
           .from('system_settings')
-          .upsert({
-            key,
-            value,
-            category: 'web_settings',
-            description: `Web setting for ${key}`,
-            is_public: false
+          .upsert(setting, {
+            onConflict: 'key,category'
           });
         
-        if (error) throw error;
+        if (error) {
+          console.error('Error saving setting:', setting.key, error);
+          throw error;
+        }
       }
 
       showSuccess('Settings Saved', 'Web settings updated successfully');

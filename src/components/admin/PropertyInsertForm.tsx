@@ -9,7 +9,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAlert } from "@/contexts/AlertContext";
-import { Building2, Plus, Save } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { Building2, Save } from "lucide-react";
 
 interface PropertyFormData {
   title: string;
@@ -30,6 +31,7 @@ interface PropertyFormData {
 }
 
 const PropertyInsertForm = () => {
+  const { user } = useAuth();
   const [formData, setFormData] = useState<PropertyFormData>({
     title: "",
     description: "",
@@ -45,7 +47,7 @@ const PropertyInsertForm = () => {
     area: "",
     development_status: "completed",
     owner_type: "individual",
-    status: "pending_approval"
+    status: "active"
   });
 
   const { showSuccess, showError } = useAlert();
@@ -54,36 +56,47 @@ const PropertyInsertForm = () => {
   // Create property mutation
   const createPropertyMutation = useMutation({
     mutationFn: async (data: PropertyFormData) => {
-      // Generate a temporary owner_id (in real scenario, this would be the current admin or selected user)
-      const tempOwnerId = '00000000-0000-0000-0000-000000000000'; // You should replace this with actual user selection
-      
-      const { error } = await supabase
+      if (!user) {
+        throw new Error('User must be logged in to create properties');
+      }
+
+      const propertyData = {
+        title: data.title,
+        description: data.description,
+        property_type: data.property_type,
+        listing_type: data.listing_type,
+        price: data.price ? parseFloat(data.price) : null,
+        bedrooms: data.bedrooms ? parseInt(data.bedrooms) : null,
+        bathrooms: data.bathrooms ? parseInt(data.bathrooms) : null,
+        area_sqm: data.area_sqm ? parseInt(data.area_sqm) : null,
+        location: data.location,
+        city: data.city,
+        state: data.state,
+        area: data.area,
+        development_status: data.development_status,
+        owner_type: data.owner_type,
+        status: data.status,
+        approval_status: 'approved',
+        owner_id: user.id,
+        images: [],
+        image_urls: []
+      };
+
+      const { data: result, error } = await supabase
         .from('properties')
-        .insert({
-          title: data.title,
-          description: data.description,
-          property_type: data.property_type,
-          listing_type: data.listing_type,
-          price: data.price ? parseFloat(data.price) : null,
-          bedrooms: data.bedrooms ? parseInt(data.bedrooms) : null,
-          bathrooms: data.bathrooms ? parseInt(data.bathrooms) : null,
-          area_sqm: data.area_sqm ? parseInt(data.area_sqm) : null,
-          location: data.location,
-          city: data.city,
-          state: data.state,
-          area: data.area,
-          development_status: data.development_status,
-          owner_type: data.owner_type,
-          status: data.status,
-          approval_status: 'approved',
-          owner_id: tempOwnerId
-        });
+        .insert(propertyData)
+        .select()
+        .single();
       
-      if (error) throw error;
-      return data;
+      if (error) {
+        console.error('Property creation error:', error);
+        throw error;
+      }
+      
+      return result;
     },
-    onSuccess: () => {
-      showSuccess("Property Created", "New property has been added successfully.");
+    onSuccess: (data) => {
+      showSuccess("Property Created", `Property "${data.title}" has been added successfully.`);
       setFormData({
         title: "",
         description: "",
@@ -99,12 +112,13 @@ const PropertyInsertForm = () => {
         area: "",
         development_status: "completed",
         owner_type: "individual",
-        status: "pending_approval"
+        status: "active"
       });
       queryClient.invalidateQueries({ queryKey: ['properties'] });
     },
     onError: (error: any) => {
-      showError("Creation Failed", error.message);
+      console.error('Property creation failed:', error);
+      showError("Creation Failed", error.message || 'Failed to create property');
     },
   });
 
@@ -116,7 +130,12 @@ const PropertyInsertForm = () => {
     e.preventDefault();
     
     if (!formData.title || !formData.property_type || !formData.listing_type || !formData.location) {
-      showError("Validation Error", "Please fill in all required fields.");
+      showError("Validation Error", "Please fill in all required fields: Title, Property Type, Listing Type, and Location.");
+      return;
+    }
+
+    if (!user) {
+      showError("Authentication Error", "You must be logged in to create properties.");
       return;
     }
     
@@ -338,8 +357,8 @@ const PropertyInsertForm = () => {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="pending_approval">Pending Approval</SelectItem>
                     <SelectItem value="active">Active</SelectItem>
+                    <SelectItem value="pending_approval">Pending Approval</SelectItem>
                     <SelectItem value="sold">Sold</SelectItem>
                     <SelectItem value="rented">Rented</SelectItem>
                     <SelectItem value="inactive">Inactive</SelectItem>

@@ -7,12 +7,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
-import { Badge } from "@/components/ui/badge";
 import { useAlert } from "@/contexts/AlertContext";
-import { Filter, Plus, Edit, Trash2, Settings } from "lucide-react";
+import { Plus, Edit, Trash2, Settings } from "lucide-react";
 
 interface SearchFilter {
   id: string;
@@ -26,33 +25,23 @@ interface SearchFilter {
   updated_at: string;
 }
 
-interface FilterFormData {
-  filter_name: string;
-  filter_type: string;
-  category: string;
-  filter_options: string;
-  is_active: boolean;
-  display_order: string;
-}
-
 const SearchFiltersManagement = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [selectedFilter, setSelectedFilter] = useState<SearchFilter | null>(null);
-  const [formData, setFormData] = useState<FilterFormData>({
+  const [editingFilter, setEditingFilter] = useState<SearchFilter | null>(null);
+  const [newFilter, setNewFilter] = useState({
     filter_name: "",
     filter_type: "select",
-    category: "",
-    filter_options: "",
+    category: "property",
+    filter_options: { options: [] },
     is_active: true,
-    display_order: "0"
+    display_order: 0
   });
 
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
 
   // Fetch search filters
-  const { data: filters, isLoading, refetch } = useQuery({
+  const { data: filters, isLoading } = useQuery({
     queryKey: ['search-filters'],
     queryFn: async (): Promise<SearchFilter[]> => {
       const { data, error } = await supabase
@@ -67,34 +56,33 @@ const SearchFiltersManagement = () => {
 
   // Create filter mutation
   const createFilterMutation = useMutation({
-    mutationFn: async (data: FilterFormData) => {
-      let filterOptions;
-      try {
-        filterOptions = data.filter_options ? JSON.parse(data.filter_options) : {};
-      } catch {
-        filterOptions = { options: data.filter_options.split(',').map(s => s.trim()) };
-      }
-
+    mutationFn: async (filterData: typeof newFilter) => {
       const { error } = await supabase
         .from('search_filters')
         .insert({
-          filter_name: data.filter_name,
-          filter_type: data.filter_type,
-          category: data.category,
-          filter_options: filterOptions,
-          is_active: data.is_active,
-          display_order: parseInt(data.display_order)
+          filter_name: filterData.filter_name,
+          filter_type: filterData.filter_type,
+          category: filterData.category,
+          filter_options: filterData.filter_options,
+          is_active: filterData.is_active,
+          display_order: filterData.display_order
         });
       
       if (error) throw error;
-      return data;
+      return filterData;
     },
     onSuccess: () => {
       showSuccess("Filter Created", "Search filter has been created successfully.");
       setIsCreateModalOpen(false);
-      resetForm();
+      setNewFilter({
+        filter_name: "",
+        filter_type: "select",
+        category: "property",
+        filter_options: { options: [] },
+        is_active: true,
+        display_order: 0
+      });
       queryClient.invalidateQueries({ queryKey: ['search-filters'] });
-      refetch();
     },
     onError: (error: any) => {
       showError("Creation Failed", error.message);
@@ -103,36 +91,19 @@ const SearchFiltersManagement = () => {
 
   // Update filter mutation
   const updateFilterMutation = useMutation({
-    mutationFn: async ({ id, data }: { id: string; data: FilterFormData }) => {
-      let filterOptions;
-      try {
-        filterOptions = data.filter_options ? JSON.parse(data.filter_options) : {};
-      } catch {
-        filterOptions = { options: data.filter_options.split(',').map(s => s.trim()) };
-      }
-
+    mutationFn: async ({ id, updates }: { id: string; updates: Partial<SearchFilter> }) => {
       const { error } = await supabase
         .from('search_filters')
-        .update({
-          filter_name: data.filter_name,
-          filter_type: data.filter_type,
-          category: data.category,
-          filter_options: filterOptions,
-          is_active: data.is_active,
-          display_order: parseInt(data.display_order),
-          updated_at: new Date().toISOString()
-        })
+        .update(updates)
         .eq('id', id);
       
       if (error) throw error;
-      return { id, data };
+      return { id, updates };
     },
     onSuccess: () => {
       showSuccess("Filter Updated", "Search filter has been updated successfully.");
-      setIsEditModalOpen(false);
-      resetForm();
+      setEditingFilter(null);
       queryClient.invalidateQueries({ queryKey: ['search-filters'] });
-      refetch();
     },
     onError: (error: any) => {
       showError("Update Failed", error.message);
@@ -141,102 +112,57 @@ const SearchFiltersManagement = () => {
 
   // Delete filter mutation
   const deleteFilterMutation = useMutation({
-    mutationFn: async (id: string) => {
+    mutationFn: async (filterId: string) => {
       const { error } = await supabase
         .from('search_filters')
         .delete()
-        .eq('id', id);
+        .eq('id', filterId);
       
       if (error) throw error;
-      return id;
+      return filterId;
     },
     onSuccess: () => {
       showSuccess("Filter Deleted", "Search filter has been deleted successfully.");
       queryClient.invalidateQueries({ queryKey: ['search-filters'] });
-      refetch();
     },
     onError: (error: any) => {
       showError("Delete Failed", error.message);
     },
   });
 
-  // Toggle filter status mutation
-  const toggleFilterMutation = useMutation({
-    mutationFn: async ({ id, is_active }: { id: string; is_active: boolean }) => {
-      const { error } = await supabase
-        .from('search_filters')
-        .update({ is_active, updated_at: new Date().toISOString() })
-        .eq('id', id);
-      
-      if (error) throw error;
-      return { id, is_active };
-    },
-    onSuccess: (data) => {
-      showSuccess("Status Updated", `Filter ${data.is_active ? 'activated' : 'deactivated'} successfully.`);
-      queryClient.invalidateQueries({ queryKey: ['search-filters'] });
-      refetch();
-    },
-    onError: (error: any) => {
-      showError("Update Failed", error.message);
-    },
-  });
-
-  const resetForm = () => {
-    setFormData({
-      filter_name: "",
-      filter_type: "select",
-      category: "",
-      filter_options: "",
-      is_active: true,
-      display_order: "0"
-    });
-    setSelectedFilter(null);
-  };
-
-  const handleInputChange = (key: keyof FilterFormData, value: string | boolean) => {
-    setFormData(prev => ({ ...prev, [key]: value }));
-  };
-
-  const openEditModal = (filter: SearchFilter) => {
-    setSelectedFilter(filter);
-    setFormData({
-      filter_name: filter.filter_name,
-      filter_type: filter.filter_type,
-      category: filter.category || "",
-      filter_options: JSON.stringify(filter.filter_options, null, 2),
-      is_active: filter.is_active,
-      display_order: filter.display_order.toString()
-    });
-    setIsEditModalOpen(true);
-  };
-
-  const handleSubmit = (e: React.FormEvent, isEdit: boolean = false) => {
-    e.preventDefault();
-    
-    if (!formData.filter_name || !formData.filter_type) {
-      showError("Validation Error", "Please fill in all required fields.");
+  const handleCreateFilter = () => {
+    if (!newFilter.filter_name || !newFilter.filter_type) {
+      showError("Validation Error", "Filter name and type are required.");
       return;
     }
-    
-    if (isEdit && selectedFilter) {
-      updateFilterMutation.mutate({ id: selectedFilter.id, data: formData });
-    } else {
-      createFilterMutation.mutate(formData);
-    }
+    createFilterMutation.mutate(newFilter);
   };
 
-  const getFilterTypeBadge = (type: string) => {
-    const colors = {
-      select: "bg-blue-100 text-blue-800",
-      range: "bg-green-100 text-green-800",
-      checkbox: "bg-purple-100 text-purple-800",
-      input: "bg-orange-100 text-orange-800"
-    };
-    return (
-      <Badge className={colors[type as keyof typeof colors] || "bg-gray-100 text-gray-800"}>
-        {type.toUpperCase()}
-      </Badge>
-    );
+  const handleEditFilter = (filter: SearchFilter) => {
+    setEditingFilter(filter);
+  };
+
+  const handleUpdateFilter = () => {
+    if (!editingFilter) return;
+    
+    updateFilterMutation.mutate({
+      id: editingFilter.id,
+      updates: {
+        filter_name: editingFilter.filter_name,
+        filter_type: editingFilter.filter_type,
+        category: editingFilter.category,
+        filter_options: editingFilter.filter_options,
+        is_active: editingFilter.is_active,
+        display_order: editingFilter.display_order
+      }
+    });
+  };
+
+  const toggleFilterStatus = (filterId: string, isActive: boolean) => {
+    updateFilterMutation.mutate({
+      id: filterId,
+      updates: { is_active: isActive }
+    });
   };
 
   return (
@@ -246,7 +172,7 @@ const SearchFiltersManagement = () => {
         <div>
           <h3 className="text-lg font-semibold">Search Filters Management</h3>
           <p className="text-sm text-muted-foreground">
-            Configure and manage property search filters
+            Manage search filters for property listings
           </p>
         </div>
         <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
@@ -256,97 +182,86 @@ const SearchFiltersManagement = () => {
               Add Filter
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-2xl">
+          <DialogContent>
             <DialogHeader>
               <DialogTitle>Create New Search Filter</DialogTitle>
             </DialogHeader>
-            <form onSubmit={(e) => handleSubmit(e, false)} className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label>Filter Name *</Label>
-                  <Input
-                    value={formData.filter_name}
-                    onChange={(e) => handleInputChange('filter_name', e.target.value)}
-                    placeholder="e.g., Property Type"
-                    required
-                  />
-                </div>
-                <div>
-                  <Label>Filter Type *</Label>
-                  <Select 
-                    value={formData.filter_type} 
-                    onValueChange={(value) => handleInputChange('filter_type', value)}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="select">Select Dropdown</SelectItem>
-                      <SelectItem value="range">Range Slider</SelectItem>
-                      <SelectItem value="checkbox">Checkbox List</SelectItem>
-                      <SelectItem value="input">Text Input</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label>Category</Label>
-                  <Input
-                    value={formData.category}
-                    onChange={(e) => handleInputChange('category', e.target.value)}
-                    placeholder="e.g., Basic, Advanced"
-                  />
-                </div>
-                <div>
-                  <Label>Display Order</Label>
-                  <Input
-                    type="number"
-                    value={formData.display_order}
-                    onChange={(e) => handleInputChange('display_order', e.target.value)}
-                    placeholder="0"
-                  />
-                </div>
+            <div className="space-y-4">
+              <div>
+                <Label>Filter Name</Label>
+                <Input
+                  value={newFilter.filter_name}
+                  onChange={(e) => setNewFilter(prev => ({ ...prev, filter_name: e.target.value }))}
+                  placeholder="Enter filter name"
+                />
               </div>
               <div>
-                <Label>Filter Options *</Label>
-                <textarea
-                  className="w-full p-2 border rounded-md"
-                  rows={4}
-                  value={formData.filter_options}
-                  onChange={(e) => handleInputChange('filter_options', e.target.value)}
-                  placeholder='{"options": ["Villa", "Apartment", "House"]} or for range: {"min": 0, "max": 10000000, "step": 100000}'
+                <Label>Filter Type</Label>
+                <Select 
+                  value={newFilter.filter_type} 
+                  onValueChange={(value) => setNewFilter(prev => ({ ...prev, filter_type: value }))}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="select">Select Dropdown</SelectItem>
+                    <SelectItem value="range">Range Input</SelectItem>
+                    <SelectItem value="checkbox">Checkbox</SelectItem>
+                    <SelectItem value="text">Text Input</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label>Category</Label>
+                <Select 
+                  value={newFilter.category} 
+                  onValueChange={(value) => setNewFilter(prev => ({ ...prev, category: value }))}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="property">Property</SelectItem>
+                    <SelectItem value="location">Location</SelectItem>
+                    <SelectItem value="price">Price</SelectItem>
+                    <SelectItem value="features">Features</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label>Display Order</Label>
+                <Input
+                  type="number"
+                  value={newFilter.display_order}
+                  onChange={(e) => setNewFilter(prev => ({ ...prev, display_order: parseInt(e.target.value) || 0 }))}
+                  placeholder="Enter display order"
                 />
-                <p className="text-xs text-muted-foreground mt-1">
-                  Enter JSON format for options or comma-separated values
-                </p>
               </div>
               <div className="flex items-center space-x-2">
                 <Switch
-                  checked={formData.is_active}
-                  onCheckedChange={(checked) => handleInputChange('is_active', checked)}
+                  checked={newFilter.is_active}
+                  onCheckedChange={(checked) => setNewFilter(prev => ({ ...prev, is_active: checked }))}
                 />
-                <Label>Active Filter</Label>
+                <Label>Active</Label>
               </div>
               <div className="flex gap-2 pt-4">
                 <Button 
-                  type="submit" 
+                  onClick={handleCreateFilter}
                   disabled={createFilterMutation.isPending}
                   className="flex-1"
                 >
                   {createFilterMutation.isPending ? 'Creating...' : 'Create Filter'}
                 </Button>
                 <Button 
-                  type="button"
                   variant="outline" 
-                  onClick={() => {
-                    setIsCreateModalOpen(false);
-                    resetForm();
-                  }}
+                  onClick={() => setIsCreateModalOpen(false)}
                   className="flex-1"
                 >
                   Cancel
                 </Button>
               </div>
-            </form>
+            </div>
           </DialogContent>
         </Dialog>
       </div>
@@ -355,14 +270,11 @@ const SearchFiltersManagement = () => {
       <Card>
         <CardHeader>
           <CardTitle>Search Filters ({filters?.length || 0})</CardTitle>
-          <CardDescription>
-            Manage all property search filters and their configurations
-          </CardDescription>
         </CardHeader>
         <CardContent>
           {isLoading ? (
             <div className="text-center py-8">Loading filters...</div>
-          ) : filters?.length === 0 ? (
+          ) : !filters || filters.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">
               No search filters found. Create your first filter to get started.
             </div>
@@ -370,45 +282,42 @@ const SearchFiltersManagement = () => {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Filter Name</TableHead>
+                  <TableHead>Name</TableHead>
                   <TableHead>Type</TableHead>
                   <TableHead>Category</TableHead>
                   <TableHead>Order</TableHead>
                   <TableHead>Status</TableHead>
-                  <TableHead>Updated</TableHead>
+                  <TableHead>Created</TableHead>
                   <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filters?.map((filter) => (
+                {filters.map((filter) => (
                   <TableRow key={filter.id}>
                     <TableCell className="font-medium">{filter.filter_name}</TableCell>
-                    <TableCell>{getFilterTypeBadge(filter.filter_type)}</TableCell>
-                    <TableCell>{filter.category || '-'}</TableCell>
-                    <TableCell>{filter.display_order}</TableCell>
                     <TableCell>
-                      <div className="flex items-center space-x-2">
-                        <Switch
-                          checked={filter.is_active}
-                          onCheckedChange={(checked) => 
-                            toggleFilterMutation.mutate({ id: filter.id, is_active: checked })
-                          }
-                          disabled={toggleFilterMutation.isPending}
-                        />
-                        <span className="text-sm">
-                          {filter.is_active ? 'Active' : 'Inactive'}
-                        </span>
-                      </div>
+                      <span className="capitalize">{filter.filter_type}</span>
                     </TableCell>
                     <TableCell>
-                      {new Date(filter.updated_at).toLocaleDateString()}
+                      <span className="capitalize">{filter.category}</span>
+                    </TableCell>
+                    <TableCell>{filter.display_order}</TableCell>
+                    <TableCell>
+                      <Switch
+                        checked={filter.is_active}
+                        onCheckedChange={(checked) => toggleFilterStatus(filter.id, checked)}
+                        disabled={updateFilterMutation.isPending}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      {new Date(filter.created_at).toLocaleDateString()}
                     </TableCell>
                     <TableCell>
                       <div className="flex gap-2">
                         <Button
                           size="sm"
                           variant="outline"
-                          onClick={() => openEditModal(filter)}
+                          onClick={() => handleEditFilter(filter)}
                         >
                           <Edit className="h-4 w-4" />
                         </Button>
@@ -430,100 +339,90 @@ const SearchFiltersManagement = () => {
         </CardContent>
       </Card>
 
-      {/* Edit Filter Modal */}
-      <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
-        <DialogContent className="max-w-2xl">
+      {/* Edit Filter Dialog */}
+      <Dialog open={!!editingFilter} onOpenChange={() => setEditingFilter(null)}>
+        <DialogContent>
           <DialogHeader>
             <DialogTitle>Edit Search Filter</DialogTitle>
           </DialogHeader>
-          <form onSubmit={(e) => handleSubmit(e, true)} className="space-y-4">
-            {/* Same form content as create modal */}
-            <div className="grid grid-cols-2 gap-4">
+          {editingFilter && (
+            <div className="space-y-4">
               <div>
-                <Label>Filter Name *</Label>
+                <Label>Filter Name</Label>
                 <Input
-                  value={formData.filter_name}
-                  onChange={(e) => handleInputChange('filter_name', e.target.value)}
-                  placeholder="e.g., Property Type"
-                  required
+                  value={editingFilter.filter_name}
+                  onChange={(e) => setEditingFilter(prev => prev ? ({ ...prev, filter_name: e.target.value }) : null)}
+                  placeholder="Enter filter name"
                 />
               </div>
               <div>
-                <Label>Filter Type *</Label>
+                <Label>Filter Type</Label>
                 <Select 
-                  value={formData.filter_type} 
-                  onValueChange={(value) => handleInputChange('filter_type', value)}
+                  value={editingFilter.filter_type} 
+                  onValueChange={(value) => setEditingFilter(prev => prev ? ({ ...prev, filter_type: value }) : null)}
                 >
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="select">Select Dropdown</SelectItem>
-                    <SelectItem value="range">Range Slider</SelectItem>
-                    <SelectItem value="checkbox">Checkbox List</SelectItem>
-                    <SelectItem value="input">Text Input</SelectItem>
+                    <SelectItem value="range">Range Input</SelectItem>
+                    <SelectItem value="checkbox">Checkbox</SelectItem>
+                    <SelectItem value="text">Text Input</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
               <div>
                 <Label>Category</Label>
-                <Input
-                  value={formData.category}
-                  onChange={(e) => handleInputChange('category', e.target.value)}
-                  placeholder="e.g., Basic, Advanced"
-                />
+                <Select 
+                  value={editingFilter.category} 
+                  onValueChange={(value) => setEditingFilter(prev => prev ? ({ ...prev, category: value }) : null)}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="property">Property</SelectItem>
+                    <SelectItem value="location">Location</SelectItem>
+                    <SelectItem value="price">Price</SelectItem>
+                    <SelectItem value="features">Features</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               <div>
                 <Label>Display Order</Label>
                 <Input
                   type="number"
-                  value={formData.display_order}
-                  onChange={(e) => handleInputChange('display_order', e.target.value)}
-                  placeholder="0"
+                  value={editingFilter.display_order}
+                  onChange={(e) => setEditingFilter(prev => prev ? ({ ...prev, display_order: parseInt(e.target.value) || 0 }) : null)}
+                  placeholder="Enter display order"
                 />
               </div>
+              <div className="flex items-center space-x-2">
+                <Switch
+                  checked={editingFilter.is_active}
+                  onCheckedChange={(checked) => setEditingFilter(prev => prev ? ({ ...prev, is_active: checked }) : null)}
+                />
+                <Label>Active</Label>
+              </div>
+              <div className="flex gap-2 pt-4">
+                <Button 
+                  onClick={handleUpdateFilter}
+                  disabled={updateFilterMutation.isPending}
+                  className="flex-1"
+                >
+                  {updateFilterMutation.isPending ? 'Updating...' : 'Update Filter'}
+                </Button>
+                <Button 
+                  variant="outline" 
+                  onClick={() => setEditingFilter(null)}
+                  className="flex-1"
+                >
+                  Cancel
+                </Button>
+              </div>
             </div>
-            <div>
-              <Label>Filter Options *</Label>
-              <textarea
-                className="w-full p-2 border rounded-md"
-                rows={4}
-                value={formData.filter_options}
-                onChange={(e) => handleInputChange('filter_options', e.target.value)}
-                placeholder='{"options": ["Villa", "Apartment", "House"]} or for range: {"min": 0, "max": 10000000, "step": 100000}'
-              />
-              <p className="text-xs text-muted-foreground mt-1">
-                Enter JSON format for options or comma-separated values
-              </p>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Switch
-                checked={formData.is_active}
-                onCheckedChange={(checked) => handleInputChange('is_active', checked)}
-              />
-              <Label>Active Filter</Label>
-            </div>
-            <div className="flex gap-2 pt-4">
-              <Button 
-                type="submit" 
-                disabled={updateFilterMutation.isPending}
-                className="flex-1"
-              >
-                {updateFilterMutation.isPending ? 'Updating...' : 'Update Filter'}
-              </Button>
-              <Button 
-                type="button"
-                variant="outline" 
-                onClick={() => {
-                  setIsEditModalOpen(false);
-                  resetForm();
-                }}
-                className="flex-1"
-              >
-                Cancel
-              </Button>
-            </div>
-          </form>
+          )}
         </DialogContent>
       </Dialog>
     </div>
