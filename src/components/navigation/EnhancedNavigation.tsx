@@ -9,6 +9,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import ThemeToggleSwitch from "@/components/ThemeToggleSwitch";
 import AnimatedLogo from "@/components/AnimatedLogo";
+import UserDropdownMenu from "./UserDropdownMenu";
 
 interface EnhancedNavigationProps {
   onLoginClick?: () => void;
@@ -76,16 +77,6 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
     navigate('/');
   };
 
-  const handleAdminClick = () => {
-    navigate('/dashboard/admin');
-    setIsOpen(false);
-  };
-
-  const handleDashboardClick = () => {
-    navigate('/dashboard');
-    setIsOpen(false);
-  };
-
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 nav-ios">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
@@ -124,51 +115,8 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
               {currentText.language}
             </Button>
 
-            {/* User Actions */}
-            {user ? (
-              <div className="flex items-center space-x-3">
-                {adminData && (
-                  <Button
-                    onClick={handleAdminClick}
-                    variant="ghost"
-                    size="sm"
-                    className="bg-ios-red/10 hover:bg-ios-red/20 text-ios-red hover:text-ios-red border-ios-red/30 hover:border-ios-red/50 transition-all duration-300"
-                  >
-                    <Shield className="h-4 w-4 mr-2" />
-                    <span className="hidden sm:inline">{currentText.admin}</span>
-                  </Button>
-                )}
-                
-                <Button
-                  onClick={handleDashboardClick}
-                  variant="ghost"
-                  size="sm"
-                  className="bg-primary/10 hover:bg-primary/20 text-primary hover:text-primary border-primary/30 hover:border-primary/50 transition-all duration-300"
-                >
-                  <User className="h-4 w-4 mr-2" />
-                  <span className="hidden sm:inline">{currentText.dashboard}</span>
-                </Button>
-                
-                <Button
-                  onClick={handleSignOut}
-                  variant="ghost"
-                  size="sm"
-                  className="text-muted-foreground hover:text-foreground border border-border/30 hover:bg-foreground/10 transition-all duration-200"
-                >
-                  <LogOut className="h-4 w-4 mr-2" />
-                  <span className="hidden sm:inline">{currentText.signOut}</span>
-                </Button>
-              </div>
-            ) : (
-              onLoginClick && (
-                <Button
-                  onClick={onLoginClick}
-                  className="btn-primary-ios px-6 py-2"
-                >
-                  {currentText.signIn}
-                </Button>
-              )
-            )}
+            {/* User Dropdown Menu */}
+            <UserDropdownMenu language={language} />
 
             {/* Mobile Menu Button */}
             <div className="lg:hidden">
@@ -200,52 +148,10 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
               </Link>
             ))}
             
-            {user ? (
-              <div className="space-y-3 pt-4 border-t border-border/30">
-                {adminData && (
-                  <Button
-                    onClick={handleAdminClick}
-                    variant="ghost"
-                    className="w-full justify-start bg-ios-red/10 hover:bg-ios-red/20 text-ios-red"
-                  >
-                    <Shield className="h-4 w-4 mr-3" />
-                    {currentText.admin}
-                  </Button>
-                )}
-                
-                <Button
-                  onClick={handleDashboardClick}
-                  variant="ghost"
-                  className="w-full justify-start bg-primary/10 hover:bg-primary/20 text-primary"
-                >
-                  <User className="h-4 w-4 mr-3" />
-                  {currentText.dashboard}
-                </Button>
-                
-                <Button
-                  onClick={handleSignOut}
-                  variant="ghost"
-                  className="w-full justify-start text-muted-foreground hover:text-foreground"
-                >
-                  <LogOut className="h-4 w-4 mr-3" />
-                  {currentText.signOut}
-                </Button>
-              </div>
-            ) : (
-              onLoginClick && (
-                <div className="pt-4 border-t border-border/30">
-                  <Button
-                    onClick={() => {
-                      onLoginClick();
-                      setIsOpen(false);
-                    }}
-                    className="w-full btn-primary-ios"
-                  >
-                    {currentText.signIn}
-                  </Button>
-                </div>
-              )
-            )}
+            {/* Mobile User Menu */}
+            <div className="space-y-3 pt-4 border-t border-border/30">
+              <UserDropdownMenu language={language} />
+            </div>
           </div>
         </div>
       )}
