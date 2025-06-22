@@ -1,506 +1,374 @@
+
 import { useState } from "react";
-import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAlert } from "@/contexts/AlertContext";
-import { useAuth } from "@/contexts/AuthContext";
-import { Plus, UserCheck, Eye } from "lucide-react";
-import PropertyImageUpload from "@/components/property/PropertyImageUpload";
-import PropertyPreview from "@/components/property/PropertyPreview";
-import LocationSelector from "@/components/property/LocationSelector";
-import Property3DViewer from "@/components/property/Property3DViewer";
-import AgentRegistrationModal from "@/components/agent/AgentRegistrationModal";
-import CelebrationPopup from "@/components/CelebrationPopup";
+import { Building2, Plus, Save } from "lucide-react";
+
+interface PropertyFormData {
+  title: string;
+  description: string;
+  property_type: string;
+  listing_type: string;
+  price: string;
+  bedrooms: string;
+  bathrooms: string;
+  area_sqm: string;
+  location: string;
+  city: string;
+  state: string;
+  area: string;
+  development_status: string;
+  owner_type: string;
+  status: string;
+}
 
 const PropertyInsertForm = () => {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<PropertyFormData>({
     title: "",
     description: "",
-    price: "",
     property_type: "",
     listing_type: "",
-    location: "",
-    state: "",
-    city: "",
-    area: "",
+    price: "",
     bedrooms: "",
     bathrooms: "",
     area_sqm: "",
-    agent_id: "no-agent",
-    owner_id: "",
+    location: "",
+    city: "",
+    state: "",
+    area: "",
+    development_status: "completed",
     owner_type: "individual",
-    images: [] as string[],
-    three_d_model_url: "",
-    virtual_tour_url: ""
+    status: "pending_approval"
   });
-
-  const [showPreview, setShowPreview] = useState(false);
-  const [showAgentRegistration, setShowAgentRegistration] = useState(false);
-  const [showCelebration, setShowCelebration] = useState(false);
 
   const { showSuccess, showError } = useAlert();
-  const { profile } = useAuth();
   const queryClient = useQueryClient();
 
-  // Fetch agents for demo selection
-  const { data: agents } = useQuery({
-    queryKey: ['demo-agents'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('id, full_name, email')
-        .eq('role', 'agent')
-        .limit(10);
-      if (error) throw error;
-      return data;
-    }
-  });
-
-  // Fetch property owners for demo selection
-  const { data: owners } = useQuery({
-    queryKey: ['demo-owners'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('id, full_name, email')
-        .eq('role', 'property_owner')
-        .limit(10);
-      if (error) throw error;
-      return data;
-    }
-  });
-
-  const insertPropertyMutation = useMutation({
-    mutationFn: async (propertyData: any) => {
+  // Create property mutation
+  const createPropertyMutation = useMutation({
+    mutationFn: async (data: PropertyFormData) => {
+      // Generate a temporary owner_id (in real scenario, this would be the current admin or selected user)
+      const tempOwnerId = '00000000-0000-0000-0000-000000000000'; // You should replace this with actual user selection
+      
       const { error } = await supabase
         .from('properties')
-        .insert([{
-          title: propertyData.title,
-          description: propertyData.description,
-          price: propertyData.price ? Number(propertyData.price) : null,
-          property_type: propertyData.property_type,
-          listing_type: propertyData.listing_type,
-          location: propertyData.location,
-          state: propertyData.state,
-          city: propertyData.city,
-          area: propertyData.area,
-          bedrooms: propertyData.bedrooms ? Number(propertyData.bedrooms) : null,
-          bathrooms: propertyData.bathrooms ? Number(propertyData.bathrooms) : null,
-          area_sqm: propertyData.area_sqm ? Number(propertyData.area_sqm) : null,
-          agent_id: propertyData.agent_id === "no-agent" ? null : propertyData.agent_id,
-          owner_id: propertyData.owner_id,
-          owner_type: propertyData.owner_type,
-          status: 'pending_approval',
-          image_urls: propertyData.images,
-          three_d_model_url: propertyData.three_d_model_url || null,
-          virtual_tour_url: propertyData.virtual_tour_url || null
-        }]);
+        .insert({
+          title: data.title,
+          description: data.description,
+          property_type: data.property_type,
+          listing_type: data.listing_type,
+          price: data.price ? parseFloat(data.price) : null,
+          bedrooms: data.bedrooms ? parseInt(data.bedrooms) : null,
+          bathrooms: data.bathrooms ? parseInt(data.bathrooms) : null,
+          area_sqm: data.area_sqm ? parseInt(data.area_sqm) : null,
+          location: data.location,
+          city: data.city,
+          state: data.state,
+          area: data.area,
+          development_status: data.development_status,
+          owner_type: data.owner_type,
+          status: data.status,
+          approval_status: 'approved',
+          owner_id: tempOwnerId
+        });
+      
       if (error) throw error;
+      return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-properties'] });
-      
-      // Show celebration popup instead of showSuccess alert
-      setShowCelebration(true);
-      setShowPreview(false);
-      
-      // Reset form after celebration
+      showSuccess("Property Created", "New property has been added successfully.");
       setFormData({
         title: "",
         description: "",
-        price: "",
         property_type: "",
         listing_type: "",
-        location: "",
-        state: "",
-        city: "",
-        area: "",
+        price: "",
         bedrooms: "",
         bathrooms: "",
         area_sqm: "",
-        agent_id: "no-agent",
-        owner_id: "",
+        location: "",
+        city: "",
+        state: "",
+        area: "",
+        development_status: "completed",
         owner_type: "individual",
-        images: [],
-        three_d_model_url: "",
-        virtual_tour_url: ""
+        status: "pending_approval"
       });
+      queryClient.invalidateQueries({ queryKey: ['properties'] });
     },
-    onError: (error) => {
-      showError("Error", `Failed to submit property: ${error.message}`);
-    }
+    onError: (error: any) => {
+      showError("Creation Failed", error.message);
+    },
   });
 
-  const handleCelebrationClose = () => {
-    setShowCelebration(false);
-    showSuccess("Success", "Property submitted for admin approval. You'll be notified once it's reviewed.");
+  const handleInputChange = (key: keyof PropertyFormData, value: string) => {
+    setFormData(prev => ({ ...prev, [key]: value }));
   };
 
-  const handlePreview = () => {
-    if (!formData.title || !formData.property_type || !formData.listing_type || !formData.owner_id) {
-      showError("Error", "Please fill in all required fields before preview");
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!formData.title || !formData.property_type || !formData.listing_type || !formData.location) {
+      showError("Validation Error", "Please fill in all required fields.");
       return;
     }
     
-    if (!formData.area && !formData.location) {
-      showError("Error", "Please select a location or enter a manual location");
-      return;
-    }
-
-    setShowPreview(true);
-  };
-
-  const handleSubmit = () => {
-    insertPropertyMutation.mutate(formData);
-  };
-
-  const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-  };
-
-  // Auto-fill agent if user is logged in as agent
-  const fillAgentData = () => {
-    if (profile?.role === 'agent' && profile?.id) {
-      handleInputChange('agent_id', profile.id);
-      showSuccess("Agent Selected", "Current logged-in agent has been selected");
-    }
+    createPropertyMutation.mutate(formData);
   };
 
   return (
-    <>
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Plus className="h-5 w-5" />
-            Add Property Listing
-            {profile?.role === 'agent' && (
-              <span className="flex items-center gap-1 text-sm bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
-                <UserCheck className="h-3 w-3" />
-                Agent Mode
-              </span>
-            )}
-          </CardTitle>
-          <CardDescription>
-            Create a new property listing with full details and approval workflow
-            {profile?.role === 'agent' && (
-              <span className="block text-blue-600 text-sm mt-1">
-                You are logged in as: {profile.full_name || 'Demo Agent'}
-              </span>
-            )}
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          {/* Basic Property Information */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Basic Information</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Title */}
-                <div>
-                  <Label htmlFor="title">Property Title *</Label>
-                  <Input
-                    id="title"
-                    value={formData.title}
-                    onChange={(e) => handleInputChange('title', e.target.value)}
-                    placeholder="Beautiful Family Home"
-                    required
-                  />
-                </div>
-
-                {/* Price */}
-                <div>
-                  <Label htmlFor="price">Price (USD)</Label>
-                  <Input
-                    id="price"
-                    type="number"
-                    value={formData.price}
-                    onChange={(e) => handleInputChange('price', e.target.value)}
-                    placeholder="500000"
-                  />
-                </div>
-
-                {/* Property Type */}
-                <div>
-                  <Label htmlFor="property_type">Property Type *</Label>
-                  <Select value={formData.property_type} onValueChange={(value) => handleInputChange('property_type', value)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select property type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="house">House</SelectItem>
-                      <SelectItem value="apartment">Apartment</SelectItem>
-                      <SelectItem value="condo">Condo</SelectItem>
-                      <SelectItem value="townhouse">Townhouse</SelectItem>
-                      <SelectItem value="land">Land</SelectItem>
-                      <SelectItem value="commercial">Commercial</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Listing Type */}
-                <div>
-                  <Label htmlFor="listing_type">Listing Type *</Label>
-                  <Select value={formData.listing_type} onValueChange={(value) => handleInputChange('listing_type', value)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select listing type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="sale">For Sale</SelectItem>
-                      <SelectItem value="rent">For Rent</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Owner Type */}
-                <div>
-                  <Label htmlFor="owner_type">Owner Type</Label>
-                  <Select value={formData.owner_type} onValueChange={(value) => handleInputChange('owner_type', value)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select owner type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="individual">Individual Owner</SelectItem>
-                      <SelectItem value="dealer">Property Dealer</SelectItem>
-                      <SelectItem value="developer">Developer</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Property Owner */}
-                <div>
-                  <Label htmlFor="owner_id">Property Owner *</Label>
-                  <Select value={formData.owner_id} onValueChange={(value) => handleInputChange('owner_id', value)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select owner" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {owners?.map((owner) => (
-                        <SelectItem key={owner.id} value={owner.id}>
-                          {owner.full_name || 'Unnamed'} ({owner.email})
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              {/* Description */}
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <Building2 className="h-5 w-5" />
+          Add New Property
+        </CardTitle>
+        <CardDescription>
+          Create a new property listing in the system
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Basic Information */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold">Basic Information</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="description">Description</Label>
-                <Textarea
-                  id="description"
-                  value={formData.description}
-                  onChange={(e) => handleInputChange('description', e.target.value)}
-                  placeholder="Detailed property description..."
-                  rows={3}
+                <Label htmlFor="title">Property Title *</Label>
+                <Input
+                  id="title"
+                  value={formData.title}
+                  onChange={(e) => handleInputChange('title', e.target.value)}
+                  placeholder="Enter property title"
+                  required
                 />
               </div>
-            </CardContent>
-          </Card>
-
-          {/* Location Selection */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Location</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <LocationSelector
-                selectedState={formData.state}
-                selectedCity={formData.city}
-                selectedArea={formData.area}
-                onStateChange={(state) => handleInputChange('state', state)}
-                onCityChange={(city) => handleInputChange('city', city)}
-                onAreaChange={(area) => handleInputChange('area', area)}
-                onLocationChange={(location) => handleInputChange('location', location)}
+              <div>
+                <Label htmlFor="property_type">Property Type *</Label>
+                <Select 
+                  value={formData.property_type} 
+                  onValueChange={(value) => handleInputChange('property_type', value)}
+                  required
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select property type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="house">House</SelectItem>
+                    <SelectItem value="apartment">Apartment</SelectItem>
+                    <SelectItem value="villa">Villa</SelectItem>
+                    <SelectItem value="townhouse">Townhouse</SelectItem>
+                    <SelectItem value="condo">Condo</SelectItem>
+                    <SelectItem value="land">Land</SelectItem>
+                    <SelectItem value="commercial">Commercial</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label htmlFor="listing_type">Listing Type *</Label>
+                <Select 
+                  value={formData.listing_type} 
+                  onValueChange={(value) => handleInputChange('listing_type', value)}
+                  required
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select listing type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="sale">For Sale</SelectItem>
+                    <SelectItem value="rent">For Rent</SelectItem>
+                    <SelectItem value="lease">For Lease</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label htmlFor="price">Price</Label>
+                <Input
+                  id="price"
+                  type="number"
+                  value={formData.price}
+                  onChange={(e) => handleInputChange('price', e.target.value)}
+                  placeholder="Enter price"
+                />
+              </div>
+            </div>
+            <div>
+              <Label htmlFor="description">Description</Label>
+              <Textarea
+                id="description"
+                value={formData.description}
+                onChange={(e) => handleInputChange('description', e.target.value)}
+                placeholder="Enter property description"
+                rows={3}
               />
-              
-              {/* Manual Location Override */}
-              <div className="mt-4">
-                <Label htmlFor="location">Manual Location (Optional)</Label>
+            </div>
+          </div>
+
+          {/* Property Details */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold">Property Details</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <Label htmlFor="bedrooms">Bedrooms</Label>
+                <Input
+                  id="bedrooms"
+                  type="number"
+                  value={formData.bedrooms}
+                  onChange={(e) => handleInputChange('bedrooms', e.target.value)}
+                  placeholder="Number of bedrooms"
+                />
+              </div>
+              <div>
+                <Label htmlFor="bathrooms">Bathrooms</Label>
+                <Input
+                  id="bathrooms"
+                  type="number"
+                  value={formData.bathrooms}
+                  onChange={(e) => handleInputChange('bathrooms', e.target.value)}
+                  placeholder="Number of bathrooms"
+                />
+              </div>
+              <div>
+                <Label htmlFor="area_sqm">Area (sqm)</Label>
+                <Input
+                  id="area_sqm"
+                  type="number"
+                  value={formData.area_sqm}
+                  onChange={(e) => handleInputChange('area_sqm', e.target.value)}
+                  placeholder="Area in square meters"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Location Information */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold">Location Information</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="location">Full Address *</Label>
                 <Input
                   id="location"
                   value={formData.location}
                   onChange={(e) => handleInputChange('location', e.target.value)}
-                  placeholder="Override with custom location"
+                  placeholder="Enter full address"
+                  required
                 />
-                <p className="text-sm text-gray-500 mt-1">
-                  Leave empty to use selected state/city/area
-                </p>
               </div>
-            </CardContent>
-          </Card>
-
-          {/* Property Details */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Property Details</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {/* Bedrooms */}
-                <div>
-                  <Label htmlFor="bedrooms">Bedrooms</Label>
-                  <Input
-                    id="bedrooms"
-                    type="number"
-                    value={formData.bedrooms}
-                    onChange={(e) => handleInputChange('bedrooms', e.target.value)}
-                    placeholder="3"
-                    min="0"
-                  />
-                </div>
-
-                {/* Bathrooms */}
-                <div>
-                  <Label htmlFor="bathrooms">Bathrooms</Label>
-                  <Input
-                    id="bathrooms"
-                    type="number"
-                    value={formData.bathrooms}
-                    onChange={(e) => handleInputChange('bathrooms', e.target.value)}
-                    placeholder="2"
-                    min="0"
-                  />
-                </div>
-
-                {/* Area */}
-                <div>
-                  <Label htmlFor="area_sqm">Area (sqm)</Label>
-                  <Input
-                    id="area_sqm"
-                    type="number"
-                    value={formData.area_sqm}
-                    onChange={(e) => handleInputChange('area_sqm', e.target.value)}
-                    placeholder="120"
-                    min="0"
-                  />
-                </div>
+              <div>
+                <Label htmlFor="city">City</Label>
+                <Input
+                  id="city"
+                  value={formData.city}
+                  onChange={(e) => handleInputChange('city', e.target.value)}
+                  placeholder="Enter city"
+                />
               </div>
-            </CardContent>
-          </Card>
-
-          {/* Property Images */}
-          <PropertyImageUpload
-            images={formData.images}
-            onImagesChange={(images) => handleInputChange('images', JSON.stringify(images))}
-          />
-
-          {/* 3D Experience */}
-          <Property3DViewer
-            threeDModelUrl={formData.three_d_model_url}
-            virtualTourUrl={formData.virtual_tour_url}
-            onModelUrlChange={(url) => handleInputChange('three_d_model_url', url)}
-            onTourUrlChange={(url) => handleInputChange('virtual_tour_url', url)}
-          />
-
-          {/* Agent Assignment */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Agent Assignment</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="agent_id" className="flex items-center gap-2">
-                    Agent (Optional)
-                    {profile?.role === 'agent' && (
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={fillAgentData}
-                        className="text-xs"
-                      >
-                        Use Current Agent
-                      </Button>
-                    )}
-                  </Label>
-                  <Select value={formData.agent_id} onValueChange={(value) => handleInputChange('agent_id', value)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select agent (optional)" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="no-agent">No Agent</SelectItem>
-                      {profile?.role === 'agent' && (
-                        <SelectItem value={profile.id}>
-                          {profile.full_name || 'Current Agent'} (You)
-                        </SelectItem>
-                      )}
-                      {agents?.map((agent) => (
-                        <SelectItem key={agent.id} value={agent.id}>
-                          {agent.full_name || 'Unnamed'} ({agent.email})
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Agent Registration Button */}
-                <div className="p-4 bg-blue-50 rounded-lg">
-                  <p className="text-sm text-blue-700 mb-2">
-                    Want to become an Astra agent? Register now!
-                  </p>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => setShowAgentRegistration(true)}
-                    className="text-blue-600 border-blue-300"
-                  >
-                    Register as Agent
-                  </Button>
-                </div>
+              <div>
+                <Label htmlFor="state">State/Province</Label>
+                <Input
+                  id="state"
+                  value={formData.state}
+                  onChange={(e) => handleInputChange('state', e.target.value)}
+                  placeholder="Enter state or province"
+                />
               </div>
-            </CardContent>
-          </Card>
+              <div>
+                <Label htmlFor="area">Area/District</Label>
+                <Input
+                  id="area"
+                  value={formData.area}
+                  onChange={(e) => handleInputChange('area', e.target.value)}
+                  placeholder="Enter area or district"
+                />
+              </div>
+            </div>
+          </div>
 
-          {/* Action Buttons */}
-          <div className="flex gap-4">
+          {/* Additional Settings */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold">Additional Settings</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <Label htmlFor="development_status">Development Status</Label>
+                <Select 
+                  value={formData.development_status} 
+                  onValueChange={(value) => handleInputChange('development_status', value)}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="completed">Completed</SelectItem>
+                    <SelectItem value="under_construction">Under Construction</SelectItem>
+                    <SelectItem value="planned">Planned</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label htmlFor="owner_type">Owner Type</Label>
+                <Select 
+                  value={formData.owner_type} 
+                  onValueChange={(value) => handleInputChange('owner_type', value)}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="individual">Individual</SelectItem>
+                    <SelectItem value="company">Company</SelectItem>
+                    <SelectItem value="developer">Developer</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label htmlFor="status">Status</Label>
+                <Select 
+                  value={formData.status} 
+                  onValueChange={(value) => handleInputChange('status', value)}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="pending_approval">Pending Approval</SelectItem>
+                    <SelectItem value="active">Active</SelectItem>
+                    <SelectItem value="sold">Sold</SelectItem>
+                    <SelectItem value="rented">Rented</SelectItem>
+                    <SelectItem value="inactive">Inactive</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </div>
+
+          {/* Submit Button */}
+          <div className="pt-4">
             <Button 
-              type="button"
-              variant="outline"
-              onClick={handlePreview}
-              className="flex-1"
+              type="submit" 
+              disabled={createPropertyMutation.isPending}
+              className="w-full md:w-auto"
             >
-              <Eye className="h-4 w-4 mr-2" />
-              Preview Property
+              {createPropertyMutation.isPending ? (
+                'Creating Property...'
+              ) : (
+                <>
+                  <Save className="h-4 w-4 mr-2" />
+                  Create Property
+                </>
+              )}
             </Button>
           </div>
-        </CardContent>
-      </Card>
-
-      {/* Property Preview Modal */}
-      <PropertyPreview
-        isOpen={showPreview}
-        onClose={() => setShowPreview(false)}
-        onConfirm={handleSubmit}
-        propertyData={{
-          ...formData,
-          images: typeof formData.images === 'string' ? JSON.parse(formData.images || '[]') : formData.images
-        }}
-        isSubmitting={insertPropertyMutation.isPending}
-      />
-
-      {/* Agent Registration Modal */}
-      <AgentRegistrationModal
-        isOpen={showAgentRegistration}
-        onClose={() => setShowAgentRegistration(false)}
-      />
-
-      {/* Celebration Popup */}
-      <CelebrationPopup
-        isOpen={showCelebration}
-        onClose={handleCelebrationClose}
-        title="🎉 Properti Berhasil Diajukan!"
-        message="Selamat! Properti telah berhasil disubmit ke sistem. Admin akan melakukan review dalam 24 jam ke depan."
-      />
-    </>
+        </form>
+      </CardContent>
+    </Card>
   );
 };
 
