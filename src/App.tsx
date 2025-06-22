@@ -19,6 +19,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 const queryClient = new QueryClient();
 
 function App() {
+  console.log('App component rendering...');
+  
   return (
     <BrowserRouter>
       <QueryClientProvider client={queryClient}>
@@ -34,7 +36,8 @@ function App() {
                     <Route path="/add-property" element={<AddProperty />} />
                     <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/dashboard/*" element={<UserDashboard />} />
-                    <Route path="/admin/*" element={<AdminDashboard />} />
+                    <Route path="/dashboard/admin" element={<AdminDashboard />} />
+                    <Route path="/admin" element={<AdminDashboard />} />
                     <Route path="/about" element={<About />} />
                   </Routes>
                   <Toaster />
