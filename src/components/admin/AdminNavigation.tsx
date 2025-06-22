@@ -26,7 +26,12 @@ import {
   Award,
   Calendar,
   LifeBuoy,
-  Phone
+  Phone,
+  Crown,
+  Monitor,
+  Home,
+  Headphones,
+  UserPlus
 } from "lucide-react";
 
 interface AdminNavigationProps {
@@ -44,13 +49,18 @@ const AdminNavigation = ({ activeSection, onSectionChange }: AdminNavigationProp
       description: 'System overview and key metrics',
       category: 'Core'
     },
+
+    // Users Management - Consolidated Section
     {
       id: 'user-management',
-      label: 'User Management',
+      label: 'Complete User Management',
       icon: Users,
-      description: 'Manage users, roles, and permissions',
-      category: 'Core'
+      description: 'All user management features in one place',
+      category: 'Users',
+      badge: 'ALL-IN-ONE'
     },
+
+    // Core Property Management
     {
       id: 'property-management',
       label: 'Property Management',
@@ -220,19 +230,24 @@ const AdminNavigation = ({ activeSection, onSectionChange }: AdminNavigationProp
     }
   ];
 
-  const categories = ['Core', 'Customer Service', 'AI & Vendors', 'Analytics', 'Content', 'Settings', 'Technical'];
+  const categories = ['Core', 'Users', 'Customer Service', 'AI & Vendors', 'Analytics', 'Content', 'Settings', 'Technical'];
 
   return (
     <div className="space-y-6">
       {categories.map((category) => (
         <div key={category}>
-          <h3 className="text-lg font-semibold mb-3 text-gray-700">{category}</h3>
+          <h3 className={`text-lg font-semibold mb-3 ${
+            category === 'Users' ? 'text-blue-600' : 'text-gray-700'
+          }`}>
+            {category === 'Users' ? '👥 Users Management' : category}
+          </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {navigationSections
               .filter(section => section.category === category)
               .map((section) => {
                 const Icon = section.icon;
                 const isActive = activeSection === section.id;
+                const isUsersCategory = category === 'Users';
                 
                 return (
                   <Card 
@@ -240,16 +255,24 @@ const AdminNavigation = ({ activeSection, onSectionChange }: AdminNavigationProp
                     className={`cursor-pointer transition-all hover:shadow-md ${
                       isActive 
                         ? 'ring-2 ring-blue-500 bg-blue-50' 
+                        : isUsersCategory
+                        ? 'hover:bg-blue-50 border-blue-200'
                         : 'hover:bg-gray-50'
                     }`}
                     onClick={() => onSectionChange(section.id)}
                   >
                     <CardHeader className="pb-2">
                       <CardTitle className="flex items-center gap-2 text-sm">
-                        <Icon className={`h-4 w-4 ${isActive ? 'text-blue-600' : 'text-gray-600'}`} />
+                        <Icon className={`h-4 w-4 ${
+                          isActive 
+                            ? 'text-blue-600' 
+                            : isUsersCategory 
+                            ? 'text-blue-500' 
+                            : 'text-gray-600'
+                        }`} />
                         <span className="flex-1">{section.label}</span>
                         {section.badge && (
-                          <Badge variant="secondary" className="text-xs">
+                          <Badge variant={isUsersCategory ? "default" : "secondary"} className="text-xs">
                             {section.badge}
                           </Badge>
                         )}
@@ -258,6 +281,16 @@ const AdminNavigation = ({ activeSection, onSectionChange }: AdminNavigationProp
                     </CardHeader>
                     <CardContent className="pt-0">
                       <p className="text-xs text-muted-foreground">{section.description}</p>
+                      {isUsersCategory && (
+                        <div className="mt-2 flex flex-wrap gap-1">
+                          <Badge variant="outline" className="text-xs">Enhanced</Badge>
+                          <Badge variant="outline" className="text-xs">Vendors</Badge>
+                          <Badge variant="outline" className="text-xs">Agents</Badge>
+                          <Badge variant="outline" className="text-xs">Owners</Badge>
+                          <Badge variant="outline" className="text-xs">Support</Badge>
+                          <Badge variant="outline" className="text-xs">Levels</Badge>
+                        </div>
+                      )}
                     </CardContent>
                   </Card>
                 );
