@@ -48,17 +48,51 @@ class ASTRATokenAPI {
   private requestResetTime = Date.now() + 3600000; // 1 hour from now
 
   private async getAuthHeaders(): Promise<Record<string, string>> {
-    const { data: { session } } = await supabase.auth.getSession();
-    
-    if (!session?.access_token) {
-      throw new Error('No valid session found. Please login first.');
-    }
+    try {
+      // First check if we have a valid session
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      
+      if (sessionError) {
+        console.error('Session error:', sessionError);
+        throw new Error('Failed to get session: ' + sessionError.message);
+      }
 
-    return {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${session.access_token}`,
-      'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNlcmRuaWtmcWlqeXF1Z2d1cnl4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ2MjEyMjcsImV4cCI6MjA1MDE5NzIyN30.IwqZ0TUwgFKnhMR5gJwPhHUXPRjGkfbA7vUi7XJBrMU',
-    };
+      if (!session) {
+        throw new Error('No active session found. Please login first.');
+      }
+
+      if (!session.access_token) {
+        throw new Error('No valid access token found. Please login again.');
+      }
+
+      // Check if token is expired
+      const now = Math.floor(Date.now() / 1000);
+      if (session.expires_at && session.expires_at < now) {
+        console.log('Token expired, refreshing...');
+        
+        // Try to refresh the session
+        const { data: refreshData, error: refreshError } = await supabase.auth.refreshSession();
+        
+        if (refreshError || !refreshData.session) {
+          throw new Error('Session expired and refresh failed. Please login again.');
+        }
+        
+        return {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${refreshData.session.access_token}`,
+          'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNlcmRuaWtmcWlqeXF1Z2d1cnl4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ2MjEyMjcsImV4cCI6MjA1MDE5NzIyN30.IwqZ0TUwgFKnhMR5gJwPhHUXPRjGkfbA7vUi7XJBrMU',
+        };
+      }
+
+      return {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${session.access_token}`,
+        'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNlcmRuaWtmcWlqeXF1Z2d1cnl4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ2MjEyMjcsImV4cCI6MjA1MDE5NzIyN30.IwqZ0TUwgFKnhMR5gJwPhHUXPRjGkfbA7vUi7XJBrMU',
+      };
+    } catch (error) {
+      console.error('Auth headers error:', error);
+      throw error;
+    }
   }
 
   private async makeRequest<T>(
@@ -79,7 +113,6 @@ class ASTRATokenAPI {
       const headers = await this.getAuthHeaders();
       
       console.log('Making ASTRA API request to:', `${this.baseURL}${endpoint}`);
-      console.log('Request headers:', headers);
 
       const response = await fetch(`${this.baseURL}${endpoint}`, {
         ...options,
@@ -92,7 +125,6 @@ class ASTRATokenAPI {
       this.requestCount++;
 
       console.log('Response status:', response.status);
-      console.log('Response headers:', Object.fromEntries(response.headers.entries()));
 
       if (!response.ok) {
         const errorText = await response.text();
@@ -105,6 +137,11 @@ class ASTRATokenAPI {
           errorData = { message: errorText };
         }
         
+        // Handle specific JWT errors
+        if (response.status === 401 || errorText.includes('Invalid JWT') || errorText.includes('JWT')) {
+          throw new Error('Authentication failed. Please login again.');
+        }
+        
         throw new Error(errorData.message || `HTTP ${response.status}: ${response.statusText}`);
       }
 
@@ -114,6 +151,12 @@ class ASTRATokenAPI {
     } catch (error) {
       console.error('API Request failed:', error);
       const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      
+      // Show user-friendly error messages for auth issues
+      if (errorMessage.includes('Authentication failed') || errorMessage.includes('login')) {
+        toast.error('Please login to continue');
+      }
+      
       return { success: false, error: errorMessage };
     }
   }

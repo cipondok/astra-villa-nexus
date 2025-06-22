@@ -15,6 +15,7 @@ export const useAstraToken = () => {
   const fetchBalance = useCallback(async () => {
     if (!user?.id || !isAuthenticated) {
       console.log('No authenticated user, skipping balance fetch');
+      setBalance(0);
       return;
     }
 
@@ -27,9 +28,9 @@ export const useAstraToken = () => {
         setBalance(response.data.balance);
       } else {
         console.error('Balance fetch failed:', response.error);
-        if (response.error?.includes('No valid session')) {
-          toast.error('Please login to access your balance');
-        } else {
+        
+        // Don't show error toast for auth issues - the API service will handle it
+        if (!response.error?.includes('login') && !response.error?.includes('Authentication')) {
           toast.error('Failed to fetch balance: ' + response.error);
         }
       }
@@ -45,6 +46,7 @@ export const useAstraToken = () => {
   const fetchTransactions = useCallback(async (limit?: number) => {
     if (!user?.id || !isAuthenticated) {
       console.log('No authenticated user, skipping transactions fetch');
+      setTransactions([]);
       return;
     }
 
@@ -57,9 +59,9 @@ export const useAstraToken = () => {
         setTransactions(response.data);
       } else {
         console.error('Transactions fetch failed:', response.error);
-        if (response.error?.includes('No valid session')) {
-          toast.error('Please login to access your transactions');
-        } else {
+        
+        // Don't show error toast for auth issues - the API service will handle it
+        if (!response.error?.includes('login') && !response.error?.includes('Authentication')) {
           toast.error('Failed to fetch transactions: ' + response.error);
         }
       }
@@ -79,14 +81,12 @@ export const useAstraToken = () => {
       if (response.success && response.data) {
         setProperties(response.data);
       } else {
-        if (response.error?.includes('No valid session')) {
-          toast.error('Please login to access properties');
-        } else {
-          toast.error('Failed to fetch properties: ' + response.error);
-        }
+        console.warn('Properties fetch failed:', response.error);
+        // Don't show error for property fetching issues
       }
     } catch (error) {
-      toast.error('Error fetching properties');
+      console.warn('Error fetching properties:', error);
+      // Don't show error for property fetching issues
     } finally {
       setIsLoading(false);
     }
@@ -153,14 +153,14 @@ export const useAstraToken = () => {
     }
   }, [user?.id, isAuthenticated, fetchBalance]);
 
-  // Load initial data
+  // Load initial data based on authentication status
   useEffect(() => {
     if (user?.id && isAuthenticated) {
-      console.log('User authenticated, fetching data for:', user.id);
+      console.log('User authenticated, fetching ASTRA data for:', user.id);
       fetchBalance();
       fetchTransactions(10); // Last 10 transactions
     } else {
-      console.log('User not authenticated, clearing data');
+      console.log('User not authenticated, clearing ASTRA data');
       setBalance(0);
       setTransactions([]);
     }
