@@ -50,9 +50,6 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
     }).format(price);
   };
 
-  const dailyRateInTokens = "50"; // This would be calculated based on property price and token exchange rate
-  const contractAddress = "0x742d35Cc6638C0532CDE2d4C2deDFc54Ae8c0a9F"; // Example contract address
-
   const PropertyContent = () => (
     <Card className="w-full hover:shadow-lg transition-shadow">
       <div className="relative">
@@ -146,10 +143,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
               <DialogContent>
                 <RentPaymentFlow
                   propertyId={id}
-                  propertyTitle={title}
-                  dailyRate={dailyRateInTokens}
-                  contractAddress={contractAddress}
-                  onClose={() => setShowRentFlow(false)}
+                  rentAmount={price}
                 />
               </DialogContent>
             </Dialog>
@@ -161,11 +155,19 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 
   // Wrap premium properties with token gate
   if (is_premium && required_token_balance > 0) {
+    const property = {
+      id,
+      title,
+      description,
+      price,
+      isPremium: true,
+      tokenRequirement: required_token_balance
+    };
+
     return (
-      <PremiumListing
-        requiredTokens={required_token_balance.toString()}
-        propertyTitle={title}
-        fallbackMessage={`This premium property requires ${required_token_balance} ASTRA tokens to view`}
+      <PremiumListing 
+        property={property}
+        onUnlock={() => console.log('Premium content unlocked')}
       >
         <PropertyContent />
       </PremiumListing>

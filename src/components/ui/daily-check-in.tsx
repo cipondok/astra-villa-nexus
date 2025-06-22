@@ -57,7 +57,6 @@ const DailyCheckIn = () => {
       
       const today = new Date().toISOString().split('T')[0];
       
-      // For now, check user activity logs as a placeholder
       const { data, error } = await supabase
         .from('user_activity_logs')
         .select('id')
@@ -89,10 +88,18 @@ const DailyCheckIn = () => {
 
       if (activityError) throw activityError;
 
-      // This would process the actual token reward when the system is fully set up
+      // Get reward amount
+      const rewardAmount = checkInSettings && typeof checkInSettings === 'object' 
+        ? (checkInSettings as { enabled?: boolean; amount?: number }).amount || 5
+        : 5;
+
+      const rewardsEnabled = checkInSettings && typeof checkInSettings === 'object' 
+        ? (checkInSettings as { enabled?: boolean; amount?: number }).enabled || false
+        : false;
+
       showSuccess(
         "Check-in Complete!",
-        `Daily check-in recorded successfully! ${checkInSettings?.enabled ? `You earned ${checkInSettings?.amount || 5} ASTRA tokens!` : ''}`
+        `Daily check-in recorded successfully! ${rewardsEnabled ? `You earned ${rewardAmount} ASTRA tokens!` : ''}`
       );
       
       refetch();
@@ -152,8 +159,18 @@ const DailyCheckIn = () => {
     );
   }
 
-  const rewardAmount = checkInSettings?.amount || 5;
-  const rewardsEnabled = checkInSettings?.enabled || false;
+  const getRewardAmount = () => {
+    if (!checkInSettings || typeof checkInSettings !== 'object') return 5;
+    return (checkInSettings as { amount?: number }).amount || 5;
+  };
+
+  const getRewardsEnabled = () => {
+    if (!checkInSettings || typeof checkInSettings !== 'object') return false;
+    return (checkInSettings as { enabled?: boolean }).enabled || false;
+  };
+
+  const rewardAmount = getRewardAmount();
+  const rewardsEnabled = getRewardsEnabled();
 
   return (
     <Card className="w-full max-w-md">

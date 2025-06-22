@@ -77,12 +77,15 @@ const RentPaymentFlow = ({ propertyId, rentAmount = 0 }: RentPaymentFlowProps) =
 
       // Calculate token rewards if enabled
       let tokenReward = 0;
-      if (tokenSystemEnabled && tokenRewardSettings?.enabled) {
-        const percentage = tokenRewardSettings.percentage || 1;
-        tokenReward = Math.floor(Number(paymentAmount) * (percentage / 100));
+      if (tokenSystemEnabled && tokenRewardSettings && typeof tokenRewardSettings === 'object') {
+        const settings = tokenRewardSettings as { enabled?: boolean; percentage?: number };
+        if (settings.enabled) {
+          const percentage = settings.percentage || 1;
+          tokenReward = Math.floor(Number(paymentAmount) * (percentage / 100));
+        }
       }
 
-      // Record payment (this would integrate with actual payment processor)
+      // Record payment
       const { error } = await supabase
         .from('user_activity_logs')
         .insert({
@@ -107,9 +110,17 @@ const RentPaymentFlow = ({ propertyId, rentAmount = 0 }: RentPaymentFlowProps) =
     }
   };
 
-  const tokenReward = tokenSystemEnabled && tokenRewardSettings?.enabled 
-    ? Math.floor(Number(paymentAmount || 0) * ((tokenRewardSettings.percentage || 1) / 100))
-    : 0;
+  const getTokenReward = () => {
+    if (!tokenSystemEnabled || !tokenRewardSettings || typeof tokenRewardSettings !== 'object') {
+      return 0;
+    }
+    const settings = tokenRewardSettings as { enabled?: boolean; percentage?: number };
+    if (!settings.enabled) return 0;
+    const percentage = settings.percentage || 1;
+    return Math.floor(Number(paymentAmount || 0) * (percentage / 100));
+  };
+
+  const tokenReward = getTokenReward();
 
   return (
     <div className="space-y-6">

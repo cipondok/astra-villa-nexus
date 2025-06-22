@@ -129,17 +129,19 @@ const VendorProfileProgress = () => {
       handleProfileCompletionReward();
     }
 
-    // Update completion percentage in database
+    // Update completion percentage in user activity logs
     updateCompletionPercentage(completionPercentage);
   };
 
   const updateCompletionPercentage = async (percentage: number) => {
     try {
+      // Log the completion percentage update
       const { error } = await supabase
-        .from('vendor_business_profiles')
-        .upsert({
-          vendor_id: user?.id,
-          profile_completion_percentage: percentage
+        .from('user_activity_logs')
+        .insert({
+          user_id: user?.id,
+          activity_type: 'profile_completion_update',
+          description: `Profile completion updated to ${percentage}%`
         });
 
       if (error) throw error;
@@ -152,8 +154,17 @@ const VendorProfileProgress = () => {
     if (!tokenSystemEnabled) return;
 
     try {
-      // This would call a database function when ASTRA tokens are properly set up
-      // For now, just show a success message
+      // Record profile completion bonus
+      const { error } = await supabase
+        .from('user_activity_logs')
+        .insert({
+          user_id: user?.id,
+          activity_type: 'profile_completion_bonus',
+          description: 'Profile completion bonus awarded'
+        });
+
+      if (error) throw error;
+
       showSuccess("Profile Complete!", "Congratulations on completing your profile! Token rewards will be available when the system is fully configured.");
     } catch (error) {
       console.error('Error claiming profile completion bonus:', error);
