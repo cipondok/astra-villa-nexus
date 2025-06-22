@@ -31,6 +31,7 @@ export interface Transaction {
   status: string;
   created_at: string;
   property_title?: string;
+  metadata?: any;
 }
 
 export interface APIResponse<T> {
@@ -42,7 +43,7 @@ export interface APIResponse<T> {
 
 class ASTRATokenAPI {
   private baseURL = 'https://cerdnikfqijyqugguryx.supabase.co/functions/v1/astra-api';
-  private apiKey = 'your-api-key-here'; // This should be moved to environment variable
+  private apiKey = 'astra_zyk4azof3tgklpffykik';
   private requestCount = 0;
   private requestResetTime = Date.now() + 3600000; // 1 hour from now
 
@@ -88,7 +89,7 @@ class ASTRATokenAPI {
 
   // User management
   async getUserBalance(userId: string): Promise<APIResponse<{ balance: number }>> {
-    return this.makeRequest<{ balance: number }>(`/balance?userId=${userId}`);
+    return this.makeRequest<{ balance: number }>(`/users?userId=${userId}`);
   }
 
   async getUser(userId: string): Promise<APIResponse<User>> {
@@ -108,16 +109,23 @@ class ASTRATokenAPI {
   }
 
   // Property operations
-  async getProperties(limit?: number): Promise<APIResponse<Property[]>> {
-    const params = limit ? `?limit=${limit}` : '';
-    return this.makeRequest<Property[]>(`/properties${params}`);
+  async getProperties(limit?: number, filters?: any): Promise<APIResponse<Property[]>> {
+    const params = new URLSearchParams();
+    if (limit) params.append('limit', limit.toString());
+    if (filters) {
+      Object.entries(filters).forEach(([key, value]) => {
+        if (value) params.append(key, value as string);
+      });
+    }
+    const queryString = params.toString() ? `?${params}` : '';
+    return this.makeRequest<Property[]>(`/properties${queryString}`);
   }
 
   async getProperty(propertyId: string): Promise<APIResponse<Property>> {
     return this.makeRequest<Property>(`/properties?propertyId=${propertyId}`);
   }
 
-  async createProperty(propertyData: Omit<Property, 'id'>): Promise<APIResponse<Property>> {
+  async createProperty(propertyData: Omit<Property, 'id' | 'status'>): Promise<APIResponse<Property>> {
     return this.makeRequest<Property>('/properties', {
       method: 'POST',
       body: JSON.stringify(propertyData),
@@ -128,14 +136,16 @@ class ASTRATokenAPI {
   async purchaseProperty(
     propertyId: string, 
     buyerId: string, 
-    amount: number
+    amount: number,
+    metadata?: any
   ): Promise<APIResponse<Transaction>> {
     return this.makeRequest<Transaction>('/transactions', {
       method: 'POST',
       body: JSON.stringify({
-        property_id: propertyId,
-        buyer_id: buyerId,
-        amount_astra: amount,
+        propertyId,
+        buyerId,
+        amount,
+        metadata,
       }),
     });
   }

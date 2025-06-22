@@ -1,0 +1,294 @@
+
+import { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Search, Grid3X3, List, SlidersHorizontal, Coins } from 'lucide-react';
+import { astraAPI, Property } from '@/services/astraTokenAPI';
+import AstraPropertyCard from '@/components/astra/AstraPropertyCard';
+import Navigation from '@/components/Navigation';
+import { toast } from 'sonner';
+
+const PropertyListings = () => {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [filters, setFilters] = useState({
+    property_type: '',
+    min_price: '',
+    max_price: '',
+    bedrooms: '',
+    bathrooms: '',
+    location: '',
+  });
+  const [sortBy, setSortBy] = useState('price_astra');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+
+  const { data: properties = [], isLoading, error, refetch } = useQuery({
+    queryKey: ['properties', filters, searchQuery],
+    queryFn: async () => {
+      const searchFilters = {
+        ...filters,
+        search: searchQuery,
+      };
+      
+      const response = await astraAPI.getProperties(50, searchFilters);
+      
+      if (!response.success) {
+        toast.error(`Failed to fetch properties: ${response.error}`);
+        return [];
+      }
+      
+      return response.data || [];
+    },
+    retry: 2,
+  });
+
+  const sortedProperties = [...properties].sort((a, b) => {
+    let aValue = a[sortBy as keyof Property];
+    let bValue = b[sortBy as keyof Property];
+    
+    if (typeof aValue === 'string') aValue = aValue.toLowerCase();
+    if (typeof bValue === 'string') bValue = bValue.toLowerCase();
+    
+    if (sortOrder === 'asc') {
+      return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
+    } else {
+      return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
+    }
+  });
+
+  const handleFilterChange = (key: string, value: string) => {
+    setFilters(prev => ({ ...prev, [key]: value }));
+  };
+
+  const clearFilters = () => {
+    setFilters({
+      property_type: '',
+      min_price: '',
+      max_price: '',
+      bedrooms: '',
+      bathrooms: '',
+      location: '',
+    });
+    setSearchQuery('');
+  };
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navigation />
+        <div className="pt-16 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-7xl mx-auto py-8">
+            <Card>
+              <CardContent className="p-8 text-center">
+                <h2 className="text-xl font-semibold text-destructive mb-2">Error Loading Properties</h2>
+                <p className="text-muted-foreground mb-4">Failed to load property listings. Please try again.</p>
+                <Button onClick={() => refetch()}>Retry</Button>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-background">
+      <Navigation />
+      <div className="pt-16 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto py-8">
+          {/* Header */}
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-foreground mb-2">Property Listings</h1>
+            <p className="text-muted-foreground">Discover properties available for purchase with ASTRA tokens</p>
+          </div>
+
+          {/* Search and Filters */}
+          <Card className="mb-6">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Search className="h-5 w-5" />
+                Search & Filter Properties
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {/* Search Bar */}
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+                <Input
+                  placeholder="Search properties by title, location, or description..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+
+              {/* Filters */}
+              <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                <Select value={filters.property_type} onValueChange={(value) => handleFilterChange('property_type', value)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Property Type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="villa">Villa</SelectItem>
+                    <SelectItem value="apartment">Apartment</SelectItem>
+                    <SelectItem value="house">House</SelectItem>
+                    <SelectItem value="condo">Condo</SelectItem>
+                    <SelectItem value="townhouse">Townhouse</SelectItem>
+                  </SelectContent>
+                </Select>
+
+                <Select value={filters.bedrooms} onValueChange={(value) => handleFilterChange('bedrooms', value)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Bedrooms" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="1">1 Bedroom</SelectItem>
+                    <SelectItem value="2">2 Bedrooms</SelectItem>
+                    <SelectItem value="3">3 Bedrooms</SelectItem>
+                    <SelectItem value="4">4+ Bedrooms</SelectItem>
+                  </SelectContent>
+                </Select>
+
+                <Select value={filters.bathrooms} onValueChange={(value) => handleFilterChange('bathrooms', value)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Bathrooms" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="1">1 Bathroom</SelectItem>
+                    <SelectItem value="2">2 Bathrooms</SelectItem>
+                    <SelectItem value="3">3+ Bathrooms</SelectItem>
+                  </SelectContent>
+                </Select>
+
+                <Input
+                  placeholder="Min Price (ASTRA)"
+                  type="number"
+                  value={filters.min_price}
+                  onChange={(e) => handleFilterChange('min_price', e.target.value)}
+                />
+
+                <Input
+                  placeholder="Max Price (ASTRA)"
+                  type="number"
+                  value={filters.max_price}
+                  onChange={(e) => handleFilterChange('max_price', e.target.value)}
+                />
+
+                <Input
+                  placeholder="Location"
+                  value={filters.location}
+                  onChange={(e) => handleFilterChange('location', e.target.value)}
+                />
+              </div>
+
+              <div className="flex items-center justify-between">
+                <Button variant="outline" onClick={clearFilters}>
+                  <SlidersHorizontal className="h-4 w-4 mr-2" />
+                  Clear Filters
+                </Button>
+
+                <div className="flex items-center gap-4">
+                  <Select value={sortBy} onValueChange={setSortBy}>
+                    <SelectTrigger className="w-48">
+                      <SelectValue placeholder="Sort by" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="price_astra">Price (ASTRA)</SelectItem>
+                      <SelectItem value="title">Title</SelectItem>
+                      <SelectItem value="location">Location</SelectItem>
+                      <SelectItem value="bedrooms">Bedrooms</SelectItem>
+                      <SelectItem value="square_feet">Size</SelectItem>
+                    </SelectContent>
+                  </Select>
+
+                  <Select value={sortOrder} onValueChange={(value: 'asc' | 'desc') => setSortOrder(value)}>
+                    <SelectTrigger className="w-32">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="asc">Low to High</SelectItem>
+                      <SelectItem value="desc">High to Low</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* View Toggle and Results Count */}
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-4">
+              <Badge variant="outline" className="bg-orange-50 text-orange-700 border-orange-200">
+                <Coins className="h-3 w-3 mr-1" />
+                {sortedProperties.length} Properties Available
+              </Badge>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <Button
+                variant={viewMode === 'grid' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setViewMode('grid')}
+              >
+                <Grid3X3 className="h-4 w-4" />
+              </Button>
+              <Button
+                variant={viewMode === 'list' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setViewMode('list')}
+              >
+                <List className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+
+          {/* Properties Grid/List */}
+          {isLoading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[...Array(6)].map((_, i) => (
+                <Card key={i} className="animate-pulse">
+                  <div className="h-48 bg-muted rounded-t-lg"></div>
+                  <CardContent className="p-4 space-y-2">
+                    <div className="h-4 bg-muted rounded"></div>
+                    <div className="h-4 bg-muted rounded w-3/4"></div>
+                    <div className="h-4 bg-muted rounded w-1/2"></div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : sortedProperties.length === 0 ? (
+            <Card>
+              <CardContent className="p-8 text-center">
+                <div className="text-4xl mb-4">🏠</div>
+                <h3 className="text-lg font-semibold mb-2">No Properties Found</h3>
+                <p className="text-muted-foreground mb-4">
+                  No properties match your current search criteria. Try adjusting your filters.
+                </p>
+                <Button onClick={clearFilters} variant="outline">
+                  Clear All Filters
+                </Button>
+              </CardContent>
+            </Card>
+          ) : (
+            <div className={`grid gap-6 ${
+              viewMode === 'grid' 
+                ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' 
+                : 'grid-cols-1'
+            }`}>
+              {sortedProperties.map((property) => (
+                <AstraPropertyCard key={property.id} property={property} />
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default PropertyListings;
