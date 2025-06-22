@@ -7,9 +7,14 @@ import { useToast } from '@/components/ui/use-toast';
 interface ActiveSession {
   id: string;
   user_id: string;
-  device_info: string;
-  last_active: string;
+  device_fingerprint?: string;
+  user_agent?: string;
+  expires_at?: string;
+  created_at: string;
+  session_token: string;
   ip_address?: string;
+  is_active?: boolean;
+  location_data?: any;
 }
 
 export const useSessionMonitoring = () => {
@@ -33,6 +38,8 @@ export const useSessionMonitoring = () => {
 
     try {
       const deviceInfo = getDeviceInfo();
+      const sessionToken = `token_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(); // 24 hours from now
       
       // Update current session
       await supabase
@@ -40,17 +47,23 @@ export const useSessionMonitoring = () => {
         .upsert({
           id: currentSessionId,
           user_id: user.id,
-          device_info: deviceInfo,
-          last_active: new Date().toISOString()
+          device_fingerprint: deviceInfo,
+          user_agent: navigator.userAgent,
+          session_token: sessionToken,
+          expires_at: expiresAt,
+          is_active: true
         });
 
-      // Check for other active sessions
+      // Check for other active sessions (active in last 5 minutes)
+      const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString();
+      
       const { data: sessions, error } = await supabase
         .from('user_sessions')
         .select('*')
         .eq('user_id', user.id)
-        .gte('last_active', new Date(Date.now() - 5 * 60 * 1000).toISOString()) // Active in last 5 minutes
-        .order('last_active', { ascending: false });
+        .eq('is_active', true)
+        .gte('created_at', fiveMinutesAgo)
+        .order('created_at', { ascending: false });
 
       if (error) {
         console.error('Error checking sessions:', error);
@@ -79,7 +92,7 @@ export const useSessionMonitoring = () => {
     try {
       await supabase
         .from('user_sessions')
-        .delete()
+        .update({ is_active: false })
         .eq('id', sessionId);
       
       setActiveSessions(prev => prev.filter(session => session.id !== sessionId));
@@ -99,7 +112,7 @@ export const useSessionMonitoring = () => {
     try {
       await supabase
         .from('user_sessions')
-        .delete()
+        .update({ is_active: false })
         .eq('id', currentSessionId);
     } catch (error) {
       console.error('Error cleaning up session:', error);

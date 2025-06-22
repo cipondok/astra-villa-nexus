@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -15,12 +16,12 @@ export const SessionManager: React.FC<SessionManagerProps> = ({ isOpen, onClose 
   const { activeSessions, terminateSession, currentSessionId } = useSessionMonitoring();
 
   const getDeviceIcon = (deviceInfo: string) => {
-    if (deviceInfo.toLowerCase().includes('mobile')) return Smartphone;
-    if (deviceInfo.toLowerCase().includes('tablet')) return Tablet;
+    if (deviceInfo?.toLowerCase().includes('mobile')) return Smartphone;
+    if (deviceInfo?.toLowerCase().includes('tablet')) return Tablet;
     return Monitor;
   };
 
-  const otherSessions = activeSessions.filter(session => session.id !== currentSessionId);
+  const otherSessions = activeSessions.filter(session => session.id !== currentSessionId && session.is_active);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -57,7 +58,7 @@ export const SessionManager: React.FC<SessionManagerProps> = ({ isOpen, onClose 
             <div className="space-y-2">
               <h4 className="font-medium text-gray-900">Other Active Sessions</h4>
               {otherSessions.map((session) => {
-                const DeviceIcon = getDeviceIcon(session.device_info);
+                const DeviceIcon = getDeviceIcon(session.device_fingerprint || '');
                 return (
                   <div key={session.id} className="p-4 border border-orange-200 bg-orange-50 rounded-lg">
                     <div className="flex items-center justify-between">
@@ -65,10 +66,10 @@ export const SessionManager: React.FC<SessionManagerProps> = ({ isOpen, onClose 
                         <DeviceIcon className="h-5 w-5 text-orange-600" />
                         <div>
                           <p className="font-medium text-orange-800">
-                            {session.device_info.split(' - ')[0]}
+                            {session.device_fingerprint?.split(' - ')[0] || 'Unknown Device'}
                           </p>
                           <p className="text-sm text-orange-600">
-                            Last active: {formatDistanceToNow(new Date(session.last_active), { addSuffix: true })}
+                            Started: {formatDistanceToNow(new Date(session.created_at), { addSuffix: true })}
                           </p>
                         </div>
                       </div>
