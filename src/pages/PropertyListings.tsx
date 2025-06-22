@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -6,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Search, Grid3X3, List, SlidersHorizontal, CreditCard, LogIn } from 'lucide-react';
+import { Search, Grid3X3, List, SlidersHorizontal, CreditCard, LogIn, Home } from 'lucide-react';
 import { astraPaymentAPI, Property } from '@/services/astraPaymentAPI';
 import AstraPaymentPropertyCard from '@/components/astra/AstraPaymentPropertyCard';
 import RoleBasedNavigation from '@/components/RoleBasedNavigation';
@@ -15,10 +16,12 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useState as useAuthModal } from 'react';
 import EnhancedAuthModal from '@/components/auth/EnhancedAuthModal';
 import { toast } from 'sonner';
+import { useNavigate } from 'react-router-dom';
 
 const PropertyListings = () => {
   const { isAuthenticated } = useAuth();
   const { language } = useLanguage();
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -34,12 +37,11 @@ const PropertyListings = () => {
   const [sortBy, setSortBy] = useState('price');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
-  // Fetch properties without authentication requirement
+  // Fetch properties without authentication requirement - PUBLIC ACCESS
   const { data: properties = [], isLoading, error, refetch } = useQuery({
     queryKey: ['public-properties', filters, searchQuery],
     queryFn: async () => {
       try {
-        // For public properties, we'll use a direct API call without authentication
         const searchFilters = {
           ...filters,
           search: searchQuery,
@@ -49,7 +51,6 @@ const PropertyListings = () => {
         
         if (!response.success) {
           console.warn(`Failed to fetch properties: ${response.error}`);
-          // Don't show error toast for public access - just return empty array
           return [];
         }
         
@@ -59,7 +60,7 @@ const PropertyListings = () => {
         return [];
       }
     },
-    retry: 1, // Reduced retry for public access
+    retry: 1,
   });
 
   const sortedProperties = [...properties].sort((a, b) => {
@@ -113,7 +114,13 @@ const PropertyListings = () => {
               <CardContent className="p-8 text-center">
                 <h2 className="text-xl font-semibold text-destructive mb-2">Error Loading Properties</h2>
                 <p className="text-muted-foreground mb-4">Failed to load property listings. Please try again.</p>
-                <Button onClick={() => refetch()}>Retry</Button>
+                <div className="flex gap-4 justify-center">
+                  <Button onClick={() => refetch()}>Retry</Button>
+                  <Button variant="outline" onClick={() => navigate('/')}>
+                    <Home className="h-4 w-4 mr-2" />
+                    Back to Home
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           </div>
@@ -136,18 +143,23 @@ const PropertyListings = () => {
           <div className="max-w-7xl mx-auto py-8">
             {/* Header */}
             <div className="mb-8">
-              <h1 className="text-3xl font-bold text-foreground mb-2">Property Listings</h1>
+              <h1 className="text-3xl font-bold text-foreground mb-2">Public Property Listings</h1>
               <p className="text-muted-foreground">
-                Browse properties available for purchase with multiple payment methods
-                {!isAuthenticated && (
-                  <span className="block mt-2 text-sm">
-                    <Button variant="link" onClick={handleLoginClick} className="p-0 h-auto text-blue-600">
-                      <LogIn className="h-4 w-4 mr-1" />
-                      Login to purchase properties
-                    </Button>
-                  </span>
-                )}
+                Browse all available properties - no login required for viewing
               </p>
+              <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <div className="flex items-start gap-3">
+                  <CreditCard className="h-5 w-5 text-blue-600 mt-0.5" />
+                  <div>
+                    <h3 className="font-medium text-blue-900 mb-1">Payment Information</h3>
+                    <ul className="text-sm text-blue-700 space-y-1">
+                      <li>• <strong>Property purchases:</strong> Use standard payment methods (cards, bank transfer, etc.)</li>
+                      <li>• <strong>ASTRA Token:</strong> Only for vendor services and professional services</li>
+                      <li>• <strong>Login required:</strong> Only for purchasing properties, not for browsing</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
             </div>
 
             {/* Search and Filters */}
@@ -278,16 +290,13 @@ const PropertyListings = () => {
             {/* View Toggle and Results Count */}
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-4">
-                <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+                <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
                   <CreditCard className="h-3 w-3 mr-1" />
                   {sortedProperties.length} Properties Available
                 </Badge>
-                {!isAuthenticated && (
-                  <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200">
-                    <LogIn className="h-3 w-3 mr-1" />
-                    Login required to purchase
-                  </Badge>
-                )}
+                <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+                  Public Access - No Login Required
+                </Badge>
               </div>
 
               <div className="flex items-center gap-2">
@@ -330,9 +339,15 @@ const PropertyListings = () => {
                   <p className="text-muted-foreground mb-4">
                     No properties match your current search criteria. Try adjusting your filters.
                   </p>
-                  <Button onClick={clearFilters} variant="outline">
-                    Clear All Filters
-                  </Button>
+                  <div className="flex gap-4 justify-center">
+                    <Button onClick={clearFilters} variant="outline">
+                      Clear All Filters
+                    </Button>
+                    <Button onClick={() => navigate('/')}>
+                      <Home className="h-4 w-4 mr-2" />
+                      Back to Home
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
             ) : (
