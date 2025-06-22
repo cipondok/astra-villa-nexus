@@ -16,7 +16,6 @@ import SystemReports from "./SystemReports";
 import SearchFiltersManagement from "./SearchFiltersManagement";
 import FeedbackManagement from "./FeedbackManagement";
 import AIBotManagement from "./AIBotManagement";
-import AstraTokenManagement from "./AstraTokenManagement";
 import AdminKYCManagement from "./AdminKYCManagement";
 import AdminMembershipManagement from "./AdminMembershipManagement";
 import DailyCheckInManagement from "./DailyCheckInManagement";
@@ -67,8 +66,6 @@ const AdminOverview = () => {
         return <SystemSettings />;
       case 'billing-management':
         return <BillingManagement />;
-      case 'astra-tokens':
-        return <AstraTokenManagement />;
       case 'database-management':
         return <DatabaseTableManagement />;
       case 'security-monitoring':

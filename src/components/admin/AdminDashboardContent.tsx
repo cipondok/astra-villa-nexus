@@ -1,3 +1,4 @@
+
 import React from "react";
 import { TabsContent } from "@/components/ui/tabs";
 import AdminOverview from "./AdminOverview";
@@ -19,7 +20,6 @@ import ContentManagement from "./ContentManagement";
 import SearchFiltersManagement from "./SearchFiltersManagement";
 import SystemSettings from "./SystemSettings";
 import BillingManagement from "./BillingManagement";
-import AstraTokenManagement from "./AstraTokenManagement";
 import DatabaseTableManagement from "./DatabaseTableManagement";
 import SecurityMonitoring from "./SecurityMonitoring";
 import SystemReports from "./SystemReports";
@@ -129,10 +129,6 @@ const AdminDashboardContent = ({ isAdmin, setActiveTab }: AdminDashboardContentP
 
       <TabsContent value="billing-management">
         <BillingManagement />
-      </TabsContent>
-
-      <TabsContent value="astra-tokens">
-        <AstraTokenManagement />
       </TabsContent>
 
       {/* Technical */}

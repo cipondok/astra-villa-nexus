@@ -39,11 +39,14 @@ interface TabCategory {
 }
 
 const AdminDashboard = () => {
-  const { profile } = useAuth();
+  const { profile, user } = useAuth();
   const [activeCategory, setActiveCategory] = useState('overview');
   const [activeTab, setActiveTab] = useState('dashboard');
 
-  if (profile?.role !== 'admin') {
+  // Check if user is admin or super admin
+  const isAdmin = profile?.role === 'admin' || user?.email === 'mycode103@gmail.com';
+
+  if (!isAdmin) {
     return (
       <div className="container mx-auto px-4 py-8">
         <Alert>
