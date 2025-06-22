@@ -67,6 +67,8 @@ export const useSessionMonitoring = () => {
           description: `You are already logged in on ${otherSessions.length} other device(s). For security, please logout from other devices if this wasn't you.`,
           variant: "destructive",
         });
+      } else if (otherSessions.length === 0) {
+        setHasMultipleSessions(false);
       }
     } catch (error) {
       console.error('Session monitoring error:', error);
@@ -107,6 +109,8 @@ export const useSessionMonitoring = () => {
   useEffect(() => {
     if (!user || !isAuthenticated) {
       cleanupCurrentSession();
+      setActiveSessions([]);
+      setHasMultipleSessions(false);
       return;
     }
 
