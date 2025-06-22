@@ -34,24 +34,24 @@ const PropertyListingsSection = ({
     en: {
       title: "Featured Properties",
       subtitle: "Discover premium real estate opportunities",
-      noResults: "No properties found",
+      noResults: "No properties found matching your search",
       searchResults: "Search Results",
       noFeaturedProperties: "No properties available at the moment",
       showingResults: "Showing",
-      loadingProperties: "Loading properties...",
-      databaseIssue: "We're working on adding new properties. Please check back later.",
-      troubleshooting: "If this persists, there might be a database connection issue."
+      loadingProperties: "Searching properties...",
+      tryDifferentSearch: "Try adjusting your search criteria",
+      browseAll: "Browse All Properties"
     },
     id: {
       title: "Properti Unggulan",
       subtitle: "Temukan peluang real estate premium",
-      noResults: "Tidak ada properti ditemukan",
+      noResults: "Tidak ada properti yang sesuai dengan pencarian Anda",
       searchResults: "Hasil Pencarian",
       noFeaturedProperties: "Tidak ada properti tersedia saat ini",
       showingResults: "Menampilkan",
-      loadingProperties: "Memuat properti...",
-      databaseIssue: "Kami sedang menambahkan properti baru. Silakan cek kembali nanti.",
-      troubleshooting: "Jika masalah berlanjut, mungkin ada masalah koneksi database."
+      loadingProperties: "Mencari properti...",
+      tryDifferentSearch: "Coba sesuaikan kriteria pencarian Anda",
+      browseAll: "Lihat Semua Properti"
     }
   };
 
@@ -88,27 +88,22 @@ const PropertyListingsSection = ({
 
   if (isSearching) {
     return (
-      <section className="py-8">
+      <section className="py-8 min-h-[400px]">
         <div className="container mx-auto px-4">
-          <SearchLoadingAnimation language={language} />
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <p className="text-lg text-gray-600">{currentText.loadingProperties}</p>
+          </div>
         </div>
       </section>
     );  
   }
   
   const displayProperties = hasSearched ? searchResults : fallbackResults;
-  
-  console.log("=== PROPERTY LISTINGS SECTION DEBUG ===");
-  console.log("hasSearched:", hasSearched);
-  console.log("searchResults:", searchResults);
-  console.log("fallbackResults:", fallbackResults);
-  console.log("displayProperties:", displayProperties);
-  console.log("displayProperties length:", displayProperties?.length || 0);
-  console.log("=== END PROPERTY LISTINGS DEBUG ===");
 
   return (
     <>
-      <section className="py-8">
+      <section className="py-8 min-h-[500px]">
         <div className="container mx-auto px-4">
           {!hideTitle && (
             <div className="text-center mb-8">
@@ -130,20 +125,19 @@ const PropertyListingsSection = ({
                   </div>
                 </div>
                 <h3 className="text-xl font-semibold mb-4">
-                  {currentText.noFeaturedProperties}
+                  {hasSearched ? currentText.noResults : currentText.noFeaturedProperties}
                 </h3>
-                <p className="text-gray-600 dark:text-gray-300 mb-4">
-                  {currentText.databaseIssue}
-                </p>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
-                  {currentText.troubleshooting}
-                </p>
+                {hasSearched && (
+                  <p className="text-gray-600 dark:text-gray-300 mb-6">
+                    {currentText.tryDifferentSearch}
+                  </p>
+                )}
                 <div className="space-y-2">
-                  <Button onClick={() => window.location.reload()} className="w-full">
-                    Reload Page
+                  <Button onClick={() => window.location.reload()} variant="outline" className="w-full">
+                    Refresh
                   </Button>
-                  <Button variant="outline" onClick={() => navigate('/properties')} className="w-full">
-                    Browse All Properties
+                  <Button onClick={() => navigate('/properties')} className="w-full">
+                    {currentText.browseAll}
                   </Button>
                 </div>
               </div>
