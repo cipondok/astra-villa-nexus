@@ -77,7 +77,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (error) {
         if (error.code === 'PGRST116') {
           console.log('Profile not found, user needs to create profile');
-          // Don't auto-create profile, let user sign up properly
           return;
         }
         console.error('Error fetching profile:', error);
@@ -99,12 +98,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   useEffect(() => {
-    // Only initialize once
     if (hasInitialized) return;
     
     console.log('Initializing auth state...');
     
-    // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         console.log('Auth state changed:', event, session?.user?.email || 'No user');
@@ -113,7 +110,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setUser(session?.user ?? null);
         
         if (session?.user && event !== 'TOKEN_REFRESHED') {
-          // Only fetch profile on actual sign in, not token refresh
           await fetchProfile(session.user.id);
         } else if (!session) {
           setProfile(null);
@@ -130,8 +126,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     );
 
-    // Only get initial session without auto-signing in
-    // This prevents auto-login behavior
     supabase.auth.getSession().then(({ data: { session } }) => {
       console.log('Initial session check:', session?.user?.email || 'No session');
       if (session?.user) {
@@ -151,7 +145,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signIn = async (email: string, password: string) => {
     try {
       console.log('Attempting sign in for:', email);
-      setLoading(true);
       
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
@@ -160,16 +153,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       if (error) {
         console.error('Sign in error:', error);
-        setLoading(false);
-        return { error, success: false };
+        return { error: error.message, success: false };
       }
 
       console.log('Sign in successful for:', email);
       return { error: null, success: true };
     } catch (error: any) {
       console.error('Sign in error:', error);
-      setLoading(false);
-      return { error, success: false };
+      return { error: error.message || 'An unexpected error occurred', success: false };
     }
   };
 
@@ -190,14 +181,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       if (error) {
         console.error('Sign up error:', error);
-        return { error, success: false };
+        return { error: error.message, success: false };
       }
 
       console.log('Sign up successful for:', email);
       return { error: null, success: true };
     } catch (error: any) {
       console.error('Sign up error:', error);
-      return { error, success: false };
+      return { error: error.message || 'An unexpected error occurred', success: false };
     }
   };
 
@@ -205,25 +196,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       console.log('Signing out user...');
       
-      // Clear state immediately
       setUser(null);
       setProfile(null);
       setSession(null);
       
-      // Sign out from Supabase
       const { error } = await supabase.auth.signOut();
       if (error) {
         console.error('Supabase signOut error:', error);
       }
       
-      // Clear any cached data
       localStorage.removeItem('supabase.auth.token');
       sessionStorage.clear();
       
       console.log('User signed out successfully');
     } catch (error: any) {
       console.error('Sign out error:', error);
-      // Force clear state even if there's an error
       setUser(null);
       setProfile(null);
       setSession(null);
@@ -232,7 +219,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const updateProfile = async (data: Partial<Profile>) => {
     try {
-      if (!user) return { error: new Error('No user found'), success: false };
+      if (!user) return { error: 'No user found', success: false };
 
       const updateData = {
         id: user.id,
@@ -246,14 +233,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       if (error) {
         console.error('Profile update error:', error);
-        return { error, success: false };
+        return { error: error.message, success: false };
       }
 
       await fetchProfile(user.id);
       return { error: null, success: true };
     } catch (error: any) {
       console.error('Update error:', error);
-      return { error, success: false };
+      return { error: error.message, success: false };
     }
   };
 
