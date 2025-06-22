@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import SearchLoadingAnimation from "@/components/SearchLoadingAnimation";
 import PropertyViewer3D from "@/components/PropertyViewer3D";
 import CompactPropertyCard from "@/components/property/CompactPropertyCard";
+import AutoScrollCarousel from "@/components/property/AutoScrollCarousel";
 
 interface PropertyListingsSectionProps {
   language: "en" | "id";
@@ -142,7 +143,22 @@ const PropertyListingsSection = ({
                 </div>
               </div>
             </div>
+          ) : displayProperties.length >= 4 ? (
+            // Use AutoScrollCarousel for 4 or more properties
+            <AutoScrollCarousel
+              title=""
+              currentPropertyId=""
+              queryType="recommended"
+              propertyData={{
+                properties: displayProperties
+              }}
+              autoScrollInterval={6000}
+              limit={displayProperties.length}
+              hideTitle={true}
+              customProperties={displayProperties}
+            />
           ) : (
+            // Use regular grid for less than 4 properties
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
               {displayProperties.map((property, index) => (
                 <CompactPropertyCard

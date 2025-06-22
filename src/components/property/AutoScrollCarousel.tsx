@@ -14,17 +14,20 @@ interface AutoScrollCarouselProps {
   ownerId?: string;
   ownerType?: string;
   propertyData?: {
-    property_type: string;
-    price: number;
-    bedrooms: number;
-    city: string;
-    state: string;
-    listing_type: string;
+    property_type?: string;
+    price?: number;
+    bedrooms?: number;
+    city?: string;
+    state?: string;
+    listing_type?: string;
+    properties?: any[];
   };
   propertyType?: string;
   location?: string;
   autoScrollInterval?: number;
   limit?: number;
+  hideTitle?: boolean;
+  customProperties?: any[];
 }
 
 const AutoScrollCarousel = ({
@@ -37,7 +40,9 @@ const AutoScrollCarousel = ({
   propertyType,
   location,
   autoScrollInterval = 5000,
-  limit = 8
+  limit = 8,
+  hideTitle = false,
+  customProperties
 }: AutoScrollCarouselProps) => {
   const [properties, setProperties] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -66,10 +71,15 @@ const AutoScrollCarousel = ({
     return () => window.removeEventListener('resize', updateItemsPerView);
   }, []);
 
-  // Fetch properties based on query type
+  // Use custom properties if provided, otherwise fetch from database
   useEffect(() => {
-    fetchProperties();
-  }, [currentPropertyId, queryType, ownerId, propertyData, propertyType, location]);
+    if (customProperties) {
+      setProperties(customProperties);
+      setIsLoading(false);
+    } else {
+      fetchProperties();
+    }
+  }, [currentPropertyId, queryType, ownerId, propertyData, propertyType, location, customProperties]);
 
   // Auto-scroll functionality
   useEffect(() => {
@@ -109,9 +119,9 @@ const AutoScrollCarousel = ({
           break;
 
         case 'similar':
-          if (propertyData) {
-            const priceMin = propertyData.price * 0.7;
-            const priceMax = propertyData.price * 1.3;
+          if (propertyData && propertyData.property_type) {
+            const priceMin = propertyData.price ? propertyData.price * 0.7 : 0;
+            const priceMax = propertyData.price ? propertyData.price * 1.3 : 999999999;
 
             const { data: similarProps } = await supabase
               .from('properties')
@@ -119,10 +129,10 @@ const AutoScrollCarousel = ({
               .neq('id', currentPropertyId)
               .eq('status', 'active')
               .eq('property_type', propertyData.property_type)
-              .eq('listing_type', propertyData.listing_type)
+              .eq('listing_type', propertyData.listing_type || 'sale')
               .gte('price', priceMin)
               .lte('price', priceMax)
-              .or(`city.ilike.%${propertyData.city}%,state.ilike.%${propertyData.state}%`)
+              .or(`city.ilike.%${propertyData.city || ''}%,state.ilike.%${propertyData.state || ''}%`)
               .limit(limit);
 
             data = similarProps || [];
@@ -221,61 +231,63 @@ const AutoScrollCarousel = ({
 
   return (
     <Card>
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2">
-            <Icon className="h-5 w-5" />
-            {title}
-            <Badge variant="outline">{properties.length} properties</Badge>
-          </CardTitle>
-          
-          <div className="flex items-center gap-2">
-            {/* Auto-scroll toggle */}
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={toggleAutoScroll}
-              className="flex items-center gap-1"
-            >
-              {isAutoScrolling ? (
-                <>
-                  <Pause className="h-3 w-3" />
-                  <span className="hidden sm:inline">Auto</span>
-                </>
-              ) : (
-                <>
-                  <Play className="h-3 w-3" />
-                  <span className="hidden sm:inline">Play</span>
-                </>
-              )}
-            </Button>
+      {!hideTitle && (
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <CardTitle className="flex items-center gap-2">
+              <Icon className="h-5 w-5" />
+              {title}
+              <Badge variant="outline">{properties.length} properties</Badge>
+            </CardTitle>
+            
+            <div className="flex items-center gap-2">
+              {/* Auto-scroll toggle */}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={toggleAutoScroll}
+                className="flex items-center gap-1"
+              >
+                {isAutoScrolling ? (
+                  <>
+                    <Pause className="h-3 w-3" />
+                    <span className="hidden sm:inline">Auto</span>
+                  </>
+                ) : (
+                  <>
+                    <Play className="h-3 w-3" />
+                    <span className="hidden sm:inline">Play</span>
+                  </>
+                )}
+              </Button>
 
-            {/* Navigation buttons */}
-            <div className="flex gap-1">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handlePrevious}
-                disabled={!canScrollLeft}
-                className="h-8 w-8 p-0"
-              >
-                <ChevronLeft className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleNext}
-                disabled={!canScrollRight}
-                className="h-8 w-8 p-0"
-              >
-                <ChevronRight className="h-4 w-4" />
-              </Button>
+              {/* Navigation buttons */}
+              <div className="flex gap-1">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handlePrevious}
+                  disabled={!canScrollLeft}
+                  className="h-8 w-8 p-0"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleNext}
+                  disabled={!canScrollRight}
+                  className="h-8 w-8 p-0"
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
-      </CardHeader>
+        </CardHeader>
+      )}
 
-      <CardContent>
+      <CardContent className={hideTitle ? "pt-6" : ""}>
         <div className="relative overflow-hidden">
           <div 
             ref={carouselRef}
@@ -304,30 +316,93 @@ const AutoScrollCarousel = ({
           </div>
         </div>
 
-        {/* Pagination dots */}
-        {properties.length > itemsPerView && (
-          <div className="flex justify-center gap-2 mt-4">
-            {[...Array(maxIndex + 1)].map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setCurrentIndex(index)}
-                className={`w-2 h-2 rounded-full transition-colors ${
-                  index === currentIndex ? 'bg-blue-600' : 'bg-gray-300'
-                }`}
-              />
-            ))}
-          </div>
+        {/* Navigation Controls - only show if not hideTitle */}
+        {!hideTitle && (
+          <>
+            {/* Pagination dots */}
+            {properties.length > itemsPerView && (
+              <div className="flex justify-center gap-2 mt-4">
+                {[...Array(maxIndex + 1)].map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setCurrentIndex(index)}
+                    className={`w-2 h-2 rounded-full transition-colors ${
+                      index === currentIndex ? 'bg-blue-600' : 'bg-gray-300'
+                    }`}
+                  />
+                ))}
+              </div>
+            )}
+
+            {/* Auto-scroll progress bar */}
+            {isAutoScrolling && properties.length > itemsPerView && (
+              <div className="mt-2 w-full bg-gray-200 rounded-full h-1">
+                <div 
+                  className="bg-blue-600 h-1 rounded-full transition-all duration-100"
+                  style={{
+                    width: `${((Date.now() % autoScrollInterval) / autoScrollInterval) * 100}%`
+                  }}
+                />
+              </div>
+            )}
+          </>
         )}
 
-        {/* Auto-scroll progress bar */}
-        {isAutoScrolling && properties.length > itemsPerView && (
-          <div className="mt-2 w-full bg-gray-200 rounded-full h-1">
-            <div 
-              className="bg-blue-600 h-1 rounded-full transition-all duration-100"
-              style={{
-                width: `${((Date.now() % autoScrollInterval) / autoScrollInterval) * 100}%`
-              }}
-            />
+        {/* Show navigation controls on main page even when hideTitle is true */}
+        {hideTitle && properties.length > itemsPerView && (
+          <div className="flex items-center justify-between mt-4">
+            <div className="flex gap-1">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handlePrevious}
+                disabled={!canScrollLeft}
+                className="h-8 w-8 p-0"
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleNext}
+                disabled={!canScrollRight}
+                className="h-8 w-8 p-0"
+              >
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </div>
+
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={toggleAutoScroll}
+              className="flex items-center gap-1"
+            >
+              {isAutoScrolling ? (
+                <>
+                  <Pause className="h-3 w-3" />
+                  <span className="hidden sm:inline">Pause</span>
+                </>
+              ) : (
+                <>
+                  <Play className="h-3 w-3" />
+                  <span className="hidden sm:inline">Play</span>
+                </>
+              )}
+            </Button>
+
+            {/* Pagination dots for main page */}
+            <div className="flex gap-2">
+              {[...Array(maxIndex + 1)].map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentIndex(index)}
+                  className={`w-2 h-2 rounded-full transition-colors ${
+                    index === currentIndex ? 'bg-blue-600' : 'bg-gray-300'
+                  }`}
+                />
+              ))}
+            </div>
           </div>
         )}
       </CardContent>
