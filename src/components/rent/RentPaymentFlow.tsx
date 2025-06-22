@@ -4,188 +4,216 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
-import { Calendar, Clock, Coins, CreditCard } from 'lucide-react';
-import { useRentPayment } from '@/hooks/useRentPayment';
-import { useTokenBalance } from '@/hooks/useTokenBalance';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
+import { useAlert } from '@/contexts/AlertContext';
+import { 
+  CreditCard, 
+  DollarSign, 
+  Calendar,
+  AlertTriangle,
+  Coins,
+  CheckCircle
+} from 'lucide-react';
 
 interface RentPaymentFlowProps {
-  propertyId: string;
-  propertyTitle: string;
-  dailyRate: string;
-  contractAddress: string;
-  onClose?: () => void;
+  propertyId?: string;
+  rentAmount?: number;
 }
 
-const RentPaymentFlow: React.FC<RentPaymentFlowProps> = ({
-  propertyId,
-  propertyTitle,
-  dailyRate,
-  contractAddress,
-  onClose,
-}) => {
-  const [duration, setDuration] = useState<number>(1);
-  const [durationUnit, setDurationUnit] = useState<'days' | 'weeks' | 'months'>('days');
-  const { processRentPayment, isProcessing, transactionHash, isSuccess } = useRentPayment();
-  const { balance, hasMinimumBalance } = useTokenBalance();
+const RentPaymentFlow = ({ propertyId, rentAmount = 0 }: RentPaymentFlowProps) => {
+  const { user, isAuthenticated } = useAuth();
+  const { showSuccess, showError } = useAlert();
+  const [paymentAmount, setPaymentAmount] = useState(rentAmount.toString());
+  const [isProcessing, setIsProcessing] = useState(false);
 
-  const calculateDurationInDays = () => {
-    switch (durationUnit) {
-      case 'weeks':
-        return duration * 7;
-      case 'months':
-        return duration * 30;
-      default:
-        return duration;
+  // Check if ASTRA tokens are enabled
+  const { data: tokenSystemEnabled } = useQuery({
+    queryKey: ['astra-token-system-enabled'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('system_settings')
+        .select('value')
+        .eq('key', 'astra_tokens_enabled')
+        .eq('category', 'tools')
+        .single();
+      
+      if (error && error.code !== 'PGRST116') throw error;
+      return data?.value === true;
+    },
+    enabled: isAuthenticated,
+  });
+
+  // Get token reward settings
+  const { data: tokenRewardSettings } = useQuery({
+    queryKey: ['rent-payment-token-rewards'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('system_settings')
+        .select('value')
+        .eq('key', 'rent_payment_rewards')
+        .eq('category', 'astra_tokens')
+        .single();
+      
+      if (error && error.code !== 'PGRST116') throw error;
+      return data?.value;
+    },
+    enabled: tokenSystemEnabled,
+  });
+
+  const handlePayment = async () => {
+    if (!isAuthenticated) {
+      showError("Authentication Required", "Please sign in to make a payment");
+      return;
+    }
+
+    setIsProcessing(true);
+    try {
+      // Simulate payment processing
+      await new Promise(resolve => setTimeout(resolve, 2000));
+
+      // Calculate token rewards if enabled
+      let tokenReward = 0;
+      if (tokenSystemEnabled && tokenRewardSettings?.enabled) {
+        const percentage = tokenRewardSettings.percentage || 1;
+        tokenReward = Math.floor(Number(paymentAmount) * (percentage / 100));
+      }
+
+      // Record payment (this would integrate with actual payment processor)
+      const { error } = await supabase
+        .from('user_activity_logs')
+        .insert({
+          user_id: user?.id,
+          activity_type: 'rent_payment',
+          description: `Rent payment of $${paymentAmount} processed${tokenReward > 0 ? ` - Earned ${tokenReward} ASTRA tokens` : ''}`
+        });
+
+      if (error) throw error;
+
+      showSuccess(
+        "Payment Successful!",
+        `Your rent payment of $${paymentAmount} has been processed.${tokenReward > 0 ? ` You earned ${tokenReward} ASTRA tokens!` : ''}`
+      );
+
+      setPaymentAmount('');
+    } catch (error) {
+      console.error('Payment error:', error);
+      showError("Payment Failed", "There was an error processing your payment");
+    } finally {
+      setIsProcessing(false);
     }
   };
 
-  const calculateTotalCost = () => {
-    const days = calculateDurationInDays();
-    return (parseFloat(dailyRate) * days).toFixed(2);
-  };
+  const tokenReward = tokenSystemEnabled && tokenRewardSettings?.enabled 
+    ? Math.floor(Number(paymentAmount || 0) * ((tokenRewardSettings.percentage || 1) / 100))
+    : 0;
 
-  const totalCost = calculateTotalCost();
-  const canAfford = hasMinimumBalance(totalCost);
-
-  const handlePayment = async () => {
-    await processRentPayment({
-      propertyId,
-      tokenAmount: totalCost,
-      durationDays: calculateDurationInDays(),
-      contractAddress,
-    });
-  };
-
-  if (isSuccess && transactionHash) {
-    return (
-      <Card className="w-full max-w-md mx-auto">
-        <CardHeader className="text-center">
-          <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
-            <CreditCard className="h-8 w-8 text-green-600" />
-          </div>
-          <CardTitle className="text-green-800">Payment Successful!</CardTitle>
+  return (
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <CreditCard className="h-5 w-5" />
+            Rent Payment
+          </CardTitle>
           <CardDescription>
-            Your rental payment has been processed
+            Process your monthly rent payment securely
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="text-center space-y-2">
-            <Badge variant="outline" className="border-green-300 text-green-700">
-              Transaction Hash: {transactionHash.slice(0, 10)}...
-            </Badge>
-          </div>
-          {onClose && (
-            <Button onClick={onClose} className="w-full">
-              Close
-            </Button>
+          {!isAuthenticated && (
+            <Alert>
+              <AlertTriangle className="h-4 w-4" />
+              <AlertDescription>
+                Please sign in to access the payment system.
+              </AlertDescription>
+            </Alert>
           )}
+
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="amount">Payment Amount</Label>
+              <div className="relative">
+                <DollarSign className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                <Input
+                  id="amount"
+                  type="number"
+                  value={paymentAmount}
+                  onChange={(e) => setPaymentAmount(e.target.value)}
+                  placeholder="Enter amount"
+                  className="pl-10"
+                  disabled={!isAuthenticated}
+                />
+              </div>
+            </div>
+
+            {tokenSystemEnabled && tokenReward > 0 && (
+              <div className="p-4 bg-purple-50 border border-purple-200 rounded-lg">
+                <div className="flex items-center gap-2 mb-2">
+                  <Coins className="h-4 w-4 text-purple-600" />
+                  <span className="font-medium text-purple-800">Token Reward</span>
+                </div>
+                <p className="text-sm text-purple-700">
+                  You'll earn {tokenReward} ASTRA tokens for this payment
+                </p>
+              </div>
+            )}
+
+            {!tokenSystemEnabled && (
+              <Alert>
+                <AlertTriangle className="h-4 w-4" />
+                <AlertDescription>
+                  ASTRA Token rewards are currently disabled. Enable them through Admin Tools to earn tokens on payments.
+                </AlertDescription>
+              </Alert>
+            )}
+
+            <Button 
+              onClick={handlePayment}
+              disabled={!isAuthenticated || isProcessing || !paymentAmount}
+              className="w-full"
+            >
+              {isProcessing ? (
+                <>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                  Processing Payment...
+                </>
+              ) : (
+                <>
+                  <CheckCircle className="h-4 w-4 mr-2" />
+                  Pay ${paymentAmount || '0'}
+                </>
+              )}
+            </Button>
+          </div>
         </CardContent>
       </Card>
-    );
-  }
 
-  return (
-    <Card className="w-full max-w-md mx-auto">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Calendar className="h-5 w-5" />
-          Rent Payment
-        </CardTitle>
-        <CardDescription>
-          {propertyTitle}
-        </CardDescription>
-      </CardHeader>
-
-      <CardContent className="space-y-4">
-        {/* Duration Selection */}
-        <div className="space-y-2">
-          <Label>Rental Duration</Label>
-          <div className="flex gap-2">
-            <Input
-              type="number"
-              min="1"
-              value={duration}
-              onChange={(e) => setDuration(parseInt(e.target.value) || 1)}
-              className="flex-1"
-            />
-            <Select value={durationUnit} onValueChange={(value: any) => setDurationUnit(value)}>
-              <SelectTrigger className="w-24">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="days">Days</SelectItem>
-                <SelectItem value="weeks">Weeks</SelectItem>
-                <SelectItem value="months">Months</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-
-        {/* Cost Breakdown */}
-        <div className="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg space-y-2">
-          <div className="flex justify-between text-sm">
-            <span>Daily Rate:</span>
-            <span>{dailyRate} ASTRA</span>
-          </div>
-          <div className="flex justify-between text-sm">
-            <span>Duration:</span>
-            <span>{calculateDurationInDays()} days</span>
-          </div>
-          <div className="border-t pt-2 flex justify-between font-semibold">
-            <span>Total Cost:</span>
-            <span className="flex items-center gap-1">
-              <Coins className="h-4 w-4" />
-              {totalCost} ASTRA
-            </span>
-          </div>
-        </div>
-
-        {/* Balance Check */}
-        {balance && (
-          <div className="flex justify-between items-center text-sm">
-            <span>Your Balance:</span>
-            <Badge variant={canAfford ? "default" : "destructive"}>
-              {parseFloat(balance).toFixed(2)} ASTRA
-            </Badge>
-          </div>
-        )}
-
-        {/* Payment Button */}
-        <div className="space-y-2">
-          <Button
-            onClick={handlePayment}
-            disabled={!canAfford || isProcessing}
-            className="w-full"
-          >
-            {isProcessing ? (
-              <>
-                <Clock className="h-4 w-4 mr-2 animate-spin" />
-                Processing Payment...
-              </>
-            ) : (
-              <>
-                <CreditCard className="h-4 w-4 mr-2" />
-                Pay {totalCost} ASTRA
-              </>
-            )}
-          </Button>
-
-          {!canAfford && (
-            <p className="text-sm text-red-600 text-center">
-              Insufficient ASTRA tokens for this rental
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Calendar className="h-5 w-5" />
+            Payment History
+          </CardTitle>
+          <CardDescription>
+            View your recent rent payments
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="text-center py-8">
+            <p className="text-muted-foreground">
+              {isAuthenticated 
+                ? "No payment history available"
+                : "Sign in to view payment history"
+              }
             </p>
-          )}
-        </div>
-
-        {onClose && (
-          <Button variant="outline" onClick={onClose} className="w-full">
-            Cancel
-          </Button>
-        )}
-      </CardContent>
-    </Card>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 

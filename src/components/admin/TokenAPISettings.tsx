@@ -18,6 +18,7 @@ interface ApiConfig {
   rate_limit: number;
   timeout: number;
   enabled: boolean;
+  [key: string]: string | number | boolean; // Add index signature for JSON compatibility
 }
 
 const TokenAPISettings = () => {
@@ -66,22 +67,24 @@ const TokenAPISettings = () => {
 
   const updateApiSettingsMutation = useMutation({
     mutationFn: async (newConfig: ApiConfig) => {
+      const configValue = newConfig as any; // Cast to satisfy JSON type
+      
       if (apiSettings) {
         const { error } = await supabase
           .from('system_settings')
-          .update({ value: newConfig })
+          .update({ value: configValue })
           .eq('id', apiSettings.id);
         
         if (error) throw error;
       } else {
         const { error } = await supabase
           .from('system_settings')
-          .insert([{
+          .insert({
             key: 'astra_token_api_config',
-            value: newConfig,
+            value: configValue,
             category: 'astra_tokens',
             description: 'API configuration for ASTRA token system'
-          }]);
+          });
         
         if (error) throw error;
       }
@@ -107,7 +110,10 @@ const TokenAPISettings = () => {
 
   React.useEffect(() => {
     if (apiSettings?.value) {
-      setConfig(apiSettings.value as ApiConfig);
+      const settingsValue = apiSettings.value as any;
+      if (typeof settingsValue === 'object' && settingsValue !== null) {
+        setConfig(settingsValue as ApiConfig);
+      }
     }
   }, [apiSettings]);
 

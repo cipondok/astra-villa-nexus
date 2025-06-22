@@ -1,277 +1,278 @@
 
-import { useState, useEffect } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/contexts/AuthContext";
-import { useAlert } from "@/contexts/AlertContext";
+import React, { useState, useEffect } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Progress } from '@/components/ui/progress';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
+import { useAlert } from '@/contexts/AlertContext';
+import { useQuery } from '@tanstack/react-query';
 import { 
   CheckCircle, 
-  Circle, 
-  Star, 
-  Coins, 
-  TrendingUp,
-  Trophy,
-  Gift,
-  ArrowRight,
-  ExternalLink
-} from "lucide-react";
+  Clock, 
+  User, 
+  Building, 
+  FileText, 
+  Award,
+  AlertTriangle,
+  Coins
+} from 'lucide-react';
 
-interface VendorProfileProgressProps {
-  onNavigateToSection?: (section: string) => void;
+interface ProfileSection {
+  name: string;
+  completed: boolean;
+  weight: number;
+  icon: React.ReactNode;
 }
 
-const VendorProfileProgress = ({ onNavigateToSection }: VendorProfileProgressProps) => {
+const VendorProfileProgress = () => {
   const { user } = useAuth();
-  const { showSuccess } = useAlert();
-  const queryClient = useQueryClient();
+  const { showSuccess, showError } = useAlert();
+  const [profileData, setProfileData] = useState<any>(null);
+  const [sections, setSections] = useState<ProfileSection[]>([]);
 
-  const { data: profileData, isLoading } = useQuery({
-    queryKey: ['vendor-profile-progress', user?.id],
+  // Check if ASTRA tokens are enabled
+  const { data: tokenSystemEnabled } = useQuery({
+    queryKey: ['astra-token-system-enabled'],
     queryFn: async () => {
-      if (!user?.id) throw new Error('No user');
+      const { data, error } = await supabase
+        .from('system_settings')
+        .select('value')
+        .eq('key', 'astra_tokens_enabled')
+        .eq('category', 'tools')
+        .single();
       
-      // Get business profile
+      if (error && error.code !== 'PGRST116') throw error;
+      return data?.value === true;
+    },
+  });
+
+  useEffect(() => {
+    if (user) {
+      loadProfileData();
+    }
+  }, [user]);
+
+  const loadProfileData = async () => {
+    try {
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user?.id)
+        .single();
+
+      if (profileError) throw profileError;
+
       const { data: businessProfile, error: businessError } = await supabase
         .from('vendor_business_profiles')
         .select('*')
-        .eq('vendor_id', user.id)
+        .eq('vendor_id', user?.id)
         .single();
-      
+
       if (businessError && businessError.code !== 'PGRST116') throw businessError;
 
-      // Get services count
-      const { data: services, error: servicesError } = await supabase
-        .from('vendor_services')
-        .select('id')
-        .eq('vendor_id', user.id);
-      
-      if (servicesError) throw servicesError;
-
-      // Get KYC status
-      const { data: kycData, error: kycError } = await supabase
-        .from('vendor_kyc_verification')
-        .select('*')
-        .eq('vendor_id', user.id)
-        .single();
-      
-      if (kycError && kycError.code !== 'PGRST116') throw kycError;
-
-      // Get ASTRA balance
-      const { data: astraBalance, error: balanceError } = await supabase
-        .from('vendor_astra_balances')
-        .select('*')
-        .eq('vendor_id', user.id)
-        .single();
-      
-      if (balanceError && balanceError.code !== 'PGRST116') throw balanceError;
-
-      return {
-        businessProfile,
-        servicesCount: services?.length || 0,
-        kycData,
-        astraBalance
-      };
-    },
-  });
-
-  const calculateProgress = () => {
-    if (!profileData) return 0;
-    
-    let completed = 0;
-    const total = 6;
-
-    // Business profile completion
-    if (profileData.businessProfile?.business_name) completed++;
-    if (profileData.businessProfile?.business_description) completed++;
-    if (profileData.businessProfile?.business_phone) completed++;
-    if (profileData.businessProfile?.business_address) completed++;
-    
-    // Services created
-    if (profileData.servicesCount > 0) completed++;
-    
-    // KYC verification
-    if (profileData.kycData?.overall_status === 'approved') completed++;
-
-    return Math.round((completed / total) * 100);
+      setProfileData({ profile, businessProfile });
+      calculateProgress(profile, businessProfile);
+    } catch (error) {
+      console.error('Error loading profile data:', error);
+    }
   };
 
-  const claimProfileCompletionBonusMutation = useMutation({
-    mutationFn: async () => {
-      const { error } = await supabase.rpc('claim_profile_completion_bonus', {
-        vendor_id: user?.id
-      });
+  const calculateProgress = (profile: any, businessProfile: any) => {
+    const profileSections: ProfileSection[] = [
+      {
+        name: 'Basic Information',
+        completed: !!(profile?.full_name && profile?.email && profile?.phone),
+        weight: 20,
+        icon: <User className="h-4 w-4" />
+      },
+      {
+        name: 'Business Details',
+        completed: !!(businessProfile?.business_name && businessProfile?.business_type && businessProfile?.business_description),
+        weight: 25,
+        icon: <Building className="h-4 w-4" />
+      },
+      {
+        name: 'Contact Information',
+        completed: !!(businessProfile?.business_phone && businessProfile?.business_email && businessProfile?.business_address),
+        weight: 20,
+        icon: <FileText className="h-4 w-4" />
+      },
+      {
+        name: 'Business Hours',
+        completed: !!(businessProfile?.business_hours && Object.keys(businessProfile.business_hours).length > 0),
+        weight: 15,
+        icon: <Clock className="h-4 w-4" />
+      },
+      {
+        name: 'Service Areas',
+        completed: !!(businessProfile?.service_areas && Array.isArray(businessProfile.service_areas) && businessProfile.service_areas.length > 0),
+        weight: 20,
+        icon: <Award className="h-4 w-4" />
+      }
+    ];
+
+    setSections(profileSections);
+
+    // Calculate overall completion
+    const totalWeight = profileSections.reduce((sum, section) => sum + section.weight, 0);
+    const completedWeight = profileSections
+      .filter(section => section.completed)
+      .reduce((sum, section) => sum + section.weight, 0);
+    
+    const completionPercentage = Math.round((completedWeight / totalWeight) * 100);
+
+    // Check if profile is 100% complete and handle token reward
+    if (completionPercentage === 100 && tokenSystemEnabled) {
+      handleProfileCompletionReward();
+    }
+
+    // Update completion percentage in database
+    updateCompletionPercentage(completionPercentage);
+  };
+
+  const updateCompletionPercentage = async (percentage: number) => {
+    try {
+      const { error } = await supabase
+        .from('vendor_business_profiles')
+        .upsert({
+          vendor_id: user?.id,
+          profile_completion_percentage: percentage
+        });
+
       if (error) throw error;
-    },
-    onSuccess: () => {
-      showSuccess("Success", "ASTRA profile completion bonus claimed!");
-      queryClient.invalidateQueries({ queryKey: ['vendor-profile-progress'] });
-    },
-  });
-
-  const progress = calculateProgress();
-  const canClaimBonus = progress === 100 && !profileData?.businessProfile?.astra_profile_bonus_claimed;
-
-  const progressSteps = [
-    {
-      id: "business-info",
-      title: "Business Information",
-      description: "Complete your business profile",
-      completed: profileData?.businessProfile?.business_name && 
-                 profileData?.businessProfile?.business_description,
-      icon: Circle,
-      navigationSection: "business-profile"
-    },
-    {
-      id: "contact-details",
-      title: "Contact Details",
-      description: "Add phone and address",
-      completed: profileData?.businessProfile?.business_phone && 
-                 profileData?.businessProfile?.business_address,
-      icon: Circle,
-      navigationSection: "business-profile"
-    },
-    {
-      id: "create-services",
-      title: "Create Services",
-      description: "Add at least one service",
-      completed: (profileData?.servicesCount || 0) > 0,
-      icon: Circle,
-      navigationSection: "services"
-    },
-    {
-      id: "kyc-verification",
-      title: "KYC Verification",
-      description: "Complete identity verification",
-      completed: profileData?.kycData?.overall_status === 'approved',
-      icon: Circle,
-      navigationSection: "kyc-verification"
-    }
-  ];
-
-  const handleStepClick = (step: any) => {
-    if (!step.completed && onNavigateToSection) {
-      onNavigateToSection(step.navigationSection);
+    } catch (error) {
+      console.error('Error updating completion percentage:', error);
     }
   };
+
+  const handleProfileCompletionReward = async () => {
+    if (!tokenSystemEnabled) return;
+
+    try {
+      // This would call a database function when ASTRA tokens are properly set up
+      // For now, just show a success message
+      showSuccess("Profile Complete!", "Congratulations on completing your profile! Token rewards will be available when the system is fully configured.");
+    } catch (error) {
+      console.error('Error claiming profile completion bonus:', error);
+    }
+  };
+
+  const completedSections = sections.filter(section => section.completed).length;
+  const totalSections = sections.length;
+  const overallProgress = Math.round((completedSections / totalSections) * 100);
 
   return (
     <div className="space-y-6">
-      {/* Progress Overview */}
-      <Card className="card-ios">
+      <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle className="flex items-center gap-2">
-                <Trophy className="h-5 w-5 text-yellow-600" />
-                Profile Completion
-              </CardTitle>
-              <CardDescription>
-                Complete your profile to unlock ASTRA tokens and benefits
-              </CardDescription>
-            </div>
-            <div className="text-right">
-              <div className="text-2xl font-bold text-blue-600">{progress}%</div>
-              <div className="text-sm text-muted-foreground">Complete</div>
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <Progress value={progress} className="w-full h-3" />
-          
-          {/* ASTRA Token Balance */}
-          <div className="flex items-center justify-between p-4 bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg border">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full">
-                <Coins className="h-5 w-5 text-white" />
-              </div>
-              <div>
-                <div className="font-semibold">ASTRA Token Balance</div>
-                <div className="text-sm text-muted-foreground">Digital reward coins</div>
-              </div>
-            </div>
-            <div className="text-right">
-              <div className="text-2xl font-bold text-purple-600">
-                {profileData?.astraBalance?.balance || 0}
-              </div>
-              <div className="text-sm text-muted-foreground">
-                Lifetime: {profileData?.astraBalance?.lifetime_earned || 0}
-              </div>
-            </div>
-          </div>
-
-          {/* Profile Completion Bonus */}
-          {canClaimBonus && (
-            <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <Gift className="h-5 w-5 text-green-600" />
-                  <div>
-                    <div className="font-semibold text-green-800">Profile Complete!</div>
-                    <div className="text-sm text-green-600">Claim your 200 ASTRA bonus</div>
-                  </div>
-                </div>
-                <Button 
-                  onClick={() => claimProfileCompletionBonusMutation.mutate()}
-                  disabled={claimProfileCompletionBonusMutation.isPending}
-                  className="bg-green-600 hover:bg-green-700"
-                >
-                  Claim Bonus
-                </Button>
-              </div>
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Progress Steps */}
-      <Card className="card-ios">
-        <CardHeader>
-          <CardTitle>Complete Your Setup</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <User className="h-5 w-5" />
+            Profile Completion Progress
+          </CardTitle>
           <CardDescription>
-            Follow these steps to get started on our platform
+            Complete your profile to unlock all features and earn rewards
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {progressSteps.map((step, index) => {
-              const Icon = step.completed ? CheckCircle : Circle;
-              const isClickable = !step.completed && onNavigateToSection;
-              
-              return (
-                <div 
-                  key={index} 
-                  className={`flex items-center gap-4 p-4 rounded-lg border transition-all duration-200 ${
-                    isClickable 
-                      ? 'cursor-pointer hover:bg-accent/50 hover:border-primary' 
-                      : ''
-                  }`}
-                  onClick={() => handleStepClick(step)}
-                >
-                  <Icon className={`h-6 w-6 ${step.completed ? 'text-green-600' : 'text-gray-400'}`} />
-                  <div className="flex-1">
-                    <div className="font-medium">{step.title}</div>
-                    <div className="text-sm text-muted-foreground">{step.description}</div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    {step.completed ? (
-                      <Badge className="bg-green-100 text-green-800">Complete</Badge>
-                    ) : (
-                      <Badge variant="outline">Pending</Badge>
-                    )}
-                    {isClickable && (
-                      <ArrowRight className="h-4 w-4 text-muted-foreground" />
-                    )}
-                  </div>
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="text-2xl font-bold">{overallProgress}%</div>
+                <div className="text-sm text-muted-foreground">
+                  {completedSections} of {totalSections} sections completed
                 </div>
-              );
-            })}
+              </div>
+              {tokenSystemEnabled && overallProgress === 100 && (
+                <Badge className="bg-green-100 text-green-800">
+                  <Coins className="h-3 w-3 mr-1" />
+                  Reward Eligible
+                </Badge>
+              )}
+            </div>
+            
+            <Progress value={overallProgress} className="h-3" />
+
+            {!tokenSystemEnabled && (
+              <Alert>
+                <AlertTriangle className="h-4 w-4" />
+                <AlertDescription>
+                  ASTRA Token rewards are currently disabled. Enable them through Admin Tools to earn completion rewards.
+                </AlertDescription>
+              </Alert>
+            )}
           </div>
         </CardContent>
       </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Profile Sections</CardTitle>
+          <CardDescription>
+            Complete each section to improve your profile score
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {sections.map((section, index) => (
+              <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
+                <div className="flex items-center gap-3">
+                  {section.icon}
+                  <div>
+                    <div className="font-medium">{section.name}</div>
+                    <div className="text-sm text-muted-foreground">
+                      Weight: {section.weight}%
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  {section.completed ? (
+                    <Badge className="bg-green-100 text-green-800">
+                      <CheckCircle className="h-3 w-3 mr-1" />
+                      Complete
+                    </Badge>
+                  ) : (
+                    <Badge variant="outline">
+                      <Clock className="h-3 w-3 mr-1" />
+                      Pending
+                    </Badge>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      {overallProgress < 100 && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Next Steps</CardTitle>
+            <CardDescription>
+              Complete these sections to reach 100% profile completion
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {sections
+                .filter(section => !section.completed)
+                .map((section, index) => (
+                  <div key={index} className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
+                    <div className="flex items-center gap-2">
+                      {section.icon}
+                      <span className="font-medium">{section.name}</span>
+                    </div>
+                    <Button size="sm" variant="outline">
+                      Complete
+                    </Button>
+                  </div>
+                ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 };
