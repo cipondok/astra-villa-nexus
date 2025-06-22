@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -6,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { Search, TrendingUp, Globe, FileText, BarChart3, ExternalLink } from 'lucide-react';
+import { Search, TrendingUp, Globe, FileText, BarChart3, ExternalLink, Edit } from 'lucide-react';
 
 const SEOManagement = () => {
   return (
