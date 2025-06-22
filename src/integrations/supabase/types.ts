@@ -888,11 +888,16 @@ export type Database = {
           email: string
           full_name: string | null
           id: string
+          is_suspended: boolean | null
           last_seen_at: string | null
           license_number: string | null
           phone: string | null
           role: Database["public"]["Enums"]["user_role"]
+          suspended_at: string | null
+          suspended_by: string | null
+          suspension_reason: string | null
           updated_at: string | null
+          user_level_id: string | null
           verification_status: string | null
         }
         Insert: {
@@ -903,11 +908,16 @@ export type Database = {
           email: string
           full_name?: string | null
           id: string
+          is_suspended?: boolean | null
           last_seen_at?: string | null
           license_number?: string | null
           phone?: string | null
           role?: Database["public"]["Enums"]["user_role"]
+          suspended_at?: string | null
+          suspended_by?: string | null
+          suspension_reason?: string | null
           updated_at?: string | null
+          user_level_id?: string | null
           verification_status?: string | null
         }
         Update: {
@@ -918,14 +928,27 @@ export type Database = {
           email?: string
           full_name?: string | null
           id?: string
+          is_suspended?: boolean | null
           last_seen_at?: string | null
           license_number?: string | null
           phone?: string | null
           role?: Database["public"]["Enums"]["user_role"]
+          suspended_at?: string | null
+          suspended_by?: string | null
+          suspension_reason?: string | null
           updated_at?: string | null
+          user_level_id?: string | null
           verification_status?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "profiles_user_level_id_fkey"
+            columns: ["user_level_id"]
+            isOneToOne: false
+            referencedRelation: "user_levels"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       properties: {
         Row: {
@@ -1463,6 +1486,45 @@ export type Database = {
         }
         Relationships: []
       }
+      user_levels: {
+        Row: {
+          can_feature_listings: boolean | null
+          created_at: string | null
+          description: string | null
+          id: string
+          max_listings: number | null
+          max_properties: number | null
+          name: string
+          priority_support: boolean | null
+          privileges: Json | null
+          updated_at: string | null
+        }
+        Insert: {
+          can_feature_listings?: boolean | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          max_listings?: number | null
+          max_properties?: number | null
+          name: string
+          priority_support?: boolean | null
+          privileges?: Json | null
+          updated_at?: string | null
+        }
+        Update: {
+          can_feature_listings?: boolean | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          max_listings?: number | null
+          max_properties?: number | null
+          name?: string
+          priority_support?: boolean | null
+          privileges?: Json | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       user_notifications: {
         Row: {
           created_at: string
@@ -1493,6 +1555,84 @@ export type Database = {
           type?: string
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      user_security_logs: {
+        Row: {
+          created_at: string | null
+          device_fingerprint: string | null
+          event_type: string
+          id: string
+          ip_address: unknown | null
+          is_flagged: boolean | null
+          location_data: Json | null
+          risk_score: number | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          device_fingerprint?: string | null
+          event_type: string
+          id?: string
+          ip_address?: unknown | null
+          is_flagged?: boolean | null
+          location_data?: Json | null
+          risk_score?: number | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          device_fingerprint?: string | null
+          event_type?: string
+          id?: string
+          ip_address?: unknown | null
+          is_flagged?: boolean | null
+          location_data?: Json | null
+          risk_score?: number | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      user_session_tracking: {
+        Row: {
+          device_info: Json | null
+          id: string
+          ip_address: unknown | null
+          is_active: boolean | null
+          last_activity: string | null
+          login_time: string | null
+          logout_time: string | null
+          session_id: string
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          device_info?: Json | null
+          id?: string
+          ip_address?: unknown | null
+          is_active?: boolean | null
+          last_activity?: string | null
+          login_time?: string | null
+          logout_time?: string | null
+          session_id: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          device_info?: Json | null
+          id?: string
+          ip_address?: unknown | null
+          is_active?: boolean | null
+          last_activity?: string | null
+          login_time?: string | null
+          logout_time?: string | null
+          session_id?: string
+          user_agent?: string | null
+          user_id?: string | null
         }
         Relationships: []
       }
@@ -3461,6 +3601,18 @@ export type Database = {
       is_super_admin_safe: {
         Args: { user_email?: string }
         Returns: boolean
+      }
+      log_security_event: {
+        Args: {
+          p_user_id: string
+          p_event_type: string
+          p_ip_address?: unknown
+          p_user_agent?: string
+          p_device_fingerprint?: string
+          p_location_data?: Json
+          p_risk_score?: number
+        }
+        Returns: string
       }
     }
     Enums: {
