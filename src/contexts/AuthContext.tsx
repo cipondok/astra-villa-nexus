@@ -40,11 +40,11 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  // Initialize all state hooks at the top level
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const [session, setSession] = useState<Session | null>(null);
-  const [hasInitialized, setHasInitialized] = useState(false);
 
   console.log('AuthProvider - user:', user?.email, 'loading:', loading, 'profile role:', profile?.role);
 
@@ -77,7 +77,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (error) {
         if (error.code === 'PGRST116') {
           console.log('Profile not found, user needs to create profile');
-          // Don't auto-create profile, let user sign up properly
           return;
         }
         console.error('Error fetching profile:', error);
@@ -99,21 +98,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   useEffect(() => {
-    // Only initialize once
-    if (hasInitialized) return;
+    let mounted = true;
     
     console.log('Initializing auth state...');
     
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
+        if (!mounted) return;
+        
         console.log('Auth state changed:', event, session?.user?.email || 'No user');
         
         setSession(session);
         setUser(session?.user ?? null);
         
         if (session?.user && event !== 'TOKEN_REFRESHED') {
-          // Only fetch profile on actual sign in, not token refresh
           await fetchProfile(session.user.id);
         } else if (!session) {
           setProfile(null);
@@ -130,23 +129,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     );
 
-    // Only get initial session without auto-signing in
-    // This prevents auto-login behavior
+    // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!mounted) return;
+      
       console.log('Initial session check:', session?.user?.email || 'No session');
       if (session?.user) {
         setSession(session);
         setUser(session.user);
         fetchProfile(session.user.id);
+      } else {
+        setLoading(false);
       }
-      setLoading(false);
-      setHasInitialized(true);
     });
 
     return () => {
+      mounted = false;
       subscription.unsubscribe();
     };
-  }, [hasInitialized]);
+  }, []);
 
   const signIn = async (email: string, password: string) => {
     try {
@@ -205,25 +206,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       console.log('Signing out user...');
       
-      // Clear state immediately
       setUser(null);
       setProfile(null);
       setSession(null);
       
-      // Sign out from Supabase
       const { error } = await supabase.auth.signOut();
       if (error) {
         console.error('Supabase signOut error:', error);
       }
       
-      // Clear any cached data
       localStorage.removeItem('supabase.auth.token');
       sessionStorage.clear();
       
       console.log('User signed out successfully');
     } catch (error: any) {
       console.error('Sign out error:', error);
-      // Force clear state even if there's an error
       setUser(null);
       setProfile(null);
       setSession(null);
