@@ -1,7 +1,10 @@
 
 import { useState, useEffect } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Sparkles, TrendingUp } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import AutoScrollCarousel from "@/components/property/AutoScrollCarousel";
+import CompactPropertyCard from "@/components/property/CompactPropertyCard";
 
 interface RecommendedPropertiesProps {
   currentPropertyId?: string;
@@ -18,7 +21,7 @@ const RecommendedProperties = ({
   propertyType, 
   location, 
   priceRange,
-  limit = 8,
+  limit = 4,
   title = "Recommended Properties",
   showAIBadge = true
 }: RecommendedPropertiesProps) => {
@@ -153,70 +156,80 @@ const RecommendedProperties = ({
         area: 'Bandung Utara',
         status: 'active',
         created_at: new Date().toISOString()
-      },
-      {
-        id: 'rec-5',
-        title: 'Seaside Condo',
-        location: 'Medan, Indonesia',
-        price: 3200000000,
-        bedrooms: 2,
-        bathrooms: 2,
-        area_sqm: 120,
-        property_type: 'apartment',
-        listing_type: 'sale',
-        images: ['https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=600&h=400&fit=crop'],
-        state: 'North Sumatra',
-        city: 'Medan',
-        area: 'Medan Timur',
-        status: 'active',
-        created_at: new Date().toISOString()
-      },
-      {
-        id: 'rec-6',
-        title: 'Mountain View House',
-        location: 'Bogor, Indonesia',
-        price: 2800000000,
-        bedrooms: 4,
-        bathrooms: 3,
-        area_sqm: 200,
-        property_type: 'house',
-        listing_type: 'sale',
-        images: ['https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=600&h=400&fit=crop'],
-        state: 'West Java',
-        city: 'Bogor',
-        area: 'Bogor Utara',
-        status: 'active',
-        created_at: new Date().toISOString()
       }
     ];
   };
 
   if (isLoading) {
     return (
-      <AutoScrollCarousel
-        title={title}
-        currentPropertyId={currentPropertyId || ""}
-        queryType="recommended"
-        propertyType={propertyType}
-        location={location}
-        autoScrollInterval={6000}
-        limit={limit}
-        customProperties={[]}
-      />
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <TrendingUp className="h-5 w-5" />
+            {title}
+            {showAIBadge && <Badge className="bg-purple-100 text-purple-800">AI</Badge>}
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="animate-pulse">
+                <div className="h-40 bg-gray-200 rounded-lg mb-3"></div>
+                <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (recommendations.length === 0) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <TrendingUp className="h-5 w-5" />
+            {title}
+            {showAIBadge && <Badge className="bg-purple-100 text-purple-800">AI</Badge>}
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-center py-8">
+            <Sparkles className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+            <p className="text-gray-600">No recommendations available at the moment</p>
+          </div>
+        </CardContent>
+      </Card>
     );
   }
 
   return (
-    <AutoScrollCarousel
-      title={title}
-      currentPropertyId={currentPropertyId || ""}
-      queryType="recommended"
-      propertyType={propertyType}
-      location={location}
-      autoScrollInterval={6000}
-      limit={limit}
-      customProperties={recommendations}
-    />
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <TrendingUp className="h-5 w-5" />
+          {title}
+          {showAIBadge && <Badge className="bg-purple-100 text-purple-800">AI</Badge>}
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {recommendations.map((property) => (
+            <CompactPropertyCard
+              key={property.id}
+              property={property}
+              language="en"
+              isSaved={false}
+              onSave={() => {}}
+              onView={() => window.open(`/property/${property.id}`, '_blank')}
+              onView3D={() => {}}
+            />
+          ))}
+        </div>
+      </CardContent>
+    </Card>
   );
 };
 

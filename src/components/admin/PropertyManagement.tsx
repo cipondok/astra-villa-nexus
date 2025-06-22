@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -13,7 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Building, Search, Plus, Edit, Trash2, Eye, MapPin, RefreshCw, Axis3d, Filter, Droplets } from "lucide-react";
+import { Building, Search, Plus, Edit, Trash2, Eye, MapPin, DollarSign, RefreshCw, Axis3d, Filter, Droplets } from "lucide-react";
 import { useAlert } from "@/contexts/AlertContext";
 import PropertyEditModal from "./PropertyEditModal";
 import PropertyViewModal from "./PropertyViewModal";
@@ -75,10 +74,10 @@ const PropertyManagement = () => {
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
 
-  const { data: properties = [], isLoading, error, refetch } = useQuery({
+  const { data: properties, isLoading, error, refetch } = useQuery({
     queryKey: ['admin-properties', searchTerm, statusFilter, categoryFilter],
     queryFn: async () => {
-      console.log('Fetching properties with filters:', { searchTerm, statusFilter, categoryFilter });
+      console.log('Fetching properties...');
       
       let query = supabase
         .from('properties')
@@ -107,22 +106,80 @@ const PropertyManagement = () => {
         }
       }
 
-      const { data, error } = await query;
+      const { data: propertiesData, error: propertiesError } = await query;
       
-      console.log('Properties query result:', { data: data?.length || 0, error });
+      console.log('Properties query result:', { data: propertiesData, error: propertiesError });
       
-      if (error) {
-        console.error('Error fetching properties:', error);
-        throw error;
+      if (propertiesError) {
+        console.error('Error fetching properties:', propertiesError);
+        throw propertiesError;
       }
 
-      return (data || []) as PropertyWithRelations[];
+      if (!propertiesData || propertiesData.length === 0) {
+        return [];
+      }
+
+      // Get unique owner and agent IDs
+      const ownerIds = [...new Set(propertiesData.map(p => p.owner_id).filter(Boolean))];
+      const agentIds = [...new Set(propertiesData.map(p => p.agent_id).filter(Boolean))];
+      const allUserIds = [...new Set([...ownerIds, ...agentIds])];
+
+      console.log('Fetching user profiles for IDs:', allUserIds);
+
+      // Fetch profiles separately
+      let profilesData = [];
+      if (allUserIds.length > 0) {
+        const { data: profiles, error: profilesError } = await supabase
+          .from('profiles')
+          .select('id, full_name, email')
+          .in('id', allUserIds);
+
+        if (profilesError) {
+          console.warn('Error fetching profiles:', profilesError);
+        } else {
+          profilesData = profiles || [];
+        }
+      }
+
+      console.log('Profiles data:', profilesData);
+
+      // Map properties with owner/agent information
+      const propertiesWithRelations = propertiesData.map((property: any) => {
+        const owner = profilesData.find(p => p.id === property.owner_id);
+        const agent = profilesData.find(p => p.id === property.agent_id);
+
+        return {
+          ...property,
+          owner: owner ? { full_name: owner.full_name, email: owner.email } : null,
+          agent: agent ? { full_name: agent.full_name, email: agent.email } : null,
+        };
+      });
+
+      console.log('Final properties with relations:', propertiesWithRelations);
+      return propertiesWithRelations as PropertyWithRelations[];
     },
-    retry: 1,
+  });
+
+  // Debug: Log the current state
+  console.log('PropertyManagement state:', { 
+    properties, 
+    isLoading, 
+    error, 
+    propertiesCount: properties?.length 
   });
 
   const createPropertyMutation = useMutation({
     mutationFn: async (propertyData: any) => {
+      const { data: adminProfile } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('email', 'mycode103@gmail.com')
+        .single();
+
+      if (!adminProfile) {
+        throw new Error('Admin profile not found');
+      }
+
       const { error } = await supabase
         .from('properties')
         .insert({
@@ -131,6 +188,7 @@ const PropertyManagement = () => {
           bedrooms: propertyData.bedrooms ? parseInt(propertyData.bedrooms) : null,
           bathrooms: propertyData.bathrooms ? parseInt(propertyData.bathrooms) : null,
           area_sqm: propertyData.area_sqm ? parseInt(propertyData.area_sqm) : null,
+          owner_id: adminProfile.id,
           status: 'approved'
         });
       if (error) throw error;
@@ -499,6 +557,7 @@ const PropertyManagement = () => {
                         />
                       </TableHead>
                       <TableHead>Property</TableHead>
+                      <TableHead>Owner/Agent</TableHead>
                       <TableHead>Details</TableHead>
                       <TableHead>Status</TableHead>
                       <TableHead>Created</TableHead>
@@ -508,13 +567,13 @@ const PropertyManagement = () => {
                   <TableBody>
                     {isLoading ? (
                       <TableRow>
-                        <TableCell colSpan={6} className="text-center py-8">
+                        <TableCell colSpan={7} className="text-center py-8">
                           Loading properties...
                         </TableCell>
                       </TableRow>
                     ) : properties?.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={6} className="text-center py-8">
+                        <TableCell colSpan={7} className="text-center py-8">
                           <div className="space-y-2">
                             <p>No properties found</p>
                             <p className="text-sm text-muted-foreground">
@@ -553,6 +612,21 @@ const PropertyManagement = () => {
                                   {property.bedrooms}BR • {property.bathrooms}BA • {property.area_sqm}sqm
                                 </div>
                               ) : null}
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="space-y-1">
+                              <div className="text-sm font-medium">
+                                {property.owner?.full_name || 'Unknown Owner'}
+                              </div>
+                              <div className="text-xs text-muted-foreground">
+                                {property.owner?.email}
+                              </div>
+                              {property.agent && (
+                                <div className="text-xs text-blue-600">
+                                  Agent: {property.agent.full_name}
+                                </div>
+                              )}
                             </div>
                           </TableCell>
                           <TableCell>

@@ -6,9 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Progress } from "@/components/ui/progress";
 import { useAuth } from "@/contexts/AuthContext";
-import { X, Eye, EyeOff, Mail, Loader2 } from "lucide-react";
+import { X, Eye, EyeOff, Mail } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 interface EnhancedAuthModalProps {
@@ -25,7 +24,6 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
   const [errors, setErrors] = useState<{[key: string]: string}>({});
   const [activeTab, setActiveTab] = useState("login");
   const [isLoading, setIsLoading] = useState(false);
-  const [loadingProgress, setLoadingProgress] = useState(0);
   
   const { signIn, signUp } = useAuth();
 
@@ -50,11 +48,7 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
       alreadyHaveAccount: "Already have an account?",
       dontHaveAccount: "Don't have an account?",
       switchToLogin: "Sign in here",
-      switchToRegister: "Sign up here",
-      authenticating: "Authenticating...",
-      creatingAccount: "Creating account...",
-      signingIn: "Signing in...",
-      preparingAuth: "Preparing authentication..."
+      switchToRegister: "Sign up here"
     },
     id: {
       login: "Masuk",
@@ -76,36 +70,15 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
       alreadyHaveAccount: "Sudah punya akun?",
       dontHaveAccount: "Belum punya akun?",
       switchToLogin: "Masuk di sini",
-      switchToRegister: "Daftar di sini",
-      authenticating: "Mengautentikasi...",
-      creatingAccount: "Membuat akun...",
-      signingIn: "Masuk...",
-      preparingAuth: "Menyiapkan autentikasi..."
+      switchToRegister: "Daftar di sini"
     }
   };
 
   const currentText = text[language];
 
-  const animateProgress = (targetProgress: number) => {
-    const interval = setInterval(() => {
-      setLoadingProgress(prev => {
-        if (prev >= targetProgress) {
-          clearInterval(interval);
-          return targetProgress;
-        }
-        return prev + 2;
-      });
-    }, 50);
-  };
-
   const handleGoogleLogin = async () => {
     setIsLoading(true);
-    setLoadingProgress(0);
-    setErrors({});
-    
     try {
-      animateProgress(30);
-      
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
@@ -113,18 +86,13 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
         }
       });
       
-      animateProgress(100);
-      
       if (error) {
         setErrors({ google: error.message });
       }
     } catch (error: any) {
       setErrors({ google: error.message });
     } finally {
-      setTimeout(() => {
-        setIsLoading(false);
-        setLoadingProgress(0);
-      }, 500);
+      setIsLoading(false);
     }
   };
 
@@ -182,32 +150,13 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
     if (!validateLoginForm()) return;
 
     setIsLoading(true);
-    setLoadingProgress(0);
-    setErrors({});
+    const result = await signIn(loginData.email, loginData.password);
+    setIsLoading(false);
     
-    try {
-      animateProgress(50);
-      
-      const result = await signIn(loginData.email, loginData.password);
-      
-      animateProgress(100);
-      
-      if (result.error) {
-        setErrors({ auth: result.error });
-      } else if (result.success) {
-        setTimeout(() => {
-          onClose();
-          setLoginData({ email: "", password: "" });
-          setErrors({});
-        }, 500);
-      }
-    } catch (error: any) {
-      setErrors({ auth: error.message || 'An unexpected error occurred' });
-    } finally {
-      setTimeout(() => {
-        setIsLoading(false);
-        setLoadingProgress(0);
-      }, 500);
+    if (result.success) {
+      onClose();
+      setLoginData({ email: "", password: "" });
+      setErrors({});
     }
   };
 
@@ -216,32 +165,13 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
     if (!validateRegisterForm()) return;
 
     setIsLoading(true);
-    setLoadingProgress(0);
-    setErrors({});
+    const result = await signUp(registerData.email, registerData.password, registerData.fullName);
+    setIsLoading(false);
     
-    try {
-      animateProgress(50);
-      
-      const result = await signUp(registerData.email, registerData.password, registerData.fullName);
-      
-      animateProgress(100);
-      
-      if (result.error) {
-        setErrors({ auth: result.error });
-      } else if (result.success) {
-        setTimeout(() => {
-          onClose();
-          setRegisterData({ email: "", password: "", fullName: "", confirmPassword: "" });
-          setErrors({});
-        }, 500);
-      }
-    } catch (error: any) {
-      setErrors({ auth: error.message || 'An unexpected error occurred' });
-    } finally {
-      setTimeout(() => {
-        setIsLoading(false);
-        setLoadingProgress(0);
-      }, 500);
+    if (result.success) {
+      onClose();
+      setRegisterData({ email: "", password: "", fullName: "", confirmPassword: "" });
+      setErrors({});
     }
   };
 
@@ -249,14 +179,11 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
     setLoginData({ email: "", password: "" });
     setRegisterData({ email: "", password: "", fullName: "", confirmPassword: "" });
     setErrors({});
-    setLoadingProgress(0);
   };
 
   const handleClose = () => {
-    if (!isLoading) {
-      resetForms();
-      onClose();
-    }
+    resetForms();
+    onClose();
   };
 
   if (!isOpen) return null;
@@ -268,38 +195,12 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
           <CardTitle className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-orange-400 bg-clip-text text-transparent">
             Astra Villa
           </CardTitle>
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            onClick={handleClose} 
-            disabled={isLoading} 
-            className="text-white hover:bg-white/10"
-          >
+          <Button variant="ghost" size="sm" onClick={handleClose} disabled={isLoading} className="text-white hover:bg-white/10">
             <X className="h-4 w-4" />
           </Button>
         </CardHeader>
         
         <CardContent className="text-white">
-          {/* Loading Progress Bar */}
-          {isLoading && (
-            <div className="mb-6 space-y-2">
-              <div className="flex items-center justify-center space-x-2">
-                <Loader2 className="h-4 w-4 animate-spin" />
-                <span className="text-sm">
-                  {activeTab === "login" ? currentText.signingIn : currentText.creatingAccount}
-                </span>
-              </div>
-              <Progress value={loadingProgress} className="w-full h-2" />
-            </div>
-          )}
-
-          {/* Error Display */}
-          {errors.auth && (
-            <Alert variant="destructive" className="mb-4 bg-red-500/20 border-red-500/50">
-              <AlertDescription className="text-white">{errors.auth}</AlertDescription>
-            </Alert>
-          )}
-
           <div className="space-y-4 mb-6">
             <Button 
               onClick={handleGoogleLogin}
@@ -307,11 +208,7 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
               className="w-full bg-white/10 hover:bg-white/20 text-white border border-white/20 backdrop-blur-sm"
               variant="outline"
             >
-              {isLoading ? (
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-              ) : (
-                <Mail className="h-4 w-4 mr-2" />
-              )}
+              <Mail className="h-4 w-4 mr-2" />
               {currentText.googleLogin}
             </Button>
 
@@ -333,12 +230,8 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
 
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid w-full grid-cols-2 bg-white/10 backdrop-blur-sm">
-              <TabsTrigger value="login" className="text-white data-[state=active]:bg-blue-600" disabled={isLoading}>
-                {currentText.login}
-              </TabsTrigger>
-              <TabsTrigger value="register" className="text-white data-[state=active]:bg-blue-600" disabled={isLoading}>
-                {currentText.register}
-              </TabsTrigger>
+              <TabsTrigger value="login" className="text-white data-[state=active]:bg-blue-600">{currentText.login}</TabsTrigger>
+              <TabsTrigger value="register" className="text-white data-[state=active]:bg-blue-600">{currentText.register}</TabsTrigger>
             </TabsList>
 
             <TabsContent value="login" className="space-y-4">
@@ -379,7 +272,6 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
                       size="sm"
                       className="absolute right-0 top-0 h-full px-3 text-gray-400 hover:text-white"
                       onClick={() => setShowPassword(!showPassword)}
-                      disabled={isLoading}
                     >
                       {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </Button>
@@ -396,14 +288,7 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
                   className="w-full bg-gradient-to-r from-blue-600 to-orange-500 hover:from-blue-700 hover:to-orange-600"
                   disabled={isLoading}
                 >
-                  {isLoading ? (
-                    <>
-                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                      {currentText.signingIn}
-                    </>
-                  ) : (
-                    currentText.loginBtn
-                  )}
+                  {isLoading ? "Signing in..." : currentText.loginBtn}
                 </Button>
 
                 <p className="text-center text-sm text-gray-300">
@@ -412,7 +297,6 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
                     type="button"
                     onClick={() => setActiveTab("register")}
                     className="text-blue-400 hover:underline"
-                    disabled={isLoading}
                   >
                     {currentText.switchToRegister}
                   </button>
@@ -476,7 +360,6 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
                       size="sm"
                       className="absolute right-0 top-0 h-full px-3 text-gray-400 hover:text-white"
                       onClick={() => setShowPassword(!showPassword)}
-                      disabled={isLoading}
                     >
                       {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </Button>
@@ -506,7 +389,6 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
                       size="sm"
                       className="absolute right-0 top-0 h-full px-3 text-gray-400 hover:text-white"
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                      disabled={isLoading}
                     >
                       {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </Button>
@@ -523,14 +405,7 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
                   className="w-full bg-gradient-to-r from-blue-600 to-orange-500 hover:from-blue-700 hover:to-orange-600"
                   disabled={isLoading}
                 >
-                  {isLoading ? (
-                    <>
-                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                      {currentText.creatingAccount}
-                    </>
-                  ) : (
-                    currentText.registerBtn
-                  )}
+                  {isLoading ? "Creating account..." : currentText.registerBtn}
                 </Button>
 
                 <p className="text-center text-sm text-gray-300">
@@ -539,7 +414,6 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
                     type="button"
                     onClick={() => setActiveTab("login")}
                     className="text-blue-400 hover:underline"
-                    disabled={isLoading}
                   >
                     {currentText.switchToLogin}
                   </button>

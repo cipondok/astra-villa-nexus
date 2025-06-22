@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
-import RoleBasedNavigation from "@/components/RoleBasedNavigation";
+import Navigation from "@/components/Navigation";
 import AdminDashboardHeader from "@/components/admin/AdminDashboardHeader";
 import AdminTabNavigation from "@/components/admin/AdminTabNavigation";
 import AdminDashboardContent from "@/components/admin/AdminDashboardContent";
@@ -19,6 +19,8 @@ const AdminDashboard = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [activeTab, setActiveTab] = useState(location.state?.defaultTab || "overview");
+  const [accessCheckComplete, setAccessCheckComplete] = useState(false);
+  const [accessTimeout, setAccessTimeout] = useState(false);
 
   console.log('AdminDashboard - Current state:', { 
     loading, 
@@ -31,6 +33,19 @@ const AdminDashboard = () => {
 
   // Initialize admin alerts hook
   useAdminAlerts();
+
+  // Timeout for access check
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (!accessCheckComplete && !loading) {
+        console.log('Access check timeout reached');
+        setAccessTimeout(true);
+        setAccessCheckComplete(true);
+      }
+    }, 5000); // 5 second timeout
+
+    return () => clearTimeout(timeout);
+  }, [accessCheckComplete, loading]);
 
   // Check access permissions
   useEffect(() => {
@@ -45,7 +60,7 @@ const AdminDashboard = () => {
 
       // If not authenticated, redirect immediately
       if (!isAuthenticated || !user) {
-        console.log('Not authenticated, redirecting to home with auth modal...');
+        console.log('Not authenticated, redirecting...');
         navigate('/?auth=true', { replace: true });
         return;
       }
@@ -64,8 +79,8 @@ const AdminDashboard = () => {
       });
 
       if (!hasAccess) {
-        console.log('Access denied, redirecting to user dashboard...');
-        navigate('/dashboard/user', { replace: true });
+        console.log('Access denied, redirecting...');
+        navigate('/', { replace: true });
         return;
       }
 
@@ -75,39 +90,49 @@ const AdminDashboard = () => {
         setActiveTab("support");
       }
 
-      console.log('Access granted');
+      console.log('Access granted, completing check');
+      setAccessCheckComplete(true);
     };
 
-    checkAccess();
-  }, [loading, isAuthenticated, user, profile, navigate, activeTab]);
+    // Only run check if not already complete and not timed out
+    if (!accessCheckComplete && !accessTimeout) {
+      checkAccess();
+    }
+  }, [loading, isAuthenticated, user, profile, navigate, activeTab, accessCheckComplete, accessTimeout]);
 
   // Show loading state while checking access
-  if (loading) {
+  if ((loading || !accessCheckComplete) && !accessTimeout) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-primary" />
           <p className="text-muted-foreground">Loading admin dashboard...</p>
+          <p className="text-xs text-muted-foreground mt-2">
+            This may take a few seconds to verify your permissions
+          </p>
         </div>
       </div>
     );
   }
 
-  // If no user but not loading, show access denied
-  if (!isAuthenticated || !user) {
+  // Handle timeout case
+  if (accessTimeout) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <Card className="w-full max-w-md">
           <CardHeader>
-            <CardTitle className="text-center text-destructive">Please Login</CardTitle>
+            <CardTitle className="text-center text-destructive">Loading Timeout</CardTitle>
           </CardHeader>
           <CardContent className="text-center">
             <p className="text-muted-foreground mb-6">
-              You need to login to access this dashboard.
+              The dashboard is taking longer than expected to load.
             </p>
             <div className="space-y-2">
-              <Button onClick={() => navigate('/?auth=true')} className="w-full">
-                Login
+              <Button onClick={() => window.location.reload()} className="w-full">
+                Reload Page
+              </Button>
+              <Button variant="outline" onClick={() => navigate('/')} className="w-full">
+                Return to Home
               </Button>
             </div>
           </CardContent>
@@ -133,9 +158,7 @@ const AdminDashboard = () => {
               You don't have permission to access this dashboard.
             </p>
             <div className="space-y-2">
-              <Button onClick={() => navigate('/dashboard/user')} className="w-full">
-                Go to User Dashboard
-              </Button>
+              <Button onClick={() => navigate('/')} className="w-full">Return to Home</Button>
               <Button variant="outline" onClick={signOut} className="w-full">
                 Logout
               </Button>
@@ -148,12 +171,7 @@ const AdminDashboard = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <RoleBasedNavigation
-        language="en"
-        onLanguageToggle={() => {}}
-        theme="light"
-        onThemeToggle={() => {}}
-      />
+      <Navigation />
       
       <AdminDashboardHeader 
         isAdmin={isAdmin} 

@@ -1,4 +1,3 @@
-
 import { useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -29,11 +28,10 @@ const RoleDashboard = ({ language }: RoleDashboardProps) => {
   const { profile, user, refreshProfile } = useAuth();
   const navigate = useNavigate();
 
-  // Handle vendor role navigation
+  // Redirect agents to their dedicated dashboard
   useEffect(() => {
-    if (profile?.role === 'vendor') {
-      console.log('RoleDashboard - Redirecting vendor to vendor dashboard');
-      navigate('/dashboard/vendor');
+    if (profile?.role === 'agent') {
+      navigate('/dashboard/agent');
     }
   }, [profile?.role, navigate]);
 
@@ -64,49 +62,59 @@ const RoleDashboard = ({ language }: RoleDashboardProps) => {
         title: "General User Dashboard",
         description: "Browse and search properties",
         actions: [
-          { label: "Search Properties", icon: Home, route: "/properties" },
-          { label: "Browse Listings", icon: Building, route: "/property-listings" },
-          { label: "View Preferences", icon: Settings, route: "/dashboard/user/preferences" }
+          { label: "Search Properties", icon: Home },
+          { label: "Saved Properties", icon: Building },
+          { label: "View Preferences", icon: Settings }
         ]
       },
       propertyOwner: {
         title: "Property Owner Dashboard",
         description: "Manage your properties and listings",
         actions: [
-          { label: "Add New Property", icon: PlusCircle, route: "/add-property" },
-          { label: "My Properties", icon: Building, route: "/dashboard/owner/properties" },
-          { label: "View Analytics", icon: BarChart3, route: "/dashboard/owner/analytics" },
-          { label: "Manage Listings", icon: FileText, route: "/dashboard/owner/listings" }
+          { label: "Add New Property", icon: PlusCircle },
+          { label: "My Properties", icon: Building },
+          { label: "View Analytics", icon: BarChart3 },
+          { label: "Manage Listings", icon: FileText }
         ]
       },
       agent: {
         title: "Agent Dashboard",
         description: "Manage clients and property listings",
         actions: [
-          { label: "Create Listing", icon: PlusCircle, route: "/dashboard/agent/create-listing" },
-          { label: "My Listings", icon: FileText, route: "/dashboard/agent/listings" },
-          { label: "Client Management", icon: Users, route: "/dashboard/agent/clients" },
-          { label: "Performance", icon: BarChart3, route: "/dashboard/agent/analytics" }
+          { label: "Create Listing", icon: PlusCircle },
+          { label: "My Listings", icon: Building },
+          { label: "Client Management", icon: Users },
+          { label: "Sales Report", icon: BarChart3 }
         ]
       },
       vendor: {
-        title: "Vendor Dashboard", 
+        title: "Vendor Dashboard",
         description: "Manage your services and bookings",
         actions: [
-          { label: "My Services", icon: Wrench, route: "/dashboard/vendor" },
-          { label: "Bookings", icon: FileText, route: "/dashboard/vendor" },
-          { label: "Analytics", icon: BarChart3, route: "/dashboard/vendor" },
-          { label: "Settings", icon: Settings, route: "/dashboard/vendor" }
+          { label: "Add Service", icon: PlusCircle },
+          { label: "My Services", icon: Wrench },
+          { label: "Bookings", icon: FileText },
+          { label: "Service Analytics", icon: BarChart3 }
         ]
       },
       admin: {
         title: "Admin Dashboard",
-        description: "System administration and management",
+        description: "Full system administration",
         actions: [
-          { label: "User Management", icon: Users, route: "/dashboard/admin/users" },
-          { label: "Property Management", icon: Building, route: "/dashboard/admin/properties" },
-          { label: "System Settings", icon: Settings, route: "/dashboard/admin/settings" },
-          { label: "Analytics", icon: BarChart3, route: "/dashboard/admin/analytics" }
+          { label: "User Management", icon: Users, path: "/admin", tab: "users" },
+          { label: "System Analytics", icon: BarChart3, path: "/admin", tab: "analytics" },
+          { label: "Verification Requests", icon: UserCheck, path: "/admin" },
+          { label: "Manage Tickets", icon: LifeBuoy, path: "/admin", tab: "support" },
+          { label: "Manage Feedback", icon: MessageSquare, path: "/admin", tab: "feedback" },
+          { label: "System Settings", icon: Settings, path: "/admin" }
+        ]
+      },
+      customer_service: {
+        title: "Customer Service Dashboard",
+        description: "Manage support tickets and user feedback.",
+        actions: [
+          { label: "Manage Tickets", icon: LifeBuoy, path: "/admin", tab: "support" },
+          { label: "Manage Feedback", icon: MessageSquare, path: "/admin", tab: "feedback" }
         ]
       }
     },
@@ -115,160 +123,311 @@ const RoleDashboard = ({ language }: RoleDashboardProps) => {
       yourRole: "Peran Anda",
       quickActions: "Aksi Cepat",
       recentActivity: "Aktivitas Terbaru",
-      refreshProfile: "Refresh Profil",
+      refreshProfile: "Segarkan Profil",
       generalUser: {
         title: "Dashboard Pengguna Umum",
         description: "Jelajahi dan cari properti",
         actions: [
-          { label: "Cari Properti", icon: Home, route: "/properties" },
-          { label: "Jelajahi Listing", icon: Building, route: "/property-listings" },
-          { label: "Lihat Preferensi", icon: Settings, route: "/dashboard/user/preferences" }
+          { label: "Cari Properti", icon: Home },
+          { label: "Properti Tersimpan", icon: Building },
+          { label: "Lihat Preferensi", icon: Settings }
         ]
       },
       propertyOwner: {
         title: "Dashboard Pemilik Properti",
         description: "Kelola properti dan listing Anda",
         actions: [
-          { label: "Tambah Properti Baru", icon: PlusCircle, route: "/add-property" },
-          { label: "Properti Saya", icon: Building, route: "/dashboard/owner/properties" },
-          { label: "Lihat Analytics", icon: BarChart3, route: "/dashboard/owner/analytics" },
-          { label: "Kelola Listing", icon: FileText, route: "/dashboard/owner/listings" }
+          { label: "Tambah Properti Baru", icon: PlusCircle },
+          { label: "Properti Saya", icon: Building },
+          { label: "Lihat Analitik", icon: BarChart3 },
+          { label: "Kelola Listing", icon: FileText }
         ]
       },
       agent: {
         title: "Dashboard Agen",
         description: "Kelola klien dan listing properti",
         actions: [
-          { label: "Buat Listing", icon: PlusCircle, route: "/dashboard/agent/create-listing" },
-          { label: "Listing Saya", icon: FileText, route: "/dashboard/agent/listings" },
-          { label: "Manajemen Klien", icon: Users, route: "/dashboard/agent/clients" },
-          { label: "Performa", icon: BarChart3, route: "/dashboard/agent/analytics" }
+          { label: "Buat Listing", icon: PlusCircle },
+          { label: "Listing Saya", icon: Building },
+          { label: "Manajemen Klien", icon: Users },
+          { label: "Laporan Penjualan", icon: BarChart3 }
         ]
       },
       vendor: {
         title: "Dashboard Vendor",
         description: "Kelola layanan dan booking Anda",
         actions: [
-          { label: "Layanan Saya", icon: Wrench, route: "/dashboard/vendor" },
-          { label: "Booking", icon: FileText, route: "/dashboard/vendor" },
-          { label: "Analytics", icon: BarChart3, route: "/dashboard/vendor" },
-          { label: "Pengaturan", icon: Settings, route: "/dashboard/vendor" }
+          { label: "Tambah Layanan", icon: PlusCircle },
+          { label: "Layanan Saya", icon: Wrench },
+          { label: "Booking", icon: FileText },
+          { label: "Analitik Layanan", icon: BarChart3 }
         ]
       },
       admin: {
         title: "Dashboard Admin",
-        description: "Administrasi dan manajemen sistem",
+        description: "Administrasi sistem penuh",
         actions: [
-          { label: "Manajemen Pengguna", icon: Users, route: "/dashboard/admin/users" },
-          { label: "Manajemen Properti", icon: Building, route: "/dashboard/admin/properties" },
-          { label: "Pengaturan Sistem", icon: Settings, route: "/dashboard/admin/settings" },
-          { label: "Analytics", icon: BarChart3, route: "/dashboard/admin/analytics" }
+          { label: "Manajemen Pengguna", icon: Users, path: "/admin", tab: "users" },
+          { label: "Analitik Sistem", icon: BarChart3, path: "/admin", tab: "analytics" },
+          { label: "Permintaan Verifikasi", icon: UserCheck, path: "/admin" },
+          { label: "Kelola Tiket", icon: LifeBuoy, path: "/admin", tab: "support" },
+          { label: "Kelola Umpan Balik", icon: MessageSquare, path: "/admin", tab: "feedback" },
+          { label: "Pengaturan Sistem", icon: Settings, path: "/admin" }
+        ]
+      },
+      customer_service: {
+        title: "Dashboard Layanan Pelanggan",
+        description: "Kelola tiket dukungan dan umpan balik pengguna.",
+        actions: [
+          { label: "Kelola Tiket", icon: LifeBuoy, path: "/admin", tab: "support" },
+          { label: "Kelola Umpan Balik", icon: MessageSquare, path: "/admin", tab: "feedback" }
         ]
       }
     }
   };
 
   const currentText = text[language];
-  
-  // Don't render anything for vendor role since it will redirect
-  if (profile?.role === 'vendor') {
-    return null;
+
+  // Show loading if no user data at all
+  if (!user) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading your dashboard...</p>
+        </div>
+      </div>
+    );
   }
 
   const getRoleConfig = () => {
-    switch (profile?.role) {
+    // Use profile role if available, otherwise default to general user
+    const userRole = profile?.role || 'general_user';
+    
+    switch (userRole) {
       case 'property_owner':
         return currentText.propertyOwner;
       case 'agent':
         return currentText.agent;
+      case 'vendor':
+        return currentText.vendor;
       case 'admin':
         return currentText.admin;
+      case 'customer_service':
+        return currentText.customer_service;
       case 'general_user':
       default:
         return currentText.generalUser;
     }
   };
 
+  const getRoleIcon = () => {
+    const userRole = profile?.role || 'general_user';
+    
+    switch (userRole) {
+      case 'property_owner':
+        return Building;
+      case 'agent':
+        return Users;
+      case 'vendor':
+        return Wrench;
+      case 'admin':
+        return Crown;
+      case 'customer_service':
+        return LifeBuoy;
+      case 'general_user':
+      default:
+        return Home;
+    }
+  };
+
   const roleConfig = getRoleConfig();
+  const RoleIcon = getRoleIcon();
+
+  const getRoleBadgeColor = () => {
+    const userRole = profile?.role || 'general_user';
+    
+    switch (userRole) {
+      case 'admin':
+        return 'bg-purple-100 text-purple-800';
+      case 'customer_service':
+        return 'bg-cyan-100 text-cyan-800';
+      case 'agent':
+        return 'bg-blue-100 text-blue-800';
+      case 'property_owner':
+        return 'bg-green-100 text-green-800';
+      case 'vendor':
+        return 'bg-orange-100 text-orange-800';
+      case 'general_user':
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  // Get display name and email
+  const displayName = profile?.full_name || user?.user_metadata?.full_name || user?.email || 'User';
+  const displayEmail = profile?.email || user?.email || '';
+  const userRole = profile?.role || 'general_user';
 
   return (
     <div className="space-y-6">
-      {/* Welcome Header */}
-      <Card>
-        <CardHeader>
-          <div className="flex justify-between items-start">
-            <div>
-              <CardTitle className="text-2xl">{currentText.welcome}, {profile?.full_name || user?.email}!</CardTitle>
-              <div className="flex items-center gap-2 mt-2">
-                <span className="text-sm text-muted-foreground">{currentText.yourRole}:</span>
-                <Badge variant="outline" className="capitalize">
-                  {profile?.role?.replace('_', ' ') || 'General User'}
-                </Badge>
-                {isSuperAdminEmail && (
-                  <Badge variant="default" className="bg-gradient-to-r from-purple-500 to-pink-500">
-                    <Crown className="h-3 w-3 mr-1" />
-                    Super Admin
-                  </Badge>
-                )}
-              </div>
-            </div>
-            <Button variant="outline" size="sm" onClick={handleRefreshProfile}>
-              <RefreshCw className="h-4 w-4 mr-2" />
-              {currentText.refreshProfile}
-            </Button>
+      {/* Debug Info for Super Admin Email */}
+      {isSuperAdminEmail && (
+        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+          <h3 className="text-sm font-semibold text-yellow-800 mb-2">Debug Info for mycode103@gmail.com:</h3>
+          <div className="text-xs text-yellow-700 space-y-1">
+            <div>Email: {user?.email}</div>
+            <div>Profile Role: {profile?.role || 'Not loaded'}</div>
+            <div>Verification Status: {profile?.verification_status || 'Not loaded'}</div>
+            <div>Profile Updated: {profile?.updated_at || 'Not loaded'}</div>
+            <div>Is Super Admin Email: {isSuperAdminEmail ? 'Yes' : 'No'}</div>
           </div>
-        </CardHeader>
-        <CardContent>
-          <p className="text-muted-foreground">{roleConfig.description}</p>
-        </CardContent>
-      </Card>
+          <Button 
+            onClick={handleRefreshProfile}
+            variant="outline" 
+            size="sm" 
+            className="mt-3"
+          >
+            <RefreshCw className="h-4 w-4 mr-2" />
+            Force Refresh Profile
+          </Button>
+        </div>
+      )}
+
+      {/* Welcome Section */}
+      <div className="bg-gradient-to-r from-blue-600 to-orange-500 text-white p-6 rounded-lg">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold">
+              {currentText.welcome}, {displayName}!
+            </h1>
+            <p className="text-blue-100 mt-2">{roleConfig.description}</p>
+            {isSuperAdminEmail && (
+              <p className="text-yellow-200 text-sm mt-1">
+                Super Admin Email Detected
+              </p>
+            )}
+          </div>
+          <div className="flex items-center space-x-2">
+            <RoleIcon className="h-8 w-8" />
+            <Badge className={`${getRoleBadgeColor()} border-0`}>
+              {userRole.replace('_', ' ').toUpperCase()}
+            </Badge>
+          </div>
+        </div>
+      </div>
 
       {/* Role-specific Dashboard */}
-      <Card>
-        <CardHeader>
-          <CardTitle>{roleConfig.title}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {roleConfig.actions.map((action, index) => {
-              const IconComponent = action.icon;
-              return (
-                <Button
-                  key={index}
-                  variant="outline"
-                  className="h-24 flex flex-col items-center justify-center space-y-2 hover:bg-muted/50"
-                  onClick={() => navigate(action.route)}
-                >
-                  <IconComponent className="h-6 w-6" />
-                  <span className="text-sm text-center">{action.label}</span>
-                </Button>
-              );
-            })}
-          </div>
-        </CardContent>
-      </Card>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Quick Actions */}
+        <div className="lg:col-span-2">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center space-x-2">
+                <PlusCircle className="h-5 w-5" />
+                <span>{currentText.quickActions}</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {roleConfig.actions.map((action, index) => {
+                  const IconComponent = action.icon;
+                  return (
+                    <Button
+                      key={index}
+                      variant="outline"
+                      className="h-auto p-4 flex flex-col items-center space-y-2 hover:bg-blue-50"
+                      onClick={() => {
+                        if ('path' in action && action.path) {
+                          const navState = ('tab' in action && action.tab) ? { state: { defaultTab: action.tab } } : {};
+                          navigate(action.path, navState);
+                        } else if (action.label.includes("Properties") || action.label.includes("Properti")) {
+                          navigate('/properties');
+                        } else {
+                          // Fallback for actions without a path, you might want to handle this.
+                          // For now, we are navigating to admin for some of them.
+                          if(action.label.includes("User Management")) navigate("/admin", { state: { defaultTab: 'users' } });
+                          if(action.label.includes("System Settings")) navigate("/admin", { state: { defaultTab: 'system' } });
+                          console.log(`Navigate to ${action.label}`);
+                        }
+                      }}
+                    >
+                      <IconComponent className="h-6 w-6" />
+                      <span className="text-sm font-medium">{action.label}</span>
+                    </Button>
+                  );
+                })}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
 
-      {/* Quick Help */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <LifeBuoy className="h-5 w-5" />
-            Need Help?
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Button variant="outline" className="justify-start">
-              <MessageSquare className="h-4 w-4 mr-2" />
-              Contact Support
-            </Button>
-            <Button variant="outline" className="justify-start">
-              <UserCheck className="h-4 w-4 mr-2" />
-              User Guide
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+        {/* Profile Info */}
+        <div className="space-y-4">
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle>{currentText.yourRole}</CardTitle>
+                <Button 
+                  onClick={handleRefreshProfile}
+                  variant="ghost" 
+                  size="sm"
+                  className="h-8 w-8 p-0"
+                >
+                  <RefreshCw className="h-4 w-4" />
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center space-x-3">
+                <RoleIcon className="h-8 w-8 text-blue-600" />
+                <div>
+                  <h3 className="font-semibold">{roleConfig.title}</h3>
+                  <p className="text-sm text-gray-600">{roleConfig.description}</p>
+                </div>
+              </div>
+              
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Email:</span>
+                  <span>{displayEmail}</span>
+                </div>
+                {profile?.phone && (
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Phone:</span>
+                    <span>{profile.phone}</span>
+                  </div>
+                )}
+                {profile?.company_name && (
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Company:</span>
+                    <span>{profile.company_name}</span>
+                  </div>
+                )}
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Status:</span>
+                  <Badge variant={profile?.verification_status === 'approved' ? 'default' : 'secondary'}>
+                    {profile?.verification_status || 'pending'}
+                  </Badge>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Recent Activity */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center space-x-2">
+                <BarChart3 className="h-5 w-5" />
+                <span>{currentText.recentActivity}</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-gray-600">Welcome to your dashboard! Start exploring the available features.</p>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import { supabase } from '@/integrations/supabase/client';
+
 import { toast } from 'sonner';
 
 export interface User {
@@ -31,7 +31,6 @@ export interface Transaction {
   status: string;
   created_at: string;
   property_title?: string;
-  metadata?: any;
 }
 
 export interface APIResponse<T> {
@@ -43,75 +42,9 @@ export interface APIResponse<T> {
 
 class ASTRATokenAPI {
   private baseURL = 'https://cerdnikfqijyqugguryx.supabase.co/functions/v1/astra-api';
+  private apiKey = 'your-api-key-here'; // This should be moved to environment variable
   private requestCount = 0;
   private requestResetTime = Date.now() + 3600000; // 1 hour from now
-
-  private async getAuthHeaders(): Promise<Record<string, string>> {
-    try {
-      // First check if we have a valid session
-      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-      
-      if (sessionError) {
-        console.log('Session error:', sessionError);
-        // Return headers anyway to try the request
-        return {
-          'Content-Type': 'application/json',
-          'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNlcmRuaWtmcWlqeXF1Z2d1cnl4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ2MjEyMjcsImV4cCI6MjA1MDE5NzIyN30.IwqZ0TUwgFKnhMR5gJwPhHUXPRjGkfbA7vUi7XJBrMU',
-        };
-      }
-
-      if (!session) {
-        console.log('No active session, using anon key');
-        return {
-          'Content-Type': 'application/json',
-          'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNlcmRuaWtmcWlqeXF1Z2d1cnl4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ2MjEyMjcsImV4cCI6MjA1MDE5NzIyN30.IwqZ0TUwgFKnhMR5gJwPhHUXPRjGkfbA7vUi7XJBrMU',
-        };
-      }
-
-      if (!session.access_token) {
-        console.log('No valid access token, using anon key');
-        return {
-          'Content-Type': 'application/json',
-          'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNlcmRuaWtmcWlqeXF1Z2d1cnl4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ2MjEyMjcsImV4cCI6MjA1MDE5NzIyN30.IwqZ0TUwgFKnhMR5gJwPhHUXPRjGkfbA7vUi7XJBrMU',
-        };
-      }
-
-      // Check if token is expired
-      const now = Math.floor(Date.now() / 1000);
-      if (session.expires_at && session.expires_at < now) {
-        console.log('Token expired, refreshing...');
-        
-        // Try to refresh the session
-        const { data: refreshData, error: refreshError } = await supabase.auth.refreshSession();
-        
-        if (refreshError || !refreshData.session) {
-          console.log('Session refresh failed, using anon key');
-          return {
-            'Content-Type': 'application/json',
-            'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNlcmRuaWtmcWlqeXF1Z2d1cnl4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ2MjEyMjcsImV4cCI6MjA1MDE5NzIyN30.IwqZ0TUwgFKnhMR5gJwPhHUXPRjGkfbA7vUi7XJBrMU',
-          };
-        }
-        
-        return {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${refreshData.session.access_token}`,
-          'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNlcmRuaWtmcWlqeXF1Z2d1cnl4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ2MjEyMjcsImV4cCI6MjA1MDE5NzIyN30.IwqZ0TUwgFKnhMR5gJwPhHUXPRjGkfbA7vUi7XJBrMU',
-        };
-      }
-
-      return {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${session.access_token}`,
-        'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNlcmRuaWtmcWlqeXF1Z2d1cnl4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ2MjEyMjcsImV4cCI6MjA1MDE5NzIyN30.IwqZ0TUwgFKnhMR5gJwPhHUXPRjGkfbA7vUi7XJBrMU',
-      };
-    } catch (error) {
-      console.log('Auth headers error, using anon key:', error);
-      return {
-        'Content-Type': 'application/json',
-        'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNlcmRuaWtmcWlqeXF1Z2d1cnl4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ2MjEyMjcsImV4cCI6MjA1MDE5NzIyN30.IwqZ0TUwgFKnhMR5gJwPhHUXPRjGkfbA7vUi7XJBrMU',
-      };
-    }
-  }
 
   private async makeRequest<T>(
     endpoint: string, 
@@ -124,56 +57,38 @@ class ASTRATokenAPI {
     }
 
     if (this.requestCount >= 1000) {
-      return { success: false, error: 'Rate limit exceeded. Please try again in an hour.' };
+      throw new Error('Rate limit exceeded. Please try again in an hour.');
     }
 
     try {
-      const headers = await this.getAuthHeaders();
-      
-      console.log('Making ASTRA API request to:', `${this.baseURL}${endpoint}`);
-
       const response = await fetch(`${this.baseURL}${endpoint}`, {
         ...options,
         headers: {
-          ...headers,
+          'Content-Type': 'application/json',
+          'x-api-key': this.apiKey,
           ...options.headers,
         },
       });
 
       this.requestCount++;
 
-      console.log('Response status:', response.status);
-
       if (!response.ok) {
-        const errorText = await response.text();
-        console.log('API Error Response:', errorText);
-        
-        let errorData;
-        try {
-          errorData = JSON.parse(errorText);
-        } catch {
-          errorData = { message: errorText };
-        }
-        
-        // Return error without throwing to avoid breaking the UI
-        return { success: false, error: errorData.message || `HTTP ${response.status}: ${response.statusText}` };
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `HTTP ${response.status}: ${response.statusText}`);
       }
 
       const data = await response.json();
-      console.log('API Success Response:', data);
       return { success: true, data };
     } catch (error) {
-      console.log('API Request failed:', error);
+      console.error('API Request failed:', error);
       const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
-      
-      // Return error without showing toast to avoid breaking the UI
       return { success: false, error: errorMessage };
     }
   }
 
   // User management
   async getUserBalance(userId: string): Promise<APIResponse<{ balance: number }>> {
-    return this.makeRequest<{ balance: number }>(`/users?userId=${userId}`);
+    return this.makeRequest<{ balance: number }>(`/balance?userId=${userId}`);
   }
 
   async getUser(userId: string): Promise<APIResponse<User>> {
@@ -192,42 +107,35 @@ class ASTRATokenAPI {
     });
   }
 
-  async getProperties(limit?: number, filters?: any): Promise<APIResponse<Property[]>> {
-    const params = new URLSearchParams();
-    if (limit) params.append('limit', limit.toString());
-    if (filters) {
-      Object.entries(filters).forEach(([key, value]) => {
-        if (value) params.append(key, value as string);
-      });
-    }
-    const queryString = params.toString() ? `?${params}` : '';
-    return this.makeRequest<Property[]>(`/properties${queryString}`);
+  // Property operations
+  async getProperties(limit?: number): Promise<APIResponse<Property[]>> {
+    const params = limit ? `?limit=${limit}` : '';
+    return this.makeRequest<Property[]>(`/properties${params}`);
   }
 
   async getProperty(propertyId: string): Promise<APIResponse<Property>> {
     return this.makeRequest<Property>(`/properties?propertyId=${propertyId}`);
   }
 
-  async createProperty(propertyData: Omit<Property, 'id' | 'status'>): Promise<APIResponse<Property>> {
+  async createProperty(propertyData: Omit<Property, 'id'>): Promise<APIResponse<Property>> {
     return this.makeRequest<Property>('/properties', {
       method: 'POST',
       body: JSON.stringify(propertyData),
     });
   }
 
+  // Transactions
   async purchaseProperty(
     propertyId: string, 
     buyerId: string, 
-    amount: number,
-    metadata?: any
+    amount: number
   ): Promise<APIResponse<Transaction>> {
     return this.makeRequest<Transaction>('/transactions', {
       method: 'POST',
       body: JSON.stringify({
-        propertyId,
-        buyerId,
-        amount,
-        metadata,
+        property_id: propertyId,
+        buyer_id: buyerId,
+        amount_astra: amount,
       }),
     });
   }
@@ -241,6 +149,7 @@ class ASTRATokenAPI {
     return this.makeRequest<Transaction[]>(`/transactions?${params}`);
   }
 
+  // Balance operations
   async addBalance(
     userId: string, 
     amount: number, 

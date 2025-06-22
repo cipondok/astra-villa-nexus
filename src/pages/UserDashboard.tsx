@@ -2,7 +2,7 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import RoleBasedNavigation from "@/components/RoleBasedNavigation";
+import Navigation from "@/components/Navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -14,21 +14,17 @@ import {
   User,
   Bell,
   Wallet,
-  Settings,
-  Loader2
+  Settings
 } from "lucide-react";
 import WalletDashboard from "@/components/wallet/WalletDashboard";
 
 const UserDashboard = () => {
-  const { isAuthenticated, loading, profile, user } = useAuth();
+  const { isAuthenticated, loading, profile } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log('UserDashboard - Auth state:', { loading, isAuthenticated, user: !!user, profile: !!profile });
-    
     if (!loading && !isAuthenticated) {
-      console.log('Not authenticated, redirecting to home with auth modal');
-      navigate('/?auth=true', { replace: true });
+      navigate('/?auth=true');
     }
   }, [isAuthenticated, loading, navigate]);
 
@@ -36,48 +32,27 @@ const UserDashboard = () => {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-primary" />
-          <h2 className="text-lg font-semibold text-foreground">Loading dashboard...</h2>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <h2 className="text-lg font-semibold text-foreground">Loading...</h2>
         </div>
       </div>
     );
   }
 
-  if (!isAuthenticated || !user) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <Card className="w-full max-w-md">
-          <CardHeader>
-            <CardTitle className="text-center">Please Login</CardTitle>
-          </CardHeader>
-          <CardContent className="text-center">
-            <p className="text-muted-foreground mb-6">
-              You need to login to access your dashboard.
-            </p>
-            <Button onClick={() => navigate('/?auth=true')} className="w-full">
-              Login
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-    );
+  if (!isAuthenticated) {
+    return null;
   }
 
   return (
     <div className="min-h-screen bg-background">
-      <RoleBasedNavigation
-        language="en"
-        onLanguageToggle={() => {}}
-        theme="light"
-        onThemeToggle={() => {}}
-      />
+      <Navigation />
       <div className="pt-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto py-8">
           {/* Welcome Section */}
           <div className="bg-gradient-to-r from-blue-600 to-orange-500 text-white p-6 rounded-lg mb-6">
             <div className="flex items-center justify-between">
               <div>
-                <h1 className="text-2xl font-bold">Welcome, {profile?.full_name || user?.email || 'User'}!</h1>
+                <h1 className="text-2xl font-bold">Welcome, {profile?.full_name || 'User'}!</h1>
                 <p className="text-blue-100 mt-2">Manage your profile, properties, and ASTRA wallet</p>
               </div>
               <User className="h-8 w-8" />
@@ -173,7 +148,7 @@ const UserDashboard = () => {
                       </div>
                       <div>
                         <label className="text-sm font-medium">Email</label>
-                        <p className="text-sm text-muted-foreground">{user?.email || 'Not set'}</p>
+                        <p className="text-sm text-muted-foreground">{profile?.email || 'Not set'}</p>
                       </div>
                       <div>
                         <label className="text-sm font-medium">Role</label>

@@ -1,221 +1,369 @@
 
 import { useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, User, LogOut, Search, MessageSquare, Bell, Shield } from "lucide-react";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { Menu, X, User, LogOut, Globe, Bot, Plus, Home, Building, Info, ShoppingCart, KeyRound, Construction, Rocket, LogIn } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
-import { useNavigate } from "react-router-dom";
-import LanguageToggleSwitch from "./LanguageToggleSwitch";
+import { useThemeSettings } from "@/contexts/ThemeSettingsContext";
+import { useTheme } from "@/components/ThemeProvider";
+import RoleBasedAuthModal from "./RoleBasedAuthModal";
 import ThemeToggleSwitch from "./ThemeToggleSwitch";
-import { EnhancedSecureAuthModal } from "./auth/EnhancedSecureAuthModal";
-import { SessionManager } from "./auth/SessionManager";
-import { useSessionMonitoring } from "@/hooks/useSessionMonitoring";
-import UserDropdownMenu from "./navigation/UserDropdownMenu";
+import LanguageToggleSwitch from "./LanguageToggleSwitch";
+import WalletButton from "./wallet/WalletButton";
+import { toast } from "sonner";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const Navigation = () => {
-  const { language } = useLanguage();
-  const { user, profile, signOut, isAuthenticated } = useAuth();
-  const [authModalOpen, setAuthModalOpen] = useState(false);
-  const [sessionManagerOpen, setSessionManagerOpen] = useState(false);
-  const { hasMultipleSessions } = useSessionMonitoring();
+  const [isOpen, setIsOpen] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const location = useLocation();
   const navigate = useNavigate();
+  const { user, signOut, profile } = useAuth();
+  const { themeSettings } = useThemeSettings();
+  const { language, setLanguage } = useLanguage();
 
-  const text = {
+  // Check if user is admin
+  const isAdmin = profile?.role === 'admin' || user?.email === 'mycode103@gmail.com';
+
+  const labels = {
     en: {
-      home: "Home",
-      properties: "Properties",
-      agents: "Agents",
-      about: "About",
-      contact: "Contact",
-      signIn: "Sign In",
-      signOut: "Sign Out",
-      welcome: "Welcome",
-      profile: "Profile",
-      dashboard: "Dashboard",
-      notifications: "Notifications",
-      chat: "AI Chat"
+      Home: "Home",
+      Properties: "Properties",
+      Buy: "Buy",
+      Rent: "Rent",
+      "New Projects": "New Projects",
+      "Pre-launching": "Pre-launching",
+      About: "About",
+      "Add Property": "Add Property",
+      "Switch Language": "Switch to Indonesian",
+      "Sign In": "Sign In",
+      "Sign Out": "Sign Out",
+      Dashboard: "Dashboard",
+      "Admin Panel": "Admin Panel"
     },
     id: {
-      home: "Beranda",
-      properties: "Properti",
-      agents: "Agen",
-      about: "Tentang",
-      contact: "Kontak",
-      signIn: "Masuk",
-      signOut: "Keluar",
-      welcome: "Selamat datang",
-      profile: "Profil",
-      dashboard: "Dasbor",
-      notifications: "Notifikasi",
-      chat: "AI Chat"
+      Home: "Beranda",
+      Properties: "Properti",
+      Buy: "Beli",
+      Rent: "Sewa",
+      "New Projects": "Proyek Baru",
+      "Pre-launching": "Pra-luncur",
+      About: "Tentang",
+      "Add Property": "Tambah Properti",
+      "Switch Language": "Ganti ke Inggris",
+      "Sign In": "Masuk",
+      "Sign Out": "Keluar",
+      Dashboard: "Dashboard",
+      "Admin Panel": "Panel Admin"
     }
   };
 
-  const navigationItems = [
-    { href: "/", label: text[language].home },
-    { href: "/properties", label: text[language].properties },
-    { href: "/agents", label: text[language].agents },
-    { href: "/about", label: text[language].about },
-    { href: "/contact", label: text[language].contact },
+  const navLabels = labels[language];
+
+  const navItems = [
+    { name: navLabels.Home, path: "/", icon: Home, isImplemented: true },
+    { name: navLabels.Properties, path: "/properties", icon: Building, isImplemented: true },
+    { name: navLabels.Buy, path: "/buy", icon: ShoppingCart, isImplemented: true },
+    { name: navLabels.Rent, path: "/rent", icon: KeyRound, isImplemented: true },
+    { name: navLabels["New Projects"], path: "/new-projects", icon: Construction, isImplemented: true },
+    { name: navLabels["Pre-launching"], path: "/pre-launching", icon: Rocket, isImplemented: true },
+    { name: navLabels.About, path: "/about", icon: Info, isImplemented: true },
   ];
 
-  const handleAuthSuccess = () => {
-    console.log('Authentication successful, closing modal and navigating to dashboard');
-    setAuthModalOpen(false);
-    setTimeout(() => {
-      navigate('/dashboard');
-    }, 100);
+  const handleSignOut = async () => {
+    await signOut();
+    setIsOpen(false);
+  };
+
+  const handleComingSoon = (featureName: string) => {
+    toast.info(`${featureName} page is coming soon. Stay tuned!`);
+    setIsOpen(false);
+  };
+
+  const toggleLanguage = () => {
+    setLanguage(language === "en" ? "id" : "en");
+  };
+
+  const handleAddPropertyClick = () => {
+    if (user) {
+      navigate('/add-property');
+    } else {
+      setShowAuthModal(true);
+    }
+    setIsOpen(false);
   };
 
   return (
     <>
-      <nav className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-40 backdrop-blur-lg bg-white/90 dark:bg-gray-900/90">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            {/* Logo */}
-            <div className="flex-shrink-0">
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-orange-500 bg-clip-text text-transparent">
-                Astra Villa
-              </h1>
-            </div>
+      <TooltipProvider delayDuration={100}>
+        <nav className="nav-ios sticky top-0 z-50">
+          <div className="max-w-7xl mx-auto px-3 sm:px-4">
+            <div className="flex justify-between h-14">
+              {/* Logo */}
+              <div className="flex items-center">
+                <Link to="/" className="flex-shrink-0 flex items-center group">
+                  <div className="flex items-center space-x-2">
+                    <div className="relative">
+                      <Rocket className="w-6 h-6 text-primary-dynamic animate-pulse" />
+                      <div className="absolute inset-0 w-6 h-6 bg-primary-dynamic/20 rounded-full animate-ping delay-500"></div>
+                    </div>
+                    <span className="text-lg font-bold">
+                      <span className="inline-block animate-gradient bg-gradient-to-r from-blue-400 via-purple-400 to-orange-400 bg-clip-text text-transparent bg-[length:300%_300%] hover:scale-105 transition-transform duration-300 group-hover:from-purple-400 group-hover:via-blue-400 group-hover:to-orange-400">
+                        Astra Villa
+                      </span>
+                    </span>
+                  </div>
+                </Link>
+              </div>
 
-            {/* Desktop Navigation */}
-            <div className="hidden md:block">
-              <div className="ml-10 flex items-baseline space-x-4">
-                {navigationItems.map((item) => (
-                  <a
-                    key={item.href}
-                    href={item.href}
-                    className="text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 rounded-md text-sm font-medium transition-colors"
-                  >
-                    {item.label}
-                  </a>
+              {/* Desktop Navigation - Icon only */}
+              <div className="hidden md:flex items-center space-x-1">
+                {navItems.map((item) => (
+                  <Tooltip key={item.name}>
+                    <TooltipTrigger asChild>
+                      {item.isImplemented ? (
+                        <Link
+                          to={item.path}
+                          className={`flex items-center justify-center p-2 text-sm font-medium transition-all duration-300 rounded-xl transform hover:scale-110 ${
+                            location.pathname === item.path
+                              ? "text-primary-dynamic bg-primary-dynamic/10"
+                              : "text-gray-600 dark:text-gray-300 hover:text-primary-dynamic hover:bg-gray-100 dark:hover:bg-gray-800"
+                          }`}
+                        >
+                          <item.icon className="h-5 w-5" />
+                          <span className="sr-only">{item.name}</span>
+                        </Link>
+                      ) : (
+                        <button
+                          onClick={() => handleComingSoon(item.name)}
+                          className="flex items-center justify-center p-2 text-sm font-medium transition-all duration-300 rounded-xl text-gray-600 dark:text-gray-300 hover:text-primary-dynamic hover:bg-gray-100 dark:hover:bg-gray-800 transform hover:scale-110"
+                        >
+                          <item.icon className="h-5 w-5" />
+                          <span className="sr-only">{item.name}</span>
+                        </button>
+                      )}
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>{item.name}</p>
+                    </TooltipContent>
+                  </Tooltip>
                 ))}
+
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={handleAddPropertyClick}
+                      className="flex items-center justify-center p-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl hover:from-blue-600 hover:to-purple-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-110"
+                    >
+                      <Plus className="h-5 w-5" />
+                      <span className="sr-only">{navLabels["Add Property"]}</span>
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>{navLabels["Add Property"]}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </div>
+
+              {/* Right side controls */}
+              <div className="hidden md:flex items-center space-x-3">
+                <LanguageToggleSwitch />
+                <ThemeToggleSwitch language={language} showLabel={false} className="bg-transparent border-transparent hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl" />
+
+                {/* ASTRA Wallet Button - Only for authenticated users */}
+                {user && <WalletButton />}
+
+                {user ? (
+                  <div className="flex items-center space-x-1">
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Link
+                          to="/dashboard"
+                          className="flex items-center p-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-primary-dynamic hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-300 rounded-xl transform hover:scale-110"
+                        >
+                          <User className="w-5 h-5" />
+                          <span className="sr-only">Dashboard</span>
+                        </Link>
+                      </TooltipTrigger>
+                      <TooltipContent><p>{navLabels.Dashboard}</p></TooltipContent>
+                    </Tooltip>
+
+                    {/* Admin Panel Link - Only for admins */}
+                    {isAdmin && (
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Link
+                            to="/admin"
+                            className="flex items-center p-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-primary-dynamic hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-300 rounded-xl transform hover:scale-110"
+                          >
+                            <Bot className="w-5 h-5" />
+                            <span className="sr-only">Admin Panel</span>
+                          </Link>
+                        </TooltipTrigger>
+                        <TooltipContent><p>{navLabels["Admin Panel"]}</p></TooltipContent>
+                      </Tooltip>
+                    )}
+
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          onClick={handleSignOut}
+                          variant="ghost"
+                          size="icon"
+                          className="text-gray-600 dark:text-gray-300 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transform hover:scale-110 transition-transform"
+                        >
+                          <LogOut className="w-5 h-5" />
+                          <span className="sr-only">Sign Out</span>
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent><p>Sign Out</p></TooltipContent>
+                    </Tooltip>
+                  </div>
+                ) : (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        onClick={() => setShowAuthModal(true)}
+                        size="icon"
+                        className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-xl p-2.5 shadow-lg hover:shadow-xl transform hover:scale-110 transition-all duration-300"
+                      >
+                        <LogIn className="w-5 h-5" />
+                        <span className="sr-only">Sign In</span>
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent><p>Sign In</p></TooltipContent>
+                  </Tooltip>
+                )}
+              </div>
+
+              {/* Mobile menu button */}
+              <div className="md:hidden flex items-center space-x-2">
+                <div className="bg-transparent">
+                  <ThemeToggleSwitch language={language} className="scale-90 bg-transparent border-transparent hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg" />
+                </div>
+
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setIsOpen(!isOpen)}
+                  className="text-gray-600 dark:text-gray-300 hover:text-primary-dynamic hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl p-2"
+                >
+                  {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+                </Button>
               </div>
             </div>
-
-            {/* Desktop Auth & Settings */}
-            <div className="hidden md:flex items-center space-x-3">
-              <LanguageToggleSwitch />
-              <ThemeToggleSwitch />
-              
-              {isAuthenticated && user ? (
-                <div className="flex items-center space-x-3">
-                  <Button 
-                    variant="ghost" 
-                    size="sm"
-                    onClick={() => navigate('/notifications')}
-                  >
-                    <Bell className="h-4 w-4" />
-                  </Button>
-                  <Button 
-                    variant="ghost" 
-                    size="sm"
-                    onClick={() => navigate('/chat')}
-                  >
-                    <MessageSquare className="h-4 w-4" />
-                  </Button>
-                  
-                  {/* Session Manager Button - only show if multiple sessions detected */}
-                  {hasMultipleSessions && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setSessionManagerOpen(true)}
-                      className="flex items-center space-x-1 text-orange-600 hover:text-orange-700 hover:bg-orange-50"
-                    >
-                      <Shield className="h-4 w-4" />
-                      <span>Sessions</span>
-                    </Button>
-                  )}
-                  
-                  {/* User Dropdown Menu */}
-                  <UserDropdownMenu language={language} />
-                </div>
-              ) : (
-                <Button
-                  onClick={() => setAuthModalOpen(true)}
-                  className="bg-gradient-to-r from-blue-600 to-orange-500 hover:from-blue-700 hover:to-orange-600"
-                >
-                  {text[language].signIn}
-                </Button>
-              )}
-            </div>
-
-            {/* Mobile menu button */}
-            <div className="md:hidden">
-              <Sheet>
-                <SheetTrigger asChild>
-                  <Button variant="ghost" size="sm">
-                    <Menu className="h-6 w-6" />
-                  </Button>
-                </SheetTrigger>
-                <SheetContent side="right" className="w-80">
-                  <div className="flex flex-col space-y-4 mt-8">
-                    {/* Mobile Navigation Items */}
-                    {navigationItems.map((item) => (
-                      <a
-                        key={item.href}
-                        href={item.href}
-                        className="text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 rounded-md text-base font-medium transition-colors"
-                      >
-                        {item.label}
-                      </a>
-                    ))}
-                    
-                    <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
-                      <div className="flex justify-between items-center mb-4">
-                        <LanguageToggleSwitch />
-                        <ThemeToggleSwitch />
-                      </div>
-                      
-                      {isAuthenticated && user ? (
-                        <div className="space-y-3">
-                          {hasMultipleSessions && (
-                            <Button
-                              variant="outline"
-                              onClick={() => setSessionManagerOpen(true)}
-                              className="w-full flex items-center justify-center space-x-2 text-orange-600 hover:text-orange-700 hover:bg-orange-50"
-                            >
-                              <Shield className="h-4 w-4" />
-                              <span>Manage Sessions</span>
-                            </Button>
-                          )}
-                          
-                          {/* Mobile User Menu */}
-                          <UserDropdownMenu language={language} />
-                        </div>
-                      ) : (
-                        <Button
-                          onClick={() => setAuthModalOpen(true)}
-                          className="w-full bg-gradient-to-r from-blue-600 to-orange-500 hover:from-blue-700 hover:to-orange-600"
-                        >
-                          {text[language].signIn}
-                        </Button>
-                      )}
-                    </div>
-                  </div>
-                </SheetContent>
-              </Sheet>
-            </div>
           </div>
-        </div>
-      </nav>
 
-      {/* Enhanced Secure Auth Modal */}
-      <EnhancedSecureAuthModal
-        isOpen={authModalOpen}
-        onClose={() => setAuthModalOpen(false)}
-        onAuthSuccess={handleAuthSuccess}
-        language={language}
-      />
+          {/* Mobile Navigation */}
+          {isOpen && (
+            <div className="md:hidden glass-card-dark border-t border-white/10 backdrop-blur-xl bg-white/90 dark:bg-gray-900/90">
+              <div className="px-3 pt-2 pb-3 space-y-1">
+                {navItems.map((item) =>
+                  item.isImplemented ? (
+                    <Link
+                      key={item.name}
+                      to={item.path}
+                      className={`flex items-center gap-3 px-4 py-3 text-base font-medium transition-all duration-300 rounded-xl ${
+                        location.pathname === item.path
+                          ? "text-primary-dynamic bg-primary-dynamic/10 border border-primary-dynamic/20"
+                          : "text-gray-600 dark:text-gray-300 hover:text-primary-dynamic hover:bg-gray-100 dark:hover:bg-gray-800"
+                      }`}
+                      onClick={() => setIsOpen(false)}
+                    >
+                      <item.icon className="h-5 w-5" />
+                      <span>{item.name}</span>
+                    </Link>
+                  ) : (
+                    <button
+                      key={item.name}
+                      onClick={() => handleComingSoon(item.name)}
+                      className="flex items-center gap-3 px-4 py-3 text-base font-medium text-gray-600 dark:text-gray-300 hover:text-primary-dynamic hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-300 rounded-xl w-full"
+                    >
+                      <item.icon className="h-5 w-5" />
+                      <span>{item.name}</span>
+                    </button>
+                  )
+                )}
 
-      {/* Session Manager Modal */}
-      <SessionManager
-        isOpen={sessionManagerOpen}
-        onClose={() => setSessionManagerOpen(false)}
-      />
+                {/* Mobile Add Property Button */}
+                <button
+                  onClick={handleAddPropertyClick}
+                  className="flex items-center gap-3 px-4 py-3 text-base font-medium text-white bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 transition-all duration-300 rounded-xl shadow-lg w-full"
+                >
+                  <Plus className="h-5 w-5" />
+                  {navLabels["Add Property"]}
+                </button>
+
+                {/* Mobile Wallet Button - Only for authenticated users */}
+                {user && (
+                  <div className="px-4 py-2">
+                    <WalletButton />
+                  </div>
+                )}
+
+                {/* Mobile Language Toggle */}
+                <Button
+                  variant="ghost"
+                  onClick={toggleLanguage}
+                  className="w-full justify-start text-gray-600 dark:text-gray-300 hover:text-primary-dynamic hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl px-4 py-3"
+                >
+                  <Globe className="h-5 w-5 mr-3" />
+                  Language: {language.toUpperCase()}
+                </Button>
+
+                {user ? (
+                  <>
+                    <Link
+                      to="/dashboard"
+                      className="flex items-center gap-3 px-4 py-3 text-base font-medium text-gray-600 dark:text-gray-300 hover:text-primary-dynamic hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-300 rounded-xl"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      <User className="h-5 w-5" />
+                      {navLabels.Dashboard}
+                    </Link>
+
+                    {/* Mobile Admin Panel Link - Only for admins */}
+                    {isAdmin && (
+                      <Link
+                        to="/admin"
+                        className="flex items-center gap-3 px-4 py-3 text-base font-medium text-gray-600 dark:text-gray-300 hover:text-primary-dynamic hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-300 rounded-xl"
+                        onClick={() => setIsOpen(false)}
+                      >
+                        <Bot className="h-5 w-5" />
+                        {navLabels["Admin Panel"]}
+                      </Link>
+                    )}
+
+                    <button
+                      onClick={handleSignOut}
+                      className="flex items-center gap-3 w-full px-4 py-3 text-base font-medium text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-300 rounded-xl"
+                    >
+                      <LogOut className="w-5 h-5" />
+                      {navLabels["Sign Out"]}
+                    </button>
+                  </>
+                ) : (
+                  <Button
+                    onClick={() => {
+                      setShowAuthModal(true);
+                      setIsOpen(false);
+                    }}
+                    className="w-full mt-2 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-xl py-3 shadow-lg"
+                  >
+                    {navLabels["Sign In"]}
+                  </Button>
+                )}
+              </div>
+            </div>
+          )}
+        </nav>
+
+        <RoleBasedAuthModal 
+          isOpen={showAuthModal} 
+          onClose={() => setShowAuthModal(false)} 
+        />
+      </TooltipProvider>
     </>
   );
 };

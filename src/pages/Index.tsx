@@ -1,7 +1,7 @@
+
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useSearchParams } from "react-router-dom";
-import RoleBasedNavigation from "@/components/RoleBasedNavigation";
+import Navigation from "@/components/Navigation";
 import EnhancedModernSearchPanel from "@/components/EnhancedModernSearchPanel";
 import PropertyListingsSection from "@/components/PropertyListingsSection";
 import ProfessionalFooter from "@/components/ProfessionalFooter";
@@ -9,23 +9,13 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import ResponsiveAIChatWidget from "@/components/ai/ResponsiveAIChatWidget";
 import { supabase } from "@/integrations/supabase/client";
 import RecommendedProperties from "@/components/property/RecommendedProperties";
-import UnifiedAuthModal from "@/components/auth/UnifiedAuthModal";
 
 const Index = () => {
   const { language } = useLanguage();
-  const [searchParams] = useSearchParams();
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
-  const [showAuthModal, setShowAuthModal] = useState(false);
-
-  // Check for auth parameter in URL
-  useEffect(() => {
-    if (searchParams.get('auth') === 'true') {
-      setShowAuthModal(true);
-    }
-  }, [searchParams]);
 
   // Fetch featured properties
   const { data: featuredProperties = [], isLoading: isFeaturedLoading } = useQuery({
@@ -130,16 +120,10 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <RoleBasedNavigation
-        language="en"
-        onLanguageToggle={() => {}}
-        theme="light"
-        onThemeToggle={() => {}}
-        onLoginClick={() => setShowAuthModal(true)}
-      />
+      <Navigation />
       
       {/* Hero Section with Search - Mobile Optimized */}
-      <section className="relative bg-gradient-to-br from-blue-600 via-purple-600 to-orange-500 text-white py-8 sm:py-12 lg:py-16 px-2 sm:px-4 pt-20">
+      <section className="relative bg-gradient-to-br from-blue-600 via-purple-600 to-orange-500 text-white py-8 sm:py-12 lg:py-16 px-2 sm:px-4">
         <div className="container mx-auto text-center">
           <h1 className="text-2xl sm:text-3xl lg:text-5xl font-bold mb-4 sm:mb-6 animate-fade-in px-2">
             {language === "en" ? "Find Your Dream Property" : "Temukan Properti Impian Anda"}
@@ -200,12 +184,6 @@ const Index = () => {
 
       {/* Footer */}
       <ProfessionalFooter language={language} />
-
-      {/* Auth Modal */}
-      <UnifiedAuthModal 
-        isOpen={showAuthModal} 
-        onClose={() => setShowAuthModal(false)} 
-      />
     </div>
   );
 };
