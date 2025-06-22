@@ -66,6 +66,7 @@ class ASTRATokenAPI {
         ...options,
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${this.apiKey}`,
           'x-api-key': this.apiKey,
           ...options.headers,
         },
