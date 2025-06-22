@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, User, LogOut, Search, MessageSquare, Bell } from "lucide-react";
@@ -128,7 +127,7 @@ const Navigation = () => {
                     <MessageSquare className="h-4 w-4" />
                   </Button>
                   
-                  {/* User Welcome & Dashboard */}
+                  {/* Dashboard Button */}
                   <Button
                     variant="outline"
                     size="sm"
@@ -137,17 +136,6 @@ const Navigation = () => {
                   >
                     <User className="h-4 w-4" />
                     <span>{text[language].welcome}, {profile?.full_name || user?.email?.split('@')[0]}</span>
-                  </Button>
-
-                  {/* Dashboard Button */}
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={handleDashboard}
-                    className="flex items-center space-x-1"
-                  >
-                    <MessageSquare className="h-4 w-4" />
-                    <span>{text[language].dashboard}</span>
                   </Button>
                   
                   {/* Logout Button */}

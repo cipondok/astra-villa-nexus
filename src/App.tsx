@@ -12,6 +12,7 @@ import PropertyDetail from "@/pages/PropertyDetail";
 import AddProperty from "@/pages/AddProperty";
 import UserDashboard from "@/pages/UserDashboard";
 import AdminDashboard from "@/pages/AdminDashboard";
+import Dashboard from "@/pages/Dashboard";
 import About from "@/pages/About";
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -33,7 +34,12 @@ function App() {
                       <Route path="/properties" element={<Properties />} />
                       <Route path="/property/:id" element={<PropertyDetail />} />
                       <Route path="/add-property" element={<AddProperty />} />
-                      <Route path="/dashboard" element={<UserDashboard />} />
+                      <Route path="/dashboard" element={<Dashboard />} />
+                      <Route path="/dashboard/user" element={<UserDashboard />} />
+                      <Route path="/dashboard/admin" element={<AdminDashboard />} />
+                      <Route path="/dashboard/agent" element={<UserDashboard />} />
+                      <Route path="/dashboard/vendor" element={<UserDashboard />} />
+                      <Route path="/dashboard/property-owner" element={<UserDashboard />} />
                       <Route path="/admin/*" element={<AdminDashboard />} />
                       <Route path="/about" element={<About />} />
                     </Routes>
