@@ -39,7 +39,7 @@ export const useSessionMonitoring = () => {
     try {
       const deviceInfo = getDeviceInfo();
       const sessionToken = `token_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-      const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(); // 24 hours from now
+      const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
       
       // Update current session
       await supabase
@@ -70,8 +70,22 @@ export const useSessionMonitoring = () => {
         return;
       }
 
-      const otherSessions = sessions?.filter(session => session.id !== currentSessionId) || [];
-      setActiveSessions(sessions || []);
+      // Transform the data to match our interface
+      const transformedSessions: ActiveSession[] = (sessions || []).map(session => ({
+        id: session.id,
+        user_id: session.user_id,
+        device_fingerprint: session.device_fingerprint,
+        user_agent: session.user_agent,
+        expires_at: session.expires_at,
+        created_at: session.created_at,
+        session_token: session.session_token,
+        ip_address: session.ip_address ? String(session.ip_address) : undefined,
+        is_active: session.is_active,
+        location_data: session.location_data
+      }));
+
+      const otherSessions = transformedSessions.filter(session => session.id !== currentSessionId);
+      setActiveSessions(transformedSessions);
       
       if (otherSessions.length > 0 && !hasMultipleSessions) {
         setHasMultipleSessions(true);
