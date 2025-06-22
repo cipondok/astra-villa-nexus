@@ -17,13 +17,17 @@ export const useAstraToken = () => {
 
     setIsLoading(true);
     try {
+      console.log('Fetching balance for user:', user.id);
       const response = await astraAPI.getUserBalance(user.id);
+      console.log('Balance response:', response);
       if (response.success && response.data) {
         setBalance(response.data.balance);
       } else {
+        console.error('Balance fetch failed:', response.error);
         toast.error('Failed to fetch balance: ' + response.error);
       }
     } catch (error) {
+      console.error('Balance fetch error:', error);
       toast.error('Error fetching balance');
     } finally {
       setIsLoading(false);
@@ -36,13 +40,17 @@ export const useAstraToken = () => {
 
     setIsLoading(true);
     try {
+      console.log('Fetching transactions for user:', user.id);
       const response = await astraAPI.getTransactionHistory(user.id, limit);
+      console.log('Transactions response:', response);
       if (response.success && response.data) {
         setTransactions(response.data);
       } else {
+        console.error('Transactions fetch failed:', response.error);
         toast.error('Failed to fetch transactions: ' + response.error);
       }
     } catch (error) {
+      console.error('Transactions fetch error:', error);
       toast.error('Error fetching transactions');
     } finally {
       setIsLoading(false);
@@ -130,6 +138,7 @@ export const useAstraToken = () => {
   // Load initial data
   useEffect(() => {
     if (user?.id) {
+      console.log('User authenticated, fetching data for:', user.id);
       fetchBalance();
       fetchTransactions(10); // Last 10 transactions
     }
