@@ -7,9 +7,9 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Search, Grid3X3, List, SlidersHorizontal, Coins } from 'lucide-react';
-import { astraAPI, Property } from '@/services/astraTokenAPI';
-import AstraPropertyCard from '@/components/astra/AstraPropertyCard';
+import { Search, Grid3X3, List, SlidersHorizontal, CreditCard } from 'lucide-react';
+import { astraPaymentAPI, Property } from '@/services/astraPaymentAPI';
+import AstraPaymentPropertyCard from '@/components/astra/AstraPaymentPropertyCard';
 import Navigation from '@/components/Navigation';
 import { toast } from 'sonner';
 
@@ -23,19 +23,20 @@ const PropertyListings = () => {
     bedrooms: '',
     bathrooms: '',
     location: '',
+    currency: '',
   });
-  const [sortBy, setSortBy] = useState('price_astra');
+  const [sortBy, setSortBy] = useState('price');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
   const { data: properties = [], isLoading, error, refetch } = useQuery({
-    queryKey: ['properties', filters, searchQuery],
+    queryKey: ['payment-properties', filters, searchQuery],
     queryFn: async () => {
       const searchFilters = {
         ...filters,
         search: searchQuery,
       };
       
-      const response = await astraAPI.getProperties(50, searchFilters);
+      const response = await astraPaymentAPI.getProperties(50, searchFilters);
       
       if (!response.success) {
         toast.error(`Failed to fetch properties: ${response.error}`);
@@ -73,6 +74,7 @@ const PropertyListings = () => {
       bedrooms: '',
       bathrooms: '',
       location: '',
+      currency: '',
     });
     setSearchQuery('');
   };
@@ -104,7 +106,7 @@ const PropertyListings = () => {
           {/* Header */}
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-foreground mb-2">Property Listings</h1>
-            <p className="text-muted-foreground">Discover properties available for purchase with ASTRA tokens</p>
+            <p className="text-muted-foreground">Discover properties available for purchase with multiple payment methods</p>
           </div>
 
           {/* Search and Filters */}
@@ -128,7 +130,7 @@ const PropertyListings = () => {
               </div>
 
               {/* Filters */}
-              <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-7 gap-4">
                 <Select value={filters.property_type} onValueChange={(value) => handleFilterChange('property_type', value)}>
                   <SelectTrigger>
                     <SelectValue placeholder="Property Type" />
@@ -165,15 +167,27 @@ const PropertyListings = () => {
                   </SelectContent>
                 </Select>
 
+                <Select value={filters.currency} onValueChange={(value) => handleFilterChange('currency', value)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Currency" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="USD">USD</SelectItem>
+                    <SelectItem value="EUR">EUR</SelectItem>
+                    <SelectItem value="GBP">GBP</SelectItem>
+                    <SelectItem value="IDR">IDR</SelectItem>
+                  </SelectContent>
+                </Select>
+
                 <Input
-                  placeholder="Min Price (ASTRA)"
+                  placeholder="Min Price"
                   type="number"
                   value={filters.min_price}
                   onChange={(e) => handleFilterChange('min_price', e.target.value)}
                 />
 
                 <Input
-                  placeholder="Max Price (ASTRA)"
+                  placeholder="Max Price"
                   type="number"
                   value={filters.max_price}
                   onChange={(e) => handleFilterChange('max_price', e.target.value)}
@@ -198,7 +212,7 @@ const PropertyListings = () => {
                       <SelectValue placeholder="Sort by" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="price_astra">Price (ASTRA)</SelectItem>
+                      <SelectItem value="price">Price</SelectItem>
                       <SelectItem value="title">Title</SelectItem>
                       <SelectItem value="location">Location</SelectItem>
                       <SelectItem value="bedrooms">Bedrooms</SelectItem>
@@ -223,8 +237,8 @@ const PropertyListings = () => {
           {/* View Toggle and Results Count */}
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-4">
-              <Badge variant="outline" className="bg-orange-50 text-orange-700 border-orange-200">
-                <Coins className="h-3 w-3 mr-1" />
+              <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+                <CreditCard className="h-3 w-3 mr-1" />
                 {sortedProperties.length} Properties Available
               </Badge>
             </div>
@@ -281,7 +295,7 @@ const PropertyListings = () => {
                 : 'grid-cols-1'
             }`}>
               {sortedProperties.map((property) => (
-                <AstraPropertyCard key={property.id} property={property} />
+                <AstraPaymentPropertyCard key={property.id} property={property} />
               ))}
             </div>
           )}
