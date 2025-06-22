@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, User, LogOut, Search, MessageSquare, Bell } from "lucide-react";
@@ -12,18 +13,6 @@ const Navigation = () => {
   const { language } = useLanguage();
   const { user, profile, signOut, isAuthenticated } = useAuth();
   const [authModalOpen, setAuthModalOpen] = useState(false);
-
-  const navigationItems = [
-    { href: "/", label: text[language].home },
-    { href: "/properties", label: text[language].properties },
-    { href: "/agents", label: text[language].agents },
-    { href: "/about", label: text[language].about },
-    { href: "/contact", label: text[language].contact },
-  ];
-
-  const handleSignOut = async () => {
-    await signOut();
-  };
 
   const text = {
     en: {
@@ -54,6 +43,18 @@ const Navigation = () => {
       notifications: "Notifikasi",
       chat: "AI Chat"
     }
+  };
+
+  const navigationItems = [
+    { href: "/", label: text[language].home },
+    { href: "/properties", label: text[language].properties },
+    { href: "/agents", label: text[language].agents },
+    { href: "/about", label: text[language].about },
+    { href: "/contact", label: text[language].contact },
+  ];
+
+  const handleSignOut = async () => {
+    await signOut();
   };
 
   return (
