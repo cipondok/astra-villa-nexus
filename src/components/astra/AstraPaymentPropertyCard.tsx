@@ -3,10 +3,11 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { MapPin, Bed, Bath, Square, CreditCard, ShoppingCart } from 'lucide-react';
+import { MapPin, Bed, Bath, Square, CreditCard, ShoppingCart, LogIn } from 'lucide-react';
 import { Property } from '@/services/astraPaymentAPI';
 import { useAuth } from '@/contexts/AuthContext';
 import PaymentPurchaseModal from '@/components/modals/PaymentPurchaseModal';
+import EnhancedAuthModal from '@/components/auth/EnhancedAuthModal';
 
 interface AstraPaymentPropertyCardProps {
   property: Property;
@@ -15,6 +16,7 @@ interface AstraPaymentPropertyCardProps {
 const AstraPaymentPropertyCard: React.FC<AstraPaymentPropertyCardProps> = ({ property }) => {
   const { isAuthenticated } = useAuth();
   const [showPurchaseModal, setShowPurchaseModal] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
   const formatPrice = (price: number, currency: string) => {
     return new Intl.NumberFormat('en-US', {
@@ -24,6 +26,14 @@ const AstraPaymentPropertyCard: React.FC<AstraPaymentPropertyCardProps> = ({ pro
   };
 
   const isAvailable = property.status === 'available';
+
+  const handlePurchaseClick = () => {
+    if (!isAuthenticated) {
+      setShowAuthModal(true);
+    } else {
+      setShowPurchaseModal(true);
+    }
+  };
 
   return (
     <>
@@ -47,7 +57,7 @@ const AstraPaymentPropertyCard: React.FC<AstraPaymentPropertyCardProps> = ({ pro
             </Badge>
             <Badge variant="outline" className="bg-blue-100 text-blue-800 border-blue-300">
               <CreditCard className="h-3 w-3 mr-1" />
-              Payment
+              Payment Methods
             </Badge>
           </div>
         </div>
@@ -100,14 +110,27 @@ const AstraPaymentPropertyCard: React.FC<AstraPaymentPropertyCardProps> = ({ pro
               )}
             </div>
 
+            {/* Note about ASTRA Token for Vendor Services */}
+            <div className="text-xs text-muted-foreground bg-amber-50 p-2 rounded border border-amber-200">
+              <strong>Note:</strong> ASTRA Tokens are used for vendor services only. Property purchases use standard payment methods.
+            </div>
+
             {isAvailable ? (
               <Button 
                 className="w-full" 
-                disabled={!isAuthenticated}
-                onClick={() => setShowPurchaseModal(true)}
+                onClick={handlePurchaseClick}
               >
-                <ShoppingCart className="h-4 w-4 mr-2" />
-                {!isAuthenticated ? 'Login to Purchase' : 'Purchase Property'}
+                {!isAuthenticated ? (
+                  <>
+                    <LogIn className="h-4 w-4 mr-2" />
+                    Login to Purchase
+                  </>
+                ) : (
+                  <>
+                    <ShoppingCart className="h-4 w-4 mr-2" />
+                    Purchase Property
+                  </>
+                )}
               </Button>
             ) : (
               <Button disabled className="w-full">
@@ -118,6 +141,7 @@ const AstraPaymentPropertyCard: React.FC<AstraPaymentPropertyCardProps> = ({ pro
         </CardContent>
       </Card>
 
+      {/* Purchase Modal for Authenticated Users */}
       <PaymentPurchaseModal
         isOpen={showPurchaseModal}
         onClose={() => setShowPurchaseModal(false)}
@@ -126,6 +150,12 @@ const AstraPaymentPropertyCard: React.FC<AstraPaymentPropertyCardProps> = ({ pro
           setShowPurchaseModal(false);
           // Optionally refresh properties list
         }}
+      />
+
+      {/* Auth Modal for Non-Authenticated Users */}
+      <EnhancedAuthModal
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
       />
     </>
   );

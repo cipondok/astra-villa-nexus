@@ -9,12 +9,14 @@ export const useAstraPayment = () => {
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
   const [transactions, setTransactions] = useState<PaymentTransaction[]>([]);
   const [properties, setProperties] = useState<Property[]>([]);
+  const [vendorServices, setVendorServices] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Fetch payment methods
+  // Fetch payment methods (requires authentication)
   const fetchPaymentMethods = useCallback(async () => {
     if (!user?.id || !isAuthenticated) {
       console.log('No authenticated user, skipping payment methods fetch');
+      setPaymentMethods([]);
       return;
     }
 
@@ -39,10 +41,11 @@ export const useAstraPayment = () => {
     }
   }, [user?.id, isAuthenticated]);
 
-  // Fetch transaction history
+  // Fetch transaction history (requires authentication)
   const fetchTransactions = useCallback(async (limit?: number) => {
     if (!user?.id || !isAuthenticated) {
       console.log('No authenticated user, skipping transactions fetch');
+      setTransactions([]);
       return;
     }
 
@@ -67,7 +70,7 @@ export const useAstraPayment = () => {
     }
   }, [user?.id, isAuthenticated]);
 
-  // Fetch properties
+  // Fetch properties (public access)
   const fetchProperties = useCallback(async (limit?: number, filters?: any) => {
     setIsLoading(true);
     try {
@@ -75,16 +78,35 @@ export const useAstraPayment = () => {
       if (response.success && response.data) {
         setProperties(response.data);
       } else {
-        toast.error('Failed to fetch properties: ' + response.error);
+        console.warn('Properties fetch failed:', response.error);
+        // Don't show error for public property browsing
       }
     } catch (error) {
-      toast.error('Error fetching properties');
+      console.warn('Error fetching properties:', error);
+      // Don't show error for public property browsing
     } finally {
       setIsLoading(false);
     }
   }, []);
 
-  // Purchase property with payment
+  // Fetch vendor services (public access for browsing)
+  const fetchVendorServices = useCallback(async (vendorId?: string, limit?: number) => {
+    setIsLoading(true);
+    try {
+      const response = await astraPaymentAPI.getVendorServices(vendorId, limit);
+      if (response.success && response.data) {
+        setVendorServices(response.data);
+      } else {
+        console.warn('Vendor services fetch failed:', response.error);
+      }
+    } catch (error) {
+      console.warn('Error fetching vendor services:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  // Purchase property with standard payment methods (requires authentication)
   const purchaseProperty = useCallback(async (
     property: Property, 
     paymentMethodId: string
@@ -121,7 +143,46 @@ export const useAstraPayment = () => {
     }
   }, [user?.id, isAuthenticated]);
 
-  // Add payment method
+  // Pay for vendor service with ASTRA Token (requires authentication)
+  const payWithAstraToken = useCallback(async (
+    serviceId: string,
+    vendorId: string,
+    amount: number,
+    serviceType: string
+  ) => {
+    if (!user?.id || !isAuthenticated) {
+      toast.error('Please log in to use ASTRA Token payments');
+      return false;
+    }
+
+    setIsLoading(true);
+    try {
+      const response = await astraPaymentAPI.payWithAstraToken(
+        serviceId,
+        vendorId,
+        user.id,
+        amount,
+        serviceType
+      );
+
+      if (response.success && response.data) {
+        toast.success('ASTRA Token payment completed successfully!');
+        // Refresh transaction history
+        await fetchTransactions(10);
+        return true;
+      } else {
+        toast.error('ASTRA Token payment failed: ' + response.error);
+        return false;
+      }
+    } catch (error) {
+      toast.error('Error processing ASTRA Token payment');
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
+  }, [user?.id, isAuthenticated, fetchTransactions]);
+
+  // Add payment method (requires authentication)
   const addPaymentMethod = useCallback(async (paymentData: Partial<PaymentMethod>) => {
     if (!user?.id || !isAuthenticated) return false;
 
@@ -144,32 +205,35 @@ export const useAstraPayment = () => {
     }
   }, [user?.id, isAuthenticated, fetchPaymentMethods]);
 
-  // Load initial data
+  // Load data based on authentication status
   useEffect(() => {
+    // Always fetch properties (public access)
+    fetchProperties();
+    fetchVendorServices();
+
     if (user?.id && isAuthenticated) {
       console.log('User authenticated, fetching payment data for:', user.id);
       fetchPaymentMethods();
       fetchTransactions(10);
     } else {
-      console.log('User not authenticated, clearing data');
+      console.log('User not authenticated, clearing private data');
       setPaymentMethods([]);
       setTransactions([]);
     }
-  }, [user?.id, isAuthenticated, fetchPaymentMethods, fetchTransactions]);
-
-  useEffect(() => {
-    fetchProperties();
-  }, [fetchProperties]);
+  }, [user?.id, isAuthenticated, fetchPaymentMethods, fetchTransactions, fetchProperties, fetchVendorServices]);
 
   return {
     paymentMethods,
     transactions,
     properties,
+    vendorServices,
     isLoading,
     purchaseProperty,
+    payWithAstraToken,
     addPaymentMethod,
     fetchPaymentMethods,
     fetchTransactions,
     fetchProperties,
+    fetchVendorServices,
   };
 };

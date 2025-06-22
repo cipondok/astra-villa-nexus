@@ -106,10 +106,20 @@ class AstraPaymentAPI {
 
   private async makeRequest<T>(
     endpoint: string, 
-    options: RequestInit = {}
+    options: RequestInit = {},
+    requireAuth: boolean = true
   ): Promise<APIResponse<T>> {
     try {
-      const headers = await this.getAuthHeaders();
+      let headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+        'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp5bXJhanV1eXlma3pkbXB0ZWJsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkxNDM5NjksImV4cCI6MjA2NDcxOTk2OX0.jcdUvzLIWj7b0ay5UvuzJ7RVsAzkSWQQ_-o83kNaYYk',
+      };
+
+      // Only add auth headers if authentication is required
+      if (requireAuth) {
+        const authHeaders = await this.getAuthHeaders();
+        headers = { ...headers, ...authHeaders };
+      }
       
       console.log('Making ASTRA Payment API request to:', `${this.baseURL}${endpoint}`);
 
@@ -158,19 +168,19 @@ class AstraPaymentAPI {
     }
   }
 
-  // Payment Methods
+  // Payment Methods (requires authentication)
   async getPaymentMethods(userId: string): Promise<APIResponse<PaymentMethod[]>> {
-    return this.makeRequest<PaymentMethod[]>(`/payment-methods?userId=${userId}`);
+    return this.makeRequest<PaymentMethod[]>(`/payment-methods?userId=${userId}`, {}, true);
   }
 
   async addPaymentMethod(userId: string, paymentData: Partial<PaymentMethod>): Promise<APIResponse<PaymentMethod>> {
     return this.makeRequest<PaymentMethod>('/payment-methods', {
       method: 'POST',
       body: JSON.stringify({ userId, ...paymentData }),
-    });
+    }, true);
   }
 
-  // Properties
+  // Properties (public access for browsing, auth required for purchasing)
   async getProperties(limit?: number, filters?: any): Promise<APIResponse<Property[]>> {
     const params = new URLSearchParams();
     if (limit) params.append('limit', limit.toString());
@@ -180,14 +190,16 @@ class AstraPaymentAPI {
       });
     }
     const queryString = params.toString() ? `?${params}` : '';
-    return this.makeRequest<Property[]>(`/properties${queryString}`);
+    // Public access for browsing properties
+    return this.makeRequest<Property[]>(`/properties${queryString}`, {}, false);
   }
 
   async getProperty(propertyId: string): Promise<APIResponse<Property>> {
-    return this.makeRequest<Property>(`/properties/${propertyId}`);
+    // Public access for viewing individual properties
+    return this.makeRequest<Property>(`/properties/${propertyId}`, {}, false);
   }
 
-  // Payments
+  // Payments (requires authentication)
   async initiatePayment(
     propertyId: string,
     userId: string,
@@ -204,24 +216,54 @@ class AstraPaymentAPI {
         amount,
         currency,
       }),
-    });
+    }, true);
   }
 
   async confirmPayment(transactionId: string): Promise<APIResponse<PaymentTransaction>> {
     return this.makeRequest<PaymentTransaction>(`/payments/confirm/${transactionId}`, {
       method: 'POST',
-    });
+    }, true);
   }
 
   async getTransactionHistory(userId: string, limit?: number): Promise<APIResponse<PaymentTransaction[]>> {
     const params = new URLSearchParams({ userId });
     if (limit) params.append('limit', limit.toString());
-    return this.makeRequest<PaymentTransaction[]>(`/transactions?${params}`);
+    return this.makeRequest<PaymentTransaction[]>(`/transactions?${params}`, {}, true);
   }
 
-  // User Management
+  // User Management (requires authentication)
   async getUser(userId: string): Promise<APIResponse<User>> {
-    return this.makeRequest<User>(`/users/${userId}`);
+    return this.makeRequest<User>(`/users/${userId}`, {}, true);
+  }
+
+  // Vendor Services with ASTRA Token payments (requires authentication)
+  async payWithAstraToken(
+    serviceId: string,
+    vendorId: string,
+    userId: string,
+    amount: number,
+    serviceType: string
+  ): Promise<APIResponse<{ transactionId: string; status: string }>> {
+    return this.makeRequest<{ transactionId: string; status: string }>('/vendor-payments/astra-token', {
+      method: 'POST',
+      body: JSON.stringify({
+        serviceId,
+        vendorId,
+        userId,
+        amount,
+        serviceType,
+        paymentType: 'astra_token'
+      }),
+    }, true);
+  }
+
+  async getVendorServices(vendorId?: string, limit?: number): Promise<APIResponse<any[]>> {
+    const params = new URLSearchParams();
+    if (vendorId) params.append('vendorId', vendorId);
+    if (limit) params.append('limit', limit.toString());
+    const queryString = params.toString() ? `?${params}` : '';
+    // Public access for browsing vendor services
+    return this.makeRequest<any[]>(`/vendor-services${queryString}`, {}, false);
   }
 }
 
