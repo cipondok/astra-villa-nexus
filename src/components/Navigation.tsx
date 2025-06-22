@@ -169,7 +169,7 @@ const Navigation = () => {
                 <ThemeToggleSwitch language={language} />
                 
                 {/* Language Toggle */}
-                <LanguageToggleSwitch onToggle={toggleLanguage} />
+                <LanguageToggleSwitch />
 
                 {/* Authentication Section */}
                 {user ? (

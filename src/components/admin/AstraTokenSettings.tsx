@@ -6,9 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { supabase } from "@/integrations/supabase/client";
 import { useAlert } from "@/contexts/AlertContext";
-import { Coins, Settings } from "lucide-react";
+import { Coins, Settings, AlertTriangle } from "lucide-react";
 
 interface TokenSettingValue {
   amount?: number;
@@ -21,8 +22,8 @@ interface TokenSettingValue {
 
 interface TokenSetting {
   id: string;
-  setting_key: string;
-  setting_value: TokenSettingValue;
+  key: string;
+  value: TokenSettingValue;
   description: string;
 }
 
@@ -34,19 +35,25 @@ const AstraTokenSettings = () => {
     queryKey: ['astra-token-settings'],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('astra_token_settings')
+        .from('system_settings')
         .select('*')
-        .order('setting_key');
+        .like('key', 'astra_token_%')
+        .eq('category', 'astra_tokens');
       
       if (error) throw error;
-      return data as TokenSetting[];
+      return data?.map(setting => ({
+        id: setting.id,
+        key: setting.key,
+        value: setting.value as TokenSettingValue,
+        description: setting.description || ''
+      })) as TokenSetting[];
     },
   });
 
   const updateSettingMutation = useMutation({
     mutationFn: async ({ id, updates }: { id: string; updates: any }) => {
       const { error } = await supabase
-        .from('astra_token_settings')
+        .from('system_settings')
         .update(updates)
         .eq('id', id);
       
@@ -63,27 +70,28 @@ const AstraTokenSettings = () => {
   });
 
   const handleSettingUpdate = (setting: TokenSetting, key: string, value: any) => {
-    const newValue = { ...setting.setting_value };
+    const newValue = { ...setting.value };
     newValue[key] = key === 'enabled' ? value : Number(value);
     
     updateSettingMutation.mutate({
       id: setting.id,
-      updates: { setting_value: newValue }
+      updates: { value: newValue }
     });
   };
 
   const renderSettingInputs = (setting: TokenSetting) => {
-    const value = setting.setting_value as TokenSettingValue;
+    const value = setting.value as TokenSettingValue;
     
     return (
-      <div className="space-y-4">
+      <div className="space-y-4 opacity-50">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="font-medium">{setting.setting_key.replace(/_/g, ' ').toUpperCase()}</h3>
+            <h3 className="font-medium">{setting.key.replace(/astra_token_|_/g, ' ').toUpperCase()}</h3>
             <p className="text-sm text-muted-foreground">{setting.description}</p>
           </div>
           <Switch
             checked={value?.enabled || false}
+            disabled={true}
             onCheckedChange={(enabled) => handleSettingUpdate(setting, 'enabled', enabled)}
           />
         </div>
@@ -98,6 +106,7 @@ const AstraTokenSettings = () => {
                 <Input
                   type="number"
                   value={val as string}
+                  disabled={true}
                   onChange={(e) => handleSettingUpdate(setting, key, e.target.value)}
                   placeholder={`Enter ${key}`}
                 />
@@ -127,10 +136,17 @@ const AstraTokenSettings = () => {
           ASTRA Token Configuration
         </CardTitle>
         <CardDescription>
-          Configure token rewards, pricing, and limits
+          Configure token rewards, pricing, and limits (Currently Disabled)
         </CardDescription>
       </CardHeader>
       <CardContent>
+        <Alert className="mb-6">
+          <AlertTriangle className="h-4 w-4" />
+          <AlertDescription>
+            ASTRA Token system is currently disabled. Enable it through Tools Management to activate these features.
+          </AlertDescription>
+        </Alert>
+        
         <div className="space-y-6">
           {tokenSettings?.map((setting) => (
             <div key={setting.id} className="p-4 border rounded-lg">
