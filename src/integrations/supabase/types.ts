@@ -394,81 +394,6 @@ export type Database = {
         }
         Relationships: []
       }
-      astra_token_settings: {
-        Row: {
-          created_at: string | null
-          description: string | null
-          id: string
-          setting_key: string
-          setting_value: Json
-          updated_at: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          description?: string | null
-          id?: string
-          setting_key: string
-          setting_value: Json
-          updated_at?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          description?: string | null
-          id?: string
-          setting_key?: string
-          setting_value?: Json
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
-      astra_token_transactions: {
-        Row: {
-          admin_id: string | null
-          amount: number
-          created_at: string | null
-          description: string | null
-          id: string
-          reference_id: string | null
-          transaction_type: string
-          vendor_id: string | null
-        }
-        Insert: {
-          admin_id?: string | null
-          amount: number
-          created_at?: string | null
-          description?: string | null
-          id?: string
-          reference_id?: string | null
-          transaction_type: string
-          vendor_id?: string | null
-        }
-        Update: {
-          admin_id?: string | null
-          amount?: number
-          created_at?: string | null
-          description?: string | null
-          id?: string
-          reference_id?: string | null
-          transaction_type?: string
-          vendor_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "astra_token_transactions_admin_id_fkey"
-            columns: ["admin_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "astra_token_transactions_vendor_id_fkey"
-            columns: ["vendor_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       billing_plans: {
         Row: {
           billing_cycle: string | null
@@ -733,30 +658,6 @@ export type Database = {
           total_visitors?: number | null
           unique_visitors?: number | null
           updated_at?: string
-        }
-        Relationships: []
-      }
-      daily_check_ins: {
-        Row: {
-          check_in_date: string
-          created_at: string
-          id: string
-          tokens_awarded: number
-          user_id: string
-        }
-        Insert: {
-          check_in_date?: string
-          created_at?: string
-          id?: string
-          tokens_awarded?: number
-          user_id: string
-        }
-        Update: {
-          check_in_date?: string
-          created_at?: string
-          id?: string
-          tokens_awarded?: number
-          user_id?: string
         }
         Relationships: []
       }
@@ -1041,7 +942,6 @@ export type Database = {
           id: string
           image_urls: string[] | null
           images: string[] | null
-          is_premium: boolean | null
           listing_type: string
           location: string
           owner_id: string
@@ -1049,7 +949,6 @@ export type Database = {
           price: number | null
           property_features: Json | null
           property_type: string
-          required_token_balance: number | null
           seo_description: string | null
           seo_title: string | null
           state: string | null
@@ -1074,7 +973,6 @@ export type Database = {
           id?: string
           image_urls?: string[] | null
           images?: string[] | null
-          is_premium?: boolean | null
           listing_type: string
           location: string
           owner_id: string
@@ -1082,7 +980,6 @@ export type Database = {
           price?: number | null
           property_features?: Json | null
           property_type: string
-          required_token_balance?: number | null
           seo_description?: string | null
           seo_title?: string | null
           state?: string | null
@@ -1107,7 +1004,6 @@ export type Database = {
           id?: string
           image_urls?: string[] | null
           images?: string[] | null
-          is_premium?: boolean | null
           listing_type?: string
           location?: string
           owner_id?: string
@@ -1115,7 +1011,6 @@ export type Database = {
           price?: number | null
           property_features?: Json | null
           property_type?: string
-          required_token_balance?: number | null
           seo_description?: string | null
           seo_title?: string | null
           state?: string | null
@@ -1275,78 +1170,6 @@ export type Database = {
             columns: ["property_id"]
             isOneToOne: false
             referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      rent_payments: {
-        Row: {
-          block_number: number | null
-          contract_address: string
-          created_at: string
-          gas_price: number | null
-          gas_used: number | null
-          id: string
-          property_id: string
-          rental_duration_days: number
-          rental_end_date: string
-          rental_start_date: string
-          status: string
-          token_amount: number
-          transaction_hash: string
-          updated_at: string
-          user_id: string
-          wallet_address: string
-        }
-        Insert: {
-          block_number?: number | null
-          contract_address: string
-          created_at?: string
-          gas_price?: number | null
-          gas_used?: number | null
-          id?: string
-          property_id: string
-          rental_duration_days: number
-          rental_end_date: string
-          rental_start_date: string
-          status?: string
-          token_amount: number
-          transaction_hash: string
-          updated_at?: string
-          user_id: string
-          wallet_address: string
-        }
-        Update: {
-          block_number?: number | null
-          contract_address?: string
-          created_at?: string
-          gas_price?: number | null
-          gas_used?: number | null
-          id?: string
-          property_id?: string
-          rental_duration_days?: number
-          rental_end_date?: string
-          rental_start_date?: string
-          status?: string
-          token_amount?: number
-          transaction_hash?: string
-          updated_at?: string
-          user_id?: string
-          wallet_address?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "rent_payments_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "rent_payments_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -1931,41 +1754,6 @@ export type Database = {
           },
         ]
       }
-      vendor_astra_balances: {
-        Row: {
-          balance: number | null
-          created_at: string | null
-          id: string
-          lifetime_earned: number | null
-          updated_at: string | null
-          vendor_id: string | null
-        }
-        Insert: {
-          balance?: number | null
-          created_at?: string | null
-          id?: string
-          lifetime_earned?: number | null
-          updated_at?: string | null
-          vendor_id?: string | null
-        }
-        Update: {
-          balance?: number | null
-          created_at?: string | null
-          id?: string
-          lifetime_earned?: number | null
-          updated_at?: string | null
-          vendor_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "vendor_astra_balances_vendor_id_fkey"
-            columns: ["vendor_id"]
-            isOneToOne: true
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       vendor_bookings: {
         Row: {
           booking_date: string
@@ -2083,8 +1871,6 @@ export type Database = {
       }
       vendor_business_profiles: {
         Row: {
-          astra_profile_bonus_claimed: boolean | null
-          astra_signup_bonus_claimed: boolean | null
           banner_url: string | null
           business_address: string | null
           business_description: string | null
@@ -2117,8 +1903,6 @@ export type Database = {
           vendor_id: string | null
         }
         Insert: {
-          astra_profile_bonus_claimed?: boolean | null
-          astra_signup_bonus_claimed?: boolean | null
           banner_url?: string | null
           business_address?: string | null
           business_description?: string | null
@@ -2151,8 +1935,6 @@ export type Database = {
           vendor_id?: string | null
         }
         Update: {
-          astra_profile_bonus_claimed?: boolean | null
-          astra_signup_bonus_claimed?: boolean | null
           banner_url?: string | null
           business_address?: string | null
           business_description?: string | null
@@ -3580,53 +3362,6 @@ export type Database = {
           },
         ]
       }
-      wallet_connections: {
-        Row: {
-          chain_id: number
-          created_at: string
-          id: string
-          is_primary: boolean
-          is_verified: boolean
-          last_used_at: string | null
-          updated_at: string
-          user_id: string
-          wallet_address: string
-          wallet_provider: string | null
-        }
-        Insert: {
-          chain_id?: number
-          created_at?: string
-          id?: string
-          is_primary?: boolean
-          is_verified?: boolean
-          last_used_at?: string | null
-          updated_at?: string
-          user_id: string
-          wallet_address: string
-          wallet_provider?: string | null
-        }
-        Update: {
-          chain_id?: number
-          created_at?: string
-          id?: string
-          is_primary?: boolean
-          is_verified?: boolean
-          last_used_at?: string | null
-          updated_at?: string
-          user_id?: string
-          wallet_address?: string
-          wallet_provider?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "wallet_connections_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       web_analytics: {
         Row: {
           browser: string | null
@@ -3703,14 +3438,6 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: boolean
       }
-      claim_profile_completion_bonus: {
-        Args: { vendor_id: string }
-        Returns: undefined
-      }
-      claim_signup_bonus: {
-        Args: { vendor_id: string }
-        Returns: undefined
-      }
       is_admin_user: {
         Args: Record<PropertyKey, never>
         Returns: boolean
@@ -3734,14 +3461,6 @@ export type Database = {
       is_super_admin_safe: {
         Args: { user_email?: string }
         Returns: boolean
-      }
-      process_daily_check_in: {
-        Args: Record<PropertyKey, never>
-        Returns: {
-          success: boolean
-          message: string
-          tokens_awarded: number
-        }[]
       }
     }
     Enums: {

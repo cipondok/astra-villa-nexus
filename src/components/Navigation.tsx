@@ -9,7 +9,6 @@ import { useTheme } from "@/components/ThemeProvider";
 import RoleBasedAuthModal from "./RoleBasedAuthModal";
 import ThemeToggleSwitch from "./ThemeToggleSwitch";
 import LanguageToggleSwitch from "./LanguageToggleSwitch";
-import WalletButton from "./wallet/WalletButton";
 import { toast } from "sonner";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -154,7 +153,7 @@ const Navigation = () => {
                   <TooltipTrigger asChild>
                     <button
                       onClick={handleAddPropertyClick}
-                      className="flex items-center justify-center p-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl hover:from-blue-600 hover:to-purple-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-110"
+                      className="flex items-center justify-center p-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl hover:from-blue-600 hover:to-purple-600 transition-all duration-300 transform hover:scale-110"
                     >
                       <Plus className="h-5 w-5" />
                       <span className="sr-only">{navLabels["Add Property"]}</span>
@@ -166,42 +165,48 @@ const Navigation = () => {
                 </Tooltip>
               </div>
 
-              {/* Right side controls */}
-              <div className="hidden md:flex items-center space-x-3">
-                <LanguageToggleSwitch />
-                <ThemeToggleSwitch language={language} showLabel={false} className="bg-transparent border-transparent hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl" />
+              {/* Right Side Controls */}
+              <div className="flex items-center space-x-2">
+                {/* Theme Toggle */}
+                <ThemeToggleSwitch language={language} />
+                
+                {/* Language Toggle */}
+                <LanguageToggleSwitch language={language} onToggle={toggleLanguage} />
 
-                {/* ASTRA Wallet Button - Only for authenticated users */}
-                {user && <WalletButton />}
-
+                {/* Authentication Section */}
                 {user ? (
-                  <div className="flex items-center space-x-1">
+                  <>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <Link
-                          to="/dashboard"
-                          className="flex items-center p-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-primary-dynamic hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-300 rounded-xl transform hover:scale-110"
+                        <Button
+                          onClick={() => navigate('/dashboard')}
+                          variant="ghost"
+                          size="sm"
+                          className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-300"
                         >
-                          <User className="w-5 h-5" />
-                          <span className="sr-only">Dashboard</span>
-                        </Link>
+                          <User className="h-4 w-4" />
+                        </Button>
                       </TooltipTrigger>
-                      <TooltipContent><p>{navLabels.Dashboard}</p></TooltipContent>
+                      <TooltipContent>
+                        <p>{navLabels.Dashboard}</p>
+                      </TooltipContent>
                     </Tooltip>
 
-                    {/* Admin Panel Link - Only for admins */}
                     {isAdmin && (
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <Link
-                            to="/admin"
-                            className="flex items-center p-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-primary-dynamic hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-300 rounded-xl transform hover:scale-110"
+                          <Button
+                            onClick={() => navigate('/admin')}
+                            variant="ghost"
+                            size="sm"
+                            className="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-300"
                           >
-                            <Bot className="w-5 h-5" />
-                            <span className="sr-only">Admin Panel</span>
-                          </Link>
+                            <Bot className="h-4 w-4" />
+                          </Button>
                         </TooltipTrigger>
-                        <TooltipContent><p>{navLabels["Admin Panel"]}</p></TooltipContent>
+                        <TooltipContent>
+                          <p>{navLabels["Admin Panel"]}</p>
+                        </TooltipContent>
                       </Tooltip>
                     )}
 
@@ -210,65 +215,60 @@ const Navigation = () => {
                         <Button
                           onClick={handleSignOut}
                           variant="ghost"
-                          size="icon"
-                          className="text-gray-600 dark:text-gray-300 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transform hover:scale-110 transition-transform"
+                          size="sm"
+                          className="text-gray-600 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-300"
                         >
-                          <LogOut className="w-5 h-5" />
-                          <span className="sr-only">Sign Out</span>
+                          <LogOut className="h-4 w-4" />
                         </Button>
                       </TooltipTrigger>
-                      <TooltipContent><p>Sign Out</p></TooltipContent>
+                      <TooltipContent>
+                        <p>{navLabels["Sign Out"]}</p>
+                      </TooltipContent>
                     </Tooltip>
-                  </div>
+                  </>
                 ) : (
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Button
                         onClick={() => setShowAuthModal(true)}
-                        size="icon"
-                        className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-xl p-2.5 shadow-lg hover:shadow-xl transform hover:scale-110 transition-all duration-300"
+                        className="bg-gradient-to-r from-blue-500 to-purple-500 text-white hover:from-blue-600 hover:to-purple-600 transition-all duration-300 transform hover:scale-105"
+                        size="sm"
                       >
-                        <LogIn className="w-5 h-5" />
-                        <span className="sr-only">Sign In</span>
+                        <LogIn className="h-4 w-4 mr-1" />
+                        <span className="hidden sm:inline">{navLabels["Sign In"]}</span>
                       </Button>
                     </TooltipTrigger>
-                    <TooltipContent><p>Sign In</p></TooltipContent>
+                    <TooltipContent>
+                      <p>{navLabels["Sign In"]}</p>
+                    </TooltipContent>
                   </Tooltip>
                 )}
-              </div>
 
-              {/* Mobile menu button */}
-              <div className="md:hidden flex items-center space-x-2">
-                <div className="bg-transparent">
-                  <ThemeToggleSwitch language={language} className="scale-90 bg-transparent border-transparent hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg" />
+                {/* Mobile Menu Button */}
+                <div className="md:hidden">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setIsOpen(!isOpen)}
+                    className="text-gray-600 dark:text-gray-300 hover:text-primary-dynamic"
+                  >
+                    {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+                  </Button>
                 </div>
-
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setIsOpen(!isOpen)}
-                  className="text-gray-600 dark:text-gray-300 hover:text-primary-dynamic hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl p-2"
-                >
-                  {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-                </Button>
               </div>
             </div>
           </div>
 
           {/* Mobile Navigation */}
           {isOpen && (
-            <div className="md:hidden glass-card-dark border-t border-white/10 backdrop-blur-xl bg-white/90 dark:bg-gray-900/90">
-              <div className="px-3 pt-2 pb-3 space-y-1">
-                {navItems.map((item) =>
+            <div className="md:hidden dropdown-ios border-t border-border/30 mt-2 mx-4 mb-4">
+              <div className="p-6 space-y-4">
+                {navItems.map((item) => (
                   item.isImplemented ? (
                     <Link
                       key={item.name}
                       to={item.path}
-                      className={`flex items-center gap-3 px-4 py-3 text-base font-medium transition-all duration-300 rounded-xl ${
-                        location.pathname === item.path
-                          ? "text-primary-dynamic bg-primary-dynamic/10 border border-primary-dynamic/20"
-                          : "text-gray-600 dark:text-gray-300 hover:text-primary-dynamic hover:bg-gray-100 dark:hover:bg-gray-800"
-                      }`}
+                      className="flex items-center space-x-3 text-base font-medium text-muted-foreground hover:text-foreground transition-colors duration-200"
                       onClick={() => setIsOpen(false)}
                     >
                       <item.icon className="h-5 w-5" />
@@ -278,92 +278,82 @@ const Navigation = () => {
                     <button
                       key={item.name}
                       onClick={() => handleComingSoon(item.name)}
-                      className="flex items-center gap-3 px-4 py-3 text-base font-medium text-gray-600 dark:text-gray-300 hover:text-primary-dynamic hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-300 rounded-xl w-full"
+                      className="flex items-center space-x-3 text-base font-medium text-muted-foreground hover:text-foreground transition-colors duration-200 w-full text-left"
                     >
                       <item.icon className="h-5 w-5" />
                       <span>{item.name}</span>
                     </button>
                   )
-                )}
-
-                {/* Mobile Add Property Button */}
+                ))}
+                
                 <button
                   onClick={handleAddPropertyClick}
-                  className="flex items-center gap-3 px-4 py-3 text-base font-medium text-white bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 transition-all duration-300 rounded-xl shadow-lg w-full"
+                  className="flex items-center space-x-3 text-base font-medium text-blue-600 hover:text-blue-700 transition-colors duration-200 w-full text-left"
                 >
                   <Plus className="h-5 w-5" />
-                  {navLabels["Add Property"]}
+                  <span>{navLabels["Add Property"]}</span>
                 </button>
-
-                {/* Mobile Wallet Button - Only for authenticated users */}
-                {user && (
-                  <div className="px-4 py-2">
-                    <WalletButton />
-                  </div>
-                )}
-
-                {/* Mobile Language Toggle */}
-                <Button
-                  variant="ghost"
-                  onClick={toggleLanguage}
-                  className="w-full justify-start text-gray-600 dark:text-gray-300 hover:text-primary-dynamic hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl px-4 py-3"
-                >
-                  <Globe className="h-5 w-5 mr-3" />
-                  Language: {language.toUpperCase()}
-                </Button>
-
+                
                 {user ? (
-                  <>
-                    <Link
-                      to="/dashboard"
-                      className="flex items-center gap-3 px-4 py-3 text-base font-medium text-gray-600 dark:text-gray-300 hover:text-primary-dynamic hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-300 rounded-xl"
-                      onClick={() => setIsOpen(false)}
+                  <div className="space-y-3 pt-4 border-t border-border/30">
+                    <button
+                      onClick={() => {
+                        navigate('/dashboard');
+                        setIsOpen(false);
+                      }}
+                      className="flex items-center space-x-3 text-base font-medium text-blue-600 hover:text-blue-700 transition-colors duration-200 w-full text-left"
                     >
                       <User className="h-5 w-5" />
-                      {navLabels.Dashboard}
-                    </Link>
-
-                    {/* Mobile Admin Panel Link - Only for admins */}
+                      <span>{navLabels.Dashboard}</span>
+                    </button>
+                    
                     {isAdmin && (
-                      <Link
-                        to="/admin"
-                        className="flex items-center gap-3 px-4 py-3 text-base font-medium text-gray-600 dark:text-gray-300 hover:text-primary-dynamic hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-300 rounded-xl"
-                        onClick={() => setIsOpen(false)}
+                      <button
+                        onClick={() => {
+                          navigate('/admin');
+                          setIsOpen(false);
+                        }}
+                        className="flex items-center space-x-3 text-base font-medium text-red-600 hover:text-red-700 transition-colors duration-200 w-full text-left"
                       >
                         <Bot className="h-5 w-5" />
-                        {navLabels["Admin Panel"]}
-                      </Link>
+                        <span>{navLabels["Admin Panel"]}</span>
+                      </button>
                     )}
-
+                    
                     <button
                       onClick={handleSignOut}
-                      className="flex items-center gap-3 w-full px-4 py-3 text-base font-medium text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-300 rounded-xl"
+                      className="flex items-center space-x-3 text-base font-medium text-red-600 hover:text-red-700 transition-colors duration-200 w-full text-left"
                     >
-                      <LogOut className="w-5 h-5" />
-                      {navLabels["Sign Out"]}
+                      <LogOut className="h-5 w-5" />
+                      <span>{navLabels["Sign Out"]}</span>
                     </button>
-                  </>
+                  </div>
                 ) : (
-                  <Button
-                    onClick={() => {
-                      setShowAuthModal(true);
-                      setIsOpen(false);
-                    }}
-                    className="w-full mt-2 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-xl py-3 shadow-lg"
-                  >
-                    {navLabels["Sign In"]}
-                  </Button>
+                  <div className="pt-4 border-t border-border/30">
+                    <Button
+                      onClick={() => {
+                        setShowAuthModal(true);
+                        setIsOpen(false);
+                      }}
+                      className="w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white hover:from-blue-600 hover:to-purple-600 transition-all duration-300"
+                    >
+                      <LogIn className="h-4 w-4 mr-2" />
+                      {navLabels["Sign In"]}
+                    </Button>
+                  </div>
                 )}
               </div>
             </div>
           )}
         </nav>
-
-        <RoleBasedAuthModal 
-          isOpen={showAuthModal} 
-          onClose={() => setShowAuthModal(false)} 
-        />
       </TooltipProvider>
+
+      {/* Auth Modal */}
+      <RoleBasedAuthModal 
+        isOpen={showAuthModal} 
+        onClose={() => setShowAuthModal(false)} 
+        language={language}
+      />
     </>
   );
 };
