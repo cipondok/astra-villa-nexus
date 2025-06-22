@@ -1,6 +1,7 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Menu, User, LogOut, Search, MessageSquare, Bell } from "lucide-react";
+import { Menu, User, LogOut, Search, MessageSquare, Bell, Shield } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -8,11 +9,15 @@ import { useNavigate } from "react-router-dom";
 import LanguageToggleSwitch from "./LanguageToggleSwitch";
 import ThemeToggleSwitch from "./ThemeToggleSwitch";
 import { EnhancedSecureAuthModal } from "./auth/EnhancedSecureAuthModal";
+import { SessionManager } from "./auth/SessionManager";
+import { useSessionMonitoring } from "@/hooks/useSessionMonitoring";
 
 const Navigation = () => {
   const { language } = useLanguage();
   const { user, profile, signOut, isAuthenticated } = useAuth();
   const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [sessionManagerOpen, setSessionManagerOpen] = useState(false);
+  const { hasMultipleSessions } = useSessionMonitoring();
   const navigate = useNavigate();
 
   const text = {
@@ -127,6 +132,19 @@ const Navigation = () => {
                     <MessageSquare className="h-4 w-4" />
                   </Button>
                   
+                  {/* Session Manager Button - only show if multiple sessions detected */}
+                  {hasMultipleSessions && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setSessionManagerOpen(true)}
+                      className="flex items-center space-x-1 text-orange-600 hover:text-orange-700 hover:bg-orange-50"
+                    >
+                      <Shield className="h-4 w-4" />
+                      <span>Sessions</span>
+                    </Button>
+                  )}
+                  
                   {/* Dashboard Button */}
                   <Button
                     variant="outline"
@@ -195,6 +213,17 @@ const Navigation = () => {
                             </span>
                           </div>
                           
+                          {hasMultipleSessions && (
+                            <Button
+                              variant="outline"
+                              onClick={() => setSessionManagerOpen(true)}
+                              className="w-full flex items-center justify-center space-x-2 text-orange-600 hover:text-orange-700 hover:bg-orange-50"
+                            >
+                              <Shield className="h-4 w-4" />
+                              <span>Manage Sessions</span>
+                            </Button>
+                          )}
+                          
                           <Button
                             variant="outline"
                             onClick={handleDashboard}
@@ -236,6 +265,12 @@ const Navigation = () => {
         onClose={() => setAuthModalOpen(false)}
         onAuthSuccess={handleAuthSuccess}
         language={language}
+      />
+
+      {/* Session Manager Modal */}
+      <SessionManager
+        isOpen={sessionManagerOpen}
+        onClose={() => setSessionManagerOpen(false)}
       />
     </>
   );
