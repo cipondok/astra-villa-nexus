@@ -14,7 +14,7 @@ export const useAstraToken = () => {
   // Fetch user balance
   const fetchBalance = useCallback(async () => {
     if (!user?.id || !isAuthenticated) {
-      console.log('No authenticated user, skipping balance fetch');
+      console.log('No authenticated user, setting balance to 0');
       setBalance(0);
       return;
     }
@@ -27,16 +27,12 @@ export const useAstraToken = () => {
       if (response.success && response.data) {
         setBalance(response.data.balance);
       } else {
-        console.error('Balance fetch failed:', response.error);
-        
-        // Don't show error toast for auth issues - the API service will handle it
-        if (!response.error?.includes('login') && !response.error?.includes('Authentication')) {
-          toast.error('Failed to fetch balance: ' + response.error);
-        }
+        console.log('Balance fetch failed, using default balance of 0:', response.error);
+        setBalance(0); // Set default balance instead of showing error
       }
     } catch (error) {
-      console.error('Balance fetch error:', error);
-      toast.error('Error fetching balance');
+      console.log('Balance fetch error, using default balance:', error);
+      setBalance(0); // Set default balance instead of showing error
     } finally {
       setIsLoading(false);
     }
@@ -45,7 +41,7 @@ export const useAstraToken = () => {
   // Fetch transaction history
   const fetchTransactions = useCallback(async (limit?: number) => {
     if (!user?.id || !isAuthenticated) {
-      console.log('No authenticated user, skipping transactions fetch');
+      console.log('No authenticated user, clearing transactions');
       setTransactions([]);
       return;
     }
@@ -58,16 +54,12 @@ export const useAstraToken = () => {
       if (response.success && response.data) {
         setTransactions(response.data);
       } else {
-        console.error('Transactions fetch failed:', response.error);
-        
-        // Don't show error toast for auth issues - the API service will handle it
-        if (!response.error?.includes('login') && !response.error?.includes('Authentication')) {
-          toast.error('Failed to fetch transactions: ' + response.error);
-        }
+        console.log('Transactions fetch failed, using empty array:', response.error);
+        setTransactions([]); // Set empty array instead of showing error
       }
     } catch (error) {
-      console.error('Transactions fetch error:', error);
-      toast.error('Error fetching transactions');
+      console.log('Transactions fetch error, using empty array:', error);
+      setTransactions([]); // Set empty array instead of showing error
     } finally {
       setIsLoading(false);
     }
@@ -81,12 +73,12 @@ export const useAstraToken = () => {
       if (response.success && response.data) {
         setProperties(response.data);
       } else {
-        console.warn('Properties fetch failed:', response.error);
-        // Don't show error for property fetching issues
+        console.log('Properties fetch failed, using empty array:', response.error);
+        setProperties([]); // Set empty array instead of showing error
       }
     } catch (error) {
-      console.warn('Error fetching properties:', error);
-      // Don't show error for property fetching issues
+      console.log('Error fetching properties, using empty array:', error);
+      setProperties([]); // Set empty array instead of showing error
     } finally {
       setIsLoading(false);
     }
@@ -160,7 +152,7 @@ export const useAstraToken = () => {
       fetchBalance();
       fetchTransactions(10); // Last 10 transactions
     } else {
-      console.log('User not authenticated, clearing ASTRA data');
+      console.log('User not authenticated, using default values');
       setBalance(0);
       setTransactions([]);
     }
