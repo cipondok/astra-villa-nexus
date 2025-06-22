@@ -166,14 +166,20 @@ const AdminDashboard = () => {
                     ))}
                   </TabsList>
                   
-                  {currentCategory.tabs.map((tab) => (
-                    <TabsContent key={tab.id} value={tab.id} className="mt-6">
-                      <tab.component {...(tab.props || {})} />
-                    </TabsContent>
-                  ))}
+                  {currentCategory.tabs.map((tab) => {
+                    const TabComponent = tab.component;
+                    return (
+                      <TabsContent key={tab.id} value={tab.id} className="mt-6">
+                        <TabComponent {...(tab.props || {})} />
+                      </TabsContent>
+                    );
+                  })}
                 </Tabs>
               ) : currentCategory.tabs?.[0] ? (
-                <currentCategory.tabs[0].component {...(currentCategory.tabs[0].props || {})} />
+                (() => {
+                  const TabComponent = currentCategory.tabs[0].component;
+                  return <TabComponent {...(currentCategory.tabs[0].props || {})} />;
+                })()
               ) : (
                 <div className="text-center py-8">
                   <p className="text-gray-500">Content coming soon...</p>
