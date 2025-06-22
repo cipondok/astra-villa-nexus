@@ -1,5 +1,4 @@
 
-
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -118,4 +117,3 @@ const Index = () => {
 };
 
 export default Index;
-
