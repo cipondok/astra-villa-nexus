@@ -1,11 +1,11 @@
 
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, User, LogOut, Search, MessageSquare, Bell } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 import LanguageToggleSwitch from "./LanguageToggleSwitch";
 import ThemeToggleSwitch from "./ThemeToggleSwitch";
 import EnhancedSecureAuthModal from "./auth/EnhancedSecureAuthModal";
@@ -14,6 +14,7 @@ const Navigation = () => {
   const { language } = useLanguage();
   const { user, profile, signOut, isAuthenticated } = useAuth();
   const [authModalOpen, setAuthModalOpen] = useState(false);
+  const navigate = useNavigate();
 
   const text = {
     en: {
@@ -55,7 +56,27 @@ const Navigation = () => {
   ];
 
   const handleSignOut = async () => {
-    await signOut();
+    try {
+      console.log('Signing out user...');
+      await signOut();
+      navigate('/');
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
+  };
+
+  const handleDashboard = () => {
+    console.log('Navigating to dashboard...');
+    navigate('/dashboard');
+  };
+
+  const handleAuthSuccess = () => {
+    console.log('Authentication successful, closing modal and navigating to dashboard');
+    setAuthModalOpen(false);
+    // Navigate to dashboard after successful login
+    setTimeout(() => {
+      navigate('/dashboard');
+    }, 100);
   };
 
   return (
@@ -90,25 +111,51 @@ const Navigation = () => {
               <LanguageToggleSwitch />
               <ThemeToggleSwitch />
               
-              {isAuthenticated ? (
+              {isAuthenticated && user ? (
                 <div className="flex items-center space-x-3">
-                  <Button variant="ghost" size="sm">
+                  <Button 
+                    variant="ghost" 
+                    size="sm"
+                    onClick={() => navigate('/notifications')}
+                  >
                     <Bell className="h-4 w-4" />
                   </Button>
-                  <Button variant="ghost" size="sm">
+                  <Button 
+                    variant="ghost" 
+                    size="sm"
+                    onClick={() => navigate('/chat')}
+                  >
                     <MessageSquare className="h-4 w-4" />
                   </Button>
-                  <div className="flex items-center space-x-2">
+                  
+                  {/* User Welcome & Dashboard */}
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleDashboard}
+                    className="flex items-center space-x-2"
+                  >
                     <User className="h-4 w-4" />
-                    <span className="text-sm font-medium">
-                      {text[language].welcome}, {profile?.full_name || user?.email?.split('@')[0]}
-                    </span>
-                  </div>
+                    <span>{text[language].welcome}, {profile?.full_name || user?.email?.split('@')[0]}</span>
+                  </Button>
+
+                  {/* Dashboard Button */}
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleDashboard}
+                    className="flex items-center space-x-1"
+                  >
+                    <MessageSquare className="h-4 w-4" />
+                    <span>{text[language].dashboard}</span>
+                  </Button>
+                  
+                  {/* Logout Button */}
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={handleSignOut}
-                    className="flex items-center space-x-1"
+                    className="flex items-center space-x-1 text-red-600 hover:text-red-700 hover:bg-red-50"
                   >
                     <LogOut className="h-4 w-4" />
                     <span>{text[language].signOut}</span>
@@ -151,7 +198,7 @@ const Navigation = () => {
                         <ThemeToggleSwitch />
                       </div>
                       
-                      {isAuthenticated ? (
+                      {isAuthenticated && user ? (
                         <div className="space-y-3">
                           <div className="flex items-center space-x-2 px-3 py-2">
                             <User className="h-4 w-4" />
@@ -159,10 +206,20 @@ const Navigation = () => {
                               {text[language].welcome}, {profile?.full_name || user?.email?.split('@')[0]}
                             </span>
                           </div>
+                          
+                          <Button
+                            variant="outline"
+                            onClick={handleDashboard}
+                            className="w-full flex items-center justify-center space-x-2"
+                          >
+                            <MessageSquare className="h-4 w-4" />
+                            <span>{text[language].dashboard}</span>
+                          </Button>
+                          
                           <Button
                             variant="outline"
                             onClick={handleSignOut}
-                            className="w-full flex items-center justify-center space-x-2"
+                            className="w-full flex items-center justify-center space-x-2 text-red-600 hover:text-red-700 hover:bg-red-50"
                           >
                             <LogOut className="h-4 w-4" />
                             <span>{text[language].signOut}</span>
@@ -189,6 +246,7 @@ const Navigation = () => {
       <EnhancedSecureAuthModal
         isOpen={authModalOpen}
         onClose={() => setAuthModalOpen(false)}
+        onAuthSuccess={handleAuthSuccess}
         language={language}
       />
     </>
