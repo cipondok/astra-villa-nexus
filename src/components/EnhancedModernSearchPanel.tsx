@@ -141,19 +141,19 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: SearchP
   };
 
   return (
-    <div className="w-full max-w-7xl mx-auto">
+    <div className="w-full max-w-7xl mx-auto px-2 sm:px-4">
       <Card className="bg-gradient-to-br from-white/98 via-white/95 to-blue-50/80 backdrop-blur-xl shadow-2xl border-0 ring-1 ring-white/20">
-        <CardContent className="p-8">
+        <CardContent className="p-3 sm:p-6 lg:p-8">
           {/* Header with Active Filters Count & Clear Button */}
           {activeFiltersCount > 0 && (
-            <div className="flex items-center justify-between mb-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl border border-blue-100/50 shadow-sm">
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-2">
-                  <Sparkles className="h-5 w-5 text-blue-600" />
-                  <span className="text-sm font-semibold text-blue-800">
+            <div className="flex items-center justify-between mb-4 sm:mb-6 p-3 sm:p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl sm:rounded-2xl border border-blue-100/50 shadow-sm">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="flex items-center gap-1 sm:gap-2">
+                  <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600" />
+                  <span className="text-xs sm:text-sm font-semibold text-blue-800">
                     {currentText.activeFilters}
                   </span>
-                  <Badge variant="secondary" className="bg-blue-100 text-blue-700 border-blue-200 font-medium px-3 py-1">
+                  <Badge variant="secondary" className="bg-blue-100 text-blue-700 border-blue-200 font-medium px-2 py-1 text-xs sm:text-sm">
                     {activeFiltersCount}
                   </Badge>
                 </div>
@@ -162,125 +162,153 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: SearchP
                 variant="outline"
                 size="sm"
                 onClick={clearAllFilters}
-                className="text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200 hover:border-red-300 font-medium transition-all duration-200"
+                className="text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200 hover:border-red-300 font-medium transition-all duration-200 text-xs sm:text-sm px-2 sm:px-3"
               >
-                <X className="h-4 w-4 mr-2" />
-                {currentText.clearFilters}
+                <X className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                <span className="hidden sm:inline">{currentText.clearFilters}</span>
+                <span className="sm:hidden">Clear</span>
               </Button>
             </div>
           )}
 
-          {/* Main Search Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 mb-8">
-            {/* Search Input */}
-            <div className="lg:col-span-2">
+          {/* Mobile-First Search Grid */}
+          <div className="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
+            {/* Search Input - Full Width on Mobile */}
+            <div className="w-full">
               <div className="relative group">
-                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5 group-focus-within:text-blue-500 transition-colors duration-200" />
+                <Search className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4 sm:h-5 sm:w-5 group-focus-within:text-blue-500 transition-colors duration-200" />
                 <Input
                   placeholder={currentText.search}
-                  className="pl-12 h-14 border-2 border-gray-200 focus:border-blue-400 focus:ring-4 focus:ring-blue-100 rounded-2xl bg-white/90 backdrop-blur-sm text-base font-medium placeholder:text-gray-400 shadow-sm hover:shadow-md transition-all duration-200"
+                  className="pl-10 sm:pl-12 h-12 sm:h-14 border-2 border-gray-200 focus:border-blue-400 focus:ring-4 focus:ring-blue-100 rounded-xl sm:rounded-2xl bg-white/90 backdrop-blur-sm text-sm sm:text-base font-medium placeholder:text-gray-400 shadow-sm hover:shadow-md transition-all duration-200"
                   value={searchQuery}
                   onChange={(e) => handleInputChange(e.target.value)}
                 />
               </div>
             </div>
             
-            {/* Location Selector */}
-            <div className="relative">
-              <Select value={selectedState} onValueChange={setSelectedState}>
-                <SelectTrigger className="h-14 border-2 border-gray-200 focus:border-blue-400 rounded-2xl bg-white/90 backdrop-blur-sm font-medium shadow-sm hover:shadow-md transition-all duration-200">
-                  <div className="flex items-center gap-2">
-                    <MapPin className="h-4 w-4 text-gray-500" />
-                    <SelectValue placeholder={currentText.state} />
-                  </div>
-                </SelectTrigger>
-                <SelectContent className="bg-white/95 backdrop-blur-xl border border-gray-200 shadow-xl rounded-2xl">
-                  <SelectItem value="all" className="font-semibold text-blue-600 hover:bg-blue-50">
-                    <div className="flex items-center gap-2">
-                      <Home className="h-4 w-4" />
-                      {currentText.allStates}
+            {/* Mobile: 2x2 Grid for Filters, Desktop: 4 columns */}
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 lg:gap-4">
+              {/* Location Selector */}
+              <div className="relative">
+                <Select value={selectedState} onValueChange={setSelectedState}>
+                  <SelectTrigger className="h-12 sm:h-14 border-2 border-gray-200 focus:border-blue-400 rounded-xl sm:rounded-2xl bg-white/90 backdrop-blur-sm font-medium shadow-sm hover:shadow-md transition-all duration-200">
+                    <div className="flex items-center gap-1 sm:gap-2">
+                      <MapPin className="h-3 w-3 sm:h-4 sm:w-4 text-gray-500 flex-shrink-0" />
+                      <SelectValue placeholder={currentText.state} className="text-xs sm:text-sm truncate" />
                     </div>
-                  </SelectItem>
-                  {indonesianStates.map((state) => (
-                    <SelectItem key={state} value={state} className="hover:bg-gray-50">
-                      {state}
+                  </SelectTrigger>
+                  <SelectContent className="bg-white/95 backdrop-blur-xl border border-gray-200 shadow-xl rounded-xl sm:rounded-2xl z-50">
+                    <SelectItem value="all" className="font-semibold text-blue-600 hover:bg-blue-50">
+                      <div className="flex items-center gap-2">
+                        <Home className="h-4 w-4" />
+                        {currentText.allStates}
+                      </div>
                     </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            
-            {/* Property Type */}
-            <div className="relative">
-              <Select value={propertyType} onValueChange={setPropertyType}>
-                <SelectTrigger className="h-14 border-2 border-gray-200 focus:border-blue-400 rounded-2xl bg-white/90 backdrop-blur-sm font-medium shadow-sm hover:shadow-md transition-all duration-200">
-                  <div className="flex items-center gap-2">
-                    <Home className="h-4 w-4 text-gray-500" />
-                    <SelectValue placeholder={currentText.type} />
-                  </div>
-                </SelectTrigger>
-                <SelectContent className="bg-white/95 backdrop-blur-xl border border-gray-200 shadow-xl rounded-2xl">
-                  <SelectItem value="all" className="font-semibold text-blue-600 hover:bg-blue-50">
-                    <div className="flex items-center gap-2">
-                      <Home className="h-4 w-4" />
-                      {currentText.allTypes}
+                    {indonesianStates.map((state) => (
+                      <SelectItem key={state} value={state} className="hover:bg-gray-50">
+                        {state}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              {/* Property Type */}
+              <div className="relative">
+                <Select value={propertyType} onValueChange={setPropertyType}>
+                  <SelectTrigger className="h-12 sm:h-14 border-2 border-gray-200 focus:border-blue-400 rounded-xl sm:rounded-2xl bg-white/90 backdrop-blur-sm font-medium shadow-sm hover:shadow-md transition-all duration-200">
+                    <div className="flex items-center gap-1 sm:gap-2">
+                      <Home className="h-3 w-3 sm:h-4 sm:w-4 text-gray-500 flex-shrink-0" />
+                      <SelectValue placeholder={currentText.type} className="text-xs sm:text-sm truncate" />
                     </div>
-                  </SelectItem>
-                  {propertyTypes.map((type) => (
-                    <SelectItem key={type.value} value={type.value} className="hover:bg-gray-50">
-                      {type.label}
+                  </SelectTrigger>
+                  <SelectContent className="bg-white/95 backdrop-blur-xl border border-gray-200 shadow-xl rounded-xl sm:rounded-2xl z-50">
+                    <SelectItem value="all" className="font-semibold text-blue-600 hover:bg-blue-50">
+                      <div className="flex items-center gap-2">
+                        <Home className="h-4 w-4" />
+                        {currentText.allTypes}
+                      </div>
                     </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+                    {propertyTypes.map((type) => (
+                      <SelectItem key={type.value} value={type.value} className="hover:bg-gray-50">
+                        {type.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
 
-            {/* Bedrooms */}
-            <div className="relative">
-              <Select value={bedrooms} onValueChange={setBedrooms}>
-                <SelectTrigger className="h-14 border-2 border-gray-200 focus:border-blue-400 rounded-2xl bg-white/90 backdrop-blur-sm font-medium shadow-sm hover:shadow-md transition-all duration-200">
-                  <div className="flex items-center gap-2">
-                    <Bed className="h-4 w-4 text-gray-500" />
-                    <SelectValue placeholder={currentText.bedrooms} />
-                  </div>
-                </SelectTrigger>
-                <SelectContent className="bg-white/95 backdrop-blur-xl border border-gray-200 shadow-xl rounded-2xl">
-                  <SelectItem value="any" className="font-semibold text-blue-600 hover:bg-blue-50">
-                    <div className="flex items-center gap-2">
-                      <Bed className="h-4 w-4" />
-                      {currentText.anyBedroom}
+              {/* Bedrooms */}
+              <div className="relative">
+                <Select value={bedrooms} onValueChange={setBedrooms}>
+                  <SelectTrigger className="h-12 sm:h-14 border-2 border-gray-200 focus:border-blue-400 rounded-xl sm:rounded-2xl bg-white/90 backdrop-blur-sm font-medium shadow-sm hover:shadow-md transition-all duration-200">
+                    <div className="flex items-center gap-1 sm:gap-2">
+                      <Bed className="h-3 w-3 sm:h-4 sm:w-4 text-gray-500 flex-shrink-0" />
+                      <SelectValue placeholder={currentText.bedrooms} className="text-xs sm:text-sm truncate" />
                     </div>
-                  </SelectItem>
-                  <SelectItem value="1" className="hover:bg-gray-50">1</SelectItem>
-                  <SelectItem value="2" className="hover:bg-gray-50">2</SelectItem>
-                  <SelectItem value="3" className="hover:bg-gray-50">3</SelectItem>
-                  <SelectItem value="4+" className="hover:bg-gray-50">4+</SelectItem>
-                </SelectContent>
-              </Select>
+                  </SelectTrigger>
+                  <SelectContent className="bg-white/95 backdrop-blur-xl border border-gray-200 shadow-xl rounded-xl sm:rounded-2xl z-50">
+                    <SelectItem value="any" className="font-semibold text-blue-600 hover:bg-blue-50">
+                      <div className="flex items-center gap-2">
+                        <Bed className="h-4 w-4" />
+                        {currentText.anyBedroom}
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="1" className="hover:bg-gray-50">1</SelectItem>
+                    <SelectItem value="2" className="hover:bg-gray-50">2</SelectItem>
+                    <SelectItem value="3" className="hover:bg-gray-50">3</SelectItem>
+                    <SelectItem value="4+" className="hover:bg-gray-50">4+</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Bathrooms */}
+              <div className="relative">
+                <Select value={bathrooms} onValueChange={setBathrooms}>
+                  <SelectTrigger className="h-12 sm:h-14 border-2 border-gray-200 focus:border-blue-400 rounded-xl sm:rounded-2xl bg-white/90 backdrop-blur-sm font-medium shadow-sm hover:shadow-md transition-all duration-200">
+                    <div className="flex items-center gap-1 sm:gap-2">
+                      <Bath className="h-3 w-3 sm:h-4 sm:w-4 text-gray-500 flex-shrink-0" />
+                      <SelectValue placeholder={currentText.bathrooms} className="text-xs sm:text-sm truncate" />
+                    </div>
+                  </SelectTrigger>
+                  <SelectContent className="bg-white/95 backdrop-blur-xl border border-gray-200 shadow-xl rounded-xl sm:rounded-2xl z-50">
+                    <SelectItem value="any" className="font-semibold text-blue-600 hover:bg-blue-50">
+                      <div className="flex items-center gap-2">
+                        <Bath className="h-4 w-4" />
+                        {currentText.anyBathroom}
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="1" className="hover:bg-gray-50">1</SelectItem>
+                    <SelectItem value="2" className="hover:bg-gray-50">2</SelectItem>
+                    <SelectItem value="3" className="hover:bg-gray-50">3</SelectItem>
+                    <SelectItem value="4+" className="hover:bg-gray-50">4+</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
             
-            {/* Search Button */}
+            {/* Search Button - Full Width on Mobile */}
             <Button 
               onClick={handleSearch}
-              className="h-14 bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-600 hover:from-blue-700 hover:via-blue-800 hover:to-indigo-700 text-white font-bold text-base shadow-lg hover:shadow-xl transition-all duration-200 rounded-2xl border-0 ring-2 ring-blue-200 hover:ring-blue-300"
+              className="w-full h-12 sm:h-14 bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-600 hover:from-blue-700 hover:via-blue-800 hover:to-indigo-700 text-white font-bold text-sm sm:text-base shadow-lg hover:shadow-xl transition-all duration-200 rounded-xl sm:rounded-2xl border-0 ring-2 ring-blue-200 hover:ring-blue-300"
             >
-              <Search className="h-5 w-5 mr-3" />
+              <Search className="h-4 w-4 sm:h-5 sm:w-5 mr-2 sm:mr-3" />
               {currentText.searchBtn}
             </Button>
           </div>
           
           {/* Trending Searches */}
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             <div className="flex items-center gap-2">
-              <Sparkles className="h-5 w-5 text-amber-500" />
-              <p className="text-gray-700 font-semibold text-base">{currentText.trending}</p>
+              <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 text-amber-500" />
+              <p className="text-gray-700 font-semibold text-sm sm:text-base">{currentText.trending}</p>
             </div>
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-wrap gap-2 sm:gap-3">
               {trendingSearches.map((term, index) => (
                 <Badge 
                   key={index} 
                   variant="secondary" 
-                  className="cursor-pointer hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 hover:text-blue-700 hover:border-blue-200 transition-all duration-200 px-4 py-2 text-sm font-medium rounded-full shadow-sm hover:shadow-md"
+                  className="cursor-pointer hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 hover:text-blue-700 hover:border-blue-200 transition-all duration-200 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium rounded-full shadow-sm hover:shadow-md"
                   onClick={() => handleQuickSearch(term)}
                 >
                   {term}

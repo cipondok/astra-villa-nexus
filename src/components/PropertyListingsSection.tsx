@@ -88,11 +88,11 @@ const PropertyListingsSection = ({
 
   if (isSearching) {
     return (
-      <section className="py-8 min-h-[400px]">
-        <div className="container mx-auto px-4">
+      <section className="py-6 sm:py-8 min-h-[400px]">
+        <div className="container mx-auto px-2 sm:px-4">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-            <p className="text-lg text-gray-600">{currentText.loadingProperties}</p>
+            <div className="animate-spin rounded-full h-8 w-8 sm:h-12 sm:w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <p className="text-base sm:text-lg text-gray-600">{currentText.loadingProperties}</p>
           </div>
         </div>
       </section>
@@ -103,32 +103,32 @@ const PropertyListingsSection = ({
 
   return (
     <>
-      <section className="py-8 min-h-[500px]">
-        <div className="container mx-auto px-4">
+      <section className="py-6 sm:py-8 min-h-[500px]">
+        <div className="container mx-auto px-2 sm:px-4">
           {!hideTitle && (
-            <div className="text-center mb-8">
-              <h2 className="text-2xl lg:text-3xl font-bold mb-2">{sectionData.sectionTitle}</h2>
+            <div className="text-center mb-6 sm:mb-8">
+              <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-2">{sectionData.sectionTitle}</h2>
               {sectionData.sectionSubtitle && (
-                <p className="text-lg text-muted-foreground">{sectionData.sectionSubtitle}</p>
+                <p className="text-base sm:text-lg text-muted-foreground">{sectionData.sectionSubtitle}</p>
               )}
             </div>
           )}
 
           {!displayProperties || displayProperties.length === 0 ? (
-            <div className="text-center py-12">
-              <div className="max-w-md mx-auto">
+            <div className="text-center py-8 sm:py-12">
+              <div className="max-w-md mx-auto px-4">
                 <div className="mb-6">
-                  <div className="w-24 h-24 mx-auto mb-4 bg-gray-200 rounded-full flex items-center justify-center">
-                    <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-16 h-16 sm:w-24 sm:h-24 mx-auto mb-4 bg-gray-200 rounded-full flex items-center justify-center">
+                    <svg className="w-8 h-8 sm:w-12 sm:h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                     </svg>
                   </div>
                 </div>
-                <h3 className="text-xl font-semibold mb-4">
+                <h3 className="text-lg sm:text-xl font-semibold mb-4">
                   {hasSearched ? currentText.noResults : currentText.noFeaturedProperties}
                 </h3>
                 {hasSearched && (
-                  <p className="text-gray-600 dark:text-gray-300 mb-6">
+                  <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 mb-6">
                     {currentText.tryDifferentSearch}
                   </p>
                 )}
@@ -143,7 +143,7 @@ const PropertyListingsSection = ({
               </div>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
               {displayProperties.map((property, index) => (
                 <CompactPropertyCard
                   key={`${property.id}-${index}`}

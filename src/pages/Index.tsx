@@ -122,13 +122,13 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Navigation />
       
-      {/* Hero Section with Search */}
-      <section className="relative bg-gradient-to-br from-blue-600 via-purple-600 to-orange-500 text-white py-16 px-4">
+      {/* Hero Section with Search - Mobile Optimized */}
+      <section className="relative bg-gradient-to-br from-blue-600 via-purple-600 to-orange-500 text-white py-8 sm:py-12 lg:py-16 px-2 sm:px-4">
         <div className="container mx-auto text-center">
-          <h1 className="text-3xl lg:text-5xl font-bold mb-6 animate-fade-in">
+          <h1 className="text-2xl sm:text-3xl lg:text-5xl font-bold mb-4 sm:mb-6 animate-fade-in px-2">
             {language === "en" ? "Find Your Dream Property" : "Temukan Properti Impian Anda"}
           </h1>
-          <p className="text-lg lg:text-xl mb-8 text-blue-100">
+          <p className="text-base sm:text-lg lg:text-xl mb-6 sm:mb-8 text-blue-100 px-2">
             {language === "en" 
               ? "Discover the perfect home with our advanced search technology" 
               : "Temukan rumah sempurna dengan teknologi pencarian canggih kami"}
@@ -155,19 +155,21 @@ const Index = () => {
         </section>
       )}
 
-      {/* Property Listings Section */}
-      <PropertyListingsSection
-        language={language}
-        searchResults={searchResults}
-        isSearching={isSearching}
-        hasSearched={hasSearched}
-        fallbackResults={featuredProperties}
-      />
+      {/* Property Listings Section - Mobile Responsive */}
+      <div className="px-2 sm:px-0">
+        <PropertyListingsSection
+          language={language}
+          searchResults={searchResults}
+          isSearching={isSearching}
+          hasSearched={hasSearched}
+          fallbackResults={featuredProperties}
+        />
+      </div>
 
       {/* Recommended Properties Section - only show if we have properties and no search */}
       {!hasSearched && featuredProperties.length > 0 && (
-        <section className="py-8 bg-gray-50 dark:bg-gray-900">
-          <div className="container mx-auto px-4">
+        <section className="py-6 sm:py-8 bg-gray-50 dark:bg-gray-900">
+          <div className="container mx-auto px-2 sm:px-4">
             <RecommendedProperties
               title={language === "en" ? "AI Recommended For You" : "Rekomendasi AI Untuk Anda"}
               limit={8}
