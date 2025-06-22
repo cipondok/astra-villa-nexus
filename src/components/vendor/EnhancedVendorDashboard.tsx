@@ -1,327 +1,254 @@
 
-import { useState } from "react";
-import { useAuth } from "@/contexts/AuthContext";
-import VendorDashboardNavigation from "./VendorDashboardNavigation";
-import VendorProfileView from "./VendorProfileView";
-import VendorBusinessProfile from "./VendorBusinessProfile";
-import VendorServicesList from "./VendorServicesList";
-import VendorServiceForm from "./VendorServiceForm";
-import VendorCustomerManagement from "./VendorCustomerManagement";
-import VendorBillingManagement from "./VendorBillingManagement";
-import VendorProgressTracking from "./VendorProgressTracking";
-import VendorReviews from "./VendorReviews";
-import VendorBookings from "./VendorBookings";
-import VendorAnalytics from "./VendorAnalytics";
-import VendorHolidayManagement from "./VendorHolidayManagement";
-import VendorChangeRequests from "./VendorChangeRequests";
-import VendorProfileProgress from "./VendorProfileProgress";
-import VendorSettings from "./VendorSettings";
-import VendorSupport from "./VendorSupport";
-import VendorListings from "./VendorListings";
-import VendorKYCVerification from "./VendorKYCVerification";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
+import React, { useState, useEffect } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Progress } from '@/components/ui/progress';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
+import { 
+  BarChart3, 
+  Calendar, 
+  DollarSign, 
+  Users,
+  TrendingUp,
+  Clock,
+  Star,
+  AlertTriangle,
+  CheckCircle,
+  User
+} from 'lucide-react';
+import VendorProfileProgress from './VendorProfileProgress';
 
 const EnhancedVendorDashboard = () => {
-  const { user, profile } = useAuth();
-  const [activeSection, setActiveSection] = useState('dashboard');
-  const [showServiceForm, setShowServiceForm] = useState(false);
-  const [editingService, setEditingService] = useState(null);
-  const [editingProfile, setEditingProfile] = useState(false);
+  const { user } = useAuth();
+  const [activeTab, setActiveTab] = useState('overview');
+  const [dashboardData, setDashboardData] = useState({
+    totalBookings: 0,
+    monthlyRevenue: 0,
+    avgRating: 0,
+    pendingBookings: 0,
+    completedBookings: 0,
+    cancelledBookings: 0,
+    profileCompletion: 0
+  });
 
-  const handleNavigateToSection = (section: string) => {
-    setActiveSection(section);
-  };
+  useEffect(() => {
+    if (user) {
+      loadDashboardData();
+    }
+  }, [user]);
 
-  const renderContent = () => {
-    switch (activeSection) {
-      case 'dashboard':
-        return (
-          <div className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {/* Quick Stats */}
-              <Card className="lg:col-span-2">
-                <CardHeader>
-                  <CardTitle>Business Overview</CardTitle>
-                  <CardDescription>Your business performance at a glance</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div className="text-center">
-                      <p className="text-2xl font-bold text-blue-600">12</p>
-                      <p className="text-sm text-gray-600">Services</p>
-                    </div>
-                    <div className="text-center">
-                      <p className="text-2xl font-bold text-green-600">45</p>
-                      <p className="text-sm text-gray-600">Bookings</p>
-                    </div>
-                    <div className="text-center">
-                      <p className="text-2xl font-bold text-yellow-600">4.8</p>
-                      <p className="text-sm text-gray-600">Rating</p>
-                    </div>
-                    <div className="text-center">
-                      <p className="text-2xl font-bold text-purple-600">28</p>
-                      <p className="text-sm text-gray-600">Reviews</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+  const loadDashboardData = async () => {
+    try {
+      // Load bookings data
+      const { data: bookings, error: bookingsError } = await supabase
+        .from('vendor_bookings')
+        .select('*')
+        .eq('vendor_id', user?.id);
 
-              {/* Quick Actions */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Quick Actions</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <Button 
-                    variant="outline" 
-                    className="w-full justify-start"
-                    onClick={() => setActiveSection('services')}
-                  >
-                    Manage Services
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    className="w-full justify-start"
-                    onClick={() => setActiveSection('bookings')}
-                  >
-                    View Bookings
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    className="w-full justify-start"
-                    onClick={() => setActiveSection('business-profile')}
-                  >
-                    Edit Profile
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    className="w-full justify-start"
-                    onClick={() => setActiveSection('property-listings')}
-                  >
-                    Manage Listings
-                  </Button>
-                </CardContent>
-              </Card>
-            </div>
+      if (bookingsError) throw bookingsError;
 
-            {/* Profile Progress */}
-            <VendorProfileProgress onNavigateToSection={handleNavigateToSection} />
+      // Load business profile for rating
+      const { data: profile, error: profileError } = await supabase
+        .from('vendor_business_profiles')
+        .select('rating, profile_completion_percentage')
+        .eq('vendor_id', user?.id)
+        .single();
 
-            {/* Recent Activity */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Recent Activity</CardTitle>
-                <CardDescription>Latest updates on your business</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex items-center gap-4 p-3 bg-blue-50 rounded-lg">
-                    <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                    <div>
-                      <p className="text-sm font-medium">New booking received</p>
-                      <p className="text-xs text-gray-600">Premium Home Cleaning - 2 hours ago</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-4 p-3 bg-green-50 rounded-lg">
-                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                    <div>
-                      <p className="text-sm font-medium">Payment received</p>
-                      <p className="text-xs text-gray-600">Rp 150,000 - 4 hours ago</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-4 p-3 bg-yellow-50 rounded-lg">
-                    <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
-                    <div>
-                      <p className="text-sm font-medium">New review</p>
-                      <p className="text-xs text-gray-600">5 stars - Property Maintenance - 1 day ago</p>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        );
-      
-      case 'business-profile':
-        if (editingProfile) {
-          return (
-            <div className="space-y-4">
-              <Button 
-                variant="ghost" 
-                onClick={() => setEditingProfile(false)}
-                className="mb-4"
-              >
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Back to Profile View
-              </Button>
-              <VendorBusinessProfile />
-            </div>
-          );
-        }
-        return (
-          <VendorProfileView 
-            profile={{}} 
-            businessNature={{}} 
-            onEdit={() => setEditingProfile(true)}
-            canChangeNature={true}
-          />
-        );
-      
-      case 'services':
-        if (showServiceForm) {
-          return (
-            <div className="space-y-4">
-              <Button 
-                variant="ghost" 
-                onClick={() => {
-                  setShowServiceForm(false);
-                  setEditingService(null);
-                }}
-                className="mb-4"
-              >
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Back to Services
-              </Button>
-              <VendorServiceForm 
-                service={editingService}
-                onClose={() => {
-                  setShowServiceForm(false);
-                  setEditingService(null);
-                }}
-                onSuccess={() => {
-                  setShowServiceForm(false);
-                  setEditingService(null);
-                }}
-              />
-            </div>
-          );
-        }
-        return (
-          <VendorServicesList 
-            onAddService={() => setShowServiceForm(true)}
-            onEditService={(service) => {
-              setEditingService(service);
-              setShowServiceForm(true);
-            }}
-          />
-        );
-      
-      case 'bookings':
-        return <VendorBookings />;
-      
-      case 'customers':
-        return <VendorCustomerManagement />;
-      
-      case 'billing':
-        return <VendorBillingManagement />;
-      
-      case 'progress':
-        return <VendorProgressTracking />;
-      
-      case 'feedback':
-        return <VendorReviews />;
-      
-      case 'holidays':
-        return <VendorHolidayManagement />;
-      
-      case 'change-requests':
-        return <VendorChangeRequests />;
+      if (profileError && profileError.code !== 'PGRST116') throw profileError;
 
-      case 'property-listings':
-        return <VendorListings />;
+      // Calculate stats
+      const totalBookings = bookings?.length || 0;
+      const pendingBookings = bookings?.filter(b => b.status === 'pending').length || 0;
+      const completedBookings = bookings?.filter(b => b.status === 'completed').length || 0;
+      const cancelledBookings = bookings?.filter(b => b.status === 'cancelled').length || 0;
+      
+      // Calculate monthly revenue (current month)
+      const currentMonth = new Date().getMonth();
+      const currentYear = new Date().getFullYear();
+      const monthlyRevenue = bookings
+        ?.filter(booking => {
+          const bookingDate = new Date(booking.created_at);
+          return bookingDate.getMonth() === currentMonth && bookingDate.getFullYear() === currentYear;
+        })
+        .reduce((sum, booking) => sum + (Number(booking.total_amount) || 0), 0) || 0;
 
-      case 'settings':
-        return <VendorSettings />;
+      setDashboardData({
+        totalBookings,
+        monthlyRevenue,
+        avgRating: profile?.rating || 0,
+        pendingBookings,
+        completedBookings,
+        cancelledBookings,
+        profileCompletion: profile?.profile_completion_percentage || 0
+      });
 
-      case 'support':
-        return <VendorSupport />;
-
-      case 'kyc-verification':
-        return <VendorKYCVerification />;
-      
-      case 'compliance':
-        return (
-          <Card>
-            <CardHeader>
-              <CardTitle>Compliance Management</CardTitle>
-              <CardDescription>
-                Track licenses, certifications, and compliance requirements
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground">
-                Compliance management features coming soon. This will include:
-              </p>
-              <ul className="list-disc list-inside mt-4 space-y-2 text-sm text-muted-foreground">
-                <li>License tracking and renewal reminders</li>
-                <li>Insurance certificate management</li>
-                <li>Certification upload and verification</li>
-                <li>Compliance status dashboard</li>
-              </ul>
-            </CardContent>
-          </Card>
-        );
-      
-      case 'customer-service':
-        return (
-          <Card>
-            <CardHeader>
-              <CardTitle>Customer Service</CardTitle>
-              <CardDescription>
-                Manage customer support tickets and communications
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground">
-                Customer service ticketing system coming soon. This will include:
-              </p>
-              <ul className="list-disc list-inside mt-4 space-y-2 text-sm text-muted-foreground">
-                <li>Support ticket management</li>
-                <li>Customer communication history</li>
-                <li>Response time tracking</li>
-                <li>Issue categorization and priority management</li>
-              </ul>
-            </CardContent>
-          </Card>
-        );
-      
-      case 'analytics':
-        return <VendorAnalytics />;
-      
-      default:
-        return (
-          <VendorProfileView 
-            profile={{}} 
-            businessNature={{}} 
-            onEdit={() => setEditingProfile(true)}
-            canChangeNature={true}
-          />
-        );
+    } catch (error) {
+      console.error('Error loading dashboard data:', error);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto px-4 py-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">
-            Vendor Control Panel
-          </h1>
-          <p className="text-gray-600 mt-2">
-            Welcome back, {profile?.full_name || user?.email}! Manage your business operations from here.
-          </p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Vendor Dashboard</h1>
+          <p className="text-gray-600 dark:text-gray-300 mt-2">Manage your business and track performance</p>
         </div>
 
-        <VendorDashboardNavigation 
-          activeSection={activeSection}
-          onSectionChange={setActiveSection}
-        />
+        {/* Quick Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Total Bookings</p>
+                  <p className="text-2xl font-bold">{dashboardData.totalBookings}</p>
+                </div>
+                <Calendar className="h-8 w-8 text-blue-500" />
+              </div>
+            </CardContent>
+          </Card>
 
-        <div className="mt-6">
-          {renderContent()}
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Monthly Revenue</p>
+                  <p className="text-2xl font-bold">${dashboardData.monthlyRevenue.toFixed(2)}</p>
+                </div>
+                <DollarSign className="h-8 w-8 text-green-500" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Average Rating</p>
+                  <p className="text-2xl font-bold">{dashboardData.avgRating.toFixed(1)}</p>
+                </div>
+                <Star className="h-8 w-8 text-yellow-500" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Profile Completion</p>
+                  <p className="text-2xl font-bold">{dashboardData.profileCompletion}%</p>
+                </div>
+                <User className="h-8 w-8 text-purple-500" />
+              </div>
+            </CardContent>
+          </Card>
         </div>
+
+        {/* Main Content */}
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="bookings">Bookings</TabsTrigger>
+            <TabsTrigger value="profile">Profile</TabsTrigger>
+            <TabsTrigger value="analytics">Analytics</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="overview" className="space-y-6">
+            {/* Profile Completion Alert */}
+            {dashboardData.profileCompletion < 100 && (
+              <Alert>
+                <AlertTriangle className="h-4 w-4" />
+                <AlertDescription>
+                  Your profile is {dashboardData.profileCompletion}% complete. Complete your profile to attract more customers.
+                </AlertDescription>
+              </Alert>
+            )}
+
+            {/* Booking Status Overview */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Clock className="h-5 w-5 text-orange-500" />
+                    Pending Bookings
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-3xl font-bold">{dashboardData.pendingBookings}</div>
+                  <p className="text-sm text-gray-600">Awaiting confirmation</p>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <CheckCircle className="h-5 w-5 text-green-500" />
+                    Completed
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-3xl font-bold">{dashboardData.completedBookings}</div>
+                  <p className="text-sm text-gray-600">Successfully completed</p>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <AlertTriangle className="h-5 w-5 text-red-500" />
+                    Cancelled
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-3xl font-bold">{dashboardData.cancelledBookings}</div>
+                  <p className="text-sm text-gray-600">Cancelled bookings</p>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="bookings" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Recent Bookings</CardTitle>
+                <CardDescription>Manage your recent booking requests</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center py-8">
+                  <p className="text-gray-500">No recent bookings to display</p>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="profile" className="space-y-6">
+            <VendorProfileProgress />
+          </TabsContent>
+
+          <TabsContent value="analytics" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <BarChart3 className="h-5 w-5" />
+                  Business Analytics
+                </CardTitle>
+                <CardDescription>Track your business performance over time</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center py-8">
+                  <p className="text-gray-500">Analytics data will be available once you have more booking activity</p>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );

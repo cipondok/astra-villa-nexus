@@ -1,12 +1,9 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
-import { MapPin, Bed, Bath, Square, Eye, Calendar } from 'lucide-react';
-import PremiumListing from '@/components/token-gated/PremiumListing';
-import RentPaymentFlow from '@/components/rent/RentPaymentFlow';
+import { MapPin, Bed, Bath, Square, Eye } from 'lucide-react';
 
 interface PropertyCardProps {
   id: string;
@@ -19,8 +16,6 @@ interface PropertyCardProps {
   area_sqm?: number;
   listing_type: string;
   images?: string[];
-  is_premium?: boolean;
-  required_token_balance?: number;
   development_status?: string;
 }
 
@@ -35,12 +30,8 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
   area_sqm,
   listing_type,
   images,
-  is_premium = false,
-  required_token_balance = 0,
   development_status = 'completed',
 }) => {
-  const [showRentFlow, setShowRentFlow] = useState(false);
-
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -50,7 +41,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
     }).format(price);
   };
 
-  const PropertyContent = () => (
+  return (
     <Card className="w-full hover:shadow-lg transition-shadow">
       <div className="relative">
         {images && images.length > 0 ? (
@@ -69,11 +60,6 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
           <Badge variant={listing_type === 'sale' ? 'default' : 'secondary'}>
             {listing_type === 'sale' ? 'For Sale' : 'For Rent'}
           </Badge>
-          {is_premium && (
-            <Badge variant="outline" className="bg-orange-100 text-orange-800 border-orange-300">
-              Premium
-            </Badge>
-          )}
         </div>
 
         {development_status !== 'completed' && (
@@ -131,50 +117,10 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
             <Eye className="h-4 w-4 mr-2" />
             View Details
           </Button>
-          
-          {listing_type === 'rent' && (
-            <Dialog open={showRentFlow} onOpenChange={setShowRentFlow}>
-              <DialogTrigger asChild>
-                <Button className="flex-1">
-                  <Calendar className="h-4 w-4 mr-2" />
-                  Rent Now
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <RentPaymentFlow
-                  propertyId={id}
-                  rentAmount={price}
-                />
-              </DialogContent>
-            </Dialog>
-          )}
         </div>
       </CardContent>
     </Card>
   );
-
-  // Wrap premium properties with token gate
-  if (is_premium && required_token_balance > 0) {
-    const property = {
-      id,
-      title,
-      description,
-      price,
-      isPremium: true,
-      tokenRequirement: required_token_balance
-    };
-
-    return (
-      <PremiumListing 
-        property={property}
-        onUnlock={() => console.log('Premium content unlocked')}
-      >
-        <PropertyContent />
-      </PremiumListing>
-    );
-  }
-
-  return <PropertyContent />;
 };
 
 export default PropertyCard;

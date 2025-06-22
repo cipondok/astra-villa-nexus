@@ -39,7 +39,7 @@ export const useToolsManagement = () => {
         enabled: setting.value === true,
         configuration: typeof setting.value === 'object' ? setting.value : {},
         version: '1.0.0',
-        status: setting.value === true ? 'healthy' : 'disabled' as const,
+        status: (setting.value === true ? 'healthy' : 'disabled') as 'healthy' | 'disabled',
         lastChecked: setting.updated_at || new Date().toISOString(),
         dependencies: []
       }));
@@ -90,13 +90,11 @@ export const useToolsManagement = () => {
   });
 
   const checkToolHealth = async (toolId: string) => {
-    // Mock health check
     console.log('Checking health for tool:', toolId);
     queryClient.invalidateQueries({ queryKey: ['tools'] });
   };
 
   const runAllHealthChecks = async () => {
-    // Mock health check for all tools
     console.log('Running health checks for all tools');
     queryClient.invalidateQueries({ queryKey: ['tools'] });
   };
@@ -115,7 +113,7 @@ export const useToolsManagement = () => {
   return {
     tools,
     isLoading,
-    loading: isLoading, // Add alias for compatibility
+    loading: isLoading,
     lastUpdate: new Date().toISOString(),
     toggleTool: toggleToolMutation.mutate,
     updateToolConfig: updateToolConfigMutation.mutate,

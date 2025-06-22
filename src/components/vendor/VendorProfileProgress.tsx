@@ -4,20 +4,16 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useAlert } from '@/contexts/AlertContext';
-import { useQuery } from '@tanstack/react-query';
 import { 
   CheckCircle, 
   Clock, 
   User, 
   Building, 
   FileText, 
-  Award,
-  AlertTriangle,
-  Coins
+  Award
 } from 'lucide-react';
 
 interface ProfileSection {
@@ -32,22 +28,6 @@ const VendorProfileProgress = () => {
   const { showSuccess, showError } = useAlert();
   const [profileData, setProfileData] = useState<any>(null);
   const [sections, setSections] = useState<ProfileSection[]>([]);
-
-  // Check if ASTRA tokens are enabled
-  const { data: tokenSystemEnabled } = useQuery({
-    queryKey: ['astra-token-system-enabled'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('system_settings')
-        .select('value')
-        .eq('key', 'astra_tokens_enabled')
-        .eq('category', 'tools')
-        .single();
-      
-      if (error && error.code !== 'PGRST116') throw error;
-      return data?.value === true;
-    },
-  });
 
   useEffect(() => {
     if (user) {
@@ -124,11 +104,6 @@ const VendorProfileProgress = () => {
     
     const completionPercentage = Math.round((completedWeight / totalWeight) * 100);
 
-    // Check if profile is 100% complete and handle token reward
-    if (completionPercentage === 100 && tokenSystemEnabled) {
-      handleProfileCompletionReward();
-    }
-
     // Update completion percentage in user activity logs
     updateCompletionPercentage(completionPercentage);
   };
@@ -160,27 +135,6 @@ const VendorProfileProgress = () => {
     }
   };
 
-  const handleProfileCompletionReward = async () => {
-    if (!tokenSystemEnabled) return;
-
-    try {
-      // Record profile completion bonus
-      const { error } = await supabase
-        .from('user_activity_logs')
-        .insert({
-          user_id: user?.id,
-          activity_type: 'profile_completion_bonus',
-          description: 'Profile completion bonus awarded'
-        });
-
-      if (error) throw error;
-
-      showSuccess("Profile Complete!", "Congratulations on completing your profile! Token rewards will be available when the system is fully configured.");
-    } catch (error) {
-      console.error('Error claiming profile completion bonus:', error);
-    }
-  };
-
   const completedSections = sections.filter(section => section.completed).length;
   const totalSections = sections.length;
   const overallProgress = Math.round((completedSections / totalSections) * 100);
@@ -194,7 +148,7 @@ const VendorProfileProgress = () => {
             Profile Completion Progress
           </CardTitle>
           <CardDescription>
-            Complete your profile to unlock all features and earn rewards
+            Complete your profile to unlock all features
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -206,24 +160,9 @@ const VendorProfileProgress = () => {
                   {completedSections} of {totalSections} sections completed
                 </div>
               </div>
-              {tokenSystemEnabled && overallProgress === 100 && (
-                <Badge className="bg-green-100 text-green-800">
-                  <Coins className="h-3 w-3 mr-1" />
-                  Reward Eligible
-                </Badge>
-              )}
             </div>
             
             <Progress value={overallProgress} className="h-3" />
-
-            {!tokenSystemEnabled && (
-              <Alert>
-                <AlertTriangle className="h-4 w-4" />
-                <AlertDescription>
-                  ASTRA Token rewards are currently disabled. Enable them through Admin Tools to earn completion rewards.
-                </AlertDescription>
-              </Alert>
-            )}
           </div>
         </CardContent>
       </Card>

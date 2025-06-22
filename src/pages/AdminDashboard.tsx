@@ -1,216 +1,296 @@
 
-import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-import { useAuth } from "@/contexts/AuthContext";
-import { Button } from "@/components/ui/button";
-import { Tabs } from "@/components/ui/tabs";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2 } from "lucide-react";
-import Navigation from "@/components/Navigation";
-import AdminDashboardHeader from "@/components/admin/AdminDashboardHeader";
-import AdminTabNavigation from "@/components/admin/AdminTabNavigation";
-import AdminDashboardContent from "@/components/admin/AdminDashboardContent";
-import TokenManagementHub from "@/components/admin/TokenManagementHub";
-import { tabCategories } from "@/components/admin/AdminTabCategories";
-import { useAdminAlerts } from "@/hooks/useAdminAlerts";
+import React, { useState } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { 
+  Users, 
+  Settings, 
+  BarChart3, 
+  Shield, 
+  Bell,
+  FileText,
+  Database,
+  Globe,
+  TrendingUp,
+  UserCheck,
+  AlertTriangle,
+  Activity
+} from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import ToolsManagementDashboard from '@/components/admin/ToolsManagementDashboard';
+
+interface TabItem {
+  id: string;
+  label: string;
+  component: React.ComponentType<any>;
+  props?: any;
+}
+
+interface TabCategory {
+  id: string;
+  label: string;
+  icon: React.ComponentType<any>;
+  description: string;
+  tabs?: TabItem[];
+  items?: TabItem[];
+}
 
 const AdminDashboard = () => {
-  const { user, profile, loading, isAuthenticated, signOut } = useAuth();
-  const navigate = useNavigate();
-  const location = useLocation();
-  const [activeTab, setActiveTab] = useState(location.state?.defaultTab || "overview");
-  const [accessCheckComplete, setAccessCheckComplete] = useState(false);
-  const [accessTimeout, setAccessTimeout] = useState(false);
+  const { profile } = useAuth();
+  const [activeCategory, setActiveCategory] = useState('overview');
+  const [activeTab, setActiveTab] = useState('dashboard');
 
-  console.log('AdminDashboard - Current state:', { 
-    loading, 
-    isAuthenticated, 
-    user: !!user, 
-    profile: !!profile, 
-    role: profile?.role,
-    userEmail: user?.email
-  });
+  if (profile?.role !== 'admin') {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <Alert>
+          <AlertTriangle className="h-4 w-4" />
+          <AlertDescription>
+            Admin access required to view this dashboard
+          </AlertDescription>
+        </Alert>
+      </div>
+    );
+  }
 
-  // Initialize admin alerts hook
-  useAdminAlerts();
-
-  // Timeout for access check
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      if (!accessCheckComplete && !loading) {
-        console.log('Access check timeout reached');
-        setAccessTimeout(true);
-        setAccessCheckComplete(true);
-      }
-    }, 5000); // 5 second timeout
-
-    return () => clearTimeout(timeout);
-  }, [accessCheckComplete, loading]);
-
-  // Check access permissions
-  useEffect(() => {
-    const checkAccess = async () => {
-      console.log('Checking admin access...', { loading, isAuthenticated, user: !!user, profile: !!profile });
-      
-      // Wait for auth to complete
-      if (loading) {
-        console.log('Still loading, waiting...');
-        return;
-      }
-
-      // If not authenticated, redirect immediately
-      if (!isAuthenticated || !user) {
-        console.log('Not authenticated, redirecting...');
-        navigate('/?auth=true', { replace: true });
-        return;
-      }
-
-      // Check admin access with multiple conditions
-      const isAdmin = profile?.role === 'admin' || user?.email === 'mycode103@gmail.com';
-      const isSupportStaff = profile?.role === 'agent' || profile?.role === 'customer_service';
-      const hasAccess = isAdmin || isSupportStaff;
-
-      console.log('Access check result:', { 
-        isAdmin, 
-        isSupportStaff, 
-        hasAccess, 
-        email: user?.email, 
-        role: profile?.role 
-      });
-
-      if (!hasAccess) {
-        console.log('Access denied, redirecting...');
-        navigate('/', { replace: true });
-        return;
-      }
-
-      // Redirect support staff to appropriate tab
-      if (isSupportStaff && !isAdmin && activeTab === 'overview') {
-        console.log('Redirecting support staff to support tab');
-        setActiveTab("support");
-      }
-
-      console.log('Access granted, completing check');
-      setAccessCheckComplete(true);
-    };
-
-    // Only run check if not already complete and not timed out
-    if (!accessCheckComplete && !accessTimeout) {
-      checkAccess();
+  // Convert to object for proper indexing
+  const tabCategories: Record<string, TabCategory> = {
+    overview: {
+      id: 'overview',
+      label: 'Overview',
+      icon: BarChart3,
+      description: 'System overview and key metrics',
+      tabs: [
+        { id: 'dashboard', label: 'Dashboard', component: () => <AdminOverview /> },
+        { id: 'analytics', label: 'Analytics', component: () => <AdminAnalytics /> }
+      ]
+    },
+    users: {
+      id: 'users',
+      label: 'User Management',
+      icon: Users,
+      description: 'Manage users, vendors, and permissions',
+      tabs: [
+        { id: 'all-users', label: 'All Users', component: () => <UserManagement /> },
+        { id: 'vendors', label: 'Vendors', component: () => <VendorManagement /> },
+        { id: 'verification', label: 'Verification', component: () => <UserVerification /> }
+      ]
+    },
+    system: {
+      id: 'system',
+      label: 'System Settings',
+      icon: Settings,
+      description: 'Configure system settings and tools',
+      tabs: [
+        { id: 'tools', label: 'Tools Management', component: ToolsManagementDashboard },
+        { id: 'settings', label: 'Site Settings', component: () => <SystemSettings /> },
+        { id: 'content', label: 'Content Management', component: () => <ContentManagement /> }
+      ]
+    },
+    security: {
+      id: 'security',
+      label: 'Security & Monitoring',
+      icon: Shield,
+      description: 'Security logs and monitoring',
+      tabs: [
+        { id: 'logs', label: 'System Logs', component: () => <SecurityLogs /> },
+        { id: 'alerts', label: 'Alerts', component: () => <SecurityAlerts /> },
+        { id: 'monitoring', label: 'Monitoring', component: () => <SystemMonitoring /> }
+      ]
     }
-  }, [loading, isAuthenticated, user, profile, navigate, activeTab, accessCheckComplete, accessTimeout]);
+  };
 
-  // Show loading state while checking access
-  if ((loading || !accessCheckComplete) && !accessTimeout) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-primary" />
-          <p className="text-muted-foreground">Loading admin dashboard...</p>
-          <p className="text-xs text-muted-foreground mt-2">
-            This may take a few seconds to verify your permissions
-          </p>
-        </div>
-      </div>
-    );
-  }
-
-  // Handle timeout case
-  if (accessTimeout) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <Card className="w-full max-w-md">
-          <CardHeader>
-            <CardTitle className="text-center text-destructive">Loading Timeout</CardTitle>
-          </CardHeader>
-          <CardContent className="text-center">
-            <p className="text-muted-foreground mb-6">
-              The dashboard is taking longer than expected to load.
-            </p>
-            <div className="space-y-2">
-              <Button onClick={() => window.location.reload()} className="w-full">
-                Reload Page
-              </Button>
-              <Button variant="outline" onClick={() => navigate('/')} className="w-full">
-                Return to Home
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
-  // Final access check
-  const isAdmin = profile?.role === 'admin' || user?.email === 'mycode103@gmail.com';
-  const isSupportStaff = profile?.role === 'agent' || profile?.role === 'customer_service';
-  const canAccess = isAdmin || isSupportStaff;
-
-  if (!canAccess) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <Card className="w-full max-w-md">
-          <CardHeader>
-            <CardTitle className="text-center text-destructive">Access Denied</CardTitle>
-          </CardHeader>
-          <CardContent className="text-center">
-            <p className="text-muted-foreground mb-6">
-              You don't have permission to access this dashboard.
-            </p>
-            <div className="space-y-2">
-              <Button onClick={() => navigate('/')} className="w-full">Return to Home</Button>
-              <Button variant="outline" onClick={signOut} className="w-full">
-                Logout
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
+  const currentCategory = tabCategories[activeCategory];
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navigation />
-      
-      <AdminDashboardHeader 
-        isAdmin={isAdmin} 
-        user={user} 
-        profile={profile} 
-      />
-      
-      <main className="container mx-auto px-4 py-8">
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <AdminTabNavigation
-            tabCategories={tabCategories}
-            activeTab={activeTab}
-            setActiveTab={setActiveTab}
-            isAdmin={isAdmin}
-          />
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Admin Dashboard</h1>
+          <p className="text-gray-600 dark:text-gray-300 mt-2">
+            Manage your platform and monitor system performance
+          </p>
+        </div>
 
-          {/* Add ASTRA Token Management as a dedicated tab */}
-          {activeTab === "astra-tokens" && (
-            <div className="space-y-6">
-              <div>
-                <h2 className="text-2xl font-bold">ASTRA Token Management</h2>
-                <p className="text-muted-foreground">
-                  Configure and manage the ASTRA token system
-                </p>
-              </div>
-              <TokenManagementHub />
-            </div>
-          )}
+        {/* Category Navigation */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          {Object.values(tabCategories).map((category) => {
+            const IconComponent = category.icon;
+            return (
+              <Card
+                key={category.id}
+                className={`cursor-pointer transition-all hover:shadow-md ${
+                  activeCategory === category.id ? 'ring-2 ring-blue-500 bg-blue-50 dark:bg-blue-950' : ''
+                }`}
+                onClick={() => {
+                  setActiveCategory(category.id);
+                  setActiveTab(category.tabs?.[0]?.id || category.items?.[0]?.id || '');
+                }}
+              >
+                <CardContent className="p-6">
+                  <div className="flex items-center gap-3 mb-2">
+                    <IconComponent className="h-6 w-6 text-blue-600" />
+                    <h3 className="font-semibold">{category.label}</h3>
+                  </div>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    {category.description}
+                  </p>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
 
-          {activeTab !== "astra-tokens" && (
-            <AdminDashboardContent
-              isAdmin={isAdmin}
-              setActiveTab={setActiveTab}
-            />
-          )}
-        </Tabs>
-      </main>
+        {/* Tab Content */}
+        {currentCategory && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <currentCategory.icon className="h-5 w-5" />
+                {currentCategory.label}
+              </CardTitle>
+              <CardDescription>{currentCategory.description}</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {currentCategory.tabs && currentCategory.tabs.length > 1 ? (
+                <Tabs value={activeTab} onValueChange={setActiveTab}>
+                  <TabsList className="grid w-full grid-cols-3">
+                    {currentCategory.tabs.map((tab) => (
+                      <TabsTrigger key={tab.id} value={tab.id}>
+                        {tab.label}
+                      </TabsTrigger>
+                    ))}
+                  </TabsList>
+                  
+                  {currentCategory.tabs.map((tab) => (
+                    <TabsContent key={tab.id} value={tab.id} className="mt-6">
+                      <tab.component {...(tab.props || {})} />
+                    </TabsContent>
+                  ))}
+                </Tabs>
+              ) : currentCategory.tabs?.[0] ? (
+                <currentCategory.tabs[0].component {...(currentCategory.tabs[0].props || {})} />
+              ) : (
+                <div className="text-center py-8">
+                  <p className="text-gray-500">Content coming soon...</p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        )}
+      </div>
     </div>
   );
 };
+
+// Placeholder components for different admin sections
+const AdminOverview = () => (
+  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <Card>
+      <CardContent className="p-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm font-medium text-gray-600">Total Users</p>
+            <p className="text-2xl font-bold">1,234</p>
+          </div>
+          <Users className="h-8 w-8 text-blue-500" />
+        </div>
+      </CardContent>
+    </Card>
+    
+    <Card>
+      <CardContent className="p-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm font-medium text-gray-600">Active Vendors</p>
+            <p className="text-2xl font-bold">89</p>
+          </div>
+          <UserCheck className="h-8 w-8 text-green-500" />
+        </div>
+      </CardContent>
+    </Card>
+    
+    <Card>
+      <CardContent className="p-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm font-medium text-gray-600">System Health</p>
+            <div className="flex items-center gap-2">
+              <Badge className="bg-green-100 text-green-800">Healthy</Badge>
+            </div>
+          </div>
+          <Activity className="h-8 w-8 text-green-500" />
+        </div>
+      </CardContent>
+    </Card>
+  </div>
+);
+
+const AdminAnalytics = () => (
+  <div className="text-center py-8">
+    <BarChart3 className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+    <p className="text-gray-500">Analytics dashboard coming soon...</p>
+  </div>
+);
+
+const UserManagement = () => (
+  <div className="text-center py-8">
+    <Users className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+    <p className="text-gray-500">User management interface coming soon...</p>
+  </div>
+);
+
+const VendorManagement = () => (
+  <div className="text-center py-8">
+    <UserCheck className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+    <p className="text-gray-500">Vendor management interface coming soon...</p>
+  </div>
+);
+
+const UserVerification = () => (
+  <div className="text-center py-8">
+    <Shield className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+    <p className="text-gray-500">User verification dashboard coming soon...</p>
+  </div>
+);
+
+const SystemSettings = () => (
+  <div className="text-center py-8">
+    <Settings className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+    <p className="text-gray-500">System settings panel coming soon...</p>
+  </div>
+);
+
+const ContentManagement = () => (
+  <div className="text-center py-8">
+    <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+    <p className="text-gray-500">Content management system coming soon...</p>
+  </div>
+);
+
+const SecurityLogs = () => (
+  <div className="text-center py-8">
+    <Database className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+    <p className="text-gray-500">Security logs viewer coming soon...</p>
+  </div>
+);
+
+const SecurityAlerts = () => (
+  <div className="text-center py-8">
+    <Bell className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+    <p className="text-gray-500">Security alerts dashboard coming soon...</p>
+  </div>
+);
+
+const SystemMonitoring = () => (
+  <div className="text-center py-8">
+    <TrendingUp className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+    <p className="text-gray-500">System monitoring dashboard coming soon...</p>
+  </div>
+);
 
 export default AdminDashboard;
