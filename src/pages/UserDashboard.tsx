@@ -2,7 +2,7 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import Navigation from "@/components/Navigation";
+import RoleBasedNavigation from "@/components/RoleBasedNavigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -19,7 +19,7 @@ import {
 import WalletDashboard from "@/components/wallet/WalletDashboard";
 
 const UserDashboard = () => {
-  const { isAuthenticated, loading, profile } = useAuth();
+  const { isAuthenticated, loading, profile, user } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -33,7 +33,7 @@ const UserDashboard = () => {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <h2 className="text-lg font-semibold text-foreground">Loading...</h2>
+          <h2 className="text-lg font-semibold text-foreground">Loading dashboard...</h2>
         </div>
       </div>
     );
@@ -45,14 +45,19 @@ const UserDashboard = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navigation />
+      <RoleBasedNavigation
+        language="en"
+        onLanguageToggle={() => {}}
+        theme="light"
+        onThemeToggle={() => {}}
+      />
       <div className="pt-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto py-8">
           {/* Welcome Section */}
           <div className="bg-gradient-to-r from-blue-600 to-orange-500 text-white p-6 rounded-lg mb-6">
             <div className="flex items-center justify-between">
               <div>
-                <h1 className="text-2xl font-bold">Welcome, {profile?.full_name || 'User'}!</h1>
+                <h1 className="text-2xl font-bold">Welcome, {profile?.full_name || user?.email || 'User'}!</h1>
                 <p className="text-blue-100 mt-2">Manage your profile, properties, and ASTRA wallet</p>
               </div>
               <User className="h-8 w-8" />
@@ -148,7 +153,7 @@ const UserDashboard = () => {
                       </div>
                       <div>
                         <label className="text-sm font-medium">Email</label>
-                        <p className="text-sm text-muted-foreground">{profile?.email || 'Not set'}</p>
+                        <p className="text-sm text-muted-foreground">{user?.email || 'Not set'}</p>
                       </div>
                       <div>
                         <label className="text-sm font-medium">Role</label>

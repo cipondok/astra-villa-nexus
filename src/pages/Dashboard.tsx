@@ -16,20 +16,16 @@ const Dashboard = () => {
       return;
     }
 
-    // If no user, redirect to home
+    // If no user, redirect to home with auth modal
     if (!isAuthenticated || !user) {
       console.log('No authenticated user, redirecting to home');
-      navigate('/', { replace: true });
+      navigate('/?auth=true', { replace: true });
       return;
     }
 
-    // If we have a user but no profile yet, wait a bit or default to user dashboard
+    // If we have a user but no profile yet, wait a bit more
     if (!profile) {
-      console.log('User exists but no profile, defaulting to user dashboard');
-      // Give it a moment for profile to load, then default to user dashboard
-      setTimeout(() => {
-        navigate('/dashboard/user', { replace: true });
-      }, 1000);
+      console.log('User exists but no profile, waiting...');
       return;
     }
 

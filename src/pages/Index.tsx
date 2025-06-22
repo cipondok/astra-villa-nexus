@@ -1,6 +1,6 @@
-
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useSearchParams } from "react-router-dom";
 import RoleBasedNavigation from "@/components/RoleBasedNavigation";
 import EnhancedModernSearchPanel from "@/components/EnhancedModernSearchPanel";
 import PropertyListingsSection from "@/components/PropertyListingsSection";
@@ -9,13 +9,23 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import ResponsiveAIChatWidget from "@/components/ai/ResponsiveAIChatWidget";
 import { supabase } from "@/integrations/supabase/client";
 import RecommendedProperties from "@/components/property/RecommendedProperties";
+import UnifiedAuthModal from "@/components/auth/UnifiedAuthModal";
 
 const Index = () => {
   const { language } = useLanguage();
+  const [searchParams] = useSearchParams();
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+
+  // Check for auth parameter in URL
+  useEffect(() => {
+    if (searchParams.get('auth') === 'true') {
+      setShowAuthModal(true);
+    }
+  }, [searchParams]);
 
   // Fetch featured properties
   const { data: featuredProperties = [], isLoading: isFeaturedLoading } = useQuery({
@@ -125,6 +135,7 @@ const Index = () => {
         onLanguageToggle={() => {}}
         theme="light"
         onThemeToggle={() => {}}
+        onLoginClick={() => setShowAuthModal(true)}
       />
       
       {/* Hero Section with Search - Mobile Optimized */}
@@ -189,6 +200,12 @@ const Index = () => {
 
       {/* Footer */}
       <ProfessionalFooter language={language} />
+
+      {/* Auth Modal */}
+      <UnifiedAuthModal 
+        isOpen={showAuthModal} 
+        onClose={() => setShowAuthModal(false)} 
+      />
     </div>
   );
 };
