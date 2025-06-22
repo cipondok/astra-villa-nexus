@@ -41,7 +41,7 @@ interface SecurityLog {
   id: string;
   user_id: string;
   event_type: string;
-  ip_address: string;
+  ip_address: string | null;
   user_agent: string;
   device_fingerprint?: string;
   location_data?: any;
@@ -54,7 +54,7 @@ interface SessionTracking {
   id: string;
   user_id: string;
   session_id: string;
-  ip_address: string;
+  ip_address: string | null;
   user_agent: string;
   device_info?: any;
   login_time: string;
@@ -123,7 +123,10 @@ const EnhancedUserManagement = () => {
         .limit(50);
       
       if (error) throw error;
-      return data || [];
+      return (data || []).map(log => ({
+        ...log,
+        ip_address: log.ip_address as string | null
+      }));
     },
     enabled: !!securityModalUser,
   });
@@ -142,7 +145,10 @@ const EnhancedUserManagement = () => {
         .limit(20);
       
       if (error) throw error;
-      return data || [];
+      return (data || []).map(session => ({
+        ...session,
+        ip_address: session.ip_address as string | null
+      }));
     },
     enabled: !!securityModalUser,
   });
@@ -482,7 +488,7 @@ const EnhancedUserManagement = () => {
                       <div className="mt-2 text-sm text-muted-foreground">
                         <div className="flex items-center gap-1">
                           <MapPin className="h-3 w-3" />
-                          IP: {log.ip_address}
+                          IP: {log.ip_address || 'Unknown'}
                         </div>
                         {log.user_agent && (
                           <div className="truncate">Device: {log.user_agent}</div>
@@ -513,7 +519,7 @@ const EnhancedUserManagement = () => {
                         </span>
                       </div>
                       <div className="mt-2 text-sm text-muted-foreground">
-                        <div>IP: {session.ip_address}</div>
+                        <div>IP: {session.ip_address || 'Unknown'}</div>
                         {session.logout_time && (
                           <div>Logout: {new Date(session.logout_time).toLocaleString()}</div>
                         )}
