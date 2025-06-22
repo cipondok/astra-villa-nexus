@@ -14,7 +14,8 @@ import {
   User,
   Bell,
   Wallet,
-  Settings
+  Settings,
+  Loader2
 } from "lucide-react";
 import WalletDashboard from "@/components/wallet/WalletDashboard";
 
@@ -23,8 +24,11 @@ const UserDashboard = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log('UserDashboard - Auth state:', { loading, isAuthenticated, user: !!user, profile: !!profile });
+    
     if (!loading && !isAuthenticated) {
-      navigate('/?auth=true');
+      console.log('Not authenticated, redirecting to home with auth modal');
+      navigate('/?auth=true', { replace: true });
     }
   }, [isAuthenticated, loading, navigate]);
 
@@ -32,15 +36,31 @@ const UserDashboard = () => {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-primary" />
           <h2 className="text-lg font-semibold text-foreground">Loading dashboard...</h2>
         </div>
       </div>
     );
   }
 
-  if (!isAuthenticated) {
-    return null;
+  if (!isAuthenticated || !user) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Card className="w-full max-w-md">
+          <CardHeader>
+            <CardTitle className="text-center">Please Login</CardTitle>
+          </CardHeader>
+          <CardContent className="text-center">
+            <p className="text-muted-foreground mb-6">
+              You need to login to access your dashboard.
+            </p>
+            <Button onClick={() => navigate('/?auth=true')} className="w-full">
+              Login
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
   }
 
   return (

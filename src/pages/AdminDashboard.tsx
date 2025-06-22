@@ -19,7 +19,6 @@ const AdminDashboard = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [activeTab, setActiveTab] = useState(location.state?.defaultTab || "overview");
-  const [accessCheckComplete, setAccessCheckComplete] = useState(false);
 
   console.log('AdminDashboard - Current state:', { 
     loading, 
@@ -46,14 +45,8 @@ const AdminDashboard = () => {
 
       // If not authenticated, redirect immediately
       if (!isAuthenticated || !user) {
-        console.log('Not authenticated, redirecting...');
+        console.log('Not authenticated, redirecting to home with auth modal...');
         navigate('/?auth=true', { replace: true });
-        return;
-      }
-
-      // If no profile yet, wait a bit more
-      if (!profile) {
-        console.log('No profile yet, waiting...');
         return;
       }
 
@@ -71,8 +64,8 @@ const AdminDashboard = () => {
       });
 
       if (!hasAccess) {
-        console.log('Access denied, redirecting...');
-        navigate('/', { replace: true });
+        console.log('Access denied, redirecting to user dashboard...');
+        navigate('/dashboard/user', { replace: true });
         return;
       }
 
@@ -82,21 +75,43 @@ const AdminDashboard = () => {
         setActiveTab("support");
       }
 
-      console.log('Access granted, completing check');
-      setAccessCheckComplete(true);
+      console.log('Access granted');
     };
 
     checkAccess();
   }, [loading, isAuthenticated, user, profile, navigate, activeTab]);
 
   // Show loading state while checking access
-  if (loading || (!accessCheckComplete && isAuthenticated)) {
+  if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-primary" />
           <p className="text-muted-foreground">Loading admin dashboard...</p>
         </div>
+      </div>
+    );
+  }
+
+  // If no user but not loading, show access denied
+  if (!isAuthenticated || !user) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Card className="w-full max-w-md">
+          <CardHeader>
+            <CardTitle className="text-center text-destructive">Please Login</CardTitle>
+          </CardHeader>
+          <CardContent className="text-center">
+            <p className="text-muted-foreground mb-6">
+              You need to login to access this dashboard.
+            </p>
+            <div className="space-y-2">
+              <Button onClick={() => navigate('/?auth=true')} className="w-full">
+                Login
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     );
   }
@@ -118,7 +133,9 @@ const AdminDashboard = () => {
               You don't have permission to access this dashboard.
             </p>
             <div className="space-y-2">
-              <Button onClick={() => navigate('/')} className="w-full">Return to Home</Button>
+              <Button onClick={() => navigate('/dashboard/user')} className="w-full">
+                Go to User Dashboard
+              </Button>
               <Button variant="outline" onClick={signOut} className="w-full">
                 Logout
               </Button>

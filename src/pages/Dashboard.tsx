@@ -2,6 +2,7 @@
 import { useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { Loader2 } from "lucide-react";
 
 const Dashboard = () => {
   const { user, profile, loading, isAuthenticated } = useAuth();
@@ -23,18 +24,19 @@ const Dashboard = () => {
       return;
     }
 
-    // If we have a user but no profile yet, wait a bit more
-    if (!profile) {
-      console.log('User exists but no profile, waiting...');
+    // If we have a user, redirect based on role immediately or use default
+    console.log('Redirecting based on role:', profile?.role);
+    
+    // Check if user is admin first (by email or role)
+    const isAdmin = profile?.role === 'admin' || user?.email === 'mycode103@gmail.com';
+    
+    if (isAdmin) {
+      navigate('/dashboard/admin', { replace: true });
       return;
     }
 
-    // Redirect based on role
-    console.log('Redirecting based on role:', profile.role);
-    switch (profile.role) {
-      case 'admin':
-        navigate('/dashboard/admin', { replace: true });
-        break;
+    // Handle other roles
+    switch (profile?.role) {
       case 'agent':
         navigate('/dashboard/agent', { replace: true });
         break;
@@ -55,7 +57,7 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-background">
       <div className="text-center space-y-4">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+        <Loader2 className="h-12 w-12 animate-spin text-primary mx-auto" />
         <div className="space-y-2">
           <h2 className="text-lg font-semibold text-foreground">
             {loading ? "Loading your dashboard..." : "Redirecting..."}

@@ -45,7 +45,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const fetchProfile = async (userId: string, userEmail?: string) => {
     try {
-      console.log('Fetching profile for user:', userId);
+      console.log('Fetching profile for user:', userId, userEmail);
       
       // Check if user is super admin by email
       if (userEmail === 'mycode103@gmail.com') {
@@ -57,6 +57,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           verification_status: 'approved',
           is_admin: true
         };
+        console.log('Setting admin profile for super admin');
         setProfile(adminProfile);
         return adminProfile;
       }
@@ -112,9 +113,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     let mounted = true;
     
-    // Get initial session first
+    // Initialize auth state
     const initializeAuth = async () => {
       try {
+        console.log('Initializing auth...');
         const { data: { session: initialSession } } = await supabase.auth.getSession();
         
         if (initialSession && mounted) {
@@ -123,11 +125,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           setUser(initialSession.user);
           await fetchProfile(initialSession.user.id, initialSession.user.email);
         }
-        
-        setLoading(false);
       } catch (error) {
         console.error('Auth initialization error:', error);
-        setLoading(false);
+      } finally {
+        if (mounted) {
+          setLoading(false);
+        }
       }
     };
 
