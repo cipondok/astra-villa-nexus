@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -57,14 +56,15 @@ const WebSettingsControl = () => {
 
       if (data && data.length > 0) {
         const settingsObj = data.reduce((acc, setting) => {
-          // Handle boolean values
-          if (typeof setting.value === 'object' && setting.value !== null) {
-            acc[setting.key] = setting.value.value;
-          } else {
-            acc[setting.key] = setting.value;
+          // Handle different JSON value types properly
+          let value = setting.value;
+          if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+            // If it's an object, try to extract a 'value' property or use the object itself
+            value = (value as any).value !== undefined ? (value as any).value : value;
           }
+          acc[setting.key] = value;
           return acc;
-        }, {});
+        }, {} as any);
         setSettings(prev => ({ ...prev, ...settingsObj }));
       }
     } catch (error) {

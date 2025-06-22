@@ -32,6 +32,7 @@ const SimpleUserManagement = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [newUser, setNewUser] = useState({
     email: "",
+    password: "",
     full_name: "",
     role: "general_user" as UserRole,
     phone: "",
@@ -55,28 +56,35 @@ const SimpleUserManagement = () => {
     },
   });
 
-  // Create user mutation
+  // Create user mutation - using Supabase Auth
   const createUserMutation = useMutation({
     mutationFn: async (userData: typeof newUser) => {
-      const { error } = await supabase
-        .from('profiles')
-        .insert({
-          email: userData.email,
-          full_name: userData.full_name,
-          role: userData.role,
-          phone: userData.phone,
-          company_name: userData.company_name,
-          verification_status: 'approved'
-        });
+      // Create user with Supabase Auth
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email: userData.email,
+        password: userData.password,
+        options: {
+          data: {
+            full_name: userData.full_name,
+            role: userData.role,
+            phone: userData.phone,
+            company_name: userData.company_name,
+            verification_status: 'approved'
+          }
+        }
+      });
       
-      if (error) throw error;
-      return userData;
+      if (authError) throw authError;
+      
+      // The profile should be created automatically via the trigger
+      return authData;
     },
     onSuccess: () => {
       showSuccess("User Created", "New user has been created successfully.");
       setIsCreateModalOpen(false);
       setNewUser({
         email: "",
+        password: "",
         full_name: "",
         role: "general_user",
         phone: "",
@@ -144,8 +152,8 @@ const SimpleUserManagement = () => {
   }) || [];
 
   const handleCreateUser = () => {
-    if (!newUser.email || !newUser.full_name) {
-      showError("Validation Error", "Email and full name are required.");
+    if (!newUser.email || !newUser.full_name || !newUser.password) {
+      showError("Validation Error", "Email, password, and full name are required.");
       return;
     }
     createUserMutation.mutate(newUser);
@@ -208,6 +216,15 @@ const SimpleUserManagement = () => {
                   value={newUser.email}
                   onChange={(e) => setNewUser(prev => ({ ...prev, email: e.target.value }))}
                   placeholder="Enter email address"
+                />
+              </div>
+              <div>
+                <Label>Password</Label>
+                <Input
+                  type="password"
+                  value={newUser.password}
+                  onChange={(e) => setNewUser(prev => ({ ...prev, password: e.target.value }))}
+                  placeholder="Enter password"
                 />
               </div>
               <div>
