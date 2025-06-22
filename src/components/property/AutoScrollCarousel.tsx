@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -80,11 +81,16 @@ const AutoScrollCarousel = ({
     }
   }, [currentPropertyId, queryType, ownerId, propertyData, propertyType, location, customProperties]);
 
-  // Auto-scroll functionality with looping
+  // Auto-scroll functionality with proper looping
   useEffect(() => {
-    if (isAutoScrolling && properties.length > itemsPerView) {
+    if (isAutoScrolling && properties.length > 0) {
       intervalRef.current = setInterval(() => {
         setCurrentIndex(prev => {
+          // If we have fewer properties than items per view, don't scroll
+          if (properties.length <= itemsPerView) {
+            return 0;
+          }
+          // Calculate the maximum index to avoid empty spaces
           const maxIndex = properties.length - itemsPerView;
           // Loop back to the beginning when reaching the end
           return prev >= maxIndex ? 0 : prev + 1;
@@ -171,6 +177,10 @@ const AutoScrollCarousel = ({
 
   const handlePrevious = () => {
     setCurrentIndex(prev => {
+      // If we have fewer properties than items per view, don't scroll
+      if (properties.length <= itemsPerView) {
+        return 0;
+      }
       const maxIndex = properties.length - itemsPerView;
       // Loop to end when going back from the beginning
       return prev <= 0 ? maxIndex : prev - 1;
@@ -179,6 +189,10 @@ const AutoScrollCarousel = ({
 
   const handleNext = () => {
     setCurrentIndex(prev => {
+      // If we have fewer properties than items per view, don't scroll
+      if (properties.length <= itemsPerView) {
+        return 0;
+      }
       const maxIndex = properties.length - itemsPerView;
       // Loop to beginning when reaching the end
       return prev >= maxIndex ? 0 : prev + 1;
@@ -232,6 +246,8 @@ const AutoScrollCarousel = ({
     return null;
   }
 
+  // Calculate if we should show navigation controls
+  const shouldShowNavigation = properties.length > itemsPerView;
   const maxIndex = Math.max(0, properties.length - itemsPerView);
 
   return (
@@ -245,47 +261,49 @@ const AutoScrollCarousel = ({
               <Badge variant="outline">{properties.length} properties</Badge>
             </CardTitle>
             
-            <div className="flex items-center gap-2">
-              {/* Auto-scroll toggle */}
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={toggleAutoScroll}
-                className="flex items-center gap-1"
-              >
-                {isAutoScrolling ? (
-                  <>
-                    <Pause className="h-3 w-3" />
-                    <span className="hidden sm:inline">Auto</span>
-                  </>
-                ) : (
-                  <>
-                    <Play className="h-3 w-3" />
-                    <span className="hidden sm:inline">Play</span>
-                  </>
-                )}
-              </Button>
+            {shouldShowNavigation && (
+              <div className="flex items-center gap-2">
+                {/* Auto-scroll toggle */}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={toggleAutoScroll}
+                  className="flex items-center gap-1"
+                >
+                  {isAutoScrolling ? (
+                    <>
+                      <Pause className="h-3 w-3" />
+                      <span className="hidden sm:inline">Auto</span>
+                    </>
+                  ) : (
+                    <>
+                      <Play className="h-3 w-3" />
+                      <span className="hidden sm:inline">Play</span>
+                    </>
+                  )}
+                </Button>
 
-              {/* Navigation buttons */}
-              <div className="flex gap-1">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handlePrevious}
-                  className="h-8 w-8 p-0"
-                >
-                  <ChevronLeft className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handleNext}
-                  className="h-8 w-8 p-0"
-                >
-                  <ChevronRight className="h-4 w-4" />
-                </Button>
+                {/* Navigation buttons */}
+                <div className="flex gap-1">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handlePrevious}
+                    className="h-8 w-8 p-0"
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleNext}
+                    className="h-8 w-8 p-0"
+                  >
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </CardHeader>
       )}
@@ -296,15 +314,19 @@ const AutoScrollCarousel = ({
             ref={carouselRef}
             className="flex transition-transform duration-500 ease-in-out gap-3"
             style={{
-              transform: `translateX(-${currentIndex * (100 / itemsPerView)}%)`,
-              width: `${(properties.length / itemsPerView) * 100}%`
+              transform: shouldShowNavigation ? `translateX(-${currentIndex * (100 / itemsPerView)}%)` : 'translateX(0)',
+              width: shouldShowNavigation ? `${(properties.length / itemsPerView) * 100}%` : '100%'
             }}
           >
             {properties.map((property) => (
               <div 
                 key={property.id} 
                 className="flex-shrink-0"
-                style={{ width: `${100 / properties.length}%` }}
+                style={{ 
+                  width: shouldShowNavigation 
+                    ? `${100 / properties.length}%` 
+                    : `${100 / Math.min(properties.length, itemsPerView)}%`
+                }}
               >
                 <div className="transform scale-90 origin-center">
                   <CompactPropertyCard
@@ -321,26 +343,24 @@ const AutoScrollCarousel = ({
           </div>
         </div>
 
-        {/* Navigation Controls - only show if not hideTitle */}
-        {!hideTitle && (
+        {/* Navigation Controls - only show if not hideTitle and has enough properties */}
+        {!hideTitle && shouldShowNavigation && (
           <>
             {/* Pagination dots */}
-            {properties.length > itemsPerView && (
-              <div className="flex justify-center gap-2 mt-4">
-                {[...Array(maxIndex + 1)].map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setCurrentIndex(index)}
-                    className={`w-2 h-2 rounded-full transition-colors ${
-                      index === currentIndex ? 'bg-blue-600' : 'bg-gray-300'
-                    }`}
-                  />
-                ))}
-              </div>
-            )}
+            <div className="flex justify-center gap-2 mt-4">
+              {[...Array(maxIndex + 1)].map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentIndex(index)}
+                  className={`w-2 h-2 rounded-full transition-colors ${
+                    index === currentIndex ? 'bg-blue-600' : 'bg-gray-300'
+                  }`}
+                />
+              ))}
+            </div>
 
             {/* Auto-scroll progress bar */}
-            {isAutoScrolling && properties.length > itemsPerView && (
+            {isAutoScrolling && (
               <div className="mt-2 w-full bg-gray-200 rounded-full h-1">
                 <div 
                   className="bg-blue-600 h-1 rounded-full transition-all duration-100"
@@ -354,7 +374,7 @@ const AutoScrollCarousel = ({
         )}
 
         {/* Show navigation controls on main page even when hideTitle is true */}
-        {hideTitle && properties.length > itemsPerView && (
+        {hideTitle && shouldShowNavigation && (
           <div className="flex items-center justify-between mt-4">
             <div className="flex gap-1">
               <Button
