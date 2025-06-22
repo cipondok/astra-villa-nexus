@@ -1,4 +1,3 @@
-
 import React from "react";
 import { TabsContent } from "@/components/ui/tabs";
 import AdminOverview from "./AdminOverview";
@@ -25,6 +24,7 @@ import DatabaseTableManagement from "./DatabaseTableManagement";
 import SecurityMonitoring from "./SecurityMonitoring";
 import SystemReports from "./SystemReports";
 import SEOSettings from "./SEOSettings";
+import ToolsManagementDashboard from "./ToolsManagementDashboard";
 
 interface AdminDashboardContentProps {
   isAdmin: boolean;
@@ -43,6 +43,10 @@ const AdminDashboardContent = ({ isAdmin, setActiveTab }: AdminDashboardContentP
     <>
       <TabsContent value="overview">
         <AdminOverview />
+      </TabsContent>
+
+      <TabsContent value="tools-management">
+        <ToolsManagementDashboard />
       </TabsContent>
 
       <TabsContent value="seo-settings">

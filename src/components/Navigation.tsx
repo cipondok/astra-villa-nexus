@@ -1,11 +1,9 @@
-
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, User, LogOut, Globe, Bot, Plus, Home, Building, Info, ShoppingCart, KeyRound, Construction, Rocket, LogIn } from "lucide-react";
+import { Menu, X, User, LogOut, Bot, Plus, Home, Building, Info, ShoppingCart, KeyRound, Construction, Rocket, LogIn } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useThemeSettings } from "@/contexts/ThemeSettingsContext";
-import { useTheme } from "@/components/ThemeProvider";
 import RoleBasedAuthModal from "./RoleBasedAuthModal";
 import ThemeToggleSwitch from "./ThemeToggleSwitch";
 import LanguageToggleSwitch from "./LanguageToggleSwitch";
@@ -171,7 +169,7 @@ const Navigation = () => {
                 <ThemeToggleSwitch language={language} />
                 
                 {/* Language Toggle */}
-                <LanguageToggleSwitch language={language} onToggle={toggleLanguage} />
+                <LanguageToggleSwitch onToggle={toggleLanguage} />
 
                 {/* Authentication Section */}
                 {user ? (
@@ -352,7 +350,6 @@ const Navigation = () => {
       <RoleBasedAuthModal 
         isOpen={showAuthModal} 
         onClose={() => setShowAuthModal(false)} 
-        language={language}
       />
     </>
   );
