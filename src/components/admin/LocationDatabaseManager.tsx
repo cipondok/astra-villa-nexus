@@ -6,30 +6,50 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useAlert } from "@/contexts/AlertContext";
-import { MapPin, Plus, Edit, Trash2, Search } from "lucide-react";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Switch } from "@/components/ui/switch";
+import { AlertCircle, Plus, Edit, Trash2, MapPin, Save, X } from "lucide-react";
+import { useAlert } from "@/contexts/AlertContext";
+
+interface Location {
+  id: string;
+  province_code: string;
+  province_name: string;
+  city_code: string;
+  city_name: string;
+  city_type: string;
+  district_code?: string;
+  district_name?: string;
+  area_name: string;
+  postal_code?: string;
+  is_capital: boolean;
+  is_active: boolean;
+}
 
 const LocationDatabaseManager = () => {
-  const { showSuccess, showError } = useAlert();
-  const queryClient = useQueryClient();
-  
-  const [searchTerm, setSearchTerm] = useState("");
-  const [showAddForm, setShowAddForm] = useState(false);
-  const [editingLocation, setEditingLocation] = useState<any>(null);
-  const [formData, setFormData] = useState({
+  const [selectedProvince, setSelectedProvince] = useState("");
+  const [selectedCity, setSelectedCity] = useState("");
+  const [editingLocation, setEditingLocation] = useState<Location | null>(null);
+  const [newLocation, setNewLocation] = useState({
+    province_code: "",
     province_name: "",
+    city_code: "",
     city_name: "",
+    city_type: "KOTA",
+    district_code: "",
+    district_name: "",
     area_name: "",
     postal_code: "",
-    city_type: "KOTA"
+    is_capital: false,
+    is_active: true
   });
 
-  // Fetch locations with new schema
-  const { data: locations, isLoading } = useQuery({
+  const { showSuccess, showError } = useAlert();
+  const queryClient = useQueryClient();
+
+  // Fetch all locations
+  const { data: locations = [], isLoading } = useQuery({
     queryKey: ['admin-locations'],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -44,120 +64,123 @@ const LocationDatabaseManager = () => {
     },
   });
 
-  // Filter locations using new schema
-  const filteredLocations = locations?.filter(location => 
-    !searchTerm || 
-    location.province_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    location.city_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    location.area_name.toLowerCase().includes(searchTerm.toLowerCase())
-  ) || [];
+  // Get unique provinces
+  const provinces = locations ? [...new Set(locations.map(loc => loc.province_name))] : [];
 
-  // Add location mutation with new schema
+  // Get cities for selected province
+  const cities = locations 
+    ? [...new Set(locations
+        .filter(loc => loc.province_name === selectedProvince)
+        .map(loc => loc.city_name))]
+    : [];
+
+  // Filtered locations
+  const filteredLocations = locations.filter(loc => {
+    if (selectedProvince && loc.province_name !== selectedProvince) return false;
+    if (selectedCity && loc.city_name !== selectedCity) return false;
+    return true;
+  });
+
+  // Add location mutation
   const addLocationMutation = useMutation({
-    mutationFn: async (data: typeof formData) => {
-      // Generate codes based on the data
-      const provinceCode = Math.random().toString(36).substr(2, 2);
-      const cityCode = Math.random().toString(36).substr(2, 4);
-      const districtCode = Math.random().toString(36).substr(2, 6);
-      
-      const { error } = await supabase
+    mutationFn: async (locationData: any) => {
+      const { data, error } = await supabase
         .from('locations')
-        .insert({
-          province_code: provinceCode,
-          province_name: data.province_name,
-          city_code: cityCode,
-          city_name: data.city_name,
-          city_type: data.city_type,
-          district_code: districtCode,
-          district_name: data.area_name,
-          area_name: data.area_name,
-          postal_code: data.postal_code || null,
-          is_active: true
-        });
+        .insert([locationData])
+        .select();
       
       if (error) throw error;
+      return data;
     },
     onSuccess: () => {
-      showSuccess("Location Added", "New Indonesian location has been added successfully.");
-      setFormData({ 
-        province_name: "", 
-        city_name: "", 
-        area_name: "", 
+      showSuccess("Berhasil", "Lokasi baru berhasil ditambahkan");
+      setNewLocation({
+        province_code: "",
+        province_name: "",
+        city_code: "",
+        city_name: "",
+        city_type: "KOTA",
+        district_code: "",
+        district_name: "",
+        area_name: "",
         postal_code: "",
-        city_type: "KOTA" 
+        is_capital: false,
+        is_active: true
       });
-      setShowAddForm(false);
       queryClient.invalidateQueries({ queryKey: ['admin-locations'] });
     },
     onError: (error: any) => {
-      showError("Error", error.message);
+      showError("Gagal", error.message || 'Gagal menambahkan lokasi');
     },
   });
 
   // Update location mutation
   const updateLocationMutation = useMutation({
-    mutationFn: async ({ id, data }: { id: string; data: any }) => {
-      const { error } = await supabase
+    mutationFn: async (locationData: Location) => {
+      const { data, error } = await supabase
         .from('locations')
-        .update(data)
-        .eq('id', id);
+        .update(locationData)
+        .eq('id', locationData.id)
+        .select();
       
       if (error) throw error;
+      return data;
     },
     onSuccess: () => {
-      showSuccess("Location Updated", "Indonesian location has been updated successfully.");
+      showSuccess("Berhasil", "Lokasi berhasil diperbarui");
       setEditingLocation(null);
       queryClient.invalidateQueries({ queryKey: ['admin-locations'] });
     },
     onError: (error: any) => {
-      showError("Error", error.message);
+      showError("Gagal", error.message || 'Gagal memperbarui lokasi');
     },
   });
 
   // Delete location mutation
   const deleteLocationMutation = useMutation({
-    mutationFn: async (id: string) => {
+    mutationFn: async (locationId: string) => {
       const { error } = await supabase
         .from('locations')
         .delete()
-        .eq('id', id);
+        .eq('id', locationId);
       
       if (error) throw error;
     },
     onSuccess: () => {
-      showSuccess("Location Deleted", "Indonesian location has been deleted successfully.");
+      showSuccess("Berhasil", "Lokasi berhasil dihapus");
       queryClient.invalidateQueries({ queryKey: ['admin-locations'] });
     },
     onError: (error: any) => {
-      showError("Error", error.message);
+      showError("Gagal", error.message || 'Gagal menghapus lokasi');
     },
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!formData.province_name || !formData.city_name || !formData.area_name) {
-      showError("Missing Fields", "Please fill in Province, City, and Area fields.");
+  const handleAddLocation = () => {
+    if (!newLocation.province_name || !newLocation.city_name || !newLocation.area_name) {
+      showError("Validasi", "Mohon lengkapi Provinsi, Kota/Kabupaten, dan Area");
       return;
     }
-    addLocationMutation.mutate(formData);
+    addLocationMutation.mutate(newLocation);
   };
 
-  const handleEdit = (location: any) => {
-    setEditingLocation(location);
+  const handleUpdateLocation = () => {
+    if (!editingLocation) return;
+    updateLocationMutation.mutate(editingLocation);
   };
 
-  const handleUpdateStatus = (id: string, isActive: boolean) => {
-    updateLocationMutation.mutate({ 
-      id, 
-      data: { is_active: isActive } 
-    });
-  };
-
-  const handleDelete = (id: string, locationName: string) => {
-    if (window.confirm(`Are you sure you want to delete "${locationName}"?`)) {
-      deleteLocationMutation.mutate(id);
+  const handleDeleteLocation = (locationId: string) => {
+    if (confirm("Apakah Anda yakin ingin menghapus lokasi ini?")) {
+      deleteLocationMutation.mutate(locationId);
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center p-8">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -165,107 +188,152 @@ const LocationDatabaseManager = () => {
         <div>
           <h2 className="text-2xl font-bold flex items-center gap-2">
             <MapPin className="h-6 w-6" />
-            Indonesian Location Database Management
+            Manajemen Database Lokasi
           </h2>
-          <p className="text-gray-600 mt-1">
-            Manage Indonesian provinces, cities, and areas for property listings
+          <p className="text-muted-foreground">
+            Kelola data lokasi provinsi, kota/kabupaten, dan area
           </p>
         </div>
-        <Button onClick={() => setShowAddForm(!showAddForm)}>
-          <Plus className="h-4 w-4 mr-2" />
-          Add Location
-        </Button>
+        <Badge variant="secondary">
+          Total: {locations.length} lokasi
+        </Badge>
       </div>
 
-      {/* Add Location Form */}
-      {showAddForm && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Add New Indonesian Location</CardTitle>
-            <CardDescription>Add a new province, city, and area combination</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-                <div>
-                  <Label htmlFor="province_name">Province *</Label>
-                  <Input
-                    id="province_name"
-                    value={formData.province_name}
-                    onChange={(e) => setFormData(prev => ({ ...prev, province_name: e.target.value }))}
-                    placeholder="e.g., DKI Jakarta"
-                    required
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="city_name">City *</Label>
-                  <Input
-                    id="city_name"
-                    value={formData.city_name}
-                    onChange={(e) => setFormData(prev => ({ ...prev, city_name: e.target.value }))}
-                    placeholder="e.g., Jakarta Selatan"
-                    required
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="city_type">City Type</Label>
-                  <Select 
-                    value={formData.city_type} 
-                    onValueChange={(value) => setFormData(prev => ({ ...prev, city_type: value }))}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="KOTA">KOTA</SelectItem>
-                      <SelectItem value="KABUPATEN">KABUPATEN</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label htmlFor="area_name">Area/District *</Label>
-                  <Input
-                    id="area_name"
-                    value={formData.area_name}
-                    onChange={(e) => setFormData(prev => ({ ...prev, area_name: e.target.value }))}
-                    placeholder="e.g., Kebayoran Baru"
-                    required
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="postal_code">Postal Code</Label>
-                  <Input
-                    id="postal_code"
-                    value={formData.postal_code}
-                    onChange={(e) => setFormData(prev => ({ ...prev, postal_code: e.target.value }))}
-                    placeholder="e.g., 12110"
-                  />
-                </div>
-              </div>
-              <div className="flex gap-2">
-                <Button type="submit" disabled={addLocationMutation.isPending}>
-                  {addLocationMutation.isPending ? 'Adding...' : 'Add Location'}
-                </Button>
-                <Button type="button" variant="outline" onClick={() => setShowAddForm(false)}>
-                  Cancel
-                </Button>
-              </div>
-            </form>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Search and Filter */}
+      {/* Add New Location */}
       <Card>
-        <CardContent className="pt-6">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-            <Input
-              placeholder="Search Indonesian locations by province, city, or area..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
-            />
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Plus className="h-5 w-5" />
+            Tambah Lokasi Baru
+          </CardTitle>
+          <CardDescription>
+            Tambahkan lokasi baru ke dalam database
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <Label htmlFor="new-province-code">Kode Provinsi</Label>
+              <Input
+                id="new-province-code"
+                value={newLocation.province_code}
+                onChange={(e) => setNewLocation(prev => ({ ...prev, province_code: e.target.value }))}
+                placeholder="31"
+              />
+            </div>
+            <div>
+              <Label htmlFor="new-province-name">Nama Provinsi</Label>
+              <Input
+                id="new-province-name"
+                value={newLocation.province_name}
+                onChange={(e) => setNewLocation(prev => ({ ...prev, province_name: e.target.value }))}
+                placeholder="DKI Jakarta"
+              />
+            </div>
+            <div>
+              <Label htmlFor="new-city-code">Kode Kota/Kabupaten</Label>
+              <Input
+                id="new-city-code"
+                value={newLocation.city_code}
+                onChange={(e) => setNewLocation(prev => ({ ...prev, city_code: e.target.value }))}
+                placeholder="3171"
+              />
+            </div>
+            <div>
+              <Label htmlFor="new-city-name">Nama Kota/Kabupaten</Label>
+              <Input
+                id="new-city-name"
+                value={newLocation.city_name}
+                onChange={(e) => setNewLocation(prev => ({ ...prev, city_name: e.target.value }))}
+                placeholder="Jakarta Pusat"
+              />
+            </div>
+            <div>
+              <Label htmlFor="new-city-type">Tipe Kota</Label>
+              <Select 
+                value={newLocation.city_type} 
+                onValueChange={(value) => setNewLocation(prev => ({ ...prev, city_type: value }))}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="KOTA">KOTA</SelectItem>
+                  <SelectItem value="KABUPATEN">KABUPATEN</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label htmlFor="new-area-name">Nama Area/Kecamatan</Label>
+              <Input
+                id="new-area-name"
+                value={newLocation.area_name}
+                onChange={(e) => setNewLocation(prev => ({ ...prev, area_name: e.target.value }))}
+                placeholder="Gambir"
+              />
+            </div>
+            <div>
+              <Label htmlFor="new-postal-code">Kode Pos</Label>
+              <Input
+                id="new-postal-code"
+                value={newLocation.postal_code}
+                onChange={(e) => setNewLocation(prev => ({ ...prev, postal_code: e.target.value }))}
+                placeholder="10110"
+              />
+            </div>
+          </div>
+          <div className="flex justify-end mt-4">
+            <Button 
+              onClick={handleAddLocation}
+              disabled={addLocationMutation.isPending}
+              className="flex items-center gap-2"
+            >
+              <Save className="h-4 w-4" />
+              {addLocationMutation.isPending ? 'Menyimpan...' : 'Tambah Lokasi'}
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Filters */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Filter Lokasi</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="filter-province">Filter berdasarkan Provinsi</Label>
+              <Select value={selectedProvince} onValueChange={setSelectedProvince}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Semua Provinsi" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">Semua Provinsi</SelectItem>
+                  {provinces.map((province) => (
+                    <SelectItem key={province} value={province}>
+                      {province}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label htmlFor="filter-city">Filter berdasarkan Kota/Kabupaten</Label>
+              <Select value={selectedCity} onValueChange={setSelectedCity} disabled={!selectedProvince}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Semua Kota/Kabupaten" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">Semua Kota/Kabupaten</SelectItem>
+                  {cities.map((city) => (
+                    <SelectItem key={city} value={city}>
+                      {city}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -273,83 +341,163 @@ const LocationDatabaseManager = () => {
       {/* Locations Table */}
       <Card>
         <CardHeader>
-          <CardTitle>Indonesian Locations ({filteredLocations.length})</CardTitle>
+          <CardTitle>Daftar Lokasi</CardTitle>
           <CardDescription>
-            Manage all Indonesian location entries in the database
+            Menampilkan {filteredLocations.length} dari {locations.length} lokasi
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {isLoading ? (
-            <div className="text-center py-8">Loading Indonesian locations...</div>
-          ) : filteredLocations.length === 0 ? (
-            <div className="text-center py-8">
-              <MapPin className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No locations found</h3>
-              <p className="text-gray-600 mb-4">
-                No Indonesian locations match your search criteria.
-              </p>
-            </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Province</TableHead>
-                    <TableHead>City</TableHead>
-                    <TableHead>Type</TableHead>
-                    <TableHead>Area/District</TableHead>
-                    <TableHead>Postal Code</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Created</TableHead>
-                    <TableHead>Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredLocations.map((location) => (
-                    <TableRow key={location.id}>
-                      <TableCell className="font-medium">{location.province_name}</TableCell>
-                      <TableCell>{location.city_name}</TableCell>
-                      <TableCell>
-                        <Badge variant={location.city_type === 'KOTA' ? 'default' : 'secondary'}>
-                          {location.city_type}
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Provinsi</TableHead>
+                  <TableHead>Kota/Kabupaten</TableHead>
+                  <TableHead>Tipe</TableHead>
+                  <TableHead>Area/Kecamatan</TableHead>
+                  <TableHead>Kode Pos</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Aksi</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filteredLocations.map((location) => (
+                  <TableRow key={location.id}>
+                    <TableCell>{location.province_name}</TableCell>
+                    <TableCell>
+                      {location.city_name}
+                      {location.is_capital && (
+                        <Badge variant="secondary" className="ml-2">
+                          Ibu Kota
                         </Badge>
-                      </TableCell>
-                      <TableCell>{location.area_name}</TableCell>
-                      <TableCell>{location.postal_code || 'N/A'}</TableCell>
-                      <TableCell>
-                        <div className="flex items-center space-x-2">
-                          <Switch
-                            checked={location.is_active}
-                            onCheckedChange={(checked) => handleUpdateStatus(location.id, checked)}
-                          />
-                          <Badge variant={location.is_active ? "default" : "secondary"}>
-                            {location.is_active ? "Active" : "Inactive"}
-                          </Badge>
-                        </div>
-                      </TableCell>
-                      <TableCell>{new Date(location.created_at).toLocaleDateString()}</TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-1">
-                          <Button variant="outline" size="sm" onClick={() => handleEdit(location)}>
-                            <Edit className="h-3 w-3" />
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleDelete(location.id, `${location.area_name}, ${location.city_name}, ${location.province_name}`)}
-                          >
-                            <Trash2 className="h-3 w-3" />
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          )}
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant={location.city_type === 'KOTA' ? 'default' : 'outline'}>
+                        {location.city_type}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>{location.area_name}</TableCell>
+                    <TableCell>{location.postal_code || '-'}</TableCell>
+                    <TableCell>
+                      <Badge variant={location.is_active ? 'success' : 'secondary'}>
+                        {location.is_active ? 'Aktif' : 'Nonaktif'}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setEditingLocation(location)}
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleDeleteLocation(location.id)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         </CardContent>
       </Card>
+
+      {/* Edit Location Modal */}
+      {editingLocation && (
+        <Card className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold">Edit Lokasi</h3>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setEditingLocation(null)}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label>Nama Provinsi</Label>
+                <Input
+                  value={editingLocation.province_name}
+                  onChange={(e) => setEditingLocation(prev => 
+                    prev ? { ...prev, province_name: e.target.value } : null
+                  )}
+                />
+              </div>
+              <div>
+                <Label>Nama Kota/Kabupaten</Label>
+                <Input
+                  value={editingLocation.city_name}
+                  onChange={(e) => setEditingLocation(prev => 
+                    prev ? { ...prev, city_name: e.target.value } : null
+                  )}
+                />
+              </div>
+              <div>
+                <Label>Tipe Kota</Label>
+                <Select 
+                  value={editingLocation.city_type} 
+                  onValueChange={(value) => setEditingLocation(prev => 
+                    prev ? { ...prev, city_type: value } : null
+                  )}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="KOTA">KOTA</SelectItem>
+                    <SelectItem value="KABUPATEN">KABUPATEN</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label>Nama Area/Kecamatan</Label>
+                <Input
+                  value={editingLocation.area_name}
+                  onChange={(e) => setEditingLocation(prev => 
+                    prev ? { ...prev, area_name: e.target.value } : null
+                  )}
+                />
+              </div>
+              <div>
+                <Label>Kode Pos</Label>
+                <Input
+                  value={editingLocation.postal_code || ''}
+                  onChange={(e) => setEditingLocation(prev => 
+                    prev ? { ...prev, postal_code: e.target.value } : null
+                  )}
+                />
+              </div>
+            </div>
+            
+            <div className="flex justify-end gap-2 mt-6">
+              <Button
+                variant="outline"
+                onClick={() => setEditingLocation(null)}
+              >
+                Batal
+              </Button>
+              <Button
+                onClick={handleUpdateLocation}
+                disabled={updateLocationMutation.isPending}
+              >
+                {updateLocationMutation.isPending ? 'Menyimpan...' : 'Simpan Perubahan'}
+              </Button>
+            </div>
+          </div>
+        </Card>
+      )}
     </div>
   );
 };
