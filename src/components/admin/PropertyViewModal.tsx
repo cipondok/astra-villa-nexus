@@ -1,9 +1,11 @@
 
+import { useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MapPin, Home, User, UserCheck, Calendar, DollarSign, Edit2, Image as ImageIcon } from "lucide-react";
+import { MapPin, Home, User, UserCheck, Calendar, DollarSign, Edit2, Image as ImageIcon, Wand2 } from "lucide-react";
 import { formatIDR } from "@/utils/currency";
+import { useAlert } from "@/contexts/AlertContext";
 
 interface PropertyViewModalProps {
   property: any;
@@ -13,6 +15,10 @@ interface PropertyViewModalProps {
 }
 
 const PropertyViewModal = ({ property, isOpen, onClose, onEdit }: PropertyViewModalProps) => {
+  const [generatingImage, setGeneratingImage] = useState(false);
+  const [aiGeneratedImage, setAiGeneratedImage] = useState<string | null>(null);
+  const { showSuccess, showError } = useAlert();
+
   if (!property) return null;
 
   const handleEdit = () => {
@@ -22,20 +28,86 @@ const PropertyViewModal = ({ property, isOpen, onClose, onEdit }: PropertyViewMo
 
   // Parse images - handle both string and array formats
   const getPropertyImages = () => {
-    if (!property.images) return [];
-    
-    if (typeof property.images === 'string') {
+    const imageSources = [
+      property.images,
+      property.image_urls,
+      property.thumbnail_url ? [property.thumbnail_url] : null
+    ];
+
+    for (const source of imageSources) {
+      if (!source) continue;
+      
       try {
-        return JSON.parse(property.images);
-      } catch {
-        return [property.images];
+        if (typeof source === 'string') {
+          // Check if it's a JSON string
+          if (source.startsWith('[') || source.startsWith('{')) {
+            try {
+              const parsed = JSON.parse(source);
+              if (Array.isArray(parsed) && parsed.length > 0) {
+                return parsed;
+              }
+            } catch {
+              // Not JSON, treat as single URL
+              return [source];
+            }
+          } else {
+            // Single URL string
+            return [source];
+          }
+        }
+        
+        if (Array.isArray(source) && source.length > 0) {
+          return source;
+        }
+      } catch (error)  {
+        console.warn('Error parsing image source:', error);
       }
     }
     
-    return Array.isArray(property.images) ? property.images : [];
+    return [];
   };
 
-  const propertyImages = getPropertyImages();
+  let propertyImages = getPropertyImages();
+  
+  // Add AI generated image if available
+  if (aiGeneratedImage) {
+    propertyImages = [aiGeneratedImage, ...propertyImages];
+  }
+
+  // Generate AI image for property
+  const generateAIImage = async () => {
+    setGeneratingImage(true);
+    try {
+      const prompt = `A beautiful ${property.property_type || 'house'} in ${property.location || 'Indonesia'}, ${property.bedrooms || 2} bedrooms, ${property.bathrooms || 1} bathrooms, modern architecture, well-lit, professional real estate photography`;
+      
+      console.log('Generating AI image with prompt:', prompt);
+      
+      const response = await fetch('/api/generate-property-image', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ prompt }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to generate image');
+      }
+
+      const data = await response.json();
+      
+      if (data.image) {
+        console.log('AI image generated successfully');
+        setAiGeneratedImage(data.image);
+        showSuccess("Success", "AI image generated successfully");
+      }
+    } catch (error) {
+      console.error('Error generating AI image:', error);
+      showError("Error", "Failed to generate AI image");
+    } finally {
+      setGeneratingImage(false);
+    }
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -99,7 +171,24 @@ const PropertyViewModal = ({ property, isOpen, onClose, onEdit }: PropertyViewMo
             ) : (
               <div className="text-center py-8 bg-gray-50 rounded-lg">
                 <ImageIcon className="h-12 w-12 text-gray-300 mx-auto mb-2" />
-                <p className="text-gray-500">No images available for this property</p>
+                <p className="text-gray-500 mb-4">No images available for this property</p>
+                <Button
+                  onClick={generateAIImage}
+                  disabled={generatingImage}
+                  className="bg-purple-600 hover:bg-purple-700 text-white"
+                >
+                  {generatingImage ? (
+                    <>
+                      <Wand2 className="h-4 w-4 mr-2 animate-pulse" />
+                      Generating...
+                    </>
+                  ) : (
+                    <>
+                      <Wand2 className="h-4 w-4 mr-2" />
+                      Generate AI Image
+                    </>
+                  )}
+                </Button>
               </div>
             )}
           </div>

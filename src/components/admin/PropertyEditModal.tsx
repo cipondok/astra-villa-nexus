@@ -10,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAlert } from "@/contexts/AlertContext";
 import { formatIDR } from "@/utils/currency";
-import { Edit, Save, X, Image as ImageIcon, Upload, Trash2 } from "lucide-react";
+import { Edit, Save, X, Image as ImageIcon, Upload, Trash2, Wand2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -39,6 +39,7 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
   
   const [images, setImages] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
+  const [generatingImage, setGeneratingImage] = useState(false);
 
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
@@ -64,32 +65,45 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
         status: property.status || "active",
       });
 
-      // Parse images with better error handling
+      // Parse images from different sources
       const getPropertyImages = () => {
-        if (!property.images) return [];
-        
-        try {
-          // Handle different image formats
-          if (typeof property.images === 'string') {
-            // Try to parse as JSON first
-            try {
-              const parsed = JSON.parse(property.images);
-              return Array.isArray(parsed) ? parsed : [property.images];
-            } catch {
-              // If JSON parse fails, treat as single image URL
-              return [property.images];
+        const imageSources = [
+          property.images,
+          property.image_urls,
+          property.thumbnail_url ? [property.thumbnail_url] : null
+        ];
+
+        for (const source of imageSources) {
+          if (!source) continue;
+          
+          try {
+            if (typeof source === 'string') {
+              // Check if it's a JSON string
+              if (source.startsWith('[') || source.startsWith('{')) {
+                try {
+                  const parsed = JSON.parse(source);
+                  if (Array.isArray(parsed) && parsed.length > 0) {
+                    return parsed;
+                  }
+                } catch {
+                  // Not JSON, treat as single URL
+                  return [source];
+                }
+              } else {
+                // Single URL string
+                return [source];
+              }
             }
+            
+            if (Array.isArray(source) && source.length > 0) {
+              return source;
+            }
+          } catch (error) {
+            console.warn('Error parsing image source:', error);
           }
-          
-          if (Array.isArray(property.images)) {
-            return property.images;
-          }
-          
-          return [];
-        } catch (error) {
-          console.error('Error parsing property images:', error);
-          return [];
         }
+        
+        return [];
       };
 
       const initialImages = getPropertyImages();
@@ -97,6 +111,47 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
       setImages(initialImages);
     }
   }, [property, isOpen]);
+
+  // Generate AI image for property
+  const generateAIImage = async () => {
+    if (!property) return;
+    
+    setGeneratingImage(true);
+    try {
+      const prompt = `A beautiful ${property.property_type || 'house'} in ${property.location || 'Indonesia'}, ${property.bedrooms || 2} bedrooms, ${property.bathrooms || 1} bathrooms, modern architecture, well-lit, professional real estate photography`;
+      
+      console.log('Generating AI image with prompt:', prompt);
+      
+      const response = await fetch('/api/generate-property-image', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ prompt }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to generate image');
+      }
+
+      const data = await response.json();
+      
+      if (data.image) {
+        console.log('AI image generated successfully');
+        setImages(prev => {
+          const newImages = [data.image, ...prev];
+          console.log('Updated images with AI generated image:', newImages);
+          return newImages;
+        });
+        showSuccess("Success", "AI image generated successfully");
+      }
+    } catch (error) {
+      console.error('Error generating AI image:', error);
+      showError("Error", "Failed to generate AI image");
+    } finally {
+      setGeneratingImage(false);
+    }
+  };
 
   // Upload image function
   const uploadImage = async (file: File): Promise<string | null> => {
@@ -207,12 +262,12 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
         updated_at: new Date().toISOString(),
       };
 
-      // Handle images - convert to JSON string for storage
+      // Handle images - save as PostgreSQL array
       if (images && images.length > 0) {
-        updatePayload.images = JSON.stringify(images);
-        console.log('Setting images as JSON string:', updatePayload.images);
+        updatePayload.images = images; // Direct array assignment for PostgreSQL
+        console.log('Setting images as array:', updatePayload.images);
       } else {
-        updatePayload.images = JSON.stringify([]);
+        updatePayload.images = []; // Empty array
         console.log('Setting empty images array');
       }
 
@@ -290,26 +345,53 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
             </h3>
             
             {/* Upload Section */}
-            <div className="space-y-2">
-              <Label htmlFor="image-upload" className="text-gray-700 font-medium">Upload New Images</Label>
-              <Input
-                id="image-upload"
-                type="file"
-                accept="image/*"
-                multiple
-                onChange={handleFileUpload}
-                disabled={uploading}
-                className="border-gray-300 focus:border-blue-500 focus:ring-blue-500"
-              />
-              <p className="text-sm text-gray-500">
-                Select multiple images (JPG, PNG, etc.) - Max 5MB per file
-              </p>
-              {uploading && (
-                <div className="flex items-center gap-2 text-blue-600">
-                  <Upload className="h-4 w-4 animate-pulse" />
-                  Uploading images...
-                </div>
-              )}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="image-upload" className="text-gray-700 font-medium">Upload New Images</Label>
+                <Input
+                  id="image-upload"
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={handleFileUpload}
+                  disabled={uploading}
+                  className="border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                />
+                <p className="text-sm text-gray-500">
+                  Select multiple images (JPG, PNG, etc.) - Max 5MB per file
+                </p>
+                {uploading && (
+                  <div className="flex items-center gap-2 text-blue-600">
+                    <Upload className="h-4 w-4 animate-pulse" />
+                    Uploading images...
+                  </div>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label className="text-gray-700 font-medium">Generate AI Image</Label>
+                <Button
+                  type="button"
+                  onClick={generateAIImage}
+                  disabled={generatingImage}
+                  className="w-full bg-purple-600 hover:bg-purple-700 text-white"
+                >
+                  {generatingImage ? (
+                    <>
+                      <Upload className="h-4 w-4 mr-2 animate-pulse" />
+                      Generating...
+                    </>
+                  ) : (
+                    <>
+                      <Wand2 className="h-4 w-4 mr-2" />
+                      Generate AI Image
+                    </>
+                  )}
+                </Button>
+                <p className="text-sm text-gray-500">
+                  Generate a professional property image using AI
+                </p>
+              </div>
             </div>
 
             {/* Current Images */}
@@ -346,7 +428,16 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
             ) : (
               <div className="text-center py-6 bg-gray-50 rounded-lg">
                 <ImageIcon className="h-8 w-8 text-gray-300 mx-auto mb-2" />
-                <p className="text-gray-500">No images uploaded yet</p>
+                <p className="text-gray-500 mb-3">No images uploaded yet</p>
+                <Button
+                  type="button"
+                  onClick={generateAIImage}
+                  disabled={generatingImage}
+                  className="bg-purple-600 hover:bg-purple-700 text-white"
+                >
+                  <Wand2 className="h-4 w-4 mr-2" />
+                  Generate Default Image
+                </Button>
               </div>
             )}
           </div>
@@ -552,7 +643,7 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
             </Button>
             <Button 
               onClick={handleUpdate} 
-              disabled={updatePropertyMutation.isPending || uploading}
+              disabled={updatePropertyMutation.isPending || uploading || generatingImage}
               className="bg-blue-600 hover:bg-blue-700 text-white"
             >
               <Save className="h-4 w-4 mr-2" />
