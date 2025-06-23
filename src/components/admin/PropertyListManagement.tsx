@@ -55,72 +55,67 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
   const { data: propertiesData, isLoading, refetch } = useQuery({
     queryKey: ['admin-properties', currentPage, searchTerm, statusFilter, typeFilter],
     queryFn: async () => {
-      console.log('Fetching properties...');
+      console.log('Fetching properties for admin dashboard...');
       
-      // First get the total count
-      let countQuery = supabase
-        .from('properties')
-        .select('*', { count: 'exact', head: true });
+      try {
+        // Build the base query
+        let query = supabase
+          .from('properties')
+          .select(`
+            *,
+            owner:owner_id(id, full_name, email),
+            agent:agent_id(id, full_name, email)
+          `);
 
-      // Apply filters for count
-      if (searchTerm) {
-        countQuery = countQuery.or(`title.ilike.%${searchTerm}%,location.ilike.%${searchTerm}%`);
-      }
-      if (statusFilter !== "all") {
-        countQuery = countQuery.eq('status', statusFilter);
-      }
-      if (typeFilter !== "all") {
-        countQuery = countQuery.eq('property_type', typeFilter);
-      }
+        // Apply filters
+        if (searchTerm) {
+          query = query.or(`title.ilike.%${searchTerm}%,location.ilike.%${searchTerm}%`);
+        }
+        if (statusFilter !== "all") {
+          query = query.eq('status', statusFilter);
+        }
+        if (typeFilter !== "all") {
+          query = query.eq('property_type', typeFilter);
+        }
 
-      const { count } = await countQuery;
+        // Get total count first
+        const { count } = await supabase
+          .from('properties')
+          .select('*', { count: 'exact', head: true });
 
-      // Then get the actual data with pagination
-      let query = supabase
-        .from('properties')
-        .select(`
-          *,
-          owner:profiles!properties_owner_id_fkey(id, full_name, email),
-          agent:profiles!properties_agent_id_fkey(id, full_name, email)
-        `);
-
-      // Apply filters
-      if (searchTerm) {
-        query = query.or(`title.ilike.%${searchTerm}%,location.ilike.%${searchTerm}%`);
-      }
-      if (statusFilter !== "all") {
-        query = query.eq('status', statusFilter);
-      }
-      if (typeFilter !== "all") {
-        query = query.eq('property_type', typeFilter);
-      }
-
-      // Apply pagination
-      const from = (currentPage - 1) * itemsPerPage;
-      const to = from + itemsPerPage - 1;
-      
-      const { data, error } = await query
-        .range(from, to)
-        .order('created_at', { ascending: false });
-      
-      if (error) {
-        console.error('Error fetching properties:', error);
+        // Apply pagination
+        const from = (currentPage - 1) * itemsPerPage;
+        const to = from + itemsPerPage - 1;
+        
+        const { data, error } = await query
+          .range(from, to)
+          .order('created_at', { ascending: false });
+        
+        if (error) {
+          console.error('Error fetching properties:', error);
+          throw error;
+        }
+        
+        console.log('Properties fetched successfully:', data?.length || 0);
+        console.log('Sample property data:', data?.[0]);
+        
+        return {
+          properties: data || [],
+          totalCount: count || 0,
+          totalPages: Math.ceil((count || 0) / itemsPerPage)
+        };
+      } catch (error) {
+        console.error('Failed to fetch properties:', error);
         throw error;
       }
-      
-      console.log('Properties fetched:', data?.length || 0);
-      
-      return {
-        properties: data || [],
-        totalCount: count || 0,
-        totalPages: Math.ceil((count || 0) / itemsPerPage)
-      };
     },
   });
 
   const properties = propertiesData?.properties || [];
   const totalPages = propertiesData?.totalPages || 1;
   const totalCount = propertiesData?.totalCount || 0;
+
+  console.log('Current properties state:', properties.length, 'Total count:', totalCount);
 
   // Delete property mutation
   const deletePropertyMutation = useMutation({
