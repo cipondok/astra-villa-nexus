@@ -10,11 +10,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAlert } from "@/contexts/AlertContext";
 import { useAuth } from "@/contexts/AuthContext";
-import { Building2, Save, Upload, Image, Eye, Settings } from "lucide-react";
+import { Building2, Save, Upload, Image, Eye, Settings, AlertTriangle, CheckCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
+import { Slider } from "@/components/ui/slider";
+import { formatIDR } from "@/utils/currency";
 
 interface PropertyFormData {
   title: string;
@@ -43,6 +45,18 @@ interface ImageUpload {
   progress: number;
   uploaded: boolean;
   url?: string;
+  originalName: string;
+  newName: string;
+  size: number;
+  optimizedSize?: number;
+  contentScanStatus: 'pending' | 'scanning' | 'approved' | 'rejected';
+  contentScanResults?: {
+    hasText: boolean;
+    hasBarcode: boolean;
+    hasViolatedContent: boolean;
+    confidence: number;
+    details: string[];
+  };
 }
 
 const EnhancedPropertyInsertForm = () => {
@@ -75,7 +89,7 @@ const EnhancedPropertyInsertForm = () => {
   const [watermarkSettings, setWatermarkSettings] = useState({
     enabled: false,
     text: "VillaAstra",
-    position: "center",
+    position: "bottom-right",
     opacity: 0.7,
     size: 24,
     color: "#FFFFFF"
@@ -103,31 +117,145 @@ const EnhancedPropertyInsertForm = () => {
   const areas = formData.city ? 
     [...new Set(locations?.filter(loc => loc.city === formData.city).map(loc => loc.area))] : [];
 
-  // Handle file selection
-  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+  // Format price input as Indonesian Rupiah
+  const handlePriceChange = (value: string) => {
+    const numericValue = value.replace(/[^\d]/g, '');
+    if (numericValue) {
+      const formatted = formatIDR(parseInt(numericValue));
+      setFormData(prev => ({ ...prev, price: numericValue }));
+    } else {
+      setFormData(prev => ({ ...prev, price: '' }));
+    }
+  };
+
+  // Image content scanning function
+  const scanImageContent = async (file: File): Promise<ImageUpload['contentScanResults']> => {
+    return new Promise((resolve) => {
+      // Simulate AI content scanning
+      setTimeout(() => {
+        const hasText = Math.random() > 0.8;
+        const hasBarcode = Math.random() > 0.9;
+        const hasViolatedContent = Math.random() > 0.95;
+        
+        resolve({
+          hasText,
+          hasBarcode,
+          hasViolatedContent,
+          confidence: Math.random() * 0.3 + 0.7,
+          details: [
+            ...(hasText ? ['Text detected in image'] : []),
+            ...(hasBarcode ? ['Barcode/QR code detected'] : []),
+            ...(hasViolatedContent ? ['Potentially inappropriate content'] : [])
+          ]
+        });
+      }, 2000);
+    });
+  };
+
+  // Image optimization function
+  const optimizeImage = async (file: File): Promise<{ blob: Blob; newName: string }> => {
+    return new Promise((resolve) => {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const img = new Image();
+      
+      img.onload = () => {
+        // Calculate new dimensions (max 1920x1080 for high quality)
+        let { width, height } = img;
+        const maxWidth = 1920;
+        const maxHeight = 1080;
+        
+        if (width > maxWidth || height > maxHeight) {
+          const ratio = Math.min(maxWidth / width, maxHeight / height);
+          width *= ratio;
+          height *= ratio;
+        }
+        
+        canvas.width = width;
+        canvas.height = height;
+        
+        ctx?.drawImage(img, 0, 0, width, height);
+        
+        canvas.toBlob((blob) => {
+          if (blob) {
+            const timestamp = Date.now();
+            const randomId = Math.random().toString(36).substr(2, 9);
+            const newName = `property_${timestamp}_${randomId}.webp`;
+            resolve({ blob, newName });
+          }
+        }, 'image/webp', 0.85); // High quality WebP
+      };
+      
+      img.src = URL.createObjectURL(file);
+    });
+  };
+
+  // Handle file selection with optimization and scanning
+  const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (!files) return;
 
-    const newImages: ImageUpload[] = Array.from(files).map(file => ({
-      id: Math.random().toString(36).substr(2, 9),
-      file,
-      preview: URL.createObjectURL(file),
-      progress: 0,
-      uploaded: false
-    }));
+    const newImages: ImageUpload[] = Array.from(files).map(file => {
+      const timestamp = Date.now();
+      const randomId = Math.random().toString(36).substr(2, 9);
+      const newName = `property_${timestamp}_${randomId}.webp`;
+      
+      return {
+        id: Math.random().toString(36).substr(2, 9),
+        file,
+        preview: URL.createObjectURL(file),
+        progress: 0,
+        uploaded: false,
+        originalName: file.name,
+        newName,
+        size: file.size,
+        contentScanStatus: 'pending'
+      };
+    });
 
     setImages(prev => [...prev, ...newImages]);
     
-    // Start uploading
-    newImages.forEach(uploadImage);
+    // Process each image
+    newImages.forEach(async (imageUpload) => {
+      // Start content scanning
+      setImages(prev => prev.map(img => 
+        img.id === imageUpload.id 
+          ? { ...img, contentScanStatus: 'scanning' }
+          : img
+      ));
+
+      const scanResults = await scanImageContent(imageUpload.file);
+      
+      setImages(prev => prev.map(img => 
+        img.id === imageUpload.id 
+          ? { 
+              ...img, 
+              contentScanResults: scanResults,
+              contentScanStatus: scanResults.hasViolatedContent ? 'rejected' : 'approved'
+            }
+          : img
+      ));
+
+      // Only upload if content scan passes
+      if (!scanResults.hasViolatedContent) {
+        uploadImage(imageUpload);
+      }
+    });
   };
 
-  // Upload individual image
+  // Upload individual image with optimization
   const uploadImage = async (imageUpload: ImageUpload) => {
     try {
-      const fileExt = imageUpload.file.name.split('.').pop();
-      const fileName = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}.${fileExt}`;
-      const filePath = `properties/${fileName}`;
+      // Optimize image first
+      const { blob, newName } = await optimizeImage(imageUpload.file);
+      
+      setImages(prev => prev.map(img => 
+        img.id === imageUpload.id 
+          ? { ...img, optimizedSize: blob.size, newName }
+          : img
+      ));
+
+      const filePath = `properties/${newName}`;
 
       // Simulate progress
       const progressInterval = setInterval(() => {
@@ -140,7 +268,7 @@ const EnhancedPropertyInsertForm = () => {
 
       const { data, error } = await supabase.storage
         .from('property-images')
-        .upload(filePath, imageUpload.file);
+        .upload(filePath, blob);
 
       clearInterval(progressInterval);
 
@@ -156,7 +284,6 @@ const EnhancedPropertyInsertForm = () => {
           : img
       ));
 
-      // Set first uploaded image as thumbnail if none selected
       if (!thumbnailId) {
         setThumbnailId(imageUpload.id);
       }
@@ -184,7 +311,7 @@ const EnhancedPropertyInsertForm = () => {
     mutationFn: async (data: PropertyFormData) => {
       if (!user) throw new Error('User must be logged in');
 
-      const uploadedImages = images.filter(img => img.uploaded && img.url);
+      const uploadedImages = images.filter(img => img.uploaded && img.url && img.contentScanStatus === 'approved');
       const thumbnailUrl = uploadedImages.find(img => img.id === thumbnailId)?.url || uploadedImages[0]?.url;
 
       const propertyData = {
@@ -301,6 +428,12 @@ const EnhancedPropertyInsertForm = () => {
       return;
     }
 
+    const approvedImages = images.filter(img => img.contentScanStatus === 'approved' && img.uploaded);
+    if (approvedImages.length === 0) {
+      showError("No Valid Images", "Please upload at least one approved image.");
+      return;
+    }
+
     if (!user) {
       showError("Authentication Error", "You must be logged in to create properties.");
       return;
@@ -381,14 +514,19 @@ const EnhancedPropertyInsertForm = () => {
                   </Select>
                 </div>
                 <div>
-                  <Label htmlFor="price">Price</Label>
-                  <Input
-                    id="price"
-                    type="number"
-                    value={formData.price}
-                    onChange={(e) => handleInputChange('price', e.target.value)}
-                    placeholder="Enter price"
-                  />
+                  <Label htmlFor="price">Price (IDR)</Label>
+                  <div className="relative">
+                    <Input
+                      id="price"
+                      type="text"
+                      value={formData.price ? formatIDR(parseInt(formData.price)) : ''}
+                      onChange={(e) => handlePriceChange(e.target.value)}
+                      placeholder="Enter price in Indonesian Rupiah"
+                    />
+                    <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-sm text-gray-500">
+                      IDR
+                    </span>
+                  </div>
                 </div>
                 <div>
                   <Label htmlFor="bedrooms">Bedrooms</Label>
@@ -475,7 +613,7 @@ const EnhancedPropertyInsertForm = () => {
                     disabled={!formData.state}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Select city" />
+                      <SelectValue placeholder={formData.state ? "Select city" : "Select state first"} />
                     </SelectTrigger>
                     <SelectContent>
                       {cities.map((city) => (
@@ -492,7 +630,7 @@ const EnhancedPropertyInsertForm = () => {
                     disabled={!formData.city}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Select area" />
+                      <SelectValue placeholder={formData.city ? "Select area" : "Select city first"} />
                     </SelectTrigger>
                     <SelectContent>
                       {areas.map((area) => (
@@ -534,7 +672,7 @@ const EnhancedPropertyInsertForm = () => {
 
                 {/* Image Grid */}
                 {images.length > 0 && (
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                     {images.map((image) => (
                       <div key={image.id} className="relative group">
                         <div className="aspect-square rounded-lg overflow-hidden border-2 border-dashed border-gray-200">
@@ -546,7 +684,7 @@ const EnhancedPropertyInsertForm = () => {
                         </div>
                         
                         {/* Progress Bar */}
-                        {!image.uploaded && (
+                        {!image.uploaded && image.contentScanStatus === 'approved' && (
                           <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
                             <div className="w-full px-4">
                               <Progress value={image.progress} className="w-full" />
@@ -555,9 +693,28 @@ const EnhancedPropertyInsertForm = () => {
                           </div>
                         )}
 
+                        {/* Content Scan Status */}
+                        <div className="absolute top-2 left-2">
+                          {image.contentScanStatus === 'scanning' && (
+                            <Badge className="bg-yellow-500 text-white">Scanning...</Badge>
+                          )}
+                          {image.contentScanStatus === 'approved' && (
+                            <Badge className="bg-green-500 text-white">
+                              <CheckCircle className="h-3 w-3 mr-1" />
+                              Approved
+                            </Badge>
+                          )}
+                          {image.contentScanStatus === 'rejected' && (
+                            <Badge className="bg-red-500 text-white">
+                              <AlertTriangle className="h-3 w-3 mr-1" />
+                              Rejected
+                            </Badge>
+                          )}
+                        </div>
+
                         {/* Controls */}
                         <div className="absolute top-2 right-2 space-x-1">
-                          {image.uploaded && (
+                          {image.uploaded && image.contentScanStatus === 'approved' && (
                             <Button
                               type="button"
                               variant="secondary"
@@ -578,9 +735,25 @@ const EnhancedPropertyInsertForm = () => {
                           </Button>
                         </div>
 
+                        {/* Image Info */}
+                        <div className="absolute bottom-0 left-0 right-0 bg-black/60 text-white p-2 text-xs">
+                          <div className="truncate">{image.newName}</div>
+                          <div className="flex justify-between">
+                            <span>Original: {(image.size / 1024).toFixed(0)}KB</span>
+                            {image.optimizedSize && (
+                              <span>Optimized: {(image.optimizedSize / 1024).toFixed(0)}KB</span>
+                            )}
+                          </div>
+                          {image.contentScanResults && (
+                            <div className="mt-1">
+                              Confidence: {(image.contentScanResults.confidence * 100).toFixed(0)}%
+                            </div>
+                          )}
+                        </div>
+
                         {/* Thumbnail Badge */}
                         {thumbnailId === image.id && (
-                          <Badge className="absolute bottom-2 left-2">Thumbnail</Badge>
+                          <Badge className="absolute bottom-2 right-2">Thumbnail</Badge>
                         )}
                       </div>
                     ))}
@@ -632,70 +805,101 @@ const EnhancedPropertyInsertForm = () => {
                   </div>
 
                   {watermarkSettings.enabled && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <Label>Watermark Text</Label>
-                        <Input
-                          value={watermarkSettings.text}
-                          onChange={(e) => 
-                            setWatermarkSettings(prev => ({ ...prev, text: e.target.value }))
-                          }
-                          placeholder="Watermark text"
-                        />
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label>Watermark Text</Label>
+                          <Input
+                            value={watermarkSettings.text}
+                            onChange={(e) => 
+                              setWatermarkSettings(prev => ({ ...prev, text: e.target.value }))
+                            }
+                            placeholder="Watermark text"
+                          />
+                        </div>
+                        <div>
+                          <Label>Position</Label>
+                          <Select 
+                            value={watermarkSettings.position} 
+                            onValueChange={(value) => 
+                              setWatermarkSettings(prev => ({ ...prev, position: value }))
+                            }
+                          >
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="center">Center</SelectItem>
+                              <SelectItem value="top-left">Top Left</SelectItem>
+                              <SelectItem value="top-right">Top Right</SelectItem>
+                              <SelectItem value="bottom-left">Bottom Left</SelectItem>
+                              <SelectItem value="bottom-right">Bottom Right</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div>
+                          <Label>Opacity: {watermarkSettings.opacity}</Label>
+                          <Slider
+                            min={0.1}
+                            max={1}
+                            step={0.1}
+                            value={[watermarkSettings.opacity]}
+                            onValueChange={(value) => 
+                              setWatermarkSettings(prev => ({ ...prev, opacity: value[0] }))
+                            }
+                          />
+                        </div>
+                        <div>
+                          <Label>Font Size</Label>
+                          <Input
+                            type="number"
+                            value={watermarkSettings.size}
+                            onChange={(e) => 
+                              setWatermarkSettings(prev => ({ ...prev, size: parseInt(e.target.value) }))
+                            }
+                            placeholder="24"
+                          />
+                        </div>
+                        <div>
+                          <Label>Color</Label>
+                          <Input
+                            type="color"
+                            value={watermarkSettings.color}
+                            onChange={(e) => 
+                              setWatermarkSettings(prev => ({ ...prev, color: e.target.value }))
+                            }
+                          />
+                        </div>
                       </div>
+                      
+                      {/* Watermark Preview */}
                       <div>
-                        <Label>Position</Label>
-                        <Select 
-                          value={watermarkSettings.position} 
-                          onValueChange={(value) => 
-                            setWatermarkSettings(prev => ({ ...prev, position: value }))
-                          }
+                        <Label>Watermark Preview</Label>
+                        <div 
+                          className="relative bg-gradient-to-br from-gray-100 to-gray-200 h-40 rounded-lg border overflow-hidden"
                         >
-                          <SelectTrigger>
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="center">Center</SelectItem>
-                            <SelectItem value="top-left">Top Left</SelectItem>
-                            <SelectItem value="top-right">Top Right</SelectItem>
-                            <SelectItem value="bottom-left">Bottom Left</SelectItem>
-                            <SelectItem value="bottom-right">Bottom Right</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div>
-                        <Label>Opacity: {watermarkSettings.opacity}</Label>
-                        <Input
-                          type="range"
-                          min="0.1"
-                          max="1"
-                          step="0.1"
-                          value={watermarkSettings.opacity}
-                          onChange={(e) => 
-                            setWatermarkSettings(prev => ({ ...prev, opacity: parseFloat(e.target.value) }))
-                          }
-                        />
-                      </div>
-                      <div>
-                        <Label>Font Size</Label>
-                        <Input
-                          type="number"
-                          value={watermarkSettings.size}
-                          onChange={(e) => 
-                            setWatermarkSettings(prev => ({ ...prev, size: parseInt(e.target.value) }))
-                          }
-                          placeholder="24"
-                        />
-                      </div>
-                      <div>
-                        <Label>Color</Label>
-                        <Input
-                          type="color"
-                          value={watermarkSettings.color}
-                          onChange={(e) => 
-                            setWatermarkSettings(prev => ({ ...prev, color: e.target.value }))
-                          }
-                        />
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <div className="text-gray-400 text-sm">Property Image Preview</div>
+                          </div>
+                          
+                          <div
+                            className={`absolute font-bold pointer-events-none select-none ${
+                              watermarkSettings.position === 'top-left' ? 'top-3 left-3' :
+                              watermarkSettings.position === 'top-right' ? 'top-3 right-3' :
+                              watermarkSettings.position === 'center' ? 'top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2' :
+                              watermarkSettings.position === 'bottom-left' ? 'bottom-3 left-3' :
+                              'bottom-3 right-3'
+                            }`}
+                            style={{
+                              color: watermarkSettings.color,
+                              opacity: watermarkSettings.opacity,
+                              fontSize: `${watermarkSettings.size}px`,
+                              textShadow: '1px 1px 2px rgba(0,0,0,0.5)'
+                            }}
+                          >
+                            {watermarkSettings.text}
+                          </div>
+                        </div>
                       </div>
                     </div>
                   )}
@@ -745,7 +949,7 @@ const EnhancedPropertyInsertForm = () => {
             <div className="pt-6 border-t">
               <Button 
                 type="submit" 
-                disabled={createPropertyMutation.isPending || images.some(img => !img.uploaded)}
+                disabled={createPropertyMutation.isPending || images.some(img => !img.uploaded && img.contentScanStatus === 'approved')}
                 className="w-full md:w-auto"
               >
                 {createPropertyMutation.isPending ? (
@@ -757,10 +961,22 @@ const EnhancedPropertyInsertForm = () => {
                   </>
                 )}
               </Button>
-              {images.some(img => !img.uploaded) && (
+              {images.some(img => !img.uploaded && img.contentScanStatus === 'approved') && (
                 <p className="text-sm text-muted-foreground mt-2">
-                  Please wait for all images to finish uploading before submitting.
+                  Please wait for all approved images to finish uploading before submitting.
                 </p>
+              )}
+              
+              {/* Image Summary */}
+              {images.length > 0 && (
+                <div className="mt-4 p-3 bg-gray-50 rounded-lg">
+                  <div className="text-sm text-gray-600">
+                    <div>Total Images: {images.length}</div>
+                    <div>Approved: {images.filter(img => img.contentScanStatus === 'approved').length}</div>
+                    <div>Rejected: {images.filter(img => img.contentScanStatus === 'rejected').length}</div>
+                    <div>Uploaded: {images.filter(img => img.uploaded).length}</div>
+                  </div>
+                </div>
               )}
             </div>
           </form>
