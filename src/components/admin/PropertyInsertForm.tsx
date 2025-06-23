@@ -10,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAlert } from "@/contexts/AlertContext";
 import { useAuth } from "@/contexts/AuthContext";
-import { Building2, Save } from "lucide-react";
+import { Building2, Save, AlertTriangle } from "lucide-react";
 
 interface PropertyFormData {
   title: string;
@@ -31,7 +31,7 @@ interface PropertyFormData {
 }
 
 const PropertyInsertForm = () => {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const [formData, setFormData] = useState<PropertyFormData>({
     title: "",
     description: "",
@@ -60,11 +60,46 @@ const PropertyInsertForm = () => {
     "North Sulawesi", "South Sulawesi", "West Nusa Tenggara", "East Nusa Tenggara"
   ];
 
+  // Check if user is authorized to create restricted development statuses
+  const isAuthorizedForRestrictedTypes = () => {
+    if (!profile) return false;
+    
+    // Super admin check
+    if (user?.email === 'mycode103@gmail.com') return true;
+    
+    // Authorized roles
+    return ['admin', 'agent', 'property_owner'].includes(profile.role);
+  };
+
+  // Get available development status options based on user authorization
+  const getAvailableDevelopmentStatuses = () => {
+    const baseOptions = [
+      { value: "completed", label: "Completed" },
+      { value: "under_construction", label: "Under Construction" },
+      { value: "planned", label: "Planned" }
+    ];
+
+    if (isAuthorizedForRestrictedTypes()) {
+      return [
+        ...baseOptions,
+        { value: "new_project", label: "New Project" },
+        { value: "pre_launching", label: "Pre-Launching" }
+      ];
+    }
+
+    return baseOptions;
+  };
+
   // Create property mutation
   const createPropertyMutation = useMutation({
     mutationFn: async (data: PropertyFormData) => {
       if (!user) {
         throw new Error('User must be logged in to create properties');
+      }
+
+      // Additional client-side check for restricted development statuses
+      if (['new_project', 'pre_launching'].includes(data.development_status) && !isAuthorizedForRestrictedTypes()) {
+        throw new Error('You are not authorized to create New Project or Pre-Launching properties. Please contact an administrator.');
       }
 
       const propertyData = {
@@ -99,6 +134,12 @@ const PropertyInsertForm = () => {
       
       if (error) {
         console.error('Property creation error:', error);
+        
+        // Handle authorization constraint violation
+        if (error.message && error.message.includes('check_development_status_authorization')) {
+          throw new Error('You are not authorized to create this type of property. Only admins, agents, and property owners can create New Project or Pre-Launching properties.');
+        }
+        
         throw error;
       }
       
@@ -150,6 +191,12 @@ const PropertyInsertForm = () => {
       return;
     }
     
+    // Additional validation for restricted development statuses
+    if (['new_project', 'pre_launching'].includes(formData.development_status) && !isAuthorizedForRestrictedTypes()) {
+      showError("Authorization Error", "You are not authorized to create New Project or Pre-Launching properties. Please contact an administrator.");
+      return;
+    }
+    
     createPropertyMutation.mutate(formData);
   };
 
@@ -162,6 +209,14 @@ const PropertyInsertForm = () => {
         </CardTitle>
         <CardDescription>
           Create a new property listing in the system
+          {!isAuthorizedForRestrictedTypes() && (
+            <div className="mt-2 flex items-center gap-2 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+              <AlertTriangle className="h-4 w-4 text-amber-600" />
+              <span className="text-sm text-amber-700">
+                Note: Only admins, agents, and property owners can create "New Project" or "Pre-Launching" properties.
+              </span>
+            </div>
+          )}
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -345,11 +400,21 @@ const PropertyInsertForm = () => {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="completed">Completed</SelectItem>
-                    <SelectItem value="under_construction">Under Construction</SelectItem>
-                    <SelectItem value="planned">Planned</SelectItem>
+                    {getAvailableDevelopmentStatuses().map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                        {['new_project', 'pre_launching'].includes(option.value) && !isAuthorizedForRestrictedTypes() && (
+                          <span className="text-xs text-amber-600 ml-2">(Restricted)</span>
+                        )}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
+                {['new_project', 'pre_launching'].includes(formData.development_status) && (
+                  <p className="text-xs text-amber-600 mt-1">
+                    This option is restricted to authorized users only.
+                  </p>
+                )}
               </div>
               <div>
                 <Label htmlFor="owner_type">Owner Type</Label>

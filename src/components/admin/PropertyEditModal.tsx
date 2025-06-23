@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -10,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAlert } from "@/contexts/AlertContext";
 import { formatIDR } from "@/utils/currency";
-import { Edit, Save, X, Image as ImageIcon, Upload, Trash2, Wand2 } from "lucide-react";
+import { Edit, Save, X, Image as ImageIcon, Upload, Trash2, Wand2, AlertTriangle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -35,6 +34,7 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
     state: "",
     area: "",
     status: "active",
+    development_status: "completed",
   });
   
   const [images, setImages] = useState<string[]>([]);
@@ -43,7 +43,37 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
 
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
+
+  // Check if user is authorized to create restricted development statuses
+  const isAuthorizedForRestrictedTypes = () => {
+    if (!profile) return false;
+    
+    // Super admin check
+    if (user?.email === 'mycode103@gmail.com') return true;
+    
+    // Authorized roles
+    return ['admin', 'agent', 'property_owner'].includes(profile.role);
+  };
+
+  // Get available development status options based on user authorization
+  const getAvailableDevelopmentStatuses = () => {
+    const baseOptions = [
+      { value: "completed", label: "Completed" },
+      { value: "under_construction", label: "Under Construction" },
+      { value: "planned", label: "Planned" }
+    ];
+
+    if (isAuthorizedForRestrictedTypes()) {
+      return [
+        ...baseOptions,
+        { value: "new_project", label: "New Project" },
+        { value: "pre_launching", label: "Pre-Launching" }
+      ];
+    }
+
+    return baseOptions;
+  };
 
   // Initialize form data when property changes
   useEffect(() => {
@@ -63,6 +93,7 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
         state: property.state || "",
         area: property.area || "",
         status: property.status || "active",
+        development_status: property.development_status || "completed",
       });
 
       // Parse images from different sources
@@ -249,6 +280,11 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
         throw new Error("Property ID is required");
       }
 
+      // Additional client-side check for restricted development statuses
+      if (['new_project', 'pre_launching'].includes(updates.development_status) && !isAuthorizedForRestrictedTypes()) {
+        throw new Error('You are not authorized to set this property to New Project or Pre-Launching status. Please contact an administrator.');
+      }
+
       console.log('Updating property with data:', updates);
       console.log('Current images state:', images);
       
@@ -280,6 +316,12 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
 
       if (error) {
         console.error('Database update error:', error);
+        
+        // Handle authorization constraint violation
+        if (error.message && error.message.includes('check_development_status_authorization')) {
+          throw new Error('You are not authorized to set this development status. Only admins, agents, and property owners can create New Project or Pre-Launching properties.');
+        }
+        
         throw error;
       }
 
@@ -307,6 +349,12 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
   };
 
   const handleUpdate = () => {
+    // Additional validation for restricted development statuses
+    if (['new_project', 'pre_launching'].includes(editData.development_status) && !isAuthorizedForRestrictedTypes()) {
+      showError("Authorization Error", "You are not authorized to set this development status. Please contact an administrator.");
+      return;
+    }
+
     console.log('Submitting update with data:', editData);
     console.log('Current images:', images);
     updatePropertyMutation.mutate(editData);
@@ -333,6 +381,14 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
           </DialogTitle>
           <DialogDescription className="text-gray-600">
             Update property information and settings
+            {!isAuthorizedForRestrictedTypes() && (
+              <div className="mt-2 flex items-center gap-2 p-2 bg-amber-50 border border-amber-200 rounded-lg">
+                <AlertTriangle className="h-4 w-4 text-amber-600" />
+                <span className="text-xs text-amber-700">
+                  Note: You cannot set development status to "New Project" or "Pre-Launching" - restricted to authorized users only.
+                </span>
+              </div>
+            )}
           </DialogDescription>
         </DialogHeader>
         
@@ -488,6 +544,33 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
                     <SelectItem value="lease">For Lease</SelectItem>
                   </SelectContent>
                 </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="edit-development-status" className="text-gray-700 font-medium">Development Status</Label>
+                <Select 
+                  value={editData.development_status} 
+                  onValueChange={(value) => handleInputChange('development_status', value)}
+                >
+                  <SelectTrigger className="border-gray-300 focus:border-blue-500">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {getAvailableDevelopmentStatuses().map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                        {['new_project', 'pre_launching'].includes(option.value) && !isAuthorizedForRestrictedTypes() && (
+                          <span className="text-xs text-amber-600 ml-2">(Restricted)</span>
+                        )}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {['new_project', 'pre_launching'].includes(editData.development_status) && !isAuthorizedForRestrictedTypes() && (
+                  <p className="text-xs text-amber-600 mt-1">
+                    This option is restricted to authorized users only.
+                  </p>
+                )}
               </div>
 
               <div className="space-y-2">

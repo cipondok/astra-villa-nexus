@@ -3837,6 +3837,10 @@ export type Database = {
         Args: { vendor_id: string }
         Returns: boolean
       }
+      can_create_development_status: {
+        Args: { user_id: string; dev_status: string }
+        Returns: boolean
+      }
       check_admin_access: {
         Args: Record<PropertyKey, never>
         Returns: boolean
