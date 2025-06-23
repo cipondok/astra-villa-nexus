@@ -1,15 +1,12 @@
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Search, Filter, MapPin, Bed, Bath, Car, Heart, Loader2, Box } from "lucide-react";
+import { Search, Loader2 } from "lucide-react";
 import AuthenticatedNavigation from "@/components/navigation/AuthenticatedNavigation";
 import { supabase } from "@/integrations/supabase/client";
-import { formatIDR } from "@/utils/currency";
 import CompactPropertyCard from "@/components/property/CompactPropertyCard";
 
 const Properties = () => {
@@ -19,10 +16,8 @@ const Properties = () => {
   const [language, setLanguage] = useState<"en" | "id">("en");
   const [theme, setTheme] = useState("light");
   const [properties, setProperties] = useState<any[]>([]);
-  const [filteredProperties, setFilteredProperties] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [isSearching, setIsSearching] = useState(false);
 
   // Fetch properties from database
   useEffect(() => {
@@ -31,41 +26,21 @@ const Properties = () => {
         setLoading(true);
         setError(null);
         
-        console.log("Fetching properties for Properties page...");
+        console.log("Fetching properties...");
         
         const { data, error } = await supabase
           .from('properties')
-          .select(`
-            id,
-            title,
-            description,
-            price,
-            property_type,
-            listing_type,
-            location,
-            city,
-            state,
-            area,
-            bedrooms,
-            bathrooms,
-            area_sqm,
-            images,
-            image_urls,
-            status,
-            created_at,
-            development_status,
-            owner_type
-          `)
+          .select('*')
           .eq('status', 'active')
-          .order('created_at', { ascending: false });
+          .order('created_at', { ascending: false })
+          .limit(50);
 
         if (error) {
           console.error('Error fetching properties:', error);
           setError(error.message);
         } else {
-          console.log(`Fetched ${data?.length || 0} properties for Properties page`);
+          console.log(`Fetched ${data?.length || 0} properties`);
           setProperties(data || []);
-          setFilteredProperties(data || []);
         }
       } catch (error) {
         console.error('Error fetching properties:', error);
@@ -78,63 +53,13 @@ const Properties = () => {
     fetchProperties();
   }, []);
 
-  // Live search effect
-  useEffect(() => {
-    const performLiveSearch = async () => {
-      if (!searchTerm || searchTerm.trim() === '') {
-        setFilteredProperties(properties);
-        setIsSearching(false);
-        return;
-      }
-
-      setIsSearching(true);
-      
-      try {
-        const { data, error } = await supabase
-          .from('properties')
-          .select(`
-            id,
-            title,
-            description,
-            price,
-            property_type,
-            listing_type,
-            location,
-            city,
-            state,
-            area,
-            bedrooms,
-            bathrooms,
-            area_sqm,
-            images,
-            image_urls,
-            status,
-            created_at,
-            development_status,
-            owner_type
-          `)
-          .eq('status', 'active')
-          .or(`title.ilike.%${searchTerm.trim()}%,description.ilike.%${searchTerm.trim()}%,location.ilike.%${searchTerm.trim()}%,city.ilike.%${searchTerm.trim()}%,state.ilike.%${searchTerm.trim()}%,area.ilike.%${searchTerm.trim()}%`)
-          .order('created_at', { ascending: false });
-
-        if (error) {
-          console.error('Error searching properties:', error);
-          setFilteredProperties([]);
-        } else {
-          console.log(`Live search found ${data?.length || 0} properties`);
-          setFilteredProperties(data || []);
-        }
-      } catch (error) {
-        console.error('Live search error:', error);
-        setFilteredProperties([]);
-      } finally {
-        setIsSearching(false);
-      }
-    };
-
-    const timeoutId = setTimeout(performLiveSearch, 300);
-    return () => clearTimeout(timeoutId);
-  }, [searchTerm, properties]);
+  // Filter properties based on search
+  const filteredProperties = properties.filter(property => 
+    !searchTerm || 
+    property.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    property.location?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    property.city?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const toggleLanguage = () => {
     setLanguage(prev => prev === "en" ? "id" : "en");
@@ -153,48 +78,28 @@ const Properties = () => {
       title: "Properties",
       subtitle: "Find your perfect property",
       search: "Search properties...",
-      filter: "Filter",
-      bedrooms: "Bedrooms",
-      bathrooms: "Bathrooms",
-      parking: "Parking",
       noResults: "No properties found",
       loading: "Loading properties...",
-      searching: "Searching...",
-      viewDetails: "View Details",
-      view3D: "3D View",
-      forSale: "For Sale",
-      forRent: "For Rent",
       loadingError: "Error loading properties. Please try again.",
       totalFound: "properties found",
-      advancedFilters: "Advanced Filters",
     },
     id: {
       title: "Properti",
       subtitle: "Temukan properti impian Anda",
       search: "Cari properti...",
-      filter: "Filter",
-      bedrooms: "Kamar Tidur",
-      bathrooms: "Kamar Mandi", 
-      parking: "Parkir",
       noResults: "Tidak ada properti ditemukan",
       loading: "Memuat properti...",
-      searching: "Mencari...",
-      viewDetails: "Lihat Detail",
-      view3D: "Tampilan 3D",
-      forSale: "Dijual",
-      forRent: "Disewa",
       loadingError: "Error memuat properti. Silakan coba lagi.",
       totalFound: "properti ditemukan",
-      advancedFilters: "Filter Lanjutan",
     }
   };
 
   const currentText = text[language];
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Fixed Header with proper Navigation */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-white dark:bg-gray-800 border-b shadow-sm">
+    <div className="min-h-screen bg-gray-50">
+      {/* Fixed Header */}
+      <div className="fixed top-0 left-0 right-0 z-50 bg-white border-b shadow-sm">
         {isAuthenticated ? (
           <AuthenticatedNavigation
             language={language}
@@ -212,15 +117,15 @@ const Properties = () => {
         )}
       </div>
       
-      {/* Main Content with proper top padding */}
+      {/* Main Content */}
       <div className="pt-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           {/* Page Header */}
-          <div className="mb-8 text-center bg-white dark:bg-gray-800 rounded-lg p-8 shadow-sm">
-            <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+          <div className="mb-8 text-center bg-white rounded-lg p-8 shadow-sm">
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">
               {currentText.title}
             </h1>
-            <p className="text-xl text-gray-600 dark:text-gray-300">
+            <p className="text-xl text-gray-600">
               {currentText.subtitle}
             </p>
           </div>
@@ -233,20 +138,15 @@ const Properties = () => {
                 placeholder={currentText.search}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 bg-white dark:bg-gray-800"
+                className="pl-10 bg-white"
               />
-              {isSearching && (
-                <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                  <Loader2 className="h-4 w-4 animate-spin text-blue-500" />
-                </div>
-              )}
             </div>
           </div>
 
           {/* Results Count */}
           {!loading && (
             <div className="mb-6">
-              <p className="text-gray-600 dark:text-gray-300">
+              <p className="text-gray-600">
                 {filteredProperties.length} {currentText.totalFound}
                 {searchTerm && (
                   <span className="ml-2 text-blue-600 font-medium">
@@ -262,7 +162,7 @@ const Properties = () => {
             <div className="flex items-center justify-center py-12">
               <div className="text-center">
                 <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-blue-500" />
-                <p className="text-gray-600 dark:text-gray-300">{currentText.loading}</p>
+                <p className="text-gray-600">{currentText.loading}</p>
               </div>
             </div>
           )}
@@ -271,7 +171,7 @@ const Properties = () => {
           {error && (
             <div className="text-center py-12">
               <p className="text-red-500 text-lg mb-4">{currentText.loadingError}</p>
-              <p className="text-gray-600 dark:text-gray-300">{error}</p>
+              <p className="text-gray-600">{error}</p>
               <Button 
                 onClick={() => window.location.reload()} 
                 className="mt-4"
@@ -295,7 +195,7 @@ const Properties = () => {
                 ))
               ) : (
                 <div className="col-span-full text-center py-12">
-                  <p className="text-gray-600 dark:text-gray-300 text-lg">
+                  <p className="text-gray-600 text-lg">
                     {searchTerm ? `No properties found for "${searchTerm}"` : currentText.noResults}
                   </p>
                   {searchTerm && (

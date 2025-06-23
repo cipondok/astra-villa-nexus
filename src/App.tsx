@@ -21,17 +21,25 @@ import Dashboard from "@/pages/Dashboard";
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      refetchOnWindowFocus: false,
+      staleTime: 5 * 60 * 1000, // 5 minutes
+    },
+  },
+});
 
 function App() {
   return (
-    <BrowserRouter>
-      <QueryClientProvider client={queryClient}>
-        <AuthProvider>
-          <ThemeSettingsProvider>
-            <LanguageProvider>
-              <AlertProvider>
-                <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <ThemeSettingsProvider>
+          <LanguageProvider>
+            <AlertProvider>
+              <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
+                <BrowserRouter>
                   <Routes>
                     <Route path="/" element={<Index />} />
                     <Route path="/properties" element={<Properties />} />
@@ -48,13 +56,13 @@ function App() {
                     <Route path="/about" element={<About />} />
                   </Routes>
                   <Toaster />
-                </ThemeProvider>
-              </AlertProvider>
-            </LanguageProvider>
-          </ThemeSettingsProvider>
-        </AuthProvider>
-      </QueryClientProvider>
-    </BrowserRouter>
+                </BrowserRouter>
+              </ThemeProvider>
+            </AlertProvider>
+          </LanguageProvider>
+        </ThemeSettingsProvider>
+      </AuthProvider>
+    </QueryClientProvider>
   );
 }
 

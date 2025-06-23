@@ -8,7 +8,6 @@ import ProfessionalFooter from "@/components/ProfessionalFooter";
 import { useLanguage } from "@/contexts/LanguageContext";
 import ResponsiveAIChatWidget from "@/components/ai/ResponsiveAIChatWidget";
 import { supabase } from "@/integrations/supabase/client";
-import RecommendedProperties from "@/components/property/RecommendedProperties";
 
 const Index = () => {
   const { language } = useLanguage();
@@ -17,7 +16,7 @@ const Index = () => {
   const [hasSearched, setHasSearched] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
 
-  // Fetch featured properties
+  // Fetch featured properties with simplified query
   const { data: featuredProperties = [], isLoading: isFeaturedLoading } = useQuery({
     queryKey: ['featured-properties'],
     queryFn: async () => {
@@ -55,10 +54,10 @@ const Index = () => {
         .select('*')
         .eq('status', 'active');
 
-      // Apply search filters based on database columns
+      // Apply search filters
       if (searchData.query && searchData.query.trim()) {
         const searchTerm = searchData.query.toLowerCase().trim();
-        query = query.or(`title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%,location.ilike.%${searchTerm}%,city.ilike.%${searchTerm}%,state.ilike.%${searchTerm}%,area.ilike.%${searchTerm}%`);
+        query = query.or(`title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%,location.ilike.%${searchTerm}%`);
       }
 
       if (searchData.state) {
@@ -67,10 +66,6 @@ const Index = () => {
 
       if (searchData.city) {
         query = query.ilike('city', `%${searchData.city}%`);
-      }
-
-      if (searchData.area) {
-        query = query.ilike('area', `%${searchData.area}%`);
       }
 
       if (searchData.propertyType) {
@@ -148,7 +143,7 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Navigation />
       
-      {/* Hero Section with Search - Mobile Optimized */}
+      {/* Hero Section with Search */}
       <section className="relative bg-gradient-to-br from-blue-600 via-purple-600 to-orange-500 text-white py-8 sm:py-12 lg:py-16 px-2 sm:px-4">
         <div className="container mx-auto text-center">
           <h1 className="text-2xl sm:text-3xl lg:text-5xl font-bold mb-4 sm:mb-6 animate-fade-in px-2">
@@ -181,7 +176,7 @@ const Index = () => {
         </section>
       )}
 
-      {/* Property Listings Section - Mobile Responsive */}
+      {/* Property Listings Section */}
       <div className="px-2 sm:px-0">
         <PropertyListingsSection
           language={language}
@@ -191,19 +186,6 @@ const Index = () => {
           fallbackResults={featuredProperties}
         />
       </div>
-
-      {/* Recommended Properties Section - only show if we have properties and no search */}
-      {!hasSearched && featuredProperties.length > 0 && (
-        <section className="py-6 sm:py-8 bg-gray-50 dark:bg-gray-900">
-          <div className="container mx-auto px-2 sm:px-4">
-            <RecommendedProperties
-              title={language === "en" ? "AI Recommended For You" : "Rekomendasi AI Untuk Anda"}
-              limit={8}
-              showAIBadge={true}
-            />
-          </div>
-        </section>
-      )}
 
       {/* AI Chat Widget */}
       <ResponsiveAIChatWidget />
