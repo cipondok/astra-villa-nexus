@@ -122,11 +122,13 @@ export const usePropertyById = (propertyId: string | null) => {
         throw error;
       }
 
-      // Handle owner data - it comes as an object, not an array
-      const transformedData = {
+      // Handle owner data - convert array to object if needed
+      const transformedData: PropertyWithOwner = {
         ...data,
-        owner: data.owner || null
-      } as PropertyWithOwner;
+        owner: Array.isArray(data.owner) 
+          ? (data.owner.length > 0 ? data.owner[0] : null)
+          : data.owner || null
+      };
 
       return transformedData;
     },
