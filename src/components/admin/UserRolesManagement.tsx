@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -121,15 +120,26 @@ const UserRolesManagement = () => {
     mutationFn: async ({ userId, role }: { userId: string; role: UserRole }) => {
       console.log('Updating role for user:', userId, 'to role:', role);
       
+      // First get the user's current data
+      const { data: currentUser, error: fetchError } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .single();
+
+      if (fetchError) {
+        console.error('Error fetching current user:', fetchError);
+        throw fetchError;
+      }
+
+      // Update with all required fields
       const { error } = await supabase
         .from('profiles')
-        .upsert({ 
-          id: userId, 
+        .update({ 
           role: role,
           updated_at: new Date().toISOString()
-        }, {
-          onConflict: 'id'
-        });
+        })
+        .eq('id', userId);
       
       if (error) throw error;
       return { userId, role };
@@ -154,13 +164,11 @@ const UserRolesManagement = () => {
       // First update the profile role
       const { error: profileError } = await supabase
         .from('profiles')
-        .upsert({ 
-          id: userId, 
+        .update({ 
           role: 'admin' as UserRole,
           updated_at: new Date().toISOString()
-        }, {
-          onConflict: 'id'
-        });
+        })
+        .eq('id', userId);
       
       if (profileError) throw profileError;
       
@@ -206,13 +214,11 @@ const UserRolesManagement = () => {
       // Update profile role
       const { error: profileError } = await supabase
         .from('profiles')
-        .upsert({ 
-          id: userId, 
+        .update({ 
           role: 'general_user' as UserRole,
           updated_at: new Date().toISOString()
-        }, {
-          onConflict: 'id'
-        });
+        })
+        .eq('id', userId);
       
       if (profileError) throw profileError;
       return userId;
