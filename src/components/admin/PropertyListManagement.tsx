@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -37,6 +38,36 @@ interface PropertyListManagementProps {
   onAddProperty?: () => void;
 }
 
+interface PropertyWithRelations {
+  id: string;
+  title: string;
+  description: string;
+  property_type: string;
+  listing_type: string;
+  price: number;
+  bedrooms: number;
+  bathrooms: number;
+  area_sqm: number;
+  location: string;
+  city: string;
+  state: string;
+  area: string;
+  status: string;
+  created_at: string;
+  owner_id: string;
+  agent_id: string;
+  owner: {
+    id: string;
+    full_name: string;
+    email: string;
+  } | null;
+  agent: {
+    id: string;
+    full_name: string;
+    email: string;
+  } | null;
+}
+
 const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) => {
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
@@ -45,7 +76,7 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
   const [statusFilter, setStatusFilter] = useState("all");
   const [typeFilter, setTypeFilter] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedProperty, setSelectedProperty] = useState<any>(null);
+  const [selectedProperty, setSelectedProperty] = useState<PropertyWithRelations | null>(null);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   
   const itemsPerPage = 10;
@@ -110,8 +141,15 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
         console.log('Properties fetched successfully:', data?.length || 0);
         console.log('Sample property data:', data?.[0]);
         
+        // Transform the data to ensure owner and agent are single objects
+        const transformedData = data?.map(property => ({
+          ...property,
+          owner: Array.isArray(property.owner) ? property.owner[0] : property.owner,
+          agent: Array.isArray(property.agent) ? property.agent[0] : property.agent,
+        })) || [];
+        
         return {
-          properties: data || [],
+          properties: transformedData,
           totalCount: count || 0,
           totalPages: Math.ceil((count || 0) / itemsPerPage)
         };
@@ -172,7 +210,7 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
     }
   };
 
-  const handleView = (property: any) => {
+  const handleView = (property: PropertyWithRelations) => {
     setSelectedProperty(property);
     setIsViewModalOpen(true);
   };
@@ -319,7 +357,6 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
                   </TableHeader>
                   <TableBody>
                     {properties.map((property) => {
-                      // Handle owner and agent data - they could be objects or null
                       const owner = property.owner;
                       const agent = property.agent;
                       
