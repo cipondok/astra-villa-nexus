@@ -12,6 +12,24 @@ import { Label } from "@/components/ui/label";
 import { useAlert } from "@/contexts/AlertContext";
 import { Shield, Save, RefreshCw } from "lucide-react";
 
+interface Department {
+  id: string;
+  name: string;
+  description: string;
+  icon: string;
+  color: string;
+  permissions: string[];
+  is_active: boolean;
+}
+
+interface Category {
+  id: string;
+  name: string;
+  description: string;
+  icon: string;
+  is_active: boolean;
+}
+
 interface CategoryAccess {
   department_id: string;
   category_id: string;
@@ -38,7 +56,7 @@ const PropertyCategoryAccessManagement = () => {
         .order('name');
       
       if (error) throw error;
-      return data || [];
+      return (data || []) as Department[];
     },
   });
 
@@ -53,7 +71,7 @@ const PropertyCategoryAccessManagement = () => {
         .order('name');
       
       if (error) throw error;
-      return data || [];
+      return (data || []) as Category[];
     },
   });
 
@@ -66,7 +84,7 @@ const PropertyCategoryAccessManagement = () => {
         .select('*');
       
       if (error) throw error;
-      return data || [];
+      return (data || []) as CategoryAccess[];
     },
   });
 
@@ -140,10 +158,12 @@ const PropertyCategoryAccessManagement = () => {
   };
 
   const initializeDefaultAccess = () => {
+    if (!departments || !categories) return;
+    
     const defaultAccess: CategoryAccess[] = [];
     
-    departments?.forEach(dept => {
-      categories?.forEach(cat => {
+    departments.forEach(dept => {
+      categories.forEach(cat => {
         let access: CategoryAccess;
         
         // Define default access based on department

@@ -1096,6 +1096,60 @@ export type Database = {
           },
         ]
       }
+      property_category_access: {
+        Row: {
+          access_level: string
+          can_approve: boolean | null
+          can_create: boolean | null
+          can_delete: boolean | null
+          can_edit: boolean | null
+          category_id: string | null
+          created_at: string | null
+          department_id: string | null
+          id: string
+          updated_at: string | null
+        }
+        Insert: {
+          access_level: string
+          can_approve?: boolean | null
+          can_create?: boolean | null
+          can_delete?: boolean | null
+          can_edit?: boolean | null
+          category_id?: string | null
+          created_at?: string | null
+          department_id?: string | null
+          id?: string
+          updated_at?: string | null
+        }
+        Update: {
+          access_level?: string
+          can_approve?: boolean | null
+          can_create?: boolean | null
+          can_delete?: boolean | null
+          can_edit?: boolean | null
+          category_id?: string | null
+          created_at?: string | null
+          department_id?: string | null
+          id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "property_category_access_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "property_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "property_category_access_department_id_fkey"
+            columns: ["department_id"]
+            isOneToOne: false
+            referencedRelation: "user_departments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       property_images: {
         Row: {
           alt_text: string | null
@@ -1570,6 +1624,45 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      user_departments: {
+        Row: {
+          color: string | null
+          created_at: string | null
+          description: string | null
+          icon: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          permissions: string[] | null
+          property_category_access: string[] | null
+          updated_at: string | null
+        }
+        Insert: {
+          color?: string | null
+          created_at?: string | null
+          description?: string | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          permissions?: string[] | null
+          property_category_access?: string[] | null
+          updated_at?: string | null
+        }
+        Update: {
+          color?: string | null
+          created_at?: string | null
+          description?: string | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          permissions?: string[] | null
+          property_category_access?: string[] | null
+          updated_at?: string | null
+        }
+        Relationships: []
       }
       user_interactions: {
         Row: {

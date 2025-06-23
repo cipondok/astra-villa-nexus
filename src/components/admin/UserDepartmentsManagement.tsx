@@ -8,7 +8,6 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -21,7 +20,6 @@ import {
   Shield, 
   Settings,
   UserCheck,
-  Briefcase,
   HeartHandshake,
   MessageSquare,
   Share2
@@ -34,27 +32,14 @@ interface UserDepartment {
   icon: string;
   color: string;
   permissions: string[];
-  property_category_access: string[];
   is_active: boolean;
   created_at: string;
   updated_at: string;
 }
 
-interface PropertyCategoryAccess {
-  department_id: string;
-  category_id: string;
-  access_level: 'read' | 'write' | 'manage';
-  can_create: boolean;
-  can_edit: boolean;
-  can_delete: boolean;
-  can_approve: boolean;
-}
-
 const UserDepartmentsManagement = () => {
   const [selectedDepartment, setSelectedDepartment] = useState<UserDepartment | null>(null);
   const [isDepartmentModalOpen, setIsDepartmentModalOpen] = useState(false);
-  const [isAccessModalOpen, setIsAccessModalOpen] = useState(false);
-  const [selectedDepartmentForAccess, setSelectedDepartmentForAccess] = useState<string | null>(null);
 
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
@@ -69,21 +54,7 @@ const UserDepartmentsManagement = () => {
         .order('name');
       
       if (error) throw error;
-      return data || [];
-    },
-  });
-
-  // Fetch property categories
-  const { data: propertyCategories } = useQuery({
-    queryKey: ['property-categories-for-access'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('property_categories')
-        .select('*')
-        .order('name');
-      
-      if (error) throw error;
-      return data || [];
+      return (data || []) as UserDepartment[];
     },
   });
 
@@ -95,64 +66,56 @@ const UserDepartmentsManagement = () => {
         description: 'Standard platform users with basic access',
         icon: '👤',
         color: '#6B7280',
-        permissions: ['view_properties', 'search_properties', 'contact_agents'],
-        property_category_access: []
+        permissions: ['view_properties', 'search_properties', 'contact_agents']
       },
       {
         name: 'Property Owners',
         description: 'Users who own and list properties',
         icon: '🏠',
         color: '#059669',
-        permissions: ['view_properties', 'list_properties', 'manage_own_listings', 'view_analytics'],
-        property_category_access: []
+        permissions: ['view_properties', 'list_properties', 'manage_own_listings', 'view_analytics']
       },
       {
         name: 'Real Estate Agents',
         description: 'Licensed real estate professionals',
         icon: '🤝',
         color: '#DC2626',
-        permissions: ['view_properties', 'list_properties', 'manage_client_listings', 'access_leads', 'view_market_data'],
-        property_category_access: []
+        permissions: ['view_properties', 'list_properties', 'manage_client_listings', 'access_leads', 'view_market_data']
       },
       {
         name: 'Vendors & Service Providers',
         description: 'Construction, maintenance, and other service providers',
         icon: '🔧',
         color: '#7C3AED',
-        permissions: ['view_properties', 'manage_services', 'access_work_orders', 'view_vendor_analytics'],
-        property_category_access: []
+        permissions: ['view_properties', 'manage_services', 'access_work_orders', 'view_vendor_analytics']
       },
       {
         name: 'Customer Service Team',
         description: 'Support staff handling customer inquiries',
         icon: '🎧',
         color: '#0891B2',
-        permissions: ['view_properties', 'access_tickets', 'manage_support_cases', 'view_user_profiles'],
-        property_category_access: []
+        permissions: ['view_properties', 'access_tickets', 'manage_support_cases', 'view_user_profiles']
       },
       {
         name: 'Marketing & Social Media',
         description: 'Marketing team managing campaigns and social presence',
         icon: '📱',
         color: '#EA580C',
-        permissions: ['view_properties', 'manage_campaigns', 'access_analytics', 'manage_social_media'],
-        property_category_access: []
+        permissions: ['view_properties', 'manage_campaigns', 'access_analytics', 'manage_social_media']
       },
       {
         name: 'Affiliate Partners',
         description: 'External partners with referral access',
         icon: '🤝',
         color: '#BE185D',
-        permissions: ['view_properties', 'generate_referrals', 'track_commissions'],
-        property_category_access: []
+        permissions: ['view_properties', 'generate_referrals', 'track_commissions']
       },
       {
         name: 'Administrative Staff',
         description: 'Internal staff with elevated administrative access',
         icon: '⚙️',
         color: '#374151',
-        permissions: ['view_properties', 'manage_users', 'access_reports', 'system_configuration'],
-        property_category_access: []
+        permissions: ['view_properties', 'manage_users', 'access_reports', 'system_configuration']
       }
     ];
 
@@ -299,28 +262,16 @@ const UserDepartmentsManagement = () => {
                       </Badge>
                     </TableCell>
                     <TableCell>
-                      <div className="flex gap-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => {
-                            setSelectedDepartment(dept);
-                            setIsDepartmentModalOpen(true);
-                          }}
-                        >
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => {
-                            setSelectedDepartmentForAccess(dept.id);
-                            setIsAccessModalOpen(true);
-                          }}
-                        >
-                          <Shield className="h-4 w-4" />
-                        </Button>
-                      </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          setSelectedDepartment(dept);
+                          setIsDepartmentModalOpen(true);
+                        }}
+                      >
+                        <Edit className="h-4 w-4" />
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))}
