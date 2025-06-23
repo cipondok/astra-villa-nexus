@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -69,8 +70,16 @@ const Navigation = () => {
   ];
 
   const handleSignOut = async () => {
-    await signOut();
-    setIsOpen(false);
+    try {
+      console.log('Navigation: Signing out user...');
+      await signOut();
+      navigate('/');
+      toast.success('Successfully signed out');
+      setIsOpen(false);
+    } catch (error) {
+      console.error('Navigation: Error signing out:', error);
+      toast.error('Error signing out');
+    }
   };
 
   const handleComingSoon = (featureName: string) => {
