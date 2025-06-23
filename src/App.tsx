@@ -9,11 +9,11 @@ import { AlertProvider } from "@/contexts/AlertContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
-import AdminDashboard from "./pages/AdminDashboard";
+import AdminDashboardPage from "./pages/AdminDashboardPage";
 import UserDashboardPage from "./pages/UserDashboardPage";
-import AgentDashboard from "./pages/AgentDashboard";
-import VendorDashboard from "./pages/VendorDashboard";
-import PropertyOwnerDashboard from "./pages/PropertyOwnerDashboard";
+import AgentDashboardPage from "./pages/AgentDashboardPage";
+import VendorDashboardPage from "./pages/VendorDashboardPage";
+import PropertyOwnerDashboardPage from "./pages/PropertyOwnerDashboardPage";
 import WalletPage from "./pages/WalletPage";
 import { SessionMonitor } from "@/components/SessionMonitor";
 
@@ -31,11 +31,11 @@ const App = () => (
                 <Routes>
                   <Route path="/" element={<Index />} />
                   <Route path="/dashboard" element={<Dashboard />} />
-                  <Route path="/dashboard/admin" element={<AdminDashboard />} />
+                  <Route path="/dashboard/admin" element={<AdminDashboardPage />} />
                   <Route path="/dashboard/user" element={<UserDashboardPage />} />
-                  <Route path="/dashboard/agent" element={<AgentDashboard />} />
-                  <Route path="/dashboard/vendor" element={<VendorDashboard />} />
-                  <Route path="/dashboard/property-owner" element={<PropertyOwnerDashboard />} />
+                  <Route path="/dashboard/agent" element={<AgentDashboardPage />} />
+                  <Route path="/dashboard/vendor" element={<VendorDashboardPage />} />
+                  <Route path="/dashboard/property-owner" element={<PropertyOwnerDashboardPage />} />
                   <Route path="/wallet" element={<WalletPage />} />
                 </Routes>
               </div>

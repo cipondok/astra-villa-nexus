@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertTriangle } from 'lucide-react';
@@ -8,8 +8,16 @@ import AdvancedAdminDashboard from '@/components/admin/AdvancedAdminDashboard';
 const AdminDashboard = () => {
   const { profile, user } = useAuth();
 
+  useEffect(() => {
+    console.log('AdminDashboard mounted');
+    console.log('User:', user);
+    console.log('Profile:', profile);
+  }, [user, profile]);
+
   // Check if user is admin or super admin
   const isAdmin = profile?.role === 'admin' || user?.email === 'mycode103@gmail.com';
+
+  console.log('isAdmin:', isAdmin);
 
   if (!isAdmin) {
     return (
