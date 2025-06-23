@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -9,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAlert } from "@/contexts/AlertContext";
+import PropertyEditModal from "./PropertyEditModal";
 import { 
   Search, 
   Plus, 
@@ -53,6 +53,8 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [typeFilter, setTypeFilter] = useState("all");
+  const [editingProperty, setEditingProperty] = useState<Property | null>(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   // Simplified property fetch
   const { data: properties = [], isLoading, error, refetch } = useQuery({
@@ -115,8 +117,17 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
     }
   };
 
-  const handleEdit = (propertyId: string) => {
-    window.open(`/property/${propertyId}/edit`, '_blank');
+  const handleEdit = (property: Property) => {
+    console.log('Opening edit modal for property:', property);
+    setEditingProperty(property);
+    setIsEditModalOpen(true);
+  };
+
+  const handleCloseEditModal = () => {
+    setIsEditModalOpen(false);
+    setEditingProperty(null);
+    // Refresh the property list
+    refetch();
   };
 
   const getStatusBadge = (status: string) => {
@@ -286,7 +297,7 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
                 </TableHeader>
                 <TableBody>
                   {properties.map((property) => (
-                    <TableRow key={property.id}>
+                    <TableRow key={property.id} className="hover:bg-gray-50">
                       <TableCell>
                         <div>
                           <div className="font-medium">{property.title}</div>
@@ -311,13 +322,15 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
                             variant="outline" 
                             size="sm"
                             onClick={() => window.open(`/property/${property.id}`, '_blank')}
+                            className="hover:bg-blue-50"
                           >
                             <Eye className="h-3 w-3" />
                           </Button>
                           <Button 
                             variant="outline" 
                             size="sm"
-                            onClick={() => handleEdit(property.id)}
+                            onClick={() => handleEdit(property)}
+                            className="hover:bg-green-50 text-green-600 hover:text-green-700"
                           >
                             <Edit className="h-3 w-3" />
                           </Button>
@@ -325,7 +338,7 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
                             variant="outline"
                             size="sm"
                             onClick={() => handleDelete(property.id, property.title)}
-                            className="text-red-600 hover:text-red-700"
+                            className="text-red-600 hover:text-red-700 hover:bg-red-50"
                           >
                             <Trash2 className="h-3 w-3" />
                           </Button>
@@ -339,6 +352,15 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
           )}
         </CardContent>
       </Card>
+
+      {/* Property Edit Modal */}
+      {editingProperty && (
+        <PropertyEditModal
+          property={editingProperty}
+          isOpen={isEditModalOpen}
+          onClose={handleCloseEditModal}
+        />
+      )}
     </div>
   );
 };
