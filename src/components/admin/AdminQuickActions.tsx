@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -23,6 +22,7 @@ import {
   TrendingUp
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useAdminAlerts } from "@/hooks/useAdminAlerts";
 
 interface QuickActionProps {
   onTabChange: (tab: string) => void;
@@ -31,6 +31,9 @@ interface QuickActionProps {
 const AdminQuickActions = ({ onTabChange }: QuickActionProps) => {
   const { signOut } = useAuth();
   const navigate = useNavigate();
+  
+  // Initialize admin alerts hook to start monitoring
+  useAdminAlerts();
 
   // Fetch property statistics
   const { data: propertyStats } = useQuery({
@@ -119,8 +122,10 @@ const AdminQuickActions = ({ onTabChange }: QuickActionProps) => {
 
   const handleLogout = async () => {
     try {
+      console.log('Attempting to logout...');
       await signOut();
-      navigate('/');
+      console.log('Logout successful, navigating to home...');
+      navigate('/', { replace: true });
     } catch (error) {
       console.error('Logout error:', error);
     }
@@ -193,7 +198,7 @@ const AdminQuickActions = ({ onTabChange }: QuickActionProps) => {
               Property Statistics & Quick Actions
             </CardTitle>
             <Button 
-              variant="outline" 
+              variant="destructive" 
               size="sm"
               onClick={handleLogout}
               className="flex items-center gap-2"

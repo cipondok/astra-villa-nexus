@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -74,6 +73,7 @@ const AdminAlertSystem = () => {
   });
 
   const handleViewAlert = (alert: AdminAlert) => {
+    console.log('Opening alert:', alert);
     setSelectedAlert(alert);
     setIsDialogOpen(true);
     
@@ -81,6 +81,11 @@ const AdminAlertSystem = () => {
     if (!alert.is_read) {
       markAsReadMutation.mutate(alert.id);
     }
+  };
+
+  const handleCloseDialog = () => {
+    setIsDialogOpen(false);
+    setSelectedAlert(null);
   };
 
   const getAlertIcon = (type: string) => {
@@ -212,7 +217,7 @@ const AdminAlertSystem = () => {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => setIsDialogOpen(false)}
+                onClick={handleCloseDialog}
               >
                 <X className="h-4 w-4" />
               </Button>
@@ -258,13 +263,16 @@ const AdminAlertSystem = () => {
               <div className="flex justify-end gap-2 pt-4">
                 <Button
                   variant="outline"
-                  onClick={() => setIsDialogOpen(false)}
+                  onClick={handleCloseDialog}
                 >
                   Close
                 </Button>
                 <Button
                   variant="destructive"
-                  onClick={() => deleteAlertMutation.mutate(selectedAlert.id)}
+                  onClick={() => {
+                    deleteAlertMutation.mutate(selectedAlert.id);
+                    handleCloseDialog();
+                  }}
                   disabled={deleteAlertMutation.isPending}
                 >
                   {deleteAlertMutation.isPending ? 'Deleting...' : 'Delete Alert'}
