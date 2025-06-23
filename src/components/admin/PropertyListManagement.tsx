@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -56,58 +57,74 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
   const [editingProperty, setEditingProperty] = useState<Property | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
-  // Simplified property fetch
+  // Fixed property fetch with better error handling
   const { data: properties = [], isLoading, error, refetch } = useQuery({
     queryKey: ['admin-properties', searchTerm, statusFilter, typeFilter],
     queryFn: async () => {
-      console.log('Fetching properties...');
+      console.log('Fetching admin properties with filters:', { searchTerm, statusFilter, typeFilter });
       
-      let query = supabase
-        .from('properties')
-        .select('*')
-        .order('created_at', { ascending: false });
+      try {
+        let query = supabase
+          .from('properties')
+          .select('*')
+          .order('created_at', { ascending: false });
 
-      // Apply filters
-      if (searchTerm && searchTerm.trim()) {
-        query = query.or(`title.ilike.%${searchTerm.trim()}%,location.ilike.%${searchTerm.trim()}%`);
-      }
-      if (statusFilter !== "all") {
-        query = query.eq('status', statusFilter);
-      }
-      if (typeFilter !== "all") {
-        query = query.eq('property_type', typeFilter);
-      }
+        // Apply search filter
+        if (searchTerm && searchTerm.trim()) {
+          query = query.or(`title.ilike.%${searchTerm.trim()}%,location.ilike.%${searchTerm.trim()}%,city.ilike.%${searchTerm.trim()}%`);
+        }
 
-      const { data, error } = await query.limit(50);
-      
-      if (error) {
-        console.error('Error fetching properties:', error);
-        throw error;
+        // Apply status filter
+        if (statusFilter !== "all") {
+          query = query.eq('status', statusFilter);
+        }
+
+        // Apply type filter
+        if (typeFilter !== "all") {
+          query = query.eq('property_type', typeFilter);
+        }
+
+        const { data, error } = await query.limit(100);
+        
+        if (error) {
+          console.error('Supabase query error:', error);
+          throw new Error(`Database error: ${error.message}`);
+        }
+        
+        console.log('Admin properties fetched successfully:', data?.length || 0);
+        return data || [];
+      } catch (err) {
+        console.error('Property fetch error:', err);
+        throw err;
       }
-      
-      console.log('Properties fetched:', data?.length || 0);
-      return data || [];
     },
-    retry: 1,
+    retry: 2,
     refetchOnWindowFocus: false,
+    staleTime: 30000, // 30 seconds
   });
 
   // Delete property mutation
   const deletePropertyMutation = useMutation({
     mutationFn: async (propertyId: string) => {
+      console.log('Deleting property:', propertyId);
       const { error } = await supabase
         .from('properties')
         .delete()
         .eq('id', propertyId);
       
-      if (error) throw error;
+      if (error) {
+        console.error('Delete error:', error);
+        throw new Error(`Failed to delete property: ${error.message}`);
+      }
     },
     onSuccess: () => {
       showSuccess("Property Deleted", "Property has been deleted successfully.");
       refetch();
+      queryClient.invalidateQueries({ queryKey: ['admin-properties'] });
     },
     onError: (error: any) => {
-      showError("Delete Failed", error.message);
+      console.error('Delete mutation error:', error);
+      showError("Delete Failed", error.message || 'Failed to delete property');
     },
   });
 
@@ -118,7 +135,7 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
   };
 
   const handleEdit = (property: Property) => {
-    console.log('Opening edit modal for property:', property);
+    console.log('Opening edit modal for property:', property.id);
     setEditingProperty(property);
     setIsEditModalOpen(true);
   };
@@ -126,8 +143,8 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
   const handleCloseEditModal = () => {
     setIsEditModalOpen(false);
     setEditingProperty(null);
-    // Refresh the property list
     refetch();
+    queryClient.invalidateQueries({ queryKey: ['admin-properties'] });
   };
 
   const getStatusBadge = (status: string) => {
@@ -147,6 +164,35 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
     }
   };
 
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <h2 className="text-2xl font-bold flex items-center gap-2">
+            <Building2 className="h-6 w-6 text-blue-600" />
+            Property Management
+          </h2>
+          <Button onClick={onAddProperty}>
+            <Plus className="h-4 w-4 mr-2" />
+            Add New Property
+          </Button>
+        </div>
+
+        <Card>
+          <CardContent className="pt-6">
+            <div className="text-center py-12">
+              <Loader2 className="h-12 w-12 animate-spin mx-auto mb-4 text-blue-500" />
+              <h3 className="text-lg font-medium mb-2">Loading Properties</h3>
+              <p className="text-gray-600">Please wait while we fetch all properties...</p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  // Error state
   if (error) {
     return (
       <div className="space-y-6">
@@ -167,11 +213,16 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
               <XCircle className="h-12 w-12 text-red-400 mx-auto mb-4" />
               <h3 className="text-lg font-medium mb-2">Error Loading Properties</h3>
               <p className="text-gray-600 mb-4">
-                {error instanceof Error ? error.message : 'Failed to load properties'}
+                {error instanceof Error ? error.message : 'Failed to load properties from database'}
               </p>
-              <Button onClick={() => refetch()}>
-                Try Again
-              </Button>
+              <div className="space-x-2">
+                <Button onClick={() => refetch()}>
+                  Try Again
+                </Button>
+                <Button variant="outline" onClick={() => window.location.reload()}>
+                  Refresh Page
+                </Button>
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -189,7 +240,7 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
             Property Management
           </h2>
           <p className="text-gray-600 mt-1">
-            Manage all property listings ({properties.length} properties)
+            Manage all property listings ({properties.length} properties loaded)
           </p>
         </div>
         <Button onClick={onAddProperty}>
@@ -259,25 +310,32 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {isLoading ? (
-            <div className="text-center py-8">
-              <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-blue-500" />
-              <p className="text-gray-600">Loading properties...</p>
-            </div>
-          ) : properties.length === 0 ? (
-            <div className="text-center py-8">
-              <Building2 className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium mb-2">No properties found</h3>
-              <p className="text-gray-600 mb-4">
+          {properties.length === 0 ? (
+            <div className="text-center py-12">
+              <Building2 className="h-16 w-16 text-gray-300 mx-auto mb-4" />
+              <h3 className="text-xl font-medium mb-2">No Properties Found</h3>
+              <p className="text-gray-600 mb-6">
                 {searchTerm || statusFilter !== "all" || typeFilter !== "all" 
-                  ? "No properties match your current filters."
-                  : "Start by adding your first property to the system."
+                  ? "No properties match your current filters. Try adjusting your search criteria."
+                  : "No properties have been added to the system yet."
                 }
               </p>
               {(!searchTerm && statusFilter === "all" && typeFilter === "all") && (
-                <Button onClick={onAddProperty}>
-                  <Plus className="h-4 w-4 mr-2" />
-                  Add First Property
+                <Button onClick={onAddProperty} size="lg">
+                  <Plus className="h-5 w-5 mr-2" />
+                  Add Your First Property
+                </Button>
+              )}
+              {(searchTerm || statusFilter !== "all" || typeFilter !== "all") && (
+                <Button 
+                  variant="outline" 
+                  onClick={() => {
+                    setSearchTerm("");
+                    setStatusFilter("all");
+                    setTypeFilter("all");
+                  }}
+                >
+                  Clear All Filters
                 </Button>
               )}
             </div>
@@ -300,22 +358,31 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
                     <TableRow key={property.id} className="hover:bg-gray-50">
                       <TableCell>
                         <div>
-                          <div className="font-medium">{property.title}</div>
+                          <div className="font-medium text-gray-900">{property.title}</div>
                           <div className="text-sm text-gray-500">
                             {property.bedrooms || 0}BR • {property.bathrooms || 0}BA • {property.area_sqm || 0}m²
                           </div>
                         </div>
                       </TableCell>
                       <TableCell className="capitalize">{property.property_type}</TableCell>
-                      <TableCell>{property.location}</TableCell>
+                      <TableCell>
+                        <div className="text-sm">
+                          <div className="font-medium">{property.location}</div>
+                          {property.city && <div className="text-gray-500">{property.city}</div>}
+                        </div>
+                      </TableCell>
                       <TableCell>
                         <div>
-                          {property.price ? formatIDR(property.price) : 'N/A'}
+                          <div className="font-medium">
+                            {property.price ? formatIDR(property.price) : 'Price not set'}
+                          </div>
+                          <div className="text-xs text-gray-500 capitalize">{property.listing_type}</div>
                         </div>
-                        <div className="text-xs text-gray-500 capitalize">{property.listing_type}</div>
                       </TableCell>
                       <TableCell>{getStatusBadge(property.status)}</TableCell>
-                      <TableCell>{new Date(property.created_at).toLocaleDateString()}</TableCell>
+                      <TableCell className="text-sm text-gray-600">
+                        {new Date(property.created_at).toLocaleDateString()}
+                      </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-1">
                           <Button 
@@ -339,6 +406,7 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
                             size="sm"
                             onClick={() => handleDelete(property.id, property.title)}
                             className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                            disabled={deletePropertyMutation.isPending}
                           >
                             <Trash2 className="h-3 w-3" />
                           </Button>
