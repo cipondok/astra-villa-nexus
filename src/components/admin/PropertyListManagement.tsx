@@ -20,8 +20,7 @@ import {
   CheckCircle,
   XCircle,
   Clock,
-  ChevronLeft,
-  ChevronRight
+  Loader2
 } from "lucide-react";
 import { formatIDR } from "@/utils/currency";
 import PropertyViewModal from "./PropertyViewModal";
@@ -38,7 +37,7 @@ interface PropertyListManagementProps {
   onAddProperty?: () => void;
 }
 
-interface PropertyWithRelations {
+interface Property {
   id: string;
   title: string;
   description: string;
@@ -56,16 +55,6 @@ interface PropertyWithRelations {
   created_at: string;
   owner_id: string;
   agent_id: string;
-  owner: {
-    id: string;
-    full_name: string;
-    email: string;
-  } | null;
-  agent: {
-    id: string;
-    full_name: string;
-    email: string;
-  } | null;
 }
 
 const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) => {
@@ -76,30 +65,26 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
   const [statusFilter, setStatusFilter] = useState("all");
   const [typeFilter, setTypeFilter] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedProperty, setSelectedProperty] = useState<PropertyWithRelations | null>(null);
+  const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   
   const itemsPerPage = 10;
 
-  // Fetch all properties with owner and agent details
-  const { data: propertiesData, isLoading, refetch } = useQuery({
+  // Fetch all properties
+  const { data: propertiesData, isLoading, error, refetch } = useQuery({
     queryKey: ['admin-properties', currentPage, searchTerm, statusFilter, typeFilter],
     queryFn: async () => {
       console.log('Fetching properties for admin dashboard...');
       
       try {
-        // Build the base query with proper joins
+        // Build the base query
         let query = supabase
           .from('properties')
-          .select(`
-            *,
-            owner:profiles!properties_owner_id_fkey(id, full_name, email),
-            agent:profiles!properties_agent_id_fkey(id, full_name, email)
-          `);
+          .select('*');
 
         // Apply filters
-        if (searchTerm) {
-          query = query.or(`title.ilike.%${searchTerm}%,location.ilike.%${searchTerm}%`);
+        if (searchTerm && searchTerm.trim()) {
+          query = query.or(`title.ilike.%${searchTerm.trim()}%,location.ilike.%${searchTerm.trim()}%`);
         }
         if (statusFilter !== "all") {
           query = query.eq('status', statusFilter);
@@ -113,8 +98,8 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
           .from('properties')
           .select('*', { count: 'exact', head: true });
 
-        if (searchTerm) {
-          countQuery = countQuery.or(`title.ilike.%${searchTerm}%,location.ilike.%${searchTerm}%`);
+        if (searchTerm && searchTerm.trim()) {
+          countQuery = countQuery.or(`title.ilike.%${searchTerm.trim()}%,location.ilike.%${searchTerm.trim()}%`);
         }
         if (statusFilter !== "all") {
           countQuery = countQuery.eq('status', statusFilter);
@@ -139,17 +124,9 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
         }
         
         console.log('Properties fetched successfully:', data?.length || 0);
-        console.log('Sample property data:', data?.[0]);
-        
-        // Transform the data to ensure owner and agent are single objects
-        const transformedData = data?.map(property => ({
-          ...property,
-          owner: Array.isArray(property.owner) ? property.owner[0] : property.owner,
-          agent: Array.isArray(property.agent) ? property.agent[0] : property.agent,
-        })) || [];
         
         return {
-          properties: transformedData,
+          properties: data || [],
           totalCount: count || 0,
           totalPages: Math.ceil((count || 0) / itemsPerPage)
         };
@@ -158,6 +135,8 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
         throw error;
       }
     },
+    retry: 3,
+    refetchOnWindowFocus: false,
   });
 
   const properties = propertiesData?.properties || [];
@@ -210,7 +189,7 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
     }
   };
 
-  const handleView = (property: PropertyWithRelations) => {
+  const handleView = (property: Property) => {
     setSelectedProperty(property);
     setIsViewModalOpen(true);
   };
@@ -236,6 +215,46 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
         return <Badge variant="outline" className="dark:border-gray-600 dark:text-gray-300">{status}</Badge>;
     }
   };
+
+  if (error) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-2xl font-bold flex items-center gap-2 text-gray-900 dark:text-gray-100">
+              <Building2 className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+              Property Management
+            </h2>
+            <p className="text-gray-600 dark:text-gray-400 mt-1">
+              Error loading properties
+            </p>
+          </div>
+          <Button 
+            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
+            onClick={onAddProperty}
+          >
+            <Plus className="h-4 w-4" />
+            Add New Property
+          </Button>
+        </div>
+
+        <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+          <CardContent className="pt-6">
+            <div className="text-center py-8">
+              <XCircle className="h-12 w-12 text-red-400 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">Error Loading Properties</h3>
+              <p className="text-gray-600 dark:text-gray-400 mb-4">
+                {error instanceof Error ? error.message : 'Failed to load properties'}
+              </p>
+              <Button onClick={() => refetch()} className="bg-blue-600 hover:bg-blue-700 text-white">
+                Try Again
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -321,7 +340,10 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
         </CardHeader>
         <CardContent>
           {isLoading ? (
-            <div className="text-center py-8 text-gray-600 dark:text-gray-400">Loading properties...</div>
+            <div className="text-center py-8">
+              <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-blue-500" />
+              <p className="text-gray-600 dark:text-gray-400">Loading properties...</p>
+            </div>
           ) : properties.length === 0 ? (
             <div className="text-center py-8">
               <Building2 className="h-12 w-12 text-gray-400 dark:text-gray-500 mx-auto mb-4" />
@@ -346,7 +368,6 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
                   <TableHeader>
                     <TableRow className="border-gray-200 dark:border-gray-700">
                       <TableHead className="text-gray-700 dark:text-gray-300">Property</TableHead>
-                      <TableHead className="text-gray-700 dark:text-gray-300">Owner/Agent</TableHead>
                       <TableHead className="text-gray-700 dark:text-gray-300">Type</TableHead>
                       <TableHead className="text-gray-700 dark:text-gray-300">Location</TableHead>
                       <TableHead className="text-gray-700 dark:text-gray-300">Price</TableHead>
@@ -356,87 +377,66 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {properties.map((property) => {
-                      const owner = property.owner;
-                      const agent = property.agent;
-                      
-                      return (
-                        <TableRow key={property.id} className="border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                          <TableCell>
-                            <div>
-                              <div className="font-medium text-gray-900 dark:text-gray-100">{property.title}</div>
-                              <div className="text-sm text-gray-500 dark:text-gray-400">
-                                {property.bedrooms}BR • {property.bathrooms}BA • {property.area_sqm}m²
-                              </div>
+                    {properties.map((property) => (
+                      <TableRow key={property.id} className="border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                        <TableCell>
+                          <div>
+                            <div className="font-medium text-gray-900 dark:text-gray-100">{property.title}</div>
+                            <div className="text-sm text-gray-500 dark:text-gray-400">
+                              {property.bedrooms}BR • {property.bathrooms}BA • {property.area_sqm}m²
                             </div>
-                          </TableCell>
-                          <TableCell>
-                            <div className="text-sm">
-                              <div className="font-medium text-gray-900 dark:text-gray-100">
-                                Owner: {owner?.full_name || 'Unknown'}
-                              </div>
-                              <div className="text-gray-500 dark:text-gray-400">{owner?.email}</div>
-                              {agent && (
-                                <>
-                                  <div className="font-medium text-blue-600 dark:text-blue-400 mt-1">
-                                    Agent: {agent.full_name}
-                                  </div>
-                                  <div className="text-gray-500 dark:text-gray-400">{agent.email}</div>
-                                </>
-                              )}
-                            </div>
-                          </TableCell>
-                          <TableCell className="capitalize text-gray-900 dark:text-gray-100">{property.property_type}</TableCell>
-                          <TableCell className="text-gray-900 dark:text-gray-100">{property.location}</TableCell>
-                          <TableCell>
-                            <div className="text-gray-900 dark:text-gray-100">
-                              {property.price ? formatIDR(property.price) : 'N/A'}
-                            </div>
-                            <div className="text-xs text-gray-500 dark:text-gray-400 capitalize">{property.listing_type}</div>
-                          </TableCell>
-                          <TableCell>{getStatusBadge(property.status)}</TableCell>
-                          <TableCell className="text-gray-900 dark:text-gray-100">{new Date(property.created_at).toLocaleDateString()}</TableCell>
-                          <TableCell>
-                            <div className="flex items-center gap-1">
-                              <Button 
-                                variant="outline" 
-                                size="sm"
-                                onClick={() => handleView(property)}
-                                className="border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700"
-                              >
-                                <Eye className="h-3 w-3" />
-                              </Button>
-                              <Button 
-                                variant="outline" 
-                                size="sm"
-                                onClick={() => handleEdit(property.id)}
-                                className="border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700"
-                              >
-                                <Edit className="h-3 w-3" />
-                              </Button>
-                              {property.status === 'pending_approval' && (
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  onClick={() => updateStatusMutation.mutate({ propertyId: property.id, status: 'active' })}
-                                  className="border-green-300 dark:border-green-600 text-green-600 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/20"
-                                >
-                                  <CheckCircle className="h-3 w-3" />
-                                </Button>
-                              )}
+                          </div>
+                        </TableCell>
+                        <TableCell className="capitalize text-gray-900 dark:text-gray-100">{property.property_type}</TableCell>
+                        <TableCell className="text-gray-900 dark:text-gray-100">{property.location}</TableCell>
+                        <TableCell>
+                          <div className="text-gray-900 dark:text-gray-100">
+                            {property.price ? formatIDR(property.price) : 'N/A'}
+                          </div>
+                          <div className="text-xs text-gray-500 dark:text-gray-400 capitalize">{property.listing_type}</div>
+                        </TableCell>
+                        <TableCell>{getStatusBadge(property.status)}</TableCell>
+                        <TableCell className="text-gray-900 dark:text-gray-100">{new Date(property.created_at).toLocaleDateString()}</TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-1">
+                            <Button 
+                              variant="outline" 
+                              size="sm"
+                              onClick={() => handleView(property)}
+                              className="border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700"
+                            >
+                              <Eye className="h-3 w-3" />
+                            </Button>
+                            <Button 
+                              variant="outline" 
+                              size="sm"
+                              onClick={() => handleEdit(property.id)}
+                              className="border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700"
+                            >
+                              <Edit className="h-3 w-3" />
+                            </Button>
+                            {property.status === 'pending_approval' && (
                               <Button
                                 variant="outline"
                                 size="sm"
-                                onClick={() => handleDelete(property.id, property.title)}
-                                className="border-red-300 dark:border-red-600 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
+                                onClick={() => updateStatusMutation.mutate({ propertyId: property.id, status: 'active' })}
+                                className="border-green-300 dark:border-green-600 text-green-600 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/20"
                               >
-                                <Trash2 className="h-3 w-3" />
+                                <CheckCircle className="h-3 w-3" />
                               </Button>
-                            </div>
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
+                            )}
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleDelete(property.id, property.title)}
+                              className="border-red-300 dark:border-red-600 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
+                            >
+                              <Trash2 className="h-3 w-3" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
                   </TableBody>
                 </Table>
               </div>
