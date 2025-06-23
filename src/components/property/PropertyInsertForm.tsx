@@ -20,6 +20,8 @@ import EnhancedImageUpload from "./EnhancedImageUpload";
 import PropertySpecifications from "./PropertySpecifications";
 import PropertyPreview from "./PropertyPreview";
 import CelebrationPopup from "@/components/CelebrationPopup";
+import EnhancedLocationSelector from "./EnhancedLocationSelector";
+import { DetailedAddressData } from "./DetailedAddressForm";
 
 const PropertyInsertForm = () => {
   const [formData, setFormData] = useState({
@@ -43,7 +45,8 @@ const PropertyInsertForm = () => {
     furnishing: "",
     parking: "",
     facilities: [] as string[],
-    property_filters: {} as Record<string, any>
+    property_filters: {} as Record<string, any>,
+    detailed_address: null as DetailedAddressData | null
   });
 
   const [currentTab, setCurrentTab] = useState("basic");
@@ -440,6 +443,10 @@ const PropertyInsertForm = () => {
     setShowCelebration(false);
   };
 
+  const handleDetailedAddressChange = (addressData: DetailedAddressData) => {
+    handleInputChange('detailed_address', addressData);
+  };
+
   return (
     <>
       <div className="p-6">
@@ -656,7 +663,7 @@ const PropertyInsertForm = () => {
 
             <TabsContent value="location" className="space-y-6 mt-6">
               <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
-                <LocationSelector
+                <EnhancedLocationSelector
                   selectedState={formData.state}
                   selectedCity={formData.city}
                   selectedArea={formData.area}
@@ -664,6 +671,7 @@ const PropertyInsertForm = () => {
                   onCityChange={(city) => handleInputChange('city', city)}
                   onAreaChange={(area) => handleInputChange('area', area)}
                   onLocationChange={(location) => handleInputChange('location', location)}
+                  onDetailedAddressChange={handleDetailedAddressChange}
                 />
               </div>
             </TabsContent>

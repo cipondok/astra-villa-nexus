@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -11,6 +10,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useAlert } from "@/contexts/AlertContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { Building2, Save } from "lucide-react";
+import EnhancedLocationSelector from "@/components/property/EnhancedLocationSelector";
+import { DetailedAddressData } from "@/components/property/DetailedAddressForm";
 
 interface PropertyFormData {
   title: string;
@@ -32,7 +33,7 @@ interface PropertyFormData {
 
 const PropertyInsertForm = () => {
   const { user } = useAuth();
-  const [formData, setFormData] = useState<PropertyFormData>({
+  const [formData, setFormData] = useState<PropertyFormData & { detailed_address?: DetailedAddressData | null }>({
     title: "",
     description: "",
     property_type: "",
@@ -47,7 +48,8 @@ const PropertyInsertForm = () => {
     area: "",
     development_status: "completed",
     owner_type: "individual",
-    status: "active"
+    status: "active",
+    detailed_address: null
   });
 
   const { showSuccess, showError } = useAlert();
@@ -112,7 +114,8 @@ const PropertyInsertForm = () => {
         area: "",
         development_status: "completed",
         owner_type: "individual",
-        status: "active"
+        status: "active",
+        detailed_address: null
       });
       queryClient.invalidateQueries({ queryKey: ['properties'] });
     },
@@ -124,6 +127,10 @@ const PropertyInsertForm = () => {
 
   const handleInputChange = (key: keyof PropertyFormData, value: string) => {
     setFormData(prev => ({ ...prev, [key]: value }));
+  };
+
+  const handleDetailedAddressChange = (addressData: DetailedAddressData) => {
+    handleInputChange('detailed_address', addressData);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -267,48 +274,19 @@ const PropertyInsertForm = () => {
             </div>
           </div>
 
-          {/* Location Information */}
+          {/* Enhanced Location Information */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold">Location Information</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="location">Full Address *</Label>
-                <Input
-                  id="location"
-                  value={formData.location}
-                  onChange={(e) => handleInputChange('location', e.target.value)}
-                  placeholder="Enter full address"
-                  required
-                />
-              </div>
-              <div>
-                <Label htmlFor="city">City</Label>
-                <Input
-                  id="city"
-                  value={formData.city}
-                  onChange={(e) => handleInputChange('city', e.target.value)}
-                  placeholder="Enter city"
-                />
-              </div>
-              <div>
-                <Label htmlFor="state">State/Province</Label>
-                <Input
-                  id="state"
-                  value={formData.state}
-                  onChange={(e) => handleInputChange('state', e.target.value)}
-                  placeholder="Enter state or province"
-                />
-              </div>
-              <div>
-                <Label htmlFor="area">Area/District</Label>
-                <Input
-                  id="area"
-                  value={formData.area}
-                  onChange={(e) => handleInputChange('area', e.target.value)}
-                  placeholder="Enter area or district"
-                />
-              </div>
-            </div>
+            <EnhancedLocationSelector
+              selectedState={formData.state}
+              selectedCity={formData.city}
+              selectedArea={formData.area}
+              onStateChange={(state) => handleInputChange('state', state)}
+              onCityChange={(city) => handleInputChange('city', city)}
+              onAreaChange={(area) => handleInputChange('area', area)}
+              onLocationChange={(location) => handleInputChange('location', location)}
+              onDetailedAddressChange={handleDetailedAddressChange}
+            />
           </div>
 
           {/* Additional Settings */}

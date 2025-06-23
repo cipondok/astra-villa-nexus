@@ -8,6 +8,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAlert } from "@/contexts/AlertContext";
+import EnhancedLocationSelector from "@/components/property/EnhancedLocationSelector";
+import { DetailedAddressData } from "@/components/property/DetailedAddressForm";
 
 interface PropertyListingFormProps {
   onSuccess: () => void;
@@ -24,6 +26,9 @@ const PropertyListingForm = ({ onSuccess }: PropertyListingFormProps) => {
     property_type: "",
     listing_type: "",
     location: "",
+    state: "",
+    city: "",
+    area: "",
     price: "",
     bedrooms: "",
     bathrooms: "",
@@ -31,6 +36,7 @@ const PropertyListingForm = ({ onSuccess }: PropertyListingFormProps) => {
     development_status: "completed",
     three_d_model_url: "",
     virtual_tour_url: "",
+    detailed_address: null as DetailedAddressData | null
   });
 
   const createPropertyMutation = useMutation({
@@ -59,6 +65,9 @@ const PropertyListingForm = ({ onSuccess }: PropertyListingFormProps) => {
         property_type: "",
         listing_type: "",
         location: "",
+        state: "",
+        city: "",
+        area: "",
         price: "",
         bedrooms: "",
         bathrooms: "",
@@ -66,6 +75,7 @@ const PropertyListingForm = ({ onSuccess }: PropertyListingFormProps) => {
         development_status: "completed",
         three_d_model_url: "",
         virtual_tour_url: "",
+        detailed_address: null as DetailedAddressData | null
       });
     },
     onError: (error: any) => {
@@ -73,10 +83,14 @@ const PropertyListingForm = ({ onSuccess }: PropertyListingFormProps) => {
     }
   });
 
+  const handleDetailedAddressChange = (addressData: DetailedAddressData) => {
+    setFormData(prev => ({ ...prev, detailed_address: addressData }));
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.title || !formData.property_type || !formData.listing_type || !formData.location) {
-      showError("Missing Information", "Please fill in all required fields.");
+    if (!formData.title || !formData.property_type || !formData.listing_type || !formData.state || !formData.city || !formData.area) {
+      showError("Missing Information", "Please fill in all required fields including location.");
       return;
     }
     createPropertyMutation.mutate(formData);
@@ -87,7 +101,7 @@ const PropertyListingForm = ({ onSuccess }: PropertyListingFormProps) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <Label htmlFor="title">Property Title *</Label>
@@ -199,6 +213,21 @@ const PropertyListingForm = ({ onSuccess }: PropertyListingFormProps) => {
             </SelectContent>
           </Select>
         </div>
+      </div>
+
+      {/* Enhanced Location Section */}
+      <div className="space-y-4">
+        <h3 className="text-lg font-semibold text-gray-900">Lokasi Properti</h3>
+        <EnhancedLocationSelector
+          selectedState={formData.state}
+          selectedCity={formData.city}
+          selectedArea={formData.area}
+          onStateChange={(state) => handleChange('state', state)}
+          onCityChange={(city) => handleChange('city', city)}
+          onAreaChange={(area) => handleChange('area', area)}
+          onLocationChange={(location) => handleChange('location', location)}
+          onDetailedAddressChange={handleDetailedAddressChange}
+        />
       </div>
 
       <div>
