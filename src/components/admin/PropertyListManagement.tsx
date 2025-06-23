@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -58,13 +57,13 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
       console.log('Fetching properties for admin dashboard...');
       
       try {
-        // Build the base query
+        // Build the base query with proper joins
         let query = supabase
           .from('properties')
           .select(`
             *,
-            owner:owner_id(id, full_name, email),
-            agent:agent_id(id, full_name, email)
+            owner:profiles!properties_owner_id_fkey(id, full_name, email),
+            agent:profiles!properties_agent_id_fkey(id, full_name, email)
           `);
 
         // Apply filters
@@ -78,10 +77,22 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
           query = query.eq('property_type', typeFilter);
         }
 
-        // Get total count first
-        const { count } = await supabase
+        // Get total count with same filters
+        let countQuery = supabase
           .from('properties')
           .select('*', { count: 'exact', head: true });
+
+        if (searchTerm) {
+          countQuery = countQuery.or(`title.ilike.%${searchTerm}%,location.ilike.%${searchTerm}%`);
+        }
+        if (statusFilter !== "all") {
+          countQuery = countQuery.eq('status', statusFilter);
+        }
+        if (typeFilter !== "all") {
+          countQuery = countQuery.eq('property_type', typeFilter);
+        }
+
+        const { count } = await countQuery;
 
         // Apply pagination
         const from = (currentPage - 1) * itemsPerPage;
@@ -278,8 +289,17 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
               <Building2 className="h-12 w-12 text-gray-400 dark:text-gray-500 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">No properties found</h3>
               <p className="text-gray-600 dark:text-gray-400 mb-4">
-                No properties match your current filters.
+                {searchTerm || statusFilter !== "all" || typeFilter !== "all" 
+                  ? "No properties match your current filters."
+                  : "Start by adding your first property to the system."
+                }
               </p>
+              {(!searchTerm && statusFilter === "all" && typeFilter === "all") && (
+                <Button onClick={onAddProperty} className="bg-blue-600 hover:bg-blue-700 text-white">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add First Property
+                </Button>
+              )}
             </div>
           ) : (
             <>
@@ -299,9 +319,9 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
                   </TableHeader>
                   <TableBody>
                     {properties.map((property) => {
-                      // Handle owner and agent data properly - they might be arrays or single objects
-                      const owner = Array.isArray(property.owner) ? property.owner[0] : property.owner;
-                      const agent = Array.isArray(property.agent) ? property.agent[0] : property.agent;
+                      // Handle owner and agent data - they could be objects or null
+                      const owner = property.owner;
+                      const agent = property.agent;
                       
                       return (
                         <TableRow key={property.id} className="border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50">
