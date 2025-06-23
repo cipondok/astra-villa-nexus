@@ -1,9 +1,9 @@
-
 import { useState, useEffect } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAlert } from "@/contexts/AlertContext";
 import PropertyAlert from "./PropertyAlert";
+import PropertyModal from "./PropertyModal";
 
 interface PropertyNotification {
   id: string;
@@ -34,6 +34,15 @@ const PropertyNotificationManager = ({
 }: PropertyNotificationManagerProps) => {
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
+  const [modalState, setModalState] = useState<{
+    isOpen: boolean;
+    propertyId: string | null;
+    mode: 'view' | 'edit';
+  }>({
+    isOpen: false,
+    propertyId: null,
+    mode: 'view'
+  });
 
   // Approve property mutation
   const approvePropertyMutation = useMutation({
@@ -64,50 +73,54 @@ const PropertyNotificationManager = ({
   };
 
   const handleView = (propertyId: string) => {
-    // Scroll to property or show property details inline
-    console.log('Viewing property:', propertyId);
-    
-    // Find the property element and scroll to it if it exists
-    const propertyElement = document.querySelector(`[data-property-id="${propertyId}"]`);
-    if (propertyElement) {
-      propertyElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      propertyElement.classList.add('ring-2', 'ring-blue-500', 'ring-opacity-50');
-      setTimeout(() => {
-        propertyElement.classList.remove('ring-2', 'ring-blue-500', 'ring-opacity-50');
-      }, 3000);
-    } else {
-      // Navigate to the home page where properties are displayed
-      window.location.href = '/';
-    }
+    setModalState({
+      isOpen: true,
+      propertyId,
+      mode: 'view'
+    });
   };
 
   const handleEdit = (propertyId: string) => {
-    // For now, show an alert that edit functionality is coming
-    showSuccess("Edit Feature", "Property editing feature will be available soon. Use the Property Management section to edit properties.");
-    
-    // Navigate to admin property management
-    const currentUrl = window.location.pathname;
-    if (!currentUrl.includes('/admin')) {
-      window.location.href = '/admin';
-    }
+    setModalState({
+      isOpen: true,
+      propertyId,
+      mode: 'edit'
+    });
+  };
+
+  const closeModal = () => {
+    setModalState({
+      isOpen: false,
+      propertyId: null,
+      mode: 'view'
+    });
   };
 
   if (notifications.length === 0) return null;
 
   return (
-    <div className="fixed top-20 right-4 z-50 space-y-3 max-w-md w-full">
-      {notifications.map((notification) => (
-        <PropertyAlert
-          key={notification.id}
-          property={notification.property}
-          onApprove={handleApprove}
-          onView={handleView}
-          onEdit={handleEdit}
-          onDismiss={() => onNotificationDismiss(notification.id)}
-          showActions={true}
-        />
-      ))}
-    </div>
+    <>
+      <div className="fixed top-20 right-4 z-50 space-y-3 max-w-md w-full">
+        {notifications.map((notification) => (
+          <PropertyAlert
+            key={notification.id}
+            property={notification.property}
+            onApprove={handleApprove}
+            onView={handleView}
+            onEdit={handleEdit}
+            onDismiss={() => onNotificationDismiss(notification.id)}
+            showActions={true}
+          />
+        ))}
+      </div>
+
+      <PropertyModal
+        isOpen={modalState.isOpen}
+        onClose={closeModal}
+        propertyId={modalState.propertyId}
+        mode={modalState.mode}
+      />
+    </>
   );
 };
 

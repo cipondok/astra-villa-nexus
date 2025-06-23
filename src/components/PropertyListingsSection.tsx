@@ -1,4 +1,3 @@
-
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -6,6 +5,7 @@ import SearchLoadingAnimation from "@/components/SearchLoadingAnimation";
 import PropertyViewer3D from "@/components/PropertyViewer3D";
 import CompactPropertyCard from "@/components/property/CompactPropertyCard";
 import AutoScrollCarousel from "@/components/property/AutoScrollCarousel";
+import PropertyModal from "@/components/admin/PropertyModal";
 
 interface PropertyListingsSectionProps {
   language: "en" | "id";
@@ -29,6 +29,15 @@ const PropertyListingsSection = ({
 }: PropertyListingsSectionProps) => {
   const [favoriteProperties, setFavoriteProperties] = useState<Set<string>>(new Set());
   const [propertyFor3DView, setPropertyFor3DView] = useState<any | null>(null);
+  const [modalState, setModalState] = useState<{
+    isOpen: boolean;
+    propertyId: string | null;
+    mode: 'view' | 'edit';
+  }>({
+    isOpen: false,
+    propertyId: null,
+    mode: 'view'
+  });
   const navigate = useNavigate();
 
   const text = {
@@ -71,21 +80,24 @@ const PropertyListingsSection = ({
   };
 
   const handleViewDetails = (propertyId: string) => {
-    // For now, scroll to property and highlight it
-    console.log('Viewing property details:', propertyId);
-    const propertyElement = document.querySelector(`[data-property-id="${propertyId}"]`);
-    if (propertyElement) {
-      propertyElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      propertyElement.classList.add('ring-2', 'ring-blue-500', 'ring-opacity-75', 'transition-all', 'duration-300');
-      setTimeout(() => {
-        propertyElement.classList.remove('ring-2', 'ring-blue-500', 'ring-opacity-75');
-      }, 3000);
-    }
+    setModalState({
+      isOpen: true,
+      propertyId,
+      mode: 'view'
+    });
   };
 
   const handleView3D = (property: any) => {
     setPropertyFor3DView(property);
   }
+
+  const closeModal = () => {
+    setModalState({
+      isOpen: false,
+      propertyId: null,
+      mode: 'view'
+    });
+  };
 
   const sectionData = useMemo(() => {
     const sectionTitle = hasSearched ? currentText.searchResults : currentText.title;
@@ -196,6 +208,13 @@ const PropertyListingsSection = ({
           propertyTitle={propertyFor3DView.title}
         />
       )}
+
+      <PropertyModal
+        isOpen={modalState.isOpen}
+        onClose={closeModal}
+        propertyId={modalState.propertyId}
+        mode={modalState.mode}
+      />
     </>
   );
 };
