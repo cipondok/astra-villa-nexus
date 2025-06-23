@@ -1,55 +1,97 @@
 
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Home, User, UserCheck, Calendar, DollarSign } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { MapPin, Home, User, UserCheck, Calendar, DollarSign, Edit2 } from "lucide-react";
 import { formatIDR } from "@/utils/currency";
 
 interface PropertyViewModalProps {
   property: any;
   isOpen: boolean;
   onClose: () => void;
+  onEdit?: (property: any) => void;
 }
 
-const PropertyViewModal = ({ property, isOpen, onClose }: PropertyViewModalProps) => {
+const PropertyViewModal = ({ property, isOpen, onClose, onEdit }: PropertyViewModalProps) => {
   if (!property) return null;
+
+  const handleEdit = () => {
+    onEdit?.(property);
+    onClose();
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+      <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto bg-white">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2 text-gray-900 dark:text-gray-100">
-            <Home className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-            {property.title}
+          <DialogTitle className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Home className="h-5 w-5 text-blue-600" />
+              {property.title}
+            </div>
+            {onEdit && (
+              <Button onClick={handleEdit} size="sm" className="bg-blue-600 hover:bg-blue-700">
+                <Edit2 className="h-4 w-4 mr-2" />
+                Edit Property
+              </Button>
+            )}
           </DialogTitle>
-          <DialogDescription className="text-gray-600 dark:text-gray-400">
+          <DialogDescription className="text-gray-600">
             Property details and information
           </DialogDescription>
         </DialogHeader>
         
-        <div className="space-y-6 text-gray-900 dark:text-gray-100">
+        <div className="space-y-6">
+          {/* Property Images */}
+          {property.images && property.images.length > 0 && (
+            <div className="space-y-4">
+              <h3 className="font-semibold text-gray-900">Property Images</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {property.images.map((image: string, index: number) => (
+                  <div key={index} className="relative group">
+                    <img
+                      src={image}
+                      alt={`Property image ${index + 1}`}
+                      className="w-full h-48 object-cover rounded-lg border"
+                    />
+                    <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        onClick={() => window.open(image, '_blank')}
+                      >
+                        View Full Size
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Basic Info */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div>
-              <h3 className="font-semibold mb-3 text-gray-900 dark:text-gray-100 flex items-center gap-2">
-                <MapPin className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+              <h3 className="font-semibold mb-3 text-gray-900 flex items-center gap-2">
+                <MapPin className="h-4 w-4 text-blue-600" />
                 Basic Information
               </h3>
-              <div className="space-y-3 bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg">
-                <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
-                  <MapPin className="h-4 w-4 text-gray-500 dark:text-gray-400" />
+              <div className="space-y-3 bg-gray-50 p-4 rounded-lg">
+                <div className="flex items-center gap-2 text-gray-700">
+                  <MapPin className="h-4 w-4 text-gray-500" />
                   <span>{property.location}</span>
                 </div>
-                <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
-                  <DollarSign className="h-4 w-4 text-green-600 dark:text-green-400" />
-                  <span className="text-lg font-semibold text-green-600 dark:text-green-400">
+                <div className="flex items-center gap-2 text-gray-700">
+                  <DollarSign className="h-4 w-4 text-green-600" />
+                  <span className="text-lg font-semibold text-green-600">
                     {property.price ? formatIDR(property.price) : 'Price not set'}
                   </span>
                 </div>
                 <div className="flex gap-2 flex-wrap">
-                  <Badge variant="outline" className="bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-700">
+                  <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
                     {property.property_type}
                   </Badge>
-                  <Badge variant="outline" className="bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 border-green-200 dark:border-green-700">
+                  <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
                     {property.listing_type}
                   </Badge>
                 </div>
@@ -57,22 +99,22 @@ const PropertyViewModal = ({ property, isOpen, onClose }: PropertyViewModalProps
             </div>
             
             <div>
-              <h3 className="font-semibold mb-3 text-gray-900 dark:text-gray-100 flex items-center gap-2">
-                <Home className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+              <h3 className="font-semibold mb-3 text-gray-900 flex items-center gap-2">
+                <Home className="h-4 w-4 text-blue-600" />
                 Property Details
               </h3>
-              <div className="space-y-3 bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg">
-                <div className="grid grid-cols-2 gap-4 text-gray-700 dark:text-gray-300">
+              <div className="space-y-3 bg-gray-50 p-4 rounded-lg">
+                <div className="grid grid-cols-2 gap-4 text-gray-700">
                   <div>
-                    <span className="font-medium text-gray-900 dark:text-gray-100">Bedrooms:</span>
+                    <span className="font-medium text-gray-900">Bedrooms:</span>
                     <p className="text-lg">{property.bedrooms || 'N/A'}</p>
                   </div>
                   <div>
-                    <span className="font-medium text-gray-900 dark:text-gray-100">Bathrooms:</span>
+                    <span className="font-medium text-gray-900">Bathrooms:</span>
                     <p className="text-lg">{property.bathrooms || 'N/A'}</p>
                   </div>
                   <div className="col-span-2">
-                    <span className="font-medium text-gray-900 dark:text-gray-100">Area:</span>
+                    <span className="font-medium text-gray-900">Area:</span>
                     <p className="text-lg">{property.area_sqm || 'N/A'} sqm</p>
                   </div>
                 </div>
@@ -80,99 +122,59 @@ const PropertyViewModal = ({ property, isOpen, onClose }: PropertyViewModalProps
             </div>
           </div>
 
-          {/* Owner & Agent Info */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div>
-              <h3 className="font-semibold mb-3 flex items-center gap-2 text-gray-900 dark:text-gray-100">
-                <User className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                Property Owner
-              </h3>
-              <div className="space-y-2 bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg">
-                <div className="text-gray-700 dark:text-gray-300">
-                  <p className="font-medium text-gray-900 dark:text-gray-100">
-                    {property.owner?.full_name || 'Unknown Owner'}
-                  </p>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">{property.owner?.email}</p>
-                  {property.owner?.phone && (
-                    <p className="text-sm text-gray-500 dark:text-gray-400">{property.owner.phone}</p>
-                  )}
-                </div>
-              </div>
-            </div>
-            
-            {property.agent && (
-              <div>
-                <h3 className="font-semibold mb-3 flex items-center gap-2 text-gray-900 dark:text-gray-100">
-                  <UserCheck className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                  Agent
-                </h3>
-                <div className="space-y-2 bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg">
-                  <div className="text-gray-700 dark:text-gray-300">
-                    <p className="font-medium text-gray-900 dark:text-gray-100">{property.agent.full_name}</p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">{property.agent.email}</p>
-                    {property.agent.phone && (
-                      <p className="text-sm text-gray-500 dark:text-gray-400">{property.agent.phone}</p>
-                    )}
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Status & Additional Info */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div>
-              <h3 className="font-semibold mb-3 text-gray-900 dark:text-gray-100">Status Information</h3>
-              <div className="flex gap-2 flex-wrap">
-                <Badge 
-                  variant={property.status === 'active' ? 'default' : 'secondary'} 
-                  className="bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 border-blue-200 dark:border-blue-700"
-                >
-                  Status: {property.status || 'pending_approval'}
-                </Badge>
-                <Badge 
-                  variant={property.approval_status === 'approved' ? 'default' : 'secondary'} 
-                  className="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 border-green-200 dark:border-green-700"
-                >
-                  Approval: {property.approval_status || 'pending'}
-                </Badge>
-              </div>
-            </div>
-
-            <div>
-              <h3 className="font-semibold mb-3 text-gray-900 dark:text-gray-100 flex items-center gap-2">
-                <Calendar className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                Timestamps
-              </h3>
-              <div className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
-                <p><span className="font-medium">Created:</span> {property.created_at ? new Date(property.created_at).toLocaleString() : 'N/A'}</p>
-                <p><span className="font-medium">Updated:</span> {property.updated_at ? new Date(property.updated_at).toLocaleString() : 'N/A'}</p>
-              </div>
+          {/* Status Information */}
+          <div>
+            <h3 className="font-semibold mb-3 text-gray-900">Status Information</h3>
+            <div className="flex gap-2 flex-wrap">
+              <Badge 
+                variant={property.status === 'active' ? 'default' : 'secondary'} 
+                className="bg-blue-100 text-blue-800 border-blue-200"
+              >
+                Status: {property.status || 'pending_approval'}
+              </Badge>
+              <Badge 
+                variant="outline" 
+                className="bg-green-100 text-green-800 border-green-200"
+              >
+                Created: {new Date(property.created_at).toLocaleDateString()}
+              </Badge>
             </div>
           </div>
 
           {/* Description */}
           {property.description && (
             <div>
-              <h3 className="font-semibold mb-3 text-gray-900 dark:text-gray-100">Description</h3>
-              <div className="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg">
-                <p className="text-gray-700 dark:text-gray-300 leading-relaxed">{property.description}</p>
+              <h3 className="font-semibold mb-3 text-gray-900">Description</h3>
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <p className="text-gray-700 leading-relaxed">{property.description}</p>
               </div>
             </div>
           )}
 
-          {/* Property Features */}
-          {property.property_features && Object.keys(property.property_features).length > 0 && (
+          {/* Location Details */}
+          {(property.city || property.state || property.area) && (
             <div>
-              <h3 className="font-semibold mb-3 text-gray-900 dark:text-gray-100">Features & Amenities</h3>
-              <div className="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg">
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                  {Object.entries(property.property_features).map(([key, value]) => (
-                    <div key={key} className="flex items-center justify-between">
-                      <span className="capitalize text-gray-700 dark:text-gray-300">{key.replace('_', ' ')}:</span>
-                      <span className="font-medium text-gray-900 dark:text-gray-100">{String(value)}</span>
+              <h3 className="font-semibold mb-3 text-gray-900">Location Details</h3>
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-gray-700">
+                  {property.city && (
+                    <div>
+                      <span className="font-medium text-gray-900">City:</span>
+                      <p>{property.city}</p>
                     </div>
-                  ))}
+                  )}
+                  {property.state && (
+                    <div>
+                      <span className="font-medium text-gray-900">State:</span>
+                      <p>{property.state}</p>
+                    </div>
+                  )}
+                  {property.area && (
+                    <div>
+                      <span className="font-medium text-gray-900">Area:</span>
+                      <p>{property.area}</p>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

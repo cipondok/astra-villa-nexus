@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -10,6 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAlert } from "@/contexts/AlertContext";
 import PropertyEditModal from "./PropertyEditModal";
+import PropertyViewModal from "./PropertyViewModal";
 import { 
   Search, 
   Plus, 
@@ -56,6 +56,8 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
   const [typeFilter, setTypeFilter] = useState("all");
   const [editingProperty, setEditingProperty] = useState<Property | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [viewingProperty, setViewingProperty] = useState<Property | null>(null);
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
 
   // Fixed property fetch with better error handling
   const { data: properties = [], isLoading, error, refetch } = useQuery({
@@ -140,11 +142,29 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
     setIsEditModalOpen(true);
   };
 
+  const handleView = (property: Property) => {
+    console.log('Opening view modal for property:', property.id);
+    setViewingProperty(property);
+    setIsViewModalOpen(true);
+  };
+
   const handleCloseEditModal = () => {
     setIsEditModalOpen(false);
     setEditingProperty(null);
     refetch();
     queryClient.invalidateQueries({ queryKey: ['admin-properties'] });
+  };
+
+  const handleCloseViewModal = () => {
+    setIsViewModalOpen(false);
+    setViewingProperty(null);
+  };
+
+  const handleEditFromView = (property: Property) => {
+    setViewingProperty(null);
+    setIsViewModalOpen(false);
+    setEditingProperty(property);
+    setIsEditModalOpen(true);
   };
 
   const getStatusBadge = (status: string) => {
@@ -388,7 +408,7 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
                           <Button 
                             variant="outline" 
                             size="sm"
-                            onClick={() => window.open(`/property/${property.id}`, '_blank')}
+                            onClick={() => handleView(property)}
                             className="hover:bg-blue-50"
                           >
                             <Eye className="h-3 w-3" />
@@ -427,6 +447,16 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
           property={editingProperty}
           isOpen={isEditModalOpen}
           onClose={handleCloseEditModal}
+        />
+      )}
+
+      {/* Property View Modal */}
+      {viewingProperty && (
+        <PropertyViewModal
+          property={viewingProperty}
+          isOpen={isViewModalOpen}
+          onClose={handleCloseViewModal}
+          onEdit={handleEditFromView}
         />
       )}
     </div>
