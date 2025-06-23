@@ -1,38 +1,18 @@
 
 import { useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { useSessionManager } from '@/hooks/useSessionManager';
 import { useAlert } from '@/contexts/AlertContext';
 
 export const SessionMonitor = () => {
   const { user, signOut } = useAuth();
   const { showWarning, showError } = useAlert();
-  const { checkSessionValidity, createSession } = useSessionManager();
 
   useEffect(() => {
     if (!user) return;
 
-    // Create session when user logs in
-    createSession(user.id);
+    console.log('SessionMonitor: Setting up session monitoring for user:', user.email);
 
-    // Check session validity on mount
-    const validateSession = async () => {
-      const isValid = await checkSessionValidity();
-      if (!isValid) {
-        showError(
-          "Session Invalid",
-          "Your session is no longer valid. Please log in again."
-        );
-        signOut();
-      }
-    };
-
-    validateSession();
-
-    // Set up periodic session validation
-    const interval = setInterval(validateSession, 5 * 60 * 1000); // Every 5 minutes
-
-    // Set up session timeout warning (25 minutes = 5 minutes before 30-minute timeout)
+    // Session timeout warning (25 minutes = 5 minutes before 30-minute timeout)
     const warningTimeout = setTimeout(() => {
       showWarning(
         "Session Expiring Soon",
@@ -68,14 +48,13 @@ export const SessionMonitor = () => {
     });
 
     return () => {
-      clearInterval(interval);
       clearTimeout(warningTimeout);
       clearTimeout(inactivityTimeout);
       events.forEach(event => {
         document.removeEventListener(event, resetTimeout, true);
       });
     };
-  }, [user, checkSessionValidity, createSession, showError, showWarning, signOut]);
+  }, [user, showError, showWarning, signOut]);
 
   return null; // This is a monitor component, no UI needed
 };

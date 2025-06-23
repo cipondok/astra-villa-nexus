@@ -16,11 +16,10 @@ interface SessionData {
 }
 
 export const useSessionManager = () => {
-  const { user, signOut } = useAuth();
+  const { user } = useAuth();
   const { showError, showWarning } = useAlert();
   const [currentSession, setCurrentSession] = useState<SessionData | null>(null);
   const [otherSessions, setOtherSessions] = useState<SessionData[]>([]);
-  const [sessionExpired, setSessionExpired] = useState(false);
 
   // Generate session token
   const generateSessionToken = useCallback(() => {
@@ -30,6 +29,7 @@ export const useSessionManager = () => {
   // Create new session
   const createSession = useCallback(async (userId: string) => {
     try {
+      console.log('Creating session for user:', userId);
       const deviceFingerprint = generateDeviceFingerprint();
       const deviceInfo = getDeviceInfo();
       const sessionToken = generateSessionToken();
@@ -41,7 +41,7 @@ export const useSessionManager = () => {
         .eq('user_id', userId)
         .eq('is_active', true);
 
-      // Check if user is already logged in on another device
+      // Only show warning if there are sessions from different devices
       if (existingSessions && existingSessions.length > 0) {
         const differentDevices = existingSessions.filter(
           session => session.device_fingerprint !== deviceFingerprint
@@ -63,7 +63,7 @@ export const useSessionManager = () => {
         }
       }
 
-      // Create new session
+      // Create new session with longer expiry (7 days)
       const { data: newSession, error } = await supabase
         .from('user_device_sessions')
         .insert({
@@ -76,18 +76,22 @@ export const useSessionManager = () => {
         .select()
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error creating session:', error);
+        return;
+      }
 
       setCurrentSession(newSession);
       localStorage.setItem('session_token', sessionToken);
       localStorage.setItem('device_fingerprint', deviceFingerprint);
+      console.log('Session created successfully');
 
     } catch (error) {
       console.error('Error creating session:', error);
     }
   }, [generateSessionToken, showWarning]);
 
-  // Update session activity
+  // Update session activity (less frequent)
   const updateSessionActivity = useCallback(async () => {
     const sessionToken = localStorage.getItem('session_token');
     if (!sessionToken || !user) return;
@@ -105,10 +109,10 @@ export const useSessionManager = () => {
     }
   }, [user]);
 
-  // Check session validity
+  // Check session validity (less aggressive)
   const checkSessionValidity = useCallback(async () => {
     const sessionToken = localStorage.getItem('session_token');
-    if (!sessionToken || !user) return false;
+    if (!sessionToken || !user) return true; // Don't fail if no session token yet
 
     try {
       const { data: session } = await supabase
@@ -120,25 +124,22 @@ export const useSessionManager = () => {
         .single();
 
       if (!session) {
-        setSessionExpired(true);
+        console.log('No active session found');
         return false;
       }
 
-      // Check if session is expired
-      if (new Date(session.expires_at) < new Date()) {
+      // Check if session is expired (with some grace period)
+      const expiryTime = new Date(session.expires_at).getTime();
+      const currentTime = new Date().getTime();
+      const gracePeriod = 5 * 60 * 1000; // 5 minutes grace period
+
+      if (expiryTime + gracePeriod < currentTime) {
+        console.log('Session expired');
         await supabase
           .from('user_device_sessions')
           .update({ is_active: false })
           .eq('id', session.id);
 
-        // Create session expired alert
-        await supabase.rpc('create_login_alert', {
-          p_user_id: user.id,
-          p_alert_type: 'session_expired',
-          p_message: 'Your session has expired. Please log in again.'
-        });
-
-        setSessionExpired(true);
         return false;
       }
 
@@ -146,7 +147,7 @@ export const useSessionManager = () => {
       return true;
     } catch (error) {
       console.error('Error checking session validity:', error);
-      return false;
+      return true; // Don't fail on error, let user continue
     }
   }, [user]);
 
@@ -205,51 +206,40 @@ export const useSessionManager = () => {
     }
   }, [user]);
 
-  // Handle session expiration
-  useEffect(() => {
-    if (sessionExpired) {
-      showError(
-        "Session Expired",
-        "Your session has expired for security reasons. Please log in again."
-      );
-      signOut();
-    }
-  }, [sessionExpired, showError, signOut]);
-
-  // Check session validity every 5 minutes
+  // Reduced frequency checks - only every 10 minutes and less aggressive
   useEffect(() => {
     if (!user) return;
 
+    // Only check session validity every 10 minutes (not 5)
     const interval = setInterval(() => {
       checkSessionValidity();
-    }, 5 * 60 * 1000); // 5 minutes
+    }, 10 * 60 * 1000); // 10 minutes
 
     return () => clearInterval(interval);
   }, [user, checkSessionValidity]);
 
-  // Update activity every 30 seconds when user is active
+  // Update activity every 2 minutes when user is active (less frequent)
   useEffect(() => {
     if (!user) return;
 
+    let activityTimeout: NodeJS.Timeout;
+
     const handleActivity = () => {
-      updateSessionActivity();
+      clearTimeout(activityTimeout);
+      activityTimeout = setTimeout(() => {
+        updateSessionActivity();
+      }, 2 * 60 * 1000); // 2 minutes instead of 30 seconds
     };
 
     const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'];
-    let activityTimeout: NodeJS.Timeout;
-
-    const debouncedActivity = () => {
-      clearTimeout(activityTimeout);
-      activityTimeout = setTimeout(handleActivity, 30000); // 30 seconds
-    };
-
+    
     events.forEach(event => {
-      document.addEventListener(event, debouncedActivity);
+      document.addEventListener(event, handleActivity);
     });
 
     return () => {
       events.forEach(event => {
-        document.removeEventListener(event, debouncedActivity);
+        document.removeEventListener(event, handleActivity);
       });
       clearTimeout(activityTimeout);
     };
@@ -262,7 +252,6 @@ export const useSessionManager = () => {
     terminateSession,
     fetchUserSessions,
     checkSessionValidity,
-    updateSessionActivity,
-    sessionExpired
+    updateSessionActivity
   };
 };
