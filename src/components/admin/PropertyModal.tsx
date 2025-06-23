@@ -121,6 +121,9 @@ const PropertyModal = ({ isOpen, onClose, propertyId, mode }: PropertyModalProps
 
   if (!property) return null;
 
+  // Safely get owner data - it could be an array or a single object
+  const ownerData = Array.isArray(property.owner) ? property.owner[0] : property.owner;
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
@@ -270,20 +273,20 @@ const PropertyModal = ({ isOpen, onClose, propertyId, mode }: PropertyModalProps
           </TabsContent>
 
           <TabsContent value="owner" className="space-y-4">
-            {property.owner && typeof property.owner === 'object' && !Array.isArray(property.owner) ? (
+            {ownerData ? (
               <div className="space-y-3">
                 <div>
                   <Label>Owner Name</Label>
-                  <p className="font-medium">{property.owner.full_name}</p>
+                  <p className="font-medium">{ownerData.full_name}</p>
                 </div>
                 <div>
                   <Label>Email</Label>
-                  <p className="text-gray-700">{property.owner.email}</p>
+                  <p className="text-gray-700">{ownerData.email}</p>
                 </div>
-                {property.owner.phone && (
+                {ownerData.phone && (
                   <div>
                     <Label>Phone</Label>
-                    <p className="text-gray-700">{property.owner.phone}</p>
+                    <p className="text-gray-700">{ownerData.phone}</p>
                   </div>
                 )}
               </div>

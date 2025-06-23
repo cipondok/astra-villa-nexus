@@ -95,11 +95,6 @@ export const usePropertyById = (propertyId: string | null) => {
         throw error;
       }
 
-      // Transform the owner data to be a single object instead of array
-      if (data && data.owner && Array.isArray(data.owner) && data.owner.length > 0) {
-        data.owner = data.owner[0];
-      }
-
       return data;
     },
     enabled: !!propertyId,
