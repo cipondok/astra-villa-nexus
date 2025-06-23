@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -273,20 +272,20 @@ const PropertyModal = ({ isOpen, onClose, propertyId, mode }: PropertyModalProps
           </TabsContent>
 
           <TabsContent value="owner" className="space-y-4">
-            {ownerData ? (
+            {property.owner ? (
               <div className="space-y-3">
                 <div>
                   <Label>Owner Name</Label>
-                  <p className="font-medium">{ownerData.full_name}</p>
+                  <p className="font-medium">{property.owner.full_name}</p>
                 </div>
                 <div>
                   <Label>Email</Label>
-                  <p className="text-gray-700">{ownerData.email}</p>
+                  <p className="text-gray-700">{property.owner.email}</p>
                 </div>
-                {ownerData.phone && (
+                {property.owner.phone && (
                   <div>
                     <Label>Phone</Label>
-                    <p className="text-gray-700">{ownerData.phone}</p>
+                    <p className="text-gray-700">{property.owner.phone}</p>
                   </div>
                 )}
               </div>

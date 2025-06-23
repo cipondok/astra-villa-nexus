@@ -68,10 +68,36 @@ export const useProperties = (options?: {
   });
 };
 
+interface PropertyWithOwner {
+  id: string;
+  title: string;
+  description: string;
+  price: number;
+  location: string;
+  city: string;
+  state: string;
+  property_type: string;
+  listing_type: string;
+  bedrooms: number;
+  bathrooms: number;
+  area_sqm: number;
+  status: string;
+  image_urls: string[];
+  thumbnail_url: string;
+  created_at: string;
+  owner_id: string;
+  owner: {
+    id: string;
+    full_name: string;
+    email: string;
+    phone: string;
+  } | null;
+}
+
 export const usePropertyById = (propertyId: string | null) => {
   return useQuery({
     queryKey: ['property', propertyId],
-    queryFn: async () => {
+    queryFn: async (): Promise<PropertyWithOwner | null> => {
       if (!propertyId) return null;
       
       console.log('Fetching single property:', propertyId);
@@ -95,7 +121,15 @@ export const usePropertyById = (propertyId: string | null) => {
         throw error;
       }
 
-      return data;
+      // Transform the owner data from array to single object if needed
+      let transformedData = data as any;
+      if (data.owner && Array.isArray(data.owner) && data.owner.length > 0) {
+        transformedData.owner = data.owner[0];
+      } else if (data.owner && Array.isArray(data.owner) && data.owner.length === 0) {
+        transformedData.owner = null;
+      }
+
+      return transformedData;
     },
     enabled: !!propertyId,
     staleTime: 5 * 60 * 1000,
