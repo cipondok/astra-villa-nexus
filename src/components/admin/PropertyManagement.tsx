@@ -12,7 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Building, Search, Plus, Edit, Trash2, Eye, MapPin, DollarSign, RefreshCw, Axis3d, Filter, Droplets } from "lucide-react";
+import { Building, Plus, Edit, Trash2, Eye, MapPin, DollarSign, RefreshCw, Axis3d, Filter, Droplets } from "lucide-react";
 import { useAlert } from "@/contexts/AlertContext";
 import PropertyEditModal from "./PropertyEditModal";
 import PropertyViewModal from "./PropertyViewModal";
@@ -49,7 +49,6 @@ interface PropertyWithRelations {
 }
 
 const PropertyManagement = () => {
-  const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
@@ -75,7 +74,7 @@ const PropertyManagement = () => {
   const queryClient = useQueryClient();
 
   const { data: properties, isLoading, error, refetch } = useQuery({
-    queryKey: ['admin-properties', searchTerm, statusFilter, categoryFilter],
+    queryKey: ['admin-properties', statusFilter, categoryFilter],
     queryFn: async () => {
       console.log('Fetching properties...');
       
@@ -83,10 +82,6 @@ const PropertyManagement = () => {
         .from('properties')
         .select('*')
         .order('created_at', { ascending: false });
-
-      if (searchTerm) {
-        query = query.or(`title.ilike.%${searchTerm}%,location.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%`);
-      }
 
       if (statusFilter !== 'all') {
         query = query.eq('status', statusFilter);
@@ -493,15 +488,6 @@ const PropertyManagement = () => {
               </div>
 
               <div className="flex flex-wrap gap-4">
-                <div className="relative flex-1 min-w-[200px]">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    placeholder="Search properties by title, location..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10"
-                  />
-                </div>
                 <Select value={statusFilter} onValueChange={setStatusFilter}>
                   <SelectTrigger className="w-full sm:w-48">
                     <SelectValue placeholder="Filter by status" />
