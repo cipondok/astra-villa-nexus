@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -49,13 +48,13 @@ const AuthenticatedNavigation = ({
   theme, 
   onThemeToggle 
 }: AuthenticatedNavigationProps) => {
-  const { user, profile, logout } = useAuth();
+  const { user, profile, signOut } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleLogout = async () => {
-    await logout();
+    await signOut();
     navigate('/');
   };
 
@@ -266,16 +265,10 @@ const AuthenticatedNavigation = ({
           {/* Right side controls */}
           <div className="flex items-center space-x-4">
             {/* Theme Toggle */}
-            <ThemeToggleSwitch 
-              theme={theme} 
-              onToggle={onThemeToggle} 
-            />
+            <ThemeToggleSwitch />
             
             {/* Language Toggle */}
-            <LanguageToggleSwitch 
-              language={language} 
-              onToggle={onLanguageToggle} 
-            />
+            <LanguageToggleSwitch />
 
             {/* User Menu */}
             <DropdownMenu>
