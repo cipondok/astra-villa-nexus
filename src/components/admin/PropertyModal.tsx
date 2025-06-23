@@ -8,8 +8,8 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import { useAlert } from "@/contexts/AlertContext";
+import { usePropertyById } from "@/hooks/useProperties";
 import { 
   Building2, 
   MapPin, 
@@ -20,7 +20,7 @@ import {
   Save,
   X,
   Edit,
-  Eye
+  Loader2
 } from "lucide-react";
 import { formatIDR } from "@/utils/currency";
 
@@ -34,49 +34,25 @@ interface PropertyModalProps {
 const PropertyModal = ({ isOpen, onClose, propertyId, mode }: PropertyModalProps) => {
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
-  const [property, setProperty] = useState<any>(null);
-  const [loading, setLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(mode === 'edit');
   const [formData, setFormData] = useState<any>({});
 
-  useEffect(() => {
-    if (propertyId && isOpen) {
-      loadProperty();
-    }
-  }, [propertyId, isOpen]);
+  // Use the optimized hook
+  const { data: property, isLoading, error } = usePropertyById(propertyId);
 
   useEffect(() => {
     setIsEditing(mode === 'edit');
   }, [mode]);
 
-  const loadProperty = async () => {
-    if (!propertyId) return;
-    
-    setLoading(true);
-    try {
-      const { data, error } = await supabase
-        .from('properties')
-        .select(`
-          *,
-          owner:profiles!properties_owner_id_fkey(full_name, email, phone)
-        `)
-        .eq('id', propertyId)
-        .single();
-
-      if (error) throw error;
-      
-      setProperty(data);
-      setFormData(data);
-    } catch (error) {
-      console.error('Error loading property:', error);
-      showError("Load Error", "Failed to load property details");
-    } finally {
-      setLoading(false);
+  useEffect(() => {
+    if (property) {
+      setFormData(property);
     }
-  };
+  }, [property]);
 
   const updatePropertyMutation = useMutation({
     mutationFn: async (updates: any) => {
+      const { supabase } = await import("@/integrations/supabase/client");
       const { error } = await supabase
         .from('properties')
         .update(updates)
@@ -86,10 +62,8 @@ const PropertyModal = ({ isOpen, onClose, propertyId, mode }: PropertyModalProps
     },
     onSuccess: () => {
       showSuccess("Success", "Property updated successfully");
-      queryClient.invalidateQueries({ queryKey: ['admin-properties'] });
       queryClient.invalidateQueries({ queryKey: ['properties'] });
-      queryClient.invalidateQueries({ queryKey: ['featured-properties'] });
-      loadProperty(); // Reload to show updated data
+      queryClient.invalidateQueries({ queryKey: ['property', propertyId] });
       setIsEditing(false);
     },
     onError: (error: any) => {
@@ -120,13 +94,25 @@ const PropertyModal = ({ isOpen, onClose, propertyId, mode }: PropertyModalProps
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <Dialog open={isOpen} onOpenChange={onClose}>
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           <div className="flex items-center justify-center py-8">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
             <span className="ml-2">Loading property...</span>
+          </div>
+        </DialogContent>
+      </Dialog>
+    );
+  }
+
+  if (error) {
+    return (
+      <Dialog open={isOpen} onOpenChange={onClose}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <div className="flex items-center justify-center py-8 text-red-600">
+            <span>Error loading property. Please try again.</span>
           </div>
         </DialogContent>
       </Dialog>
@@ -252,7 +238,11 @@ const PropertyModal = ({ isOpen, onClose, propertyId, mode }: PropertyModalProps
                   onClick={handleSave}
                   disabled={updatePropertyMutation.isPending}
                 >
-                  <Save className="h-4 w-4 mr-2" />
+                  {updatePropertyMutation.isPending ? (
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  ) : (
+                    <Save className="h-4 w-4 mr-2" />
+                  )}
                   {updatePropertyMutation.isPending ? 'Saving...' : 'Save Changes'}
                 </Button>
               </div>

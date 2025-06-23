@@ -1,11 +1,11 @@
+
 import { useState, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import SearchLoadingAnimation from "@/components/SearchLoadingAnimation";
 import PropertyViewer3D from "@/components/PropertyViewer3D";
 import CompactPropertyCard from "@/components/property/CompactPropertyCard";
 import AutoScrollCarousel from "@/components/property/AutoScrollCarousel";
 import PropertyModal from "@/components/admin/PropertyModal";
+import { useProperties } from "@/hooks/useProperties";
 
 interface PropertyListingsSectionProps {
   language: "en" | "id";
@@ -38,7 +38,12 @@ const PropertyListingsSection = ({
     propertyId: null,
     mode: 'view'
   });
-  const navigate = useNavigate();
+
+  // Use the optimized hook for fetching properties
+  const { data: featuredProperties = [], isLoading: isFeaturedLoading } = useProperties({
+    limit: 20,
+    status: 'active'
+  });
 
   const text = {
     en: {
@@ -48,7 +53,7 @@ const PropertyListingsSection = ({
       searchResults: "Search Results",
       noFeaturedProperties: "No properties available at the moment",
       showingResults: "Showing",
-      loadingProperties: "Searching properties...",
+      loadingProperties: "Loading properties...",
       tryDifferentSearch: "Try adjusting your search criteria",
       browseAll: "Browse All Properties"
     },
@@ -59,7 +64,7 @@ const PropertyListingsSection = ({
       searchResults: "Hasil Pencarian",
       noFeaturedProperties: "Tidak ada properti tersedia saat ini",
       showingResults: "Menampilkan",
-      loadingProperties: "Mencari properti...",
+      loadingProperties: "Memuat properti...",
       tryDifferentSearch: "Coba sesuaikan kriteria pencarian Anda",
       browseAll: "Lihat Semua Properti"
     }
@@ -108,7 +113,8 @@ const PropertyListingsSection = ({
     return { sectionTitle, sectionSubtitle };
   }, [hasSearched, searchResults.length, currentText]);
 
-  if (isSearching) {
+  // Show loading state
+  if (isSearching || (!hasSearched && isFeaturedLoading)) {
     return (
       <section className="py-6 sm:py-8 min-h-[400px]">
         <div className="container mx-auto px-2 sm:px-4">
@@ -121,7 +127,8 @@ const PropertyListingsSection = ({
     );  
   }
   
-  const displayProperties = hasSearched ? searchResults : fallbackResults;
+  // Determine which properties to display
+  const displayProperties = hasSearched ? searchResults : featuredProperties;
 
   return (
     <>
@@ -162,7 +169,6 @@ const PropertyListingsSection = ({
               </div>
             </div>
           ) : displayProperties.length >= 4 ? (
-            // Use AutoScrollCarousel for 4 or more properties
             <div data-property-container="true">
               <AutoScrollCarousel
                 title=""
@@ -181,7 +187,6 @@ const PropertyListingsSection = ({
               />
             </div>
           ) : (
-            // Use regular grid for less than 4 properties
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
               {displayProperties.map((property, index) => (
                 <div key={`${property.id}-${index}`} data-property-id={property.id} className="transition-all duration-300">
