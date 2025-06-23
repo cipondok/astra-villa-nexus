@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -23,7 +22,11 @@ import {
 } from "lucide-react";
 import { formatIDR } from "@/utils/currency";
 
-const PropertyListManagement = () => {
+interface PropertyListManagementProps {
+  onAddProperty?: () => void;
+}
+
+const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) => {
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
   
@@ -131,7 +134,10 @@ const PropertyListManagement = () => {
             Manage all property listings in the system
           </p>
         </div>
-        <Button className="flex items-center gap-2">
+        <Button 
+          className="flex items-center gap-2"
+          onClick={onAddProperty}
+        >
           <Plus className="h-4 w-4" />
           Add New Property
         </Button>

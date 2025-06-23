@@ -4,10 +4,16 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Building2, Plus, List, Settings } from "lucide-react";
 import PropertyListManagement from "./PropertyListManagement";
-import RoleBasedPropertyForm from "@/components/property/RoleBasedPropertyForm";
+import PropertyInsertForm from "./PropertyInsertForm";
 import PropertyCategoriesManagement from "./PropertyCategoriesManagement";
 
 const AdminPropertyManagement = () => {
+  const [activeTab, setActiveTab] = useState("properties");
+
+  const handleAddProperty = () => {
+    setActiveTab("add-property");
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -22,7 +28,7 @@ const AdminPropertyManagement = () => {
         </div>
       </div>
 
-      <Tabs defaultValue="properties" className="space-y-6">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="properties" className="flex items-center gap-2">
             <List className="h-4 w-4" />
@@ -39,24 +45,11 @@ const AdminPropertyManagement = () => {
         </TabsList>
 
         <TabsContent value="properties">
-          <PropertyListManagement />
+          <PropertyListManagement onAddProperty={handleAddProperty} />
         </TabsContent>
 
         <TabsContent value="add-property">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Plus className="h-5 w-5" />
-                Create New Property
-              </CardTitle>
-              <CardDescription>
-                Add a new property listing with full administrative privileges
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <RoleBasedPropertyForm />
-            </CardContent>
-          </Card>
+          <PropertyInsertForm />
         </TabsContent>
 
         <TabsContent value="categories">
