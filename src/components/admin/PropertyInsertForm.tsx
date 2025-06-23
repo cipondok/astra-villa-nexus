@@ -12,6 +12,7 @@ import { useAlert } from "@/contexts/AlertContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { Building2, Save } from "lucide-react";
 import EnhancedLocationSelector from "@/components/property/EnhancedLocationSelector";
+import EnhancedImageUpload from "@/components/property/EnhancedImageUpload";
 import { DetailedAddressData } from "@/components/property/DetailedAddressForm";
 
 interface PropertyFormData {
@@ -31,6 +32,7 @@ interface PropertyFormData {
   owner_type: string;
   status: string;
   detailed_address?: DetailedAddressData | null;
+  images: string[];
 }
 
 const PropertyInsertForm = () => {
@@ -51,17 +53,61 @@ const PropertyInsertForm = () => {
     development_status: "completed",
     owner_type: "individual",
     status: "active",
-    detailed_address: null
+    detailed_address: null,
+    images: []
   });
+  const [thumbnailIndex, setThumbnailIndex] = useState(0);
+  const [isGeneratingImage, setIsGeneratingImage] = useState(false);
 
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
+
+  // Generate AI image mutation
+  const generateAIImageMutation = useMutation({
+    mutationFn: async (prompt: string) => {
+      const response = await supabase.functions.invoke('ai-image-generator', {
+        body: { prompt }
+      });
+      
+      if (response.error) {
+        throw new Error(response.error.message);
+      }
+      
+      return response.data.image;
+    },
+    onSuccess: (imageDataUrl) => {
+      const newImages = [...formData.images, imageDataUrl];
+      setFormData(prev => ({ ...prev, images: newImages }));
+      showSuccess("AI Image Generated", "Default property image has been generated successfully.");
+    },
+    onError: (error: any) => {
+      console.error('AI image generation failed:', error);
+      showError("Image Generation Failed", error.message || 'Failed to generate default image');
+    },
+  });
 
   // Create property mutation
   const createPropertyMutation = useMutation({
     mutationFn: async (data: PropertyFormData) => {
       if (!user) {
         throw new Error('User must be logged in to create properties');
+      }
+
+      let finalImages = [...data.images];
+      
+      // Generate AI image if no images provided
+      if (finalImages.length === 0) {
+        setIsGeneratingImage(true);
+        try {
+          const prompt = `Professional real estate photo of a ${data.property_type || 'modern property'} in ${data.location || 'beautiful location'}, ${data.listing_type || 'for sale'}, architectural photography, high quality, well-lit, attractive exterior view`;
+          
+          const aiImage = await generateAIImageMutation.mutateAsync(prompt);
+          finalImages = [aiImage];
+        } catch (error) {
+          console.warn('Failed to generate AI image, proceeding without images');
+        } finally {
+          setIsGeneratingImage(false);
+        }
       }
 
       const propertyData = {
@@ -82,8 +128,8 @@ const PropertyInsertForm = () => {
         status: data.status,
         approval_status: 'approved',
         owner_id: user.id,
-        images: [],
-        image_urls: []
+        images: finalImages,
+        image_urls: finalImages
       };
 
       const { data: result, error } = await supabase
@@ -117,8 +163,10 @@ const PropertyInsertForm = () => {
         development_status: "completed",
         owner_type: "individual",
         status: "active",
-        detailed_address: null
+        detailed_address: null,
+        images: []
       });
+      setThumbnailIndex(0);
       queryClient.invalidateQueries({ queryKey: ['properties'] });
     },
     onError: (error: any) => {
@@ -127,12 +175,16 @@ const PropertyInsertForm = () => {
     },
   });
 
-  const handleInputChange = (key: keyof PropertyFormData, value: string | DetailedAddressData | null) => {
+  const handleInputChange = (key: keyof PropertyFormData, value: string | DetailedAddressData | null | string[]) => {
     setFormData(prev => ({ ...prev, [key]: value }));
   };
 
   const handleDetailedAddressChange = (addressData: DetailedAddressData) => {
     handleInputChange('detailed_address', addressData);
+  };
+
+  const handleImagesChange = (images: string[]) => {
+    handleInputChange('images', images);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -291,6 +343,24 @@ const PropertyInsertForm = () => {
             />
           </div>
 
+          {/* Media & Images */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold">Media & Images</h3>
+            <EnhancedImageUpload
+              images={formData.images}
+              onImagesChange={handleImagesChange}
+              thumbnailIndex={thumbnailIndex}
+              onThumbnailChange={setThumbnailIndex}
+            />
+            {formData.images.length === 0 && (
+              <div className="bg-blue-50 p-4 rounded-lg">
+                <p className="text-sm text-blue-800">
+                  💡 <strong>Auto Image Generation:</strong> If you don't upload any images, we'll automatically generate a professional property image using AI based on your property details.
+                </p>
+              </div>
+            )}
+          </div>
+
           {/* Additional Settings */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold">Additional Settings</h3>
@@ -352,10 +422,12 @@ const PropertyInsertForm = () => {
           <div className="pt-4">
             <Button 
               type="submit" 
-              disabled={createPropertyMutation.isPending}
+              disabled={createPropertyMutation.isPending || isGeneratingImage}
               className="w-full md:w-auto"
             >
-              {createPropertyMutation.isPending ? (
+              {isGeneratingImage ? (
+                'Generating AI Image...'
+              ) : createPropertyMutation.isPending ? (
                 'Creating Property...'
               ) : (
                 <>
