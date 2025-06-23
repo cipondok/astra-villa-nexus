@@ -50,27 +50,31 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
   
   const itemsPerPage = 10;
 
-  // Fetch all properties with separate queries for owner and agent details
+  // Fetch all properties with owner and agent details
   const { data: propertiesData, isLoading, refetch } = useQuery({
     queryKey: ['admin-properties', currentPage, searchTerm, statusFilter, typeFilter],
     queryFn: async () => {
       console.log('Fetching properties for admin dashboard...');
       
       try {
-        // First, get the basic properties data
-        let propertiesQuery = supabase
+        // Build the base query with proper joins
+        let query = supabase
           .from('properties')
-          .select('*');
+          .select(`
+            *,
+            owner:profiles!properties_owner_id_fkey(id, full_name, email),
+            agent:profiles!properties_agent_id_fkey(id, full_name, email)
+          `);
 
         // Apply filters
         if (searchTerm) {
-          propertiesQuery = propertiesQuery.or(`title.ilike.%${searchTerm}%,location.ilike.%${searchTerm}%`);
+          query = query.or(`title.ilike.%${searchTerm}%,location.ilike.%${searchTerm}%`);
         }
         if (statusFilter !== "all") {
-          propertiesQuery = propertiesQuery.eq('status', statusFilter);
+          query = query.eq('status', statusFilter);
         }
         if (typeFilter !== "all") {
-          propertiesQuery = propertiesQuery.eq('property_type', typeFilter);
+          query = query.eq('property_type', typeFilter);
         }
 
         // Get total count with same filters
@@ -90,75 +94,24 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
 
         const { count } = await countQuery;
 
-        // Apply pagination to properties query
+        // Apply pagination
         const from = (currentPage - 1) * itemsPerPage;
         const to = from + itemsPerPage - 1;
         
-        const { data: properties, error: propError } = await propertiesQuery
+        const { data, error } = await query
           .range(from, to)
           .order('created_at', { ascending: false });
         
-        if (propError) {
-          console.error('Error fetching properties:', propError);
-          throw propError;
+        if (error) {
+          console.error('Error fetching properties:', error);
+          throw error;
         }
         
-        console.log('Properties fetched successfully:', properties?.length || 0);
-        
-        if (!properties || properties.length === 0) {
-          return {
-            properties: [],
-            totalCount: count || 0,
-            totalPages: Math.ceil((count || 0) / itemsPerPage)
-          };
-        }
-
-        // Get unique owner and agent IDs
-        const ownerIds = [...new Set(properties.map(p => p.owner_id).filter(Boolean))];
-        const agentIds = [...new Set(properties.map(p => p.agent_id).filter(Boolean))];
-
-        // Fetch owner details if we have owner IDs
-        let ownerProfiles: any[] = [];
-        if (ownerIds.length > 0) {
-          const { data: owners, error: ownerError } = await supabase
-            .from('profiles')
-            .select('id, full_name, email')
-            .in('id', ownerIds);
-          
-          if (!ownerError) {
-            ownerProfiles = owners || [];
-          }
-        }
-
-        // Fetch agent details if we have agent IDs
-        let agentProfiles: any[] = [];
-        if (agentIds.length > 0) {
-          const { data: agents, error: agentError } = await supabase
-            .from('profiles')
-            .select('id, full_name, email')
-            .in('id', agentIds);
-          
-          if (!agentError) {
-            agentProfiles = agents || [];
-          }
-        }
-
-        // Combine the data
-        const propertiesWithProfiles = properties.map(property => {
-          const owner = ownerProfiles.find(o => o.id === property.owner_id);
-          const agent = agentProfiles.find(a => a.id === property.agent_id);
-          
-          return {
-            ...property,
-            owner: owner || null,
-            agent: agent || null
-          };
-        });
-        
-        console.log('Properties with profiles prepared:', propertiesWithProfiles.length);
+        console.log('Properties fetched successfully:', data?.length || 0);
+        console.log('Sample property data:', data?.[0]);
         
         return {
-          properties: propertiesWithProfiles,
+          properties: data || [],
           totalCount: count || 0,
           totalPages: Math.ceil((count || 0) / itemsPerPage)
         };
@@ -366,6 +319,7 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
                   </TableHeader>
                   <TableBody>
                     {properties.map((property) => {
+                      // Handle owner and agent data - they could be objects or null
                       const owner = property.owner;
                       const agent = property.agent;
                       

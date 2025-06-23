@@ -1,11 +1,11 @@
 
 import { useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import SearchLoadingAnimation from "@/components/SearchLoadingAnimation";
 import PropertyViewer3D from "@/components/PropertyViewer3D";
 import CompactPropertyCard from "@/components/property/CompactPropertyCard";
 import AutoScrollCarousel from "@/components/property/AutoScrollCarousel";
-import PropertyModal from "@/components/admin/PropertyModal";
-import { useProperties } from "@/hooks/useProperties";
 
 interface PropertyListingsSectionProps {
   language: "en" | "id";
@@ -29,21 +29,7 @@ const PropertyListingsSection = ({
 }: PropertyListingsSectionProps) => {
   const [favoriteProperties, setFavoriteProperties] = useState<Set<string>>(new Set());
   const [propertyFor3DView, setPropertyFor3DView] = useState<any | null>(null);
-  const [modalState, setModalState] = useState<{
-    isOpen: boolean;
-    propertyId: string | null;
-    mode: 'view' | 'edit';
-  }>({
-    isOpen: false,
-    propertyId: null,
-    mode: 'view'
-  });
-
-  // Use the optimized hook for fetching properties
-  const { data: featuredProperties = [], isLoading: isFeaturedLoading } = useProperties({
-    limit: 20,
-    status: 'active'
-  });
+  const navigate = useNavigate();
 
   const text = {
     en: {
@@ -53,7 +39,7 @@ const PropertyListingsSection = ({
       searchResults: "Search Results",
       noFeaturedProperties: "No properties available at the moment",
       showingResults: "Showing",
-      loadingProperties: "Loading properties...",
+      loadingProperties: "Searching properties...",
       tryDifferentSearch: "Try adjusting your search criteria",
       browseAll: "Browse All Properties"
     },
@@ -64,7 +50,7 @@ const PropertyListingsSection = ({
       searchResults: "Hasil Pencarian",
       noFeaturedProperties: "Tidak ada properti tersedia saat ini",
       showingResults: "Menampilkan",
-      loadingProperties: "Memuat properti...",
+      loadingProperties: "Mencari properti...",
       tryDifferentSearch: "Coba sesuaikan kriteria pencarian Anda",
       browseAll: "Lihat Semua Properti"
     }
@@ -85,24 +71,12 @@ const PropertyListingsSection = ({
   };
 
   const handleViewDetails = (propertyId: string) => {
-    setModalState({
-      isOpen: true,
-      propertyId,
-      mode: 'view'
-    });
+    navigate(`/property/${propertyId}`);
   };
 
   const handleView3D = (property: any) => {
     setPropertyFor3DView(property);
   }
-
-  const closeModal = () => {
-    setModalState({
-      isOpen: false,
-      propertyId: null,
-      mode: 'view'
-    });
-  };
 
   const sectionData = useMemo(() => {
     const sectionTitle = hasSearched ? currentText.searchResults : currentText.title;
@@ -113,8 +87,7 @@ const PropertyListingsSection = ({
     return { sectionTitle, sectionSubtitle };
   }, [hasSearched, searchResults.length, currentText]);
 
-  // Show loading state
-  if (isSearching || (!hasSearched && isFeaturedLoading)) {
+  if (isSearching) {
     return (
       <section className="py-6 sm:py-8 min-h-[400px]">
         <div className="container mx-auto px-2 sm:px-4">
@@ -127,8 +100,7 @@ const PropertyListingsSection = ({
     );  
   }
   
-  // Determine which properties to display
-  const displayProperties = hasSearched ? searchResults : featuredProperties;
+  const displayProperties = hasSearched ? searchResults : fallbackResults;
 
   return (
     <>
@@ -165,40 +137,39 @@ const PropertyListingsSection = ({
                   <Button onClick={() => window.location.reload()} variant="outline" className="w-full">
                     Refresh
                   </Button>
+                  <Button onClick={() => navigate('/properties')} className="w-full">
+                    {currentText.browseAll}
+                  </Button>
                 </div>
               </div>
             </div>
           ) : displayProperties.length >= 4 ? (
-            <div data-property-container="true">
-              <AutoScrollCarousel
-                title=""
-                currentPropertyId=""
-                queryType="recommended"
-                propertyData={{
-                  properties: displayProperties.map(property => ({
-                    ...property,
-                    'data-property-id': property.id
-                  }))
-                }}
-                autoScrollInterval={6000}
-                limit={displayProperties.length}
-                hideTitle={true}
-                customProperties={displayProperties}
-              />
-            </div>
+            // Use AutoScrollCarousel for 4 or more properties
+            <AutoScrollCarousel
+              title=""
+              currentPropertyId=""
+              queryType="recommended"
+              propertyData={{
+                properties: displayProperties
+              }}
+              autoScrollInterval={6000}
+              limit={displayProperties.length}
+              hideTitle={true}
+              customProperties={displayProperties}
+            />
           ) : (
+            // Use regular grid for less than 4 properties
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
               {displayProperties.map((property, index) => (
-                <div key={`${property.id}-${index}`} data-property-id={property.id} className="transition-all duration-300">
-                  <CompactPropertyCard
-                    property={property}
-                    language={language}
-                    isSaved={favoriteProperties.has(property.id)}
-                    onSave={() => toggleFavorite(property.id)}
-                    onView={() => handleViewDetails(property.id)}
-                    onView3D={handleView3D}
-                  />
-                </div>
+                <CompactPropertyCard
+                  key={`${property.id}-${index}`}
+                  property={property}
+                  language={language}
+                  isSaved={favoriteProperties.has(property.id)}
+                  onSave={() => toggleFavorite(property.id)}
+                  onView={() => handleViewDetails(property.id)}
+                  onView3D={handleView3D}
+                />
               ))}
             </div>
           )}
@@ -213,13 +184,6 @@ const PropertyListingsSection = ({
           propertyTitle={propertyFor3DView.title}
         />
       )}
-
-      <PropertyModal
-        isOpen={modalState.isOpen}
-        onClose={closeModal}
-        propertyId={modalState.propertyId}
-        mode={modalState.mode}
-      />
     </>
   );
 };
