@@ -15,13 +15,15 @@ import {
   FileText,
   Briefcase,
   UserCheck,
-  Layers
+  Layers,
+  Plus
 } from "lucide-react";
 
 // Import existing components
 import UserManagement from "./UserManagement";
 import PropertyCategoriesManagement from "./PropertyCategoriesManagement";
 import RoleBasedPropertyManagement from "./RoleBasedPropertyManagement";
+import AdminPropertyManagement from "./AdminPropertyManagement";
 
 const AdvancedAdminDashboard = () => {
   const [activeTab, setActiveTab] = useState("overview");
@@ -41,7 +43,7 @@ const AdvancedAdminDashboard = () => {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-2 lg:grid-cols-6">
+        <TabsList className="grid w-full grid-cols-2 lg:grid-cols-7">
           <TabsTrigger value="overview" className="flex items-center gap-2">
             <BarChart3 className="h-4 w-4" />
             <span className="hidden sm:inline">Overview</span>
@@ -53,6 +55,10 @@ const AdvancedAdminDashboard = () => {
           <TabsTrigger value="properties" className="flex items-center gap-2">
             <Building2 className="h-4 w-4" />
             <span className="hidden sm:inline">Properties</span>
+          </TabsTrigger>
+          <TabsTrigger value="property-hub" className="flex items-center gap-2">
+            <Plus className="h-4 w-4" />
+            <span className="hidden sm:inline">Property Hub</span>
           </TabsTrigger>
           <TabsTrigger value="roles" className="flex items-center gap-2">
             <Shield className="h-4 w-4" />
@@ -130,9 +136,15 @@ const AdvancedAdminDashboard = () => {
                       <span className="text-sm">Manage Users</span>
                     </div>
                   </Card>
-                  <Card className="p-4 cursor-pointer hover:bg-muted/50" onClick={() => setActiveTab("properties")}>
+                  <Card className="p-4 cursor-pointer hover:bg-muted/50" onClick={() => setActiveTab("property-hub")}>
                     <div className="flex items-center gap-2">
                       <Building2 className="h-4 w-4" />
+                      <span className="text-sm">Property Management</span>
+                    </div>
+                  </Card>
+                  <Card className="p-4 cursor-pointer hover:bg-muted/50" onClick={() => setActiveTab("properties")}>
+                    <div className="flex items-center gap-2">
+                      <Settings className="h-4 w-4" />
                       <span className="text-sm">Property Categories</span>
                     </div>
                   </Card>
@@ -140,12 +152,6 @@ const AdvancedAdminDashboard = () => {
                     <div className="flex items-center gap-2">
                       <Shield className="h-4 w-4" />
                       <span className="text-sm">Role Management</span>
-                    </div>
-                  </Card>
-                  <Card className="p-4 cursor-pointer hover:bg-muted/50" onClick={() => setActiveTab("system")}>
-                    <div className="flex items-center gap-2">
-                      <Settings className="h-4 w-4" />
-                      <span className="text-sm">System Settings</span>
                     </div>
                   </Card>
                 </div>
@@ -187,6 +193,10 @@ const AdvancedAdminDashboard = () => {
 
         <TabsContent value="properties" className="space-y-6">
           <PropertyCategoriesManagement />
+        </TabsContent>
+
+        <TabsContent value="property-hub" className="space-y-6">
+          <AdminPropertyManagement />
         </TabsContent>
 
         <TabsContent value="roles" className="space-y-6">
