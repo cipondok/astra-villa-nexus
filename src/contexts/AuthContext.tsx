@@ -2,6 +2,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
+import { clearAllCookies } from '@/utils/deviceFingerprint';
 
 type UserRole = 'general_user' | 'property_owner' | 'agent' | 'vendor' | 'admin' | 'customer_service';
 
@@ -102,6 +103,62 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  // Create session when user signs in
+  const createUserSession = async (userId: string) => {
+    try {
+      const deviceFingerprint = btoa(navigator.userAgent + screen.width + screen.height).substring(0, 32);
+      const deviceInfo = {
+        userAgent: navigator.userAgent,
+        platform: navigator.platform,
+        language: navigator.language,
+        screenResolution: `${screen.width}x${screen.height}`
+      };
+      
+      const sessionToken = crypto.randomUUID() + '-' + Date.now();
+
+      // Check for existing sessions from other devices
+      const { data: existingSessions } = await supabase
+        .from('user_device_sessions')
+        .select('*')
+        .eq('user_id', userId)
+        .eq('is_active', true);
+
+      if (existingSessions && existingSessions.length > 0) {
+        const differentDevices = existingSessions.filter(
+          session => session.device_fingerprint !== deviceFingerprint
+        );
+
+        if (differentDevices.length > 0) {
+          // Create alert for multiple device login
+          await supabase.rpc('create_login_alert', {
+            p_user_id: userId,
+            p_alert_type: 'multiple_sessions',
+            p_device_info: deviceInfo,
+            p_message: `Login detected from new device: ${navigator.platform}`
+          });
+        }
+      }
+
+      // Create new session record
+      await supabase
+        .from('user_device_sessions')
+        .insert({
+          user_id: userId,
+          session_token: sessionToken,
+          device_fingerprint: deviceFingerprint,
+          device_info: deviceInfo,
+          expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString() // 7 days
+        });
+
+      // Store session token locally
+      localStorage.setItem('session_token', sessionToken);
+      localStorage.setItem('device_fingerprint', deviceFingerprint);
+      
+    } catch (error) {
+      console.error('Error creating session:', error);
+    }
+  };
+
   React.useEffect(() => {
     let mounted = true;
     
@@ -119,6 +176,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         
         if (session?.user && event !== 'TOKEN_REFRESHED') {
           await fetchProfile(session.user.id);
+          if (event === 'SIGNED_IN') {
+            await createUserSession(session.user.id);
+          }
         } else if (!session) {
           setProfile(null);
         }
@@ -128,6 +188,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           setProfile(null);
           setUser(null);
           setSession(null);
+          clearAllCookies();
         }
         
         setLoading(false);
@@ -211,6 +272,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       console.log('Signing out user...');
       
+      // Terminate current session
+      const sessionToken = localStorage.getItem('session_token');
+      if (sessionToken && user) {
+        await supabase
+          .from('user_device_sessions')
+          .update({ is_active: false })
+          .eq('session_token', sessionToken)
+          .eq('user_id', user.id);
+      }
+      
       setUser(null);
       setProfile(null);
       setSession(null);
@@ -220,8 +291,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         console.error('Supabase signOut error:', error);
       }
       
-      localStorage.removeItem('supabase.auth.token');
-      sessionStorage.clear();
+      // Clear all cookies and storage
+      clearAllCookies();
       
       console.log('User signed out successfully');
     } catch (error: any) {
@@ -229,6 +300,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser(null);
       setProfile(null);
       setSession(null);
+      clearAllCookies();
     }
   };
 

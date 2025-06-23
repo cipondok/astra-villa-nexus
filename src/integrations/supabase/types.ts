@@ -1733,6 +1733,54 @@ export type Database = {
         }
         Relationships: []
       }
+      user_device_sessions: {
+        Row: {
+          created_at: string | null
+          device_fingerprint: string | null
+          device_info: Json | null
+          expires_at: string | null
+          id: string
+          ip_address: unknown | null
+          is_active: boolean | null
+          last_activity: string | null
+          location_data: Json | null
+          login_time: string | null
+          session_token: string
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          device_fingerprint?: string | null
+          device_info?: Json | null
+          expires_at?: string | null
+          id?: string
+          ip_address?: unknown | null
+          is_active?: boolean | null
+          last_activity?: string | null
+          location_data?: Json | null
+          login_time?: string | null
+          session_token: string
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          device_fingerprint?: string | null
+          device_info?: Json | null
+          expires_at?: string | null
+          id?: string
+          ip_address?: unknown | null
+          is_active?: boolean | null
+          last_activity?: string | null
+          location_data?: Json | null
+          login_time?: string | null
+          session_token?: string
+          user_agent?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_interactions: {
         Row: {
           created_at: string
@@ -1793,6 +1841,42 @@ export type Database = {
           priority_support?: boolean | null
           privileges?: Json | null
           updated_at?: string | null
+        }
+        Relationships: []
+      }
+      user_login_alerts: {
+        Row: {
+          alert_type: string
+          created_at: string | null
+          device_info: Json | null
+          id: string
+          ip_address: unknown | null
+          is_read: boolean | null
+          location_data: Json | null
+          message: string
+          user_id: string
+        }
+        Insert: {
+          alert_type: string
+          created_at?: string | null
+          device_info?: Json | null
+          id?: string
+          ip_address?: unknown | null
+          is_read?: boolean | null
+          location_data?: Json | null
+          message: string
+          user_id: string
+        }
+        Update: {
+          alert_type?: string
+          created_at?: string | null
+          device_info?: Json | null
+          id?: string
+          ip_address?: unknown | null
+          is_read?: boolean | null
+          location_data?: Json | null
+          message?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -3852,6 +3936,21 @@ export type Database = {
       check_super_admin_email: {
         Args: Record<PropertyKey, never>
         Returns: boolean
+      }
+      cleanup_expired_sessions: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
+      create_login_alert: {
+        Args: {
+          p_user_id: string
+          p_alert_type: string
+          p_device_info?: Json
+          p_ip_address?: unknown
+          p_location_data?: Json
+          p_message?: string
+        }
+        Returns: string
       }
       is_admin_user: {
         Args: Record<PropertyKey, never>
