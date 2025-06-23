@@ -62,7 +62,20 @@ const AdminPropertyManagement = () => {
         </TabsContent>
 
         <TabsContent value="locations">
-          <LocationDatabaseManager />
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <MapPin className="h-5 w-5" />
+                Location Database Management
+              </CardTitle>
+              <CardDescription>
+                Manage location data and database settings
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <LocationDatabaseManager />
+            </CardContent>
+          </Card>
         </TabsContent>
       </Tabs>
     </div>
