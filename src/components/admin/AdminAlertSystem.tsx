@@ -173,7 +173,15 @@ const AdminAlertSystem = () => {
                             {new Date(alert.created_at).toLocaleString()}
                           </p>
                         </div>
-                        <Button size="sm" variant="ghost" className="h-6 w-6 p-0">
+                        <Button 
+                          size="sm" 
+                          variant="ghost" 
+                          className="h-6 w-6 p-0"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleViewAlert(alert);
+                          }}
+                        >
                           <Eye className="h-3 w-3" />
                         </Button>
                       </div>

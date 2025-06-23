@@ -22,6 +22,7 @@ import {
   Calendar,
   TrendingUp
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface QuickActionProps {
   onTabChange: (tab: string) => void;
@@ -29,6 +30,7 @@ interface QuickActionProps {
 
 const AdminQuickActions = ({ onTabChange }: QuickActionProps) => {
   const { signOut } = useAuth();
+  const navigate = useNavigate();
 
   // Fetch property statistics
   const { data: propertyStats } = useQuery({
@@ -116,7 +118,12 @@ const AdminQuickActions = ({ onTabChange }: QuickActionProps) => {
   });
 
   const handleLogout = async () => {
-    await signOut();
+    try {
+      await signOut();
+      navigate('/');
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
   };
 
   const quickActions = [
