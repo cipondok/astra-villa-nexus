@@ -7,6 +7,7 @@ import { LanguageProvider } from "@/contexts/LanguageContext";
 import { AlertProvider } from "@/contexts/AlertContext";
 import Index from "@/pages/Index";
 import Properties from "@/pages/Properties";
+import PropertyList from "@/pages/PropertyList";
 import Buy from "@/pages/Buy";
 import Rent from "@/pages/Rent";
 import NewProjects from "@/pages/NewProjects";
@@ -34,6 +35,7 @@ function App() {
                   <Routes>
                     <Route path="/" element={<Index />} />
                     <Route path="/properties" element={<Properties />} />
+                    <Route path="/my-properties" element={<PropertyList />} />
                     <Route path="/buy" element={<Buy />} />
                     <Route path="/rent" element={<Rent />} />
                     <Route path="/new-projects" element={<NewProjects />} />
