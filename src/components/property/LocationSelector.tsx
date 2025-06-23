@@ -101,7 +101,7 @@ const LocationSelector = ({
           <Label htmlFor="city" className="text-gray-700 font-medium">Kota/Kabupaten *</Label>
           <Select value={selectedCity} onValueChange={handleCityChange} disabled={!selectedState}>
             <SelectTrigger className="bg-white border-gray-300 text-gray-900">
-              <SelectValue placeholder="Pilih Kota" />
+              <SelectValue placeholder="Pilih Kota/Kabupaten" />
             </SelectTrigger>
             <SelectContent className="bg-white border border-gray-200 shadow-lg z-50">
               {cities.map((city) => (
@@ -117,7 +117,7 @@ const LocationSelector = ({
           <Label htmlFor="area" className="text-gray-700 font-medium">Kecamatan/Area *</Label>
           <Select value={selectedArea} onValueChange={onAreaChange} disabled={!selectedCity}>
             <SelectTrigger className="bg-white border-gray-300 text-gray-900">
-              <SelectValue placeholder="Pilih Area" />
+              <SelectValue placeholder="Pilih Kecamatan/Area" />
             </SelectTrigger>
             <SelectContent className="bg-white border border-gray-200 shadow-lg z-50">
               {areas.map((area) => (
@@ -135,7 +135,7 @@ const LocationSelector = ({
         <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
           <div className="flex items-center gap-2 text-blue-800">
             <MapPin className="h-4 w-4" />
-            <span className="font-medium">Wilayah Terpilih:</span>
+            <span className="font-medium">Lokasi Terpilih:</span>
           </div>
           <div className="text-blue-700 font-medium mt-1">
             {selectedArea} <ChevronRight className="inline h-3 w-3 mx-1" />
