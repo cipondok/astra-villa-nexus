@@ -84,9 +84,9 @@ const PropertyCategoriesManagement = () => {
   });
 
   // Fetch property services
-  const { data: services, isLoading: servicesLoading, refetch: refetchServices } = useQuery({
+  const { data: servicesData, isLoading: servicesLoading, refetch: refetchServices } = useQuery({
     queryKey: ['property-services'],
-    queryFn: async (): Promise<PropertyService[]> => {
+    queryFn: async () => {
       const { data, error } = await supabase
         .from('property_services')
         .select('*')
@@ -96,6 +96,13 @@ const PropertyCategoriesManagement = () => {
       return data || [];
     },
   });
+
+  // Transform services data to match our interface
+  const services: PropertyService[] = servicesData?.map(service => ({
+    ...service,
+    features: Array.isArray(service.features) ? service.features as string[] : [],
+    requirements: Array.isArray(service.requirements) ? service.requirements as string[] : [],
+  })) || [];
 
   // Initialize sample data
   useEffect(() => {
@@ -195,7 +202,7 @@ const PropertyCategoriesManagement = () => {
 
   // Category operations
   const categoryMutation = useMutation({
-    mutationFn: async (categoryData: Partial<PropertyCategory>) => {
+    mutationFn: async (categoryData: any) => {
       if (categoryData.id) {
         const { error } = await supabase
           .from('property_categories')
@@ -205,7 +212,7 @@ const PropertyCategoriesManagement = () => {
       } else {
         const { error } = await supabase
           .from('property_categories')
-          .insert(categoryData);
+          .insert([categoryData]);
         if (error) throw error;
       }
     },
@@ -221,7 +228,7 @@ const PropertyCategoriesManagement = () => {
 
   // Service operations
   const serviceMutation = useMutation({
-    mutationFn: async (serviceData: Partial<PropertyService>) => {
+    mutationFn: async (serviceData: any) => {
       if (serviceData.id) {
         const { error } = await supabase
           .from('property_services')
@@ -231,7 +238,7 @@ const PropertyCategoriesManagement = () => {
       } else {
         const { error } = await supabase
           .from('property_services')
-          .insert(serviceData);
+          .insert([serviceData]);
         if (error) throw error;
       }
     },
@@ -365,7 +372,7 @@ const PropertyCategoriesManagement = () => {
                           <div className="flex items-center gap-2">
                             <span>{subCat.icon}</span>
                             <span className="font-medium">{subCat.name}</span>
-                            <Badge variant="outline" size="sm">
+                            <Badge variant="outline">
                               {subCat.is_active ? "Active" : "Inactive"}
                             </Badge>
                           </div>
