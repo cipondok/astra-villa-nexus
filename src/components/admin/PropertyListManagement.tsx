@@ -294,82 +294,88 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {filteredProperties.map((property) => (
-                      <TableRow key={property.id} className="border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                        <TableCell>
-                          <div>
-                            <div className="font-medium text-gray-900 dark:text-gray-100">{property.title}</div>
-                            <div className="text-sm text-gray-500 dark:text-gray-400">
-                              {property.bedrooms}BR • {property.bathrooms}BA • {property.area_sqm}m²
+                    {filteredProperties.map((property) => {
+                      // Handle owner and agent data properly (they could be arrays or single objects)
+                      const owner = Array.isArray(property.owner) ? property.owner[0] : property.owner;
+                      const agent = Array.isArray(property.agent) ? property.agent[0] : property.agent;
+                      
+                      return (
+                        <TableRow key={property.id} className="border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                          <TableCell>
+                            <div>
+                              <div className="font-medium text-gray-900 dark:text-gray-100">{property.title}</div>
+                              <div className="text-sm text-gray-500 dark:text-gray-400">
+                                {property.bedrooms}BR • {property.bathrooms}BA • {property.area_sqm}m²
+                              </div>
                             </div>
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <div className="text-sm">
-                            <div className="font-medium text-gray-900 dark:text-gray-100">
-                              Owner: {property.owner?.full_name || 'Unknown'}
+                          </TableCell>
+                          <TableCell>
+                            <div className="text-sm">
+                              <div className="font-medium text-gray-900 dark:text-gray-100">
+                                Owner: {owner?.full_name || 'Unknown'}
+                              </div>
+                              <div className="text-gray-500 dark:text-gray-400">{owner?.email}</div>
+                              {agent && (
+                                <>
+                                  <div className="font-medium text-blue-600 dark:text-blue-400 mt-1">
+                                    Agent: {agent.full_name}
+                                  </div>
+                                  <div className="text-gray-500 dark:text-gray-400">{agent.email}</div>
+                                </>
+                              )}
                             </div>
-                            <div className="text-gray-500 dark:text-gray-400">{property.owner?.email}</div>
-                            {property.agent && (
-                              <>
-                                <div className="font-medium text-blue-600 dark:text-blue-400 mt-1">
-                                  Agent: {property.agent.full_name}
-                                </div>
-                                <div className="text-gray-500 dark:text-gray-400">{property.agent.email}</div>
-                              </>
-                            )}
-                          </div>
-                        </TableCell>
-                        <TableCell className="capitalize text-gray-900 dark:text-gray-100">{property.property_type}</TableCell>
-                        <TableCell className="text-gray-900 dark:text-gray-100">{property.location}</TableCell>
-                        <TableCell>
-                          <div className="text-gray-900 dark:text-gray-100">
-                            {property.price ? formatIDR(property.price) : 'N/A'}
-                          </div>
-                          <div className="text-xs text-gray-500 dark:text-gray-400 capitalize">{property.listing_type}</div>
-                        </TableCell>
-                        <TableCell>{getStatusBadge(property.status)}</TableCell>
-                        <TableCell className="text-gray-900 dark:text-gray-100">{new Date(property.created_at).toLocaleDateString()}</TableCell>
-                        <TableCell>
-                          <div className="flex items-center gap-1">
-                            <Button 
-                              variant="outline" 
-                              size="sm"
-                              onClick={() => handleView(property)}
-                              className="border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700"
-                            >
-                              <Eye className="h-3 w-3" />
-                            </Button>
-                            <Button 
-                              variant="outline" 
-                              size="sm"
-                              onClick={() => handleEdit(property.id)}
-                              className="border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700"
-                            >
-                              <Edit className="h-3 w-3" />
-                            </Button>
-                            {property.status === 'pending_approval' && (
+                          </TableCell>
+                          <TableCell className="capitalize text-gray-900 dark:text-gray-100">{property.property_type}</TableCell>
+                          <TableCell className="text-gray-900 dark:text-gray-100">{property.location}</TableCell>
+                          <TableCell>
+                            <div className="text-gray-900 dark:text-gray-100">
+                              {property.price ? formatIDR(property.price) : 'N/A'}
+                            </div>
+                            <div className="text-xs text-gray-500 dark:text-gray-400 capitalize">{property.listing_type}</div>
+                          </TableCell>
+                          <TableCell>{getStatusBadge(property.status)}</TableCell>
+                          <TableCell className="text-gray-900 dark:text-gray-100">{new Date(property.created_at).toLocaleDateString()}</TableCell>
+                          <TableCell>
+                            <div className="flex items-center gap-1">
+                              <Button 
+                                variant="outline" 
+                                size="sm"
+                                onClick={() => handleView(property)}
+                                className="border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700"
+                              >
+                                <Eye className="h-3 w-3" />
+                              </Button>
+                              <Button 
+                                variant="outline" 
+                                size="sm"
+                                onClick={() => handleEdit(property.id)}
+                                className="border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700"
+                              >
+                                <Edit className="h-3 w-3" />
+                              </Button>
+                              {property.status === 'pending_approval' && (
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => updateStatusMutation.mutate({ propertyId: property.id, status: 'active' })}
+                                  className="border-green-300 dark:border-green-600 text-green-600 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/20"
+                                >
+                                  <CheckCircle className="h-3 w-3" />
+                                </Button>
+                              )}
                               <Button
                                 variant="outline"
                                 size="sm"
-                                onClick={() => updateStatusMutation.mutate({ propertyId: property.id, status: 'active' })}
-                                className="border-green-300 dark:border-green-600 text-green-600 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/20"
+                                onClick={() => handleDelete(property.id, property.title)}
+                                className="border-red-300 dark:border-red-600 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
                               >
-                                <CheckCircle className="h-3 w-3" />
+                                <Trash2 className="h-3 w-3" />
                               </Button>
-                            )}
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => handleDelete(property.id, property.title)}
-                              className="border-red-300 dark:border-red-600 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
-                            >
-                              <Trash2 className="h-3 w-3" />
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
                   </TableBody>
                 </Table>
               </div>
