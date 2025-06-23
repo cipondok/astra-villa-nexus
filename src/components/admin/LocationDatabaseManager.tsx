@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAlert } from "@/contexts/AlertContext";
 import { MapPin, Plus, Edit, Trash2, Search } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -20,43 +21,56 @@ const LocationDatabaseManager = () => {
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingLocation, setEditingLocation] = useState<any>(null);
   const [formData, setFormData] = useState({
-    state: "",
-    city: "",
-    area: "",
-    postal_code: ""
+    province_name: "",
+    city_name: "",
+    area_name: "",
+    postal_code: "",
+    city_type: "KOTA"
   });
 
-  // Fetch locations
+  // Fetch locations with new schema
   const { data: locations, isLoading } = useQuery({
     queryKey: ['admin-locations'],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('locations')
         .select('*')
-        .order('state', { ascending: true });
+        .order('province_name', { ascending: true })
+        .order('city_name', { ascending: true })
+        .order('area_name', { ascending: true });
       
       if (error) throw error;
       return data || [];
     },
   });
 
-  // Filter locations
+  // Filter locations using new schema
   const filteredLocations = locations?.filter(location => 
     !searchTerm || 
-    location.state.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    location.city.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    location.area.toLowerCase().includes(searchTerm.toLowerCase())
+    location.province_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    location.city_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    location.area_name.toLowerCase().includes(searchTerm.toLowerCase())
   ) || [];
 
-  // Add location mutation
+  // Add location mutation with new schema
   const addLocationMutation = useMutation({
     mutationFn: async (data: typeof formData) => {
+      // Generate codes based on the data
+      const provinceCode = Math.random().toString(36).substr(2, 2);
+      const cityCode = Math.random().toString(36).substr(2, 4);
+      const districtCode = Math.random().toString(36).substr(2, 6);
+      
       const { error } = await supabase
         .from('locations')
         .insert({
-          state: data.state,
-          city: data.city,
-          area: data.area,
+          province_code: provinceCode,
+          province_name: data.province_name,
+          city_code: cityCode,
+          city_name: data.city_name,
+          city_type: data.city_type,
+          district_code: districtCode,
+          district_name: data.area_name,
+          area_name: data.area_name,
           postal_code: data.postal_code || null,
           is_active: true
         });
@@ -64,8 +78,14 @@ const LocationDatabaseManager = () => {
       if (error) throw error;
     },
     onSuccess: () => {
-      showSuccess("Location Added", "New location has been added successfully.");
-      setFormData({ state: "", city: "", area: "", postal_code: "" });
+      showSuccess("Location Added", "New Indonesian location has been added successfully.");
+      setFormData({ 
+        province_name: "", 
+        city_name: "", 
+        area_name: "", 
+        postal_code: "",
+        city_type: "KOTA" 
+      });
       setShowAddForm(false);
       queryClient.invalidateQueries({ queryKey: ['admin-locations'] });
     },
@@ -85,7 +105,7 @@ const LocationDatabaseManager = () => {
       if (error) throw error;
     },
     onSuccess: () => {
-      showSuccess("Location Updated", "Location has been updated successfully.");
+      showSuccess("Location Updated", "Indonesian location has been updated successfully.");
       setEditingLocation(null);
       queryClient.invalidateQueries({ queryKey: ['admin-locations'] });
     },
@@ -105,7 +125,7 @@ const LocationDatabaseManager = () => {
       if (error) throw error;
     },
     onSuccess: () => {
-      showSuccess("Location Deleted", "Location has been deleted successfully.");
+      showSuccess("Location Deleted", "Indonesian location has been deleted successfully.");
       queryClient.invalidateQueries({ queryKey: ['admin-locations'] });
     },
     onError: (error: any) => {
@@ -115,8 +135,8 @@ const LocationDatabaseManager = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.state || !formData.city || !formData.area) {
-      showError("Missing Fields", "Please fill in State, City, and Area fields.");
+    if (!formData.province_name || !formData.city_name || !formData.area_name) {
+      showError("Missing Fields", "Please fill in Province, City, and Area fields.");
       return;
     }
     addLocationMutation.mutate(formData);
@@ -145,10 +165,10 @@ const LocationDatabaseManager = () => {
         <div>
           <h2 className="text-2xl font-bold flex items-center gap-2">
             <MapPin className="h-6 w-6" />
-            Location Database Management
+            Indonesian Location Database Management
           </h2>
           <p className="text-gray-600 mt-1">
-            Manage states, cities, and areas for property listings
+            Manage Indonesian provinces, cities, and areas for property listings
           </p>
         </div>
         <Button onClick={() => setShowAddForm(!showAddForm)}>
@@ -161,39 +181,54 @@ const LocationDatabaseManager = () => {
       {showAddForm && (
         <Card>
           <CardHeader>
-            <CardTitle>Add New Location</CardTitle>
-            <CardDescription>Add a new state, city, and area combination</CardDescription>
+            <CardTitle>Add New Indonesian Location</CardTitle>
+            <CardDescription>Add a new province, city, and area combination</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                 <div>
-                  <Label htmlFor="state">State *</Label>
+                  <Label htmlFor="province_name">Province *</Label>
                   <Input
-                    id="state"
-                    value={formData.state}
-                    onChange={(e) => setFormData(prev => ({ ...prev, state: e.target.value }))}
-                    placeholder="e.g., Jakarta"
+                    id="province_name"
+                    value={formData.province_name}
+                    onChange={(e) => setFormData(prev => ({ ...prev, province_name: e.target.value }))}
+                    placeholder="e.g., DKI Jakarta"
                     required
                   />
                 </div>
                 <div>
-                  <Label htmlFor="city">City *</Label>
+                  <Label htmlFor="city_name">City *</Label>
                   <Input
-                    id="city"
-                    value={formData.city}
-                    onChange={(e) => setFormData(prev => ({ ...prev, city: e.target.value }))}
-                    placeholder="e.g., Central Jakarta"
+                    id="city_name"
+                    value={formData.city_name}
+                    onChange={(e) => setFormData(prev => ({ ...prev, city_name: e.target.value }))}
+                    placeholder="e.g., Jakarta Selatan"
                     required
                   />
                 </div>
                 <div>
-                  <Label htmlFor="area">Area *</Label>
+                  <Label htmlFor="city_type">City Type</Label>
+                  <Select 
+                    value={formData.city_type} 
+                    onValueChange={(value) => setFormData(prev => ({ ...prev, city_type: value }))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="KOTA">KOTA</SelectItem>
+                      <SelectItem value="KABUPATEN">KABUPATEN</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label htmlFor="area_name">Area/District *</Label>
                   <Input
-                    id="area"
-                    value={formData.area}
-                    onChange={(e) => setFormData(prev => ({ ...prev, area: e.target.value }))}
-                    placeholder="e.g., Menteng"
+                    id="area_name"
+                    value={formData.area_name}
+                    onChange={(e) => setFormData(prev => ({ ...prev, area_name: e.target.value }))}
+                    placeholder="e.g., Kebayoran Baru"
                     required
                   />
                 </div>
@@ -203,7 +238,7 @@ const LocationDatabaseManager = () => {
                     id="postal_code"
                     value={formData.postal_code}
                     onChange={(e) => setFormData(prev => ({ ...prev, postal_code: e.target.value }))}
-                    placeholder="e.g., 10310"
+                    placeholder="e.g., 12110"
                   />
                 </div>
               </div>
@@ -226,7 +261,7 @@ const LocationDatabaseManager = () => {
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
             <Input
-              placeholder="Search locations by state, city, or area..."
+              placeholder="Search Indonesian locations by province, city, or area..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10"
@@ -238,20 +273,20 @@ const LocationDatabaseManager = () => {
       {/* Locations Table */}
       <Card>
         <CardHeader>
-          <CardTitle>All Locations ({filteredLocations.length})</CardTitle>
+          <CardTitle>Indonesian Locations ({filteredLocations.length})</CardTitle>
           <CardDescription>
-            Manage all location entries in the database
+            Manage all Indonesian location entries in the database
           </CardDescription>
         </CardHeader>
         <CardContent>
           {isLoading ? (
-            <div className="text-center py-8">Loading locations...</div>
+            <div className="text-center py-8">Loading Indonesian locations...</div>
           ) : filteredLocations.length === 0 ? (
             <div className="text-center py-8">
               <MapPin className="h-12 w-12 text-gray-400 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-gray-900 mb-2">No locations found</h3>
               <p className="text-gray-600 mb-4">
-                No locations match your search criteria.
+                No Indonesian locations match your search criteria.
               </p>
             </div>
           ) : (
@@ -259,9 +294,10 @@ const LocationDatabaseManager = () => {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>State</TableHead>
+                    <TableHead>Province</TableHead>
                     <TableHead>City</TableHead>
-                    <TableHead>Area</TableHead>
+                    <TableHead>Type</TableHead>
+                    <TableHead>Area/District</TableHead>
                     <TableHead>Postal Code</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead>Created</TableHead>
@@ -271,9 +307,14 @@ const LocationDatabaseManager = () => {
                 <TableBody>
                   {filteredLocations.map((location) => (
                     <TableRow key={location.id}>
-                      <TableCell className="font-medium">{location.state}</TableCell>
-                      <TableCell>{location.city}</TableCell>
-                      <TableCell>{location.area}</TableCell>
+                      <TableCell className="font-medium">{location.province_name}</TableCell>
+                      <TableCell>{location.city_name}</TableCell>
+                      <TableCell>
+                        <Badge variant={location.city_type === 'KOTA' ? 'default' : 'secondary'}>
+                          {location.city_type}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>{location.area_name}</TableCell>
                       <TableCell>{location.postal_code || 'N/A'}</TableCell>
                       <TableCell>
                         <div className="flex items-center space-x-2">
@@ -295,7 +336,7 @@ const LocationDatabaseManager = () => {
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => handleDelete(location.id, `${location.area}, ${location.city}, ${location.state}`)}
+                            onClick={() => handleDelete(location.id, `${location.area_name}, ${location.city_name}, ${location.province_name}`)}
                           >
                             <Trash2 className="h-3 w-3" />
                           </Button>
