@@ -8,12 +8,11 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { AlertProvider } from "@/contexts/AlertContext";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
-import AdminDashboardPage from "./pages/AdminDashboardPage";
+import AdminDashboard from "./pages/AdminDashboard";
 import UserDashboardPage from "./pages/UserDashboardPage";
-import AgentDashboardPage from "./pages/AgentDashboardPage";
-import VendorDashboardPage from "./pages/VendorDashboardPage";
-import PropertyOwnerDashboardPage from "./pages/PropertyOwnerDashboardPage";
-import WalletPage from "./pages/WalletPage";
+import AgentDashboard from "./pages/AgentDashboard";
+import VendorDashboard from "./pages/VendorDashboard";
+import PropertyOwnerDashboard from "./pages/PropertyOwnerDashboard";
 import { SessionMonitor } from "@/components/SessionMonitor";
 
 const queryClient = new QueryClient();
@@ -28,13 +27,12 @@ const App = () => (
             <div className="min-h-screen bg-background font-sans antialiased">
               <Routes>
                 <Route path="/" element={<Index />} />
-                <Route path="/dashboar" element={<Dashboard />} />
-                <Route path="/dashboard/admin" element={<AdminDashboardPage />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/dashboard/admin" element={<AdminDashboard />} />
                 <Route path="/dashboard/user" element={<UserDashboardPage />} />
-                <Route path="/dashboard/agent" element={<AgentDashboardPage />} />
-                <Route path="/dashboard/vendor" element={<VendorDashboardPage />} />
-                <Route path="/dashboard/property-owner" element={<PropertyOwnerDashboardPage />} />
-                <Route path="/wallet" element={<WalletPage />} />
+                <Route path="/dashboard/agent" element={<AgentDashboard />} />
+                <Route path="/dashboard/vendor" element={<VendorDashboard />} />
+                <Route path="/dashboard/property-owner" element={<PropertyOwnerDashboard />} />
               </Routes>
             </div>
             <Toaster />
