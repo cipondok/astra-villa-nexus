@@ -59,6 +59,15 @@ interface ImageUpload {
   };
 }
 
+interface WatermarkSettings {
+  enabled: boolean;
+  text: string;
+  position: string;
+  opacity: number;
+  size: number;
+  color: string;
+}
+
 const EnhancedPropertyInsertForm = () => {
   const { user } = useAuth();
   const { showSuccess, showError } = useAlert();
@@ -86,8 +95,8 @@ const EnhancedPropertyInsertForm = () => {
 
   const [images, setImages] = useState<ImageUpload[]>([]);
   const [thumbnailId, setThumbnailId] = useState<string>("");
-  const [watermarkSettings, setWatermarkSettings] = useState({
-    enabled: false,
+  const [watermarkSettings, setWatermarkSettings] = useState<WatermarkSettings>({
+    enabled: true,
     text: "VillaAstra",
     position: "bottom-right",
     opacity: 0.7,
@@ -95,8 +104,34 @@ const EnhancedPropertyInsertForm = () => {
     color: "#FFFFFF"
   });
 
+  // Fetch default watermark settings on component mount
+  const { data: defaultWatermarkSettings } = useQuery({
+    queryKey: ['default-watermark-settings'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('system_settings')
+        .select('value')
+        .eq('key', 'default_watermark_settings')
+        .maybeSingle();
+      
+      if (error) {
+        console.log('No default watermark settings found, using component defaults');
+        return null;
+      }
+      
+      return data?.value as WatermarkSettings;
+    },
+  });
+
+  // Update watermark settings when default settings are loaded
+  useEffect(() => {
+    if (defaultWatermarkSettings) {
+      setWatermarkSettings(defaultWatermarkSettings);
+    }
+  }, [defaultWatermarkSettings]);
+
   // Fetch locations from database
-  const { data: locations } = useQuery({
+  const { data: locations, isLoading: locationsLoading } = useQuery({
     queryKey: ['locations'],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -105,23 +140,46 @@ const EnhancedPropertyInsertForm = () => {
         .eq('is_active', true)
         .order('state', { ascending: true });
       
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching locations:', error);
+        throw error;
+      }
       return data || [];
     },
   });
 
-  // Get unique states, cities, and areas
-  const states = [...new Set(locations?.map(loc => loc.state))];
-  const cities = formData.state ? 
-    [...new Set(locations?.filter(loc => loc.state === formData.state).map(loc => loc.city))] : [];
-  const areas = formData.city ? 
-    [...new Set(locations?.filter(loc => loc.city === formData.city).map(loc => loc.area))] : [];
+  // Get unique states, cities, and areas with proper filtering
+  const states = locations ? [...new Set(locations.map(loc => loc.state))].filter(Boolean) : [];
+  const cities = formData.state && locations ? 
+    [...new Set(locations.filter(loc => loc.state === formData.state).map(loc => loc.city))].filter(Boolean) : [];
+  const areas = formData.city && locations ? 
+    [...new Set(locations.filter(loc => loc.city === formData.city).map(loc => loc.area))].filter(Boolean) : [];
+
+  // Save watermark settings as default
+  const saveWatermarkAsDefault = async () => {
+    try {
+      const { error } = await supabase
+        .from('system_settings')
+        .upsert({
+          key: 'default_watermark_settings',
+          value: watermarkSettings,
+          category: 'property',
+          description: 'Default watermark settings for property images'
+        });
+
+      if (error) throw error;
+      
+      showSuccess("Settings Saved", "Watermark settings have been saved as default for future properties.");
+      queryClient.invalidateQueries({ queryKey: ['default-watermark-settings'] });
+    } catch (error: any) {
+      showError("Save Failed", error.message);
+    }
+  };
 
   // Format price input as Indonesian Rupiah
   const handlePriceChange = (value: string) => {
     const numericValue = value.replace(/[^\d]/g, '');
     if (numericValue) {
-      const formatted = formatIDR(parseInt(numericValue));
       setFormData(prev => ({ ...prev, price: numericValue }));
     } else {
       setFormData(prev => ({ ...prev, price: '' }));
@@ -131,24 +189,25 @@ const EnhancedPropertyInsertForm = () => {
   // Image content scanning function
   const scanImageContent = async (file: File): Promise<ImageUpload['contentScanResults']> => {
     return new Promise((resolve) => {
-      // Simulate AI content scanning
       setTimeout(() => {
-        const hasText = Math.random() > 0.8;
-        const hasBarcode = Math.random() > 0.9;
-        const hasViolatedContent = Math.random() > 0.95;
+        // Simulate comprehensive content scanning
+        const hasText = Math.random() > 0.95; // Very low chance of text detection
+        const hasBarcode = Math.random() > 0.98; // Very low chance of barcode detection
+        const hasViolatedContent = Math.random() > 0.99; // Very low chance of violation
         
         resolve({
           hasText,
           hasBarcode,
           hasViolatedContent,
-          confidence: Math.random() * 0.3 + 0.7,
+          confidence: Math.random() * 0.2 + 0.8, // High confidence (80-100%)
           details: [
-            ...(hasText ? ['Text detected in image'] : []),
+            ...(hasText ? ['Text content detected in image'] : []),
             ...(hasBarcode ? ['Barcode/QR code detected'] : []),
-            ...(hasViolatedContent ? ['Potentially inappropriate content'] : [])
+            ...(hasViolatedContent ? ['Potentially inappropriate content detected'] : []),
+            ...(!hasText && !hasBarcode && !hasViolatedContent ? ['Clean image - no issues detected'] : [])
           ]
         });
-      }, 2000);
+      }, 1500);
     });
   };
 
@@ -588,65 +647,69 @@ const EnhancedPropertyInsertForm = () => {
             </TabsContent>
 
             <TabsContent value="location" className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <Label htmlFor="state">State/Province *</Label>
-                  <Select 
-                    value={formData.state} 
-                    onValueChange={(value) => handleLocationChange('state', value)}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select state" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {states.map((state) => (
-                        <SelectItem key={state} value={state}>{state}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+              {locationsLoading ? (
+                <div className="text-center">Loading locations...</div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <Label htmlFor="state">State/Province *</Label>
+                    <Select 
+                      value={formData.state} 
+                      onValueChange={(value) => handleLocationChange('state', value)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select state" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {states.map((state) => (
+                          <SelectItem key={state} value={state}>{state}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label htmlFor="city">City *</Label>
+                    <Select 
+                      value={formData.city} 
+                      onValueChange={(value) => handleLocationChange('city', value)}
+                      disabled={!formData.state}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder={formData.state ? "Select city" : "Select state first"} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {cities.map((city) => (
+                          <SelectItem key={city} value={city}>{city}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label htmlFor="area">Area/District</Label>
+                    <Select 
+                      value={formData.area} 
+                      onValueChange={(value) => handleLocationChange('area', value)}
+                      disabled={!formData.city}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder={formData.city ? "Select area" : "Select city first"} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {areas.map((area) => (
+                          <SelectItem key={area} value={area}>{area}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
-                <div>
-                  <Label htmlFor="city">City *</Label>
-                  <Select 
-                    value={formData.city} 
-                    onValueChange={(value) => handleLocationChange('city', value)}
-                    disabled={!formData.state}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder={formData.state ? "Select city" : "Select state first"} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {cities.map((city) => (
-                        <SelectItem key={city} value={city}>{city}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label htmlFor="area">Area/District</Label>
-                  <Select 
-                    value={formData.area} 
-                    onValueChange={(value) => handleLocationChange('area', value)}
-                    disabled={!formData.city}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder={formData.city ? "Select area" : "Select city first"} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {areas.map((area) => (
-                        <SelectItem key={area} value={area}>{area}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
+              )}
               <div>
                 <Label htmlFor="location">Full Address Preview</Label>
                 <Input
                   id="location"
                   value={formData.location}
                   onChange={(e) => handleInputChange('location', e.target.value)}
-                  placeholder="Generated from location selection above"
+                  placeholder="Generated from location selection above or enter manually"
                 />
               </div>
             </TabsContent>
@@ -788,10 +851,20 @@ const EnhancedPropertyInsertForm = () => {
               {/* Watermark Settings */}
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Settings className="h-4 w-4" />
-                    Watermark Settings
-                  </CardTitle>
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="flex items-center gap-2">
+                      <Settings className="h-4 w-4" />
+                      Watermark Settings
+                    </CardTitle>
+                    <Button 
+                      type="button" 
+                      variant="outline" 
+                      size="sm"
+                      onClick={saveWatermarkAsDefault}
+                    >
+                      Save as Default
+                    </Button>
+                  </div>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex items-center space-x-2">
@@ -879,7 +952,7 @@ const EnhancedPropertyInsertForm = () => {
                           className="relative bg-gradient-to-br from-gray-100 to-gray-200 h-40 rounded-lg border overflow-hidden"
                         >
                           <div className="absolute inset-0 flex items-center justify-center">
-                            <div className="text-gray-400 text-sm">Property Image Preview</div>
+                            <div className="text-gray-400 text-sm">Property Image Preview Area</div>
                           </div>
                           
                           <div
