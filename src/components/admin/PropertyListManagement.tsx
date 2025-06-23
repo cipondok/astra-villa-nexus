@@ -304,9 +304,9 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
                   </TableHeader>
                   <TableBody>
                     {properties.map((property) => {
-                      // Handle owner and agent data properly
-                      const owner = property.owner;
-                      const agent = property.agent;
+                      // Handle owner and agent data properly - they might be arrays or single objects
+                      const owner = Array.isArray(property.owner) ? property.owner[0] : property.owner;
+                      const agent = Array.isArray(property.agent) ? property.agent[0] : property.agent;
                       
                       return (
                         <TableRow key={property.id} className="border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50">
