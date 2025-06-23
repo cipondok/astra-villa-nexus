@@ -708,36 +708,105 @@ export type Database = {
           },
         ]
       }
-      locations: {
+      location_admin_settings: {
         Row: {
-          area: string
-          city: string
-          coordinates: unknown | null
           created_at: string | null
+          created_by: string | null
+          description: string | null
           id: string
           is_active: boolean | null
-          postal_code: string | null
-          state: string
+          setting_key: string
+          setting_value: Json
+          updated_at: string | null
+          updated_by: string | null
         }
         Insert: {
-          area: string
-          city: string
-          coordinates?: unknown | null
           created_at?: string | null
+          created_by?: string | null
+          description?: string | null
           id?: string
           is_active?: boolean | null
-          postal_code?: string | null
-          state: string
+          setting_key: string
+          setting_value?: Json
+          updated_at?: string | null
+          updated_by?: string | null
         }
         Update: {
-          area?: string
-          city?: string
-          coordinates?: unknown | null
           created_at?: string | null
+          created_by?: string | null
+          description?: string | null
           id?: string
           is_active?: boolean | null
+          setting_key?: string
+          setting_value?: Json
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
+      locations: {
+        Row: {
+          area_km2: number | null
+          area_name: string
+          city_code: string
+          city_name: string
+          city_type: string
+          coordinates: unknown | null
+          created_at: string | null
+          district_code: string | null
+          district_name: string | null
+          id: string
+          is_active: boolean | null
+          is_capital: boolean | null
+          population: number | null
+          postal_code: string | null
+          province_code: string
+          province_name: string
+          subdistrict_code: string | null
+          subdistrict_name: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          area_km2?: number | null
+          area_name: string
+          city_code: string
+          city_name: string
+          city_type?: string
+          coordinates?: unknown | null
+          created_at?: string | null
+          district_code?: string | null
+          district_name?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_capital?: boolean | null
+          population?: number | null
           postal_code?: string | null
-          state?: string
+          province_code: string
+          province_name: string
+          subdistrict_code?: string | null
+          subdistrict_name?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          area_km2?: number | null
+          area_name?: string
+          city_code?: string
+          city_name?: string
+          city_type?: string
+          coordinates?: unknown | null
+          created_at?: string | null
+          district_code?: string | null
+          district_name?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_capital?: boolean | null
+          population?: number | null
+          postal_code?: string | null
+          province_code?: string
+          province_name?: string
+          subdistrict_code?: string | null
+          subdistrict_name?: string | null
+          updated_at?: string | null
         }
         Relationships: []
       }

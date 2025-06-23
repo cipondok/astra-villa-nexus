@@ -65,6 +65,22 @@ interface WatermarkSettings {
   opacity: number;
   size: number;
   color: string;
+  [key: string]: any; // Add index signature for compatibility
+}
+
+interface LocationData {
+  id: string;
+  province_code: string;
+  province_name: string;
+  city_code: string;
+  city_name: string;
+  city_type: string;
+  district_code?: string;
+  district_name?: string;
+  area_name: string;
+  postal_code?: string;
+  is_capital: boolean;
+  is_active: boolean;
 }
 
 const EnhancedPropertyInsertForm = () => {
@@ -121,7 +137,7 @@ const EnhancedPropertyInsertForm = () => {
       
       if (data?.value) {
         console.log('Default watermark settings found:', data.value);
-        return data.value;
+        return data.value as WatermarkSettings;
       }
       
       console.log('No default watermark settings found');
@@ -131,36 +147,36 @@ const EnhancedPropertyInsertForm = () => {
     retry: 2,
   });
 
-  // Enhanced locations query with better error handling and debugging
+  // Enhanced locations query with new database structure
   const { data: locations, isLoading: locationsLoading, error: locationsError } = useQuery({
-    queryKey: ['locations'],
+    queryKey: ['indonesian-locations'],
     queryFn: async () => {
-      console.log('Fetching locations from database...');
+      console.log('Fetching Indonesian locations from database...');
       
       try {
         const { data, error, count } = await supabase
           .from('locations')
           .select('*', { count: 'exact' })
           .eq('is_active', true)
-          .order('state')
-          .order('city')
-          .order('area');
+          .order('province_name')
+          .order('city_name')
+          .order('area_name');
         
         if (error) {
           console.error('Supabase error fetching locations:', error);
           throw error;
         }
         
-        console.log(`Successfully fetched ${data?.length || 0} locations (total count: ${count})`);
+        console.log(`Successfully fetched ${data?.length || 0} Indonesian locations (total count: ${count})`);
         
         if (!data || data.length === 0) {
-          console.warn('No locations found in database');
+          console.warn('No Indonesian locations found in database');
           return [];
         }
         
-        return data;
+        return data as LocationData[];
       } catch (error) {
-        console.error('Failed to fetch locations:', error);
+        console.error('Failed to fetch Indonesian locations:', error);
         throw error;
       }
     },
@@ -183,33 +199,33 @@ const EnhancedPropertyInsertForm = () => {
   // Log locations data for debugging
   useEffect(() => {
     if (locations) {
-      console.log('Locations loaded:', {
+      console.log('Indonesian locations loaded:', {
         total: locations.length,
-        states: [...new Set(locations.map(loc => loc.state))].sort(),
-        cities: [...new Set(locations.map(loc => loc.city))].sort(),
-        areas: [...new Set(locations.map(loc => loc.area))].sort()
+        provinces: [...new Set(locations.map(loc => loc.province_name))].sort(),
+        cities: [...new Set(locations.map(loc => loc.city_name))].sort(),
+        areas: [...new Set(locations.map(loc => loc.area_name))].sort()
       });
     }
     if (locationsError) {
-      console.error('Locations query error:', locationsError);
-      showError("Location Loading Error", "Failed to load locations from database. Please refresh the page or contact administrator.");
+      console.error('Indonesian locations query error:', locationsError);
+      showError("Location Loading Error", "Failed to load Indonesian locations from database. Please refresh the page or contact administrator.");
     }
   }, [locations, locationsError, showError]);
 
-  // Get unique states, cities, and areas with proper filtering and fallbacks
-  const states = locations && locations.length > 0 ? 
-    [...new Set(locations.map(loc => loc.state))].filter(Boolean).sort() : 
-    ['Jakarta', 'Bali', 'Yogyakarta', 'Bandung', 'Surabaya'];
+  // Get unique provinces, cities, and areas with proper filtering and fallbacks
+  const provinces = locations && locations.length > 0 ? 
+    [...new Set(locations.map(loc => loc.province_name))].filter(Boolean).sort() : 
+    ['DKI Jakarta', 'Bali', 'DI Yogyakarta', 'Jawa Barat', 'Jawa Timur'];
   
   const cities = formData.state && locations && locations.length > 0 ? 
-    [...new Set(locations.filter(loc => loc.state === formData.state).map(loc => loc.city))].filter(Boolean).sort() : 
+    [...new Set(locations.filter(loc => loc.province_name === formData.state).map(loc => loc.city_name))].filter(Boolean).sort() : 
     [];
   
   const areas = formData.city && locations && locations.length > 0 ? 
-    [...new Set(locations.filter(loc => loc.city === formData.city).map(loc => loc.area))].filter(Boolean).sort() : 
+    [...new Set(locations.filter(loc => loc.city_name === formData.city).map(loc => loc.area_name))].filter(Boolean).sort() : 
     [];
 
-  // Enhanced save watermark settings function
+  // Enhanced save watermark settings function with proper type casting
   const saveWatermarkAsDefault = async () => {
     try {
       console.log('Saving watermark settings as default:', watermarkSettings);
@@ -218,7 +234,7 @@ const EnhancedPropertyInsertForm = () => {
         .from('system_settings')
         .upsert({
           key: 'default_watermark_settings',
-          value: watermarkSettings,
+          value: watermarkSettings as any, // Type cast for JSON compatibility
           category: 'property',
           description: 'Default watermark settings for property images',
           is_public: false
@@ -526,7 +542,7 @@ const EnhancedPropertyInsertForm = () => {
   };
 
   const handleLocationChange = (field: 'state' | 'city' | 'area', value: string) => {
-    console.log(`Location changed: ${field} = ${value}`);
+    console.log(`Indonesian location changed: ${field} = ${value}`);
     
     setFormData(prev => {
       const newData = { ...prev, [field]: value };
@@ -535,17 +551,17 @@ const EnhancedPropertyInsertForm = () => {
       if (field === 'state') {
         newData.city = "";
         newData.area = "";
-        console.log('Reset city and area due to state change');
+        console.log('Reset city and area due to province change');
       } else if (field === 'city') {
         newData.area = "";
         console.log('Reset area due to city change');
       }
       
-      // Auto-generate location string
+      // Auto-generate location string with Indonesian format
       const locationParts = [newData.area, newData.city, newData.state].filter(Boolean);
       newData.location = locationParts.join(', ');
       
-      console.log('Generated location string:', newData.location);
+      console.log('Generated Indonesian location string:', newData.location);
       
       return newData;
     });
@@ -719,49 +735,49 @@ const EnhancedPropertyInsertForm = () => {
             </TabsContent>
 
             <TabsContent value="location" className="space-y-4">
-              {/* Enhanced location loading and error states */}
+              {/* Enhanced Indonesian location loading and error states */}
               {locationsLoading ? (
                 <div className="text-center py-8">
                   <div className="animate-spin h-6 w-6 border-2 border-blue-500 border-t-transparent rounded-full mx-auto mb-2"></div>
-                  <div className="text-sm text-gray-600">Loading locations from database...</div>
+                  <div className="text-sm text-gray-600">Loading Indonesian locations from database...</div>
                 </div>
               ) : locationsError ? (
                 <div className="text-center py-8">
                   <AlertTriangle className="h-8 w-8 text-red-500 mx-auto mb-2" />
-                  <div className="text-sm text-red-600 mb-2">Failed to load locations from database</div>
+                  <div className="text-sm text-red-600 mb-2">Failed to load Indonesian locations from database</div>
                   <div className="text-xs text-gray-500 mb-4">Using fallback locations. Some options may be limited.</div>
                   <Button 
                     variant="outline" 
                     size="sm" 
-                    onClick={() => queryClient.invalidateQueries({ queryKey: ['locations'] })}
+                    onClick={() => queryClient.invalidateQueries({ queryKey: ['indonesian-locations'] })}
                   >
                     Retry Loading
                   </Button>
                 </div>
               ) : !locations || locations.length === 0 ? (
                 <div className="text-center py-6">
-                  <div className="text-sm text-yellow-600 mb-2">No locations found in database</div>
+                  <div className="text-sm text-yellow-600 mb-2">No Indonesian locations found in database</div>
                   <div className="text-xs text-gray-500">Using default locations. Contact administrator to add more locations.</div>
                 </div>
               ) : (
                 <div className="text-center py-2">
-                  <div className="text-xs text-green-600">✓ {locations.length} locations loaded from database</div>
+                  <div className="text-xs text-green-600">✓ {locations.length} Indonesian locations loaded from database</div>
                 </div>
               )}
               
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <Label htmlFor="state">State/Province *</Label>
+                  <Label htmlFor="state">Province *</Label>
                   <Select 
                     value={formData.state} 
                     onValueChange={(value) => handleLocationChange('state', value)}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Select state" />
+                      <SelectValue placeholder="Select province" />
                     </SelectTrigger>
-                    <SelectContent className="bg-white border shadow-lg z-50">
-                      {states.map((state) => (
-                        <SelectItem key={state} value={state}>{state}</SelectItem>
+                    <SelectContent className="bg-white border shadow-lg z-50 max-h-60 overflow-y-auto">
+                      {provinces.map((province) => (
+                        <SelectItem key={province} value={province}>{province}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -774,9 +790,9 @@ const EnhancedPropertyInsertForm = () => {
                     disabled={!formData.state}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder={formData.state ? "Select city" : "Select state first"} />
+                      <SelectValue placeholder={formData.state ? "Select city" : "Select province first"} />
                     </SelectTrigger>
-                    <SelectContent className="bg-white border shadow-lg z-50">
+                    <SelectContent className="bg-white border shadow-lg z-50 max-h-60 overflow-y-auto">
                       {cities.map((city) => (
                         <SelectItem key={city} value={city}>{city}</SelectItem>
                       ))}
@@ -793,7 +809,7 @@ const EnhancedPropertyInsertForm = () => {
                     <SelectTrigger>
                       <SelectValue placeholder={formData.city ? "Select area" : "Select city first"} />
                     </SelectTrigger>
-                    <SelectContent className="bg-white border shadow-lg z-50">
+                    <SelectContent className="bg-white border shadow-lg z-50 max-h-60 overflow-y-auto">
                       {areas.map((area) => (
                         <SelectItem key={area} value={area}>{area}</SelectItem>
                       ))}
@@ -814,7 +830,6 @@ const EnhancedPropertyInsertForm = () => {
             </TabsContent>
 
             <TabsContent value="media" className="space-y-6">
-              {/* Image Upload Section */}
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <Label>Property Images</Label>
