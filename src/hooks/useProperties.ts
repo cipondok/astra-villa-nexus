@@ -61,7 +61,7 @@ export const useProperties = (options?: {
       return data || [];
     },
     staleTime: 2 * 60 * 1000, // 2 minutes
-    cacheTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 5 * 60 * 1000, // 5 minutes (renamed from cacheTime)
     refetchOnWindowFocus: false,
     retry: 3,
     retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000),
@@ -95,11 +95,16 @@ export const usePropertyById = (propertyId: string | null) => {
         throw error;
       }
 
+      // Transform the owner data to be a single object instead of array
+      if (data && data.owner && Array.isArray(data.owner) && data.owner.length > 0) {
+        data.owner = data.owner[0];
+      }
+
       return data;
     },
     enabled: !!propertyId,
     staleTime: 5 * 60 * 1000,
-    cacheTime: 10 * 60 * 1000,
+    gcTime: 10 * 60 * 1000, // 10 minutes (renamed from cacheTime)
     refetchOnWindowFocus: false,
   });
 };

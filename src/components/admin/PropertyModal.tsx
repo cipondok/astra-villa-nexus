@@ -270,7 +270,7 @@ const PropertyModal = ({ isOpen, onClose, propertyId, mode }: PropertyModalProps
           </TabsContent>
 
           <TabsContent value="owner" className="space-y-4">
-            {property.owner ? (
+            {property.owner && typeof property.owner === 'object' && !Array.isArray(property.owner) ? (
               <div className="space-y-3">
                 <div>
                   <Label>Owner Name</Label>
