@@ -15,6 +15,14 @@ import {
   Wrench
 } from "lucide-react";
 
+export interface NavigationSection {
+  id: string;
+  label: string;
+  icon: any;
+  description: string;
+  badge?: string;
+}
+
 export const navigationSections = {
   "Core Management": [
     {
