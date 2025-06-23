@@ -10,6 +10,7 @@ import {
   Building2, 
   MapPin, 
   DollarSign,
+  Edit,
   X
 } from "lucide-react";
 import { formatIDR } from "@/utils/currency";
@@ -30,6 +31,7 @@ interface PropertyAlertProps {
   };
   onApprove?: (propertyId: string) => void;
   onView?: (propertyId: string) => void;
+  onEdit?: (propertyId: string) => void;
   onDismiss?: () => void;
   showActions?: boolean;
 }
@@ -38,6 +40,7 @@ const PropertyAlert = ({
   property, 
   onApprove, 
   onView, 
+  onEdit,
   onDismiss,
   showActions = true 
 }: PropertyAlertProps) => {
@@ -143,7 +146,17 @@ const PropertyAlert = ({
               className="flex items-center gap-2"
             >
               <Eye className="h-4 w-4" />
-              View Details
+              View
+            </Button>
+            
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => onEdit?.(property.id)}
+              className="flex items-center gap-2"
+            >
+              <Edit className="h-4 w-4" />
+              Edit
             </Button>
             
             {property.status === 'pending_approval' && onApprove && (

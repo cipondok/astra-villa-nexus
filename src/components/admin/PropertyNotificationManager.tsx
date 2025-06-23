@@ -66,6 +66,11 @@ const PropertyNotificationManager = ({
     window.open(`/property/${propertyId}`, '_blank');
   };
 
+  const handleEdit = (propertyId: string) => {
+    // Open property edit page in new tab
+    window.open(`/property/${propertyId}/edit`, '_blank');
+  };
+
   if (notifications.length === 0) return null;
 
   return (
@@ -76,6 +81,7 @@ const PropertyNotificationManager = ({
           property={notification.property}
           onApprove={handleApprove}
           onView={handleView}
+          onEdit={handleEdit}
           onDismiss={() => onNotificationDismiss(notification.id)}
           showActions={true}
         />
