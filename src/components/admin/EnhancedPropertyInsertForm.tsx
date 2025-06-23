@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -130,10 +129,11 @@ const EnhancedPropertyInsertForm = () => {
     }
   }, [defaultWatermarkSettings]);
 
-  // Fetch locations from database
-  const { data: locations, isLoading: locationsLoading } = useQuery({
+  // Fetch locations from database with better error handling
+  const { data: locations, isLoading: locationsLoading, error: locationsError } = useQuery({
     queryKey: ['locations'],
     queryFn: async () => {
+      console.log('Fetching locations...');
       const { data, error } = await supabase
         .from('locations')
         .select('*')
@@ -144,9 +144,21 @@ const EnhancedPropertyInsertForm = () => {
         console.error('Error fetching locations:', error);
         throw error;
       }
+      
+      console.log('Locations fetched:', data?.length || 0);
       return data || [];
     },
+    retry: 3,
+    retryDelay: 1000,
   });
+
+  // Log locations error if any
+  useEffect(() => {
+    if (locationsError) {
+      console.error('Locations query error:', locationsError);
+      showError("Loading Error", "Failed to load locations. Please refresh the page.");
+    }
+  }, [locationsError, showError]);
 
   // Get unique states, cities, and areas with proper filtering
   const states = locations ? [...new Set(locations.map(loc => loc.state))].filter(Boolean) : [];
@@ -649,7 +661,17 @@ const EnhancedPropertyInsertForm = () => {
 
             <TabsContent value="location" className="space-y-4">
               {locationsLoading ? (
-                <div className="text-center">Loading locations...</div>
+                <div className="text-center py-4">
+                  <div className="text-sm text-gray-600">Loading locations...</div>
+                </div>
+              ) : locationsError ? (
+                <div className="text-center py-4">
+                  <div className="text-sm text-red-600">Failed to load locations. Please refresh the page.</div>
+                </div>
+              ) : !locations || locations.length === 0 ? (
+                <div className="text-center py-4">
+                  <div className="text-sm text-yellow-600">No locations available. Please contact administrator.</div>
+                </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
