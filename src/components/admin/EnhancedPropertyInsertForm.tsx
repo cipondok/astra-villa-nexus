@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -104,10 +103,11 @@ const EnhancedPropertyInsertForm = () => {
     color: "#FFFFFF"
   });
 
-  // Fetch default watermark settings on component mount
-  const { data: defaultWatermarkSettings } = useQuery({
+  // Enhanced fetch for default watermark settings with better error handling
+  const { data: defaultWatermarkSettings, isLoading: watermarkLoading } = useQuery({
     queryKey: ['default-watermark-settings'],
     queryFn: async () => {
+      console.log('Fetching default watermark settings...');
       const { data, error } = await supabase
         .from('system_settings')
         .select('value')
@@ -115,103 +115,130 @@ const EnhancedPropertyInsertForm = () => {
         .maybeSingle();
       
       if (error) {
-        console.log('No default watermark settings found, using component defaults');
+        console.error('Error fetching watermark settings:', error);
         return null;
       }
       
-      return data?.value ? (data.value as any) : null;
+      if (data?.value) {
+        console.log('Default watermark settings found:', data.value);
+        return data.value;
+      }
+      
+      console.log('No default watermark settings found');
+      return null;
     },
+    staleTime: 10 * 60 * 1000, // 10 minutes
+    retry: 2,
   });
 
-  // Update watermark settings when default settings are loaded
-  useEffect(() => {
-    if (defaultWatermarkSettings) {
-      setWatermarkSettings(defaultWatermarkSettings);
-    }
-  }, [defaultWatermarkSettings]);
-
-  // Fetch locations from database with better error handling
+  // Enhanced locations query with better error handling and debugging
   const { data: locations, isLoading: locationsLoading, error: locationsError } = useQuery({
     queryKey: ['locations'],
     queryFn: async () => {
-      console.log('Fetching locations...');
+      console.log('Fetching locations from database...');
       
-      // First check if the locations table exists and has data
-      const { data, error, count } = await supabase
-        .from('locations')
-        .select('*', { count: 'exact' });
-      
-      if (error) {
-        console.error('Error fetching locations:', error);
-        // If table doesn't exist or has permission issues, return default locations
-        if (error.code === '42P01' || error.code === '42501') {
-          console.log('Locations table not accessible, using default locations');
-          return [
-            { id: '1', state: 'Jakarta', city: 'Jakarta Selatan', area: 'Kemang', is_active: true },
-            { id: '2', state: 'Jakarta', city: 'Jakarta Pusat', area: 'Menteng', is_active: true },
-            { id: '3', state: 'Bali', city: 'Denpasar', area: 'Sanur', is_active: true },
-            { id: '4', state: 'Bali', city: 'Ubud', area: 'Central Ubud', is_active: true },
-            { id: '5', state: 'Yogyakarta', city: 'Yogyakarta', area: 'Malioboro', is_active: true },
-          ];
+      try {
+        const { data, error, count } = await supabase
+          .from('locations')
+          .select('*', { count: 'exact' })
+          .eq('is_active', true)
+          .order('state')
+          .order('city')
+          .order('area');
+        
+        if (error) {
+          console.error('Supabase error fetching locations:', error);
+          throw error;
         }
+        
+        console.log(`Successfully fetched ${data?.length || 0} locations (total count: ${count})`);
+        
+        if (!data || data.length === 0) {
+          console.warn('No locations found in database');
+          return [];
+        }
+        
+        return data;
+      } catch (error) {
+        console.error('Failed to fetch locations:', error);
         throw error;
       }
-      
-      console.log('Locations fetched:', data?.length || 0, 'Total count:', count);
-      
-      // If no data found, return some default locations
-      if (!data || data.length === 0) {
-        console.log('No locations in database, using default locations');
-        return [
-          { id: '1', state: 'Jakarta', city: 'Jakarta Selatan', area: 'Kemang', is_active: true },
-          { id: '2', state: 'Jakarta', city: 'Jakarta Pusat', area: 'Menteng', is_active: true },
-          { id: '3', state: 'Bali', city: 'Denpasar', area: 'Sanur', is_active: true },
-          { id: '4', state: 'Bali', city: 'Ubud', area: 'Central Ubud', is_active: true },
-          { id: '5', state: 'Yogyakarta', city: 'Yogyakarta', area: 'Malioboro', is_active: true },
-        ];
-      }
-      
-      return data;
     },
-    retry: 2,
-    retryDelay: 1000,
+    retry: 3,
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
-  // Log locations error if any
+  // Update watermark settings when defaults are loaded
   useEffect(() => {
+    if (defaultWatermarkSettings && !watermarkLoading) {
+      console.log('Applying default watermark settings:', defaultWatermarkSettings);
+      setWatermarkSettings(prev => ({
+        ...prev,
+        ...defaultWatermarkSettings
+      }));
+    }
+  }, [defaultWatermarkSettings, watermarkLoading]);
+
+  // Log locations data for debugging
+  useEffect(() => {
+    if (locations) {
+      console.log('Locations loaded:', {
+        total: locations.length,
+        states: [...new Set(locations.map(loc => loc.state))].sort(),
+        cities: [...new Set(locations.map(loc => loc.city))].sort(),
+        areas: [...new Set(locations.map(loc => loc.area))].sort()
+      });
+    }
     if (locationsError) {
       console.error('Locations query error:', locationsError);
-      showError("Location Loading", "Using default locations. Database locations may not be available.");
+      showError("Location Loading Error", "Failed to load locations from database. Please refresh the page or contact administrator.");
     }
-  }, [locationsError, showError]);
+  }, [locations, locationsError, showError]);
 
-  // Get unique states, cities, and areas with proper filtering
-  const states = locations ? [...new Set(locations.map(loc => loc.state))].filter(Boolean) : [];
-  const cities = formData.state && locations ? 
-    [...new Set(locations.filter(loc => loc.state === formData.state).map(loc => loc.city))].filter(Boolean) : [];
-  const areas = formData.city && locations ? 
-    [...new Set(locations.filter(loc => loc.city === formData.city).map(loc => loc.area))].filter(Boolean) : [];
+  // Get unique states, cities, and areas with proper filtering and fallbacks
+  const states = locations && locations.length > 0 ? 
+    [...new Set(locations.map(loc => loc.state))].filter(Boolean).sort() : 
+    ['Jakarta', 'Bali', 'Yogyakarta', 'Bandung', 'Surabaya'];
+  
+  const cities = formData.state && locations && locations.length > 0 ? 
+    [...new Set(locations.filter(loc => loc.state === formData.state).map(loc => loc.city))].filter(Boolean).sort() : 
+    [];
+  
+  const areas = formData.city && locations && locations.length > 0 ? 
+    [...new Set(locations.filter(loc => loc.city === formData.city).map(loc => loc.area))].filter(Boolean).sort() : 
+    [];
 
-  // Save watermark settings as default
+  // Enhanced save watermark settings function
   const saveWatermarkAsDefault = async () => {
     try {
+      console.log('Saving watermark settings as default:', watermarkSettings);
+      
       const { error } = await supabase
         .from('system_settings')
         .upsert({
           key: 'default_watermark_settings',
-          value: watermarkSettings as unknown as any,
+          value: watermarkSettings,
           category: 'property',
           description: 'Default watermark settings for property images',
           is_public: false
+        }, {
+          onConflict: 'key'
         });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error saving watermark settings:', error);
+        throw error;
+      }
       
+      console.log('Watermark settings saved successfully');
       showSuccess("Settings Saved", "Watermark settings have been saved as default for future properties.");
-      queryClient.invalidateQueries({ queryKey: ['default-watermark-settings'] });
+      
+      // Invalidate the query to refresh the data
+      await queryClient.invalidateQueries({ queryKey: ['default-watermark-settings'] });
     } catch (error: any) {
-      showError("Save Failed", error.message);
+      console.error('Failed to save watermark settings:', error);
+      showError("Save Failed", error.message || "Failed to save watermark settings");
     }
   };
 
@@ -499,6 +526,8 @@ const EnhancedPropertyInsertForm = () => {
   };
 
   const handleLocationChange = (field: 'state' | 'city' | 'area', value: string) => {
+    console.log(`Location changed: ${field} = ${value}`);
+    
     setFormData(prev => {
       const newData = { ...prev, [field]: value };
       
@@ -506,13 +535,17 @@ const EnhancedPropertyInsertForm = () => {
       if (field === 'state') {
         newData.city = "";
         newData.area = "";
+        console.log('Reset city and area due to state change');
       } else if (field === 'city') {
         newData.area = "";
+        console.log('Reset area due to city change');
       }
       
       // Auto-generate location string
       const locationParts = [newData.area, newData.city, newData.state].filter(Boolean);
       newData.location = locationParts.join(', ');
+      
+      console.log('Generated location string:', newData.location);
       
       return newData;
     });
@@ -686,15 +719,35 @@ const EnhancedPropertyInsertForm = () => {
             </TabsContent>
 
             <TabsContent value="location" className="space-y-4">
+              {/* Enhanced location loading and error states */}
               {locationsLoading ? (
-                <div className="text-center py-4">
-                  <div className="text-sm text-gray-600">Loading locations...</div>
+                <div className="text-center py-8">
+                  <div className="animate-spin h-6 w-6 border-2 border-blue-500 border-t-transparent rounded-full mx-auto mb-2"></div>
+                  <div className="text-sm text-gray-600">Loading locations from database...</div>
+                </div>
+              ) : locationsError ? (
+                <div className="text-center py-8">
+                  <AlertTriangle className="h-8 w-8 text-red-500 mx-auto mb-2" />
+                  <div className="text-sm text-red-600 mb-2">Failed to load locations from database</div>
+                  <div className="text-xs text-gray-500 mb-4">Using fallback locations. Some options may be limited.</div>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={() => queryClient.invalidateQueries({ queryKey: ['locations'] })}
+                  >
+                    Retry Loading
+                  </Button>
                 </div>
               ) : !locations || locations.length === 0 ? (
-                <div className="text-center py-4">
-                  <div className="text-sm text-yellow-600">Using default locations. Contact administrator if you need custom locations.</div>
+                <div className="text-center py-6">
+                  <div className="text-sm text-yellow-600 mb-2">No locations found in database</div>
+                  <div className="text-xs text-gray-500">Using default locations. Contact administrator to add more locations.</div>
                 </div>
-              ) : null}
+              ) : (
+                <div className="text-center py-2">
+                  <div className="text-xs text-green-600">✓ {locations.length} locations loaded from database</div>
+                </div>
+              )}
               
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
@@ -706,7 +759,7 @@ const EnhancedPropertyInsertForm = () => {
                     <SelectTrigger>
                       <SelectValue placeholder="Select state" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-white border shadow-lg z-50">
                       {states.map((state) => (
                         <SelectItem key={state} value={state}>{state}</SelectItem>
                       ))}
@@ -723,7 +776,7 @@ const EnhancedPropertyInsertForm = () => {
                     <SelectTrigger>
                       <SelectValue placeholder={formData.state ? "Select city" : "Select state first"} />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-white border shadow-lg z-50">
                       {cities.map((city) => (
                         <SelectItem key={city} value={city}>{city}</SelectItem>
                       ))}
@@ -740,7 +793,7 @@ const EnhancedPropertyInsertForm = () => {
                     <SelectTrigger>
                       <SelectValue placeholder={formData.city ? "Select area" : "Select city first"} />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-white border shadow-lg z-50">
                       {areas.map((area) => (
                         <SelectItem key={area} value={area}>{area}</SelectItem>
                       ))}
@@ -894,23 +947,32 @@ const EnhancedPropertyInsertForm = () => {
             </TabsContent>
 
             <TabsContent value="settings" className="space-y-6">
-              {/* Watermark Settings */}
+              {/* Enhanced Watermark Settings */}
               <Card>
                 <CardHeader>
                   <div className="flex items-center justify-between">
                     <CardTitle className="flex items-center gap-2">
                       <Settings className="h-4 w-4" />
                       Watermark Settings
+                      {watermarkLoading && (
+                        <div className="animate-spin h-4 w-4 border-2 border-blue-500 border-t-transparent rounded-full"></div>
+                      )}
                     </CardTitle>
                     <Button 
                       type="button" 
                       variant="outline" 
                       size="sm"
                       onClick={saveWatermarkAsDefault}
+                      disabled={watermarkLoading}
                     >
                       Save as Default
                     </Button>
                   </div>
+                  {defaultWatermarkSettings && (
+                    <CardDescription className="text-green-600 text-sm">
+                      ✓ Default settings loaded
+                    </CardDescription>
+                  )}
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex items-center space-x-2">
