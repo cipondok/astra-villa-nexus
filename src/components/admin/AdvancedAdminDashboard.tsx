@@ -30,6 +30,7 @@ import {
 } from 'lucide-react';
 
 // Import management components
+import UserManagement from './UserManagement';
 import UserActivityMonitoring from './UserActivityMonitoring';
 import VendorControlPanel from './VendorControlPanel';
 import PropertyManagementAdvanced from './PropertyManagementAdvanced';
@@ -61,9 +62,19 @@ const AdvancedAdminDashboard = () => {
   const dashboardSections: DashboardSection[] = [
     // User Management
     {
-      id: 'user-control',
-      label: 'User Control & Activities',
+      id: 'user-management',
+      label: 'Complete User Management',
       icon: Users,
+      description: 'Full user management with roles, permissions, and user data control',
+      category: 'User Management',
+      status: 'active',
+      count: 1234,
+      component: UserManagement
+    },
+    {
+      id: 'user-control',
+      label: 'User Activity Monitoring',
+      icon: Activity,
       description: 'Monitor user activities, sessions, and behavior patterns',
       category: 'User Management',
       status: 'active',
@@ -150,15 +161,6 @@ const AdvancedAdminDashboard = () => {
       status: 'active',
       component: SystemAnalytics
     },
-    {
-      id: 'activity-monitoring',
-      label: 'Activity Monitoring',
-      icon: Activity,
-      description: 'Real-time system activity and performance monitoring',
-      category: 'Analytics & Monitoring',
-      status: 'active',
-      component: UserActivityMonitoring
-    },
 
     // Communication & Support
     {
@@ -219,7 +221,7 @@ const AdvancedAdminDashboard = () => {
 
   const renderActiveComponent = () => {
     if (activeSection === 'overview') {
-      return <DashboardOverview sections={dashboardSections} />;
+      return <DashboardOverview sections={dashboardSections} onSectionSelect={setActiveSection} />;
     }
     
     const section = dashboardSections.find(s => s.id === activeSection);
@@ -312,13 +314,14 @@ const AdvancedAdminDashboard = () => {
           <CardContent className="p-6">
             <Tabs value={activeSection} onValueChange={setActiveSection}>
               <div className="flex items-center justify-between mb-6">
-                <TabsList className="grid w-full grid-cols-6">
+                <TabsList className="grid w-full grid-cols-7">
                   <TabsTrigger value="overview">Overview</TabsTrigger>
-                  <TabsTrigger value="user-control">Users</TabsTrigger>
+                  <TabsTrigger value="user-management">User Mgmt</TabsTrigger>
                   <TabsTrigger value="property-advanced">Properties</TabsTrigger>
                   <TabsTrigger value="system-analytics">Analytics</TabsTrigger>
                   <TabsTrigger value="security-management">Security</TabsTrigger>
                   <TabsTrigger value="customer-service">Support</TabsTrigger>
+                  <TabsTrigger value="web-settings">Settings</TabsTrigger>
                 </TabsList>
               </div>
 
