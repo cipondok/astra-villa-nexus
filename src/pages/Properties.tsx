@@ -41,17 +41,20 @@ const Properties = () => {
             description,
             price,
             property_type,
+            listing_type,
             location,
+            city,
+            state,
+            area,
             bedrooms,
             bathrooms,
             area_sqm,
             images,
+            image_urls,
             status,
             created_at,
-            state,
-            city,
-            area,
-            listing_type
+            development_status,
+            owner_type
           `)
           .eq('status', 'active')
           .order('created_at', { ascending: false });
@@ -95,20 +98,23 @@ const Properties = () => {
             description,
             price,
             property_type,
+            listing_type,
             location,
+            city,
+            state,
+            area,
             bedrooms,
             bathrooms,
             area_sqm,
             images,
+            image_urls,
             status,
             created_at,
-            state,
-            city,
-            area,
-            listing_type
+            development_status,
+            owner_type
           `)
           .eq('status', 'active')
-          .or(`title.ilike.%${searchTerm.trim()}%,description.ilike.%${searchTerm.trim()}%,location.ilike.%${searchTerm.trim()}%,city.ilike.%${searchTerm.trim()}%,state.ilike.%${searchTerm.trim()}%`)
+          .or(`title.ilike.%${searchTerm.trim()}%,description.ilike.%${searchTerm.trim()}%,location.ilike.%${searchTerm.trim()}%,city.ilike.%${searchTerm.trim()}%,state.ilike.%${searchTerm.trim()}%,area.ilike.%${searchTerm.trim()}%`)
           .order('created_at', { ascending: false });
 
         if (error) {

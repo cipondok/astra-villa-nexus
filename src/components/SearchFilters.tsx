@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -17,10 +18,10 @@ const SearchFilters = ({ language, onSearch }: SearchFiltersProps) => {
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedArea, setSelectedArea] = useState("");
   const [propertyType, setPropertyType] = useState("");
+  const [listingType, setListingType] = useState("");
   const [priceRange, setPriceRange] = useState("");
   const [bedrooms, setBedrooms] = useState("");
   const [bathrooms, setBathrooms] = useState("");
-  const [furnishing, setFurnishing] = useState("");
   const [amenities, setAmenities] = useState<string[]>([]);
 
   const text = {
@@ -29,50 +30,42 @@ const SearchFilters = ({ language, onSearch }: SearchFiltersProps) => {
       state: "Select State",
       city: "Select City", 
       area: "Select Area",
-      type: "Property Type",
+      propertyType: "Property Type",
+      listingType: "Listing Type",
       price: "Price Range",
       bedrooms: "Bedrooms",
       bathrooms: "Bathrooms",
-      furnishing: "Furnishing",
       amenities: "Amenities",
       searchBtn: "Search Properties",
       trending: "Trending Searches",
-      buy: "Buy",
-      rent: "Rent",
-      newProject: "New Project",
+      forSale: "For Sale",
+      forRent: "For Rent",
+      forLease: "For Lease",
       allTypes: "All Types",
       anyPrice: "Any Price",
       anyBedroom: "Any",
-      anyBathroom: "Any",
-      furnished: "Furnished",
-      unfurnished: "Unfurnished",
-      partiallyFurnished: "Partially Furnished",
-      anyFurnishing: "Any Furnishing"
+      anyBathroom: "Any"
     },
     id: {
       search: "Cari properti, lokasi, atau area...",
       state: "Pilih Provinsi",
       city: "Pilih Kota",
       area: "Pilih Area", 
-      type: "Jenis Properti",
+      propertyType: "Jenis Properti",
+      listingType: "Tipe Listing",
       price: "Range Harga",
       bedrooms: "Kamar Tidur",
       bathrooms: "Kamar Mandi",
-      furnishing: "Perabotan",
       amenities: "Fasilitas",
       searchBtn: "Cari Properti",
       trending: "Pencarian Trending",
-      buy: "Beli",
-      rent: "Sewa",
-      newProject: "Proyek Baru",
+      forSale: "Dijual",
+      forRent: "Disewa",
+      forLease: "Disewakan",
       allTypes: "Semua Jenis",
       anyPrice: "Semua Harga",
       anyBedroom: "Semua",
-      anyBathroom: "Semua",
-      furnished: "Berperabotan",
-      unfurnished: "Tidak Berperabotan",
-      partiallyFurnished: "Sebagian Berperabotan",
-      anyFurnishing: "Semua"
+      anyBathroom: "Semua"
     }
   };
 
@@ -82,6 +75,16 @@ const SearchFilters = ({ language, onSearch }: SearchFiltersProps) => {
     "DKI Jakarta", "West Java", "East Java", "Central Java", "Bali", "North Sumatra",
     "South Sumatra", "West Sumatra", "Riau", "South Kalimantan", "East Kalimantan",
     "North Sulawesi", "South Sulawesi", "West Nusa Tenggara", "East Nusa Tenggara"
+  ];
+
+  const propertyTypes = [
+    { value: "house", label: language === "en" ? "House" : "Rumah" },
+    { value: "apartment", label: language === "en" ? "Apartment" : "Apartemen" },
+    { value: "villa", label: "Villa" },
+    { value: "townhouse", label: "Townhouse" },
+    { value: "condo", label: "Condo" },
+    { value: "land", label: language === "en" ? "Land" : "Tanah" },
+    { value: "commercial", label: language === "en" ? "Commercial" : "Komersial" }
   ];
 
   const trendingSearches = language === "en" 
@@ -104,18 +107,21 @@ const SearchFilters = ({ language, onSearch }: SearchFiltersProps) => {
   };
 
   const handleSearch = () => {
-    onSearch({
+    const searchFilters = {
       query: searchQuery,
       state: selectedState,
       city: selectedCity,
       area: selectedArea,
-      propertyType,
+      propertyType: propertyType,
+      listingType: listingType,
       priceRange,
       bedrooms,
       bathrooms,
-      furnishing,
       amenities
-    });
+    };
+    
+    console.log('Search filters:', searchFilters);
+    onSearch(searchFilters);
   };
 
   return (
@@ -140,6 +146,7 @@ const SearchFilters = ({ language, onSearch }: SearchFiltersProps) => {
               <SelectValue placeholder={currentText.state} />
             </SelectTrigger>
             <SelectContent className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+              <SelectItem value="">{currentText.state}</SelectItem>
               {indonesianStates.map((state) => (
                 <SelectItem key={state} value={state}>{state}</SelectItem>
               ))}
@@ -148,13 +155,13 @@ const SearchFilters = ({ language, onSearch }: SearchFiltersProps) => {
           
           <Select value={propertyType} onValueChange={setPropertyType}>
             <SelectTrigger className="h-12">
-              <SelectValue placeholder={currentText.type} />
+              <SelectValue placeholder={currentText.propertyType} />
             </SelectTrigger>
             <SelectContent className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-              <SelectItem value="all">{currentText.allTypes}</SelectItem>
-              <SelectItem value="buy">{currentText.buy}</SelectItem>
-              <SelectItem value="rent">{currentText.rent}</SelectItem>
-              <SelectItem value="new-project">{currentText.newProject}</SelectItem>
+              <SelectItem value="">{currentText.allTypes}</SelectItem>
+              {propertyTypes.map((type) => (
+                <SelectItem key={type.value} value={type.value}>{type.label}</SelectItem>
+              ))}
             </SelectContent>
           </Select>
           
@@ -168,15 +175,27 @@ const SearchFilters = ({ language, onSearch }: SearchFiltersProps) => {
 
         {/* Advanced Filters */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+          <Select value={listingType} onValueChange={setListingType}>
+            <SelectTrigger className="h-10">
+              <SelectValue placeholder={currentText.listingType} />
+            </SelectTrigger>
+            <SelectContent className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+              <SelectItem value="">{currentText.allTypes}</SelectItem>
+              <SelectItem value="sale">{currentText.forSale}</SelectItem>
+              <SelectItem value="rent">{currentText.forRent}</SelectItem>
+              <SelectItem value="lease">{currentText.forLease}</SelectItem>
+            </SelectContent>
+          </Select>
+
           <Select value={priceRange} onValueChange={setPriceRange}>
             <SelectTrigger className="h-10">
               <SelectValue placeholder={currentText.price} />
             </SelectTrigger>
             <SelectContent className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-              <SelectItem value="any">{currentText.anyPrice}</SelectItem>
-              <SelectItem value="0-1b">Under Rp 1B</SelectItem>
-              <SelectItem value="1b-5b">Rp 1B - 5B</SelectItem>
-              <SelectItem value="5b+">Rp 5B+</SelectItem>
+              <SelectItem value="">{currentText.anyPrice}</SelectItem>
+              <SelectItem value="0-1000000000">Under Rp 1B</SelectItem>
+              <SelectItem value="1000000000-5000000000">Rp 1B - 5B</SelectItem>
+              <SelectItem value="5000000000-999999999999">Rp 5B+</SelectItem>
             </SelectContent>
           </Select>
 
@@ -185,7 +204,7 @@ const SearchFilters = ({ language, onSearch }: SearchFiltersProps) => {
               <SelectValue placeholder={currentText.bedrooms} />
             </SelectTrigger>
             <SelectContent className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-              <SelectItem value="any">{currentText.anyBedroom}</SelectItem>
+              <SelectItem value="">{currentText.anyBedroom}</SelectItem>
               <SelectItem value="1">1</SelectItem>
               <SelectItem value="2">2</SelectItem>
               <SelectItem value="3">3</SelectItem>
@@ -198,23 +217,11 @@ const SearchFilters = ({ language, onSearch }: SearchFiltersProps) => {
               <SelectValue placeholder={currentText.bathrooms} />
             </SelectTrigger>
             <SelectContent className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-              <SelectItem value="any">{currentText.anyBathroom}</SelectItem>
+              <SelectItem value="">{currentText.anyBathroom}</SelectItem>
               <SelectItem value="1">1</SelectItem>
               <SelectItem value="2">2</SelectItem>
               <SelectItem value="3">3</SelectItem>
               <SelectItem value="4+">4+</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Select value={furnishing} onValueChange={setFurnishing}>
-            <SelectTrigger className="h-10">
-              <SelectValue placeholder={currentText.furnishing} />
-            </SelectTrigger>
-            <SelectContent className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-              <SelectItem value="any">{currentText.anyFurnishing}</SelectItem>
-              <SelectItem value="furnished">{currentText.furnished}</SelectItem>
-              <SelectItem value="unfurnished">{currentText.unfurnished}</SelectItem>
-              <SelectItem value="partial">{currentText.partiallyFurnished}</SelectItem>
             </SelectContent>
           </Select>
 

@@ -11,8 +11,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useAlert } from "@/contexts/AlertContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { Building2, Save } from "lucide-react";
-import EnhancedLocationSelector from "@/components/property/EnhancedLocationSelector";
-import { DetailedAddressData } from "@/components/property/DetailedAddressForm";
 
 interface PropertyFormData {
   title: string;
@@ -30,7 +28,6 @@ interface PropertyFormData {
   development_status: string;
   owner_type: string;
   status: string;
-  detailed_address?: DetailedAddressData | null;
 }
 
 const PropertyInsertForm = () => {
@@ -50,12 +47,18 @@ const PropertyInsertForm = () => {
     area: "",
     development_status: "completed",
     owner_type: "individual",
-    status: "active",
-    detailed_address: null
+    status: "active"
   });
 
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
+
+  // Indonesian provinces/states
+  const indonesianStates = [
+    "DKI Jakarta", "West Java", "East Java", "Central Java", "Bali", "North Sumatra",
+    "South Sumatra", "West Sumatra", "Riau", "South Kalimantan", "East Kalimantan",
+    "North Sulawesi", "South Sulawesi", "West Nusa Tenggara", "East Nusa Tenggara"
+  ];
 
   // Create property mutation
   const createPropertyMutation = useMutation({
@@ -86,6 +89,8 @@ const PropertyInsertForm = () => {
         image_urls: []
       };
 
+      console.log('Creating property with data:', propertyData);
+
       const { data: result, error } = await supabase
         .from('properties')
         .insert(propertyData)
@@ -97,6 +102,7 @@ const PropertyInsertForm = () => {
         throw error;
       }
       
+      console.log('Property created successfully:', result);
       return result;
     },
     onSuccess: (data) => {
@@ -116,10 +122,10 @@ const PropertyInsertForm = () => {
         area: "",
         development_status: "completed",
         owner_type: "individual",
-        status: "active",
-        detailed_address: null
+        status: "active"
       });
-      queryClient.invalidateQueries({ queryKey: ['properties'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-properties'] });
+      queryClient.invalidateQueries({ queryKey: ['featured-properties'] });
     },
     onError: (error: any) => {
       console.error('Property creation failed:', error);
@@ -127,12 +133,8 @@ const PropertyInsertForm = () => {
     },
   });
 
-  const handleInputChange = (key: keyof PropertyFormData, value: string | DetailedAddressData | null) => {
+  const handleInputChange = (key: keyof PropertyFormData, value: string) => {
     setFormData(prev => ({ ...prev, [key]: value }));
-  };
-
-  const handleDetailedAddressChange = (addressData: DetailedAddressData) => {
-    handleInputChange('detailed_address', addressData);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -276,19 +278,57 @@ const PropertyInsertForm = () => {
             </div>
           </div>
 
-          {/* Enhanced Location Information */}
+          {/* Location Information */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold">Location Information</h3>
-            <EnhancedLocationSelector
-              selectedState={formData.state}
-              selectedCity={formData.city}
-              selectedArea={formData.area}
-              onStateChange={(state) => handleInputChange('state', state)}
-              onCityChange={(city) => handleInputChange('city', city)}
-              onAreaChange={(area) => handleInputChange('area', area)}
-              onLocationChange={(location) => handleInputChange('location', location)}
-              onDetailedAddressChange={handleDetailedAddressChange}
-            />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="state">State/Province *</Label>
+                <Select 
+                  value={formData.state} 
+                  onValueChange={(value) => handleInputChange('state', value)}
+                  required
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select state" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {indonesianStates.map((state) => (
+                      <SelectItem key={state} value={state}>{state}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label htmlFor="city">City *</Label>
+                <Input
+                  id="city"
+                  value={formData.city}
+                  onChange={(e) => handleInputChange('city', e.target.value)}
+                  placeholder="Enter city name"
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="area">Area/District</Label>
+                <Input
+                  id="area"
+                  value={formData.area}
+                  onChange={(e) => handleInputChange('area', e.target.value)}
+                  placeholder="Enter area or district"
+                />
+              </div>
+              <div>
+                <Label htmlFor="location">Full Address *</Label>
+                <Input
+                  id="location"
+                  value={formData.location}
+                  onChange={(e) => handleInputChange('location', e.target.value)}
+                  placeholder="Enter full address"
+                  required
+                />
+              </div>
+            </div>
           </div>
 
           {/* Additional Settings */}

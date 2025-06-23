@@ -27,6 +27,7 @@ const Index = () => {
         .from('properties')
         .select('*')
         .eq('status', 'active')
+        .order('created_at', { ascending: false })
         .limit(20);
 
       if (error) {
@@ -54,18 +55,30 @@ const Index = () => {
         .select('*')
         .eq('status', 'active');
 
-      // Apply search filters
+      // Apply search filters based on database columns
       if (searchData.query && searchData.query.trim()) {
         const searchTerm = searchData.query.toLowerCase().trim();
-        query = query.or(`title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%,location.ilike.%${searchTerm}%,city.ilike.%${searchTerm}%,state.ilike.%${searchTerm}%`);
+        query = query.or(`title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%,location.ilike.%${searchTerm}%,city.ilike.%${searchTerm}%,state.ilike.%${searchTerm}%,area.ilike.%${searchTerm}%`);
       }
 
       if (searchData.state) {
         query = query.eq('state', searchData.state);
       }
 
+      if (searchData.city) {
+        query = query.ilike('city', `%${searchData.city}%`);
+      }
+
+      if (searchData.area) {
+        query = query.ilike('area', `%${searchData.area}%`);
+      }
+
       if (searchData.propertyType) {
         query = query.eq('property_type', searchData.propertyType);
+      }
+
+      if (searchData.listingType) {
+        query = query.eq('listing_type', searchData.listingType);
       }
 
       if (searchData.bedrooms) {
@@ -86,7 +99,20 @@ const Index = () => {
         }
       }
 
-      const { data, error } = await query.limit(50);
+      // Handle price range filter
+      if (searchData.priceRange) {
+        const [minPrice, maxPrice] = searchData.priceRange.split('-').map(Number);
+        if (minPrice) {
+          query = query.gte('price', minPrice);
+        }
+        if (maxPrice && maxPrice < 999999999999) {
+          query = query.lte('price', maxPrice);
+        }
+      }
+
+      const { data, error } = await query
+        .order('created_at', { ascending: false })
+        .limit(50);
 
       if (error) {
         console.error('Search error:', error);
