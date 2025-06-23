@@ -2,7 +2,7 @@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MapPin, Home, User, UserCheck, Calendar, DollarSign, Edit2 } from "lucide-react";
+import { MapPin, Home, User, UserCheck, Calendar, DollarSign, Edit2, Image as ImageIcon } from "lucide-react";
 import { formatIDR } from "@/utils/currency";
 
 interface PropertyViewModalProps {
@@ -19,6 +19,23 @@ const PropertyViewModal = ({ property, isOpen, onClose, onEdit }: PropertyViewMo
     onEdit?.(property);
     onClose();
   };
+
+  // Parse images - handle both string and array formats
+  const getPropertyImages = () => {
+    if (!property.images) return [];
+    
+    if (typeof property.images === 'string') {
+      try {
+        return JSON.parse(property.images);
+      } catch {
+        return [property.images];
+      }
+    }
+    
+    return Array.isArray(property.images) ? property.images : [];
+  };
+
+  const propertyImages = getPropertyImages();
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -43,16 +60,24 @@ const PropertyViewModal = ({ property, isOpen, onClose, onEdit }: PropertyViewMo
         
         <div className="space-y-6">
           {/* Property Images */}
-          {property.images && property.images.length > 0 && (
-            <div className="space-y-4">
-              <h3 className="font-semibold text-gray-900">Property Images</h3>
+          <div className="space-y-4">
+            <h3 className="font-semibold text-gray-900 flex items-center gap-2">
+              <ImageIcon className="h-4 w-4 text-blue-600" />
+              Property Images ({propertyImages.length})
+            </h3>
+            
+            {propertyImages.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {property.images.map((image: string, index: number) => (
+                {propertyImages.map((image: string, index: number) => (
                   <div key={index} className="relative group">
                     <img
                       src={image}
                       alt={`Property image ${index + 1}`}
-                      className="w-full h-48 object-cover rounded-lg border"
+                      className="w-full h-48 object-cover rounded-lg border shadow-sm"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&h=300&fit=crop';
+                      }}
                     />
                     <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
                       <Button
@@ -63,11 +88,21 @@ const PropertyViewModal = ({ property, isOpen, onClose, onEdit }: PropertyViewMo
                         View Full Size
                       </Button>
                     </div>
+                    <div className="absolute bottom-2 left-2">
+                      <Badge variant="secondary" className="text-xs">
+                        {index + 1}
+                      </Badge>
+                    </div>
                   </div>
                 ))}
               </div>
-            </div>
-          )}
+            ) : (
+              <div className="text-center py-8 bg-gray-50 rounded-lg">
+                <ImageIcon className="h-12 w-12 text-gray-300 mx-auto mb-2" />
+                <p className="text-gray-500">No images available for this property</p>
+              </div>
+            )}
+          </div>
 
           {/* Basic Info */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
