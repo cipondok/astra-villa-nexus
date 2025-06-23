@@ -7,10 +7,30 @@ import PropertyListManagement from "./PropertyListManagement";
 import EnhancedPropertyInsertForm from "./EnhancedPropertyInsertForm";
 import PropertyCategoriesManagement from "./PropertyCategoriesManagement";
 import LocationDatabaseManager from "./LocationDatabaseManager";
+import PropertyNotificationManager from "./PropertyNotificationManager";
+
+interface PropertyNotification {
+  id: string;
+  property: {
+    id: string;
+    title: string;
+    property_type: string;
+    listing_type: string;
+    location: string;
+    price?: number;
+    status: string;
+    owner?: {
+      full_name: string;
+      email: string;
+    };
+  };
+  timestamp: Date;
+}
 
 const AdminPropertyManagement = () => {
   const [activeTab, setActiveTab] = useState("properties");
   const [searchQuery, setSearchQuery] = useState("");
+  const [notifications, setNotifications] = useState<PropertyNotification[]>([]);
 
   const handleAddProperty = () => {
     setActiveTab("add-property");
@@ -21,8 +41,37 @@ const AdminPropertyManagement = () => {
     // You can pass this search query to child components if needed
   };
 
+  const handlePropertyCreated = (property: any) => {
+    // Create a notification for the new property
+    const notification: PropertyNotification = {
+      id: `notification-${Date.now()}`,
+      property: {
+        id: property.id,
+        title: property.title,
+        property_type: property.property_type,
+        listing_type: property.listing_type,
+        location: property.location,
+        price: property.price,
+        status: property.status,
+        owner: property.owner
+      },
+      timestamp: new Date()
+    };
+
+    setNotifications(prev => [notification, ...prev]);
+
+    // Auto-dismiss notification after 10 seconds
+    setTimeout(() => {
+      setNotifications(prev => prev.filter(n => n.id !== notification.id));
+    }, 10000);
+  };
+
+  const handleNotificationDismiss = (notificationId: string) => {
+    setNotifications(prev => prev.filter(n => n.id !== notificationId));
+  };
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 relative">
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Property Management Hub</h2>
@@ -71,7 +120,7 @@ const AdminPropertyManagement = () => {
         </TabsContent>
 
         <TabsContent value="add-property">
-          <EnhancedPropertyInsertForm />
+          <EnhancedPropertyInsertForm onPropertyCreated={handlePropertyCreated} />
         </TabsContent>
 
         <TabsContent value="categories">
@@ -82,6 +131,12 @@ const AdminPropertyManagement = () => {
           <LocationDatabaseManager />
         </TabsContent>
       </Tabs>
+
+      {/* Property Notifications */}
+      <PropertyNotificationManager
+        notifications={notifications}
+        onNotificationDismiss={handleNotificationDismiss}
+      />
     </div>
   );
 };

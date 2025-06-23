@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -35,7 +34,11 @@ interface PropertyFormData {
   images: string[];
 }
 
-const PropertyInsertForm = () => {
+interface PropertyInsertFormProps {
+  onPropertyCreated?: (property: any) => void;
+}
+
+const PropertyInsertForm = ({ onPropertyCreated }: PropertyInsertFormProps) => {
   const { user } = useAuth();
   const [formData, setFormData] = useState<PropertyFormData>({
     title: "",
@@ -147,6 +150,11 @@ const PropertyInsertForm = () => {
     },
     onSuccess: (data) => {
       showSuccess("Property Created", `Property "${data.title}" has been added successfully.`);
+      
+      // Trigger the notification callback
+      onPropertyCreated?.(data);
+      
+      // Reset form and invalidate queries
       setFormData({
         title: "",
         description: "",
