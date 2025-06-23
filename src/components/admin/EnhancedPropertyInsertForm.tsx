@@ -119,7 +119,7 @@ const EnhancedPropertyInsertForm = () => {
         return null;
       }
       
-      return data?.value as WatermarkSettings;
+      return data?.value as WatermarkSettings | null;
     },
   });
 
@@ -162,9 +162,10 @@ const EnhancedPropertyInsertForm = () => {
         .from('system_settings')
         .upsert({
           key: 'default_watermark_settings',
-          value: watermarkSettings,
+          value: watermarkSettings as any, // Cast to any for JSON compatibility
           category: 'property',
-          description: 'Default watermark settings for property images'
+          description: 'Default watermark settings for property images',
+          is_public: false
         });
 
       if (error) throw error;
@@ -216,7 +217,7 @@ const EnhancedPropertyInsertForm = () => {
     return new Promise((resolve) => {
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
-      const img = document.createElement('img');
+      const img = new Image();
       
       img.onload = () => {
         // Calculate new dimensions (max 1920x1080 for high quality)
