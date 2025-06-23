@@ -64,22 +64,37 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
         status: property.status || "active",
       });
 
-      // Parse images
+      // Parse images with better error handling
       const getPropertyImages = () => {
         if (!property.images) return [];
         
-        if (typeof property.images === 'string') {
-          try {
-            return JSON.parse(property.images);
-          } catch {
-            return [property.images];
+        try {
+          // Handle different image formats
+          if (typeof property.images === 'string') {
+            // Try to parse as JSON first
+            try {
+              const parsed = JSON.parse(property.images);
+              return Array.isArray(parsed) ? parsed : [property.images];
+            } catch {
+              // If JSON parse fails, treat as single image URL
+              return [property.images];
+            }
           }
+          
+          if (Array.isArray(property.images)) {
+            return property.images;
+          }
+          
+          return [];
+        } catch (error) {
+          console.error('Error parsing property images:', error);
+          return [];
         }
-        
-        return Array.isArray(property.images) ? property.images : [];
       };
 
-      setImages(getPropertyImages());
+      const initialImages = getPropertyImages();
+      console.log('Setting initial images:', initialImages);
+      setImages(initialImages);
     }
   }, [property, isOpen]);
 
@@ -103,16 +118,22 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
       const fileExt = file.name.split('.').pop();
       const fileName = `${user.id}/${Date.now()}.${fileExt}`;
       
+      console.log('Uploading image to storage:', fileName);
+      
       const { data, error } = await supabase.storage
         .from('property-images')
         .upload(fileName, file);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Storage upload error:', error);
+        throw error;
+      }
 
       const { data: { publicUrl } } = supabase.storage
         .from('property-images')
         .getPublicUrl(fileName);
 
+      console.log('Image uploaded successfully:', publicUrl);
       return publicUrl;
     } catch (error) {
       console.error('Error uploading image:', error);
@@ -129,24 +150,41 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
 
     setUploading(true);
     try {
+      console.log('Starting file upload for', files.length, 'files');
+      
       const uploadPromises = Array.from(files).map(uploadImage);
       const uploadedUrls = await Promise.all(uploadPromises);
       const successfulUploads = uploadedUrls.filter(url => url !== null) as string[];
       
       if (successfulUploads.length > 0) {
-        setImages(prev => [...prev, ...successfulUploads]);
+        console.log('Successfully uploaded images:', successfulUploads);
+        setImages(prev => {
+          const newImages = [...prev, ...successfulUploads];
+          console.log('Updated images array:', newImages);
+          return newImages;
+        });
         showSuccess("Success", `${successfulUploads.length} image(s) uploaded successfully`);
       }
     } catch (error) {
+      console.error('File upload error:', error);
       showError("Error", "Failed to upload images");
     } finally {
       setUploading(false);
+      // Clear the input
+      if (event.target) {
+        event.target.value = '';
+      }
     }
   };
 
   // Remove image
   const removeImage = (index: number) => {
-    setImages(prev => prev.filter((_, i) => i !== index));
+    console.log('Removing image at index:', index);
+    setImages(prev => {
+      const newImages = prev.filter((_, i) => i !== index);
+      console.log('Images after removal:', newImages);
+      return newImages;
+    });
   };
 
   // Update property mutation
@@ -157,16 +195,26 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
       }
 
       console.log('Updating property with data:', updates);
+      console.log('Current images state:', images);
       
+      // Prepare the update payload
       const updatePayload = {
         ...updates,
         price: updates.price ? parseFloat(updates.price) : null,
         bedrooms: updates.bedrooms ? parseInt(updates.bedrooms) : null,
         bathrooms: updates.bathrooms ? parseInt(updates.bathrooms) : null,
         area_sqm: updates.area_sqm ? parseInt(updates.area_sqm) : null,
-        images: JSON.stringify(images),
         updated_at: new Date().toISOString(),
       };
+
+      // Handle images - convert to JSON string for storage
+      if (images && images.length > 0) {
+        updatePayload.images = JSON.stringify(images);
+        console.log('Setting images as JSON string:', updatePayload.images);
+      } else {
+        updatePayload.images = JSON.stringify([]);
+        console.log('Setting empty images array');
+      }
 
       console.log('Final update payload:', updatePayload);
 
@@ -176,10 +224,11 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
         .eq('id', property.id);
 
       if (error) {
-        console.error('Update error:', error);
+        console.error('Database update error:', error);
         throw error;
       }
 
+      console.log('Property updated successfully');
       return updatePayload;
     },
     onSuccess: () => {
@@ -203,7 +252,8 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
   };
 
   const handleUpdate = () => {
-    console.log('Submitting update data:', editData);
+    console.log('Submitting update with data:', editData);
+    console.log('Current images:', images);
     updatePropertyMutation.mutate(editData);
   };
 
@@ -502,7 +552,7 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
             </Button>
             <Button 
               onClick={handleUpdate} 
-              disabled={updatePropertyMutation.isPending}
+              disabled={updatePropertyMutation.isPending || uploading}
               className="bg-blue-600 hover:bg-blue-700 text-white"
             >
               <Save className="h-4 w-4 mr-2" />
