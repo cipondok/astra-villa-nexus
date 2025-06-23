@@ -1,7 +1,7 @@
 
 import React from "react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { navigationSections } from "./navigationSections";
-import NavigationCard from "./NavigationCard";
 
 interface NavigationCategoryProps {
   category: string;
@@ -10,26 +10,40 @@ interface NavigationCategoryProps {
 }
 
 const NavigationCategory = ({ category, activeSection, onSectionChange }: NavigationCategoryProps) => {
-  const isUsersCategory = category === 'Users';
-  const sectionsInCategory = navigationSections.filter(section => section.category === category);
+  const sections = navigationSections[category as keyof typeof navigationSections] || [];
 
   return (
-    <div>
-      <h3 className={`text-lg font-semibold mb-3 ${
-        isUsersCategory ? 'text-blue-600' : 'text-gray-700'
-      }`}>
-        {isUsersCategory ? '👥 Users Management' : category}
+    <div className="space-y-3">
+      <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
+        {category}
       </h3>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {sectionsInCategory.map((section) => (
-          <NavigationCard
-            key={section.id}
-            section={section}
-            isActive={activeSection === section.id}
-            isUsersCategory={isUsersCategory}
-            onSectionChange={onSectionChange}
-          />
-        ))}
+      <div className="grid gap-2">
+        {sections.map((section) => {
+          const Icon = section.icon;
+          return (
+            <Card
+              key={section.id}
+              className={`cursor-pointer transition-all hover:shadow-md ${
+                activeSection === section.id
+                  ? "ring-2 ring-primary bg-primary/5"
+                  : "hover:bg-muted/50"
+              }`}
+              onClick={() => onSectionChange(section.id)}
+            >
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm flex items-center gap-2">
+                  <Icon className="h-4 w-4" />
+                  {section.label}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="pt-0">
+                <CardDescription className="text-xs">
+                  {section.description}
+                </CardDescription>
+              </CardContent>
+            </Card>
+          );
+        })}
       </div>
     </div>
   );

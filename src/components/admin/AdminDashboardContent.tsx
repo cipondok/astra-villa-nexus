@@ -4,6 +4,7 @@ import { TabsContent } from "@/components/ui/tabs";
 import AdminOverview from "./AdminOverview";
 import UserManagement from "./UserManagement";
 import PropertyManagement from "./PropertyManagement";
+import AdminPropertyManagement from "./AdminPropertyManagement";
 import CustomerServiceTicketMan from "./CustomerServiceTicketManagement";
 import ContactManagement from "./ContactManagement";
 import ComprehensiveVendorManagement from "./ComprehensiveVendorManagement";
@@ -60,6 +61,10 @@ const AdminDashboardContent = ({ isAdmin, setActiveTab }: AdminDashboardContentP
 
       <TabsContent value="property-management">
         <PropertyManagement />
+      </TabsContent>
+
+      <TabsContent value="property-management-hub">
+        <AdminPropertyManagement />
       </TabsContent>
 
       {/* Customer Service */}
