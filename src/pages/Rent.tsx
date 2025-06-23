@@ -6,7 +6,7 @@ const Rent = () => {
     <PropertyListingPage
       pageType="rent"
       title="Rent Properties"
-      subtitle="Browse properties available for rent."
+      subtitle="Find rental properties - Residential, Commercial & Short-term rentals"
     />
   );
 };

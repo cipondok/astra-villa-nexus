@@ -6,7 +6,7 @@ const NewProjects = () => {
     <PropertyListingPage
       pageType="new-projects"
       title="New Projects"
-      subtitle="Discover upcoming real estate projects."
+      subtitle="Discover upcoming real estate projects and developments"
     />
   );
 };

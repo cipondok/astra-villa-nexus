@@ -6,7 +6,7 @@ const Buy = () => {
     <PropertyListingPage
       pageType="buy"
       title="Buy Properties"
-      subtitle="Browse properties available for sale."
+      subtitle="Browse properties available for sale - Houses, Apartments, Commercial & Land"
     />
   );
 };

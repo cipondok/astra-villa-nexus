@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -35,6 +34,7 @@ import UserActivityMonitoring from './UserActivityMonitoring';
 import VendorControlPanel from './VendorControlPanel';
 import PropertyManagementAdvanced from './PropertyManagementAdvanced';
 import PropertyFiltersManagement from './PropertyFiltersManagement';
+import PropertyCategoriesManagement from './PropertyCategoriesManagement';
 import SEOManagement from './SEOManagement';
 import WebSettingsControl from './WebSettingsControl';
 import SecurityManagement from './SecurityManagement';
@@ -102,6 +102,15 @@ const AdvancedAdminDashboard = () => {
       status: 'active',
       count: 567,
       component: PropertyManagementAdvanced
+    },
+    {
+      id: 'property-categories',
+      label: 'Property Categories & Services',
+      icon: Building2,
+      description: 'Manage Buy, Rent, New Projects, Pre-Launching categories and services',
+      category: 'Content Management',
+      status: 'active',
+      component: PropertyCategoriesManagement
     },
     {
       id: 'property-filters',

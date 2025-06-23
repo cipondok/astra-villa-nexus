@@ -6,7 +6,7 @@ const PreLaunching = () => {
     <PropertyListingPage
       pageType="pre-launching"
       title="Pre-launching Offers"
-      subtitle="Get exclusive access to pre-launching properties and offers."
+      subtitle="Get exclusive access to pre-launching properties with special offers"
     />
   );
 };
