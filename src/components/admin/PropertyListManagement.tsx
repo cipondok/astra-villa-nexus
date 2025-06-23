@@ -55,6 +55,27 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
   const { data: propertiesData, isLoading, refetch } = useQuery({
     queryKey: ['admin-properties', currentPage, searchTerm, statusFilter, typeFilter],
     queryFn: async () => {
+      console.log('Fetching properties...');
+      
+      // First get the total count
+      let countQuery = supabase
+        .from('properties')
+        .select('*', { count: 'exact', head: true });
+
+      // Apply filters for count
+      if (searchTerm) {
+        countQuery = countQuery.or(`title.ilike.%${searchTerm}%,location.ilike.%${searchTerm}%`);
+      }
+      if (statusFilter !== "all") {
+        countQuery = countQuery.eq('status', statusFilter);
+      }
+      if (typeFilter !== "all") {
+        countQuery = countQuery.eq('property_type', typeFilter);
+      }
+
+      const { count } = await countQuery;
+
+      // Then get the actual data with pagination
       let query = supabase
         .from('properties')
         .select(`
@@ -74,11 +95,6 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
         query = query.eq('property_type', typeFilter);
       }
 
-      // Get total count
-      const { count } = await supabase
-        .from('properties')
-        .select('*', { count: 'exact', head: true });
-
       // Apply pagination
       const from = (currentPage - 1) * itemsPerPage;
       const to = from + itemsPerPage - 1;
@@ -87,7 +103,12 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
         .range(from, to)
         .order('created_at', { ascending: false });
       
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching properties:', error);
+        throw error;
+      }
+      
+      console.log('Properties fetched:', data?.length || 0);
       
       return {
         properties: data || [],
@@ -100,18 +121,6 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
   const properties = propertiesData?.properties || [];
   const totalPages = propertiesData?.totalPages || 1;
   const totalCount = propertiesData?.totalCount || 0;
-
-  // Filter properties for client-side filtering
-  const filteredProperties = properties.filter(property => {
-    const matchesSearch = !searchTerm || 
-      property.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      property.location.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesStatus = statusFilter === "all" || property.status === statusFilter;
-    const matchesType = typeFilter === "all" || property.property_type === typeFilter;
-    
-    return matchesSearch && matchesStatus && matchesType;
-  });
 
   // Delete property mutation
   const deletePropertyMutation = useMutation({
@@ -261,7 +270,7 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
       {/* Properties Table */}
       <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
         <CardHeader>
-          <CardTitle className="text-gray-900 dark:text-gray-100">Properties ({filteredProperties.length})</CardTitle>
+          <CardTitle className="text-gray-900 dark:text-gray-100">Properties ({properties.length})</CardTitle>
           <CardDescription className="text-gray-600 dark:text-gray-400">
             Complete list of all property listings in the system
           </CardDescription>
@@ -269,7 +278,7 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
         <CardContent>
           {isLoading ? (
             <div className="text-center py-8 text-gray-600 dark:text-gray-400">Loading properties...</div>
-          ) : filteredProperties.length === 0 ? (
+          ) : properties.length === 0 ? (
             <div className="text-center py-8">
               <Building2 className="h-12 w-12 text-gray-400 dark:text-gray-500 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">No properties found</h3>
@@ -294,10 +303,10 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {filteredProperties.map((property) => {
-                      // Handle owner and agent data properly (they could be arrays or single objects)
-                      const owner = Array.isArray(property.owner) ? property.owner[0] : property.owner;
-                      const agent = Array.isArray(property.agent) ? property.agent[0] : property.agent;
+                    {properties.map((property) => {
+                      // Handle owner and agent data properly
+                      const owner = property.owner;
+                      const agent = property.agent;
                       
                       return (
                         <TableRow key={property.id} className="border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50">
