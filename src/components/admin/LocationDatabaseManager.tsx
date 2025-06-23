@@ -8,7 +8,8 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { AlertCircle, Plus, Edit, Trash2, MapPin, Save, X } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { AlertCircle, Plus, Edit, Trash2, MapPin, Save, X, BarChart3 } from "lucide-react";
 import { useAlert } from "@/contexts/AlertContext";
 
 interface Location {
@@ -24,6 +25,13 @@ interface Location {
   postal_code?: string;
   is_capital: boolean;
   is_active: boolean;
+}
+
+interface LocationStats {
+  total_provinces: number;
+  total_cities: number;
+  total_areas: number;
+  active_locations: number;
 }
 
 const LocationDatabaseManager = () => {
@@ -47,16 +55,49 @@ const LocationDatabaseManager = () => {
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
 
-  // Fetch all locations
-  const { data: locations = [], isLoading } = useQuery({
-    queryKey: ['admin-locations'],
+  // Fetch location statistics
+  const { data: stats, isLoading: statsLoading } = useQuery({
+    queryKey: ['location-stats'],
     queryFn: async () => {
       const { data, error } = await supabase
+        .from('locations')
+        .select('province_name, city_name, area_name, is_active');
+      
+      if (error) throw error;
+      
+      const provinces = new Set(data?.map(loc => loc.province_name) || []);
+      const cities = new Set(data?.map(loc => loc.city_name) || []);
+      const areas = data?.length || 0;
+      const active = data?.filter(loc => loc.is_active).length || 0;
+      
+      return {
+        total_provinces: provinces.size,
+        total_cities: cities.size,
+        total_areas: areas,
+        active_locations: active
+      } as LocationStats;
+    },
+  });
+
+  // Fetch all locations with pagination
+  const { data: locations = [], isLoading } = useQuery({
+    queryKey: ['admin-locations', selectedProvince, selectedCity],
+    queryFn: async () => {
+      let query = supabase
         .from('locations')
         .select('*')
         .order('province_name', { ascending: true })
         .order('city_name', { ascending: true })
         .order('area_name', { ascending: true });
+      
+      if (selectedProvince) {
+        query = query.eq('province_name', selectedProvince);
+      }
+      if (selectedCity) {
+        query = query.eq('city_name', selectedCity);
+      }
+      
+      const { data, error } = await query.limit(100); // Limit for better performance
       
       if (error) throw error;
       return data || [];
@@ -64,14 +105,36 @@ const LocationDatabaseManager = () => {
   });
 
   // Get unique provinces
-  const provinces = locations ? [...new Set(locations.map(loc => loc.province_name))] : [];
+  const { data: provinces = [] } = useQuery({
+    queryKey: ['provinces'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('locations')
+        .select('province_name')
+        .order('province_name');
+      
+      if (error) throw error;
+      return [...new Set(data?.map(loc => loc.province_name) || [])];
+    },
+  });
 
   // Get cities for selected province
-  const cities = locations 
-    ? [...new Set(locations
-        .filter(loc => loc.province_name === selectedProvince)
-        .map(loc => loc.city_name))]
-    : [];
+  const { data: cities = [] } = useQuery({
+    queryKey: ['cities', selectedProvince],
+    queryFn: async () => {
+      if (!selectedProvince) return [];
+      
+      const { data, error } = await supabase
+        .from('locations')
+        .select('city_name')
+        .eq('province_name', selectedProvince)
+        .order('city_name');
+      
+      if (error) throw error;
+      return [...new Set(data?.map(loc => loc.city_name) || [])];
+    },
+    enabled: !!selectedProvince,
+  });
 
   // Filtered locations
   const filteredLocations = locations.filter(loc => {
@@ -107,6 +170,7 @@ const LocationDatabaseManager = () => {
         is_active: true
       });
       queryClient.invalidateQueries({ queryKey: ['admin-locations'] });
+      queryClient.invalidateQueries({ queryKey: ['location-stats'] });
     },
     onError: (error: any) => {
       showError("Gagal", error.message || 'Gagal menambahkan lokasi');
@@ -129,6 +193,7 @@ const LocationDatabaseManager = () => {
       showSuccess("Berhasil", "Lokasi berhasil diperbarui");
       setEditingLocation(null);
       queryClient.invalidateQueries({ queryKey: ['admin-locations'] });
+      queryClient.invalidateQueries({ queryKey: ['location-stats'] });
     },
     onError: (error: any) => {
       showError("Gagal", error.message || 'Gagal memperbarui lokasi');
@@ -148,6 +213,7 @@ const LocationDatabaseManager = () => {
     onSuccess: () => {
       showSuccess("Berhasil", "Lokasi berhasil dihapus");
       queryClient.invalidateQueries({ queryKey: ['admin-locations'] });
+      queryClient.invalidateQueries({ queryKey: ['location-stats'] });
     },
     onError: (error: any) => {
       showError("Gagal", error.message || 'Gagal menghapus lokasi');
@@ -173,29 +239,86 @@ const LocationDatabaseManager = () => {
     }
   };
 
-  if (isLoading) {
+  if (isLoading && !locations.length) {
     return (
-      <div className="flex items-center justify-center p-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      <div className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          {[...Array(4)].map((_, i) => (
+            <Skeleton key={i} className="h-20 w-full" />
+          ))}
+        </div>
+        <Skeleton className="h-96 w-full" />
       </div>
     );
   }
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold flex items-center gap-2">
-            <MapPin className="h-6 w-6" />
-            Manajemen Database Lokasi
-          </h2>
-          <p className="text-muted-foreground">
-            Kelola data lokasi provinsi, kota/kabupaten, dan area
-          </p>
-        </div>
-        <Badge variant="secondary">
-          Total: {locations.length} lokasi
-        </Badge>
+      {/* Statistics Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-blue-100 rounded-lg">
+                <MapPin className="h-5 w-5 text-blue-600" />
+              </div>
+              <div>
+                <p className="text-sm text-gray-600">Total Provinsi</p>
+                <p className="text-2xl font-bold text-blue-600">
+                  {statsLoading ? <Skeleton className="h-6 w-8" /> : stats?.total_provinces || 0}
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-green-100 rounded-lg">
+                <BarChart3 className="h-5 w-5 text-green-600" />
+              </div>
+              <div>
+                <p className="text-sm text-gray-600">Total Kota/Kabupaten</p>
+                <p className="text-2xl font-bold text-green-600">
+                  {statsLoading ? <Skeleton className="h-6 w-8" /> : stats?.total_cities || 0}
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-purple-100 rounded-lg">
+                <MapPin className="h-5 w-5 text-purple-600" />
+              </div>
+              <div>
+                <p className="text-sm text-gray-600">Total Area</p>
+                <p className="text-2xl font-bold text-purple-600">
+                  {statsLoading ? <Skeleton className="h-6 w-8" /> : stats?.total_areas || 0}
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-orange-100 rounded-lg">
+                <AlertCircle className="h-5 w-5 text-orange-600" />
+              </div>
+              <div>
+                <p className="text-sm text-gray-600">Lokasi Aktif</p>
+                <p className="text-2xl font-bold text-orange-600">
+                  {statsLoading ? <Skeleton className="h-6 w-8" /> : stats?.active_locations || 0}
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Add New Location */}
@@ -205,9 +328,6 @@ const LocationDatabaseManager = () => {
             <Plus className="h-5 w-5" />
             Tambah Lokasi Baru
           </CardTitle>
-          <CardDescription>
-            Tambahkan lokasi baru ke dalam database
-          </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -269,15 +389,6 @@ const LocationDatabaseManager = () => {
                 value={newLocation.area_name}
                 onChange={(e) => setNewLocation(prev => ({ ...prev, area_name: e.target.value }))}
                 placeholder="Gambir"
-              />
-            </div>
-            <div>
-              <Label htmlFor="new-postal-code">Kode Pos</Label>
-              <Input
-                id="new-postal-code"
-                value={newLocation.postal_code}
-                onChange={(e) => setNewLocation(prev => ({ ...prev, postal_code: e.target.value }))}
-                placeholder="10110"
               />
             </div>
           </div>
@@ -342,7 +453,8 @@ const LocationDatabaseManager = () => {
         <CardHeader>
           <CardTitle>Daftar Lokasi</CardTitle>
           <CardDescription>
-            Menampilkan {filteredLocations.length} dari {locations.length} lokasi
+            Menampilkan {locations.length} lokasi
+            {isLoading && <span className="ml-2 text-blue-600">Loading...</span>}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -354,55 +466,65 @@ const LocationDatabaseManager = () => {
                   <TableHead>Kota/Kabupaten</TableHead>
                   <TableHead>Tipe</TableHead>
                   <TableHead>Area/Kecamatan</TableHead>
-                  <TableHead>Kode Pos</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Aksi</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredLocations.map((location) => (
-                  <TableRow key={location.id}>
-                    <TableCell>{location.province_name}</TableCell>
-                    <TableCell>
-                      {location.city_name}
-                      {location.is_capital && (
-                        <Badge variant="secondary" className="ml-2">
-                          Ibu Kota
+                {isLoading ? (
+                  [...Array(5)].map((_, i) => (
+                    <TableRow key={i}>
+                      {[...Array(6)].map((_, j) => (
+                        <TableCell key={j}>
+                          <Skeleton className="h-4 w-20" />
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))
+                ) : (
+                  locations.map((location) => (
+                    <TableRow key={location.id}>
+                      <TableCell>{location.province_name}</TableCell>
+                      <TableCell>
+                        {location.city_name}
+                        {location.is_capital && (
+                          <Badge variant="secondary" className="ml-2">
+                            Ibu Kota
+                          </Badge>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant={location.city_type === 'KOTA' ? 'default' : 'outline'}>
+                          {location.city_type}
                         </Badge>
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant={location.city_type === 'KOTA' ? 'default' : 'outline'}>
-                        {location.city_type}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>{location.area_name}</TableCell>
-                    <TableCell>{location.postal_code || '-'}</TableCell>
-                    <TableCell>
-                      <Badge variant={location.is_active ? 'default' : 'secondary'}>
-                        {location.is_active ? 'Aktif' : 'Nonaktif'}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => setEditingLocation(location)}
-                        >
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleDeleteLocation(location.id)}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                      </TableCell>
+                      <TableCell>{location.area_name}</TableCell>
+                      <TableCell>
+                        <Badge variant={location.is_active ? 'default' : 'secondary'}>
+                          {location.is_active ? 'Aktif' : 'Nonaktif'}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setEditingLocation(location)}
+                          >
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleDeleteLocation(location.id)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
               </TableBody>
             </Table>
           </div>
@@ -466,15 +588,6 @@ const LocationDatabaseManager = () => {
                   value={editingLocation.area_name}
                   onChange={(e) => setEditingLocation(prev => 
                     prev ? { ...prev, area_name: e.target.value } : null
-                  )}
-                />
-              </div>
-              <div>
-                <Label>Kode Pos</Label>
-                <Input
-                  value={editingLocation.postal_code || ''}
-                  onChange={(e) => setEditingLocation(prev => 
-                    prev ? { ...prev, postal_code: e.target.value } : null
                   )}
                 />
               </div>

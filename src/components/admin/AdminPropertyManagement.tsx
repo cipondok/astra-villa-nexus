@@ -7,27 +7,29 @@ import PropertyListManagement from "./PropertyListManagement";
 import EnhancedPropertyInsertForm from "./EnhancedPropertyInsertForm";
 import PropertyCategoriesManagement from "./PropertyCategoriesManagement";
 import LocationDatabaseManager from "./LocationDatabaseManager";
+import AdminTopMenu from "./AdminTopMenu";
 
 const AdminPropertyManagement = () => {
   const [activeTab, setActiveTab] = useState("properties");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const handleAddProperty = () => {
     setActiveTab("add-property");
   };
 
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+    // You can pass this search query to child components if needed
+  };
+
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold flex items-center gap-2">
-            <Building2 className="h-8 w-8" />
-            Property Management Hub
-          </h1>
-          <p className="text-muted-foreground mt-2">
-            Comprehensive property management for administrators
-          </p>
-        </div>
-      </div>
+      <AdminTopMenu 
+        title="Property Management Hub"
+        subtitle="Comprehensive property management for administrators"
+        showSearch={true}
+        onSearch={handleSearch}
+      />
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
         <TabsList className="grid w-full grid-cols-4">
@@ -62,20 +64,7 @@ const AdminPropertyManagement = () => {
         </TabsContent>
 
         <TabsContent value="locations">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <MapPin className="h-5 w-5" />
-                Location Database Management
-              </CardTitle>
-              <CardDescription>
-                Manage location data and database settings
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <LocationDatabaseManager />
-            </CardContent>
-          </Card>
+          <LocationDatabaseManager />
         </TabsContent>
       </Tabs>
     </div>
