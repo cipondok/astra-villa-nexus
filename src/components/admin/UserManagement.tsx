@@ -15,7 +15,7 @@ import PropertyOwnerUserManagement from "./PropertyOwnerUserManagement";
 import CustomerServiceUserManagement from "./CustomerServiceUserManagement";
 
 const UserManagement = () => {
-  const [activeTab, setActiveTab] = useState("enhanced");
+  const [activeTab, setActiveTab] = useState("roles");
 
   return (
     <div className="space-y-6">
@@ -33,6 +33,10 @@ const UserManagement = () => {
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
         <TabsList className="grid w-full grid-cols-5 lg:grid-cols-10">
+          <TabsTrigger value="roles" className="flex items-center gap-2">
+            <Shield className="h-4 w-4" />
+            <span className="hidden sm:inline">User Roles</span>
+          </TabsTrigger>
           <TabsTrigger value="enhanced" className="flex items-center gap-2">
             <UserPlus className="h-4 w-4" />
             <span className="hidden sm:inline">Enhanced</span>
@@ -57,10 +61,6 @@ const UserManagement = () => {
             <Crown className="h-4 w-4" />
             <span className="hidden sm:inline">Levels</span>
           </TabsTrigger>
-          <TabsTrigger value="roles" className="flex items-center gap-2">
-            <Shield className="h-4 w-4" />
-            <span className="hidden sm:inline">Roles</span>
-          </TabsTrigger>
           <TabsTrigger value="monitoring" className="flex items-center gap-2">
             <Monitor className="h-4 w-4" />
             <span className="hidden sm:inline">Monitor</span>
@@ -74,6 +74,10 @@ const UserManagement = () => {
             <span className="hidden sm:inline">Database</span>
           </TabsTrigger>
         </TabsList>
+
+        <TabsContent value="roles" className="space-y-6">
+          <UserRolesManagement />
+        </TabsContent>
 
         <TabsContent value="enhanced" className="space-y-6">
           <EnhancedUserManagement />
@@ -97,10 +101,6 @@ const UserManagement = () => {
 
         <TabsContent value="levels" className="space-y-6">
           <UserLevelManagement />
-        </TabsContent>
-
-        <TabsContent value="roles" className="space-y-6">
-          <UserRolesManagement />
         </TabsContent>
 
         <TabsContent value="monitoring" className="space-y-6">

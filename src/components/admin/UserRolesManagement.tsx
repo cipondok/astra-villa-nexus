@@ -8,10 +8,10 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { useAlert } from "@/contexts/AlertContext";
-import { Shield, UserPlus, Crown, Settings, Trash2, Edit } from "lucide-react";
+import { Shield, UserPlus, Crown, Settings, Trash2, Edit, Search, RefreshCw } from "lucide-react";
 
 type UserRole = "general_user" | "property_owner" | "agent" | "vendor" | "admin" | "customer_service";
 
@@ -22,6 +22,9 @@ interface User {
   role: UserRole;
   verification_status: string;
   created_at: string;
+  phone?: string;
+  company_name?: string;
+  last_seen_at?: string;
 }
 
 interface AdminUser {
@@ -36,22 +39,65 @@ const UserRolesManagement = () => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [isRoleModalOpen, setIsRoleModalOpen] = useState(false);
   const [newRole, setNewRole] = useState<UserRole>("general_user");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [roleFilter, setRoleFilter] = useState("all");
 
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
 
-  // Fetch users with roles
+  // Fetch all users with roles
   const { data: users, isLoading, refetch } = useQuery({
-    queryKey: ['user-roles'],
+    queryKey: ['all-user-roles'],
     queryFn: async (): Promise<User[]> => {
-      const { data, error } = await supabase
+      console.log('Fetching all users...');
+      
+      // First try to get users from profiles table
+      const { data: profilesData, error: profilesError } = await supabase
         .from('profiles')
         .select('*')
         .order('created_at', { ascending: false });
       
-      if (error) throw error;
-      return data || [];
+      if (profilesError) {
+        console.error('Error fetching profiles:', profilesError);
+        throw profilesError;
+      }
+
+      console.log('Profiles fetched:', profilesData?.length);
+      
+      // If we don't get many users from profiles, try auth.users (admin only)
+      if (!profilesData || profilesData.length === 0) {
+        try {
+          const { data: { user } } = await supabase.auth.getUser();
+          if (user?.email === 'mycode103@gmail.com') {
+            // For super admin, we can access more user data
+            const { data: authUsers, error: authError } = await supabase.auth.admin.listUsers();
+            
+            if (authError) {
+              console.error('Error fetching auth users:', authError);
+            } else {
+              console.log('Auth users fetched:', authUsers?.users?.length);
+              // Transform auth users to our format
+              return authUsers.users.map(user => ({
+                id: user.id,
+                email: user.email || '',
+                full_name: user.user_metadata?.full_name || user.email || 'Unknown User',
+                role: 'general_user' as UserRole,
+                verification_status: 'pending',
+                created_at: user.created_at,
+                phone: user.phone || undefined,
+                last_seen_at: user.last_sign_in_at || undefined
+              }));
+            }
+          }
+        } catch (authError) {
+          console.error('Auth access error:', authError);
+        }
+      }
+      
+      return profilesData || [];
     },
+    retry: 2,
+    refetchOnWindowFocus: false,
   });
 
   // Fetch admin users
@@ -62,7 +108,10 @@ const UserRolesManagement = () => {
         .from('admin_users')
         .select('*');
       
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching admin users:', error);
+        return [];
+      }
       return data || [];
     },
   });
@@ -70,21 +119,29 @@ const UserRolesManagement = () => {
   // Update user role mutation
   const updateRoleMutation = useMutation({
     mutationFn: async ({ userId, role }: { userId: string; role: UserRole }) => {
+      console.log('Updating role for user:', userId, 'to role:', role);
+      
       const { error } = await supabase
         .from('profiles')
-        .update({ role })
-        .eq('id', userId);
+        .upsert({ 
+          id: userId, 
+          role: role,
+          updated_at: new Date().toISOString()
+        }, {
+          onConflict: 'id'
+        });
       
       if (error) throw error;
       return { userId, role };
     },
     onSuccess: (data) => {
       showSuccess("Role Updated", `User role updated to ${data.role.replace('_', ' ')}.`);
-      queryClient.invalidateQueries({ queryKey: ['user-roles'] });
+      queryClient.invalidateQueries({ queryKey: ['all-user-roles'] });
       setIsRoleModalOpen(false);
       refetch();
     },
     onError: (error: any) => {
+      console.error('Role update error:', error);
       showError("Update Failed", error.message);
     },
   });
@@ -92,11 +149,18 @@ const UserRolesManagement = () => {
   // Grant admin access mutation
   const grantAdminMutation = useMutation({
     mutationFn: async ({ userId, isSuperAdmin = false }: { userId: string; isSuperAdmin?: boolean }) => {
+      console.log('Granting admin access to user:', userId);
+      
       // First update the profile role
       const { error: profileError } = await supabase
         .from('profiles')
-        .update({ role: 'admin' as UserRole })
-        .eq('id', userId);
+        .upsert({ 
+          id: userId, 
+          role: 'admin' as UserRole,
+          updated_at: new Date().toISOString()
+        }, {
+          onConflict: 'id'
+        });
       
       if (profileError) throw profileError;
       
@@ -116,11 +180,12 @@ const UserRolesManagement = () => {
         "Admin Access Granted", 
         `${data.isSuperAdmin ? 'Super admin' : 'Admin'} access granted successfully.`
       );
-      queryClient.invalidateQueries({ queryKey: ['user-roles'] });
+      queryClient.invalidateQueries({ queryKey: ['all-user-roles'] });
       queryClient.invalidateQueries({ queryKey: ['admin-users'] });
       refetch();
     },
     onError: (error: any) => {
+      console.error('Grant admin error:', error);
       showError("Grant Failed", error.message);
     },
   });
@@ -128,6 +193,8 @@ const UserRolesManagement = () => {
   // Revoke admin access mutation
   const revokeAdminMutation = useMutation({
     mutationFn: async (userId: string) => {
+      console.log('Revoking admin access for user:', userId);
+      
       // Remove from admin_users table
       const { error: adminError } = await supabase
         .from('admin_users')
@@ -139,22 +206,39 @@ const UserRolesManagement = () => {
       // Update profile role
       const { error: profileError } = await supabase
         .from('profiles')
-        .update({ role: 'general_user' as UserRole })
-        .eq('id', userId);
+        .upsert({ 
+          id: userId, 
+          role: 'general_user' as UserRole,
+          updated_at: new Date().toISOString()
+        }, {
+          onConflict: 'id'
+        });
       
       if (profileError) throw profileError;
       return userId;
     },
     onSuccess: () => {
       showSuccess("Admin Access Revoked", "Admin access has been revoked successfully.");
-      queryClient.invalidateQueries({ queryKey: ['user-roles'] });
+      queryClient.invalidateQueries({ queryKey: ['all-user-roles'] });
       queryClient.invalidateQueries({ queryKey: ['admin-users'] });
       refetch();
     },
     onError: (error: any) => {
+      console.error('Revoke admin error:', error);
       showError("Revoke Failed", error.message);
     },
   });
+
+  // Filter users based on search and role filter
+  const filteredUsers = users?.filter((user) => {
+    const matchesSearch = 
+      user.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.email?.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchesRole = roleFilter === "all" || user.role === roleFilter;
+    
+    return matchesSearch && matchesRole;
+  }) || [];
 
   const isUserAdmin = (userId: string): AdminUser | undefined => {
     return adminUsers?.find(admin => admin.user_id === userId);
@@ -270,10 +354,47 @@ const UserRolesManagement = () => {
         </Card>
       </div>
 
+      {/* Search and Filters */}
+      <Card>
+        <CardContent className="p-4">
+          <div className="flex gap-4 items-center">
+            <div className="flex-1">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <Input
+                  placeholder="Search users by name or email..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+            </div>
+            <Select value={roleFilter} onValueChange={setRoleFilter}>
+              <SelectTrigger className="w-[200px]">
+                <SelectValue placeholder="Filter by role" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Roles</SelectItem>
+                <SelectItem value="admin">Admin</SelectItem>
+                <SelectItem value="agent">Agent</SelectItem>
+                <SelectItem value="vendor">Vendor</SelectItem>
+                <SelectItem value="property_owner">Property Owner</SelectItem>
+                <SelectItem value="customer_service">Customer Service</SelectItem>
+                <SelectItem value="general_user">General User</SelectItem>
+              </SelectContent>
+            </Select>
+            <Button onClick={() => refetch()} variant="outline" size="sm">
+              <RefreshCw className="h-4 w-4 mr-2" />
+              Refresh
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Users Role Management Table */}
       <Card>
         <CardHeader>
-          <CardTitle>User Roles & Permissions</CardTitle>
+          <CardTitle>User Roles & Permissions ({filteredUsers.length} users)</CardTitle>
           <CardDescription>
             Manage user roles, admin access, and permissions
           </CardDescription>
@@ -281,6 +402,10 @@ const UserRolesManagement = () => {
         <CardContent>
           {isLoading ? (
             <div className="text-center py-8">Loading users...</div>
+          ) : filteredUsers.length === 0 ? (
+            <div className="text-center py-8 text-muted-foreground">
+              {searchTerm || roleFilter !== "all" ? "No users found matching your filters." : "No users found in the database."}
+            </div>
           ) : (
             <Table>
               <TableHeader>
@@ -290,11 +415,12 @@ const UserRolesManagement = () => {
                   <TableHead>Current Role</TableHead>
                   <TableHead>Admin Access</TableHead>
                   <TableHead>Created</TableHead>
+                  <TableHead>Last Seen</TableHead>
                   <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {users?.map((user) => {
+                {filteredUsers.map((user) => {
                   const adminUser = isUserAdmin(user.id);
                   return (
                     <TableRow key={user.id}>
@@ -304,9 +430,16 @@ const UserRolesManagement = () => {
                           <div className="text-sm text-muted-foreground">
                             ID: {user.id.slice(0, 8)}...
                           </div>
+                          {user.phone && (
+                            <div className="text-sm text-muted-foreground">
+                              📞 {user.phone}
+                            </div>
+                          )}
                         </div>
                       </TableCell>
-                      <TableCell>{user.email}</TableCell>
+                      <TableCell>
+                        <div className="break-all">{user.email}</div>
+                      </TableCell>
                       <TableCell>{getRoleBadge(user.role, user.id)}</TableCell>
                       <TableCell>
                         {adminUser ? (
@@ -322,6 +455,9 @@ const UserRolesManagement = () => {
                       </TableCell>
                       <TableCell>
                         {new Date(user.created_at).toLocaleDateString()}
+                      </TableCell>
+                      <TableCell>
+                        {user.last_seen_at ? new Date(user.last_seen_at).toLocaleDateString() : 'Never'}
                       </TableCell>
                       <TableCell>
                         <div className="flex gap-2">
