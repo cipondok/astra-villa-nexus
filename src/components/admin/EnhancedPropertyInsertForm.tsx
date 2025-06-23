@@ -119,7 +119,7 @@ const EnhancedPropertyInsertForm = () => {
         return null;
       }
       
-      return data?.value as WatermarkSettings | null;
+      return data?.value ? (data.value as unknown as WatermarkSettings) : null;
     },
   });
 
@@ -162,7 +162,7 @@ const EnhancedPropertyInsertForm = () => {
         .from('system_settings')
         .upsert({
           key: 'default_watermark_settings',
-          value: watermarkSettings as any, // Cast to any for JSON compatibility
+          value: watermarkSettings as unknown as any,
           category: 'property',
           description: 'Default watermark settings for property images',
           is_public: false
@@ -217,7 +217,7 @@ const EnhancedPropertyInsertForm = () => {
     return new Promise((resolve) => {
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
-      const img = new Image();
+      const img = document.createElement('img');
       
       img.onload = () => {
         // Calculate new dimensions (max 1920x1080 for high quality)
