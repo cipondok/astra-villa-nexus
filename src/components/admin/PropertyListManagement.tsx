@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -21,7 +22,9 @@ import {
   CheckCircle,
   XCircle,
   Clock,
-  Loader2
+  Loader2,
+  AlertTriangle,
+  RefreshCw
 } from "lucide-react";
 import { formatIDR } from "@/utils/currency";
 
@@ -58,14 +61,49 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [viewingProperty, setViewingProperty] = useState<Property | null>(null);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  const [connectionStatus, setConnectionStatus] = useState<'connected' | 'error' | 'checking'>('checking');
 
-  // Fixed property fetch with better error handling
-  const { data: properties = [], isLoading, error, refetch } = useQuery({
+  // Test database connection
+  const testConnection = async () => {
+    try {
+      console.log('Testing database connection...');
+      setConnectionStatus('checking');
+      
+      // Simple connection test
+      const { data, error } = await supabase
+        .from('properties')
+        .select('count', { count: 'exact', head: true })
+        .limit(1);
+      
+      if (error) {
+        console.error('Connection test failed:', error);
+        setConnectionStatus('error');
+        return false;
+      }
+      
+      console.log('Connection test successful');
+      setConnectionStatus('connected');
+      return true;
+    } catch (err) {
+      console.error('Connection test error:', err);
+      setConnectionStatus('error');
+      return false;
+    }
+  };
+
+  // Enhanced property fetch with better error handling and retry logic
+  const { data: properties = [], isLoading, error, refetch, isError } = useQuery({
     queryKey: ['admin-properties', searchTerm, statusFilter, typeFilter],
     queryFn: async () => {
-      console.log('Fetching admin properties with filters:', { searchTerm, statusFilter, typeFilter });
+      console.log('Fetching properties with filters:', { searchTerm, statusFilter, typeFilter });
       
       try {
+        // Test connection first
+        const connectionOk = await testConnection();
+        if (!connectionOk) {
+          throw new Error('Database connection failed. Please check your network connection.');
+        }
+
         let query = supabase
           .from('properties')
           .select('*')
@@ -73,7 +111,8 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
 
         // Apply search filter
         if (searchTerm && searchTerm.trim()) {
-          query = query.or(`title.ilike.%${searchTerm.trim()}%,location.ilike.%${searchTerm.trim()}%,city.ilike.%${searchTerm.trim()}%`);
+          const searchTermLower = searchTerm.toLowerCase().trim();
+          query = query.or(`title.ilike.%${searchTermLower}%,location.ilike.%${searchTermLower}%,city.ilike.%${searchTermLower}%,description.ilike.%${searchTermLower}%`);
         }
 
         // Apply status filter
@@ -86,29 +125,58 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
           query = query.eq('property_type', typeFilter);
         }
 
+        console.log('Executing query...');
         const { data, error } = await query.limit(100);
         
         if (error) {
-          console.error('Supabase query error:', error);
-          throw new Error(`Database error: ${error.message}`);
+          console.error('Query error details:', {
+            message: error.message,
+            details: error.details,
+            hint: error.hint,
+            code: error.code
+          });
+          
+          // Provide more specific error messages
+          if (error.code === 'PGRST301') {
+            throw new Error('Database table not found. Please contact administrator.');
+          } else if (error.message.includes('permission denied')) {
+            throw new Error('Access denied. Please check your permissions.');
+          } else if (error.message.includes('timeout')) {
+            throw new Error('Database query timeout. Please try again.');
+          } else {
+            throw new Error(`Database error: ${error.message}`);
+          }
         }
         
-        console.log('Admin properties fetched successfully:', data?.length || 0);
+        console.log('Properties fetched successfully:', data?.length || 0);
+        setConnectionStatus('connected');
         return data || [];
+        
       } catch (err) {
         console.error('Property fetch error:', err);
+        setConnectionStatus('error');
         throw err;
       }
     },
-    retry: 2,
+    retry: (failureCount, error) => {
+      // Retry up to 3 times for network errors, but not for permission errors
+      if (failureCount < 3 && !error.message.includes('permission denied')) {
+        console.log(`Retrying query, attempt ${failureCount + 1}`);
+        return true;
+      }
+      return false;
+    },
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
     refetchOnWindowFocus: false,
     staleTime: 30000, // 30 seconds
+    gcTime: 5 * 60 * 1000, // 5 minutes
   });
 
-  // Delete property mutation
+  // Delete property mutation with better error handling
   const deletePropertyMutation = useMutation({
     mutationFn: async (propertyId: string) => {
       console.log('Deleting property:', propertyId);
+      
       const { error } = await supabase
         .from('properties')
         .delete()
@@ -167,6 +235,17 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
     setIsEditModalOpen(true);
   };
 
+  const handleRetry = () => {
+    console.log('Manual retry triggered');
+    refetch();
+  };
+
+  const handleForceRefresh = () => {
+    console.log('Force refresh triggered');
+    queryClient.invalidateQueries({ queryKey: ['admin-properties'] });
+    refetch();
+  };
+
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'active':
@@ -184,15 +263,35 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
     }
   };
 
-  // Loading state
+  // Connection status indicator
+  const getConnectionStatusBadge = () => {
+    switch (connectionStatus) {
+      case 'connected':
+        return <Badge className="bg-green-100 text-green-800"><CheckCircle className="h-3 w-3 mr-1" />Connected</Badge>;
+      case 'error':
+        return <Badge className="bg-red-100 text-red-800"><XCircle className="h-3 w-3 mr-1" />Connection Error</Badge>;
+      case 'checking':
+        return <Badge className="bg-yellow-100 text-yellow-800"><Clock className="h-3 w-3 mr-1" />Checking...</Badge>;
+      default:
+        return null;
+    }
+  };
+
+  // Loading state with better UX
   if (isLoading) {
     return (
       <div className="space-y-6">
         <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-bold flex items-center gap-2">
-            <Building2 className="h-6 w-6 text-blue-600" />
-            Property Management
-          </h2>
+          <div>
+            <h2 className="text-2xl font-bold flex items-center gap-2">
+              <Building2 className="h-6 w-6 text-blue-600" />
+              Property Management
+            </h2>
+            <div className="flex items-center gap-2 mt-1">
+              <p className="text-gray-600">Loading properties...</p>
+              {getConnectionStatusBadge()}
+            </div>
+          </div>
           <Button onClick={onAddProperty}>
             <Plus className="h-4 w-4 mr-2" />
             Add New Property
@@ -204,7 +303,13 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
             <div className="text-center py-12">
               <Loader2 className="h-12 w-12 animate-spin mx-auto mb-4 text-blue-500" />
               <h3 className="text-lg font-medium mb-2">Loading Properties</h3>
-              <p className="text-gray-600">Please wait while we fetch all properties...</p>
+              <p className="text-gray-600">Connecting to database and fetching data...</p>
+              <div className="mt-4">
+                <Button variant="outline" onClick={handleRetry} size="sm">
+                  <RefreshCw className="h-4 w-4 mr-2" />
+                  Retry Connection
+                </Button>
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -212,36 +317,57 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
     );
   }
 
-  // Error state
-  if (error) {
+  // Enhanced error state with troubleshooting
+  if (isError || error) {
     return (
       <div className="space-y-6">
         <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-bold flex items-center gap-2">
-            <Building2 className="h-6 w-6 text-blue-600" />
-            Property Management
-          </h2>
+          <div>
+            <h2 className="text-2xl font-bold flex items-center gap-2">
+              <Building2 className="h-6 w-6 text-blue-600" />
+              Property Management
+            </h2>
+            <div className="flex items-center gap-2 mt-1">
+              <p className="text-gray-600">Database connection error</p>
+              {getConnectionStatusBadge()}
+            </div>
+          </div>
           <Button onClick={onAddProperty}>
             <Plus className="h-4 w-4 mr-2" />
             Add New Property
           </Button>
         </div>
 
-        <Card>
+        <Card className="border-red-200 bg-red-50">
           <CardContent className="pt-6">
             <div className="text-center py-8">
-              <XCircle className="h-12 w-12 text-red-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium mb-2">Error Loading Properties</h3>
-              <p className="text-gray-600 mb-4">
-                {error instanceof Error ? error.message : 'Failed to load properties from database'}
+              <AlertTriangle className="h-12 w-12 text-red-400 mx-auto mb-4" />
+              <h3 className="text-lg font-medium mb-2 text-red-800">Database Connection Error</h3>
+              <p className="text-red-600 mb-4 max-w-lg mx-auto">
+                {error instanceof Error ? error.message : 'Unable to connect to the database. This could be due to network issues or server problems.'}
               </p>
-              <div className="space-x-2">
-                <Button onClick={() => refetch()}>
-                  Try Again
-                </Button>
-                <Button variant="outline" onClick={() => window.location.reload()}>
-                  Refresh Page
-                </Button>
+              
+              <div className="space-y-4">
+                <div className="flex justify-center gap-2">
+                  <Button onClick={handleRetry} variant="outline" className="border-red-300 text-red-700 hover:bg-red-100">
+                    <RefreshCw className="h-4 w-4 mr-2" />
+                    Retry Connection
+                  </Button>
+                  <Button onClick={handleForceRefresh} variant="outline" className="border-red-300 text-red-700 hover:bg-red-100">
+                    <RefreshCw className="h-4 w-4 mr-2" />
+                    Force Refresh
+                  </Button>
+                </div>
+                
+                <div className="text-sm text-red-600 space-y-2">
+                  <p><strong>Troubleshooting steps:</strong></p>
+                  <ul className="text-left max-w-md mx-auto space-y-1">
+                    <li>• Check your internet connection</li>
+                    <li>• Verify Supabase service status</li>
+                    <li>• Try refreshing the page</li>
+                    <li>• Contact administrator if problem persists</li>
+                  </ul>
+                </div>
               </div>
             </div>
           </CardContent>
@@ -252,16 +378,19 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
 
   return (
     <div className="space-y-6">
-      {/* Page Header */}
+      {/* Page Header with Connection Status */}
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold flex items-center gap-2">
             <Building2 className="h-6 w-6 text-blue-600" />
             Property Management
           </h2>
-          <p className="text-gray-600 mt-1">
-            Manage all property listings ({properties.length} properties loaded)
-          </p>
+          <div className="flex items-center gap-2 mt-1">
+            <p className="text-gray-600">
+              Manage all property listings ({properties.length} properties loaded)
+            </p>
+            {getConnectionStatusBadge()}
+          </div>
         </div>
         <Button onClick={onAddProperty}>
           <Plus className="h-4 w-4 mr-2" />
@@ -272,7 +401,7 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
       {/* Filters */}
       <Card>
         <CardContent className="pt-6">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
               <Input
@@ -309,13 +438,13 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
                 <SelectItem value="land">Land</SelectItem>
               </SelectContent>
             </Select>
-            <Button 
-              variant="outline" 
-              onClick={() => refetch()} 
-              className="flex items-center gap-2"
-            >
-              <Filter className="h-4 w-4" />
+            <Button variant="outline" onClick={handleRetry} className="flex items-center gap-2">
+              <RefreshCw className="h-4 w-4" />
               Refresh
+            </Button>
+            <Button variant="outline" onClick={testConnection} className="flex items-center gap-2">
+              <AlertTriangle className="h-4 w-4" />
+              Test Connection
             </Button>
           </div>
         </CardContent>
