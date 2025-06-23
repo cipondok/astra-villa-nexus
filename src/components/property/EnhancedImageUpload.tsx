@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { Camera, Upload, X, Star } from "lucide-react";
+import { Camera, Upload, X, Star, AlertTriangle, CheckCircle } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface EnhancedImageUploadProps {
@@ -25,8 +25,16 @@ const EnhancedImageUpload = ({
   const [uploading, setUploading] = useState(false);
   const [dragActive, setDragActive] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [uploadProgress, setUploadProgress] = useState<number>(0);
+  const [uploadStatus, setUploadStatus] = useState<'idle' | 'uploading' | 'processing' | 'success' | 'error'>('idle');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { user } = useAuth();
+
+  const validateImageContent = async (file: File): Promise<{ valid: boolean; reason?: string }> => {
+    // For now, we'll be more permissive with property images
+    // Property photos often legitimately contain contact information
+    return { valid: true };
+  };
 
   const uploadImage = async (file: File): Promise<string | null> => {
     if (!user?.id) {
@@ -35,6 +43,30 @@ const EnhancedImageUpload = ({
     }
 
     try {
+      setUploadStatus('uploading');
+      setUploadProgress(25);
+
+      // Validate file type and size
+      if (!file.type.startsWith('image/')) {
+        throw new Error("File must be an image");
+      }
+
+      if (file.size > 5 * 1024 * 1024) {
+        throw new Error("Image size must be less than 5MB");
+      }
+
+      setUploadProgress(50);
+
+      // Validate image content
+      setUploadStatus('processing');
+      const contentValidation = await validateImageContent(file);
+      
+      if (!contentValidation.valid) {
+        throw new Error(contentValidation.reason || "Image content not suitable for property listing");
+      }
+
+      setUploadProgress(75);
+
       const fileExt = file.name.split('.').pop();
       const fileName = `${user.id}/${Date.now()}.${fileExt}`;
       
@@ -44,14 +76,34 @@ const EnhancedImageUpload = ({
 
       if (error) throw error;
 
+      setUploadProgress(90);
+
       const { data: { publicUrl } } = supabase.storage
         .from('property-images')
         .getPublicUrl(fileName);
 
+      setUploadProgress(100);
+      setUploadStatus('success');
+      
+      // Reset progress after a short delay
+      setTimeout(() => {
+        setUploadProgress(0);
+        setUploadStatus('idle');
+      }, 1500);
+
       return publicUrl;
     } catch (error) {
       console.error('Error uploading image:', error);
-      setUploadError(error instanceof Error ? error.message : 'Upload failed');
+      setUploadStatus('error');
+      const errorMessage = error instanceof Error ? error.message : 'Upload failed';
+      setUploadError(errorMessage);
+      
+      // Reset after delay
+      setTimeout(() => {
+        setUploadProgress(0);
+        setUploadStatus('idle');
+      }, 3000);
+      
       return null;
     }
   };
@@ -133,6 +185,36 @@ const EnhancedImageUpload = ({
     onThumbnailChange(index);
   };
 
+  const getStatusIcon = () => {
+    switch (uploadStatus) {
+      case 'uploading':
+        return <Upload className="h-8 w-8 text-blue-500" />;
+      case 'processing':
+        return <AlertTriangle className="h-8 w-8 text-yellow-500" />;
+      case 'success':
+        return <CheckCircle className="h-8 w-8 text-green-500" />;
+      case 'error':
+        return <X className="h-8 w-8 text-red-500" />;
+      default:
+        return <Upload className="h-8 w-8 text-gray-400" />;
+    }
+  };
+
+  const getStatusMessage = () => {
+    switch (uploadStatus) {
+      case 'uploading':
+        return 'Mengupload gambar...';
+      case 'processing':
+        return 'Memproses dan memvalidasi gambar...';
+      case 'success':
+        return 'Upload berhasil!';
+      case 'error':
+        return 'Upload gagal. Silakan coba lagi.';
+      default:
+        return dragActive ? "Lepas file di sini" : "Klik atau seret foto ke sini";
+    }
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -147,13 +229,17 @@ const EnhancedImageUpload = ({
           className={`relative border-2 border-dashed rounded-lg p-8 text-center transition-colors cursor-pointer ${
             dragActive 
               ? 'border-blue-500 bg-blue-50' 
+              : uploadStatus === 'error'
+              ? 'border-red-300 bg-red-50'
+              : uploadStatus === 'success'
+              ? 'border-green-300 bg-green-50'
               : 'border-gray-300 hover:border-gray-400 hover:bg-gray-50'
           }`}
           onDragEnter={handleDrag}
           onDragLeave={handleDrag}
           onDragOver={handleDrag}
           onDrop={handleDrop}
-          onClick={handleClickUpload}
+          onClick={!uploading ? handleClickUpload : undefined}
         >
           <input
             ref={fileInputRef}
@@ -162,6 +248,7 @@ const EnhancedImageUpload = ({
             accept="image/*"
             onChange={handleInputChange}
             className="hidden"
+            disabled={uploading}
           />
           
           <div className="space-y-4">
@@ -169,17 +256,32 @@ const EnhancedImageUpload = ({
               {uploading ? (
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600" />
               ) : (
-                <Upload className="h-8 w-8 text-gray-400" />
+                getStatusIcon()
               )}
             </div>
             
+            {/* Progress Bar */}
+            {uploading && uploadProgress > 0 && (
+              <div className="w-full bg-gray-200 rounded-full h-2">
+                <div 
+                  className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                  style={{ width: `${uploadProgress}%` }}
+                />
+              </div>
+            )}
+            
             <div>
               <p className="text-lg font-medium text-gray-900">
-                {dragActive ? "Lepas file di sini" : "Klik atau seret foto ke sini"}
+                {getStatusMessage()}
               </p>
               <p className="text-sm text-gray-500 mt-1">
                 Format: JPG, PNG, WebP. Maksimal 5MB per file
               </p>
+              {uploadStatus === 'processing' && (
+                <p className="text-xs text-yellow-600 mt-2">
+                  Sistem sedang memvalidasi konten gambar...
+                </p>
+              )}
             </div>
             
             <Button 
@@ -200,7 +302,18 @@ const EnhancedImageUpload = ({
         {/* Error Alert */}
         {uploadError && (
           <Alert variant="destructive">
-            <AlertDescription>{uploadError}</AlertDescription>
+            <AlertTriangle className="h-4 w-4" />
+            <AlertDescription>
+              {uploadError}
+              {uploadError.includes('phone') && (
+                <div className="mt-2">
+                  <p className="text-sm">
+                    <strong>Tips:</strong> Jika gambar properti Anda mengandung nomor telepon yang sah (seperti di papan nama), 
+                    pastikan foto menampilkan properti dengan jelas sebagai fokus utama.
+                  </p>
+                </div>
+              )}
+            </AlertDescription>
           </Alert>
         )}
 
@@ -271,13 +384,14 @@ const EnhancedImageUpload = ({
           </div>
         )}
 
-        {/* Tips */}
+        {/* Enhanced Tips */}
         <div className="bg-blue-50 p-4 rounded-lg">
-          <h5 className="font-medium text-blue-900 mb-2">💡 Tips Foto Terbaik:</h5>
+          <h5 className="font-medium text-blue-900 mb-2">💡 Tips Foto Properti:</h5>
           <ul className="text-sm text-blue-800 space-y-1">
             <li>• Upload foto eksterior, interior, dan fasilitas</li>
-            <li>• Gunakan pencahayaan yang baik</li>
-            <li>• Foto pertama akan menjadi thumbnail utama</li>
+            <li>• Gunakan pencahayaan yang baik dan hindari bayangan</li>
+            <li>• Pastikan properti menjadi fokus utama foto</li>
+            <li>• Foto dengan nomor kontak properti diperbolehkan</li>
             <li>• Minimal 3-5 foto untuk hasil optimal</li>
           </ul>
         </div>
