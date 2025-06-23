@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -29,11 +30,12 @@ interface PropertyFormData {
   development_status: string;
   owner_type: string;
   status: string;
+  detailed_address?: DetailedAddressData | null;
 }
 
 const PropertyInsertForm = () => {
   const { user } = useAuth();
-  const [formData, setFormData] = useState<PropertyFormData & { detailed_address?: DetailedAddressData | null }>({
+  const [formData, setFormData] = useState<PropertyFormData>({
     title: "",
     description: "",
     property_type: "",
@@ -125,7 +127,7 @@ const PropertyInsertForm = () => {
     },
   });
 
-  const handleInputChange = (key: keyof PropertyFormData, value: string) => {
+  const handleInputChange = (key: keyof PropertyFormData, value: string | DetailedAddressData | null) => {
     setFormData(prev => ({ ...prev, [key]: value }));
   };
 

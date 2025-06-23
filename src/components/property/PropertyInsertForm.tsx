@@ -184,7 +184,8 @@ const PropertyInsertForm = () => {
         furnishing: "",
         parking: "",
         facilities: [],
-        property_filters: {}
+        property_filters: {},
+        detailed_address: null
       });
     },
     onError: (error) => {
