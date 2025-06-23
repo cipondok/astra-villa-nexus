@@ -76,6 +76,7 @@ interface PropertyWithOwner {
   location: string;
   city: string;
   state: string;
+  area: string;
   property_type: string;
   listing_type: string;
   bedrooms: number;
@@ -121,13 +122,11 @@ export const usePropertyById = (propertyId: string | null) => {
         throw error;
       }
 
-      // Transform the owner data from array to single object if needed
-      let transformedData = data as any;
-      if (data.owner && Array.isArray(data.owner) && data.owner.length > 0) {
-        transformedData.owner = data.owner[0];
-      } else if (data.owner && Array.isArray(data.owner) && data.owner.length === 0) {
-        transformedData.owner = null;
-      }
+      // Handle owner data - it comes as an object, not an array
+      const transformedData = {
+        ...data,
+        owner: data.owner || null
+      } as PropertyWithOwner;
 
       return transformedData;
     },
