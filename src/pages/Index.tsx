@@ -17,29 +17,50 @@ const Index = () => {
   const [hasSearched, setHasSearched] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
 
-  // Fetch featured properties
-  const { data: featuredProperties = [], isLoading: isFeaturedLoading } = useQuery({
+  // Fetch featured properties with better error handling
+  const { data: featuredProperties = [], isLoading: isFeaturedLoading, error: featuredError } = useQuery({
     queryKey: ['featured-properties'],
     queryFn: async () => {
       console.log('Fetching featured properties...');
       
-      const { data, error } = await supabase
-        .from('properties')
-        .select('*')
-        .eq('status', 'active')
-        .limit(20);
+      try {
+        const { data, error } = await supabase
+          .from('properties')
+          .select('*')
+          .eq('status', 'active')
+          .order('created_at', { ascending: false })
+          .limit(20);
 
-      if (error) {
-        console.error('Query error:', error);
+        if (error) {
+          console.error('Query error:', error);
+          throw error;
+        }
+
+        console.log('Featured properties fetched:', data?.length || 0);
+        
+        // Add data-property-id attribute for highlighting
+        const propertiesWithId = (data || []).map(property => ({
+          ...property,
+          'data-property-id': property.id
+        }));
+        
+        return propertiesWithId;
+      } catch (error) {
+        console.error('Failed to fetch properties:', error);
         return [];
       }
-
-      console.log('Featured properties fetched:', data?.length || 0);
-      return data || [];
     },
-    retry: 1,
+    retry: 2,
     refetchOnWindowFocus: false,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
+
+  // Log any featured properties loading errors
+  useEffect(() => {
+    if (featuredError) {
+      console.error('Featured properties error:', featuredError);
+    }
+  }, [featuredError]);
 
   const handleSearch = async (searchData: any) => {
     console.log('Search initiated:', searchData);
@@ -52,7 +73,8 @@ const Index = () => {
       let query = supabase
         .from('properties')
         .select('*')
-        .eq('status', 'active');
+        .eq('status', 'active')
+        .order('created_at', { ascending: false });
 
       // Apply search filters
       if (searchData.query && searchData.query.trim()) {
@@ -151,6 +173,16 @@ const Index = () => {
             <div className="text-center text-red-600 font-medium">
               {searchError}
             </div>
+          </div>
+        </section>
+      )}
+
+      {/* Loading State */}
+      {isFeaturedLoading && !hasSearched && (
+        <section className="py-8">
+          <div className="container mx-auto px-4 text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading properties...</p>
           </div>
         </section>
       )}

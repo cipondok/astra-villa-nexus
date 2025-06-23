@@ -51,6 +51,8 @@ const PropertyNotificationManager = ({
     onSuccess: () => {
       showSuccess("Property Approved", "Property has been approved and is now active.");
       queryClient.invalidateQueries({ queryKey: ['admin-properties'] });
+      queryClient.invalidateQueries({ queryKey: ['properties'] });
+      queryClient.invalidateQueries({ queryKey: ['featured-properties'] });
     },
     onError: (error: any) => {
       showError("Approval Failed", error.message);
@@ -62,13 +64,32 @@ const PropertyNotificationManager = ({
   };
 
   const handleView = (propertyId: string) => {
-    // Open property in new tab for detailed view
-    window.open(`/property/${propertyId}`, '_blank');
+    // Scroll to property or show property details inline
+    console.log('Viewing property:', propertyId);
+    
+    // Find the property element and scroll to it if it exists
+    const propertyElement = document.querySelector(`[data-property-id="${propertyId}"]`);
+    if (propertyElement) {
+      propertyElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      propertyElement.classList.add('ring-2', 'ring-blue-500', 'ring-opacity-50');
+      setTimeout(() => {
+        propertyElement.classList.remove('ring-2', 'ring-blue-500', 'ring-opacity-50');
+      }, 3000);
+    } else {
+      // Navigate to the home page where properties are displayed
+      window.location.href = '/';
+    }
   };
 
   const handleEdit = (propertyId: string) => {
-    // Open property edit page in new tab
-    window.open(`/property/${propertyId}/edit`, '_blank');
+    // For now, show an alert that edit functionality is coming
+    showSuccess("Edit Feature", "Property editing feature will be available soon. Use the Property Management section to edit properties.");
+    
+    // Navigate to admin property management
+    const currentUrl = window.location.pathname;
+    if (!currentUrl.includes('/admin')) {
+      window.location.href = '/admin';
+    }
   };
 
   if (notifications.length === 0) return null;

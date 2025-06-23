@@ -71,7 +71,16 @@ const PropertyListingsSection = ({
   };
 
   const handleViewDetails = (propertyId: string) => {
-    navigate(`/property/${propertyId}`);
+    // For now, scroll to property and highlight it
+    console.log('Viewing property details:', propertyId);
+    const propertyElement = document.querySelector(`[data-property-id="${propertyId}"]`);
+    if (propertyElement) {
+      propertyElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      propertyElement.classList.add('ring-2', 'ring-blue-500', 'ring-opacity-75', 'transition-all', 'duration-300');
+      setTimeout(() => {
+        propertyElement.classList.remove('ring-2', 'ring-blue-500', 'ring-opacity-75');
+      }, 3000);
+    }
   };
 
   const handleView3D = (property: any) => {
@@ -137,39 +146,42 @@ const PropertyListingsSection = ({
                   <Button onClick={() => window.location.reload()} variant="outline" className="w-full">
                     Refresh
                   </Button>
-                  <Button onClick={() => navigate('/properties')} className="w-full">
-                    {currentText.browseAll}
-                  </Button>
                 </div>
               </div>
             </div>
           ) : displayProperties.length >= 4 ? (
             // Use AutoScrollCarousel for 4 or more properties
-            <AutoScrollCarousel
-              title=""
-              currentPropertyId=""
-              queryType="recommended"
-              propertyData={{
-                properties: displayProperties
-              }}
-              autoScrollInterval={6000}
-              limit={displayProperties.length}
-              hideTitle={true}
-              customProperties={displayProperties}
-            />
+            <div data-property-container="true">
+              <AutoScrollCarousel
+                title=""
+                currentPropertyId=""
+                queryType="recommended"
+                propertyData={{
+                  properties: displayProperties.map(property => ({
+                    ...property,
+                    'data-property-id': property.id
+                  }))
+                }}
+                autoScrollInterval={6000}
+                limit={displayProperties.length}
+                hideTitle={true}
+                customProperties={displayProperties}
+              />
+            </div>
           ) : (
             // Use regular grid for less than 4 properties
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
               {displayProperties.map((property, index) => (
-                <CompactPropertyCard
-                  key={`${property.id}-${index}`}
-                  property={property}
-                  language={language}
-                  isSaved={favoriteProperties.has(property.id)}
-                  onSave={() => toggleFavorite(property.id)}
-                  onView={() => handleViewDetails(property.id)}
-                  onView3D={handleView3D}
-                />
+                <div key={`${property.id}-${index}`} data-property-id={property.id} className="transition-all duration-300">
+                  <CompactPropertyCard
+                    property={property}
+                    language={language}
+                    isSaved={favoriteProperties.has(property.id)}
+                    onSave={() => toggleFavorite(property.id)}
+                    onView={() => handleViewDetails(property.id)}
+                    onView3D={handleView3D}
+                  />
+                </div>
               ))}
             </div>
           )}
