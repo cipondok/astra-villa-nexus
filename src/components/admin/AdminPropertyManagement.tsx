@@ -2,10 +2,11 @@
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Building2, Plus, List, Settings } from "lucide-react";
+import { Building2, Plus, List, Settings, MapPin } from "lucide-react";
 import PropertyListManagement from "./PropertyListManagement";
-import PropertyInsertForm from "./PropertyInsertForm";
+import EnhancedPropertyInsertForm from "./EnhancedPropertyInsertForm";
 import PropertyCategoriesManagement from "./PropertyCategoriesManagement";
+import LocationDatabaseManager from "./LocationDatabaseManager";
 
 const AdminPropertyManagement = () => {
   const [activeTab, setActiveTab] = useState("properties");
@@ -29,7 +30,7 @@ const AdminPropertyManagement = () => {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="properties" className="flex items-center gap-2">
             <List className="h-4 w-4" />
             Property List
@@ -42,6 +43,10 @@ const AdminPropertyManagement = () => {
             <Settings className="h-4 w-4" />
             Categories
           </TabsTrigger>
+          <TabsTrigger value="locations" className="flex items-center gap-2">
+            <MapPin className="h-4 w-4" />
+            Locations
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="properties">
@@ -49,11 +54,15 @@ const AdminPropertyManagement = () => {
         </TabsContent>
 
         <TabsContent value="add-property">
-          <PropertyInsertForm />
+          <EnhancedPropertyInsertForm />
         </TabsContent>
 
         <TabsContent value="categories">
           <PropertyCategoriesManagement />
+        </TabsContent>
+
+        <TabsContent value="locations">
+          <LocationDatabaseManager />
         </TabsContent>
       </Tabs>
     </div>
