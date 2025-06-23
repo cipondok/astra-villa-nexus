@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -380,7 +379,7 @@ const LocationDatabaseManager = () => {
                     <TableCell>{location.area_name}</TableCell>
                     <TableCell>{location.postal_code || '-'}</TableCell>
                     <TableCell>
-                      <Badge variant={location.is_active ? 'success' : 'secondary'}>
+                      <Badge variant={location.is_active ? 'default' : 'secondary'}>
                         {location.is_active ? 'Aktif' : 'Nonaktif'}
                       </Badge>
                     </TableCell>
