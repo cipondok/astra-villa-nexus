@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -6,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAlert } from "@/contexts/AlertContext";
 import { usePropertyById } from "@/hooks/useProperties";
@@ -45,7 +47,21 @@ const PropertyModal = ({ isOpen, onClose, propertyId, mode }: PropertyModalProps
 
   useEffect(() => {
     if (property) {
-      setFormData(property);
+      setFormData({
+        title: property.title || "",
+        description: property.description || "",
+        price: property.price || "",
+        location: property.location || "",
+        city: property.city || "",
+        state: property.state || "",
+        area: property.area || "",
+        bedrooms: property.bedrooms || "",
+        bathrooms: property.bathrooms || "",
+        area_sqm: property.area_sqm || "",
+        property_type: property.property_type || "house",
+        listing_type: property.listing_type || "sale",
+        status: property.status || "pending_approval",
+      });
     }
   }, [property]);
 
@@ -63,6 +79,7 @@ const PropertyModal = ({ isOpen, onClose, propertyId, mode }: PropertyModalProps
       showSuccess("Success", "Property updated successfully");
       queryClient.invalidateQueries({ queryKey: ['properties'] });
       queryClient.invalidateQueries({ queryKey: ['property', propertyId] });
+      queryClient.invalidateQueries({ queryKey: ['admin-properties'] });
       setIsEditing(false);
     },
     onError: (error: any) => {
@@ -76,14 +93,18 @@ const PropertyModal = ({ isOpen, onClose, propertyId, mode }: PropertyModalProps
     const updates = {
       title: formData.title,
       description: formData.description,
-      price: formData.price,
+      price: formData.price ? parseFloat(formData.price) : null,
       location: formData.location,
-      bedrooms: formData.bedrooms,
-      bathrooms: formData.bathrooms,
-      area_sqm: formData.area_sqm,
+      city: formData.city,
+      state: formData.state,
+      area: formData.area,
+      bedrooms: formData.bedrooms ? parseInt(formData.bedrooms) : null,
+      bathrooms: formData.bathrooms ? parseInt(formData.bathrooms) : null,
+      area_sqm: formData.area_sqm ? parseInt(formData.area_sqm) : null,
       property_type: formData.property_type,
       listing_type: formData.listing_type,
       status: formData.status,
+      updated_at: new Date().toISOString(),
     };
     
     updatePropertyMutation.mutate(updates);
@@ -119,9 +140,6 @@ const PropertyModal = ({ isOpen, onClose, propertyId, mode }: PropertyModalProps
   }
 
   if (!property) return null;
-
-  // Safely get owner data - it could be an array or a single object
-  const ownerData = Array.isArray(property.owner) ? property.owner[0] : property.owner;
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -173,13 +191,14 @@ const PropertyModal = ({ isOpen, onClose, propertyId, mode }: PropertyModalProps
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="price">Price</Label>
+                <Label htmlFor="price">Price (IDR)</Label>
                 {isEditing ? (
                   <Input
                     id="price"
                     type="number"
                     value={formData.price || ''}
-                    onChange={(e) => handleInputChange('price', parseFloat(e.target.value))}
+                    onChange={(e) => handleInputChange('price', e.target.value)}
+                    placeholder="Enter price"
                   />
                 ) : (
                   <p className="font-medium text-green-600">
@@ -188,7 +207,7 @@ const PropertyModal = ({ isOpen, onClose, propertyId, mode }: PropertyModalProps
                 )}
               </div>
 
-              <div className="space-y-2 col-span-2">
+              <div className="space-y-2">
                 <Label htmlFor="location">Location</Label>
                 {isEditing ? (
                   <Input
@@ -201,6 +220,106 @@ const PropertyModal = ({ isOpen, onClose, propertyId, mode }: PropertyModalProps
                     <MapPin className="h-4 w-4 text-gray-500" />
                     <span>{property.location}</span>
                   </div>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="city">City</Label>
+                {isEditing ? (
+                  <Input
+                    id="city"
+                    value={formData.city || ''}
+                    onChange={(e) => handleInputChange('city', e.target.value)}
+                  />
+                ) : (
+                  <p className="font-medium">{property.city || 'Not specified'}</p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="state">State</Label>
+                {isEditing ? (
+                  <Input
+                    id="state"
+                    value={formData.state || ''}
+                    onChange={(e) => handleInputChange('state', e.target.value)}
+                  />
+                ) : (
+                  <p className="font-medium">{property.state || 'Not specified'}</p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="area">Area</Label>
+                {isEditing ? (
+                  <Input
+                    id="area"
+                    value={formData.area || ''}
+                    onChange={(e) => handleInputChange('area', e.target.value)}
+                  />
+                ) : (
+                  <p className="font-medium">{property.area || 'Not specified'}</p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="property_type">Property Type</Label>
+                {isEditing ? (
+                  <Select value={formData.property_type} onValueChange={(value) => handleInputChange('property_type', value)}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="house">House</SelectItem>
+                      <SelectItem value="apartment">Apartment</SelectItem>
+                      <SelectItem value="villa">Villa</SelectItem>
+                      <SelectItem value="townhouse">Townhouse</SelectItem>
+                      <SelectItem value="land">Land</SelectItem>
+                      <SelectItem value="commercial">Commercial</SelectItem>
+                    </SelectContent>
+                  </Select>
+                ) : (
+                  <p className="font-medium capitalize">{property.property_type}</p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="listing_type">Listing Type</Label>
+                {isEditing ? (
+                  <Select value={formData.listing_type} onValueChange={(value) => handleInputChange('listing_type', value)}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="sale">For Sale</SelectItem>
+                      <SelectItem value="rent">For Rent</SelectItem>
+                      <SelectItem value="lease">For Lease</SelectItem>
+                    </SelectContent>
+                  </Select>
+                ) : (
+                  <p className="font-medium capitalize">{property.listing_type}</p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="status">Status</Label>
+                {isEditing ? (
+                  <Select value={formData.status} onValueChange={(value) => handleInputChange('status', value)}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="active">Active</SelectItem>
+                      <SelectItem value="pending_approval">Pending Approval</SelectItem>
+                      <SelectItem value="rejected">Rejected</SelectItem>
+                      <SelectItem value="sold">Sold</SelectItem>
+                      <SelectItem value="rented">Rented</SelectItem>
+                    </SelectContent>
+                  </Select>
+                ) : (
+                  <Badge variant={property.status === 'active' ? 'default' : 'secondary'}>
+                    {property.status}
+                  </Badge>
                 )}
               </div>
 
@@ -217,18 +336,6 @@ const PropertyModal = ({ isOpen, onClose, propertyId, mode }: PropertyModalProps
                   <p className="text-gray-700">{property.description || 'No description available'}</p>
                 )}
               </div>
-            </div>
-
-            <div className="flex items-center gap-4 pt-4">
-              <Badge variant={property.status === 'active' ? 'default' : 'secondary'}>
-                {property.status}
-              </Badge>
-              <Badge variant="outline">
-                {property.property_type}
-              </Badge>
-              <Badge variant="outline">
-                {property.listing_type}
-              </Badge>
             </div>
 
             {isEditing && (
@@ -253,20 +360,55 @@ const PropertyModal = ({ isOpen, onClose, propertyId, mode }: PropertyModalProps
 
           <TabsContent value="specifications" className="space-y-4">
             <div className="grid grid-cols-3 gap-4">
-              <div className="text-center p-4 bg-gray-50 rounded-lg">
-                <Bed className="h-8 w-8 text-gray-600 mx-auto mb-2" />
-                <div className="font-semibold">{property.bedrooms || 'N/A'}</div>
-                <div className="text-sm text-gray-600">Bedrooms</div>
+              <div className="space-y-2">
+                <Label>Bedrooms</Label>
+                {isEditing ? (
+                  <Input
+                    type="number"
+                    value={formData.bedrooms || ''}
+                    onChange={(e) => handleInputChange('bedrooms', e.target.value)}
+                  />
+                ) : (
+                  <div className="text-center p-4 bg-gray-50 rounded-lg">
+                    <Bed className="h-8 w-8 text-gray-600 mx-auto mb-2" />
+                    <div className="font-semibold">{property.bedrooms || 'N/A'}</div>
+                    <div className="text-sm text-gray-600">Bedrooms</div>
+                  </div>
+                )}
               </div>
-              <div className="text-center p-4 bg-gray-50 rounded-lg">
-                <Bath className="h-8 w-8 text-gray-600 mx-auto mb-2" />
-                <div className="font-semibold">{property.bathrooms || 'N/A'}</div>
-                <div className="text-sm text-gray-600">Bathrooms</div>
+              
+              <div className="space-y-2">
+                <Label>Bathrooms</Label>
+                {isEditing ? (
+                  <Input
+                    type="number"
+                    value={formData.bathrooms || ''}
+                    onChange={(e) => handleInputChange('bathrooms', e.target.value)}
+                  />
+                ) : (
+                  <div className="text-center p-4 bg-gray-50 rounded-lg">
+                    <Bath className="h-8 w-8 text-gray-600 mx-auto mb-2" />
+                    <div className="font-semibold">{property.bathrooms || 'N/A'}</div>
+                    <div className="text-sm text-gray-600">Bathrooms</div>
+                  </div>
+                )}
               </div>
-              <div className="text-center p-4 bg-gray-50 rounded-lg">
-                <Square className="h-8 w-8 text-gray-600 mx-auto mb-2" />
-                <div className="font-semibold">{property.area_sqm || 'N/A'}</div>
-                <div className="text-sm text-gray-600">Sqm</div>
+              
+              <div className="space-y-2">
+                <Label>Area (sqm)</Label>
+                {isEditing ? (
+                  <Input
+                    type="number"
+                    value={formData.area_sqm || ''}
+                    onChange={(e) => handleInputChange('area_sqm', e.target.value)}
+                  />
+                ) : (
+                  <div className="text-center p-4 bg-gray-50 rounded-lg">
+                    <Square className="h-8 w-8 text-gray-600 mx-auto mb-2" />
+                    <div className="font-semibold">{property.area_sqm || 'N/A'}</div>
+                    <div className="text-sm text-gray-600">Sqm</div>
+                  </div>
+                )}
               </div>
             </div>
           </TabsContent>
