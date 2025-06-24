@@ -9,12 +9,13 @@ import { AlertProvider } from "@/contexts/AlertContext";
 import { ThemeSettingsProvider } from "@/contexts/ThemeSettingsContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { SessionMonitor } from "@/components/SessionMonitor";
+import AppInitializer from "@/components/AppInitializer";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import ContentManagement from "./pages/ContentManagement";
 import Loading from "./pages/Loading";
-import { SessionMonitor } from "@/components/SessionMonitor";
 
 const queryClient = new QueryClient();
 
@@ -29,14 +30,16 @@ const App: React.FC = () => {
                 <TooltipProvider>
                   <Toaster />
                   <BrowserRouter>
-                    <SessionMonitor />
-                    <Routes>
-                      <Route path="/" element={<Index />} />
-                      <Route path="/dashboard" element={<Dashboard />} />
-                      <Route path="/admin" element={<AdminDashboard />} />
-                      <Route path="/content-management" element={<ContentManagement />} />
-                      <Route path="/loading" element={<Loading />} />
-                    </Routes>
+                    <AppInitializer>
+                      <SessionMonitor />
+                      <Routes>
+                        <Route path="/" element={<Index />} />
+                        <Route path="/dashboard" element={<Dashboard />} />
+                        <Route path="/admin" element={<AdminDashboard />} />
+                        <Route path="/content-management" element={<ContentManagement />} />
+                        <Route path="/loading" element={<Loading />} />
+                      </Routes>
+                    </AppInitializer>
                   </BrowserRouter>
                 </TooltipProvider>
               </AlertProvider>
