@@ -70,14 +70,16 @@ const SystemSettings = () => {
       </div>
 
       <Tabs defaultValue="general" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-6">
-          <TabsTrigger value="general">General</TabsTrigger>
-          <TabsTrigger value="security">Security</TabsTrigger>
-          <TabsTrigger value="notifications">Notifications</TabsTrigger>
-          <TabsTrigger value="files">Files</TabsTrigger>
-          <TabsTrigger value="system">System</TabsTrigger>
-          <TabsTrigger value="backup">Backup</TabsTrigger>
-        </TabsList>
+        <div className="overflow-x-auto">
+          <TabsList className="grid w-full grid-cols-6 min-w-fit">
+            <TabsTrigger value="general" className="whitespace-nowrap">General</TabsTrigger>
+            <TabsTrigger value="security" className="whitespace-nowrap">Security</TabsTrigger>
+            <TabsTrigger value="notifications" className="whitespace-nowrap">Notifications</TabsTrigger>
+            <TabsTrigger value="files" className="whitespace-nowrap">Files</TabsTrigger>
+            <TabsTrigger value="system" className="whitespace-nowrap">System Monitor</TabsTrigger>
+            <TabsTrigger value="backup" className="whitespace-nowrap">Backup</TabsTrigger>
+          </TabsList>
+        </div>
 
         <TabsContent value="general" className="space-y-4">
           <GeneralSettings 
