@@ -17,7 +17,7 @@ import { useAlert } from "@/contexts/AlertContext";
 
 const ContentManagement = () => {
   const [showForm, setShowForm] = useState(false);
-  const [editingContent, setEditingContent] = useState(null);
+  const [editingContent, setEditingContent] = useState<any>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState("all");
   const [filterStatus, setFilterStatus] = useState("all");
@@ -25,14 +25,13 @@ const ContentManagement = () => {
     title: '',
     slug: '',
     type: 'page',
-    content: {},
+    content: '',
     status: 'draft',
     category_id: '',
-    excerpt: '',
     featured_image: '',
     seo_title: '',
     seo_description: '',
-    tags: '',
+    seo_keywords: '',
     author_id: '',
     publish_date: ''
   });
@@ -50,7 +49,7 @@ const ContentManagement = () => {
         .order('created_at', { ascending: false });
       
       if (searchTerm) {
-        query = query.or(`title.ilike.%${searchTerm}%,content->>body.ilike.%${searchTerm}%`);
+        query = query.or(`title.ilike.%${searchTerm}%`);
       }
       
       if (filterType !== 'all') {
@@ -86,10 +85,8 @@ const ContentManagement = () => {
     mutationFn: async (contentData: any) => {
       const processedData = {
         ...contentData,
-        content: typeof contentData.content === 'string' 
-          ? { body: contentData.content } 
-          : contentData.content,
-        tags: contentData.tags ? contentData.tags.split(',').map((t: string) => t.trim()) : []
+        content: contentData.content || '',
+        seo_keywords: contentData.seo_keywords ? contentData.seo_keywords.split(',').map((k: string) => k.trim()) : []
       };
       
       const { error } = await supabase
@@ -112,10 +109,8 @@ const ContentManagement = () => {
     mutationFn: async ({ id, updates }: { id: string; updates: any }) => {
       const processedUpdates = {
         ...updates,
-        content: typeof updates.content === 'string' 
-          ? { body: updates.content } 
-          : updates.content,
-        tags: updates.tags ? updates.tags.split(',').map((t: string) => t.trim()) : []
+        content: updates.content || '',
+        seo_keywords: updates.seo_keywords ? updates.seo_keywords.split(',').map((k: string) => k.trim()) : []
       };
       
       const { error } = await supabase
@@ -158,14 +153,13 @@ const ContentManagement = () => {
       title: '',
       slug: '',
       type: 'page',
-      content: {},
+      content: '',
       status: 'draft',
       category_id: '',
-      excerpt: '',
       featured_image: '',
       seo_title: '',
       seo_description: '',
-      tags: '',
+      seo_keywords: '',
       author_id: '',
       publish_date: ''
     });
@@ -182,17 +176,16 @@ const ContentManagement = () => {
   const handleEdit = (item: any) => {
     setEditingContent(item);
     setFormData({
-      title: item.title,
+      title: item.title || '',
       slug: item.slug || '',
-      type: item.type,
-      content: typeof item.content === 'object' ? JSON.stringify(item.content, null, 2) : item.content || '',
-      status: item.status,
+      type: item.type || 'page',
+      content: typeof item.content === 'string' ? item.content : (item.content ? JSON.stringify(item.content, null, 2) : ''),
+      status: item.status || 'draft',
       category_id: item.category_id || '',
-      excerpt: item.excerpt || '',
       featured_image: item.featured_image || '',
       seo_title: item.seo_title || '',
       seo_description: item.seo_description || '',
-      tags: Array.isArray(item.tags) ? item.tags.join(', ') : '',
+      seo_keywords: Array.isArray(item.seo_keywords) ? item.seo_keywords.join(', ') : '',
       author_id: item.author_id || '',
       publish_date: item.publish_date || ''
     });
@@ -223,10 +216,20 @@ const ContentManagement = () => {
     }
   };
 
+  const getContentPreview = (content: any) => {
+    if (typeof content === 'string') {
+      return content.length > 100 ? content.substring(0, 100) + '...' : content;
+    }
+    if (content && typeof content === 'object') {
+      const contentStr = JSON.stringify(content);
+      return contentStr.length > 100 ? contentStr.substring(0, 100) + '...' : contentStr;
+    }
+    return 'No content available';
+  };
+
   const filteredContent = content?.filter(item => {
     const matchesSearch = !searchTerm || 
-      item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (item.content?.body && item.content.body.toLowerCase().includes(searchTerm.toLowerCase()));
+      item.title.toLowerCase().includes(searchTerm.toLowerCase());
     
     const matchesType = filterType === 'all' || item.type === filterType;
     const matchesStatus = filterStatus === 'all' || item.status === filterStatus;
@@ -341,18 +344,6 @@ const ContentManagement = () => {
                     </div>
                     
                     <div className="grid gap-2">
-                      <Label htmlFor="excerpt" className="text-foreground">Excerpt</Label>
-                      <Textarea
-                        id="excerpt"
-                        value={formData.excerpt}
-                        onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
-                        placeholder="Brief description or excerpt"
-                        rows={3}
-                        className="bg-background border-border text-foreground"
-                      />
-                    </div>
-                    
-                    <div className="grid gap-2">
                       <Label htmlFor="featured_image" className="text-foreground">Featured Image URL</Label>
                       <Input
                         id="featured_image"
@@ -362,18 +353,6 @@ const ContentManagement = () => {
                         className="bg-background border-border text-foreground"
                       />
                     </div>
-                    
-                    <div className="grid gap-2">
-                      <Label htmlFor="tags" className="text-foreground">Tags</Label>
-                      <Input
-                        id="tags"
-                        value={formData.tags}
-                        onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
-                        placeholder="tag1, tag2, tag3"
-                        className="bg-background border-border text-foreground"
-                      />
-                      <p className="text-sm text-muted-foreground">Separate tags with commas</p>
-                    </div>
                   </TabsContent>
                   
                   <TabsContent value="content" className="space-y-4">
@@ -381,14 +360,14 @@ const ContentManagement = () => {
                       <Label htmlFor="content" className="text-foreground">Content</Label>
                       <Textarea
                         id="content"
-                        value={typeof formData.content === 'string' ? formData.content : JSON.stringify(formData.content, null, 2)}
+                        value={formData.content}
                         onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                        placeholder="Enter your content here... You can use JSON format for structured content."
+                        placeholder="Enter your content here..."
                         rows={15}
                         className="bg-background border-border text-foreground font-mono"
                       />
                       <p className="text-sm text-muted-foreground">
-                        For simple content, just type normally. For structured content, use JSON format like: {"{"}"body": "Your content here", "sections": [...]{"}"} 
+                        Enter your content in markdown or HTML format
                       </p>
                     </div>
                   </TabsContent>
@@ -415,6 +394,18 @@ const ContentManagement = () => {
                         rows={3}
                         className="bg-background border-border text-foreground"
                       />
+                    </div>
+                    
+                    <div className="grid gap-2">
+                      <Label htmlFor="seo_keywords" className="text-foreground">SEO Keywords</Label>
+                      <Input
+                        id="seo_keywords"
+                        value={formData.seo_keywords}
+                        onChange={(e) => setFormData({ ...formData, seo_keywords: e.target.value })}
+                        placeholder="keyword1, keyword2, keyword3"
+                        className="bg-background border-border text-foreground"
+                      />
+                      <p className="text-sm text-muted-foreground">Separate keywords with commas</p>
                     </div>
                     
                     <div className="grid gap-2">
@@ -521,9 +512,9 @@ const ContentManagement = () => {
                           {item.slug && (
                             <div className="text-sm text-muted-foreground">/{item.slug}</div>
                           )}
-                          {item.excerpt && (
-                            <div className="text-sm text-muted-foreground mt-1 line-clamp-2">{item.excerpt}</div>
-                          )}
+                          <div className="text-sm text-muted-foreground mt-1 line-clamp-2">
+                            {getContentPreview(item.content)}
+                          </div>
                         </div>
                       </TableCell>
                       <TableCell>
