@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -16,9 +15,12 @@ import {
   TrendingUp,
   RefreshCw,
   UserCheck,
-  UserPlus
+  UserPlus,
+  Wifi,
+  WifiOff
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { useDatabaseConnection } from "@/hooks/useDatabaseConnection";
 
 // Simplified type definitions
 interface ServiceStatus {
@@ -54,6 +56,13 @@ interface Metrics {
 
 const SystemMonitor = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const { 
+    connectionStatus, 
+    isLoading: connectionLoading, 
+    retryConnection, 
+    isConnected,
+    lastChecked 
+  } = useDatabaseConnection();
 
   const { data: systemStatus, refetch } = useQuery({
     queryKey: ['system-status'],
@@ -71,6 +80,7 @@ const SystemMonitor = () => {
       };
     },
     refetchInterval: 30000,
+    enabled: isConnected, // Only run when database is connected
   });
 
   const { data: metrics } = useQuery({
@@ -115,15 +125,28 @@ const SystemMonitor = () => {
       };
     },
     refetchInterval: 30000,
+    enabled: isConnected, // Only run when database is connected
   });
 
   const checkDatabaseHealth = async (): Promise<ServiceStatus> => {
+    // Use the actual connection status from the hook
+    if (!isConnected) {
+      return {
+        status: 'error',
+        message: 'Database connection failed',
+        responseTime: 0
+      };
+    }
+
     try {
+      const start = Date.now();
       const { error } = await supabase.from('profiles').select('count').limit(1);
+      const responseTime = Date.now() - start;
+      
       return {
         status: error ? 'error' : 'healthy',
         message: error ? error.message : 'Connection stable',
-        responseTime: Math.floor(Math.random() * 50) + 20
+        responseTime
       };
     } catch (error) {
       return {
@@ -166,7 +189,10 @@ const SystemMonitor = () => {
 
   const handleRefresh = async () => {
     setIsRefreshing(true);
-    await refetch();
+    await Promise.all([
+      retryConnection(),
+      refetch()
+    ]);
     setTimeout(() => setIsRefreshing(false), 1000);
   };
 
@@ -183,19 +209,76 @@ const SystemMonitor = () => {
     }
   };
 
+  const getConnectionIcon = () => {
+    if (connectionStatus === 'connected') {
+      return <Wifi className="h-4 w-4 text-green-500" />;
+    } else {
+      return <WifiOff className="h-4 w-4 text-red-500" />;
+    }
+  };
+
+  const getConnectionStatus = () => {
+    switch (connectionStatus) {
+      case 'connected':
+        return <Badge className="bg-green-500">Connected</Badge>;
+      case 'connecting':
+        return <Badge variant="secondary">Connecting...</Badge>;
+      case 'error':
+        return <Badge variant="destructive">Connection Error</Badge>;
+      case 'offline':
+        return <Badge variant="destructive">Offline</Badge>;
+      default:
+        return <Badge variant="outline">Unknown</Badge>;
+    }
+  };
+
   return (
     <div className="space-y-6">
-      {/* Header */}
+      {/* Header with Real Connection Status */}
       <div className="flex justify-between items-center">
         <div>
           <h2 className="text-2xl font-bold">System Monitor</h2>
-          <p className="text-muted-foreground">Real-time system health and performance monitoring</p>
+          <div className="flex items-center gap-2 mt-1">
+            <p className="text-muted-foreground">Real-time system health and performance monitoring</p>
+            {getConnectionIcon()}
+            {getConnectionStatus()}
+          </div>
         </div>
-        <Button onClick={handleRefresh} disabled={isRefreshing} variant="outline">
-          <RefreshCw className={`h-4 w-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
+        <Button onClick={handleRefresh} disabled={isRefreshing || connectionLoading} variant="outline">
+          <RefreshCw className={`h-4 w-4 mr-2 ${(isRefreshing || connectionLoading) ? 'animate-spin' : ''}`} />
           Refresh
         </Button>
       </div>
+
+      {/* Connection Status Alert */}
+      {!isConnected && (
+        <Card className="border-red-200 bg-red-50">
+          <CardContent className="pt-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <AlertTriangle className="h-6 w-6 text-red-500" />
+                <div>
+                  <h3 className="font-semibold text-red-700">Database Connection Issue</h3>
+                  <p className="text-red-600">Unable to connect to the database. Please check your connection.</p>
+                  {lastChecked && (
+                    <p className="text-sm text-red-500 mt-1">
+                      Last successful connection: {lastChecked.toLocaleString()}
+                    </p>
+                  )}
+                </div>
+              </div>
+              <Button 
+                onClick={retryConnection} 
+                disabled={connectionLoading}
+                variant="outline"
+                className="border-red-300 text-red-700 hover:bg-red-100"
+              >
+                {connectionLoading ? 'Retrying...' : 'Retry Connection'}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Overall Health */}
       <Card className="glass-ios">
@@ -206,6 +289,11 @@ const SystemMonitor = () => {
           </CardTitle>
           <CardDescription>
             Last updated: {systemStatus?.lastChecked ? new Date(systemStatus.lastChecked).toLocaleTimeString() : 'Never'}
+            {lastChecked && (
+              <span className="ml-2 text-sm">
+                | DB Check: {lastChecked.toLocaleTimeString()}
+              </span>
+            )}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -213,10 +301,10 @@ const SystemMonitor = () => {
             <div className="flex items-center justify-between">
               <span className="text-lg font-semibold">Overall Health</span>
               <span className="text-2xl font-bold text-green-600">
-                {systemStatus?.overallHealth || 0}%
+                {isConnected ? (systemStatus?.overallHealth || 0) : 0}%
               </span>
             </div>
-            <Progress value={systemStatus?.overallHealth || 0} className="h-3" />
+            <Progress value={isConnected ? (systemStatus?.overallHealth || 0) : 0} className="h-3" />
           </div>
         </CardContent>
       </Card>
@@ -232,12 +320,12 @@ const SystemMonitor = () => {
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {getStatusBadge(systemStatus?.database?.status || 'unknown')}
+              {getStatusBadge(isConnected ? (systemStatus?.database?.status || 'error') : 'error')}
               <p className="text-sm text-muted-foreground">
-                {systemStatus?.database?.message || 'Checking...'}
+                {isConnected ? (systemStatus?.database?.message || 'Checking...') : 'Connection failed'}
               </p>
               <div className="text-xs text-muted-foreground">
-                Response: {systemStatus?.database?.responseTime || 0}ms
+                Response: {isConnected ? (systemStatus?.database?.responseTime || 0) : 0}ms
               </div>
             </div>
           </CardContent>
@@ -294,7 +382,9 @@ const SystemMonitor = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-blue-600">{metrics?.activeMembers || 0}</div>
+            <div className="text-2xl font-bold text-blue-600">
+              {isConnected ? (metrics?.activeMembers || 0) : 0}
+            </div>
             <div className="flex items-center text-xs text-muted-foreground">
               <TrendingUp className="h-3 w-3 mr-1" />
               Users active in last 30 days
@@ -310,7 +400,9 @@ const SystemMonitor = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">{metrics?.activeUsers || 0}</div>
+            <div className="text-2xl font-bold text-green-600">
+              {isConnected ? (metrics?.activeUsers || 0) : 0}
+            </div>
             <div className="flex items-center text-xs text-muted-foreground">
               <Clock className="h-3 w-3 mr-1" />
               Currently active users
@@ -326,7 +418,7 @@ const SystemMonitor = () => {
             <CardTitle className="text-sm font-medium">Total Users</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{metrics?.totalUsers || 0}</div>
+            <div className="text-2xl font-bold">{isConnected ? (metrics?.totalUsers || 0) : 0}</div>
             <div className="flex items-center text-xs text-muted-foreground">
               <TrendingUp className="h-3 w-3 mr-1" />
               All registered users
@@ -339,7 +431,7 @@ const SystemMonitor = () => {
             <CardTitle className="text-sm font-medium">Properties</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{metrics?.totalProperties || 0}</div>
+            <div className="text-2xl font-bold">{isConnected ? (metrics?.totalProperties || 0) : 0}</div>
             <div className="flex items-center text-xs text-muted-foreground">
               <Clock className="h-3 w-3 mr-1" />
               Total in database
@@ -352,7 +444,7 @@ const SystemMonitor = () => {
             <CardTitle className="text-sm font-medium">Vendors</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{metrics?.totalVendors || 0}</div>
+            <div className="text-2xl font-bold">{isConnected ? (metrics?.totalVendors || 0) : 0}</div>
             <div className="flex items-center text-xs text-muted-foreground">
               <Users className="h-3 w-3 mr-1" />
               Registered vendors
@@ -365,7 +457,7 @@ const SystemMonitor = () => {
             <CardTitle className="text-sm font-medium">Property Owners</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{metrics?.totalPropertyOwners || 0}</div>
+            <div className="text-2xl font-bold">{isConnected ? (metrics?.totalPropertyOwners || 0) : 0}</div>
             <div className="flex items-center text-xs text-muted-foreground">
               <Users className="h-3 w-3 mr-1" />
               Property owners
@@ -381,7 +473,7 @@ const SystemMonitor = () => {
             <CardTitle className="text-sm font-medium">Agents</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{metrics?.totalAgents || 0}</div>
+            <div className="text-2xl font-bold">{isConnected ? (metrics?.totalAgents || 0) : 0}</div>
             <div className="flex items-center text-xs text-muted-foreground">
               <Users className="h-3 w-3 mr-1" />
               Registered agents
@@ -394,7 +486,7 @@ const SystemMonitor = () => {
             <CardTitle className="text-sm font-medium">System Uptime</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{metrics?.uptime || 'N/A'}</div>
+            <div className="text-2xl font-bold">{isConnected ? (metrics?.uptime || 'N/A') : 'N/A'}</div>
             <div className="flex items-center text-xs text-muted-foreground">
               <CheckCircle className="h-3 w-3 mr-1" />
               Last 30 days
@@ -407,7 +499,7 @@ const SystemMonitor = () => {
             <CardTitle className="text-sm font-medium">Response Time</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{metrics?.responseTime || 'N/A'}</div>
+            <div className="text-2xl font-bold">{isConnected ? (metrics?.responseTime || 'N/A') : 'N/A'}</div>
             <div className="flex items-center text-xs text-muted-foreground">
               <Activity className="h-3 w-3 mr-1" />
               Average response
@@ -417,7 +509,7 @@ const SystemMonitor = () => {
       </div>
 
       {/* Error Summary */}
-      {metrics?.errorCount && metrics.errorCount > 0 && (
+      {isConnected && metrics?.errorCount && metrics.errorCount > 0 && (
         <Card className="glass-ios border-red-200">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-red-700">

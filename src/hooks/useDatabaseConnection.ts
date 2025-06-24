@@ -5,77 +5,67 @@ import { supabase } from '@/integrations/supabase/client';
 export type ConnectionStatus = 'connecting' | 'connected' | 'error' | 'offline';
 
 export const useDatabaseConnection = () => {
-  const [connectionStatus, setConnectionStatus] = useState<ConnectionStatus>('offline');
+  const [connectionStatus, setConnectionStatus] = useState<ConnectionStatus>('connecting');
   const [isLoading, setIsLoading] = useState(false);
+  const [lastChecked, setLastChecked] = useState<Date | null>(null);
+
+  const checkConnection = async () => {
+    try {
+      setConnectionStatus('connecting');
+      
+      // Test with a simple, fast query with timeout
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 3000);
+      
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('id')
+        .limit(1)
+        .abortSignal(controller.signal);
+
+      clearTimeout(timeoutId);
+
+      if (error) {
+        console.error('Database connection error:', error);
+        setConnectionStatus('error');
+        return false;
+      } else {
+        setConnectionStatus('connected');
+        setLastChecked(new Date());
+        return true;
+      }
+    } catch (error) {
+      console.error('Database connection failed:', error);
+      setConnectionStatus('offline');
+      return false;
+    }
+  };
 
   useEffect(() => {
-    // Don't block app startup - assume offline initially
-    setConnectionStatus('offline');
+    // Initial connection check
+    checkConnection();
     
-    // Very lightweight background check - only when user interacts
-    const checkConnectionLater = () => {
-      setTimeout(async () => {
-        try {
-          setConnectionStatus('connecting');
-          
-          // Ultra-fast timeout (1 second max)
-          const timeoutPromise = new Promise<never>((_, reject) => {
-            setTimeout(() => reject(new Error('Quick timeout')), 1000);
-          });
+    // Set up periodic connection checking every 30 seconds
+    const interval = setInterval(() => {
+      checkConnection();
+    }, 30000);
 
-          const connectionPromise = supabase
-            .from('profiles')
-            .select('id')
-            .limit(1);
-
-          const { error } = await Promise.race([connectionPromise, timeoutPromise]);
-
-          if (error) {
-            setConnectionStatus('offline');
-          } else {
-            setConnectionStatus('connected');
-          }
-        } catch (error) {
-          setConnectionStatus('offline');
-        }
-      }, 3000); // Wait 3 seconds after app loads before checking
-    };
-
-    checkConnectionLater();
+    return () => clearInterval(interval);
   }, []);
 
   const retryConnection = async () => {
     setIsLoading(true);
-    setConnectionStatus('connecting');
-    
-    try {
-      const timeoutPromise = new Promise<never>((_, reject) => {
-        setTimeout(() => reject(new Error('Connection timeout')), 2000);
-      });
-
-      const connectionPromise = supabase
-        .from('profiles')
-        .select('id')
-        .limit(1);
-
-      const { error } = await Promise.race([connectionPromise, timeoutPromise]);
-
-      if (error) {
-        setConnectionStatus('error');
-      } else {
-        setConnectionStatus('connected');
-      }
-    } catch (error) {
-      setConnectionStatus('offline');
-    } finally {
-      setIsLoading(false);
-    }
+    const result = await checkConnection();
+    setIsLoading(false);
+    return result;
   };
 
   return {
     connectionStatus,
     isLoading,
     retryConnection,
-    isConnected: connectionStatus === 'connected'
+    isConnected: connectionStatus === 'connected',
+    lastChecked,
+    checkConnection
   };
 };
