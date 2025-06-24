@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -7,8 +8,9 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import { AlertTriangle, CheckCircle, Info, X, Eye } from "lucide-react";
+import { AlertTriangle, CheckCircle, Info, X, Eye, UserPlus, Building2, ShoppingCart } from "lucide-react";
 import { useAlert } from "@/contexts/AlertContext";
+import ActivityDetailsModal from "./ActivityDetailsModal";
 
 interface AdminAlert {
   id: string;
@@ -26,6 +28,15 @@ interface AdminAlert {
 const AdminAlertSystem = () => {
   const [selectedAlert, setSelectedAlert] = useState<AdminAlert | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [activityModal, setActivityModal] = useState<{
+    isOpen: boolean;
+    type: 'properties' | 'users';
+    title: string;
+  }>({
+    isOpen: false,
+    type: 'properties',
+    title: ''
+  });
   const { showSuccess } = useAlert();
   const queryClient = useQueryClient();
 
@@ -39,6 +50,38 @@ const AdminAlertSystem = () => {
       
       if (error) throw error;
       return data as AdminAlert[];
+    },
+  });
+
+  // Fetch today's new properties
+  const { data: todayProperties } = useQuery({
+    queryKey: ['today-properties'],
+    queryFn: async () => {
+      const today = new Date().toISOString().split('T')[0];
+      const { data, error } = await supabase
+        .from('properties')
+        .select('id, title, created_at, owner_id, status')
+        .gte('created_at', today)
+        .order('created_at', { ascending: false });
+      
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  // Fetch today's new users
+  const { data: todayUsers } = useQuery({
+    queryKey: ['today-users'],
+    queryFn: async () => {
+      const today = new Date().toISOString().split('T')[0];
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('id, full_name, email, role, created_at')
+        .gte('created_at', today)
+        .order('created_at', { ascending: false });
+      
+      if (error) throw error;
+      return data;
     },
   });
 
@@ -73,7 +116,6 @@ const AdminAlertSystem = () => {
   });
 
   const handleViewAlert = (alert: AdminAlert) => {
-    console.log('Opening alert:', alert);
     setSelectedAlert(alert);
     setIsDialogOpen(true);
     
@@ -88,6 +130,22 @@ const AdminAlertSystem = () => {
     setSelectedAlert(null);
   };
 
+  const handleShowPropertiesDetails = () => {
+    setActivityModal({
+      isOpen: true,
+      type: 'properties',
+      title: `Today's New Properties (${todayProperties?.length || 0})`
+    });
+  };
+
+  const handleShowUsersDetails = () => {
+    setActivityModal({
+      isOpen: true,
+      type: 'users',
+      title: `Today's New Users (${todayUsers?.length || 0})`
+    });
+  };
+
   const getAlertIcon = (type: string) => {
     switch (type.toLowerCase()) {
       case 'error':
@@ -95,6 +153,12 @@ const AdminAlertSystem = () => {
         return AlertTriangle;
       case 'success':
         return CheckCircle;
+      case 'property':
+        return Building2;
+      case 'user':
+        return UserPlus;
+      case 'sale':
+        return ShoppingCart;
       default:
         return Info;
     }
@@ -117,6 +181,8 @@ const AdminAlertSystem = () => {
   };
 
   const unreadCount = alerts?.filter(alert => !alert.is_read).length || 0;
+  const todayPropertiesCount = todayProperties?.length || 0;
+  const todayUsersCount = todayUsers?.length || 0;
 
   return (
     <>
@@ -125,7 +191,7 @@ const AdminAlertSystem = () => {
           <div className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-2">
               <AlertTriangle className="h-5 w-5" />
-              System Alerts
+              Admin Alerts & Today's Activity
               {unreadCount > 0 && (
                 <Badge variant="destructive" className="ml-2">
                   {unreadCount} unread
@@ -135,6 +201,35 @@ const AdminAlertSystem = () => {
           </div>
         </CardHeader>
         <CardContent>
+          {/* Today's Activity Summary */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <Card className="cursor-pointer hover:bg-muted/50 transition-colors" onClick={handleShowPropertiesDetails}>
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-muted-foreground">New Properties Today</p>
+                    <p className="text-2xl font-bold text-green-600">{todayPropertiesCount}</p>
+                    <p className="text-xs text-muted-foreground">Click to view details</p>
+                  </div>
+                  <Building2 className="h-8 w-8 text-green-500" />
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="cursor-pointer hover:bg-muted/50 transition-colors" onClick={handleShowUsersDetails}>
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-muted-foreground">New Users Today</p>
+                    <p className="text-2xl font-bold text-blue-600">{todayUsersCount}</p>
+                    <p className="text-xs text-muted-foreground">Click to view details</p>
+                  </div>
+                  <UserPlus className="h-8 w-8 text-blue-500" />
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
           <ScrollArea className="h-80">
             {isLoading ? (
               <div className="text-center py-4">Loading alerts...</div>
@@ -151,7 +246,7 @@ const AdminAlertSystem = () => {
                     <div
                       key={alert.id}
                       className={`p-3 border rounded-lg cursor-pointer transition-colors hover:bg-muted/50 ${
-                        !alert.is_read ? 'bg-blue-50 border-blue-200' : ''
+                        !alert.is_read ? 'bg-blue-50 border-blue-200 dark:bg-blue-950/20 dark:border-blue-800' : ''
                       }`}
                       onClick={() => handleViewAlert(alert)}
                     >
@@ -168,6 +263,11 @@ const AdminAlertSystem = () => {
                             {alert.action_required && (
                               <Badge variant="outline" className="text-xs">
                                 Action Required
+                              </Badge>
+                            )}
+                            {!alert.is_read && (
+                              <Badge variant="default" className="text-xs bg-blue-500">
+                                New
                               </Badge>
                             )}
                           </div>
@@ -199,6 +299,7 @@ const AdminAlertSystem = () => {
         </CardContent>
       </Card>
 
+      {/* Alert Details Modal */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
@@ -237,11 +338,16 @@ const AdminAlertSystem = () => {
                     Action Required
                   </Badge>
                 )}
+                {selectedAlert.is_read && (
+                  <Badge variant="default" className="bg-green-500">
+                    Read
+                  </Badge>
+                )}
               </div>
               
               <Separator />
               
-              <DialogDescription className="text-base leading-relaxed">
+              <DialogDescription className="text-base leading-relaxed whitespace-pre-wrap">
                 {selectedAlert.message}
               </DialogDescription>
               
@@ -267,11 +373,21 @@ const AdminAlertSystem = () => {
                 >
                   Close
                 </Button>
+                {!selectedAlert.is_read && (
+                  <Button
+                    variant="default"
+                    onClick={() => {
+                      markAsReadMutation.mutate(selectedAlert.id);
+                    }}
+                    disabled={markAsReadMutation.isPending}
+                  >
+                    {markAsReadMutation.isPending ? 'Marking...' : 'Mark as Read'}
+                  </Button>
+                )}
                 <Button
                   variant="destructive"
                   onClick={() => {
                     deleteAlertMutation.mutate(selectedAlert.id);
-                    handleCloseDialog();
                   }}
                   disabled={deleteAlertMutation.isPending}
                 >
@@ -282,6 +398,15 @@ const AdminAlertSystem = () => {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Activity Details Modal */}
+      <ActivityDetailsModal
+        isOpen={activityModal.isOpen}
+        onClose={() => setActivityModal({ ...activityModal, isOpen: false })}
+        type={activityModal.type}
+        title={activityModal.title}
+        data={activityModal.type === 'properties' ? (todayProperties || []) : (todayUsers || [])}
+      />
     </>
   );
 };
