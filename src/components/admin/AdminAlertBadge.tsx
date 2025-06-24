@@ -31,10 +31,10 @@ const AdminAlertBadge = () => {
   const [showAlerts, setShowAlerts] = useState(false);
 
   // Fetch unread alert count
-  const { data: unreadCount = 0 } = useQuery({
+  const { data: unreadCountData = 0 } = useQuery({
     queryKey: ['admin-alerts-count'],
     queryFn: async () => {
-      const { data, error } = await supabase
+      const { count, error } = await supabase
         .from('admin_alerts')
         .select('*', { count: 'exact', head: true })
         .eq('is_read', false);
@@ -43,7 +43,7 @@ const AdminAlertBadge = () => {
         console.error('Error fetching alert count:', error);
         return 0;
       }
-      return data || 0;
+      return count || 0;
     },
     refetchInterval: 30000, // Refetch every 30 seconds
   });
@@ -66,6 +66,9 @@ const AdminAlertBadge = () => {
     },
     enabled: showAlerts, // Only fetch when dialog is open
   });
+
+  // Ensure unreadCount is a number
+  const unreadCount = typeof unreadCountData === 'number' ? unreadCountData : 0;
 
   const handleAlertClick = () => {
     console.log('Alert badge clicked, opening alerts dialog...');
