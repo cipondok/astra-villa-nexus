@@ -110,7 +110,7 @@ const SystemSettings = () => {
         </TabsContent>
 
         <TabsContent value="system" className="space-y-4">
-          <SystemMonitoring systemInfo={systemInfo} />
+          <SystemMonitoring />
         </TabsContent>
 
         <TabsContent value="backup" className="space-y-4">
