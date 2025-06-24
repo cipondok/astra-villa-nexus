@@ -1,4 +1,5 @@
 
+import React from "react";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -16,31 +17,33 @@ import { SessionMonitor } from "@/components/SessionMonitor";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
-      <LanguageProvider>
-        <ThemeSettingsProvider>
-          <AuthProvider>
-            <AlertProvider>
-              <TooltipProvider>
-                <Toaster />
-                <BrowserRouter>
-                  <SessionMonitor />
-                  <Routes>
-                    <Route path="/" element={<Index />} />
-                    <Route path="/dashboard" element={<Dashboard />} />
-                    <Route path="/admin" element={<AdminDashboard />} />
-                    <Route path="/content-management" element={<ContentManagement />} />
-                  </Routes>
-                </BrowserRouter>
-              </TooltipProvider>
-            </AlertProvider>
-          </AuthProvider>
-        </ThemeSettingsProvider>
-      </LanguageProvider>
-    </ThemeProvider>
-  </QueryClientProvider>
-);
+const App: React.FC = () => {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
+        <LanguageProvider>
+          <ThemeSettingsProvider>
+            <AuthProvider>
+              <AlertProvider>
+                <TooltipProvider>
+                  <Toaster />
+                  <BrowserRouter>
+                    <SessionMonitor />
+                    <Routes>
+                      <Route path="/" element={<Index />} />
+                      <Route path="/dashboard" element={<Dashboard />} />
+                      <Route path="/admin" element={<AdminDashboard />} />
+                      <Route path="/content-management" element={<ContentManagement />} />
+                    </Routes>
+                  </BrowserRouter>
+                </TooltipProvider>
+              </AlertProvider>
+            </AuthProvider>
+          </ThemeSettingsProvider>
+        </LanguageProvider>
+      </ThemeProvider>
+    </QueryClientProvider>
+  );
+};
 
 export default App;
