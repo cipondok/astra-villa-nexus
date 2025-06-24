@@ -3,12 +3,13 @@ import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { RefreshCw, Activity, Server, AlertTriangle, TrendingUp, BarChart3 } from "lucide-react";
+import { RefreshCw, Activity, Server, AlertTriangle, TrendingUp, BarChart3, Stethoscope } from "lucide-react";
 import { useEnhancedDatabaseConnection } from "@/hooks/useEnhancedDatabaseConnection";
 import { useRealTimeMetrics } from "@/hooks/useRealTimeMetrics";
 import RealTimeSystemHealth from "./RealTimeSystemHealth";
 import EnhancedAlertManagement from "./EnhancedAlertManagement";
 import ConnectionStatusIndicator from "./ConnectionStatusIndicator";
+import SupabaseDiagnosticsPanel from "./SupabaseDiagnosticsPanel";
 
 const SystemMonitor = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -86,10 +87,14 @@ const SystemMonitor = () => {
 
       {/* Main Monitoring Tabs */}
       <Tabs defaultValue="health" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="health" className="flex items-center gap-2">
             <Activity className="h-4 w-4" />
             System Health
+          </TabsTrigger>
+          <TabsTrigger value="diagnostics" className="flex items-center gap-2">
+            <Stethoscope className="h-4 w-4" />
+            Diagnostics
           </TabsTrigger>
           <TabsTrigger value="alerts" className="flex items-center gap-2">
             <AlertTriangle className="h-4 w-4" />
@@ -103,6 +108,10 @@ const SystemMonitor = () => {
 
         <TabsContent value="health">
           <RealTimeSystemHealth />
+        </TabsContent>
+
+        <TabsContent value="diagnostics">
+          <SupabaseDiagnosticsPanel />
         </TabsContent>
 
         <TabsContent value="alerts">
