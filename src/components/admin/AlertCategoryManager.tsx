@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -284,7 +283,6 @@ const AlertCategoryManager = () => {
                       <Switch
                         checked={category.notificationSettings.email}
                         onCheckedChange={(value) => updateNotificationSetting(category.id, 'email', value)}
-                        size="sm"
                       />
                     </div>
                     <div className="flex items-center justify-between p-2 border rounded">
@@ -292,7 +290,6 @@ const AlertCategoryManager = () => {
                       <Switch
                         checked={category.notificationSettings.push}
                         onCheckedChange={(value) => updateNotificationSetting(category.id, 'push', value)}
-                        size="sm"
                       />
                     </div>
                     <div className="flex items-center justify-between p-2 border rounded">
@@ -300,7 +297,6 @@ const AlertCategoryManager = () => {
                       <Switch
                         checked={category.notificationSettings.sms}
                         onCheckedChange={(value) => updateNotificationSetting(category.id, 'sms', value)}
-                        size="sm"
                       />
                     </div>
                   </div>
