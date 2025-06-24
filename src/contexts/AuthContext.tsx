@@ -1,7 +1,7 @@
+
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
-import { clearAllCookies } from '@/utils/deviceFingerprint';
 
 type UserRole = 'general_user' | 'property_owner' | 'agent' | 'vendor' | 'admin' | 'customer_service';
 
@@ -40,12 +40,6 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // Ensure React is properly initialized before using hooks
-  if (!React.useState) {
-    console.error('React hooks not available - React may not be properly initialized');
-    return <div>Loading...</div>;
-  }
-
   const [user, setUser] = React.useState<User | null>(null);
   const [profile, setProfile] = React.useState<Profile | null>(null);
   const [loading, setLoading] = React.useState(true);
@@ -102,62 +96,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  // Create session when user signs in
-  const createUserSession = async (userId: string) => {
-    try {
-      const deviceFingerprint = btoa(navigator.userAgent + screen.width + screen.height).substring(0, 32);
-      const deviceInfo = {
-        userAgent: navigator.userAgent,
-        platform: navigator.platform,
-        language: navigator.language,
-        screenResolution: `${screen.width}x${screen.height}`
-      };
-      
-      const sessionToken = crypto.randomUUID() + '-' + Date.now();
-
-      // Check for existing sessions from other devices
-      const { data: existingSessions } = await supabase
-        .from('user_device_sessions')
-        .select('*')
-        .eq('user_id', userId)
-        .eq('is_active', true);
-
-      if (existingSessions && existingSessions.length > 0) {
-        const differentDevices = existingSessions.filter(
-          session => session.device_fingerprint !== deviceFingerprint
-        );
-
-        if (differentDevices.length > 0) {
-          // Create alert for multiple device login
-          await supabase.rpc('create_login_alert', {
-            p_user_id: userId,
-            p_alert_type: 'multiple_sessions',
-            p_device_info: deviceInfo,
-            p_message: `Login detected from new device: ${navigator.platform}`
-          });
-        }
-      }
-
-      // Create new session record
-      await supabase
-        .from('user_device_sessions')
-        .insert({
-          user_id: userId,
-          session_token: sessionToken,
-          device_fingerprint: deviceFingerprint,
-          device_info: deviceInfo,
-          expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString() // 7 days
-        });
-
-      // Store session token locally
-      localStorage.setItem('session_token', sessionToken);
-      localStorage.setItem('device_fingerprint', deviceFingerprint);
-      
-    } catch (error) {
-      console.error('Error creating session:', error);
-    }
-  };
-
   React.useEffect(() => {
     let mounted = true;
     
@@ -176,16 +114,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (session?.user && event !== 'TOKEN_REFRESHED') {
           await fetchProfile(session.user.id);
           if (event === 'SIGNED_IN') {
-            await createUserSession(session.user.id);
-            // Store login time for session monitoring
             localStorage.setItem('login_time', Date.now().toString());
           }
         } else if (!session) {
           setProfile(null);
-          // Clear session data on logout
           localStorage.removeItem('login_time');
-          localStorage.removeItem('session_token');
-          localStorage.removeItem('device_fingerprint');
         }
         
         if (event === 'SIGNED_OUT') {
@@ -193,11 +126,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           setProfile(null);
           setUser(null);
           setSession(null);
-          clearAllCookies();
-          // Clear all session-related data
-          localStorage.removeItem('login_time');
-          localStorage.removeItem('session_token');
-          localStorage.removeItem('device_fingerprint');
+          localStorage.clear();
         }
         
         setLoading(false);
@@ -281,16 +210,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       console.log('Signing out user...');
       
-      // Terminate current session
-      const sessionToken = localStorage.getItem('session_token');
-      if (sessionToken && user) {
-        await supabase
-          .from('user_device_sessions')
-          .update({ is_active: false })
-          .eq('session_token', sessionToken)
-          .eq('user_id', user.id);
-      }
-      
       setUser(null);
       setProfile(null);
       setSession(null);
@@ -300,22 +219,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         console.error('Supabase signOut error:', error);
       }
       
-      // Clear all cookies and storage
-      clearAllCookies();
-      localStorage.removeItem('login_time');
-      localStorage.removeItem('session_token');
-      localStorage.removeItem('device_fingerprint');
-      
+      localStorage.clear();
       console.log('User signed out successfully');
     } catch (error: any) {
       console.error('Sign out error:', error);
       setUser(null);
       setProfile(null);
       setSession(null);
-      clearAllCookies();
-      localStorage.removeItem('login_time');
-      localStorage.removeItem('session_token');
-      localStorage.removeItem('device_fingerprint');
+      localStorage.clear();
     }
   };
 
