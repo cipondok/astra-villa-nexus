@@ -20,6 +20,7 @@ import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import AdminAlertBadge from "./AdminAlertBadge";
+import ThemeSwitcher from "@/components/ui/theme-switcher";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -67,35 +68,18 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
       }
     };
 
-    // Update session time every minute
     updateSessionTime();
     const interval = setInterval(updateSessionTime, 60000);
-
     return () => clearInterval(interval);
   }, []);
-
-  // Check for session expiry
-  useEffect(() => {
-    const checkSession = () => {
-      const sessionToken = localStorage.getItem('session_token');
-      if (!sessionToken || !user) {
-        console.log('Session expired, redirecting to login...');
-        toast.error('Session expired. Please log in again.');
-        navigate('/');
-        return;
-      }
-    };
-
-    // Check session every 5 minutes
-    const sessionCheck = setInterval(checkSession, 5 * 60 * 1000);
-    return () => clearInterval(sessionCheck);
-  }, [user, navigate]);
 
   const handleSignOut = async () => {
     try {
       console.log('AdminDashboardHeader: Signing out...');
       await signOut();
-      navigate('/');
+      localStorage.removeItem('login_time');
+      localStorage.removeItem('session_token');
+      navigate('/?auth=true', { replace: true });
       toast.success('Successfully signed out');
     } catch (error) {
       console.error('AdminDashboardHeader: Error signing out:', error);
@@ -141,7 +125,7 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
                 {isAdmin ? "System Administrator" : "Support Staff"}
               </Badge>
               
-              {/* Alert Badge - Now clickable */}
+              {/* Alert Badge - Clickable */}
               <Dialog open={showAlerts} onOpenChange={setShowAlerts}>
                 <DialogTrigger asChild>
                   <div className="cursor-pointer">
@@ -192,6 +176,11 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
           </div>
           
           <div className="flex items-center gap-4">
+            {/* Theme Switcher */}
+            <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg p-2">
+              <ThemeSwitcher variant="compact" />
+            </div>
+
             {/* Session Controls */}
             <Card className="bg-white/10 backdrop-blur-sm border-white/20 text-white">
               <CardContent className="p-4">
@@ -209,7 +198,7 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
               </CardContent>
             </Card>
 
-            {/* Admin Profile - Now clickable */}
+            {/* Admin Profile - Clickable */}
             <Dialog open={showProfile} onOpenChange={setShowProfile}>
               <DialogTrigger asChild>
                 <Card className="bg-white/10 backdrop-blur-sm border-white/20 text-white cursor-pointer hover:bg-white/20 transition-colors">
@@ -228,7 +217,7 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
-                  <DialogTitle>Admin Profile</DialogTitle>
+                  <DialogTitle>Admin Profile Management</DialogTitle>
                   <DialogDescription>
                     Your administrator profile information
                   </DialogDescription>
@@ -252,11 +241,19 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
                       Active
                     </Badge>
                   </div>
+                  <div className="flex gap-2 pt-4">
+                    <Button variant="outline" size="sm">
+                      Edit Profile
+                    </Button>
+                    <Button variant="outline" size="sm">
+                      Change Password
+                    </Button>
+                  </div>
                 </div>
               </DialogContent>
             </Dialog>
 
-            {/* Logout Button - Fixed */}
+            {/* Logout Button */}
             <Button
               onClick={handleSignOut}
               variant="ghost"
@@ -266,7 +263,7 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
               Logout
             </Button>
 
-            {/* Admin Menu - Fixed */}
+            {/* Admin Menu */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="bg-white/10 hover:bg-white/20 text-white border border-white/20">
@@ -293,6 +290,7 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
               </DropdownMenuContent>
             </DropdownMenu>
             
+            {/* System Status Cards */}
             <Card className="bg-white/10 backdrop-blur-sm border-white/20 text-white">
               <CardContent className="p-4">
                 <div className="flex items-center gap-3">
@@ -301,7 +299,7 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
                   </div>
                   <div>
                     <p className="text-sm text-blue-100">System Status</p>
-                    <p className="font-semibold text-white">All Systems Operational</p>
+                    <p className="font-semibold text-white">Operational</p>
                   </div>
                 </div>
               </CardContent>
