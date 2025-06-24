@@ -16,48 +16,71 @@ const Index = () => {
   const [hasSearched, setHasSearched] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
 
-  // Fetch featured properties with simplified query
+  // Optimized featured properties query with aggressive caching
   const { data: featuredProperties = [], isLoading: isFeaturedLoading } = useQuery({
-    queryKey: ['featured-properties'],
+    queryKey: ['featured-properties-fast'],
     queryFn: async () => {
-      console.log('Fetching featured properties...');
+      console.log('Fetching featured properties with optimized query...');
       
-      const { data, error } = await supabase
-        .from('properties')
-        .select('*')
-        .eq('status', 'active')
-        .order('created_at', { ascending: false })
-        .limit(20);
+      try {
+        // Ultra-fast query with minimal timeout
+        const timeoutPromise = new Promise<never>((_, reject) => {
+          setTimeout(() => reject(new Error('Query timeout')), 3000); // 3 second max
+        });
 
-      if (error) {
-        console.error('Query error:', error);
+        const queryPromise = supabase
+          .from('properties')
+          .select('id, title, property_type, listing_type, price, location, bedrooms, bathrooms, area_sqm, images, thumbnail_url, state, city')
+          .eq('status', 'active')
+          .order('created_at', { ascending: false })
+          .limit(12); // Reduced limit for faster loading
+
+        const { data, error } = await Promise.race([queryPromise, timeoutPromise]);
+
+        if (error) {
+          console.error('Properties query error:', error);
+          // Return empty array instead of throwing
+          return [];
+        }
+
+        console.log('Featured properties loaded:', data?.length || 0);
+        return data || [];
+        
+      } catch (err) {
+        console.error('Featured properties fetch error:', err);
+        // Return empty array for graceful degradation
         return [];
       }
-
-      console.log('Featured properties fetched:', data?.length || 0);
-      return data || [];
     },
-    retry: 1,
+    retry: 1, // Only retry once
+    retryDelay: 1000, // 1 second retry delay
     refetchOnWindowFocus: false,
+    staleTime: 60000, // Cache for 1 minute
+    gcTime: 300000, // Keep in cache for 5 minutes
   });
 
   const handleSearch = async (searchData: any) => {
-    console.log('Search initiated:', searchData);
+    console.log('Search initiated with optimized query:', searchData);
     
     setIsSearching(true);
     setHasSearched(true);
     setSearchError(null);
     
     try {
+      // Fast search with timeout
+      const timeoutPromise = new Promise<never>((_, reject) => {
+        setTimeout(() => reject(new Error('Search timeout')), 5000); // 5 second max for search
+      });
+
       let query = supabase
         .from('properties')
-        .select('*')
+        .select('id, title, property_type, listing_type, price, location, bedrooms, bathrooms, area_sqm, images, thumbnail_url, state, city')
         .eq('status', 'active');
 
-      // Apply search filters
+      // Apply search filters efficiently
       if (searchData.query && searchData.query.trim()) {
         const searchTerm = searchData.query.toLowerCase().trim();
-        query = query.or(`title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%,location.ilike.%${searchTerm}%`);
+        query = query.or(`title.ilike.%${searchTerm}%,location.ilike.%${searchTerm}%`);
       }
 
       if (searchData.state) {
@@ -105,9 +128,12 @@ const Index = () => {
         }
       }
 
-      const { data, error } = await query
-        .order('created_at', { ascending: false })
-        .limit(50);
+      const queryWithTimeout = Promise.race([
+        query.order('created_at', { ascending: false }).limit(24),
+        timeoutPromise
+      ]);
+
+      const { data, error } = await queryWithTimeout;
 
       if (error) {
         console.error('Search error:', error);
@@ -120,7 +146,7 @@ const Index = () => {
       }
     } catch (error) {
       console.error('Search error:', error);
-      setSearchError('Search failed. Please try again.');
+      setSearchError('Search timeout. Please try again.');
       setSearchResults([]);
     } finally {
       setIsSearching(false);

@@ -41,7 +41,8 @@ const PropertyListingsSection = ({
       showingResults: "Showing",
       loadingProperties: "Searching properties...",
       tryDifferentSearch: "Try adjusting your search criteria",
-      browseAll: "Browse All Properties"
+      browseAll: "Browse All Properties",
+      connectionIssue: "Having trouble loading properties? Check your connection."
     },
     id: {
       title: "Properti Unggulan",
@@ -52,7 +53,8 @@ const PropertyListingsSection = ({
       showingResults: "Menampilkan",
       loadingProperties: "Mencari properti...",
       tryDifferentSearch: "Coba sesuaikan kriteria pencarian Anda",
-      browseAll: "Lihat Semua Properti"
+      browseAll: "Lihat Semua Properti",
+      connectionIssue: "Masalah memuat properti? Periksa koneksi Anda."
     }
   };
 
@@ -87,6 +89,7 @@ const PropertyListingsSection = ({
     return { sectionTitle, sectionSubtitle };
   }, [hasSearched, searchResults.length, currentText]);
 
+  // Optimized loading state
   if (isSearching) {
     return (
       <section className="py-6 sm:py-8 min-h-[400px]">
@@ -94,6 +97,7 @@ const PropertyListingsSection = ({
           <div className="text-center">
             <div className="animate-spin rounded-full h-8 w-8 sm:h-12 sm:w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
             <p className="text-base sm:text-lg text-gray-600">{currentText.loadingProperties}</p>
+            <p className="text-sm text-gray-500 mt-2">This should only take a few seconds...</p>
           </div>
         </div>
       </section>
@@ -141,6 +145,7 @@ const PropertyListingsSection = ({
                     {currentText.browseAll}
                   </Button>
                 </div>
+                <p className="text-xs text-gray-500 mt-4">{currentText.connectionIssue}</p>
               </div>
             </div>
           ) : displayProperties.length >= 4 ? (
@@ -152,7 +157,7 @@ const PropertyListingsSection = ({
               propertyData={{
                 properties: displayProperties
               }}
-              autoScrollInterval={6000}
+              autoScrollInterval={8000} // Slower auto-scroll
               limit={displayProperties.length}
               hideTitle={true}
               customProperties={displayProperties}
