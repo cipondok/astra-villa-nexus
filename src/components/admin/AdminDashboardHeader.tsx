@@ -162,6 +162,16 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
               </CardContent>
             </Card>
 
+            {/* Logout Button */}
+            <Button
+              onClick={handleSignOut}
+              variant="ghost"
+              className="bg-red-500/20 hover:bg-red-500/30 text-white border border-red-300/30 px-4 py-2"
+            >
+              <LogOut className="h-4 w-4 mr-2" />
+              Logout
+            </Button>
+
             {/* Admin Menu */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
