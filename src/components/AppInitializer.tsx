@@ -8,26 +8,20 @@ interface AppInitializerProps {
 }
 
 const AppInitializer: React.FC<AppInitializerProps> = ({ children }) => {
-  const { connectionStatus, isLoading, retryConnection } = useDatabaseConnection();
+  const { connectionStatus, retryConnection } = useDatabaseConnection();
   const [initializationComplete, setInitializationComplete] = useState(false);
 
   useEffect(() => {
-    const initializeApp = async () => {
-      // Simulate app initialization process
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      if (connectionStatus === 'connected' || connectionStatus === 'offline') {
-        setInitializationComplete(true);
-      }
-    };
+    // Quick initialization - don't wait for database connection
+    const timer = setTimeout(() => {
+      setInitializationComplete(true);
+    }, 1000); // Reduced from 2 seconds to 1 second
 
-    if (!isLoading) {
-      initializeApp();
-    }
-  }, [connectionStatus, isLoading]);
+    return () => clearTimeout(timer);
+  }, []);
 
-  // Show loading screen during initialization
-  if (!initializationComplete || isLoading) {
+  // Show very brief loading screen
+  if (!initializationComplete) {
     return (
       <LoadingPage
         message="Initializing ASTRA Villa..."
@@ -37,8 +31,8 @@ const AppInitializer: React.FC<AppInitializerProps> = ({ children }) => {
     );
   }
 
-  // Show error state with retry option
-  if (connectionStatus === 'error') {
+  // Only show error state if user explicitly retries and fails
+  if (connectionStatus === 'error' && window.location.search.includes('retry=true')) {
     return (
       <div className="bg-black text-white flex items-center justify-center min-h-screen font-orbitron">
         <div className="flex flex-col items-center space-y-6 text-center max-w-md">
@@ -53,16 +47,20 @@ const AppInitializer: React.FC<AppInitializerProps> = ({ children }) => {
             Retry Connection
           </button>
           <button
-            onClick={() => setInitializationComplete(true)}
+            onClick={() => {
+              window.history.replaceState({}, '', window.location.pathname);
+              window.location.reload();
+            }}
             className="px-6 py-3 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors"
           >
-            Continue Offline
+            Continue Anyway
           </button>
         </div>
       </div>
     );
   }
 
+  // Always render children - don't block on database connection
   return <>{children}</>;
 };
 

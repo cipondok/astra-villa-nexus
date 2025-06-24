@@ -19,7 +19,7 @@ const LoadingPage: React.FC<LoadingPageProps> = ({
       case 'connected':
         return 'Database connected successfully';
       case 'error':
-        return 'Database connection failed';
+        return 'Database connection issue - continuing anyway';
       case 'offline':
         return 'Working in offline mode';
       default:
@@ -34,7 +34,7 @@ const LoadingPage: React.FC<LoadingPageProps> = ({
       case 'connected':
         return 'text-green-400';
       case 'error':
-        return 'text-red-400';
+        return 'text-orange-400'; // Changed from red to orange to be less alarming
       case 'offline':
         return 'text-orange-400';
       default:
@@ -69,7 +69,7 @@ const LoadingPage: React.FC<LoadingPageProps> = ({
               <div className={`w-2 h-2 rounded-full ${
                 connectionStatus === 'connecting' ? 'bg-yellow-400 animate-pulse' :
                 connectionStatus === 'connected' ? 'bg-green-400' :
-                connectionStatus === 'error' ? 'bg-red-400 animate-pulse' :
+                connectionStatus === 'error' ? 'bg-orange-400' :
                 'bg-orange-400'
               }`}></div>
               <span>{getConnectionMessage()}</span>

@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -63,7 +62,7 @@ const AuthModal = ({ isOpen, onClose, language }: AuthModalProps) => {
 
   if (!isOpen) return null;
 
-  // Show loading screen during authentication
+  // Show loading screen during authentication (reduced timeout)
   if (loading && authAction) {
     const loadingMessage = authAction === 'login' 
       ? "Authenticating user..." 
@@ -72,8 +71,7 @@ const AuthModal = ({ isOpen, onClose, language }: AuthModalProps) => {
     return (
       <LoadingPage 
         message={loadingMessage}
-        showConnectionStatus={true}
-        connectionStatus="connecting"
+        showConnectionStatus={false} // Don't show connection status for auth
       />
     );
   }

@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -26,7 +25,7 @@ const RoleBasedAuthModal = ({ isOpen, onClose }: RoleBasedAuthModalProps) => {
   
   const { signIn, signUp } = useAuth();
 
-  // Show loading screen during authentication
+  // Show loading screen during authentication (simplified)
   if (isLoading && authAction) {
     const loadingMessage = authAction === 'login' 
       ? "Authenticating user..." 
@@ -35,8 +34,7 @@ const RoleBasedAuthModal = ({ isOpen, onClose }: RoleBasedAuthModalProps) => {
     return (
       <LoadingPage 
         message={loadingMessage}
-        showConnectionStatus={true}
-        connectionStatus="connecting"
+        showConnectionStatus={false} // Don't show connection status for auth
       />
     );
   }

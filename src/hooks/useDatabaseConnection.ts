@@ -6,37 +6,44 @@ export type ConnectionStatus = 'connecting' | 'connected' | 'error' | 'offline';
 
 export const useDatabaseConnection = () => {
   const [connectionStatus, setConnectionStatus] = useState<ConnectionStatus>('connecting');
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const checkConnection = async () => {
       try {
         setConnectionStatus('connecting');
         
-        // Test database connection
-        const { error } = await supabase
+        // Quick timeout for connection test (3 seconds max)
+        const timeoutPromise = new Promise<never>((_, reject) => {
+          setTimeout(() => reject(new Error('Connection timeout')), 3000);
+        });
+
+        const connectionPromise = supabase
           .from('profiles')
           .select('id')
           .limit(1);
 
+        const { error } = await Promise.race([connectionPromise, timeoutPromise]);
+
         if (error) {
-          console.error('Database connection error:', error);
+          console.warn('Database connection warning:', error);
           setConnectionStatus('error');
         } else {
           setConnectionStatus('connected');
         }
       } catch (error) {
-        console.error('Connection test failed:', error);
+        console.warn('Connection test failed, continuing anyway:', error);
         setConnectionStatus('offline');
       } finally {
         setIsLoading(false);
       }
     };
 
+    // Don't block initial load - check connection in background
     checkConnection();
 
-    // Set up a periodic connection check
-    const interval = setInterval(checkConnection, 30000); // Check every 30 seconds
+    // Set up a periodic connection check (every 60 seconds instead of 30)
+    const interval = setInterval(checkConnection, 60000);
 
     return () => clearInterval(interval);
   }, []);
@@ -46,10 +53,16 @@ export const useDatabaseConnection = () => {
     setConnectionStatus('connecting');
     
     try {
-      const { error } = await supabase
+      const timeoutPromise = new Promise<never>((_, reject) => {
+        setTimeout(() => reject(new Error('Connection timeout')), 3000);
+      });
+
+      const connectionPromise = supabase
         .from('profiles')
         .select('id')
         .limit(1);
+
+      const { error } = await Promise.race([connectionPromise, timeoutPromise]);
 
       if (error) {
         setConnectionStatus('error');
