@@ -10,9 +10,24 @@ import {
   Activity,
   AlertTriangle,
   Bell,
-  User
+  User,
+  LogOut,
+  Clock,
+  RefreshCw
 } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { toast } from "sonner";
 import AdminAlertBadge from "./AdminAlertBadge";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface AdminDashboardHeaderProps {
   isAdmin: boolean;
@@ -21,6 +36,68 @@ interface AdminDashboardHeaderProps {
 }
 
 const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderProps) => {
+  const { signOut } = useAuth();
+  const navigate = useNavigate();
+  const [sessionTime, setSessionTime] = useState<string>('');
+
+  // Session monitoring
+  useEffect(() => {
+    const updateSessionTime = () => {
+      const loginTime = localStorage.getItem('login_time');
+      if (loginTime) {
+        const elapsed = Date.now() - parseInt(loginTime);
+        const minutes = Math.floor(elapsed / 60000);
+        const hours = Math.floor(minutes / 60);
+        
+        if (hours > 0) {
+          setSessionTime(`${hours}h ${minutes % 60}m`);
+        } else {
+          setSessionTime(`${minutes}m`);
+        }
+      }
+    };
+
+    // Update session time every minute
+    updateSessionTime();
+    const interval = setInterval(updateSessionTime, 60000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  // Check for session expiry
+  useEffect(() => {
+    const checkSession = () => {
+      const sessionToken = localStorage.getItem('session_token');
+      if (!sessionToken || !user) {
+        console.log('Session expired, redirecting to login...');
+        toast.error('Session expired. Please log in again.');
+        navigate('/');
+        return;
+      }
+    };
+
+    // Check session every 5 minutes
+    const sessionCheck = setInterval(checkSession, 5 * 60 * 1000);
+    return () => clearInterval(sessionCheck);
+  }, [user, navigate]);
+
+  const handleSignOut = async () => {
+    try {
+      console.log('AdminDashboardHeader: Signing out...');
+      await signOut();
+      navigate('/');
+      toast.success('Successfully signed out');
+    } catch (error) {
+      console.error('AdminDashboardHeader: Error signing out:', error);
+      toast.error('Error signing out');
+    }
+  };
+
+  const handleRefreshSession = () => {
+    window.location.reload();
+    toast.info('Session refreshed');
+  };
+
   return (
     <div className="relative bg-gradient-to-br from-blue-600 via-blue-700 to-purple-700 text-white overflow-hidden">
       {/* Background Pattern */}
@@ -58,10 +135,60 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
                 <Activity className="h-4 w-4 mr-2" />
                 Online
               </Badge>
+              {sessionTime && (
+                <Badge variant="outline" className="bg-blue-500/20 text-blue-100 border-blue-300/30 px-4 py-2">
+                  <Clock className="h-4 w-4 mr-2" />
+                  Session: {sessionTime}
+                </Badge>
+              )}
             </div>
           </div>
           
           <div className="flex items-center gap-4">
+            {/* Session Controls */}
+            <Card className="bg-white/10 backdrop-blur-sm border-white/20 text-white">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <Button
+                    onClick={handleRefreshSession}
+                    variant="ghost"
+                    size="sm"
+                    className="text-white hover:bg-white/20"
+                  >
+                    <RefreshCw className="h-4 w-4 mr-2" />
+                    Refresh
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Admin Menu */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="bg-white/10 hover:bg-white/20 text-white border border-white/20">
+                  <Settings className="h-4 w-4 mr-2" />
+                  Admin Menu
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuLabel>Admin Controls</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => navigate('/dashboard')}>
+                  <User className="h-4 w-4 mr-2" />
+                  User Dashboard
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate('/wallet')}>
+                  <Building2 className="h-4 w-4 mr-2" />
+                  Wallet
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleSignOut} className="text-red-600">
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Sign Out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            
             <Card className="bg-white/10 backdrop-blur-sm border-white/20 text-white">
               <CardContent className="p-4">
                 <div className="flex items-center gap-3">

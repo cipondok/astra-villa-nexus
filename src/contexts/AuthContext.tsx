@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -178,9 +177,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           await fetchProfile(session.user.id);
           if (event === 'SIGNED_IN') {
             await createUserSession(session.user.id);
+            // Store login time for session monitoring
+            localStorage.setItem('login_time', Date.now().toString());
           }
         } else if (!session) {
           setProfile(null);
+          // Clear session data on logout
+          localStorage.removeItem('login_time');
+          localStorage.removeItem('session_token');
+          localStorage.removeItem('device_fingerprint');
         }
         
         if (event === 'SIGNED_OUT') {
@@ -189,6 +194,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           setUser(null);
           setSession(null);
           clearAllCookies();
+          // Clear all session-related data
+          localStorage.removeItem('login_time');
+          localStorage.removeItem('session_token');
+          localStorage.removeItem('device_fingerprint');
         }
         
         setLoading(false);
@@ -293,6 +302,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       
       // Clear all cookies and storage
       clearAllCookies();
+      localStorage.removeItem('login_time');
+      localStorage.removeItem('session_token');
+      localStorage.removeItem('device_fingerprint');
       
       console.log('User signed out successfully');
     } catch (error: any) {
@@ -301,6 +313,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setProfile(null);
       setSession(null);
       clearAllCookies();
+      localStorage.removeItem('login_time');
+      localStorage.removeItem('session_token');
+      localStorage.removeItem('device_fingerprint');
     }
   };
 
