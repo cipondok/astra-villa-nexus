@@ -35,6 +35,7 @@ interface AuthContextType {
   signOut: () => Promise<void>;
   updateProfile: (data: Partial<Profile>) => Promise<{ error: any; success?: boolean }>;
   refreshProfile: () => Promise<void>;
+  extendSession: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -96,6 +97,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  // Extended session management
+  const extendSession = async () => {
+    try {
+      console.log('Extending session...');
+      const { data, error } = await supabase.auth.refreshSession();
+      if (error) {
+        console.error('Session refresh error:', error);
+      } else {
+        console.log('Session extended successfully');
+        // Update last activity time
+        localStorage.setItem('last_activity', Date.now().toString());
+      }
+    } catch (error) {
+      console.error('Error extending session:', error);
+    }
+  };
+
   React.useEffect(() => {
     let mounted = true;
     
@@ -115,10 +133,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           await fetchProfile(session.user.id);
           if (event === 'SIGNED_IN') {
             localStorage.setItem('login_time', Date.now().toString());
+            localStorage.setItem('last_activity', Date.now().toString());
           }
         } else if (!session) {
           setProfile(null);
           localStorage.removeItem('login_time');
+          localStorage.removeItem('last_activity');
         }
         
         if (event === 'SIGNED_OUT') {
@@ -142,6 +162,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setSession(session);
         setUser(session.user);
         fetchProfile(session.user.id);
+        // Set initial activity time if not exists
+        if (!localStorage.getItem('last_activity')) {
+          localStorage.setItem('last_activity', Date.now().toString());
+        }
       } else {
         setLoading(false);
       }
@@ -152,6 +176,57 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       subscription.unsubscribe();
     };
   }, []);
+
+  // Auto-extend session on user activity (every 10 minutes max)
+  React.useEffect(() => {
+    if (!user || !session) return;
+
+    let activityTimeout: NodeJS.Timeout;
+    let lastExtension = Date.now();
+
+    const handleActivity = () => {
+      const now = Date.now();
+      const lastActivity = localStorage.getItem('last_activity');
+      const timeSinceLastActivity = lastActivity ? now - parseInt(lastActivity) : 0;
+      const timeSinceLastExtension = now - lastExtension;
+
+      // Update activity time
+      localStorage.setItem('last_activity', now.toString());
+
+      // Extend session if it's been more than 10 minutes since last extension
+      // and user has been active in the last 5 minutes
+      if (timeSinceLastExtension > 10 * 60 * 1000 && timeSinceLastActivity < 5 * 60 * 1000) {
+        extendSession();
+        lastExtension = now;
+      }
+
+      // Reset timeout
+      clearTimeout(activityTimeout);
+      activityTimeout = setTimeout(() => {
+        // Auto-extend session every 15 minutes during active use
+        if (user && session) {
+          extendSession();
+          lastExtension = Date.now();
+        }
+      }, 15 * 60 * 1000); // 15 minutes
+    };
+
+    // Listen for user activity
+    const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'];
+    events.forEach(event => {
+      document.addEventListener(event, handleActivity, { passive: true });
+    });
+
+    // Initial activity setup
+    handleActivity();
+
+    return () => {
+      events.forEach(event => {
+        document.removeEventListener(event, handleActivity);
+      });
+      clearTimeout(activityTimeout);
+    };
+  }, [user, session]);
 
   const signIn = async (email: string, password: string) => {
     try {
@@ -269,6 +344,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     signOut,
     updateProfile,
     refreshProfile,
+    extendSession,
   };
 
   return (

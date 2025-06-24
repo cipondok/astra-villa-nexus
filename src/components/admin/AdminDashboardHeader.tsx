@@ -45,23 +45,25 @@ interface AdminDashboardHeaderProps {
 }
 
 const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderProps) => {
-  const { signOut } = useAuth();
+  const { signOut, extendSession } = useAuth();
   const navigate = useNavigate();
   const [sessionTime, setSessionTime] = useState<string>('');
   const [showProfile, setShowProfile] = useState(false);
   const [showAlerts, setShowAlerts] = useState(false);
 
-  // Session monitoring
+  // Session monitoring with extended session info
   useEffect(() => {
     const updateSessionTime = () => {
       const loginTime = localStorage.getItem('login_time');
+      const lastActivity = localStorage.getItem('last_activity');
+      
       if (loginTime) {
         const elapsed = Date.now() - parseInt(loginTime);
-        const minutes = Math.floor(elapsed / 60000);
-        const hours = Math.floor(minutes / 60);
+        const hours = Math.floor(elapsed / (1000 * 60 * 60));
+        const minutes = Math.floor((elapsed % (1000 * 60 * 60)) / (1000 * 60));
         
         if (hours > 0) {
-          setSessionTime(`${hours}h ${minutes % 60}m`);
+          setSessionTime(`${hours}h ${minutes}m`);
         } else {
           setSessionTime(`${minutes}m`);
         }
@@ -85,9 +87,24 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
     }
   };
 
-  const handleRefreshSession = () => {
-    window.location.reload();
-    toast.info('Session refreshed');
+  const handleRefreshSession = async () => {
+    try {
+      await extendSession();
+      toast.success('Session refreshed and extended');
+    } catch (error) {
+      console.error('Error refreshing session:', error);
+      toast.error('Failed to refresh session');
+    }
+  };
+
+  const handleExtendSession = async () => {
+    try {
+      await extendSession();
+      toast.success('Session extended successfully! You can continue working.');
+    } catch (error) {
+      console.error('Error extending session:', error);
+      toast.error('Failed to extend session');
+    }
   };
 
   return (
@@ -138,7 +155,12 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
               </Badge>
               
               {sessionTime && (
-                <Badge variant="outline" className="bg-blue-500/20 text-blue-100 border-blue-300/30 px-4 py-2">
+                <Badge 
+                  variant="outline" 
+                  className="bg-blue-500/20 text-blue-100 border-blue-300/30 px-4 py-2 cursor-pointer hover:bg-blue-500/30"
+                  onClick={handleExtendSession}
+                  title="Click to extend session"
+                >
                   <Clock className="h-4 w-4 mr-2" />
                   Session: {sessionTime}
                 </Badge>
@@ -151,6 +173,16 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
             <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg p-2">
               <ThemeSwitcher variant="compact" />
             </div>
+
+            {/* Extend Session Button */}
+            <Button
+              onClick={handleExtendSession}
+              variant="ghost"
+              className="bg-green-500/20 hover:bg-green-500/30 text-white border border-green-300/30"
+            >
+              <RefreshCw className="h-4 w-4 mr-2" />
+              Extend Session
+            </Button>
 
             {/* Refresh Button */}
             <Button
@@ -202,6 +234,11 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
                   Wallet
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleExtendSession}>
+                  <Clock className="h-4 w-4 mr-2" />
+                  Extend Session
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleSignOut} className="text-red-600">
                   <LogOut className="h-4 w-4 mr-2" />
                   Sign Out
@@ -222,22 +259,31 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
+            <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
+              <div className="flex items-center gap-2">
+                <Clock className="h-4 w-4 text-green-600" />
+                <span className="font-medium text-green-800">Extended Session Timeout</span>
+              </div>
+              <p className="text-sm text-green-700 mt-1">
+                Session timeout has been extended to 2 hours for better development experience
+              </p>
+            </div>
             <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
               <div className="flex items-center gap-2">
                 <AlertTriangle className="h-4 w-4 text-yellow-600" />
-                <span className="font-medium text-yellow-800">System Maintenance</span>
+                <span className="font-medium text-yellow-800">Auto Session Extension</span>
               </div>
               <p className="text-sm text-yellow-700 mt-1">
-                Scheduled maintenance will occur tonight at 2:00 AM UTC
+                Your session will automatically extend when you're active. Manual extension available.
               </p>
             </div>
             <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
               <div className="flex items-center gap-2">
                 <Bell className="h-4 w-4 text-blue-600" />
-                <span className="font-medium text-blue-800">New User Registrations</span>
+                <span className="font-medium text-blue-800">Development Mode</span>
               </div>
               <p className="text-sm text-blue-700 mt-1">
-                5 new users have registered in the last hour
+                Enhanced session management active for smoother development workflow
               </p>
             </div>
           </div>
@@ -250,7 +296,7 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
           <DialogHeader>
             <DialogTitle>Admin Profile Management</DialogTitle>
             <DialogDescription>
-              Your administrator profile information
+              Your administrator profile information and session details
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
@@ -267,12 +313,20 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
               <p className="text-gray-900">{profile?.role || 'admin'}</p>
             </div>
             <div>
+              <label className="text-sm font-medium text-gray-700">Session Duration</label>
+              <p className="text-gray-900">{sessionTime || '0m'}</p>
+            </div>
+            <div>
               <label className="text-sm font-medium text-gray-700">Status</label>
               <Badge variant="outline" className="bg-green-100 text-green-800">
                 Active
               </Badge>
             </div>
             <div className="flex gap-2 pt-4">
+              <Button variant="outline" size="sm" onClick={handleExtendSession}>
+                <Clock className="h-4 w-4 mr-2" />
+                Extend Session
+              </Button>
               <Button variant="outline" size="sm">
                 Edit Profile
               </Button>
