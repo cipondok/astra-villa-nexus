@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -10,30 +11,71 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { FileText, Plus, Edit, Trash2, Eye } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { FileText, Plus, Edit, Trash2, Eye, Search, Filter, Globe, BookOpen, FileIcon } from "lucide-react";
 import { useAlert } from "@/contexts/AlertContext";
 
 const ContentManagement = () => {
   const [showForm, setShowForm] = useState(false);
   const [editingContent, setEditingContent] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterType, setFilterType] = useState("all");
+  const [filterStatus, setFilterStatus] = useState("all");
   const [formData, setFormData] = useState({
     title: '',
     slug: '',
     type: 'page',
     content: {},
-    status: 'draft'
+    status: 'draft',
+    category_id: '',
+    excerpt: '',
+    featured_image: '',
+    seo_title: '',
+    seo_description: '',
+    tags: '',
+    author_id: '',
+    publish_date: ''
   });
 
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
 
+  // Fetch content with filtering
   const { data: content, isLoading } = useQuery({
-    queryKey: ['cms-content'],
+    queryKey: ['cms-content', searchTerm, filterType, filterStatus],
     queryFn: async () => {
-      const { data, error } = await supabase
+      let query = supabase
         .from('cms_content')
         .select('*')
         .order('created_at', { ascending: false });
+      
+      if (searchTerm) {
+        query = query.or(`title.ilike.%${searchTerm}%,content->>body.ilike.%${searchTerm}%`);
+      }
+      
+      if (filterType !== 'all') {
+        query = query.eq('type', filterType);
+      }
+      
+      if (filterStatus !== 'all') {
+        query = query.eq('status', filterStatus);
+      }
+      
+      const { data, error } = await query;
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  // Fetch categories for dropdown
+  const { data: categories } = useQuery({
+    queryKey: ['content-categories'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('content_categories')
+        .select('*')
+        .eq('is_active', true)
+        .order('name');
       
       if (error) throw error;
       return data;
@@ -42,9 +84,17 @@ const ContentManagement = () => {
 
   const createContentMutation = useMutation({
     mutationFn: async (contentData: any) => {
+      const processedData = {
+        ...contentData,
+        content: typeof contentData.content === 'string' 
+          ? { body: contentData.content } 
+          : contentData.content,
+        tags: contentData.tags ? contentData.tags.split(',').map((t: string) => t.trim()) : []
+      };
+      
       const { error } = await supabase
         .from('cms_content')
-        .insert([contentData]);
+        .insert([processedData]);
       if (error) throw error;
     },
     onSuccess: () => {
@@ -60,9 +110,17 @@ const ContentManagement = () => {
 
   const updateContentMutation = useMutation({
     mutationFn: async ({ id, updates }: { id: string; updates: any }) => {
+      const processedUpdates = {
+        ...updates,
+        content: typeof updates.content === 'string' 
+          ? { body: updates.content } 
+          : updates.content,
+        tags: updates.tags ? updates.tags.split(',').map((t: string) => t.trim()) : []
+      };
+      
       const { error } = await supabase
         .from('cms_content')
-        .update(updates)
+        .update(processedUpdates)
         .eq('id', id);
       if (error) throw error;
     },
@@ -101,7 +159,15 @@ const ContentManagement = () => {
       slug: '',
       type: 'page',
       content: {},
-      status: 'draft'
+      status: 'draft',
+      category_id: '',
+      excerpt: '',
+      featured_image: '',
+      seo_title: '',
+      seo_description: '',
+      tags: '',
+      author_id: '',
+      publish_date: ''
     });
   };
 
@@ -119,8 +185,16 @@ const ContentManagement = () => {
       title: item.title,
       slug: item.slug || '',
       type: item.type,
-      content: item.content || {},
-      status: item.status
+      content: typeof item.content === 'object' ? JSON.stringify(item.content, null, 2) : item.content || '',
+      status: item.status,
+      category_id: item.category_id || '',
+      excerpt: item.excerpt || '',
+      featured_image: item.featured_image || '',
+      seo_title: item.seo_title || '',
+      seo_description: item.seo_description || '',
+      tags: Array.isArray(item.tags) ? item.tags.join(', ') : '',
+      author_id: item.author_id || '',
+      publish_date: item.publish_date || ''
     });
     setShowForm(true);
   };
@@ -140,109 +214,230 @@ const ContentManagement = () => {
     }
   };
 
+  const getTypeIcon = (type: string) => {
+    switch (type) {
+      case 'blog': return <BookOpen className="h-4 w-4" />;
+      case 'documentation': return <FileIcon className="h-4 w-4" />;
+      case 'page': return <Globe className="h-4 w-4" />;
+      default: return <FileText className="h-4 w-4" />;
+    }
+  };
+
+  const filteredContent = content?.filter(item => {
+    const matchesSearch = !searchTerm || 
+      item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (item.content?.body && item.content.body.toLowerCase().includes(searchTerm.toLowerCase()));
+    
+    const matchesType = filterType === 'all' || item.type === filterType;
+    const matchesStatus = filterStatus === 'all' || item.status === filterStatus;
+    
+    return matchesSearch && matchesType && matchesStatus;
+  });
+
   return (
     <div className="space-y-6">
-      <Card>
+      <Card className="bg-card border-border">
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 text-card-foreground">
                 <FileText className="h-5 w-5" />
-                Content Management
+                Content Management System
               </CardTitle>
-              <CardDescription>
-                Manage website content, pages, and blog posts
+              <CardDescription className="text-muted-foreground">
+                Manage website content, blogs, and documentation with advanced features
               </CardDescription>
             </div>
             <Dialog open={showForm} onOpenChange={setShowForm}>
               <DialogTrigger asChild>
-                <Button onClick={() => { resetForm(); setEditingContent(null); }}>
+                <Button onClick={() => { resetForm(); setEditingContent(null); }} className="bg-primary text-primary-foreground hover:bg-primary/90">
                   <Plus className="h-4 w-4 mr-2" />
                   Add Content
                 </Button>
               </DialogTrigger>
-              <DialogContent className="max-w-2xl">
+              <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-card border-border">
                 <DialogHeader>
-                  <DialogTitle>
+                  <DialogTitle className="text-card-foreground">
                     {editingContent ? 'Edit Content' : 'Create New Content'}
                   </DialogTitle>
-                  <DialogDescription>
+                  <DialogDescription className="text-muted-foreground">
                     {editingContent ? 'Update the content details below.' : 'Fill in the details to create new content.'}
                   </DialogDescription>
                 </DialogHeader>
-                <div className="grid gap-4 py-4">
-                  <div className="grid gap-2">
-                    <Label htmlFor="title">Title</Label>
-                    <Input
-                      id="title"
-                      value={formData.title}
-                      onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                      placeholder="Content title"
-                    />
-                  </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="slug">Slug</Label>
-                    <Input
-                      id="slug"
-                      value={formData.slug}
-                      onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
-                      placeholder="content-slug"
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="grid gap-2">
-                      <Label htmlFor="type">Type</Label>
-                      <Select value={formData.type} onValueChange={(value) => setFormData({ ...formData, type: value })}>
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="page">Page</SelectItem>
-                          <SelectItem value="blog">Blog Post</SelectItem>
-                          <SelectItem value="news">News</SelectItem>
-                          <SelectItem value="faq">FAQ</SelectItem>
-                        </SelectContent>
-                      </Select>
+                
+                <Tabs defaultValue="basic" className="w-full">
+                  <TabsList className="grid w-full grid-cols-3 bg-muted">
+                    <TabsTrigger value="basic" className="text-foreground">Basic Info</TabsTrigger>
+                    <TabsTrigger value="content" className="text-foreground">Content</TabsTrigger>
+                    <TabsTrigger value="seo" className="text-foreground">SEO & Meta</TabsTrigger>
+                  </TabsList>
+                  
+                  <TabsContent value="basic" className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="grid gap-2">
+                        <Label htmlFor="title" className="text-foreground">Title</Label>
+                        <Input
+                          id="title"
+                          value={formData.title}
+                          onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                          placeholder="Content title"
+                          className="bg-background border-border text-foreground"
+                        />
+                      </div>
+                      <div className="grid gap-2">
+                        <Label htmlFor="slug" className="text-foreground">Slug</Label>
+                        <Input
+                          id="slug"
+                          value={formData.slug}
+                          onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+                          placeholder="content-slug"
+                          className="bg-background border-border text-foreground"
+                        />
+                      </div>
                     </div>
-                    <div className="grid gap-2">
-                      <Label htmlFor="status">Status</Label>
-                      <Select value={formData.status} onValueChange={(value) => setFormData({ ...formData, status: value })}>
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="draft">Draft</SelectItem>
-                          <SelectItem value="published">Published</SelectItem>
-                          <SelectItem value="archived">Archived</SelectItem>
-                        </SelectContent>
-                      </Select>
+                    
+                    <div className="grid grid-cols-3 gap-4">
+                      <div className="grid gap-2">
+                        <Label htmlFor="type" className="text-foreground">Type</Label>
+                        <Select value={formData.type} onValueChange={(value) => setFormData({ ...formData, type: value })}>
+                          <SelectTrigger className="bg-background border-border text-foreground">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent className="bg-card border-border">
+                            <SelectItem value="page" className="text-foreground hover:bg-muted">Website Page</SelectItem>
+                            <SelectItem value="blog" className="text-foreground hover:bg-muted">Blog Post</SelectItem>
+                            <SelectItem value="documentation" className="text-foreground hover:bg-muted">Documentation</SelectItem>
+                            <SelectItem value="news" className="text-foreground hover:bg-muted">News Article</SelectItem>
+                            <SelectItem value="faq" className="text-foreground hover:bg-muted">FAQ</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="grid gap-2">
+                        <Label htmlFor="category" className="text-foreground">Category</Label>
+                        <Select value={formData.category_id} onValueChange={(value) => setFormData({ ...formData, category_id: value })}>
+                          <SelectTrigger className="bg-background border-border text-foreground">
+                            <SelectValue placeholder="Select category" />
+                          </SelectTrigger>
+                          <SelectContent className="bg-card border-border">
+                            {categories?.map((cat) => (
+                              <SelectItem key={cat.id} value={cat.id} className="text-foreground hover:bg-muted">{cat.name}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="grid gap-2">
+                        <Label htmlFor="status" className="text-foreground">Status</Label>
+                        <Select value={formData.status} onValueChange={(value) => setFormData({ ...formData, status: value })}>
+                          <SelectTrigger className="bg-background border-border text-foreground">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent className="bg-card border-border">
+                            <SelectItem value="draft" className="text-foreground hover:bg-muted">Draft</SelectItem>
+                            <SelectItem value="published" className="text-foreground hover:bg-muted">Published</SelectItem>
+                            <SelectItem value="archived" className="text-foreground hover:bg-muted">Archived</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
                     </div>
-                  </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="content">Content (JSON)</Label>
-                    <Textarea
-                      id="content"
-                      value={JSON.stringify(formData.content, null, 2)}
-                      onChange={(e) => {
-                        try {
-                          const parsed = JSON.parse(e.target.value);
-                          setFormData({ ...formData, content: parsed });
-                        } catch (error) {
-                          // Invalid JSON, keep the text as is
-                        }
-                      }}
-                      placeholder='{"body": "Content goes here..."}'
-                      rows={8}
-                    />
-                  </div>
-                </div>
+                    
+                    <div className="grid gap-2">
+                      <Label htmlFor="excerpt" className="text-foreground">Excerpt</Label>
+                      <Textarea
+                        id="excerpt"
+                        value={formData.excerpt}
+                        onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
+                        placeholder="Brief description or excerpt"
+                        rows={3}
+                        className="bg-background border-border text-foreground"
+                      />
+                    </div>
+                    
+                    <div className="grid gap-2">
+                      <Label htmlFor="featured_image" className="text-foreground">Featured Image URL</Label>
+                      <Input
+                        id="featured_image"
+                        value={formData.featured_image}
+                        onChange={(e) => setFormData({ ...formData, featured_image: e.target.value })}
+                        placeholder="https://example.com/image.jpg"
+                        className="bg-background border-border text-foreground"
+                      />
+                    </div>
+                    
+                    <div className="grid gap-2">
+                      <Label htmlFor="tags" className="text-foreground">Tags</Label>
+                      <Input
+                        id="tags"
+                        value={formData.tags}
+                        onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
+                        placeholder="tag1, tag2, tag3"
+                        className="bg-background border-border text-foreground"
+                      />
+                      <p className="text-sm text-muted-foreground">Separate tags with commas</p>
+                    </div>
+                  </TabsContent>
+                  
+                  <TabsContent value="content" className="space-y-4">
+                    <div className="grid gap-2">
+                      <Label htmlFor="content" className="text-foreground">Content</Label>
+                      <Textarea
+                        id="content"
+                        value={typeof formData.content === 'string' ? formData.content : JSON.stringify(formData.content, null, 2)}
+                        onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+                        placeholder="Enter your content here... You can use JSON format for structured content."
+                        rows={15}
+                        className="bg-background border-border text-foreground font-mono"
+                      />
+                      <p className="text-sm text-muted-foreground">
+                        For simple content, just type normally. For structured content, use JSON format like: {"{"}"body": "Your content here", "sections": [...]{"}"} 
+                      </p>
+                    </div>
+                  </TabsContent>
+                  
+                  <TabsContent value="seo" className="space-y-4">
+                    <div className="grid gap-2">
+                      <Label htmlFor="seo_title" className="text-foreground">SEO Title</Label>
+                      <Input
+                        id="seo_title"
+                        value={formData.seo_title}
+                        onChange={(e) => setFormData({ ...formData, seo_title: e.target.value })}
+                        placeholder="SEO optimized title"
+                        className="bg-background border-border text-foreground"
+                      />
+                    </div>
+                    
+                    <div className="grid gap-2">
+                      <Label htmlFor="seo_description" className="text-foreground">SEO Description</Label>
+                      <Textarea
+                        id="seo_description"
+                        value={formData.seo_description}
+                        onChange={(e) => setFormData({ ...formData, seo_description: e.target.value })}
+                        placeholder="SEO meta description"
+                        rows={3}
+                        className="bg-background border-border text-foreground"
+                      />
+                    </div>
+                    
+                    <div className="grid gap-2">
+                      <Label htmlFor="publish_date" className="text-foreground">Publish Date</Label>
+                      <Input
+                        id="publish_date"
+                        type="datetime-local"
+                        value={formData.publish_date}
+                        onChange={(e) => setFormData({ ...formData, publish_date: e.target.value })}
+                        className="bg-background border-border text-foreground"
+                      />
+                    </div>
+                  </TabsContent>
+                </Tabs>
+                
                 <DialogFooter>
-                  <Button variant="outline" onClick={() => setShowForm(false)}>
+                  <Button variant="outline" onClick={() => setShowForm(false)} className="border-border text-foreground hover:bg-muted">
                     Cancel
                   </Button>
                   <Button 
                     onClick={handleSubmit}
                     disabled={createContentMutation.isPending || updateContentMutation.isPending}
+                    className="bg-primary text-primary-foreground hover:bg-primary/90"
                   >
                     {editingContent ? 'Update' : 'Create'} Content
                   </Button>
@@ -252,64 +447,118 @@ const ContentManagement = () => {
           </div>
         </CardHeader>
         <CardContent>
-          <div className="border rounded-lg">
+          {/* Search and Filters */}
+          <div className="flex flex-col sm:flex-row gap-4 mb-6">
+            <div className="flex-1">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+                <Input
+                  placeholder="Search content..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10 bg-background border-border text-foreground"
+                />
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <Select value={filterType} onValueChange={setFilterType}>
+                <SelectTrigger className="w-40 bg-background border-border text-foreground">
+                  <SelectValue placeholder="Filter by type" />
+                </SelectTrigger>
+                <SelectContent className="bg-card border-border">
+                  <SelectItem value="all" className="text-foreground hover:bg-muted">All Types</SelectItem>
+                  <SelectItem value="page" className="text-foreground hover:bg-muted">Pages</SelectItem>
+                  <SelectItem value="blog" className="text-foreground hover:bg-muted">Blogs</SelectItem>
+                  <SelectItem value="documentation" className="text-foreground hover:bg-muted">Documentation</SelectItem>
+                  <SelectItem value="news" className="text-foreground hover:bg-muted">News</SelectItem>
+                  <SelectItem value="faq" className="text-foreground hover:bg-muted">FAQ</SelectItem>
+                </SelectContent>
+              </Select>
+              <Select value={filterStatus} onValueChange={setFilterStatus}>
+                <SelectTrigger className="w-40 bg-background border-border text-foreground">
+                  <SelectValue placeholder="Filter by status" />
+                </SelectTrigger>
+                <SelectContent className="bg-card border-border">
+                  <SelectItem value="all" className="text-foreground hover:bg-muted">All Status</SelectItem>
+                  <SelectItem value="draft" className="text-foreground hover:bg-muted">Draft</SelectItem>
+                  <SelectItem value="published" className="text-foreground hover:bg-muted">Published</SelectItem>
+                  <SelectItem value="archived" className="text-foreground hover:bg-muted">Archived</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <div className="border border-border rounded-lg bg-card">
             <Table>
               <TableHeader>
-                <TableRow>
-                  <TableHead>Title</TableHead>
-                  <TableHead>Type</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Created</TableHead>
-                  <TableHead>Actions</TableHead>
+                <TableRow className="border-border">
+                  <TableHead className="text-muted-foreground">Content</TableHead>
+                  <TableHead className="text-muted-foreground">Type</TableHead>
+                  <TableHead className="text-muted-foreground">Status</TableHead>
+                  <TableHead className="text-muted-foreground">Created</TableHead>
+                  <TableHead className="text-muted-foreground">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {isLoading ? (
                   <TableRow>
-                    <TableCell colSpan={5} className="text-center py-8">
+                    <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
                       Loading content...
                     </TableCell>
                   </TableRow>
-                ) : content?.length === 0 ? (
+                ) : filteredContent?.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={5} className="text-center py-8">
+                    <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
                       No content found
                     </TableCell>
                   </TableRow>
                 ) : (
-                  content?.map((item) => (
-                    <TableRow key={item.id}>
-                      <TableCell>
+                  filteredContent?.map((item) => (
+                    <TableRow key={item.id} className="border-border hover:bg-muted/50">
+                      <TableCell className="text-foreground">
                         <div>
                           <div className="font-medium">{item.title}</div>
                           {item.slug && (
                             <div className="text-sm text-muted-foreground">/{item.slug}</div>
                           )}
+                          {item.excerpt && (
+                            <div className="text-sm text-muted-foreground mt-1 line-clamp-2">{item.excerpt}</div>
+                          )}
                         </div>
                       </TableCell>
                       <TableCell>
-                        <Badge variant="outline">{item.type}</Badge>
+                        <div className="flex items-center gap-2">
+                          {getTypeIcon(item.type)}
+                          <Badge variant="outline" className="border-border text-muted-foreground">
+                            {item.type}
+                          </Badge>
+                        </div>
                       </TableCell>
                       <TableCell>
-                        <Badge variant={getStatusBadgeVariant(item.status)}>
+                        <Badge variant={getStatusBadgeVariant(item.status)} className={
+                          item.status === 'published' 
+                            ? "bg-primary text-primary-foreground" 
+                            : "bg-muted text-muted-foreground"
+                        }>
                           {item.status}
                         </Badge>
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="text-foreground">
                         {new Date(item.created_at).toLocaleDateString()}
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
-                          <Button size="sm" variant="outline">
+                          <Button size="sm" variant="outline" className="border-border text-foreground hover:bg-muted">
                             <Eye className="h-4 w-4" />
                           </Button>
-                          <Button size="sm" variant="outline" onClick={() => handleEdit(item)}>
+                          <Button size="sm" variant="outline" onClick={() => handleEdit(item)} className="border-border text-foreground hover:bg-muted">
                             <Edit className="h-4 w-4" />
                           </Button>
                           <Button 
                             size="sm" 
                             variant="outline" 
                             onClick={() => handleDelete(item.id)}
+                            className="border-border text-foreground hover:bg-muted hover:text-destructive"
                           >
                             <Trash2 className="h-4 w-4" />
                           </Button>
