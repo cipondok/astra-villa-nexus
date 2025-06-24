@@ -56,7 +56,7 @@ const config: Config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        // Custom color scheme
+        // New Color Scheme
         custom: {
           blue: "hsl(var(--custom-blue))",
           lightBlue: "hsl(var(--custom-light-blue))",

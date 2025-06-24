@@ -12,19 +12,19 @@
     --card-foreground: 222.2 84% 4.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
-    --primary: 221.2 83.2% 53.3%;
+    --primary: 196 69% 35%;
     --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96%;
+    --secondary: 197 91% 84%;
     --secondary-foreground: 222.2 84% 4.9%;
-    --muted: 210 40% 96%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96%;
+    --muted: 45 71% 96%;
+    --muted-foreground: 222.2 84% 4.9%;
+    --accent: 15 91% 71%;
     --accent-foreground: 222.2 84% 4.9%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 221.2 83.2% 53.3%;
+    --ring: 196 69% 61%;
     --radius: 0.75rem;
     --chart-1: 12 76% 61%;
     --chart-2: 173 58% 39%;
@@ -32,8 +32,8 @@
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
 
-    /* Custom Color Scheme */
-    --custom-blue: 196 69% 61%;     /* #OFA3B1 */
+    /* New Color Scheme Variables */
+    --custom-blue: 196 69% 61%;     /* #0FA3B1 */
     --custom-light-blue: 197 91% 84%; /* #B5E2FA */
     --custom-cream: 45 71% 96%;     /* #F9F7F3 */
     --custom-yellow: 50 59% 78%;    /* #EDDEA4 */
@@ -70,24 +70,24 @@
 
   .dark {
     --background: 240 15% 35%;      /* #555879 */
-    --foreground: 210 40% 98%;
+    --foreground: 45 71% 96%;       /* Cream for better contrast */
     --card: 240 15% 35%;            /* #555879 */
-    --card-foreground: 210 40% 98%;
+    --card-foreground: 45 71% 96%;  /* Cream for better contrast */
     --popover: 240 15% 35%;         /* #555879 */
-    --popover-foreground: 210 40% 98%;
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 45 71% 96%; /* Cream for better contrast */
+    --primary: 196 69% 61%;         /* Custom blue */
+    --primary-foreground: 45 71% 96%; /* Cream for contrast */
     --secondary: 240 10% 45%;       /* Slightly lighter than background */
-    --secondary-foreground: 210 40% 98%;
+    --secondary-foreground: 45 71% 96%; /* Cream for contrast */
     --muted: 240 10% 45%;           /* Slightly lighter than background */
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 240 10% 45%;          /* Slightly lighter than background */
-    --accent-foreground: 210 40% 98%;
+    --muted-foreground: 197 91% 84%; /* Light blue for muted text */
+    --accent: 15 91% 71%;           /* Orange accent */
+    --accent-foreground: 240 15% 35%; /* Dark background for contrast */
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 45 71% 96%;
     --border: 240 10% 45%;          /* Slightly lighter than background */
     --input: 240 10% 45%;           /* Slightly lighter than background */
-    --ring: 224.3 76.3% 94.1%;
+    --ring: 196 69% 61%;            /* Custom blue */
     --chart-1: 220 70% 50%;
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
@@ -99,25 +99,25 @@
   }
 
   .middle {
-    --background: hsl(var(--custom-cream));
-    --foreground: 222.2 84% 4.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --background: 45 71% 96%;       /* Custom cream */
+    --foreground: 240 15% 35%;      /* Dark blue-gray for contrast */
+    --card: 0 0% 100%;              /* Pure white cards */
+    --card-foreground: 240 15% 35%; /* Dark blue-gray for contrast */
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: hsl(var(--custom-blue));
-    --primary-foreground: 210 40% 98%;
-    --secondary: hsl(var(--custom-light-blue));
-    --secondary-foreground: 222.2 84% 4.9%;
-    --muted: hsl(var(--custom-yellow));
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: hsl(var(--custom-orange));
-    --accent-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 240 15% 35%;
+    --primary: 196 69% 61%;         /* Custom blue */
+    --primary-foreground: 45 71% 96%; /* Cream for contrast */
+    --secondary: 197 91% 84%;       /* Light blue */
+    --secondary-foreground: 240 15% 35%; /* Dark for contrast */
+    --muted: 50 59% 78%;            /* Custom yellow */
+    --muted-foreground: 240 15% 35%; /* Dark for contrast */
+    --accent: 15 91% 71%;           /* Custom orange */
+    --accent-foreground: 240 15% 35%; /* Dark for contrast */
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 45 71% 96%;
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: hsl(var(--custom-blue));
+    --ring: 196 69% 61%;            /* Custom blue */
 
     /* Dynamic Primary Color for middle mode */
     --primary-dynamic: hsl(var(--custom-blue));
@@ -181,7 +181,7 @@
   }
   
   .hover-glow:hover {
-    box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+    box-shadow: 0 0 20px rgba(15, 163, 177, 0.5);
   }
 }
 
@@ -197,7 +197,7 @@
   }
 }
 
-/* iOS-style glass morphism effects with custom colors */
+/* iOS-style glass morphism effects with new custom colors */
 .glass-ios {
   background: rgba(181, 226, 250, 0.15); /* Custom light blue with transparency */
   backdrop-filter: blur(20px);
@@ -223,7 +223,7 @@
 }
 
 .dark .dropdown-ios {
-  background: rgba(0, 0, 0, 0.85);
+  background: rgba(85, 88, 121, 0.95); /* Dark theme using #555879 */
   border: 1px solid rgba(181, 226, 250, 0.1);
 }
 
@@ -235,7 +235,7 @@
 }
 
 .dark .nav-ios {
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(85, 88, 121, 0.8); /* Dark theme using #555879 */
   border-bottom: 1px solid rgba(181, 226, 250, 0.1);
 }
 
@@ -248,11 +248,11 @@
 }
 
 .dark .card-ios {
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(85, 88, 121, 0.7); /* Dark theme using #555879 */
   border: 1px solid rgba(181, 226, 250, 0.1);
 }
 
-/* iOS-style buttons with custom colors */
+/* iOS-style buttons with new custom colors */
 .btn-ios {
   border-radius: 12px;
   font-weight: 600;
@@ -287,14 +287,14 @@
 
 /* Glass effects for dark theme */
 .glass-dark {
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(85, 88, 121, 0.4); /* Using #555879 */
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(181, 226, 250, 0.1);
 }
 
 .glass-card-dark {
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(85, 88, 121, 0.6); /* Using #555879 */
   backdrop-filter: blur(25px);
   -webkit-backdrop-filter: blur(25px);
   border: 1px solid rgba(181, 226, 250, 0.15);
