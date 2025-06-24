@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Navigation from "@/components/Navigation";
@@ -169,13 +168,14 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Navigation />
       
-      {/* Hero Section with Search */}
-      <section className="relative bg-gradient-to-br from-blue-600 via-purple-600 to-orange-500 text-white py-8 sm:py-12 lg:py-16 px-2 sm:px-4">
-        <div className="container mx-auto text-center">
+      {/* Hero Section with New Color Scheme */}
+      <section className="relative bg-gradient-to-br from-custom-blue via-custom-lightBlue to-custom-orange text-white py-8 sm:py-12 lg:py-16 px-2 sm:px-4">
+        <div className="absolute inset-0 bg-gradient-to-t from-custom-cream/10 to-transparent"></div>
+        <div className="container mx-auto text-center relative z-10">
           <h1 className="text-2xl sm:text-3xl lg:text-5xl font-bold mb-4 sm:mb-6 animate-fade-in px-2">
             {language === "en" ? "Find Your Dream Property" : "Temukan Properti Impian Anda"}
           </h1>
-          <p className="text-base sm:text-lg lg:text-xl mb-6 sm:mb-8 text-blue-100 px-2">
+          <p className="text-base sm:text-lg lg:text-xl mb-6 sm:mb-8 text-white/90 px-2">
             {language === "en" 
               ? "Discover the perfect home with our advanced search technology" 
               : "Temukan rumah sempurna dengan teknologi pencarian canggih kami"}

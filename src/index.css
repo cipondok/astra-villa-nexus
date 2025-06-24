@@ -32,6 +32,13 @@
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
 
+    /* Custom Color Scheme */
+    --custom-blue: 196 69% 61%;     /* #OFA3B1 */
+    --custom-light-blue: 197 91% 84%; /* #B5E2FA */
+    --custom-cream: 45 71% 96%;     /* #F9F7F3 */
+    --custom-yellow: 50 59% 78%;    /* #EDDEA4 */
+    --custom-orange: 15 91% 71%;    /* #F7A072 */
+
     /* iOS Design System Colors */
     --ios-blue: 214 100% 59%;
     --ios-blue-rgb: 0, 122, 255;
@@ -54,10 +61,10 @@
     --ios-cyan: 189 100% 62%;
     --ios-cyan-rgb: 100, 210, 255;
 
-    /* Dynamic Primary Color (can be overridden by theme settings) */
-    --primary-color: var(--ios-blue);
-    --primary-color-rgb: var(--ios-blue-rgb);
-    --primary-color-hover: hsl(var(--ios-blue) / 0.8);
+    /* Dynamic Primary Color using custom scheme */
+    --primary-color: var(--custom-blue);
+    --primary-color-rgb: var(--custom-blue);
+    --primary-color-hover: hsl(var(--custom-blue) / 0.8);
     --primary-dynamic: hsl(var(--primary-color));
   }
 
@@ -88,32 +95,32 @@
     --chart-5: 340 75% 55%;
 
     /* Dynamic Primary Color for dark mode */
-    --primary-dynamic: hsl(var(--primary-color));
+    --primary-dynamic: hsl(var(--custom-blue));
   }
 
   .middle {
-    --background: 213 27% 84%;
+    --background: hsl(var(--custom-cream));
     --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
-    --primary: 221.2 83.2% 53.3%;
+    --primary: hsl(var(--custom-blue));
     --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96%;
+    --secondary: hsl(var(--custom-light-blue));
     --secondary-foreground: 222.2 84% 4.9%;
-    --muted: 210 40% 96%;
+    --muted: hsl(var(--custom-yellow));
     --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96%;
+    --accent: hsl(var(--custom-orange));
     --accent-foreground: 222.2 84% 4.9%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 221.2 83.2% 53.3%;
+    --ring: hsl(var(--custom-blue));
 
     /* Dynamic Primary Color for middle mode */
-    --primary-dynamic: hsl(var(--primary-color));
+    --primary-dynamic: hsl(var(--custom-blue));
   }
 }
 
@@ -190,62 +197,62 @@
   }
 }
 
-/* iOS-style glass morphism effects */
+/* iOS-style glass morphism effects with custom colors */
 .glass-ios {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(181, 226, 250, 0.15); /* Custom light blue with transparency */
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  border: 1px solid rgba(15, 163, 177, 0.2); /* Custom blue border */
+  box-shadow: 0 8px 32px 0 rgba(15, 163, 177, 0.15);
 }
 
 .glass-card-ios {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(249, 247, 243, 0.8); /* Custom cream background */
   backdrop-filter: blur(25px);
   -webkit-backdrop-filter: blur(25px);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.4);
+  border: 1px solid rgba(15, 163, 177, 0.25);
+  box-shadow: 0 12px 40px 0 rgba(15, 163, 177, 0.2);
 }
 
 .dropdown-ios {
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(249, 247, 243, 0.95); /* Custom cream */
   backdrop-filter: blur(30px);
   -webkit-backdrop-filter: blur(30px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.25);
+  border: 1px solid rgba(15, 163, 177, 0.3);
+  box-shadow: 0 8px 32px 0 rgba(15, 163, 177, 0.15);
 }
 
 .dark .dropdown-ios {
   background: rgba(0, 0, 0, 0.85);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(181, 226, 250, 0.1);
 }
 
 .nav-ios {
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(249, 247, 243, 0.8); /* Custom cream */
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid rgba(15, 163, 177, 0.1);
 }
 
 .dark .nav-ios {
   background: rgba(0, 0, 0, 0.8);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(181, 226, 250, 0.1);
 }
 
 .card-ios {
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(249, 247, 243, 0.9); /* Custom cream */
   backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 4px 24px 0 rgba(31, 38, 135, 0.2);
+  border: 1px solid rgba(15, 163, 177, 0.2);
+  box-shadow: 0 4px 24px 0 rgba(15, 163, 177, 0.1);
 }
 
 .dark .card-ios {
   background: rgba(0, 0, 0, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(181, 226, 250, 0.1);
 }
 
-/* iOS-style buttons */
+/* iOS-style buttons with custom colors */
 .btn-ios {
   border-radius: 12px;
   font-weight: 600;
@@ -255,26 +262,26 @@
 }
 
 .btn-primary-ios {
-  background: linear-gradient(135deg, hsl(var(--ios-blue)), hsl(var(--ios-purple)));
+  background: linear-gradient(135deg, hsl(var(--custom-blue)), hsl(var(--custom-orange)));
   color: white;
   border: none;
-  box-shadow: 0 4px 15px 0 rgba(0, 122, 255, 0.3);
+  box-shadow: 0 4px 15px 0 rgba(15, 163, 177, 0.3);
 }
 
 .btn-primary-ios:hover {
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px 0 rgba(0, 122, 255, 0.4);
+  box-shadow: 0 6px 20px 0 rgba(15, 163, 177, 0.4);
 }
 
 .btn-secondary-ios {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(181, 226, 250, 0.2); /* Custom light blue */
+  border: 1px solid rgba(15, 163, 177, 0.3);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
 }
 
 .btn-secondary-ios:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(181, 226, 250, 0.3);
   transform: translateY(-1px);
 }
 
@@ -283,14 +290,14 @@
   background: rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(181, 226, 250, 0.1);
 }
 
 .glass-card-dark {
   background: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(25px);
   -webkit-backdrop-filter: blur(25px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(181, 226, 250, 0.15);
 }
 
 /* Animation delays */
@@ -408,6 +415,25 @@
     @apply py-4 md:py-6 lg:py-8;
   }
 }
+
+/* Custom color utilities */
+.text-custom-blue { color: hsl(var(--custom-blue)); }
+.text-custom-light-blue { color: hsl(var(--custom-light-blue)); }
+.text-custom-cream { color: hsl(var(--custom-cream)); }
+.text-custom-yellow { color: hsl(var(--custom-yellow)); }
+.text-custom-orange { color: hsl(var(--custom-orange)); }
+
+.bg-custom-blue { background-color: hsl(var(--custom-blue)); }
+.bg-custom-light-blue { background-color: hsl(var(--custom-light-blue)); }
+.bg-custom-cream { background-color: hsl(var(--custom-cream)); }
+.bg-custom-yellow { background-color: hsl(var(--custom-yellow)); }
+.bg-custom-orange { background-color: hsl(var(--custom-orange)); }
+
+.border-custom-blue { border-color: hsl(var(--custom-blue)); }
+.border-custom-light-blue { border-color: hsl(var(--custom-light-blue)); }
+.border-custom-cream { border-color: hsl(var(--custom-cream)); }
+.border-custom-yellow { border-color: hsl(var(--custom-yellow)); }
+.border-custom-orange { border-color: hsl(var(--custom-orange)); }
 
 /* iOS color utilities */
 .text-ios-blue { color: hsl(var(--ios-blue)); }

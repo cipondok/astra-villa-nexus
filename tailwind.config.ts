@@ -56,6 +56,14 @@ const config: Config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        // Custom color scheme
+        custom: {
+          blue: "hsl(var(--custom-blue))",
+          lightBlue: "hsl(var(--custom-light-blue))",
+          cream: "hsl(var(--custom-cream))",
+          yellow: "hsl(var(--custom-yellow))",
+          orange: "hsl(var(--custom-orange))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -73,10 +81,10 @@ const config: Config = {
         },
         "pulse-glow": {
           "0%, 100%": {
-            textShadow: "0 0 8px #7f5af0, 0 0 12px #2cb67d",
+            textShadow: "0 0 8px #0FA3B1, 0 0 12px #B5E2FA",
           },
           "50%": {
-            textShadow: "0 0 16px #2cb67d, 0 0 32px #7f5af0",
+            textShadow: "0 0 16px #B5E2FA, 0 0 32px #0FA3B1",
           },
         },
         "dot-flash": {
