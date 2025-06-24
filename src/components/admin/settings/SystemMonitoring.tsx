@@ -19,7 +19,20 @@ import {
   Zap
 } from 'lucide-react';
 
-const SystemMonitoring = () => {
+interface SystemInfo {
+  version: string;
+  uptime: string;
+  memoryUsage: string;
+  diskSpace: string;
+  activeUsers: number;
+  totalProperties: number;
+}
+
+interface SystemMonitoringProps {
+  systemInfo?: SystemInfo;
+}
+
+const SystemMonitoring: React.FC<SystemMonitoringProps> = ({ systemInfo }) => {
   return (
     <div className="space-y-6">
       <Card>
@@ -197,6 +210,46 @@ const SystemMonitoring = () => {
               <Database className="h-4 w-4" />
               Current System Status
             </h3>
+            
+            {systemInfo && (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+                <Card className="bg-blue-50 dark:bg-blue-900/20">
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="font-medium">System Version</p>
+                        <p className="text-sm text-muted-foreground">{systemInfo.version}</p>
+                      </div>
+                      <Badge variant="default" className="bg-blue-500">Active</Badge>
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <Card className="bg-green-50 dark:bg-green-900/20">
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="font-medium">Active Users</p>
+                        <p className="text-sm text-muted-foreground">{systemInfo.activeUsers} online</p>
+                      </div>
+                      <Badge variant="default" className="bg-green-500">Live</Badge>
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <Card className="bg-purple-50 dark:bg-purple-900/20">
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="font-medium">Total Properties</p>
+                        <p className="text-sm text-muted-foreground">{systemInfo.totalProperties} listings</p>
+                      </div>
+                      <Badge variant="default" className="bg-purple-500">Updated</Badge>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <Card className="bg-green-50 dark:bg-green-900/20">
