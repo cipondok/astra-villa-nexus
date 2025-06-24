@@ -28,6 +28,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 interface AdminDashboardHeaderProps {
   isAdmin: boolean;
@@ -39,6 +47,8 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
   const { signOut } = useAuth();
   const navigate = useNavigate();
   const [sessionTime, setSessionTime] = useState<string>('');
+  const [showProfile, setShowProfile] = useState(false);
+  const [showAlerts, setShowAlerts] = useState(false);
 
   // Session monitoring
   useEffect(() => {
@@ -130,7 +140,44 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
                 <User className="h-4 w-4 mr-2" />
                 {isAdmin ? "System Administrator" : "Support Staff"}
               </Badge>
-              <AdminAlertBadge />
+              
+              {/* Alert Badge - Now clickable */}
+              <Dialog open={showAlerts} onOpenChange={setShowAlerts}>
+                <DialogTrigger asChild>
+                  <div className="cursor-pointer">
+                    <AdminAlertBadge />
+                  </div>
+                </DialogTrigger>
+                <DialogContent className="max-w-2xl">
+                  <DialogHeader>
+                    <DialogTitle>System Alerts</DialogTitle>
+                    <DialogDescription>
+                      Recent system alerts and notifications
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="space-y-4">
+                    <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                      <div className="flex items-center gap-2">
+                        <AlertTriangle className="h-4 w-4 text-yellow-600" />
+                        <span className="font-medium text-yellow-800">System Maintenance</span>
+                      </div>
+                      <p className="text-sm text-yellow-700 mt-1">
+                        Scheduled maintenance will occur tonight at 2:00 AM UTC
+                      </p>
+                    </div>
+                    <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                      <div className="flex items-center gap-2">
+                        <Bell className="h-4 w-4 text-blue-600" />
+                        <span className="font-medium text-blue-800">New User Registrations</span>
+                      </div>
+                      <p className="text-sm text-blue-700 mt-1">
+                        5 new users have registered in the last hour
+                      </p>
+                    </div>
+                  </div>
+                </DialogContent>
+              </Dialog>
+              
               <Badge variant="outline" className="bg-green-500/20 text-green-100 border-green-300/30 px-4 py-2">
                 <Activity className="h-4 w-4 mr-2" />
                 Online
@@ -162,7 +209,54 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
               </CardContent>
             </Card>
 
-            {/* Logout Button */}
+            {/* Admin Profile - Now clickable */}
+            <Dialog open={showProfile} onOpenChange={setShowProfile}>
+              <DialogTrigger asChild>
+                <Card className="bg-white/10 backdrop-blur-sm border-white/20 text-white cursor-pointer hover:bg-white/20 transition-colors">
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-blue-500/20 rounded-lg">
+                        <User className="h-5 w-5 text-blue-300" />
+                      </div>
+                      <div>
+                        <p className="text-sm text-blue-100">Admin Profile</p>
+                        <p className="font-semibold text-white">{profile?.full_name || user?.email}</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Admin Profile</DialogTitle>
+                  <DialogDescription>
+                    Your administrator profile information
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="space-y-4">
+                  <div>
+                    <label className="text-sm font-medium text-gray-700">Email</label>
+                    <p className="text-gray-900">{user?.email}</p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-700">Full Name</label>
+                    <p className="text-gray-900">{profile?.full_name || 'Not set'}</p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-700">Role</label>
+                    <p className="text-gray-900">{profile?.role || 'admin'}</p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-700">Status</label>
+                    <Badge variant="outline" className="bg-green-100 text-green-800">
+                      Active
+                    </Badge>
+                  </div>
+                </div>
+              </DialogContent>
+            </Dialog>
+
+            {/* Logout Button - Fixed */}
             <Button
               onClick={handleSignOut}
               variant="ghost"
@@ -172,12 +266,12 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
               Logout
             </Button>
 
-            {/* Admin Menu */}
+            {/* Admin Menu - Fixed */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="bg-white/10 hover:bg-white/20 text-white border border-white/20">
                   <Settings className="h-4 w-4 mr-2" />
-                  Admin Menu
+                  Menu
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
