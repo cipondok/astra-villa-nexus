@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { useSupabaseConnectionDiagnostics } from '@/hooks/useSupabaseConnectionDiagnostics';
 import { useOfflineSupport } from '@/hooks/useOfflineSupport';
+import { supabase } from '@/integrations/supabase/client';
 
 const SupabaseDiagnosticsPanel = () => {
   const { diagnostics, runFullDiagnostics, getRecommendations } = useSupabaseConnectionDiagnostics();
@@ -194,7 +195,7 @@ const SupabaseDiagnosticsPanel = () => {
             <Button 
               variant="outline" 
               className="justify-start"
-              onClick={() => console.log('Supabase Client:', { supabase })}
+              onClick={() => console.log('Supabase Client:', supabase)}
             >
               Log Client Info
             </Button>

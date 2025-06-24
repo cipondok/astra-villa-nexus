@@ -143,17 +143,18 @@ export const useOfflineSupport = () => {
       try {
         let result;
         
+        // Use type assertion to handle dynamic table names
         switch (operation.type) {
           case 'insert':
-            result = await supabase.from(operation.table).insert(operation.data);
+            result = await (supabase as any).from(operation.table).insert(operation.data);
             break;
           case 'update':
-            result = await supabase.from(operation.table)
+            result = await (supabase as any).from(operation.table)
               .update(operation.data)
               .eq('id', operation.data.id);
             break;
           case 'delete':
-            result = await supabase.from(operation.table)
+            result = await (supabase as any).from(operation.table)
               .delete()
               .eq('id', operation.data.id);
             break;
@@ -183,60 +184,14 @@ export const useOfflineSupport = () => {
     }
   }, [isOnline, queuedOperations, cacheData]);
 
-  // Enhanced query function with offline support
-  const offlineQuery = useCallback(async (
-    table: string,
-    options: {
-      select?: string;
-      filters?: Record<string, any>;
-      limit?: number;
-    } = {}
-  ) => {
-    if (isOnline) {
-      try {
-        let query = supabase.from(table).select(options.select || '*');
-        
-        if (options.filters) {
-          Object.entries(options.filters).forEach(([key, value]) => {
-            query = query.eq(key, value);
-          });
-        }
-        
-        if (options.limit) {
-          query = query.limit(options.limit);
-        }
+  // Simplified query function for known tables
+  const getCachedProperties = useCallback(() => {
+    return offlineData.properties;
+  }, [offlineData.properties]);
 
-        const result = await query;
-        return result;
-      } catch (error) {
-        console.warn('Online query failed, falling back to cache:', error);
-      }
-    }
-
-    // Fallback to cached data
-    console.log('📱 Using cached data for offline query');
-    const cachedTableData = offlineData[table as keyof OfflineData];
-    
-    if (Array.isArray(cachedTableData)) {
-      let filteredData = cachedTableData;
-      
-      if (options.filters) {
-        filteredData = cachedTableData.filter(item => {
-          return Object.entries(options.filters!).every(([key, value]) => 
-            item[key] === value
-          );
-        });
-      }
-      
-      if (options.limit) {
-        filteredData = filteredData.slice(0, options.limit);
-      }
-
-      return { data: filteredData, error: null };
-    }
-
-    return { data: null, error: new Error('No cached data available') };
-  }, [isOnline, offlineData]);
+  const getCachedProfiles = useCallback(() => {
+    return offlineData.profiles;
+  }, [offlineData.profiles]);
 
   return {
     isOnline,
@@ -245,6 +200,7 @@ export const useOfflineSupport = () => {
     cacheData,
     queueOperation,
     syncQueuedOperations,
-    offlineQuery
+    getCachedProperties,
+    getCachedProfiles
   };
 };
