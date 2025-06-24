@@ -17,7 +17,8 @@ import {
   UserCheck,
   UserPlus,
   Wifi,
-  WifiOff
+  WifiOff,
+  AlertCircle
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useDatabaseConnection } from "@/hooks/useDatabaseConnection";
@@ -56,6 +57,7 @@ interface Metrics {
 
 const SystemMonitor = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [connectionTestResult, setConnectionTestResult] = useState<string>('');
   const { 
     connectionStatus, 
     isLoading: connectionLoading, 
@@ -63,6 +65,42 @@ const SystemMonitor = () => {
     isConnected,
     lastChecked 
   } = useDatabaseConnection();
+
+  // Real-time connection test
+  const performLiveConnectionTest = async () => {
+    console.log('🔍 Performing live connection test...');
+    setConnectionTestResult('Testing...');
+    
+    try {
+      // Test 1: Simple query
+      const { data: testData, error: testError } = await supabase
+        .from('profiles')
+        .select('count')
+        .limit(1);
+
+      if (testError) {
+        setConnectionTestResult(`❌ Query failed: ${testError.message}`);
+        return false;
+      }
+
+      // Test 2: Try to access system settings
+      const { error: systemError } = await supabase
+        .from('system_settings')
+        .select('id')
+        .limit(1);
+
+      if (systemError) {
+        setConnectionTestResult(`⚠️ System access limited: ${systemError.message}`);
+      } else {
+        setConnectionTestResult('✅ Full database access confirmed');
+      }
+
+      return true;
+    } catch (error: any) {
+      setConnectionTestResult(`💥 Connection failed: ${error.message}`);
+      return false;
+    }
+  };
 
   const { data: systemStatus, refetch } = useQuery({
     queryKey: ['system-status'],
@@ -189,6 +227,11 @@ const SystemMonitor = () => {
 
   const handleRefresh = async () => {
     setIsRefreshing(true);
+    console.log('🔄 Manual refresh triggered');
+    
+    // Perform live test first
+    await performLiveConnectionTest();
+    
     await Promise.all([
       retryConnection(),
       refetch()
@@ -210,10 +253,17 @@ const SystemMonitor = () => {
   };
 
   const getConnectionIcon = () => {
-    if (connectionStatus === 'connected') {
-      return <Wifi className="h-4 w-4 text-green-500" />;
-    } else {
-      return <WifiOff className="h-4 w-4 text-red-500" />;
+    switch (connectionStatus) {
+      case 'connected':
+        return <Wifi className="h-4 w-4 text-green-500" />;
+      case 'connecting':
+        return <RefreshCw className="h-4 w-4 text-yellow-500 animate-spin" />;
+      case 'error':
+        return <AlertCircle className="h-4 w-4 text-red-500" />;
+      case 'offline':
+        return <WifiOff className="h-4 w-4 text-red-500" />;
+      default:
+        return <WifiOff className="h-4 w-4 text-gray-500" />;
     }
   };
 
@@ -232,6 +282,29 @@ const SystemMonitor = () => {
     }
   };
 
+  const getDetailedConnectionInfo = () => {
+    const now = new Date();
+    const timeSinceCheck = lastChecked ? 
+      Math.floor((now.getTime() - lastChecked.getTime()) / 1000) : null;
+
+    return (
+      <div className="text-xs text-muted-foreground space-y-1">
+        <div>Status: {connectionStatus}</div>
+        {lastChecked && (
+          <div>Last check: {timeSinceCheck}s ago</div>
+        )}
+        {connectionTestResult && (
+          <div>Test result: {connectionTestResult}</div>
+        )}
+      </div>
+    );
+  };
+
+  // Auto-test connection on component mount
+  useEffect(() => {
+    performLiveConnectionTest();
+  }, []);
+
   return (
     <div className="space-y-6">
       {/* Header with Real Connection Status */}
@@ -244,13 +317,63 @@ const SystemMonitor = () => {
             {getConnectionStatus()}
           </div>
         </div>
-        <Button onClick={handleRefresh} disabled={isRefreshing || connectionLoading} variant="outline">
-          <RefreshCw className={`h-4 w-4 mr-2 ${(isRefreshing || connectionLoading) ? 'animate-spin' : ''}`} />
-          Refresh
-        </Button>
+        <div className="flex gap-2">
+          <Button 
+            onClick={performLiveConnectionTest} 
+            variant="outline" 
+            size="sm"
+            className="text-xs"
+          >
+            Test DB
+          </Button>
+          <Button onClick={handleRefresh} disabled={isRefreshing || connectionLoading} variant="outline">
+            <RefreshCw className={`h-4 w-4 mr-2 ${(isRefreshing || connectionLoading) ? 'animate-spin' : ''}`} />
+            Refresh
+          </Button>
+        </div>
       </div>
 
-      {/* Connection Status Alert */}
+      {/* Detailed Connection Status */}
+      <Card className={`border-2 ${isConnected ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'}`}>
+        <CardContent className="pt-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              {getConnectionIcon()}
+              <div>
+                <h3 className={`font-semibold ${isConnected ? 'text-green-700' : 'text-red-700'}`}>
+                  Database Connection Status
+                </h3>
+                <p className={`${isConnected ? 'text-green-600' : 'text-red-600'}`}>
+                  {isConnected ? 'Database is accessible and responding' : 'Database connection issues detected'}
+                </p>
+                {getDetailedConnectionInfo()}
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <Button 
+                onClick={performLiveConnectionTest} 
+                disabled={connectionLoading}
+                variant="outline"
+                size="sm"
+                className="border-blue-300 text-blue-700 hover:bg-blue-100"
+              >
+                Test Connection
+              </Button>
+              <Button 
+                onClick={retryConnection} 
+                disabled={connectionLoading}
+                variant="outline"
+                size="sm"
+                className={`${isConnected ? 'border-green-300 text-green-700 hover:bg-green-100' : 'border-red-300 text-red-700 hover:bg-red-100'}`}
+              >
+                {connectionLoading ? 'Retrying...' : 'Retry Connection'}
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Connection Status Alert - Only show if there are issues */}
       {!isConnected && (
         <Card className="border-red-200 bg-red-50">
           <CardContent className="pt-6">
@@ -263,6 +386,11 @@ const SystemMonitor = () => {
                   {lastChecked && (
                     <p className="text-sm text-red-500 mt-1">
                       Last successful connection: {lastChecked.toLocaleString()}
+                    </p>
+                  )}
+                  {connectionTestResult && (
+                    <p className="text-sm text-red-600 mt-1">
+                      {connectionTestResult}
                     </p>
                   )}
                 </div>
