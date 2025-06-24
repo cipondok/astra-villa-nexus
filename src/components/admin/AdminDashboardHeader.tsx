@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -82,27 +83,23 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
   }, []);
 
   const handleSignOut = async () => {
-    if (isSigningOut) return; // Prevent multiple logout attempts
+    if (isSigningOut) return;
     
     try {
       console.log('AdminDashboardHeader: Starting sign out process...');
       setIsSigningOut(true);
       
-      // Show immediate feedback
       toast.loading('Signing out...', { duration: 2000 });
       
-      // Close any open dialogs
       setShowProfile(false);
       setShowAlerts(false);
       
-      // Call the signOut function which will handle everything
       await signOut();
       
     } catch (error) {
       console.error('AdminDashboardHeader: Error signing out:', error);
       setIsSigningOut(false);
       toast.error('Error signing out');
-      // Force navigation even if error
       window.location.href = '/';
     }
   };
@@ -115,6 +112,16 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
       console.error('Error extending session:', error);
       toast.error('Failed to extend session');
     }
+  };
+
+  const handleAlertsClick = () => {
+    console.log('Opening alerts dialog...');
+    setShowAlerts(true);
+  };
+
+  const handleProfileClick = () => {
+    console.log('Opening profile dialog...');
+    setShowProfile(true);
   };
 
   return (
@@ -150,15 +157,6 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
                 {isAdmin ? "System Administrator" : "Support Staff"}
               </Badge>
               
-              {/* Alert Badge */}
-              <Button
-                onClick={() => setShowAlerts(true)}
-                variant="ghost"
-                className="p-0 h-auto bg-transparent hover:bg-white/10"
-              >
-                <AdminAlertBadge />
-              </Button>
-              
               <Badge variant="outline" className="bg-green-500/20 text-green-100 border-green-300/30 px-4 py-2">
                 <Activity className="h-4 w-4 mr-2" />
                 Online
@@ -178,13 +176,32 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
             </div>
           </div>
           
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
+            {/* Home Button */}
+            <Button
+              onClick={() => navigate('/')}
+              variant="ghost"
+              className="bg-white/10 hover:bg-white/20 text-white border border-white/20 px-4 py-2 flex items-center gap-2"
+            >
+              <Home className="h-4 w-4" />
+              <span className="hidden md:block">Home</span>
+            </Button>
+
+            {/* Alerts Button */}
+            <Button
+              onClick={handleAlertsClick}
+              variant="ghost"
+              className="bg-white/10 hover:bg-white/20 text-white border border-white/20 px-4 py-2 flex items-center gap-2"
+            >
+              <AdminAlertBadge />
+            </Button>
+
             {/* Theme Switcher */}
             <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg p-2">
               <ThemeSwitcher variant="compact" />
             </div>
 
-            {/* Single Admin Control Menu */}
+            {/* Admin Control Menu */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -211,7 +228,7 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
                 
                 {/* Profile Management */}
                 <DropdownMenuItem 
-                  onClick={() => setShowProfile(true)}
+                  onClick={handleProfileClick}
                   className="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700"
                 >
                   <UserCog className="h-4 w-4 mr-2" />
@@ -219,42 +236,29 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
                 </DropdownMenuItem>
                 
                 {/* Dashboard Navigation */}
-                <DropdownMenuSub>
-                  <DropdownMenuSubTrigger className="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700">
-                    <Monitor className="h-4 w-4 mr-2" />
-                    Navigation
-                  </DropdownMenuSubTrigger>
-                  <DropdownMenuSubContent className="bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700">
-                    <DropdownMenuItem 
-                      onClick={() => navigate('/')}
-                      className="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700"
-                    >
-                      <Home className="h-4 w-4 mr-2" />
-                      Home Page
-                    </DropdownMenuItem>
-                    <DropdownMenuItem 
-                      onClick={() => navigate('/dashboard/admin')}
-                      className="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700"
-                    >
-                      <Shield className="h-4 w-4 mr-2" />
-                      Admin Panel
-                    </DropdownMenuItem>
-                    <DropdownMenuItem 
-                      onClick={() => navigate('/dashboard')}
-                      className="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700"
-                    >
-                      <User className="h-4 w-4 mr-2" />
-                      User Dashboard
-                    </DropdownMenuItem>
-                    <DropdownMenuItem 
-                      onClick={() => navigate('/wallet')}
-                      className="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700"
-                    >
-                      <Building2 className="h-4 w-4 mr-2" />
-                      Wallet
-                    </DropdownMenuItem>
-                  </DropdownMenuSubContent>
-                </DropdownMenuSub>
+                <DropdownMenuItem 
+                  onClick={() => navigate('/dashboard/admin')}
+                  className="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700"
+                >
+                  <Shield className="h-4 w-4 mr-2" />
+                  Admin Panel
+                </DropdownMenuItem>
+                
+                <DropdownMenuItem 
+                  onClick={() => navigate('/dashboard')}
+                  className="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700"
+                >
+                  <User className="h-4 w-4 mr-2" />
+                  User Dashboard
+                </DropdownMenuItem>
+                
+                <DropdownMenuItem 
+                  onClick={() => navigate('/wallet')}
+                  className="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700"
+                >
+                  <Building2 className="h-4 w-4 mr-2" />
+                  Wallet
+                </DropdownMenuItem>
                 
                 {/* System Management */}
                 <DropdownMenuSub>
