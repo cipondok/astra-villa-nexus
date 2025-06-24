@@ -4,14 +4,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RefreshCw, Activity, Server, AlertTriangle, TrendingUp, BarChart3 } from "lucide-react";
-import { useDatabaseConnection } from "@/hooks/useDatabaseConnection";
+import { useEnhancedDatabaseConnection } from "@/hooks/useEnhancedDatabaseConnection";
 import { useRealTimeMetrics } from "@/hooks/useRealTimeMetrics";
 import RealTimeSystemHealth from "./RealTimeSystemHealth";
 import EnhancedAlertManagement from "./EnhancedAlertManagement";
+import ConnectionStatusIndicator from "./ConnectionStatusIndicator";
 
 const SystemMonitor = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const { connectionStatus, isLoading: connectionLoading, retryConnection, isConnected } = useDatabaseConnection();
+  const { connectionStatus, isLoading: connectionLoading, retryConnection, isConnected } = useEnhancedDatabaseConnection();
   const { metrics, refreshMetrics } = useRealTimeMetrics();
 
   const handleRefresh = async () => {
@@ -41,20 +42,11 @@ const SystemMonitor = () => {
         </Button>
       </div>
 
-      {/* Quick Stats Bar */}
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-        <Card className="bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-blue-600 dark:text-blue-400">Connection</p>
-                <p className="font-semibold">{isConnected ? 'Online' : 'Offline'}</p>
-              </div>
-              <div className={`h-3 w-3 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500'} animate-pulse`} />
-            </div>
-          </CardContent>
-        </Card>
-
+      {/* Connection Status */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <ConnectionStatusIndicator />
+        
+        {/* Quick Stats */}
         <Card className="bg-gradient-to-r from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
@@ -87,18 +79,6 @@ const SystemMonitor = () => {
                 <p className="font-semibold">{metrics.totalProperties}</p>
               </div>
               <Server className="h-5 w-5 text-orange-500" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-gradient-to-r from-red-50 to-red-100 dark:from-red-900/20 dark:to-red-800/20">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-red-600 dark:text-red-400">Alerts</p>
-                <p className="font-semibold">{metrics.pendingAlerts}</p>
-              </div>
-              <AlertTriangle className="h-5 w-5 text-red-500" />
             </div>
           </CardContent>
         </Card>
