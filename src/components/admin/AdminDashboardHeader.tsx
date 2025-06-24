@@ -16,7 +16,8 @@ import {
   UserCog,
   Database,
   Monitor,
-  ChevronDown
+  ChevronDown,
+  Home
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -221,9 +222,16 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
                 <DropdownMenuSub>
                   <DropdownMenuSubTrigger className="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700">
                     <Monitor className="h-4 w-4 mr-2" />
-                    Dashboards
+                    Navigation
                   </DropdownMenuSubTrigger>
                   <DropdownMenuSubContent className="bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700">
+                    <DropdownMenuItem 
+                      onClick={() => navigate('/')}
+                      className="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700"
+                    >
+                      <Home className="h-4 w-4 mr-2" />
+                      Home Page
+                    </DropdownMenuItem>
                     <DropdownMenuItem 
                       onClick={() => navigate('/dashboard/admin')}
                       className="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700"
