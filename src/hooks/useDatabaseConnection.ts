@@ -5,47 +5,43 @@ import { supabase } from '@/integrations/supabase/client';
 export type ConnectionStatus = 'connecting' | 'connected' | 'error' | 'offline';
 
 export const useDatabaseConnection = () => {
-  const [connectionStatus, setConnectionStatus] = useState<ConnectionStatus>('connecting');
+  const [connectionStatus, setConnectionStatus] = useState<ConnectionStatus>('offline');
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    const checkConnection = async () => {
-      try {
-        setConnectionStatus('connecting');
-        
-        // Quick timeout for connection test (3 seconds max)
-        const timeoutPromise = new Promise<never>((_, reject) => {
-          setTimeout(() => reject(new Error('Connection timeout')), 3000);
-        });
+    // Don't block app startup - assume offline initially
+    setConnectionStatus('offline');
+    
+    // Very lightweight background check - only when user interacts
+    const checkConnectionLater = () => {
+      setTimeout(async () => {
+        try {
+          setConnectionStatus('connecting');
+          
+          // Ultra-fast timeout (1 second max)
+          const timeoutPromise = new Promise<never>((_, reject) => {
+            setTimeout(() => reject(new Error('Quick timeout')), 1000);
+          });
 
-        const connectionPromise = supabase
-          .from('profiles')
-          .select('id')
-          .limit(1);
+          const connectionPromise = supabase
+            .from('profiles')
+            .select('id')
+            .limit(1);
 
-        const { error } = await Promise.race([connectionPromise, timeoutPromise]);
+          const { error } = await Promise.race([connectionPromise, timeoutPromise]);
 
-        if (error) {
-          console.warn('Database connection warning:', error);
-          setConnectionStatus('error');
-        } else {
-          setConnectionStatus('connected');
+          if (error) {
+            setConnectionStatus('offline');
+          } else {
+            setConnectionStatus('connected');
+          }
+        } catch (error) {
+          setConnectionStatus('offline');
         }
-      } catch (error) {
-        console.warn('Connection test failed, continuing anyway:', error);
-        setConnectionStatus('offline');
-      } finally {
-        setIsLoading(false);
-      }
+      }, 3000); // Wait 3 seconds after app loads before checking
     };
 
-    // Don't block initial load - check connection in background
-    checkConnection();
-
-    // Set up a periodic connection check (every 60 seconds instead of 30)
-    const interval = setInterval(checkConnection, 60000);
-
-    return () => clearInterval(interval);
+    checkConnectionLater();
   }, []);
 
   const retryConnection = async () => {
@@ -54,7 +50,7 @@ export const useDatabaseConnection = () => {
     
     try {
       const timeoutPromise = new Promise<never>((_, reject) => {
-        setTimeout(() => reject(new Error('Connection timeout')), 3000);
+        setTimeout(() => reject(new Error('Connection timeout')), 2000);
       });
 
       const connectionPromise = supabase

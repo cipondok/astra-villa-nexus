@@ -1,24 +1,21 @@
 
 import { useAuth } from "@/contexts/AuthContext";
-import { Loader2 } from "lucide-react";
 import AdminDashboard from "./AdminDashboard";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import LoadingPage from "@/components/LoadingPage";
-import { useDatabaseConnection } from "@/hooks/useDatabaseConnection";
 
 const AdminDashboardPage = () => {
   const { user, profile, loading } = useAuth();
-  const { connectionStatus } = useDatabaseConnection();
   const [timeoutReached, setTimeoutReached] = useState(false);
   const navigate = useNavigate();
 
-  // Simplified timeout - 5 seconds max
+  // Much shorter timeout - 2 seconds max
   useEffect(() => {
     const timer = setTimeout(() => {
       setTimeoutReached(true);
-    }, 5000);
+    }, 2000);
 
     return () => clearTimeout(timer);
   }, []);
@@ -32,13 +29,12 @@ const AdminDashboardPage = () => {
     }
   }, [timeoutReached, loading, navigate]);
 
-  // Show enhanced loading state with database status
+  // Show brief loading state
   if (loading && !timeoutReached) {
     return (
       <LoadingPage
         message="Loading admin dashboard..."
-        showConnectionStatus={true}
-        connectionStatus={connectionStatus}
+        showConnectionStatus={false} // Don't show database status here
       />
     );
   }

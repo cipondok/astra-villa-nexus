@@ -15,13 +15,13 @@ const LoadingPage: React.FC<LoadingPageProps> = ({
   const getConnectionMessage = () => {
     switch (connectionStatus) {
       case 'connecting':
-        return 'Connecting to database...';
+        return 'Checking database...';
       case 'connected':
-        return 'Database connected successfully';
+        return 'Database ready';
       case 'error':
-        return 'Database connection issue - continuing anyway';
+        return 'Database unavailable';
       case 'offline':
-        return 'Working in offline mode';
+        return 'Working offline';
       default:
         return 'Initializing...';
     }
@@ -34,9 +34,9 @@ const LoadingPage: React.FC<LoadingPageProps> = ({
       case 'connected':
         return 'text-green-400';
       case 'error':
-        return 'text-orange-400'; // Changed from red to orange to be less alarming
+        return 'text-gray-400';
       case 'offline':
-        return 'text-orange-400';
+        return 'text-gray-400';
       default:
         return 'text-gray-400';
     }
@@ -49,7 +49,7 @@ const LoadingPage: React.FC<LoadingPageProps> = ({
           className="text-4xl md:text-6xl font-extrabold tracking-widest animate-pulse-glow"
           style={{
             textShadow: '0 0 8px #7f5af0, 0 0 12px #2cb67d',
-            animation: 'pulseGlow 3s ease-in-out infinite'
+            animation: 'pulseGlow 2s ease-in-out infinite'
           }}
         >
           ASTRA <span className="text-indigo-400">Villa</span>
@@ -69,8 +69,7 @@ const LoadingPage: React.FC<LoadingPageProps> = ({
               <div className={`w-2 h-2 rounded-full ${
                 connectionStatus === 'connecting' ? 'bg-yellow-400 animate-pulse' :
                 connectionStatus === 'connected' ? 'bg-green-400' :
-                connectionStatus === 'error' ? 'bg-orange-400' :
-                'bg-orange-400'
+                'bg-gray-400'
               }`}></div>
               <span>{getConnectionMessage()}</span>
             </div>
