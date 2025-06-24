@@ -143,21 +143,57 @@ export const useOfflineSupport = () => {
       try {
         let result;
         
-        // Use type assertion to handle dynamic table names
-        switch (operation.type) {
-          case 'insert':
-            result = await (supabase as any).from(operation.table).insert(operation.data);
-            break;
-          case 'update':
-            result = await (supabase as any).from(operation.table)
-              .update(operation.data)
-              .eq('id', operation.data.id);
-            break;
-          case 'delete':
-            result = await (supabase as any).from(operation.table)
-              .delete()
-              .eq('id', operation.data.id);
-            break;
+        // Handle each table type explicitly to avoid TypeScript conflicts
+        if (operation.table === 'properties') {
+          switch (operation.type) {
+            case 'insert':
+              result = await supabase.from('properties').insert(operation.data);
+              break;
+            case 'update':
+              result = await supabase.from('properties')
+                .update(operation.data)
+                .eq('id', operation.data.id);
+              break;
+            case 'delete':
+              result = await supabase.from('properties')
+                .delete()
+                .eq('id', operation.data.id);
+              break;
+          }
+        } else if (operation.table === 'profiles') {
+          switch (operation.type) {
+            case 'insert':
+              result = await supabase.from('profiles').insert(operation.data);
+              break;
+            case 'update':
+              result = await supabase.from('profiles')
+                .update(operation.data)
+                .eq('id', operation.data.id);
+              break;
+            case 'delete':
+              result = await supabase.from('profiles')
+                .delete()
+                .eq('id', operation.data.id);
+              break;
+          }
+        } else {
+          // For other tables, use the any type assertion as fallback
+          const supabaseAny = supabase as any;
+          switch (operation.type) {
+            case 'insert':
+              result = await supabaseAny.from(operation.table).insert(operation.data);
+              break;
+            case 'update':
+              result = await supabaseAny.from(operation.table)
+                .update(operation.data)
+                .eq('id', operation.data.id);
+              break;
+            case 'delete':
+              result = await supabaseAny.from(operation.table)
+                .delete()
+                .eq('id', operation.data.id);
+              break;
+          }
         }
 
         if (result?.error) {
