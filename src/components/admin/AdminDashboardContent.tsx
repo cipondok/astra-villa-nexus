@@ -17,7 +17,7 @@ import WebTrafficAnalytics from "./WebTrafficAnalytics";
 import AIBotManagement from "./AIBotManagement";
 import FeedbackManagement from "./FeedbackManagement";
 import DailyCheckInManagement from "./DailyCheckInManagement";
-import ContentManagement from "./ContentManagement";
+import SimpleContentManagement from "./SimpleContentManagement";
 import SearchFiltersManagement from "./SearchFiltersManagement";
 import SystemSettings from "./SystemSettings";
 import BillingManagement from "./BillingManagement";
@@ -118,16 +118,16 @@ const AdminDashboardContent = ({ isAdmin, setActiveTab }: AdminDashboardContentP
         <DailyCheckInManagement />
       </TabsContent>
 
-      {/* Content & Settings */}
+      {/* Content & Settings - Now using functional components */}
       <TabsContent value="content-management">
-        <ContentManagement />
+        <SimpleContentManagement />
       </TabsContent>
 
       <TabsContent value="search-filters">
         <SearchFiltersManagement />
       </TabsContent>
 
-      {/* System Settings */}
+      {/* System Settings - Now using functional component */}
       <TabsContent value="system-settings">
         {isAdmin ? <SystemSettings /> : <UnauthorizedAccess />}
       </TabsContent>

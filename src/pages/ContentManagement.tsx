@@ -2,9 +2,9 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { Navigate } from "react-router-dom";
 import AdminDashboardHeader from "@/components/admin/AdminDashboardHeader";
-import SimpleContentManagement from "@/components/admin/SimpleContentManagement";
+import ContentManagement from "@/components/admin/ContentManagement";
 
-const ContentManagement = () => {
+const ContentManagementPage = () => {
   const { user, profile, loading } = useAuth();
 
   if (loading) {
@@ -33,10 +33,10 @@ const ContentManagement = () => {
         profile={profile} 
       />
       <div className="container mx-auto px-4 py-8">
-        <SimpleContentManagement />
+        <ContentManagement />
       </div>
     </div>
   );
 };
 
-export default ContentManagement;
+export default ContentManagementPage;
