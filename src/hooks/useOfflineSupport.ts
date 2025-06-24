@@ -1,17 +1,24 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import type { Database } from '@/integrations/supabase/types';
+
+// Define supported table types for better type safety
+type SupportedTable = 'properties' | 'profiles';
+type TableRow<T extends SupportedTable> = Database['public']['Tables'][T]['Row'];
+type TableInsert<T extends SupportedTable> = Database['public']['Tables'][T]['Insert'];
+type TableUpdate<T extends SupportedTable> = Database['public']['Tables'][T]['Update'];
 
 interface OfflineData {
-  properties: any[];
-  profiles: any[];
+  properties: TableRow<'properties'>[];
+  profiles: TableRow<'profiles'>[];
   lastSync: Date | null;
 }
 
 interface QueuedOperation {
   id: string;
   type: 'insert' | 'update' | 'delete';
-  table: string;
+  table: SupportedTable;
   data: any;
   timestamp: Date;
 }
@@ -53,19 +60,27 @@ export const useOfflineSupport = () => {
       console.log('💾 Caching data for offline use...');
       
       // Cache recent properties
-      const { data: properties } = await supabase
+      const { data: properties, error: propertiesError } = await supabase
         .from('properties')
         .select('*')
         .order('created_at', { ascending: false })
         .limit(50);
 
+      if (propertiesError) {
+        console.error('Error caching properties:', propertiesError);
+      }
+
       // Cache user profiles
-      const { data: profiles } = await supabase
+      const { data: profiles, error: profilesError } = await supabase
         .from('profiles')
         .select('*')
         .limit(100);
 
-      const cachedData = {
+      if (profilesError) {
+        console.error('Error caching profiles:', profilesError);
+      }
+
+      const cachedData: OfflineData = {
         properties: properties || [],
         profiles: profiles || [],
         lastSync: new Date()
@@ -112,7 +127,7 @@ export const useOfflineSupport = () => {
   // Queue operations when offline
   const queueOperation = useCallback((
     type: 'insert' | 'update' | 'delete',
-    table: string,
+    table: SupportedTable,
     data: any
   ) => {
     const operation: QueuedOperation = {
@@ -132,6 +147,52 @@ export const useOfflineSupport = () => {
     console.log(`📝 Queued ${type} operation for ${table}:`, data);
   }, []);
 
+  // Type-safe operation executor
+  const executeOperation = async (operation: QueuedOperation) => {
+    switch (operation.table) {
+      case 'properties':
+        return await executePropertiesOperation(operation);
+      case 'profiles':
+        return await executeProfilesOperation(operation);
+      default:
+        throw new Error(`Unsupported table: ${operation.table}`);
+    }
+  };
+
+  const executePropertiesOperation = async (operation: QueuedOperation) => {
+    switch (operation.type) {
+      case 'insert':
+        return await supabase.from('properties').insert(operation.data as TableInsert<'properties'>);
+      case 'update':
+        return await supabase.from('properties')
+          .update(operation.data as TableUpdate<'properties'>)
+          .eq('id', operation.data.id);
+      case 'delete':
+        return await supabase.from('properties')
+          .delete()
+          .eq('id', operation.data.id);
+      default:
+        throw new Error(`Unsupported operation type: ${operation.type}`);
+    }
+  };
+
+  const executeProfilesOperation = async (operation: QueuedOperation) => {
+    switch (operation.type) {
+      case 'insert':
+        return await supabase.from('profiles').insert(operation.data as TableInsert<'profiles'>);
+      case 'update':
+        return await supabase.from('profiles')
+          .update(operation.data as TableUpdate<'profiles'>)
+          .eq('id', operation.data.id);
+      case 'delete':
+        return await supabase.from('profiles')
+          .delete()
+          .eq('id', operation.data.id);
+      default:
+        throw new Error(`Unsupported operation type: ${operation.type}`);
+    }
+  };
+
   // Sync queued operations when back online
   const syncQueuedOperations = useCallback(async () => {
     if (!isOnline || queuedOperations.length === 0) return;
@@ -141,60 +202,7 @@ export const useOfflineSupport = () => {
 
     for (const operation of queuedOperations) {
       try {
-        let result;
-        
-        // Handle each table type explicitly to avoid TypeScript conflicts
-        if (operation.table === 'properties') {
-          switch (operation.type) {
-            case 'insert':
-              result = await supabase.from('properties').insert(operation.data);
-              break;
-            case 'update':
-              result = await supabase.from('properties')
-                .update(operation.data)
-                .eq('id', operation.data.id);
-              break;
-            case 'delete':
-              result = await supabase.from('properties')
-                .delete()
-                .eq('id', operation.data.id);
-              break;
-          }
-        } else if (operation.table === 'profiles') {
-          switch (operation.type) {
-            case 'insert':
-              result = await supabase.from('profiles').insert(operation.data);
-              break;
-            case 'update':
-              result = await supabase.from('profiles')
-                .update(operation.data)
-                .eq('id', operation.data.id);
-              break;
-            case 'delete':
-              result = await supabase.from('profiles')
-                .delete()
-                .eq('id', operation.data.id);
-              break;
-          }
-        } else {
-          // For other tables, use the any type assertion as fallback
-          const supabaseAny = supabase as any;
-          switch (operation.type) {
-            case 'insert':
-              result = await supabaseAny.from(operation.table).insert(operation.data);
-              break;
-            case 'update':
-              result = await supabaseAny.from(operation.table)
-                .update(operation.data)
-                .eq('id', operation.data.id);
-              break;
-            case 'delete':
-              result = await supabaseAny.from(operation.table)
-                .delete()
-                .eq('id', operation.data.id);
-              break;
-          }
-        }
+        const result = await executeOperation(operation);
 
         if (result?.error) {
           console.error(`Failed to sync ${operation.type} for ${operation.table}:`, result.error);
@@ -220,7 +228,7 @@ export const useOfflineSupport = () => {
     }
   }, [isOnline, queuedOperations, cacheData]);
 
-  // Simplified query function for known tables
+  // Simplified query functions for cached data
   const getCachedProperties = useCallback(() => {
     return offlineData.properties;
   }, [offlineData.properties]);
