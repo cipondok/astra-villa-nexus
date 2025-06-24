@@ -13,6 +13,7 @@ import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import ContentManagement from "./pages/ContentManagement";
+import Loading from "./pages/Loading";
 import { SessionMonitor } from "@/components/SessionMonitor";
 
 const queryClient = new QueryClient();
@@ -34,6 +35,7 @@ const App: React.FC = () => {
                       <Route path="/dashboard" element={<Dashboard />} />
                       <Route path="/admin" element={<AdminDashboard />} />
                       <Route path="/content-management" element={<ContentManagement />} />
+                      <Route path="/loading" element={<Loading />} />
                     </Routes>
                   </BrowserRouter>
                 </TooltipProvider>
