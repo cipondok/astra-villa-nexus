@@ -7,6 +7,7 @@ import { useSystemSettings } from '@/hooks/useSystemSettings';
 import { useSystemInfo } from '@/hooks/useSystemInfo';
 import { useBackupSettings } from '@/hooks/useBackupSettings';
 import { useAlert } from '@/contexts/AlertContext';
+import { useDatabaseConnection } from '@/hooks/useDatabaseConnection';
 import GeneralSettings from './settings/GeneralSettings';
 import SecuritySettings from './settings/SecuritySettings';
 import NotificationSettings from './settings/NotificationSettings';
@@ -17,6 +18,7 @@ import LoadingPage from '../LoadingPage';
 
 const SystemSettings = () => {
   const { showSuccess, showError } = useAlert();
+  const { connectionStatus } = useDatabaseConnection();
   const { settings, loading, saveSettings, handleInputChange } = useSystemSettings();
   const { systemInfo } = useSystemInfo();
   const { 
@@ -27,13 +29,15 @@ const SystemSettings = () => {
     createBackup 
   } = useBackupSettings();
 
-  // Show loading screen when settings are being saved
+  console.log('SystemSettings rendering, loading:', loading, 'settings:', settings);
+
+  // Show loading screen when settings are being saved or initially loading
   if (loading && Object.keys(settings).length === 0) {
     return (
       <LoadingPage 
         message="Loading system settings..."
         showConnectionStatus={true}
-        connectionStatus="connected"
+        connectionStatus={connectionStatus}
       />
     );
   }

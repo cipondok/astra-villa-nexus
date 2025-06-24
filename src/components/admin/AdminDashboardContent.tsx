@@ -40,6 +40,8 @@ const UnauthorizedAccess = () => (
 );
 
 const AdminDashboardContent = ({ isAdmin, setActiveTab }: AdminDashboardContentProps) => {
+  console.log('AdminDashboardContent rendering, isAdmin:', isAdmin);
+  
   return (
     <>
       <TabsContent value="overview">
@@ -118,7 +120,7 @@ const AdminDashboardContent = ({ isAdmin, setActiveTab }: AdminDashboardContentP
         <DailyCheckInManagement />
       </TabsContent>
 
-      {/* Content & Settings - Now using functional components */}
+      {/* Content & Settings */}
       <TabsContent value="content-management">
         <SimpleContentManagement />
       </TabsContent>
@@ -127,9 +129,13 @@ const AdminDashboardContent = ({ isAdmin, setActiveTab }: AdminDashboardContentP
         <SearchFiltersManagement />
       </TabsContent>
 
-      {/* System Settings - Now using functional component */}
+      {/* System Settings - This is the key tab that should show your settings */}
       <TabsContent value="system-settings">
-        {isAdmin ? <SystemSettings /> : <UnauthorizedAccess />}
+        {isAdmin ? (
+          <SystemSettings />
+        ) : (
+          <UnauthorizedAccess />
+        )}
       </TabsContent>
 
       <TabsContent value="billing-management">
