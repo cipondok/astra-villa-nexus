@@ -13,8 +13,8 @@ const ThemeSwitcher = ({ className = "", variant = "default" }: ThemeSwitcherPro
 
   const themes = [
     { key: "light", label: "Light", icon: Sun },
-    { key: "middle", label: "Middle", icon: Sunset },
-    { key: "dark", label: "Dark", icon: Moon }
+    { key: "dark", label: "Dark", icon: Moon },
+    { key: "system", label: "System", icon: Sunset }
   ] as const;
 
   if (variant === "compact") {
@@ -28,10 +28,10 @@ const ThemeSwitcher = ({ className = "", variant = "default" }: ThemeSwitcherPro
         variant="ghost"
         size="sm"
         onClick={() => setTheme(nextTheme.key)}
-        className={`flex items-center gap-2 ${className}`}
+        className={`flex items-center gap-2 text-white hover:bg-white/20 ${className}`}
       >
         <Icon className="h-4 w-4" />
-        <span className="hidden md:inline">{nextTheme.label}</span>
+        <span className="hidden md:inline text-white">{nextTheme.label}</span>
       </Button>
     );
   }

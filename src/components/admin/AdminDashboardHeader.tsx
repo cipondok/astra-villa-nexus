@@ -13,7 +13,11 @@ import {
   User,
   LogOut,
   Clock,
-  RefreshCw
+  RefreshCw,
+  UserCog,
+  Database,
+  Monitor,
+  ChevronDown
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -28,6 +32,9 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
   Dialog,
@@ -35,7 +42,6 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 
 interface AdminDashboardHeaderProps {
@@ -51,11 +57,10 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
   const [showProfile, setShowProfile] = useState(false);
   const [showAlerts, setShowAlerts] = useState(false);
 
-  // Session monitoring with extended session info
+  // Session monitoring
   useEffect(() => {
     const updateSessionTime = () => {
       const loginTime = localStorage.getItem('login_time');
-      const lastActivity = localStorage.getItem('last_activity');
       
       if (loginTime) {
         const elapsed = Date.now() - parseInt(loginTime);
@@ -87,16 +92,6 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
     }
   };
 
-  const handleRefreshSession = async () => {
-    try {
-      await extendSession();
-      toast.success('Session refreshed and extended');
-    } catch (error) {
-      console.error('Error refreshing session:', error);
-      toast.error('Failed to refresh session');
-    }
-  };
-
   const handleExtendSession = async () => {
     try {
       await extendSession();
@@ -108,7 +103,7 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
   };
 
   return (
-    <div className="relative bg-gradient-to-br from-blue-600 via-blue-700 to-purple-700 text-white overflow-hidden">
+    <div className="relative bg-gradient-to-br from-blue-600 via-blue-700 to-purple-700 dark:from-slate-800 dark:via-slate-900 dark:to-slate-800 text-white overflow-hidden">
       {/* Background Pattern */}
       <div 
         className="absolute inset-0 opacity-20"
@@ -126,7 +121,7 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
               </div>
               <div>
                 <h1 className="text-3xl lg:text-4xl font-bold text-white">
-                  {isAdmin ? "Admin Dashboard" : "Support Dashboard"}
+                  {isAdmin ? "Admin Control Panel" : "Support Dashboard"}
                 </h1>
                 <p className="text-blue-100 text-lg mt-1">
                   Welcome back, {profile?.full_name || user?.email}
@@ -174,72 +169,110 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
               <ThemeSwitcher variant="compact" />
             </div>
 
-            {/* Extend Session Button */}
-            <Button
-              onClick={handleExtendSession}
-              variant="ghost"
-              className="bg-green-500/20 hover:bg-green-500/30 text-white border border-green-300/30"
-            >
-              <RefreshCw className="h-4 w-4 mr-2" />
-              Extend Session
-            </Button>
-
-            {/* Refresh Button */}
-            <Button
-              onClick={handleRefreshSession}
-              variant="ghost"
-              className="bg-white/10 hover:bg-white/20 text-white border border-white/20"
-            >
-              <RefreshCw className="h-4 w-4 mr-2" />
-              Refresh
-            </Button>
-
-            {/* Admin Profile Button */}
-            <Button
-              onClick={() => setShowProfile(true)}
-              variant="ghost"
-              className="bg-white/10 hover:bg-white/20 text-white border border-white/20 px-4 py-2"
-            >
-              <User className="h-4 w-4 mr-2" />
-              Profile
-            </Button>
-
-            {/* Logout Button */}
-            <Button
-              onClick={handleSignOut}
-              variant="ghost"
-              className="bg-red-500/20 hover:bg-red-500/30 text-white border border-red-300/30 px-4 py-2"
-            >
-              <LogOut className="h-4 w-4 mr-2" />
-              Logout
-            </Button>
-
-            {/* Admin Menu */}
+            {/* Single Admin Control Menu */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="bg-white/10 hover:bg-white/20 text-white border border-white/20">
-                  <Settings className="h-4 w-4 mr-2" />
-                  Menu
+                <Button
+                  variant="ghost"
+                  className="bg-white/10 hover:bg-white/20 text-white border border-white/20 px-4 py-2 flex items-center gap-2"
+                >
+                  <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
+                    <User className="h-4 w-4 text-white" />
+                  </div>
+                  <span className="hidden md:block">{profile?.full_name || 'Admin'}</span>
+                  <ChevronDown className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuLabel>Admin Controls</DropdownMenuLabel>
+              <DropdownMenuContent align="end" className="w-64 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700">
+                <DropdownMenuLabel className="text-gray-900 dark:text-white">
+                  <div className="flex flex-col space-y-1">
+                    <p className="text-sm font-medium">{profile?.full_name || 'Administrator'}</p>
+                    <p className="text-xs text-gray-600 dark:text-gray-300">{user?.email}</p>
+                    <p className="text-xs text-blue-600 dark:text-blue-400">System Administrator</p>
+                  </div>
+                </DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => navigate('/dashboard')}>
-                  <User className="h-4 w-4 mr-2" />
-                  User Dashboard
+                
+                {/* Profile Management */}
+                <DropdownMenuItem 
+                  onClick={() => setShowProfile(true)}
+                  className="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700"
+                >
+                  <UserCog className="h-4 w-4 mr-2" />
+                  Admin Profile
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate('/wallet')}>
-                  <Building2 className="h-4 w-4 mr-2" />
-                  Wallet
-                </DropdownMenuItem>
+                
+                {/* Dashboard Navigation */}
+                <DropdownMenuSub>
+                  <DropdownMenuSubTrigger className="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700">
+                    <Monitor className="h-4 w-4 mr-2" />
+                    Dashboards
+                  </DropdownMenuSubTrigger>
+                  <DropdownMenuSubContent className="bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700">
+                    <DropdownMenuItem 
+                      onClick={() => navigate('/dashboard/admin')}
+                      className="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700"
+                    >
+                      <Shield className="h-4 w-4 mr-2" />
+                      Admin Panel
+                    </DropdownMenuItem>
+                    <DropdownMenuItem 
+                      onClick={() => navigate('/dashboard')}
+                      className="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700"
+                    >
+                      <User className="h-4 w-4 mr-2" />
+                      User Dashboard
+                    </DropdownMenuItem>
+                    <DropdownMenuItem 
+                      onClick={() => navigate('/wallet')}
+                      className="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700"
+                    >
+                      <Building2 className="h-4 w-4 mr-2" />
+                      Wallet
+                    </DropdownMenuItem>
+                  </DropdownMenuSubContent>
+                </DropdownMenuSub>
+                
+                {/* System Management */}
+                <DropdownMenuSub>
+                  <DropdownMenuSubTrigger className="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700">
+                    <Database className="h-4 w-4 mr-2" />
+                    System Management
+                  </DropdownMenuSubTrigger>
+                  <DropdownMenuSubContent className="bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700">
+                    <DropdownMenuItem className="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700">
+                      <Users className="h-4 w-4 mr-2" />
+                      User Management
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700">
+                      <Building2 className="h-4 w-4 mr-2" />
+                      Property Management
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700">
+                      <Settings className="h-4 w-4 mr-2" />
+                      System Settings
+                    </DropdownMenuItem>
+                  </DropdownMenuSubContent>
+                </DropdownMenuSub>
+                
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleExtendSession}>
-                  <Clock className="h-4 w-4 mr-2" />
-                  Extend Session
+                
+                {/* Session Management */}
+                <DropdownMenuItem 
+                  onClick={handleExtendSession}
+                  className="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700"
+                >
+                  <RefreshCw className="h-4 w-4 mr-2" />
+                  Extend Session ({sessionTime})
                 </DropdownMenuItem>
+                
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleSignOut} className="text-red-600">
+                
+                {/* Logout */}
+                <DropdownMenuItem 
+                  onClick={handleSignOut} 
+                  className="text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
+                >
                   <LogOut className="h-4 w-4 mr-2" />
                   Sign Out
                 </DropdownMenuItem>
@@ -251,39 +284,30 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
 
       {/* Alerts Dialog */}
       <Dialog open={showAlerts} onOpenChange={setShowAlerts}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-w-2xl bg-white dark:bg-slate-800 text-gray-900 dark:text-white">
           <DialogHeader>
-            <DialogTitle>System Alerts</DialogTitle>
-            <DialogDescription>
+            <DialogTitle className="text-gray-900 dark:text-white">System Alerts</DialogTitle>
+            <DialogDescription className="text-gray-600 dark:text-gray-300">
               Recent system alerts and notifications
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
-            <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
+            <div className="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
               <div className="flex items-center gap-2">
-                <Clock className="h-4 w-4 text-green-600" />
-                <span className="font-medium text-green-800">Extended Session Timeout</span>
+                <Clock className="h-4 w-4 text-green-600 dark:text-green-400" />
+                <span className="font-medium text-green-800 dark:text-green-300">Extended Session Timeout</span>
               </div>
-              <p className="text-sm text-green-700 mt-1">
+              <p className="text-sm text-green-700 dark:text-green-300 mt-1">
                 Session timeout has been extended to 2 hours for better development experience
               </p>
             </div>
-            <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+            <div className="p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
               <div className="flex items-center gap-2">
-                <AlertTriangle className="h-4 w-4 text-yellow-600" />
-                <span className="font-medium text-yellow-800">Auto Session Extension</span>
+                <Bell className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                <span className="font-medium text-blue-800 dark:text-blue-300">Admin Control Panel</span>
               </div>
-              <p className="text-sm text-yellow-700 mt-1">
-                Your session will automatically extend when you're active. Manual extension available.
-              </p>
-            </div>
-            <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-              <div className="flex items-center gap-2">
-                <Bell className="h-4 w-4 text-blue-600" />
-                <span className="font-medium text-blue-800">Development Mode</span>
-              </div>
-              <p className="text-sm text-blue-700 mt-1">
-                Enhanced session management active for smoother development workflow
+              <p className="text-sm text-blue-700 dark:text-blue-300 mt-1">
+                Unified admin controls now available through single user menu
               </p>
             </div>
           </div>
@@ -292,33 +316,33 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
 
       {/* Profile Dialog */}
       <Dialog open={showProfile} onOpenChange={setShowProfile}>
-        <DialogContent>
+        <DialogContent className="bg-white dark:bg-slate-800 text-gray-900 dark:text-white">
           <DialogHeader>
-            <DialogTitle>Admin Profile Management</DialogTitle>
-            <DialogDescription>
+            <DialogTitle className="text-gray-900 dark:text-white">Admin Profile Management</DialogTitle>
+            <DialogDescription className="text-gray-600 dark:text-gray-300">
               Your administrator profile information and session details
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div>
-              <label className="text-sm font-medium text-gray-700">Email</label>
-              <p className="text-gray-900">{user?.email}</p>
+              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Email</label>
+              <p className="text-gray-900 dark:text-white">{user?.email}</p>
             </div>
             <div>
-              <label className="text-sm font-medium text-gray-700">Full Name</label>
-              <p className="text-gray-900">{profile?.full_name || 'Not set'}</p>
+              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Full Name</label>
+              <p className="text-gray-900 dark:text-white">{profile?.full_name || 'Not set'}</p>
             </div>
             <div>
-              <label className="text-sm font-medium text-gray-700">Role</label>
-              <p className="text-gray-900">{profile?.role || 'admin'}</p>
+              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Role</label>
+              <p className="text-gray-900 dark:text-white">{profile?.role || 'admin'}</p>
             </div>
             <div>
-              <label className="text-sm font-medium text-gray-700">Session Duration</label>
-              <p className="text-gray-900">{sessionTime || '0m'}</p>
+              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Session Duration</label>
+              <p className="text-gray-900 dark:text-white">{sessionTime || '0m'}</p>
             </div>
             <div>
-              <label className="text-sm font-medium text-gray-700">Status</label>
-              <Badge variant="outline" className="bg-green-100 text-green-800">
+              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Status</label>
+              <Badge variant="outline" className="bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-300">
                 Active
               </Badge>
             </div>
