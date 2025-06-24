@@ -9,6 +9,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useAuth } from "@/contexts/AuthContext";
 import { X, Eye, EyeOff, Mail } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import LoadingPage from "../LoadingPage";
 
 interface EnhancedAuthModalProps {
   isOpen: boolean;
@@ -24,6 +25,7 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
   const [errors, setErrors] = useState<{[key: string]: string}>({});
   const [activeTab, setActiveTab] = useState("login");
   const [isLoading, setIsLoading] = useState(false);
+  const [authAction, setAuthAction] = useState<'login' | 'register' | null>(null);
   
   const { signIn, signUp } = useAuth();
 
@@ -76,8 +78,26 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
 
   const currentText = text[language];
 
+  if (!isOpen) return null;
+
+  // Show loading screen during authentication
+  if (isLoading && authAction) {
+    const loadingMessage = authAction === 'login' 
+      ? "Authenticating user..." 
+      : "Creating your account...";
+    
+    return (
+      <LoadingPage 
+        message={loadingMessage}
+        showConnectionStatus={true}
+        connectionStatus="connecting"
+      />
+    );
+  }
+
   const handleGoogleLogin = async () => {
     setIsLoading(true);
+    setAuthAction('login');
     try {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
@@ -93,6 +113,7 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
       setErrors({ google: error.message });
     } finally {
       setIsLoading(false);
+      setAuthAction(null);
     }
   };
 
@@ -150,8 +171,10 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
     if (!validateLoginForm()) return;
 
     setIsLoading(true);
+    setAuthAction('login');
     const result = await signIn(loginData.email, loginData.password);
     setIsLoading(false);
+    setAuthAction(null);
     
     if (result.success) {
       onClose();
@@ -165,8 +188,10 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
     if (!validateRegisterForm()) return;
 
     setIsLoading(true);
+    setAuthAction('register');
     const result = await signUp(registerData.email, registerData.password, registerData.fullName);
     setIsLoading(false);
+    setAuthAction(null);
     
     if (result.success) {
       onClose();
@@ -185,8 +210,6 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
     resetForms();
     onClose();
   };
-
-  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">

@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/contexts/AuthContext";
+import LoadingPage from "./LoadingPage";
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -20,6 +22,7 @@ const AuthModal = ({ isOpen, onClose, language }: AuthModalProps) => {
   const [name, setName] = useState("");
   const [role, setRole] = useState("general_user");
   const [loading, setLoading] = useState(false);
+  const [authAction, setAuthAction] = useState<'login' | 'register' | null>(null);
 
   const text = {
     en: {
@@ -60,8 +63,24 @@ const AuthModal = ({ isOpen, onClose, language }: AuthModalProps) => {
 
   if (!isOpen) return null;
 
+  // Show loading screen during authentication
+  if (loading && authAction) {
+    const loadingMessage = authAction === 'login' 
+      ? "Authenticating user..." 
+      : "Creating your account...";
+    
+    return (
+      <LoadingPage 
+        message={loadingMessage}
+        showConnectionStatus={true}
+        connectionStatus="connecting"
+      />
+    );
+  }
+
   const handleLogin = async () => {
     setLoading(true);
+    setAuthAction('login');
     try {
       const { success } = await signIn(email, password);
       if (success) {
@@ -71,13 +90,14 @@ const AuthModal = ({ isOpen, onClose, language }: AuthModalProps) => {
       }
     } finally {
       setLoading(false);
+      setAuthAction(null);
     }
   };
 
   const handleRegister = async () => {
     setLoading(true);
+    setAuthAction('register');
     try {
-      // Set the role in user metadata during signup
       const { success } = await signUp(email, password, name);
       if (success) {
         onClose();
@@ -88,6 +108,7 @@ const AuthModal = ({ isOpen, onClose, language }: AuthModalProps) => {
       }
     } finally {
       setLoading(false);
+      setAuthAction(null);
     }
   };
 

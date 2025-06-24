@@ -5,9 +5,12 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertTriangle, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import AdvancedAdminDashboard from '@/components/admin/AdvancedAdminDashboard';
+import LoadingPage from '@/components/LoadingPage';
+import { useDatabaseConnection } from '@/hooks/useDatabaseConnection';
 
 const AdminDashboard = () => {
   const { profile, user } = useAuth();
+  const { connectionStatus } = useDatabaseConnection();
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -31,20 +34,11 @@ const AdminDashboard = () => {
 
   if (isLoading) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex items-center justify-center min-h-[400px]">
-          <div className="text-center">
-            <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
-            <p>Initializing admin dashboard...</p>
-            <button 
-              onClick={() => navigate('/?auth=true', { replace: true })}
-              className="mt-4 text-blue-500 hover:text-blue-700 underline text-sm"
-            >
-              Having trouble? Re-login
-            </button>
-          </div>
-        </div>
-      </div>
+      <LoadingPage
+        message="Initializing admin dashboard..."
+        showConnectionStatus={true}
+        connectionStatus={connectionStatus}
+      />
     );
   }
 

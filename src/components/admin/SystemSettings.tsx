@@ -13,6 +13,7 @@ import NotificationSettings from './settings/NotificationSettings';
 import FileSettings from './settings/FileSettings';
 import SystemMonitoring from './settings/SystemMonitoring';
 import BackupSettings from './settings/BackupSettings';
+import LoadingPage from '../LoadingPage';
 
 const SystemSettings = () => {
   const { showSuccess, showError } = useAlert();
@@ -25,6 +26,17 @@ const SystemSettings = () => {
     handleBackupSettingChange, 
     createBackup 
   } = useBackupSettings();
+
+  // Show loading screen when settings are being saved
+  if (loading && Object.keys(settings).length === 0) {
+    return (
+      <LoadingPage 
+        message="Loading system settings..."
+        showConnectionStatus={true}
+        connectionStatus="connected"
+      />
+    );
+  }
 
   const clearCache = async () => {
     try {

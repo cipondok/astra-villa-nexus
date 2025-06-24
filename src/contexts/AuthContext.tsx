@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -264,6 +265,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signUp = async (email: string, password: string, fullName: string) => {
     try {
       console.log('Attempting sign up for:', email);
+      setLoading(true);
       
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -278,6 +280,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       if (error) {
         console.error('Sign up error:', error);
+        setLoading(false);
         return { error, success: false };
       }
 
@@ -285,6 +288,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return { error: null, success: true };
     } catch (error: any) {
       console.error('Sign up error:', error);
+      setLoading(false);
       return { error, success: false };
     }
   };

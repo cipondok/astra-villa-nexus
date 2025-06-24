@@ -5,9 +5,12 @@ import AdminDashboard from "./AdminDashboard";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import LoadingPage from "@/components/LoadingPage";
+import { useDatabaseConnection } from "@/hooks/useDatabaseConnection";
 
 const AdminDashboardPage = () => {
   const { user, profile, loading } = useAuth();
+  const { connectionStatus } = useDatabaseConnection();
   const [timeoutReached, setTimeoutReached] = useState(false);
   const navigate = useNavigate();
 
@@ -29,15 +32,14 @@ const AdminDashboardPage = () => {
     }
   }, [timeoutReached, loading, navigate]);
 
-  // Show loading state
+  // Show enhanced loading state with database status
   if (loading && !timeoutReached) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
-          <p>Loading admin dashboard...</p>
-        </div>
-      </div>
+      <LoadingPage
+        message="Loading admin dashboard..."
+        showConnectionStatus={true}
+        connectionStatus={connectionStatus}
+      />
     );
   }
 
@@ -46,18 +48,10 @@ const AdminDashboardPage = () => {
     console.log('No user found, redirecting to login');
     navigate('/?auth=true', { replace: true });
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <h2 className="text-xl font-semibold mb-2">Access Denied</h2>
-          <p className="text-muted-foreground mb-4">Please log in to access the admin dashboard</p>
-          <button 
-            onClick={() => navigate('/?auth=true', { replace: true })}
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-          >
-            Go to Login
-          </button>
-        </div>
-      </div>
+      <LoadingPage
+        message="Redirecting to login..."
+        showConnectionStatus={false}
+      />
     );
   }
 

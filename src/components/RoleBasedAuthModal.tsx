@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Eye, EyeOff } from "lucide-react";
+import LoadingPage from "./LoadingPage";
 
 interface RoleBasedAuthModalProps {
   isOpen: boolean;
@@ -21,8 +22,24 @@ const RoleBasedAuthModal = ({ isOpen, onClose }: RoleBasedAuthModalProps) => {
   const [fullName, setFullName] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [authAction, setAuthAction] = useState<'login' | 'register' | null>(null);
   
   const { signIn, signUp } = useAuth();
+
+  // Show loading screen during authentication
+  if (isLoading && authAction) {
+    const loadingMessage = authAction === 'login' 
+      ? "Authenticating user..." 
+      : "Creating your account...";
+    
+    return (
+      <LoadingPage 
+        message={loadingMessage}
+        showConnectionStatus={true}
+        connectionStatus="connecting"
+      />
+    );
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,6 +47,7 @@ const RoleBasedAuthModal = ({ isOpen, onClose }: RoleBasedAuthModalProps) => {
 
     try {
       if (isLogin) {
+        setAuthAction('login');
         console.log('Attempting login for:', email);
         const result = await signIn(email, password);
         if (result.success) {
@@ -41,6 +59,7 @@ const RoleBasedAuthModal = ({ isOpen, onClose }: RoleBasedAuthModalProps) => {
           setFullName("");
         }
       } else {
+        setAuthAction('register');
         console.log('Attempting sign up for:', email);
         // Simplified signup - just basic user registration
         const { data, error } = await supabase.auth.signUp({
@@ -73,6 +92,7 @@ const RoleBasedAuthModal = ({ isOpen, onClose }: RoleBasedAuthModalProps) => {
       console.error('Auth error:', error);
     } finally {
       setIsLoading(false);
+      setAuthAction(null);
     }
   };
 
