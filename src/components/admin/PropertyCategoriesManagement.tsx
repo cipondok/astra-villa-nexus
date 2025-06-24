@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -272,36 +271,36 @@ const PropertyCategoriesManagement = () => {
 
   return (
     <div className="space-y-6">
-      <Card>
+      <Card className="bg-card border-border">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
+          <CardTitle className="flex items-center gap-2 text-card-foreground">
             <Building2 className="h-5 w-5" />
             Property Categories & Services Management
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="text-muted-foreground">
             Manage property categories (Buy, Rent, New Projects, Pre-Launching) and their associated services
           </CardDescription>
         </CardHeader>
       </Card>
 
       {/* Tab Navigation */}
-      <div className="flex space-x-4 border-b">
+      <div className="flex space-x-4 border-b border-border bg-card rounded-t-lg p-2">
         <button
           onClick={() => setActiveTab("categories")}
-          className={`py-2 px-4 border-b-2 font-medium text-sm ${
+          className={`py-2 px-4 border-b-2 font-medium text-sm rounded-md transition-colors ${
             activeTab === "categories"
-              ? "border-blue-500 text-blue-600"
-              : "border-transparent text-gray-500 hover:text-gray-700"
+              ? "border-primary text-primary bg-primary/10"
+              : "border-transparent text-muted-foreground hover:text-foreground hover:bg-muted"
           }`}
         >
           Categories ({categories?.length || 0})
         </button>
         <button
           onClick={() => setActiveTab("services")}
-          className={`py-2 px-4 border-b-2 font-medium text-sm ${
+          className={`py-2 px-4 border-b-2 font-medium text-sm rounded-md transition-colors ${
             activeTab === "services"
-              ? "border-blue-500 text-blue-600"
-              : "border-transparent text-gray-500 hover:text-gray-700"
+              ? "border-primary text-primary bg-primary/10"
+              : "border-transparent text-muted-foreground hover:text-foreground hover:bg-muted"
           }`}
         >
           Services ({services?.length || 0})
@@ -310,18 +309,18 @@ const PropertyCategoriesManagement = () => {
 
       {/* Categories Tab */}
       {activeTab === "categories" && (
-        <Card>
+        <Card className="bg-card border-border">
           <CardHeader>
             <div className="flex justify-between items-center">
               <div>
-                <CardTitle>Property Categories</CardTitle>
-                <CardDescription>
+                <CardTitle className="text-card-foreground">Property Categories</CardTitle>
+                <CardDescription className="text-muted-foreground">
                   Main categories and subcategories for property organization
                 </CardDescription>
               </div>
               <Dialog open={isCategoryModalOpen} onOpenChange={setIsCategoryModalOpen}>
                 <DialogTrigger asChild>
-                  <Button onClick={() => setSelectedCategory(null)}>
+                  <Button onClick={() => setSelectedCategory(null)} className="bg-primary text-primary-foreground hover:bg-primary/90">
                     <Plus className="h-4 w-4 mr-2" />
                     Add Category
                   </Button>
@@ -337,19 +336,23 @@ const PropertyCategoriesManagement = () => {
           </CardHeader>
           <CardContent>
             {categoriesLoading ? (
-              <div className="text-center py-8">Loading categories...</div>
+              <div className="text-center py-8 text-muted-foreground">Loading categories...</div>
             ) : (
               <div className="space-y-6">
                 {getMainCategories().map((mainCat) => (
-                  <div key={mainCat.id} className="border rounded-lg p-4">
+                  <div key={mainCat.id} className="border border-border rounded-lg p-4 bg-card">
                     <div className="flex items-center justify-between mb-4">
                       <div className="flex items-center gap-3">
                         <span className="text-2xl">{mainCat.icon}</span>
                         <div>
-                          <h3 className="font-semibold text-lg">{mainCat.name}</h3>
-                          <p className="text-gray-600 text-sm">{mainCat.description}</p>
+                          <h3 className="font-semibold text-lg text-card-foreground">{mainCat.name}</h3>
+                          <p className="text-muted-foreground text-sm">{mainCat.description}</p>
                         </div>
-                        <Badge variant={mainCat.is_active ? "default" : "secondary"}>
+                        <Badge variant={mainCat.is_active ? "default" : "secondary"} className={
+                          mainCat.is_active 
+                            ? "bg-primary text-primary-foreground" 
+                            : "bg-muted text-muted-foreground"
+                        }>
                           {mainCat.is_active ? "Active" : "Inactive"}
                         </Badge>
                       </div>
@@ -360,6 +363,7 @@ const PropertyCategoriesManagement = () => {
                           setSelectedCategory(mainCat);
                           setIsCategoryModalOpen(true);
                         }}
+                        className="border-border text-foreground hover:bg-muted"
                       >
                         <Edit className="h-4 w-4" />
                       </Button>
@@ -368,11 +372,11 @@ const PropertyCategoriesManagement = () => {
                     {/* Subcategories */}
                     <div className="ml-8 space-y-2">
                       {getSubCategories(mainCat.id).map((subCat) => (
-                        <div key={subCat.id} className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                        <div key={subCat.id} className="flex items-center justify-between p-2 bg-muted/50 rounded border border-border">
                           <div className="flex items-center gap-2">
                             <span>{subCat.icon}</span>
-                            <span className="font-medium">{subCat.name}</span>
-                            <Badge variant="outline">
+                            <span className="font-medium text-foreground">{subCat.name}</span>
+                            <Badge variant="outline" className="border-border text-muted-foreground">
                               {subCat.is_active ? "Active" : "Inactive"}
                             </Badge>
                           </div>
@@ -383,6 +387,7 @@ const PropertyCategoriesManagement = () => {
                               setSelectedCategory(subCat);
                               setIsCategoryModalOpen(true);
                             }}
+                            className="text-muted-foreground hover:text-foreground hover:bg-muted"
                           >
                             <Edit className="h-3 w-3" />
                           </Button>
@@ -399,18 +404,18 @@ const PropertyCategoriesManagement = () => {
 
       {/* Services Tab */}
       {activeTab === "services" && (
-        <Card>
+        <Card className="bg-card border-border">
           <CardHeader>
             <div className="flex justify-between items-center">
               <div>
-                <CardTitle>Property Services</CardTitle>
-                <CardDescription>
+                <CardTitle className="text-card-foreground">Property Services</CardTitle>
+                <CardDescription className="text-muted-foreground">
                   Services available for each property category
                 </CardDescription>
               </div>
               <Dialog open={isServiceModalOpen} onOpenChange={setIsServiceModalOpen}>
                 <DialogTrigger asChild>
-                  <Button onClick={() => setSelectedService(null)}>
+                  <Button onClick={() => setSelectedService(null)} className="bg-primary text-primary-foreground hover:bg-primary/90">
                     <Plus className="h-4 w-4 mr-2" />
                     Add Service
                   </Button>
@@ -426,66 +431,73 @@ const PropertyCategoriesManagement = () => {
           </CardHeader>
           <CardContent>
             {servicesLoading ? (
-              <div className="text-center py-8">Loading services...</div>
+              <div className="text-center py-8 text-muted-foreground">Loading services...</div>
             ) : (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Service</TableHead>
-                    <TableHead>Category</TableHead>
-                    <TableHead>Type</TableHead>
-                    <TableHead>Price Range</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {services?.map((service) => {
-                    const category = categories?.find(c => c.id === service.category_id);
-                    return (
-                      <TableRow key={service.id}>
-                        <TableCell>
-                          <div>
-                            <div className="font-medium">{service.name}</div>
-                            <div className="text-sm text-gray-500">{service.description}</div>
-                          </div>
-                        </TableCell>
-                        <TableCell>{category?.name || 'Unknown'}</TableCell>
-                        <TableCell>
-                          <div className="flex items-center gap-2">
-                            {getCategoryIcon(service.service_type)}
-                            <Badge variant="outline">
-                              {service.service_type.replace('_', ' ').toUpperCase()}
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="border-border">
+                      <TableHead className="text-muted-foreground">Service</TableHead>
+                      <TableHead className="text-muted-foreground">Category</TableHead>
+                      <TableHead className="text-muted-foreground">Type</TableHead>
+                      <TableHead className="text-muted-foreground">Price Range</TableHead>
+                      <TableHead className="text-muted-foreground">Status</TableHead>
+                      <TableHead className="text-muted-foreground">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {services?.map((service) => {
+                      const category = categories?.find(c => c.id === service.category_id);
+                      return (
+                        <TableRow key={service.id} className="border-border hover:bg-muted/50">
+                          <TableCell>
+                            <div>
+                              <div className="font-medium text-foreground">{service.name}</div>
+                              <div className="text-sm text-muted-foreground">{service.description}</div>
+                            </div>
+                          </TableCell>
+                          <TableCell className="text-foreground">{category?.name || 'Unknown'}</TableCell>
+                          <TableCell>
+                            <div className="flex items-center gap-2">
+                              {getCategoryIcon(service.service_type)}
+                              <Badge variant="outline" className="border-border text-muted-foreground">
+                                {service.service_type.replace('_', ' ').toUpperCase()}
+                              </Badge>
+                            </div>
+                          </TableCell>
+                          <TableCell className="text-foreground">
+                            {service.price_range_min && service.price_range_max
+                              ? `$${service.price_range_min.toLocaleString()} - $${service.price_range_max.toLocaleString()}`
+                              : 'Not specified'}
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant={service.is_active ? "default" : "secondary"} className={
+                              service.is_active 
+                                ? "bg-primary text-primary-foreground" 
+                                : "bg-muted text-muted-foreground"
+                            }>
+                              {service.is_active ? "Active" : "Inactive"}
                             </Badge>
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          {service.price_range_min && service.price_range_max
-                            ? `$${service.price_range_min.toLocaleString()} - $${service.price_range_max.toLocaleString()}`
-                            : 'Not specified'}
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant={service.is_active ? "default" : "secondary"}>
-                            {service.is_active ? "Active" : "Inactive"}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => {
-                              setSelectedService(service);
-                              setIsServiceModalOpen(true);
-                            }}
-                          >
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
+                          </TableCell>
+                          <TableCell>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                setSelectedService(service);
+                                setIsServiceModalOpen(true);
+                              }}
+                              className="border-border text-foreground hover:bg-muted"
+                            >
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              </div>
             )}
           </CardContent>
         </Card>
@@ -522,57 +534,61 @@ const CategoryModal = ({
   };
 
   return (
-    <DialogContent className="max-w-md">
+    <DialogContent className="max-w-md bg-card border-border">
       <DialogHeader>
-        <DialogTitle>
+        <DialogTitle className="text-card-foreground">
           {category ? 'Edit Category' : 'Add New Category'}
         </DialogTitle>
       </DialogHeader>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <Label>Name</Label>
+          <Label className="text-foreground">Name</Label>
           <Input
             value={formData.name}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             required
+            className="bg-background border-border text-foreground"
           />
         </div>
         <div>
-          <Label>Slug</Label>
+          <Label className="text-foreground">Slug</Label>
           <Input
             value={formData.slug}
             onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
             required
+            className="bg-background border-border text-foreground"
           />
         </div>
         <div>
-          <Label>Description</Label>
+          <Label className="text-foreground">Description</Label>
           <Textarea
             value={formData.description}
             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+            className="bg-background border-border text-foreground"
           />
         </div>
         <div>
-          <Label>Icon (Emoji)</Label>
+          <Label className="text-foreground">Icon (Emoji)</Label>
           <Input
             value={formData.icon}
             onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
             placeholder="🏠"
+            className="bg-background border-border text-foreground"
           />
         </div>
         <div>
-          <Label>Parent Category</Label>
+          <Label className="text-foreground">Parent Category</Label>
           <Select 
             value={formData.parent_id} 
             onValueChange={(value) => setFormData({ ...formData, parent_id: value })}
           >
-            <SelectTrigger>
+            <SelectTrigger className="bg-background border-border text-foreground">
               <SelectValue placeholder="Select parent category (optional)" />
             </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="">No Parent (Main Category)</SelectItem>
+            <SelectContent className="bg-card border-border">
+              <SelectItem value="" className="text-foreground hover:bg-muted">No Parent (Main Category)</SelectItem>
               {parentCategories.map((cat) => (
-                <SelectItem key={cat.id} value={cat.id}>
+                <SelectItem key={cat.id} value={cat.id} className="text-foreground hover:bg-muted">
                   {cat.name}
                 </SelectItem>
               ))}
@@ -584,11 +600,12 @@ const CategoryModal = ({
             type="checkbox"
             checked={formData.is_active}
             onChange={(e) => setFormData({ ...formData, is_active: e.target.checked })}
+            className="accent-primary"
           />
-          <Label>Active</Label>
+          <Label className="text-foreground">Active</Label>
         </div>
         <div className="flex gap-2">
-          <Button type="submit" disabled={isLoading} className="flex-1">
+          <Button type="submit" disabled={isLoading} className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90">
             {isLoading ? 'Saving...' : 'Save Category'}
           </Button>
         </div>
@@ -636,51 +653,54 @@ const ServiceModal = ({
   };
 
   return (
-    <DialogContent className="max-w-2xl">
+    <DialogContent className="max-w-2xl bg-card border-border">
       <DialogHeader>
-        <DialogTitle>
+        <DialogTitle className="text-card-foreground">
           {service ? 'Edit Service' : 'Add New Service'}
         </DialogTitle>
       </DialogHeader>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <Label>Name</Label>
+            <Label className="text-foreground">Name</Label>
             <Input
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               required
+              className="bg-background border-border text-foreground"
             />
           </div>
           <div>
-            <Label>Slug</Label>
+            <Label className="text-foreground">Slug</Label>
             <Input
               value={formData.slug}
               onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
               required
+              className="bg-background border-border text-foreground"
             />
           </div>
         </div>
         <div>
-          <Label>Description</Label>
+          <Label className="text-foreground">Description</Label>
           <Textarea
             value={formData.description}
             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+            className="bg-background border-border text-foreground"
           />
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <Label>Category</Label>
+            <Label className="text-foreground">Category</Label>
             <Select 
               value={formData.category_id} 
               onValueChange={(value) => setFormData({ ...formData, category_id: value })}
             >
-              <SelectTrigger>
+              <SelectTrigger className="bg-background border-border text-foreground">
                 <SelectValue placeholder="Select category" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-card border-border">
                 {categories.map((cat) => (
-                  <SelectItem key={cat.id} value={cat.id}>
+                  <SelectItem key={cat.id} value={cat.id} className="text-foreground hover:bg-muted">
                     {cat.name}
                   </SelectItem>
                 ))}
@@ -688,55 +708,59 @@ const ServiceModal = ({
             </Select>
           </div>
           <div>
-            <Label>Service Type</Label>
+            <Label className="text-foreground">Service Type</Label>
             <Select 
               value={formData.service_type} 
               onValueChange={(value) => setFormData({ ...formData, service_type: value })}
             >
-              <SelectTrigger>
+              <SelectTrigger className="bg-background border-border text-foreground">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="buy">Buy</SelectItem>
-                <SelectItem value="rent">Rent</SelectItem>
-                <SelectItem value="new_projects">New Projects</SelectItem>
-                <SelectItem value="pre_launching">Pre-Launching</SelectItem>
+              <SelectContent className="bg-card border-border">
+                <SelectItem value="buy" className="text-foreground hover:bg-muted">Buy</SelectItem>
+                <SelectItem value="rent" className="text-foreground hover:bg-muted">Rent</SelectItem>
+                <SelectItem value="new_projects" className="text-foreground hover:bg-muted">New Projects</SelectItem>
+                <SelectItem value="pre_launching" className="text-foreground hover:bg-muted">Pre-Launching</SelectItem>
               </SelectContent>
             </Select>
           </div>
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <Label>Min Price</Label>
+            <Label className="text-foreground">Min Price</Label>
             <Input
               type="number"
               value={formData.price_range_min}
               onChange={(e) => setFormData({ ...formData, price_range_min: e.target.value })}
+              className="bg-background border-border text-foreground"
             />
           </div>
           <div>
-            <Label>Max Price</Label>
+            <Label className="text-foreground">Max Price</Label>
             <Input
               type="number"
               value={formData.price_range_max}
               onChange={(e) => setFormData({ ...formData, price_range_max: e.target.value })}
+              className="bg-background border-border text-foreground"
             />
           </div>
         </div>
         <div>
-          <Label>Features (one per line)</Label>
+          <Label className="text-foreground">Features (one per line)</Label>
           <Textarea
             value={formData.features}
             onChange={(e) => setFormData({ ...formData, features: e.target.value })}
             placeholder="Property evaluation&#10;Legal documentation&#10;Financing assistance"
+            className="bg-background border-border text-foreground"
           />
         </div>
         <div>
-          <Label>Requirements (one per line)</Label>
+          <Label className="text-foreground">Requirements (one per line)</Label>
           <Textarea
             value={formData.requirements}
             onChange={(e) => setFormData({ ...formData, requirements: e.target.value })}
             placeholder="Valid ID&#10;Proof of income&#10;Credit check"
+            className="bg-background border-border text-foreground"
           />
         </div>
         <div className="flex items-center gap-2">
@@ -744,11 +768,12 @@ const ServiceModal = ({
             type="checkbox"
             checked={formData.is_active}
             onChange={(e) => setFormData({ ...formData, is_active: e.target.checked })}
+            className="accent-primary"
           />
-          <Label>Active</Label>
+          <Label className="text-foreground">Active</Label>
         </div>
         <div className="flex gap-2">
-          <Button type="submit" disabled={isLoading} className="flex-1">
+          <Button type="submit" disabled={isLoading} className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90">
             {isLoading ? 'Saving...' : 'Save Service'}
           </Button>
         </div>
