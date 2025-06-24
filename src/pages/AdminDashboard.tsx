@@ -5,6 +5,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertTriangle, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import AdvancedAdminDashboard from '@/components/admin/AdvancedAdminDashboard';
+import AlertMonitoringProvider from '@/components/admin/AlertMonitoringProvider';
 import LoadingPage from '@/components/LoadingPage';
 import { useDatabaseConnection } from '@/hooks/useDatabaseConnection';
 
@@ -69,7 +70,11 @@ const AdminDashboard = () => {
     );
   }
 
-  return <AdvancedAdminDashboard />;
+  return (
+    <AlertMonitoringProvider>
+      <AdvancedAdminDashboard />
+    </AlertMonitoringProvider>
+  );
 };
 
 export default AdminDashboard;

@@ -9,45 +9,96 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      admin_alert_rules: {
+        Row: {
+          alert_template: Json
+          conditions: Json | null
+          created_at: string | null
+          event_type: string
+          id: string
+          is_active: boolean | null
+          rule_name: string
+          updated_at: string | null
+        }
+        Insert: {
+          alert_template: Json
+          conditions?: Json | null
+          created_at?: string | null
+          event_type: string
+          id?: string
+          is_active?: boolean | null
+          rule_name: string
+          updated_at?: string | null
+        }
+        Update: {
+          alert_template?: Json
+          conditions?: Json | null
+          created_at?: string | null
+          event_type?: string
+          id?: string
+          is_active?: boolean | null
+          rule_name?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       admin_alerts: {
         Row: {
           action_required: boolean
+          alert_category: string | null
+          auto_generated: boolean | null
           created_at: string
           id: string
           is_read: boolean
           message: string
+          metadata: Json | null
           priority: string
           reference_id: string | null
           reference_type: string | null
+          source_id: string | null
+          source_table: string | null
           title: string
           type: string
           updated_at: string
+          urgency_level: number | null
         }
         Insert: {
           action_required?: boolean
+          alert_category?: string | null
+          auto_generated?: boolean | null
           created_at?: string
           id?: string
           is_read?: boolean
           message: string
+          metadata?: Json | null
           priority?: string
           reference_id?: string | null
           reference_type?: string | null
+          source_id?: string | null
+          source_table?: string | null
           title: string
           type: string
           updated_at?: string
+          urgency_level?: number | null
         }
         Update: {
           action_required?: boolean
+          alert_category?: string | null
+          auto_generated?: boolean | null
           created_at?: string
           id?: string
           is_read?: boolean
           message?: string
+          metadata?: Json | null
           priority?: string
           reference_id?: string | null
           reference_type?: string | null
+          source_id?: string | null
+          source_table?: string | null
           title?: string
           type?: string
           updated_at?: string
+          urgency_level?: number | null
         }
         Relationships: []
       }
@@ -533,6 +584,51 @@ export type Database = {
           },
         ]
       }
+      customer_complaints: {
+        Row: {
+          assigned_to: string | null
+          complaint_type: string
+          created_at: string | null
+          description: string
+          id: string
+          priority: string | null
+          resolution_notes: string | null
+          resolved_at: string | null
+          status: string | null
+          subject: string
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          assigned_to?: string | null
+          complaint_type: string
+          created_at?: string | null
+          description: string
+          id?: string
+          priority?: string | null
+          resolution_notes?: string | null
+          resolved_at?: string | null
+          status?: string | null
+          subject: string
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          assigned_to?: string | null
+          complaint_type?: string
+          created_at?: string | null
+          description?: string
+          id?: string
+          priority?: string | null
+          resolution_notes?: string | null
+          resolved_at?: string | null
+          status?: string | null
+          subject?: string
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       customer_service_tickets: {
         Row: {
           assigned_to: string | null
@@ -704,6 +800,65 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      inquiries: {
+        Row: {
+          admin_response: string | null
+          contact_email: string | null
+          contact_phone: string | null
+          created_at: string | null
+          id: string
+          inquiry_type: string
+          message: string
+          property_id: string | null
+          responded_at: string | null
+          responded_by: string | null
+          status: string | null
+          subject: string
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          admin_response?: string | null
+          contact_email?: string | null
+          contact_phone?: string | null
+          created_at?: string | null
+          id?: string
+          inquiry_type: string
+          message: string
+          property_id?: string | null
+          responded_at?: string | null
+          responded_by?: string | null
+          status?: string | null
+          subject: string
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          admin_response?: string | null
+          contact_email?: string | null
+          contact_phone?: string | null
+          created_at?: string | null
+          id?: string
+          inquiry_type?: string
+          message?: string
+          property_id?: string | null
+          responded_at?: string | null
+          responded_by?: string | null
+          status?: string | null
+          subject?: string
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inquiries_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
             referencedColumns: ["id"]
           },
         ]
@@ -1586,6 +1741,60 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      system_reports: {
+        Row: {
+          action_taken: string | null
+          admin_notes: string | null
+          created_at: string | null
+          description: string | null
+          evidence_urls: Json | null
+          id: string
+          reason: string
+          report_type: string
+          reported_by: string | null
+          resolved_at: string | null
+          reviewed_by: string | null
+          status: string | null
+          target_id: string
+          target_type: string
+          updated_at: string | null
+        }
+        Insert: {
+          action_taken?: string | null
+          admin_notes?: string | null
+          created_at?: string | null
+          description?: string | null
+          evidence_urls?: Json | null
+          id?: string
+          reason: string
+          report_type: string
+          reported_by?: string | null
+          resolved_at?: string | null
+          reviewed_by?: string | null
+          status?: string | null
+          target_id: string
+          target_type: string
+          updated_at?: string | null
+        }
+        Update: {
+          action_taken?: string | null
+          admin_notes?: string | null
+          created_at?: string | null
+          description?: string | null
+          evidence_urls?: Json | null
+          id?: string
+          reason?: string
+          report_type?: string
+          reported_by?: string | null
+          resolved_at?: string | null
+          reviewed_by?: string | null
+          status?: string | null
+          target_id?: string
+          target_type?: string
+          updated_at?: string | null
+        }
+        Relationships: []
       }
       system_settings: {
         Row: {
