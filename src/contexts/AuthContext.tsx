@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -45,8 +44,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [profile, setProfile] = React.useState<Profile | null>(null);
   const [loading, setLoading] = React.useState(true);
   const [session, setSession] = React.useState<Session | null>(null);
+  const [isSigningOut, setIsSigningOut] = React.useState(false);
 
-  console.log('AuthProvider - user:', user?.email, 'loading:', loading, 'profile role:', profile?.role);
+  console.log('AuthProvider - user:', user?.email, 'loading:', loading, 'profile role:', profile?.role, 'isSigningOut:', isSigningOut);
 
   const fetchProfile = async (userId: string) => {
     try {
@@ -97,7 +97,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  // Extended session management
   const extendSession = async () => {
     try {
       console.log('Extending session...');
@@ -106,7 +105,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         console.error('Session refresh error:', error);
       } else {
         console.log('Session extended successfully');
-        // Update last activity time
         localStorage.setItem('last_activity', Date.now().toString());
       }
     } catch (error) {
@@ -126,6 +124,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         
         console.log('Auth state changed:', event, session?.user?.email || 'No user');
         
+        // If we're in the process of signing out, ignore any state changes
+        if (isSigningOut && event !== 'SIGNED_OUT') {
+          console.log('Ignoring auth state change during sign out process');
+          return;
+        }
+        
         setSession(session);
         setUser(session?.user ?? null);
         
@@ -142,40 +146,44 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
         
         if (event === 'SIGNED_OUT') {
-          console.log('User signed out, clearing state');
+          console.log('User signed out, clearing all state');
           setProfile(null);
           setUser(null);
           setSession(null);
+          setIsSigningOut(false);
+          // Clear all storage
           localStorage.clear();
+          sessionStorage.clear();
         }
         
         setLoading(false);
       }
     );
 
-    // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!mounted) return;
-      
-      console.log('Initial session check:', session?.user?.email || 'No session');
-      if (session?.user) {
-        setSession(session);
-        setUser(session.user);
-        fetchProfile(session.user.id);
-        // Set initial activity time if not exists
-        if (!localStorage.getItem('last_activity')) {
-          localStorage.setItem('last_activity', Date.now().toString());
+    // Get initial session only if not signing out
+    if (!isSigningOut) {
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        if (!mounted) return;
+        
+        console.log('Initial session check:', session?.user?.email || 'No session');
+        if (session?.user) {
+          setSession(session);
+          setUser(session.user);
+          fetchProfile(session.user.id);
+          if (!localStorage.getItem('last_activity')) {
+            localStorage.setItem('last_activity', Date.now().toString());
+          }
+        } else {
+          setLoading(false);
         }
-      } else {
-        setLoading(false);
-      }
-    });
+      });
+    }
 
     return () => {
       mounted = false;
       subscription.unsubscribe();
     };
-  }, []);
+  }, [isSigningOut]);
 
   // Auto-extend session on user activity (every 10 minutes max)
   React.useEffect(() => {
@@ -283,25 +291,52 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signOut = async () => {
     try {
-      console.log('Signing out user...');
+      console.log('Starting sign out process...');
+      setIsSigningOut(true);
+      setLoading(true);
       
+      // Immediately clear local state
       setUser(null);
       setProfile(null);
       setSession(null);
       
-      const { error } = await supabase.auth.signOut();
+      // Clear all storage immediately
+      localStorage.clear();
+      sessionStorage.clear();
+      
+      // Clear any cookies
+      document.cookie.split(";").forEach((c) => {
+        const eqPos = c.indexOf("=");
+        const name = eqPos > -1 ? c.substr(0, eqPos) : c;
+        document.cookie = `${name.trim()}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
+      });
+      
+      // Sign out from Supabase
+      const { error } = await supabase.auth.signOut({
+        scope: 'global' // Sign out from all sessions
+      });
+      
       if (error) {
         console.error('Supabase signOut error:', error);
+      } else {
+        console.log('Successfully signed out from Supabase');
       }
       
-      localStorage.clear();
-      console.log('User signed out successfully');
+      // Force reload to ensure clean state
+      setTimeout(() => {
+        window.location.href = '/';
+      }, 100);
+      
     } catch (error: any) {
       console.error('Sign out error:', error);
+      // Even if there's an error, clear everything
       setUser(null);
       setProfile(null);
       setSession(null);
+      setIsSigningOut(false);
       localStorage.clear();
+      sessionStorage.clear();
+      window.location.href = '/';
     }
   };
 
@@ -332,7 +367,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const isAuthenticated = !!user && !!session;
+  const isAuthenticated = !!user && !!session && !isSigningOut;
 
   const value = {
     user,

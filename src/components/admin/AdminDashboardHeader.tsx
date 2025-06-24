@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -56,6 +55,7 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
   const [sessionTime, setSessionTime] = useState<string>('');
   const [showProfile, setShowProfile] = useState(false);
   const [showAlerts, setShowAlerts] = useState(false);
+  const [isSigningOut, setIsSigningOut] = useState(false);
 
   // Session monitoring
   useEffect(() => {
@@ -81,14 +81,28 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
   }, []);
 
   const handleSignOut = async () => {
+    if (isSigningOut) return; // Prevent multiple logout attempts
+    
     try {
-      console.log('AdminDashboardHeader: Signing out...');
+      console.log('AdminDashboardHeader: Starting sign out process...');
+      setIsSigningOut(true);
+      
+      // Show immediate feedback
+      toast.loading('Signing out...', { duration: 2000 });
+      
+      // Close any open dialogs
+      setShowProfile(false);
+      setShowAlerts(false);
+      
+      // Call the signOut function which will handle everything
       await signOut();
-      navigate('/?auth=true', { replace: true });
-      toast.success('Successfully signed out');
+      
     } catch (error) {
       console.error('AdminDashboardHeader: Error signing out:', error);
+      setIsSigningOut(false);
       toast.error('Error signing out');
+      // Force navigation even if error
+      window.location.href = '/';
     }
   };
 
@@ -174,7 +188,8 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="ghost"
-                  className="bg-white/10 hover:bg-white/20 text-white border border-white/20 px-4 py-2 flex items-center gap-2"
+                  disabled={isSigningOut}
+                  className="bg-white/10 hover:bg-white/20 text-white border border-white/20 px-4 py-2 flex items-center gap-2 disabled:opacity-50"
                 >
                   <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
                     <User className="h-4 w-4 text-white" />
@@ -271,10 +286,11 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
                 {/* Logout */}
                 <DropdownMenuItem 
                   onClick={handleSignOut} 
-                  className="text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
+                  disabled={isSigningOut}
+                  className="text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 disabled:opacity-50"
                 >
                   <LogOut className="h-4 w-4 mr-2" />
-                  Sign Out
+                  {isSigningOut ? 'Signing Out...' : 'Sign Out'}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
