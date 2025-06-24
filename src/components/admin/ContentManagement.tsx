@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { FileText, Plus, Edit, Trash2, Eye, Search, Filter, Globe, BookOpen, FileIcon } from "lucide-react";
+import { FileText, Plus, Edit, Trash2, Eye, Search, Filter, Globe, BookOpen, FileIcon, Tag } from "lucide-react";
 import { useAlert } from "@/contexts/AlertContext";
 
 const ContentManagement = () => {
@@ -33,7 +33,8 @@ const ContentManagement = () => {
     seo_description: '',
     seo_keywords: '',
     author_id: '',
-    publish_date: ''
+    publish_date: '',
+    tags: ''
   });
 
   const { showSuccess, showError } = useAlert();
@@ -86,7 +87,8 @@ const ContentManagement = () => {
       const processedData = {
         ...contentData,
         content: contentData.content || '',
-        seo_keywords: contentData.seo_keywords ? contentData.seo_keywords.split(',').map((k: string) => k.trim()) : []
+        seo_keywords: contentData.seo_keywords ? contentData.seo_keywords.split(',').map((k: string) => k.trim()) : [],
+        category_id: contentData.category_id || null
       };
       
       const { error } = await supabase
@@ -110,7 +112,8 @@ const ContentManagement = () => {
       const processedUpdates = {
         ...updates,
         content: updates.content || '',
-        seo_keywords: updates.seo_keywords ? updates.seo_keywords.split(',').map((k: string) => k.trim()) : []
+        seo_keywords: updates.seo_keywords ? updates.seo_keywords.split(',').map((k: string) => k.trim()) : [],
+        category_id: updates.category_id || null
       };
       
       const { error } = await supabase
@@ -161,7 +164,8 @@ const ContentManagement = () => {
       seo_description: '',
       seo_keywords: '',
       author_id: '',
-      publish_date: ''
+      publish_date: '',
+      tags: ''
     });
   };
 
@@ -187,7 +191,8 @@ const ContentManagement = () => {
       seo_description: item.seo_description || '',
       seo_keywords: Array.isArray(item.seo_keywords) ? item.seo_keywords.join(', ') : '',
       author_id: item.author_id || '',
-      publish_date: item.publish_date || ''
+      publish_date: item.publish_date || '',
+      tags: item.tags || ''
     });
     setShowForm(true);
   };
@@ -212,6 +217,8 @@ const ContentManagement = () => {
       case 'blog': return <BookOpen className="h-4 w-4" />;
       case 'documentation': return <FileIcon className="h-4 w-4" />;
       case 'page': return <Globe className="h-4 w-4" />;
+      case 'news': return <FileText className="h-4 w-4" />;
+      case 'faq': return <Tag className="h-4 w-4" />;
       default: return <FileText className="h-4 w-4" />;
     }
   };
@@ -319,7 +326,7 @@ const ContentManagement = () => {
                         <Label htmlFor="category" className="text-foreground">Category</Label>
                         <Select value={formData.category_id} onValueChange={(value) => setFormData({ ...formData, category_id: value })}>
                           <SelectTrigger className="bg-background border-border text-foreground">
-                            <SelectValue placeholder="Select category" />
+                            <SelectValue placeholder="Select category (optional)" />
                           </SelectTrigger>
                           <SelectContent className="bg-card border-border">
                             {categories?.map((cat) => (
@@ -352,6 +359,18 @@ const ContentManagement = () => {
                         placeholder="https://example.com/image.jpg"
                         className="bg-background border-border text-foreground"
                       />
+                    </div>
+
+                    <div className="grid gap-2">
+                      <Label htmlFor="tags" className="text-foreground">Tags</Label>
+                      <Input
+                        id="tags"
+                        value={formData.tags}
+                        onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
+                        placeholder="tag1, tag2, tag3"
+                        className="bg-background border-border text-foreground"
+                      />
+                      <p className="text-sm text-muted-foreground">Separate tags with commas</p>
                     </div>
                   </TabsContent>
                   
