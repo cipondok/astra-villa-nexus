@@ -2,6 +2,8 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 import { 
   LayoutDashboard,
   Building2, 
@@ -18,7 +20,9 @@ import {
   Shield,
   HeadphonesIcon,
   CreditCard,
-  Award
+  Award,
+  Eye,
+  Edit
 } from "lucide-react";
 
 interface VendorDashboardNavigationProps {
@@ -27,6 +31,62 @@ interface VendorDashboardNavigationProps {
 }
 
 const VendorDashboardNavigation = ({ activeSection, onSectionChange }: VendorDashboardNavigationProps) => {
+  const navigate = useNavigate();
+
+  const handleToolClick = (toolId: string) => {
+    console.log('Tool clicked:', toolId);
+    
+    switch (toolId) {
+      case 'dashboard':
+        onSectionChange('overview');
+        break;
+      case 'business-profile':
+        onSectionChange('profile');
+        break;
+      case 'services':
+        onSectionChange('services');
+        break;
+      case 'bookings':
+        onSectionChange('bookings');
+        break;
+      case 'customers':
+        onSectionChange('customers');
+        break;
+      case 'billing':
+        onSectionChange('billing');
+        break;
+      case 'progress':
+        onSectionChange('progress');
+        break;
+      case 'holidays':
+        onSectionChange('holidays');
+        break;
+      case 'change-requests':
+        onSectionChange('change-requests');
+        break;
+      case 'kyc-verification':
+        onSectionChange('kyc-verification');
+        break;
+      case 'membership-progress':
+        onSectionChange('membership-progress');
+        break;
+      case 'feedback':
+        onSectionChange('reviews');
+        break;
+      case 'compliance':
+        onSectionChange('compliance');
+        break;
+      case 'customer-service':
+        onSectionChange('support');
+        break;
+      case 'analytics':
+        onSectionChange('analytics');
+        break;
+      default:
+        console.log('Unknown tool:', toolId);
+    }
+  };
+
   const navigationSections = [
     {
       id: 'dashboard',
@@ -133,10 +193,9 @@ const VendorDashboardNavigation = ({ activeSection, onSectionChange }: VendorDas
             key={section.id}
             className={`cursor-pointer transition-all hover:shadow-md ${
               isActive 
-                ? 'ring-2 ring-blue-500 bg-blue-50' 
-                : 'hover:bg-gray-50'
+                ? 'ring-2 ring-blue-500 bg-blue-50 dark:bg-blue-900/20' 
+                : 'hover:bg-gray-50 dark:hover:bg-gray-800'
             }`}
-            onClick={() => onSectionChange(section.id)}
           >
             <CardHeader className="pb-2">
               <CardTitle className="flex items-center gap-2 text-sm">
@@ -147,11 +206,20 @@ const VendorDashboardNavigation = ({ activeSection, onSectionChange }: VendorDas
                     {section.badge}
                   </Badge>
                 )}
-                {isActive && <Badge variant="default" className="text-xs">Active</Badge>}
               </CardTitle>
             </CardHeader>
             <CardContent className="pt-0">
-              <p className="text-xs text-muted-foreground">{section.description}</p>
+              <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">
+                {section.description}
+              </p>
+              <Button 
+                size="sm" 
+                variant={isActive ? "default" : "outline"}
+                className="w-full"
+                onClick={() => handleToolClick(section.id)}
+              >
+                {isActive ? 'Active' : 'Open'}
+              </Button>
             </CardContent>
           </Card>
         );
