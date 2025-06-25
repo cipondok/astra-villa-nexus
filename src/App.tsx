@@ -24,7 +24,7 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: 10 * 60 * 1000, // 10 minutes
-      retry: 2,
+      retry: 1, // Reduced retry for faster loading
       refetchOnWindowFocus: false,
       refetchOnReconnect: true,
     },
@@ -37,28 +37,26 @@ const App: React.FC = () => {
       <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
         <LanguageProvider>
           <ThemeSettingsProvider>
-            <EnhancedAuthProvider>
-              <AlertProvider>
+            <AlertProvider>
+              <EnhancedAuthProvider>
                 <TooltipProvider>
                   <Toaster />
                   <BrowserRouter>
-                    <AppInitializer>
-                      <SessionMonitor />
-                      <DuplicateLoginDetector />
-                      <Routes>
-                        <Route path="/" element={<Index />} />
-                        <Route path="/dashboard" element={<Dashboard />} />
-                        <Route path="/admin" element={<AdminDashboard />} />
-                        <Route path="/content-management" element={<ContentManagement />} />
-                        <Route path="/loading" element={<Loading />} />
-                        <Route path="/services" element={<Services />} />
-                        <Route path="/services/new" element={<ServiceForm />} />
-                      </Routes>
-                    </AppInitializer>
+                    <Routes>
+                      <Route path="/" element={<Index />} />
+                      <Route path="/dashboard" element={<Dashboard />} />
+                      <Route path="/admin" element={<AdminDashboard />} />
+                      <Route path="/content-management" element={<ContentManagement />} />
+                      <Route path="/loading" element={<Loading />} />
+                      <Route path="/services" element={<Services />} />
+                      <Route path="/services/new" element={<ServiceForm />} />
+                    </Routes>
+                    <SessionMonitor />
+                    <DuplicateLoginDetector />
                   </BrowserRouter>
                 </TooltipProvider>
-              </AlertProvider>
-            </EnhancedAuthProvider>
+              </EnhancedAuthProvider>
+            </AlertProvider>
           </ThemeSettingsProvider>
         </LanguageProvider>
       </ThemeProvider>

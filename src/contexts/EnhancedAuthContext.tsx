@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -52,7 +51,7 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
 
   console.log('EnhancedAuth - user:', user?.email, 'loading:', loading, 'profile role:', profile?.role);
 
-  // Enhanced session tracking
+  // Enhanced session tracking - simplified to prevent blocking
   const trackUserSession = async (userId: string, action: 'login' | 'logout') => {
     try {
       const deviceInfo = {
@@ -64,29 +63,41 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
       };
 
       if (action === 'login') {
-        // Check for existing active sessions
-        const { data: existingSessions } = await supabase
+        // Create device fingerprint for session tracking
+        const fingerprint = btoa(JSON.stringify({
+          userAgent: navigator.userAgent,
+          language: navigator.language,
+          platform: navigator.platform
+        }));
+        localStorage.setItem('device_fingerprint', fingerprint);
+
+        // Check for existing active sessions - non-blocking
+        supabase
           .from('user_device_sessions')
           .select('*')
           .eq('user_id', userId)
-          .eq('is_active', true);
+          .eq('is_active', true)
+          .then(({ data: existingSessions }) => {
+            if (existingSessions && existingSessions.length > 0) {
+              showWarning(
+                "Multiple Login Detected",
+                `You are already logged in on ${existingSessions.length} other device(s). For security, please log out from unused devices.`
+              );
+            }
+          })
+          .catch(err => console.error('Session check error:', err));
 
-        if (existingSessions && existingSessions.length > 0) {
-          showWarning(
-            "Multiple Login Detected",
-            `You are already logged in on ${existingSessions.length} other device(s). For security, please log out from unused devices.`
-          );
-        }
-
-        // Create new session record
-        await supabase
+        // Create new session record - non-blocking
+        supabase
           .from('user_device_sessions')
           .insert({
             user_id: userId,
             device_info: deviceInfo,
+            device_fingerprint: fingerprint,
             session_token: crypto.randomUUID(),
             expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
-          });
+          })
+          .catch(err => console.error('Session create error:', err));
       }
     } catch (error) {
       console.error('Session tracking error:', error);
@@ -143,18 +154,18 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
         return;
       }
       
-      // Use Promise.race for timeout
+      // Fast query with timeout for regular users
+      const timeoutPromise = new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error('Query timeout')), 3000)
+      );
+
       const queryPromise = supabase
         .from('profiles')
         .select('*')
         .eq('id', userId)
         .single();
 
-      const timeoutPromise = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error('Query timeout')), 8000)
-      );
-
-      const { data, error } = await Promise.race([queryPromise, timeoutPromise]) as any;
+      const { data, error } = await Promise.race([queryPromise, timeoutPromise]);
 
       if (error) {
         if (error.code === 'PGRST116') {
@@ -179,10 +190,15 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
         }
         
         console.error('Error fetching profile:', error);
-        showError(
-          "Profile Loading Error",
-          "There was an issue loading your profile. Please try refreshing the page."
-        );
+        // Don't show error to user immediately, create default profile
+        const defaultProfile: Profile = {
+          id: userId,
+          email: authUser.user?.email || '',
+          full_name: authUser.user?.user_metadata?.full_name || 'User',
+          role: 'general_user',
+          verification_status: 'pending'
+        };
+        setProfile(defaultProfile);
         setLoading(false);
         return;
       }
@@ -201,17 +217,16 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
     } catch (error: any) {
       console.error('Profile fetch error:', error);
       
-      if (error.message === 'Query timeout') {
-        showError(
-          "Connection Timeout",
-          "The connection is taking longer than expected. Please check your internet connection and try again."
-        );
-      } else {
-        showError(
-          "Profile Error",
-          "Failed to load your profile. Please try logging in again."
-        );
-      }
+      // Create fallback profile instead of showing error
+      const { data: authUser } = await supabase.auth.getUser();
+      const fallbackProfile: Profile = {
+        id: userId,
+        email: authUser.user?.email || '',
+        full_name: authUser.user?.user_metadata?.full_name || 'User',
+        role: 'general_user',
+        verification_status: 'pending'
+      };
+      setProfile(fallbackProfile);
       setLoading(false);
     }
   };
@@ -350,7 +365,7 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
       activityTimeout = setTimeout(() => {
         if (user && session) {
           extendSession();
-          lastExtension = Date.now();
+          lastExtension = now;
         }
       }, 15 * 60 * 1000);
     };
