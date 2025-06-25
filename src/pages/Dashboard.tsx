@@ -1,144 +1,105 @@
 
-import { useEffect, useState } from "react";
-import { useAuth } from "@/contexts/AuthContext";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { AlertTriangle, Loader2 } from 'lucide-react';
+import UserDashboard from '@/components/dashboard/UserDashboard';
+import LoadingPage from '@/components/LoadingPage';
+import { useDatabaseConnection } from '@/hooks/useDatabaseConnection';
 
 const Dashboard = () => {
   const { user, profile, loading } = useAuth();
+  const { connectionStatus } = useDatabaseConnection();
   const navigate = useNavigate();
-  const [redirectTimeout, setRedirectTimeout] = useState<NodeJS.Timeout | null>(null);
-  const [hasRedirected, setHasRedirected] = useState(false);
+  const [isInitializing, setIsInitializing] = useState(true);
+
+  console.log('Dashboard - User:', user);
+  console.log('Dashboard - Profile:', profile);
+  console.log('Dashboard - Loading:', loading);
 
   useEffect(() => {
-    // Clear any existing timeout
-    if (redirectTimeout) {
-      clearTimeout(redirectTimeout);
-    }
+    console.log('Dashboard mounted');
+    
+    // Set up initialization timeout
+    const timer = setTimeout(() => {
+      setIsInitializing(false);
+    }, 2000); // Wait 2 seconds for auth to initialize
 
-    // Don't proceed if still loading or already redirected
-    if (loading || hasRedirected) {
-      return;
-    }
+    return () => clearTimeout(timer);
+  }, []);
 
-    console.log('Dashboard redirect logic:', {
-      loading,
-      user: user?.email,
-      profile: profile?.role,
-      hasRedirected
-    });
-
-    // If no user, redirect to home with auth modal
-    if (!user) {
-      console.log('No user found, redirecting to home');
-      setHasRedirected(true);
+  // Redirect to login if no user after initialization
+  useEffect(() => {
+    if (!loading && !isInitializing && !user) {
+      console.log('No user found after initialization, redirecting to login');
       navigate('/?auth=true', { replace: true });
-      return;
     }
+  }, [user, loading, isInitializing, navigate]);
 
-    // Set a timeout to prevent infinite loading
-    const timeout = setTimeout(() => {
-      if (!hasRedirected) {
-        console.log('Timeout reached, defaulting to user dashboard');
-        setHasRedirected(true);
-        navigate('/dashboard/user', { replace: true });
-      }
-    }, 3000); // 3 second timeout
+  // Show loading while auth is initializing
+  if (loading || isInitializing) {
+    return (
+      <LoadingPage
+        message="Loading your dashboard..."
+        showConnectionStatus={true}
+        connectionStatus={connectionStatus}
+      />
+    );
+  }
 
-    setRedirectTimeout(timeout);
-
-    // If we have a user but no profile, wait a bit for profile to load
-    if (user && !profile) {
-      console.log('User exists but no profile, waiting...');
-      const profileTimeout = setTimeout(() => {
-        if (!hasRedirected) {
-          console.log('Profile timeout, redirecting to user dashboard');
-          setHasRedirected(true);
-          navigate('/dashboard/user', { replace: true });
-        }
-      }, 2000);
-      
-      return () => clearTimeout(profileTimeout);
-    }
-
-    // If we have both user and profile, redirect based on role
-    if (user && profile && !hasRedirected) {
-      console.log('Redirecting based on role:', profile.role);
-      setHasRedirected(true);
-      
-      switch (profile.role) {
-        case 'admin':
-          navigate('/dashboard/admin', { replace: true });
-          break;
-        case 'agent':
-          navigate('/dashboard/agent', { replace: true });
-          break;
-        case 'vendor':
-          navigate('/dashboard/vendor', { replace: true });
-          break;
-        case 'property_owner':
-          navigate('/dashboard/property-owner', { replace: true });
-          break;
-        case 'general_user':
-        default:
-          navigate('/dashboard/user', { replace: true });
-          break;
-      }
-    }
-
-    // Cleanup timeout on unmount
-    return () => {
-      if (timeout) {
-        clearTimeout(timeout);
-      }
-    };
-  }, [user, profile, loading, navigate, hasRedirected]);
-
-  // Show loading with timeout indicator
-  return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-background">
-      <div className="text-center space-y-4">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-        <div className="space-y-2">
-          <h2 className="text-lg font-semibold text-foreground">
-            {loading ? "Loading your dashboard..." : "Redirecting to your dashboard..."}
-          </h2>
-          <p className="text-sm text-muted-foreground">
-            {user ? `Welcome ${user.email}` : "Please wait..."}
-          </p>
-          {profile && (
-            <p className="text-xs text-muted-foreground">
-              Role: {profile.role}
-            </p>
-          )}
-        </div>
-        
-        {/* Manual navigation options after 2 seconds */}
-        <div className="mt-6 space-y-2">
-          <p className="text-xs text-muted-foreground">Taking too long?</p>
-          <div className="flex gap-2 justify-center">
-            <button
-              onClick={() => {
-                setHasRedirected(true);
-                navigate('/dashboard/user', { replace: true });
-              }}
-              className="px-4 py-2 text-sm bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
-            >
-              Go to Dashboard
-            </button>
-            <button
-              onClick={() => {
-                setHasRedirected(true);
-                navigate('/', { replace: true });
-              }}
-              className="px-4 py-2 text-sm bg-secondary text-secondary-foreground rounded-md hover:bg-secondary/90 transition-colors"
-            >
-              Back to Home
-            </button>
-          </div>
+  // Show error if no user after loading
+  if (!user) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <Alert>
+          <AlertTriangle className="h-4 w-4" />
+          <AlertDescription>
+            Please log in to access your dashboard.
+          </AlertDescription>
+        </Alert>
+        <div className="mt-4">
+          <button 
+            onClick={() => navigate('/?auth=true', { replace: true })}
+            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+          >
+            Go to Login
+          </button>
         </div>
       </div>
-    </div>
-  );
+    );
+  }
+
+  // Redirect agents to admin dashboard if they're admin role
+  if (profile?.role === 'admin' || user?.email === 'mycode103@gmail.com') {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <Alert>
+          <AlertTriangle className="h-4 w-4" />
+          <AlertDescription>
+            Admin users should use the admin dashboard.
+          </AlertDescription>
+        </Alert>
+        <div className="mt-4 space-x-2">
+          <button 
+            onClick={() => navigate('/admin', { replace: true })}
+            className="bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600"
+          >
+            Go to Admin Dashboard
+          </button>
+          <button 
+            onClick={() => navigate('/', { replace: true })}
+            className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+          >
+            Go to Home
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Show the user dashboard
+  return <UserDashboard />;
 };
 
 export default Dashboard;
