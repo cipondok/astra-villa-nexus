@@ -3,12 +3,16 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BarChart3, Activity, Globe, Users, FileText, TrendingUp, Home } from "lucide-react";
+import { BarChart3, Activity, Globe, Users, FileText, TrendingUp, Home, Settings, Building, Store } from "lucide-react";
 import AdminOverview from './AdminOverview';
 import WebTrafficAnalytics from './WebTrafficAnalytics';
 import VendorPerformanceAnalytics from './VendorPerformanceAnalytics';
 import SystemReports from './SystemReports';
 import PerformanceAnalyticsDashboard from './PerformanceAnalyticsDashboard';
+import UserManagement from './UserManagement';
+import PropertyManagement from './PropertyManagement';
+import VendorManagementHub from './VendorManagementHub';
+import SystemSettings from './SystemSettings';
 
 const AdvancedAdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -26,6 +30,14 @@ const AdvancedAdminDashboard = () => {
     switch (activeTab) {
       case 'overview':
         return <AdminOverview />;
+      case 'users':
+        return <UserManagement />;
+      case 'properties':
+        return <PropertyManagement />;
+      case 'vendors':
+        return <VendorManagementHub />;
+      case 'system-settings':
+        return <SystemSettings />;
       case 'performance-analytics':
         return <PerformanceAnalyticsDashboard />;
       case 'web-traffic':
@@ -46,6 +58,30 @@ const AdvancedAdminDashboard = () => {
       label: 'Overview', 
       icon: Home, 
       description: 'Dashboard overview and quick stats' 
+    },
+    { 
+      id: 'users', 
+      label: 'Users', 
+      icon: Users,
+      description: 'User management and permissions'
+    },
+    { 
+      id: 'properties', 
+      label: 'Properties', 
+      icon: Building,
+      description: 'Property listings and management'
+    },
+    { 
+      id: 'vendors', 
+      label: 'Vendors', 
+      icon: Store,
+      description: 'Vendor management and services'
+    },
+    { 
+      id: 'system-settings', 
+      label: 'System Settings', 
+      icon: Settings,
+      description: 'System configuration and settings'
     },
     { 
       id: 'performance-analytics', 
@@ -85,7 +121,7 @@ const AdvancedAdminDashboard = () => {
       </div>
       
       <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-5 bg-muted rounded-lg p-1">
+        <TabsList className="grid w-full grid-cols-3 lg:grid-cols-9 bg-muted rounded-lg p-1">
           {tabs.map((tab) => (
             <TabsTrigger
               key={tab.id}
