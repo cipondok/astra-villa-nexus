@@ -71,11 +71,10 @@ const Navigation = () => {
   const handleSignOut = async () => {
     try {
       setIsOpen(false);
-      toast.loading('Signing out...', { duration: 500 });
+      // No loading toast - just sign out immediately
       await signOut();
     } catch (error) {
       console.error('Error signing out:', error);
-      toast.error('Error signing out');
     }
   };
 

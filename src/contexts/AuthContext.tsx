@@ -277,22 +277,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signOut = async () => {
     try {
-      console.log('Starting fast sign out...');
+      console.log('Fast logout initiated...');
       
-      // Clear state immediately
+      // Clear state immediately for instant UI update
       setUser(null);
       setProfile(null);
       setSession(null);
+      setLoading(false);
       
-      // Sign out from Supabase (this triggers the auth state change)
-      await supabase.auth.signOut();
-      
-      // Clear storage
+      // Clear storage immediately
       localStorage.clear();
       sessionStorage.clear();
       
-      // Navigate to home
-      window.location.href = '/';
+      // Supabase sign out in background - don't await this
+      supabase.auth.signOut().catch(error => {
+        console.error('Background sign out error:', error);
+      });
+      
+      // Navigate immediately
+      window.location.replace('/');
       
     } catch (error: any) {
       console.error('Sign out error:', error);
@@ -302,7 +305,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setSession(null);
       localStorage.clear();
       sessionStorage.clear();
-      window.location.href = '/';
+      window.location.replace('/');
     }
   };
 
