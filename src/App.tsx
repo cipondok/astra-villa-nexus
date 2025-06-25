@@ -17,8 +17,17 @@ import AdminDashboard from "./pages/AdminDashboard";
 import ContentManagement from "./pages/ContentManagement";
 import Loading from "./pages/Loading";
 import Services from "./pages/Services";
+import ServiceForm from "./pages/ServiceForm";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      retry: 1,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 const App: React.FC = () => {
   return (
@@ -40,6 +49,7 @@ const App: React.FC = () => {
                         <Route path="/content-management" element={<ContentManagement />} />
                         <Route path="/loading" element={<Loading />} />
                         <Route path="/services" element={<Services />} />
+                        <Route path="/services/new" element={<ServiceForm />} />
                       </Routes>
                     </AppInitializer>
                   </BrowserRouter>

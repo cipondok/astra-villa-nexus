@@ -43,7 +43,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = React.useState<User | null>(null);
   const [profile, setProfile] = React.useState<Profile | null>(null);
-  const [loading, setLoading] = React.useState(true);
+  const [loading, setLoading] = React.useState(false); // Start false for better UX
   const [session, setSession] = React.useState<Session | null>(null);
 
   console.log('AuthProvider - user:', user?.email, 'loading:', loading, 'profile role:', profile?.role);
@@ -84,16 +84,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return;
       }
       
+      // Optimize query with timeout
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000);
+
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', userId)
-        .single();
+        .single()
+        .abortSignal(controller.signal);
+
+      clearTimeout(timeoutId);
 
       if (error) {
         if (error.code === 'PGRST116') {
           console.log('Profile not found, creating default profile');
-          // Create default profile for new users
           const defaultProfile: Profile = {
             id: userId,
             email: authUser.user?.email || '',
@@ -158,6 +164,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setUser(session?.user ?? null);
         
         if (session?.user && event !== 'TOKEN_REFRESHED') {
+          setLoading(true);
           await fetchProfile(session.user.id);
           if (event === 'SIGNED_IN') {
             localStorage.setItem('login_time', Date.now().toString());
@@ -182,7 +189,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     );
 
-    // Get initial session
+    // Get initial session with faster response
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (!mounted) return;
       
@@ -190,6 +197,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (session?.user) {
         setSession(session);
         setUser(session.user);
+        setLoading(true);
         fetchProfile(session.user.id);
         if (!localStorage.getItem('last_activity')) {
           localStorage.setItem('last_activity', Date.now().toString());
@@ -373,7 +381,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     user,
     profile,
     loading,
-    isAuthenticated,
+    isAuthenticated: !!user && !!session,
     signIn,
     signUp,
     signOut,
