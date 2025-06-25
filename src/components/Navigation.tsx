@@ -14,7 +14,6 @@ import { useLanguage } from "@/contexts/LanguageContext";
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
-  const [isSigningOut, setIsSigningOut] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const { user, signOut, profile } = useAuth();
@@ -70,25 +69,13 @@ const Navigation = () => {
   ];
 
   const handleSignOut = async () => {
-    if (isSigningOut) return;
-    
     try {
-      console.log('Navigation: Starting fast sign out...');
-      setIsSigningOut(true);
       setIsOpen(false);
-      
-      // Show loading toast briefly
-      toast.loading('Signing out...', { duration: 1000 });
-      
-      // Call optimized signOut
+      toast.loading('Signing out...', { duration: 500 });
       await signOut();
-      
     } catch (error) {
-      console.error('Navigation: Error signing out:', error);
-      setIsSigningOut(false);
+      console.error('Error signing out:', error);
       toast.error('Error signing out');
-      // Force navigation
-      window.location.href = '/';
     }
   };
 
@@ -199,8 +186,7 @@ const Navigation = () => {
                           onClick={() => navigate('/dashboard')}
                           variant="ghost"
                           size="sm"
-                          disabled={isSigningOut}
-                          className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-300 disabled:opacity-50"
+                          className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-300"
                         >
                           <User className="h-4 w-4" />
                         </Button>
@@ -217,8 +203,7 @@ const Navigation = () => {
                             onClick={() => navigate('/admin')}
                             variant="ghost"
                             size="sm"
-                            disabled={isSigningOut}
-                            className="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-300 disabled:opacity-50"
+                            className="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-300"
                           >
                             <Bot className="h-4 w-4" />
                           </Button>
@@ -235,14 +220,13 @@ const Navigation = () => {
                           onClick={handleSignOut}
                           variant="ghost"
                           size="sm"
-                          disabled={isSigningOut}
-                          className="text-gray-600 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-300 disabled:opacity-50"
+                          className="text-gray-600 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-300"
                         >
                           <LogOut className="h-4 w-4" />
                         </Button>
                       </TooltipTrigger>
                       <TooltipContent>
-                        <p>{isSigningOut ? 'Signing Out...' : navLabels["Sign Out"]}</p>
+                        <p>{navLabels["Sign Out"]}</p>
                       </TooltipContent>
                     </Tooltip>
                   </>
@@ -321,8 +305,7 @@ const Navigation = () => {
                         navigate('/dashboard');
                         setIsOpen(false);
                       }}
-                      disabled={isSigningOut}
-                      className="flex items-center space-x-3 text-base font-medium text-blue-600 hover:text-blue-700 transition-colors duration-200 w-full text-left disabled:opacity-50"
+                      className="flex items-center space-x-3 text-base font-medium text-blue-600 hover:text-blue-700 transition-colors duration-200 w-full text-left"
                     >
                       <User className="h-5 w-5" />
                       <span>{navLabels.Dashboard}</span>
@@ -334,8 +317,7 @@ const Navigation = () => {
                           navigate('/admin');
                           setIsOpen(false);
                         }}
-                        disabled={isSigningOut}
-                        className="flex items-center space-x-3 text-base font-medium text-red-600 hover:text-red-700 transition-colors duration-200 w-full text-left disabled:opacity-50"
+                        className="flex items-center space-x-3 text-base font-medium text-red-600 hover:text-red-700 transition-colors duration-200 w-full text-left"
                       >
                         <Bot className="h-5 w-5" />
                         <span>{navLabels["Admin Panel"]}</span>
@@ -344,11 +326,10 @@ const Navigation = () => {
                     
                     <button
                       onClick={handleSignOut}
-                      disabled={isSigningOut}
-                      className="flex items-center space-x-3 text-base font-medium text-red-600 hover:text-red-700 transition-colors duration-200 w-full text-left disabled:opacity-50"
+                      className="flex items-center space-x-3 text-base font-medium text-red-600 hover:text-red-700 transition-colors duration-200 w-full text-left"
                     >
                       <LogOut className="h-5 w-5" />
-                      <span>{isSigningOut ? 'Signing Out...' : navLabels["Sign Out"]}</span>
+                      <span>{navLabels["Sign Out"]}</span>
                     </button>
                   </div>
                 ) : (

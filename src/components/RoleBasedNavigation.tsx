@@ -78,13 +78,11 @@ const RoleBasedNavigation = ({
 
   const handleSignOut = async () => {
     try {
-      console.log('RoleBasedNavigation: Fast sign out...');
-      await signOut();
-      navigate('/');
+      console.log('RoleBasedNavigation: Starting sign out...');
       setIsMenuOpen(false);
+      await signOut();
     } catch (error) {
       console.error('Error signing out:', error);
-      window.location.href = '/';
     }
   };
 

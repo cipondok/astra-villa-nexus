@@ -75,7 +75,6 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
   const navigate = useNavigate();
   const [sessionTime, setSessionTime] = useState<string>('');
   const [showProfile, setShowProfile] = useState(false);
-  const [isSigningOut, setIsSigningOut] = useState(false);
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -101,22 +100,14 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
   }, []);
 
   const handleSignOut = async () => {
-    if (isSigningOut) return;
-    
     try {
-      console.log('AdminDashboardHeader: Starting fast sign out...');
-      setIsSigningOut(true);
-      
-      toast.loading('Signing out...', { duration: 1000 });
+      console.log('AdminDashboardHeader: Starting sign out...');
+      toast.loading('Signing out...', { duration: 500 });
       setShowProfile(false);
-      
       await signOut();
-      
     } catch (error) {
       console.error('AdminDashboardHeader: Error signing out:', error);
-      setIsSigningOut(false);
       toast.error('Error signing out');
-      window.location.href = '/';
     }
   };
 
@@ -213,8 +204,7 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="ghost"
-                  disabled={isSigningOut}
-                  className="bg-white/10 hover:bg-white/20 text-white border border-white/20 px-4 py-2 flex items-center gap-2 disabled:opacity-50"
+                  className="bg-white/10 hover:bg-white/20 text-white border border-white/20 px-4 py-2 flex items-center gap-2"
                 >
                   <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
                     <User className="h-4 w-4 text-white" />
@@ -305,11 +295,10 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
                 {/* Logout */}
                 <DropdownMenuItem 
                   onClick={handleSignOut} 
-                  disabled={isSigningOut}
-                  className="text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 disabled:opacity-50"
+                  className="text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
                 >
                   <LogOut className="h-4 w-4 mr-2" />
-                  {isSigningOut ? 'Signing Out...' : 'Sign Out'}
+                  Sign Out
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
