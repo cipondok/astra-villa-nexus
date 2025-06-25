@@ -9,7 +9,7 @@ import { AlertProvider } from "@/contexts/AlertContext";
 import { ThemeSettingsProvider } from "@/contexts/ThemeSettingsContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { ThemeProvider } from "@/components/ThemeProvider";
-import { SessionMonitor } from "@/components/SessionMonitor";
+import SessionMonitor from "@/components/SessionMonitor";
 import DuplicateLoginDetector from "@/components/DuplicateLoginDetector";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
