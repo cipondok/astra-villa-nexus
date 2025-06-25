@@ -11,51 +11,58 @@ import {
   FileText, 
   Shield,
   Activity,
-  AlertTriangle
+  AlertTriangle,
+  DollarSign,
+  Zap,
+  Eye,
+  Lock
 } from "lucide-react";
 import PerformanceAnalyticsDashboard from './PerformanceAnalyticsDashboard';
 import WebTrafficAnalytics from './WebTrafficAnalytics';
 import VendorPerformanceAnalytics from './VendorPerformanceAnalytics';
 import SystemReports from './SystemReports';
 import EnhancedAlertManagement from './EnhancedAlertManagement';
+import BusinessIntelligenceDashboard from './BusinessIntelligenceDashboard';
+import SecurityComplianceDashboard from './SecurityComplianceDashboard';
+import AutomationFeaturesDashboard from './AutomationFeaturesDashboard';
 
 const AnalyticsDashboard = () => {
-  const [activeAnalyticsTab, setActiveAnalyticsTab] = useState('performance');
+  const [activeAnalyticsTab, setActiveAnalyticsTab] = useState('business-intelligence');
 
   console.log('AnalyticsDashboard - Current analytics tab:', activeAnalyticsTab);
 
   const analyticsOverviewStats = [
     {
-      title: "Total Users",
-      value: "2,847",
-      change: "+12.3%",
+      title: "Revenue Growth",
+      value: "$328K",
+      change: "+23.5%",
       trend: "up",
-      icon: Users,
-      color: "blue"
+      icon: DollarSign,
+      color: "green"
     },
     {
       title: "Page Views",
       value: "127.4K",
       change: "+8.7%",
       trend: "up",
-      icon: Globe,
-      color: "green"
+      icon: Eye,
+      color: "blue"
     },
     {
-      title: "Active Alerts",
-      value: "23",
-      change: "-15.2%",
-      trend: "down",
-      icon: AlertTriangle,
-      color: "yellow"
-    },
-    {
-      title: "System Health",
-      value: "98.5%",
-      change: "+0.3%",
+      title: "Security Score",
+      value: "96%",
+      change: "+2.1%",
       trend: "up",
-      icon: Activity,
+      icon: Shield,
       color: "emerald"
+    },
+    {
+      title: "Automation Rate",
+      value: "87%",
+      change: "+15.3%",
+      trend: "up",
+      icon: Zap,
+      color: "purple"
     }
   ];
 
@@ -65,10 +72,10 @@ const AnalyticsDashboard = () => {
         <div>
           <h2 className="text-2xl font-bold flex items-center gap-2">
             <BarChart3 className="h-6 w-6" />
-            Analytics & Monitoring Center
+            Analytics & Business Intelligence Center
           </h2>
           <p className="text-muted-foreground">
-            Comprehensive analytics, reports, alerts and system monitoring
+            Comprehensive analytics, business intelligence, security monitoring, and automation
           </p>
         </div>
         <Badge variant="outline" className="px-3 py-1">
@@ -76,7 +83,7 @@ const AnalyticsDashboard = () => {
         </Badge>
       </div>
 
-      {/* Overview Stats */}
+      {/* Enhanced Overview Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {analyticsOverviewStats.map((stat) => {
           const Icon = stat.icon;
@@ -105,16 +112,28 @@ const AnalyticsDashboard = () => {
         })}
       </div>
 
-      {/* Analytics Tabs */}
+      {/* Enhanced Analytics Tabs */}
       <Tabs value={activeAnalyticsTab} onValueChange={setActiveAnalyticsTab} className="space-y-4">
-        <TabsList className="grid w-full grid-cols-2 lg:grid-cols-5 bg-muted rounded-lg p-1">
+        <TabsList className="grid w-full grid-cols-4 lg:grid-cols-8 bg-muted rounded-lg p-1">
+          <TabsTrigger value="business-intelligence" className="flex items-center gap-2">
+            <DollarSign className="h-4 w-4" />
+            <span className="hidden sm:inline">BI</span>
+          </TabsTrigger>
+          <TabsTrigger value="security-compliance" className="flex items-center gap-2">
+            <Shield className="h-4 w-4" />
+            <span className="hidden sm:inline">Security</span>
+          </TabsTrigger>
+          <TabsTrigger value="automation" className="flex items-center gap-2">
+            <Zap className="h-4 w-4" />
+            <span className="hidden sm:inline">Automation</span>
+          </TabsTrigger>
           <TabsTrigger value="performance" className="flex items-center gap-2">
             <TrendingUp className="h-4 w-4" />
             <span className="hidden sm:inline">Performance</span>
           </TabsTrigger>
           <TabsTrigger value="web-traffic" className="flex items-center gap-2">
             <Globe className="h-4 w-4" />
-            <span className="hidden sm:inline">Web Traffic</span>
+            <span className="hidden sm:inline">Traffic</span>
           </TabsTrigger>
           <TabsTrigger value="vendor-analytics" className="flex items-center gap-2">
             <Users className="h-4 w-4" />
@@ -125,10 +144,22 @@ const AnalyticsDashboard = () => {
             <span className="hidden sm:inline">Reports</span>
           </TabsTrigger>
           <TabsTrigger value="alerts" className="flex items-center gap-2">
-            <Shield className="h-4 w-4" />
+            <AlertTriangle className="h-4 w-4" />
             <span className="hidden sm:inline">Alerts</span>
           </TabsTrigger>
         </TabsList>
+
+        <TabsContent value="business-intelligence" className="space-y-4">
+          <BusinessIntelligenceDashboard />
+        </TabsContent>
+
+        <TabsContent value="security-compliance" className="space-y-4">
+          <SecurityComplianceDashboard />
+        </TabsContent>
+
+        <TabsContent value="automation" className="space-y-4">
+          <AutomationFeaturesDashboard />
+        </TabsContent>
 
         <TabsContent value="performance" className="space-y-4">
           <PerformanceAnalyticsDashboard />
