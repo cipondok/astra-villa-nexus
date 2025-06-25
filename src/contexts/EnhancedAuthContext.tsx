@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -52,7 +51,7 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
 
   console.log('EnhancedAuth - user:', user?.email, 'loading:', loading, 'profile role:', profile?.role);
 
-  // Enhanced session tracking - simplified to prevent blocking
+  // Enhanced session tracking with proper async/await error handling
   const trackUserSession = async (userId: string, action: 'login' | 'logout') => {
     try {
       const deviceInfo = {
@@ -72,13 +71,18 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
         }));
         localStorage.setItem('device_fingerprint', fingerprint);
 
-        // Check for existing active sessions - non-blocking
+        // Check for existing active sessions - non-blocking with proper error handling
         try {
-          const { data: existingSessions } = await supabase
+          const { data: existingSessions, error: sessionError } = await supabase
             .from('user_device_sessions')
             .select('*')
             .eq('user_id', userId)
             .eq('is_active', true);
+
+          if (sessionError) {
+            console.error('Session check error:', sessionError);
+            return; // Don't block login on session check failure
+          }
 
           if (existingSessions && existingSessions.length > 0) {
             showWarning(
@@ -90,9 +94,9 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
           console.error('Session check error:', err);
         }
 
-        // Create new session record - non-blocking
+        // Create new session record - non-blocking with proper error handling
         try {
-          await supabase
+          const { error: insertError } = await supabase
             .from('user_device_sessions')
             .insert({
               user_id: userId,
@@ -101,6 +105,10 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
               session_token: crypto.randomUUID(),
               expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
             });
+
+          if (insertError) {
+            console.error('Session create error:', insertError);
+          }
         } catch (err) {
           console.error('Session create error:', err);
         }
@@ -115,7 +123,13 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
       console.log('Fetching profile for user:', userId);
       
       // Check if user is super admin by email
-      const { data: authUser } = await supabase.auth.getUser();
+      const { data: authUser, error: userError } = await supabase.auth.getUser();
+      
+      if (userError) {
+        console.error('Error getting auth user:', userError);
+        setLoading(false);
+        return;
+      }
       
       if (authUser.user?.email === 'mycode103@gmail.com') {
         const adminProfile: Profile = {
@@ -160,7 +174,7 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
         return;
       }
       
-      // Fast query with timeout for regular users
+      // Fast query with timeout for regular users - proper Promise.race implementation
       const timeoutPromise = new Promise<never>((_, reject) =>
         setTimeout(() => reject(new Error('Query timeout')), 3000)
       );
@@ -171,11 +185,34 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
         .eq('id', userId)
         .single();
 
-      const { data, error } = await Promise.race([queryPromise, timeoutPromise]);
+      try {
+        const result = await Promise.race([queryPromise, timeoutPromise]);
+        const { data, error } = result as any;
 
-      if (error) {
-        if (error.code === 'PGRST116') {
-          console.log('Profile not found, creating default profile');
+        if (error) {
+          if (error.code === 'PGRST116') {
+            console.log('Profile not found, creating default profile');
+            const defaultProfile: Profile = {
+              id: userId,
+              email: authUser.user?.email || '',
+              full_name: authUser.user?.user_metadata?.full_name || 'User',
+              role: 'general_user',
+              verification_status: 'pending'
+            };
+            setProfile(defaultProfile);
+            setLoading(false);
+            
+            if (showGreeting) {
+              showSuccess(
+                "Welcome to AstraVilla!",
+                "Your account has been created successfully. Complete your profile to get started."
+              );
+            }
+            return;
+          }
+          
+          console.error('Error fetching profile:', error);
+          // Don't show error to user immediately, create default profile
           const defaultProfile: Profile = {
             id: userId,
             email: authUser.user?.email || '',
@@ -185,54 +222,51 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
           };
           setProfile(defaultProfile);
           setLoading(false);
-          
-          if (showGreeting) {
-            showSuccess(
-              "Welcome to AstraVilla!",
-              "Your account has been created successfully. Complete your profile to get started."
-            );
-          }
           return;
         }
+
+        console.log('Profile fetched successfully:', data);
+        setProfile(data as Profile);
+        setLoading(false);
         
-        console.error('Error fetching profile:', error);
-        // Don't show error to user immediately, create default profile
-        const defaultProfile: Profile = {
+        if (showGreeting) {
+          const greeting = getGreetingMessage(data.full_name || 'User');
+          showSuccess(
+            `${greeting}, ${data.full_name || 'User'}!`,
+            "Successfully logged in to your account."
+          );
+        }
+      } catch (raceError: any) {
+        console.error('Profile fetch race error:', raceError);
+        
+        // Create fallback profile instead of showing error
+        const fallbackProfile: Profile = {
           id: userId,
           email: authUser.user?.email || '',
           full_name: authUser.user?.user_metadata?.full_name || 'User',
           role: 'general_user',
           verification_status: 'pending'
         };
-        setProfile(defaultProfile);
+        setProfile(fallbackProfile);
         setLoading(false);
-        return;
-      }
-
-      console.log('Profile fetched successfully:', data);
-      setProfile(data as Profile);
-      setLoading(false);
-      
-      if (showGreeting) {
-        const greeting = getGreetingMessage(data.full_name || 'User');
-        showSuccess(
-          `${greeting}, ${data.full_name || 'User'}!`,
-          "Successfully logged in to your account."
-        );
       }
     } catch (error: any) {
       console.error('Profile fetch error:', error);
       
       // Create fallback profile instead of showing error
-      const { data: authUser } = await supabase.auth.getUser();
-      const fallbackProfile: Profile = {
-        id: userId,
-        email: authUser.user?.email || '',
-        full_name: authUser.user?.user_metadata?.full_name || 'User',
-        role: 'general_user',
-        verification_status: 'pending'
-      };
-      setProfile(fallbackProfile);
+      try {
+        const { data: authUser } = await supabase.auth.getUser();
+        const fallbackProfile: Profile = {
+          id: userId,
+          email: authUser.user?.email || '',
+          full_name: authUser.user?.user_metadata?.full_name || 'User',
+          role: 'general_user',
+          verification_status: 'pending'
+        };
+        setProfile(fallbackProfile);
+      } catch (fallbackError) {
+        console.error('Fallback profile creation error:', fallbackError);
+      }
       setLoading(false);
     }
   };
@@ -347,7 +381,6 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
     };
   }, []);
 
-  // Enhanced auto-extend session with better error handling
   React.useEffect(() => {
     if (!user || !session) return;
 
@@ -553,7 +586,7 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
       localStorage.clear();
       sessionStorage.clear();
       
-      // Supabase sign out in background
+      // Supabase sign out in background - proper async/await handling
       try {
         await supabase.auth.signOut();
       } catch (error) {
