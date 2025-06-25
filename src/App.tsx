@@ -16,6 +16,7 @@ import Dashboard from "./pages/Dashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import ContentManagement from "./pages/ContentManagement";
 import Loading from "./pages/Loading";
+import Services from "./pages/Services";
 
 const queryClient = new QueryClient();
 
@@ -38,6 +39,7 @@ const App: React.FC = () => {
                         <Route path="/admin" element={<AdminDashboard />} />
                         <Route path="/content-management" element={<ContentManagement />} />
                         <Route path="/loading" element={<Loading />} />
+                        <Route path="/services" element={<Services />} />
                       </Routes>
                     </AppInitializer>
                   </BrowserRouter>
