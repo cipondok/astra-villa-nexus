@@ -33,7 +33,7 @@ const NavigationCategory = ({ category, activeSection, onSectionChange }: Naviga
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm flex items-center gap-2">
                   <Icon className="h-4 w-4" />
-                  {section.label}
+                  {section.title}
                 </CardTitle>
               </CardHeader>
               <CardContent className="pt-0">
