@@ -9,8 +9,6 @@ import { AlertProvider } from "@/contexts/AlertContext";
 import { ThemeSettingsProvider } from "@/contexts/ThemeSettingsContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { ThemeProvider } from "@/components/ThemeProvider";
-import { SessionMonitor } from "@/components/SessionMonitor";
-import AppInitializer from "@/components/AppInitializer";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import AdminDashboard from "./pages/AdminDashboard";
@@ -23,7 +21,7 @@ import VendorDashboard from "./pages/VendorDashboard";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 5 * 60 * 1000, // 5 minutes
+      staleTime: 5 * 60 * 1000,
       retry: 1,
       refetchOnWindowFocus: false,
     },
@@ -31,6 +29,8 @@ const queryClient = new QueryClient({
 });
 
 const App: React.FC = () => {
+  console.log('App component rendering...');
+  
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
@@ -41,19 +41,16 @@ const App: React.FC = () => {
                 <TooltipProvider>
                   <Toaster />
                   <BrowserRouter>
-                    <AppInitializer>
-                      <SessionMonitor />
-                      <Routes>
-                        <Route path="/" element={<Index />} />
-                        <Route path="/dashboard" element={<Dashboard />} />
-                        <Route path="/vendor-dashboard" element={<VendorDashboard />} />
-                        <Route path="/admin" element={<AdminDashboard />} />
-                        <Route path="/content-management" element={<ContentManagement />} />
-                        <Route path="/loading" element={<Loading />} />
-                        <Route path="/services" element={<Services />} />
-                        <Route path="/services/new" element={<ServiceForm />} />
-                      </Routes>
-                    </AppInitializer>
+                    <Routes>
+                      <Route path="/" element={<Index />} />
+                      <Route path="/dashboard" element={<Dashboard />} />
+                      <Route path="/vendor-dashboard" element={<VendorDashboard />} />
+                      <Route path="/admin" element={<AdminDashboard />} />
+                      <Route path="/content-management" element={<ContentManagement />} />
+                      <Route path="/loading" element={<Loading />} />
+                      <Route path="/services" element={<Services />} />
+                      <Route path="/services/new" element={<ServiceForm />} />
+                    </Routes>
                   </BrowserRouter>
                 </TooltipProvider>
               </AlertProvider>

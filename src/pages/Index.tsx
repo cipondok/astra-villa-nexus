@@ -9,36 +9,30 @@ import ResponsiveAIChatWidget from "@/components/ai/ResponsiveAIChatWidget";
 import { supabase } from "@/integrations/supabase/client";
 
 const Index = () => {
+  console.log('Index page rendering...');
+  
   const { language } = useLanguage();
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
 
-  // Optimized featured properties query with aggressive caching
+  // Simple featured properties query
   const { data: featuredProperties = [], isLoading: isFeaturedLoading } = useQuery({
-    queryKey: ['featured-properties-fast'],
+    queryKey: ['featured-properties'],
     queryFn: async () => {
-      console.log('Fetching featured properties with optimized query...');
+      console.log('Fetching featured properties...');
       
       try {
-        // Ultra-fast query with minimal timeout
-        const timeoutPromise = new Promise<never>((_, reject) => {
-          setTimeout(() => reject(new Error('Query timeout')), 3000); // 3 second max
-        });
-
-        const queryPromise = supabase
+        const { data, error } = await supabase
           .from('properties')
           .select('id, title, property_type, listing_type, price, location, bedrooms, bathrooms, area_sqm, images, thumbnail_url, state, city')
           .eq('status', 'active')
           .order('created_at', { ascending: false })
-          .limit(12); // Reduced limit for faster loading
-
-        const { data, error } = await Promise.race([queryPromise, timeoutPromise]);
+          .limit(12);
 
         if (error) {
           console.error('Properties query error:', error);
-          // Return empty array instead of throwing
           return [];
         }
 
@@ -47,36 +41,27 @@ const Index = () => {
         
       } catch (err) {
         console.error('Featured properties fetch error:', err);
-        // Return empty array for graceful degradation
         return [];
       }
     },
-    retry: 1, // Only retry once
-    retryDelay: 1000, // 1 second retry delay
+    retry: 1,
     refetchOnWindowFocus: false,
-    staleTime: 60000, // Cache for 1 minute
-    gcTime: 300000, // Keep in cache for 5 minutes
+    staleTime: 60000,
   });
 
   const handleSearch = async (searchData: any) => {
-    console.log('Search initiated with optimized query:', searchData);
+    console.log('Search initiated:', searchData);
     
     setIsSearching(true);
     setHasSearched(true);
     setSearchError(null);
     
     try {
-      // Fast search with timeout
-      const timeoutPromise = new Promise<never>((_, reject) => {
-        setTimeout(() => reject(new Error('Search timeout')), 5000); // 5 second max for search
-      });
-
       let query = supabase
         .from('properties')
         .select('id, title, property_type, listing_type, price, location, bedrooms, bathrooms, area_sqm, images, thumbnail_url, state, city')
         .eq('status', 'active');
 
-      // Apply search filters efficiently
       if (searchData.query && searchData.query.trim()) {
         const searchTerm = searchData.query.toLowerCase().trim();
         query = query.or(`title.ilike.%${searchTerm}%,location.ilike.%${searchTerm}%`);
@@ -127,12 +112,7 @@ const Index = () => {
         }
       }
 
-      const queryWithTimeout = Promise.race([
-        query.order('created_at', { ascending: false }).limit(24),
-        timeoutPromise
-      ]);
-
-      const { data, error } = await queryWithTimeout;
+      const { data, error } = await query.order('created_at', { ascending: false }).limit(24);
 
       if (error) {
         console.error('Search error:', error);
@@ -145,7 +125,7 @@ const Index = () => {
       }
     } catch (error) {
       console.error('Search error:', error);
-      setSearchError('Search timeout. Please try again.');
+      setSearchError('Search failed. Please try again.');
       setSearchResults([]);
     } finally {
       setIsSearching(false);
@@ -168,9 +148,8 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Navigation />
       
-      {/* Hero Section with New Color Scheme */}
-      <section className="relative bg-gradient-to-br from-custom-blue via-custom-lightBlue to-custom-orange text-white py-8 sm:py-12 lg:py-16 px-2 sm:px-4">
-        <div className="absolute inset-0 bg-gradient-to-t from-custom-cream/10 to-transparent"></div>
+      <section className="relative bg-gradient-to-br from-blue-600 via-blue-500 to-orange-400 text-white py-8 sm:py-12 lg:py-16 px-2 sm:px-4">
+        <div className="absolute inset-0 bg-gradient-to-t from-cream-100/10 to-transparent"></div>
         <div className="container mx-auto text-center relative z-10">
           <h1 className="text-2xl sm:text-3xl lg:text-5xl font-bold mb-4 sm:mb-6 animate-fade-in px-2">
             {language === "en" ? "Find Your Dream Property" : "Temukan Properti Impian Anda"}
@@ -191,7 +170,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Error Message */}
       {searchError && (
         <section className="py-4 bg-red-50">
           <div className="container mx-auto px-4">
@@ -202,7 +180,6 @@ const Index = () => {
         </section>
       )}
 
-      {/* Property Listings Section */}
       <div className="px-2 sm:px-0">
         <PropertyListingsSection
           language={language}
@@ -213,10 +190,7 @@ const Index = () => {
         />
       </div>
 
-      {/* AI Chat Widget */}
       <ResponsiveAIChatWidget />
-
-      {/* Footer */}
       <ProfessionalFooter language={language} />
     </div>
   );
