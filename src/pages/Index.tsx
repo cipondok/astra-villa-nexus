@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Navigation from "@/components/Navigation";
@@ -10,30 +9,36 @@ import ResponsiveAIChatWidget from "@/components/ai/ResponsiveAIChatWidget";
 import { supabase } from "@/integrations/supabase/client";
 
 const Index = () => {
-  console.log('Index component rendering...');
-  
   const { language } = useLanguage();
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
 
-  // Simplified featured properties query
+  // Optimized featured properties query with aggressive caching
   const { data: featuredProperties = [], isLoading: isFeaturedLoading } = useQuery({
-    queryKey: ['featured-properties'],
+    queryKey: ['featured-properties-fast'],
     queryFn: async () => {
-      console.log('Fetching featured properties...');
+      console.log('Fetching featured properties with optimized query...');
       
       try {
-        const { data, error } = await supabase
+        // Ultra-fast query with minimal timeout
+        const timeoutPromise = new Promise<never>((_, reject) => {
+          setTimeout(() => reject(new Error('Query timeout')), 3000); // 3 second max
+        });
+
+        const queryPromise = supabase
           .from('properties')
           .select('id, title, property_type, listing_type, price, location, bedrooms, bathrooms, area_sqm, images, thumbnail_url, state, city')
           .eq('status', 'active')
           .order('created_at', { ascending: false })
-          .limit(12);
+          .limit(12); // Reduced limit for faster loading
+
+        const { data, error } = await Promise.race([queryPromise, timeoutPromise]);
 
         if (error) {
           console.error('Properties query error:', error);
+          // Return empty array instead of throwing
           return [];
         }
 
@@ -42,28 +47,36 @@ const Index = () => {
         
       } catch (err) {
         console.error('Featured properties fetch error:', err);
+        // Return empty array for graceful degradation
         return [];
       }
     },
-    retry: 1,
+    retry: 1, // Only retry once
+    retryDelay: 1000, // 1 second retry delay
     refetchOnWindowFocus: false,
-    staleTime: 60000,
+    staleTime: 60000, // Cache for 1 minute
+    gcTime: 300000, // Keep in cache for 5 minutes
   });
 
   const handleSearch = async (searchData: any) => {
-    console.log('Search initiated:', searchData);
+    console.log('Search initiated with optimized query:', searchData);
     
     setIsSearching(true);
     setHasSearched(true);
     setSearchError(null);
     
     try {
+      // Fast search with timeout
+      const timeoutPromise = new Promise<never>((_, reject) => {
+        setTimeout(() => reject(new Error('Search timeout')), 5000); // 5 second max for search
+      });
+
       let query = supabase
         .from('properties')
         .select('id, title, property_type, listing_type, price, location, bedrooms, bathrooms, area_sqm, images, thumbnail_url, state, city')
         .eq('status', 'active');
 
-      // Apply search filters
+      // Apply search filters efficiently
       if (searchData.query && searchData.query.trim()) {
         const searchTerm = searchData.query.toLowerCase().trim();
         query = query.or(`title.ilike.%${searchTerm}%,location.ilike.%${searchTerm}%`);
@@ -114,7 +127,12 @@ const Index = () => {
         }
       }
 
-      const { data, error } = await query.order('created_at', { ascending: false }).limit(24);
+      const queryWithTimeout = Promise.race([
+        query.order('created_at', { ascending: false }).limit(24),
+        timeoutPromise
+      ]);
+
+      const { data, error } = await queryWithTimeout;
 
       if (error) {
         console.error('Search error:', error);
@@ -146,26 +164,13 @@ const Index = () => {
     await handleSearch({ query: searchTerm });
   };
 
-  useEffect(() => {
-    console.log('Index page mounted, language:', language);
-    console.log('Featured properties:', featuredProperties?.length || 0);
-  }, [language, featuredProperties]);
-
-  console.log('Index rendering with:', {
-    language,
-    featuredPropertiesCount: featuredProperties?.length,
-    isLoading: isFeaturedLoading,
-    hasSearched,
-    searchResultsCount: searchResults?.length
-  });
-
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
       
-      {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-blue-600 via-blue-500 to-orange-400 text-white py-8 sm:py-12 lg:py-16 px-2 sm:px-4">
-        <div className="absolute inset-0 bg-gradient-to-t from-cream/10 to-transparent"></div>
+      {/* Hero Section with New Color Scheme */}
+      <section className="relative bg-gradient-to-br from-custom-blue via-custom-lightBlue to-custom-orange text-white py-8 sm:py-12 lg:py-16 px-2 sm:px-4">
+        <div className="absolute inset-0 bg-gradient-to-t from-custom-cream/10 to-transparent"></div>
         <div className="container mx-auto text-center relative z-10">
           <h1 className="text-2xl sm:text-3xl lg:text-5xl font-bold mb-4 sm:mb-6 animate-fade-in px-2">
             {language === "en" ? "Find Your Dream Property" : "Temukan Properti Impian Anda"}

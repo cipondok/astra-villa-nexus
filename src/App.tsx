@@ -4,13 +4,13 @@ import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { EnhancedAuthProvider } from "@/contexts/EnhancedAuthContext";
+import { AuthProvider } from "@/contexts/AuthContext";
 import { AlertProvider } from "@/contexts/AlertContext";
 import { ThemeSettingsProvider } from "@/contexts/ThemeSettingsContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { ThemeProvider } from "@/components/ThemeProvider";
-import SessionMonitor from "@/components/SessionMonitor";
-import DuplicateLoginDetector from "@/components/DuplicateLoginDetector";
+import { SessionMonitor } from "@/components/SessionMonitor";
+import AppInitializer from "@/components/AppInitializer";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import AdminDashboard from "./pages/AdminDashboard";
@@ -22,42 +22,40 @@ import ServiceForm from "./pages/ServiceForm";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 10 * 60 * 1000,
+      staleTime: 5 * 60 * 1000, // 5 minutes
       retry: 1,
       refetchOnWindowFocus: false,
-      refetchOnReconnect: true,
     },
   },
 });
 
 const App: React.FC = () => {
-  console.log('App component rendering...');
-
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
         <LanguageProvider>
           <ThemeSettingsProvider>
-            <AlertProvider>
-              <EnhancedAuthProvider>
+            <AuthProvider>
+              <AlertProvider>
                 <TooltipProvider>
                   <Toaster />
                   <BrowserRouter>
-                    <Routes>
-                      <Route path="/" element={<Index />} />
-                      <Route path="/dashboard" element={<Dashboard />} />
-                      <Route path="/admin" element={<AdminDashboard />} />
-                      <Route path="/content-management" element={<ContentManagement />} />
-                      <Route path="/loading" element={<Loading />} />
-                      <Route path="/services" element={<Services />} />
-                      <Route path="/services/new" element={<ServiceForm />} />
-                    </Routes>
-                    <SessionMonitor />
-                    <DuplicateLoginDetector />
+                    <AppInitializer>
+                      <SessionMonitor />
+                      <Routes>
+                        <Route path="/" element={<Index />} />
+                        <Route path="/dashboard" element={<Dashboard />} />
+                        <Route path="/admin" element={<AdminDashboard />} />
+                        <Route path="/content-management" element={<ContentManagement />} />
+                        <Route path="/loading" element={<Loading />} />
+                        <Route path="/services" element={<Services />} />
+                        <Route path="/services/new" element={<ServiceForm />} />
+                      </Routes>
+                    </AppInitializer>
                   </BrowserRouter>
                 </TooltipProvider>
-              </EnhancedAuthProvider>
-            </AlertProvider>
+              </AlertProvider>
+            </AuthProvider>
           </ThemeSettingsProvider>
         </LanguageProvider>
       </ThemeProvider>
