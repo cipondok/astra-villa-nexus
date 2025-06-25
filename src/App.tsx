@@ -9,7 +9,7 @@ import { AlertProvider } from "@/contexts/AlertContext";
 import { ThemeSettingsProvider } from "@/contexts/ThemeSettingsContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { ThemeProvider } from "@/components/ThemeProvider";
-import { SessionMonitor } from "@/components/SessionMonitor";
+import SessionMonitor from "@/components/SessionMonitor";
 import AppInitializer from "@/components/AppInitializer";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
@@ -18,6 +18,7 @@ import ContentManagement from "./pages/ContentManagement";
 import Loading from "./pages/Loading";
 import Services from "./pages/Services";
 import ServiceForm from "./pages/ServiceForm";
+import VendorDashboard from "./pages/VendorDashboard";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -45,6 +46,7 @@ const App: React.FC = () => {
                       <Routes>
                         <Route path="/" element={<Index />} />
                         <Route path="/dashboard" element={<Dashboard />} />
+                        <Route path="/vendor-dashboard" element={<VendorDashboard />} />
                         <Route path="/admin" element={<AdminDashboard />} />
                         <Route path="/content-management" element={<ContentManagement />} />
                         <Route path="/loading" element={<Loading />} />

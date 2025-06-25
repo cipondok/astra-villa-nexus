@@ -20,6 +20,7 @@ import {
   FileText,
   AlertTriangle,
   Home,
+  ArrowLeft,
   Sun,
   Moon
 } from 'lucide-react';
@@ -47,7 +48,13 @@ const VendorDashboard = () => {
   const isVendor = profile?.role === 'vendor';
 
   const handleHomeClick = () => {
-    navigate('/');
+    console.log('Navigating to home page');
+    navigate('/', { replace: true });
+  };
+
+  const handleBackClick = () => {
+    console.log('Going back in history');
+    window.history.back();
   };
 
   if (!user) {
@@ -92,6 +99,7 @@ const VendorDashboard = () => {
       case 'services':
         return <VendorServices />;
       case 'bookings':
+        console.log('Rendering VendorBookings component');
         return <VendorBookings />;
       case 'analytics':
         return <VendorAnalytics />;
@@ -155,11 +163,22 @@ const VendorDashboard = () => {
       <div className="bg-samsung-gradient shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-white">Welcome back, Vendor!</h1>
-              <p className="text-white/80 mt-1">
-                Manage your services and bookings
-              </p>
+            <div className="flex items-center gap-4">
+              <Button
+                onClick={handleBackClick}
+                variant="outline"
+                size="sm"
+                className="flex items-center gap-2 bg-white/20 border-white/30 text-white hover:bg-white/30"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                <span className="hidden sm:block">Back</span>
+              </Button>
+              <div>
+                <h1 className="text-3xl font-bold text-white">Welcome back, Vendor!</h1>
+                <p className="text-white/80 mt-1">
+                  Manage your services and bookings
+                </p>
+              </div>
             </div>
             <div className="flex items-center gap-3">
               <Button

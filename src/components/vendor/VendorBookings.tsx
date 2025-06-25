@@ -1,10 +1,11 @@
+
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Calendar, Clock, MapPin, User, Phone, Mail } from "lucide-react";
+import { Calendar, Clock, MapPin, User, Phone, Mail, AlertCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface Booking {
@@ -32,20 +33,34 @@ const VendorBookings = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   const [bookings, setBookings] = useState<Booking[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState('all');
+
+  console.log('VendorBookings component rendered');
 
   useEffect(() => {
     if (user) {
+      console.log('Fetching bookings for user:', user.id);
       fetchBookings();
+    } else {
+      console.log('No user found, skipping booking fetch');
+      setLoading(false);
     }
   }, [user, filter]);
 
   const fetchBookings = async () => {
-    if (!user) return;
+    if (!user) {
+      console.log('No user available for booking fetch');
+      return;
+    }
     
     setLoading(true);
+    setError(null);
+    
     try {
+      console.log('Starting booking fetch...');
+      
       let query = supabase
         .from('vendor_bookings')
         .select(`
@@ -61,11 +76,15 @@ const VendorBookings = () => {
 
       const { data, error } = await query.order('booking_date', { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Booking fetch error:', error);
+        throw error;
+      }
+
+      console.log('Raw booking data:', data);
 
       // Type-safe data handling
       const typedBookings: Booking[] = (data || []).map(booking => {
-        // Safe customer handling
         const customerData = booking.customer as any;
         
         return {
@@ -90,12 +109,14 @@ const VendorBookings = () => {
         };
       });
 
+      console.log('Processed bookings:', typedBookings);
       setBookings(typedBookings);
     } catch (error: any) {
       console.error('Error fetching bookings:', error);
+      setError(error.message || 'Failed to load bookings');
       toast({
         title: "Error",
-        description: "Failed to load bookings",
+        description: "Failed to load bookings. Please try again.",
         variant: "destructive"
       });
     } finally {
@@ -105,6 +126,8 @@ const VendorBookings = () => {
 
   const updateBookingStatus = async (bookingId: string, status: string) => {
     try {
+      console.log(`Updating booking ${bookingId} to status ${status}`);
+      
       const { error } = await supabase
         .from('vendor_bookings')
         .update({ status })
@@ -158,7 +181,27 @@ const VendorBookings = () => {
     return (
       <div className="flex items-center justify-center p-8">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <span className="ml-2">Loading bookings...</span>
       </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <Card>
+        <CardContent className="flex flex-col items-center justify-center py-12">
+          <AlertCircle className="h-12 w-12 text-red-400 mb-4" />
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+            Error Loading Bookings
+          </h3>
+          <p className="text-gray-600 dark:text-gray-400 mb-4">
+            {error}
+          </p>
+          <Button onClick={fetchBookings}>
+            Try Again
+          </Button>
+        </CardContent>
+      </Card>
     );
   }
 
@@ -203,7 +246,7 @@ const VendorBookings = () => {
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-lg">
-                    {booking.service?.service_name}
+                    {booking.service?.service_name || 'Service'}
                   </CardTitle>
                   <Badge className={getStatusColor(booking.status)}>
                     {booking.status.replace('_', ' ').toUpperCase()}
