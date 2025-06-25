@@ -20,6 +20,13 @@ import {
   User,
   Users,
   Wifi,
+  Activity,
+  Database,
+  SlidersHorizontal,
+  BellAlert,
+  Rocket,
+  Book,
+  LayoutDashboard,
 } from 'lucide-react';
 
 export const mainNavigation = [
@@ -175,37 +182,46 @@ export const superAdminNavigation = [
   },
 ];
 
+export interface NavigationItem {
+  id: string;
+  title: string;
+  description: string;
+  icon: any;
+  href: string;
+  badge?: string;
+}
+
 export interface NavigationSection {
   id: string;
   title: string;
-  icon: string;
-  items: {
-    id: string;
-    title: string;
-    description: string;
-    icon: string;
-    href: string;
-  }[];
+  label: string;
+  description: string;
+  icon: any;
+  href?: string;
+  badge?: string;
+  items?: NavigationItem[];
 }
 
 export const navigationSections: NavigationSection[] = [
   {
     id: 'getting-started',
     title: 'Getting Started',
-    icon: 'Rocket',
+    label: 'Getting Started',
+    description: 'Start here for dashboard overview and guides',
+    icon: Rocket,
     items: [
       {
         id: 'admin-overview',
         title: 'Admin Overview',
         description: 'Dashboard overview and key metrics',
-        icon: 'LayoutDashboard',
+        icon: LayoutDashboard,
         href: '/admin',
       },
       {
         id: 'user-guide',
         title: 'User Guide',
         description: 'Learn how to use the admin dashboard',
-        icon: 'Book',
+        icon: Book,
         href: '/admin/guide',
       },
     ],
@@ -213,27 +229,29 @@ export const navigationSections: NavigationSection[] = [
   {
     id: 'data-management',
     title: 'Data Management',
-    icon: 'Database',
+    label: 'Data Management',
+    description: 'Manage users, properties, and vendors',
+    icon: Database,
     items: [
       {
         id: 'user-management',
         title: 'User Management',
         description: 'Manage user accounts and roles',
-        icon: 'Users',
+        icon: Users,
         href: '/admin/users',
       },
       {
         id: 'property-management',
         title: 'Property Management',
         description: 'Manage property listings and details',
-        icon: 'Building',
+        icon: Building,
         href: '/admin/properties',
       },
       {
         id: 'vendor-management',
         title: 'Vendor Management',
         description: 'Manage vendors and service providers',
-        icon: 'ShoppingBag',
+        icon: ShoppingBag,
         href: '/admin/vendors',
       },
     ],
@@ -241,27 +259,29 @@ export const navigationSections: NavigationSection[] = [
   {
     id: 'system-configuration',
     title: 'System Configuration',
-    icon: 'SlidersHorizontal',
+    label: 'System Configuration',
+    description: 'Configure system settings and alerts',
+    icon: SlidersHorizontal,
     items: [
       {
         id: 'system-settings',
         title: 'System Settings',
         description: 'Configure system-wide settings',
-        icon: 'Sliders',
+        icon: Sliders,
         href: '/admin/settings',
       },
       {
         id: 'alert-rules',
         title: 'Alert Rules',
         description: 'Define rules for system alerts',
-        icon: 'BellAlert',
+        icon: BellAlert,
         href: '/admin/alert-rules',
       },
       {
         id: 'queue-management',
         title: 'Queue Management',
         description: 'Manage background task queues',
-        icon: 'SquareKanban',
+        icon: SquareKanban,
         href: '/admin/queues',
       },
     ],
@@ -269,20 +289,22 @@ export const navigationSections: NavigationSection[] = [
   {
     id: 'monitoring-logs',
     title: 'Monitoring & Logs',
-    icon: 'Activity',
+    label: 'Monitoring & Logs',
+    description: 'Monitor system health and view logs',
+    icon: Activity,
     items: [
       {
         id: 'system-monitor',
         title: 'System Monitor',
         description: 'Real-time system health monitoring',
-        icon: 'Gauge',
+        icon: Gauge,
         href: '/admin/system-monitor',
       },
       {
         id: 'audit-logs',
         title: 'Audit Logs',
         description: 'Track user actions and system events',
-        icon: 'ListChecks',
+        icon: ListChecks,
         href: '/admin/audit-logs',
       },
     ],
@@ -290,46 +312,152 @@ export const navigationSections: NavigationSection[] = [
   {
     id: 'analytics-reports',
     title: 'Analytics & Reports',
-    icon: 'BarChart3',
+    label: 'Analytics & Reports',
+    description: 'View analytics and generate reports',
+    icon: BarChart3,
     items: [
       {
         id: 'system-analytics',
         title: 'System Analytics',
         description: 'View system performance metrics',
-        icon: 'Activity',
+        icon: Activity,
         href: '/admin/analytics',
       },
       {
         id: 'performance-analytics',
         title: 'Performance Analytics',
         description: 'Detailed system performance and trends',
-        icon: 'TrendingUp',
+        icon: TrendingUp,
         href: '/admin/performance-analytics',
       },
       {
         id: 'web-traffic',
         title: 'Web Traffic Analytics',
         description: 'Website traffic and user behavior',
-        icon: 'Globe',
+        icon: Globe,
         href: '/admin/web-traffic',
       },
       {
         id: 'vendor-analytics',
         title: 'Vendor Performance',
         description: 'AI-powered vendor analytics',
-        icon: 'Users',
+        icon: Users,
         href: '/admin/vendor-performance',
       },
       {
         id: 'system-reports',
         title: 'System Reports',
         description: 'Generate comprehensive reports',
-        icon: 'FileText',
+        icon: FileText,
         href: '/admin/reports',
       },
     ],
   },
 ];
 
+// Create section categories mapping for NavigationCategory component
+export const sectionCategories = {
+  'getting-started': [
+    {
+      id: 'admin-overview',
+      label: 'Admin Overview',
+      description: 'Dashboard overview and key metrics',
+      icon: LayoutDashboard,
+    },
+    {
+      id: 'user-guide',
+      label: 'User Guide',
+      description: 'Learn how to use the admin dashboard',
+      icon: Book,
+    },
+  ],
+  'data-management': [
+    {
+      id: 'user-management',
+      label: 'User Management',
+      description: 'Manage user accounts and roles',
+      icon: Users,
+    },
+    {
+      id: 'property-management',
+      label: 'Property Management',
+      description: 'Manage property listings and details',
+      icon: Building,
+    },
+    {
+      id: 'vendor-management',
+      label: 'Vendor Management',
+      description: 'Manage vendors and service providers',
+      icon: ShoppingBag,
+    },
+  ],
+  'system-configuration': [
+    {
+      id: 'system-settings',
+      label: 'System Settings',
+      description: 'Configure system-wide settings',
+      icon: Sliders,
+    },
+    {
+      id: 'alert-rules',
+      label: 'Alert Rules',
+      description: 'Define rules for system alerts',
+      icon: BellAlert,
+    },
+    {
+      id: 'queue-management',
+      label: 'Queue Management',
+      description: 'Manage background task queues',
+      icon: SquareKanban,
+    },
+  ],
+  'monitoring-logs': [
+    {
+      id: 'system-monitor',
+      label: 'System Monitor',
+      description: 'Real-time system health monitoring',
+      icon: Gauge,
+    },
+    {
+      id: 'audit-logs',
+      label: 'Audit Logs',
+      description: 'Track user actions and system events',
+      icon: ListChecks,
+    },
+  ],
+  'analytics-reports': [
+    {
+      id: 'system-analytics',
+      label: 'System Analytics',
+      description: 'View system performance metrics',
+      icon: Activity,
+    },
+    {
+      id: 'performance-analytics',
+      label: 'Performance Analytics',
+      description: 'Detailed system performance and trends',
+      icon: TrendingUp,
+    },
+    {
+      id: 'web-traffic',
+      label: 'Web Traffic Analytics',
+      description: 'Website traffic and user behavior',
+      icon: Globe,
+    },
+    {
+      id: 'vendor-analytics',
+      label: 'Vendor Performance',
+      description: 'AI-powered vendor analytics',
+      icon: Users,
+    },
+    {
+      id: 'system-reports',
+      label: 'System Reports',
+      description: 'Generate comprehensive reports',
+      icon: FileText,
+    },
+  ],
+};
+
 // Export categories for backward compatibility
-export const categories = navigationSections.map(section => section.id);
+export const categories = Object.keys(sectionCategories);

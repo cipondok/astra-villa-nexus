@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { navigationSections } from "./navigationSections";
+import { sectionCategories } from "./navigationSections";
 
 interface NavigationCategoryProps {
   category: string;
@@ -10,12 +10,12 @@ interface NavigationCategoryProps {
 }
 
 const NavigationCategory = ({ category, activeSection, onSectionChange }: NavigationCategoryProps) => {
-  const sections = navigationSections[category as keyof typeof navigationSections] || [];
+  const sections = sectionCategories[category as keyof typeof sectionCategories] || [];
 
   return (
     <div className="space-y-3">
       <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
-        {category}
+        {category.replace('-', ' ')}
       </h3>
       <div className="grid gap-2">
         {sections.map((section) => {
