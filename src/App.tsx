@@ -10,7 +10,6 @@ import { ThemeSettingsProvider } from "@/contexts/ThemeSettingsContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { SessionMonitor } from "@/components/SessionMonitor";
-import AppInitializer from "@/components/AppInitializer";
 import DuplicateLoginDetector from "@/components/DuplicateLoginDetector";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
@@ -23,8 +22,8 @@ import ServiceForm from "./pages/ServiceForm";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 10 * 60 * 1000, // 10 minutes
-      retry: 1, // Reduced retry for faster loading
+      staleTime: 10 * 60 * 1000,
+      retry: 1,
       refetchOnWindowFocus: false,
       refetchOnReconnect: true,
     },
@@ -32,6 +31,8 @@ const queryClient = new QueryClient({
 });
 
 const App: React.FC = () => {
+  console.log('App component rendering...');
+
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">

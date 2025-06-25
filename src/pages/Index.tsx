@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Navigation from "@/components/Navigation";
@@ -15,30 +16,22 @@ const Index = () => {
   const [hasSearched, setHasSearched] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
 
-  // Optimized featured properties query with aggressive caching
+  // Simple featured properties query without aggressive timeout
   const { data: featuredProperties = [], isLoading: isFeaturedLoading } = useQuery({
-    queryKey: ['featured-properties-fast'],
+    queryKey: ['featured-properties'],
     queryFn: async () => {
-      console.log('Fetching featured properties with optimized query...');
+      console.log('Fetching featured properties...');
       
       try {
-        // Ultra-fast query with minimal timeout
-        const timeoutPromise = new Promise<never>((_, reject) => {
-          setTimeout(() => reject(new Error('Query timeout')), 3000); // 3 second max
-        });
-
-        const queryPromise = supabase
+        const { data, error } = await supabase
           .from('properties')
           .select('id, title, property_type, listing_type, price, location, bedrooms, bathrooms, area_sqm, images, thumbnail_url, state, city')
           .eq('status', 'active')
           .order('created_at', { ascending: false })
-          .limit(12); // Reduced limit for faster loading
-
-        const { data, error } = await Promise.race([queryPromise, timeoutPromise]);
+          .limit(12);
 
         if (error) {
           console.error('Properties query error:', error);
-          // Return empty array instead of throwing
           return [];
         }
 
@@ -47,36 +40,30 @@ const Index = () => {
         
       } catch (err) {
         console.error('Featured properties fetch error:', err);
-        // Return empty array for graceful degradation
         return [];
       }
     },
-    retry: 1, // Only retry once
-    retryDelay: 1000, // 1 second retry delay
+    retry: 1,
+    retryDelay: 1000,
     refetchOnWindowFocus: false,
-    staleTime: 60000, // Cache for 1 minute
-    gcTime: 300000, // Keep in cache for 5 minutes
+    staleTime: 60000,
+    gcTime: 300000,
   });
 
   const handleSearch = async (searchData: any) => {
-    console.log('Search initiated with optimized query:', searchData);
+    console.log('Search initiated:', searchData);
     
     setIsSearching(true);
     setHasSearched(true);
     setSearchError(null);
     
     try {
-      // Fast search with timeout
-      const timeoutPromise = new Promise<never>((_, reject) => {
-        setTimeout(() => reject(new Error('Search timeout')), 5000); // 5 second max for search
-      });
-
       let query = supabase
         .from('properties')
         .select('id, title, property_type, listing_type, price, location, bedrooms, bathrooms, area_sqm, images, thumbnail_url, state, city')
         .eq('status', 'active');
 
-      // Apply search filters efficiently
+      // Apply search filters
       if (searchData.query && searchData.query.trim()) {
         const searchTerm = searchData.query.toLowerCase().trim();
         query = query.or(`title.ilike.%${searchTerm}%,location.ilike.%${searchTerm}%`);
@@ -127,12 +114,7 @@ const Index = () => {
         }
       }
 
-      const queryWithTimeout = Promise.race([
-        query.order('created_at', { ascending: false }).limit(24),
-        timeoutPromise
-      ]);
-
-      const { data, error } = await queryWithTimeout;
+      const { data, error } = await query.order('created_at', { ascending: false }).limit(24);
 
       if (error) {
         console.error('Search error:', error);
@@ -164,11 +146,17 @@ const Index = () => {
     await handleSearch({ query: searchTerm });
   };
 
+  // Add error boundary console log
+  useEffect(() => {
+    console.log('Index page mounted, language:', language);
+    console.log('Featured properties:', featuredProperties?.length || 0);
+  }, [language, featuredProperties]);
+
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
       
-      {/* Hero Section with New Color Scheme */}
+      {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-custom-blue via-custom-lightBlue to-custom-orange text-white py-8 sm:py-12 lg:py-16 px-2 sm:px-4">
         <div className="absolute inset-0 bg-gradient-to-t from-custom-cream/10 to-transparent"></div>
         <div className="container mx-auto text-center relative z-10">
