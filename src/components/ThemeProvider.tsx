@@ -44,10 +44,10 @@ export function ThemeProvider({
 
       root.classList.add(systemTheme);
       
-      // Apply custom dark background
+      // Apply custom dark background for system dark mode
       if (systemTheme === "dark") {
-        root.style.setProperty('--background', '#333446');
-        root.style.setProperty('--card', '#3a3b4e');
+        root.style.setProperty('--background', '51 52 70'); // #333446 in HSL
+        root.style.setProperty('--card', '58 59 78'); // Slightly lighter for cards
       } else {
         root.style.removeProperty('--background');
         root.style.removeProperty('--card');
@@ -57,10 +57,14 @@ export function ThemeProvider({
 
     root.classList.add(theme);
     
-    // Apply custom dark background for dark themes
-    if (theme === "dark" || theme === "middle") {
-      root.style.setProperty('--background', '#333446');
-      root.style.setProperty('--card', '#3a3b4e');
+    // Apply custom dark background for dark and middle themes
+    if (theme === "dark") {
+      root.style.setProperty('--background', '51 52 70'); // #333446 in HSL
+      root.style.setProperty('--card', '58 59 78'); // Slightly lighter for cards
+    } else if (theme === "middle") {
+      // Middle theme uses cream background, no custom override needed
+      root.style.removeProperty('--background');
+      root.style.removeProperty('--card');
     } else {
       root.style.removeProperty('--background');
       root.style.removeProperty('--card');
