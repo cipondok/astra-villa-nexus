@@ -1,3 +1,4 @@
+
 import {
   BarChart3,
   Building2,
@@ -14,6 +15,16 @@ import {
   UserPlus,
   Users,
 } from "lucide-react";
+
+export interface NavigationSection {
+  id: string;
+  title: string;
+  description: string;
+  component: string;
+  icon: any;
+  badge?: string;
+  label?: string;
+}
 
 export const adminNavigationSections = [
   {
@@ -184,3 +195,18 @@ export const adminNavigationSections = [
     ],
   },
 ];
+
+// Extract categories for navigation
+export const categories = adminNavigationSections.map(section => section.id);
+
+// Create section categories mapping
+export const sectionCategories = adminNavigationSections.reduce((acc, section) => {
+  acc[section.id] = section.items.map(item => ({
+    id: item.id,
+    title: item.title,
+    description: item.description,
+    icon: eval(item.icon), // Convert string to actual icon component
+    component: item.component
+  }));
+  return acc;
+}, {} as Record<string, NavigationSection[]>);

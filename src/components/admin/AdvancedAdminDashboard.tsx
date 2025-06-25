@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -69,7 +70,7 @@ const AdvancedAdminDashboard = () => {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <AlertMonitoring className="h-5 w-5" />
+                <Settings className="h-5 w-5" />
                 Under Development
               </CardTitle>
             </CardHeader>
