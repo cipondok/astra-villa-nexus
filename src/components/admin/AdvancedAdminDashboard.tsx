@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BarChart3, Activity, Globe, Users, FileText, TrendingUp } from "lucide-react";
+import { BarChart3, Activity, Globe, Users, FileText, TrendingUp, Home } from "lucide-react";
 import AdminOverview from './AdminOverview';
 import WebTrafficAnalytics from './WebTrafficAnalytics';
 import VendorPerformanceAnalytics from './VendorPerformanceAnalytics';
