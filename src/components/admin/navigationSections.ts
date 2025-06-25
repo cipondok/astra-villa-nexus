@@ -1,3 +1,4 @@
+
 import {
   BarChart3,
   Building,
@@ -174,7 +175,20 @@ export const superAdminNavigation = [
   },
 ];
 
-export const navigationSections = [
+export interface NavigationSection {
+  id: string;
+  title: string;
+  icon: string;
+  items: {
+    id: string;
+    title: string;
+    description: string;
+    icon: string;
+    href: string;
+  }[];
+}
+
+export const navigationSections: NavigationSection[] = [
   {
     id: 'getting-started',
     title: 'Getting Started',
@@ -316,3 +330,6 @@ export const navigationSections = [
     ],
   },
 ];
+
+// Export categories for backward compatibility
+export const categories = navigationSections.map(section => section.id);
