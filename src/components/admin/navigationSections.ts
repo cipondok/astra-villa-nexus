@@ -1,4 +1,3 @@
-
 import {
   BarChart3,
   Building,
@@ -23,7 +22,7 @@ import {
   Activity,
   Database,
   SlidersHorizontal,
-  BellAlert,
+  Bell,
   Rocket,
   Book,
   LayoutDashboard,
@@ -274,7 +273,7 @@ export const navigationSections: NavigationSection[] = [
         id: 'alert-rules',
         title: 'Alert Rules',
         description: 'Define rules for system alerts',
-        icon: BellAlert,
+        icon: Bell,
         href: '/admin/alert-rules',
       },
       {
@@ -357,106 +356,11 @@ export const navigationSections: NavigationSection[] = [
 
 // Create section categories mapping for NavigationCategory component
 export const sectionCategories = {
-  'getting-started': [
-    {
-      id: 'admin-overview',
-      label: 'Admin Overview',
-      description: 'Dashboard overview and key metrics',
-      icon: LayoutDashboard,
-    },
-    {
-      id: 'user-guide',
-      label: 'User Guide',
-      description: 'Learn how to use the admin dashboard',
-      icon: Book,
-    },
-  ],
-  'data-management': [
-    {
-      id: 'user-management',
-      label: 'User Management',
-      description: 'Manage user accounts and roles',
-      icon: Users,
-    },
-    {
-      id: 'property-management',
-      label: 'Property Management',
-      description: 'Manage property listings and details',
-      icon: Building,
-    },
-    {
-      id: 'vendor-management',
-      label: 'Vendor Management',
-      description: 'Manage vendors and service providers',
-      icon: ShoppingBag,
-    },
-  ],
-  'system-configuration': [
-    {
-      id: 'system-settings',
-      label: 'System Settings',
-      description: 'Configure system-wide settings',
-      icon: Sliders,
-    },
-    {
-      id: 'alert-rules',
-      label: 'Alert Rules',
-      description: 'Define rules for system alerts',
-      icon: BellAlert,
-    },
-    {
-      id: 'queue-management',
-      label: 'Queue Management',
-      description: 'Manage background task queues',
-      icon: SquareKanban,
-    },
-  ],
-  'monitoring-logs': [
-    {
-      id: 'system-monitor',
-      label: 'System Monitor',
-      description: 'Real-time system health monitoring',
-      icon: Gauge,
-    },
-    {
-      id: 'audit-logs',
-      label: 'Audit Logs',
-      description: 'Track user actions and system events',
-      icon: ListChecks,
-    },
-  ],
-  'analytics-reports': [
-    {
-      id: 'system-analytics',
-      label: 'System Analytics',
-      description: 'View system performance metrics',
-      icon: Activity,
-    },
-    {
-      id: 'performance-analytics',
-      label: 'Performance Analytics',
-      description: 'Detailed system performance and trends',
-      icon: TrendingUp,
-    },
-    {
-      id: 'web-traffic',
-      label: 'Web Traffic Analytics',
-      description: 'Website traffic and user behavior',
-      icon: Globe,
-    },
-    {
-      id: 'vendor-analytics',
-      label: 'Vendor Performance',
-      description: 'AI-powered vendor analytics',
-      icon: Users,
-    },
-    {
-      id: 'system-reports',
-      label: 'System Reports',
-      description: 'Generate comprehensive reports',
-      icon: FileText,
-    },
-  ],
+  'getting-started': navigationSections[0].items || [],
+  'data-management': navigationSections[1].items || [],
+  'system-configuration': navigationSections[2].items || [],
+  'monitoring-logs': navigationSections[3].items || [],
+  'analytics-reports': navigationSections[4].items || [],
 };
 
 // Export categories for backward compatibility
