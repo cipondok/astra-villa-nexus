@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Slider } from '@/components/ui/slider';
 import { useAlert } from '@/contexts/AlertContext';
 import { supabase } from '@/integrations/supabase/client';
-import { Loader2, Palette, Type, Zap, Eye, Save } from 'lucide-react';
+import { Loader2, Palette, Type, Zap, Eye, Save, Upload, ImageIcon } from 'lucide-react';
 
 interface LoadingPageSettings {
   // Basic Settings
@@ -22,6 +22,14 @@ interface LoadingPageSettings {
   logoText: string;
   logoSubtext: string;
   showConnectionStatus: boolean;
+  
+  // Image Settings
+  logoImageUrl: string;
+  imageSize: number;
+  imagePosition: 'top' | 'center' | 'bottom' | 'left' | 'right';
+  showBothTextAndImage: boolean;
+  imageAlignment: 'left' | 'center' | 'right';
+  textAlignment: 'left' | 'center' | 'right';
   
   // Animation Settings
   animationType: 'pulse' | 'bounce' | 'spin' | 'gradient' | 'dots';
@@ -52,6 +60,12 @@ const LoadingPageCustomization = () => {
     logoText: 'ASTRA Villa',
     logoSubtext: '',
     showConnectionStatus: true,
+    logoImageUrl: '',
+    imageSize: 100,
+    imagePosition: 'top',
+    showBothTextAndImage: false,
+    imageAlignment: 'center',
+    textAlignment: 'center',
     animationType: 'gradient',
     animationSpeed: 2,
     backgroundColor: '#000000',
@@ -67,6 +81,7 @@ const LoadingPageCustomization = () => {
 
   const [loading, setLoading] = useState(false);
   const [previewMode, setPreviewMode] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
   const { showSuccess, showError } = useAlert();
 
   useEffect(() => {
@@ -139,6 +154,47 @@ const LoadingPageCustomization = () => {
     setSettings(prev => ({ ...prev, [key]: value }));
   };
 
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Check file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      showError('File too large', 'Please select an image smaller than 5MB');
+      return;
+    }
+
+    // Check file type
+    if (!file.type.startsWith('image/')) {
+      showError('Invalid file type', 'Please select an image file');
+      return;
+    }
+
+    setUploadingImage(true);
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `loading-logo-${Date.now()}.${fileExt}`;
+      
+      const { data, error } = await supabase.storage
+        .from('property-images')
+        .upload(`loading/${fileName}`, file);
+
+      if (error) throw error;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('property-images')
+        .getPublicUrl(`loading/${fileName}`);
+
+      handleInputChange('logoImageUrl', publicUrl);
+      showSuccess('Image uploaded', 'Logo image uploaded successfully');
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      showError('Upload failed', 'Failed to upload image');
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
   const previewStyles = {
     backgroundColor: settings.backgroundColor,
     color: settings.textColor,
@@ -154,12 +210,27 @@ const LoadingPageCustomization = () => {
     backgroundClip: 'text',
   };
 
+  const getFlexDirection = () => {
+    if (settings.imagePosition === 'left') return 'row';
+    if (settings.imagePosition === 'right') return 'row-reverse';
+    if (settings.imagePosition === 'bottom') return 'column-reverse';
+    return 'column'; // top or center
+  };
+
+  const getAlignmentClass = (alignment: string) => {
+    switch (alignment) {
+      case 'left': return 'text-left';
+      case 'right': return 'text-right';
+      default: return 'text-center';
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold">Loading Page Customization</h2>
-          <p className="text-gray-600">Customize the loading screen experience</p>
+          <p className="text-gray-600">Customize the loading screen experience with images and positioning</p>
         </div>
         <div className="flex gap-2">
           <Button 
@@ -179,23 +250,49 @@ const LoadingPageCustomization = () => {
       {previewMode && (
         <Card>
           <CardHeader>
-            <CardTitle>Preview</CardTitle>
+            <CardTitle>Live Preview</CardTitle>
           </CardHeader>
           <CardContent>
             <div 
               className="min-h-96 flex items-center justify-center relative rounded-lg"
               style={previewStyles}
             >
-              <div className="flex flex-col items-center space-y-6">
-                <div className="text-center">
-                  <h1 className="text-4xl font-bold mb-2" style={logoStyles}>
-                    {settings.logoText}
-                  </h1>
-                  {settings.logoSubtext && (
-                    <p className="text-lg opacity-75">{settings.logoSubtext}</p>
-                  )}
-                </div>
+              <div 
+                className="flex items-center space-y-6"
+                style={{ 
+                  flexDirection: getFlexDirection(),
+                  gap: settings.imagePosition === 'left' || settings.imagePosition === 'right' ? '2rem' : '1.5rem'
+                }}
+              >
+                {/* Logo Image */}
+                {settings.logoImageUrl && (
+                  <div className={`flex justify-${settings.imageAlignment}`}>
+                    <img 
+                      src={settings.logoImageUrl}
+                      alt="Loading Logo"
+                      style={{ 
+                        width: `${settings.imageSize}px`,
+                        height: `${settings.imageSize}px`,
+                        objectFit: 'contain'
+                      }}
+                      className="rounded-lg"
+                    />
+                  </div>
+                )}
                 
+                {/* Text Content */}
+                {(settings.logoText || settings.showBothTextAndImage || !settings.logoImageUrl) && (
+                  <div className={`text-center ${getAlignmentClass(settings.textAlignment)}`}>
+                    <h1 className="text-4xl font-bold mb-2" style={logoStyles}>
+                      {settings.logoText}
+                    </h1>
+                    {settings.logoSubtext && (
+                      <p className="text-lg opacity-75">{settings.logoSubtext}</p>
+                    )}
+                  </div>
+                )}
+                
+                {/* Animation */}
                 {settings.animationType === 'dots' && (
                   <div className="flex space-x-2">
                     <div className="w-3 h-3 rounded-full animate-bounce" style={{backgroundColor: settings.accentColor}}></div>
@@ -208,7 +305,8 @@ const LoadingPageCustomization = () => {
                   <Loader2 className="h-8 w-8 animate-spin" style={{color: settings.accentColor}} />
                 )}
                 
-                <div className="text-center">
+                {/* Messages */}
+                <div className={`text-center ${getAlignmentClass(settings.textAlignment)}`}>
                   <p className="text-sm mb-2">{settings.message}</p>
                   {settings.subMessage && (
                     <p className="text-xs opacity-60">{settings.subMessage}</p>
@@ -223,7 +321,8 @@ const LoadingPageCustomization = () => {
       <Tabs defaultValue="basic" className="space-y-4">
         <TabsList>
           <TabsTrigger value="basic">Basic Settings</TabsTrigger>
-          <TabsTrigger value="branding">Branding</TabsTrigger>
+          <TabsTrigger value="branding">Branding & Images</TabsTrigger>
+          <TabsTrigger value="positioning">Positioning</TabsTrigger>
           <TabsTrigger value="animation">Animation</TabsTrigger>
           <TabsTrigger value="styling">Styling</TabsTrigger>
           <TabsTrigger value="advanced">Advanced</TabsTrigger>
@@ -289,26 +388,166 @@ const LoadingPageCustomization = () => {
         </TabsContent>
 
         <TabsContent value="branding">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Logo Image</CardTitle>
+                <CardDescription>Upload and configure your loading page logo</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <label className="text-sm font-medium">Logo Image</label>
+                  <div className="mt-2 space-y-4">
+                    <div className="flex items-center gap-4">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageUpload}
+                        className="hidden"
+                        id="logo-upload"
+                      />
+                      <label
+                        htmlFor="logo-upload"
+                        className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-md cursor-pointer hover:bg-gray-50"
+                      >
+                        {uploadingImage ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          <Upload className="h-4 w-4" />
+                        )}
+                        {uploadingImage ? 'Uploading...' : 'Upload Image'}
+                      </label>
+                      {settings.logoImageUrl && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleInputChange('logoImageUrl', '')}
+                        >
+                          Remove
+                        </Button>
+                      )}
+                    </div>
+                    {settings.logoImageUrl && (
+                      <div className="flex items-center gap-4">
+                        <img 
+                          src={settings.logoImageUrl} 
+                          alt="Logo preview" 
+                          className="w-16 h-16 object-contain border rounded"
+                        />
+                        <span className="text-sm text-gray-500">Current logo image</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+                
+                <div>
+                  <label className="text-sm font-medium">Image Size: {settings.imageSize}px</label>
+                  <Slider
+                    value={[settings.imageSize]}
+                    onValueChange={(value) => handleInputChange('imageSize', value[0])}
+                    max={300}
+                    min={50}
+                    step={10}
+                    className="mt-2"
+                  />
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <span>Show Both Text and Image</span>
+                  <Switch 
+                    checked={settings.showBothTextAndImage}
+                    onCheckedChange={(checked) => handleInputChange('showBothTextAndImage', checked)}
+                  />
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Text Branding</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <label className="text-sm font-medium">Logo Text</label>
+                  <Input 
+                    value={settings.logoText}
+                    onChange={(e) => handleInputChange('logoText', e.target.value)}
+                    placeholder="ASTRA Villa" 
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium">Logo Subtext</label>
+                  <Input 
+                    value={settings.logoSubtext}
+                    onChange={(e) => handleInputChange('logoSubtext', e.target.value)}
+                    placeholder="Real Estate Platform" 
+                  />
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="positioning">
           <Card>
             <CardHeader>
-              <CardTitle>Brand Settings</CardTitle>
+              <CardTitle>Layout & Positioning</CardTitle>
+              <CardDescription>Configure how text and images are positioned on the loading page</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <label className="text-sm font-medium">Logo Text</label>
-                <Input 
-                  value={settings.logoText}
-                  onChange={(e) => handleInputChange('logoText', e.target.value)}
-                  placeholder="ASTRA Villa" 
-                />
-              </div>
-              <div>
-                <label className="text-sm font-medium">Logo Subtext</label>
-                <Input 
-                  value={settings.logoSubtext}
-                  onChange={(e) => handleInputChange('logoSubtext', e.target.value)}
-                  placeholder="Real Estate Platform" 
-                />
+            <CardContent className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label className="text-sm font-medium">Image Position</label>
+                  <Select 
+                    value={settings.imagePosition}
+                    onValueChange={(value) => handleInputChange('imagePosition', value)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select position" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="top">Top</SelectItem>
+                      <SelectItem value="center">Center</SelectItem>
+                      <SelectItem value="bottom">Bottom</SelectItem>
+                      <SelectItem value="left">Left</SelectItem>
+                      <SelectItem value="right">Right</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div>
+                  <label className="text-sm font-medium">Image Alignment</label>
+                  <Select 
+                    value={settings.imageAlignment}
+                    onValueChange={(value) => handleInputChange('imageAlignment', value)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select alignment" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="left">Left</SelectItem>
+                      <SelectItem value="center">Center</SelectItem>
+                      <SelectItem value="right">Right</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div>
+                  <label className="text-sm font-medium">Text Alignment</label>
+                  <Select 
+                    value={settings.textAlignment}
+                    onValueChange={(value) => handleInputChange('textAlignment', value)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select alignment" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="left">Left</SelectItem>
+                      <SelectItem value="center">Center</SelectItem>
+                      <SelectItem value="right">Right</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
             </CardContent>
           </Card>

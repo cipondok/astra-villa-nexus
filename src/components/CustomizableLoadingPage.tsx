@@ -15,6 +15,12 @@ interface LoadingPageSettings {
   logoText: string;
   logoSubtext: string;
   showConnectionStatus: boolean;
+  logoImageUrl: string;
+  imageSize: number;
+  imagePosition: 'top' | 'center' | 'bottom' | 'left' | 'right';
+  showBothTextAndImage: boolean;
+  imageAlignment: 'left' | 'center' | 'right';
+  textAlignment: 'left' | 'center' | 'right';
   animationType: 'pulse' | 'bounce' | 'spin' | 'gradient' | 'dots';
   animationSpeed: number;
   backgroundColor: string;
@@ -41,6 +47,12 @@ const CustomizableLoadingPage: React.FC<LoadingPageProps> = ({
     logoText: 'ASTRA Villa',
     logoSubtext: '',
     showConnectionStatus: true,
+    logoImageUrl: '',
+    imageSize: 100,
+    imagePosition: 'top',
+    showBothTextAndImage: false,
+    imageAlignment: 'center',
+    textAlignment: 'center',
     animationType: 'gradient',
     animationSpeed: 2,
     backgroundColor: '#000000',
@@ -129,6 +141,29 @@ const CustomizableLoadingPage: React.FC<LoadingPageProps> = ({
     }
   };
 
+  const getFlexDirection = () => {
+    if (settings.imagePosition === 'left') return 'row';
+    if (settings.imagePosition === 'right') return 'row-reverse';
+    if (settings.imagePosition === 'bottom') return 'column-reverse';
+    return 'column'; // top or center
+  };
+
+  const getJustifyContent = () => {
+    switch (settings.imageAlignment) {
+      case 'left': return 'flex-start';
+      case 'right': return 'flex-end';
+      default: return 'center';
+    }
+  };
+
+  const getTextAlign = () => {
+    switch (settings.textAlignment) {
+      case 'left': return 'left';
+      case 'right': return 'right';
+      default: return 'center';
+    }
+  };
+
   const containerStyles: React.CSSProperties = {
     backgroundColor: settings.backgroundColor,
     color: settings.textColor,
@@ -149,14 +184,26 @@ const CustomizableLoadingPage: React.FC<LoadingPageProps> = ({
     fontSize: '4rem',
     fontWeight: 'bold',
     marginBottom: '1rem',
+    textAlign: getTextAlign() as any,
     animation: settings.animationType === 'gradient' ? `pulseGlow ${settings.animationSpeed}s ease-in-out infinite` : undefined,
   };
+
+  const contentWrapperStyles: React.CSSProperties = {
+    display: 'flex',
+    flexDirection: getFlexDirection() as any,
+    alignItems: 'center',
+    justifyContent: getJustifyContent(),
+    gap: settings.imagePosition === 'left' || settings.imagePosition === 'right' ? '2rem' : '1.5rem',
+  };
+
+  const showImage = settings.logoImageUrl && (settings.showBothTextAndImage || !settings.logoText);
+  const showText = settings.logoText && (settings.showBothTextAndImage || !settings.logoImageUrl);
 
   const renderAnimation = () => {
     switch (settings.animationType) {
       case 'dots':
         return (
-          <div className="flex space-x-2">
+          <div className="flex space-x-2" style={{ justifyContent: getJustifyContent() }}>
             <div 
               className="w-3 h-3 rounded-full animate-bounce"
               style={{ 
@@ -184,24 +231,28 @@ const CustomizableLoadingPage: React.FC<LoadingPageProps> = ({
         );
       case 'spin':
         return (
-          <div 
-            className="w-8 h-8 border-4 border-t-transparent rounded-full animate-spin"
-            style={{ 
-              borderColor: settings.accentColor,
-              borderTopColor: 'transparent',
-              animationDuration: `${settings.animationSpeed}s`
-            }}
-          />
+          <div style={{ display: 'flex', justifyContent: getJustifyContent() }}>
+            <div 
+              className="w-8 h-8 border-4 border-t-transparent rounded-full animate-spin"
+              style={{ 
+                borderColor: settings.accentColor,
+                borderTopColor: 'transparent',
+                animationDuration: `${settings.animationSpeed}s`
+              }}
+            />
+          </div>
         );
       case 'pulse':
         return (
-          <div 
-            className="w-4 h-4 rounded-full animate-pulse"
-            style={{ 
-              backgroundColor: settings.accentColor,
-              animationDuration: `${settings.animationSpeed}s`
-            }}
-          />
+          <div style={{ display: 'flex', justifyContent: getJustifyContent() }}>
+            <div 
+              className="w-4 h-4 rounded-full animate-pulse"
+              style={{ 
+                backgroundColor: settings.accentColor,
+                animationDuration: `${settings.animationSpeed}s`
+              }}
+            />
+          </div>
         );
       default:
         return null;
@@ -245,18 +296,41 @@ const CustomizableLoadingPage: React.FC<LoadingPageProps> = ({
       </style>
       <div style={containerStyles}>
         <div className="flex flex-col items-center space-y-6">
-          <div className="text-center">
-            <div style={logoStyles}>
-              {settings.logoText}
-            </div>
-            {settings.logoSubtext && (
-              <p className="text-lg opacity-75 mb-4">{settings.logoSubtext}</p>
+          <div style={contentWrapperStyles}>
+            {/* Logo Image */}
+            {showImage && (
+              <div style={{ display: 'flex', justifyContent: getJustifyContent() }}>
+                <img 
+                  src={settings.logoImageUrl}
+                  alt="Loading Logo"
+                  style={{ 
+                    width: `${settings.imageSize}px`,
+                    height: `${settings.imageSize}px`,
+                    objectFit: 'contain'
+                  }}
+                  className="rounded-lg"
+                />
+              </div>
+            )}
+            
+            {/* Text Content */}
+            {showText && (
+              <div style={{ textAlign: getTextAlign() as any }}>
+                <div style={logoStyles}>
+                  {settings.logoText}
+                </div>
+                {settings.logoSubtext && (
+                  <p className="text-lg opacity-75 mb-4" style={{ textAlign: getTextAlign() as any }}>
+                    {settings.logoSubtext}
+                  </p>
+                )}
+              </div>
             )}
           </div>
           
           {renderAnimation()}
           
-          <div className="text-center">
+          <div style={{ textAlign: getTextAlign() as any }}>
             <p className="text-sm mb-2">{displayMessage}</p>
             {settings.subMessage && (
               <p className="text-xs opacity-60 mb-4">{settings.subMessage}</p>
