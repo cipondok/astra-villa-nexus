@@ -1,187 +1,318 @@
-
-import { 
-  BarChart3, 
-  Users, 
-  Building2, 
-  Settings, 
-  Shield, 
-  MessageSquare, 
-  TrendingUp,
-  Database,
+import {
+  BarChart3,
+  Building,
+  Calendar,
+  CheckCircle2,
   FileText,
-  Briefcase,
-  UserCheck,
-  Search,
-  Wrench
-} from "lucide-react";
+  Gauge,
+  Globe,
+  HelpCircle,
+  Home,
+  ListChecks,
+  MessageSquare,
+  Plus,
+  Settings,
+  ShoppingBag,
+  Sliders,
+  SquareKanban,
+  TrendingUp,
+  User,
+  Users,
+  Wifi,
+} from 'lucide-react';
 
-export interface NavigationSection {
-  id: string;
-  label: string;
-  icon: any;
-  description: string;
-  badge?: string;
-}
+export const mainNavigation = [
+  {
+    id: 'home',
+    title: 'Home',
+    icon: Home,
+    href: '/dashboard',
+  },
+  {
+    id: 'properties',
+    title: 'Properties',
+    icon: Building,
+    href: '/properties',
+  },
+  {
+    id: 'calendar',
+    title: 'Calendar',
+    icon: Calendar,
+    href: '/calendar',
+  },
+  {
+    id: 'messages',
+    title: 'Messages',
+    icon: MessageSquare,
+    href: '/messages',
+  },
+];
 
-export const navigationSections = {
-  "Core Management": [
-    {
-      id: "overview",
-      label: "Overview",
-      icon: BarChart3,
-      description: "Dashboard overview and analytics"
-    },
-    {
-      id: "user-management", 
-      label: "User Management",
-      icon: Users,
-      description: "Manage users, roles and permissions"
-    },
-    {
-      id: "property-management-hub",
-      label: "Property Management",
-      icon: Building2,
-      description: "Complete property management system"
-    }
-  ],
-  "Customer Service": [
-    {
-      id: "customer-service",
-      label: "Support Tickets",
-      icon: MessageSquare,
-      description: "Customer service and support"
-    },
-    {
-      id: "contact-management",
-      label: "Contact Management", 
-      icon: UserCheck,
-      description: "Manage customer contacts"
-    }
-  ],
-  "AI & Vendor Management": [
-    {
-      id: "ai-vendor-management",
-      label: "Vendor Hub",
-      icon: Briefcase,
-      description: "Comprehensive vendor management"
-    },
-    {
-      id: "vendor-management",
-      label: "Vendor Directory",
-      icon: Users,
-      description: "Manage vendor profiles"
-    },
-    {
-      id: "vendor-service-categories",
-      label: "Service Categories",
-      icon: Settings,
-      description: "Manage service categories"
-    },
-    {
-      id: "vendor-services",
-      label: "Vendor Services",
-      icon: Wrench,
-      description: "Manage vendor services"
-    },
-    {
-      id: "kyc-management",
-      label: "KYC Management",
-      icon: Shield,
-      description: "Know Your Customer verification"
-    },
-    {
-      id: "membership-management",
-      label: "Membership Plans",
-      icon: UserCheck,
-      description: "Manage membership levels"
-    }
-  ],
-  "Analytics & Monitoring": [
-    {
-      id: "analytics",
-      label: "Web Analytics",
-      icon: BarChart3,
-      description: "Website traffic and analytics"
-    },
-    {
-      id: "ai-bot-management",
-      label: "AI Bot Management",
-      icon: MessageSquare,
-      description: "Manage AI chatbot settings"
-    },
-    {
-      id: "feedback-management",
-      label: "Feedback Management",
-      icon: TrendingUp,
-      description: "User feedback and reviews"
-    },
-    {
-      id: "daily-checkin",
-      label: "Daily Check-in",
-      icon: UserCheck,
-      description: "Daily user activity tracking"
-    }
-  ],
-  "Content & Settings": [
-    {
-      id: "content-management",
-      label: "Content Management",
-      icon: FileText,
-      description: "Manage website content"
-    },
-    {
-      id: "search-filters",
-      label: "Search Filters",
-      icon: Search,
-      description: "Configure search filters"
-    }
-  ],
-  "System Settings": [
-    {
-      id: "tools-management",
-      label: "Tools Management",
-      icon: Wrench,
-      description: "Manage system tools"
-    },
-    {
-      id: "seo-settings",
-      label: "SEO Settings",
-      icon: TrendingUp,
-      description: "Search engine optimization"
-    },
-    {
-      id: "system-settings",
-      label: "System Settings",
-      icon: Settings,
-      description: "Core system configuration"
-    },
-    {
-      id: "billing-management",
-      label: "Billing Management",
-      icon: Database,
-      description: "Manage billing and subscriptions"
-    }
-  ],
-  "Technical": [
-    {
-      id: "database-management",
-      label: "Database Management",
-      icon: Database,
-      description: "Database administration"
-    },
-    {
-      id: "security-monitoring",
-      label: "Security Monitoring",
-      icon: Shield,
-      description: "Security alerts and monitoring"
-    },
-    {
-      id: "system-reports",
-      label: "System Reports",
-      icon: BarChart3,
-      description: "Generate system reports"
-    }
-  ]
-};
+export const secondaryNavigation = [
+  {
+    id: 'settings',
+    title: 'Settings',
+    icon: Settings,
+    href: '/settings',
+  },
+  {
+    id: 'help',
+    title: 'Help',
+    icon: HelpCircle,
+    href: '/help',
+  },
+];
 
-export const categories = Object.keys(navigationSections);
+export const adminNavigation = [
+  {
+    id: 'admin-overview',
+    title: 'Overview',
+    icon: Home,
+    href: '/admin',
+  },
+  {
+    id: 'user-management',
+    title: 'User Management',
+    icon: Users,
+    href: '/admin/users',
+  },
+  {
+    id: 'property-management',
+    title: 'Property Management',
+    icon: Building,
+    href: '/admin/properties',
+  },
+  {
+    id: 'vendor-management',
+    title: 'Vendor Management',
+    icon: ShoppingBag,
+    href: '/admin/vendors',
+  },
+  {
+    id: 'system-monitor',
+    title: 'System Monitor',
+    icon: Gauge,
+    href: '/admin/system-monitor',
+  },
+];
+
+export const propertyOwnerNavigation = [
+  {
+    id: 'owner-overview',
+    title: 'Overview',
+    icon: Home,
+    href: '/owner',
+  },
+  {
+    id: 'owner-properties',
+    title: 'My Properties',
+    icon: Building,
+    href: '/owner/properties',
+  },
+  {
+    id: 'add-property',
+    title: 'Add Property',
+    icon: Plus,
+    href: '/add-property',
+  },
+  {
+    id: 'owner-calendar',
+    title: 'Calendar',
+    icon: Calendar,
+    href: '/owner/calendar',
+  },
+  {
+    id: 'owner-messages',
+    title: 'Messages',
+    icon: MessageSquare,
+    href: '/owner/messages',
+  },
+  {
+    id: 'owner-settings',
+    title: 'Settings',
+    icon: Settings,
+    href: '/owner/settings',
+  },
+];
+
+export const superAdminNavigation = [
+  {
+    id: 'super-admin-overview',
+    title: 'Overview',
+    icon: Home,
+    href: '/super-admin',
+  },
+  {
+    id: 'database-management',
+    title: 'Database Management',
+    icon: Wifi,
+    href: '/super-admin/database',
+  },
+  {
+    id: 'system-settings',
+    title: 'System Settings',
+    icon: Sliders,
+    href: '/super-admin/settings',
+  },
+  {
+    id: 'audit-logs',
+    title: 'Audit Logs',
+    icon: ListChecks,
+    href: '/super-admin/audit-logs',
+  },
+  {
+    id: 'queue-management',
+    title: 'Queue Management',
+    icon: SquareKanban,
+    href: '/super-admin/queues',
+  },
+  {
+    id: 'developer-tools',
+    title: 'Developer Tools',
+    icon: CheckCircle2,
+    href: '/super-admin/developer-tools',
+  },
+];
+
+export const navigationSections = [
+  {
+    id: 'getting-started',
+    title: 'Getting Started',
+    icon: 'Rocket',
+    items: [
+      {
+        id: 'admin-overview',
+        title: 'Admin Overview',
+        description: 'Dashboard overview and key metrics',
+        icon: 'LayoutDashboard',
+        href: '/admin',
+      },
+      {
+        id: 'user-guide',
+        title: 'User Guide',
+        description: 'Learn how to use the admin dashboard',
+        icon: 'Book',
+        href: '/admin/guide',
+      },
+    ],
+  },
+  {
+    id: 'data-management',
+    title: 'Data Management',
+    icon: 'Database',
+    items: [
+      {
+        id: 'user-management',
+        title: 'User Management',
+        description: 'Manage user accounts and roles',
+        icon: 'Users',
+        href: '/admin/users',
+      },
+      {
+        id: 'property-management',
+        title: 'Property Management',
+        description: 'Manage property listings and details',
+        icon: 'Building',
+        href: '/admin/properties',
+      },
+      {
+        id: 'vendor-management',
+        title: 'Vendor Management',
+        description: 'Manage vendors and service providers',
+        icon: 'ShoppingBag',
+        href: '/admin/vendors',
+      },
+    ],
+  },
+  {
+    id: 'system-configuration',
+    title: 'System Configuration',
+    icon: 'SlidersHorizontal',
+    items: [
+      {
+        id: 'system-settings',
+        title: 'System Settings',
+        description: 'Configure system-wide settings',
+        icon: 'Sliders',
+        href: '/admin/settings',
+      },
+      {
+        id: 'alert-rules',
+        title: 'Alert Rules',
+        description: 'Define rules for system alerts',
+        icon: 'BellAlert',
+        href: '/admin/alert-rules',
+      },
+      {
+        id: 'queue-management',
+        title: 'Queue Management',
+        description: 'Manage background task queues',
+        icon: 'SquareKanban',
+        href: '/admin/queues',
+      },
+    ],
+  },
+  {
+    id: 'monitoring-logs',
+    title: 'Monitoring & Logs',
+    icon: 'Activity',
+    items: [
+      {
+        id: 'system-monitor',
+        title: 'System Monitor',
+        description: 'Real-time system health monitoring',
+        icon: 'Gauge',
+        href: '/admin/system-monitor',
+      },
+      {
+        id: 'audit-logs',
+        title: 'Audit Logs',
+        description: 'Track user actions and system events',
+        icon: 'ListChecks',
+        href: '/admin/audit-logs',
+      },
+    ],
+  },
+  {
+    id: 'analytics-reports',
+    title: 'Analytics & Reports',
+    icon: 'BarChart3',
+    items: [
+      {
+        id: 'system-analytics',
+        title: 'System Analytics',
+        description: 'View system performance metrics',
+        icon: 'Activity',
+        href: '/admin/analytics',
+      },
+      {
+        id: 'performance-analytics',
+        title: 'Performance Analytics',
+        description: 'Detailed system performance and trends',
+        icon: 'TrendingUp',
+        href: '/admin/performance-analytics',
+      },
+      {
+        id: 'web-traffic',
+        title: 'Web Traffic Analytics',
+        description: 'Website traffic and user behavior',
+        icon: 'Globe',
+        href: '/admin/web-traffic',
+      },
+      {
+        id: 'vendor-analytics',
+        title: 'Vendor Performance',
+        description: 'AI-powered vendor analytics',
+        icon: 'Users',
+        href: '/admin/vendor-performance',
+      },
+      {
+        id: 'system-reports',
+        title: 'System Reports',
+        description: 'Generate comprehensive reports',
+        icon: 'FileText',
+        href: '/admin/reports',
+      },
+    ],
+  },
+];
