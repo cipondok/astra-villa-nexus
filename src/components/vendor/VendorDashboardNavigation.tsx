@@ -96,7 +96,7 @@ const VendorDashboardNavigation = ({ activeSection, onSectionChange }: VendorDas
       description: 'Track project milestones and completion',
       isImplemented: false,
       badge: 'Coming Soon',
-      onClick: () => {}
+      onClick: () => handleToolClick('progress')
     },
     {
       id: 'holidays',
@@ -105,7 +105,7 @@ const VendorDashboardNavigation = ({ activeSection, onSectionChange }: VendorDas
       description: 'Set service availability and holidays',
       isImplemented: false,
       badge: 'Coming Soon',
-      onClick: () => {}
+      onClick: () => handleToolClick('holidays')
     },
     {
       id: 'change-requests',
@@ -114,7 +114,7 @@ const VendorDashboardNavigation = ({ activeSection, onSectionChange }: VendorDas
       description: 'Request profile and service changes',
       isImplemented: false,
       badge: 'Coming Soon',
-      onClick: () => {}
+      onClick: () => handleToolClick('change-requests')
     },
     {
       id: 'kyc-verification',
@@ -123,7 +123,7 @@ const VendorDashboardNavigation = ({ activeSection, onSectionChange }: VendorDas
       description: 'Identity and business verification',
       isImplemented: false,
       badge: 'Required',
-      onClick: () => {}
+      onClick: () => handleToolClick('kyc-verification')
     },
     {
       id: 'membership-progress',
@@ -132,7 +132,7 @@ const VendorDashboardNavigation = ({ activeSection, onSectionChange }: VendorDas
       description: 'Track your membership progress',
       isImplemented: false,
       badge: 'New',
-      onClick: () => {}
+      onClick: () => handleToolClick('membership-progress')
     },
     {
       id: 'reviews',
@@ -149,7 +149,7 @@ const VendorDashboardNavigation = ({ activeSection, onSectionChange }: VendorDas
       description: 'Manage licenses and certifications',
       isImplemented: false,
       badge: 'Coming Soon',
-      onClick: () => {}
+      onClick: () => handleToolClick('compliance')
     },
     {
       id: 'support',
@@ -220,6 +220,10 @@ const VendorDashboardNavigation = ({ activeSection, onSectionChange }: VendorDas
                       : 'opacity-50 cursor-not-allowed'
                 }`}
                 disabled={!section.isImplemented}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  section.onClick();
+                }}
               >
                 {isActive ? 'Active' : section.isImplemented ? 'Open' : 'Coming Soon'}
               </Button>

@@ -2,6 +2,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { toast } from "@/hooks/use-toast";
 import { 
   PlusCircle, 
   BarChart3, 
@@ -17,16 +18,50 @@ const QuickActions = () => {
   const handleUploadPhotos = () => {
     // Navigate to add property page where photos can be uploaded
     navigate('/add-property');
+    toast({
+      title: "Photo Upload",
+      description: "Redirecting to property upload page...",
+    });
   };
 
   const handleScheduleTour = () => {
-    // For now, we'll show an alert. In the future, this could open a scheduling modal
-    alert('Schedule Tour feature - This will open a tour scheduling interface');
+    // For now, we'll show a toast notification
+    toast({
+      title: "Schedule Tour",
+      description: "Tour scheduling feature coming soon!",
+    });
   };
 
   const handleMessages = () => {
-    // For now, we'll show an alert. In the future, this could navigate to a messages page
-    alert('Messages feature - This will open your messages inbox');
+    // For now, we'll show a toast notification
+    toast({
+      title: "Messages",
+      description: "Message center feature coming soon!",
+    });
+  };
+
+  const handleAddProperty = () => {
+    navigate('/add-property');
+    toast({
+      title: "Add Property",
+      description: "Redirecting to add property page...",
+    });
+  };
+
+  const handleViewAnalytics = () => {
+    navigate('/dashboard/property-owner');
+    toast({
+      title: "Analytics",
+      description: "Redirecting to property owner dashboard...",
+    });
+  };
+
+  const handleSettings = () => {
+    navigate('/profile');
+    toast({
+      title: "Settings",
+      description: "Redirecting to profile settings...",
+    });
   };
 
   const actions = [
@@ -35,14 +70,14 @@ const QuickActions = () => {
       description: "List a new property",
       icon: PlusCircle,
       color: "bg-blue-500 hover:bg-blue-600",
-      onClick: () => navigate('/add-property')
+      onClick: handleAddProperty
     },
     {
       title: "View Analytics",
       description: "Check performance",
       icon: BarChart3,
       color: "bg-green-500 hover:bg-green-600",
-      onClick: () => navigate('/dashboard/property-owner')
+      onClick: handleViewAnalytics
     },
     {
       title: "Messages",
@@ -70,7 +105,7 @@ const QuickActions = () => {
       description: "Manage account",
       icon: Settings,
       color: "bg-gray-500 hover:bg-gray-600",
-      onClick: () => navigate('/profile')
+      onClick: handleSettings
     }
   ];
 

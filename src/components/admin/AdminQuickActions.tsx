@@ -159,6 +159,13 @@ const AdminQuickActions = ({ onTabChange }: QuickActionProps) => {
     },
   });
 
+  const handleQuickAction = (tab: string) => {
+    console.log('Quick action clicked:', tab);
+    if (onTabChange) {
+      onTabChange(tab);
+    }
+  };
+
   const quickActions = [
     {
       title: "Total Properties",
@@ -168,7 +175,7 @@ const AdminQuickActions = ({ onTabChange }: QuickActionProps) => {
       icon: Building2,
       variant: "default" as const,
       description: "All property listings in system",
-      onClick: () => onTabChange("properties")
+      onClick: () => handleQuickAction("properties")
     },
     {
       title: "New Today",
@@ -178,7 +185,7 @@ const AdminQuickActions = ({ onTabChange }: QuickActionProps) => {
       icon: Calendar,
       variant: "secondary" as const,
       description: "Properties added today",
-      onClick: () => onTabChange("properties")
+      onClick: () => handleQuickAction("properties")
     },
     {
       title: "Approved Properties",
@@ -188,7 +195,7 @@ const AdminQuickActions = ({ onTabChange }: QuickActionProps) => {
       icon: CheckCircle,
       variant: "default" as const,
       description: "Live approved properties",
-      onClick: () => onTabChange("properties")
+      onClick: () => handleQuickAction("properties")
     },
     {
       title: "Pending Approval",
@@ -198,7 +205,7 @@ const AdminQuickActions = ({ onTabChange }: QuickActionProps) => {
       icon: Clock,
       variant: "destructive" as const,
       description: "Properties awaiting approval",
-      onClick: () => onTabChange("properties")
+      onClick: () => handleQuickAction("properties")
     },
     {
       title: "Total Users",
@@ -208,7 +215,7 @@ const AdminQuickActions = ({ onTabChange }: QuickActionProps) => {
       icon: Users,
       variant: "default" as const,
       description: "All registered users",
-      onClick: () => onTabChange("users")
+      onClick: () => handleQuickAction("users")
     },
     {
       title: "Vendors",
@@ -218,7 +225,7 @@ const AdminQuickActions = ({ onTabChange }: QuickActionProps) => {
       icon: MessageSquare,
       variant: "secondary" as const,
       description: "Registered vendor accounts",
-      onClick: () => onTabChange("users")
+      onClick: () => handleQuickAction("users")
     }
   ];
 
@@ -267,6 +274,10 @@ const AdminQuickActions = ({ onTabChange }: QuickActionProps) => {
                   size="sm"
                   variant="outline"
                   className="bg-white/20 border-white/30 text-white hover:bg-white/30"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    action.onClick();
+                  }}
                 >
                   {action.action}
                 </Button>
