@@ -18,6 +18,8 @@ import Services from "./pages/Services";
 import ServiceForm from "./pages/ServiceForm";
 import VendorDashboard from "./pages/VendorDashboard";
 
+console.log('=== APP.TSX DEBUG START ===');
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -28,38 +30,70 @@ const queryClient = new QueryClient({
   },
 });
 
+console.log('1. QueryClient created:', queryClient);
+
 const App: React.FC = () => {
-  console.log('App component rendering...');
+  console.log('2. App component rendering...');
   
-  return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
-        <LanguageProvider>
-          <ThemeSettingsProvider>
-            <AuthProvider>
-              <AlertProvider>
-                <TooltipProvider>
-                  <Toaster />
-                  <BrowserRouter>
-                    <Routes>
-                      <Route path="/" element={<Index />} />
-                      <Route path="/dashboard" element={<Dashboard />} />
-                      <Route path="/vendor-dashboard" element={<VendorDashboard />} />
-                      <Route path="/admin" element={<AdminDashboard />} />
-                      <Route path="/content-management" element={<ContentManagement />} />
-                      <Route path="/loading" element={<Loading />} />
-                      <Route path="/services" element={<Services />} />
-                      <Route path="/services/new" element={<ServiceForm />} />
-                    </Routes>
-                  </BrowserRouter>
-                </TooltipProvider>
-              </AlertProvider>
-            </AuthProvider>
-          </ThemeSettingsProvider>
-        </LanguageProvider>
-      </ThemeProvider>
-    </QueryClientProvider>
-  );
+  try {
+    console.log('3. Rendering app structure...');
+    
+    return (
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
+          <LanguageProvider>
+            <ThemeSettingsProvider>
+              <AuthProvider>
+                <AlertProvider>
+                  <TooltipProvider>
+                    <Toaster />
+                    <BrowserRouter>
+                      <Routes>
+                        <Route path="/" element={<Index />} />
+                        <Route path="/dashboard" element={<Dashboard />} />
+                        <Route path="/vendor-dashboard" element={<VendorDashboard />} />
+                        <Route path="/admin" element={<AdminDashboard />} />
+                        <Route path="/content-management" element={<ContentManagement />} />
+                        <Route path="/loading" element={<Loading />} />
+                        <Route path="/services" element={<Services />} />
+                        <Route path="/services/new" element={<ServiceForm />} />
+                      </Routes>
+                    </BrowserRouter>
+                  </TooltipProvider>
+                </AlertProvider>
+              </AuthProvider>
+            </ThemeSettingsProvider>
+          </LanguageProvider>
+        </ThemeProvider>
+      </QueryClientProvider>
+    );
+  } catch (error) {
+    console.error('❌ Error in App component:', error);
+    console.error('Error stack:', error.stack);
+    
+    // Fallback UI
+    return (
+      <div style={{ 
+        padding: '20px', 
+        background: 'red', 
+        color: 'white', 
+        fontSize: '20px',
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: 9999
+      }}>
+        <h1>ERROR IN APP COMPONENT</h1>
+        <p>Check the console for details</p>
+        <pre>{error.toString()}</pre>
+      </div>
+    );
+  }
 };
+
+console.log('4. App component defined');
+console.log('=== APP.TSX DEBUG END ===');
 
 export default App;

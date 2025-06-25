@@ -9,7 +9,8 @@ import ResponsiveAIChatWidget from "@/components/ai/ResponsiveAIChatWidget";
 import { supabase } from "@/integrations/supabase/client";
 
 const Index = () => {
-  console.log('Index page rendering...');
+  console.log('=== INDEX PAGE DEBUG START ===');
+  console.log('1. Index page component rendering...');
   
   const { language } = useLanguage();
   const [searchResults, setSearchResults] = useState<any[]>([]);
@@ -17,11 +18,13 @@ const Index = () => {
   const [hasSearched, setHasSearched] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
 
-  // Simple featured properties query
-  const { data: featuredProperties = [], isLoading: isFeaturedLoading } = useQuery({
+  console.log('2. State initialized, language:', language);
+
+  // Simple featured properties query with better error handling
+  const { data: featuredProperties = [], isLoading: isFeaturedLoading, error: featuredError } = useQuery({
     queryKey: ['featured-properties'],
     queryFn: async () => {
-      console.log('Fetching featured properties...');
+      console.log('3. Fetching featured properties...');
       
       try {
         const { data, error } = await supabase
@@ -36,7 +39,7 @@ const Index = () => {
           return [];
         }
 
-        console.log('Featured properties loaded:', data?.length || 0);
+        console.log('4. Featured properties loaded:', data?.length || 0);
         return data || [];
         
       } catch (err) {
@@ -49,8 +52,10 @@ const Index = () => {
     staleTime: 60000,
   });
 
+  console.log('5. Query setup complete');
+
   const handleSearch = async (searchData: any) => {
-    console.log('Search initiated:', searchData);
+    console.log('6. Search initiated:', searchData);
     
     setIsSearching(true);
     setHasSearched(true);
@@ -101,7 +106,6 @@ const Index = () => {
         }
       }
 
-      // Handle price range filter
       if (searchData.priceRange) {
         const [minPrice, maxPrice] = searchData.priceRange.split('-').map(Number);
         if (minPrice) {
@@ -144,56 +148,84 @@ const Index = () => {
     await handleSearch({ query: searchTerm });
   };
 
-  return (
-    <div className="min-h-screen bg-background">
-      <Navigation />
-      
-      <section className="relative bg-gradient-to-br from-blue-600 via-blue-500 to-orange-400 text-white py-8 sm:py-12 lg:py-16 px-2 sm:px-4">
-        <div className="absolute inset-0 bg-gradient-to-t from-cream-100/10 to-transparent"></div>
-        <div className="container mx-auto text-center relative z-10">
-          <h1 className="text-2xl sm:text-3xl lg:text-5xl font-bold mb-4 sm:mb-6 animate-fade-in px-2">
-            {language === "en" ? "Find Your Dream Property" : "Temukan Properti Impian Anda"}
-          </h1>
-          <p className="text-base sm:text-lg lg:text-xl mb-6 sm:mb-8 text-white/90 px-2">
-            {language === "en" 
-              ? "Discover the perfect home with our advanced search technology" 
-              : "Temukan rumah sempurna dengan teknologi pencarian canggih kami"}
-          </p>
-          
-          <div className="max-w-5xl mx-auto">
-            <EnhancedModernSearchPanel
-              language={language}
-              onSearch={handleSearch}
-              onLiveSearch={handleLiveSearch}
-            />
-          </div>
-        </div>
-      </section>
+  console.log('7. About to render Index page UI...');
 
-      {searchError && (
-        <section className="py-4 bg-red-50">
-          <div className="container mx-auto px-4">
-            <div className="text-center text-red-600 font-medium">
-              {searchError}
+  if (featuredError) {
+    console.error('Featured properties error:', featuredError);
+  }
+
+  try {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navigation />
+        
+        <section className="relative bg-gradient-to-br from-blue-600 via-blue-500 to-orange-400 text-white py-8 sm:py-12 lg:py-16 px-2 sm:px-4">
+          <div className="absolute inset-0 bg-gradient-to-t from-cream-100/10 to-transparent"></div>
+          <div className="container mx-auto text-center relative z-10">
+            <h1 className="text-2xl sm:text-3xl lg:text-5xl font-bold mb-4 sm:mb-6 animate-fade-in px-2">
+              {language === "en" ? "Find Your Dream Property" : "Temukan Properti Impian Anda"}
+            </h1>
+            <p className="text-base sm:text-lg lg:text-xl mb-6 sm:mb-8 text-white/90 px-2">
+              {language === "en" 
+                ? "Discover the perfect home with our advanced search technology" 
+                : "Temukan rumah sempurna dengan teknologi pencarian canggih kami"}
+            </p>
+            
+            <div className="max-w-5xl mx-auto">
+              <EnhancedModernSearchPanel
+                language={language}
+                onSearch={handleSearch}
+                onLiveSearch={handleLiveSearch}
+              />
             </div>
           </div>
         </section>
-      )}
 
-      <div className="px-2 sm:px-0">
-        <PropertyListingsSection
-          language={language}
-          searchResults={searchResults}
-          isSearching={isSearching}
-          hasSearched={hasSearched}
-          fallbackResults={featuredProperties}
-        />
+        {searchError && (
+          <section className="py-4 bg-red-50">
+            <div className="container mx-auto px-4">
+              <div className="text-center text-red-600 font-medium">
+                {searchError}
+              </div>
+            </div>
+          </section>
+        )}
+
+        <div className="px-2 sm:px-0">
+          <PropertyListingsSection
+            language={language}
+            searchResults={searchResults}
+            isSearching={isSearching}
+            hasSearched={hasSearched}
+            fallbackResults={featuredProperties}
+          />
+        </div>
+
+        <ResponsiveAIChatWidget />
+        <ProfessionalFooter language={language} />
       </div>
-
-      <ResponsiveAIChatWidget />
-      <ProfessionalFooter language={language} />
-    </div>
-  );
+    );
+  } catch (error) {
+    console.error('❌ Error rendering Index page:', error);
+    console.error('Error stack:', error.stack);
+    
+    return (
+      <div style={{ 
+        padding: '20px', 
+        background: 'orange', 
+        color: 'white', 
+        fontSize: '18px',
+        minHeight: '100vh'
+      }}>
+        <h1>ERROR IN INDEX PAGE</h1>
+        <p>Check the console for details</p>
+        <pre>{error.toString()}</pre>
+      </div>
+    );
+  }
 };
+
+console.log('8. Index component defined');
+console.log('=== INDEX PAGE DEBUG END ===');
 
 export default Index;
