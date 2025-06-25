@@ -10,25 +10,24 @@ const AppInitializer: React.FC<AppInitializerProps> = ({ children }) => {
   const [initializationComplete, setInitializationComplete] = useState(false);
 
   useEffect(() => {
-    // Very quick initialization - don't wait for anything
+    // Quick initialization without delays
     const timer = setTimeout(() => {
       setInitializationComplete(true);
-    }, 500); // Just half a second for smooth transition
+    }, 100);
 
     return () => clearTimeout(timer);
   }, []);
 
-  // Show minimal loading screen
+  // Show minimal loading screen only briefly
   if (!initializationComplete) {
     return (
       <LoadingPage
-        message="Loading ASTRA Villa..."
-        showConnectionStatus={false} // Don't show connection status during initial load
+        message="Initializing..."
+        showConnectionStatus={false}
       />
     );
   }
 
-  // Always render children immediately - no database blocking
   return <>{children}</>;
 };
 

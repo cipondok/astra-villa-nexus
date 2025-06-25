@@ -65,6 +65,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           is_admin: true
         };
         setProfile(adminProfile);
+        setLoading(false);
+        return;
+      }
+      
+      // Check for vendor@astravilla.com as vendor
+      if (authUser.user?.email === 'vendor@astravilla.com') {
+        const vendorProfile: Profile = {
+          id: userId,
+          email: authUser.user.email,
+          full_name: authUser.user.user_metadata?.full_name || 'Vendor User',
+          role: 'vendor',
+          verification_status: 'approved',
+          company_name: 'AstraVilla Services'
+        };
+        setProfile(vendorProfile);
+        setLoading(false);
         return;
       }
       
@@ -76,23 +92,37 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       if (error) {
         if (error.code === 'PGRST116') {
-          console.log('Profile not found, user needs to create profile');
+          console.log('Profile not found, creating default profile');
+          // Create default profile for new users
+          const defaultProfile: Profile = {
+            id: userId,
+            email: authUser.user?.email || '',
+            full_name: authUser.user?.user_metadata?.full_name || 'User',
+            role: 'general_user',
+            verification_status: 'pending'
+          };
+          setProfile(defaultProfile);
+          setLoading(false);
           return;
         }
         console.error('Error fetching profile:', error);
+        setLoading(false);
         return;
       }
 
       console.log('Profile fetched successfully:', data);
       setProfile(data as Profile);
+      setLoading(false);
     } catch (error) {
       console.error('Profile fetch error:', error);
+      setLoading(false);
     }
   };
 
   const refreshProfile = async () => {
     if (user?.id) {
       console.log('Manually refreshing profile for user:', user.email);
+      setLoading(true);
       await fetchProfile(user.id);
     }
   };
@@ -135,6 +165,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           }
         } else if (!session) {
           setProfile(null);
+          setLoading(false);
           localStorage.removeItem('login_time');
           localStorage.removeItem('last_activity');
         }
@@ -144,11 +175,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           setProfile(null);
           setUser(null);
           setSession(null);
+          setLoading(false);
           localStorage.clear();
           sessionStorage.clear();
         }
-        
-        setLoading(false);
       }
     );
 
@@ -236,6 +266,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
 
       console.log('Sign in successful for:', email);
+      // Don't set loading to false here, let the auth state change handler do it
       return { error: null, success: true };
     } catch (error: any) {
       console.error('Sign in error:', error);
