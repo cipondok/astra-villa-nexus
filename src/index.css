@@ -1,3 +1,4 @@
+
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 @tailwind base;
 @tailwind components;
@@ -11,116 +12,96 @@
     --card-foreground: 222.2 84% 4.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
-    --primary: 196 69% 35%;
+    --primary: 214 100% 47%;  /* Samsung Blue Titanium Primary */
     --primary-foreground: 210 40% 98%;
-    --secondary: 197 91% 84%;
+    --secondary: 220 30% 85%;  /* Light Blue Titanium */
     --secondary-foreground: 222.2 84% 4.9%;
-    --muted: 45 71% 96%;
-    --muted-foreground: 222.2 84% 4.9%;
-    --accent: 15 91% 71%;
+    --muted: 220 15% 96%;  /* Titanium White */
+    --muted-foreground: 215 16% 47%;
+    --accent: 217 91% 60%;  /* Bright Blue Titanium */
     --accent-foreground: 222.2 84% 4.9%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 196 69% 61%;
+    --border: 220 25% 88%;  /* Titanium Border */
+    --input: 220 25% 88%;
+    --ring: 214 100% 47%;  /* Samsung Blue Titanium */
     --radius: 0.75rem;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
+    --chart-1: 214 100% 47%;  /* Samsung Blue */
+    --chart-2: 220 30% 65%;   /* Medium Titanium */
+    --chart-3: 215 50% 35%;   /* Dark Blue Titanium */
+    --chart-4: 217 91% 60%;   /* Bright Blue */
+    --chart-5: 210 80% 70%;   /* Light Blue */
 
-    /* New Color Scheme Variables */
-    --custom-blue: 196 69% 61%;     /* #0FA3B1 */
-    --custom-light-blue: 197 91% 84%; /* #B5E2FA */
-    --custom-cream: 45 71% 96%;     /* #F9F7F3 */
-    --custom-yellow: 50 59% 78%;    /* #EDDEA4 */
-    --custom-orange: 15 91% 71%;    /* #F7A072 */
+    /* Samsung Blue Titanium Color Variables */
+    --samsung-blue-primary: 214 100% 47%;    /* #0066FF - Main Samsung Blue */
+    --samsung-blue-light: 217 91% 60%;       /* #4285FF - Light Blue */
+    --samsung-blue-dark: 215 50% 35%;        /* #2C5AA0 - Dark Blue */
+    --titanium-light: 220 30% 85%;           /* #D1D9E6 - Light Titanium */
+    --titanium-medium: 220 30% 65%;          /* #9DB2CC - Medium Titanium */
+    --titanium-dark: 220 30% 25%;            /* #3D4852 - Dark Titanium */
+    --titanium-white: 220 15% 96%;           /* #F5F6F8 - Titanium White */
 
-    /* iOS Design System Colors */
-    --ios-blue: 214 100% 59%;
-    --ios-blue-rgb: 0, 122, 255;
-    --ios-green: 149 100% 46%;
-    --ios-green-rgb: 52, 199, 89;
-    --ios-orange: 28 100% 55%;
-    --ios-orange-rgb: 255, 149, 0;
-    --ios-red: 5 78% 57%;
-    --ios-red-rgb: 255, 59, 48;
-    --ios-purple: 250 100% 75%;
-    --ios-purple-rgb: 175, 82, 222;
-    --ios-pink: 316 100% 74%;
-    --ios-pink-rgb: 255, 45, 85;
-    --ios-yellow: 48 100% 51%;
-    --ios-yellow-rgb: 255, 204, 0;
-    --ios-indigo: 225 100% 69%;
-    --ios-indigo-rgb: 88, 86, 214;
-    --ios-teal: 172 100% 41%;
-    --ios-teal-rgb: 90, 200, 250;
-    --ios-cyan: 189 100% 62%;
-    --ios-cyan-rgb: 100, 210, 255;
-
-    /* Dynamic Primary Color using custom scheme */
-    --primary-color: var(--custom-blue);
-    --primary-color-rgb: var(--custom-blue);
-    --primary-color-hover: hsl(var(--custom-blue) / 0.8);
-    --primary-dynamic: hsl(var(--primary-color));
+    /* Dynamic Primary Color using Samsung Blue */
+    --primary-color: var(--samsung-blue-primary);
+    --primary-color-rgb: 0, 102, 255;
+    --primary-color-hover: hsl(214 100% 42%);
+    --primary-dynamic: hsl(var(--samsung-blue-primary));
   }
 
   .dark {
-    /* Using exact #333446 color - converted to HSL: 231° 17% 24% */
-    --background: 231 17% 24%;      /* #333446 - exact color requested */
-    --foreground: 45 71% 96%;       /* Cream for better contrast */
-    --card: 231 17% 28%;            /* Slightly lighter than background for cards */
-    --card-foreground: 45 71% 96%;  /* Cream for better contrast */
-    --popover: 231 17% 24%;         /* Same as background */
-    --popover-foreground: 45 71% 96%; /* Cream for better contrast */
-    --primary: 196 69% 61%;         /* Custom blue */
-    --primary-foreground: 45 71% 96%; /* Cream for contrast */
-    --secondary: 231 17% 32%;       /* Slightly lighter than background */
-    --secondary-foreground: 45 71% 96%; /* Cream for contrast */
-    --muted: 231 17% 32%;           /* Slightly lighter than background */
-    --muted-foreground: 197 91% 84%; /* Light blue for muted text */
-    --accent: 15 91% 71%;           /* Orange accent */
-    --accent-foreground: 231 17% 24%; /* Dark background for contrast */
+    /* Samsung Blue Titanium Dark Mode */
+    --background: 220 30% 8%;               /* #0D1117 - Very Dark Titanium */
+    --foreground: 220 15% 96%;              /* Titanium White for text */
+    --card: 220 30% 12%;                    /* #1A1F2E - Dark Card Background */
+    --card-foreground: 220 15% 96%;         /* Titanium White */
+    --popover: 220 30% 8%;                  /* Same as background */
+    --popover-foreground: 220 15% 96%;      /* Titanium White */
+    --primary: 217 91% 60%;                 /* Bright Blue for dark mode */
+    --primary-foreground: 220 30% 8%;       /* Dark background for contrast */
+    --secondary: 220 30% 18%;               /* Darker Titanium */
+    --secondary-foreground: 220 15% 96%;    /* Titanium White */
+    --muted: 220 30% 18%;                   /* Darker Titanium */
+    --muted-foreground: 220 30% 65%;        /* Medium Titanium for muted text */
+    --accent: 214 100% 47%;                 /* Samsung Blue accent */
+    --accent-foreground: 220 15% 96%;       /* Titanium White */
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 45 71% 96%;
-    --border: 231 17% 32%;          /* Slightly lighter than background */
-    --input: 231 17% 32%;           /* Slightly lighter than background */
-    --ring: 196 69% 61%;            /* Custom blue */
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
+    --destructive-foreground: 220 15% 96%;
+    --border: 220 30% 18%;                  /* Darker Titanium border */
+    --input: 220 30% 18%;                   /* Darker Titanium input */
+    --ring: 217 91% 60%;                    /* Bright Blue ring */
+    --chart-1: 217 91% 60%;                 /* Bright Blue */
+    --chart-2: 220 30% 65%;                 /* Medium Titanium */
+    --chart-3: 214 100% 47%;                /* Samsung Blue */
+    --chart-4: 210 80% 70%;                 /* Light Blue */
+    --chart-5: 215 50% 35%;                 /* Dark Blue */
 
     /* Dynamic Primary Color for dark mode */
-    --primary-dynamic: hsl(var(--custom-blue));
+    --primary-dynamic: hsl(var(--samsung-blue-light));
   }
 
   .middle {
-    --background: 45 71% 96%;       /* Custom cream */
-    --foreground: 231 17% 24%;      /* Dark blue-gray for contrast */
-    --card: 0 0% 100%;              /* Pure white cards */
-    --card-foreground: 231 17% 24%; /* Dark blue-gray for contrast */
+    --background: 220 15% 96%;              /* Titanium White background */
+    --foreground: 220 30% 15%;              /* Dark Titanium for text */
+    --card: 0 0% 100%;                      /* Pure white cards */
+    --card-foreground: 220 30% 15%;         /* Dark Titanium text */
     --popover: 0 0% 100%;
-    --popover-foreground: 231 17% 24%;
-    --primary: 196 69% 61%;         /* Custom blue */
-    --primary-foreground: 45 71% 96%; /* Cream for contrast */
-    --secondary: 197 91% 84%;       /* Light blue */
-    --secondary-foreground: 231 17% 24%; /* Dark for contrast */
-    --muted: 50 59% 78%;            /* Custom yellow */
-    --muted-foreground: 231 17% 24%; /* Dark for contrast */
-    --accent: 15 91% 71%;           /* Custom orange */
-    --accent-foreground: 231 17% 24%; /* Dark for contrast */
+    --popover-foreground: 220 30% 15%;
+    --primary: 214 100% 47%;                /* Samsung Blue */
+    --primary-foreground: 220 15% 96%;      /* Titanium White */
+    --secondary: 220 30% 85%;               /* Light Titanium */
+    --secondary-foreground: 220 30% 15%;    /* Dark Titanium */
+    --muted: 220 25% 88%;                   /* Light Titanium muted */
+    --muted-foreground: 220 30% 25%;        /* Dark Titanium muted text */
+    --accent: 217 91% 60%;                  /* Bright Blue accent */
+    --accent-foreground: 220 30% 15%;       /* Dark Titanium */
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 45 71% 96%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 196 69% 61%;            /* Custom blue */
+    --destructive-foreground: 220 15% 96%;
+    --border: 220 25% 88%;                  /* Light Titanium border */
+    --input: 220 25% 88%;                   /* Light Titanium input */
+    --ring: 214 100% 47%;                   /* Samsung Blue ring */
 
     /* Dynamic Primary Color for middle mode */
-    --primary-dynamic: hsl(var(--custom-blue));
+    --primary-dynamic: hsl(var(--samsung-blue-primary));
   }
 }
 
@@ -168,12 +149,12 @@
 @media (hover: hover) and (pointer: fine) {
   .property-card:hover {
     transform: translateY(-8px) scale(1.02);
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 25px 50px -12px rgba(0, 102, 255, 0.25);
   }
   
   .hover-lift:hover {
     transform: translateY(-2px);
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 25px -5px rgba(0, 102, 255, 0.1);
   }
   
   .hover-scale:hover {
@@ -181,7 +162,7 @@
   }
   
   .hover-glow:hover {
-    box-shadow: 0 0 20px rgba(15, 163, 177, 0.5);
+    box-shadow: 0 0 20px rgba(0, 102, 255, 0.5);
   }
 }
 
@@ -193,66 +174,66 @@
   }
   
   .touch-feedback:active {
-    background-color: rgba(0, 0, 0, 0.1);
+    background-color: rgba(0, 102, 255, 0.1);
   }
 }
 
-/* iOS-style glass morphism effects with new custom colors */
+/* Samsung Blue Titanium glass morphism effects */
 .glass-ios {
-  background: rgba(181, 226, 250, 0.15); /* Custom light blue with transparency */
+  background: rgba(66, 133, 255, 0.15); /* Samsung Blue Light with transparency */
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(15, 163, 177, 0.2); /* Custom blue border */
-  box-shadow: 0 8px 32px 0 rgba(15, 163, 177, 0.15);
+  border: 1px solid rgba(0, 102, 255, 0.2); /* Samsung Blue border */
+  box-shadow: 0 8px 32px 0 rgba(0, 102, 255, 0.15);
 }
 
 .glass-card-ios {
-  background: rgba(249, 247, 243, 0.8); /* Custom cream background */
+  background: rgba(245, 246, 248, 0.8); /* Titanium White background */
   backdrop-filter: blur(25px);
   -webkit-backdrop-filter: blur(25px);
-  border: 1px solid rgba(15, 163, 177, 0.25);
-  box-shadow: 0 12px 40px 0 rgba(15, 163, 177, 0.2);
+  border: 1px solid rgba(0, 102, 255, 0.25);
+  box-shadow: 0 12px 40px 0 rgba(0, 102, 255, 0.2);
 }
 
 .dropdown-ios {
-  background: rgba(249, 247, 243, 0.95); /* Custom cream */
+  background: rgba(245, 246, 248, 0.95); /* Titanium White */
   backdrop-filter: blur(30px);
   -webkit-backdrop-filter: blur(30px);
-  border: 1px solid rgba(15, 163, 177, 0.3);
-  box-shadow: 0 8px 32px 0 rgba(15, 163, 177, 0.15);
+  border: 1px solid rgba(0, 102, 255, 0.3);
+  box-shadow: 0 8px 32px 0 rgba(0, 102, 255, 0.15);
 }
 
 .dark .dropdown-ios {
-  background: rgba(85, 88, 121, 0.95); /* Dark theme using #555879 */
-  border: 1px solid rgba(181, 226, 250, 0.1);
+  background: rgba(26, 31, 46, 0.95); /* Dark Titanium */
+  border: 1px solid rgba(66, 133, 255, 0.1);
 }
 
 .nav-ios {
-  background: rgba(249, 247, 243, 0.8); /* Custom cream */
+  background: rgba(245, 246, 248, 0.8); /* Titanium White */
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(15, 163, 177, 0.1);
+  border-bottom: 1px solid rgba(0, 102, 255, 0.1);
 }
 
 .dark .nav-ios {
-  background: rgba(85, 88, 121, 0.8); /* Dark theme using #555879 */
-  border-bottom: 1px solid rgba(181, 226, 250, 0.1);
+  background: rgba(26, 31, 46, 0.8); /* Dark Titanium */
+  border-bottom: 1px solid rgba(66, 133, 255, 0.1);
 }
 
 .card-ios {
-  background: rgba(249, 247, 243, 0.9); /* Custom cream */
+  background: rgba(245, 246, 248, 0.9); /* Titanium White */
   backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
-  border: 1px solid rgba(15, 163, 177, 0.2);
-  box-shadow: 0 4px 24px 0 rgba(15, 163, 177, 0.1);
+  border: 1px solid rgba(0, 102, 255, 0.2);
+  box-shadow: 0 4px 24px 0 rgba(0, 102, 255, 0.1);
 }
 
 .dark .card-ios {
-  background: rgba(85, 88, 121, 0.7); /* Dark theme using #555879 */
-  border: 1px solid rgba(181, 226, 250, 0.1);
+  background: rgba(26, 31, 46, 0.7); /* Dark Titanium */
+  border: 1px solid rgba(66, 133, 255, 0.1);
 }
 
-/* iOS-style buttons with new custom colors */
+/* Samsung Blue Titanium buttons */
 .btn-ios {
   border-radius: 12px;
   font-weight: 600;
@@ -262,42 +243,42 @@
 }
 
 .btn-primary-ios {
-  background: linear-gradient(135deg, hsl(var(--custom-blue)), hsl(var(--custom-orange)));
+  background: linear-gradient(135deg, hsl(var(--samsung-blue-primary)), hsl(var(--samsung-blue-light)));
   color: white;
   border: none;
-  box-shadow: 0 4px 15px 0 rgba(15, 163, 177, 0.3);
+  box-shadow: 0 4px 15px 0 rgba(0, 102, 255, 0.3);
 }
 
 .btn-primary-ios:hover {
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px 0 rgba(15, 163, 177, 0.4);
+  box-shadow: 0 6px 20px 0 rgba(0, 102, 255, 0.4);
 }
 
 .btn-secondary-ios {
-  background: rgba(181, 226, 250, 0.2); /* Custom light blue */
-  border: 1px solid rgba(15, 163, 177, 0.3);
+  background: rgba(209, 217, 230, 0.2); /* Light Titanium */
+  border: 1px solid rgba(0, 102, 255, 0.3);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
 }
 
 .btn-secondary-ios:hover {
-  background: rgba(181, 226, 250, 0.3);
+  background: rgba(209, 217, 230, 0.3);
   transform: translateY(-1px);
 }
 
 /* Glass effects for dark theme */
 .glass-dark {
-  background: rgba(85, 88, 121, 0.4); /* Using #555879 */
+  background: rgba(26, 31, 46, 0.4); /* Dark Titanium */
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(181, 226, 250, 0.1);
+  border: 1px solid rgba(66, 133, 255, 0.1);
 }
 
 .glass-card-dark {
-  background: rgba(85, 88, 121, 0.6); /* Using #555879 */
+  background: rgba(26, 31, 46, 0.6); /* Dark Titanium */
   backdrop-filter: blur(25px);
   -webkit-backdrop-filter: blur(25px);
-  border: 1px solid rgba(181, 226, 250, 0.15);
+  border: 1px solid rgba(66, 133, 255, 0.15);
 }
 
 /* Animation delays */
@@ -317,7 +298,7 @@
   animation-delay: 0.8s;
 }
 
-/* AI Gradient Animation for Logo */
+/* AI Gradient Animation for Logo with Samsung Blue */
 @keyframes gradient {
   0%, 100% {
     background-position: 0% 50%;
@@ -330,6 +311,7 @@
 .animate-gradient {
   animation: gradient 3s ease infinite;
   background-size: 300% 300%;
+  background: linear-gradient(45deg, hsl(var(--samsung-blue-primary)), hsl(var(--samsung-blue-light)), hsl(var(--samsung-blue-dark)));
 }
 
 /* Enhanced animations with hardware acceleration */
@@ -416,60 +398,45 @@
   }
 }
 
-/* Custom color utilities */
-.text-custom-blue { color: hsl(var(--custom-blue)); }
-.text-custom-light-blue { color: hsl(var(--custom-light-blue)); }
-.text-custom-cream { color: hsl(var(--custom-cream)); }
-.text-custom-yellow { color: hsl(var(--custom-yellow)); }
-.text-custom-orange { color: hsl(var(--custom-orange)); }
+/* Samsung Blue Titanium color utilities */
+.text-samsung-blue { color: hsl(var(--samsung-blue-primary)); }
+.text-samsung-blue-light { color: hsl(var(--samsung-blue-light)); }
+.text-samsung-blue-dark { color: hsl(var(--samsung-blue-dark)); }
+.text-titanium-light { color: hsl(var(--titanium-light)); }
+.text-titanium-medium { color: hsl(var(--titanium-medium)); }
+.text-titanium-dark { color: hsl(var(--titanium-dark)); }
+.text-titanium-white { color: hsl(var(--titanium-white)); }
 
-.bg-custom-blue { background-color: hsl(var(--custom-blue)); }
-.bg-custom-light-blue { background-color: hsl(var(--custom-light-blue)); }
-.bg-custom-cream { background-color: hsl(var(--custom-cream)); }
-.bg-custom-yellow { background-color: hsl(var(--custom-yellow)); }
-.bg-custom-orange { background-color: hsl(var(--custom-orange)); }
+.bg-samsung-blue { background-color: hsl(var(--samsung-blue-primary)); }
+.bg-samsung-blue-light { background-color: hsl(var(--samsung-blue-light)); }
+.bg-samsung-blue-dark { background-color: hsl(var(--samsung-blue-dark)); }
+.bg-titanium-light { background-color: hsl(var(--titanium-light)); }
+.bg-titanium-medium { background-color: hsl(var(--titanium-medium)); }
+.bg-titanium-dark { background-color: hsl(var(--titanium-dark)); }
+.bg-titanium-white { background-color: hsl(var(--titanium-white)); }
 
-.border-custom-blue { border-color: hsl(var(--custom-blue)); }
-.border-custom-light-blue { border-color: hsl(var(--custom-light-blue)); }
-.border-custom-cream { border-color: hsl(var(--custom-cream)); }
-.border-custom-yellow { border-color: hsl(var(--custom-yellow)); }
-.border-custom-orange { border-color: hsl(var(--custom-orange)); }
-
-/* iOS color utilities */
-.text-ios-blue { color: hsl(var(--ios-blue)); }
-.text-ios-green { color: hsl(var(--ios-green)); }
-.text-ios-orange { color: hsl(var(--ios-orange)); }
-.text-ios-red { color: hsl(var(--ios-red)); }
-.text-ios-purple { color: hsl(var(--ios-purple)); }
-.text-ios-pink { color: hsl(var(--ios-pink)); }
-.text-ios-yellow { color: hsl(var(--ios-yellow)); }
-.text-ios-indigo { color: hsl(var(--ios-indigo)); }
-.text-ios-teal { color: hsl(var(--ios-teal)); }
-.text-ios-cyan { color: hsl(var(--ios-cyan)); }
-
-.bg-ios-blue { background-color: hsl(var(--ios-blue)); }
-.bg-ios-green { background-color: hsl(var(--ios-green)); }
-.bg-ios-orange { background-color: hsl(var(--ios-orange)); }
-.bg-ios-red { background-color: hsl(var(--ios-red)); }
-.bg-ios-purple { background-color: hsl(var(--ios-purple)); }
-.bg-ios-pink { background-color: hsl(var(--ios-pink)); }
-.bg-ios-yellow { background-color: hsl(var(--ios-yellow)); }
-.bg-ios-indigo { background-color: hsl(var(--ios-indigo)); }
-.bg-ios-teal { background-color: hsl(var(--ios-teal)); }
-.bg-ios-cyan { background-color: hsl(var(--ios-cyan)); }
-
-.border-ios-blue { border-color: hsl(var(--ios-blue)); }
-.border-ios-green { border-color: hsl(var(--ios-green)); }
-.border-ios-orange { border-color: hsl(var(--ios-orange)); }
-.border-ios-red { border-color: hsl(var(--ios-red)); }
-.border-ios-purple { border-color: hsl(var(--ios-purple)); }
-.border-ios-pink { border-color: hsl(var(--ios-pink)); }
-.border-ios-yellow { border-color: hsl(var(--ios-yellow)); }
-.border-ios-indigo { border-color: hsl(var(--ios-indigo)); }
-.border-ios-teal { border-color: hsl(var(--ios-teal)); }
-.border-ios-cyan { border-color: hsl(var(--ios-cyan)); }
+.border-samsung-blue { border-color: hsl(var(--samsung-blue-primary)); }
+.border-samsung-blue-light { border-color: hsl(var(--samsung-blue-light)); }
+.border-samsung-blue-dark { border-color: hsl(var(--samsung-blue-dark)); }
+.border-titanium-light { border-color: hsl(var(--titanium-light)); }
+.border-titanium-medium { border-color: hsl(var(--titanium-medium)); }
+.border-titanium-dark { border-color: hsl(var(--titanium-dark)); }
+.border-titanium-white { border-color: hsl(var(--titanium-white)); }
 
 /* Dynamic primary color utility */
 .text-primary-dynamic { color: var(--primary-dynamic); }
 .bg-primary-dynamic { background-color: var(--primary-dynamic); }
 .border-primary-dynamic { border-color: var(--primary-dynamic); }
+
+/* Samsung Blue Titanium gradients */
+.bg-samsung-gradient {
+  background: linear-gradient(135deg, hsl(var(--samsung-blue-primary)), hsl(var(--samsung-blue-light)));
+}
+
+.bg-titanium-gradient {
+  background: linear-gradient(135deg, hsl(var(--titanium-light)), hsl(var(--titanium-white)));
+}
+
+.dark .bg-titanium-gradient {
+  background: linear-gradient(135deg, hsl(var(--titanium-dark)), rgba(26, 31, 46, 1));
+}

@@ -16,7 +16,7 @@ interface ThemeSettingsContextType {
 }
 
 const defaultThemeSettings: ThemeSettings = {
-  primaryColor: '#3b82f6', // Default blue
+  primaryColor: '#0066FF', // Samsung Blue Titanium
   currency: 'USD',
   siteName: 'AstraVilla Realty',
   isDarkMode: true
@@ -74,19 +74,27 @@ export const ThemeSettingsProvider: React.FC<{ children: React.ReactNode }> = ({
 
       setThemeSettings(prev => ({ ...prev, ...settings }));
       
-      // Apply primary color to CSS custom properties
-      if (settings.primaryColor) {
-        document.documentElement.style.setProperty('--primary-color', settings.primaryColor);
-        
-        // Generate lighter and darker variants
-        const hex = settings.primaryColor.replace('#', '');
-        const r = parseInt(hex.substr(0, 2), 16);
-        const g = parseInt(hex.substr(2, 2), 16);
-        const b = parseInt(hex.substr(4, 2), 16);
-        
-        document.documentElement.style.setProperty('--primary-color-rgb', `${r}, ${g}, ${b}`);
-        document.documentElement.style.setProperty('--primary-color-hover', `rgb(${Math.max(0, r-20)}, ${Math.max(0, g-20)}, ${Math.max(0, b-20)})`);
-      }
+      // Apply Samsung Blue Titanium primary color to CSS custom properties
+      const primaryColor = settings.primaryColor || defaultThemeSettings.primaryColor;
+      document.documentElement.style.setProperty('--primary-color', primaryColor);
+      
+      // Generate Samsung Blue variants
+      const hex = primaryColor.replace('#', '');
+      const r = parseInt(hex.substr(0, 2), 16);
+      const g = parseInt(hex.substr(2, 2), 16);
+      const b = parseInt(hex.substr(4, 2), 16);
+      
+      document.documentElement.style.setProperty('--primary-color-rgb', `${r}, ${g}, ${b}`);
+      document.documentElement.style.setProperty('--primary-color-hover', `rgb(${Math.max(0, r-20)}, ${Math.max(0, g-20)}, ${Math.max(0, b-20)})`);
+      
+      // Set Samsung Blue Titanium colors
+      document.documentElement.style.setProperty('--samsung-blue-primary', '214 100% 47%'); // #0066FF
+      document.documentElement.style.setProperty('--samsung-blue-light', '217 91% 60%');   // #4285FF
+      document.documentElement.style.setProperty('--samsung-blue-dark', '215 50% 35%');    // #2C5AA0
+      document.documentElement.style.setProperty('--titanium-light', '220 30% 85%');       // #D1D9E6
+      document.documentElement.style.setProperty('--titanium-medium', '220 30% 65%');      // #9DB2CC
+      document.documentElement.style.setProperty('--titanium-dark', '220 30% 25%');        // #3D4852
+      document.documentElement.style.setProperty('--titanium-white', '220 15% 96%');       // #F5F6F8
     }
   }, [systemSettings]);
 

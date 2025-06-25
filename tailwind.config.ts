@@ -56,13 +56,17 @@ const config: Config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        // New Color Scheme
-        custom: {
-          blue: "hsl(var(--custom-blue))",
-          lightBlue: "hsl(var(--custom-light-blue))",
-          cream: "hsl(var(--custom-cream))",
-          yellow: "hsl(var(--custom-yellow))",
-          orange: "hsl(var(--custom-orange))",
+        // Samsung Blue Titanium Color Scheme
+        samsung: {
+          blue: "hsl(var(--samsung-blue-primary))",      // #0066FF
+          'blue-light': "hsl(var(--samsung-blue-light))", // #4285FF
+          'blue-dark': "hsl(var(--samsung-blue-dark))",   // #2C5AA0
+        },
+        titanium: {
+          light: "hsl(var(--titanium-light))",           // #D1D9E6
+          medium: "hsl(var(--titanium-medium))",         // #9DB2CC
+          dark: "hsl(var(--titanium-dark))",             // #3D4852
+          white: "hsl(var(--titanium-white))",           // #F5F6F8
         },
       },
       borderRadius: {
@@ -81,10 +85,10 @@ const config: Config = {
         },
         "pulse-glow": {
           "0%, 100%": {
-            textShadow: "0 0 8px #0FA3B1, 0 0 12px #B5E2FA",
+            textShadow: "0 0 8px #0066FF, 0 0 12px #4285FF",
           },
           "50%": {
-            textShadow: "0 0 16px #B5E2FA, 0 0 32px #0FA3B1",
+            textShadow: "0 0 16px #4285FF, 0 0 32px #0066FF",
           },
         },
         "dot-flash": {
@@ -92,12 +96,25 @@ const config: Config = {
           "50%": { opacity: "1" },
           "100%": { opacity: "0.2" },
         },
+        "samsung-gradient": {
+          "0%, 100%": {
+            backgroundPosition: "0% 50%",
+          },
+          "50%": {
+            backgroundPosition: "100% 50%",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "pulse-glow": "pulse-glow 3s ease-in-out infinite",
         "dot-flash": "dot-flash 1.2s infinite",
+        "samsung-gradient": "samsung-gradient 3s ease infinite",
+      },
+      backgroundImage: {
+        'samsung-gradient': 'linear-gradient(135deg, hsl(var(--samsung-blue-primary)), hsl(var(--samsung-blue-light)))',
+        'titanium-gradient': 'linear-gradient(135deg, hsl(var(--titanium-light)), hsl(var(--titanium-white)))',
       },
     },
   },

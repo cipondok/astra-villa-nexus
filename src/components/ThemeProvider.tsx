@@ -44,30 +44,34 @@ export function ThemeProvider({
 
       root.classList.add(systemTheme);
       
-      // Apply custom dark background for system dark mode
+      // Apply Samsung Blue Titanium colors for system theme
       if (systemTheme === "dark") {
-        root.style.setProperty('--background', '51 52 70'); // #333446 in HSL
-        root.style.setProperty('--card', '58 59 78'); // Slightly lighter for cards
+        root.style.setProperty('--background', '220 30% 8%'); // Very Dark Titanium
+        root.style.setProperty('--card', '220 30% 12%'); // Dark Card Background
+        root.style.setProperty('--primary', '217 91% 60%'); // Bright Blue for dark mode
       } else {
-        root.style.removeProperty('--background');
-        root.style.removeProperty('--card');
+        root.style.setProperty('--background', '0 0% 100%'); // White
+        root.style.setProperty('--card', '0 0% 100%'); // White cards
+        root.style.setProperty('--primary', '214 100% 47%'); // Samsung Blue Primary
       }
       return;
     }
 
     root.classList.add(theme);
     
-    // Apply custom dark background for dark and middle themes
+    // Apply Samsung Blue Titanium colors based on theme
     if (theme === "dark") {
-      root.style.setProperty('--background', '51 52 70'); // #333446 in HSL
-      root.style.setProperty('--card', '58 59 78'); // Slightly lighter for cards
+      root.style.setProperty('--background', '220 30% 8%'); // Very Dark Titanium
+      root.style.setProperty('--card', '220 30% 12%'); // Dark Card Background
+      root.style.setProperty('--primary', '217 91% 60%'); // Bright Blue for dark mode
     } else if (theme === "middle") {
-      // Middle theme uses cream background, no custom override needed
-      root.style.removeProperty('--background');
-      root.style.removeProperty('--card');
+      root.style.setProperty('--background', '220 15% 96%'); // Titanium White
+      root.style.setProperty('--card', '0 0% 100%'); // Pure white cards
+      root.style.setProperty('--primary', '214 100% 47%'); // Samsung Blue Primary
     } else {
-      root.style.removeProperty('--background');
-      root.style.removeProperty('--card');
+      root.style.setProperty('--background', '0 0% 100%'); // White
+      root.style.setProperty('--card', '0 0% 100%'); // White cards
+      root.style.setProperty('--primary', '214 100% 47%'); // Samsung Blue Primary
     }
   }, [theme]);
 
