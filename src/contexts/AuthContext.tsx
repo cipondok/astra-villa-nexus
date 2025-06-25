@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -295,51 +294,39 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signOut = async () => {
     try {
-      console.log('Starting sign out process...');
+      console.log('Starting optimized sign out process...');
       setIsSigningOut(true);
-      setLoading(true);
       
-      // Immediately clear local state
+      // Clear local state immediately for faster UI response
       setUser(null);
       setProfile(null);
       setSession(null);
       
-      // Clear all storage immediately
-      localStorage.clear();
-      sessionStorage.clear();
-      
-      // Clear any cookies
-      document.cookie.split(";").forEach((c) => {
-        const eqPos = c.indexOf("=");
-        const name = eqPos > -1 ? c.substr(0, eqPos) : c;
-        document.cookie = `${name.trim()}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
-      });
+      // Clear storage in background
+      setTimeout(() => {
+        localStorage.clear();
+        sessionStorage.clear();
+      }, 0);
       
       // Sign out from Supabase
       const { error } = await supabase.auth.signOut({
-        scope: 'global' // Sign out from all sessions
+        scope: 'global'
       });
       
       if (error) {
         console.error('Supabase signOut error:', error);
-      } else {
-        console.log('Successfully signed out from Supabase');
       }
       
-      // Force reload to ensure clean state
-      setTimeout(() => {
-        window.location.href = '/';
-      }, 100);
+      // Navigate immediately without waiting
+      window.location.href = '/';
       
     } catch (error: any) {
       console.error('Sign out error:', error);
-      // Even if there's an error, clear everything
+      // Fallback cleanup
       setUser(null);
       setProfile(null);
       setSession(null);
       setIsSigningOut(false);
-      localStorage.clear();
-      sessionStorage.clear();
       window.location.href = '/';
     }
   };

@@ -70,24 +70,24 @@ const Navigation = () => {
   ];
 
   const handleSignOut = async () => {
-    if (isSigningOut) return; // Prevent multiple logout attempts
+    if (isSigningOut) return;
     
     try {
-      console.log('Navigation: Starting sign out process...');
+      console.log('Navigation: Starting fast sign out...');
       setIsSigningOut(true);
       setIsOpen(false);
       
-      // Show immediate feedback
-      toast.loading('Signing out...', { duration: 2000 });
+      // Show loading toast briefly
+      toast.loading('Signing out...', { duration: 1000 });
       
-      // Call the signOut function which will handle everything
+      // Call optimized signOut
       await signOut();
       
     } catch (error) {
       console.error('Navigation: Error signing out:', error);
       setIsSigningOut(false);
       toast.error('Error signing out');
-      // Force navigation even if error
+      // Force navigation
       window.location.href = '/';
     }
   };

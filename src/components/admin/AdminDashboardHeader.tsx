@@ -104,11 +104,10 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
     if (isSigningOut) return;
     
     try {
-      console.log('AdminDashboardHeader: Starting sign out process...');
+      console.log('AdminDashboardHeader: Starting fast sign out...');
       setIsSigningOut(true);
       
-      toast.loading('Signing out...', { duration: 2000 });
-      
+      toast.loading('Signing out...', { duration: 1000 });
       setShowProfile(false);
       
       await signOut();
