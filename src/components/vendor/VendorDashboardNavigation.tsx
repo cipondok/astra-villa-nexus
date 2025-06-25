@@ -35,150 +35,122 @@ const VendorDashboardNavigation = ({ activeSection, onSectionChange }: VendorDas
 
   const handleToolClick = (toolId: string) => {
     console.log('Tool clicked:', toolId);
-    
-    switch (toolId) {
-      case 'dashboard':
-        onSectionChange('overview');
-        break;
-      case 'business-profile':
-        onSectionChange('profile');
-        break;
-      case 'services':
-        onSectionChange('services');
-        break;
-      case 'bookings':
-        onSectionChange('bookings');
-        break;
-      case 'customers':
-        onSectionChange('customers');
-        break;
-      case 'billing':
-        onSectionChange('billing');
-        break;
-      case 'progress':
-        onSectionChange('progress');
-        break;
-      case 'holidays':
-        onSectionChange('holidays');
-        break;
-      case 'change-requests':
-        onSectionChange('change-requests');
-        break;
-      case 'kyc-verification':
-        onSectionChange('kyc-verification');
-        break;
-      case 'membership-progress':
-        onSectionChange('membership-progress');
-        break;
-      case 'feedback':
-        onSectionChange('reviews');
-        break;
-      case 'compliance':
-        onSectionChange('compliance');
-        break;
-      case 'customer-service':
-        onSectionChange('support');
-        break;
-      case 'analytics':
-        onSectionChange('analytics');
-        break;
-      default:
-        console.log('Unknown tool:', toolId);
-    }
+    onSectionChange(toolId);
   };
 
   const navigationSections = [
     {
       id: 'dashboard',
-      label: 'Dashboard',
+      label: 'Dashboard Overview',
       icon: LayoutDashboard,
-      description: 'Overview and quick stats'
+      description: 'Main dashboard with stats and overview',
+      isImplemented: true
     },
     {
-      id: 'business-profile',
+      id: 'profile',
       label: 'Business Profile',
       icon: Building2,
-      description: 'Manage business information'
+      description: 'Manage your business information',
+      isImplemented: true
     },
     {
       id: 'services',
-      label: 'Services',
+      label: 'Service Management',
       icon: Settings,
-      description: 'Create and manage services'
+      description: 'Create and manage your services',
+      isImplemented: true
     },
     {
       id: 'bookings',
-      label: 'Bookings',
+      label: 'Booking Management',
       icon: Calendar,
-      description: 'View and manage bookings'
+      description: 'View and manage customer bookings',
+      isImplemented: true
     },
     {
       id: 'customers',
-      label: 'Customers',
+      label: 'Customer Management',
       icon: Users,
-      description: 'Customer management'
+      description: 'Manage your customer relationships',
+      isImplemented: false,
+      badge: 'Coming Soon'
     },
     {
       id: 'billing',
-      label: 'Billing',
+      label: 'Billing & Payments',
       icon: DollarSign,
-      description: 'Invoices and payments (IDR)'
+      description: 'Invoice management and payment tracking',
+      isImplemented: false,
+      badge: 'Coming Soon'
     },
     {
       id: 'progress',
       label: 'Project Progress',
       icon: TrendingUp,
-      description: 'Track project milestones'
+      description: 'Track project milestones and completion',
+      isImplemented: false,
+      badge: 'Coming Soon'
     },
     {
       id: 'holidays',
       label: 'Holiday Management',
       icon: Clock,
-      description: 'Set service holidays'
+      description: 'Set service availability and holidays',
+      isImplemented: false,
+      badge: 'Coming Soon'
     },
     {
       id: 'change-requests',
       label: 'Change Requests',
       icon: FileText,
-      description: 'Request profile changes'
+      description: 'Request profile and service changes',
+      isImplemented: false,
+      badge: 'Coming Soon'
     },
     {
       id: 'kyc-verification',
       label: 'KYC Verification',
       icon: CreditCard,
-      description: 'Identity verification',
+      description: 'Identity and business verification',
+      isImplemented: false,
       badge: 'Required'
     },
     {
       id: 'membership-progress',
       label: 'Membership Level',
       icon: Award,
-      description: 'Track membership progress',
+      description: 'Track your membership progress',
+      isImplemented: false,
       badge: 'New'
     },
     {
-      id: 'feedback',
+      id: 'reviews',
       label: 'Reviews & Feedback',
       icon: Star,
-      description: 'Customer reviews and ratings'
+      description: 'Customer reviews and ratings',
+      isImplemented: true
     },
     {
       id: 'compliance',
-      label: 'Compliance',
+      label: 'Compliance & Licenses',
       icon: Shield,
-      description: 'Licenses and certifications'
+      description: 'Manage licenses and certifications',
+      isImplemented: false,
+      badge: 'Coming Soon'
     },
     {
-      id: 'customer-service',
-      label: 'Customer Service',
+      id: 'support',
+      label: 'Customer Support',
       icon: HeadphonesIcon,
-      description: 'Support tickets'
+      description: 'Support tickets and help center',
+      isImplemented: true
     },
     {
       id: 'analytics',
-      label: 'Analytics',
+      label: 'Business Analytics',
       icon: TrendingUp,
-      description: 'Business insights'
+      description: 'Performance insights and metrics',
+      isImplemented: true
     }
   ];
 
@@ -193,16 +165,25 @@ const VendorDashboardNavigation = ({ activeSection, onSectionChange }: VendorDas
             key={section.id}
             className={`cursor-pointer transition-all hover:shadow-md ${
               isActive 
-                ? 'ring-2 ring-blue-500 bg-blue-50 dark:bg-blue-900/20' 
+                ? 'ring-2 ring-samsung-blue bg-samsung-blue/5 dark:bg-samsung-blue/10' 
                 : 'hover:bg-gray-50 dark:hover:bg-gray-800'
-            }`}
+            } ${!section.isImplemented ? 'opacity-60' : ''}`}
           >
             <CardHeader className="pb-2">
               <CardTitle className="flex items-center gap-2 text-sm">
-                <Icon className={`h-4 w-4 ${isActive ? 'text-blue-600' : 'text-gray-600'}`} />
+                <Icon className={`h-4 w-4 ${
+                  isActive 
+                    ? 'text-samsung-blue' 
+                    : section.isImplemented 
+                      ? 'text-gray-600 dark:text-gray-400' 
+                      : 'text-gray-400'
+                }`} />
                 <span className="flex-1">{section.label}</span>
                 {section.badge && (
-                  <Badge variant="secondary" className="text-xs">
+                  <Badge 
+                    variant={section.badge === 'Required' ? 'destructive' : 'secondary'} 
+                    className="text-xs"
+                  >
                     {section.badge}
                   </Badge>
                 )}
@@ -215,10 +196,17 @@ const VendorDashboardNavigation = ({ activeSection, onSectionChange }: VendorDas
               <Button 
                 size="sm" 
                 variant={isActive ? "default" : "outline"}
-                className="w-full"
-                onClick={() => handleToolClick(section.id)}
+                className={`w-full ${
+                  isActive 
+                    ? 'bg-samsung-blue hover:bg-samsung-blue-dark' 
+                    : section.isImplemented 
+                      ? '' 
+                      : 'opacity-50 cursor-not-allowed'
+                }`}
+                onClick={() => section.isImplemented && handleToolClick(section.id)}
+                disabled={!section.isImplemented}
               >
-                {isActive ? 'Active' : 'Open'}
+                {isActive ? 'Active' : section.isImplemented ? 'Open' : 'Coming Soon'}
               </Button>
             </CardContent>
           </Card>

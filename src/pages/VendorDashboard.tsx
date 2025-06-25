@@ -77,6 +77,8 @@ const VendorDashboard = () => {
   }
 
   const renderActiveSection = () => {
+    console.log('Rendering section:', activeSection);
+    
     switch (activeSection) {
       case 'dashboard':
         return <EnhancedVendorDashboard />;
@@ -99,20 +101,63 @@ const VendorDashboard = () => {
         return <VendorSettings />;
       case 'support':
         return <VendorSupport />;
+      // Placeholder components for sections not yet implemented
+      case 'customers':
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Users className="h-5 w-5" />
+                Customer Management
+              </CardTitle>
+              <CardDescription>
+                Manage your customer relationships and interactions
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="text-center py-8">
+                <Users className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                <h3 className="text-lg font-semibold mb-2">Coming Soon</h3>
+                <p className="text-gray-600">Customer management features are being developed.</p>
+              </div>
+            </CardContent>
+          </Card>
+        );
+      case 'billing':
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <DollarSign className="h-5 w-5" />
+                Billing & Payments
+              </CardTitle>
+              <CardDescription>
+                Manage invoices, payments, and financial transactions
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="text-center py-8">
+                <DollarSign className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                <h3 className="text-lg font-semibold mb-2">Coming Soon</h3>
+                <p className="text-gray-600">Billing and payment features are being developed.</p>
+              </div>
+            </CardContent>
+          </Card>
+        );
       default:
         return <EnhancedVendorDashboard />;
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Header with Home and Theme Toggle */}
-      <div className="bg-white dark:bg-gray-800 shadow-sm border-b">
+    <div className="min-h-screen bg-background">
+      {/* Header with Samsung Blue Titanium styling */}
+      <div className="bg-samsung-gradient shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Vendor Dashboard</h1>
-              <p className="text-gray-600 dark:text-gray-300 mt-1">
+              <h1 className="text-3xl font-bold text-white">Vendor Dashboard</h1>
+              <p className="text-white/80 mt-1">
                 Manage your business, services, and customer relationships
               </p>
             </div>
@@ -120,12 +165,14 @@ const VendorDashboard = () => {
               <Button
                 onClick={handleHomeClick}
                 variant="outline"
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 bg-white/20 border-white/30 text-white hover:bg-white/30"
               >
                 <Home className="h-4 w-4" />
                 <span className="hidden md:block">Home</span>
               </Button>
-              <ThemeSwitcher />
+              <div className="bg-white/20 backdrop-blur-sm border border-white/20 rounded-lg p-1">
+                <ThemeSwitcher variant="compact" />
+              </div>
             </div>
           </div>
         </div>
@@ -134,53 +181,53 @@ const VendorDashboard = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Quick Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card>
+          <Card className="bg-gradient-to-br from-blue-500 to-samsung-blue text-white border-0">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Bookings</p>
+                  <p className="text-sm font-medium text-white/80">Total Bookings</p>
                   <p className="text-2xl font-bold">42</p>
                 </div>
-                <Calendar className="h-8 w-8 text-blue-500" />
+                <Calendar className="h-8 w-8 text-white/80" />
               </div>
             </CardContent>
           </Card>
           
-          <Card>
+          <Card className="bg-gradient-to-br from-green-500 to-green-600 text-white border-0">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">This Month Revenue</p>
+                  <p className="text-sm font-medium text-white/80">This Month Revenue</p>
                   <p className="text-2xl font-bold">$2,340</p>
                 </div>
-                <DollarSign className="h-8 w-8 text-green-500" />
+                <DollarSign className="h-8 w-8 text-white/80" />
               </div>
             </CardContent>
           </Card>
           
-          <Card>
+          <Card className="bg-gradient-to-br from-purple-500 to-purple-600 text-white border-0">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Active Services</p>
+                  <p className="text-sm font-medium text-white/80">Active Services</p>
                   <p className="text-2xl font-bold">8</p>
                 </div>
-                <Store className="h-8 w-8 text-purple-500" />
+                <Store className="h-8 w-8 text-white/80" />
               </div>
             </CardContent>
           </Card>
           
-          <Card>
+          <Card className="bg-gradient-to-br from-orange-500 to-orange-600 text-white border-0">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Customer Rating</p>
+                  <p className="text-sm font-medium text-white/80">Customer Rating</p>
                   <div className="flex items-center gap-2">
                     <p className="text-2xl font-bold">4.8</p>
-                    <Badge className="bg-yellow-100 text-yellow-800">★★★★★</Badge>
+                    <Badge className="bg-yellow-400 text-yellow-900 border-0">★★★★★</Badge>
                   </div>
                 </div>
-                <TrendingUp className="h-8 w-8 text-orange-500" />
+                <TrendingUp className="h-8 w-8 text-white/80" />
               </div>
             </CardContent>
           </Card>
@@ -206,13 +253,14 @@ const VendorDashboard = () => {
                 <div className="space-y-6">
                   <div>
                     <h3 className="text-lg font-semibold mb-4">Vendor Dashboard Tools</h3>
-                    <p className="text-gray-600 dark:text-gray-400 mb-6">
+                    <p className="text-muted-foreground mb-6">
                       Access all vendor management tools and features
                     </p>
                   </div>
                   <VendorDashboardNavigation 
                     activeSection={activeSection}
                     onSectionChange={(section) => {
+                      console.log('Section changed to:', section);
                       setActiveSection(section);
                       setActiveTab('overview');
                     }}

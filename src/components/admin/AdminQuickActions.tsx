@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -17,9 +18,9 @@ import {
   Phone,
   Mail,
   Wifi,
-  LogOut,
   Calendar,
-  TrendingUp
+  TrendingUp,
+  Home
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAdminAlerts } from "@/hooks/useAdminAlerts";
@@ -29,7 +30,7 @@ interface QuickActionProps {
 }
 
 const AdminQuickActions = ({ onTabChange }: QuickActionProps) => {
-  const { signOut } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
   
   // Initialize admin alerts hook to start monitoring
@@ -69,6 +70,44 @@ const AdminQuickActions = ({ onTabChange }: QuickActionProps) => {
         newToday: newToday || 0,
         approved: approved || 0,
         pending: pending || 0
+      };
+    },
+  });
+
+  // Fetch user statistics
+  const { data: userStats } = useQuery({
+    queryKey: ['user-stats'],
+    queryFn: async () => {
+      const today = new Date().toISOString().split('T')[0];
+      
+      // Total users
+      const { count: totalUsers } = await supabase
+        .from('profiles')
+        .select('*', { count: 'exact', head: true });
+
+      // New users today
+      const { count: newUsersToday } = await supabase
+        .from('profiles')
+        .select('*', { count: 'exact', head: true })
+        .gte('created_at', today);
+
+      // Vendors
+      const { count: vendors } = await supabase
+        .from('profiles')
+        .select('*', { count: 'exact', head: true })
+        .eq('role', 'vendor');
+
+      // Agents
+      const { count: agents } = await supabase
+        .from('profiles')
+        .select('*', { count: 'exact', head: true })
+        .eq('role', 'agent');
+
+      return {
+        total: totalUsers || 0,
+        newToday: newUsersToday || 0,
+        vendors: vendors || 0,
+        agents: agents || 0
       };
     },
   });
@@ -120,17 +159,6 @@ const AdminQuickActions = ({ onTabChange }: QuickActionProps) => {
     },
   });
 
-  const handleLogout = async () => {
-    try {
-      console.log('Attempting to logout...');
-      await signOut();
-      console.log('Logout successful, navigating to home...');
-      navigate('/', { replace: true });
-    } catch (error) {
-      console.error('Logout error:', error);
-    }
-  };
-
   const quickActions = [
     {
       title: "Total Properties",
@@ -169,42 +197,42 @@ const AdminQuickActions = ({ onTabChange }: QuickActionProps) => {
       description: "Properties awaiting approval"
     },
     {
-      title: "Communication Hub",
-      count: 23,
+      title: "Total Users",
+      count: userStats?.total || 0,
       action: "Manage",
-      tab: "communication",
-      icon: MessageSquare,
+      tab: "users",
+      icon: Users,
       variant: "default" as const,
-      description: "Active conversations and channels"
+      description: "All registered users"
     },
     {
-      title: "Vendor Directory",
-      count: 8,
-      action: "Contact",
-      tab: "vendor-directory",
-      icon: Phone,
+      title: "Vendors",
+      count: userStats?.vendors || 0,
+      action: "View",
+      tab: "users",
+      icon: MessageSquare,
       variant: "secondary" as const,
-      description: "Available vendors by service type"
+      description: "Registered vendor accounts"
     }
   ];
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-      <Card>
+      <Card className="bg-samsung-gradient text-white border-0">
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle className="flex items-center gap-2">
+            <CardTitle className="flex items-center gap-2 text-white">
               <TrendingUp className="h-5 w-5" />
-              Property Statistics & Quick Actions
+              Quick Statistics & Actions
             </CardTitle>
             <Button 
-              variant="destructive" 
+              variant="outline" 
               size="sm"
-              onClick={handleLogout}
-              className="flex items-center gap-2"
+              onClick={() => navigate('/')}
+              className="flex items-center gap-2 bg-white/20 border-white/30 text-white hover:bg-white/30"
             >
-              <LogOut className="h-4 w-4" />
-              Logout
+              <Home className="h-4 w-4" />
+              Home
             </Button>
           </div>
         </CardHeader>
@@ -212,21 +240,27 @@ const AdminQuickActions = ({ onTabChange }: QuickActionProps) => {
           {quickActions.map((action, index) => (
             <div
               key={index}
-              className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50 transition-colors"
+              className="flex items-center justify-between p-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg hover:bg-white/20 transition-colors"
             >
               <div className="flex items-center gap-3">
-                <action.icon className="h-5 w-5 text-muted-foreground" />
+                <action.icon className="h-5 w-5 text-white/80" />
                 <div>
-                  <div className="font-medium">{action.title}</div>
-                  <div className="text-xs text-muted-foreground">{action.description}</div>
+                  <div className="font-medium text-white">{action.title}</div>
+                  <div className="text-xs text-white/70">{action.description}</div>
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <Badge variant={action.variant}>{action.count}</Badge>
+                <Badge 
+                  variant="outline" 
+                  className="bg-white/20 text-white border-white/30"
+                >
+                  {action.count}
+                </Badge>
                 <Button
                   size="sm"
                   variant="outline"
                   onClick={() => onTabChange(action.tab)}
+                  className="bg-white/20 border-white/30 text-white hover:bg-white/30"
                 >
                   {action.action}
                 </Button>
