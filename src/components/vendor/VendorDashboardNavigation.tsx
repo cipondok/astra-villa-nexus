@@ -44,28 +44,32 @@ const VendorDashboardNavigation = ({ activeSection, onSectionChange }: VendorDas
       label: 'Dashboard Overview',
       icon: LayoutDashboard,
       description: 'Main dashboard with stats and overview',
-      isImplemented: true
+      isImplemented: true,
+      onClick: () => handleToolClick('dashboard')
     },
     {
       id: 'profile',
       label: 'Business Profile',
       icon: Building2,
       description: 'Manage your business information',
-      isImplemented: true
+      isImplemented: true,
+      onClick: () => handleToolClick('profile')
     },
     {
       id: 'services',
       label: 'Service Management',
       icon: Settings,
       description: 'Create and manage your services',
-      isImplemented: true
+      isImplemented: true,
+      onClick: () => handleToolClick('services')
     },
     {
       id: 'bookings',
       label: 'Booking Management',
       icon: Calendar,
       description: 'View and manage customer bookings',
-      isImplemented: true
+      isImplemented: true,
+      onClick: () => handleToolClick('bookings')
     },
     {
       id: 'customers',
@@ -73,7 +77,8 @@ const VendorDashboardNavigation = ({ activeSection, onSectionChange }: VendorDas
       icon: Users,
       description: 'Manage your customer relationships',
       isImplemented: false,
-      badge: 'Coming Soon'
+      badge: 'Coming Soon',
+      onClick: () => handleToolClick('customers')
     },
     {
       id: 'billing',
@@ -81,7 +86,8 @@ const VendorDashboardNavigation = ({ activeSection, onSectionChange }: VendorDas
       icon: DollarSign,
       description: 'Invoice management and payment tracking',
       isImplemented: false,
-      badge: 'Coming Soon'
+      badge: 'Coming Soon',
+      onClick: () => handleToolClick('billing')
     },
     {
       id: 'progress',
@@ -89,7 +95,8 @@ const VendorDashboardNavigation = ({ activeSection, onSectionChange }: VendorDas
       icon: TrendingUp,
       description: 'Track project milestones and completion',
       isImplemented: false,
-      badge: 'Coming Soon'
+      badge: 'Coming Soon',
+      onClick: () => {}
     },
     {
       id: 'holidays',
@@ -97,7 +104,8 @@ const VendorDashboardNavigation = ({ activeSection, onSectionChange }: VendorDas
       icon: Clock,
       description: 'Set service availability and holidays',
       isImplemented: false,
-      badge: 'Coming Soon'
+      badge: 'Coming Soon',
+      onClick: () => {}
     },
     {
       id: 'change-requests',
@@ -105,7 +113,8 @@ const VendorDashboardNavigation = ({ activeSection, onSectionChange }: VendorDas
       icon: FileText,
       description: 'Request profile and service changes',
       isImplemented: false,
-      badge: 'Coming Soon'
+      badge: 'Coming Soon',
+      onClick: () => {}
     },
     {
       id: 'kyc-verification',
@@ -113,7 +122,8 @@ const VendorDashboardNavigation = ({ activeSection, onSectionChange }: VendorDas
       icon: CreditCard,
       description: 'Identity and business verification',
       isImplemented: false,
-      badge: 'Required'
+      badge: 'Required',
+      onClick: () => {}
     },
     {
       id: 'membership-progress',
@@ -121,14 +131,16 @@ const VendorDashboardNavigation = ({ activeSection, onSectionChange }: VendorDas
       icon: Award,
       description: 'Track your membership progress',
       isImplemented: false,
-      badge: 'New'
+      badge: 'New',
+      onClick: () => {}
     },
     {
       id: 'reviews',
       label: 'Reviews & Feedback',
       icon: Star,
       description: 'Customer reviews and ratings',
-      isImplemented: true
+      isImplemented: true,
+      onClick: () => handleToolClick('reviews')
     },
     {
       id: 'compliance',
@@ -136,21 +148,24 @@ const VendorDashboardNavigation = ({ activeSection, onSectionChange }: VendorDas
       icon: Shield,
       description: 'Manage licenses and certifications',
       isImplemented: false,
-      badge: 'Coming Soon'
+      badge: 'Coming Soon',
+      onClick: () => {}
     },
     {
       id: 'support',
       label: 'Customer Support',
       icon: HeadphonesIcon,
       description: 'Support tickets and help center',
-      isImplemented: true
+      isImplemented: true,
+      onClick: () => handleToolClick('support')
     },
     {
       id: 'analytics',
       label: 'Business Analytics',
       icon: TrendingUp,
       description: 'Performance insights and metrics',
-      isImplemented: true
+      isImplemented: true,
+      onClick: () => handleToolClick('analytics')
     }
   ];
 
@@ -168,6 +183,7 @@ const VendorDashboardNavigation = ({ activeSection, onSectionChange }: VendorDas
                 ? 'ring-2 ring-samsung-blue bg-samsung-blue/5 dark:bg-samsung-blue/10' 
                 : 'hover:bg-gray-50 dark:hover:bg-gray-800'
             } ${!section.isImplemented ? 'opacity-60' : ''}`}
+            onClick={section.onClick}
           >
             <CardHeader className="pb-2">
               <CardTitle className="flex items-center gap-2 text-sm">
@@ -203,7 +219,6 @@ const VendorDashboardNavigation = ({ activeSection, onSectionChange }: VendorDas
                       ? '' 
                       : 'opacity-50 cursor-not-allowed'
                 }`}
-                onClick={() => section.isImplemented && handleToolClick(section.id)}
                 disabled={!section.isImplemented}
               >
                 {isActive ? 'Active' : section.isImplemented ? 'Open' : 'Coming Soon'}

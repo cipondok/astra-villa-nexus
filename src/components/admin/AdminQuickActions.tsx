@@ -167,7 +167,8 @@ const AdminQuickActions = ({ onTabChange }: QuickActionProps) => {
       tab: "properties",
       icon: Building2,
       variant: "default" as const,
-      description: "All property listings in system"
+      description: "All property listings in system",
+      onClick: () => onTabChange("properties")
     },
     {
       title: "New Today",
@@ -176,7 +177,8 @@ const AdminQuickActions = ({ onTabChange }: QuickActionProps) => {
       tab: "properties",
       icon: Calendar,
       variant: "secondary" as const,
-      description: "Properties added today"
+      description: "Properties added today",
+      onClick: () => onTabChange("properties")
     },
     {
       title: "Approved Properties",
@@ -185,7 +187,8 @@ const AdminQuickActions = ({ onTabChange }: QuickActionProps) => {
       tab: "properties",
       icon: CheckCircle,
       variant: "default" as const,
-      description: "Live approved properties"
+      description: "Live approved properties",
+      onClick: () => onTabChange("properties")
     },
     {
       title: "Pending Approval",
@@ -194,7 +197,8 @@ const AdminQuickActions = ({ onTabChange }: QuickActionProps) => {
       tab: "properties",
       icon: Clock,
       variant: "destructive" as const,
-      description: "Properties awaiting approval"
+      description: "Properties awaiting approval",
+      onClick: () => onTabChange("properties")
     },
     {
       title: "Total Users",
@@ -203,7 +207,8 @@ const AdminQuickActions = ({ onTabChange }: QuickActionProps) => {
       tab: "users",
       icon: Users,
       variant: "default" as const,
-      description: "All registered users"
+      description: "All registered users",
+      onClick: () => onTabChange("users")
     },
     {
       title: "Vendors",
@@ -212,7 +217,8 @@ const AdminQuickActions = ({ onTabChange }: QuickActionProps) => {
       tab: "users",
       icon: MessageSquare,
       variant: "secondary" as const,
-      description: "Registered vendor accounts"
+      description: "Registered vendor accounts",
+      onClick: () => onTabChange("users")
     }
   ];
 
@@ -240,7 +246,8 @@ const AdminQuickActions = ({ onTabChange }: QuickActionProps) => {
           {quickActions.map((action, index) => (
             <div
               key={index}
-              className="flex items-center justify-between p-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg hover:bg-white/20 transition-colors"
+              className="flex items-center justify-between p-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg hover:bg-white/20 transition-colors cursor-pointer"
+              onClick={action.onClick}
             >
               <div className="flex items-center gap-3">
                 <action.icon className="h-5 w-5 text-white/80" />
@@ -259,7 +266,6 @@ const AdminQuickActions = ({ onTabChange }: QuickActionProps) => {
                 <Button
                   size="sm"
                   variant="outline"
-                  onClick={() => onTabChange(action.tab)}
                   className="bg-white/20 border-white/30 text-white hover:bg-white/30"
                 >
                   {action.action}
