@@ -10,13 +10,15 @@ import ResponsiveAIChatWidget from "@/components/ai/ResponsiveAIChatWidget";
 import { supabase } from "@/integrations/supabase/client";
 
 const Index = () => {
+  console.log('Index component rendering...');
+  
   const { language } = useLanguage();
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
 
-  // Simple featured properties query without aggressive timeout
+  // Simplified featured properties query
   const { data: featuredProperties = [], isLoading: isFeaturedLoading } = useQuery({
     queryKey: ['featured-properties'],
     queryFn: async () => {
@@ -44,10 +46,8 @@ const Index = () => {
       }
     },
     retry: 1,
-    retryDelay: 1000,
     refetchOnWindowFocus: false,
     staleTime: 60000,
-    gcTime: 300000,
   });
 
   const handleSearch = async (searchData: any) => {
@@ -146,19 +146,26 @@ const Index = () => {
     await handleSearch({ query: searchTerm });
   };
 
-  // Add error boundary console log
   useEffect(() => {
     console.log('Index page mounted, language:', language);
     console.log('Featured properties:', featuredProperties?.length || 0);
   }, [language, featuredProperties]);
+
+  console.log('Index rendering with:', {
+    language,
+    featuredPropertiesCount: featuredProperties?.length,
+    isLoading: isFeaturedLoading,
+    hasSearched,
+    searchResultsCount: searchResults?.length
+  });
 
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
       
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-custom-blue via-custom-lightBlue to-custom-orange text-white py-8 sm:py-12 lg:py-16 px-2 sm:px-4">
-        <div className="absolute inset-0 bg-gradient-to-t from-custom-cream/10 to-transparent"></div>
+      <section className="relative bg-gradient-to-br from-blue-600 via-blue-500 to-orange-400 text-white py-8 sm:py-12 lg:py-16 px-2 sm:px-4">
+        <div className="absolute inset-0 bg-gradient-to-t from-cream/10 to-transparent"></div>
         <div className="container mx-auto text-center relative z-10">
           <h1 className="text-2xl sm:text-3xl lg:text-5xl font-bold mb-4 sm:mb-6 animate-fade-in px-2">
             {language === "en" ? "Find Your Dream Property" : "Temukan Properti Impian Anda"}
