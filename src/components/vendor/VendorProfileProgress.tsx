@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
@@ -7,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useAlert } from '@/contexts/AlertContext';
+import { useNavigate } from 'react-router-dom';
 import { 
   CheckCircle, 
   Clock, 
@@ -17,7 +17,11 @@ import {
   Hash,
   TrendingUp,
   Settings,
-  Eye
+  Eye,
+  Edit,
+  Plus,
+  Star,
+  Calendar
 } from 'lucide-react';
 
 interface ProfileSection {
@@ -30,6 +34,7 @@ interface ProfileSection {
 const VendorProfileProgress = () => {
   const { user, profile } = useAuth();
   const { showSuccess, showError } = useAlert();
+  const navigate = useNavigate();
   const [profileData, setProfileData] = useState<any>(null);
   const [sections, setSections] = useState<ProfileSection[]>([]);
   const [userLevel, setUserLevel] = useState<string>('Beginner');
@@ -156,7 +161,7 @@ const VendorProfileProgress = () => {
   };
 
   const formatUserIdHash = (userId: string) => {
-    if (!userId) return 'No ID';
+    if (!userId) return '#XXXXXXXX';
     return `#${userId.slice(0, 8).toUpperCase()}`;
   };
 
@@ -183,13 +188,29 @@ const VendorProfileProgress = () => {
     }
   };
 
+  const handleEditProfile = () => {
+    navigate('/dashboard/vendor?tab=profile');
+  };
+
+  const handleAddServices = () => {
+    navigate('/dashboard/vendor?tab=services');
+  };
+
+  const handlePreviewProfile = () => {
+    navigate('/vendor/profile/' + user?.id);
+  };
+
+  const handleBusinessSetup = () => {
+    navigate('/dashboard/vendor?tab=settings');
+  };
+
   const completedSections = sections.filter(section => section.completed).length;
   const totalSections = sections.length;
 
   return (
     <div className="space-y-6">
       {/* User Level & ID Card */}
-      <Card className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20">
+      <Card className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 border-l-4 border-l-blue-500">
         <CardHeader>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -197,7 +218,15 @@ const VendorProfileProgress = () => {
                 <User className="h-6 w-6 text-blue-600 dark:text-blue-400" />
               </div>
               <div>
-                <CardTitle className="text-xl">Vendor Profile</CardTitle>
+                <CardTitle className="text-xl flex items-center gap-2">
+                  {profile?.full_name || 'Vendor Profile'}
+                  <Badge 
+                    variant="outline" 
+                    className="text-xs bg-green-100 text-green-800 border-green-300"
+                  >
+                    Online
+                  </Badge>
+                </CardTitle>
                 <div className="flex items-center gap-2 mt-1">
                   <Hash className="h-4 w-4 text-gray-500" />
                   <span className="text-sm font-mono text-gray-600 dark:text-gray-400">
@@ -206,69 +235,118 @@ const VendorProfileProgress = () => {
                 </div>
               </div>
             </div>
-            <Badge 
-              variant="outline" 
-              className={`px-3 py-1 text-sm font-medium ${
-                userLevel === 'Expert' ? 'bg-green-100 text-green-800 border-green-300' :
-                userLevel === 'Advanced' ? 'bg-blue-100 text-blue-800 border-blue-300' :
-                userLevel === 'Intermediate' ? 'bg-purple-100 text-purple-800 border-purple-300' :
-                userLevel === 'Beginner' ? 'bg-orange-100 text-orange-800 border-orange-300' :
-                'bg-gray-100 text-gray-800 border-gray-300'
-              }`}
-            >
-              {userLevel} Level
-            </Badge>
+            <div className="flex flex-col items-end gap-1">
+              <Badge 
+                variant="outline" 
+                className={`px-3 py-1 text-sm font-medium ${
+                  userLevel === 'Expert' ? 'bg-green-100 text-green-800 border-green-300' :
+                  userLevel === 'Advanced' ? 'bg-blue-100 text-blue-800 border-blue-300' :
+                  userLevel === 'Intermediate' ? 'bg-purple-100 text-purple-800 border-purple-300' :
+                  userLevel === 'Beginner' ? 'bg-orange-100 text-orange-800 border-orange-300' :
+                  'bg-gray-100 text-gray-800 border-gray-300'
+                }`}
+              >
+                <Star className="h-3 w-3 mr-1" />
+                {userLevel} Level
+              </Badge>
+              <div className="text-xs text-gray-500">
+                Current Level
+              </div>
+            </div>
           </div>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="text-center">
+            <div className="text-center p-3 bg-white/50 dark:bg-gray-800/50 rounded-lg">
               <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">{completionPercentage}%</div>
               <div className="text-sm text-gray-600 dark:text-gray-400">Profile Complete</div>
             </div>
-            <div className="text-center">
+            <div className="text-center p-3 bg-white/50 dark:bg-gray-800/50 rounded-lg">
               <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">{completedSections}/{totalSections}</div>
               <div className="text-sm text-gray-600 dark:text-gray-400">Sections Done</div>
             </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-green-600 dark:text-green-400">{getProgressToNextLevel()}%</div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">To {getNextLevel()}</div>
+            <div className="text-center p-3 bg-white/50 dark:bg-gray-800/50 rounded-lg">
+              <div className="text-2xl font-bold text-green-600 dark:text-green-400">
+                {userLevel === 'Expert' ? '🎯' : `${getProgressToNextLevel()}%`}
+              </div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">
+                {userLevel === 'Expert' ? 'Max Level' : `To ${getNextLevel()}`}
+              </div>
             </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* Progress Overview */}
+      {/* Progress Overview with Upcoming Progress */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <TrendingUp className="h-5 w-5" />
-            Progress Overview
+            Progress Overview & Upcoming Milestones
           </CardTitle>
           <CardDescription>
-            Track your profile completion and level progression
+            Track your profile completion and see what's next
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="text-lg font-semibold">Current Level: {userLevel}</div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">
-                  {userLevel === 'Expert' ? 'Maximum level reached!' : `${getProgressToNextLevel()}% needed for ${getNextLevel()}`}
+          <div className="space-y-6">
+            {/* Current Progress */}
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <div>
+                  <div className="text-lg font-semibold">Current Level: {userLevel}</div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400">
+                    {userLevel === 'Expert' ? 'Maximum level reached!' : `${getProgressToNextLevel()}% needed for ${getNextLevel()}`}
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className="text-2xl font-bold text-blue-600">{completionPercentage}%</div>
+                  <div className="text-xs text-gray-500">Complete</div>
                 </div>
               </div>
+              
+              <Progress value={completionPercentage} className="h-4 mb-2" />
+              
+              <div className="flex justify-between text-xs text-gray-600 dark:text-gray-400">
+                <span>Newcomer</span>
+                <span>Beginner</span>
+                <span>Intermediate</span>
+                <span>Advanced</span>
+                <span>Expert</span>
+              </div>
             </div>
-            
-            <Progress value={completionPercentage} className="h-3" />
-            
-            <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
-              <span>0%</span>
-              <span>25%</span>
-              <span>50%</span>
-              <span>70%</span>
-              <span>90%</span>
-              <span>100%</span>
+
+            {/* Upcoming Progress */}
+            <div className="border-t pt-4">
+              <h4 className="font-medium mb-3 flex items-center gap-2">
+                <Calendar className="h-4 w-4" />
+                Upcoming Progress
+              </h4>
+              <div className="space-y-2">
+                {userLevel !== 'Expert' && (
+                  <div className="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                    <div className="flex items-center gap-2">
+                      <Award className="h-4 w-4 text-blue-600" />
+                      <span className="font-medium">Reach {getNextLevel()} Level</span>
+                    </div>
+                    <Badge variant="outline" className="bg-blue-100 text-blue-800">
+                      {getProgressToNextLevel()}% needed
+                    </Badge>
+                  </div>
+                )}
+                
+                {completionPercentage < 100 && (
+                  <div className="flex items-center justify-between p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                    <div className="flex items-center gap-2">
+                      <CheckCircle className="h-4 w-4 text-green-600" />
+                      <span className="font-medium">Complete Profile</span>
+                    </div>
+                    <Badge variant="outline" className="bg-green-100 text-green-800">
+                      {100 - completionPercentage}% remaining
+                    </Badge>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </CardContent>
@@ -314,85 +392,70 @@ const VendorProfileProgress = () => {
         </CardContent>
       </Card>
 
-      {/* Quick Actions */}
-      {completionPercentage < 100 && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Quick Actions</CardTitle>
-            <CardDescription>
-              Tools to help complete your profile faster
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <Button variant="outline" className="justify-start">
-                <Settings className="h-4 w-4 mr-2" />
-                Edit Profile
-              </Button>
-              <Button variant="outline" className="justify-start">
-                <Building className="h-4 w-4 mr-2" />
-                Business Setup
-              </Button>
-              <Button variant="outline" className="justify-start">
-                <FileText className="h-4 w-4 mr-2" />
-                Add Services
-              </Button>
-              <Button variant="outline" className="justify-start">
-                <Eye className="h-4 w-4 mr-2" />
-                Preview Profile
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Upcoming Milestones */}
+      {/* Quick Actions - Make tools functional */}
       <Card>
         <CardHeader>
-          <CardTitle>Upcoming Progress</CardTitle>
+          <CardTitle>Quick Actions</CardTitle>
           <CardDescription>
-            Your next achievements and milestones
+            Tools to help complete your profile faster
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="space-y-3">
-            {userLevel !== 'Expert' && (
-              <div className="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                <div className="flex items-center gap-2">
-                  <Award className="h-4 w-4 text-blue-600" />
-                  <span className="font-medium">Reach {getNextLevel()} Level</span>
-                </div>
-                <Badge variant="outline">
-                  {getProgressToNextLevel()}% needed
-                </Badge>
-              </div>
-            )}
-            
-            {completionPercentage < 100 && (
-              <div className="flex items-center justify-between p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="h-4 w-4 text-green-600" />
-                  <span className="font-medium">Complete Profile</span>
-                </div>
-                <Badge variant="outline">
-                  {100 - completionPercentage}% remaining
-                </Badge>
-              </div>
-            )}
-            
-            {completionPercentage >= 100 && userLevel === 'Expert' && (
-              <div className="text-center py-4">
-                <div className="text-lg font-semibold text-green-600 dark:text-green-400">
-                  🎉 Congratulations!
-                </div>
-                <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                  You've completed your vendor profile and reached Expert level!
-                </div>
-              </div>
-            )}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <Button 
+              variant="outline" 
+              className="justify-start"
+              onClick={handleEditProfile}
+            >
+              <Edit className="h-4 w-4 mr-2" />
+              Edit Profile
+            </Button>
+            <Button 
+              variant="outline" 
+              className="justify-start"
+              onClick={handleBusinessSetup}
+            >
+              <Building className="h-4 w-4 mr-2" />
+              Business Setup
+            </Button>
+            <Button 
+              variant="outline" 
+              className="justify-start"
+              onClick={handleAddServices}
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Add Services
+            </Button>
+            <Button 
+              variant="outline" 
+              className="justify-start"
+              onClick={handlePreviewProfile}
+            >
+              <Eye className="h-4 w-4 mr-2" />
+              Preview Profile
+            </Button>
           </div>
         </CardContent>
       </Card>
+
+      {/* Achievement Celebration */}
+      {completionPercentage >= 100 && userLevel === 'Expert' && (
+        <Card className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-green-200">
+          <CardContent className="text-center py-6">
+            <div className="text-4xl mb-2">🎉</div>
+            <div className="text-lg font-semibold text-green-600 dark:text-green-400 mb-1">
+              Congratulations!
+            </div>
+            <div className="text-sm text-gray-600 dark:text-gray-400">
+              You've completed your vendor profile and reached Expert level!
+            </div>
+            <Button className="mt-4" onClick={handlePreviewProfile}>
+              <Eye className="h-4 w-4 mr-2" />
+              View Your Profile
+            </Button>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 };
