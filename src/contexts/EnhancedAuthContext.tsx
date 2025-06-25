@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -72,32 +73,37 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
         localStorage.setItem('device_fingerprint', fingerprint);
 
         // Check for existing active sessions - non-blocking
-        supabase
-          .from('user_device_sessions')
-          .select('*')
-          .eq('user_id', userId)
-          .eq('is_active', true)
-          .then(({ data: existingSessions }) => {
-            if (existingSessions && existingSessions.length > 0) {
-              showWarning(
-                "Multiple Login Detected",
-                `You are already logged in on ${existingSessions.length} other device(s). For security, please log out from unused devices.`
-              );
-            }
-          })
-          .catch(err => console.error('Session check error:', err));
+        try {
+          const { data: existingSessions } = await supabase
+            .from('user_device_sessions')
+            .select('*')
+            .eq('user_id', userId)
+            .eq('is_active', true);
+
+          if (existingSessions && existingSessions.length > 0) {
+            showWarning(
+              "Multiple Login Detected",
+              `You are already logged in on ${existingSessions.length} other device(s). For security, please log out from unused devices.`
+            );
+          }
+        } catch (err) {
+          console.error('Session check error:', err);
+        }
 
         // Create new session record - non-blocking
-        supabase
-          .from('user_device_sessions')
-          .insert({
-            user_id: userId,
-            device_info: deviceInfo,
-            device_fingerprint: fingerprint,
-            session_token: crypto.randomUUID(),
-            expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
-          })
-          .catch(err => console.error('Session create error:', err));
+        try {
+          await supabase
+            .from('user_device_sessions')
+            .insert({
+              user_id: userId,
+              device_info: deviceInfo,
+              device_fingerprint: fingerprint,
+              session_token: crypto.randomUUID(),
+              expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
+            });
+        } catch (err) {
+          console.error('Session create error:', err);
+        }
       }
     } catch (error) {
       console.error('Session tracking error:', error);
@@ -548,9 +554,11 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
       sessionStorage.clear();
       
       // Supabase sign out in background
-      supabase.auth.signOut().catch(error => {
+      try {
+        await supabase.auth.signOut();
+      } catch (error) {
         console.error('Background sign out error:', error);
-      });
+      }
       
       // Navigate immediately
       window.location.replace('/');
