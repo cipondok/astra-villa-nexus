@@ -18,7 +18,9 @@ import Services from "./pages/Services";
 import ServiceForm from "./pages/ServiceForm";
 import VendorDashboard from "./pages/VendorDashboard";
 
-console.log('=== APP.TSX DEBUG START ===');
+// Simple deployment verification
+console.log('🚀 DEPLOYMENT CHECK: App.tsx loaded at', new Date().toISOString());
+console.log('🚀 DEPLOYMENT CHECK: React version:', React.version);
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -30,15 +32,22 @@ const queryClient = new QueryClient({
   },
 });
 
-console.log('1. QueryClient created:', queryClient);
-
 const App: React.FC = () => {
-  console.log('2. App component rendering...');
+  console.log('🚀 DEPLOYMENT CHECK: App component rendering...');
   
-  try {
-    console.log('3. Rendering app structure...');
-    
-    return (
+  return (
+    <div style={{ background: 'white', minHeight: '100vh' }}>
+      <div style={{ 
+        padding: '20px', 
+        background: 'green', 
+        color: 'white', 
+        textAlign: 'center',
+        fontSize: '18px',
+        fontWeight: 'bold'
+      }}>
+        ✅ NEW VERSION IS LIVE! Deployment working at {new Date().toLocaleTimeString()}
+      </div>
+      
       <QueryClientProvider client={queryClient}>
         <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
           <LanguageProvider>
@@ -66,34 +75,8 @@ const App: React.FC = () => {
           </LanguageProvider>
         </ThemeProvider>
       </QueryClientProvider>
-    );
-  } catch (error) {
-    console.error('❌ Error in App component:', error);
-    console.error('Error stack:', error.stack);
-    
-    // Fallback UI
-    return (
-      <div style={{ 
-        padding: '20px', 
-        background: 'red', 
-        color: 'white', 
-        fontSize: '20px',
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        zIndex: 9999
-      }}>
-        <h1>ERROR IN APP COMPONENT</h1>
-        <p>Check the console for details</p>
-        <pre>{error.toString()}</pre>
-      </div>
-    );
-  }
+    </div>
+  );
 };
-
-console.log('4. App component defined');
-console.log('=== APP.TSX DEBUG END ===');
 
 export default App;
