@@ -1,137 +1,120 @@
 
 import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Button } from '@/components/ui/button';
-import {
-  BarChart3,
-  Users,
-  Store,
-  Settings,
-  FileText,
-  Palette,
-  Loader2,
-  LayoutDashboard
-} from 'lucide-react';
-import AdminDashboardHeader from './AdminDashboardHeader';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { BarChart3, Activity, Globe, Users, FileText, TrendingUp, Home, Settings, Building, Store, Shield } from "lucide-react";
+import AdminOverview from './AdminOverview';
 import UserManagement from './UserManagement';
 import PropertyManagement from './PropertyManagement';
+import VendorManagementHub from './VendorManagementHub';
 import SystemSettings from './SystemSettings';
-import WebSettingsControl from './WebSettingsControl';
-import ThemeSettings from './ThemeSettings';
-import ContentManagement from './ContentManagement';
-import AlertMonitoring from './AlertMonitoring';
-import LoadingCustomization from './LoadingCustomization';
-import { useAuth } from '@/contexts/AuthContext';
-import { adminNavigationSections } from './navigationSections';
+import AnalyticsDashboard from './AnalyticsDashboard';
 
 const AdvancedAdminDashboard = () => {
-  const [activeComponent, setActiveComponent] = useState('Dashboard');
-  const { user, profile } = useAuth();
+  const [activeTab, setActiveTab] = useState('overview');
 
-  const renderActiveComponent = () => {
-    console.log('Rendering component:', activeComponent);
+  console.log('AdvancedAdminDashboard - Current active tab:', activeTab);
+
+  const handleTabChange = (tab: string) => {
+    console.log('AdvancedAdminDashboard - Tab changed to:', tab);
+    setActiveTab(tab);
+  };
+
+  const renderTabContent = () => {
+    console.log('AdvancedAdminDashboard - Rendering content for tab:', activeTab);
     
-    switch (activeComponent) {
-      case 'Dashboard':
-        return (
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <LayoutDashboard className="h-5 w-5" />
-                Dashboard Overview
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground">
-                Welcome to the admin dashboard. Manage users, properties, and system settings.
-              </p>
-            </CardContent>
-          </Card>
-        );
-      case 'UserManagement':
+    switch (activeTab) {
+      case 'overview':
+        return <AdminOverview />;
+      case 'users':
         return <UserManagement />;
-      case 'PropertyManagement':
+      case 'properties':
         return <PropertyManagement />;
-      case 'SystemSettings':
+      case 'vendors':
+        return <VendorManagementHub />;
+      case 'system-settings':
         return <SystemSettings />;
-      case 'WebSettingsControl':
-        return <WebSettingsControl />;
-      case 'ThemeSettings':
-        return <ThemeSettings />;
-      case 'ContentManagement':
-        return <ContentManagement />;
-      case 'AlertMonitoring':
-        return <AlertMonitoring />;
-      case 'LoadingCustomization':
-        return <LoadingCustomization />;
+      case 'analytics':
+        return <AnalyticsDashboard />;
       default:
-        return (
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Settings className="h-5 w-5" />
-                Under Development
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground">
-                This section is currently under development. Please check back later.
-              </p>
-            </CardContent>
-          </Card>
-        );
+        console.log('AdvancedAdminDashboard - Unknown tab, showing overview');
+        return <AdminOverview />;
     }
   };
 
-  return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <AdminDashboardHeader 
-        isAdmin={true} 
-        user={user} 
-        profile={profile} 
-      />
-      <div className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          {/* Navigation Sidebar */}
-          <div className="md:col-span-1">
-            <Card className="sticky top-4">
-              <CardHeader>
-                <CardTitle>Admin Navigation</CardTitle>
-                <CardContent>
-                  Select a section to manage
-                </CardContent>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                {adminNavigationSections.map((section) => (
-                  <div key={section.id} className="space-y-1">
-                    <h3 className="text-sm font-semibold text-gray-500 dark:text-gray-400">{section.title}</h3>
-                    <p className="text-xs text-gray-400 dark:text-gray-500">{section.description}</p>
-                    <ul className="ml-2 space-y-1">
-                      {section.items.map((item) => (
-                        <li key={item.id}>
-                          <Button
-                            variant="ghost"
-                            className={`w-full justify-start ${activeComponent === item.component ? 'text-blue-600 dark:text-blue-400' : ''}`}
-                            onClick={() => setActiveComponent(item.component)}
-                          >
-                            {item.title}
-                          </Button>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-          </div>
+  const tabs = [
+    { 
+      id: 'overview', 
+      label: 'Overview', 
+      icon: Home, 
+      description: 'Dashboard overview and quick stats' 
+    },
+    { 
+      id: 'users', 
+      label: 'Users', 
+      icon: Users,
+      description: 'User management and permissions'
+    },
+    { 
+      id: 'properties', 
+      label: 'Properties', 
+      icon: Building,
+      description: 'Property listings and management'
+    },
+    { 
+      id: 'vendors', 
+      label: 'Vendors', 
+      icon: Store,
+      description: 'Vendor management and services'
+    },
+    { 
+      id: 'system-settings', 
+      label: 'System Settings', 
+      icon: Settings,
+      description: 'System configuration and settings'
+    },
+    { 
+      id: 'analytics', 
+      label: 'Analytics', 
+      icon: BarChart3,
+      description: 'All analytics, reports and monitoring'
+    }
+  ];
 
-          {/* Main Content Area */}
-          <div className="md:col-span-3">
-            {renderActiveComponent()}
-          </div>
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold">Advanced Admin Dashboard</h1>
+          <p className="text-muted-foreground">
+            Comprehensive system management and analytics
+          </p>
         </div>
       </div>
+      
+      <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-6">
+        <TabsList className="grid w-full grid-cols-3 lg:grid-cols-6 bg-muted rounded-lg p-1">
+          {tabs.map((tab) => (
+            <TabsTrigger
+              key={tab.id}
+              value={tab.id}
+              className={`
+                flex items-center justify-center gap-2 px-3 py-2 rounded-md transition-all
+                data-[state=active]:bg-background data-[state=active]:text-foreground
+                data-[state=active]:shadow-sm
+              `}
+            >
+              <tab.icon className="h-4 w-4" />
+              <span className="hidden sm:inline text-sm">{tab.label}</span>
+            </TabsTrigger>
+          ))}
+        </TabsList>
+        
+        <div className="mt-6">
+          {renderTabContent()}
+        </div>
+      </Tabs>
     </div>
   );
 };

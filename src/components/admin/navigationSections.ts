@@ -1,212 +1,367 @@
-
 import {
   BarChart3,
-  Building2,
+  Building,
   Calendar,
+  CheckCircle2,
   FileText,
-  LayoutDashboard,
+  Gauge,
+  Globe,
+  HelpCircle,
+  Home,
   ListChecks,
-  Loader2,
-  Palette,
+  MessageSquare,
+  Plus,
   Settings,
-  Shield,
   ShoppingBag,
+  Sliders,
+  SquareKanban,
+  TrendingUp,
   User,
-  UserPlus,
   Users,
-} from "lucide-react";
+  Wifi,
+  Activity,
+  Database,
+  SlidersHorizontal,
+  Bell,
+  Rocket,
+  Book,
+  LayoutDashboard,
+} from 'lucide-react';
+
+export const mainNavigation = [
+  {
+    id: 'home',
+    title: 'Home',
+    icon: Home,
+    href: '/dashboard',
+  },
+  {
+    id: 'properties',
+    title: 'Properties',
+    icon: Building,
+    href: '/properties',
+  },
+  {
+    id: 'calendar',
+    title: 'Calendar',
+    icon: Calendar,
+    href: '/calendar',
+  },
+  {
+    id: 'messages',
+    title: 'Messages',
+    icon: MessageSquare,
+    href: '/messages',
+  },
+];
+
+export const secondaryNavigation = [
+  {
+    id: 'settings',
+    title: 'Settings',
+    icon: Settings,
+    href: '/settings',
+  },
+  {
+    id: 'help',
+    title: 'Help',
+    icon: HelpCircle,
+    href: '/help',
+  },
+];
+
+export const adminNavigation = [
+  {
+    id: 'admin-overview',
+    title: 'Overview',
+    icon: Home,
+    href: '/admin',
+  },
+  {
+    id: 'user-management',
+    title: 'User Management',
+    icon: Users,
+    href: '/admin/users',
+  },
+  {
+    id: 'property-management',
+    title: 'Property Management',
+    icon: Building,
+    href: '/admin/properties',
+  },
+  {
+    id: 'vendor-management',
+    title: 'Vendor Management',
+    icon: ShoppingBag,
+    href: '/admin/vendors',
+  },
+  {
+    id: 'system-monitor',
+    title: 'System Monitor',
+    icon: Gauge,
+    href: '/admin/system-monitor',
+  },
+];
+
+export const propertyOwnerNavigation = [
+  {
+    id: 'owner-overview',
+    title: 'Overview',
+    icon: Home,
+    href: '/owner',
+  },
+  {
+    id: 'owner-properties',
+    title: 'My Properties',
+    icon: Building,
+    href: '/owner/properties',
+  },
+  {
+    id: 'add-property',
+    title: 'Add Property',
+    icon: Plus,
+    href: '/add-property',
+  },
+  {
+    id: 'owner-calendar',
+    title: 'Calendar',
+    icon: Calendar,
+    href: '/owner/calendar',
+  },
+  {
+    id: 'owner-messages',
+    title: 'Messages',
+    icon: MessageSquare,
+    href: '/owner/messages',
+  },
+  {
+    id: 'owner-settings',
+    title: 'Settings',
+    icon: Settings,
+    href: '/owner/settings',
+  },
+];
+
+export const superAdminNavigation = [
+  {
+    id: 'super-admin-overview',
+    title: 'Overview',
+    icon: Home,
+    href: '/super-admin',
+  },
+  {
+    id: 'database-management',
+    title: 'Database Management',
+    icon: Wifi,
+    href: '/super-admin/database',
+  },
+  {
+    id: 'system-settings',
+    title: 'System Settings',
+    icon: Sliders,
+    href: '/super-admin/settings',
+  },
+  {
+    id: 'audit-logs',
+    title: 'Audit Logs',
+    icon: ListChecks,
+    href: '/super-admin/audit-logs',
+  },
+  {
+    id: 'queue-management',
+    title: 'Queue Management',
+    icon: SquareKanban,
+    href: '/super-admin/queues',
+  },
+  {
+    id: 'developer-tools',
+    title: 'Developer Tools',
+    icon: CheckCircle2,
+    href: '/super-admin/developer-tools',
+  },
+];
+
+export interface NavigationItem {
+  id: string;
+  title: string;
+  description: string;
+  icon: any;
+  href: string;
+  badge?: string;
+}
 
 export interface NavigationSection {
   id: string;
   title: string;
+  label: string;
   description: string;
-  component: string;
   icon: any;
+  href?: string;
   badge?: string;
-  label?: string;
+  items?: NavigationItem[];
 }
 
-export const adminNavigationSections = [
+export const navigationSections: NavigationSection[] = [
   {
-    id: "dashboard",
-    title: "Dashboard",
-    icon: "LayoutDashboard",
-    description: "Analytics and overview",
+    id: 'getting-started',
+    title: 'Getting Started',
+    label: 'Getting Started',
+    description: 'Start here for dashboard overview and guides',
+    icon: Rocket,
     items: [
       {
-        id: "analytics",
-        title: "Analytics Dashboard",
-        description: "Overview of system performance",
-        component: "AnalyticsDashboard",
-        icon: "BarChart3",
+        id: 'admin-overview',
+        title: 'Admin Overview',
+        description: 'Dashboard overview and key metrics',
+        icon: LayoutDashboard,
+        href: '/admin',
       },
       {
-        id: "alerts",
-        title: "Alert Monitoring",
-        description: "Real-time system alerts",
-        component: "AlertMonitoring",
-        icon: "Shield",
+        id: 'user-guide',
+        title: 'User Guide',
+        description: 'Learn how to use the admin dashboard',
+        icon: Book,
+        href: '/admin/guide',
       },
     ],
   },
   {
-    id: "users",
-    title: "Users",
-    icon: "Users",
-    description: "Manage user accounts",
+    id: 'data-management',
+    title: 'Data Management',
+    label: 'Data Management',
+    description: 'Manage users, properties, and vendors',
+    icon: Database,
     items: [
       {
-        id: "user-management",
-        title: "User Management",
-        description: "View, edit, and manage user accounts",
-        component: "UserManagement",
-        icon: "User",
+        id: 'user-management',
+        title: 'User Management',
+        description: 'Manage user accounts and roles',
+        icon: Users,
+        href: '/admin/users',
       },
       {
-        id: "roles-permissions",
-        title: "Roles & Permissions",
-        description: "Configure user roles and permissions",
-        component: "RolesPermissions",
-        icon: "ListChecks",
+        id: 'property-management',
+        title: 'Property Management',
+        description: 'Manage property listings and details',
+        icon: Building,
+        href: '/admin/properties',
       },
       {
-        id: "registration",
-        title: "User Registration",
-        description: "Add new user accounts",
-        component: "UserRegistration",
-        icon: "UserPlus",
+        id: 'vendor-management',
+        title: 'Vendor Management',
+        description: 'Manage vendors and service providers',
+        icon: ShoppingBag,
+        href: '/admin/vendors',
       },
     ],
   },
   {
-    id: "properties",
-    title: "Properties",
-    icon: "Building2",
-    description: "Manage property listings",
+    id: 'system-configuration',
+    title: 'System Configuration',
+    label: 'System Configuration',
+    description: 'Configure system settings and alerts',
+    icon: SlidersHorizontal,
     items: [
       {
-        id: "property-management",
-        title: "Property Management",
-        description: "View, edit, and manage property listings",
-        component: "PropertyManagement",
-        icon: "Building2",
+        id: 'system-settings',
+        title: 'System Settings',
+        description: 'Configure system-wide settings',
+        icon: Sliders,
+        href: '/admin/settings',
       },
       {
-        id: "property-submission",
-        title: "Property Submission",
-        description: "Add new property listings",
-        component: "PropertySubmission",
-        icon: "FileText",
+        id: 'alert-rules',
+        title: 'Alert Rules',
+        description: 'Define rules for system alerts',
+        icon: Bell,
+        href: '/admin/alert-rules',
       },
       {
-        id: "bookings-calendar",
-        title: "Bookings Calendar",
-        description: "View and manage property bookings",
-        component: "BookingsCalendar",
-        icon: "Calendar",
+        id: 'queue-management',
+        title: 'Queue Management',
+        description: 'Manage background task queues',
+        icon: SquareKanban,
+        href: '/admin/queues',
       },
     ],
   },
   {
-    id: "customization",
-    title: "Customization",
-    icon: "Palette",
-    description: "UI and branding customization",
+    id: 'monitoring-logs',
+    title: 'Monitoring & Logs',
+    label: 'Monitoring & Logs',
+    description: 'Monitor system health and view logs',
+    icon: Activity,
     items: [
       {
-        id: "web-settings",
-        title: "Web Settings",
-        description: "Global website settings",
-        component: "WebSettingsControl",
-        icon: "Settings",
+        id: 'system-monitor',
+        title: 'System Monitor',
+        description: 'Real-time system health monitoring',
+        icon: Gauge,
+        href: '/admin/system-monitor',
       },
       {
-        id: "loading-customization",
-        title: "Loading Screens",
-        description: "Customize loading animations and branding",
-        component: "LoadingCustomization",
-        icon: "Loader2",
-      },
-      {
-        id: "theme-settings",
-        title: "Theme Settings",
-        description: "Colors, fonts, and UI themes",
-        component: "ThemeSettings",
-        icon: "Palette",
+        id: 'audit-logs',
+        title: 'Audit Logs',
+        description: 'Track user actions and system events',
+        icon: ListChecks,
+        href: '/admin/audit-logs',
       },
     ],
   },
   {
-    id: "system",
-    title: "System",
-    icon: "Settings",
-    description: "System settings and configuration",
+    id: 'analytics-reports',
+    title: 'Analytics & Reports',
+    label: 'Analytics & Reports',
+    description: 'View analytics and generate reports',
+    icon: BarChart3,
     items: [
       {
-        id: "system-settings",
-        title: "System Settings",
-        description: "Configure system-wide settings",
-        component: "SystemSettings",
-        icon: "Settings",
+        id: 'system-analytics',
+        title: 'System Analytics',
+        description: 'View system performance metrics',
+        icon: Activity,
+        href: '/admin/analytics',
       },
       {
-        id: "backup-restore",
-        title: "Backup & Restore",
-        description: "Backup and restore system data",
-        component: "BackupRestore",
-        icon: "Shield",
+        id: 'performance-analytics',
+        title: 'Performance Analytics',
+        description: 'Detailed system performance and trends',
+        icon: TrendingUp,
+        href: '/admin/performance-analytics',
       },
       {
-        id: "logs",
-        title: "System Logs",
-        description: "View system logs and activity",
-        component: "SystemLogs",
-        icon: "FileText",
-      },
-    ],
-  },
-  {
-    id: "ecommerce",
-    title: "E-Commerce",
-    icon: "ShoppingBag",
-    description: "Manage e-commerce settings",
-    items: [
-      {
-        id: "product-management",
-        title: "Product Management",
-        description: "Manage products and categories",
-        component: "ProductManagement",
-        icon: "ShoppingBag",
+        id: 'web-traffic',
+        title: 'Web Traffic Analytics',
+        description: 'Website traffic and user behavior',
+        icon: Globe,
+        href: '/admin/web-traffic',
       },
       {
-        id: "orders",
-        title: "Orders",
-        description: "View and manage customer orders",
-        component: "Orders",
-        icon: "ListChecks",
+        id: 'vendor-analytics',
+        title: 'Vendor Performance',
+        description: 'AI-powered vendor analytics',
+        icon: Users,
+        href: '/admin/vendor-performance',
       },
       {
-        id: "payments",
-        title: "Payments",
-        description: "Configure payment gateways",
-        component: "Payments",
-        icon: "Shield",
+        id: 'system-reports',
+        title: 'System Reports',
+        description: 'Generate comprehensive reports',
+        icon: FileText,
+        href: '/admin/reports',
       },
     ],
   },
 ];
 
-// Extract categories for navigation
-export const categories = adminNavigationSections.map(section => section.id);
+// Create section categories mapping for NavigationCategory component
+export const sectionCategories = {
+  'getting-started': navigationSections[0].items || [],
+  'data-management': navigationSections[1].items || [],
+  'system-configuration': navigationSections[2].items || [],
+  'monitoring-logs': navigationSections[3].items || [],
+  'analytics-reports': navigationSections[4].items || [],
+};
 
-// Create section categories mapping
-export const sectionCategories = adminNavigationSections.reduce((acc, section) => {
-  acc[section.id] = section.items.map(item => ({
-    id: item.id,
-    title: item.title,
-    description: item.description,
-    icon: eval(item.icon), // Convert string to actual icon component
-    component: item.component
-  }));
-  return acc;
-}, {} as Record<string, NavigationSection[]>);
+// Export categories for backward compatibility
+export const categories = Object.keys(sectionCategories);

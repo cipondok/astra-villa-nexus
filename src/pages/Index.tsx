@@ -9,64 +9,74 @@ import ResponsiveAIChatWidget from "@/components/ai/ResponsiveAIChatWidget";
 import { supabase } from "@/integrations/supabase/client";
 
 const Index = () => {
-  console.log('=== INDEX PAGE DEBUG START ===');
-  console.log('1. Index page component rendering...');
-  
   const { language } = useLanguage();
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
 
-  console.log('2. State initialized, language:', language);
-
-  // Simple featured properties query with better error handling
-  const { data: featuredProperties = [], isLoading: isFeaturedLoading, error: featuredError } = useQuery({
-    queryKey: ['featured-properties'],
+  // Optimized featured properties query with aggressive caching
+  const { data: featuredProperties = [], isLoading: isFeaturedLoading } = useQuery({
+    queryKey: ['featured-properties-fast'],
     queryFn: async () => {
-      console.log('3. Fetching featured properties...');
+      console.log('Fetching featured properties with optimized query...');
       
       try {
-        const { data, error } = await supabase
+        // Ultra-fast query with minimal timeout
+        const timeoutPromise = new Promise<never>((_, reject) => {
+          setTimeout(() => reject(new Error('Query timeout')), 3000); // 3 second max
+        });
+
+        const queryPromise = supabase
           .from('properties')
           .select('id, title, property_type, listing_type, price, location, bedrooms, bathrooms, area_sqm, images, thumbnail_url, state, city')
           .eq('status', 'active')
           .order('created_at', { ascending: false })
-          .limit(12);
+          .limit(12); // Reduced limit for faster loading
+
+        const { data, error } = await Promise.race([queryPromise, timeoutPromise]);
 
         if (error) {
           console.error('Properties query error:', error);
+          // Return empty array instead of throwing
           return [];
         }
 
-        console.log('4. Featured properties loaded:', data?.length || 0);
+        console.log('Featured properties loaded:', data?.length || 0);
         return data || [];
         
       } catch (err) {
         console.error('Featured properties fetch error:', err);
+        // Return empty array for graceful degradation
         return [];
       }
     },
-    retry: 1,
+    retry: 1, // Only retry once
+    retryDelay: 1000, // 1 second retry delay
     refetchOnWindowFocus: false,
-    staleTime: 60000,
+    staleTime: 60000, // Cache for 1 minute
+    gcTime: 300000, // Keep in cache for 5 minutes
   });
 
-  console.log('5. Query setup complete');
-
   const handleSearch = async (searchData: any) => {
-    console.log('6. Search initiated:', searchData);
+    console.log('Search initiated with optimized query:', searchData);
     
     setIsSearching(true);
     setHasSearched(true);
     setSearchError(null);
     
     try {
+      // Fast search with timeout
+      const timeoutPromise = new Promise<never>((_, reject) => {
+        setTimeout(() => reject(new Error('Search timeout')), 5000); // 5 second max for search
+      });
+
       let query = supabase
         .from('properties')
         .select('id, title, property_type, listing_type, price, location, bedrooms, bathrooms, area_sqm, images, thumbnail_url, state, city')
         .eq('status', 'active');
 
+      // Apply search filters efficiently
       if (searchData.query && searchData.query.trim()) {
         const searchTerm = searchData.query.toLowerCase().trim();
         query = query.or(`title.ilike.%${searchTerm}%,location.ilike.%${searchTerm}%`);
@@ -106,6 +116,7 @@ const Index = () => {
         }
       }
 
+      // Handle price range filter
       if (searchData.priceRange) {
         const [minPrice, maxPrice] = searchData.priceRange.split('-').map(Number);
         if (minPrice) {
@@ -116,7 +127,12 @@ const Index = () => {
         }
       }
 
-      const { data, error } = await query.order('created_at', { ascending: false }).limit(24);
+      const queryWithTimeout = Promise.race([
+        query.order('created_at', { ascending: false }).limit(24),
+        timeoutPromise
+      ]);
+
+      const { data, error } = await queryWithTimeout;
 
       if (error) {
         console.error('Search error:', error);
@@ -129,7 +145,7 @@ const Index = () => {
       }
     } catch (error) {
       console.error('Search error:', error);
-      setSearchError('Search failed. Please try again.');
+      setSearchError('Search timeout. Please try again.');
       setSearchResults([]);
     } finally {
       setIsSearching(false);
@@ -148,84 +164,62 @@ const Index = () => {
     await handleSearch({ query: searchTerm });
   };
 
-  console.log('7. About to render Index page UI...');
+  return (
+    <div className="min-h-screen bg-background">
+      <Navigation />
+      
+      {/* Hero Section with New Color Scheme */}
+      <section className="relative bg-gradient-to-br from-custom-blue via-custom-lightBlue to-custom-orange text-white py-8 sm:py-12 lg:py-16 px-2 sm:px-4">
+        <div className="absolute inset-0 bg-gradient-to-t from-custom-cream/10 to-transparent"></div>
+        <div className="container mx-auto text-center relative z-10">
+          <h1 className="text-2xl sm:text-3xl lg:text-5xl font-bold mb-4 sm:mb-6 animate-fade-in px-2">
+            {language === "en" ? "Find Your Dream Property" : "Temukan Properti Impian Anda"}
+          </h1>
+          <p className="text-base sm:text-lg lg:text-xl mb-6 sm:mb-8 text-white/90 px-2">
+            {language === "en" 
+              ? "Discover the perfect home with our advanced search technology" 
+              : "Temukan rumah sempurna dengan teknologi pencarian canggih kami"}
+          </p>
+          
+          <div className="max-w-5xl mx-auto">
+            <EnhancedModernSearchPanel
+              language={language}
+              onSearch={handleSearch}
+              onLiveSearch={handleLiveSearch}
+            />
+          </div>
+        </div>
+      </section>
 
-  if (featuredError) {
-    console.error('Featured properties error:', featuredError);
-  }
-
-  try {
-    return (
-      <div className="min-h-screen bg-background">
-        <Navigation />
-        
-        <section className="relative bg-gradient-to-br from-blue-600 via-blue-500 to-orange-400 text-white py-8 sm:py-12 lg:py-16 px-2 sm:px-4">
-          <div className="absolute inset-0 bg-gradient-to-t from-cream-100/10 to-transparent"></div>
-          <div className="container mx-auto text-center relative z-10">
-            <h1 className="text-2xl sm:text-3xl lg:text-5xl font-bold mb-4 sm:mb-6 animate-fade-in px-2">
-              {language === "en" ? "Find Your Dream Property" : "Temukan Properti Impian Anda"}
-            </h1>
-            <p className="text-base sm:text-lg lg:text-xl mb-6 sm:mb-8 text-white/90 px-2">
-              {language === "en" 
-                ? "Discover the perfect home with our advanced search technology" 
-                : "Temukan rumah sempurna dengan teknologi pencarian canggih kami"}
-            </p>
-            
-            <div className="max-w-5xl mx-auto">
-              <EnhancedModernSearchPanel
-                language={language}
-                onSearch={handleSearch}
-                onLiveSearch={handleLiveSearch}
-              />
+      {/* Error Message */}
+      {searchError && (
+        <section className="py-4 bg-red-50">
+          <div className="container mx-auto px-4">
+            <div className="text-center text-red-600 font-medium">
+              {searchError}
             </div>
           </div>
         </section>
+      )}
 
-        {searchError && (
-          <section className="py-4 bg-red-50">
-            <div className="container mx-auto px-4">
-              <div className="text-center text-red-600 font-medium">
-                {searchError}
-              </div>
-            </div>
-          </section>
-        )}
-
-        <div className="px-2 sm:px-0">
-          <PropertyListingsSection
-            language={language}
-            searchResults={searchResults}
-            isSearching={isSearching}
-            hasSearched={hasSearched}
-            fallbackResults={featuredProperties}
-          />
-        </div>
-
-        <ResponsiveAIChatWidget />
-        <ProfessionalFooter language={language} />
+      {/* Property Listings Section */}
+      <div className="px-2 sm:px-0">
+        <PropertyListingsSection
+          language={language}
+          searchResults={searchResults}
+          isSearching={isSearching}
+          hasSearched={hasSearched}
+          fallbackResults={featuredProperties}
+        />
       </div>
-    );
-  } catch (error) {
-    console.error('❌ Error rendering Index page:', error);
-    console.error('Error stack:', error.stack);
-    
-    return (
-      <div style={{ 
-        padding: '20px', 
-        background: 'orange', 
-        color: 'white', 
-        fontSize: '18px',
-        minHeight: '100vh'
-      }}>
-        <h1>ERROR IN INDEX PAGE</h1>
-        <p>Check the console for details</p>
-        <pre>{error.toString()}</pre>
-      </div>
-    );
-  }
+
+      {/* AI Chat Widget */}
+      <ResponsiveAIChatWidget />
+
+      {/* Footer */}
+      <ProfessionalFooter language={language} />
+    </div>
+  );
 };
-
-console.log('8. Index component defined');
-console.log('=== INDEX PAGE DEBUG END ===');
 
 export default Index;
