@@ -8,6 +8,8 @@ import ProfessionalFooter from "@/components/ProfessionalFooter";
 import { useLanguage } from "@/contexts/LanguageContext";
 import ResponsiveAIChatWidget from "@/components/ai/ResponsiveAIChatWidget";
 import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/components/ui/button";
+import { Home, Key, Building, Rocket, Star, TrendingUp, Wrench } from "lucide-react";
 
 const Index = () => {
   const { language } = useLanguage();
@@ -15,6 +17,7 @@ const Index = () => {
   const [isSearching, setIsSearching] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
+  const [activeSection, setActiveSection] = useState('ai_recommended');
 
   // Optimized featured properties query with aggressive caching
   const { data: featuredProperties = [], isLoading: isFeaturedLoading } = useQuery({
@@ -23,23 +26,21 @@ const Index = () => {
       console.log('Fetching featured properties with optimized query...');
       
       try {
-        // Ultra-fast query with minimal timeout
         const timeoutPromise = new Promise<never>((_, reject) => {
-          setTimeout(() => reject(new Error('Query timeout')), 3000); // 3 second max
+          setTimeout(() => reject(new Error('Query timeout')), 3000);
         });
 
         const queryPromise = supabase
           .from('properties')
-          .select('id, title, property_type, listing_type, price, location, bedrooms, bathrooms, area_sqm, images, thumbnail_url, state, city')
+          .select('id, title, property_type, listing_type, price, location, bedrooms, bathrooms, area_sqm, images, thumbnail_url, state, city, development_status')
           .eq('status', 'active')
           .order('created_at', { ascending: false })
-          .limit(12); // Reduced limit for faster loading
+          .limit(12);
 
         const { data, error } = await Promise.race([queryPromise, timeoutPromise]);
 
         if (error) {
           console.error('Properties query error:', error);
-          // Return empty array instead of throwing
           return [];
         }
 
@@ -48,15 +49,103 @@ const Index = () => {
         
       } catch (err) {
         console.error('Featured properties fetch error:', err);
-        // Return empty array for graceful degradation
         return [];
       }
     },
-    retry: 1, // Only retry once
-    retryDelay: 1000, // 1 second retry delay
+    retry: 1,
+    retryDelay: 1000,
     refetchOnWindowFocus: false,
-    staleTime: 60000, // Cache for 1 minute
-    gcTime: 300000, // Keep in cache for 5 minutes
+    staleTime: 60000,
+    gcTime: 300000,
+  });
+
+  // Query for different property sections
+  const { data: aiRecommendedProperties = [] } = useQuery({
+    queryKey: ['ai-recommended-properties'],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from('properties')
+        .select('*')
+        .eq('status', 'active')
+        .order('created_at', { ascending: false })
+        .limit(8);
+      return data || [];
+    },
+    enabled: activeSection === 'ai_recommended'
+  });
+
+  const { data: popularProperties = [] } = useQuery({
+    queryKey: ['popular-properties'],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from('properties')
+        .select('*')
+        .eq('status', 'active')
+        .order('created_at', { ascending: false })
+        .limit(8);
+      return data || [];
+    },
+    enabled: activeSection === 'popular'
+  });
+
+  const { data: rentProperties = [] } = useQuery({
+    queryKey: ['rent-properties'],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from('properties')
+        .select('*')
+        .eq('listing_type', 'rent')
+        .eq('status', 'active')
+        .order('created_at', { ascending: false })
+        .limit(8);
+      return data || [];
+    },
+    enabled: activeSection === 'rent'
+  });
+
+  const { data: saleProperties = [] } = useQuery({
+    queryKey: ['sale-properties'],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from('properties')
+        .select('*')
+        .eq('listing_type', 'buy')
+        .eq('status', 'active')
+        .order('created_at', { ascending: false })
+        .limit(8);
+      return data || [];
+    },
+    enabled: activeSection === 'sale'
+  });
+
+  const { data: newProjectProperties = [] } = useQuery({
+    queryKey: ['new-project-properties'],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from('properties')
+        .select('*')
+        .eq('development_status', 'new_project')
+        .eq('status', 'active')
+        .order('created_at', { ascending: false })
+        .limit(8);
+      return data || [];
+    },
+    enabled: activeSection === 'new_projects'
+  });
+
+  const { data: preLaunchProperties = [] } = useQuery({
+    queryKey: ['pre-launch-properties'],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from('properties')
+        .select('*')
+        .eq('development_status', 'pre_launching')
+        .eq('status', 'active')
+        .order('created_at', { ascending: false })
+        .limit(8);
+      return data || [];
+    },
+    enabled: activeSection === 'pre_launch'
   });
 
   const handleSearch = async (searchData: any) => {
@@ -67,9 +156,8 @@ const Index = () => {
     setSearchError(null);
     
     try {
-      // Fast search with timeout
       const timeoutPromise = new Promise<never>((_, reject) => {
-        setTimeout(() => reject(new Error('Search timeout')), 5000); // 5 second max for search
+        setTimeout(() => reject(new Error('Search timeout')), 5000);
       });
 
       let query = supabase
@@ -117,7 +205,6 @@ const Index = () => {
         }
       }
 
-      // Handle price range filter
       if (searchData.priceRange) {
         const [minPrice, maxPrice] = searchData.priceRange.split('-').map(Number);
         if (minPrice) {
@@ -165,11 +252,102 @@ const Index = () => {
     await handleSearch({ query: searchTerm });
   };
 
+  const getCurrentSectionData = () => {
+    switch (activeSection) {
+      case 'ai_recommended':
+        return aiRecommendedProperties;
+      case 'popular':
+        return popularProperties;
+      case 'rent':
+        return rentProperties;
+      case 'sale':
+        return saleProperties;
+      case 'new_projects':
+        return newProjectProperties;
+      case 'pre_launch':
+        return preLaunchProperties;
+      default:
+        return featuredProperties;
+    }
+  };
+
+  const text = {
+    en: {
+      buy: "Buy",
+      rent: "Rent",
+      preLaunch: "Pre Launch",
+      newProjects: "New Projects",
+      aiRecommended: "AI Recommended",
+      popular: "Most Popular",
+      sale: "Sale",
+      services: "Services"
+    },
+    id: {
+      buy: "Beli",
+      rent: "Sewa",
+      preLaunch: "Pra Peluncuran",
+      newProjects: "Proyek Baru",
+      aiRecommended: "Rekomendasi AI",
+      popular: "Paling Populer",
+      sale: "Jual",
+      services: "Layanan"
+    }
+  };
+
+  const currentText = text[language] || text.en;
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-blue-900">
       <Navigation />
       
-      {/* Hero Section with ASTRA Villa Branding - No Analytics */}
+      {/* Top Navigation Menu for Property Types */}
+      <section className="pt-20 pb-4">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-wrap justify-center gap-2 sm:gap-4">
+            <Button 
+              variant="ghost" 
+              className="text-white hover:bg-purple-600/20 border border-purple-500/30"
+              onClick={() => handleSearch({ listingType: 'buy' })}
+            >
+              <Home className="h-4 w-4 mr-2" />
+              {currentText.buy}
+            </Button>
+            <Button 
+              variant="ghost" 
+              className="text-white hover:bg-purple-600/20 border border-purple-500/30"
+              onClick={() => handleSearch({ listingType: 'rent' })}
+            >
+              <Key className="h-4 w-4 mr-2" />
+              {currentText.rent}
+            </Button>
+            <Button 
+              variant="ghost" 
+              className="text-white hover:bg-purple-600/20 border border-purple-500/30"
+              onClick={() => handleSearch({ development_status: 'pre_launching' })}
+            >
+              <Rocket className="h-4 w-4 mr-2" />
+              {currentText.preLaunch}
+            </Button>
+            <Button 
+              variant="ghost" 
+              className="text-white hover:bg-purple-600/20 border border-purple-500/30"
+              onClick={() => handleSearch({ development_status: 'new_project' })}
+            >
+              <Building className="h-4 w-4 mr-2" />
+              {currentText.newProjects}
+            </Button>
+            <Button 
+              variant="ghost" 
+              className="text-white hover:bg-purple-600/20 border border-purple-500/30"
+            >
+              <Wrench className="h-4 w-4 mr-2" />
+              {currentText.services}
+            </Button>
+          </div>
+        </div>
+      </section>
+      
+      {/* Hero Section with ASTRA Villa Branding */}
       <section className="relative py-8 sm:py-12 lg:py-16 px-2 sm:px-4">
         <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
         <div className="container mx-auto text-center relative z-10">
@@ -187,26 +365,6 @@ const Index = () => {
               </p>
             </div>
           </div>
-
-          {/* Property Stats Cards - Not Analytics */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8 max-w-4xl mx-auto">
-            <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-4 border border-purple-500/20">
-              <div className="text-purple-400 text-sm mb-1">Properties</div>
-              <div className="text-white text-xl font-bold">2,500+</div>
-            </div>
-            <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-4 border border-blue-500/20">
-              <div className="text-blue-400 text-sm mb-1">Locations</div>
-              <div className="text-white text-xl font-bold">150+</div>
-            </div>
-            <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-4 border border-green-500/20">
-              <div className="text-green-400 text-sm mb-1">Happy Clients</div>
-              <div className="text-white text-xl font-bold">5,000+</div>
-            </div>
-            <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-4 border border-orange-500/20">
-              <div className="text-orange-400 text-sm mb-1">Years Experience</div>
-              <div className="text-white text-xl font-bold">15+</div>
-            </div>
-          </div>
           
           <div className="max-w-5xl mx-auto">
             <EnhancedModernSearchPanel
@@ -214,6 +372,84 @@ const Index = () => {
               onSearch={handleSearch}
               onLiveSearch={handleLiveSearch}
             />
+          </div>
+        </div>
+      </section>
+
+      {/* Property Section Navigation */}
+      <section className="py-6">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-wrap justify-center gap-2 mb-8">
+            <Button
+              variant={activeSection === 'ai_recommended' ? 'default' : 'ghost'}
+              onClick={() => setActiveSection('ai_recommended')}
+              className={`${activeSection === 'ai_recommended' 
+                ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white' 
+                : 'text-white hover:bg-purple-600/20'} border border-purple-500/30`}
+            >
+              <Star className="h-4 w-4 mr-2" />
+              {currentText.aiRecommended}
+            </Button>
+            <Button
+              variant={activeSection === 'popular' ? 'default' : 'ghost'}
+              onClick={() => setActiveSection('popular')}
+              className={`${activeSection === 'popular' 
+                ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white' 
+                : 'text-white hover:bg-purple-600/20'} border border-purple-500/30`}
+            >
+              <TrendingUp className="h-4 w-4 mr-2" />
+              {currentText.popular}
+            </Button>
+            <Button
+              variant={activeSection === 'rent' ? 'default' : 'ghost'}
+              onClick={() => setActiveSection('rent')}
+              className={`${activeSection === 'rent' 
+                ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white' 
+                : 'text-white hover:bg-purple-600/20'} border border-purple-500/30`}
+            >
+              <Key className="h-4 w-4 mr-2" />
+              {currentText.rent}
+            </Button>
+            <Button
+              variant={activeSection === 'sale' ? 'default' : 'ghost'}
+              onClick={() => setActiveSection('sale')}
+              className={`${activeSection === 'sale' 
+                ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white' 
+                : 'text-white hover:bg-purple-600/20'} border border-purple-500/30`}
+            >
+              <Home className="h-4 w-4 mr-2" />
+              {currentText.sale}
+            </Button>
+            <Button
+              variant={activeSection === 'new_projects' ? 'default' : 'ghost'}
+              onClick={() => setActiveSection('new_projects')}
+              className={`${activeSection === 'new_projects' 
+                ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white' 
+                : 'text-white hover:bg-purple-600/20'} border border-purple-500/30`}
+            >
+              <Building className="h-4 w-4 mr-2" />
+              {currentText.newProjects}
+            </Button>
+            <Button
+              variant={activeSection === 'pre_launch' ? 'default' : 'ghost'}
+              onClick={() => setActiveSection('pre_launch')}
+              className={`${activeSection === 'pre_launch' 
+                ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white' 
+                : 'text-white hover:bg-purple-600/20'} border border-purple-500/30`}
+            >
+              <Rocket className="h-4 w-4 mr-2" />
+              {currentText.preLaunch}
+            </Button>
+            <Button
+              variant={activeSection === 'services' ? 'default' : 'ghost'}
+              onClick={() => setActiveSection('services')}
+              className={`${activeSection === 'services' 
+                ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white' 
+                : 'text-white hover:bg-purple-600/20'} border border-purple-500/30`}
+            >
+              <Wrench className="h-4 w-4 mr-2" />
+              {currentText.services}
+            </Button>
           </div>
         </div>
       </section>
@@ -233,7 +469,7 @@ const Index = () => {
       <div className="px-2 sm:px-0 bg-slate-900/50">
         <PropertyListingsSection
           language={language}
-          searchResults={searchResults}
+          searchResults={hasSearched ? searchResults : getCurrentSectionData()}
           isSearching={isSearching}
           hasSearched={hasSearched}
           fallbackResults={featuredProperties}
