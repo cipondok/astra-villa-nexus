@@ -8,6 +8,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Eye, EyeOff } from "lucide-react";
 import LoadingPage from "./LoadingPage";
+import { Alert, AlertTriangle, AlertDescription } from "@/components/ui/alert";
 
 interface RoleBasedAuthModalProps {
   isOpen: boolean;
@@ -22,6 +23,7 @@ const RoleBasedAuthModal = ({ isOpen, onClose }: RoleBasedAuthModalProps) => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [authAction, setAuthAction] = useState<'login' | 'register' | null>(null);
+  const [error, setError] = useState<string | null>(null);
   
   const { signIn, signUp } = useAuth();
 
@@ -42,16 +44,26 @@ const RoleBasedAuthModal = ({ isOpen, onClose }: RoleBasedAuthModalProps) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setError(null);
 
     try {
       if (isLogin) {
         setAuthAction('login');
         console.log('Attempting login for:', email);
         const result = await signIn(email, password);
-        if (result.success) {
+        
+        if (result.error) {
+          console.error('Login error:', result.error);
+          if (result.error.message.includes('Invalid login credentials')) {
+            setError('Invalid email or password. Please check your credentials and try again.');
+          } else if (result.error.message.includes('Email not confirmed')) {
+            setError('Please check your email and confirm your account before logging in.');
+          } else {
+            setError(result.error.message || 'Login failed. Please try again.');
+          }
+        } else if (result.success) {
           console.log('Login successful, closing modal');
           onClose();
-          // Reset form
           setEmail("");
           setPassword("");
           setFullName("");
@@ -59,35 +71,39 @@ const RoleBasedAuthModal = ({ isOpen, onClose }: RoleBasedAuthModalProps) => {
       } else {
         setAuthAction('register');
         console.log('Attempting sign up for:', email);
-        // Simplified signup - just basic user registration
+        
         const { data, error } = await supabase.auth.signUp({
           email,
           password,
           options: {
             data: {
               full_name: fullName
-            }
+            },
+            emailRedirectTo: `${window.location.origin}/`
           }
         });
 
         if (error) {
           console.error('Sign up error:', error);
           if (error.message.includes('email rate limit exceeded')) {
-            throw new Error('Too many signup attempts. Please wait a few minutes before trying again.');
+            setError('Too many signup attempts. Please wait a few minutes before trying again.');
+          } else if (error.message.includes('User already registered')) {
+            setError('An account with this email already exists. Please try logging in instead.');
           } else {
-            throw new Error(error.message);
+            setError(error.message || 'Registration failed. Please try again.');
           }
+        } else {
+          console.log('Sign up successful for:', email);
+          setError(null);
+          onClose();
+          setEmail("");
+          setPassword("");
+          setFullName("");
         }
-
-        console.log('Sign up successful for:', email);
-        onClose();
-        // Reset form
-        setEmail("");
-        setPassword("");
-        setFullName("");
       }
     } catch (error: any) {
       console.error('Auth error:', error);
+      setError(error.message || 'An unexpected error occurred. Please try again.');
     } finally {
       setIsLoading(false);
       setAuthAction(null);
@@ -104,12 +120,19 @@ const RoleBasedAuthModal = ({ isOpen, onClose }: RoleBasedAuthModalProps) => {
           </DialogDescription>
         </DialogHeader>
 
+        {error && (
+          <Alert variant="destructive">
+            <AlertTriangle className="h-4 w-4" />
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
+
         <Tabs value={isLogin ? "signin" : "signup"} className="w-full">
           <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="signin" onClick={() => setIsLogin(true)}>
+            <TabsTrigger value="signin" onClick={() => { setIsLogin(true); setError(null); }}>
               Sign In
             </TabsTrigger>
-            <TabsTrigger value="signup" onClick={() => setIsLogin(false)}>
+            <TabsTrigger value="signup" onClick={() => { setIsLogin(false); setError(null); }}>
               Sign Up
             </TabsTrigger>
           </TabsList>

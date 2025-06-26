@@ -1,367 +1,228 @@
 import {
-  BarChart3,
-  Building,
-  Calendar,
-  CheckCircle2,
-  FileText,
-  Gauge,
-  Globe,
-  HelpCircle,
   Home,
-  ListChecks,
-  MessageSquare,
-  Plus,
-  Settings,
-  ShoppingBag,
-  Sliders,
-  SquareKanban,
-  TrendingUp,
-  User,
+  Building,
   Users,
-  Wifi,
-  Activity,
-  Database,
-  SlidersHorizontal,
-  Bell,
-  Rocket,
-  Book,
+  Settings,
+  PlusCircle,
+  BarChart3,
+  FileText,
+  Wrench,
+  UserCheck,
+  Crown,
+  RefreshCw,
+  LifeBuoy,
+  MessageSquare,
+  AlertTriangle,
+  User,
+  Coins,
+  Monitor,
+  Globe,
   LayoutDashboard,
-} from 'lucide-react';
+  ShoppingBag,
+  Contact2,
+  TrendingUp,
+  ListChecks,
+  LucideIcon
+} from "lucide-react";
 
-export const mainNavigation = [
-  {
-    id: 'home',
-    title: 'Home',
-    icon: Home,
-    href: '/dashboard',
-  },
-  {
-    id: 'properties',
-    title: 'Properties',
-    icon: Building,
-    href: '/properties',
-  },
-  {
-    id: 'calendar',
-    title: 'Calendar',
-    icon: Calendar,
-    href: '/calendar',
-  },
-  {
-    id: 'messages',
-    title: 'Messages',
-    icon: MessageSquare,
-    href: '/messages',
-  },
+export const categories = [
+  "overview",
+  "astra-token", 
+  "tools",
+  "core-management",
+  "customer-service", 
+  "ai-vendor-management",
+  "analytics-monitoring",
+  "content-settings",
+  "system-settings",
+  "technical"
 ];
 
-export const secondaryNavigation = [
-  {
-    id: 'settings',
-    title: 'Settings',
-    icon: Settings,
-    href: '/settings',
-  },
-  {
-    id: 'help',
-    title: 'Help',
-    icon: HelpCircle,
-    href: '/help',
-  },
-];
+export const navigationSections = {
+  overview: [
+    { 
+      key: "overview", 
+      label: "Dashboard Overview", 
+      icon: Home,
+      description: "Main dashboard overview and quick stats"
+    }
+  ],
 
-export const adminNavigation = [
-  {
-    id: 'admin-overview',
-    title: 'Overview',
-    icon: Home,
-    href: '/admin',
-  },
-  {
-    id: 'user-management',
-    title: 'User Management',
-    icon: Users,
-    href: '/admin/users',
-  },
-  {
-    id: 'property-management',
-    title: 'Property Management',
-    icon: Building,
-    href: '/admin/properties',
-  },
-  {
-    id: 'vendor-management',
-    title: 'Vendor Management',
-    icon: ShoppingBag,
-    href: '/admin/vendors',
-  },
-  {
-    id: 'system-monitor',
-    title: 'System Monitor',
-    icon: Gauge,
-    href: '/admin/system-monitor',
-  },
-];
+  "astra-token": [
+    {
+      key: "astra-token",
+      label: "ASTRA Token Analytics",
+      icon: Coins,
+      description: "Monitor ASTRA token usage and transactions"
+    }
+  ],
 
-export const propertyOwnerNavigation = [
-  {
-    id: 'owner-overview',
-    title: 'Overview',
-    icon: Home,
-    href: '/owner',
-  },
-  {
-    id: 'owner-properties',
-    title: 'My Properties',
-    icon: Building,
-    href: '/owner/properties',
-  },
-  {
-    id: 'add-property',
-    title: 'Add Property',
-    icon: Plus,
-    href: '/add-property',
-  },
-  {
-    id: 'owner-calendar',
-    title: 'Calendar',
-    icon: Calendar,
-    href: '/owner/calendar',
-  },
-  {
-    id: 'owner-messages',
-    title: 'Messages',
-    icon: MessageSquare,
-    href: '/owner/messages',
-  },
-  {
-    id: 'owner-settings',
-    title: 'Settings',
-    icon: Settings,
-    href: '/owner/settings',
-  },
-];
+  tools: [
+    {
+      key: "tools-management",
+      label: "Tools Management",
+      icon: Wrench,
+      description: "Manage various tools and utilities"
+    },
+    {
+      key: "seo-settings",
+      label: "SEO Settings",
+      icon: Globe,
+      description: "Configure SEO settings for the website"
+    }
+  ],
 
-export const superAdminNavigation = [
-  {
-    id: 'super-admin-overview',
-    title: 'Overview',
-    icon: Home,
-    href: '/super-admin',
-  },
-  {
-    id: 'database-management',
-    title: 'Database Management',
-    icon: Wifi,
-    href: '/super-admin/database',
-  },
-  {
-    id: 'system-settings',
-    title: 'System Settings',
-    icon: Sliders,
-    href: '/super-admin/settings',
-  },
-  {
-    id: 'audit-logs',
-    title: 'Audit Logs',
-    icon: ListChecks,
-    href: '/super-admin/audit-logs',
-  },
-  {
-    id: 'queue-management',
-    title: 'Queue Management',
-    icon: SquareKanban,
-    href: '/super-admin/queues',
-  },
-  {
-    id: 'developer-tools',
-    title: 'Developer Tools',
-    icon: CheckCircle2,
-    href: '/super-admin/developer-tools',
-  },
-];
+  "core-management": [
+    {
+      key: "user-management",
+      label: "User Management",
+      icon: Users,
+      description: "Manage user accounts and roles"
+    },
+    {
+      key: "property-management",
+      label: "Property Management",
+      icon: Building,
+      description: "Manage property listings and details"
+    },
+    {
+      key: "property-management-hub",
+      label: "Property Management Hub",
+      icon: LayoutDashboard,
+      description: "Centralized property management dashboard"
+    }
+  ],
 
-export interface NavigationItem {
-  id: string;
-  title: string;
-  description: string;
-  icon: any;
-  href: string;
-  badge?: string;
-}
+  "customer-service": [
+    {
+      key: "customer-service",
+      label: "Customer Service",
+      icon: Headphones,
+      description: "Manage customer service tickets and inquiries"
+    },
+    {
+      key: "contact-management",
+      label: "Contact Management",
+      icon: Contact2,
+      description: "Manage contact forms and submissions"
+    }
+  ],
 
-export interface NavigationSection {
-  id: string;
-  title: string;
-  label: string;
-  description: string;
-  icon: any;
-  href?: string;
-  badge?: string;
-  items?: NavigationItem[];
-}
+  "ai-vendor-management": [
+    {
+      key: "ai-vendor-management",
+      label: "AI Vendor Management",
+      icon: ShoppingBag,
+      description: "Manage AI and vendor integrations"
+    },
+    {
+      key: "vendor-management",
+      label: "Vendor Management",
+      icon: Users,
+      description: "Manage vendor accounts and services"
+    },
+    {
+      key: "vendor-service-categories",
+      label: "Vendor Service Categories",
+      icon: ListChecks,
+      description: "Manage categories for vendor services"
+    },
+    {
+      key: "vendor-services",
+      label: "Vendor Services",
+      icon: ShoppingBag,
+      description: "Manage individual vendor services"
+    }
+  ],
 
-export const navigationSections: NavigationSection[] = [
-  {
-    id: 'getting-started',
-    title: 'Getting Started',
-    label: 'Getting Started',
-    description: 'Start here for dashboard overview and guides',
-    icon: Rocket,
-    items: [
-      {
-        id: 'admin-overview',
-        title: 'Admin Overview',
-        description: 'Dashboard overview and key metrics',
-        icon: LayoutDashboard,
-        href: '/admin',
-      },
-      {
-        id: 'user-guide',
-        title: 'User Guide',
-        description: 'Learn how to use the admin dashboard',
-        icon: Book,
-        href: '/admin/guide',
-      },
-    ],
-  },
-  {
-    id: 'data-management',
-    title: 'Data Management',
-    label: 'Data Management',
-    description: 'Manage users, properties, and vendors',
-    icon: Database,
-    items: [
-      {
-        id: 'user-management',
-        title: 'User Management',
-        description: 'Manage user accounts and roles',
-        icon: Users,
-        href: '/admin/users',
-      },
-      {
-        id: 'property-management',
-        title: 'Property Management',
-        description: 'Manage property listings and details',
-        icon: Building,
-        href: '/admin/properties',
-      },
-      {
-        id: 'vendor-management',
-        title: 'Vendor Management',
-        description: 'Manage vendors and service providers',
-        icon: ShoppingBag,
-        href: '/admin/vendors',
-      },
-    ],
-  },
-  {
-    id: 'system-configuration',
-    title: 'System Configuration',
-    label: 'System Configuration',
-    description: 'Configure system settings and alerts',
-    icon: SlidersHorizontal,
-    items: [
-      {
-        id: 'system-settings',
-        title: 'System Settings',
-        description: 'Configure system-wide settings',
-        icon: Sliders,
-        href: '/admin/settings',
-      },
-      {
-        id: 'alert-rules',
-        title: 'Alert Rules',
-        description: 'Define rules for system alerts',
-        icon: Bell,
-        href: '/admin/alert-rules',
-      },
-      {
-        id: 'queue-management',
-        title: 'Queue Management',
-        description: 'Manage background task queues',
-        icon: SquareKanban,
-        href: '/admin/queues',
-      },
-    ],
-  },
-  {
-    id: 'monitoring-logs',
-    title: 'Monitoring & Logs',
-    label: 'Monitoring & Logs',
-    description: 'Monitor system health and view logs',
-    icon: Activity,
-    items: [
-      {
-        id: 'system-monitor',
-        title: 'System Monitor',
-        description: 'Real-time system health monitoring',
-        icon: Gauge,
-        href: '/admin/system-monitor',
-      },
-      {
-        id: 'audit-logs',
-        title: 'Audit Logs',
-        description: 'Track user actions and system events',
-        icon: ListChecks,
-        href: '/admin/audit-logs',
-      },
-    ],
-  },
-  {
-    id: 'analytics-reports',
-    title: 'Analytics & Reports',
-    label: 'Analytics & Reports',
-    description: 'View analytics and generate reports',
-    icon: BarChart3,
-    items: [
-      {
-        id: 'system-analytics',
-        title: 'System Analytics',
-        description: 'View system performance metrics',
-        icon: Activity,
-        href: '/admin/analytics',
-      },
-      {
-        id: 'performance-analytics',
-        title: 'Performance Analytics',
-        description: 'Detailed system performance and trends',
-        icon: TrendingUp,
-        href: '/admin/performance-analytics',
-      },
-      {
-        id: 'web-traffic',
-        title: 'Web Traffic Analytics',
-        description: 'Website traffic and user behavior',
-        icon: Globe,
-        href: '/admin/web-traffic',
-      },
-      {
-        id: 'vendor-analytics',
-        title: 'Vendor Performance',
-        description: 'AI-powered vendor analytics',
-        icon: Users,
-        href: '/admin/vendor-performance',
-      },
-      {
-        id: 'system-reports',
-        title: 'System Reports',
-        description: 'Generate comprehensive reports',
-        icon: FileText,
-        href: '/admin/reports',
-      },
-    ],
-  },
-];
+  "analytics-monitoring": [
+    {
+      key: "analytics",
+      label: "Web Traffic Analytics",
+      icon: BarChart3,
+      description: "Monitor website traffic and user behavior"
+    },
+    {
+      key: "ai-bot-management",
+      label: "AI Bot Management",
+      icon: Monitor,
+      description: "Manage AI bot interactions and performance"
+    },
+    {
+      key: "feedback-management",
+      label: "Feedback Management",
+      icon: MessageSquare,
+      description: "Manage user feedback and reviews"
+    },
+    {
+      key: "daily-checkin",
+      label: "Daily Check-in",
+      icon: CheckCircle,
+      description: "Monitor daily check-in activity"
+    }
+  ],
 
-// Create section categories mapping for NavigationCategory component
-export const sectionCategories = {
-  'getting-started': navigationSections[0].items || [],
-  'data-management': navigationSections[1].items || [],
-  'system-configuration': navigationSections[2].items || [],
-  'monitoring-logs': navigationSections[3].items || [],
-  'analytics-reports': navigationSections[4].items || [],
+  "content-settings": [
+    {
+      key: "content-management",
+      label: "Content Management",
+      icon: FileText,
+      description: "Manage website content and pages"
+    },
+    {
+      key: "search-filters",
+      label: "Search Filters",
+      icon: Settings,
+      description: "Configure search filters and options"
+    }
+  ],
+
+  "system-settings": [
+    {
+      key: "system-settings",
+      label: "System Settings",
+      icon: Settings,
+      description: "Configure global system settings"
+    },
+    {
+      key: "billing-management",
+      label: "Billing Management",
+      icon: ShoppingBag,
+      description: "Manage billing and subscription settings"
+    }
+  ],
+
+  technical: [
+    {
+      key: "database-management",
+      label: "Database Management",
+      icon: Database,
+      description: "Manage database tables and entries"
+    },
+    {
+      key: "security-monitoring",
+      label: "Security Monitoring",
+      icon: Shield,
+      description: "Monitor system security and threats"
+    },
+    {
+      key: "system-reports",
+      label: "System Reports",
+      icon: FileText,
+      description: "Generate system reports and logs"
+    }
+  ]
 };
 
-// Export categories for backward compatibility
-export const categories = Object.keys(sectionCategories);
+export const sectionTitles = {
+  overview: "Dashboard",
+  "astra-token": "ASTRA Token",
+  tools: "Tools & Management",
+  "core-management": "Core Management",
+  "customer-service": "Customer Service",
+  "ai-vendor-management": "AI & Vendor Management", 
+  "analytics-monitoring": "Analytics & Monitoring",
+  "content-settings": "Content & Settings",
+  "system-settings": "System Settings",
+  technical: "Technical"
+};
