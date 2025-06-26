@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -6,7 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useNavigate } from "react-router-dom";
+import ASTRATokenDisplay from "@/components/ASTRATokenDisplay";
 import { 
   Home, 
   Building, 
@@ -22,7 +23,8 @@ import {
   LifeBuoy,
   MessageSquare,
   AlertTriangle,
-  User
+  User,
+  Coins
 } from "lucide-react";
 
 const UserDashboard = () => {
@@ -227,136 +229,190 @@ const UserDashboard = () => {
         </div>
       </div>
 
-      {/* Main Dashboard Content */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Quick Actions */}
-        <div className="lg:col-span-2">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <PlusCircle className="h-5 w-5" />
-                <span>Quick Actions</span>
-              </CardTitle>
-              <CardDescription>
-                Access your most important features quickly
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {roleConfig.actions.map((action, index) => {
-                  const IconComponent = action.icon;
-                  return (
-                    <Button
-                      key={index}
-                      variant="outline"
-                      className="h-auto p-4 flex flex-col items-center space-y-2 hover:bg-blue-50 dark:hover:bg-blue-950"
-                      onClick={() => {
-                        if ('path' in action && action.path) {
-                          const navState = ('tab' in action && action.tab) 
-                            ? { state: { defaultTab: action.tab } } 
-                            : {};
-                          navigate(action.path, navState);
-                        } else {
-                          console.log(`Navigate to ${action.label}`);
-                        }
-                      }}
+      {/* Dashboard Tabs */}
+      <Tabs defaultValue="overview" className="space-y-6">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="astra-token">
+            <Coins className="h-4 w-4 mr-2" />
+            ASTRA Token
+          </TabsTrigger>
+          <TabsTrigger value="profile">Profile</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="overview" className="space-y-6">
+          {/* Main Dashboard Content */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Quick Actions */}
+            <div className="lg:col-span-2">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center space-x-2">
+                    <PlusCircle className="h-5 w-5" />
+                    <span>Quick Actions</span>
+                  </CardTitle>
+                  <CardDescription>
+                    Access your most important features quickly
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {roleConfig.actions.map((action, index) => {
+                      const IconComponent = action.icon;
+                      return (
+                        <Button
+                          key={index}
+                          variant="outline"
+                          className="h-auto p-4 flex flex-col items-center space-y-2 hover:bg-blue-50 dark:hover:bg-blue-950"
+                          onClick={() => {
+                            if ('path' in action && action.path) {
+                              const navState = ('tab' in action && action.tab) 
+                                ? { state: { defaultTab: action.tab } } 
+                                : {};
+                              navigate(action.path, navState);
+                            } else {
+                              console.log(`Navigate to ${action.label}`);
+                            }
+                          }}
+                        >
+                          <IconComponent className="h-8 w-8 text-blue-600" />
+                          <span className="text-sm font-medium text-center">{action.label}</span>
+                        </Button>
+                      );
+                    })}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Profile Info */}
+            <div className="space-y-4">
+              <Card>
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <CardTitle>Your Profile</CardTitle>
+                    <Button 
+                      onClick={handleRefreshProfile}
+                      disabled={isRefreshing}
+                      variant="ghost" 
+                      size="sm"
+                      className="h-8 w-8 p-0"
                     >
-                      <IconComponent className="h-8 w-8 text-blue-600" />
-                      <span className="text-sm font-medium text-center">{action.label}</span>
+                      <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
                     </Button>
-                  );
-                })}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex items-center space-x-3">
+                    <RoleIcon className="h-10 w-10 text-blue-600" />
+                    <div>
+                      <h3 className="font-semibold text-lg">{displayName}</h3>
+                      <p className="text-sm text-muted-foreground">{roleConfig.title}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-3 text-sm">
+                    <div className="flex justify-between items-center">
+                      <span className="text-muted-foreground">Email:</span>
+                      <span className="font-medium">{displayEmail}</span>
+                    </div>
+                    {profile?.phone && (
+                      <div className="flex justify-between items-center">
+                        <span className="text-muted-foreground">Phone:</span>
+                        <span className="font-medium">{profile.phone}</span>
+                      </div>
+                    )}
+                    {profile?.company_name && (
+                      <div className="flex justify-between items-center">
+                        <span className="text-muted-foreground">Company:</span>
+                        <span className="font-medium">{profile.company_name}</span>
+                      </div>
+                    )}
+                    <div className="flex justify-between items-center">
+                      <span className="text-muted-foreground">Status:</span>
+                      <Badge variant={profile?.verification_status === 'approved' ? 'default' : 'secondary'}>
+                        {profile?.verification_status || 'pending'}
+                      </Badge>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-muted-foreground">Role:</span>
+                      <Badge className={getRoleBadgeColor()}>
+                        {userRole.replace('_', ' ')}
+                      </Badge>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
 
-        {/* Profile Info */}
-        <div className="space-y-4">
+              {/* Account Info */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center space-x-2">
+                    <BarChart3 className="h-5 w-5" />
+                    <span>Account Info</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">User ID:</span>
+                      <span className="font-mono text-xs">{user.id}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Created:</span>
+                      <span>{new Date(user.created_at).toLocaleDateString()}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Last Login:</span>
+                      <span>{new Date(user.last_sign_in_at || user.created_at).toLocaleDateString()}</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="astra-token" className="space-y-6">
+          <ASTRATokenDisplay />
+        </TabsContent>
+
+        <TabsContent value="profile" className="space-y-6">
           <Card>
             <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle>Your Profile</CardTitle>
-                <Button 
-                  onClick={handleRefreshProfile}
-                  disabled={isRefreshing}
-                  variant="ghost" 
-                  size="sm"
-                  className="h-8 w-8 p-0"
-                >
-                  <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
-                </Button>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center space-x-3">
-                <RoleIcon className="h-10 w-10 text-blue-600" />
-                <div>
-                  <h3 className="font-semibold text-lg">{displayName}</h3>
-                  <p className="text-sm text-muted-foreground">{roleConfig.title}</p>
-                </div>
-              </div>
-              
-              <div className="space-y-3 text-sm">
-                <div className="flex justify-between items-center">
-                  <span className="text-muted-foreground">Email:</span>
-                  <span className="font-medium">{displayEmail}</span>
-                </div>
-                {profile?.phone && (
-                  <div className="flex justify-between items-center">
-                    <span className="text-muted-foreground">Phone:</span>
-                    <span className="font-medium">{profile.phone}</span>
-                  </div>
-                )}
-                {profile?.company_name && (
-                  <div className="flex justify-between items-center">
-                    <span className="text-muted-foreground">Company:</span>
-                    <span className="font-medium">{profile.company_name}</span>
-                  </div>
-                )}
-                <div className="flex justify-between items-center">
-                  <span className="text-muted-foreground">Status:</span>
-                  <Badge variant={profile?.verification_status === 'approved' ? 'default' : 'secondary'}>
-                    {profile?.verification_status || 'pending'}
-                  </Badge>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-muted-foreground">Role:</span>
-                  <Badge className={getRoleBadgeColor()}>
-                    {userRole.replace('_', ' ')}
-                  </Badge>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Recent Activity */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <BarChart3 className="h-5 w-5" />
-                <span>Account Info</span>
-              </CardTitle>
+              <CardTitle>Profile Settings</CardTitle>
+              <CardDescription>Manage your account information and preferences</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">User ID:</span>
-                  <span className="font-mono text-xs">{user.id}</span>
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-sm font-medium">Full Name</label>
+                    <p className="text-sm text-muted-foreground">{profile?.full_name || 'Not set'}</p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium">Email</label>
+                    <p className="text-sm text-muted-foreground">{profile?.email || 'Not set'}</p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium">Role</label>
+                    <p className="text-sm text-muted-foreground capitalize">{profile?.role || 'Not set'}</p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium">Verification Status</label>
+                    <p className="text-sm text-muted-foreground capitalize">{profile?.verification_status || 'Not set'}</p>
+                  </div>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Created:</span>
-                  <span>{new Date(user.created_at).toLocaleDateString()}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Last Login:</span>
-                  <span>{new Date(user.last_sign_in_at || user.created_at).toLocaleDateString()}</span>
+                <div className="pt-4">
+                  <Button variant="outline">
+                    Edit Profile
+                  </Button>
                 </div>
               </div>
             </CardContent>
           </Card>
-        </div>
-      </div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
