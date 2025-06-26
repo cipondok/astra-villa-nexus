@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -105,11 +104,19 @@ const APIConfiguration = () => {
       for (const [key, value] of Object.entries(config)) {
         console.log(`Saving ${key}:`, value, 'type:', typeof value);
         
+        // Convert value to appropriate format for storage
+        let storedValue = value;
+        if (typeof value === 'boolean') {
+          storedValue = value.toString();
+        } else if (typeof value === 'number') {
+          storedValue = value.toString();
+        }
+        
         const { error } = await supabase
           .from('system_settings')
           .upsert({
             key: `astra_api_${key}`,
-            value: value,
+            value: storedValue,
             category: 'astra_api',
             description: `ASTRA API ${key} setting`
           }, {
@@ -124,7 +131,7 @@ const APIConfiguration = () => {
 
       showSuccess('Settings Saved', 'ASTRA API configuration updated successfully');
       console.log('API configuration saved successfully');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error saving API config:', error);
       showError('Error', `Failed to save API configuration: ${error.message || 'Unknown error'}`);
     } finally {
@@ -147,30 +154,21 @@ const APIConfiguration = () => {
 
       console.log('Testing API connection with key:', config.apiKey.substring(0, 10) + '...');
 
-      // Try multiple authentication methods
+      // Try authentication methods as specified in integration instructions
       const authMethods = [
-        // Method 1: Both Authorization and x-api-key headers
+        // Method 1: x-api-key header (recommended)
         {
-          name: 'Authorization + x-api-key',
+          name: 'x-api-key (recommended)',
           headers: {
-            'Authorization': `Bearer ${config.apiKey}`,
             'x-api-key': config.apiKey,
             'Content-Type': 'application/json'
           }
         },
-        // Method 2: Only Authorization header
+        // Method 2: Authorization header with raw API key
         {
-          name: 'Authorization only',
+          name: 'Authorization with raw key',
           headers: {
-            'Authorization': `Bearer ${config.apiKey}`,
-            'Content-Type': 'application/json'
-          }
-        },
-        // Method 3: Only x-api-key header
-        {
-          name: 'x-api-key only',
-          headers: {
-            'x-api-key': config.apiKey,
+            'Authorization': config.apiKey,
             'Content-Type': 'application/json'
           }
         }
@@ -320,7 +318,7 @@ const APIConfiguration = () => {
                   </div>
                   <div className="space-y-1">
                     <p className="text-xs text-gray-400">API key should start with "astra_"</p>
-                    <p className="text-xs text-gray-500">Will be sent as x-api-key header only</p>
+                    <p className="text-xs text-gray-500">Primary: x-api-key header | Alternative: Authorization header</p>
                     {config.apiKey && !isValidAPIKey(config.apiKey) && (
                       <p className="text-xs text-red-400 flex items-center">
                         <AlertTriangle className="h-3 w-3 mr-1" />
