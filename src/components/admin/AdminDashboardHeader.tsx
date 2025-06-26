@@ -143,7 +143,7 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
               </div>
               <div>
                 <h1 className="text-3xl lg:text-4xl font-bold text-white">
-                  {isAdmin ? "Admin Control Panel" : "Support Dashboard"}
+                  ASTRA Villa {isAdmin ? "Admin Panel" : "Support Dashboard"}
                 </h1>
                 <p className="text-blue-100 text-lg mt-1">
                   Welcome back, {profile?.full_name || user?.email}

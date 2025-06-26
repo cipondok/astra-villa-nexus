@@ -4,14 +4,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { NavigationSection } from "./navigationSections";
 
-interface NavigationCardProps {
+interface LightModeNavigationCardProps {
   section: NavigationSection;
   isActive: boolean;
   isUsersCategory: boolean;
   onSectionChange: (sectionId: string) => void;
 }
 
-const NavigationCard = ({ section, isActive, isUsersCategory, onSectionChange }: NavigationCardProps) => {
+const LightModeNavigationCard = ({ section, isActive, isUsersCategory, onSectionChange }: LightModeNavigationCardProps) => {
   const Icon = section.icon;
 
   return (
@@ -75,4 +75,4 @@ const NavigationCard = ({ section, isActive, isUsersCategory, onSectionChange }:
   );
 };
 
-export default NavigationCard;
+export default LightModeNavigationCard;
