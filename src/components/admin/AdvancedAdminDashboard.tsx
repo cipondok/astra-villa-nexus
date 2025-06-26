@@ -1,8 +1,9 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BarChart3, Activity, Globe, Users, FileText, TrendingUp, Home, Settings, Building, Store, Shield, Loader2, Crown, Zap } from "lucide-react";
+import { BarChart3, Activity, Globe, Users, FileText, TrendingUp, Home, Settings, Building, Store, Shield, Loader2, Crown, Zap, Database, MessageSquare, AlertTriangle, Monitor, Blocks } from "lucide-react";
 import AdminOverview from './AdminOverview';
 import UserManagement from './UserManagement';
 import PropertyManagement from './PropertyManagement';
@@ -12,7 +13,7 @@ import AnalyticsDashboard from './AnalyticsDashboard';
 import LoadingPageCustomization from './LoadingPageCustomization';
 
 const AdvancedAdminDashboard = () => {
-  const [activeTab, setActiveTab] = useState('overview');
+  const [activeTab, setActiveTab] = useState('analytics');
 
   console.log('AdvancedAdminDashboard - Current active tab:', activeTab);
 
@@ -25,29 +26,35 @@ const AdvancedAdminDashboard = () => {
     console.log('AdvancedAdminDashboard - Rendering content for tab:', activeTab);
     
     switch (activeTab) {
-      case 'overview':
-        return <AdminOverview />;
-      case 'users':
-        return <UserManagement />;
-      case 'properties':
-        return <PropertyManagement />;
-      case 'vendors':
-        return <VendorManagementHub />;
-      case 'system-settings':
-        return <SystemSettings />;
       case 'analytics':
         return <AnalyticsDashboard />;
-      case 'loading-page':
-        return <LoadingPageCustomization />;
-      default:
-        console.log('AdvancedAdminDashboard - Unknown tab, showing overview');
+      case 'users':
+        return <UserManagement />;
+      case 'api':
+        return <div className="text-white">API Management - Coming Soon</div>;
+      case 'project':
+        return <PropertyManagement />;
+      case 'system':
+        return <SystemSettings />;
+      case 'blockchain':
+        return <div className="text-white">Blockchain Tools - Coming Soon</div>;
+      case 'monitor':
         return <AdminOverview />;
+      case 'errors':
+        return <div className="text-white">Error Management - Coming Soon</div>;
+      case 'chat':
+        return <div className="text-white">Chat Management - Coming Soon</div>;
+      case 'database':
+        return <div className="text-white">Database Management - Coming Soon</div>;
+      default:
+        console.log('AdvancedAdminDashboard - Unknown tab, showing analytics');
+        return <AnalyticsDashboard />;
     }
   };
 
   const tabs = [
     { 
-      id: 'overview', 
+      id: 'analytics', 
       label: 'Analytics', 
       icon: BarChart3, 
       description: 'Real-time insights and performance metrics' 
@@ -59,34 +66,52 @@ const AdvancedAdminDashboard = () => {
       description: 'User management and permissions'
     },
     { 
-      id: 'properties', 
-      label: 'Properties', 
-      icon: Building,
-      description: 'Property listings and management'
-    },
-    { 
-      id: 'vendors', 
-      label: 'Vendors', 
-      icon: Store,
-      description: 'Vendor management and services'
-    },
-    { 
-      id: 'system-settings', 
-      label: 'System', 
+      id: 'api', 
+      label: 'API', 
       icon: Settings,
+      description: 'API management and configuration'
+    },
+    { 
+      id: 'project', 
+      label: 'Project', 
+      icon: Building,
+      description: 'Project and property management'
+    },
+    { 
+      id: 'system', 
+      label: 'System', 
+      icon: Monitor,
       description: 'System configuration and settings'
     },
     { 
-      id: 'loading-page', 
-      label: 'Loading', 
-      icon: Loader2,
-      description: 'Customize loading screen appearance'
+      id: 'blockchain', 
+      label: 'Blockchain', 
+      icon: Blocks,
+      description: 'Blockchain and Web3 tools'
     },
     { 
-      id: 'analytics', 
+      id: 'monitor', 
       label: 'Monitor', 
       icon: Activity,
       description: 'System monitoring and health'
+    },
+    { 
+      id: 'errors', 
+      label: 'Errors', 
+      icon: AlertTriangle,
+      description: 'Error tracking and management'
+    },
+    { 
+      id: 'chat', 
+      label: 'Chat', 
+      icon: MessageSquare,
+      description: 'Chat and communication tools'
+    },
+    { 
+      id: 'database', 
+      label: 'Database', 
+      icon: Database,
+      description: 'Database management and queries'
     }
   ];
 
@@ -175,7 +200,7 @@ const AdvancedAdminDashboard = () => {
         </div>
         
         <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3 lg:grid-cols-7 bg-slate-800/50 rounded-2xl p-2 border border-purple-500/20">
+          <TabsList className="grid w-full grid-cols-5 lg:grid-cols-10 bg-slate-800/50 rounded-2xl p-2 border border-purple-500/20">
             {tabs.map((tab) => (
               <TabsTrigger
                 key={tab.id}
