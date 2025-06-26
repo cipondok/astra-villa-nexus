@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -97,7 +96,7 @@ const APIConfiguration = () => {
   };
 
   const saveAPIConfig = async () => {
-    if (loading) return; // Prevent double submissions
+    if (loading) return;
     
     setLoading(true);
     try {
@@ -107,75 +106,47 @@ const APIConfiguration = () => {
       // Validate required fields
       if (!config.apiKey || !config.baseUrl) {
         showError('Validation Error', 'API key and base URL are required');
+        setLoading(false);
         return;
       }
       
-      // First, delete existing settings to avoid conflicts
-      console.log('🗑️ Clearing existing settings...');
-      await supabase
-        .from('system_settings')
-        .delete()
-        .eq('category', 'astra_api');
-
-      // Prepare the settings for insert
+      // Use individual upsert operations for each setting
       const settingsToSave = [
-        {
-          key: 'astra_api_baseUrl',
-          value: config.baseUrl,
-          category: 'astra_api',
-          description: 'ASTRA API baseUrl setting',
-          is_public: false
-        },
-        {
-          key: 'astra_api_apiKey',
-          value: config.apiKey,
-          category: 'astra_api',
-          description: 'ASTRA API apiKey setting',
-          is_public: false
-        },
-        {
-          key: 'astra_api_isEnabled',
-          value: config.isEnabled.toString(),
-          category: 'astra_api',
-          description: 'ASTRA API isEnabled setting',
-          is_public: false
-        },
-        {
-          key: 'astra_api_timeout',
-          value: config.timeout.toString(),
-          category: 'astra_api',
-          description: 'ASTRA API timeout setting',
-          is_public: false
-        },
-        {
-          key: 'astra_api_retryAttempts',
-          value: config.retryAttempts.toString(),
-          category: 'astra_api',
-          description: 'ASTRA API retryAttempts setting',
-          is_public: false
-        },
-        {
-          key: 'astra_api_description',
-          value: config.description,
-          category: 'astra_api',
-          description: 'ASTRA API description setting',
-          is_public: false
-        }
+        { key: 'astra_api_baseUrl', value: config.baseUrl },
+        { key: 'astra_api_apiKey', value: config.apiKey },
+        { key: 'astra_api_isEnabled', value: config.isEnabled.toString() },
+        { key: 'astra_api_timeout', value: config.timeout.toString() },
+        { key: 'astra_api_retryAttempts', value: config.retryAttempts.toString() },
+        { key: 'astra_api_description', value: config.description }
       ];
 
-      console.log('💾 Inserting new settings:', settingsToSave);
+      console.log('💾 Saving settings one by one...');
 
-      // Insert all settings
-      const { error: insertError } = await supabase
-        .from('system_settings')
-        .insert(settingsToSave);
+      // Save each setting individually with upsert
+      for (const setting of settingsToSave) {
+        console.log(`Saving ${setting.key}:`, setting.value);
+        
+        const { error } = await supabase
+          .from('system_settings')
+          .upsert({
+            key: setting.key,
+            value: setting.value,
+            category: 'astra_api',
+            description: `ASTRA API ${setting.key.replace('astra_api_', '')} setting`,
+            is_public: false
+          }, {
+            onConflict: 'key,category'
+          });
 
-      if (insertError) {
-        console.error('❌ Insert error:', insertError);
-        throw new Error(`Failed to save settings: ${insertError.message}`);
+        if (error) {
+          console.error(`❌ Error saving ${setting.key}:`, error);
+          throw new Error(`Failed to save ${setting.key}: ${error.message}`);
+        }
+        
+        console.log(`✅ Successfully saved ${setting.key}`);
       }
 
-      console.log('✅ Settings saved successfully');
+      console.log('✅ All settings saved successfully');
       showSuccess('Configuration Saved', 'ASTRA API configuration has been saved successfully');
       
       // Reload to confirm save
@@ -213,24 +184,24 @@ const APIConfiguration = () => {
       // Try different authentication methods
       const authMethods = [
         {
-          name: 'Supabase Auth Token',
-          headers: {
-            'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`,
-            'Content-Type': 'application/json',
-            'x-api-key': config.apiKey
-          }
-        },
-        {
-          name: 'API Key Only',
+          name: 'X-API-Key Header',
           headers: {
             'x-api-key': config.apiKey,
             'Content-Type': 'application/json'
           }
         },
         {
-          name: 'Bearer API Key',
+          name: 'Authorization Bearer',
           headers: {
             'Authorization': `Bearer ${config.apiKey}`,
+            'Content-Type': 'application/json'
+          }
+        },
+        {
+          name: 'Supabase + API Key',
+          headers: {
+            'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`,
+            'x-api-key': config.apiKey,
             'Content-Type': 'application/json'
           }
         }
