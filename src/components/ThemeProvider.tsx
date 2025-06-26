@@ -23,7 +23,7 @@ const ThemeProviderContext = createContext<ThemeProviderState>(initialState);
 
 export function ThemeProvider({
   children,
-  defaultTheme = "system",
+  defaultTheme = "light",
   storageKey = "astra-villa-theme",
   ...props
 }: ThemeProviderProps) {
@@ -34,6 +34,7 @@ export function ThemeProvider({
   useEffect(() => {
     const root = window.document.documentElement;
 
+    // Remove all theme classes
     root.classList.remove("light", "dark");
 
     if (theme === "system") {
@@ -43,10 +44,18 @@ export function ThemeProvider({
         : "light";
 
       root.classList.add(systemTheme);
-      return;
+    } else {
+      root.classList.add(theme);
     }
 
-    root.classList.add(theme);
+    // Force light mode consistency
+    if (theme === "light") {
+      document.body.style.backgroundColor = "rgb(255, 255, 255)";
+      document.body.style.color = "rgb(15, 23, 42)";
+    } else if (theme === "dark") {
+      document.body.style.backgroundColor = "";
+      document.body.style.color = "";
+    }
   }, [theme]);
 
   const value = {

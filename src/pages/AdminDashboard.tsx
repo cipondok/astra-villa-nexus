@@ -45,35 +45,39 @@ const AdminDashboard = () => {
 
   if (!isAdmin) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <Alert>
-          <AlertTriangle className="h-4 w-4" />
-          <AlertDescription>
-            Admin access required to view this dashboard
-          </AlertDescription>
-        </Alert>
-        <div className="mt-4 space-x-2">
-          <button 
-            onClick={() => navigate('/dashboard', { replace: true })}
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-          >
-            Go to Dashboard
-          </button>
-          <button 
-            onClick={() => navigate('/?auth=true', { replace: true })}
-            className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
-          >
-            Re-login
-          </button>
+      <div className="min-h-screen bg-background text-foreground">
+        <div className="container mx-auto px-4 py-8">
+          <Alert className="bg-card border-border">
+            <AlertTriangle className="h-4 w-4 text-destructive" />
+            <AlertDescription className="text-foreground">
+              Admin access required to view this dashboard
+            </AlertDescription>
+          </Alert>
+          <div className="mt-4 space-x-2">
+            <button 
+              onClick={() => navigate('/dashboard', { replace: true })}
+              className="bg-primary text-primary-foreground px-4 py-2 rounded hover:bg-primary/90 transition-colors"
+            >
+              Go to Dashboard
+            </button>
+            <button 
+              onClick={() => navigate('/?auth=true', { replace: true })}
+              className="bg-secondary text-secondary-foreground px-4 py-2 rounded hover:bg-secondary/90 transition-colors"
+            >
+              Re-login
+            </button>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <AlertMonitoringProvider>
-      <AdvancedAdminDashboard />
-    </AlertMonitoringProvider>
+    <div className="min-h-screen bg-background text-foreground">
+      <AlertMonitoringProvider>
+        <AdvancedAdminDashboard />
+      </AlertMonitoringProvider>
+    </div>
   );
 };
 
