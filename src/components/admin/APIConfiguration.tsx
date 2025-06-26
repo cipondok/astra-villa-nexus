@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -112,10 +111,9 @@ const APIConfiguration = () => {
     }
   };
 
-  const isValidJWT = (token: string): boolean => {
-    // JWT tokens have 3 parts separated by dots
-    const parts = token.split('.');
-    return parts.length === 3 && parts.every(part => part.length > 0);
+  const isValidAPIKey = (key: string): boolean => {
+    // API keys should start with "astra_" and have reasonable length
+    return key.startsWith('astra_') && key.length > 10;
   };
 
   const testAPIConnection = async () => {
@@ -123,16 +121,16 @@ const APIConfiguration = () => {
     setConnectionStatus('testing');
     
     try {
-      // Validate JWT format first
-      if (!isValidJWT(config.apiKey)) {
-        throw new Error('Invalid JWT token format. JWT tokens should have 3 parts separated by dots (e.g., eyJ0eXAiOiJKV1QiLCJhb...)');
+      // Validate API key format first
+      if (!isValidAPIKey(config.apiKey)) {
+        throw new Error('Invalid API key format. API keys should start with "astra_" (e.g., astra_your_actual_api_key_here)');
       }
 
-      // Test the API connection with proper Authorization header (Bearer token format)
+      // Test the API connection with proper x-api-key header
       const response = await fetch(`${config.baseUrl}/health`, {
         method: 'GET',
         headers: {
-          'Authorization': `Bearer ${config.apiKey}`,
+          'x-api-key': config.apiKey,
           'Content-Type': 'application/json'
         },
         signal: AbortSignal.timeout(config.timeout)
@@ -239,13 +237,13 @@ const APIConfiguration = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label className="text-white">JWT Token</Label>
+                  <Label className="text-white">API Key</Label>
                   <div className="flex space-x-2">
                     <Input
                       type={showApiKey ? 'text' : 'password'}
                       value={config.apiKey}
                       onChange={(e) => handleInputChange('apiKey', e.target.value)}
-                      placeholder="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
+                      placeholder="astra_your_actual_api_key_here"
                       className="bg-slate-700/50 border-slate-600 text-white"
                     />
                     <Button
@@ -257,11 +255,11 @@ const APIConfiguration = () => {
                     </Button>
                   </div>
                   <div className="space-y-1">
-                    <p className="text-xs text-gray-400">Valid JWT token required (3 parts separated by dots)</p>
-                    {config.apiKey && !isValidJWT(config.apiKey) && (
+                    <p className="text-xs text-gray-400">API key should start with "astra_"</p>
+                    {config.apiKey && !isValidAPIKey(config.apiKey) && (
                       <p className="text-xs text-red-400 flex items-center">
                         <AlertTriangle className="h-3 w-3 mr-1" />
-                        Invalid JWT format
+                        Invalid API key format
                       </p>
                     )}
                   </div>
