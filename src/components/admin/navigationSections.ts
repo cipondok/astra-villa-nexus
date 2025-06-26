@@ -1,3 +1,4 @@
+
 import {
   Home,
   Building,
@@ -22,8 +23,19 @@ import {
   Contact2,
   TrendingUp,
   ListChecks,
-  LucideIcon
+  LucideIcon,
+  Headphones,
+  CheckCircle,
+  Database,
+  Shield
 } from "lucide-react";
+
+export interface NavigationSection {
+  key: string;
+  label: string;
+  icon: LucideIcon;
+  description: string;
+}
 
 export const categories = [
   "overview",
@@ -213,6 +225,8 @@ export const navigationSections = {
     }
   ]
 };
+
+export const sectionCategories = navigationSections;
 
 export const sectionTitles = {
   overview: "Dashboard",
