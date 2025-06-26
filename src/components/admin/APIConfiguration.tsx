@@ -64,7 +64,16 @@ const APIConfiguration = () => {
 
       if (data && data.length > 0) {
         const settings = data.reduce((acc, setting) => {
-          acc[setting.key] = setting.value;
+          // Remove the 'astra_api_' prefix from the key to match our config object
+          const key = setting.key.replace('astra_api_', '');
+          // Parse the value based on the key type
+          let value = setting.value;
+          if (key === 'isEnabled') {
+            value = value === 'true' || value === true;
+          } else if (key === 'timeout' || key === 'retryAttempts') {
+            value = parseInt(value);
+          }
+          acc[key] = value;
           return acc;
         }, {} as any);
         
@@ -79,6 +88,7 @@ const APIConfiguration = () => {
   const saveAPIConfig = async () => {
     setLoading(true);
     try {
+      // Save each config item as a separate row in system_settings
       for (const [key, value] of Object.entries(config)) {
         const { error } = await supabase
           .from('system_settings')
@@ -106,7 +116,7 @@ const APIConfiguration = () => {
     setConnectionStatus('testing');
     
     try {
-      // Test the API connection
+      // Test the API connection with proper headers
       const response = await fetch(`${config.baseUrl}/health`, {
         method: 'GET',
         headers: {
