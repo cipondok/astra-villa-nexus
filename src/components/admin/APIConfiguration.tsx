@@ -164,11 +164,11 @@ const APIConfiguration = () => {
             'Content-Type': 'application/json'
           }
         },
-        // Method 2: Authorization header with raw API key
+        // Method 2: Authorization header with Bearer token format
         {
-          name: 'Authorization with raw key',
+          name: 'Authorization with Bearer token',
           headers: {
-            'Authorization': config.apiKey,
+            'Authorization': `Bearer ${config.apiKey}`,
             'Content-Type': 'application/json'
           }
         }
@@ -318,7 +318,7 @@ const APIConfiguration = () => {
                   </div>
                   <div className="space-y-1">
                     <p className="text-xs text-gray-400">API key should start with "astra_"</p>
-                    <p className="text-xs text-gray-500">Primary: x-api-key header | Alternative: Authorization header</p>
+                    <p className="text-xs text-gray-500">Primary: x-api-key header | Alternative: Authorization: Bearer {token}</p>
                     {config.apiKey && !isValidAPIKey(config.apiKey) && (
                       <p className="text-xs text-red-400 flex items-center">
                         <AlertTriangle className="h-3 w-3 mr-1" />
