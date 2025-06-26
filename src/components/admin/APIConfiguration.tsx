@@ -110,40 +110,65 @@ const APIConfiguration = () => {
         return;
       }
       
-      // Use individual upsert operations for each setting
+      // Prepare settings for upsert
       const settingsToSave = [
-        { key: 'astra_api_baseUrl', value: config.baseUrl },
-        { key: 'astra_api_apiKey', value: config.apiKey },
-        { key: 'astra_api_isEnabled', value: config.isEnabled.toString() },
-        { key: 'astra_api_timeout', value: config.timeout.toString() },
-        { key: 'astra_api_retryAttempts', value: config.retryAttempts.toString() },
-        { key: 'astra_api_description', value: config.description }
+        { 
+          key: 'astra_api_baseUrl', 
+          value: config.baseUrl,
+          category: 'astra_api',
+          description: 'ASTRA API base URL',
+          is_public: false
+        },
+        { 
+          key: 'astra_api_apiKey', 
+          value: config.apiKey,
+          category: 'astra_api',
+          description: 'ASTRA API authentication key',
+          is_public: false
+        },
+        { 
+          key: 'astra_api_isEnabled', 
+          value: config.isEnabled.toString(),
+          category: 'astra_api',
+          description: 'ASTRA API enabled status',
+          is_public: false
+        },
+        { 
+          key: 'astra_api_timeout', 
+          value: config.timeout.toString(),
+          category: 'astra_api',
+          description: 'ASTRA API request timeout',
+          is_public: false
+        },
+        { 
+          key: 'astra_api_retryAttempts', 
+          value: config.retryAttempts.toString(),
+          category: 'astra_api',
+          description: 'ASTRA API retry attempts',
+          is_public: false
+        },
+        { 
+          key: 'astra_api_description', 
+          value: config.description,
+          category: 'astra_api',
+          description: 'ASTRA API description',
+          is_public: false
+        }
       ];
 
-      console.log('💾 Saving settings one by one...');
+      console.log('💾 Saving settings...');
 
-      // Save each setting individually with upsert
-      for (const setting of settingsToSave) {
-        console.log(`Saving ${setting.key}:`, setting.value);
-        
-        const { error } = await supabase
-          .from('system_settings')
-          .upsert({
-            key: setting.key,
-            value: setting.value,
-            category: 'astra_api',
-            description: `ASTRA API ${setting.key.replace('astra_api_', '')} setting`,
-            is_public: false
-          }, {
-            onConflict: 'key,category'
-          });
+      // Use a single upsert operation for all settings
+      const { error } = await supabase
+        .from('system_settings')
+        .upsert(settingsToSave, {
+          onConflict: 'key,category',
+          ignoreDuplicates: false
+        });
 
-        if (error) {
-          console.error(`❌ Error saving ${setting.key}:`, error);
-          throw new Error(`Failed to save ${setting.key}: ${error.message}`);
-        }
-        
-        console.log(`✅ Successfully saved ${setting.key}`);
+      if (error) {
+        console.error('❌ Save error:', error);
+        throw new Error(`Failed to save configuration: ${error.message}`);
       }
 
       console.log('✅ All settings saved successfully');
