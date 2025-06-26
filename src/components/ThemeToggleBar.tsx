@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { Sun, Sunset, Moon } from "lucide-react";
+import { Sun, Moon } from "lucide-react";
 import { useTheme } from "@/components/ThemeProvider";
 
 interface ThemeToggleBarProps {
@@ -13,12 +13,10 @@ const ThemeToggleBar = ({ language }: ThemeToggleBarProps) => {
   const text = {
     en: {
       light: "Light",
-      middle: "Middle", 
       dark: "Dark"
     },
     id: {
       light: "Terang",
-      middle: "Tengah",
       dark: "Gelap"
     }
   };
@@ -27,7 +25,6 @@ const ThemeToggleBar = ({ language }: ThemeToggleBarProps) => {
 
   const themes = [
     { key: "light", label: currentText.light, icon: Sun },
-    { key: "middle", label: currentText.middle, icon: Sunset },
     { key: "dark", label: currentText.dark, icon: Moon }
   ] as const;
 

@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { Sun, Sunset, Moon } from "lucide-react";
+import { Sun, Moon } from "lucide-react";
 import { useTheme } from "@/components/ThemeProvider";
 
 interface ThemeToggleSwitchProps {
@@ -15,23 +15,19 @@ const ThemeToggleSwitch = ({ language = "en", className = "", showLabel = true }
   const text = {
     en: {
       light: "Light",
-      middle: "Middle", 
       dark: "Dark"
     },
     id: {
       light: "Terang",
-      middle: "Tengah",
       dark: "Gelap"
     }
   };
 
   const currentText = text[language];
 
-  // 3-step theme cycling function
-  const cycleTheme = () => {
+  // Toggle between light and dark
+  const toggleTheme = () => {
     if (theme === "light") {
-      setTheme("middle");
-    } else if (theme === "middle") {
       setTheme("dark");
     } else {
       setTheme("light");
@@ -42,8 +38,6 @@ const ThemeToggleSwitch = ({ language = "en", className = "", showLabel = true }
     switch (theme) {
       case "light":
         return { icon: Sun, label: currentText.light, color: "text-yellow-500" };
-      case "middle":
-        return { icon: Sunset, label: currentText.middle, color: "text-orange-500" };
       case "dark":
         return { icon: Moon, label: currentText.dark, color: "text-blue-400" };
       default:
@@ -58,7 +52,7 @@ const ThemeToggleSwitch = ({ language = "en", className = "", showLabel = true }
     <Button
       variant="ghost"
       size="sm"
-      onClick={cycleTheme}
+      onClick={toggleTheme}
       className={`
         flex items-center space-x-2 px-3 py-2 rounded-full transition-all duration-300
         bg-transparent border-transparent hover:bg-white/5
