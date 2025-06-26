@@ -54,6 +54,7 @@ const APIConfiguration = () => {
 
   const loadAPIConfig = async () => {
     try {
+      console.log('Loading API configuration...');
       const { data, error } = await supabase
         .from('system_settings')
         .select('*')
@@ -61,14 +62,15 @@ const APIConfiguration = () => {
       
       if (error) {
         console.error('Error loading API config:', error);
+        showError('Database Error', `Failed to load configuration: ${error.message}`);
         return;
       }
 
+      console.log('Loaded settings data:', data);
+
       if (data && data.length > 0) {
         const settings = data.reduce((acc, setting) => {
-          // Remove the 'astra_api_' prefix from the key to match our config object
           const key = setting.key.replace('astra_api_', '');
-          // Parse the value based on the key type
           let value = setting.value;
           
           // Handle different data types properly
@@ -78,15 +80,13 @@ const APIConfiguration = () => {
             } else if (key === 'timeout' || key === 'retryAttempts') {
               value = parseInt(value);
             }
-          } else if (typeof value === 'object' && value !== null) {
-            // If value is stored as JSON, extract the actual value
-            value = value;
           }
           
           acc[key] = value;
           return acc;
         }, {} as any);
         
+        console.log('Processed settings:', settings);
         setConfig(prev => ({ ...prev, ...settings }));
       }
     } catch (error) {
@@ -100,11 +100,16 @@ const APIConfiguration = () => {
     try {
       console.log('Saving API config:', config);
       
+      // Validate required fields
+      if (!config.apiKey || !config.baseUrl) {
+        showError('Validation Error', 'API key and base URL are required');
+        return;
+      }
+      
       // Save each config item as a separate row in system_settings
-      for (const [key, value] of Object.entries(config)) {
+      const savePromises = Object.entries(config).map(async ([key, value]) => {
         console.log(`Saving ${key}:`, value, 'type:', typeof value);
         
-        // Convert value to appropriate format for storage
         let storedValue = value;
         if (typeof value === 'boolean') {
           storedValue = value.toString();
@@ -120,20 +125,21 @@ const APIConfiguration = () => {
             category: 'astra_api',
             description: `ASTRA API ${key} setting`
           }, {
-            onConflict: 'key,category'
+            onConflict: 'key'
           });
         
         if (error) {
           console.error(`Error saving ${key}:`, error);
-          throw error;
+          throw new Error(`Failed to save ${key}: ${error.message}`);
         }
-      }
+      });
 
+      await Promise.all(savePromises);
       showSuccess('Settings Saved', 'ASTRA API configuration updated successfully');
       console.log('API configuration saved successfully');
     } catch (error: any) {
       console.error('Error saving API config:', error);
-      showError('Error', `Failed to save API configuration: ${error.message || 'Unknown error'}`);
+      showError('Save Error', `Failed to save API configuration: ${error.message || 'Unknown error'}`);
     } finally {
       setLoading(false);
     }
@@ -144,75 +150,137 @@ const APIConfiguration = () => {
   };
 
   const testAPIConnection = async () => {
+    if (!config.apiKey) {
+      showError('Missing API Key', 'Please enter your API key before testing');
+      return;
+    }
+
+    if (!isValidAPIKey(config.apiKey)) {
+      showError('Invalid API Key', 'API key must start with "astra_" and be valid format');
+      return;
+    }
+
     setTesting(true);
     setConnectionStatus('testing');
+    setTestResults(null);
     
     try {
-      if (!isValidAPIKey(config.apiKey)) {
-        throw new Error('Invalid API key format. API keys should start with "astra_" (e.g., astra_your_actual_api_key_here)');
-      }
+      console.log('Testing ASTRA API connection...');
+      console.log('Base URL:', config.baseUrl);
+      console.log('API Key prefix:', config.apiKey.substring(0, 10) + '...');
 
-      console.log('Testing API connection with key:', config.apiKey.substring(0, 10) + '...');
-
-      // Try authentication methods as specified in integration instructions
-      const authMethods = [
-        // Method 1: x-api-key header (recommended)
-        {
-          name: 'x-api-key (recommended)',
-          headers: {
-            'x-api-key': config.apiKey,
-            'Content-Type': 'application/json'
-          }
+      // Method 1: x-api-key header (Primary method)
+      console.log('Trying x-api-key header method...');
+      const response1 = await fetch(`${config.baseUrl}/health`, {
+        method: 'GET',
+        headers: {
+          'x-api-key': config.apiKey,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
         },
-        // Method 2: Authorization header with raw key (not Bearer token)
-        {
-          name: 'Authorization with raw key',
-          headers: {
-            'Authorization': config.apiKey,
-            'Content-Type': 'application/json'
-          }
-        }
-      ];
+        signal: AbortSignal.timeout(config.timeout)
+      });
 
-      let lastError = null;
-      
-      for (const method of authMethods) {
-        try {
-          console.log(`Trying authentication method: ${method.name}`);
-          
-          const response = await fetch(`${config.baseUrl}/health`, {
-            method: 'GET',
-            headers: method.headers,
-            signal: AbortSignal.timeout(config.timeout)
-          });
+      console.log('x-api-key Response status:', response1.status);
+      console.log('x-api-key Response headers:', Object.fromEntries(response1.headers.entries()));
 
-          console.log(`${method.name} - Status:`, response.status);
-          console.log(`${method.name} - Headers:`, Object.fromEntries(response.headers.entries()));
-
-          if (response.ok) {
-            const data = await response.json();
-            setConnectionStatus('connected');
-            setTestResults({
-              status: 'success',
-              message: `API connection successful using ${method.name}`,
-              method: method.name,
-              data: data
-            });
-            showSuccess('Connection Test', `ASTRA API connection successful using ${method.name}`);
-            return; // Exit on first successful method
-          } else {
-            const errorText = await response.text();
-            console.log(`${method.name} - Error Response:`, errorText);
-            lastError = new Error(`${method.name}: HTTP ${response.status}: ${errorText || response.statusText}`);
-          }
-        } catch (error: any) {
-          console.error(`${method.name} failed:`, error);
-          lastError = error;
-        }
+      if (response1.ok) {
+        const data = await response1.json();
+        console.log('x-api-key Success response:', data);
+        setConnectionStatus('connected');
+        setTestResults({
+          status: 'success',
+          method: 'x-api-key header',
+          statusCode: response1.status,
+          data: data,
+          message: 'API connection successful using x-api-key header'
+        });
+        showSuccess('Connection Test', 'ASTRA API connection successful using x-api-key header');
+        return;
       }
 
-      // If we get here, all methods failed
-      throw lastError || new Error('All authentication methods failed');
+      const errorText1 = await response1.text();
+      console.log('x-api-key Error response:', errorText1);
+
+      // Method 2: Authorization header with API key
+      console.log('Trying Authorization header method...');
+      const response2 = await fetch(`${config.baseUrl}/health`, {
+        method: 'GET',
+        headers: {
+          'Authorization': config.apiKey,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        signal: AbortSignal.timeout(config.timeout)
+      });
+
+      console.log('Authorization Response status:', response2.status);
+      console.log('Authorization Response headers:', Object.fromEntries(response2.headers.entries()));
+
+      if (response2.ok) {
+        const data = await response2.json();
+        console.log('Authorization Success response:', data);
+        setConnectionStatus('connected');
+        setTestResults({
+          status: 'success',
+          method: 'Authorization header',
+          statusCode: response2.status,
+          data: data,
+          message: 'API connection successful using Authorization header'
+        });
+        showSuccess('Connection Test', 'ASTRA API connection successful using Authorization header');
+        return;
+      }
+
+      const errorText2 = await response2.text();
+      console.log('Authorization Error response:', errorText2);
+
+      // Method 3: Try with Bearer format (some APIs require this)
+      console.log('Trying Bearer token method...');
+      const response3 = await fetch(`${config.baseUrl}/health`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${config.apiKey}`,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        signal: AbortSignal.timeout(config.timeout)
+      });
+
+      console.log('Bearer Response status:', response3.status);
+
+      if (response3.ok) {
+        const data = await response3.json();
+        console.log('Bearer Success response:', data);
+        setConnectionStatus('connected');
+        setTestResults({
+          status: 'success',
+          method: 'Bearer token',
+          statusCode: response3.status,
+          data: data,
+          message: 'API connection successful using Bearer token'
+        });
+        showSuccess('Connection Test', 'ASTRA API connection successful using Bearer token');
+        return;
+      }
+
+      const errorText3 = await response3.text();
+      console.log('Bearer Error response:', errorText3);
+
+      // All methods failed
+      setConnectionStatus('disconnected');
+      setTestResults({
+        status: 'error',
+        attempts: [
+          { method: 'x-api-key', status: response1.status, error: errorText1 },
+          { method: 'Authorization', status: response2.status, error: errorText2 },
+          { method: 'Bearer', status: response3.status, error: errorText3 }
+        ],
+        message: 'All authentication methods failed',
+        suggestion: 'Please verify your API key is correct and contact ASTRA support if the issue persists.'
+      });
+
+      showError('Connection Test Failed', 'All authentication methods failed. Please check your API key.');
 
     } catch (error: any) {
       console.error('API Connection Error:', error);
@@ -221,7 +289,7 @@ const APIConfiguration = () => {
         status: 'error',
         message: error.message || 'Connection failed',
         error: error,
-        suggestion: 'Please check your API key format and ensure it\'s valid. Contact ASTRA support if the issue persists.'
+        suggestion: 'Check your network connection and API endpoint URL.'
       });
       showError('Connection Test Failed', error.message || 'Failed to connect to ASTRA API');
     } finally {
@@ -318,7 +386,7 @@ const APIConfiguration = () => {
                   </div>
                   <div className="space-y-1">
                     <p className="text-xs text-gray-400">API key should start with "astra_"</p>
-                    <p className="text-xs text-gray-500">Primary: x-api-key header | Alternative: Authorization: &#123;raw_key&#125;</p>
+                    <p className="text-xs text-gray-500">Supports multiple auth methods: x-api-key, Authorization, Bearer token</p>
                     {config.apiKey && !isValidAPIKey(config.apiKey) && (
                       <p className="text-xs text-red-400 flex items-center">
                         <AlertTriangle className="h-3 w-3 mr-1" />
@@ -473,7 +541,7 @@ const APIConfiguration = () => {
                       ? 'bg-green-900/20 border border-green-500/30' 
                       : 'bg-red-900/20 border border-red-500/30'
                   }`}>
-                    <pre className="text-xs text-white overflow-auto">
+                    <pre className="text-xs text-white overflow-auto whitespace-pre-wrap">
                       {JSON.stringify(testResults, null, 2)}
                     </pre>
                   </div>
