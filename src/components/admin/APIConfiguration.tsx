@@ -103,40 +103,67 @@ const APIConfiguration = () => {
       // Validate required fields
       if (!config.apiKey || !config.baseUrl) {
         showError('Validation Error', 'API key and base URL are required');
+        setLoading(false);
         return;
       }
       
-      // Save each config item as a separate row in system_settings
-      const savePromises = Object.entries(config).map(async ([key, value]) => {
-        console.log(`Saving ${key}:`, value, 'type:', typeof value);
-        
-        let storedValue = value;
-        if (typeof value === 'boolean') {
-          storedValue = value.toString();
-        } else if (typeof value === 'number') {
-          storedValue = value.toString();
+      // Prepare the settings for upsert
+      const settingsToSave = [
+        {
+          key: 'astra_api_baseUrl',
+          value: config.baseUrl,
+          category: 'astra_api',
+          description: 'ASTRA API baseUrl setting'
+        },
+        {
+          key: 'astra_api_apiKey',
+          value: config.apiKey,
+          category: 'astra_api',
+          description: 'ASTRA API apiKey setting'
+        },
+        {
+          key: 'astra_api_isEnabled',
+          value: config.isEnabled.toString(),
+          category: 'astra_api',
+          description: 'ASTRA API isEnabled setting'
+        },
+        {
+          key: 'astra_api_timeout',
+          value: config.timeout.toString(),
+          category: 'astra_api',
+          description: 'ASTRA API timeout setting'
+        },
+        {
+          key: 'astra_api_retryAttempts',
+          value: config.retryAttempts.toString(),
+          category: 'astra_api',
+          description: 'ASTRA API retryAttempts setting'
+        },
+        {
+          key: 'astra_api_description',
+          value: config.description,
+          category: 'astra_api',
+          description: 'ASTRA API description setting'
         }
-        
-        const { error } = await supabase
-          .from('system_settings')
-          .upsert({
-            key: `astra_api_${key}`,
-            value: storedValue,
-            category: 'astra_api',
-            description: `ASTRA API ${key} setting`
-          }, {
-            onConflict: 'key'
-          });
-        
-        if (error) {
-          console.error(`Error saving ${key}:`, error);
-          throw new Error(`Failed to save ${key}: ${error.message}`);
-        }
-      });
+      ];
 
-      await Promise.all(savePromises);
+      console.log('Settings to save:', settingsToSave);
+
+      // Save all settings using upsert
+      const { error } = await supabase
+        .from('system_settings')
+        .upsert(settingsToSave, {
+          onConflict: 'key'
+        });
+
+      if (error) {
+        console.error('Error saving settings:', error);
+        throw new Error(`Failed to save settings: ${error.message}`);
+      }
+
+      console.log('Settings saved successfully');
       showSuccess('Settings Saved', 'ASTRA API configuration updated successfully');
-      console.log('API configuration saved successfully');
+      
     } catch (error: any) {
       console.error('Error saving API config:', error);
       showError('Save Error', `Failed to save API configuration: ${error.message || 'Unknown error'}`);
