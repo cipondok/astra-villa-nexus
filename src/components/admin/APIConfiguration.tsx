@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -96,77 +97,93 @@ const APIConfiguration = () => {
   };
 
   const saveAPIConfig = async () => {
+    if (loading) return; // Prevent double submissions
+    
     setLoading(true);
     try {
-      console.log('Saving API config:', config);
+      console.log('🔄 Starting save process...');
+      console.log('Current config:', config);
       
       // Validate required fields
       if (!config.apiKey || !config.baseUrl) {
         showError('Validation Error', 'API key and base URL are required');
-        setLoading(false);
         return;
       }
       
-      // Prepare the settings for upsert
+      // First, delete existing settings to avoid conflicts
+      console.log('🗑️ Clearing existing settings...');
+      await supabase
+        .from('system_settings')
+        .delete()
+        .eq('category', 'astra_api');
+
+      // Prepare the settings for insert
       const settingsToSave = [
         {
           key: 'astra_api_baseUrl',
           value: config.baseUrl,
           category: 'astra_api',
-          description: 'ASTRA API baseUrl setting'
+          description: 'ASTRA API baseUrl setting',
+          is_public: false
         },
         {
           key: 'astra_api_apiKey',
           value: config.apiKey,
           category: 'astra_api',
-          description: 'ASTRA API apiKey setting'
+          description: 'ASTRA API apiKey setting',
+          is_public: false
         },
         {
           key: 'astra_api_isEnabled',
           value: config.isEnabled.toString(),
           category: 'astra_api',
-          description: 'ASTRA API isEnabled setting'
+          description: 'ASTRA API isEnabled setting',
+          is_public: false
         },
         {
           key: 'astra_api_timeout',
           value: config.timeout.toString(),
           category: 'astra_api',
-          description: 'ASTRA API timeout setting'
+          description: 'ASTRA API timeout setting',
+          is_public: false
         },
         {
           key: 'astra_api_retryAttempts',
           value: config.retryAttempts.toString(),
           category: 'astra_api',
-          description: 'ASTRA API retryAttempts setting'
+          description: 'ASTRA API retryAttempts setting',
+          is_public: false
         },
         {
           key: 'astra_api_description',
           value: config.description,
           category: 'astra_api',
-          description: 'ASTRA API description setting'
+          description: 'ASTRA API description setting',
+          is_public: false
         }
       ];
 
-      console.log('Settings to save:', settingsToSave);
+      console.log('💾 Inserting new settings:', settingsToSave);
 
-      // Save all settings using upsert
-      const { error } = await supabase
+      // Insert all settings
+      const { error: insertError } = await supabase
         .from('system_settings')
-        .upsert(settingsToSave, {
-          onConflict: 'key'
-        });
+        .insert(settingsToSave);
 
-      if (error) {
-        console.error('Error saving settings:', error);
-        throw new Error(`Failed to save settings: ${error.message}`);
+      if (insertError) {
+        console.error('❌ Insert error:', insertError);
+        throw new Error(`Failed to save settings: ${insertError.message}`);
       }
 
-      console.log('Settings saved successfully');
-      showSuccess('Settings Saved', 'ASTRA API configuration updated successfully');
+      console.log('✅ Settings saved successfully');
+      showSuccess('Configuration Saved', 'ASTRA API configuration has been saved successfully');
+      
+      // Reload to confirm save
+      await loadAPIConfig();
       
     } catch (error: any) {
-      console.error('Error saving API config:', error);
-      showError('Save Error', `Failed to save API configuration: ${error.message || 'Unknown error'}`);
+      console.error('❌ Save error:', error);
+      showError('Save Failed', `Could not save configuration: ${error.message || 'Unknown error'}`);
     } finally {
       setLoading(false);
     }
@@ -182,135 +199,95 @@ const APIConfiguration = () => {
       return;
     }
 
-    if (!isValidAPIKey(config.apiKey)) {
-      showError('Invalid API Key', 'API key must start with "astra_" and be valid format');
-      return;
-    }
-
     setTesting(true);
     setConnectionStatus('testing');
     setTestResults(null);
     
     try {
-      console.log('Testing ASTRA API connection...');
-      console.log('Base URL:', config.baseUrl);
-      console.log('API Key prefix:', config.apiKey.substring(0, 10) + '...');
+      console.log('🧪 Testing ASTRA API connection...');
+      console.log('📍 Base URL:', config.baseUrl);
+      console.log('🔑 API Key (masked):', config.apiKey.substring(0, 15) + '...');
 
-      // Method 1: x-api-key header (Primary method)
-      console.log('Trying x-api-key header method...');
-      const response1 = await fetch(`${config.baseUrl}/health`, {
-        method: 'GET',
-        headers: {
-          'x-api-key': config.apiKey,
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
+      const testUrl = `${config.baseUrl}/health`;
+      
+      // Try different authentication methods
+      const authMethods = [
+        {
+          name: 'Supabase Auth Token',
+          headers: {
+            'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`,
+            'Content-Type': 'application/json',
+            'x-api-key': config.apiKey
+          }
         },
-        signal: AbortSignal.timeout(config.timeout)
-      });
-
-      console.log('x-api-key Response status:', response1.status);
-      console.log('x-api-key Response headers:', Object.fromEntries(response1.headers.entries()));
-
-      if (response1.ok) {
-        const data = await response1.json();
-        console.log('x-api-key Success response:', data);
-        setConnectionStatus('connected');
-        setTestResults({
-          status: 'success',
-          method: 'x-api-key header',
-          statusCode: response1.status,
-          data: data,
-          message: 'API connection successful using x-api-key header'
-        });
-        showSuccess('Connection Test', 'ASTRA API connection successful using x-api-key header');
-        return;
-      }
-
-      const errorText1 = await response1.text();
-      console.log('x-api-key Error response:', errorText1);
-
-      // Method 2: Authorization header with API key
-      console.log('Trying Authorization header method...');
-      const response2 = await fetch(`${config.baseUrl}/health`, {
-        method: 'GET',
-        headers: {
-          'Authorization': config.apiKey,
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
+        {
+          name: 'API Key Only',
+          headers: {
+            'x-api-key': config.apiKey,
+            'Content-Type': 'application/json'
+          }
         },
-        signal: AbortSignal.timeout(config.timeout)
-      });
+        {
+          name: 'Bearer API Key',
+          headers: {
+            'Authorization': `Bearer ${config.apiKey}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      ];
 
-      console.log('Authorization Response status:', response2.status);
-      console.log('Authorization Response headers:', Object.fromEntries(response2.headers.entries()));
+      for (const method of authMethods) {
+        try {
+          console.log(`🔄 Trying ${method.name}...`);
+          
+          const response = await fetch(testUrl, {
+            method: 'GET',
+            headers: method.headers,
+            signal: AbortSignal.timeout(config.timeout)
+          });
 
-      if (response2.ok) {
-        const data = await response2.json();
-        console.log('Authorization Success response:', data);
-        setConnectionStatus('connected');
-        setTestResults({
-          status: 'success',
-          method: 'Authorization header',
-          statusCode: response2.status,
-          data: data,
-          message: 'API connection successful using Authorization header'
-        });
-        showSuccess('Connection Test', 'ASTRA API connection successful using Authorization header');
-        return;
+          console.log(`📊 ${method.name} Response:`, {
+            status: response.status,
+            statusText: response.statusText,
+            headers: Object.fromEntries(response.headers.entries())
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            console.log(`✅ ${method.name} Success:`, data);
+            
+            setConnectionStatus('connected');
+            setTestResults({
+              status: 'success',
+              method: method.name,
+              statusCode: response.status,
+              data: data,
+              message: `API connection successful using ${method.name}`
+            });
+            
+            showSuccess('Connection Test Passed', `ASTRA API is working with ${method.name}`);
+            return;
+          } else {
+            const errorText = await response.text();
+            console.log(`❌ ${method.name} Failed:`, errorText);
+          }
+        } catch (methodError) {
+          console.log(`❌ ${method.name} Error:`, methodError);
+        }
       }
-
-      const errorText2 = await response2.text();
-      console.log('Authorization Error response:', errorText2);
-
-      // Method 3: Try with Bearer format (some APIs require this)
-      console.log('Trying Bearer token method...');
-      const response3 = await fetch(`${config.baseUrl}/health`, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${config.apiKey}`,
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        signal: AbortSignal.timeout(config.timeout)
-      });
-
-      console.log('Bearer Response status:', response3.status);
-
-      if (response3.ok) {
-        const data = await response3.json();
-        console.log('Bearer Success response:', data);
-        setConnectionStatus('connected');
-        setTestResults({
-          status: 'success',
-          method: 'Bearer token',
-          statusCode: response3.status,
-          data: data,
-          message: 'API connection successful using Bearer token'
-        });
-        showSuccess('Connection Test', 'ASTRA API connection successful using Bearer token');
-        return;
-      }
-
-      const errorText3 = await response3.text();
-      console.log('Bearer Error response:', errorText3);
 
       // All methods failed
       setConnectionStatus('disconnected');
       setTestResults({
         status: 'error',
-        attempts: [
-          { method: 'x-api-key', status: response1.status, error: errorText1 },
-          { method: 'Authorization', status: response2.status, error: errorText2 },
-          { method: 'Bearer', status: response3.status, error: errorText3 }
-        ],
         message: 'All authentication methods failed',
-        suggestion: 'Please verify your API key is correct and contact ASTRA support if the issue persists.'
+        suggestion: 'Please verify your API key is correct and the endpoint is accessible. The API key format should be "astra_xxxxxxxxxx".'
       });
 
-      showError('Connection Test Failed', 'All authentication methods failed. Please check your API key.');
+      showError('Connection Test Failed', 'All authentication methods failed. Please verify your API key and endpoint.');
 
     } catch (error: any) {
-      console.error('API Connection Error:', error);
+      console.error('🚨 Connection test error:', error);
       setConnectionStatus('disconnected');
       setTestResults({
         status: 'error',
@@ -413,7 +390,7 @@ const APIConfiguration = () => {
                   </div>
                   <div className="space-y-1">
                     <p className="text-xs text-gray-400">API key should start with "astra_"</p>
-                    <p className="text-xs text-gray-500">Supports multiple auth methods: x-api-key, Authorization, Bearer token</p>
+                    <p className="text-xs text-gray-500">Current key: {config.apiKey ? config.apiKey.substring(0, 15) + '...' : 'Not set'}</p>
                     {config.apiKey && !isValidAPIKey(config.apiKey) && (
                       <p className="text-xs text-red-400 flex items-center">
                         <AlertTriangle className="h-3 w-3 mr-1" />
@@ -464,7 +441,14 @@ const APIConfiguration = () => {
 
               <div className="flex space-x-2">
                 <Button onClick={saveAPIConfig} disabled={loading}>
-                  {loading ? 'Saving...' : 'Save Configuration'}
+                  {loading ? (
+                    <>
+                      <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                      Saving...
+                    </>
+                  ) : (
+                    'Save Configuration'
+                  )}
                 </Button>
                 <Button variant="outline" onClick={testAPIConnection} disabled={testing}>
                   {testing ? (
