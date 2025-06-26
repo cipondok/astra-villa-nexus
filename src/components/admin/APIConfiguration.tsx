@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -59,7 +60,10 @@ const APIConfiguration = () => {
         .select('*')
         .eq('category', 'astra_api');
       
-      if (error) throw error;
+      if (error) {
+        console.error('Error loading API config:', error);
+        return;
+      }
 
       if (data && data.length > 0) {
         const settings = data.reduce((acc, setting) => {
@@ -67,12 +71,19 @@ const APIConfiguration = () => {
           const key = setting.key.replace('astra_api_', '');
           // Parse the value based on the key type
           let value = setting.value;
-          if (key === 'isEnabled') {
-            value = value === 'true' || value === true;
-          } else if (key === 'timeout' || key === 'retryAttempts') {
-            // Convert to string first, then parse to integer
-            value = parseInt(String(value));
+          
+          // Handle different data types properly
+          if (typeof value === 'string') {
+            if (key === 'isEnabled') {
+              value = value === 'true';
+            } else if (key === 'timeout' || key === 'retryAttempts') {
+              value = parseInt(value);
+            }
+          } else if (typeof value === 'object' && value !== null) {
+            // If value is stored as JSON, extract the actual value
+            value = value;
           }
+          
           acc[key] = value;
           return acc;
         }, {} as any);
@@ -88,24 +99,34 @@ const APIConfiguration = () => {
   const saveAPIConfig = async () => {
     setLoading(true);
     try {
+      console.log('Saving API config:', config);
+      
       // Save each config item as a separate row in system_settings
       for (const [key, value] of Object.entries(config)) {
+        console.log(`Saving ${key}:`, value, 'type:', typeof value);
+        
         const { error } = await supabase
           .from('system_settings')
           .upsert({
             key: `astra_api_${key}`,
-            value: String(value),
+            value: value, // Store the value directly without stringifying
             category: 'astra_api',
             description: `ASTRA API ${key} setting`
+          }, {
+            onConflict: 'key,category'
           });
         
-        if (error) throw error;
+        if (error) {
+          console.error(`Error saving ${key}:`, error);
+          throw error;
+        }
       }
 
       showSuccess('Settings Saved', 'ASTRA API configuration updated successfully');
+      console.log('API configuration saved successfully');
     } catch (error) {
       console.error('Error saving API config:', error);
-      showError('Error', 'Failed to save API configuration');
+      showError('Error', `Failed to save API configuration: ${error.message || 'Unknown error'}`);
     } finally {
       setLoading(false);
     }
