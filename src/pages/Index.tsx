@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Navigation from "@/components/Navigation";
@@ -8,7 +9,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import ResponsiveAIChatWidget from "@/components/ai/ResponsiveAIChatWidget";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Home, Key, Building, Rocket, Star, TrendingUp, Wrench, Sparkles, Brain, Zap, ArrowRight, DollarSign, BarChart3, Shield, Crown, Activity } from "lucide-react";
+import { Home, Key, Building, Rocket } from "lucide-react";
 
 const Index = () => {
   const { language } = useLanguage();
@@ -16,13 +17,13 @@ const Index = () => {
   const [isSearching, setIsSearching] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
-  const [activeSection, setActiveSection] = useState('ai_recommended');
+  const [activeSection, setActiveSection] = useState('featured');
 
-  // Optimized featured properties query with aggressive caching
+  // Optimized featured properties query
   const { data: featuredProperties = [], isLoading: isFeaturedLoading } = useQuery({
     queryKey: ['featured-properties-fast'],
     queryFn: async () => {
-      console.log('Fetching featured properties with optimized query...');
+      console.log('Fetching featured properties...');
       
       try {
         const timeoutPromise = new Promise<never>((_, reject) => {
@@ -58,97 +59,8 @@ const Index = () => {
     gcTime: 300000,
   });
 
-  // Query for different property sections
-  const { data: aiRecommendedProperties = [] } = useQuery({
-    queryKey: ['ai-recommended-properties'],
-    queryFn: async () => {
-      const { data } = await supabase
-        .from('properties')
-        .select('*')
-        .eq('status', 'active')
-        .order('created_at', { ascending: false })
-        .limit(8);
-      return data || [];
-    },
-    enabled: activeSection === 'ai_recommended'
-  });
-
-  const { data: popularProperties = [] } = useQuery({
-    queryKey: ['popular-properties'],
-    queryFn: async () => {
-      const { data } = await supabase
-        .from('properties')
-        .select('*')
-        .eq('status', 'active')
-        .order('created_at', { ascending: false })
-        .limit(8);
-      return data || [];
-    },
-    enabled: activeSection === 'popular'
-  });
-
-  const { data: rentProperties = [] } = useQuery({
-    queryKey: ['rent-properties'],
-    queryFn: async () => {
-      const { data } = await supabase
-        .from('properties')
-        .select('*')
-        .eq('listing_type', 'rent')
-        .eq('status', 'active')
-        .order('created_at', { ascending: false })
-        .limit(8);
-      return data || [];
-    },
-    enabled: activeSection === 'rent'
-  });
-
-  const { data: saleProperties = [] } = useQuery({
-    queryKey: ['sale-properties'],
-    queryFn: async () => {
-      const { data } = await supabase
-        .from('properties')
-        .select('*')
-        .eq('listing_type', 'buy')
-        .eq('status', 'active')
-        .order('created_at', { ascending: false })
-        .limit(8);
-      return data || [];
-    },
-    enabled: activeSection === 'sale'
-  });
-
-  const { data: newProjectProperties = [] } = useQuery({
-    queryKey: ['new-project-properties'],
-    queryFn: async () => {
-      const { data } = await supabase
-        .from('properties')
-        .select('*')
-        .eq('development_status', 'new_project')
-        .eq('status', 'active')
-        .order('created_at', { ascending: false })
-        .limit(8);
-      return data || [];
-    },
-    enabled: activeSection === 'new_projects'
-  });
-
-  const { data: preLaunchProperties = [] } = useQuery({
-    queryKey: ['pre-launch-properties'],
-    queryFn: async () => {
-      const { data } = await supabase
-        .from('properties')
-        .select('*')
-        .eq('development_status', 'pre_launching')
-        .eq('status', 'active')
-        .order('created_at', { ascending: false })
-        .limit(8);
-      return data || [];
-    },
-    enabled: activeSection === 'pre_launch'
-  });
-
   const handleSearch = async (searchData: any) => {
-    console.log('Search initiated with optimized query:', searchData);
+    console.log('Search initiated:', searchData);
     
     setIsSearching(true);
     setHasSearched(true);
@@ -164,7 +76,7 @@ const Index = () => {
         .select('id, title, property_type, listing_type, price, location, bedrooms, bathrooms, area_sqm, images, thumbnail_url, state, city')
         .eq('status', 'active');
 
-      // Apply search filters efficiently
+      // Apply search filters
       if (searchData.query && searchData.query.trim()) {
         const searchTerm = searchData.query.toLowerCase().trim();
         query = query.or(`title.ilike.%${searchTerm}%,location.ilike.%${searchTerm}%`);
@@ -184,34 +96,6 @@ const Index = () => {
 
       if (searchData.listingType) {
         query = query.eq('listing_type', searchData.listingType);
-      }
-
-      if (searchData.bedrooms) {
-        const bedroomCount = searchData.bedrooms === '4+' ? 4 : parseInt(searchData.bedrooms);
-        if (searchData.bedrooms === '4+') {
-          query = query.gte('bedrooms', bedroomCount);
-        } else {
-          query = query.eq('bedrooms', bedroomCount);
-        }
-      }
-
-      if (searchData.bathrooms) {
-        const bathroomCount = searchData.bathrooms === '4+' ? 4 : parseInt(searchData.bathrooms);
-        if (searchData.bathrooms === '4+') {
-          query = query.gte('bathrooms', bathroomCount);
-        } else {
-          query = query.eq('bathrooms', bathroomCount);
-        }
-      }
-
-      if (searchData.priceRange) {
-        const [minPrice, maxPrice] = searchData.priceRange.split('-').map(Number);
-        if (minPrice) {
-          query = query.gte('price', minPrice);
-        }
-        if (maxPrice && maxPrice < 999999999999) {
-          query = query.lte('price', maxPrice);
-        }
       }
 
       const queryWithTimeout = Promise.race([
@@ -251,273 +135,100 @@ const Index = () => {
     await handleSearch({ query: searchTerm });
   };
 
-  const getCurrentSectionData = () => {
-    switch (activeSection) {
-      case 'ai_recommended':
-        return aiRecommendedProperties;
-      case 'popular':
-        return popularProperties;
-      case 'rent':
-        return rentProperties;
-      case 'sale':
-        return saleProperties;
-      case 'new_projects':
-        return newProjectProperties;
-      case 'pre_launch':
-        return preLaunchProperties;
-      default:
-        return featuredProperties;
-    }
-  };
-
-  const text = {
-    en: {
-      buy: "Buy",
-      rent: "Rent",
-      preLaunch: "Pre Launch",
-      newProjects: "New Projects",
-      aiRecommended: "AI Recommended",
-      popular: "Most Popular",
-      sale: "Sale",
-      services: "Services"
-    },
-    id: {
-      buy: "Beli",
-      rent: "Sewa",
-      preLaunch: "Pra Peluncuran",
-      newProjects: "Proyek Baru",
-      aiRecommended: "Rekomendasi AI",
-      popular: "Paling Populer",
-      sale: "Jual",
-      services: "Layanan"
-    }
-  };
-
-  const currentText = text[language] || text.en;
-
   return (
-    <div className="min-h-screen mesh-gradient-astra">
+    <div className="min-h-screen bg-background">
       <Navigation />
       
-      {/* ASTRA Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center px-4 overflow-hidden">
-        {/* ASTRA Background Elements */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/20 rounded-full filter blur-3xl animate-astra-float"></div>
-          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-500/20 rounded-full filter blur-3xl animate-astra-float" style={{ animationDelay: '2s' }}></div>
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] bg-gradient-to-r from-purple-500/10 via-blue-500/10 to-cyan-500/10 rounded-full filter blur-3xl animate-astra-glow"></div>
-        </div>
-        
-        <div className="container mx-auto text-center relative z-10">
-          {/* ASTRA Villa Branding */}
-          <div className="mb-12 animate-astra-scale-in">
-            <div className="flex items-center justify-center mb-12">
-              <div className="relative group">
-                <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-purple-500 via-blue-500 to-cyan-500 flex items-center justify-center mr-8 shadow-2xl animate-astra-glow group-hover:scale-110 transition-transform duration-500">
-                  <Crown className="text-white text-4xl font-bold relative z-10 animate-astra-float" size={40} />
-                </div>
-                <div className="absolute -top-3 -right-3 w-8 h-8 bg-cyan-400 rounded-full flex items-center justify-center animate-astra-glow">
-                  <Zap size={16} className="text-white" />
-                </div>
-                <div className="absolute -bottom-2 -left-2 w-6 h-6 bg-purple-400 rounded-full animate-astra-float" style={{ animationDelay: '1s' }}></div>
-              </div>
-              <div className="text-left">
-                <h1 className="text-6xl sm:text-7xl lg:text-8xl font-extrabold text-foreground mb-6 heading-astra">
-                  ASTRA Villa
-                </h1>
-                <div className="flex items-center gap-4 mb-4">
-                  <BarChart3 className="text-purple-400 animate-astra-glow" size={32} />
-                  <p className="text-purple-400 text-2xl font-semibold">
-                    Advanced Property Intelligence
-                  </p>
-                </div>
-                <p className="text-cyan-400 text-xl font-medium">
-                  Next-Generation Real Estate Platform
-                </p>
-              </div>
-            </div>
-            
-            {/* ASTRA Features Showcase */}
-            <div className="flex flex-wrap justify-center gap-6 mb-12">
-              <div className="glass-astra px-8 py-4 flex items-center gap-3 group">
-                <Star className="text-purple-400 animate-astra-glow group-hover:scale-125 transition-transform" size={20} />
-                <span className="text-foreground font-semibold text-lg">AI Powered</span>
-              </div>
-              <div className="glass-astra px-8 py-4 flex items-center gap-3 group">
-                <Shield className="text-cyan-400 animate-astra-glow group-hover:scale-125 transition-transform" size={20} />
-                <span className="text-foreground font-semibold text-lg">Secure Platform</span>
-              </div>
-              <div className="glass-astra px-8 py-4 flex items-center gap-3 group">
-                <Activity className="text-blue-400 animate-astra-glow group-hover:scale-125 transition-transform" size={20} />
-                <span className="text-foreground font-semibold text-lg">Real-time Data</span>
-              </div>
-              <div className="glass-astra px-8 py-4 flex items-center gap-3 group">
-                <BarChart3 className="text-purple-400 animate-astra-glow group-hover:scale-125 transition-transform" size={20} />
-                <span className="text-foreground font-semibold text-lg">Analytics</span>
-              </div>
-            </div>
+      {/* Hero Section with Search */}
+      <section className="relative py-20 px-4">
+        <div className="container mx-auto text-center">
+          {/* Simple Title */}
+          <div className="mb-12">
+            <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-4">
+              Find Your Perfect Property
+            </h1>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Discover amazing properties with our advanced search platform
+            </p>
           </div>
           
-          {/* ASTRA Search Panel */}
-          <div className="max-w-7xl mx-auto animate-astra-slide-in">
-            <div className="search-panel-astra">
-              <EnhancedModernSearchPanel
-                language={language}
-                onSearch={handleSearch}
-                onLiveSearch={handleLiveSearch}
-              />
-            </div>
-          </div>
-
-          {/* Call to Action */}
-          <div className="mt-12 animate-astra-scale-in">
-            <Button className="btn-astra text-xl px-12 py-6 group">
-              Explore Properties
-              <ArrowRight className="ml-3 group-hover:translate-x-2 transition-transform" size={24} />
-            </Button>
+          {/* Search Panel */}
+          <div className="max-w-4xl mx-auto">
+            <EnhancedModernSearchPanel
+              language={language}
+              onSearch={handleSearch}
+              onLiveSearch={handleLiveSearch}
+            />
           </div>
         </div>
       </section>
 
-      {/* ASTRA Navigation Buttons */}
-      <section className="py-12 bg-card/10 backdrop-astra">
+      {/* Quick Action Buttons */}
+      <section className="py-12">
         <div className="container mx-auto px-4">
-          <div className="flex flex-wrap justify-center gap-6">
+          <div className="flex flex-wrap justify-center gap-4">
             <Button 
-              className="btn-astra group"
               onClick={() => handleSearch({ listingType: 'buy' })}
+              className="flex items-center gap-2"
             >
-              <Home className="h-6 w-6 mr-3 group-hover:scale-110 transition-transform" />
+              <Home className="h-5 w-5" />
               Buy Properties
             </Button>
             <Button 
-              className="btn-success-astra group"
+              variant="outline"
               onClick={() => handleSearch({ listingType: 'rent' })}
+              className="flex items-center gap-2"
             >
-              <Key className="h-6 w-6 mr-3 group-hover:scale-110 transition-transform" />
+              <Key className="h-5 w-5" />
               Rent Properties
             </Button>
             <Button 
-              className="btn-astra-outline group"
+              variant="outline"
               onClick={() => handleSearch({ development_status: 'pre_launching' })}
+              className="flex items-center gap-2"
             >
-              <Rocket className="h-6 w-6 mr-3 group-hover:scale-110 transition-transform" />
+              <Rocket className="h-5 w-5" />
               Pre-Launch
             </Button>
             <Button 
-              className="btn-astra group"
+              variant="outline"
               onClick={() => handleSearch({ development_status: 'new_project' })}
+              className="flex items-center gap-2"
             >
-              <Building className="h-6 w-6 mr-3 group-hover:scale-110 transition-transform" />
+              <Building className="h-5 w-5" />
               New Projects
             </Button>
           </div>
         </div>
       </section>
 
-      {/* ASTRA Property Section Navigation */}
-      <section className="py-12">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-wrap justify-center gap-4 mb-12">
-            <Button
-              variant={activeSection === 'ai_recommended' ? 'default' : 'ghost'}
-              onClick={() => setActiveSection('ai_recommended')}
-              className={`glass-astra transition-all duration-500 group ${activeSection === 'ai_recommended' 
-                ? 'bg-gradient-to-r from-purple-500 to-blue-500 text-white shadow-2xl scale-105' 
-                : 'text-foreground hover:bg-purple-500/10 hover:scale-105'}`}
-            >
-              <Star className="h-5 w-5 mr-3 group-hover:rotate-12 transition-transform" />
-              AI Recommended
-            </Button>
-            <Button
-              variant={activeSection === 'popular' ? 'default' : 'ghost'}
-              onClick={() => setActiveSection('popular')}
-              className={`glass-astra transition-all duration-500 group ${activeSection === 'popular' 
-                ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-2xl scale-105' 
-                : 'text-foreground hover:bg-cyan-500/10 hover:scale-105'}`}
-            >
-              <TrendingUp className="h-5 w-5 mr-3 group-hover:rotate-12 transition-transform" />
-              Popular
-            </Button>
-            <Button
-              variant={activeSection === 'rent' ? 'default' : 'ghost'}
-              onClick={() => setActiveSection('rent')}
-              className={`glass-astra transition-all duration-500 group ${activeSection === 'rent' 
-                ? 'bg-gradient-to-r from-purple-500 to-cyan-500 text-white shadow-2xl scale-105' 
-                : 'text-foreground hover:bg-purple-500/10 hover:scale-105'}`}
-            >
-              <Key className="h-5 w-5 mr-3 group-hover:rotate-12 transition-transform" />
-              Rent
-            </Button>
-            <Button
-              variant={activeSection === 'sale' ? 'default' : 'ghost'}
-              onClick={() => setActiveSection('sale')}
-              className={`glass-astra transition-all duration-500 group ${activeSection === 'sale' 
-                ? 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-2xl scale-105' 
-                : 'text-foreground hover:bg-blue-500/10 hover:scale-105'}`}
-            >
-              <Home className="h-5 w-5 mr-3 group-hover:rotate-12 transition-transform" />
-              Sale
-            </Button>
-            <Button
-              variant={activeSection === 'new_projects' ? 'default' : 'ghost'}
-              onClick={() => setActiveSection('new_projects')}
-              className={`glass-astra transition-all duration-500 group ${activeSection === 'new_projects' 
-                ? 'bg-gradient-to-r from-purple-500 to-blue-500 text-white shadow-2xl scale-105' 
-                : 'text-foreground hover:bg-purple-500/10 hover:scale-105'}`}
-            >
-              <Building className="h-5 w-5 mr-3 group-hover:rotate-12 transition-transform" />
-              New Projects
-            </Button>
-            <Button
-              variant={activeSection === 'pre_launch' ? 'default' : 'ghost'}
-              onClick={() => setActiveSection('pre_launch')}
-              className={`glass-astra transition-all duration-500 group ${activeSection === 'pre_launch' 
-                ? 'bg-gradient-to-r from-cyan-500 to-purple-500 text-white shadow-2xl scale-105' 
-                : 'text-foreground hover:bg-cyan-500/10 hover:scale-105'}`}
-            >
-              <Rocket className="h-5 w-5 mr-3 group-hover:rotate-12 transition-transform" />
-              Pre Launch
-            </Button>
-          </div>
-        </div>
-      </section>
-
-      {/* Error Message with ASTRA Styling */}
+      {/* Error Message */}
       {searchError && (
         <section className="py-8">
           <div className="container mx-auto px-4">
-            <div className="glass-astra bg-red-500/10 border-red-500/20 text-red-400 font-medium text-center p-8 rounded-2xl animate-astra-scale-in">
-              <div className="flex items-center justify-center gap-3">
-                <div className="w-3 h-3 bg-red-400 rounded-full animate-astra-glow"></div>
-                {searchError}
-              </div>
+            <div className="bg-destructive/10 border border-destructive/20 text-destructive text-center p-6 rounded-lg">
+              {searchError}
             </div>
           </div>
         </section>
       )}
 
-      {/* ASTRA Property Listings */}
-      <div className="px-4 backdrop-astra">
+      {/* Property Listings */}
+      <div className="px-4">
         <PropertyListingsSection
           language={language}
-          searchResults={hasSearched ? searchResults : []}
+          searchResults={hasSearched ? searchResults : featuredProperties}
           isSearching={isSearching}
           hasSearched={hasSearched}
-          fallbackResults={[]}
+          fallbackResults={featuredProperties}
         />
       </div>
 
       {/* AI Chat Widget */}
       <ResponsiveAIChatWidget />
 
-      {/* Professional Footer */}
+      {/* Footer */}
       <ProfessionalFooter language={language} />
-
-      {/* Floating Action Button - ASTRA Style */}
-      <div className="fixed bottom-8 right-8 w-16 h-16 rounded-full flex items-center justify-center text-white shadow-2xl bg-gradient-to-br from-purple-500 to-cyan-500 transition-all duration-300 hover:scale-110 hover:rotate-5 group z-50 animate-astra-glow">
-        <Activity className="h-6 w-6 group-hover:scale-125 transition-transform" />
-      </div>
     </div>
   );
 };
