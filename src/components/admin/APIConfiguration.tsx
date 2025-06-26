@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -71,7 +70,8 @@ const APIConfiguration = () => {
           if (key === 'isEnabled') {
             value = value === 'true' || value === true;
           } else if (key === 'timeout' || key === 'retryAttempts') {
-            value = parseInt(value);
+            // Convert to string first, then parse to integer
+            value = parseInt(String(value));
           }
           acc[key] = value;
           return acc;
