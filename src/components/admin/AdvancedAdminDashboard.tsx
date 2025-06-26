@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -12,6 +11,7 @@ import SystemSettings from './SystemSettings';
 import AnalyticsDashboard from './AnalyticsDashboard';
 import LoadingPageCustomization from './LoadingPageCustomization';
 import SimpleThemeToggle from '@/components/SimpleThemeToggle';
+import APIConfiguration from './APIConfiguration';
 
 const AdvancedAdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('analytics');
@@ -32,7 +32,7 @@ const AdvancedAdminDashboard = () => {
       case 'users':
         return <UserManagement />;
       case 'api':
-        return <div className="text-white">API Management - Coming Soon</div>;
+        return <APIConfiguration />;
       case 'project':
         return <PropertyManagement />;
       case 'system':
@@ -70,7 +70,7 @@ const AdvancedAdminDashboard = () => {
       id: 'api', 
       label: 'API', 
       icon: Settings,
-      description: 'API management and configuration'
+      description: 'ASTRA Token API configuration and management'
     },
     { 
       id: 'project', 
