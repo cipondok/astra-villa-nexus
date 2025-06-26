@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Navigation from "@/components/Navigation";
@@ -9,7 +8,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import ResponsiveAIChatWidget from "@/components/ai/ResponsiveAIChatWidget";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Home, Key, Building, Rocket, Star, TrendingUp, Wrench } from "lucide-react";
+import { Home, Key, Building, Rocket, Star, TrendingUp, Wrench, Sparkles, Brain, Zap } from "lucide-react";
 
 const Index = () => {
   const { language } = useLanguage();
@@ -297,176 +296,210 @@ const Index = () => {
   const currentText = text[language] || text.en;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-blue-900">
+    <div className="min-h-screen neural-bg">
       <Navigation />
       
-      {/* Top Navigation Menu for Property Types */}
-      <section className="pt-20 pb-4">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-wrap justify-center gap-2 sm:gap-4">
-            <Button 
-              variant="ghost" 
-              className="text-white hover:bg-purple-600/20 border border-purple-500/30"
-              onClick={() => handleSearch({ listingType: 'buy' })}
-            >
-              <Home className="h-4 w-4 mr-2" />
-              {currentText.buy}
-            </Button>
-            <Button 
-              variant="ghost" 
-              className="text-white hover:bg-purple-600/20 border border-purple-500/30"
-              onClick={() => handleSearch({ listingType: 'rent' })}
-            >
-              <Key className="h-4 w-4 mr-2" />
-              {currentText.rent}
-            </Button>
-            <Button 
-              variant="ghost" 
-              className="text-white hover:bg-purple-600/20 border border-purple-500/30"
-              onClick={() => handleSearch({ development_status: 'pre_launching' })}
-            >
-              <Rocket className="h-4 w-4 mr-2" />
-              {currentText.preLaunch}
-            </Button>
-            <Button 
-              variant="ghost" 
-              className="text-white hover:bg-purple-600/20 border border-purple-500/30"
-              onClick={() => handleSearch({ development_status: 'new_project' })}
-            >
-              <Building className="h-4 w-4 mr-2" />
-              {currentText.newProjects}
-            </Button>
-            <Button 
-              variant="ghost" 
-              className="text-white hover:bg-purple-600/20 border border-purple-500/30"
-            >
-              <Wrench className="h-4 w-4 mr-2" />
-              {currentText.services}
-            </Button>
-          </div>
+      {/* Modern AI Hero Section */}
+      <section className="relative min-h-screen flex items-center justify-center px-4 overflow-hidden">
+        {/* Animated Background Elements */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full filter blur-3xl animate-pulse"></div>
+          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-500/10 rounded-full filter blur-3xl animate-pulse delay-1000"></div>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-r from-purple-500/5 to-blue-500/5 rounded-full filter blur-3xl"></div>
         </div>
-      </section>
-      
-      {/* Hero Section with ASTRA Villa Branding */}
-      <section className="relative py-8 sm:py-12 lg:py-16 px-2 sm:px-4">
-        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+        
         <div className="container mx-auto text-center relative z-10">
-          {/* ASTRA Villa Logo/Brand */}
-          <div className="flex items-center justify-center mb-6">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-r from-purple-600 to-blue-600 flex items-center justify-center mr-4">
-              <span className="text-white font-bold text-2xl">A</span>
+          {/* ASTRA Villa Branding with Modern AI Touch */}
+          <div className="mb-12 animate-fade-in-up">
+            <div className="flex items-center justify-center mb-8">
+              <div className="relative">
+                <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-purple-600 via-blue-600 to-cyan-500 flex items-center justify-center mr-6 shadow-2xl">
+                  <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-purple-600 via-blue-600 to-cyan-500 animate-pulse opacity-75"></div>
+                  <Sparkles className="text-white text-3xl font-bold relative z-10" size={32} />
+                </div>
+                <div className="absolute -top-2 -right-2 w-6 h-6 bg-green-400 rounded-full flex items-center justify-center">
+                  <Zap size={12} className="text-green-900" />
+                </div>
+              </div>
+              <div className="text-left">
+                <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white mb-4 heading-modern">
+                  ASTRA Villa
+                </h1>
+                <div className="flex items-center gap-3 mb-2">
+                  <Brain className="text-cyan-400" size={24} />
+                  <p className="text-cyan-300 text-xl">
+                    AI-Powered Property Intelligence
+                  </p>
+                </div>
+                <p className="text-purple-300 text-lg">
+                  Next-Generation Real Estate Platform
+                </p>
+              </div>
             </div>
-            <div className="text-left">
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-2">
-                ASTRA Villa
-              </h1>
-              <p className="text-purple-300 text-sm sm:text-base">
-                Your Gateway to Luxury Property Investment
-              </p>
+            
+            {/* AI Features Highlight */}
+            <div className="flex flex-wrap justify-center gap-4 mb-8 stagger-children">
+              <div className="glass-modern px-6 py-3 flex items-center gap-2">
+                <Star className="text-yellow-400" size={16} />
+                <span className="text-white font-medium">AI Property Matching</span>
+              </div>
+              <div className="glass-modern px-6 py-3 flex items-center gap-2">
+                <Brain className="text-purple-400" size={16} />
+                <span className="text-white font-medium">Smart Price Prediction</span>
+              </div>
+              <div className="glass-modern px-6 py-3 flex items-center gap-2">
+                <Zap className="text-cyan-400" size={16} />
+                <span className="text-white font-medium">Instant Virtual Tours</span>
+              </div>
             </div>
           </div>
           
-          <div className="max-w-5xl mx-auto">
-            <EnhancedModernSearchPanel
-              language={language}
-              onSearch={handleSearch}
-              onLiveSearch={handleLiveSearch}
-            />
+          {/* Modern Search Panel */}
+          <div className="max-w-6xl mx-auto animate-scale-in">
+            <div className="search-panel-modern">
+              <EnhancedModernSearchPanel
+                language={language}
+                onSearch={handleSearch}
+                onLiveSearch={handleLiveSearch}
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Modern Navigation Buttons */}
+      <section className="py-8 bg-black/20 backdrop-blur-sm">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-wrap justify-center gap-3">
+            <Button 
+              className="btn-modern"
+              onClick={() => handleSearch({ listingType: 'buy' })}
+            >
+              <Home className="h-5 w-5 mr-2" />
+              Buy Properties
+            </Button>
+            <Button 
+              className="btn-modern"
+              onClick={() => handleSearch({ listingType: 'rent' })}
+            >
+              <Key className="h-5 w-5 mr-2" />
+              Rent Properties
+            </Button>
+            <Button 
+              className="btn-modern"
+              onClick={() => handleSearch({ development_status: 'pre_launching' })}
+            >
+              <Rocket className="h-5 w-5 mr-2" />
+              Pre-Launch
+            </Button>
+            <Button 
+              className="btn-modern"
+              onClick={() => handleSearch({ development_status: 'new_project' })}
+            >
+              <Building className="h-5 w-5 mr-2" />
+              New Projects
+            </Button>
+            <Button 
+              className="btn-modern"
+            >
+              <Wrench className="h-5 w-5 mr-2" />
+              AI Services
+            </Button>
           </div>
         </div>
       </section>
 
       {/* Property Section Navigation */}
-      <section className="py-6">
+      <section className="py-8 bg-black/10">
         <div className="container mx-auto px-4">
-          <div className="flex flex-wrap justify-center gap-2 mb-8">
+          <div className="flex flex-wrap justify-center gap-3 mb-8">
             <Button
               variant={activeSection === 'ai_recommended' ? 'default' : 'ghost'}
               onClick={() => setActiveSection('ai_recommended')}
-              className={`${activeSection === 'ai_recommended' 
-                ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white' 
-                : 'text-white hover:bg-purple-600/20'} border border-purple-500/30`}
+              className={`glass-modern transition-all duration-300 ${activeSection === 'ai_recommended' 
+                ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg' 
+                : 'text-white hover:bg-white/10'}`}
             >
               <Star className="h-4 w-4 mr-2" />
-              {currentText.aiRecommended}
+              AI Recommended
             </Button>
             <Button
               variant={activeSection === 'popular' ? 'default' : 'ghost'}
               onClick={() => setActiveSection('popular')}
-              className={`${activeSection === 'popular' 
-                ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white' 
-                : 'text-white hover:bg-purple-600/20'} border border-purple-500/30`}
+              className={`glass-modern transition-all duration-300 ${activeSection === 'popular' 
+                ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg' 
+                : 'text-white hover:bg-white/10'}`}
             >
               <TrendingUp className="h-4 w-4 mr-2" />
-              {currentText.popular}
+              Most Popular
             </Button>
             <Button
               variant={activeSection === 'rent' ? 'default' : 'ghost'}
               onClick={() => setActiveSection('rent')}
-              className={`${activeSection === 'rent' 
-                ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white' 
-                : 'text-white hover:bg-purple-600/20'} border border-purple-500/30`}
+              className={`glass-modern transition-all duration-300 ${activeSection === 'rent' 
+                ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg' 
+                : 'text-white hover:bg-white/10'}`}
             >
               <Key className="h-4 w-4 mr-2" />
-              {currentText.rent}
+              Rent
             </Button>
             <Button
               variant={activeSection === 'sale' ? 'default' : 'ghost'}
               onClick={() => setActiveSection('sale')}
-              className={`${activeSection === 'sale' 
-                ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white' 
-                : 'text-white hover:bg-purple-600/20'} border border-purple-500/30`}
+              className={`glass-modern transition-all duration-300 ${activeSection === 'sale' 
+                ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg' 
+                : 'text-white hover:bg-white/10'}`}
             >
               <Home className="h-4 w-4 mr-2" />
-              {currentText.sale}
+              Sale
             </Button>
             <Button
               variant={activeSection === 'new_projects' ? 'default' : 'ghost'}
               onClick={() => setActiveSection('new_projects')}
-              className={`${activeSection === 'new_projects' 
-                ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white' 
-                : 'text-white hover:bg-purple-600/20'} border border-purple-500/30`}
+              className={`glass-modern transition-all duration-300 ${activeSection === 'new_projects' 
+                ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg' 
+                : 'text-white hover:bg-white/10'}`}
             >
               <Building className="h-4 w-4 mr-2" />
-              {currentText.newProjects}
+              New Projects
             </Button>
             <Button
               variant={activeSection === 'pre_launch' ? 'default' : 'ghost'}
               onClick={() => setActiveSection('pre_launch')}
-              className={`${activeSection === 'pre_launch' 
-                ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white' 
-                : 'text-white hover:bg-purple-600/20'} border border-purple-500/30`}
+              className={`glass-modern transition-all duration-300 ${activeSection === 'pre_launch' 
+                ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg' 
+                : 'text-white hover:bg-white/10'}`}
             >
               <Rocket className="h-4 w-4 mr-2" />
-              {currentText.preLaunch}
+              Pre Launch
             </Button>
             <Button
               variant={activeSection === 'services' ? 'default' : 'ghost'}
               onClick={() => setActiveSection('services')}
-              className={`${activeSection === 'services' 
-                ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white' 
-                : 'text-white hover:bg-purple-600/20'} border border-purple-500/30`}
+              className={`glass-modern transition-all duration-300 ${activeSection === 'services' 
+                ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg' 
+                : 'text-white hover:bg-white/10'}`}
             >
               <Wrench className="h-4 w-4 mr-2" />
-              {currentText.services}
+              AI Services
             </Button>
           </div>
         </div>
       </section>
 
-      {/* Error Message */}
+      {/* Error Message with Modern Styling */}
       {searchError && (
-        <section className="py-4 bg-red-900/50">
+        <section className="py-6">
           <div className="container mx-auto px-4">
-            <div className="text-center text-red-300 font-medium">
+            <div className="glass-modern bg-red-500/10 border-red-500/20 text-red-300 font-medium text-center p-6 rounded-2xl">
               {searchError}
             </div>
           </div>
         </section>
       )}
 
-      {/* Property Listings Section */}
-      <div className="px-2 sm:px-0 bg-slate-900/50">
+      {/* Modern Property Listings */}
+      <div className="px-4 bg-black/5 backdrop-blur-sm">
         <PropertyListingsSection
           language={language}
           searchResults={hasSearched ? searchResults : getCurrentSectionData()}
@@ -479,7 +512,7 @@ const Index = () => {
       {/* AI Chat Widget */}
       <ResponsiveAIChatWidget />
 
-      {/* Footer */}
+      {/* Modern Footer */}
       <ProfessionalFooter language={language} />
     </div>
   );

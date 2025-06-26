@@ -1,9 +1,10 @@
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { Search, MapPin, Home, Bed, Bath, Car, Wifi, AirVent, Sofa } from "lucide-react";
+import { Search, MapPin, Home, Bed, Bath, Car, Wifi, AirVent, Sofa, Brain, Sparkles, Zap } from "lucide-react";
 import { useState } from "react";
 
 interface SearchFiltersProps {
@@ -124,27 +125,41 @@ const SearchFilters = ({ language, onSearch }: SearchFiltersProps) => {
   };
 
   return (
-    <Card className="glass-card-ios shadow-2xl border-0">
-      <CardContent className="p-6">
+    <Card className="glass-card border-0 shadow-2xl">
+      <CardContent className="p-8">
+        {/* AI-Powered Search Header */}
+        <div className="text-center mb-8">
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <div className="p-3 rounded-2xl bg-gradient-to-r from-purple-600 to-blue-600 text-white">
+              <Brain className="h-6 w-6" />
+            </div>
+            <h2 className="text-2xl font-bold text-gradient">AI-Powered Property Search</h2>
+          </div>
+          <p className="text-muted-foreground">Find your perfect property with intelligent recommendations</p>
+        </div>
+
         {/* Main Search Bar */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
           <div className="lg:col-span-2">
             <div className="relative">
-              <Search className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
+              <Search className="absolute left-4 top-4 h-5 w-5 text-muted-foreground" />
               <Input
                 placeholder={currentText.search}
-                className="pl-10 h-12 macos-select border-0 text-foreground bg-background/90"
+                className="input-modern pl-12 h-14 text-base"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
+              <div className="absolute right-3 top-3 p-2 rounded-lg bg-gradient-to-r from-purple-600 to-blue-600">
+                <Sparkles className="h-4 w-4 text-white" />
+              </div>
             </div>
           </div>
           
           <Select value={selectedState} onValueChange={setSelectedState}>
-            <SelectTrigger className="h-12 macos-select border-0 bg-background/90">
+            <SelectTrigger className="input-modern h-14 border-border/20">
               <SelectValue placeholder={currentText.state} />
             </SelectTrigger>
-            <SelectContent className="macos-select">
+            <SelectContent className="glass-modern border-border/20">
               <SelectItem value="">{currentText.state}</SelectItem>
               {indonesianStates.map((state) => (
                 <SelectItem key={state} value={state}>{state}</SelectItem>
@@ -153,10 +168,10 @@ const SearchFilters = ({ language, onSearch }: SearchFiltersProps) => {
           </Select>
           
           <Select value={propertyType} onValueChange={setPropertyType}>
-            <SelectTrigger className="h-12 macos-select border-0 bg-background/90">
+            <SelectTrigger className="input-modern h-14 border-border/20">
               <SelectValue placeholder={currentText.propertyType} />
             </SelectTrigger>
-            <SelectContent className="macos-select">
+            <SelectContent className="glass-modern border-border/20">
               <SelectItem value="">{currentText.allTypes}</SelectItem>
               {propertyTypes.map((type) => (
                 <SelectItem key={type.value} value={type.value}>{type.label}</SelectItem>
@@ -166,19 +181,20 @@ const SearchFilters = ({ language, onSearch }: SearchFiltersProps) => {
           
           <Button 
             onClick={handleSearch}
-            className="h-12 btn-primary-ios font-semibold"
+            className="btn-modern h-14 text-base font-semibold"
           >
+            <Zap className="h-5 w-5 mr-2" />
             {currentText.searchBtn}
           </Button>
         </div>
 
-        {/* Advanced Filters */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+        {/* Advanced AI Filters */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
           <Select value={listingType} onValueChange={setListingType}>
-            <SelectTrigger className="h-10 macos-select border-0 bg-background/80">
+            <SelectTrigger className="input-modern h-12 border-border/20">
               <SelectValue placeholder={currentText.listingType} />
             </SelectTrigger>
-            <SelectContent className="macos-select">
+            <SelectContent className="glass-modern border-border/20">
               <SelectItem value="">{currentText.allTypes}</SelectItem>
               <SelectItem value="sale">{currentText.forSale}</SelectItem>
               <SelectItem value="rent">{currentText.forRent}</SelectItem>
@@ -187,10 +203,10 @@ const SearchFilters = ({ language, onSearch }: SearchFiltersProps) => {
           </Select>
 
           <Select value={priceRange} onValueChange={setPriceRange}>
-            <SelectTrigger className="h-10 macos-select border-0 bg-background/80">
+            <SelectTrigger className="input-modern h-12 border-border/20">
               <SelectValue placeholder={currentText.price} />
             </SelectTrigger>
-            <SelectContent className="macos-select">
+            <SelectContent className="glass-modern border-border/20">
               <SelectItem value="">{currentText.anyPrice}</SelectItem>
               <SelectItem value="0-1000000000">Under Rp 1B</SelectItem>
               <SelectItem value="1000000000-5000000000">Rp 1B - 5B</SelectItem>
@@ -199,10 +215,10 @@ const SearchFilters = ({ language, onSearch }: SearchFiltersProps) => {
           </Select>
 
           <Select value={bedrooms} onValueChange={setBedrooms}>
-            <SelectTrigger className="h-10 macos-select border-0 bg-background/80">
+            <SelectTrigger className="input-modern h-12 border-border/20">
               <SelectValue placeholder={currentText.bedrooms} />
             </SelectTrigger>
-            <SelectContent className="macos-select">
+            <SelectContent className="glass-modern border-border/20">
               <SelectItem value="">{currentText.anyBedroom}</SelectItem>
               <SelectItem value="1">1</SelectItem>
               <SelectItem value="2">2</SelectItem>
@@ -212,10 +228,10 @@ const SearchFilters = ({ language, onSearch }: SearchFiltersProps) => {
           </Select>
 
           <Select value={bathrooms} onValueChange={setBathrooms}>
-            <SelectTrigger className="h-10 macos-select border-0 bg-background/80">
+            <SelectTrigger className="input-modern h-12 border-border/20">
               <SelectValue placeholder={currentText.bathrooms} />
             </SelectTrigger>
-            <SelectContent className="macos-select">
+            <SelectContent className="glass-modern border-border/20">
               <SelectItem value="">{currentText.anyBathroom}</SelectItem>
               <SelectItem value="1">1</SelectItem>
               <SelectItem value="2">2</SelectItem>
@@ -231,26 +247,30 @@ const SearchFilters = ({ language, onSearch }: SearchFiltersProps) => {
                 variant={amenities.includes(amenity.key) ? "default" : "outline"}
                 size="sm"
                 onClick={() => toggleAmenity(amenity.key)}
-                className="h-10 px-3 btn-secondary-ios"
+                className="h-12 px-4 glass-modern border-border/20 hover:bg-primary/10"
               >
-                <amenity.icon className="h-4 w-4 mr-1" />
+                <amenity.icon className="h-4 w-4 mr-2" />
                 <span className="hidden sm:inline">{amenity.label}</span>
               </Button>
             ))}
           </div>
         </div>
         
-        {/* Trending Searches */}
+        {/* AI-Enhanced Trending Searches */}
         <div className="text-left">
-          <p className="text-muted-foreground mb-3 font-medium">{currentText.trending}:</p>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex items-center gap-2 mb-4">
+            <Brain className="h-5 w-5 text-purple-500" />
+            <p className="text-muted-foreground font-medium">{currentText.trending}:</p>
+          </div>
+          <div className="flex flex-wrap gap-3">
             {trendingSearches.map((term, index) => (
               <Badge 
                 key={index} 
                 variant="secondary" 
-                className="cursor-pointer hover:bg-primary/10 transition-colors bg-background/60"
+                className="cursor-pointer glass-modern bg-gradient-to-r from-purple-500/10 to-blue-500/10 hover:from-purple-500/20 hover:to-blue-500/20 transition-all duration-300 border-border/20 px-4 py-2"
                 onClick={() => setSearchQuery(term)}
               >
+                <Sparkles className="h-3 w-3 mr-2" />
                 {term}
               </Badge>
             ))}

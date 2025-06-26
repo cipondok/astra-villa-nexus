@@ -28,7 +28,7 @@ const ThemeSwitcher = ({ className = "", variant = "default" }: ThemeSwitcherPro
         variant="ghost"
         size="sm"
         onClick={() => setTheme(nextTheme.key)}
-        className={`flex items-center gap-2 text-white hover:bg-white/20 ${className}`}
+        className={`flex items-center gap-2 text-white hover:bg-white/20 glass-modern border-white/20 ${className}`}
       >
         <Icon className="h-4 w-4" />
         <span className="hidden md:inline text-white">{nextTheme.label}</span>
@@ -37,7 +37,7 @@ const ThemeSwitcher = ({ className = "", variant = "default" }: ThemeSwitcherPro
   }
 
   return (
-    <div className={`flex items-center glass-ios rounded-full p-1 border border-border/30 ${className}`}>
+    <div className={`flex items-center glass-modern rounded-2xl p-1 border border-border/20 ${className}`}>
       {themes.map(({ key, label, icon: Icon }) => (
         <Button
           key={key}
@@ -45,10 +45,10 @@ const ThemeSwitcher = ({ className = "", variant = "default" }: ThemeSwitcherPro
           size="sm"
           onClick={() => setTheme(key)}
           className={`
-            flex items-center space-x-1 px-3 py-1 rounded-full transition-all duration-200
+            flex items-center space-x-2 px-4 py-2 rounded-xl transition-all duration-300
             ${theme === key 
-              ? 'bg-primary text-primary-foreground shadow-md' 
-              : 'text-muted-foreground hover:text-foreground hover:bg-foreground/10'
+              ? 'bg-gradient-to-r from-primary to-accent text-primary-foreground shadow-lg' 
+              : 'text-muted-foreground hover:text-foreground hover:bg-accent/10'
             }
           `}
         >
