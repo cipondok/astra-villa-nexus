@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -126,12 +127,11 @@ const APIConfiguration = () => {
         throw new Error('Invalid API key format. API keys should start with "astra_" (e.g., astra_your_actual_api_key_here)');
       }
 
-      // Test the API connection with both x-api-key and Authorization headers
+      // Test the API connection using only x-api-key header
       const response = await fetch(`${config.baseUrl}/health`, {
         method: 'GET',
         headers: {
           'x-api-key': config.apiKey,
-          'Authorization': `Bearer ${config.apiKey}`,
           'Content-Type': 'application/json'
         },
         signal: AbortSignal.timeout(config.timeout)
@@ -257,7 +257,7 @@ const APIConfiguration = () => {
                   </div>
                   <div className="space-y-1">
                     <p className="text-xs text-gray-400">API key should start with "astra_"</p>
-                    <p className="text-xs text-gray-500">Will be sent as both x-api-key and Authorization Bearer headers</p>
+                    <p className="text-xs text-gray-500">Will be sent as x-api-key header (not Authorization Bearer)</p>
                     {config.apiKey && !isValidAPIKey(config.apiKey) && (
                       <p className="text-xs text-red-400 flex items-center">
                         <AlertTriangle className="h-3 w-3 mr-1" />
