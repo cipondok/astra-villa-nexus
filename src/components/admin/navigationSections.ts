@@ -35,6 +35,7 @@ export interface NavigationSection {
   label: string;
   icon: LucideIcon;
   description: string;
+  badge?: string;
 }
 
 export const categories = [
@@ -128,7 +129,8 @@ export const navigationSections = {
       key: "chat-management",
       label: "Chat Management",
       icon: MessageSquare,
-      description: "Manage live chat and messaging - Coming Soon"
+      description: "Manage live chat and messaging",
+      badge: "Coming Soon"
     }
   ],
 
@@ -188,7 +190,8 @@ export const navigationSections = {
       key: "error-management",
       label: "Error Management",
       icon: AlertTriangle,
-      description: "Monitor and manage system errors - Coming Soon"
+      description: "Monitor and manage system errors",
+      badge: "Coming Soon"
     }
   ],
 

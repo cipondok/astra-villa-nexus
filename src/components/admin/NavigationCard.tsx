@@ -16,7 +16,7 @@ const NavigationCard = ({ section, isActive, isUsersCategory, onSectionChange }:
 
   return (
     <Card 
-      key={section.id}
+      key={section.key}
       className={`cursor-pointer transition-all hover:shadow-md ${
         isActive 
           ? 'ring-2 ring-blue-500 bg-blue-50' 
@@ -24,7 +24,7 @@ const NavigationCard = ({ section, isActive, isUsersCategory, onSectionChange }:
           ? 'hover:bg-blue-50 border-blue-200'
           : 'hover:bg-gray-50'
       }`}
-      onClick={() => onSectionChange(section.id)}
+      onClick={() => onSectionChange(section.key)}
     >
       <CardHeader className="pb-2">
         <CardTitle className="flex items-center gap-2 text-sm">

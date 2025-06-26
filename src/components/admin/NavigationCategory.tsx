@@ -22,18 +22,18 @@ const NavigationCategory = ({ category, activeSection, onSectionChange }: Naviga
           const Icon = section.icon;
           return (
             <Card
-              key={section.id}
+              key={section.key}
               className={`cursor-pointer transition-all hover:shadow-md ${
-                activeSection === section.id
+                activeSection === section.key
                   ? "ring-2 ring-primary bg-primary/5"
                   : "hover:bg-muted/50"
               }`}
-              onClick={() => onSectionChange(section.id)}
+              onClick={() => onSectionChange(section.key)}
             >
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm flex items-center gap-2">
                   <Icon className="h-4 w-4" />
-                  {section.title}
+                  {section.label}
                 </CardTitle>
               </CardHeader>
               <CardContent className="pt-0">
