@@ -26,6 +26,9 @@ import SystemReports from "./SystemReports";
 import SEOSettings from "./SEOSettings";
 import ToolsManagementDashboard from "./ToolsManagementDashboard";
 import ASTRATokenAnalytics from "./ASTRATokenAnalytics";
+import ASTRATokenSettings from "./ASTRATokenSettings";
+import ErrorManagement from "./ErrorManagement";
+import ChatManagement from "./ChatManagement";
 
 interface AdminDashboardContentProps {
   isAdmin: boolean;
@@ -50,6 +53,10 @@ const AdminDashboardContent = ({ isAdmin, setActiveTab }: AdminDashboardContentP
 
       <TabsContent value="astra-token">
         <ASTRATokenAnalytics />
+      </TabsContent>
+
+      <TabsContent value="astra-token-settings">
+        <ASTRATokenSettings />
       </TabsContent>
 
       <TabsContent value="tools-management">
@@ -80,6 +87,10 @@ const AdminDashboardContent = ({ isAdmin, setActiveTab }: AdminDashboardContentP
 
       <TabsContent value="contact-management">
         <ContactManagement />
+      </TabsContent>
+
+      <TabsContent value="chat-management">
+        <ChatManagement />
       </TabsContent>
 
       {/* AI & Vendor Management */}
@@ -122,6 +133,10 @@ const AdminDashboardContent = ({ isAdmin, setActiveTab }: AdminDashboardContentP
 
       <TabsContent value="daily-checkin">
         <DailyCheckInManagement />
+      </TabsContent>
+
+      <TabsContent value="error-management">
+        <ErrorManagement />
       </TabsContent>
 
       {/* Content & Settings */}

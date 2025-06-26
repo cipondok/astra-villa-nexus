@@ -66,6 +66,12 @@ export const navigationSections = {
       label: "ASTRA Token Analytics",
       icon: Coins,
       description: "Monitor ASTRA token usage and transactions"
+    },
+    {
+      key: "astra-token-settings",
+      label: "ASTRA Token Settings",
+      icon: Settings,
+      description: "Configure ASTRA token API and settings"
     }
   ],
 
@@ -117,6 +123,12 @@ export const navigationSections = {
       label: "Contact Management",
       icon: Contact2,
       description: "Manage contact forms and submissions"
+    },
+    {
+      key: "chat-management",
+      label: "Chat Management",
+      icon: MessageSquare,
+      description: "Manage live chat and messaging - Coming Soon"
     }
   ],
 
@@ -171,6 +183,12 @@ export const navigationSections = {
       label: "Daily Check-in",
       icon: CheckCircle,
       description: "Monitor daily check-in activity"
+    },
+    {
+      key: "error-management",
+      label: "Error Management",
+      icon: AlertTriangle,
+      description: "Monitor and manage system errors - Coming Soon"
     }
   ],
 
