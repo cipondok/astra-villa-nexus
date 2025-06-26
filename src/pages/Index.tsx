@@ -169,7 +169,7 @@ const Index = () => {
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-blue-900">
       <Navigation />
       
-      {/* Hero Section with ASTRA Token Design */}
+      {/* Hero Section with ASTRA Villa Branding - No Analytics */}
       <section className="relative py-8 sm:py-12 lg:py-16 px-2 sm:px-4">
         <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
         <div className="container mx-auto text-center relative z-10">
@@ -188,23 +188,23 @@ const Index = () => {
             </div>
           </div>
 
-          {/* Stats Cards */}
+          {/* Property Stats Cards - Not Analytics */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8 max-w-4xl mx-auto">
             <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-4 border border-purple-500/20">
               <div className="text-purple-400 text-sm mb-1">Properties</div>
               <div className="text-white text-xl font-bold">2,500+</div>
             </div>
             <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-4 border border-blue-500/20">
-              <div className="text-blue-400 text-sm mb-1">Active Users</div>
-              <div className="text-white text-xl font-bold">12,547</div>
+              <div className="text-blue-400 text-sm mb-1">Locations</div>
+              <div className="text-white text-xl font-bold">150+</div>
             </div>
             <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-4 border border-green-500/20">
-              <div className="text-green-400 text-sm mb-1">Success Rate</div>
-              <div className="text-white text-xl font-bold">98.5%</div>
+              <div className="text-green-400 text-sm mb-1">Happy Clients</div>
+              <div className="text-white text-xl font-bold">5,000+</div>
             </div>
             <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-4 border border-orange-500/20">
-              <div className="text-orange-400 text-sm mb-1">Satisfaction</div>
-              <div className="text-white text-xl font-bold">15.8%</div>
+              <div className="text-orange-400 text-sm mb-1">Years Experience</div>
+              <div className="text-white text-xl font-bold">15+</div>
             </div>
           </div>
           

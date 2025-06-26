@@ -16,42 +16,44 @@ interface AlertSystemProps {
 }
 
 const AlertSystem = ({ alerts, onRemoveAlert }: AlertSystemProps) => {
+  console.log('AlertSystem rendering with alerts:', alerts); // Debug log
+
   const getAlertStyles = (type: AlertMessage["type"]) => {
     switch (type) {
       case "success":
         return {
-          container: "bg-gradient-to-r from-green-50 to-emerald-50 border-green-200 dark:from-green-900/20 dark:to-emerald-900/20 dark:border-green-800",
-          icon: "text-green-500",
-          title: "text-green-800 dark:text-green-200",
-          message: "text-green-700 dark:text-green-300"
+          container: "bg-gradient-to-r from-green-900/90 to-emerald-900/90 border-green-500/50 backdrop-blur-sm",
+          icon: "text-green-400",
+          title: "text-green-200",
+          message: "text-green-300"
         };
       case "error":
         return {
-          container: "bg-gradient-to-r from-red-50 to-rose-50 border-red-200 dark:from-red-900/20 dark:to-rose-900/20 dark:border-red-800",
-          icon: "text-red-500",
-          title: "text-red-800 dark:text-red-200",
-          message: "text-red-700 dark:text-red-300"
+          container: "bg-gradient-to-r from-red-900/90 to-rose-900/90 border-red-500/50 backdrop-blur-sm",
+          icon: "text-red-400",
+          title: "text-red-200",
+          message: "text-red-300"
         };
       case "warning":
         return {
-          container: "bg-gradient-to-r from-yellow-50 to-amber-50 border-yellow-200 dark:from-yellow-900/20 dark:to-amber-900/20 dark:border-yellow-800",
-          icon: "text-yellow-500",
-          title: "text-yellow-800 dark:text-yellow-200",
-          message: "text-yellow-700 dark:text-yellow-300"
+          container: "bg-gradient-to-r from-yellow-900/90 to-amber-900/90 border-yellow-500/50 backdrop-blur-sm",
+          icon: "text-yellow-400",
+          title: "text-yellow-200",
+          message: "text-yellow-300"
         };
       case "info":
         return {
-          container: "bg-gradient-to-r from-blue-50 to-sky-50 border-blue-200 dark:from-blue-900/20 dark:to-sky-900/20 dark:border-blue-800",
-          icon: "text-blue-500",
-          title: "text-blue-800 dark:text-blue-200",
-          message: "text-blue-700 dark:text-blue-300"
+          container: "bg-gradient-to-r from-blue-900/90 to-sky-900/90 border-blue-500/50 backdrop-blur-sm",
+          icon: "text-blue-400",
+          title: "text-blue-200",
+          message: "text-blue-300"
         };
       default:
         return {
-          container: "bg-gradient-to-r from-gray-50 to-slate-50 border-gray-200 dark:from-gray-900/20 dark:to-slate-900/20 dark:border-gray-800",
-          icon: "text-gray-500",
-          title: "text-gray-800 dark:text-gray-200",
-          message: "text-gray-700 dark:text-gray-300"
+          container: "bg-gradient-to-r from-slate-900/90 to-gray-900/90 border-slate-500/50 backdrop-blur-sm",
+          icon: "text-gray-400",
+          title: "text-gray-200",
+          message: "text-gray-300"
         };
     }
   };
@@ -72,7 +74,7 @@ const AlertSystem = ({ alerts, onRemoveAlert }: AlertSystemProps) => {
   };
 
   return (
-    <div className="fixed top-4 right-4 z-[100] space-y-3 max-w-sm w-full">
+    <div className="fixed top-20 right-4 z-[100] space-y-3 max-w-sm w-full">
       {alerts.map((alert) => {
         const styles = getAlertStyles(alert.type);
         return (
@@ -106,6 +108,8 @@ const AlertItem = ({ alert, styles, icon, onRemove }: AlertItemProps) => {
   const [isLeaving, setIsLeaving] = useState(false);
 
   useEffect(() => {
+    console.log('AlertItem mounted:', alert); // Debug log
+    
     // Trigger enter animation
     const timer = setTimeout(() => setIsVisible(true), 10);
     
@@ -153,12 +157,12 @@ const AlertItem = ({ alert, styles, icon, onRemove }: AlertItemProps) => {
             : 'translate-x-full opacity-0 scale-95'
           }
           ${styles.container}
-          border rounded-lg shadow-lg backdrop-blur-sm
+          border rounded-xl shadow-2xl
           p-4 relative overflow-hidden
         `}
       >
         {/* Subtle animated background */}
-        <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent animate-pulse" />
+        <div className="absolute inset-0 bg-gradient-to-r from-white/5 to-transparent animate-pulse" />
         
         <div className="relative flex items-start space-x-3">
           <div className={`flex-shrink-0 ${styles.icon}`}>
@@ -177,9 +181,8 @@ const AlertItem = ({ alert, styles, icon, onRemove }: AlertItemProps) => {
           <button
             onClick={handleRemove}
             className={`
-              flex-shrink-0 ml-4 inline-flex text-gray-400 hover:text-gray-600 
-              dark:text-gray-500 dark:hover:text-gray-300
-              focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500
+              flex-shrink-0 ml-4 inline-flex text-gray-400 hover:text-white
+              focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500
               rounded-md p-1 transition-colors duration-200
             `}
           >
@@ -189,7 +192,7 @@ const AlertItem = ({ alert, styles, icon, onRemove }: AlertItemProps) => {
         
         {/* Progress bar for auto-dismiss */}
         <div 
-          className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full" 
+          className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full" 
           style={progressBarStyle}
         />
       </div>

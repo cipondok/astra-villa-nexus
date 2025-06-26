@@ -222,9 +222,9 @@ const AnalyticsDashboard = () => {
         </Card>
       </div>
 
-      {/* Bottom Grid */}
+      {/* Bottom Grid with Dark Table Styling */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Top Performing Pages */}
+        {/* Top Performing Pages with Dark Table */}
         <Card className="bg-slate-800/50 backdrop-blur-sm border border-slate-700/50">
           <CardHeader>
             <CardTitle className="text-white flex items-center gap-2">
@@ -233,20 +233,28 @@ const AnalyticsDashboard = () => {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            {topPages.map((page, index) => (
-              <div key={index} className="bg-slate-900/50 rounded-lg p-4 border border-slate-700/30">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-white font-medium">{page.page}</span>
-                  <span className="text-white font-bold">{page.bounce}</span>
-                </div>
-                <div className="flex items-center gap-4 text-sm text-gray-400">
-                  <span><Eye className="h-3 w-3 inline mr-1" />{page.views.toLocaleString()} views</span>
-                  <span><Users className="h-3 w-3 inline mr-1" />{page.unique.toLocaleString()} unique</span>
-                  <span><Calendar className="h-3 w-3 inline mr-1" />{page.time}</span>
-                </div>
-                <div className="text-right text-sm text-gray-500 mt-1">bounce rate</div>
+            {/* Dark Table Header */}
+            <div className="bg-slate-900/80 rounded-lg p-4 border border-slate-700/50">
+              <div className="grid grid-cols-4 gap-4 text-sm font-medium text-gray-300 mb-3">
+                <span>Page</span>
+                <span>Views</span>
+                <span>Time</span>
+                <span>Bounce</span>
               </div>
-            ))}
+              
+              {/* Dark Table Rows */}
+              {topPages.map((page, index) => (
+                <div key={index} className="grid grid-cols-4 gap-4 py-3 border-t border-slate-700/30 first:border-t-0">
+                  <span className="text-white font-medium text-sm">{page.page}</span>
+                  <div className="text-gray-400 text-sm">
+                    <div>{page.views.toLocaleString()}</div>
+                    <div className="text-xs text-gray-500">{page.unique.toLocaleString()} unique</div>
+                  </div>
+                  <span className="text-gray-400 text-sm">{page.time}</span>
+                  <span className="text-white font-bold text-sm">{page.bounce}</span>
+                </div>
+              ))}
+            </div>
           </CardContent>
         </Card>
 

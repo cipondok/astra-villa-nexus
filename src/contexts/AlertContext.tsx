@@ -14,6 +14,8 @@ interface AlertContextType {
 const AlertContext = createContext<AlertContextType | undefined>(undefined);
 
 export const AlertProvider = ({ children }: { children: ReactNode }) => {
+  console.log('AlertProvider initialized'); // Debug log
+  
   const {
     alerts,
     removeAlert,
@@ -23,6 +25,8 @@ export const AlertProvider = ({ children }: { children: ReactNode }) => {
     showWarning,
     showInfo
   } = useAlerts();
+
+  console.log('Current alerts:', alerts); // Debug log
 
   return (
     <AlertContext.Provider value={{
