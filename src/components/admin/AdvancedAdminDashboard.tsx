@@ -11,6 +11,7 @@ import VendorManagementHub from './VendorManagementHub';
 import SystemSettings from './SystemSettings';
 import AnalyticsDashboard from './AnalyticsDashboard';
 import LoadingPageCustomization from './LoadingPageCustomization';
+import SimpleThemeToggle from '@/components/SimpleThemeToggle';
 
 const AdvancedAdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('analytics');
@@ -132,6 +133,7 @@ const AdvancedAdminDashboard = () => {
             </div>
           </div>
           <div className="flex items-center space-x-3">
+            <SimpleThemeToggle />
             <div className="text-right">
               <div className="text-sm text-gray-300">Welcome back,</div>
               <div className="text-cyan-400 font-medium">admin@astra.com</div>
