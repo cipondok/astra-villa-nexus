@@ -94,7 +94,7 @@ const APIConfiguration = () => {
           .from('system_settings')
           .upsert({
             key: `astra_api_${key}`,
-            value: value.toString(),
+            value: String(value),
             category: 'astra_api',
             description: `ASTRA API ${key} setting`
           });
@@ -116,15 +116,18 @@ const APIConfiguration = () => {
     setConnectionStatus('testing');
     
     try {
-      // Test the API connection with proper headers
+      // Test the API connection with proper Authorization header (Bearer token format)
       const response = await fetch(`${config.baseUrl}/health`, {
         method: 'GET',
         headers: {
-          'x-api-key': config.apiKey,
+          'Authorization': `Bearer ${config.apiKey}`,
           'Content-Type': 'application/json'
         },
         signal: AbortSignal.timeout(config.timeout)
       });
+
+      console.log('API Response Status:', response.status);
+      console.log('API Response Headers:', Object.fromEntries(response.headers.entries()));
 
       if (response.ok) {
         const data = await response.json();
@@ -136,9 +139,12 @@ const APIConfiguration = () => {
         });
         showSuccess('Connection Test', 'ASTRA API connection successful');
       } else {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        const errorText = await response.text();
+        console.log('API Error Response:', errorText);
+        throw new Error(`HTTP ${response.status}: ${errorText || response.statusText}`);
       }
     } catch (error: any) {
+      console.error('API Connection Error:', error);
       setConnectionStatus('disconnected');
       setTestResults({
         status: 'error',
@@ -221,13 +227,13 @@ const APIConfiguration = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label className="text-white">API Key</Label>
+                  <Label className="text-white">API Key (Bearer Token)</Label>
                   <div className="flex space-x-2">
                     <Input
                       type={showApiKey ? 'text' : 'password'}
                       value={config.apiKey}
                       onChange={(e) => handleInputChange('apiKey', e.target.value)}
-                      placeholder="Enter your API key"
+                      placeholder="Enter your ASTRA API token"
                       className="bg-slate-700/50 border-slate-600 text-white"
                     />
                     <Button
@@ -238,6 +244,7 @@ const APIConfiguration = () => {
                       {showApiKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </Button>
                   </div>
+                  <p className="text-xs text-gray-400">This will be used as Bearer token in Authorization header</p>
                 </div>
 
                 <div className="space-y-2">
@@ -303,6 +310,14 @@ const APIConfiguration = () => {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-3">
+                <div className="p-3 bg-slate-700/30 rounded-lg">
+                  <div className="flex items-center justify-between">
+                    <span className="font-mono text-green-400">GET /health</span>
+                    <Badge variant="outline">Health Check</Badge>
+                  </div>
+                  <p className="text-sm text-gray-400 mt-1">Check API connectivity and status</p>
+                </div>
+
                 <div className="p-3 bg-slate-700/30 rounded-lg">
                   <div className="flex items-center justify-between">
                     <span className="font-mono text-green-400">GET /users</span>
