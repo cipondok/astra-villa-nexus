@@ -72,13 +72,13 @@
   }
 }
 
-/* Blue glass morphism effects */
+/* Enhanced light mode compatible glass effects */
 .glass-ios {
-  background: rgba(66, 133, 255, 0.15);
+  background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(0, 102, 255, 0.2);
-  box-shadow: 0 8px 32px 0 rgba(0, 102, 255, 0.15);
+  border: 1px solid rgba(0, 102, 255, 0.15);
+  box-shadow: 0 8px 32px 0 rgba(0, 102, 255, 0.08);
 }
 
 .dark .glass-ios {
@@ -87,11 +87,11 @@
 }
 
 .glass-card-ios {
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(25px);
   -webkit-backdrop-filter: blur(25px);
-  border: 1px solid rgba(0, 102, 255, 0.25);
-  box-shadow: 0 12px 40px 0 rgba(0, 102, 255, 0.2);
+  border: 1px solid rgba(0, 102, 255, 0.2);
+  box-shadow: 0 12px 40px 0 rgba(0, 102, 255, 0.1);
 }
 
 .dark .glass-card-ios {
@@ -100,11 +100,11 @@
 }
 
 .card-ios {
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.98);
   backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
-  border: 1px solid rgba(0, 102, 255, 0.2);
-  box-shadow: 0 4px 24px 0 rgba(0, 102, 255, 0.1);
+  border: 1px solid rgba(0, 102, 255, 0.15);
+  box-shadow: 0 4px 24px 0 rgba(0, 102, 255, 0.06);
 }
 
 .dark .card-ios {
@@ -112,32 +112,68 @@
   border: 1px solid rgba(66, 133, 255, 0.1);
 }
 
-/* Blue buttons */
+/* MacOS style selection components */
+.macos-select {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.2s ease;
+}
+
+.macos-select:hover {
+  border-color: rgba(0, 102, 255, 0.3);
+  box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.1);
+}
+
+.macos-select:focus-within {
+  border-color: rgba(0, 102, 255, 0.5);
+  box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.15);
+}
+
+.dark .macos-select {
+  background: rgba(40, 40, 40, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dark .macos-select:hover {
+  border-color: rgba(66, 133, 255, 0.3);
+  box-shadow: 0 0 0 3px rgba(66, 133, 255, 0.1);
+}
+
+.dark .macos-select:focus-within {
+  border-color: rgba(66, 133, 255, 0.5);
+  box-shadow: 0 0 0 3px rgba(66, 133, 255, 0.15);
+}
+
+/* Enhanced buttons with proper light mode colors */
 .btn-primary-ios {
   background: linear-gradient(135deg, #0066FF, #4285FF);
   color: white;
   border: none;
-  box-shadow: 0 4px 15px 0 rgba(0, 102, 255, 0.3);
+  box-shadow: 0 4px 15px 0 rgba(0, 102, 255, 0.2);
+  transition: all 0.2s ease;
 }
 
 .btn-primary-ios:hover {
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px 0 rgba(0, 102, 255, 0.4);
+  box-shadow: 0 6px 20px 0 rgba(0, 102, 255, 0.3);
 }
 
 .btn-secondary-ios {
-  background: rgba(0, 102, 255, 0.1);
-  border: 1px solid rgba(0, 102, 255, 0.3);
+  background: rgba(0, 102, 255, 0.08);
+  border: 1px solid rgba(0, 102, 255, 0.2);
+  color: hsl(var(--foreground));
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+  transition: all 0.2s ease;
 }
 
 .btn-secondary-ios:hover {
-  background: rgba(0, 102, 255, 0.2);
+  background: rgba(0, 102, 255, 0.12);
   transform: translateY(-1px);
 }
 
-/* Dark mode specific styles */
 .dark .btn-secondary-ios {
   background: rgba(66, 133, 255, 0.1);
   border: 1px solid rgba(66, 133, 255, 0.2);
@@ -147,12 +183,12 @@
   background: rgba(66, 133, 255, 0.2);
 }
 
-/* Navigation styles */
+/* Enhanced navigation with light mode compatibility */
 .nav-ios {
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(0, 102, 255, 0.1);
+  border-bottom: 1px solid rgba(0, 102, 255, 0.08);
 }
 
 .dark .nav-ios {
@@ -160,7 +196,19 @@
   border-bottom: 1px solid rgba(66, 133, 255, 0.1);
 }
 
-/* Responsive Grid System */
+/* Compact filter styles */
+.compact-filter {
+  min-height: 2.5rem;
+  padding: 0.375rem 0.75rem;
+  font-size: 0.875rem;
+}
+
+.filter-dropdown {
+  min-width: 8rem;
+  max-width: 12rem;
+}
+
+/* ... keep existing code (responsive grid, animations, and other utilities) */
 .responsive-grid {
   display: grid;
   gap: 1rem;

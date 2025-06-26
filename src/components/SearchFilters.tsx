@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -125,16 +124,16 @@ const SearchFilters = ({ language, onSearch }: SearchFiltersProps) => {
   };
 
   return (
-    <Card className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm shadow-2xl">
+    <Card className="glass-card-ios shadow-2xl border-0">
       <CardContent className="p-6">
         {/* Main Search Bar */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
           <div className="lg:col-span-2">
             <div className="relative">
-              <Search className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+              <Search className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
               <Input
                 placeholder={currentText.search}
-                className="pl-10 h-12 text-gray-700 dark:text-gray-200"
+                className="pl-10 h-12 macos-select border-0 text-foreground bg-background/90"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -142,10 +141,10 @@ const SearchFilters = ({ language, onSearch }: SearchFiltersProps) => {
           </div>
           
           <Select value={selectedState} onValueChange={setSelectedState}>
-            <SelectTrigger className="h-12">
+            <SelectTrigger className="h-12 macos-select border-0 bg-background/90">
               <SelectValue placeholder={currentText.state} />
             </SelectTrigger>
-            <SelectContent className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+            <SelectContent className="macos-select">
               <SelectItem value="">{currentText.state}</SelectItem>
               {indonesianStates.map((state) => (
                 <SelectItem key={state} value={state}>{state}</SelectItem>
@@ -154,10 +153,10 @@ const SearchFilters = ({ language, onSearch }: SearchFiltersProps) => {
           </Select>
           
           <Select value={propertyType} onValueChange={setPropertyType}>
-            <SelectTrigger className="h-12">
+            <SelectTrigger className="h-12 macos-select border-0 bg-background/90">
               <SelectValue placeholder={currentText.propertyType} />
             </SelectTrigger>
-            <SelectContent className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+            <SelectContent className="macos-select">
               <SelectItem value="">{currentText.allTypes}</SelectItem>
               {propertyTypes.map((type) => (
                 <SelectItem key={type.value} value={type.value}>{type.label}</SelectItem>
@@ -167,7 +166,7 @@ const SearchFilters = ({ language, onSearch }: SearchFiltersProps) => {
           
           <Button 
             onClick={handleSearch}
-            className="h-12 bg-[#59a1ef]/60 hover:bg-[#59a1ef]/80 text-white font-semibold transition-all duration-300 transform hover:scale-105 backdrop-blur-sm"
+            className="h-12 btn-primary-ios font-semibold"
           >
             {currentText.searchBtn}
           </Button>
@@ -176,10 +175,10 @@ const SearchFilters = ({ language, onSearch }: SearchFiltersProps) => {
         {/* Advanced Filters */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
           <Select value={listingType} onValueChange={setListingType}>
-            <SelectTrigger className="h-10">
+            <SelectTrigger className="h-10 macos-select border-0 bg-background/80">
               <SelectValue placeholder={currentText.listingType} />
             </SelectTrigger>
-            <SelectContent className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+            <SelectContent className="macos-select">
               <SelectItem value="">{currentText.allTypes}</SelectItem>
               <SelectItem value="sale">{currentText.forSale}</SelectItem>
               <SelectItem value="rent">{currentText.forRent}</SelectItem>
@@ -188,10 +187,10 @@ const SearchFilters = ({ language, onSearch }: SearchFiltersProps) => {
           </Select>
 
           <Select value={priceRange} onValueChange={setPriceRange}>
-            <SelectTrigger className="h-10">
+            <SelectTrigger className="h-10 macos-select border-0 bg-background/80">
               <SelectValue placeholder={currentText.price} />
             </SelectTrigger>
-            <SelectContent className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+            <SelectContent className="macos-select">
               <SelectItem value="">{currentText.anyPrice}</SelectItem>
               <SelectItem value="0-1000000000">Under Rp 1B</SelectItem>
               <SelectItem value="1000000000-5000000000">Rp 1B - 5B</SelectItem>
@@ -200,10 +199,10 @@ const SearchFilters = ({ language, onSearch }: SearchFiltersProps) => {
           </Select>
 
           <Select value={bedrooms} onValueChange={setBedrooms}>
-            <SelectTrigger className="h-10">
+            <SelectTrigger className="h-10 macos-select border-0 bg-background/80">
               <SelectValue placeholder={currentText.bedrooms} />
             </SelectTrigger>
-            <SelectContent className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+            <SelectContent className="macos-select">
               <SelectItem value="">{currentText.anyBedroom}</SelectItem>
               <SelectItem value="1">1</SelectItem>
               <SelectItem value="2">2</SelectItem>
@@ -213,10 +212,10 @@ const SearchFilters = ({ language, onSearch }: SearchFiltersProps) => {
           </Select>
 
           <Select value={bathrooms} onValueChange={setBathrooms}>
-            <SelectTrigger className="h-10">
+            <SelectTrigger className="h-10 macos-select border-0 bg-background/80">
               <SelectValue placeholder={currentText.bathrooms} />
             </SelectTrigger>
-            <SelectContent className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+            <SelectContent className="macos-select">
               <SelectItem value="">{currentText.anyBathroom}</SelectItem>
               <SelectItem value="1">1</SelectItem>
               <SelectItem value="2">2</SelectItem>
@@ -232,7 +231,7 @@ const SearchFilters = ({ language, onSearch }: SearchFiltersProps) => {
                 variant={amenities.includes(amenity.key) ? "default" : "outline"}
                 size="sm"
                 onClick={() => toggleAmenity(amenity.key)}
-                className="h-10 px-3"
+                className="h-10 px-3 btn-secondary-ios"
               >
                 <amenity.icon className="h-4 w-4 mr-1" />
                 <span className="hidden sm:inline">{amenity.label}</span>
@@ -243,13 +242,13 @@ const SearchFilters = ({ language, onSearch }: SearchFiltersProps) => {
         
         {/* Trending Searches */}
         <div className="text-left">
-          <p className="text-gray-600 dark:text-gray-400 mb-3 font-medium">{currentText.trending}:</p>
+          <p className="text-muted-foreground mb-3 font-medium">{currentText.trending}:</p>
           <div className="flex flex-wrap gap-2">
             {trendingSearches.map((term, index) => (
               <Badge 
                 key={index} 
                 variant="secondary" 
-                className="cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-900 transition-colors"
+                className="cursor-pointer hover:bg-primary/10 transition-colors bg-background/60"
                 onClick={() => setSearchQuery(term)}
               >
                 {term}
