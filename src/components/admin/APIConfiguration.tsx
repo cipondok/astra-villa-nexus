@@ -109,7 +109,7 @@ const APIConfiguration = () => {
           .from('system_settings')
           .upsert({
             key: `astra_api_${key}`,
-            value: value, // Store the value directly without stringifying
+            value: value,
             category: 'astra_api',
             description: `ASTRA API ${key} setting`
           }, {
@@ -133,7 +133,6 @@ const APIConfiguration = () => {
   };
 
   const isValidAPIKey = (key: string): boolean => {
-    // API keys should start with "astra_" and have reasonable length
     return key.startsWith('astra_') && key.length > 10;
   };
 
@@ -142,47 +141,89 @@ const APIConfiguration = () => {
     setConnectionStatus('testing');
     
     try {
-      // Validate API key format first
       if (!isValidAPIKey(config.apiKey)) {
         throw new Error('Invalid API key format. API keys should start with "astra_" (e.g., astra_your_actual_api_key_here)');
       }
 
       console.log('Testing API connection with key:', config.apiKey.substring(0, 10) + '...');
 
-      // Test the API connection using only x-api-key header (no Authorization header)
-      const response = await fetch(`${config.baseUrl}/health`, {
-        method: 'GET',
-        headers: {
-          'x-api-key': config.apiKey,
-          'Content-Type': 'application/json'
+      // Try multiple authentication methods
+      const authMethods = [
+        // Method 1: Both Authorization and x-api-key headers
+        {
+          name: 'Authorization + x-api-key',
+          headers: {
+            'Authorization': `Bearer ${config.apiKey}`,
+            'x-api-key': config.apiKey,
+            'Content-Type': 'application/json'
+          }
         },
-        signal: AbortSignal.timeout(config.timeout)
-      });
+        // Method 2: Only Authorization header
+        {
+          name: 'Authorization only',
+          headers: {
+            'Authorization': `Bearer ${config.apiKey}`,
+            'Content-Type': 'application/json'
+          }
+        },
+        // Method 3: Only x-api-key header
+        {
+          name: 'x-api-key only',
+          headers: {
+            'x-api-key': config.apiKey,
+            'Content-Type': 'application/json'
+          }
+        }
+      ];
 
-      console.log('API Response Status:', response.status);
-      console.log('API Response Headers:', Object.fromEntries(response.headers.entries()));
+      let lastError = null;
+      
+      for (const method of authMethods) {
+        try {
+          console.log(`Trying authentication method: ${method.name}`);
+          
+          const response = await fetch(`${config.baseUrl}/health`, {
+            method: 'GET',
+            headers: method.headers,
+            signal: AbortSignal.timeout(config.timeout)
+          });
 
-      if (response.ok) {
-        const data = await response.json();
-        setConnectionStatus('connected');
-        setTestResults({
-          status: 'success',
-          message: 'API connection successful',
-          data: data
-        });
-        showSuccess('Connection Test', 'ASTRA API connection successful');
-      } else {
-        const errorText = await response.text();
-        console.log('API Error Response:', errorText);
-        throw new Error(`HTTP ${response.status}: ${errorText || response.statusText}`);
+          console.log(`${method.name} - Status:`, response.status);
+          console.log(`${method.name} - Headers:`, Object.fromEntries(response.headers.entries()));
+
+          if (response.ok) {
+            const data = await response.json();
+            setConnectionStatus('connected');
+            setTestResults({
+              status: 'success',
+              message: `API connection successful using ${method.name}`,
+              method: method.name,
+              data: data
+            });
+            showSuccess('Connection Test', `ASTRA API connection successful using ${method.name}`);
+            return; // Exit on first successful method
+          } else {
+            const errorText = await response.text();
+            console.log(`${method.name} - Error Response:`, errorText);
+            lastError = new Error(`${method.name}: HTTP ${response.status}: ${errorText || response.statusText}`);
+          }
+        } catch (error: any) {
+          console.error(`${method.name} failed:`, error);
+          lastError = error;
+        }
       }
+
+      // If we get here, all methods failed
+      throw lastError || new Error('All authentication methods failed');
+
     } catch (error: any) {
       console.error('API Connection Error:', error);
       setConnectionStatus('disconnected');
       setTestResults({
         status: 'error',
         message: error.message || 'Connection failed',
-        error: error
+        error: error,
+        suggestion: 'Please check your API key format and ensure it\'s valid. Contact ASTRA support if the issue persists.'
       });
       showError('Connection Test Failed', error.message || 'Failed to connect to ASTRA API');
     } finally {
