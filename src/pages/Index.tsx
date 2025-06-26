@@ -9,7 +9,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import ResponsiveAIChatWidget from "@/components/ai/ResponsiveAIChatWidget";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Home, Key, Building, Rocket, Star, TrendingUp, Wrench, Sparkles, Brain, Zap, ArrowRight } from "lucide-react";
+import { Home, Key, Building, Rocket, Star, TrendingUp, Wrench, Sparkles, Brain, Zap, ArrowRight, DollarSign, BarChart3, Shield } from "lucide-react";
 
 const Index = () => {
   const { language } = useLanguage();
@@ -297,72 +297,72 @@ const Index = () => {
   const currentText = text[language] || text.en;
 
   return (
-    <div className="min-h-screen mesh-gradient">
+    <div className="min-h-screen mesh-gradient-binance">
       <Navigation />
       
-      {/* Ultra Modern Hero Section */}
+      {/* Binance-Style Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center px-4 overflow-hidden">
         {/* Advanced Background Elements */}
         <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/20 rounded-full filter blur-3xl animate-float"></div>
-          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-accent/20 rounded-full filter blur-3xl animate-float" style={{ animationDelay: '2s' }}></div>
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 rounded-full filter blur-3xl animate-pulse-glow"></div>
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-yellow-400/20 rounded-full filter blur-3xl animate-binance-float"></div>
+          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-green-400/20 rounded-full filter blur-3xl animate-binance-float" style={{ animationDelay: '2s' }}></div>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] bg-gradient-to-r from-yellow-400/10 via-green-400/10 to-yellow-400/10 rounded-full filter blur-3xl animate-binance-glow"></div>
         </div>
         
         <div className="container mx-auto text-center relative z-10">
-          {/* Ultra Modern ASTRA Villa Branding */}
-          <div className="mb-12 animate-fade-in-scale stagger-ultra">
+          {/* Binance-Style ASTRA Villa Branding */}
+          <div className="mb-12 animate-binance-scale-in stagger-binance">
             <div className="flex items-center justify-center mb-12">
               <div className="relative group">
-                <div className="w-24 h-24 rounded-3xl bg-gradient-to-br from-primary via-accent to-primary flex items-center justify-center mr-8 shadow-2xl animate-pulse-glow group-hover:scale-110 transition-transform duration-500">
-                  <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-primary via-accent to-primary animate-shimmer opacity-75"></div>
-                  <Sparkles className="text-white text-4xl font-bold relative z-10 animate-float" size={40} />
+                <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-yellow-400 via-yellow-500 to-yellow-600 flex items-center justify-center mr-8 shadow-2xl animate-binance-glow group-hover:scale-110 transition-transform duration-500">
+                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-yellow-400 via-yellow-500 to-yellow-600 animate-shimmer opacity-75"></div>
+                  <DollarSign className="text-black text-4xl font-bold relative z-10 animate-binance-float" size={40} />
                 </div>
-                <div className="absolute -top-3 -right-3 w-8 h-8 bg-green-400 rounded-full flex items-center justify-center animate-pulse-glow">
-                  <Zap size={16} className="text-green-900" />
+                <div className="absolute -top-3 -right-3 w-8 h-8 bg-green-400 rounded-full flex items-center justify-center animate-binance-glow">
+                  <Zap size={16} className="text-black" />
                 </div>
-                <div className="absolute -bottom-2 -left-2 w-6 h-6 bg-blue-400 rounded-full animate-float" style={{ animationDelay: '1s' }}></div>
+                <div className="absolute -bottom-2 -left-2 w-6 h-6 bg-red-400 rounded-full animate-binance-float" style={{ animationDelay: '1s' }}></div>
               </div>
               <div className="text-left">
-                <h1 className="text-6xl sm:text-7xl lg:text-8xl font-extrabold text-white mb-6 heading-ultra">
+                <h1 className="text-6xl sm:text-7xl lg:text-8xl font-extrabold text-foreground mb-6 heading-binance">
                   ASTRA Villa
                 </h1>
                 <div className="flex items-center gap-4 mb-4">
-                  <Brain className="text-cyan-400 animate-pulse-glow" size={32} />
-                  <p className="text-cyan-300 text-2xl font-semibold">
-                    Next-Gen AI Property Intelligence
+                  <BarChart3 className="text-yellow-400 animate-binance-glow" size={32} />
+                  <p className="text-yellow-400 text-2xl font-semibold">
+                    Professional Trading Experience
                   </p>
                 </div>
-                <p className="text-purple-300 text-xl font-medium">
-                  Ultra Modern Real Estate Experience
+                <p className="text-green-400 text-xl font-medium">
+                  Advanced Property Investment Platform
                 </p>
               </div>
             </div>
             
-            {/* Advanced AI Features Showcase */}
-            <div className="flex flex-wrap justify-center gap-6 mb-12 stagger-ultra">
-              <div className="glass-ultra px-8 py-4 flex items-center gap-3 group">
-                <Star className="text-yellow-400 animate-pulse-glow group-hover:scale-125 transition-transform" size={20} />
-                <span className="text-white font-semibold text-lg">AI Property Matching</span>
+            {/* Binance-Style Features Showcase */}
+            <div className="flex flex-wrap justify-center gap-6 mb-12 stagger-binance">
+              <div className="glass-binance px-8 py-4 flex items-center gap-3 group">
+                <Star className="text-yellow-400 animate-binance-glow group-hover:scale-125 transition-transform" size={20} />
+                <span className="text-foreground font-semibold text-lg">Professional Trading</span>
               </div>
-              <div className="glass-ultra px-8 py-4 flex items-center gap-3 group">
-                <Brain className="text-purple-400 animate-pulse-glow group-hover:scale-125 transition-transform" size={20} />
-                <span className="text-white font-semibold text-lg">Smart Price Prediction</span>
+              <div className="glass-binance px-8 py-4 flex items-center gap-3 group">
+                <Shield className="text-green-400 animate-binance-glow group-hover:scale-125 transition-transform" size={20} />
+                <span className="text-foreground font-semibold text-lg">Secure Platform</span>
               </div>
-              <div className="glass-ultra px-8 py-4 flex items-center gap-3 group">
-                <Zap className="text-cyan-400 animate-pulse-glow group-hover:scale-125 transition-transform" size={20} />
-                <span className="text-white font-semibold text-lg">Instant Virtual Tours</span>
+              <div className="glass-binance px-8 py-4 flex items-center gap-3 group">
+                <Zap className="text-yellow-400 animate-binance-glow group-hover:scale-125 transition-transform" size={20} />
+                <span className="text-foreground font-semibold text-lg">Instant Analytics</span>
               </div>
-              <div className="glass-ultra px-8 py-4 flex items-center gap-3 group">
-                <Sparkles className="text-pink-400 animate-pulse-glow group-hover:scale-125 transition-transform" size={20} />
-                <span className="text-white font-semibold text-lg">Neural Recommendations</span>
+              <div className="glass-binance px-8 py-4 flex items-center gap-3 group">
+                <BarChart3 className="text-green-400 animate-binance-glow group-hover:scale-125 transition-transform" size={20} />
+                <span className="text-foreground font-semibold text-lg">Market Intelligence</span>
               </div>
             </div>
           </div>
           
-          {/* Ultra Modern Search Panel */}
-          <div className="max-w-7xl mx-auto animate-slide-in-left">
-            <div className="search-panel-ultra">
+          {/* Binance-Style Search Panel */}
+          <div className="max-w-7xl mx-auto animate-binance-slide-in">
+            <div className="search-panel-binance">
               <EnhancedModernSearchPanel
                 language={language}
                 onSearch={handleSearch}
@@ -372,67 +372,67 @@ const Index = () => {
           </div>
 
           {/* Call to Action */}
-          <div className="mt-12 animate-fade-in-scale">
-            <Button className="btn-ultra text-xl px-12 py-6 group">
-              Discover Properties
+          <div className="mt-12 animate-binance-scale-in">
+            <Button className="btn-binance text-xl px-12 py-6 group">
+              Start Trading Properties
               <ArrowRight className="ml-3 group-hover:translate-x-2 transition-transform" size={24} />
             </Button>
           </div>
         </div>
       </section>
 
-      {/* Ultra Modern Navigation Buttons */}
-      <section className="py-12 bg-black/10 backdrop-ultra">
+      {/* Binance-Style Navigation Buttons */}
+      <section className="py-12 bg-card/50 backdrop-binance">
         <div className="container mx-auto px-4">
-          <div className="flex flex-wrap justify-center gap-6 stagger-ultra">
+          <div className="flex flex-wrap justify-center gap-6 stagger-binance">
             <Button 
-              className="btn-ultra group"
+              className="btn-binance group"
               onClick={() => handleSearch({ listingType: 'buy' })}
             >
               <Home className="h-6 w-6 mr-3 group-hover:scale-110 transition-transform" />
               Buy Properties
             </Button>
             <Button 
-              className="btn-ultra group"
+              className="btn-success group"
               onClick={() => handleSearch({ listingType: 'rent' })}
             >
               <Key className="h-6 w-6 mr-3 group-hover:scale-110 transition-transform" />
               Rent Properties
             </Button>
             <Button 
-              className="btn-ultra group"
+              className="btn-binance-outline group"
               onClick={() => handleSearch({ development_status: 'pre_launching' })}
             >
               <Rocket className="h-6 w-6 mr-3 group-hover:scale-110 transition-transform" />
               Pre-Launch
             </Button>
             <Button 
-              className="btn-ultra group"
+              className="btn-binance group"
               onClick={() => handleSearch({ development_status: 'new_project' })}
             >
               <Building className="h-6 w-6 mr-3 group-hover:scale-110 transition-transform" />
               New Projects
             </Button>
             <Button 
-              className="btn-ultra group"
+              className="btn-binance-outline group"
             >
               <Wrench className="h-6 w-6 mr-3 group-hover:scale-110 transition-transform" />
-              AI Services
+              Pro Services
             </Button>
           </div>
         </div>
       </section>
 
-      {/* Ultra Modern Property Section Navigation */}
-      <section className="py-12 bg-black/5">
+      {/* Binance-Style Property Section Navigation */}
+      <section className="py-12 bg-background/95">
         <div className="container mx-auto px-4">
-          <div className="flex flex-wrap justify-center gap-4 mb-12 stagger-ultra">
+          <div className="flex flex-wrap justify-center gap-4 mb-12 stagger-binance">
             <Button
               variant={activeSection === 'ai_recommended' ? 'default' : 'ghost'}
               onClick={() => setActiveSection('ai_recommended')}
-              className={`glass-ultra transition-all duration-500 group ${activeSection === 'ai_recommended' 
-                ? 'bg-gradient-to-r from-primary to-accent text-white shadow-2xl scale-105' 
-                : 'text-white hover:bg-white/10 hover:scale-105'}`}
+              className={`glass-binance transition-all duration-500 group ${activeSection === 'ai_recommended' 
+                ? 'bg-gradient-to-r from-yellow-400 to-yellow-500 text-black shadow-2xl scale-105' 
+                : 'text-foreground hover:bg-yellow-400/10 hover:scale-105'}`}
             >
               <Star className="h-5 w-5 mr-3 group-hover:rotate-12 transition-transform" />
               AI Recommended
@@ -440,9 +440,9 @@ const Index = () => {
             <Button
               variant={activeSection === 'popular' ? 'default' : 'ghost'}
               onClick={() => setActiveSection('popular')}
-              className={`glass-ultra transition-all duration-500 group ${activeSection === 'popular' 
-                ? 'bg-gradient-to-r from-primary to-accent text-white shadow-2xl scale-105' 
-                : 'text-white hover:bg-white/10 hover:scale-105'}`}
+              className={`glass-binance transition-all duration-500 group ${activeSection === 'popular' 
+                ? 'bg-gradient-to-r from-green-400 to-green-500 text-black shadow-2xl scale-105' 
+                : 'text-foreground hover:bg-green-400/10 hover:scale-105'}`}
             >
               <TrendingUp className="h-5 w-5 mr-3 group-hover:rotate-12 transition-transform" />
               Most Popular
@@ -450,9 +450,9 @@ const Index = () => {
             <Button
               variant={activeSection === 'rent' ? 'default' : 'ghost'}
               onClick={() => setActiveSection('rent')}
-              className={`glass-ultra transition-all duration-500 group ${activeSection === 'rent' 
-                ? 'bg-gradient-to-r from-primary to-accent text-white shadow-2xl scale-105' 
-                : 'text-white hover:bg-white/10 hover:scale-105'}`}
+              className={`glass-binance transition-all duration-500 group ${activeSection === 'rent' 
+                ? 'bg-gradient-to-r from-yellow-400 to-yellow-500 text-black shadow-2xl scale-105' 
+                : 'text-foreground hover:bg-yellow-400/10 hover:scale-105'}`}
             >
               <Key className="h-5 w-5 mr-3 group-hover:rotate-12 transition-transform" />
               Rent
@@ -460,9 +460,9 @@ const Index = () => {
             <Button
               variant={activeSection === 'sale' ? 'default' : 'ghost'}
               onClick={() => setActiveSection('sale')}
-              className={`glass-ultra transition-all duration-500 group ${activeSection === 'sale' 
-                ? 'bg-gradient-to-r from-primary to-accent text-white shadow-2xl scale-105' 
-                : 'text-white hover:bg-white/10 hover:scale-105'}`}
+              className={`glass-binance transition-all duration-500 group ${activeSection === 'sale' 
+                ? 'bg-gradient-to-r from-green-400 to-green-500 text-black shadow-2xl scale-105' 
+                : 'text-foreground hover:bg-green-400/10 hover:scale-105'}`}
             >
               <Home className="h-5 w-5 mr-3 group-hover:rotate-12 transition-transform" />
               Sale
@@ -470,9 +470,9 @@ const Index = () => {
             <Button
               variant={activeSection === 'new_projects' ? 'default' : 'ghost'}
               onClick={() => setActiveSection('new_projects')}
-              className={`glass-ultra transition-all duration-500 group ${activeSection === 'new_projects' 
-                ? 'bg-gradient-to-r from-primary to-accent text-white shadow-2xl scale-105' 
-                : 'text-white hover:bg-white/10 hover:scale-105'}`}
+              className={`glass-binance transition-all duration-500 group ${activeSection === 'new_projects' 
+                ? 'bg-gradient-to-r from-yellow-400 to-yellow-500 text-black shadow-2xl scale-105' 
+                : 'text-foreground hover:bg-yellow-400/10 hover:scale-105'}`}
             >
               <Building className="h-5 w-5 mr-3 group-hover:rotate-12 transition-transform" />
               New Projects
@@ -480,9 +480,9 @@ const Index = () => {
             <Button
               variant={activeSection === 'pre_launch' ? 'default' : 'ghost'}
               onClick={() => setActiveSection('pre_launch')}
-              className={`glass-ultra transition-all duration-500 group ${activeSection === 'pre_launch' 
-                ? 'bg-gradient-to-r from-primary to-accent text-white shadow-2xl scale-105' 
-                : 'text-white hover:bg-white/10 hover:scale-105'}`}
+              className={`glass-binance transition-all duration-500 group ${activeSection === 'pre_launch' 
+                ? 'bg-gradient-to-r from-green-400 to-green-500 text-black shadow-2xl scale-105' 
+                : 'text-foreground hover:bg-green-400/10 hover:scale-105'}`}
             >
               <Rocket className="h-5 w-5 mr-3 group-hover:rotate-12 transition-transform" />
               Pre Launch
@@ -490,24 +490,24 @@ const Index = () => {
             <Button
               variant={activeSection === 'services' ? 'default' : 'ghost'}
               onClick={() => setActiveSection('services')}
-              className={`glass-ultra transition-all duration-500 group ${activeSection === 'services' 
-                ? 'bg-gradient-to-r from-primary to-accent text-white shadow-2xl scale-105' 
-                : 'text-white hover:bg-white/10 hover:scale-105'}`}
+              className={`glass-binance transition-all duration-500 group ${activeSection === 'services' 
+                ? 'bg-gradient-to-r from-yellow-400 to-yellow-500 text-black shadow-2xl scale-105' 
+                : 'text-foreground hover:bg-yellow-400/10 hover:scale-105'}`}
             >
               <Wrench className="h-5 w-5 mr-3 group-hover:rotate-12 transition-transform" />
-              AI Services
+              Pro Services
             </Button>
           </div>
         </div>
       </section>
 
-      {/* Error Message with Ultra Modern Styling */}
+      {/* Error Message with Binance Styling */}
       {searchError && (
         <section className="py-8">
           <div className="container mx-auto px-4">
-            <div className="glass-ultra bg-red-500/10 border-red-500/20 text-red-300 font-medium text-center p-8 rounded-3xl animate-fade-in-scale">
+            <div className="glass-binance bg-red-500/10 border-red-500/20 text-red-400 font-medium text-center p-8 rounded-2xl animate-binance-scale-in">
               <div className="flex items-center justify-center gap-3">
-                <div className="w-3 h-3 bg-red-400 rounded-full animate-pulse-glow"></div>
+                <div className="w-3 h-3 bg-red-400 rounded-full animate-binance-glow"></div>
                 {searchError}
               </div>
             </div>
@@ -515,8 +515,8 @@ const Index = () => {
         </section>
       )}
 
-      {/* Ultra Modern Property Listings */}
-      <div className="px-4 bg-black/5 backdrop-ultra">
+      {/* Binance-Style Property Listings */}
+      <div className="px-4 bg-background/95 backdrop-binance">
         <PropertyListingsSection
           language={language}
           searchResults={hasSearched ? searchResults : []}
@@ -529,11 +529,11 @@ const Index = () => {
       {/* AI Chat Widget */}
       <ResponsiveAIChatWidget />
 
-      {/* Ultra Modern Footer */}
+      {/* Professional Footer */}
       <ProfessionalFooter language={language} />
 
-      {/* Floating Action Button */}
-      <div className="fab-ultra group">
+      {/* Floating Action Button - Binance Style */}
+      <div className="fixed bottom-8 right-8 w-16 h-16 rounded-full flex items-center justify-center text-black shadow-2xl bg-gradient-to-br from-yellow-400 to-yellow-500 transition-all duration-300 hover:scale-110 hover:rotate-5 group z-50 animate-binance-glow">
         <Brain className="h-6 w-6 group-hover:scale-125 transition-transform" />
       </div>
     </div>
