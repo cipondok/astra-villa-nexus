@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { Sun, Moon, Sunset, Sparkles, DollarSign } from "lucide-react";
+import { Sun, Moon, Sunset, Sparkles, Crown } from "lucide-react";
 import { useTheme } from "@/components/ThemeProvider";
 
 interface ThemeSwitcherProps {
@@ -28,17 +28,17 @@ const ThemeSwitcher = ({ className = "", variant = "default" }: ThemeSwitcherPro
         variant="ghost"
         size="sm"
         onClick={() => setTheme(nextTheme.key)}
-        className={`flex items-center gap-3 text-foreground hover:bg-yellow-400/20 glass-binance border-yellow-400/20 transition-all duration-300 group micro-bounce-binance ${className}`}
+        className={`flex items-center gap-3 text-foreground hover:bg-purple-400/20 glass-astra border-purple-400/20 transition-all duration-300 group ${className}`}
       >
         <Icon className="h-5 w-5 group-hover:rotate-12 transition-transform" />
         <span className="hidden md:inline text-foreground font-medium">{nextTheme.label}</span>
-        <DollarSign className="h-3 w-3 animate-pulse" />
+        <Crown className="h-3 w-3 animate-pulse" />
       </Button>
     );
   }
 
   return (
-    <div className={`flex items-center glass-binance rounded-2xl p-2 border border-border/20 ${className}`}>
+    <div className={`flex items-center glass-astra rounded-2xl p-2 border border-border/20 ${className}`}>
       {themes.map(({ key, label, icon: Icon }) => (
         <Button
           key={key}
@@ -46,16 +46,16 @@ const ThemeSwitcher = ({ className = "", variant = "default" }: ThemeSwitcherPro
           size="sm"
           onClick={() => setTheme(key)}
           className={`
-            flex items-center space-x-3 px-6 py-3 rounded-xl transition-all duration-500 group micro-bounce-binance
+            flex items-center space-x-3 px-6 py-3 rounded-xl transition-all duration-500 group
             ${theme === key 
-              ? 'bg-gradient-to-r from-yellow-400 to-yellow-500 text-black shadow-2xl scale-105 animate-binance-glow' 
-              : 'text-muted-foreground hover:text-foreground hover:bg-yellow-400/10 hover:scale-105'
+              ? 'bg-gradient-to-r from-purple-500 to-cyan-500 text-white shadow-2xl scale-105 animate-astra-glow' 
+              : 'text-muted-foreground hover:text-foreground hover:bg-purple-400/10 hover:scale-105'
             }
           `}
         >
           <Icon className="h-5 w-5 group-hover:rotate-12 transition-transform" />
           <span className="text-sm font-semibold">{label}</span>
-          {theme === key && <Sparkles className="h-3 w-3 animate-binance-float" />}
+          {theme === key && <Sparkles className="h-3 w-3 animate-astra-float" />}
         </Button>
       ))}
     </div>

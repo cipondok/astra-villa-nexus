@@ -6,75 +6,64 @@
 
 @layer base {
   :root {
-    /* Binance Light Mode Color Scheme */
-    --background: 248 249 251;           /* Light gray background */
-    --foreground: 33 39 46;              /* Dark text */
-    --card: 255 255 255;                 /* White cards */
-    --card-foreground: 33 39 46;         
-    --popover: 255 255 255;              
-    --popover-foreground: 33 39 46;      
-    --primary: 240 185 11;               /* Binance Yellow */
-    --primary-foreground: 33 39 46;      
-    --secondary: 234 236 239;            /* Light gray */
-    --secondary-foreground: 33 39 46;    
-    --muted: 234 236 239;                
-    --muted-foreground: 132 142 156;     
-    --accent: 240 185 11;                /* Binance Yellow accent */
-    --accent-foreground: 33 39 46;       
-    --destructive: 246 70 93;            /* Binance Red */
-    --destructive-foreground: 255 255 255;
-    --border: 234 236 239;               /* Light borders */
-    --input: 255 255 255;                
-    --ring: 240 185 11;                  
-    --radius: 0.5rem;
+    /* ASTRA Token Color Scheme */
+    --background: 20 16 41;              /* Deep purple dark background */
+    --foreground: 248 250 252;           /* White text */
+    --card: 30 25 60;                    /* Dark purple cards */
+    --card-foreground: 248 250 252;      
+    --popover: 30 25 60;                 
+    --popover-foreground: 248 250 252;   
+    --primary: 147 51 234;               /* Purple primary */
+    --primary-foreground: 248 250 252;      
+    --secondary: 45 35 85;               /* Medium purple */
+    --secondary-foreground: 248 250 252; 
+    --muted: 45 35 85;                   
+    --muted-foreground: 156 163 175;     
+    --accent: 59 130 246;                /* Blue accent */
+    --accent-foreground: 248 250 252;       
+    --destructive: 239 68 68;            /* Red */
+    --destructive-foreground: 248 250 252;
+    --border: 59 39 99;                  /* Purple borders */
+    --input: 30 25 60;                   
+    --ring: 147 51 234;                  
+    --radius: 0.75rem;
     
-    /* Binance Specific Colors */
-    --binance-yellow: 240 185 11;
-    --binance-green: 14 203 129;
-    --binance-red: 246 70 93;
-    --binance-dark: 24 26 32;
-    --binance-darker: 17 18 22;
-    --binance-gray: 132 142 156;
-    --binance-light-gray: 234 236 239;
+    /* ASTRA Specific Colors */
+    --astra-purple: 147 51 234;
+    --astra-blue: 59 130 246;
+    --astra-cyan: 6 182 212;
+    --astra-dark: 20 16 41;
+    --astra-darker: 15 10 30;
+    --astra-card: 30 25 60;
+    --astra-border: 59 39 99;
     
-    /* Advanced Gradient System */
-    --gradient-binance: linear-gradient(135deg, #f0b90b 0%, #f8d12f 100%);
-    --gradient-success: linear-gradient(135deg, #0ecb81 0%, #5ddb7a 100%);
-    --gradient-danger: linear-gradient(135deg, #f6465d 0%, #ff7a93 100%);
-    --gradient-dark: linear-gradient(135deg, #181a20 0%, #1e2329 100%);
-    
-    /* Glass Morphism */
-    --glass-bg: rgba(255, 255, 255, 0.15);
-    --glass-border: rgba(240, 185, 11, 0.2);
-    --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    /* ASTRA Gradients */
+    --gradient-astra: linear-gradient(135deg, #9333ea 0%, #3b82f6 50%, #06b6d4 100%);
+    --gradient-card: linear-gradient(135deg, rgba(147, 51, 234, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%);
+    --gradient-background: linear-gradient(135deg, #141025 0%, #1e1b4b 50%, #312e81 100%);
   }
 
-  .dark {
-    /* Binance Dark Mode Color Scheme */
-    --background: 24 26 32;              /* Binance Dark */
-    --foreground: 234 236 239;           
-    --card: 33 39 46;                    /* Dark cards */
-    --card-foreground: 234 236 239;      
-    --popover: 33 39 46;                 
-    --popover-foreground: 234 236 239;   
-    --primary: 240 185 11;               /* Binance Yellow */
-    --primary-foreground: 24 26 32;      
-    --secondary: 47 51 56;               
-    --secondary-foreground: 234 236 239; 
-    --muted: 47 51 56;                   
-    --muted-foreground: 132 142 156;     
-    --accent: 240 185 11;                /* Binance Yellow accent */
-    --accent-foreground: 24 26 32;       
-    --destructive: 246 70 93;            /* Binance Red */
-    --destructive-foreground: 234 236 239;
-    --border: 47 51 56;                  
-    --input: 33 39 46;                   
-    --ring: 240 185 11;                  
-    
-    /* Dark Glass Morphism */
-    --glass-bg: rgba(33, 39, 46, 0.4);
-    --glass-border: rgba(240, 185, 11, 0.2);
-    --glass-shadow: 0 8px 32px 0 rgba(240, 185, 11, 0.1);
+  .light {
+    /* Light mode - keeping ASTRA aesthetic */
+    --background: 248 250 252;           
+    --foreground: 20 16 41;              
+    --card: 255 255 255;                 
+    --card-foreground: 20 16 41;         
+    --popover: 255 255 255;              
+    --popover-foreground: 20 16 41;      
+    --primary: 147 51 234;               
+    --primary-foreground: 248 250 252;      
+    --secondary: 241 245 249;            
+    --secondary-foreground: 20 16 41;    
+    --muted: 241 245 249;                
+    --muted-foreground: 100 116 139;     
+    --accent: 59 130 246;                
+    --accent-foreground: 248 250 252;       
+    --destructive: 239 68 68;            
+    --destructive-foreground: 248 250 252;
+    --border: 226 232 240;               
+    --input: 255 255 255;                
+    --ring: 147 51 234;                  
   }
 }
 
@@ -91,222 +80,201 @@
   body {
     @apply bg-background text-foreground;
     font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
-    font-optical-sizing: auto;
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+    background: var(--gradient-background);
+    min-height: 100vh;
   }
 }
 
-/* Binance Component System */
+/* ASTRA Component System */
 
-/* Binance Cards */
-.binance-card {
-  @apply relative overflow-hidden rounded-lg bg-card border border-border/10;
+/* ASTRA Cards */
+.astra-card {
+  @apply relative overflow-hidden rounded-2xl border;
+  background: rgba(30, 25, 60, 0.6);
+  border: 1px solid rgba(147, 51, 234, 0.2);
   backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
-.binance-card:hover {
+.astra-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 20px 40px rgba(240, 185, 11, 0.15);
+  border-color: rgba(147, 51, 234, 0.4);
+  box-shadow: 0 20px 40px rgba(147, 51, 234, 0.2);
 }
 
-.binance-card-premium {
+.astra-card-premium {
   background: linear-gradient(135deg, 
-    rgba(240, 185, 11, 0.1) 0%, 
-    rgba(240, 185, 11, 0.05) 100%);
-  border: 1px solid rgba(240, 185, 11, 0.2);
+    rgba(147, 51, 234, 0.15) 0%, 
+    rgba(59, 130, 246, 0.15) 100%);
+  border: 1px solid rgba(147, 51, 234, 0.3);
 }
 
-/* Binance Buttons */
-.btn-binance {
-  @apply relative overflow-hidden rounded-md px-6 py-3 font-semibold transition-all duration-300;
-  background: var(--gradient-binance);
-  color: rgb(var(--binance-dark));
+/* ASTRA Buttons */
+.btn-astra {
+  @apply relative overflow-hidden rounded-xl px-6 py-3 font-semibold transition-all duration-300;
+  background: var(--gradient-astra);
+  color: white;
   border: none;
   cursor: pointer;
-  box-shadow: 0 4px 15px rgba(240, 185, 11, 0.3);
-  transform: translateY(0);
+  box-shadow: 0 8px 25px rgba(147, 51, 234, 0.3);
 }
 
-.btn-binance:hover {
+.btn-astra:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(240, 185, 11, 0.4);
+  box-shadow: 0 12px 35px rgba(147, 51, 234, 0.4);
 }
 
-.btn-binance:active {
-  transform: translateY(0);
-}
-
-.btn-binance-outline {
-  @apply relative overflow-hidden rounded-md px-6 py-3 font-semibold transition-all duration-300;
+.btn-astra-outline {
+  @apply relative overflow-hidden rounded-xl px-6 py-3 font-semibold transition-all duration-300;
   background: transparent;
-  color: rgb(var(--binance-yellow));
-  border: 2px solid rgb(var(--binance-yellow));
+  color: rgb(147, 51, 234);
+  border: 2px solid rgb(147, 51, 234);
   cursor: pointer;
 }
 
-.btn-binance-outline:hover {
-  background: rgb(var(--binance-yellow));
-  color: rgb(var(--binance-dark));
+.btn-astra-outline:hover {
+  background: rgb(147, 51, 234);
+  color: white;
 }
 
-.btn-success {
-  @apply relative overflow-hidden rounded-md px-6 py-3 font-semibold transition-all duration-300;
-  background: var(--gradient-success);
+.btn-success-astra {
+  @apply relative overflow-hidden rounded-xl px-6 py-3 font-semibold transition-all duration-300;
+  background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
   color: white;
   border: none;
 }
 
-.btn-danger {
-  @apply relative overflow-hidden rounded-md px-6 py-3 font-semibold transition-all duration-300;
-  background: var(--gradient-danger);
-  color: white;
-  border: none;
-}
-
-/* Binance Glass Morphism */
-.glass-binance {
-  background: var(--glass-bg);
+/* ASTRA Glass Elements */
+.glass-astra {
+  background: rgba(30, 25, 60, 0.4);
   backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--glass-shadow);
+  border: 1px solid rgba(147, 51, 234, 0.2);
   border-radius: 1rem;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.glass-binance:hover {
+.glass-astra:hover {
   transform: translateY(-2px);
-  box-shadow: 0 20px 40px rgba(240, 185, 11, 0.2);
+  border-color: rgba(147, 51, 234, 0.4);
+  box-shadow: 0 20px 40px rgba(147, 51, 234, 0.15);
 }
 
-/* Binance Inputs */
-.input-binance {
-  @apply w-full px-4 py-3 rounded-md border border-border bg-card text-foreground placeholder-muted-foreground;
+/* ASTRA Inputs */
+.input-astra {
+  @apply w-full px-4 py-3 rounded-xl border bg-card/20 text-foreground placeholder-muted-foreground;
+  background: rgba(30, 25, 60, 0.6);
+  border: 1px solid rgba(147, 51, 234, 0.2);
+  backdrop-filter: blur(10px);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.input-binance:focus {
-  @apply outline-none ring-2 ring-primary/50;
-  border-color: rgb(var(--binance-yellow));
-  box-shadow: 0 0 0 3px rgba(240, 185, 11, 0.1);
+.input-astra:focus {
+  @apply outline-none;
+  border-color: rgb(147, 51, 234);
+  box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.1);
 }
 
-/* Binance Property Cards */
-.property-card-binance {
-  @apply relative overflow-hidden rounded-xl bg-card border border-border/10;
+/* ASTRA Property Cards */
+.property-card-astra {
+  @apply relative overflow-hidden rounded-2xl;
+  background: rgba(30, 25, 60, 0.6);
+  border: 1px solid rgba(147, 51, 234, 0.2);
   backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
   transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
 }
 
-.property-card-binance:hover {
-  transform: translateY(-8px) rotateX(2deg) rotateY(2deg);
-  box-shadow: 0 25px 60px rgba(240, 185, 11, 0.2);
+.property-card-astra:hover {
+  transform: translateY(-8px);
+  border-color: rgba(147, 51, 234, 0.4);
+  box-shadow: 0 25px 60px rgba(147, 51, 234, 0.25);
 }
 
-.property-card-binance::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(135deg, rgba(240, 185, 11, 0.1), transparent);
-  opacity: 0;
-  transition: opacity 0.3s;
-  pointer-events: none;
-}
-
-.property-card-binance:hover::after {
-  opacity: 1;
-}
-
-/* Binance Search Panel */
-.search-panel-binance {
-  @apply relative rounded-2xl p-8 bg-card/80 border border-border/10;
+/* ASTRA Search Panel */
+.search-panel-astra {
+  @apply relative rounded-2xl p-8;
+  background: rgba(30, 25, 60, 0.8);
+  border: 1px solid rgba(147, 51, 234, 0.2);
   backdrop-filter: blur(30px) saturate(180%);
-  -webkit-backdrop-filter: blur(30px) saturate(180%);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 20px 60px rgba(147, 51, 234, 0.2);
 }
 
-/* Binance Navigation */
-.nav-binance {
+/* ASTRA Navigation */
+.nav-astra {
   @apply fixed top-0 left-0 right-0 z-50 px-6 py-4;
-  background: rgba(var(--background), 0.9);
+  background: rgba(20, 16, 41, 0.9);
   backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border-bottom: 1px solid rgba(var(--border), 0.1);
+  border-bottom: 1px solid rgba(147, 51, 234, 0.2);
 }
 
-/* Binance Typography */
-.text-gradient-binance {
-  background: var(--gradient-binance);
+/* ASTRA Typography */
+.text-gradient-astra {
+  background: var(--gradient-astra);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   font-weight: 700;
 }
 
-.heading-binance {
-  @apply font-bold text-gradient-binance;
+.heading-astra {
+  @apply font-bold text-gradient-astra;
   font-family: "Space Grotesk", sans-serif;
   letter-spacing: -0.02em;
   line-height: 1.2;
 }
 
-/* Binance Status Indicators */
-.status-binance {
+/* ASTRA Status Indicators */
+.status-astra {
   @apply inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium;
 }
 
-.status-verified {
-  @apply bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400;
+.status-verified-astra {
+  background: rgba(6, 182, 212, 0.2);
+  color: rgb(6, 182, 212);
+  border: 1px solid rgba(6, 182, 212, 0.3);
 }
 
-.status-pending {
-  @apply bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400;
+.status-pending-astra {
+  background: rgba(251, 191, 36, 0.2);
+  color: rgb(251, 191, 36);
+  border: 1px solid rgba(251, 191, 36, 0.3);
 }
 
-.status-danger {
-  @apply bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400;
+.status-danger-astra {
+  background: rgba(239, 68, 68, 0.2);
+  color: rgb(239, 68, 68);
+  border: 1px solid rgba(239, 68, 68, 0.3);
 }
 
-/* Binance Animations */
-@keyframes binanceFloat {
+/* ASTRA Animations */
+@keyframes astraFloat {
   0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-8px); }
+  50% { transform: translateY(-10px); }
 }
 
-@keyframes binanceGlow {
+@keyframes astraGlow {
   0%, 100% {
-    box-shadow: 0 0 20px rgba(240, 185, 11, 0.3);
+    box-shadow: 0 0 20px rgba(147, 51, 234, 0.3);
   }
   50% {
-    box-shadow: 0 0 30px rgba(240, 185, 11, 0.6);
+    box-shadow: 0 0 40px rgba(147, 51, 234, 0.6);
   }
 }
 
-@keyframes binanceSlideIn {
+@keyframes astraSlideIn {
   from {
     opacity: 0;
-    transform: translateX(-30px);
+    transform: translateY(30px);
   }
   to {
     opacity: 1;
-    transform: translateX(0);
+    transform: translateY(0);
   }
 }
 
-@keyframes binanceScaleIn {
+@keyframes astraScaleIn {
   from {
     opacity: 0;
-    transform: scale(0.9);
+    transform: scale(0.95);
   }
   to {
     opacity: 1;
@@ -314,132 +282,76 @@
   }
 }
 
-.animate-binance-float {
-  animation: binanceFloat 6s ease-in-out infinite;
+.animate-astra-float {
+  animation: astraFloat 6s ease-in-out infinite;
 }
 
-.animate-binance-glow {
-  animation: binanceGlow 2s ease-in-out infinite;
+.animate-astra-glow {
+  animation: astraGlow 3s ease-in-out infinite;
 }
 
-.animate-binance-slide-in {
-  animation: binanceSlideIn 0.6s ease-out forwards;
+.animate-astra-slide-in {
+  animation: astraSlideIn 0.8s ease-out forwards;
 }
 
-.animate-binance-scale-in {
-  animation: binanceScaleIn 0.5s ease-out forwards;
+.animate-astra-scale-in {
+  animation: astraScaleIn 0.6s ease-out forwards;
 }
 
-/* Stagger Animation System */
-.stagger-binance > *:nth-child(1) { animation-delay: 0.1s; }
-.stagger-binance > *:nth-child(2) { animation-delay: 0.2s; }
-.stagger-binance > *:nth-child(3) { animation-delay: 0.3s; }
-.stagger-binance > *:nth-child(4) { animation-delay: 0.4s; }
-.stagger-binance > *:nth-child(5) { animation-delay: 0.5s; }
-.stagger-binance > *:nth-child(6) { animation-delay: 0.6s; }
+/* ASTRA Mesh Background */
+.mesh-gradient-astra {
+  background: 
+    radial-gradient(at 40% 20%, rgba(147, 51, 234, 0.4) 0px, transparent 50%),
+    radial-gradient(at 80% 0%, rgba(59, 130, 246, 0.3) 0px, transparent 50%),
+    radial-gradient(at 40% 50%, rgba(6, 182, 212, 0.2) 0px, transparent 50%),
+    radial-gradient(at 80% 50%, rgba(147, 51, 234, 0.2) 0px, transparent 50%),
+    radial-gradient(at 40% 100%, rgba(59, 130, 246, 0.3) 0px, transparent 50%),
+    radial-gradient(at 80% 100%, rgba(6, 182, 212, 0.2) 0px, transparent 50%),
+    linear-gradient(135deg, #141025 0%, #1e1b4b 50%, #312e81 100%);
+  background-size: 300% 300%;
+  animation: meshMoveAstra 20s ease infinite;
+}
 
-/* Binance Scrollbar */
+@keyframes meshMoveAstra {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* ASTRA Utility Classes */
+.backdrop-astra {
+  backdrop-filter: blur(20px) saturate(180%);
+}
+
+.text-shadow-astra {
+  text-shadow: 0 2px 8px rgba(147, 51, 234, 0.3);
+}
+
+.border-gradient-astra {
+  border: 1px solid transparent;
+  background: linear-gradient(var(--background), var(--background)) padding-box,
+              var(--gradient-astra) border-box;
+}
+
+/* ASTRA Scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: rgba(30, 25, 60, 0.3);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--gradient-binance);
-  border-radius: 3px;
+  background: var(--gradient-astra);
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(135deg, #f8d12f, #f0b90b);
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-  .binance-card:hover {
-    transform: translateY(-2px);
-  }
-  
-  .property-card-binance:hover {
-    transform: translateY(-4px);
-  }
-  
-  .search-panel-binance {
-    @apply p-6;
-  }
-}
-
-/* Focus States */
-.focus-binance {
-  @apply outline-none ring-2 ring-primary/50 ring-offset-2 ring-offset-background;
+  background: linear-gradient(135deg, #a855f7, #3b82f6);
 }
 
 /* Selection */
 ::selection {
-  background: rgba(240, 185, 11, 0.3);
-  color: rgb(var(--foreground));
-}
-
-/* Loading States */
-.skeleton-binance {
-  background: linear-gradient(90deg, 
-    rgba(240, 185, 11, 0.1) 25%, 
-    rgba(240, 185, 11, 0.2) 50%, 
-    rgba(240, 185, 11, 0.1) 75%
-  );
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
-}
-
-@keyframes shimmer {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
-}
-
-/* Micro Interactions */
-.micro-bounce-binance {
-  transition: transform 0.1s ease;
-}
-
-.micro-bounce-binance:active {
-  transform: scale(0.98);
-}
-
-/* Utility Classes */
-.backdrop-binance {
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-}
-
-.text-shadow-binance {
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.border-gradient-binance {
-  border: 1px solid transparent;
-  background: linear-gradient(var(--background), var(--background)) padding-box,
-              var(--gradient-binance) border-box;
-}
-
-/* Mesh Gradient Background */
-.mesh-gradient-binance {
-  background: radial-gradient(at 40% 20%, rgba(240, 185, 11, 0.3) 0px, transparent 50%),
-              radial-gradient(at 80% 0%, rgba(14, 203, 129, 0.2) 0px, transparent 50%),
-              radial-gradient(at 40% 50%, rgba(240, 185, 11, 0.1) 0px, transparent 50%),
-              radial-gradient(at 80% 50%, rgba(246, 70, 93, 0.1) 0px, transparent 50%),
-              radial-gradient(at 40% 100%, rgba(240, 185, 11, 0.2) 0px, transparent 50%),
-              radial-gradient(at 80% 100%, rgba(14, 203, 129, 0.1) 0px, transparent 50%);
-  background-size: 300% 300%;
-  animation: meshMoveBinance 20s ease infinite;
-}
-
-@keyframes meshMoveBinance {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
+  background: rgba(147, 51, 234, 0.3);
+  color: rgb(248, 250, 252);
 }
