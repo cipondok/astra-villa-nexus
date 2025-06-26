@@ -19,9 +19,6 @@ const config: Config = {
       },
     },
     extend: {
-      fontFamily: {
-        orbitron: ['Orbitron', 'sans-serif'],
-      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -56,17 +53,20 @@ const config: Config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        // Samsung Blue Titanium Color Scheme
-        samsung: {
-          blue: "hsl(var(--samsung-blue-primary))",      // #0066FF
-          'blue-light': "hsl(var(--samsung-blue-light))", // #4285FF
-          'blue-dark': "hsl(var(--samsung-blue-dark))",   // #2C5AA0
-        },
-        titanium: {
-          light: "hsl(var(--titanium-light))",           // #D1D9E6
-          medium: "hsl(var(--titanium-medium))",         // #9DB2CC
-          dark: "hsl(var(--titanium-dark))",             // #3D4852
-          white: "hsl(var(--titanium-white))",           // #F5F6F8
+        // ASTRA Token Theme Colors
+        'custom-blue': '#3b82f6',
+        'custom-lightBlue': '#60a5fa',
+        'custom-orange': '#f97316',
+        'custom-cream': '#fef3c7',
+        'astra': {
+          'dark': '#0f1419',
+          'slate': '#1e293b',
+          'purple': '#7c3aed',
+          'blue': '#3b82f6',
+          'cyan': '#06b6d4',
+          'green': '#10b981',
+          'orange': '#f59e0b',
+          'pink': '#ec4899',
         },
       },
       borderRadius: {
@@ -83,39 +83,50 @@ const config: Config = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
-        "pulse-glow": {
+        "fade-in": {
+          "0%": {
+            opacity: "0",
+            transform: "translateY(10px)"
+          },
+          "100%": {
+            opacity: "1",
+            transform: "translateY(0)"
+          }
+        },
+        "scale-in": {
+          "0%": {
+            transform: "scale(0.95)",
+            opacity: "0"
+          },
+          "100%": {
+            transform: "scale(1)",
+            opacity: "1"
+          }
+        },
+        "glow": {
           "0%, 100%": {
-            textShadow: "0 0 8px #0066FF, 0 0 12px #4285FF",
+            boxShadow: "0 0 20px rgba(139, 92, 246, 0.3)"
           },
           "50%": {
-            textShadow: "0 0 16px #4285FF, 0 0 32px #0066FF",
-          },
-        },
-        "dot-flash": {
-          "0%": { opacity: "0.2" },
-          "50%": { opacity: "1" },
-          "100%": { opacity: "0.2" },
-        },
-        "samsung-gradient": {
-          "0%, 100%": {
-            backgroundPosition: "0% 50%",
-          },
-          "50%": {
-            backgroundPosition: "100% 50%",
-          },
-        },
+            boxShadow: "0 0 30px rgba(139, 92, 246, 0.6)"
+          }
+        }
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        "pulse-glow": "pulse-glow 3s ease-in-out infinite",
-        "dot-flash": "dot-flash 1.2s infinite",
-        "samsung-gradient": "samsung-gradient 3s ease infinite",
+        "fade-in": "fade-in 0.3s ease-out",
+        "scale-in": "scale-in 0.2s ease-out",
+        "glow": "glow 2s ease-in-out infinite",
+      },
+      backdropBlur: {
+        xs: '2px',
       },
       backgroundImage: {
-        'samsung-gradient': 'linear-gradient(135deg, hsl(var(--samsung-blue-primary)), hsl(var(--samsung-blue-light)))',
-        'titanium-gradient': 'linear-gradient(135deg, hsl(var(--titanium-light)), hsl(var(--titanium-white)))',
-      },
+        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+        'astra-gradient': 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        'neural-gradient': 'linear-gradient(45deg, #8B5CF6, #06B6D4, #10B981)',
+      }
     },
   },
   plugins: [require("tailwindcss-animate")],

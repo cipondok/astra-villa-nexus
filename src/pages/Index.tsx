@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Navigation from "@/components/Navigation";
@@ -165,21 +166,47 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-blue-900">
       <Navigation />
       
-      {/* Hero Section with New Color Scheme */}
-      <section className="relative bg-gradient-to-br from-custom-blue via-custom-lightBlue to-custom-orange text-white py-8 sm:py-12 lg:py-16 px-2 sm:px-4">
-        <div className="absolute inset-0 bg-gradient-to-t from-custom-cream/10 to-transparent"></div>
+      {/* Hero Section with ASTRA Token Design */}
+      <section className="relative py-8 sm:py-12 lg:py-16 px-2 sm:px-4">
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
         <div className="container mx-auto text-center relative z-10">
-          <h1 className="text-2xl sm:text-3xl lg:text-5xl font-bold mb-4 sm:mb-6 animate-fade-in px-2">
-            {language === "en" ? "Find Your Dream Property" : "Temukan Properti Impian Anda"}
-          </h1>
-          <p className="text-base sm:text-lg lg:text-xl mb-6 sm:mb-8 text-white/90 px-2">
-            {language === "en" 
-              ? "Discover the perfect home with our advanced search technology" 
-              : "Temukan rumah sempurna dengan teknologi pencarian canggih kami"}
-          </p>
+          {/* ASTRA Villa Logo/Brand */}
+          <div className="flex items-center justify-center mb-6">
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-r from-purple-600 to-blue-600 flex items-center justify-center mr-4">
+              <span className="text-white font-bold text-2xl">A</span>
+            </div>
+            <div className="text-left">
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-2">
+                ASTRA Villa
+              </h1>
+              <p className="text-purple-300 text-sm sm:text-base">
+                Your Gateway to Luxury Property Investment
+              </p>
+            </div>
+          </div>
+
+          {/* Stats Cards */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8 max-w-4xl mx-auto">
+            <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-4 border border-purple-500/20">
+              <div className="text-purple-400 text-sm mb-1">Properties</div>
+              <div className="text-white text-xl font-bold">2,500+</div>
+            </div>
+            <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-4 border border-blue-500/20">
+              <div className="text-blue-400 text-sm mb-1">Active Users</div>
+              <div className="text-white text-xl font-bold">12,547</div>
+            </div>
+            <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-4 border border-green-500/20">
+              <div className="text-green-400 text-sm mb-1">Success Rate</div>
+              <div className="text-white text-xl font-bold">98.5%</div>
+            </div>
+            <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-4 border border-orange-500/20">
+              <div className="text-orange-400 text-sm mb-1">Satisfaction</div>
+              <div className="text-white text-xl font-bold">15.8%</div>
+            </div>
+          </div>
           
           <div className="max-w-5xl mx-auto">
             <EnhancedModernSearchPanel
@@ -193,9 +220,9 @@ const Index = () => {
 
       {/* Error Message */}
       {searchError && (
-        <section className="py-4 bg-red-50">
+        <section className="py-4 bg-red-900/50">
           <div className="container mx-auto px-4">
-            <div className="text-center text-red-600 font-medium">
+            <div className="text-center text-red-300 font-medium">
               {searchError}
             </div>
           </div>
@@ -203,7 +230,7 @@ const Index = () => {
       )}
 
       {/* Property Listings Section */}
-      <div className="px-2 sm:px-0">
+      <div className="px-2 sm:px-0 bg-slate-900/50">
         <PropertyListingsSection
           language={language}
           searchResults={searchResults}

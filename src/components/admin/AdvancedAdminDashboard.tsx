@@ -1,9 +1,8 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BarChart3, Activity, Globe, Users, FileText, TrendingUp, Home, Settings, Building, Store, Shield, Loader2 } from "lucide-react";
+import { BarChart3, Activity, Globe, Users, FileText, TrendingUp, Home, Settings, Building, Store, Shield, Loader2, Crown, Zap } from "lucide-react";
 import AdminOverview from './AdminOverview';
 import UserManagement from './UserManagement';
 import PropertyManagement from './PropertyManagement';
@@ -49,9 +48,9 @@ const AdvancedAdminDashboard = () => {
   const tabs = [
     { 
       id: 'overview', 
-      label: 'Overview', 
-      icon: Home, 
-      description: 'Dashboard overview and quick stats' 
+      label: 'Analytics', 
+      icon: BarChart3, 
+      description: 'Real-time insights and performance metrics' 
     },
     { 
       id: 'users', 
@@ -73,57 +72,132 @@ const AdvancedAdminDashboard = () => {
     },
     { 
       id: 'system-settings', 
-      label: 'System Settings', 
+      label: 'System', 
       icon: Settings,
       description: 'System configuration and settings'
     },
     { 
       id: 'loading-page', 
-      label: 'Loading Page', 
+      label: 'Loading', 
       icon: Loader2,
       description: 'Customize loading screen appearance'
     },
     { 
       id: 'analytics', 
-      label: 'Analytics', 
-      icon: BarChart3,
-      description: 'All analytics, reports and monitoring'
+      label: 'Monitor', 
+      icon: Activity,
+      description: 'System monitoring and health'
     }
   ];
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">Advanced Admin Dashboard</h1>
-          <p className="text-muted-foreground">
-            Comprehensive system management and analytics
-          </p>
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-blue-900">
+      <div className="container mx-auto px-4 py-6 space-y-6">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-r from-purple-600 to-blue-600 flex items-center justify-center">
+              <Crown className="h-6 w-6 text-white" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold text-white">ASTRA AI Control Center</h1>
+              <p className="text-purple-300">
+                Advanced System Monitoring & Management
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center space-x-3">
+            <div className="text-right">
+              <div className="text-sm text-gray-300">Welcome back,</div>
+              <div className="text-cyan-400 font-medium">admin@astra.com</div>
+            </div>
+            <Button variant="outline" className="bg-slate-800/50 border-purple-500/20 text-white hover:bg-slate-700/50">
+              Sign Out
+            </Button>
+          </div>
         </div>
-      </div>
-      
-      <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-3 lg:grid-cols-7 bg-muted rounded-lg p-1">
-          {tabs.map((tab) => (
-            <TabsTrigger
-              key={tab.id}
-              value={tab.id}
-              className={`
-                flex items-center justify-center gap-2 px-3 py-2 rounded-md transition-all
-                data-[state=active]:bg-background data-[state=active]:text-foreground
-                data-[state=active]:shadow-sm
-              `}
-            >
-              <tab.icon className="h-4 w-4" />
-              <span className="hidden sm:inline text-sm">{tab.label}</span>
-            </TabsTrigger>
-          ))}
-        </TabsList>
+
+        {/* Stats Overview */}
+        <div className="grid grid-cols-2 lg:grid-cols-6 gap-4">
+          <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-4 border border-cyan-500/20">
+            <div className="flex items-center justify-between mb-2">
+              <div className="text-cyan-400 text-sm">Total Users</div>
+              <Users className="h-4 w-4 text-cyan-400" />
+            </div>
+            <div className="text-white text-2xl font-bold">12,547</div>
+            <div className="text-green-400 text-xs">+18.5% from last month</div>
+          </div>
+          
+          <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-4 border border-green-500/20">
+            <div className="flex items-center justify-between mb-2">
+              <div className="text-green-400 text-sm">Active Users</div>
+              <Activity className="h-4 w-4 text-green-400" />
+            </div>
+            <div className="text-white text-2xl font-bold">8,234</div>
+            <div className="text-green-400 text-xs">Currently online</div>
+          </div>
+
+          <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-4 border border-orange-500/20">
+            <div className="flex items-center justify-between mb-2">
+              <div className="text-orange-400 text-sm">Unresolved Errors</div>
+              <Shield className="h-4 w-4 text-orange-400" />
+            </div>
+            <div className="text-white text-2xl font-bold">0</div>
+            <div className="text-green-400 text-xs">All systems operational</div>
+          </div>
+
+          <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-4 border border-blue-500/20">
+            <div className="flex items-center justify-between mb-2">
+              <div className="text-blue-400 text-sm">Total Transfers</div>
+              <TrendingUp className="h-4 w-4 text-blue-400" />
+            </div>
+            <div className="text-white text-2xl font-bold">$45,789</div>
+            <div className="text-green-400 text-xs">+12.3% this week</div>
+          </div>
+
+          <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-4 border border-purple-500/20">
+            <div className="flex items-center justify-between mb-2">
+              <div className="text-purple-400 text-sm">System Health</div>
+              <Zap className="h-4 w-4 text-purple-400" />
+            </div>
+            <div className="text-white text-2xl font-bold">98.5%</div>
+            <div className="text-green-400 text-xs">Excellent performance</div>
+          </div>
+
+          <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-4 border border-yellow-500/20">
+            <div className="flex items-center justify-between mb-2">
+              <div className="text-yellow-400 text-sm">AI Status</div>
+              <Activity className="h-4 w-4 text-yellow-400" />
+            </div>
+            <div className="text-white text-lg font-bold">Online</div>
+            <div className="inline-block w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+          </div>
+        </div>
         
-        <div className="mt-6">
-          {renderTabContent()}
-        </div>
-      </Tabs>
+        <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-6">
+          <TabsList className="grid w-full grid-cols-3 lg:grid-cols-7 bg-slate-800/50 rounded-2xl p-2 border border-purple-500/20">
+            {tabs.map((tab) => (
+              <TabsTrigger
+                key={tab.id}
+                value={tab.id}
+                className={`
+                  flex items-center justify-center gap-2 px-3 py-3 rounded-xl transition-all
+                  data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600 
+                  data-[state=active]:text-white data-[state=active]:shadow-lg
+                  text-gray-400 hover:text-white hover:bg-slate-700/50
+                `}
+              >
+                <tab.icon className="h-4 w-4" />
+                <span className="hidden sm:inline text-sm font-medium">{tab.label}</span>
+              </TabsTrigger>
+            ))}
+          </TabsList>
+          
+          <div className="mt-6 bg-slate-900/50 rounded-2xl border border-slate-700/50 p-6">
+            {renderTabContent()}
+          </div>
+        </Tabs>
+      </div>
     </div>
   );
 };
