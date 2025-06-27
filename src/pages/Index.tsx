@@ -136,24 +136,27 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-binance-black">
       <Navigation />
       
       {/* Hero Section with Search */}
-      <section className="relative py-20 px-4">
+      <section className="relative py-20 px-4 bg-gradient-to-br from-binance-black via-binance-dark-gray to-binance-gray">
         <div className="container mx-auto text-center">
-          {/* Simple Title */}
+          {/* Enhanced Title */}
           <div className="mb-12">
-            <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-4">
+            <h1 className="text-4xl md:text-6xl font-bold text-binance-white mb-4 glow-gold">
               Find Your Perfect Property
+              <span className="block text-2xl md:text-3xl text-binance-orange font-normal mt-2">
+                Premium Real Estate Platform
+              </span>
             </h1>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-xl text-binance-white/80 max-w-2xl mx-auto">
               Discover amazing properties with our advanced search platform
             </p>
           </div>
           
           {/* Search Panel */}
-          <div className="max-w-4xl mx-auto">
+          <div className="max-w-5xl mx-auto">
             <EnhancedModernSearchPanel
               language={language}
               onSearch={handleSearch}
@@ -164,39 +167,36 @@ const Index = () => {
       </section>
 
       {/* Quick Action Buttons */}
-      <section className="py-12">
+      <section className="py-12 bg-binance-dark-gray">
         <div className="container mx-auto px-4">
           <div className="flex flex-wrap justify-center gap-4">
             <Button 
               onClick={() => handleSearch({ listingType: 'buy' })}
-              className="flex items-center gap-2"
+              className="btn btn-primary flex items-center gap-2 hover:scale-105 transition-all duration-300"
             >
               <Home className="h-5 w-5" />
-              Buy Properties
+              💰 Buy Properties
             </Button>
             <Button 
-              variant="outline"
               onClick={() => handleSearch({ listingType: 'rent' })}
-              className="flex items-center gap-2"
+              className="btn btn-outline flex items-center gap-2 hover:scale-105 transition-all duration-300"
             >
               <Key className="h-5 w-5" />
-              Rent Properties
+              🏠 Rent Properties
             </Button>
             <Button 
-              variant="outline"
               onClick={() => handleSearch({ development_status: 'pre_launching' })}
-              className="flex items-center gap-2"
+              className="btn btn-outline flex items-center gap-2 hover:scale-105 transition-all duration-300"
             >
               <Rocket className="h-5 w-5" />
-              Pre-Launch
+              🚀 Pre-Launch
             </Button>
             <Button 
-              variant="outline"
               onClick={() => handleSearch({ development_status: 'new_project' })}
-              className="flex items-center gap-2"
+              className="btn btn-outline flex items-center gap-2 hover:scale-105 transition-all duration-300"
             >
               <Building className="h-5 w-5" />
-              New Projects
+              🏗️ New Projects
             </Button>
           </div>
         </div>
@@ -206,15 +206,15 @@ const Index = () => {
       {searchError && (
         <section className="py-8">
           <div className="container mx-auto px-4">
-            <div className="bg-destructive/10 border border-destructive/20 text-destructive text-center p-6 rounded-lg">
-              {searchError}
+            <div className="enhanced-card bg-binance-red/20 border border-binance-red/40 text-binance-red text-center p-6 rounded-lg glow-gold">
+              ⚠️ {searchError}
             </div>
           </div>
         </section>
       )}
 
       {/* Property Listings */}
-      <div className="px-4">
+      <div className="px-4 bg-binance-black">
         <PropertyListingsSection
           language={language}
           searchResults={hasSearched ? searchResults : featuredProperties}

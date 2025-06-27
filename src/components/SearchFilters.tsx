@@ -2,9 +2,8 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { Search, MapPin, Home, Bed, Bath, Car, Wifi, Shield, Activity } from "lucide-react";
+import { Search, MapPin } from "lucide-react";
 import { useState } from "react";
 
 interface SearchFiltersProps {
@@ -32,7 +31,7 @@ const SearchFilters = ({ language, onSearch }: SearchFiltersProps) => {
       price: "Price Range",
       bedrooms: "Bedrooms",
       bathrooms: "Bathrooms",
-      searchBtn: "Search Properties",
+      searchBtn: "🔍 Search Properties",
       forSale: "For Sale",
       forRent: "For Rent",
       allTypes: "All Types",
@@ -49,7 +48,7 @@ const SearchFilters = ({ language, onSearch }: SearchFiltersProps) => {
       price: "Range Harga",
       bedrooms: "Kamar Tidur",
       bathrooms: "Kamar Mandi",
-      searchBtn: "Cari Properti",
+      searchBtn: "🔍 Cari Properti",
       forSale: "Dijual",
       forRent: "Disewa",
       allTypes: "Semua Jenis",
@@ -68,13 +67,13 @@ const SearchFilters = ({ language, onSearch }: SearchFiltersProps) => {
   ];
 
   const propertyTypes = [
-    { value: "house", label: language === "en" ? "House" : "Rumah" },
-    { value: "apartment", label: language === "en" ? "Apartment" : "Apartemen" },
-    { value: "villa", label: "Villa" },
-    { value: "townhouse", label: "Townhouse" },
-    { value: "condo", label: "Condo" },
-    { value: "land", label: language === "en" ? "Land" : "Tanah" },
-    { value: "commercial", label: language === "en" ? "Commercial" : "Komersial" }
+    { value: "house", label: language === "en" ? "🏠 House" : "🏠 Rumah" },
+    { value: "apartment", label: language === "en" ? "🏢 Apartment" : "🏢 Apartemen" },
+    { value: "villa", label: "🏖️ Villa" },
+    { value: "townhouse", label: "🏘️ Townhouse" },
+    { value: "condo", label: "🌆 Condo" },
+    { value: "land", label: language === "en" ? "🌿 Land" : "🌿 Tanah" },
+    { value: "commercial", label: language === "en" ? "🏬 Commercial" : "🏬 Komersial" }
   ];
 
   const handleSearch = () => {
@@ -94,16 +93,16 @@ const SearchFilters = ({ language, onSearch }: SearchFiltersProps) => {
   };
 
   return (
-    <Card className="border-0 shadow-xl bg-card/50 backdrop-blur-sm">
+    <Card className="enhanced-card glow-gold border-binance-orange/30 backdrop-blur-lg">
       <CardContent className="p-8">
         {/* Main Search Bar */}
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
           <div className="lg:col-span-2">
             <div className="relative">
-              <Search className="absolute left-4 top-4 h-5 w-5 text-muted-foreground" />
+              <Search className="absolute left-4 top-4 h-5 w-5 text-binance-orange" />
               <Input
                 placeholder={currentText.search}
-                className="pl-12 h-12 border-border/50 bg-background/50"
+                className="enhanced-input pl-12 h-12 bg-binance-gray border-binance-light-gray text-binance-white placeholder:text-binance-light-gray"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -111,32 +110,32 @@ const SearchFilters = ({ language, onSearch }: SearchFiltersProps) => {
           </div>
           
           <Select value={selectedState} onValueChange={setSelectedState}>
-            <SelectTrigger className="h-12 border-border/50 bg-background/50">
-              <SelectValue placeholder={currentText.state} />
+            <SelectTrigger className="h-12 bg-binance-gray border-binance-light-gray text-binance-white">
+              <SelectValue placeholder={`🌏 ${currentText.state}`} />
             </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="">{currentText.state}</SelectItem>
+            <SelectContent className="bg-binance-dark-gray border-binance-gray">
+              <SelectItem value="" className="text-binance-white hover:bg-binance-gray">{currentText.state}</SelectItem>
               {indonesianStates.map((state) => (
-                <SelectItem key={state} value={state}>{state}</SelectItem>
+                <SelectItem key={state} value={state} className="text-binance-white hover:bg-binance-gray">{state}</SelectItem>
               ))}
             </SelectContent>
           </Select>
           
           <Select value={propertyType} onValueChange={setPropertyType}>
-            <SelectTrigger className="h-12 border-border/50 bg-background/50">
-              <SelectValue placeholder={currentText.propertyType} />
+            <SelectTrigger className="h-12 bg-binance-gray border-binance-light-gray text-binance-white">
+              <SelectValue placeholder={`🏠 ${currentText.propertyType}`} />
             </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="">{currentText.allTypes}</SelectItem>
+            <SelectContent className="bg-binance-dark-gray border-binance-gray">
+              <SelectItem value="" className="text-binance-white hover:bg-binance-gray">{currentText.allTypes}</SelectItem>
               {propertyTypes.map((type) => (
-                <SelectItem key={type.value} value={type.value}>{type.label}</SelectItem>
+                <SelectItem key={type.value} value={type.value} className="text-binance-white hover:bg-binance-gray">{type.label}</SelectItem>
               ))}
             </SelectContent>
           </Select>
           
           <Button 
             onClick={handleSearch}
-            className="h-12 font-medium"
+            className="btn btn-primary h-12 font-bold text-lg glow-gold"
           >
             {currentText.searchBtn}
           </Button>
@@ -145,51 +144,51 @@ const SearchFilters = ({ language, onSearch }: SearchFiltersProps) => {
         {/* Advanced Filters */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <Select value={listingType} onValueChange={setListingType}>
-            <SelectTrigger className="h-10 border-border/50 bg-background/50">
-              <SelectValue placeholder={currentText.listingType} />
+            <SelectTrigger className="h-10 bg-binance-gray border-binance-light-gray text-binance-white">
+              <SelectValue placeholder={`💰 ${currentText.listingType}`} />
             </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="">{currentText.allTypes}</SelectItem>
-              <SelectItem value="sale">{currentText.forSale}</SelectItem>
-              <SelectItem value="rent">{currentText.forRent}</SelectItem>
+            <SelectContent className="bg-binance-dark-gray border-binance-gray">
+              <SelectItem value="" className="text-binance-white hover:bg-binance-gray">{currentText.allTypes}</SelectItem>
+              <SelectItem value="sale" className="text-binance-white hover:bg-binance-gray">💵 {currentText.forSale}</SelectItem>
+              <SelectItem value="rent" className="text-binance-white hover:bg-binance-gray">🏠 {currentText.forRent}</SelectItem>
             </SelectContent>
           </Select>
 
           <Select value={priceRange} onValueChange={setPriceRange}>
-            <SelectTrigger className="h-10 border-border/50 bg-background/50">
-              <SelectValue placeholder={currentText.price} />
+            <SelectTrigger className="h-10 bg-binance-gray border-binance-light-gray text-binance-white">
+              <SelectValue placeholder={`💸 ${currentText.price}`} />
             </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="">{currentText.anyPrice}</SelectItem>
-              <SelectItem value="0-1000000000">Under Rp 1B</SelectItem>
-              <SelectItem value="1000000000-5000000000">Rp 1B - 5B</SelectItem>
-              <SelectItem value="5000000000-999999999999">Rp 5B+</SelectItem>
+            <SelectContent className="bg-binance-dark-gray border-binance-gray">
+              <SelectItem value="" className="text-binance-white hover:bg-binance-gray">{currentText.anyPrice}</SelectItem>
+              <SelectItem value="0-1000000000" className="text-binance-white hover:bg-binance-gray">Under Rp 1B</SelectItem>
+              <SelectItem value="1000000000-5000000000" className="text-binance-white hover:bg-binance-gray">Rp 1B - 5B</SelectItem>
+              <SelectItem value="5000000000-999999999999" className="text-binance-white hover:bg-binance-gray">Rp 5B+</SelectItem>
             </SelectContent>
           </Select>
 
           <Select value={bedrooms} onValueChange={setBedrooms}>
-            <SelectTrigger className="h-10 border-border/50 bg-background/50">
-              <SelectValue placeholder={currentText.bedrooms} />
+            <SelectTrigger className="h-10 bg-binance-gray border-binance-light-gray text-binance-white">
+              <SelectValue placeholder={`🛏️ ${currentText.bedrooms}`} />
             </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="">{currentText.anyBedroom}</SelectItem>
-              <SelectItem value="1">1</SelectItem>
-              <SelectItem value="2">2</SelectItem>
-              <SelectItem value="3">3</SelectItem>
-              <SelectItem value="4+">4+</SelectItem>
+            <SelectContent className="bg-binance-dark-gray border-binance-gray">
+              <SelectItem value="" className="text-binance-white hover:bg-binance-gray">{currentText.anyBedroom}</SelectItem>
+              <SelectItem value="1" className="text-binance-white hover:bg-binance-gray">1</SelectItem>
+              <SelectItem value="2" className="text-binance-white hover:bg-binance-gray">2</SelectItem>
+              <SelectItem value="3" className="text-binance-white hover:bg-binance-gray">3</SelectItem>
+              <SelectItem value="4+" className="text-binance-white hover:bg-binance-gray">4+</SelectItem>
             </SelectContent>
           </Select>
 
           <Select value={bathrooms} onValueChange={setBathrooms}>
-            <SelectTrigger className="h-10 border-border/50 bg-background/50">
-              <SelectValue placeholder={currentText.bathrooms} />
+            <SelectTrigger className="h-10 bg-binance-gray border-binance-light-gray text-binance-white">
+              <SelectValue placeholder={`🚿 ${currentText.bathrooms}`} />
             </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="">{currentText.anyBathroom}</SelectItem>
-              <SelectItem value="1">1</SelectItem>
-              <SelectItem value="2">2</SelectItem>
-              <SelectItem value="3">3</SelectItem>
-              <SelectItem value="4+">4+</SelectItem>
+            <SelectContent className="bg-binance-dark-gray border-binance-gray">
+              <SelectItem value="" className="text-binance-white hover:bg-binance-gray">{currentText.anyBathroom}</SelectItem>
+              <SelectItem value="1" className="text-binance-white hover:bg-binance-gray">1</SelectItem>
+              <SelectItem value="2" className="text-binance-white hover:bg-binance-gray">2</SelectItem>
+              <SelectItem value="3" className="text-binance-white hover:bg-binance-gray">3</SelectItem>
+              <SelectItem value="4+" className="text-binance-white hover:bg-binance-gray">4+</SelectItem>
             </SelectContent>
           </Select>
         </div>
