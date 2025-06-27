@@ -1,15 +1,16 @@
-
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Navigation from "@/components/Navigation";
 import EnhancedModernSearchPanel from "@/components/EnhancedModernSearchPanel";
 import PropertyListingsSection from "@/components/PropertyListingsSection";
 import ProfessionalFooter from "@/components/ProfessionalFooter";
+import PropertySlideshow from "@/components/PropertySlideshow";
 import { useLanguage } from "@/contexts/LanguageContext";
 import ResponsiveAIChatWidget from "@/components/ai/ResponsiveAIChatWidget";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Home, Key, Building, Rocket } from "lucide-react";
+import "@/components/PropertySlideshow.css";
 
 const Index = () => {
   const { language } = useLanguage();
@@ -17,7 +18,6 @@ const Index = () => {
   const [isSearching, setIsSearching] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
-  const [activeSection, setActiveSection] = useState('featured');
 
   // Optimized featured properties query
   const { data: featuredProperties = [], isLoading: isFeaturedLoading } = useQuery({
@@ -142,7 +142,6 @@ const Index = () => {
       {/* Hero Section with Search */}
       <section className="relative py-20 px-4 bg-gradient-to-br from-binance-black via-binance-dark-gray to-binance-gray">
         <div className="container mx-auto text-center">
-          {/* Enhanced Title */}
           <div className="mb-12">
             <h1 className="text-4xl md:text-6xl font-bold text-binance-white mb-4 glow-gold">
               Find Your Perfect Property
@@ -155,7 +154,6 @@ const Index = () => {
             </p>
           </div>
           
-          {/* Search Panel */}
           <div className="max-w-5xl mx-auto">
             <EnhancedModernSearchPanel
               language={language}
@@ -199,6 +197,21 @@ const Index = () => {
               🏗️ New Projects
             </Button>
           </div>
+        </div>
+      </section>
+
+      {/* Property Slideshow */}
+      <section className="py-16 bg-binance-black">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-binance-white mb-4">
+              Featured Properties
+            </h2>
+            <p className="text-binance-white/80 text-lg">
+              Discover our handpicked selection of premium properties
+            </p>
+          </div>
+          <PropertySlideshow />
         </div>
       </section>
 
