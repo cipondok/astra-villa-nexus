@@ -1,5 +1,5 @@
 
-/* Slideshow Container */
+/* Modern Property Slideshow */
 .property-slideshow {
   position: relative;
   max-width: 1200px;
@@ -27,26 +27,33 @@
 /* Slides */
 .slideshow-track {
   display: flex;
-  gap: 25px;
+  gap: 30px;
   min-width: 100%;
 }
 
 /* Individual Slide */
 .property-slide {
   min-width: 300px;
-  background: var(--binance-dark-gray);
-  border-radius: 12px;
+  background: hsl(var(--card));
+  border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.08);
   transition: all 0.3s ease;
   scroll-snap-align: start;
-  border: 1px solid var(--binance-gray);
+  border: 1px solid hsl(var(--border));
+}
+
+.dark .property-slide {
+  box-shadow: 0 8px 25px rgba(0,0,0,0.3);
 }
 
 .property-slide:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(240, 185, 11, 0.3);
-  border-color: var(--binance-orange);
+  transform: translateY(-8px);
+  box-shadow: 0 15px 35px rgba(74, 107, 255, 0.15);
+}
+
+.dark .property-slide:hover {
+  box-shadow: 0 15px 35px rgba(91, 124, 255, 0.25);
 }
 
 /* Slide Image */
@@ -58,54 +65,53 @@
 
 /* Slide Content */
 .slide-content {
-  padding: 20px;
+  padding: 24px;
 }
 
 .slide-title {
   font-size: 18px;
   font-weight: 600;
-  margin-bottom: 5px;
-  color: var(--binance-white);
+  margin-bottom: 8px;
+  color: hsl(var(--foreground));
 }
 
 .slide-location {
   display: flex;
   align-items: center;
   font-size: 14px;
-  color: var(--binance-orange);
-  margin-bottom: 10px;
+  color: hsl(var(--primary));
+  margin-bottom: 12px;
 }
 
 .slide-location svg {
-  margin-right: 5px;
+  margin-right: 6px;
 }
 
 .slide-price {
   font-size: 20px;
   font-weight: 700;
-  color: var(--binance-orange);
-  margin-bottom: 15px;
-  text-shadow: 0 0 10px rgba(240, 185, 11, 0.3);
+  color: hsl(var(--primary));
+  margin-bottom: 16px;
 }
 
 .slide-features {
   display: flex;
-  gap: 15px;
+  gap: 12px;
 }
 
 .feature {
   display: flex;
   align-items: center;
   font-size: 14px;
-  color: var(--binance-white);
-  background: var(--binance-gray);
-  padding: 4px 8px;
-  border-radius: 4px;
+  color: hsl(var(--foreground));
+  background: hsl(var(--secondary));
+  padding: 6px 12px;
+  border-radius: 8px;
 }
 
 .feature svg {
-  margin-right: 5px;
-  color: var(--binance-orange);
+  margin-right: 4px;
+  color: hsl(var(--primary));
 }
 
 /* Navigation Arrows */
@@ -121,63 +127,75 @@
 }
 
 .slide-arrow {
-  background: var(--binance-dark-gray);
-  border: 1px solid var(--binance-orange);
-  width: 40px;
-  height: 40px;
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--primary));
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 10px rgba(240, 185, 11, 0.3);
+  box-shadow: 0 4px 15px rgba(74, 107, 255, 0.2);
   cursor: pointer;
   pointer-events: auto;
   transition: all 0.3s;
-  opacity: 0.8;
+  opacity: 0.9;
+}
+
+.dark .slide-arrow {
+  box-shadow: 0 4px 15px rgba(91, 124, 255, 0.3);
 }
 
 .slide-arrow:hover {
   opacity: 1;
   transform: scale(1.1);
-  box-shadow: 0 4px 20px rgba(240, 185, 11, 0.5);
-  background: var(--binance-orange);
+  box-shadow: 0 6px 20px rgba(74, 107, 255, 0.4);
+  background: hsl(var(--primary));
+}
+
+.dark .slide-arrow:hover {
+  box-shadow: 0 6px 20px rgba(91, 124, 255, 0.5);
 }
 
 .slide-arrow svg {
-  color: var(--binance-orange);
+  color: hsl(var(--primary));
 }
 
 .slide-arrow:hover svg {
-  color: var(--binance-black);
+  color: white;
 }
 
 /* Pagination Dots */
 .slideshow-dots {
   display: flex;
   justify-content: center;
-  gap: 8px;
-  margin-top: 20px;
+  gap: 10px;
+  margin-top: 24px;
 }
 
 .dot {
-  width: 10px;
-  height: 10px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
-  background: var(--binance-gray);
+  background: hsl(var(--muted));
   cursor: pointer;
   transition: all 0.3s;
   border: none;
 }
 
 .dot.active {
-  background: var(--binance-orange);
-  transform: scale(1.2);
-  box-shadow: 0 0 10px rgba(240, 185, 11, 0.5);
+  background: hsl(var(--primary));
+  transform: scale(1.3);
+  box-shadow: 0 0 10px rgba(74, 107, 255, 0.4);
+}
+
+.dark .dot.active {
+  box-shadow: 0 0 10px rgba(91, 124, 255, 0.5);
 }
 
 .dot:hover {
-  background: var(--binance-orange);
-  opacity: 0.7;
+  background: hsl(var(--primary));
+  opacity: 0.8;
 }
 
 /* Responsive Adjustments */
@@ -195,7 +213,7 @@
   }
   
   .slideshow-track {
-    gap: 15px;
+    gap: 20px;
   }
 }
 

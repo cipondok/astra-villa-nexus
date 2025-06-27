@@ -10,7 +10,6 @@ import ResponsiveAIChatWidget from "@/components/ai/ResponsiveAIChatWidget";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Home, Key, Building, Rocket } from "lucide-react";
-import "@/components/PropertySlideshow.css";
 
 const Index = () => {
   const { language } = useLanguage();
@@ -135,26 +134,52 @@ const Index = () => {
     await handleSearch({ query: searchTerm });
   };
 
+  // Create blockchain animation blocks
+  useEffect(() => {
+    const createBlock = () => {
+      const block = document.createElement('div');
+      block.className = 'block';
+      block.style.left = Math.random() * 100 + '%';
+      block.style.animationDelay = Math.random() * 15 + 's';
+      
+      const animation = document.querySelector('.blockchain-animation');
+      if (animation) {
+        animation.appendChild(block);
+        
+        setTimeout(() => {
+          if (block.parentNode) {
+            block.parentNode.removeChild(block);
+          }
+        }, 15000);
+      }
+    };
+
+    const interval = setInterval(createBlock, 3000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
-    <div className="min-h-screen bg-binance-black">
+    <div className="min-h-screen bg-background text-foreground">
       <Navigation />
       
-      {/* Hero Section with Search */}
-      <section className="relative py-20 px-4 bg-gradient-to-br from-binance-black via-binance-dark-gray to-binance-gray">
-        <div className="container mx-auto text-center">
-          <div className="mb-12">
-            <h1 className="text-4xl md:text-6xl font-bold text-binance-white mb-4 glow-gold">
+      {/* Hero Section with Modern Design */}
+      <section className="relative py-32 px-4 overflow-hidden">
+        <div className="blockchain-animation"></div>
+        
+        <div className="container mx-auto text-center relative z-10">
+          <div className="mb-16">
+            <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-primary via-blue-600 to-primary bg-clip-text text-transparent">
               Find Your Perfect Property
-              <span className="block text-2xl md:text-3xl text-binance-orange font-normal mt-2">
-                Premium Real Estate Platform
+              <span className="block text-2xl md:text-3xl text-muted-foreground font-normal mt-4">
+                Modern Real Estate Platform
               </span>
             </h1>
-            <p className="text-xl text-binance-white/80 max-w-2xl mx-auto">
-              Discover amazing properties with our advanced search platform
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+              Discover amazing properties with our advanced search platform powered by modern technology
             </p>
           </div>
           
-          <div className="max-w-5xl mx-auto">
+          <div className="max-w-6xl mx-auto">
             <EnhancedModernSearchPanel
               language={language}
               onSearch={handleSearch}
@@ -165,35 +190,35 @@ const Index = () => {
       </section>
 
       {/* Quick Action Buttons */}
-      <section className="py-12 bg-binance-dark-gray">
+      <section className="py-16 bg-secondary/50">
         <div className="container mx-auto px-4">
-          <div className="flex flex-wrap justify-center gap-4">
+          <div className="flex flex-wrap justify-center gap-6">
             <Button 
               onClick={() => handleSearch({ listingType: 'buy' })}
-              className="btn btn-primary flex items-center gap-2 hover:scale-105 transition-all duration-300"
+              className="btn btn-primary flex items-center gap-3 px-8 py-4 text-lg font-semibold hover:scale-105 transition-all duration-300"
             >
-              <Home className="h-5 w-5" />
+              <Home className="h-6 w-6" />
               💰 Buy Properties
             </Button>
             <Button 
               onClick={() => handleSearch({ listingType: 'rent' })}
-              className="btn btn-outline flex items-center gap-2 hover:scale-105 transition-all duration-300"
+              className="btn btn-outline flex items-center gap-3 px-8 py-4 text-lg font-semibold hover:scale-105 transition-all duration-300"
             >
-              <Key className="h-5 w-5" />
+              <Key className="h-6 w-6" />
               🏠 Rent Properties
             </Button>
             <Button 
               onClick={() => handleSearch({ development_status: 'pre_launching' })}
-              className="btn btn-outline flex items-center gap-2 hover:scale-105 transition-all duration-300"
+              className="btn btn-outline flex items-center gap-3 px-8 py-4 text-lg font-semibold hover:scale-105 transition-all duration-300"
             >
-              <Rocket className="h-5 w-5" />
+              <Rocket className="h-6 w-6" />
               🚀 Pre-Launch
             </Button>
             <Button 
               onClick={() => handleSearch({ development_status: 'new_project' })}
-              className="btn btn-outline flex items-center gap-2 hover:scale-105 transition-all duration-300"
+              className="btn btn-outline flex items-center gap-3 px-8 py-4 text-lg font-semibold hover:scale-105 transition-all duration-300"
             >
-              <Building className="h-5 w-5" />
+              <Building className="h-6 w-6" />
               🏗️ New Projects
             </Button>
           </div>
@@ -201,13 +226,13 @@ const Index = () => {
       </section>
 
       {/* Property Slideshow */}
-      <section className="py-16 bg-binance-black">
+      <section className="py-20 bg-background">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-binance-white mb-4">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-foreground">
               Featured Properties
             </h2>
-            <p className="text-binance-white/80 text-lg">
+            <p className="text-muted-foreground text-xl max-w-2xl mx-auto">
               Discover our handpicked selection of premium properties
             </p>
           </div>
@@ -219,15 +244,16 @@ const Index = () => {
       {searchError && (
         <section className="py-8">
           <div className="container mx-auto px-4">
-            <div className="enhanced-card bg-binance-red/20 border border-binance-red/40 text-binance-red text-center p-6 rounded-lg glow-gold">
-              ⚠️ {searchError}
+            <div className="enhanced-card bg-destructive/20 border border-destructive/40 text-destructive text-center p-8 rounded-2xl">
+              <div className="text-2xl mb-2">⚠️</div>
+              <div className="font-semibold">{searchError}</div>
             </div>
           </div>
         </section>
       )}
 
       {/* Property Listings */}
-      <div className="px-4 bg-binance-black">
+      <div className="px-4 bg-background">
         <PropertyListingsSection
           language={language}
           searchResults={hasSearched ? searchResults : featuredProperties}
