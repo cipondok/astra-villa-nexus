@@ -1,7 +1,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { MapPin, Bed, Bath, Square, ChevronLeft, ChevronRight } from "lucide-react";
+import { MapPin, Bed, Bath, Square, ChevronLeft, ChevronRight, Cube } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 interface Property {
@@ -17,12 +17,14 @@ interface Property {
   thumbnail_url?: string;
   city: string;
   state: string;
+  listing_type: string;
 }
 
 const PropertySlideshow = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const slideshowRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
 
   // Fetch featured properties for slideshow
   const { data: properties = [] } = useQuery({
@@ -56,20 +58,24 @@ const PropertySlideshow = () => {
   };
 
   const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % Math.max(1, properties.length - 3));
+    if (properties.length > 0) {
+      setCurrentSlide((prev) => (prev + 1) % properties.length);
+    }
   };
 
   const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + Math.max(1, properties.length - 3)) % Math.max(1, properties.length - 3));
+    if (properties.length > 0) {
+      setCurrentSlide((prev) => (prev - 1 + properties.length) % properties.length);
+    }
   };
 
-  const goToSlide = (index: number) => {
-    setCurrentSlide(index);
+  const handleViewTour = (propertyTitle: string) => {
+    alert(`Launching 3D virtual tour for: ${propertyTitle}`);
   };
 
   // Auto-scroll functionality
   useEffect(() => {
-    if (!isHovered && properties.length > 4) {
+    if (!isHovered && properties.length > 0) {
       const interval = setInterval(() => {
         nextSlide();
       }, 4000);
@@ -78,83 +84,124 @@ const PropertySlideshow = () => {
     }
   }, [isHovered, properties.length]);
 
+  // Create duplicated slides for infinite scroll effect
+  const duplicatedProperties = properties.length > 0 ? [...properties, ...properties] : [];
+
   if (properties.length === 0) {
-    return null;
+    return (
+      <div className="property-slideshow-loading">
+        <div className="text-center py-20">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading featured properties...</p>
+        </div>
+      </div>
+    );
   }
 
-  const maxSlides = Math.max(1, properties.length - 3);
-
   return (
-    <div className="property-slideshow">
-      <div 
-        className="slideshow-container"
-        ref={slideshowRef}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-      >
-        <div 
-          className="slideshow-track"
-          style={{
-            transform: `translateX(-${currentSlide * 325}px)`,
-            transition: 'transform 0.5s ease',
-            animationPlayState: isHovered ? 'paused' : 'running'
-          }}
-        >
-          {properties.map((property) => (
-            <div key={property.id} className="property-slide">
-              <img
-                src={property.thumbnail_url || property.images?.[0] || '/placeholder.svg'}
-                alt={property.title}
-                className="slide-image"
-              />
-              <div className="slide-content">
-                <h3 className="slide-title">{property.title}</h3>
-                <div className="slide-location">
-                  <MapPin size={14} />
-                  {property.city}, {property.state}
-                </div>
-                <div className="slide-price">
-                  {formatPrice(property.price)}
-                </div>
-                <div className="slide-features">
-                  <div className="feature">
-                    <Bed size={14} />
-                    {property.bedrooms}
-                  </div>
-                  <div className="feature">
-                    <Bath size={14} />
-                    {property.bathrooms}
-                  </div>
-                  <div className="feature">
-                    <Square size={14} />
-                    {property.area_sqm}m²
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
+    <div className="enhanced-property-slideshow">
+      {/* Enhanced Header Section */}
+      <div className="slideshow-header">
+        <div className="header-gradient-border"></div>
+        <div className="header-content">
+          <h2 className="header-title">
+            Featured Properties
+            <span className="title-underline"></span>
+          </h2>
+          <p className="header-description">
+            Discover our handpicked selection of premium properties with virtual tours and detailed insights
+          </p>
+          <div className="header-actions">
+            <button className="header-btn primary-btn">
+              <Square className="w-4 h-4" />
+              Browse Properties
+            </button>
+            <button className="header-btn secondary-btn">
+              <MapPin className="w-4 h-4" />
+              Contact Agent
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Navigation Arrows */}
-      <div className="slideshow-nav">
-        <button className="slide-arrow" onClick={prevSlide}>
-          <ChevronLeft size={18} />
-        </button>
-        <button className="slide-arrow" onClick={nextSlide}>
-          <ChevronRight size={18} />
-        </button>
-      </div>
+      {/* Slideshow Container */}
+      <div 
+        className="slideshow-wrapper"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
+        <div className="slideshow-container" ref={slideshowRef}>
+          <div 
+            className={`slideshow-track ${!isHovered ? 'auto-scroll' : 'paused'}`}
+            ref={trackRef}
+          >
+            {duplicatedProperties.map((property, index) => (
+              <div key={`${property.id}-${index}`} className="property-slide">
+                <div className="slide-image-container">
+                  <img
+                    src={property.thumbnail_url || property.images?.[0] || '/placeholder.svg'}
+                    alt={property.title}
+                    className="slide-image"
+                  />
+                  
+                  {/* Status Badge */}
+                  <span className="status-badge">
+                    {property.listing_type === 'buy' ? 'For Sale' : 'For Rent'}
+                  </span>
+                  
+                  {/* 3D Tour Button */}
+                  <button 
+                    className="view-3d-btn"
+                    onClick={() => handleViewTour(property.title)}
+                  >
+                    <Cube className="w-3 h-3" />
+                    3D Tour
+                  </button>
+                  
+                  {/* Image Overlay Content */}
+                  <div className="image-overlay-content">
+                    <div className="slide-price">
+                      {formatPrice(property.price)}
+                    </div>
+                    <div className="slide-location">
+                      <MapPin className="w-3 h-3" />
+                      {property.city}, {property.state}
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Slide Details */}
+                <div className="slide-details">
+                  <h3 className="slide-title">{property.title}</h3>
+                  <div className="slide-features">
+                    <div className="feature">
+                      <Bed className="w-4 h-4" />
+                      {property.bedrooms}
+                    </div>
+                    <div className="feature">
+                      <Bath className="w-4 h-4" />
+                      {property.bathrooms}
+                    </div>
+                    <div className="feature">
+                      <Square className="w-4 h-4" />
+                      {property.area_sqm}m²
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
 
-      {/* Pagination Dots */}
-      <div className="slideshow-dots">
-        {Array.from({ length: maxSlides }, (_, index) => (
-          <button
-            key={index}
-            className={`dot ${index === currentSlide ? 'active' : ''}`}
-            onClick={() => goToSlide(index)}
-          />
-        ))}
+        {/* Navigation Arrows */}
+        <div className="slideshow-nav">
+          <button className="slide-arrow prev-arrow" onClick={prevSlide}>
+            <ChevronLeft className="w-5 h-5" />
+          </button>
+          <button className="slide-arrow next-arrow" onClick={nextSlide}>
+            <ChevronRight className="w-5 h-5" />
+          </button>
+        </div>
       </div>
     </div>
   );
