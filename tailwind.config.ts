@@ -53,26 +53,38 @@ const config: Config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        // ASTRA Token Theme Colors
-        'custom-blue': '#3b82f6',
-        'custom-lightBlue': '#60a5fa',
-        'custom-orange': '#f97316',
-        'custom-cream': '#fef3c7',
-        'astra': {
-          'dark': '#0f1419',
-          'slate': '#1e293b',
-          'purple': '#7c3aed',
-          'blue': '#3b82f6',
-          'cyan': '#06b6d4',
-          'green': '#10b981',
-          'orange': '#f59e0b',
-          'pink': '#ec4899',
+        // WWDC 2025 Color System
+        'wwdc': {
+          'midnight': '#000000',
+          'dark': '#1c1c1e',
+          'gray-1': '#2c2c2e',
+          'gray-2': '#3a3a3c',
+          'gray-3': '#48484a',
+          'gray-4': '#636366',
+          'gray-5': '#8e8e93',
+          'gray-6': '#aeaeb2',
+          'light-gray': '#c7c7cc',
+          'white': '#ffffff',
+          'blue': '#007aff',
+          'blue-light': '#5ac8fa',
+          'purple': '#af52de',
+          'pink': '#ff2d92',
+          'red': '#ff3b30',
+          'orange': '#ff9500',
+          'yellow': '#ffcc00',
+          'green': '#30d158',
+          'teal': '#40c8e0',
+          'indigo': '#5856d6',
         },
       },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+      },
+      fontFamily: {
+        'sf': ['SF Pro Display', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'sans-serif'],
+        'inter': ['Inter', 'system-ui', 'sans-serif'],
       },
       keyframes: {
         "accordion-down": {
@@ -103,12 +115,28 @@ const config: Config = {
             opacity: "1"
           }
         },
-        "glow": {
+        "wwdc-glow": {
           "0%, 100%": {
-            boxShadow: "0 0 20px rgba(139, 92, 246, 0.3)"
+            boxShadow: "0 0 20px rgba(0, 122, 255, 0.3)"
           },
           "50%": {
-            boxShadow: "0 0 30px rgba(139, 92, 246, 0.6)"
+            boxShadow: "0 0 40px rgba(0, 122, 255, 0.6)"
+          }
+        },
+        "wwdc-float": {
+          "0%, 100%": {
+            transform: "translateY(0px)"
+          },
+          "50%": {
+            transform: "translateY(-6px)"
+          }
+        },
+        "wwdc-pulse": {
+          "0%, 100%": {
+            opacity: "1"
+          },
+          "50%": {
+            opacity: "0.7"
           }
         }
       },
@@ -117,15 +145,22 @@ const config: Config = {
         "accordion-up": "accordion-up 0.2s ease-out",
         "fade-in": "fade-in 0.3s ease-out",
         "scale-in": "scale-in 0.2s ease-out",
-        "glow": "glow 2s ease-in-out infinite",
+        "wwdc-glow": "wwdc-glow 2s ease-in-out infinite",
+        "wwdc-float": "wwdc-float 3s ease-in-out infinite",
+        "wwdc-pulse": "wwdc-pulse 2s ease-in-out infinite",
       },
       backdropBlur: {
         xs: '2px',
       },
       backgroundImage: {
-        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'astra-gradient': 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        'neural-gradient': 'linear-gradient(45deg, #8B5CF6, #06B6D4, #10B981)',
+        'wwdc-gradient': 'linear-gradient(135deg, #007aff 0%, #af52de 100%)',
+        'wwdc-dark-gradient': 'linear-gradient(180deg, #000000 0%, #1c1c1e 100%)',
+        'wwdc-card-gradient': 'linear-gradient(135deg, #2c2c2e 0%, rgba(0, 122, 255, 0.05) 100%)',
+      },
+      boxShadow: {
+        'wwdc': '0 8px 32px rgba(0, 0, 0, 0.2)',
+        'wwdc-hover': '0 20px 60px rgba(0, 122, 255, 0.3)',
+        'wwdc-glow': '0 0 20px rgba(0, 122, 255, 0.4)',
       }
     },
   },

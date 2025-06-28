@@ -3,223 +3,418 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Binance-inspired color scheme and enhanced styles */
+/* Apple WWDC 2025 Design System */
 @layer base {
   :root {
-    /* Binance Color Scheme with Enhanced Gold */
-    --binance-black: #0b0e11;
-    --binance-dark-gray: #1e2329;
-    --binance-gray: #2b3139;
-    --binance-light-gray: #474d57;
-    --binance-orange: #f0b90b;
-    --binance-gold: linear-gradient(135deg, #f0b90b 0%, #f8d33a 50%, #f0b90b 100%);
-    --binance-green: #02c076;
-    --binance-red: #f6465d;
-    --binance-white: #eaecef;
-    --gold-reflection: rgba(255, 215, 0, 0.15);
-
-    /* Updated theme variables */
-    --background: 11 14 17;
-    --foreground: 234 236 239;
-    --card: 30 35 41;
-    --card-foreground: 234 236 239;
-    --popover: 30 35 41;
-    --popover-foreground: 234 236 239;
-    --primary: 240 185 11;
-    --primary-foreground: 11 14 17;
-    --secondary: 43 49 57;
-    --secondary-foreground: 234 236 239;
-    --muted: 43 49 57;
-    --muted-foreground: 71 77 87;
-    --accent: 240 185 11;
-    --accent-foreground: 11 14 17;
-    --destructive: 246 70 93;
-    --destructive-foreground: 234 236 239;
-    --border: 71 77 87;
-    --input: 43 49 57;
-    --ring: 240 185 11;
-    --radius: 0.5rem;
-  }
-
-  body {
-    @apply bg-background text-foreground;
-    font-family: 'Roboto', sans-serif;
-    background-color: var(--binance-black);
-    color: var(--binance-white);
+    /* WWDC 2025 Color Palette */
+    --wwdc-midnight: #000000;
+    --wwdc-dark: #1c1c1e;
+    --wwdc-gray-1: #2c2c2e;
+    --wwdc-gray-2: #3a3a3c;
+    --wwdc-gray-3: #48484a;
+    --wwdc-gray-4: #636366;
+    --wwdc-gray-5: #8e8e93;
+    --wwdc-gray-6: #aeaeb2;
+    --wwdc-light-gray: #c7c7cc;
+    --wwdc-white: #ffffff;
+    --wwdc-blue: #007aff;
+    --wwdc-blue-light: #5ac8fa;
+    --wwdc-purple: #af52de;
+    --wwdc-pink: #ff2d92;
+    --wwdc-red: #ff3b30;
+    --wwdc-orange: #ff9500;
+    --wwdc-yellow: #ffcc00;
+    --wwdc-green: #30d158;
+    --wwdc-teal: #40c8e0;
+    --wwdc-indigo: #5856d6;
+    
+    /* Dynamic colors for themes */
+    --background: 0 0% 0%;
+    --foreground: 0 0% 100%;
+    --card: 0 0% 11%;
+    --card-foreground: 0 0% 100%;
+    --popover: 0 0% 11%;
+    --popover-foreground: 0 0% 100%;
+    --primary: 211 100% 50%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 17%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 0 0% 17%;
+    --muted-foreground: 240 5% 64%;
+    --accent: 271 91% 65%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 348 83% 47%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 240 6% 28%;
+    --input: 240 6% 28%;
+    --ring: 211 100% 50%;
+    --radius: 1rem;
   }
 
   * {
     @apply border-border;
   }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(180deg, var(--wwdc-midnight) 0%, var(--wwdc-dark) 100%);
+    color: var(--wwdc-white);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 @layer components {
-  /* Enhanced Button Effects */
-  .btn {
-    padding: 10px 16px;
-    border-radius: 4px;
+  /* WWDC 2025 Glass Effect */
+  .wwdc-glass {
+    background: rgba(28, 28, 30, 0.8);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  }
+
+  .wwdc-glass-light {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  /* WWDC 2025 Buttons */
+  .wwdc-button-primary {
+    background: linear-gradient(135deg, var(--wwdc-blue) 0%, var(--wwdc-purple) 100%);
+    color: var(--wwdc-white);
+    padding: 12px 24px;
+    border-radius: 16px;
+    font-weight: 600;
+    font-size: 16px;
     border: none;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    box-shadow: 0 4px 20px rgba(0, 122, 255, 0.3);
+  }
+
+  .wwdc-button-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0, 122, 255, 0.4);
+    background: linear-gradient(135deg, var(--wwdc-blue-light) 0%, var(--wwdc-pink) 100%);
+  }
+
+  .wwdc-button-secondary {
+    background: var(--wwdc-gray-1);
+    color: var(--wwdc-white);
+    padding: 12px 24px;
+    border-radius: 16px;
     font-weight: 500;
+    border: 1px solid var(--wwdc-gray-3);
     cursor: pointer;
     transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-    z-index: 1;
   }
 
-  .btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      rgba(255, 255, 255, 0.2),
-      transparent
-    );
-    transition: 0.5s;
-    z-index: -1;
-  }
-
-  .btn:hover::before {
-    left: 100%;
-  }
-
-  .btn-primary {
-    background: var(--binance-gold);
-    color: var(--binance-black);
-    font-weight: 600;
-    box-shadow: 0 2px 10px rgba(240, 185, 11, 0.4);
-  }
-
-  .btn-primary:hover {
-    box-shadow: 0 4px 20px rgba(240, 185, 11, 0.6);
+  .wwdc-button-secondary:hover {
+    background: var(--wwdc-gray-2);
+    border-color: var(--wwdc-gray-4);
     transform: translateY(-1px);
   }
 
-  .btn-outline {
-    background-color: transparent;
-    border: 1px solid var(--binance-orange);
-    color: var(--binance-orange);
+  /* WWDC 2025 Cards */
+  .wwdc-card {
+    background: var(--wwdc-gray-1);
+    border-radius: 20px;
+    padding: 24px;
+    border: 1px solid var(--wwdc-gray-2);
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
   }
 
-  .btn-outline:hover {
-    background-color: rgba(240, 185, 11, 0.1);
-    box-shadow: 0 0 15px rgba(240, 185, 11, 0.3);
+  .wwdc-card:hover {
+    transform: translateY(-8px);
+    border-color: var(--wwdc-blue);
+    box-shadow: 0 20px 60px rgba(0, 122, 255, 0.2);
+    background: linear-gradient(135deg, var(--wwdc-gray-1) 0%, rgba(0, 122, 255, 0.05) 100%);
   }
 
-  /* Enhanced Card with Metallic Border */
-  .enhanced-card {
-    background-color: var(--binance-dark-gray);
-    border-radius: 4px;
+  /* WWDC 2025 Text Styles */
+  .wwdc-title {
+    font-size: 3.5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--wwdc-white) 0%, var(--wwdc-blue-light) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+
+  .wwdc-subtitle {
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: var(--wwdc-gray-5);
+    line-height: 1.4;
+  }
+
+  .wwdc-body {
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--wwdc-gray-6);
+    line-height: 1.6;
+  }
+
+  /* WWDC 2025 Navigation */
+  .wwdc-nav {
+    background: rgba(28, 28, 30, 0.9);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--wwdc-gray-2);
+    padding: 16px 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+  }
+
+  .wwdc-nav-item {
+    color: var(--wwdc-gray-5);
+    font-weight: 500;
+    padding: 8px 16px;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+  }
+
+  .wwdc-nav-item:hover {
+    color: var(--wwdc-blue);
+    background: rgba(0, 122, 255, 0.1);
+  }
+
+  .wwdc-nav-item.active {
+    color: var(--wwdc-blue);
+    background: rgba(0, 122, 255, 0.15);
+  }
+
+  /* WWDC 2025 Input Fields */
+  .wwdc-input {
+    background: var(--wwdc-gray-1);
+    border: 1px solid var(--wwdc-gray-3);
+    border-radius: 12px;
     padding: 16px;
-    margin-bottom: 16px;
-    border: 1px solid var(--binance-gray);
-    position: relative;
+    color: var(--wwdc-white);
+    font-size: 16px;
+    transition: all 0.3s ease;
+    width: 100%;
+  }
+
+  .wwdc-input:focus {
+    outline: none;
+    border-color: var(--wwdc-blue);
+    box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.2);
+    background: var(--wwdc-gray-2);
+  }
+
+  .wwdc-input::placeholder {
+    color: var(--wwdc-gray-5);
+  }
+
+  /* WWDC 2025 Animations */
+  .wwdc-fade-in {
+    animation: wwdcFadeIn 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  }
+
+  .wwdc-slide-up {
+    animation: wwdcSlideUp 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  }
+
+  .wwdc-scale-in {
+    animation: wwdcScaleIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+
+  /* Property Slideshow WWDC 2025 Style */
+  .wwdc-slideshow {
+    background: transparent;
+    padding: 40px 20px;
+    border-radius: 24px;
     overflow: hidden;
   }
 
-  .enhanced-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      var(--binance-orange),
-      transparent
-    );
-    box-shadow: 0 0 10px var(--binance-orange);
+  .wwdc-slide-card {
+    background: var(--wwdc-gray-1);
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid var(--wwdc-gray-2);
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    min-width: 320px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
   }
 
-  .enhanced-card:hover {
-    box-shadow: 0 0 15px rgba(240, 185, 11, 0.2);
+  .wwdc-slide-card:hover {
+    transform: translateY(-12px) scale(1.02);
+    border-color: var(--wwdc-blue);
+    box-shadow: 0 25px 60px rgba(0, 122, 255, 0.25);
   }
 
-  /* Price Display Effects */
-  .price {
-    font-size: 24px;
-    font-weight: 700;
-    position: relative;
-  }
-
-  .price.up {
-    color: var(--binance-green);
-    animation: pulseGreen 2s infinite;
-  }
-
-  .price.down {
-    color: var(--binance-red);
-    animation: pulseRed 2s infinite;
-  }
-
-  /* Input Field Effects */
-  .enhanced-input {
+  .wwdc-slide-image {
     width: 100%;
-    padding: 12px;
-    background-color: var(--binance-gray);
-    border: 1px solid var(--binance-light-gray);
-    border-radius: 4px;
-    color: var(--binance-white);
-    font-size: 16px;
+    height: 220px;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+  }
+
+  .wwdc-slide-card:hover .wwdc-slide-image {
+    transform: scale(1.05);
+  }
+
+  .wwdc-slide-content {
+    padding: 24px;
+  }
+
+  .wwdc-slide-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--wwdc-white);
+    margin-bottom: 8px;
+    line-height: 1.3;
+  }
+
+  .wwdc-slide-location {
+    color: var(--wwdc-blue);
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .wwdc-slide-price {
+    font-size: 1.5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--wwdc-green) 0%, var(--wwdc-teal) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 16px;
+  }
+
+  .wwdc-slide-features {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .wwdc-slide-feature {
+    background: var(--wwdc-gray-2);
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    color: var(--wwdc-gray-6);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* Navigation Arrows WWDC Style */
+  .wwdc-nav-arrow {
+    background: rgba(28, 28, 30, 0.9);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--wwdc-gray-3);
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: var(--wwdc-white);
+  }
+
+  .wwdc-nav-arrow:hover {
+    background: var(--wwdc-blue);
+    border-color: var(--wwdc-blue);
+    transform: scale(1.1);
+    box-shadow: 0 8px 25px rgba(0, 122, 255, 0.4);
+  }
+
+  /* Pagination Dots WWDC Style */
+  .wwdc-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--wwdc-gray-4);
+    cursor: pointer;
     transition: all 0.3s ease;
   }
 
-  .enhanced-input:focus {
-    outline: none;
-    border-color: var(--binance-orange);
-    box-shadow: 0 0 0 2px rgba(240, 185, 11, 0.3);
-  }
-
-  /* Glowing Effects */
-  .glow-gold {
-    box-shadow: 0 0 15px rgba(240, 185, 11, 0.4);
-  }
-
-  .glow-gold:hover {
-    box-shadow: 0 0 25px rgba(240, 185, 11, 0.6);
+  .wwdc-dot.active {
+    background: var(--wwdc-blue);
+    transform: scale(1.5);
+    box-shadow: 0 0 10px rgba(0, 122, 255, 0.6);
   }
 }
 
 @layer utilities {
-  .bg-binance-black { background-color: var(--binance-black); }
-  .bg-binance-dark-gray { background-color: var(--binance-dark-gray); }
-  .bg-binance-gray { background-color: var(--binance-gray); }
-  .bg-binance-light-gray { background-color: var(--binance-light-gray); }
-  .bg-binance-orange { background-color: var(--binance-orange); }
-  .bg-binance-green { background-color: var(--binance-green); }
-  .bg-binance-red { background-color: var(--binance-red); }
-  .bg-binance-white { background-color: var(--binance-white); }
+  .wwdc-gradient-bg {
+    background: linear-gradient(180deg, var(--wwdc-midnight) 0%, var(--wwdc-dark) 50%, var(--wwdc-gray-1) 100%);
+  }
+
+  .wwdc-text-gradient {
+    background: linear-gradient(135deg, var(--wwdc-blue) 0%, var(--wwdc-purple) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+}
+
+/* WWDC 2025 Keyframe Animations */
+@keyframes wwdcFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes wwdcSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes wwdcScaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .wwdc-title {
+    font-size: 2.5rem;
+  }
   
-  .text-binance-orange { color: var(--binance-orange); }
-  .text-binance-green { color: var(--binance-green); }
-  .text-binance-red { color: var(--binance-red); }
-  .text-binance-white { color: var(--binance-white); }
+  .wwdc-card {
+    padding: 20px;
+  }
   
-  .border-binance-orange { border-color: var(--binance-orange); }
-  .border-binance-gray { border-color: var(--binance-gray); }
-}
-
-/* Keyframe Animations */
-@keyframes pulseGreen {
-  0% { text-shadow: 0 0 5px rgba(2, 192, 118, 0); }
-  50% { text-shadow: 0 0 10px rgba(2, 192, 118, 0.5); }
-  100% { text-shadow: 0 0 5px rgba(2, 192, 118, 0); }
-}
-
-@keyframes pulseRed {
-  0% { text-shadow: 0 0 5px rgba(246, 70, 93, 0); }
-  50% { text-shadow: 0 0 10px rgba(246, 70, 93, 0.5); }
-  100% { text-shadow: 0 0 5px rgba(246, 70, 93, 0); }
-}
-
-@keyframes shine {
-  0% { transform: translateX(-100%) translateY(-100%) rotate(30deg); }
-  100% { transform: translateX(100%) translateY(100%) rotate(30deg); }
+  .wwdc-slide-card {
+    min-width: 280px;
+  }
 }

@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Navigation from "@/components/Navigation";
@@ -9,7 +10,6 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import ResponsiveAIChatWidget from "@/components/ai/ResponsiveAIChatWidget";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Home, Key, Building, Rocket } from "lucide-react";
 import "@/components/PropertySlideshow.css";
 
 const Index = () => {
@@ -136,25 +136,25 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-binance-black">
+    <div className="min-h-screen wwdc-gradient-bg">
       <Navigation />
       
-      {/* Hero Section with Search */}
-      <section className="relative py-20 px-4 bg-gradient-to-br from-binance-black via-binance-dark-gray to-binance-gray">
+      {/* Hero Section with WWDC 2025 Styling */}
+      <section className="relative py-32 px-4 wwdc-dark-gradient">
         <div className="container mx-auto text-center">
-          <div className="mb-12">
-            <h1 className="text-4xl md:text-6xl font-bold text-binance-white mb-4 glow-gold">
+          <div className="mb-16 wwdc-fade-in">
+            <h1 className="wwdc-title mb-6 animate-wwdc-float">
               Find Your Perfect Property
-              <span className="block text-2xl md:text-3xl text-binance-orange font-normal mt-2">
+              <span className="block text-3xl md:text-4xl wwdc-text-gradient font-medium mt-4">
                 Premium Real Estate Platform
               </span>
             </h1>
-            <p className="text-xl text-binance-white/80 max-w-2xl mx-auto">
-              Discover amazing properties with our advanced search platform
+            <p className="wwdc-subtitle max-w-2xl mx-auto animate-wwdc-pulse">
+              Discover amazing properties with our advanced search platform powered by cutting-edge technology
             </p>
           </div>
           
-          <div className="max-w-5xl mx-auto">
+          <div className="max-w-5xl mx-auto wwdc-scale-in">
             <EnhancedModernSearchPanel
               language={language}
               onSearch={handleSearch}
@@ -164,50 +164,50 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Quick Action Buttons */}
-      <section className="py-12 bg-binance-dark-gray">
+      {/* Quick Action Buttons with WWDC Styling */}
+      <section className="py-16 bg-wwdc-dark">
         <div className="container mx-auto px-4">
-          <div className="flex flex-wrap justify-center gap-4">
+          <div className="flex flex-wrap justify-center gap-6">
             <Button 
               onClick={() => handleSearch({ listingType: 'buy' })}
-              className="btn btn-primary flex items-center gap-2 hover:scale-105 transition-all duration-300"
+              className="wwdc-button-primary flex items-center gap-3 px-8 py-4 text-lg hover:scale-105 transition-all duration-300 animate-wwdc-glow"
             >
-              <Home className="h-5 w-5" />
+              <i className="fas fa-home text-xl"></i>
               💰 Buy Properties
             </Button>
             <Button 
               onClick={() => handleSearch({ listingType: 'rent' })}
-              className="btn btn-outline flex items-center gap-2 hover:scale-105 transition-all duration-300"
+              className="wwdc-button-secondary flex items-center gap-3 px-8 py-4 text-lg hover:scale-105 transition-all duration-300"
             >
-              <Key className="h-5 w-5" />
+              <i className="fas fa-key text-xl"></i>
               🏠 Rent Properties
             </Button>
             <Button 
               onClick={() => handleSearch({ development_status: 'pre_launching' })}
-              className="btn btn-outline flex items-center gap-2 hover:scale-105 transition-all duration-300"
+              className="wwdc-button-secondary flex items-center gap-3 px-8 py-4 text-lg hover:scale-105 transition-all duration-300"
             >
-              <Rocket className="h-5 w-5" />
+              <i className="fas fa-rocket text-xl"></i>
               🚀 Pre-Launch
             </Button>
             <Button 
               onClick={() => handleSearch({ development_status: 'new_project' })}
-              className="btn btn-outline flex items-center gap-2 hover:scale-105 transition-all duration-300"
+              className="wwdc-button-secondary flex items-center gap-3 px-8 py-4 text-lg hover:scale-105 transition-all duration-300"
             >
-              <Building className="h-5 w-5" />
+              <i className="fas fa-building text-xl"></i>
               🏗️ New Projects
             </Button>
           </div>
         </div>
       </section>
 
-      {/* Property Slideshow */}
-      <section className="py-16 bg-binance-black">
+      {/* Property Slideshow with WWDC 2025 Design */}
+      <section className="py-20 bg-wwdc-midnight">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-binance-white mb-4">
+          <div className="text-center mb-16 wwdc-fade-in">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 wwdc-text-gradient">
               Featured Properties
             </h2>
-            <p className="text-binance-white/80 text-lg">
+            <p className="wwdc-subtitle text-xl">
               Discover our handpicked selection of premium properties
             </p>
           </div>
@@ -215,19 +215,20 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Error Message */}
+      {/* Error Message with WWDC Styling */}
       {searchError && (
         <section className="py-8">
           <div className="container mx-auto px-4">
-            <div className="enhanced-card bg-binance-red/20 border border-binance-red/40 text-binance-red text-center p-6 rounded-lg glow-gold">
-              ⚠️ {searchError}
+            <div className="wwdc-glass border border-wwdc-red/40 text-wwdc-red text-center p-8 rounded-2xl max-w-2xl mx-auto">
+              <i className="fas fa-exclamation-triangle text-2xl mb-4"></i>
+              <p className="text-lg font-medium">⚠️ {searchError}</p>
             </div>
           </div>
         </section>
       )}
 
       {/* Property Listings */}
-      <div className="px-4 bg-binance-black">
+      <div className="px-4 bg-wwdc-dark">
         <PropertyListingsSection
           language={language}
           searchResults={hasSearched ? searchResults : featuredProperties}

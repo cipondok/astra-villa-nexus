@@ -1,7 +1,6 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { MapPin, Bed, Bath, Square, ChevronLeft, ChevronRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 interface Property {
@@ -85,7 +84,7 @@ const PropertySlideshow = () => {
   const maxSlides = Math.max(1, properties.length - 3);
 
   return (
-    <div className="property-slideshow">
+    <div className="property-slideshow wwdc-fade-in">
       <div 
         className="slideshow-container"
         ref={slideshowRef}
@@ -95,13 +94,13 @@ const PropertySlideshow = () => {
         <div 
           className="slideshow-track"
           style={{
-            transform: `translateX(-${currentSlide * 325}px)`,
-            transition: 'transform 0.5s ease',
+            transform: `translateX(-${currentSlide * 372}px)`,
+            transition: 'transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
             animationPlayState: isHovered ? 'paused' : 'running'
           }}
         >
-          {properties.map((property) => (
-            <div key={property.id} className="property-slide">
+          {properties.map((property, index) => (
+            <div key={property.id} className={`property-slide wwdc-slide-up`} style={{ animationDelay: `${index * 0.1}s` }}>
               <img
                 src={property.thumbnail_url || property.images?.[0] || '/placeholder.svg'}
                 alt={property.title}
@@ -110,7 +109,7 @@ const PropertySlideshow = () => {
               <div className="slide-content">
                 <h3 className="slide-title">{property.title}</h3>
                 <div className="slide-location">
-                  <MapPin size={14} />
+                  <i className="fas fa-map-marker-alt"></i>
                   {property.city}, {property.state}
                 </div>
                 <div className="slide-price">
@@ -118,15 +117,15 @@ const PropertySlideshow = () => {
                 </div>
                 <div className="slide-features">
                   <div className="feature">
-                    <Bed size={14} />
+                    <i className="fas fa-bed"></i>
                     {property.bedrooms}
                   </div>
                   <div className="feature">
-                    <Bath size={14} />
+                    <i className="fas fa-bath"></i>
                     {property.bathrooms}
                   </div>
                   <div className="feature">
-                    <Square size={14} />
+                    <i className="fas fa-ruler-combined"></i>
                     {property.area_sqm}m²
                   </div>
                 </div>
@@ -139,10 +138,10 @@ const PropertySlideshow = () => {
       {/* Navigation Arrows */}
       <div className="slideshow-nav">
         <button className="slide-arrow" onClick={prevSlide}>
-          <ChevronLeft size={18} />
+          <i className="fas fa-chevron-left"></i>
         </button>
         <button className="slide-arrow" onClick={nextSlide}>
-          <ChevronRight size={18} />
+          <i className="fas fa-chevron-right"></i>
         </button>
       </div>
 
