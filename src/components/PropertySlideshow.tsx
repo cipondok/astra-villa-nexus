@@ -1,7 +1,6 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { MapPin, Bed, Bath, Square, ChevronLeft, ChevronRight, Box } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 interface Property {
@@ -113,11 +112,11 @@ const PropertySlideshow = () => {
           </p>
           <div className="header-actions">
             <button className="header-btn primary-btn">
-              <Square className="w-4 h-4" />
+              <i className="fas fa-th-large"></i>
               Browse Properties
             </button>
             <button className="header-btn secondary-btn">
-              <MapPin className="w-4 h-4" />
+              <i className="fas fa-map-marker-alt"></i>
               Contact Agent
             </button>
           </div>
@@ -154,7 +153,7 @@ const PropertySlideshow = () => {
                     className="view-3d-btn"
                     onClick={() => handleViewTour(property.title)}
                   >
-                    <Box className="w-3 h-3" />
+                    <i className="fas fa-cube"></i>
                     3D Tour
                   </button>
                   
@@ -164,7 +163,7 @@ const PropertySlideshow = () => {
                       {formatPrice(property.price)}
                     </div>
                     <div className="slide-location">
-                      <MapPin className="w-3 h-3" />
+                      <i className="fas fa-map-marker-alt"></i>
                       {property.city}, {property.state}
                     </div>
                   </div>
@@ -175,15 +174,15 @@ const PropertySlideshow = () => {
                   <h3 className="slide-title">{property.title}</h3>
                   <div className="slide-features">
                     <div className="feature">
-                      <Bed className="w-4 h-4" />
+                      <i className="fas fa-bed"></i>
                       {property.bedrooms}
                     </div>
                     <div className="feature">
-                      <Bath className="w-4 h-4" />
+                      <i className="fas fa-bath"></i>
                       {property.bathrooms}
                     </div>
                     <div className="feature">
-                      <Square className="w-4 h-4" />
+                      <i className="fas fa-expand-arrows-alt"></i>
                       {property.area_sqm}m²
                     </div>
                   </div>
@@ -196,10 +195,10 @@ const PropertySlideshow = () => {
         {/* Navigation Arrows */}
         <div className="slideshow-nav">
           <button className="slide-arrow prev-arrow" onClick={prevSlide}>
-            <ChevronLeft className="w-5 h-5" />
+            <i className="fas fa-chevron-left"></i>
           </button>
           <button className="slide-arrow next-arrow" onClick={nextSlide}>
-            <ChevronRight className="w-5 h-5" />
+            <i className="fas fa-chevron-right"></i>
           </button>
         </div>
       </div>
