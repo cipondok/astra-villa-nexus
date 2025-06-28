@@ -1,432 +1,205 @@
 
-/* Enhanced Property Slideshow - Modern Design with Font Awesome & Poppins */
-:root {
-  --primary-color: #4a6bff;
-  --secondary-color: #f8f9fa;
-  --text-color: #2d3748;
-  --card-bg: #ffffff;
-  --border-color: #e2e8f0;
-  --shadow-light: 0 8px 25px rgba(0,0,0,0.08);
-  --shadow-hover: 0 15px 35px rgba(74, 107, 255, 0.15);
-  --transition: all 0.3s ease;
-}
-
-.enhanced-property-slideshow {
+/* Slideshow Container */
+.property-slideshow {
+  position: relative;
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
-  position: relative;
-  font-family: 'Poppins', sans-serif;
-}
-
-/* Enhanced Header Section */
-.slideshow-header {
-  text-align: center;
-  padding: 40px 20px;
-  background: var(--card-bg);
-  margin-bottom: 40px;
-  border-radius: 16px;
-  position: relative;
   overflow: hidden;
-  border: 1px solid var(--border-color);
-  box-shadow: var(--shadow-light);
 }
 
-.header-gradient-border {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, var(--primary-color), #7c3aed, #10b981);
-}
-
-.header-content {
-  max-width: 800px;
-  margin: 0 auto;
-  position: relative;
-}
-
-.header-title {
-  font-size: 2.5rem;
-  font-weight: 700;
-  margin-bottom: 15px;
-  color: var(--text-color);
-  position: relative;
-  display: inline-block;
-  font-family: 'Poppins', sans-serif;
-}
-
-.title-underline {
-  position: absolute;
-  bottom: -8px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 80px;
-  height: 4px;
-  background: var(--primary-color);
-  border-radius: 2px;
-}
-
-.header-description {
-  font-size: 1.1rem;
-  color: #718096;
-  max-width: 600px;
-  margin: 0 auto 25px;
-  line-height: 1.6;
-  font-family: 'Poppins', sans-serif;
-}
-
-.header-actions {
-  display: flex;
-  gap: 15px;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.header-btn {
-  padding: 12px 24px;
-  border-radius: 30px;
-  font-weight: 600;
-  font-size: 0.95rem;
-  cursor: pointer;
-  transition: var(--transition);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  border: none;
-  outline: none;
-  font-family: 'Poppins', sans-serif;
-}
-
-.primary-btn {
-  background: var(--primary-color);
-  color: white;
-  box-shadow: 0 4px 15px rgba(74, 107, 255, 0.3);
-}
-
-.secondary-btn {
-  background: transparent;
-  color: var(--primary-color);
-  border: 2px solid var(--primary-color);
-}
-
-.header-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(74, 107, 255, 0.4);
-}
-
-.secondary-btn:hover {
-  background: var(--primary-color);
-  color: white;
-}
-
-/* Slideshow Wrapper */
-.slideshow-wrapper {
-  position: relative;
-  overflow: hidden;
-  border-radius: 16px;
-  background: var(--card-bg);
-  padding: 20px;
-  box-shadow: var(--shadow-light);
-}
-
-/* Slideshow Container */
+/* Slideshow Track */
 .slideshow-container {
-  overflow: hidden;
+  display: flex;
   width: 100%;
-  position: relative;
+  overflow: hidden;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 20px;
 }
 
-/* Auto-Scrolling Track */
+/* Hide scrollbar */
+.slideshow-container::-webkit-scrollbar {
+  display: none;
+}
+
+/* Slides */
 .slideshow-track {
   display: flex;
   gap: 25px;
-  width: fit-content;
-  transition: transform 0.5s ease;
+  min-width: 100%;
 }
 
-.slideshow-track.auto-scroll {
-  animation: infiniteScroll 40s linear infinite;
-}
-
-.slideshow-track.paused {
-  animation-play-state: paused;
-}
-
-@keyframes infiniteScroll {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(calc(-350px * 8 - 25px * 7));
-  }
-}
-
-/* Individual Property Slide */
+/* Individual Slide */
 .property-slide {
-  position: relative;
-  min-width: 325px;
+  min-width: 300px;
+  background: var(--binance-dark-gray);
   border-radius: 12px;
   overflow: hidden;
-  background: var(--card-bg);
-  border: 1px solid var(--border-color);
-  box-shadow: var(--shadow-light);
-  transition: var(--transition);
-  flex-shrink: 0;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  transition: all 0.3s ease;
+  scroll-snap-align: start;
+  border: 1px solid var(--binance-gray);
 }
 
 .property-slide:hover {
-  transform: translateY(-8px);
-  box-shadow: var(--shadow-hover);
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(240, 185, 11, 0.3);
+  border-color: var(--binance-orange);
 }
 
-/* Slide Image Container */
-.slide-image-container {
-  position: relative;
-  height: 220px;
-  width: 100%;
-  overflow: hidden;
-}
-
+/* Slide Image */
 .slide-image {
-  height: 100%;
+  height: 200px;
   width: 100%;
   object-fit: cover;
-  transition: transform 0.5s ease;
 }
 
-.property-slide:hover .slide-image {
-  transform: scale(1.05);
+/* Slide Content */
+.slide-content {
+  padding: 20px;
 }
 
-/* Image Overlay Content */
-.image-overlay-content {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  padding: 15px;
-  background: linear-gradient(transparent, rgba(0,0,0,0.7));
-  color: white;
-  z-index: 2;
-}
-
-.slide-price {
-  font-size: 1.4rem;
-  font-weight: 700;
+.slide-title {
+  font-size: 18px;
+  font-weight: 600;
   margin-bottom: 5px;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-  font-family: 'Poppins', sans-serif;
+  color: var(--binance-white);
 }
 
 .slide-location {
   display: flex;
   align-items: center;
-  gap: 5px;
-  font-size: 0.9rem;
-  opacity: 0.9;
-  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  color: var(--binance-orange);
+  margin-bottom: 10px;
 }
 
-/* 3D Tour Button with Font Awesome */
-.view-3d-btn {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  background: rgba(255,255,255,0.95);
-  color: var(--primary-color);
-  border: none;
-  padding: 8px 12px;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  cursor: pointer;
-  transition: var(--transition);
-  z-index: 3;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.15);
-  font-family: 'Poppins', sans-serif;
+.slide-location svg {
+  margin-right: 5px;
 }
 
-.view-3d-btn:hover {
-  background: white;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(0,0,0,0.25);
-}
-
-.view-3d-btn i {
-  font-size: 0.75rem;
-}
-
-/* Status Badge */
-.status-badge {
-  position: absolute;
-  top: 15px;
-  left: 15px;
-  background: #10b981;
-  color: white;
-  padding: 4px 10px;
-  border-radius: 6px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  z-index: 3;
-  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
-  font-family: 'Poppins', sans-serif;
-}
-
-/* Slide Details */
-.slide-details {
-  padding: 20px;
-}
-
-.slide-title {
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin-bottom: 12px;
-  color: var(--text-color);
-  line-height: 1.4;
-  font-family: 'Poppins', sans-serif;
+.slide-price {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--binance-orange);
+  margin-bottom: 15px;
+  text-shadow: 0 0 10px rgba(240, 185, 11, 0.3);
 }
 
 .slide-features {
   display: flex;
   gap: 15px;
-  margin-top: 10px;
 }
 
 .feature {
   display: flex;
   align-items: center;
-  gap: 4px;
-  font-size: 0.85rem;
-  color: #718096;
-  background: var(--secondary-color);
+  font-size: 14px;
+  color: var(--binance-white);
+  background: var(--binance-gray);
   padding: 4px 8px;
-  border-radius: 6px;
-  font-family: 'Poppins', sans-serif;
+  border-radius: 4px;
 }
 
-.feature i {
-  color: var(--primary-color);
-  font-size: 0.8rem;
+.feature svg {
+  margin-right: 5px;
+  color: var(--binance-orange);
 }
 
-/* Navigation Arrows with Font Awesome */
+/* Navigation Arrows */
 .slideshow-nav {
   position: absolute;
   top: 50%;
-  width: calc(100% - 40px);
-  left: 20px;
+  width: 100%;
   display: flex;
   justify-content: space-between;
   transform: translateY(-50%);
   pointer-events: none;
-  z-index: 10;
+  padding: 0 10px;
 }
 
 .slide-arrow {
-  background: var(--card-bg);
-  border: 1px solid var(--border-color);
-  width: 48px;
-  height: 48px;
+  background: var(--binance-dark-gray);
+  border: 1px solid var(--binance-orange);
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: var(--shadow-light);
+  box-shadow: 0 2px 10px rgba(240, 185, 11, 0.3);
   cursor: pointer;
   pointer-events: auto;
-  transition: var(--transition);
-  opacity: 0.9;
+  transition: all 0.3s;
+  opacity: 0.8;
 }
 
 .slide-arrow:hover {
   opacity: 1;
   transform: scale(1.1);
-  background: var(--primary-color);
-  border-color: var(--primary-color);
+  box-shadow: 0 4px 20px rgba(240, 185, 11, 0.5);
+  background: var(--binance-orange);
 }
 
-.slide-arrow i {
-  color: var(--text-color);
-  font-size: 1.2rem;
+.slide-arrow svg {
+  color: var(--binance-orange);
 }
 
-.slide-arrow:hover i {
-  color: white;
+.slide-arrow:hover svg {
+  color: var(--binance-black);
 }
 
-/* Loading State */
-.property-slideshow-loading {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-  font-family: 'Poppins', sans-serif;
+/* Pagination Dots */
+.slideshow-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 20px;
 }
 
-/* Dark Mode Support */
-.dark .enhanced-property-slideshow {
-  --card-bg: #1e293b;
-  --text-color: #e2e8f0;
-  --border-color: #2d3748;
-  --shadow-light: 0 8px 25px rgba(0,0,0,0.3);
-  --shadow-hover: 0 15px 35px rgba(91, 124, 255, 0.25);
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--binance-gray);
+  cursor: pointer;
+  transition: all 0.3s;
+  border: none;
 }
 
-/* Responsive Design */
+.dot.active {
+  background: var(--binance-orange);
+  transform: scale(1.2);
+  box-shadow: 0 0 10px rgba(240, 185, 11, 0.5);
+}
+
+.dot:hover {
+  background: var(--binance-orange);
+  opacity: 0.7;
+}
+
+/* Responsive Adjustments */
 @media (max-width: 768px) {
-  .enhanced-property-slideshow {
-    padding: 15px;
-  }
-  
-  .slideshow-header {
-    padding: 30px 15px;
-    margin-bottom: 30px;
-  }
-  
-  .header-title {
-    font-size: 2rem;
-  }
-  
-  .header-description {
-    font-size: 1rem;
-  }
-  
-  .header-actions {
-    flex-direction: column;
-    align-items: center;
-  }
-  
   .property-slide {
-    min-width: 280px;
+    min-width: 260px;
   }
   
-  .slide-image-container {
-    height: 200px;
+  .slide-image {
+    height: 180px;
   }
   
   .slideshow-nav {
     display: none;
   }
   
-  .slideshow-track.auto-scroll {
-    animation: infiniteScrollMobile 35s linear infinite;
-  }
-  
-  @keyframes infiniteScrollMobile {
-    0% {
-      transform: translateX(0);
-    }
-    100% {
-      transform: translateX(calc(-305px * 8 - 25px * 7));
-    }
+  .slideshow-track {
+    gap: 15px;
   }
 }
 
-/* Pause animation on hover */
-.slideshow-wrapper:hover .slideshow-track.auto-scroll {
+/* Pause on hover */
+.property-slideshow:hover .slideshow-track {
   animation-play-state: paused;
 }
