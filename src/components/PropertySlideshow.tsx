@@ -86,7 +86,7 @@ const PropertySlideshow = () => {
       <div className="w-full max-w-7xl mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {[...Array(4)].map((_, index) => (
-            <div key={index} className="professional-card animate-pulse">
+            <div key={index} className="macos-card animate-pulse">
               <div className="h-56 bg-muted rounded-xl mb-4"></div>
               <div className="space-y-3">
                 <div className="h-4 bg-muted rounded w-3/4"></div>
@@ -115,17 +115,17 @@ const PropertySlideshow = () => {
             transform: `translateX(-${currentSlide * (100 / slidesToShow)}%)`,
           }}
         >
-          {properties.map((property, index) => (
+          {properties.map((property) => (
             <div 
               key={property.id} 
-              className="professional-slide-card flex-shrink-0"
+              className="macos-card flex-shrink-0 group cursor-pointer"
               style={{ width: `calc(${100 / slidesToShow}% - 2rem)` }}
             >
               <div className="relative overflow-hidden rounded-t-xl">
                 <img
                   src={property.thumbnail_url || property.images?.[0] || '/placeholder.svg'}
                   alt={property.title}
-                  className="professional-slide-image"
+                  className="w-full h-56 object-cover transition-transform duration-500 group-hover:scale-105"
                 />
                 <div className="absolute top-4 right-4">
                   <span className="px-3 py-1 bg-primary/90 text-primary-foreground text-xs font-semibold rounded-full backdrop-blur-sm">
@@ -135,25 +135,27 @@ const PropertySlideshow = () => {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </div>
               
-              <div className="professional-slide-content">
-                <h3 className="professional-slide-title">{property.title}</h3>
-                <div className="professional-slide-location">
-                  <i className="fas fa-map-marker-alt text-primary"></i>
+              <div className="p-6">
+                <h3 className="text-xl font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">
+                  {property.title}
+                </h3>
+                <div className="flex items-center text-primary mb-3 text-sm font-medium">
+                  <i className="fas fa-map-marker-alt mr-2"></i>
                   {property.city}, {property.state}
                 </div>
-                <div className="professional-slide-price">
+                <div className="text-2xl font-bold macos-text-gradient mb-4">
                   {formatPrice(property.price)}
                 </div>
-                <div className="professional-slide-features">
-                  <div className="professional-slide-feature">
+                <div className="flex gap-3 flex-wrap">
+                  <div className="flex items-center gap-2 bg-secondary/80 text-secondary-foreground px-3 py-1 rounded-lg text-sm transition-all hover:bg-secondary">
                     <i className="fas fa-bed text-primary"></i>
                     <span>{property.bedrooms}</span>
                   </div>
-                  <div className="professional-slide-feature">
+                  <div className="flex items-center gap-2 bg-secondary/80 text-secondary-foreground px-3 py-1 rounded-lg text-sm transition-all hover:bg-secondary">
                     <i className="fas fa-bath text-primary"></i>
                     <span>{property.bathrooms}</span>
                   </div>
-                  <div className="professional-slide-feature">
+                  <div className="flex items-center gap-2 bg-secondary/80 text-secondary-foreground px-3 py-1 rounded-lg text-sm transition-all hover:bg-secondary">
                     <i className="fas fa-ruler-combined text-primary"></i>
                     <span>{property.area_sqm}m²</span>
                   </div>
@@ -167,14 +169,14 @@ const PropertySlideshow = () => {
         {properties.length > slidesToShow && (
           <>
             <button 
-              className="professional-nav-arrow absolute left-4 top-1/2 -translate-y-1/2 z-10"
+              className="absolute left-4 top-1/2 -translate-y-1/2 z-10 w-12 h-12 rounded-full macos-glass flex items-center justify-center text-foreground hover:bg-primary hover:text-primary-foreground hover:scale-110 transition-all duration-300"
               onClick={prevSlide}
               aria-label="Previous slide"
             >
               <ChevronLeft className="h-6 w-6" />
             </button>
             <button 
-              className="professional-nav-arrow absolute right-4 top-1/2 -translate-y-1/2 z-10"
+              className="absolute right-4 top-1/2 -translate-y-1/2 z-10 w-12 h-12 rounded-full macos-glass flex items-center justify-center text-foreground hover:bg-primary hover:text-primary-foreground hover:scale-110 transition-all duration-300"
               onClick={nextSlide}
               aria-label="Next slide"
             >
@@ -190,7 +192,11 @@ const PropertySlideshow = () => {
           {Array.from({ length: maxSlides }, (_, index) => (
             <button
               key={index}
-              className={`professional-dot ${index === currentSlide ? 'active' : ''}`}
+              className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                index === currentSlide 
+                  ? 'bg-primary scale-150 shadow-lg' 
+                  : 'bg-muted-foreground hover:bg-primary/60 hover:scale-125'
+              }`}
               onClick={() => goToSlide(index)}
               aria-label={`Go to slide ${index + 1}`}
             />
