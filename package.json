@@ -1,4 +1,15 @@
 {
+  "scripts": {
+    "ai-review": "node ./ai-assistant/review.js",
+    "ai-refactor": "node ./ai-assistant/refactor.js",
+    "ai-suggest": "node ./ai-assistant/suggest.js"
+  },
+  "dependencies": {
+    "@deepseek/sdk": "^1.0.0", // Hypothetical DeepSeek SDK
+    "openai": "^4.0.0",         // Fallback option
+    "glob": "^8.0.0"
+  }
+{
   "name": "vite_react_shadcn_ts",
   "private": true,
   "version": "0.0.0",
