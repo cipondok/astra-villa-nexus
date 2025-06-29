@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Navigation from "@/components/Navigation";
@@ -10,7 +9,6 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import ResponsiveAIChatWidget from "@/components/ai/ResponsiveAIChatWidget";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import "@/components/PropertySlideshow.css";
 
 const Index = () => {
   const { language } = useLanguage();
@@ -136,21 +134,21 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen wwdc-gradient-bg">
+    <div className="min-h-screen bg-background">
       <Navigation />
       
       {/* Hero Section with WWDC 2025 Styling */}
-      <section className="relative py-32 px-4 wwdc-dark-gradient">
+      <section className="relative py-32 px-4 bg-gradient-to-b from-background to-secondary/20">
         <div className="container mx-auto text-center">
           <div className="mb-16 wwdc-fade-in">
             <h1 className="wwdc-title mb-6 animate-wwdc-float">
               Find Your Perfect Property
               <span className="block text-3xl md:text-4xl wwdc-text-gradient font-medium mt-4">
-                Premium Real Estate Platform
+                AI-Powered Real Estate Platform
               </span>
             </h1>
             <p className="wwdc-subtitle max-w-2xl mx-auto animate-wwdc-pulse">
-              Discover amazing properties with our advanced search platform powered by cutting-edge technology
+              Discover amazing properties with our advanced AI search platform powered by cutting-edge technology
             </p>
           </div>
           
@@ -165,7 +163,7 @@ const Index = () => {
       </section>
 
       {/* Quick Action Buttons with WWDC Styling */}
-      <section className="py-16 bg-wwdc-dark">
+      <section className="py-16 bg-secondary/30">
         <div className="container mx-auto px-4">
           <div className="flex flex-wrap justify-center gap-6">
             <Button 
@@ -201,10 +199,10 @@ const Index = () => {
       </section>
 
       {/* Property Slideshow with WWDC 2025 Design */}
-      <section className="py-20 bg-wwdc-midnight">
+      <section className="py-20 bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16 wwdc-fade-in">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 wwdc-text-gradient">
+            <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6 wwdc-text-gradient">
               Featured Properties
             </h2>
             <p className="wwdc-subtitle text-xl">
@@ -219,7 +217,7 @@ const Index = () => {
       {searchError && (
         <section className="py-8">
           <div className="container mx-auto px-4">
-            <div className="wwdc-glass border border-wwdc-red/40 text-wwdc-red text-center p-8 rounded-2xl max-w-2xl mx-auto">
+            <div className="wwdc-glass border border-red-500/40 text-red-500 text-center p-8 rounded-2xl max-w-2xl mx-auto">
               <i className="fas fa-exclamation-triangle text-2xl mb-4"></i>
               <p className="text-lg font-medium">⚠️ {searchError}</p>
             </div>
@@ -228,7 +226,7 @@ const Index = () => {
       )}
 
       {/* Property Listings */}
-      <div className="px-4 bg-wwdc-dark">
+      <div className="px-4 bg-secondary/10">
         <PropertyListingsSection
           language={language}
           searchResults={hasSearched ? searchResults : featuredProperties}
