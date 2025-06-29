@@ -68,7 +68,7 @@ const Navigation = () => {
 
   return (
     <>
-      <nav className="wwdc-nav">
+      <nav className="titanium-nav">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             {/* ASTRA Villa Logo with AI Effects */}
@@ -77,18 +77,18 @@ const Navigation = () => {
               onClick={() => navigate('/')}
             >
               <div className="relative">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-primary via-purple-500 to-pink-500 flex items-center justify-center transform transition-all duration-300 group-hover:scale-110 group-hover:rotate-3 shadow-lg">
-                  <Brain className="h-5 w-5 text-white animate-pulse" />
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-primary via-secondary to-accent flex items-center justify-center transform transition-all duration-300 group-hover:scale-110 group-hover:rotate-3 shadow-lg">
+                  <Brain className="h-5 w-5 text-primary-foreground animate-pulse" />
                 </div>
-                <div className="absolute -inset-1 bg-gradient-to-r from-primary via-purple-500 to-pink-500 rounded-xl blur opacity-30 group-hover:opacity-60 transition-all duration-300 animate-pulse"></div>
+                <div className="absolute -inset-1 bg-gradient-to-r from-primary via-secondary to-accent rounded-xl blur opacity-30 group-hover:opacity-60 transition-all duration-300 animate-pulse"></div>
               </div>
               <div className="hidden sm:block">
                 <div className="flex items-center space-x-2">
-                  <span className="text-xl font-bold wwdc-text-gradient">
+                  <span className="text-xl font-bold titanium-text-gradient">
                     ASTRA
                   </span>
                   <span className="text-xl font-bold text-foreground">Villa</span>
-                  <div className="w-2 h-2 rounded-full bg-gradient-to-r from-primary to-purple-500 animate-pulse"></div>
+                  <div className="w-2 h-2 rounded-full bg-gradient-to-r from-primary to-accent animate-pulse"></div>
                 </div>
                 <div className="text-xs text-muted-foreground font-medium">AI-Powered Property Platform</div>
               </div>
@@ -98,14 +98,14 @@ const Navigation = () => {
             <div className="hidden lg:flex items-center space-x-6">
               <Button 
                 variant="ghost" 
-                className="wwdc-nav-item"
+                className="titanium-nav-item"
                 onClick={() => navigate('/')}
               >
                 {currentText.home}
               </Button>
               <Button 
                 variant="ghost" 
-                className="wwdc-nav-item"
+                className="titanium-nav-item"
                 onClick={() => navigate('/services')}
               >
                 {currentText.services}
@@ -113,7 +113,7 @@ const Navigation = () => {
               {user && (
                 <Button 
                   variant="ghost" 
-                  className="wwdc-nav-item"
+                  className="titanium-nav-item"
                   onClick={() => navigate('/dashboard')}
                 >
                   {currentText.dashboard}
@@ -122,7 +122,7 @@ const Navigation = () => {
               {profile?.role === 'admin' && (
                 <Button 
                   variant="ghost" 
-                  className="text-yellow-400 hover:text-yellow-300 hover:bg-yellow-600/20 wwdc-nav-item"
+                  className="text-accent hover:text-accent/80 hover:bg-accent/20 titanium-nav-item"
                   onClick={() => navigate('/admin')}
                 >
                   <Crown className="h-4 w-4 mr-2" />
@@ -135,10 +135,10 @@ const Navigation = () => {
             <div className="flex items-center space-x-3">
               {/* Smart AI Icon */}
               <div className="relative group">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-primary/20 to-purple-500/20 backdrop-blur-sm border border-primary/30 flex items-center justify-center cursor-pointer transition-all duration-300 hover:scale-110 hover:bg-gradient-to-r hover:from-primary/30 hover:to-purple-500/30">
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-primary/20 to-accent/20 backdrop-blur-sm border border-primary/30 flex items-center justify-center cursor-pointer transition-all duration-300 hover:scale-110 hover:bg-gradient-to-r hover:from-primary/30 hover:to-accent/30">
                   <Sparkles className="h-4 w-4 text-primary animate-pulse" />
                 </div>
-                <div className="absolute -inset-0.5 bg-gradient-to-r from-primary/20 to-purple-500/20 rounded-lg blur opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-primary/20 to-accent/20 rounded-lg blur opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
               </div>
 
               {/* Dark Mode Toggle */}
@@ -146,7 +146,7 @@ const Navigation = () => {
                 variant="ghost"
                 size="sm"
                 onClick={toggleTheme}
-                className="wwdc-nav-item relative group w-8 h-8 p-0 rounded-lg bg-secondary/50 hover:bg-secondary/80 border border-border/50"
+                className="titanium-nav-item relative group w-8 h-8 p-0 rounded-lg bg-secondary/50 hover:bg-secondary/80 border border-border/50"
               >
                 {theme === "light" ? (
                   <Moon className="h-4 w-4 transition-transform group-hover:rotate-12" />
@@ -169,14 +169,14 @@ const Navigation = () => {
                       {profile?.role || 'user'}
                     </div>
                   </div>
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-r from-primary to-purple-500 flex items-center justify-center shadow-lg">
-                    <User className="h-4 w-4 text-white" />
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-r from-primary to-accent flex items-center justify-center shadow-lg">
+                    <User className="h-4 w-4 text-primary-foreground" />
                   </div>
                   <Button 
                     variant="ghost" 
                     size="sm"
                     onClick={handleSignOut}
-                    className="text-muted-foreground hover:text-red-500 hover:bg-red-500/10 rounded-lg"
+                    className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg"
                   >
                     <LogOut className="h-4 w-4" />
                   </Button>
@@ -184,7 +184,7 @@ const Navigation = () => {
               ) : (
                 <Button
                   onClick={() => setShowAuthModal(true)}
-                  className="wwdc-button-primary text-sm px-4 py-2"
+                  className="titanium-button-primary text-sm px-4 py-2"
                 >
                   {currentText.signIn}
                 </Button>
@@ -194,7 +194,7 @@ const Navigation = () => {
               <Button
                 variant="ghost"
                 size="sm"
-                className="lg:hidden wwdc-nav-item w-8 h-8 p-0"
+                className="lg:hidden titanium-nav-item w-8 h-8 p-0"
                 onClick={toggleMenu}
               >
                 {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -204,21 +204,21 @@ const Navigation = () => {
 
           {/* Mobile Navigation */}
           {isMenuOpen && (
-            <div className="lg:hidden border-t border-border wwdc-glass mt-2 rounded-2xl">
+            <div className="lg:hidden border-t border-border titanium-glass mt-2 rounded-2xl">
               <div className="px-2 pt-2 pb-3 space-y-1">
-                <Button variant="ghost" className="block w-full text-left px-3 py-2 rounded-md wwdc-nav-item" onClick={() => { navigate('/'); toggleMenu(); }}>
+                <Button variant="ghost" className="block w-full text-left px-3 py-2 rounded-md titanium-nav-item" onClick={() => { navigate('/'); toggleMenu(); }}>
                   {currentText.home}
                 </Button>
-                <Button variant="ghost" className="block w-full text-left px-3 py-2 rounded-md wwdc-nav-item" onClick={() => { navigate('/services'); toggleMenu(); }}>
+                <Button variant="ghost" className="block w-full text-left px-3 py-2 rounded-md titanium-nav-item" onClick={() => { navigate('/services'); toggleMenu(); }}>
                   {currentText.services}
                 </Button>
                 {user && (
-                  <Button variant="ghost" className="block w-full text-left px-3 py-2 rounded-md wwdc-nav-item" onClick={() => { navigate('/dashboard'); toggleMenu(); }}>
+                  <Button variant="ghost" className="block w-full text-left px-3 py-2 rounded-md titanium-nav-item" onClick={() => { navigate('/dashboard'); toggleMenu(); }}>
                     {currentText.dashboard}
                   </Button>
                 )}
                 {profile?.role === 'admin' && (
-                  <Button variant="ghost" className="block w-full text-left px-3 py-2 rounded-md text-yellow-400 hover:text-yellow-300 hover:bg-yellow-600/20" onClick={() => { navigate('/admin'); toggleMenu(); }}>
+                  <Button variant="ghost" className="block w-full text-left px-3 py-2 rounded-md text-accent hover:text-accent/80 hover:bg-accent/20" onClick={() => { navigate('/admin'); toggleMenu(); }}>
                     {currentText.adminPanel}
                   </Button>
                 )}
@@ -227,7 +227,7 @@ const Navigation = () => {
                     variant="ghost"
                     size="sm"
                     onClick={toggleTheme}
-                    className="wwdc-nav-item"
+                    className="titanium-nav-item"
                   >
                     {theme === "light" ? <Moon className="h-4 w-4 mr-2" /> : <Sun className="h-4 w-4 mr-2" />}
                     {theme === "light" ? "Dark" : "Light"}
@@ -235,7 +235,7 @@ const Navigation = () => {
                   <LanguageToggleSwitch />
                 </div>
                 {user && (
-                  <Button variant="ghost" className="block w-full text-left px-3 py-2 rounded-md text-red-500 hover:bg-red-500/10" onClick={handleSignOut}>
+                  <Button variant="ghost" className="block w-full text-left px-3 py-2 rounded-md text-destructive hover:bg-destructive/10" onClick={handleSignOut}>
                     {currentText.signOut}
                   </Button>
                 )}

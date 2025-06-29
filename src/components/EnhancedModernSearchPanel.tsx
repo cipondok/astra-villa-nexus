@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -142,8 +141,8 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: SearchP
 
   return (
     <div className="w-full max-w-7xl mx-auto px-2 sm:px-4">
-      <Card className="wwdc-glass border-2 border-border/30 shadow-2xl">
-        <CardContent className="p-3 sm:p-6 lg:p-8">
+      <div className="titanium-glass border-2 border-border/30 shadow-2xl rounded-2xl">
+        <div className="p-3 sm:p-6 lg:p-8">
           {/* Header with Active Filters Count & Clear Button */}
           {activeFiltersCount > 0 && (
             <div className="flex items-center justify-between mb-4 sm:mb-6 p-3 sm:p-4 bg-primary/5 rounded-xl sm:rounded-2xl border border-primary/20 shadow-sm">
@@ -153,16 +152,16 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: SearchP
                   <span className="text-xs sm:text-sm font-semibold text-primary">
                     {currentText.activeFilters}
                   </span>
-                  <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20 font-medium px-2 py-1 text-xs sm:text-sm">
+                  <span className="bg-primary/10 text-primary border-primary/20 font-medium px-2 py-1 text-xs sm:text-sm rounded-full border">
                     {activeFiltersCount}
-                  </Badge>
+                  </span>
                 </div>
               </div>
               <Button
                 variant="outline"
                 size="sm"
                 onClick={clearAllFilters}
-                className="text-red-500 hover:text-red-600 hover:bg-red-50 border-red-200 hover:border-red-300 font-medium transition-all duration-200 text-xs sm:text-sm px-2 sm:px-3"
+                className="text-destructive hover:text-destructive hover:bg-destructive/10 border-destructive/30 hover:border-destructive/50 font-medium transition-all duration-200 text-xs sm:text-sm px-2 sm:px-3"
               >
                 <X className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                 <span className="hidden sm:inline">{currentText.clearFilters}</span>
@@ -197,7 +196,7 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: SearchP
                       <SelectValue placeholder={currentText.state} className="text-xs sm:text-sm truncate" />
                     </div>
                   </SelectTrigger>
-                  <SelectContent className="wwdc-glass border border-border shadow-xl rounded-xl sm:rounded-2xl z-50">
+                  <SelectContent className="titanium-glass border border-border shadow-xl rounded-xl sm:rounded-2xl z-50">
                     <SelectItem value="all" className="font-semibold text-primary hover:bg-primary/10">
                       <div className="flex items-center gap-2">
                         <Home className="h-4 w-4" />
@@ -222,7 +221,7 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: SearchP
                       <SelectValue placeholder={currentText.type} className="text-xs sm:text-sm truncate" />
                     </div>
                   </SelectTrigger>
-                  <SelectContent className="wwdc-glass border border-border shadow-xl rounded-xl sm:rounded-2xl z-50">
+                  <SelectContent className="titanium-glass border border-border shadow-xl rounded-xl sm:rounded-2xl z-50">
                     <SelectItem value="all" className="font-semibold text-primary hover:bg-primary/10">
                       <div className="flex items-center gap-2">
                         <Home className="h-4 w-4" />
@@ -247,7 +246,7 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: SearchP
                       <SelectValue placeholder={currentText.bedrooms} className="text-xs sm:text-sm truncate" />
                     </div>
                   </SelectTrigger>
-                  <SelectContent className="wwdc-glass border border-border shadow-xl rounded-xl sm:rounded-2xl z-50">
+                  <SelectContent className="titanium-glass border border-border shadow-xl rounded-xl sm:rounded-2xl z-50">
                     <SelectItem value="any" className="font-semibold text-primary hover:bg-primary/10">
                       <div className="flex items-center gap-2">
                         <Bed className="h-4 w-4" />
@@ -271,7 +270,7 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: SearchP
                       <SelectValue placeholder={currentText.bathrooms} className="text-xs sm:text-sm truncate" />
                     </div>
                   </SelectTrigger>
-                  <SelectContent className="wwdc-glass border border-border shadow-xl rounded-xl sm:rounded-2xl z-50">
+                  <SelectContent className="titanium-glass border border-border shadow-xl rounded-xl sm:rounded-2xl z-50">
                     <SelectItem value="any" className="font-semibold text-primary hover:bg-primary/10">
                       <div className="flex items-center gap-2">
                         <Bath className="h-4 w-4" />
@@ -290,7 +289,7 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: SearchP
             {/* Search Button - Full Width on Mobile */}
             <Button 
               onClick={handleSearch}
-              className="w-full h-12 sm:h-14 wwdc-button-primary text-sm sm:text-base shadow-lg hover:shadow-xl transition-all duration-200 rounded-xl sm:rounded-2xl"
+              className="w-full h-12 sm:h-14 titanium-button-primary text-sm sm:text-base shadow-lg hover:shadow-xl transition-all duration-200 rounded-xl sm:rounded-2xl"
             >
               <Search className="h-4 w-4 sm:h-5 sm:w-5 mr-2 sm:mr-3" />
               {currentText.searchBtn}
@@ -305,19 +304,18 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: SearchP
             </div>
             <div className="flex flex-wrap gap-2 sm:gap-3">
               {trendingSearches.map((term, index) => (
-                <Badge 
+                <span
                   key={index} 
-                  variant="secondary" 
-                  className="cursor-pointer hover:bg-primary/10 hover:text-primary hover:border-primary/20 transition-all duration-200 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium rounded-full shadow-sm hover:shadow-md"
+                  className="cursor-pointer hover:bg-primary/10 hover:text-primary hover:border-primary/20 transition-all duration-200 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium rounded-full shadow-sm hover:shadow-md bg-secondary/80 text-secondary-foreground border border-border"
                   onClick={() => handleQuickSearch(term)}
                 >
                   {term}
-                </Badge>
+                </span>
               ))}
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 };

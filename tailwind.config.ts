@@ -53,28 +53,14 @@ const config: Config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        // WWDC 2025 Color System
-        'wwdc': {
-          'midnight': '#000000',
-          'dark': '#1c1c1e',
-          'gray-1': '#2c2c2e',
-          'gray-2': '#3a3a3c',
-          'gray-3': '#48484a',
-          'gray-4': '#636366',
-          'gray-5': '#8e8e93',
-          'gray-6': '#aeaeb2',
-          'light-gray': '#c7c7cc',
-          'white': '#ffffff',
-          'blue': '#007aff',
-          'blue-light': '#5ac8fa',
-          'purple': '#af52de',
-          'pink': '#ff2d92',
-          'red': '#ff3b30',
-          'orange': '#ff9500',
-          'yellow': '#ffcc00',
-          'green': '#30d158',
-          'teal': '#40c8e0',
-          'indigo': '#5856d6',
+        // Titanium Color System
+        'titanium': {
+          'white': '#E4E4E2',
+          'gray': '#3A3A3C',
+          'gold': '#D4AF37',
+          'bronze': '#5A4B3C',
+          'blue': '#2B2D42',
+          'dark': '#1C1C1E',
         },
       },
       borderRadius: {
@@ -115,15 +101,15 @@ const config: Config = {
             opacity: "1"
           }
         },
-        "wwdc-glow": {
+        "titanium-glow": {
           "0%, 100%": {
-            boxShadow: "0 0 20px rgba(0, 122, 255, 0.3)"
+            boxShadow: "0 0 20px rgba(212, 175, 55, 0.3)"
           },
           "50%": {
-            boxShadow: "0 0 40px rgba(0, 122, 255, 0.6)"
+            boxShadow: "0 0 40px rgba(212, 175, 55, 0.6)"
           }
         },
-        "wwdc-float": {
+        "titanium-float": {
           "0%, 100%": {
             transform: "translateY(0px)"
           },
@@ -131,7 +117,7 @@ const config: Config = {
             transform: "translateY(-6px)"
           }
         },
-        "wwdc-pulse": {
+        "titanium-pulse": {
           "0%, 100%": {
             opacity: "1"
           },
@@ -145,22 +131,22 @@ const config: Config = {
         "accordion-up": "accordion-up 0.2s ease-out",
         "fade-in": "fade-in 0.3s ease-out",
         "scale-in": "scale-in 0.2s ease-out",
-        "wwdc-glow": "wwdc-glow 2s ease-in-out infinite",
-        "wwdc-float": "wwdc-float 3s ease-in-out infinite",
-        "wwdc-pulse": "wwdc-pulse 2s ease-in-out infinite",
+        "titanium-glow": "titanium-glow 2s ease-in-out infinite",
+        "titanium-float": "titanium-float 3s ease-in-out infinite",
+        "titanium-pulse": "titanium-pulse 2s ease-in-out infinite",
       },
       backdropBlur: {
         xs: '2px',
       },
       backgroundImage: {
-        'wwdc-gradient': 'linear-gradient(135deg, #007aff 0%, #af52de 100%)',
-        'wwdc-dark-gradient': 'linear-gradient(180deg, #000000 0%, #1c1c1e 100%)',
-        'wwdc-card-gradient': 'linear-gradient(135deg, #2c2c2e 0%, rgba(0, 122, 255, 0.05) 100%)',
+        'titanium-gradient': 'linear-gradient(135deg, #D4AF37 0%, #5A4B3C 100%)',
+        'titanium-dark-gradient': 'linear-gradient(180deg, #1C1C1E 0%, #3A3A3C 100%)',
+        'titanium-card-gradient': 'linear-gradient(135deg, #3A3A3C 0%, rgba(212, 175, 55, 0.05) 100%)',
       },
       boxShadow: {
-        'wwdc': '0 8px 32px rgba(0, 0, 0, 0.2)',
-        'wwdc-hover': '0 20px 60px rgba(0, 122, 255, 0.3)',
-        'wwdc-glow': '0 0 20px rgba(0, 122, 255, 0.4)',
+        'titanium': '0 8px 32px rgba(0, 0, 0, 0.2)',
+        'titanium-hover': '0 20px 60px rgba(212, 175, 55, 0.3)',
+        'titanium-glow': '0 0 20px rgba(212, 175, 55, 0.4)',
       }
     },
   },

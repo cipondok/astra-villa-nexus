@@ -86,7 +86,7 @@ const PropertySlideshow = () => {
       <div className="w-full max-w-7xl mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {[...Array(4)].map((_, index) => (
-            <div key={index} className="wwdc-card animate-pulse">
+            <div key={index} className="titanium-card animate-pulse">
               <div className="h-56 bg-muted rounded-xl mb-4"></div>
               <div className="space-y-3">
                 <div className="h-4 bg-muted rounded w-3/4"></div>
@@ -118,14 +118,14 @@ const PropertySlideshow = () => {
           {properties.map((property, index) => (
             <div 
               key={property.id} 
-              className="wwdc-slide-card flex-shrink-0"
+              className="titanium-slide-card flex-shrink-0"
               style={{ width: `calc(${100 / slidesToShow}% - 1.5rem)` }}
             >
-              <div className="relative overflow-hidden rounded-t-2xl">
+              <div className="relative overflow-hidden rounded-t-xl">
                 <img
                   src={property.thumbnail_url || property.images?.[0] || '/placeholder.svg'}
                   alt={property.title}
-                  className="wwdc-slide-image"
+                  className="titanium-slide-image"
                 />
                 <div className="absolute top-4 right-4">
                   <span className="px-3 py-1 bg-primary/90 text-primary-foreground text-xs font-semibold rounded-full backdrop-blur-sm">
@@ -134,25 +134,25 @@ const PropertySlideshow = () => {
                 </div>
               </div>
               
-              <div className="wwdc-slide-content">
-                <h3 className="wwdc-slide-title">{property.title}</h3>
-                <div className="wwdc-slide-location">
+              <div className="titanium-slide-content">
+                <h3 className="titanium-slide-title">{property.title}</h3>
+                <div className="titanium-slide-location">
                   <i className="fas fa-map-marker-alt text-primary"></i>
                   {property.city}, {property.state}
                 </div>
-                <div className="wwdc-slide-price">
+                <div className="titanium-slide-price">
                   {formatPrice(property.price)}
                 </div>
-                <div className="wwdc-slide-features">
-                  <div className="wwdc-slide-feature">
+                <div className="titanium-slide-features">
+                  <div className="titanium-slide-feature">
                     <i className="fas fa-bed text-primary"></i>
                     {property.bedrooms}
                   </div>
-                  <div className="wwdc-slide-feature">
+                  <div className="titanium-slide-feature">
                     <i className="fas fa-bath text-primary"></i>
                     {property.bathrooms}
                   </div>
-                  <div className="wwdc-slide-feature">
+                  <div className="titanium-slide-feature">
                     <i className="fas fa-ruler-combined text-primary"></i>
                     {property.area_sqm}m²
                   </div>
@@ -166,14 +166,14 @@ const PropertySlideshow = () => {
         {properties.length > slidesToShow && (
           <>
             <button 
-              className="wwdc-nav-arrow absolute left-4 top-1/2 -translate-y-1/2 z-10"
+              className="titanium-nav-arrow absolute left-4 top-1/2 -translate-y-1/2 z-10"
               onClick={prevSlide}
               aria-label="Previous slide"
             >
               <ChevronLeft className="h-6 w-6" />
             </button>
             <button 
-              className="wwdc-nav-arrow absolute right-4 top-1/2 -translate-y-1/2 z-10"
+              className="titanium-nav-arrow absolute right-4 top-1/2 -translate-y-1/2 z-10"
               onClick={nextSlide}
               aria-label="Next slide"
             >
@@ -189,7 +189,7 @@ const PropertySlideshow = () => {
           {Array.from({ length: maxSlides }, (_, index) => (
             <button
               key={index}
-              className={`wwdc-dot ${index === currentSlide ? 'active' : ''}`}
+              className={`titanium-dot ${index === currentSlide ? 'active' : ''}`}
               onClick={() => goToSlide(index)}
               aria-label={`Go to slide ${index + 1}`}
             />

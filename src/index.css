@@ -3,75 +3,65 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Apple WWDC 2025 Design System */
+/* SF Pro Display Font */
+@import url('https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600;700;800;900&display=swap');
+
+/* Titanium Design System */
 @layer base {
   :root {
-    /* WWDC 2025 Light Mode Colors */
-    --wwdc-midnight: #000000;
-    --wwdc-dark: #1c1c1e;
-    --wwdc-gray-1: #2c2c2e;
-    --wwdc-gray-2: #3a3a3c;
-    --wwdc-gray-3: #48484a;
-    --wwdc-gray-4: #636366;
-    --wwdc-gray-5: #8e8e93;
-    --wwdc-gray-6: #aeaeb2;
-    --wwdc-light-gray: #c7c7cc;
-    --wwdc-white: #ffffff;
-    --wwdc-blue: #007aff;
-    --wwdc-blue-light: #5ac8fa;
-    --wwdc-purple: #af52de;
-    --wwdc-pink: #ff2d92;
-    --wwdc-red: #ff3b30;
-    --wwdc-orange: #ff9500;
-    --wwdc-yellow: #ffcc00;
-    --wwdc-green: #30d158;
-    --wwdc-teal: #40c8e0;
-    --wwdc-indigo: #5856d6;
+    /* Base Titanium Colors */
+    --titanium-white: #E4E4E2;
+    --titanium-gray: #3A3A3C;
+    --titanium-gold: #D4AF37;
+    --titanium-bronze: #5A4B3C;
+    --titanium-blue: #2B2D42;
+    --titanium-dark: #1C1C1E;
     
-    /* Light Mode Dynamic Colors */
-    --background: 248 250 252;
-    --foreground: 15 23 42;
-    --card: 255 255 255;
-    --card-foreground: 15 23 42;
-    --popover: 255 255 255;
-    --popover-foreground: 15 23 42;
-    --primary: 0 122 255;
-    --primary-foreground: 255 255 255;
-    --secondary: 240 244 248;
-    --secondary-foreground: 51 65 85;
-    --muted: 241 245 249;
-    --muted-foreground: 100 116 139;
-    --accent: 226 232 240;
-    --accent-foreground: 51 65 85;
-    --destructive: 239 68 68;
+    /* Light Mode Colors */
+    --background: 255 255 255;
+    --foreground: 28 28 30;
+    --card: 228 228 226;
+    --card-foreground: 28 28 30;
+    --popover: 228 228 226;
+    --popover-foreground: 28 28 30;
+    --primary: 212 175 55;
+    --primary-foreground: 28 28 30;
+    --secondary: 58 58 60;
+    --secondary-foreground: 228 228 226;
+    --muted: 244 244 244;
+    --muted-foreground: 58 58 60;
+    --accent: 212 175 55;
+    --accent-foreground: 28 28 30;
+    --destructive: 255 59 48;
     --destructive-foreground: 255 255 255;
-    --border: 226 232 240;
-    --input: 226 232 240;
-    --ring: 0 122 255;
-    --radius: 1rem;
+    --border: 58 58 60;
+    --input: 228 228 226;
+    --ring: 212 175 55;
+    --radius: 12px;
+    --shadow-intensity: 0.15;
   }
 
   .dark {
-    /* Dark Mode Dynamic Colors */
-    --background: 15 15 17;
-    --foreground: 248 250 252;
-    --card: 28 28 30;
-    --card-foreground: 248 250 252;
-    --popover: 28 28 30;
-    --popover-foreground: 248 250 252;
-    --primary: 90 200 250;
+    /* Dark Mode Colors */
+    --background: 28 28 30;
+    --foreground: 228 228 226;
+    --card: 58 58 60;
+    --card-foreground: 228 228 226;
+    --popover: 58 58 60;
+    --popover-foreground: 228 228 226;
+    --primary: 212 175 55;
     --primary-foreground: 28 28 30;
-    --secondary: 44 44 46;
-    --secondary-foreground: 174 174 178;
-    --muted: 44 44 46;
-    --muted-foreground: 142 142 147;
-    --accent: 58 58 60;
-    --accent-foreground: 174 174 178;
+    --secondary: 90 75 60;
+    --secondary-foreground: 228 228 226;
+    --muted: 58 58 60;
+    --muted-foreground: 228 228 226;
+    --accent: 212 175 55;
+    --accent-foreground: 28 28 30;
     --destructive: 255 59 48;
-    --destructive-foreground: 248 250 252;
-    --border: 58 58 60;
+    --destructive-foreground: 228 228 226;
+    --border: 90 75 60;
     --input: 58 58 60;
-    --ring: 90 200 250;
+    --ring: 212 175 55;
   }
 
   * {
@@ -79,20 +69,20 @@
   }
 
   body {
-    @apply bg-background text-foreground transition-colors duration-300;
-    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', sans-serif;
+    @apply bg-background text-foreground transition-all duration-300;
+    font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
   /* Light Mode Background */
   body:not(.dark) {
-    background: linear-gradient(135deg, rgb(248, 250, 252) 0%, rgb(241, 245, 249) 50%, rgb(226, 232, 240) 100%);
+    background: linear-gradient(135deg, rgb(255, 255, 255) 0%, rgb(244, 244, 244) 50%, rgb(228, 228, 226) 100%);
   }
 
   /* Dark Mode Background */
   body.dark {
-    background: linear-gradient(135deg, rgb(15, 15, 17) 0%, rgb(28, 28, 30) 50%, rgb(44, 44, 46) 100%);
+    background: linear-gradient(135deg, rgb(28, 28, 30) 0%, rgb(58, 58, 60) 50%, rgb(90, 75, 60) 100%);
   }
 
   html {
@@ -101,89 +91,78 @@
 }
 
 @layer components {
-  /* WWDC 2025 Glass Effect */
-  .wwdc-glass {
+  /* Titanium Glass Effect */
+  .titanium-glass {
     @apply backdrop-blur-xl border transition-all duration-300;
-    background: rgba(255, 255, 255, 0.8);
-    border-color: rgba(226, 232, 240, 0.5);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
-  }
-
-  .dark .wwdc-glass {
-    background: rgba(28, 28, 30, 0.8);
+    background: rgba(228, 228, 226, 0.8);
     border-color: rgba(58, 58, 60, 0.5);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, var(--shadow-intensity, 0.15));
   }
 
-  /* WWDC 2025 Buttons */
-  .wwdc-button-primary {
-    background: linear-gradient(135deg, rgb(0, 122, 255) 0%, rgb(175, 82, 222) 100%);
-    color: white;
+  .dark .titanium-glass {
+    background: rgba(58, 58, 60, 0.8);
+    border-color: rgba(90, 75, 60, 0.5);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  }
+
+  /* Titanium Buttons */
+  .titanium-button-primary {
+    background: linear-gradient(135deg, rgb(212, 175, 55) 0%, rgb(90, 75, 60) 100%);
+    color: rgb(28, 28, 30);
     padding: 12px 24px;
-    border-radius: 16px;
+    border-radius: var(--radius);
     font-weight: 600;
     font-size: 16px;
     border: none;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    box-shadow: 0 4px 20px rgba(0, 122, 255, 0.25);
+    box-shadow: 0 4px 20px rgba(212, 175, 55, 0.25);
   }
 
-  .wwdc-button-primary:hover {
+  .titanium-button-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 30px rgba(0, 122, 255, 0.35);
-    background: linear-gradient(135deg, rgb(90, 200, 250) 0%, rgb(255, 45, 146) 100%);
+    box-shadow: 0 8px 30px rgba(212, 175, 55, 0.35);
+    background: linear-gradient(135deg, rgb(212, 175, 55) 0%, rgb(43, 45, 66) 100%);
   }
 
-  .dark .wwdc-button-primary {
-    background: linear-gradient(135deg, rgb(90, 200, 250) 0%, rgb(175, 82, 222) 100%);
-    box-shadow: 0 4px 20px rgba(90, 200, 250, 0.25);
-  }
-
-  .dark .wwdc-button-primary:hover {
-    box-shadow: 0 8px 30px rgba(90, 200, 250, 0.35);
-  }
-
-  .wwdc-button-secondary {
+  .titanium-button-secondary {
     @apply bg-secondary text-secondary-foreground border border-border;
     padding: 12px 24px;
-    border-radius: 16px;
+    border-radius: var(--radius);
     font-weight: 500;
     cursor: pointer;
     transition: all 0.3s ease;
   }
 
-  .wwdc-button-secondary:hover {
+  .titanium-button-secondary:hover {
     @apply bg-secondary/80;
     transform: translateY(-1px);
   }
 
-  /* WWDC 2025 Cards */
-  .wwdc-card {
-    @apply bg-card/95 text-card-foreground border border-border/50 rounded-2xl p-6 backdrop-blur-xl;
+  /* Titanium Cards */
+  .titanium-card {
+    @apply bg-card/95 text-card-foreground border border-border/50 backdrop-blur-xl;
+    border-radius: var(--radius);
+    padding: 24px;
     transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, var(--shadow-intensity, 0.15));
   }
 
-  .dark .wwdc-card {
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  .dark .titanium-card {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   }
 
-  .wwdc-card:hover {
+  .titanium-card:hover {
     transform: translateY(-8px);
     @apply border-primary/50;
-    box-shadow: 0 20px 60px rgba(0, 122, 255, 0.15);
+    box-shadow: 0 20px 60px rgba(212, 175, 55, 0.2);
   }
 
-  .dark .wwdc-card:hover {
-    box-shadow: 0 20px 60px rgba(90, 200, 250, 0.2);
-  }
-
-  /* WWDC 2025 Text Styles */
-  .wwdc-title {
+  /* Titanium Text Styles */
+  .titanium-title {
     font-size: 3.5rem;
     font-weight: 700;
-    background: linear-gradient(135deg, hsl(var(--foreground)) 0%, rgb(0, 122, 255) 100%);
+    background: linear-gradient(135deg, hsl(var(--foreground)) 0%, rgb(212, 175, 55) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -191,71 +170,54 @@
     letter-spacing: -0.02em;
   }
 
-  .dark .wwdc-title {
-    background: linear-gradient(135deg, hsl(var(--foreground)) 0%, rgb(90, 200, 250) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  .wwdc-subtitle {
+  .titanium-subtitle {
     font-size: 1.25rem;
     font-weight: 500;
     @apply text-muted-foreground;
     line-height: 1.4;
   }
 
-  .wwdc-text-gradient {
-    background: linear-gradient(135deg, rgb(0, 122, 255) 0%, rgb(175, 82, 222) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  .dark .wwdc-text-gradient {
-    background: linear-gradient(135deg, rgb(90, 200, 250) 0%, rgb(175, 82, 222) 100%);
+  .titanium-text-gradient {
+    background: linear-gradient(135deg, rgb(212, 175, 55) 0%, rgb(90, 75, 60) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
 
   /* Property Slideshow Styles */
-  .wwdc-slide-card {
-    @apply bg-card/95 border border-border/50 rounded-2xl overflow-hidden backdrop-blur-xl;
+  .titanium-slide-card {
+    @apply bg-card/95 border border-border/50 overflow-hidden backdrop-blur-xl;
+    border-radius: var(--radius);
     transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, var(--shadow-intensity, 0.15));
   }
 
-  .dark .wwdc-slide-card {
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  .dark .titanium-slide-card {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   }
 
-  .wwdc-slide-card:hover {
+  .titanium-slide-card:hover {
     transform: translateY(-12px) scale(1.02);
     @apply border-primary/60;
-    box-shadow: 0 25px 60px rgba(0, 122, 255, 0.2);
+    box-shadow: 0 25px 60px rgba(212, 175, 55, 0.25);
   }
 
-  .dark .wwdc-slide-card:hover {
-    box-shadow: 0 25px 60px rgba(90, 200, 250, 0.25);
-  }
-
-  .wwdc-slide-image {
+  .titanium-slide-image {
     width: 100%;
     height: 220px;
     object-fit: cover;
     transition: transform 0.4s ease;
   }
 
-  .wwdc-slide-card:hover .wwdc-slide-image {
+  .titanium-slide-card:hover .titanium-slide-image {
     transform: scale(1.05);
   }
 
-  .wwdc-slide-content {
+  .titanium-slide-content {
     padding: 24px;
   }
 
-  .wwdc-slide-title {
+  .titanium-slide-title {
     font-size: 1.25rem;
     font-weight: 600;
     @apply text-foreground;
@@ -263,7 +225,7 @@
     line-height: 1.3;
   }
 
-  .wwdc-slide-location {
+  .titanium-slide-location {
     color: rgb(var(--primary));
     font-size: 0.875rem;
     font-weight: 500;
@@ -273,24 +235,27 @@
     gap: 6px;
   }
 
-  .wwdc-slide-price {
+  .titanium-slide-price {
     font-size: 1.5rem;
     font-weight: 700;
-    background: linear-gradient(135deg, rgb(48, 209, 88) 0%, rgb(64, 200, 224) 100%);
+    background: linear-gradient(135deg, rgb(212, 175, 55) 0%, rgb(90, 75, 60) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
     margin-bottom: 16px;
   }
 
-  .wwdc-slide-features {
+  .titanium-slide-features {
     display: flex;
     gap: 12px;
     flex-wrap: wrap;
   }
 
-  .wwdc-slide-feature {
-    @apply bg-secondary/80 text-secondary-foreground rounded-lg px-3 py-1.5 text-sm;
+  .titanium-slide-feature {
+    @apply bg-secondary/80 text-secondary-foreground;
+    border-radius: calc(var(--radius) * 0.5);
+    padding: 6px 12px;
+    font-size: 0.875rem;
     display: flex;
     align-items: center;
     gap: 4px;
@@ -298,32 +263,31 @@
     border: 1px solid transparent;
   }
 
-  .wwdc-slide-feature:hover {
+  .titanium-slide-feature:hover {
     @apply bg-secondary border-border;
   }
 
   /* Navigation Arrows */
-  .wwdc-nav-arrow {
-    @apply bg-card/90 backdrop-blur-xl border border-border/50 rounded-full w-12 h-12 flex items-center justify-center cursor-pointer text-foreground;
+  .titanium-nav-arrow {
+    @apply bg-card/90 backdrop-blur-xl border border-border/50 text-foreground;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
     transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, var(--shadow-intensity, 0.15));
   }
 
-  .wwdc-nav-arrow:hover {
+  .titanium-nav-arrow:hover {
     @apply bg-primary border-primary text-primary-foreground scale-110;
-    box-shadow: 0 8px 25px rgba(0, 122, 255, 0.3);
-  }
-
-  .dark .wwdc-nav-arrow {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  }
-
-  .dark .wwdc-nav-arrow:hover {
-    box-shadow: 0 8px 25px rgba(90, 200, 250, 0.3);
+    box-shadow: 0 8px 25px rgba(212, 175, 55, 0.3);
   }
 
   /* Pagination Dots */
-  .wwdc-dot {
+  .titanium-dot {
     width: 8px;
     height: 8px;
     border-radius: 50%;
@@ -331,55 +295,51 @@
     transition: all 0.3s ease;
   }
 
-  .wwdc-dot.active {
+  .titanium-dot.active {
     @apply bg-primary scale-150;
-    box-shadow: 0 0 10px rgba(0, 122, 255, 0.6);
-  }
-
-  .dark .wwdc-dot.active {
-    box-shadow: 0 0 10px rgba(90, 200, 250, 0.6);
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.6);
   }
 
   /* Navigation Styles */
-  .wwdc-nav {
+  .titanium-nav {
     @apply bg-background/90 backdrop-blur-xl border-b border-border/50 sticky top-0 z-50;
     transition: all 0.3s ease;
     padding: 16px 0;
   }
 
-  .wwdc-nav-item {
+  .titanium-nav-item {
     @apply text-muted-foreground hover:text-foreground;
     font-weight: 500;
     padding: 8px 16px;
-    border-radius: 12px;
+    border-radius: calc(var(--radius) * 0.75);
     text-decoration: none;
     transition: all 0.3s ease;
   }
 
-  .wwdc-nav-item:hover {
+  .titanium-nav-item:hover {
     @apply text-primary bg-primary/10;
   }
 
-  .wwdc-nav-item.active {
+  .titanium-nav-item.active {
     @apply text-primary bg-primary/15;
   }
 
   /* Animation Classes */
-  .wwdc-fade-in {
-    animation: wwdcFadeIn 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  .titanium-fade-in {
+    animation: titaniumFadeIn 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
   }
 
-  .wwdc-slide-up {
-    animation: wwdcSlideUp 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  .titanium-slide-up {
+    animation: titaniumSlideUp 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
   }
 
-  .wwdc-scale-in {
-    animation: wwdcScaleIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  .titanium-scale-in {
+    animation: titaniumScaleIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
   }
 }
 
 /* Keyframe Animations */
-@keyframes wwdcFadeIn {
+@keyframes titaniumFadeIn {
   from {
     opacity: 0;
     transform: translateY(20px);
@@ -390,7 +350,7 @@
   }
 }
 
-@keyframes wwdcSlideUp {
+@keyframes titaniumSlideUp {
   from {
     opacity: 0;
     transform: translateY(40px);
@@ -401,7 +361,7 @@
   }
 }
 
-@keyframes wwdcScaleIn {
+@keyframes titaniumScaleIn {
   from {
     opacity: 0;
     transform: scale(0.9);
@@ -414,11 +374,11 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .wwdc-title {
+  .titanium-title {
     font-size: 2.5rem;
   }
   
-  .wwdc-card {
+  .titanium-card {
     padding: 20px;
   }
 }

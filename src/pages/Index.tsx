@@ -137,22 +137,22 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Navigation />
       
-      {/* Hero Section with WWDC 2025 Styling */}
+      {/* Hero Section with Titanium Styling */}
       <section className="relative py-32 px-4 bg-gradient-to-b from-background to-secondary/20">
         <div className="container mx-auto text-center">
-          <div className="mb-16 wwdc-fade-in">
-            <h1 className="wwdc-title mb-6 animate-wwdc-float">
+          <div className="mb-16 titanium-fade-in">
+            <h1 className="titanium-title mb-6">
               Find Your Perfect Property
-              <span className="block text-3xl md:text-4xl wwdc-text-gradient font-medium mt-4">
+              <span className="block text-3xl md:text-4xl titanium-text-gradient font-medium mt-4">
                 AI-Powered Real Estate Platform
               </span>
             </h1>
-            <p className="wwdc-subtitle max-w-2xl mx-auto animate-wwdc-pulse">
+            <p className="titanium-subtitle max-w-2xl mx-auto">
               Discover amazing properties with our advanced AI search platform powered by cutting-edge technology
             </p>
           </div>
           
-          <div className="max-w-5xl mx-auto wwdc-scale-in">
+          <div className="max-w-5xl mx-auto titanium-scale-in">
             <EnhancedModernSearchPanel
               language={language}
               onSearch={handleSearch}
@@ -162,34 +162,34 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Quick Action Buttons with WWDC Styling */}
+      {/* Quick Action Buttons with Titanium Styling */}
       <section className="py-16 bg-secondary/30">
         <div className="container mx-auto px-4">
           <div className="flex flex-wrap justify-center gap-6">
             <Button 
               onClick={() => handleSearch({ listingType: 'buy' })}
-              className="wwdc-button-primary flex items-center gap-3 px-8 py-4 text-lg hover:scale-105 transition-all duration-300 animate-wwdc-glow"
+              className="titanium-button-primary flex items-center gap-3 px-8 py-4 text-lg hover:scale-105 transition-all duration-300"
             >
               <i className="fas fa-home text-xl"></i>
               💰 Buy Properties
             </Button>
             <Button 
               onClick={() => handleSearch({ listingType: 'rent' })}
-              className="wwdc-button-secondary flex items-center gap-3 px-8 py-4 text-lg hover:scale-105 transition-all duration-300"
+              className="titanium-button-secondary flex items-center gap-3 px-8 py-4 text-lg hover:scale-105 transition-all duration-300"
             >
               <i className="fas fa-key text-xl"></i>
               🏠 Rent Properties
             </Button>
             <Button 
               onClick={() => handleSearch({ development_status: 'pre_launching' })}
-              className="wwdc-button-secondary flex items-center gap-3 px-8 py-4 text-lg hover:scale-105 transition-all duration-300"
+              className="titanium-button-secondary flex items-center gap-3 px-8 py-4 text-lg hover:scale-105 transition-all duration-300"
             >
               <i className="fas fa-rocket text-xl"></i>
               🚀 Pre-Launch
             </Button>
             <Button 
               onClick={() => handleSearch({ development_status: 'new_project' })}
-              className="wwdc-button-secondary flex items-center gap-3 px-8 py-4 text-lg hover:scale-105 transition-all duration-300"
+              className="titanium-button-secondary flex items-center gap-3 px-8 py-4 text-lg hover:scale-105 transition-all duration-300"
             >
               <i className="fas fa-building text-xl"></i>
               🏗️ New Projects
@@ -198,14 +198,14 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Property Slideshow with WWDC 2025 Design */}
+      {/* Property Slideshow with Titanium Design */}
       <section className="py-20 bg-background">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-16 wwdc-fade-in">
-            <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6 wwdc-text-gradient">
+          <div className="text-center mb-16 titanium-fade-in">
+            <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6 titanium-text-gradient">
               Featured Properties
             </h2>
-            <p className="wwdc-subtitle text-xl">
+            <p className="titanium-subtitle text-xl">
               Discover our handpicked selection of premium properties
             </p>
           </div>
@@ -213,11 +213,11 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Error Message with WWDC Styling */}
+      {/* Error Message with Titanium Styling */}
       {searchError && (
         <section className="py-8">
           <div className="container mx-auto px-4">
-            <div className="wwdc-glass border border-red-500/40 text-red-500 text-center p-8 rounded-2xl max-w-2xl mx-auto">
+            <div className="titanium-glass border border-destructive/40 text-destructive text-center p-8 rounded-2xl max-w-2xl mx-auto">
               <i className="fas fa-exclamation-triangle text-2xl mb-4"></i>
               <p className="text-lg font-medium">⚠️ {searchError}</p>
             </div>
