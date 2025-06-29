@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface Property {
   id: number;
@@ -32,7 +33,7 @@ const PropertySlideshow = () => {
         .select('*')
         .eq('status', 'active')
         .order('created_at', { ascending: false })
-        .limit(8);
+        .limit(12);
 
       if (error) {
         console.error('Error fetching slideshow properties:', error);
@@ -54,12 +55,15 @@ const PropertySlideshow = () => {
     }
   };
 
+  const slidesToShow = 4;
+  const maxSlides = Math.max(1, properties.length - slidesToShow + 1);
+
   const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % Math.max(1, properties.length - 3));
+    setCurrentSlide((prev) => (prev + 1) % maxSlides);
   };
 
   const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + Math.max(1, properties.length - 3)) % Math.max(1, properties.length - 3));
+    setCurrentSlide((prev) => (prev - 1 + maxSlides) % maxSlides);
   };
 
   const goToSlide = (index: number) => {
@@ -68,7 +72,7 @@ const PropertySlideshow = () => {
 
   // Auto-scroll functionality
   useEffect(() => {
-    if (!isHovered && properties.length > 4) {
+    if (!isHovered && properties.length > slidesToShow) {
       const interval = setInterval(() => {
         nextSlide();
       }, 4000);
@@ -78,54 +82,78 @@ const PropertySlideshow = () => {
   }, [isHovered, properties.length]);
 
   if (properties.length === 0) {
-    return null;
+    return (
+      <div className="w-full max-w-7xl mx-auto px-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {[...Array(4)].map((_, index) => (
+            <div key={index} className="wwdc-card animate-pulse">
+              <div className="h-56 bg-muted rounded-xl mb-4"></div>
+              <div className="space-y-3">
+                <div className="h-4 bg-muted rounded w-3/4"></div>
+                <div className="h-3 bg-muted rounded w-1/2"></div>
+                <div className="h-6 bg-muted rounded w-2/3"></div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
   }
 
-  const maxSlides = Math.max(1, properties.length - 3);
-
   return (
-    <div className="property-slideshow wwdc-fade-in">
+    <div className="w-full max-w-7xl mx-auto px-4 py-8">
       <div 
-        className="slideshow-container"
+        className="relative overflow-hidden"
         ref={slideshowRef}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
+        {/* Slideshow Container */}
         <div 
-          className="slideshow-track"
+          className="flex transition-transform duration-700 ease-in-out gap-6"
           style={{
-            transform: `translateX(-${currentSlide * 372}px)`,
-            transition: 'transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
-            animationPlayState: isHovered ? 'paused' : 'running'
+            transform: `translateX(-${currentSlide * (100 / slidesToShow)}%)`,
           }}
         >
           {properties.map((property, index) => (
-            <div key={property.id} className={`property-slide wwdc-slide-up`} style={{ animationDelay: `${index * 0.1}s` }}>
-              <img
-                src={property.thumbnail_url || property.images?.[0] || '/placeholder.svg'}
-                alt={property.title}
-                className="slide-image"
-              />
-              <div className="slide-content">
-                <h3 className="slide-title">{property.title}</h3>
-                <div className="slide-location">
-                  <i className="fas fa-map-marker-alt"></i>
+            <div 
+              key={property.id} 
+              className="wwdc-slide-card flex-shrink-0"
+              style={{ width: `calc(${100 / slidesToShow}% - 1.5rem)` }}
+            >
+              <div className="relative overflow-hidden rounded-t-2xl">
+                <img
+                  src={property.thumbnail_url || property.images?.[0] || '/placeholder.svg'}
+                  alt={property.title}
+                  className="wwdc-slide-image"
+                />
+                <div className="absolute top-4 right-4">
+                  <span className="px-3 py-1 bg-primary/90 text-primary-foreground text-xs font-semibold rounded-full backdrop-blur-sm">
+                    {property.property_type}
+                  </span>
+                </div>
+              </div>
+              
+              <div className="wwdc-slide-content">
+                <h3 className="wwdc-slide-title">{property.title}</h3>
+                <div className="wwdc-slide-location">
+                  <i className="fas fa-map-marker-alt text-primary"></i>
                   {property.city}, {property.state}
                 </div>
-                <div className="slide-price">
+                <div className="wwdc-slide-price">
                   {formatPrice(property.price)}
                 </div>
-                <div className="slide-features">
-                  <div className="feature">
-                    <i className="fas fa-bed"></i>
+                <div className="wwdc-slide-features">
+                  <div className="wwdc-slide-feature">
+                    <i className="fas fa-bed text-primary"></i>
                     {property.bedrooms}
                   </div>
-                  <div className="feature">
-                    <i className="fas fa-bath"></i>
+                  <div className="wwdc-slide-feature">
+                    <i className="fas fa-bath text-primary"></i>
                     {property.bathrooms}
                   </div>
-                  <div className="feature">
-                    <i className="fas fa-ruler-combined"></i>
+                  <div className="wwdc-slide-feature">
+                    <i className="fas fa-ruler-combined text-primary"></i>
                     {property.area_sqm}m²
                   </div>
                 </div>
@@ -133,28 +161,41 @@ const PropertySlideshow = () => {
             </div>
           ))}
         </div>
-      </div>
 
-      {/* Navigation Arrows */}
-      <div className="slideshow-nav">
-        <button className="slide-arrow" onClick={prevSlide}>
-          <i className="fas fa-chevron-left"></i>
-        </button>
-        <button className="slide-arrow" onClick={nextSlide}>
-          <i className="fas fa-chevron-right"></i>
-        </button>
+        {/* Navigation Arrows */}
+        {properties.length > slidesToShow && (
+          <>
+            <button 
+              className="wwdc-nav-arrow absolute left-4 top-1/2 -translate-y-1/2 z-10"
+              onClick={prevSlide}
+              aria-label="Previous slide"
+            >
+              <ChevronLeft className="h-6 w-6" />
+            </button>
+            <button 
+              className="wwdc-nav-arrow absolute right-4 top-1/2 -translate-y-1/2 z-10"
+              onClick={nextSlide}
+              aria-label="Next slide"
+            >
+              <ChevronRight className="h-6 w-6" />
+            </button>
+          </>
+        )}
       </div>
 
       {/* Pagination Dots */}
-      <div className="slideshow-dots">
-        {Array.from({ length: maxSlides }, (_, index) => (
-          <button
-            key={index}
-            className={`dot ${index === currentSlide ? 'active' : ''}`}
-            onClick={() => goToSlide(index)}
-          />
-        ))}
-      </div>
+      {properties.length > slidesToShow && (
+        <div className="flex justify-center items-center mt-8 gap-3">
+          {Array.from({ length: maxSlides }, (_, index) => (
+            <button
+              key={index}
+              className={`wwdc-dot ${index === currentSlide ? 'active' : ''}`}
+              onClick={() => goToSlide(index)}
+              aria-label={`Go to slide ${index + 1}`}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 };

@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Menu, X, User, Settings, LogOut, Crown, Moon, Sun, Sparkles } from "lucide-react";
+import { Menu, X, User, Settings, LogOut, Crown, Moon, Sun, Sparkles, Brain } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useTheme } from "@/components/ThemeProvider";
@@ -77,20 +77,20 @@ const Navigation = () => {
               onClick={() => navigate('/')}
             >
               <div className="relative">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 flex items-center justify-center transform transition-all duration-300 group-hover:scale-110 group-hover:rotate-3">
-                  <Sparkles className="h-5 w-5 text-white animate-pulse" />
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-primary via-purple-500 to-pink-500 flex items-center justify-center transform transition-all duration-300 group-hover:scale-110 group-hover:rotate-3 shadow-lg">
+                  <Brain className="h-5 w-5 text-white animate-pulse" />
                 </div>
-                <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-xl blur opacity-30 group-hover:opacity-60 transition-all duration-300 animate-pulse"></div>
+                <div className="absolute -inset-1 bg-gradient-to-r from-primary via-purple-500 to-pink-500 rounded-xl blur opacity-30 group-hover:opacity-60 transition-all duration-300 animate-pulse"></div>
               </div>
               <div className="hidden sm:block">
                 <div className="flex items-center space-x-2">
-                  <span className="text-xl font-bold bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+                  <span className="text-xl font-bold wwdc-text-gradient">
                     ASTRA
                   </span>
                   <span className="text-xl font-bold text-foreground">Villa</span>
-                  <div className="w-2 h-2 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 animate-pulse"></div>
+                  <div className="w-2 h-2 rounded-full bg-gradient-to-r from-primary to-purple-500 animate-pulse"></div>
                 </div>
-                <div className="text-xs text-muted-foreground">AI-Powered Property Platform</div>
+                <div className="text-xs text-muted-foreground font-medium">AI-Powered Property Platform</div>
               </div>
             </div>
 
@@ -132,18 +132,26 @@ const Navigation = () => {
             </div>
 
             {/* User Section */}
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-3">
+              {/* Smart AI Icon */}
+              <div className="relative group">
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-primary/20 to-purple-500/20 backdrop-blur-sm border border-primary/30 flex items-center justify-center cursor-pointer transition-all duration-300 hover:scale-110 hover:bg-gradient-to-r hover:from-primary/30 hover:to-purple-500/30">
+                  <Sparkles className="h-4 w-4 text-primary animate-pulse" />
+                </div>
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-primary/20 to-purple-500/20 rounded-lg blur opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
+              </div>
+
               {/* Dark Mode Toggle */}
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={toggleTheme}
-                className="wwdc-nav-item relative group"
+                className="wwdc-nav-item relative group w-8 h-8 p-0 rounded-lg bg-secondary/50 hover:bg-secondary/80 border border-border/50"
               >
                 {theme === "light" ? (
-                  <Moon className="h-5 w-5 transition-transform group-hover:rotate-12" />
+                  <Moon className="h-4 w-4 transition-transform group-hover:rotate-12" />
                 ) : (
-                  <Sun className="h-5 w-5 transition-transform group-hover:rotate-12" />
+                  <Sun className="h-4 w-4 transition-transform group-hover:rotate-12" />
                 )}
               </Button>
 
@@ -161,14 +169,14 @@ const Navigation = () => {
                       {profile?.role || 'user'}
                     </div>
                   </div>
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-r from-primary to-purple-500 flex items-center justify-center shadow-lg">
                     <User className="h-4 w-4 text-white" />
                   </div>
                   <Button 
                     variant="ghost" 
                     size="sm"
                     onClick={handleSignOut}
-                    className="text-muted-foreground hover:text-red-500 hover:bg-red-500/10"
+                    className="text-muted-foreground hover:text-red-500 hover:bg-red-500/10 rounded-lg"
                   >
                     <LogOut className="h-4 w-4" />
                   </Button>
@@ -176,7 +184,7 @@ const Navigation = () => {
               ) : (
                 <Button
                   onClick={() => setShowAuthModal(true)}
-                  className="wwdc-button-primary"
+                  className="wwdc-button-primary text-sm px-4 py-2"
                 >
                   {currentText.signIn}
                 </Button>
@@ -186,7 +194,7 @@ const Navigation = () => {
               <Button
                 variant="ghost"
                 size="sm"
-                className="lg:hidden wwdc-nav-item"
+                className="lg:hidden wwdc-nav-item w-8 h-8 p-0"
                 onClick={toggleMenu}
               >
                 {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
