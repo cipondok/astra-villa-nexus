@@ -75,7 +75,7 @@ const PropertySlideshow = () => {
     if (!isHovered && properties.length > slidesToShow) {
       const interval = setInterval(() => {
         nextSlide();
-      }, 4000);
+      }, 5000);
 
       return () => clearInterval(interval);
     }
@@ -86,7 +86,7 @@ const PropertySlideshow = () => {
       <div className="w-full max-w-7xl mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {[...Array(4)].map((_, index) => (
-            <div key={index} className="titanium-card animate-pulse">
+            <div key={index} className="professional-card animate-pulse">
               <div className="h-56 bg-muted rounded-xl mb-4"></div>
               <div className="space-y-3">
                 <div className="h-4 bg-muted rounded w-3/4"></div>
@@ -101,7 +101,7 @@ const PropertySlideshow = () => {
   }
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 py-8">
+    <div className="w-full max-w-7xl mx-auto px-4 py-12">
       <div 
         className="relative overflow-hidden"
         ref={slideshowRef}
@@ -110,7 +110,7 @@ const PropertySlideshow = () => {
       >
         {/* Slideshow Container */}
         <div 
-          className="flex transition-transform duration-700 ease-in-out gap-6"
+          className="flex transition-transform duration-700 ease-in-out gap-8"
           style={{
             transform: `translateX(-${currentSlide * (100 / slidesToShow)}%)`,
           }}
@@ -118,43 +118,44 @@ const PropertySlideshow = () => {
           {properties.map((property, index) => (
             <div 
               key={property.id} 
-              className="titanium-slide-card flex-shrink-0"
-              style={{ width: `calc(${100 / slidesToShow}% - 1.5rem)` }}
+              className="professional-slide-card flex-shrink-0"
+              style={{ width: `calc(${100 / slidesToShow}% - 2rem)` }}
             >
               <div className="relative overflow-hidden rounded-t-xl">
                 <img
                   src={property.thumbnail_url || property.images?.[0] || '/placeholder.svg'}
                   alt={property.title}
-                  className="titanium-slide-image"
+                  className="professional-slide-image"
                 />
                 <div className="absolute top-4 right-4">
                   <span className="px-3 py-1 bg-primary/90 text-primary-foreground text-xs font-semibold rounded-full backdrop-blur-sm">
                     {property.property_type}
                   </span>
                 </div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </div>
               
-              <div className="titanium-slide-content">
-                <h3 className="titanium-slide-title">{property.title}</h3>
-                <div className="titanium-slide-location">
+              <div className="professional-slide-content">
+                <h3 className="professional-slide-title">{property.title}</h3>
+                <div className="professional-slide-location">
                   <i className="fas fa-map-marker-alt text-primary"></i>
                   {property.city}, {property.state}
                 </div>
-                <div className="titanium-slide-price">
+                <div className="professional-slide-price">
                   {formatPrice(property.price)}
                 </div>
-                <div className="titanium-slide-features">
-                  <div className="titanium-slide-feature">
+                <div className="professional-slide-features">
+                  <div className="professional-slide-feature">
                     <i className="fas fa-bed text-primary"></i>
-                    {property.bedrooms}
+                    <span>{property.bedrooms}</span>
                   </div>
-                  <div className="titanium-slide-feature">
+                  <div className="professional-slide-feature">
                     <i className="fas fa-bath text-primary"></i>
-                    {property.bathrooms}
+                    <span>{property.bathrooms}</span>
                   </div>
-                  <div className="titanium-slide-feature">
+                  <div className="professional-slide-feature">
                     <i className="fas fa-ruler-combined text-primary"></i>
-                    {property.area_sqm}m²
+                    <span>{property.area_sqm}m²</span>
                   </div>
                 </div>
               </div>
@@ -166,14 +167,14 @@ const PropertySlideshow = () => {
         {properties.length > slidesToShow && (
           <>
             <button 
-              className="titanium-nav-arrow absolute left-4 top-1/2 -translate-y-1/2 z-10"
+              className="professional-nav-arrow absolute left-4 top-1/2 -translate-y-1/2 z-10"
               onClick={prevSlide}
               aria-label="Previous slide"
             >
               <ChevronLeft className="h-6 w-6" />
             </button>
             <button 
-              className="titanium-nav-arrow absolute right-4 top-1/2 -translate-y-1/2 z-10"
+              className="professional-nav-arrow absolute right-4 top-1/2 -translate-y-1/2 z-10"
               onClick={nextSlide}
               aria-label="Next slide"
             >
@@ -185,11 +186,11 @@ const PropertySlideshow = () => {
 
       {/* Pagination Dots */}
       {properties.length > slidesToShow && (
-        <div className="flex justify-center items-center mt-8 gap-3">
+        <div className="flex justify-center items-center mt-10 gap-4">
           {Array.from({ length: maxSlides }, (_, index) => (
             <button
               key={index}
-              className={`titanium-dot ${index === currentSlide ? 'active' : ''}`}
+              className={`professional-dot ${index === currentSlide ? 'active' : ''}`}
               onClick={() => goToSlide(index)}
               aria-label={`Go to slide ${index + 1}`}
             />

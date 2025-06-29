@@ -78,7 +78,6 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: SearchP
     ? ["Jakarta Apartment", "Bali Villa", "Surabaya House", "Modern Condo"]
     : ["Apartemen Jakarta", "Villa Bali", "Rumah Surabaya", "Kondo Modern"];
 
-  // Count active filters
   const getActiveFiltersCount = () => {
     let count = 0;
     if (searchQuery.trim()) count++;
@@ -91,7 +90,6 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: SearchP
 
   const activeFiltersCount = getActiveFiltersCount();
 
-  // Clear all filters
   const clearAllFilters = () => {
     setSearchQuery("");
     setSelectedState("");
@@ -99,7 +97,6 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: SearchP
     setBedrooms("");
     setBathrooms("");
     
-    // Trigger search with empty filters
     if (onLiveSearch) {
       onLiveSearch("");
     }
@@ -141,7 +138,7 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: SearchP
 
   return (
     <div className="w-full max-w-7xl mx-auto px-2 sm:px-4">
-      <div className="titanium-glass border-2 border-border/30 shadow-2xl rounded-2xl">
+      <div className="professional-glass border-2 border-border/30 shadow-2xl rounded-2xl">
         <div className="p-3 sm:p-6 lg:p-8">
           {/* Header with Active Filters Count & Clear Button */}
           {activeFiltersCount > 0 && (
@@ -170,33 +167,33 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: SearchP
             </div>
           )}
 
-          {/* Mobile-First Search Grid */}
+          {/* Professional Search Grid */}
           <div className="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
-            {/* Search Input - Full Width on Mobile */}
+            {/* Search Input */}
             <div className="w-full">
               <div className="relative group">
                 <Search className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4 sm:h-5 sm:w-5 group-focus-within:text-primary transition-colors duration-200" />
                 <Input
                   placeholder={currentText.search}
-                  className="pl-10 sm:pl-12 h-12 sm:h-14 border-2 border-border focus:border-primary focus:ring-4 focus:ring-primary/20 rounded-xl sm:rounded-2xl bg-card/90 backdrop-blur-sm text-sm sm:text-base font-medium placeholder:text-muted-foreground shadow-sm hover:shadow-md transition-all duration-200"
+                  className="professional-input pl-10 sm:pl-12 h-12 sm:h-14 text-sm sm:text-base font-medium placeholder:text-muted-foreground shadow-sm hover:shadow-md transition-all duration-200"
                   value={searchQuery}
                   onChange={(e) => handleInputChange(e.target.value)}
                 />
               </div>
             </div>
             
-            {/* Mobile: 2x2 Grid for Filters, Desktop: 4 columns */}
+            {/* Filters Grid */}
             <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 lg:gap-4">
               {/* Location Selector */}
               <div className="relative">
                 <Select value={selectedState} onValueChange={setSelectedState}>
-                  <SelectTrigger className="h-12 sm:h-14 border-2 border-border focus:border-primary rounded-xl sm:rounded-2xl bg-card/90 backdrop-blur-sm font-medium shadow-sm hover:shadow-md transition-all duration-200">
+                  <SelectTrigger className="professional-input h-12 sm:h-14 font-medium shadow-sm hover:shadow-md transition-all duration-200">
                     <div className="flex items-center gap-1 sm:gap-2">
                       <MapPin className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground flex-shrink-0" />
                       <SelectValue placeholder={currentText.state} className="text-xs sm:text-sm truncate" />
                     </div>
                   </SelectTrigger>
-                  <SelectContent className="titanium-glass border border-border shadow-xl rounded-xl sm:rounded-2xl z-50">
+                  <SelectContent className="professional-dropdown shadow-xl rounded-xl sm:rounded-2xl z-50">
                     <SelectItem value="all" className="font-semibold text-primary hover:bg-primary/10">
                       <div className="flex items-center gap-2">
                         <Home className="h-4 w-4" />
@@ -215,13 +212,13 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: SearchP
               {/* Property Type */}
               <div className="relative">
                 <Select value={propertyType} onValueChange={setPropertyType}>
-                  <SelectTrigger className="h-12 sm:h-14 border-2 border-border focus:border-primary rounded-xl sm:rounded-2xl bg-card/90 backdrop-blur-sm font-medium shadow-sm hover:shadow-md transition-all duration-200">
+                  <SelectTrigger className="professional-input h-12 sm:h-14 font-medium shadow-sm hover:shadow-md transition-all duration-200">
                     <div className="flex items-center gap-1 sm:gap-2">
                       <Home className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground flex-shrink-0" />
                       <SelectValue placeholder={currentText.type} className="text-xs sm:text-sm truncate" />
                     </div>
                   </SelectTrigger>
-                  <SelectContent className="titanium-glass border border-border shadow-xl rounded-xl sm:rounded-2xl z-50">
+                  <SelectContent className="professional-dropdown shadow-xl rounded-xl sm:rounded-2xl z-50">
                     <SelectItem value="all" className="font-semibold text-primary hover:bg-primary/10">
                       <div className="flex items-center gap-2">
                         <Home className="h-4 w-4" />
@@ -240,13 +237,13 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: SearchP
               {/* Bedrooms */}
               <div className="relative">
                 <Select value={bedrooms} onValueChange={setBedrooms}>
-                  <SelectTrigger className="h-12 sm:h-14 border-2 border-border focus:border-primary rounded-xl sm:rounded-2xl bg-card/90 backdrop-blur-sm font-medium shadow-sm hover:shadow-md transition-all duration-200">
+                  <SelectTrigger className="professional-input h-12 sm:h-14 font-medium shadow-sm hover:shadow-md transition-all duration-200">
                     <div className="flex items-center gap-1 sm:gap-2">
                       <Bed className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground flex-shrink-0" />
                       <SelectValue placeholder={currentText.bedrooms} className="text-xs sm:text-sm truncate" />
                     </div>
                   </SelectTrigger>
-                  <SelectContent className="titanium-glass border border-border shadow-xl rounded-xl sm:rounded-2xl z-50">
+                  <SelectContent className="professional-dropdown shadow-xl rounded-xl sm:rounded-2xl z-50">
                     <SelectItem value="any" className="font-semibold text-primary hover:bg-primary/10">
                       <div className="flex items-center gap-2">
                         <Bed className="h-4 w-4" />
@@ -264,13 +261,13 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: SearchP
               {/* Bathrooms */}
               <div className="relative">
                 <Select value={bathrooms} onValueChange={setBathrooms}>
-                  <SelectTrigger className="h-12 sm:h-14 border-2 border-border focus:border-primary rounded-xl sm:rounded-2xl bg-card/90 backdrop-blur-sm font-medium shadow-sm hover:shadow-md transition-all duration-200">
+                  <SelectTrigger className="professional-input h-12 sm:h-14 font-medium shadow-sm hover:shadow-md transition-all duration-200">
                     <div className="flex items-center gap-1 sm:gap-2">
                       <Bath className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground flex-shrink-0" />
                       <SelectValue placeholder={currentText.bathrooms} className="text-xs sm:text-sm truncate" />
                     </div>
                   </SelectTrigger>
-                  <SelectContent className="titanium-glass border border-border shadow-xl rounded-xl sm:rounded-2xl z-50">
+                  <SelectContent className="professional-dropdown shadow-xl rounded-xl sm:rounded-2xl z-50">
                     <SelectItem value="any" className="font-semibold text-primary hover:bg-primary/10">
                       <div className="flex items-center gap-2">
                         <Bath className="h-4 w-4" />
@@ -286,10 +283,10 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: SearchP
               </div>
             </div>
             
-            {/* Search Button - Full Width on Mobile */}
+            {/* Search Button */}
             <Button 
               onClick={handleSearch}
-              className="w-full h-12 sm:h-14 titanium-button-primary text-sm sm:text-base shadow-lg hover:shadow-xl transition-all duration-200 rounded-xl sm:rounded-2xl"
+              className="w-full h-12 sm:h-14 professional-button-primary text-sm sm:text-base shadow-lg hover:shadow-xl transition-all duration-200 rounded-xl sm:rounded-2xl"
             >
               <Search className="h-4 w-4 sm:h-5 sm:w-5 mr-2 sm:mr-3" />
               {currentText.searchBtn}
