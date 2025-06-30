@@ -209,11 +209,11 @@ const VendorManagementHub = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Vendor Management Hub</h1>
-          <p className="text-muted-foreground">Comprehensive vendor system management and monitoring</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Vendor Management Hub</h1>
+          <p className="text-gray-600 dark:text-gray-400">Comprehensive vendor system management and monitoring</p>
         </div>
         <div className="flex gap-2">
-          <Badge variant="outline" className="px-3 py-1">
+          <Badge variant="outline" className="px-3 py-1 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300">
             <Database className="h-3 w-3 mr-1" />
             All Systems Online
           </Badge>
@@ -221,13 +221,17 @@ const VendorManagementHub = () => {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid grid-cols-4 lg:grid-cols-7 w-full">
+        <TabsList className="grid grid-cols-4 lg:grid-cols-7 w-full bg-white dark:bg-gray-800 rounded-xl p-1 border border-gray-200 dark:border-gray-700">
           {vendorTabs.map((tab) => (
-            <TabsTrigger key={tab.id} value={tab.id} className="flex items-center gap-2">
+            <TabsTrigger 
+              key={tab.id} 
+              value={tab.id} 
+              className="flex items-center gap-2 px-2 py-2 rounded-lg text-xs font-medium text-gray-700 dark:text-gray-300 data-[state=active]:bg-blue-600 data-[state=active]:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
+            >
               <tab.icon className="h-4 w-4" />
               <span className="hidden sm:inline">{tab.label}</span>
               {tab.badge && (
-                <Badge variant="secondary" className="text-xs ml-1">
+                <Badge variant="secondary" className="text-xs ml-1 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300">
                   {tab.badge}
                 </Badge>
               )}
@@ -235,33 +239,35 @@ const VendorManagementHub = () => {
           ))}
         </TabsList>
 
-        <TabsContent value="overview">
-          <VendorOverview />
-        </TabsContent>
+        <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+          <TabsContent value="overview" className="mt-0">
+            <VendorOverview />
+          </TabsContent>
 
-        <TabsContent value="vendor-requests">
-          <VendorManagement />
-        </TabsContent>
+          <TabsContent value="vendor-requests" className="mt-0">
+            <VendorManagement />
+          </TabsContent>
 
-        <TabsContent value="vendor-services">
-          <EnhancedVendorServiceManagement />
-        </TabsContent>
+          <TabsContent value="vendor-services" className="mt-0">
+            <EnhancedVendorServiceManagement />
+          </TabsContent>
 
-        <TabsContent value="service-categories">
-          <VendorServiceCategoryManagement />
-        </TabsContent>
+          <TabsContent value="service-categories" className="mt-0">
+            <VendorServiceCategoryManagement />
+          </TabsContent>
 
-        <TabsContent value="kyc-verification">
-          <AdminKYCManagement />
-        </TabsContent>
+          <TabsContent value="kyc-verification" className="mt-0">
+            <AdminKYCManagement />
+          </TabsContent>
 
-        <TabsContent value="membership-levels">
-          <AdminMembershipManagement />
-        </TabsContent>
+          <TabsContent value="membership-levels" className="mt-0">
+            <AdminMembershipManagement />
+          </TabsContent>
 
-        <TabsContent value="performance-analytics">
-          <VendorPerformanceAnalytics />
-        </TabsContent>
+          <TabsContent value="performance-analytics" className="mt-0">
+            <VendorPerformanceAnalytics />
+          </TabsContent>
+        </div>
       </Tabs>
     </div>
   );
