@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { Sun, Moon, Sunset, Sparkles, Crown } from "lucide-react";
+import { Sun, Moon, Sunset, Sparkles } from "lucide-react";
 import { useTheme } from "@/components/ThemeProvider";
 
 interface ThemeSwitcherProps {
@@ -18,12 +18,17 @@ const ThemeSwitcher = ({ className = "", variant = "default" }: ThemeSwitcherPro
   ] as const;
 
   if (variant === "compact") {
-    // Toggle between light and dark (skip system for compact mode)
+    // Simple toggle between light and dark
     const toggleTheme = () => {
+      console.log('Toggling theme from:', theme);
       if (theme === "dark") {
         setTheme("light");
-      } else {
+      } else if (theme === "light") {
         setTheme("dark");
+      } else {
+        // If system, check current system preference and toggle opposite
+        const systemIsDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        setTheme(systemIsDark ? "light" : "dark");
       }
     };
 
@@ -36,7 +41,7 @@ const ThemeSwitcher = ({ className = "", variant = "default" }: ThemeSwitcherPro
 
     const currentTheme = getCurrentTheme();
     const Icon = currentTheme === "dark" ? Sun : Moon;
-    const label = currentTheme === "dark" ? "Light" : "Dark";
+    const label = currentTheme === "dark" ? "Light Mode" : "Dark Mode";
 
     return (
       <Button
@@ -58,7 +63,10 @@ const ThemeSwitcher = ({ className = "", variant = "default" }: ThemeSwitcherPro
           key={key}
           variant="ghost"
           size="sm"
-          onClick={() => setTheme(key)}
+          onClick={() => {
+            console.log('Setting theme to:', key);
+            setTheme(key);
+          }}
           className={`
             flex items-center space-x-2 px-3 py-2 rounded-md transition-all duration-300
             ${theme === key 

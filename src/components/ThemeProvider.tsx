@@ -35,6 +35,8 @@ export function ThemeProvider({
     const root = window.document.documentElement;
     const body = window.document.body;
 
+    console.log('Theme changed to:', theme);
+
     // Remove all theme classes first
     root.classList.remove("light", "dark");
     body.classList.remove("dark", "light");
@@ -47,48 +49,72 @@ export function ThemeProvider({
         ? "dark"
         : "light";
       effectiveTheme = systemTheme;
+      console.log('System theme detected:', systemTheme);
     }
 
     // Apply theme classes
     root.classList.add(effectiveTheme);
-    if (effectiveTheme === "dark") {
-      body.classList.add("dark");
-    } else {
-      body.classList.add("light");
-    }
+    body.classList.add(effectiveTheme);
 
-    // Set CSS custom properties for consistent theming
-    if (effectiveTheme === "dark") {
-      root.style.setProperty('--background', '0 0 0');
-      root.style.setProperty('--foreground', '255 255 255');
-      root.style.setProperty('--card', '28 28 30');
-      root.style.setProperty('--card-foreground', '255 255 255');
-      root.style.setProperty('--primary', '217 91 60');
-      root.style.setProperty('--primary-foreground', '255 255 255');
-      root.style.setProperty('--secondary', '44 44 46');
-      root.style.setProperty('--secondary-foreground', '255 255 255');
-      root.style.setProperty('--muted', '44 44 46');
-      root.style.setProperty('--muted-foreground', '174 174 178');
-      root.style.setProperty('--border', '58 58 60');
-    } else {
-      root.style.setProperty('--background', '255 255 255');
-      root.style.setProperty('--foreground', '0 0 0');
-      root.style.setProperty('--card', '255 255 255');
-      root.style.setProperty('--card-foreground', '0 0 0');
-      root.style.setProperty('--primary', '217 91 60');
-      root.style.setProperty('--primary-foreground', '255 255 255');
-      root.style.setProperty('--secondary', '245 245 247');
-      root.style.setProperty('--secondary-foreground', '0 0 0');
-      root.style.setProperty('--muted', '248 248 248');
-      root.style.setProperty('--muted-foreground', '99 99 102');
-      root.style.setProperty('--border', '229 229 234');
-    }
+    // Force update CSS custom properties
+    const updateCSSVariables = () => {
+      if (effectiveTheme === "dark") {
+        root.style.setProperty('--background', '0 0 0');
+        root.style.setProperty('--foreground', '255 255 255');
+        root.style.setProperty('--card', '28 28 30');
+        root.style.setProperty('--card-foreground', '255 255 255');
+        root.style.setProperty('--primary', '217 91 60');
+        root.style.setProperty('--primary-foreground', '255 255 255');
+        root.style.setProperty('--secondary', '44 44 46');
+        root.style.setProperty('--secondary-foreground', '255 255 255');
+        root.style.setProperty('--muted', '44 44 46');
+        root.style.setProperty('--muted-foreground', '174 174 178');
+        root.style.setProperty('--border', '58 58 60');
+        root.style.setProperty('--input', '28 28 30');
+        root.style.setProperty('--ring', '217 91 60');
+        root.style.setProperty('--destructive', '239 68 68');
+        root.style.setProperty('--destructive-foreground', '255 255 255');
+        root.style.setProperty('--popover', '28 28 30');
+        root.style.setProperty('--popover-foreground', '255 255 255');
+        root.style.setProperty('--accent', '44 44 46');
+        root.style.setProperty('--accent-foreground', '255 255 255');
+      } else {
+        root.style.setProperty('--background', '255 255 255');
+        root.style.setProperty('--foreground', '0 0 0');
+        root.style.setProperty('--card', '255 255 255');
+        root.style.setProperty('--card-foreground', '0 0 0');
+        root.style.setProperty('--primary', '217 91 60');
+        root.style.setProperty('--primary-foreground', '255 255 255');
+        root.style.setProperty('--secondary', '245 245 247');
+        root.style.setProperty('--secondary-foreground', '0 0 0');
+        root.style.setProperty('--muted', '248 248 248');
+        root.style.setProperty('--muted-foreground', '99 99 102');
+        root.style.setProperty('--border', '229 229 234');
+        root.style.setProperty('--input', '255 255 255');
+        root.style.setProperty('--ring', '217 91 60');
+        root.style.setProperty('--destructive', '239 68 68');
+        root.style.setProperty('--destructive-foreground', '255 255 255');
+        root.style.setProperty('--popover', '255 255 255');
+        root.style.setProperty('--popover-foreground', '0 0 0');
+        root.style.setProperty('--accent', '245 245 247');
+        root.style.setProperty('--accent-foreground', '0 0 0');
+      }
+    };
+
+    // Apply CSS variables immediately
+    updateCSSVariables();
+
+    // Force a reflow to ensure changes are applied
+    document.body.offsetHeight;
+
+    console.log('Theme applied:', effectiveTheme);
 
     // Listen for system theme changes
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
     const handleChange = () => {
       if (theme === "system") {
-        // Trigger re-render when system theme changes
+        console.log('System theme changed, re-applying');
+        // Force re-render
         setTheme("system");
       }
     };
@@ -100,6 +126,7 @@ export function ThemeProvider({
   const value = {
     theme,
     setTheme: (theme: Theme) => {
+      console.log('Setting theme to:', theme);
       localStorage.setItem(storageKey, theme);
       setTheme(theme);
     },
