@@ -119,108 +119,84 @@ const AdvancedAdminDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-all duration-300">
-      <div className="container mx-auto px-4 py-6 space-y-6">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-r from-blue-600 to-blue-700 dark:from-blue-700 dark:to-blue-800 flex items-center justify-center">
-              <Crown className="h-6 w-6 text-white" />
+      <div className="container mx-auto px-4 py-4 space-y-4">
+        
+        {/* Compact Stats Overview */}
+        <div className="grid grid-cols-3 lg:grid-cols-6 gap-3">
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-3 border border-gray-200 dark:border-gray-700 shadow-sm">
+            <div className="flex items-center justify-between mb-1">
+              <div className="text-blue-600 dark:text-blue-400 text-xs font-medium">Total Users</div>
+              <Users className="h-3 w-3 text-blue-600 dark:text-blue-400" />
             </div>
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">ASTRA AI Control Center</h1>
-              <p className="text-gray-600 dark:text-gray-400">
-                Advanced System Monitoring & Management
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center space-x-3">
-            <SimpleThemeToggle />
-            <div className="text-right">
-              <div className="text-sm text-gray-600 dark:text-gray-400">Welcome back,</div>
-              <div className="text-blue-600 dark:text-blue-400 font-medium">admin@astra.com</div>
-            </div>
-            <Button variant="outline" className="border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700">
-              Sign Out
-            </Button>
-          </div>
-        </div>
-
-        {/* Stats Overview */}
-        <div className="grid grid-cols-2 lg:grid-cols-6 gap-4">
-          <div className="bg-white dark:bg-gray-800 rounded-2xl p-4 border border-gray-200 dark:border-gray-700 shadow-sm">
-            <div className="flex items-center justify-between mb-2">
-              <div className="text-blue-600 dark:text-blue-400 text-sm">Total Users</div>
-              <Users className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-            </div>
-            <div className="text-gray-900 dark:text-gray-100 text-2xl font-bold">12,547</div>
-            <div className="text-green-600 dark:text-green-400 text-xs">+18.5% from last month</div>
+            <div className="text-gray-900 dark:text-gray-100 text-lg font-bold">12,547</div>
+            <div className="text-green-600 dark:text-green-400 text-[10px]">+18.5%</div>
           </div>
           
-          <div className="bg-white dark:bg-gray-800 rounded-2xl p-4 border border-gray-200 dark:border-gray-700 shadow-sm">
-            <div className="flex items-center justify-between mb-2">
-              <div className="text-green-600 dark:text-green-400 text-sm">Active Users</div>
-              <Activity className="h-4 w-4 text-green-600 dark:text-green-400" />
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-3 border border-gray-200 dark:border-gray-700 shadow-sm">
+            <div className="flex items-center justify-between mb-1">
+              <div className="text-green-600 dark:text-green-400 text-xs font-medium">Active Users</div>
+              <Activity className="h-3 w-3 text-green-600 dark:text-green-400" />
             </div>
-            <div className="text-gray-900 dark:text-gray-100 text-2xl font-bold">8,234</div>
-            <div className="text-green-600 dark:text-green-400 text-xs">Currently online</div>
+            <div className="text-gray-900 dark:text-gray-100 text-lg font-bold">8,234</div>
+            <div className="text-green-600 dark:text-green-400 text-[10px]">Online</div>
           </div>
 
-          <div className="bg-white dark:bg-gray-800 rounded-2xl p-4 border border-gray-200 dark:border-gray-700 shadow-sm">
-            <div className="flex items-center justify-between mb-2">
-              <div className="text-orange-600 dark:text-orange-400 text-sm">Unresolved Errors</div>
-              <Shield className="h-4 w-4 text-orange-600 dark:text-orange-400" />
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-3 border border-gray-200 dark:border-gray-700 shadow-sm">
+            <div className="flex items-center justify-between mb-1">
+              <div className="text-orange-600 dark:text-orange-400 text-xs font-medium">Errors</div>
+              <Shield className="h-3 w-3 text-orange-600 dark:text-orange-400" />
             </div>
-            <div className="text-gray-900 dark:text-gray-100 text-2xl font-bold">0</div>
-            <div className="text-green-600 dark:text-green-400 text-xs">All systems operational</div>
+            <div className="text-gray-900 dark:text-gray-100 text-lg font-bold">0</div>
+            <div className="text-green-600 dark:text-green-400 text-[10px]">All good</div>
           </div>
 
-          <div className="bg-white dark:bg-gray-800 rounded-2xl p-4 border border-gray-200 dark:border-gray-700 shadow-sm">
-            <div className="flex items-center justify-between mb-2">
-              <div className="text-blue-600 dark:text-blue-400 text-sm">Total Transfers</div>
-              <TrendingUp className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-3 border border-gray-200 dark:border-gray-700 shadow-sm">
+            <div className="flex items-center justify-between mb-1">
+              <div className="text-blue-600 dark:text-blue-400 text-xs font-medium">Transfers</div>
+              <TrendingUp className="h-3 w-3 text-blue-600 dark:text-blue-400" />
             </div>
-            <div className="text-gray-900 dark:text-gray-100 text-2xl font-bold">$45,789</div>
-            <div className="text-green-600 dark:text-green-400 text-xs">+12.3% this week</div>
+            <div className="text-gray-900 dark:text-gray-100 text-lg font-bold">$45,789</div>
+            <div className="text-green-600 dark:text-green-400 text-[10px]">+12.3%</div>
           </div>
 
-          <div className="bg-white dark:bg-gray-800 rounded-2xl p-4 border border-gray-200 dark:border-gray-700 shadow-sm">
-            <div className="flex items-center justify-between mb-2">
-              <div className="text-purple-600 dark:text-purple-400 text-sm">System Health</div>
-              <Zap className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-3 border border-gray-200 dark:border-gray-700 shadow-sm">
+            <div className="flex items-center justify-between mb-1">
+              <div className="text-purple-600 dark:text-purple-400 text-xs font-medium">Health</div>
+              <Zap className="h-3 w-3 text-purple-600 dark:text-purple-400" />
             </div>
-            <div className="text-gray-900 dark:text-gray-100 text-2xl font-bold">98.5%</div>
-            <div className="text-green-600 dark:text-green-400 text-xs">Excellent performance</div>
+            <div className="text-gray-900 dark:text-gray-100 text-lg font-bold">98.5%</div>
+            <div className="text-green-600 dark:text-green-400 text-[10px]">Excellent</div>
           </div>
 
-          <div className="bg-white dark:bg-gray-800 rounded-2xl p-4 border border-gray-200 dark:border-gray-700 shadow-sm">
-            <div className="flex items-center justify-between mb-2">
-              <div className="text-yellow-600 dark:text-yellow-400 text-sm">AI Status</div>
-              <Activity className="h-4 w-4 text-yellow-600 dark:text-yellow-400" />
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-3 border border-gray-200 dark:border-gray-700 shadow-sm">
+            <div className="flex items-center justify-between mb-1">
+              <div className="text-yellow-600 dark:text-yellow-400 text-xs font-medium">AI Status</div>
+              <Activity className="h-3 w-3 text-yellow-600 dark:text-yellow-400" />
             </div>
-            <div className="text-gray-900 dark:text-gray-100 text-lg font-bold">Online</div>
+            <div className="text-gray-900 dark:text-gray-100 text-sm font-bold">Online</div>
             <div className="inline-block w-2 h-2 bg-green-500 dark:bg-green-400 rounded-full animate-pulse"></div>
           </div>
         </div>
         
-        <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5 lg:grid-cols-10 bg-white dark:bg-gray-800 rounded-2xl p-2 border border-gray-200 dark:border-gray-700">
+        <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-4">
+          <TabsList className="grid w-full grid-cols-5 lg:grid-cols-10 bg-white dark:bg-gray-800 rounded-xl p-1 border border-gray-200 dark:border-gray-700">
             {tabs.map((tab) => (
               <TabsTrigger
                 key={tab.id}
                 value={tab.id}
                 className={`
-                  flex items-center justify-center gap-2 px-3 py-3 rounded-xl transition-all
+                  flex items-center justify-center gap-1 px-2 py-2 rounded-lg transition-all text-xs
                   data-[state=active]:bg-blue-600 data-[state=active]:text-white data-[state=active]:shadow-lg
-                  text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700
+                  text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700
                 `}
               >
-                <tab.icon className="h-4 w-4" />
-                <span className="hidden sm:inline text-sm font-medium">{tab.label}</span>
+                <tab.icon className="h-3 w-3" />
+                <span className="hidden sm:inline font-medium">{tab.label}</span>
               </TabsTrigger>
             ))}
           </TabsList>
           
-          <div className="mt-6 bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm">
+          <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 shadow-sm">
             {renderTabContent()}
           </div>
         </Tabs>

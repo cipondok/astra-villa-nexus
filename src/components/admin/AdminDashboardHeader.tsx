@@ -125,76 +125,66 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
     setShowProfile(true);
   };
 
+  // Get proper display name and email
+  const displayName = profile?.full_name || user?.user_metadata?.full_name || 'Administrator';
+  const displayEmail = user?.email || 'admin@astra.com';
+  const userRole = profile?.role || 'admin';
+
   return (
-    <div className="relative bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 text-white transition-all duration-300">
-      {/* Background Pattern */}
-      <div 
-        className="absolute inset-0 opacity-10 dark:opacity-5"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='7' cy='7' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
-        }}
-      />
-      
-      <div className="relative container mx-auto px-4 py-8">
-        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
-          <div className="flex-1">
-            <div className="flex items-center gap-4 mb-4">
-              <div className="p-3 bg-white/20 dark:bg-gray-800/60 backdrop-blur-sm rounded-xl border border-white/30 dark:border-gray-600/50">
-                <Shield className="h-8 w-8 text-white" />
-              </div>
-              <div>
-                <h1 className="text-3xl lg:text-4xl font-bold text-white">
-                  ASTRA Villa {isAdmin ? "Admin Panel" : "Support Dashboard"}
-                </h1>
-                <p className="text-blue-100 dark:text-gray-300 text-lg mt-1">
-                  Welcome back, {profile?.full_name || user?.email}
-                </p>
-              </div>
+    <div className="relative bg-gradient-to-r from-blue-600 to-blue-700 dark:from-gray-800 dark:to-gray-900 text-white transition-all duration-300">
+      {/* Compact Header */}
+      <div className="relative container mx-auto px-4 py-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-white/20 dark:bg-gray-700/60 backdrop-blur-sm rounded-lg border border-white/30 dark:border-gray-600/50">
+              <Shield className="h-6 w-6 text-white" />
             </div>
-            
-            <div className="flex flex-wrap items-center gap-3">
-              <Badge variant="secondary" className="bg-white/20 dark:bg-gray-700/60 text-white border-white/30 dark:border-gray-600/50 hover:bg-white/30 dark:hover:bg-gray-600/60 transition-colors px-4 py-2">
-                <User className="h-4 w-4 mr-2" />
-                {isAdmin ? "System Administrator" : "Support Staff"}
-              </Badge>
-              
-              <Badge variant="outline" className="bg-green-500/20 dark:bg-green-600/30 text-green-100 dark:text-green-200 border-green-400/50 dark:border-green-500/40 px-4 py-2">
-                <Activity className="h-4 w-4 mr-2" />
-                Online
-              </Badge>
-              
-              {sessionTime && (
-                <Badge 
-                  variant="outline" 
-                  className="bg-blue-500/20 dark:bg-blue-600/30 text-blue-100 dark:text-blue-200 border-blue-400/50 dark:border-blue-500/40 px-4 py-2 cursor-pointer hover:bg-blue-500/30 dark:hover:bg-blue-600/40"
-                  onClick={handleExtendSession}
-                  title="Click to extend session"
-                >
-                  <Clock className="h-4 w-4 mr-2" />
-                  Session: {sessionTime}
-                </Badge>
-              )}
+            <div>
+              <h1 className="text-xl font-bold text-white">
+                ASTRA AI Control Center
+              </h1>
+              <p className="text-blue-100 dark:text-gray-300 text-sm">
+                Welcome back, {displayName}
+              </p>
             </div>
           </div>
           
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
+            {/* Compact Status Badges */}
+            <Badge variant="outline" className="bg-green-500/20 text-green-100 border-green-400/50 px-3 py-1 text-xs">
+              <Activity className="h-3 w-3 mr-1" />
+              Online
+            </Badge>
+            
+            {sessionTime && (
+              <Badge 
+                variant="outline" 
+                className="bg-blue-500/20 text-blue-100 border-blue-400/50 px-3 py-1 text-xs cursor-pointer hover:bg-blue-500/30"
+                onClick={handleExtendSession}
+                title="Click to extend session"
+              >
+                <Clock className="h-3 w-3 mr-1" />
+                {sessionTime}
+              </Badge>
+            )}
+
             {/* Home Button */}
             <Button
               onClick={() => navigate('/')}
               variant="ghost"
-              className="bg-white/10 dark:bg-gray-800/60 hover:bg-white/20 dark:hover:bg-gray-700/60 text-white border border-white/20 dark:border-gray-600/50 px-4 py-2 flex items-center gap-2 transition-all duration-200"
+              size="sm"
+              className="bg-white/10 hover:bg-white/20 text-white border border-white/20 px-3 py-1"
             >
               <Home className="h-4 w-4" />
-              <span className="hidden md:block">Home</span>
             </Button>
 
             {/* Theme Switcher */}
-            <div className="bg-white/10 dark:bg-gray-800/60 backdrop-blur-sm border border-white/20 dark:border-gray-600/50 rounded-lg">
+            <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg">
               <ThemeSwitcher variant="compact" className="px-2" />
             </div>
 
             {/* Enhanced Real-time Alerts Button */}
-            <div className="bg-white/10 dark:bg-gray-800/60 backdrop-blur-sm border border-white/20 dark:border-gray-600/50 rounded-lg">
+            <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg">
               <EnhancedAlertBadge />
             </div>
 
@@ -203,21 +193,22 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="ghost"
-                  className="bg-white/10 dark:bg-gray-800/60 hover:bg-white/20 dark:hover:bg-gray-700/60 text-white border border-white/20 dark:border-gray-600/50 px-4 py-2 flex items-center gap-2 transition-all duration-200"
+                  size="sm"
+                  className="bg-white/10 hover:bg-white/20 text-white border border-white/20 px-3 py-1 flex items-center gap-2"
                 >
-                  <div className="w-8 h-8 bg-blue-600 dark:bg-blue-700 rounded-full flex items-center justify-center">
-                    <User className="h-4 w-4 text-white" />
+                  <div className="w-6 h-6 bg-blue-600 dark:bg-blue-700 rounded-full flex items-center justify-center">
+                    <User className="h-3 w-3 text-white" />
                   </div>
-                  <span className="hidden md:block">{profile?.full_name || 'Admin'}</span>
-                  <ChevronDown className="h-4 w-4" />
+                  <span className="hidden md:block text-sm">{displayName}</span>
+                  <ChevronDown className="h-3 w-3" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-64 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 z-50">
+              <DropdownMenuContent align="end" className="w-64 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 z-50">
                 <DropdownMenuLabel className="text-gray-900 dark:text-gray-100">
                   <div className="flex flex-col space-y-1">
-                    <p className="text-sm font-medium">{profile?.full_name || 'Administrator'}</p>
-                    <p className="text-xs text-gray-600 dark:text-gray-400">{user?.email}</p>
-                    <p className="text-xs text-blue-600 dark:text-blue-400">System Administrator</p>
+                    <p className="text-sm font-medium">{displayName}</p>
+                    <p className="text-xs text-gray-600 dark:text-gray-400">{displayEmail}</p>
+                    <p className="text-xs text-blue-600 dark:text-blue-400 capitalize">{userRole} Access</p>
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator className="bg-gray-200 dark:bg-gray-700" />
@@ -307,7 +298,7 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
 
       {/* Profile Dialog */}
       <Dialog open={showProfile} onOpenChange={setShowProfile}>
-        <DialogContent className="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border-gray-200 dark:border-gray-700">
+        <DialogContent className="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700">
           <DialogHeader>
             <DialogTitle className="text-gray-900 dark:text-gray-100">Admin Profile Management</DialogTitle>
             <DialogDescription className="text-gray-600 dark:text-gray-400">
@@ -317,15 +308,15 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
           <div className="space-y-4">
             <div>
               <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Email</label>
-              <p className="text-gray-900 dark:text-gray-100">{user?.email}</p>
+              <p className="text-gray-900 dark:text-gray-100">{displayEmail}</p>
             </div>
             <div>
               <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Full Name</label>
-              <p className="text-gray-900 dark:text-gray-100">{profile?.full_name || 'Not set'}</p>
+              <p className="text-gray-900 dark:text-gray-100">{displayName}</p>
             </div>
             <div>
               <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Role</label>
-              <p className="text-gray-900 dark:text-gray-100">{profile?.role || 'admin'}</p>
+              <p className="text-gray-900 dark:text-gray-100 capitalize">{userRole}</p>
             </div>
             <div>
               <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Session Duration</label>

@@ -51,7 +51,7 @@ const ThemeSwitcher = ({ className = "", variant = "default" }: ThemeSwitcherPro
         className={`flex items-center gap-2 text-white hover:bg-white/20 dark:text-gray-300 dark:hover:bg-gray-600/50 transition-all duration-300 ${className}`}
       >
         <Icon className="h-4 w-4" />
-        <span className="hidden md:inline text-white dark:text-gray-300 font-medium">{label}</span>
+        <span className="hidden md:inline text-white dark:text-gray-300 font-medium text-sm">{label}</span>
       </Button>
     );
   }
@@ -71,7 +71,7 @@ const ThemeSwitcher = ({ className = "", variant = "default" }: ThemeSwitcherPro
             flex items-center space-x-2 px-3 py-2 rounded-md transition-all duration-300
             ${theme === key 
               ? 'bg-blue-600 text-white shadow-md font-medium' 
-              : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-600'
+              : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-600'
             }
           `}
         >
