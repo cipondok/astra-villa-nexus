@@ -68,44 +68,42 @@ const Navigation = () => {
 
   return (
     <>
-      <nav className="titanium-nav">
+      <nav className="apple-nav">
         <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between h-16">
-            {/* ASTRA Villa Logo with AI Effects */}
+          <div className="flex items-center justify-between h-14">
+            {/* ASTRA Villa Logo with Apple Effects */}
             <div 
               className="flex items-center space-x-3 cursor-pointer group" 
               onClick={() => navigate('/')}
             >
               <div className="relative">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-primary via-secondary to-accent flex items-center justify-center transform transition-all duration-300 group-hover:scale-110 group-hover:rotate-3 shadow-lg">
-                  <Brain className="h-5 w-5 text-primary-foreground animate-pulse" />
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-primary to-accent flex items-center justify-center transform transition-all duration-200 group-hover:scale-110 shadow-lg">
+                  <Brain className="h-4 w-4 text-primary-foreground" />
                 </div>
-                <div className="absolute -inset-1 bg-gradient-to-r from-primary via-secondary to-accent rounded-xl blur opacity-30 group-hover:opacity-60 transition-all duration-300 animate-pulse"></div>
               </div>
               <div className="hidden sm:block">
                 <div className="flex items-center space-x-2">
-                  <span className="text-xl font-bold titanium-text-gradient">
+                  <span className="text-lg font-semibold apple-text-gradient">
                     ASTRA
                   </span>
-                  <span className="text-xl font-bold text-foreground">Villa</span>
-                  <div className="w-2 h-2 rounded-full bg-gradient-to-r from-primary to-accent animate-pulse"></div>
+                  <span className="text-lg font-semibold text-foreground">Villa</span>
                 </div>
-                <div className="text-xs text-muted-foreground font-medium">AI-Powered Property Platform</div>
+                <div className="text-xs text-muted-foreground font-medium">AI-Powered Platform</div>
               </div>
             </div>
 
             {/* Desktop Navigation */}
-            <div className="hidden lg:flex items-center space-x-6">
+            <div className="hidden lg:flex items-center space-x-4">
               <Button 
                 variant="ghost" 
-                className="titanium-nav-item"
+                className="apple-nav-item"
                 onClick={() => navigate('/')}
               >
                 {currentText.home}
               </Button>
               <Button 
                 variant="ghost" 
-                className="titanium-nav-item"
+                className="apple-nav-item"
                 onClick={() => navigate('/services')}
               >
                 {currentText.services}
@@ -113,7 +111,7 @@ const Navigation = () => {
               {user && (
                 <Button 
                   variant="ghost" 
-                  className="titanium-nav-item"
+                  className="apple-nav-item"
                   onClick={() => navigate('/dashboard')}
                 >
                   {currentText.dashboard}
@@ -122,11 +120,11 @@ const Navigation = () => {
               {profile?.role === 'admin' && (
                 <Button 
                   variant="ghost" 
-                  className="text-accent hover:text-accent/80 hover:bg-accent/20 titanium-nav-item"
+                  className="text-accent hover:text-accent/80 hover:bg-accent/20 apple-nav-item"
                   onClick={() => navigate('/admin')}
                 >
-                  <Crown className="h-4 w-4 mr-2" />
-                  Admin Panel
+                  <Crown className="h-4 w-4 mr-1" />
+                  Admin
                 </Button>
               )}
             </div>
@@ -135,10 +133,9 @@ const Navigation = () => {
             <div className="flex items-center space-x-3">
               {/* Smart AI Icon */}
               <div className="relative group">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-primary/20 to-accent/20 backdrop-blur-sm border border-primary/30 flex items-center justify-center cursor-pointer transition-all duration-300 hover:scale-110 hover:bg-gradient-to-r hover:from-primary/30 hover:to-accent/30">
-                  <Sparkles className="h-4 w-4 text-primary animate-pulse" />
+                <div className="w-7 h-7 rounded-lg bg-gradient-to-r from-primary/20 to-accent/20 backdrop-blur-sm border border-primary/30 flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-110">
+                  <Sparkles className="h-3 w-3 text-primary" />
                 </div>
-                <div className="absolute -inset-0.5 bg-gradient-to-r from-primary/20 to-accent/20 rounded-lg blur opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
               </div>
 
               {/* Dark Mode Toggle */}
@@ -146,7 +143,7 @@ const Navigation = () => {
                 variant="ghost"
                 size="sm"
                 onClick={toggleTheme}
-                className="titanium-nav-item relative group w-8 h-8 p-0 rounded-lg bg-secondary/50 hover:bg-secondary/80 border border-border/50"
+                className="apple-nav-item w-7 h-7 p-0 rounded-lg bg-secondary/50 hover:bg-secondary/80"
               >
                 {theme === "light" ? (
                   <Moon className="h-4 w-4 transition-transform group-hover:rotate-12" />
@@ -155,12 +152,12 @@ const Navigation = () => {
                 )}
               </Button>
 
-              <div className="hidden md:flex items-center space-x-3">
+              <div className="hidden md:flex items-center space-x-2">
                 <LanguageToggleSwitch />
               </div>
 
               {user ? (
-                <div className="flex items-center space-x-3">
+                <div className="flex items-center space-x-2">
                   <div className="hidden sm:block text-right">
                     <div className="text-sm font-medium text-foreground">
                       {profile?.full_name || currentText.user}
@@ -169,7 +166,7 @@ const Navigation = () => {
                       {profile?.role || 'user'}
                     </div>
                   </div>
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-r from-primary to-accent flex items-center justify-center shadow-lg">
+                  <div className="w-7 h-7 rounded-full bg-gradient-to-r from-primary to-accent flex items-center justify-center shadow-lg">
                     <User className="h-4 w-4 text-primary-foreground" />
                   </div>
                   <Button 
@@ -184,7 +181,7 @@ const Navigation = () => {
               ) : (
                 <Button
                   onClick={() => setShowAuthModal(true)}
-                  className="titanium-button-primary text-sm px-4 py-2"
+                  className="apple-button-primary text-sm px-4 py-2"
                 >
                   {currentText.signIn}
                 </Button>
@@ -194,26 +191,26 @@ const Navigation = () => {
               <Button
                 variant="ghost"
                 size="sm"
-                className="lg:hidden titanium-nav-item w-8 h-8 p-0"
+                className="lg:hidden apple-nav-item w-7 h-7 p-0"
                 onClick={toggleMenu}
               >
-                {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+                {isMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
               </Button>
             </div>
           </div>
 
           {/* Mobile Navigation */}
           {isMenuOpen && (
-            <div className="lg:hidden border-t border-border titanium-glass mt-2 rounded-2xl">
+            <div className="lg:hidden border-t border-border apple-glass mt-2 rounded-2xl">
               <div className="px-2 pt-2 pb-3 space-y-1">
-                <Button variant="ghost" className="block w-full text-left px-3 py-2 rounded-md titanium-nav-item" onClick={() => { navigate('/'); toggleMenu(); }}>
+                <Button variant="ghost" className="block w-full text-left px-3 py-2 rounded-md apple-nav-item" onClick={() => { navigate('/'); toggleMenu(); }}>
                   {currentText.home}
                 </Button>
-                <Button variant="ghost" className="block w-full text-left px-3 py-2 rounded-md titanium-nav-item" onClick={() => { navigate('/services'); toggleMenu(); }}>
+                <Button variant="ghost" className="block w-full text-left px-3 py-2 rounded-md apple-nav-item" onClick={() => { navigate('/services'); toggleMenu(); }}>
                   {currentText.services}
                 </Button>
                 {user && (
-                  <Button variant="ghost" className="block w-full text-left px-3 py-2 rounded-md titanium-nav-item" onClick={() => { navigate('/dashboard'); toggleMenu(); }}>
+                  <Button variant="ghost" className="block w-full text-left px-3 py-2 rounded-md apple-nav-item" onClick={() => { navigate('/dashboard'); toggleMenu(); }}>
                     {currentText.dashboard}
                   </Button>
                 )}
@@ -227,7 +224,7 @@ const Navigation = () => {
                     variant="ghost"
                     size="sm"
                     onClick={toggleTheme}
-                    className="titanium-nav-item"
+                    className="apple-nav-item"
                   >
                     {theme === "light" ? <Moon className="h-4 w-4 mr-2" /> : <Sun className="h-4 w-4 mr-2" />}
                     {theme === "light" ? "Dark" : "Light"}
