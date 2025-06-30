@@ -209,22 +209,6 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
         { value: "bus", label: "Bus" },
         { value: "kereta", label: language === "id" ? "KRL" : "Commuter Line" }
       ]
-    },
-    {
-      label: language === "id" ? "Pusat Belanja" : "Shopping",
-      key: "shopping",
-      options: [
-        { value: "mall", label: language === "id" ? "Mall" : "Shopping Mall" },
-        { value: "supermarket", label: "Supermarket" },
-      ]
-    },
-    {
-      label: language === "id" ? "Area Publik" : "Public Area",
-      key: "public",
-      options: [
-        { value: "public-park", label: language === "id" ? "Taman Kota" : "Park" },
-        { value: "public-area", label: language === "id" ? "Fasilitas Umum" : "Facilities" }
-      ]
     }
   ];
 
@@ -425,193 +409,197 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
         </DialogContent>
       </Dialog>
 
-      {/* Apple-style Compact Search Panel */}
-      <div className="w-full max-w-[1800px] mx-auto px-2 sm:px-3 lg:px-4">
-        <Card className="bg-gray-50/95 dark:bg-gray-800/95 backdrop-blur-xl border border-gray-200/50 dark:border-gray-700/50 shadow-xl transition-all duration-300 hover:shadow-2xl rounded-xl">
+      {/* Slim, Centered Search Panel for Wide Screens */}
+      <div className="w-full max-w-6xl mx-auto px-3 sm:px-4 lg:px-6">
+        <Card className="bg-gray-50/90 dark:bg-gray-800/90 backdrop-blur-xl border border-gray-200/40 dark:border-gray-700/40 shadow-lg transition-all duration-300 hover:shadow-xl rounded-xl">
           <CardContent className="p-3 lg:p-4">
 
-            {/* Property Type Toggle - Much Smaller */}
-            <div className="mb-3">
+            {/* Property Type Toggle - Centered and Compact */}
+            <div className="mb-2 flex justify-center">
               <IPhoneToggleGroup
                 options={[
-                  { value: "", label: language === "id" ? "Semua Jenis" : "All Types", colorClass: "bg-blue-600 hover:bg-blue-700 text-white shadow-sm border-0" },
-                  { value: "apartment", label: language === "id" ? "Apartemen" : "Apartment", colorClass: "bg-white hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm border border-gray-200 dark:border-gray-600" },
-                  { value: "house", label: language === "id" ? "Rumah" : "House", colorClass: "bg-white hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm border border-gray-200 dark:border-gray-600" },
+                  { value: "", label: language === "id" ? "All" : "All", colorClass: "bg-blue-600 hover:bg-blue-700 text-white shadow-sm border-0" },
+                  { value: "apartment", label: language === "id" ? "Apt" : "Apt", colorClass: "bg-white hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm border border-gray-200 dark:border-gray-600" },
+                  { value: "house", label: language === "id" ? "House" : "House", colorClass: "bg-white hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm border border-gray-200 dark:border-gray-600" },
                   { value: "villa", label: "Villa", colorClass: "bg-white hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm border border-gray-200 dark:border-gray-600" },
-                  { value: "townhouse", label: language === "id" ? "Rumah Kota" : "Townhouse", colorClass: "bg-white hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm border border-gray-200 dark:border-gray-600" },
+                  { value: "townhouse", label: language === "id" ? "Town" : "Town", colorClass: "bg-white hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm border border-gray-200 dark:border-gray-600" },
                 ]}
                 value={propertyType}
                 onChange={setPropertyType}
-                className="flex flex-wrap justify-center gap-1 lg:gap-2"
+                className="flex gap-1"
               />
             </div>
 
-            {/* Main Search Bar - Compact */}
-            <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-2 mb-3">
-              <div className="w-full">
-                <div className="relative w-full">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+            {/* Main Search Bar - Centered Single Row */}
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <div className="flex-1 max-w-2xl">
+                <div className="relative">
+                  <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-3 w-3 text-gray-400" />
                   <Input
                     placeholder={currentText.search}
-                    className="pl-9 h-9 text-sm bg-white dark:bg-gray-900 border-gray-300/50 dark:border-gray-600/50 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-300 hover:shadow-md font-medium"
+                    className="pl-7 h-8 text-xs bg-white dark:bg-gray-900 border-gray-300/50 dark:border-gray-600/50 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-300 hover:shadow-md font-medium"
                     value={searchQuery}
                     onChange={handleSearchInputChange}
                     onKeyDown={handleKeyPress}
                   />
                 </div>
               </div>
-              <div className="flex justify-center lg:justify-end">
-                <Button
-                  onClick={handleManualSearch}
-                  className="h-9 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-sm transition-all duration-300 hover:shadow-md hover:scale-105 text-sm"
-                >
-                  <Search className="h-3 w-3 mr-1" />
-                  {currentText.searchBtn}
-                </Button>
-              </div>
+              <Button
+                onClick={handleManualSearch}
+                className="h-8 px-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-sm transition-all duration-300 hover:shadow-md hover:scale-105 text-xs"
+              >
+                <Search className="h-3 w-3 mr-1" />
+                {language === "id" ? "Cari" : "Search"}
+              </Button>
             </div>
 
-            {/* Advanced Filters Toggle - Smaller */}
-            <div className="flex items-center justify-between mb-3">
+            {/* Advanced Filters Toggle - Centered */}
+            <div className="flex items-center justify-center gap-2 mb-2">
               <Button
                 variant="ghost"
                 onClick={() => setShowAdvanced(v => !v)}
-                className="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-100/50 dark:hover:bg-gray-700/50 rounded-lg px-3 py-1 transition-all duration-200 text-xs font-medium"
+                className="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-100/50 dark:hover:bg-gray-700/50 rounded-lg px-2 py-1 transition-all duration-200 text-xs font-medium"
               >
                 <Filter className="h-3 w-3 mr-1" />
                 {showAdvanced
-                  ? (language === "id" ? "Sembunyikan Filter" : "Hide Filters")
-                  : (language === "id" ? "Filter Lanjutan" : "Advanced Filters")}
+                  ? (language === "id" ? "Hide" : "Hide")
+                  : (language === "id" ? "Filters" : "Filters")}
               </Button>
               {hasActiveFilters && (
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={handleClearFilters}
-                  className="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 border-gray-300/50 dark:border-gray-600/50 rounded-lg px-3 py-1 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-all duration-200 text-xs"
+                  className="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 border-gray-300/50 dark:border-gray-600/50 rounded-lg px-2 py-1 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-all duration-200 text-xs"
                 >
                   <X className="h-3 w-3 mr-1" />
-                  {language === "id" ? "Hapus semua" : "Clear all"}
+                  {language === "id" ? "Clear" : "Clear"}
                 </Button>
               )}
             </div>
             
-            {/* Animated Advanced Filters Section - Smaller */}
+            {/* Slim Advanced Filters Section */}
             <div
               className={`overflow-hidden ${filterAnimBase} ${showAdvanced ? filterAnimVisible : filterAnimHidden}`}
-              style={{ minHeight: showAdvanced ? 200 : 0, maxHeight: showAdvanced ? 600 : 0 }}
+              style={{ minHeight: showAdvanced ? 120 : 0, maxHeight: showAdvanced ? 400 : 0 }}
               onTransitionEnd={() => {
                 if (!showAdvanced) setFiltersMounted(false);
               }}
             >
               {filtersMounted && (
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 mb-3 p-3 bg-white/90 dark:bg-gray-900/90 rounded-lg border border-gray-200/50 dark:border-gray-700/50 shadow-sm">
-                  {/* Location Selector - Smaller */}
-                  <div className="lg:col-span-5">
-                    <LocationSelector
-                      selectedState={selectedState}
-                      selectedCity={selectedCity}
-                      selectedArea={selectedArea}
-                      onStateChange={setSelectedState}
-                      onCityChange={setSelectedCity}
-                      onAreaChange={setSelectedArea}
-                      onLocationChange={setLocation}
-                    />
-                  </div>
-                  
-                  {/* Bedrooms and Bathrooms - Smaller */}
-                  <div className="lg:col-span-2">
-                    <label className="block mb-1 text-gray-700 dark:text-gray-300 text-xs font-semibold">
-                      {language === "id" ? "Kamar Tidur" : "Bedrooms"}
-                    </label>
-                    <PillToggleGroup
-                      options={[
-                        { value: "1", label: "1" },
-                        { value: "2", label: "2" },
-                        { value: "3", label: "3" },
-                        { value: "4+", label: "4+" },
-                      ]}
-                      value={bedPills}
-                      onChange={handleBedPillsChange}
-                      multiple={false}
-                    />
-                  </div>
-                  
-                  <div className="lg:col-span-2">
-                    <label className="block mb-1 text-gray-700 dark:text-gray-300 text-xs font-semibold">
-                      {language === "id" ? "Kamar Mandi" : "Bathrooms"}
-                    </label>
-                    <PillToggleGroup
-                      options={[
-                        { value: "1", label: "1" },
-                        { value: "2", label: "2" },
-                        { value: "3", label: "3" },
-                        { value: "4+", label: "4+" },
-                      ]}
-                      value={bathPills}
-                      onChange={handleBathPillsChange}
-                      multiple={false}
-                    />
-                  </div>
-                  
-                  {/* Smart Filter grouped pills - Smaller */}
-                  <div className="lg:col-span-3 space-y-2">
-                    <label className="block mb-2 text-gray-700 dark:text-gray-300 text-xs font-semibold">
-                      {language === "id" ? "Filter Pintar" : "Smart Filters"}
-                    </label>
-                    <div className="space-y-2">
-                      {smartFilterCategories.map((cat) => (
-                        <div key={cat.key} className="space-y-1">
-                          <div className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{cat.label}</div>
-                          <div className="flex flex-wrap gap-1">
-                            {cat.options.map((option) => (
+                <div className="p-2 bg-white/80 dark:bg-gray-900/80 rounded-lg border border-gray-200/50 dark:border-gray-700/50 shadow-sm">
+                  {/* Compact Filter Grid */}
+                  <div className="grid grid-cols-1 lg:grid-cols-5 gap-2 mb-2">
+                    {/* Location - Condensed */}
+                    <div className="lg:col-span-2">
+                      <label className="block mb-1 text-gray-700 dark:text-gray-300 text-xs font-semibold">
+                        {language === "id" ? "Lokasi" : "Location"}
+                      </label>
+                      <LocationSelector
+                        selectedState={selectedState}
+                        selectedCity={selectedCity}
+                        selectedArea={selectedArea}
+                        onStateChange={setSelectedState}
+                        onCityChange={setSelectedCity}
+                        onAreaChange={setSelectedArea}
+                        onLocationChange={setLocation}
+                      />
+                    </div>
+                    
+                    {/* Bedrooms */}
+                    <div>
+                      <label className="block mb-1 text-gray-700 dark:text-gray-300 text-xs font-semibold">
+                        {language === "id" ? "Bed" : "Bed"}
+                      </label>
+                      <PillToggleGroup
+                        options={[
+                          { value: "1", label: "1" },
+                          { value: "2", label: "2" },
+                          { value: "3", label: "3" },
+                          { value: "4+", label: "4+" },
+                        ]}
+                        value={bedPills}
+                        onChange={handleBedPillsChange}
+                        multiple={false}
+                      />
+                    </div>
+                    
+                    {/* Bathrooms */}
+                    <div>
+                      <label className="block mb-1 text-gray-700 dark:text-gray-300 text-xs font-semibold">
+                        {language === "id" ? "Bath" : "Bath"}
+                      </label>
+                      <PillToggleGroup
+                        options={[
+                          { value: "1", label: "1" },
+                          { value: "2", label: "2" },
+                          { value: "3", label: "3" },
+                          { value: "4+", label: "4+" },
+                        ]}
+                        value={bathPills}
+                        onChange={handleBathPillsChange}
+                        multiple={false}
+                      />
+                    </div>
+                    
+                    {/* Smart Filters - Compact */}
+                    <div>
+                      <label className="block mb-1 text-gray-700 dark:text-gray-300 text-xs font-semibold">
+                        {language === "id" ? "Smart" : "Smart"}
+                      </label>
+                      <div className="space-y-1">
+                        {smartFilterCategories.slice(0, 2).map((cat) => (
+                          <div key={cat.key} className="flex flex-wrap gap-1">
+                            {cat.options.slice(0, 2).map((option) => (
                               <button
                                 type="button"
                                 key={option.value}
                                 onClick={() => handleSmartFacilityToggle(option.value)}
-                                className={`px-2 py-0.5 rounded-md border text-xs font-medium transition-all duration-300 hover:scale-105
+                                className={`px-1 py-0.5 rounded text-xs font-medium transition-all duration-300
                                   ${selectedSmartFacilities.includes(option.value)
-                                    ? "bg-blue-600 text-white border-blue-600 shadow-sm"
-                                    : "bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 border-gray-300/50 dark:border-gray-600/50 hover:bg-gray-50 dark:hover:bg-gray-700/50 shadow-sm"}
+                                    ? "bg-blue-600 text-white shadow-sm"
+                                    : "bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-300 dark:hover:bg-gray-600"}
                                 `}
-                                aria-pressed={selectedSmartFacilities.includes(option.value)}
                               >
-                                {option.label}
+                                {option.label.split(' ')[0]}
                               </button>
                             ))}
                           </div>
-                        </div>
-                      ))}
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </div>
               )}
             </div>
 
-            {/* Popular Searches - Smaller */}
-            <div className="text-center lg:text-left">
-              <p className="text-gray-600 dark:text-gray-400 mb-2 font-semibold text-xs">
-                {language === "id" ? "Pencarian populer:" : "Popular searches:"}
+            {/* Popular Searches - Centered and Compact */}
+            <div className="text-center">
+              <p className="text-gray-600 dark:text-gray-400 mb-1 font-semibold text-xs">
+                {language === "id" ? "Popular:" : "Popular:"}
               </p>
-              <div className="flex flex-wrap justify-center lg:justify-start gap-1">
+              <div className="flex flex-wrap justify-center gap-1">
                 {
                   (language === "id"
-                    ? ["Apartemen Jakarta", "Villa Bali", "Rumah Surabaya", "Kost Bandung"]
-                    : ["Apartment Jakarta", "Villa Bali", "House Surabaya", "Boarding Bandung"]
+                    ? ["Jakarta Apt", "Bali Villa", "Surabaya House"]
+                    : ["Jakarta Apt", "Bali Villa", "Surabaya House"]
                   ).map((term, idx) => (
                     <Badge
                       key={idx}
                       variant="secondary"
                       className="cursor-pointer bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-300/50 dark:border-gray-600/50 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:border-blue-300/50 dark:hover:border-blue-600/50 transition-all duration-300 px-2 py-0.5 rounded-md font-medium shadow-sm hover:shadow-md hover:scale-105 text-xs"
                       onClick={() => {
-                        setSearchQuery(term);
+                        const fullTerm = language === "id" 
+                          ? ["Apartemen Jakarta", "Villa Bali", "Rumah Surabaya"][idx]
+                          : ["Apartment Jakarta", "Villa Bali", "House Surabaya"][idx];
+                        setSearchQuery(fullTerm);
                         setPropertyType("");
                         setBedrooms("");
                         setBathrooms("");
                         setLocation("");
                         setHas3D(false);
                         const searchData = {
-                          query: term,
+                          query: fullTerm,
                           propertyType: "",
                           bedrooms: "",
                           bathrooms: "",
