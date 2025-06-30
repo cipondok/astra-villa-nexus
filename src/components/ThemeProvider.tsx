@@ -35,35 +35,66 @@ export function ThemeProvider({
     const root = window.document.documentElement;
     const body = window.document.body;
 
-    // Remove all theme classes
+    // Remove all theme classes first
     root.classList.remove("light", "dark");
-    body.classList.remove("dark");
+    body.classList.remove("dark", "light");
 
+    let effectiveTheme = theme;
+
+    // Handle system theme
     if (theme === "system") {
-      const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
-        .matches
+      const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
         ? "dark"
         : "light";
-
-      if (systemTheme === "dark") {
-        root.classList.add("dark");
-        body.classList.add("dark");
-      }
-    } else {
-      if (theme === "dark") {
-        root.classList.add("dark");
-        body.classList.add("dark");
-      }
+      effectiveTheme = systemTheme;
     }
 
-    // Force proper background colors
-    if (theme === "light" || (theme === "system" && !window.matchMedia("(prefers-color-scheme: dark)").matches)) {
-      body.style.backgroundColor = "rgb(255, 255, 255)";
-      body.style.color = "rgb(0, 0, 0)";
+    // Apply theme classes
+    root.classList.add(effectiveTheme);
+    if (effectiveTheme === "dark") {
+      body.classList.add("dark");
     } else {
-      body.style.backgroundColor = "rgb(0, 0, 0)";
-      body.style.color = "rgb(255, 255, 255)";
+      body.classList.add("light");
     }
+
+    // Set CSS custom properties for consistent theming
+    if (effectiveTheme === "dark") {
+      root.style.setProperty('--background', '0 0 0');
+      root.style.setProperty('--foreground', '255 255 255');
+      root.style.setProperty('--card', '28 28 30');
+      root.style.setProperty('--card-foreground', '255 255 255');
+      root.style.setProperty('--primary', '217 91 60');
+      root.style.setProperty('--primary-foreground', '255 255 255');
+      root.style.setProperty('--secondary', '44 44 46');
+      root.style.setProperty('--secondary-foreground', '255 255 255');
+      root.style.setProperty('--muted', '44 44 46');
+      root.style.setProperty('--muted-foreground', '174 174 178');
+      root.style.setProperty('--border', '58 58 60');
+    } else {
+      root.style.setProperty('--background', '255 255 255');
+      root.style.setProperty('--foreground', '0 0 0');
+      root.style.setProperty('--card', '255 255 255');
+      root.style.setProperty('--card-foreground', '0 0 0');
+      root.style.setProperty('--primary', '217 91 60');
+      root.style.setProperty('--primary-foreground', '255 255 255');
+      root.style.setProperty('--secondary', '245 245 247');
+      root.style.setProperty('--secondary-foreground', '0 0 0');
+      root.style.setProperty('--muted', '248 248 248');
+      root.style.setProperty('--muted-foreground', '99 99 102');
+      root.style.setProperty('--border', '229 229 234');
+    }
+
+    // Listen for system theme changes
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const handleChange = () => {
+      if (theme === "system") {
+        // Trigger re-render when system theme changes
+        setTheme("system");
+      }
+    };
+
+    mediaQuery.addEventListener("change", handleChange);
+    return () => mediaQuery.removeEventListener("change", handleChange);
   }, [theme]);
 
   const value = {

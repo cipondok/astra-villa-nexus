@@ -177,21 +177,19 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
           </div>
           
           <div className="flex items-center gap-3">
-            {/* Home Button with Theme Toggle */}
-            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg p-1">
-              <Button
-                onClick={() => navigate('/')}
-                variant="ghost"
-                className="bg-transparent hover:bg-white/20 text-white border-0 px-3 py-2 flex items-center gap-2"
-              >
-                <Home className="h-4 w-4" />
-                <span className="hidden md:block">Home</span>
-              </Button>
-              
-              {/* Theme Switcher integrated */}
-              <div className="px-2">
-                <ThemeSwitcher variant="compact" />
-              </div>
+            {/* Home Button */}
+            <Button
+              onClick={() => navigate('/')}
+              variant="ghost"
+              className="bg-white/10 hover:bg-white/20 text-white border border-white/20 px-4 py-2 flex items-center gap-2"
+            >
+              <Home className="h-4 w-4" />
+              <span className="hidden md:block">Home</span>
+            </Button>
+
+            {/* Theme Switcher - Fixed positioning */}
+            <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg">
+              <ThemeSwitcher variant="compact" className="px-2" />
             </div>
 
             {/* Enhanced Real-time Alerts Button */}
@@ -213,7 +211,7 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
                   <ChevronDown className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-64 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700">
+              <DropdownMenuContent align="end" className="w-64 bg-background border-border">
                 <DropdownMenuLabel className="text-gray-900 dark:text-white">
                   <div className="flex flex-col space-y-1">
                     <p className="text-sm font-medium">{profile?.full_name || 'Administrator'}</p>
@@ -308,7 +306,7 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
 
       {/* Profile Dialog */}
       <Dialog open={showProfile} onOpenChange={setShowProfile}>
-        <DialogContent className="bg-white dark:bg-slate-800 text-gray-900 dark:text-white">
+        <DialogContent className="bg-background text-foreground border-border">
           <DialogHeader>
             <DialogTitle className="text-gray-900 dark:text-white">Admin Profile Management</DialogTitle>
             <DialogDescription className="text-gray-600 dark:text-gray-300">
