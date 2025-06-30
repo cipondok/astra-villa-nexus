@@ -8,10 +8,10 @@ interface AnimatedLogoProps {
 const AnimatedLogo = ({ className = "" }: AnimatedLogoProps) => {
   return (
     <div className={`flex items-center ${className}`}>
-      {/* Simple Text Logo Only */}
+      {/* Simple Text Logo - No Animation */}
       <div>
-        <h1 className="text-xl font-bold relative overflow-hidden">
-          <span className="inline-block animate-gradient bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent bg-[length:300%_300%] hover:scale-105 transition-transform duration-300">
+        <h1 className="text-xl font-bold">
+          <span className="text-foreground">
             Astra Villa
           </span>
         </h1>

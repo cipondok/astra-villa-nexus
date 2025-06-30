@@ -126,9 +126,9 @@ const AdvancedAdminDashboard = () => {
         onLanguageToggle={() => {}} 
       />
       
-      <div className="container mx-auto px-4 py-4 space-y-4 mt-20">
+      <div className="container mx-auto px-4 py-4 space-y-4 mt-16">
         
-        {/* Improved Stats Overview with Better Light Mode Colors */}
+        {/* Improved Stats Overview with Consistent Blue/Purple Colors */}
         <div className="grid grid-cols-3 lg:grid-cols-6 gap-3">
           <div className="bg-white dark:bg-gray-800 rounded-xl p-3 border border-gray-300 dark:border-gray-700 shadow-sm">
             <div className="flex items-center justify-between mb-1">
@@ -150,8 +150,8 @@ const AdvancedAdminDashboard = () => {
 
           <div className="bg-white dark:bg-gray-800 rounded-xl p-3 border border-gray-300 dark:border-gray-700 shadow-sm">
             <div className="flex items-center justify-between mb-1">
-              <div className="text-orange-800 dark:text-orange-400 text-xs font-semibold">Errors</div>
-              <Shield className="h-3 w-3 text-orange-800 dark:text-orange-400" />
+              <div className="text-blue-800 dark:text-blue-400 text-xs font-semibold">Errors</div>
+              <Shield className="h-3 w-3 text-blue-800 dark:text-blue-400" />
             </div>
             <div className="text-gray-900 dark:text-gray-100 text-lg font-bold">0</div>
             <div className="text-blue-800 dark:text-blue-400 text-[10px] font-medium">All good</div>
@@ -159,17 +159,17 @@ const AdvancedAdminDashboard = () => {
 
           <div className="bg-white dark:bg-gray-800 rounded-xl p-3 border border-gray-300 dark:border-gray-700 shadow-sm">
             <div className="flex items-center justify-between mb-1">
-              <div className="text-blue-800 dark:text-blue-400 text-xs font-semibold">Transfers</div>
-              <TrendingUp className="h-3 w-3 text-blue-800 dark:text-blue-400" />
+              <div className="text-purple-800 dark:text-purple-400 text-xs font-semibold">Transfers</div>
+              <TrendingUp className="h-3 w-3 text-purple-800 dark:text-purple-400" />
             </div>
             <div className="text-gray-900 dark:text-gray-100 text-lg font-bold">$45,789</div>
-            <div className="text-blue-800 dark:text-blue-400 text-[10px] font-medium">+12.3%</div>
+            <div className="text-purple-800 dark:text-purple-400 text-[10px] font-medium">+12.3%</div>
           </div>
 
           <div className="bg-white dark:bg-gray-800 rounded-xl p-3 border border-gray-300 dark:border-gray-700 shadow-sm">
             <div className="flex items-center justify-between mb-1">
-              <div className="text-purple-800 dark:text-purple-400 text-xs font-semibold">Health</div>
-              <Zap className="h-3 w-3 text-purple-800 dark:text-purple-400" />
+              <div className="text-blue-800 dark:text-blue-400 text-xs font-semibold">Health</div>
+              <Zap className="h-3 w-3 text-blue-800 dark:text-blue-400" />
             </div>
             <div className="text-gray-900 dark:text-gray-100 text-lg font-bold">98.5%</div>
             <div className="text-blue-800 dark:text-blue-400 text-[10px] font-medium">Excellent</div>
@@ -177,8 +177,8 @@ const AdvancedAdminDashboard = () => {
 
           <div className="bg-white dark:bg-gray-800 rounded-xl p-3 border border-gray-300 dark:border-gray-700 shadow-sm">
             <div className="flex items-center justify-between mb-1">
-              <div className="text-amber-800 dark:text-yellow-400 text-xs font-semibold">AI Status</div>
-              <Activity className="h-3 w-3 text-amber-800 dark:text-yellow-400" />
+              <div className="text-purple-800 dark:text-purple-400 text-xs font-semibold">AI Status</div>
+              <Activity className="h-3 w-3 text-purple-800 dark:text-purple-400" />
             </div>
             <div className="text-gray-900 dark:text-gray-100 text-sm font-bold">Online</div>
             <div className="inline-block w-2 h-2 bg-blue-600 dark:bg-blue-400 rounded-full animate-pulse"></div>
