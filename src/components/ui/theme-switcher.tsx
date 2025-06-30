@@ -48,16 +48,16 @@ const ThemeSwitcher = ({ className = "", variant = "default" }: ThemeSwitcherPro
         variant="ghost"
         size="sm"
         onClick={toggleTheme}
-        className={`flex items-center gap-2 text-foreground dark:text-white hover:bg-background/20 dark:hover:bg-slate-600/50 transition-all duration-300 ${className}`}
+        className={`flex items-center gap-2 text-white hover:bg-white/20 dark:text-gray-300 dark:hover:bg-gray-600/50 transition-all duration-300 ${className}`}
       >
         <Icon className="h-4 w-4" />
-        <span className="hidden md:inline text-foreground dark:text-white font-medium">{label}</span>
+        <span className="hidden md:inline text-white dark:text-gray-300 font-medium">{label}</span>
       </Button>
     );
   }
 
   return (
-    <div className={`flex items-center bg-background/10 dark:bg-slate-700/50 backdrop-blur-sm rounded-lg p-1 border border-border/20 dark:border-slate-600/50 ${className}`}>
+    <div className={`flex items-center bg-gray-100 dark:bg-gray-700 backdrop-blur-sm rounded-lg p-1 border border-gray-200 dark:border-gray-600 ${className}`}>
       {themes.map(({ key, label, icon: Icon }) => (
         <Button
           key={key}
@@ -70,8 +70,8 @@ const ThemeSwitcher = ({ className = "", variant = "default" }: ThemeSwitcherPro
           className={`
             flex items-center space-x-2 px-3 py-2 rounded-md transition-all duration-300
             ${theme === key 
-              ? 'bg-primary/20 dark:bg-slate-600/50 text-primary dark:text-white shadow-md font-medium' 
-              : 'text-muted-foreground dark:text-slate-300 hover:text-foreground dark:hover:text-white hover:bg-background/10 dark:hover:bg-slate-600/30'
+              ? 'bg-blue-600 text-white shadow-md font-medium' 
+              : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-600'
             }
           `}
         >
