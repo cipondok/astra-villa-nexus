@@ -426,88 +426,89 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
         </DialogContent>
       </Dialog>
 
-      {/* Wider Search Panel with Apple-style Design */}
-      <div className="w-full max-w-7xl mx-auto px-4">
-        <Card className="bg-gray-50/80 dark:bg-gray-800/80 backdrop-blur-xl border border-gray-200/50 dark:border-gray-700/50 shadow-lg transition-colors">
-          <CardContent className="p-8">
+      {/* Apple-style Wide Screen Search Panel */}
+      <div className="w-full max-w-[1400px] mx-auto px-6 lg:px-8">
+        <Card className="bg-gray-50/90 dark:bg-gray-800/90 backdrop-blur-xl border border-gray-200/40 dark:border-gray-700/40 shadow-2xl transition-all duration-300 hover:shadow-3xl rounded-2xl">
+          <CardContent className="p-8 lg:p-12">
 
-            {/* Property Type as Apple-style buttons */}
-            <IPhoneToggleGroup
-              options={[
-                { value: "", label: language === "id" ? "Semua Jenis" : "All Types", colorClass: "bg-blue-600 hover:bg-blue-700 text-white shadow-sm" },
-                { value: "apartment", label: language === "id" ? "Apartemen" : "Apartment", colorClass: "bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100 shadow-sm" },
-                { value: "house", label: language === "id" ? "Rumah" : "House", colorClass: "bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100 shadow-sm" },
-                { value: "villa", label: "Villa", colorClass: "bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100 shadow-sm" },
-                { value: "townhouse", label: language === "id" ? "Rumah Kota" : "Townhouse", colorClass: "bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100 shadow-sm" },
-              ]}
-              value={propertyType}
-              onChange={setPropertyType}
-              className="mb-6"
-            />
+            {/* Property Type Toggle - Apple Style */}
+            <div className="mb-8">
+              <IPhoneToggleGroup
+                options={[
+                  { value: "", label: language === "id" ? "Semua Jenis" : "All Types", colorClass: "bg-blue-600 hover:bg-blue-700 text-white shadow-lg border-0" },
+                  { value: "apartment", label: language === "id" ? "Apartemen" : "Apartment", colorClass: "bg-white hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-md border border-gray-200 dark:border-gray-600" },
+                  { value: "house", label: language === "id" ? "Rumah" : "House", colorClass: "bg-white hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-md border border-gray-200 dark:border-gray-600" },
+                  { value: "villa", label: "Villa", colorClass: "bg-white hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-md border border-gray-200 dark:border-gray-600" },
+                  { value: "townhouse", label: language === "id" ? "Rumah Kota" : "Townhouse", colorClass: "bg-white hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-md border border-gray-200 dark:border-gray-600" },
+                ]}
+                value={propertyType}
+                onChange={setPropertyType}
+                className="flex flex-wrap justify-center gap-3 lg:gap-4"
+              />
+            </div>
 
-            {/* Main Search Bar */}
-            <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-4 mb-6">
-              <div>
+            {/* Main Search Bar - Wide Screen Optimized */}
+            <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-6 mb-8">
+              <div className="w-full">
                 <div className="relative w-full">
-                  <Search className="absolute left-4 top-4 h-5 w-5 text-gray-400" />
+                  <Search className="absolute left-6 top-1/2 transform -translate-y-1/2 h-6 w-6 text-gray-400" />
                   <Input
                     placeholder={currentText.search}
-                    className="pl-12 h-14 text-lg bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="pl-16 h-16 text-lg bg-white dark:bg-gray-900 border-gray-300/50 dark:border-gray-600/50 rounded-2xl shadow-lg focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-300 hover:shadow-xl"
                     value={searchQuery}
                     onChange={handleSearchInputChange}
                     onKeyDown={handleKeyPress}
                   />
                 </div>
               </div>
-              <div className="flex">
+              <div className="flex justify-center lg:justify-end">
                 <Button
                   onClick={handleManualSearch}
-                  className="h-14 px-8 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-sm transition-all duration-200 hover:shadow-md"
+                  className="h-16 px-10 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-2xl shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105 text-lg"
                 >
-                  <Search className="h-5 w-5 mr-2" />
+                  <Search className="h-6 w-6 mr-3" />
                   {currentText.searchBtn}
                 </Button>
               </div>
             </div>
 
             {/* Advanced Filters Toggle */}
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center justify-between mb-8">
               <Button
                 variant="ghost"
                 onClick={() => setShowAdvanced(v => !v)}
-                className="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg px-4 py-2"
+                className="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-100/50 dark:hover:bg-gray-700/50 rounded-xl px-6 py-3 transition-all duration-200"
               >
-                <Filter className="h-4 w-4 mr-2" />
+                <Filter className="h-5 w-5 mr-3" />
                 {showAdvanced
                   ? (language === "id" ? "Sembunyikan Filter" : "Hide Filters")
                   : (language === "id" ? "Filter Lanjutan" : "Advanced Filters")}
               </Button>
-              {/* Clear all filters button */}
               {hasActiveFilters && (
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={handleClearFilters}
-                  className="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 border-gray-300 dark:border-gray-600 rounded-lg"
+                  className="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 border-gray-300/50 dark:border-gray-600/50 rounded-xl px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-all duration-200"
                 >
-                  <X className="h-4 w-4 mr-1" />
+                  <X className="h-4 w-4 mr-2" />
                   {language === "id" ? "Hapus semua" : "Clear all"}
                 </Button>
               )}
             </div>
             
-            {/* Animated Advanced Filters Section */}
+            {/* Animated Advanced Filters Section - Wide Screen Layout */}
             <div
               className={`overflow-hidden ${filterAnimBase} ${showAdvanced ? filterAnimVisible : filterAnimHidden}`}
-              style={{ minHeight: showAdvanced ? 220 : 0, maxHeight: showAdvanced ? 600 : 0 }}
+              style={{ minHeight: showAdvanced ? 280 : 0, maxHeight: showAdvanced ? 800 : 0 }}
               onTransitionEnd={() => {
                 if (!showAdvanced) setFiltersMounted(false);
               }}
             >
               {filtersMounted && (
-                <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mb-6 p-6 bg-white/50 dark:bg-gray-900/50 rounded-xl border border-gray-200/50 dark:border-gray-700/50">
-                  {/* Location Selector */}
-                  <div className="md:col-span-3">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-8 p-8 bg-white/80 dark:bg-gray-900/80 rounded-2xl border border-gray-200/40 dark:border-gray-700/40 shadow-lg">
+                  {/* Location Selector - Takes more space on wide screens */}
+                  <div className="lg:col-span-6">
                     <LocationSelector
                       selectedState={selectedState}
                       selectedCity={selectedCity}
@@ -518,9 +519,10 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
                       onLocationChange={setLocation}
                     />
                   </div>
-                  {/* Bedrooms pills */}
-                  <div>
-                    <label className="block mb-2 text-gray-700 dark:text-gray-300 text-sm font-medium">
+                  
+                  {/* Bedrooms and Bathrooms - Side by side */}
+                  <div className="lg:col-span-3">
+                    <label className="block mb-3 text-gray-700 dark:text-gray-300 text-sm font-semibold">
                       {language === "id" ? "Kamar Tidur" : "Bedrooms"}
                     </label>
                     <PillToggleGroup
@@ -535,9 +537,9 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
                       multiple={false}
                     />
                   </div>
-                  {/* Bathrooms pills */}
-                  <div>
-                    <label className="block mb-2 text-gray-700 dark:text-gray-300 text-sm font-medium">
+                  
+                  <div className="lg:col-span-3">
+                    <label className="block mb-3 text-gray-700 dark:text-gray-300 text-sm font-semibold">
                       {language === "id" ? "Kamar Mandi" : "Bathrooms"}
                     </label>
                     <PillToggleGroup
@@ -552,44 +554,47 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
                       multiple={false}
                     />
                   </div>
-                  {/* Smart Filter grouped pills */}
-                  <div className="md:col-span-2 space-y-4">
-                    <label className="block mb-2 text-gray-700 dark:text-gray-300 text-sm font-medium">
+                  
+                  {/* Smart Filter grouped pills - Full width on second row */}
+                  <div className="lg:col-span-12 space-y-6">
+                    <label className="block mb-4 text-gray-700 dark:text-gray-300 text-sm font-semibold">
                       {language === "id" ? "Filter Pintar" : "Smart Filters"}
                     </label>
-                    {smartFilterCategories.map((cat) => (
-                      <div key={cat.key} className="mb-3">
-                        <div className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-2">{cat.label}</div>
-                        <div className="flex flex-wrap gap-2">
-                          {cat.options.map((option) => (
-                            <button
-                              type="button"
-                              key={option.value}
-                              onClick={() => handleSmartFacilityToggle(option.value)}
-                              className={`px-3 py-1.5 rounded-full border text-xs font-medium transition-all duration-200 
-                                ${selectedSmartFacilities.includes(option.value)
-                                  ? "bg-blue-600 text-white border-blue-600 shadow-sm scale-105"
-                                  : "bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700"}
-                              `}
-                              aria-pressed={selectedSmartFacilities.includes(option.value)}
-                            >
-                              {option.label}
-                            </button>
-                          ))}
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+                      {smartFilterCategories.map((cat) => (
+                        <div key={cat.key} className="space-y-3">
+                          <div className="text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wider">{cat.label}</div>
+                          <div className="flex flex-wrap gap-2">
+                            {cat.options.map((option) => (
+                              <button
+                                type="button"
+                                key={option.value}
+                                onClick={() => handleSmartFacilityToggle(option.value)}
+                                className={`px-4 py-2 rounded-xl border text-xs font-medium transition-all duration-300 hover:scale-105
+                                  ${selectedSmartFacilities.includes(option.value)
+                                    ? "bg-blue-600 text-white border-blue-600 shadow-lg"
+                                    : "bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 border-gray-300/50 dark:border-gray-600/50 hover:bg-gray-50 dark:hover:bg-gray-700/50 shadow-sm"}
+                                `}
+                                aria-pressed={selectedSmartFacilities.includes(option.value)}
+                              >
+                                {option.label}
+                              </button>
+                            ))}
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
                 </div>
               )}
             </div>
 
-            {/* Popular Searches */}
-            <div className="text-left">
-              <p className="text-gray-600 dark:text-gray-400 mb-4 font-medium text-sm">
+            {/* Popular Searches - Wide Screen Layout */}
+            <div className="text-center lg:text-left">
+              <p className="text-gray-600 dark:text-gray-400 mb-6 font-semibold text-sm">
                 {language === "id" ? "Pencarian populer:" : "Popular searches:"}
               </p>
-              <div className="flex flex-wrap gap-3">
+              <div className="flex flex-wrap justify-center lg:justify-start gap-4">
                 {
                   (language === "id"
                     ? ["Apartemen Jakarta", "Villa Bali", "Rumah Surabaya", "Kost Bandung"]
@@ -598,7 +603,7 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
                     <Badge
                       key={idx}
                       variant="secondary"
-                      className="cursor-pointer bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 hover:bg-blue-50 dark:hover:bg-blue-900 hover:border-blue-300 dark:hover:border-blue-600 transition-all duration-200 px-4 py-2 rounded-full"
+                      className="cursor-pointer bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-300/50 dark:border-gray-600/50 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:border-blue-300/50 dark:hover:border-blue-600/50 transition-all duration-300 px-6 py-3 rounded-xl font-medium shadow-sm hover:shadow-md hover:scale-105"
                       onClick={() => {
                         setSearchQuery(term);
                         setPropertyType("");
@@ -606,7 +611,6 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
                         setBathrooms("");
                         setLocation("");
                         setHas3D(false);
-                        // You may want to also trigger a search instantly here
                         const searchData = {
                           query: term,
                           propertyType: "",
