@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -31,9 +32,17 @@
     --ring: 217 91 60;                          /* Blue focus ring */
     --radius: 12px;
     
-    /* Light Mode Glass Colors */
-    --glass-light: rgba(255, 255, 255, 0.85);
-    --glass-light-border: rgba(59, 130, 246, 0.15);
+    /* Light Mode Glass Colors - Distinct for each section */
+    --glass-light-nav: rgba(255, 255, 255, 0.95);          /* Almost opaque white for header */
+    --glass-light-search: rgba(248, 250, 252, 0.85);       /* Slate-50 for search panel */
+    --glass-light-content: rgba(255, 255, 255, 0.75);      /* Pure white for content */
+    --glass-light-footer: rgba(241, 245, 249, 0.90);       /* Slate-100 for footer */
+    
+    --glass-light-border-nav: rgba(59, 130, 246, 0.15);
+    --glass-light-border-search: rgba(16, 185, 129, 0.20);
+    --glass-light-border-content: rgba(59, 130, 246, 0.10);
+    --glass-light-border-footer: rgba(100, 116, 139, 0.25);
+    
     --glass-light-shadow: rgba(59, 130, 246, 0.08);
   }
 
@@ -131,18 +140,18 @@
 }
 
 @layer components {
-  /* Light Mode Glass Effects */
+  /* Light Mode Glass Effects - Separate for each section */
   .glass-card {
-    background: var(--glass-light);
+    background: var(--glass-light-content);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border: 1px solid var(--glass-light-border);
+    border: 1px solid var(--glass-light-border-content);
     box-shadow: 0 8px 32px var(--glass-light-shadow);
     border-radius: 12px;
     transition: all 0.3s ease;
   }
 
-  /* Dark Mode Glass Effects - Updated for better distinction */
+  /* Dark Mode Glass Effects */
   .dark .glass-card {
     background: var(--glass-dark-content);
     backdrop-filter: blur(30px);
@@ -157,38 +166,38 @@
     transition: all 0.3s ease;
   }
 
-  /* Light Mode Navigation */
+  /* Light Mode Navigation - Pure white with slight transparency */
   .apple-nav {
-    background: rgba(255, 255, 255, 0.9);
+    background: var(--glass-light-nav);
     backdrop-filter: blur(30px);
     -webkit-backdrop-filter: blur(30px);
-    border-bottom: 1px solid rgba(59, 130, 246, 0.15);
+    border-bottom: 1px solid var(--glass-light-border-nav);
     position: sticky;
     top: 0;
     z-index: 50;
     transition: all 0.2s ease;
     padding: 12px 0;
-    box-shadow: 0 4px 20px rgba(59, 130, 246, 0.08);
+    box-shadow: 0 4px 20px var(--glass-light-shadow);
   }
 
-  /* Dark Mode Navigation - Distinct from other sections */
+  /* Dark Mode Navigation */
   .dark .apple-nav {
     background: var(--glass-dark-nav);
     border-bottom: 1px solid var(--glass-dark-border-nav);
     box-shadow: 0 4px 20px rgba(59, 130, 246, 0.2);
   }
 
-  /* Light Mode Search Panel */
+  /* Light Mode Search Panel - Slate background with teal accents */
   .search-panel {
-    background: rgba(255, 255, 255, 0.9);
-    border: 1px solid rgba(59, 130, 246, 0.15);
+    background: var(--glass-light-search);
+    border: 1px solid var(--glass-light-border-search);
     backdrop-filter: blur(30px);
     -webkit-backdrop-filter: blur(30px);
     border-radius: 16px;
-    box-shadow: 0 8px 32px rgba(59, 130, 246, 0.08);
+    box-shadow: 0 8px 32px rgba(16, 185, 129, 0.12);
   }
 
-  /* Dark Mode Search Panel - Distinct color scheme */
+  /* Dark Mode Search Panel */
   .dark .search-panel {
     background: var(--glass-dark-search);
     border: 1px solid var(--glass-dark-border-search);
@@ -198,7 +207,7 @@
   /* Light Mode Search Input */
   .search-panel-input {
     background: rgba(255, 255, 255, 0.9);
-    border: 1px solid rgba(59, 130, 246, 0.2);
+    border: 1px solid var(--glass-light-border-search);
     color: rgb(15, 23, 42);
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
@@ -207,7 +216,7 @@
     font-size: 16px;
   }
 
-  /* Dark Mode Search Input - Consistent with search panel */
+  /* Dark Mode Search Input */
   .dark .search-panel-input {
     background: rgba(51, 65, 85, 0.8);
     border: 1px solid var(--glass-dark-border-search);
@@ -223,8 +232,8 @@
   }
 
   .search-panel-input:focus {
-    border-color: rgb(59, 130, 246);
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    border-color: rgb(16, 185, 129);
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
     background: rgba(255, 255, 255, 0.95);
   }
 
@@ -305,65 +314,61 @@
     box-shadow: 0 8px 30px rgba(16, 185, 129, 0.4);
   }
 
-  /* Light Mode Glass Sections */
+  /* Light Mode Glass Sections - Pure white with subtle borders */
   .glass-section {
-    background: rgba(255, 255, 255, 0.85);
+    background: var(--glass-light-content);
     backdrop-filter: blur(30px);
     -webkit-backdrop-filter: blur(30px);
-    border: 1px solid rgba(59, 130, 246, 0.15);
+    border: 1px solid var(--glass-light-border-content);
     border-radius: 16px;
-    box-shadow: 0 8px 32px rgba(59, 130, 246, 0.08);
+    box-shadow: 0 8px 32px var(--glass-light-shadow);
   }
 
-  /* Dark Mode Glass Sections - Content areas with distinct styling */
+  /* Dark Mode Glass Sections */
   .dark .glass-section {
     background: var(--glass-dark-content);
     border: 1px solid var(--glass-dark-border-content);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
   }
 
-  /* Modern Glass Effect - Unified but with dark mode variations */
+  /* Modern Glass Effect - Light Mode with distinct colors */
   .apple-glass, .glass-astra, .glass-ios {
     transition: all 0.3s ease;
     border-radius: var(--radius);
-  }
-
-  /* Light Mode Glass */
-  .apple-glass, .glass-astra, .glass-ios {
-    background: rgba(255, 255, 255, 0.85);
+    background: var(--glass-light-content);
     backdrop-filter: blur(30px);
     -webkit-backdrop-filter: blur(30px);
-    border: 1px solid rgba(59, 130, 246, 0.15);
-    box-shadow: 0 8px 32px rgba(59, 130, 246, 0.08);
+    border: 1px solid var(--glass-light-border-content);
+    box-shadow: 0 8px 32px var(--glass-light-shadow);
   }
 
-  /* Dark Mode Glass - Content sections */
+  /* Dark Mode Glass */
   .dark .apple-glass, .dark .glass-astra, .dark .glass-ios {
     background: var(--glass-dark-content);
     border: 1px solid var(--glass-dark-border-content);
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
   }
 
-  /* Modern Cards - Light Mode */
+  /* Modern Cards - Light Mode with pure white background */
   .apple-card {
     padding: 16px;
     transition: all 0.3s ease;
     border-radius: var(--radius);
-    background: rgba(255, 255, 255, 0.85);
+    background: var(--glass-light-content);
     backdrop-filter: blur(30px);
     -webkit-backdrop-filter: blur(30px);
-    border: 1px solid rgba(59, 130, 246, 0.15);
-    box-shadow: 0 8px 32px rgba(59, 130, 246, 0.08);
+    border: 1px solid var(--glass-light-border-content);
+    box-shadow: 0 8px 32px var(--glass-light-shadow);
   }
 
   .apple-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 12px 40px rgba(59, 130, 246, 0.15);
     border-color: rgba(59, 130, 246, 0.3);
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.95);
   }
 
-  /* Dark Mode Cards - Property cards with content styling */
+  /* Dark Mode Cards */
   .dark .apple-card {
     background: var(--glass-dark-content);
     border: 1px solid var(--glass-dark-border-content);
@@ -406,16 +411,16 @@
     -webkit-text-fill-color: transparent;
   }
 
-  /* Footer - Light Mode */
+  /* Footer - Light Mode with distinct slate background */
   .glass-footer {
-    background: rgba(248, 250, 252, 0.95);
+    background: var(--glass-light-footer);
     backdrop-filter: blur(30px);
     -webkit-backdrop-filter: blur(30px);
-    border-top: 1px solid rgba(59, 130, 246, 0.15);
-    box-shadow: 0 -2px 10px rgba(59, 130, 246, 0.08);
+    border-top: 1px solid var(--glass-light-border-footer);
+    box-shadow: 0 -2px 10px rgba(100, 116, 139, 0.12);
   }
 
-  /* Footer - Dark Mode with distinct styling */
+  /* Footer - Dark Mode */
   .dark .glass-footer {
     background: var(--glass-dark-footer);
     border-top: 1px solid var(--glass-dark-border-footer);
