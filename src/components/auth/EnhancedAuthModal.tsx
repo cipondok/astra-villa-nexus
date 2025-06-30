@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,9 +6,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useAuth } from "@/contexts/AuthContext";
-import { X, Eye, EyeOff, Mail } from "lucide-react";
+import { X, Eye, EyeOff, Mail, AlertTriangle, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import LoadingPage from "../LoadingPage";
 
 interface EnhancedAuthModalProps {
   isOpen: boolean;
@@ -25,7 +23,6 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
   const [errors, setErrors] = useState<{[key: string]: string}>({});
   const [activeTab, setActiveTab] = useState("login");
   const [isLoading, setIsLoading] = useState(false);
-  const [authAction, setAuthAction] = useState<'login' | 'register' | null>(null);
   
   const { signIn, signUp } = useAuth();
 
@@ -50,7 +47,9 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
       alreadyHaveAccount: "Already have an account?",
       dontHaveAccount: "Don't have an account?",
       switchToLogin: "Sign in here",
-      switchToRegister: "Sign up here"
+      switchToRegister: "Sign up here",
+      networkError: "Network error. Please check your connection and try again.",
+      timeout: "Request timed out. Please try again."
     },
     id: {
       login: "Masuk",
@@ -72,7 +71,9 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
       alreadyHaveAccount: "Sudah punya akun?",
       dontHaveAccount: "Belum punya akun?",
       switchToLogin: "Masuk di sini",
-      switchToRegister: "Daftar di sini"
+      switchToRegister: "Daftar di sini",
+      networkError: "Kesalahan jaringan. Periksa koneksi dan coba lagi.",
+      timeout: "Permintaan habis waktu. Silakan coba lagi."
     }
   };
 
@@ -80,24 +81,9 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
 
   if (!isOpen) return null;
 
-  // Show loading screen during authentication
-  if (isLoading && authAction) {
-    const loadingMessage = authAction === 'login' 
-      ? "Authenticating user..." 
-      : "Creating your account...";
-    
-    return (
-      <LoadingPage 
-        message={loadingMessage}
-        showConnectionStatus={true}
-        connectionStatus="connecting"
-      />
-    );
-  }
-
   const handleGoogleLogin = async () => {
     setIsLoading(true);
-    setAuthAction('login');
+    setErrors({});
     try {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
@@ -110,10 +96,9 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
         setErrors({ google: error.message });
       }
     } catch (error: any) {
-      setErrors({ google: error.message });
+      setErrors({ google: error.message || currentText.networkError });
     } finally {
       setIsLoading(false);
-      setAuthAction(null);
     }
   };
 
@@ -171,15 +156,35 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
     if (!validateLoginForm()) return;
 
     setIsLoading(true);
-    setAuthAction('login');
-    const result = await signIn(loginData.email, loginData.password);
-    setIsLoading(false);
-    setAuthAction(null);
+    setErrors({});
     
-    if (result.success) {
-      onClose();
-      setLoginData({ email: "", password: "" });
-      setErrors({});
+    try {
+      const result = await signIn(loginData.email, loginData.password);
+      
+      if (result.error) {
+        console.error('Login error:', result.error);
+        let errorMessage = result.error.message || currentText.networkError;
+        
+        // Handle specific error messages
+        if (errorMessage.includes('Invalid login credentials')) {
+          errorMessage = 'Invalid email or password. Please check your credentials and try again.';
+        } else if (errorMessage.includes('timeout') || errorMessage.includes('Load failed')) {
+          errorMessage = currentText.timeout;
+        } else if (errorMessage.includes('Network error')) {
+          errorMessage = currentText.networkError;
+        }
+        
+        setErrors({ login: errorMessage });
+      } else if (result.success) {
+        onClose();
+        setLoginData({ email: "", password: "" });
+        setErrors({});
+      }
+    } catch (error: any) {
+      console.error('Login catch error:', error);
+      setErrors({ login: currentText.networkError });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -188,15 +193,37 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
     if (!validateRegisterForm()) return;
 
     setIsLoading(true);
-    setAuthAction('register');
-    const result = await signUp(registerData.email, registerData.password, registerData.fullName);
-    setIsLoading(false);
-    setAuthAction(null);
+    setErrors({});
     
-    if (result.success) {
-      onClose();
-      setRegisterData({ email: "", password: "", fullName: "", confirmPassword: "" });
-      setErrors({});
+    try {
+      const result = await signUp(registerData.email, registerData.password, registerData.fullName);
+      
+      if (result.error) {
+        console.error('Register error:', result.error);
+        let errorMessage = result.error.message || currentText.networkError;
+        
+        // Handle specific error messages
+        if (errorMessage.includes('email rate limit exceeded')) {
+          errorMessage = 'Too many signup attempts. Please wait a few minutes before trying again.';
+        } else if (errorMessage.includes('User already registered')) {
+          errorMessage = 'An account with this email already exists. Please try logging in instead.';
+        } else if (errorMessage.includes('timeout') || errorMessage.includes('Load failed')) {
+          errorMessage = currentText.timeout;
+        } else if (errorMessage.includes('Network error')) {
+          errorMessage = currentText.networkError;
+        }
+        
+        setErrors({ register: errorMessage });
+      } else if (result.success) {
+        onClose();
+        setRegisterData({ email: "", password: "", fullName: "", confirmPassword: "" });
+        setErrors({});
+      }
+    } catch (error: any) {
+      console.error('Register catch error:', error);
+      setErrors({ register: currentText.networkError });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -204,6 +231,7 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
     setLoginData({ email: "", password: "" });
     setRegisterData({ email: "", password: "", fullName: "", confirmPassword: "" });
     setErrors({});
+    setIsLoading(false);
   };
 
   const handleClose = () => {
@@ -231,12 +259,17 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
               className="w-full bg-white/10 hover:bg-white/20 text-white border border-white/20 backdrop-blur-sm"
               variant="outline"
             >
-              <Mail className="h-4 w-4 mr-2" />
+              {isLoading ? (
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              ) : (
+                <Mail className="h-4 w-4 mr-2" />
+              )}
               {currentText.googleLogin}
             </Button>
 
             {errors.google && (
               <Alert variant="destructive" className="bg-red-500/20 border-red-500/50">
+                <AlertTriangle className="h-4 w-4" />
                 <AlertDescription className="text-white">{errors.google}</AlertDescription>
               </Alert>
             )}
@@ -258,6 +291,13 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
             </TabsList>
 
             <TabsContent value="login" className="space-y-4">
+              {errors.login && (
+                <Alert variant="destructive" className="bg-red-500/20 border-red-500/50">
+                  <AlertTriangle className="h-4 w-4" />
+                  <AlertDescription className="text-white">{errors.login}</AlertDescription>
+                </Alert>
+              )}
+              
               <form onSubmit={handleLogin} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="login-email" className="text-white">{currentText.email}</Label>
@@ -305,13 +345,20 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
                     </Alert>
                   )}
                 </div>
-
+                
                 <Button 
                   type="submit" 
                   className="w-full bg-gradient-to-r from-blue-600 to-orange-500 hover:from-blue-700 hover:to-orange-600"
                   disabled={isLoading}
                 >
-                  {isLoading ? "Signing in..." : currentText.loginBtn}
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      Signing in...
+                    </>
+                  ) : (
+                    currentText.loginBtn
+                  )}
                 </Button>
 
                 <p className="text-center text-sm text-gray-300">
@@ -328,6 +375,13 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
             </TabsContent>
             
             <TabsContent value="register" className="space-y-4">
+              {errors.register && (
+                <Alert variant="destructive" className="bg-red-500/20 border-red-500/50">
+                  <AlertTriangle className="h-4 w-4" />
+                  <AlertDescription className="text-white">{errors.register}</AlertDescription>
+                </Alert>
+              )}
+              
               <form onSubmit={handleRegister} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="register-name" className="text-white">{currentText.fullName}</Label>
@@ -428,7 +482,14 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
                   className="w-full bg-gradient-to-r from-blue-600 to-orange-500 hover:from-blue-700 hover:to-orange-600"
                   disabled={isLoading}
                 >
-                  {isLoading ? "Creating account..." : currentText.registerBtn}
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      Creating account...
+                    </>
+                  ) : (
+                    currentText.registerBtn
+                  )}
                 </Button>
 
                 <p className="text-center text-sm text-gray-300">

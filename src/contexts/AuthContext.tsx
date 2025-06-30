@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -42,7 +43,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = React.useState<User | null>(null);
   const [profile, setProfile] = React.useState<Profile | null>(null);
-  const [loading, setLoading] = React.useState(false); // Start false for better UX
+  const [loading, setLoading] = React.useState(false);
   const [session, setSession] = React.useState<Session | null>(null);
 
   console.log('AuthProvider - user:', user?.email, 'loading:', loading, 'profile role:', profile?.role);
@@ -83,43 +84,71 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return;
       }
       
-      // Use Promise.race for timeout instead of abortSignal
-      const queryPromise = supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', userId)
-        .single();
+      // Try to fetch profile with timeout and error handling
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 3000); // 3 second timeout
 
-      const timeoutPromise = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error('Query timeout')), 5000)
-      );
+      try {
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', userId)
+          .abortSignal(controller.signal)
+          .single();
 
-      const { data, error } = await Promise.race([queryPromise, timeoutPromise]) as any;
+        clearTimeout(timeoutId);
 
-      if (error) {
-        if (error.code === 'PGRST116') {
-          console.log('Profile not found, creating default profile');
-          const defaultProfile: Profile = {
-            id: userId,
-            email: authUser.user?.email || '',
-            full_name: authUser.user?.user_metadata?.full_name || 'User',
-            role: 'general_user',
-            verification_status: 'pending'
-          };
-          setProfile(defaultProfile);
-          setLoading(false);
-          return;
+        if (error) {
+          if (error.code === 'PGRST116') {
+            console.log('Profile not found, creating default profile');
+            const defaultProfile: Profile = {
+              id: userId,
+              email: authUser.user?.email || '',
+              full_name: authUser.user?.user_metadata?.full_name || 'User',
+              role: 'general_user',
+              verification_status: 'pending'
+            };
+            setProfile(defaultProfile);
+            setLoading(false);
+            return;
+          }
+          throw error;
         }
-        console.error('Error fetching profile:', error);
+
+        console.log('Profile fetched successfully:', data);
+        setProfile(data as Profile);
         setLoading(false);
-        return;
+      } catch (fetchError) {
+        clearTimeout(timeoutId);
+        if (fetchError.name === 'AbortError') {
+          console.log('Profile fetch timed out, using default profile');
+        } else {
+          console.error('Profile fetch error:', fetchError);
+        }
+        
+        // Create default profile on any error
+        const defaultProfile: Profile = {
+          id: userId,
+          email: authUser.user?.email || '',
+          full_name: authUser.user?.user_metadata?.full_name || 'User',
+          role: 'general_user',
+          verification_status: 'pending'
+        };
+        setProfile(defaultProfile);
+        setLoading(false);
       }
 
-      console.log('Profile fetched successfully:', data);
-      setProfile(data as Profile);
-      setLoading(false);
     } catch (error) {
       console.error('Profile fetch error:', error);
+      // Always clear loading state and provide default profile
+      const defaultProfile: Profile = {
+        id: userId,
+        email: user?.email || '',
+        full_name: user?.user_metadata?.full_name || 'User',
+        role: 'general_user',
+        verification_status: 'pending'
+      };
+      setProfile(defaultProfile);
       setLoading(false);
     }
   };
@@ -188,23 +217,40 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     );
 
-    // Get initial session with faster response
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!mounted) return;
-      
-      console.log('Initial session check:', session?.user?.email || 'No session');
-      if (session?.user) {
-        setSession(session);
-        setUser(session.user);
-        setLoading(true);
-        fetchProfile(session.user.id);
-        if (!localStorage.getItem('last_activity')) {
-          localStorage.setItem('last_activity', Date.now().toString());
+    // Get initial session with timeout
+    const initializeAuth = async () => {
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        
+        if (!mounted) return;
+        
+        if (error) {
+          console.error('Initial session error:', error);
+          setLoading(false);
+          return;
         }
-      } else {
-        setLoading(false);
+        
+        console.log('Initial session check:', session?.user?.email || 'No session');
+        if (session?.user) {
+          setSession(session);
+          setUser(session.user);
+          setLoading(true);
+          await fetchProfile(session.user.id);
+          if (!localStorage.getItem('last_activity')) {
+            localStorage.setItem('last_activity', Date.now().toString());
+          }
+        } else {
+          setLoading(false);
+        }
+      } catch (error) {
+        console.error('Auth initialization error:', error);
+        if (mounted) {
+          setLoading(false);
+        }
       }
-    });
+    };
+
+    initializeAuth();
 
     return () => {
       mounted = false;
@@ -261,10 +307,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       console.log('Attempting sign in for:', email);
       setLoading(true);
       
+      // Add timeout to sign in
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => {
+        controller.abort();
+        setLoading(false);
+      }, 10000); // 10 second timeout
+
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
+
+      clearTimeout(timeoutId);
 
       if (error) {
         console.error('Sign in error:', error);
@@ -278,7 +333,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } catch (error: any) {
       console.error('Sign in error:', error);
       setLoading(false);
-      return { error, success: false };
+      
+      // Handle specific network errors
+      if (error.name === 'AbortError') {
+        return { error: { message: 'Login timeout. Please check your connection and try again.' }, success: false };
+      }
+      
+      return { error: { message: 'Network error. Please check your connection and try again.' }, success: false };
     }
   };
 
@@ -287,6 +348,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       console.log('Attempting sign up for:', email);
       setLoading(true);
       
+      // Add timeout to sign up
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => {
+        controller.abort();
+        setLoading(false);
+      }, 10000); // 10 second timeout
+
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -298,6 +366,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
       });
 
+      clearTimeout(timeoutId);
+
       if (error) {
         console.error('Sign up error:', error);
         setLoading(false);
@@ -305,11 +375,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
 
       console.log('Sign up successful for:', email);
+      setLoading(false);
       return { error: null, success: true };
     } catch (error: any) {
       console.error('Sign up error:', error);
       setLoading(false);
-      return { error, success: false };
+      
+      // Handle specific network errors
+      if (error.name === 'AbortError') {
+        return { error: { message: 'Registration timeout. Please check your connection and try again.' }, success: false };
+      }
+      
+      return { error: { message: 'Network error. Please check your connection and try again.' }, success: false };
     }
   };
 
