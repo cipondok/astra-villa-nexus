@@ -123,7 +123,9 @@ const MainPageSearchFilters = ({ language, onSearch, onLiveSearch }: MainPageSea
   };
 
   const handleFilterChange = (key: string, value: any) => {
-    const newFilters = { ...filters, [key]: value };
+    // Convert "all" back to empty string for backend compatibility
+    const actualValue = value === "all" ? "" : value;
+    const newFilters = { ...filters, [key]: actualValue };
     setFilters(newFilters);
   };
 
@@ -176,7 +178,7 @@ const MainPageSearchFilters = ({ language, onSearch, onLiveSearch }: MainPageSea
 
           {/* Quick Filters Row */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            <Select value={filters.location} onValueChange={(value) => handleFilterChange('location', value)}>
+            <Select value={filters.location || "all"} onValueChange={(value) => handleFilterChange('location', value)}>
               <SelectTrigger className="h-12 border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg">
                 <div className="flex items-center gap-2">
                   <MapPin className="h-4 w-4 text-blue-600 dark:text-blue-400" />
@@ -184,7 +186,7 @@ const MainPageSearchFilters = ({ language, onSearch, onLiveSearch }: MainPageSea
                 </div>
               </SelectTrigger>
               <SelectContent className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
-                <SelectItem value="" className="text-gray-900 dark:text-gray-100">{currentText.any}</SelectItem>
+                <SelectItem value="all" className="text-gray-900 dark:text-gray-100">{currentText.any}</SelectItem>
                 <SelectItem value="jakarta" className="text-gray-900 dark:text-gray-100">Jakarta</SelectItem>
                 <SelectItem value="bali" className="text-gray-900 dark:text-gray-100">Bali</SelectItem>
                 <SelectItem value="surabaya" className="text-gray-900 dark:text-gray-100">Surabaya</SelectItem>
@@ -192,7 +194,7 @@ const MainPageSearchFilters = ({ language, onSearch, onLiveSearch }: MainPageSea
               </SelectContent>
             </Select>
 
-            <Select value={filters.propertyType} onValueChange={(value) => handleFilterChange('propertyType', value)}>
+            <Select value={filters.propertyType || "all"} onValueChange={(value) => handleFilterChange('propertyType', value)}>
               <SelectTrigger className="h-12 border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg">
                 <div className="flex items-center gap-2">
                   <Home className="h-4 w-4 text-blue-600 dark:text-blue-400" />
@@ -200,7 +202,7 @@ const MainPageSearchFilters = ({ language, onSearch, onLiveSearch }: MainPageSea
                 </div>
               </SelectTrigger>
               <SelectContent className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
-                <SelectItem value="" className="text-gray-900 dark:text-gray-100">{currentText.any}</SelectItem>
+                <SelectItem value="all" className="text-gray-900 dark:text-gray-100">{currentText.any}</SelectItem>
                 {propertyTypes.map((type) => (
                   <SelectItem key={type.value} value={type.value} className="text-gray-900 dark:text-gray-100">
                     {type.icon} {type.label}
@@ -209,7 +211,7 @@ const MainPageSearchFilters = ({ language, onSearch, onLiveSearch }: MainPageSea
               </SelectContent>
             </Select>
 
-            <Select value={filters.listingType} onValueChange={(value) => handleFilterChange('listingType', value)}>
+            <Select value={filters.listingType || "all"} onValueChange={(value) => handleFilterChange('listingType', value)}>
               <SelectTrigger className="h-12 border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg">
                 <div className="flex items-center gap-2">
                   <DollarSign className="h-4 w-4 text-blue-600 dark:text-blue-400" />
@@ -217,7 +219,7 @@ const MainPageSearchFilters = ({ language, onSearch, onLiveSearch }: MainPageSea
                 </div>
               </SelectTrigger>
               <SelectContent className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
-                <SelectItem value="" className="text-gray-900 dark:text-gray-100">{currentText.any}</SelectItem>
+                <SelectItem value="all" className="text-gray-900 dark:text-gray-100">{currentText.any}</SelectItem>
                 {listingTypes.map((type) => (
                   <SelectItem key={type.value} value={type.value} className="text-gray-900 dark:text-gray-100">
                     {type.icon} {type.label}
