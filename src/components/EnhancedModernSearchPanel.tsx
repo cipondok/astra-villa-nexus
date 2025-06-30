@@ -80,7 +80,6 @@ interface EnhancedModernSearchPanelProps {
   language: "en" | "id";
   onSearch: (filters: any) => void;
   onLiveSearch?: (searchTerm: string) => void;
-  // (Optionally accept isSearching and searchCount as props)
 }
 
 const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: EnhancedModernSearchPanelProps) => {
@@ -390,15 +389,15 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
     <>
       {/* Search Progress Popup */}
       <Dialog open={isSearching} onOpenChange={setIsSearching}>
-        <DialogContent className="max-w-md bg-white/95 dark:bg-gray-900/95 border-none p-0 shadow-xl animate-fade-in">
-          <div className="flex flex-col items-center justify-center px-8 py-8 space-y-7">
-            <h2 className="font-bold text-2xl bg-gradient-to-r from-blue-600 via-purple-500 to-orange-500 bg-clip-text text-transparent animate-gradient">
+        <DialogContent className="max-w-lg bg-white/95 dark:bg-gray-900/95 border-none p-0 shadow-xl animate-fade-in">
+          <div className="flex flex-col items-center justify-center px-10 py-10 space-y-8">
+            <h2 className="font-bold text-3xl bg-gradient-to-r from-blue-600 via-purple-500 to-orange-500 bg-clip-text text-transparent animate-gradient">
               {language === "id" ? "Sedang Mencari..." : "Searching..."}
             </h2>
-            <Progress value={progress} className="h-3 w-full mb-3" />
+            <Progress value={progress} className="h-4 w-full mb-4" />
             {searchCount !== null
               ? (
-                <span className="text-lg font-semibold text-primary">
+                <span className="text-xl font-semibold text-primary">
                   {language === "id"
                     ? `${searchCount} hasil ditemukan`
                     : `${searchCount} results found`
@@ -406,7 +405,7 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
                 </span>
               )
               : (
-                <span className="text-muted-foreground animate-pulse">
+                <span className="text-muted-foreground animate-pulse text-lg">
                   {language === "id"
                     ? "Memproses hasil, tunggu sebentar…"
                     : "Analyzing results, please wait…"
@@ -416,9 +415,9 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
             }
             <Button
               variant="outline"
-              size="sm"
+              size="lg"
               onClick={() => setIsSearching(false)}
-              className="mt-6"
+              className="mt-8 px-8 py-3"
             >
               {language === "id" ? "Tutup" : "Close"}
             </Button>
@@ -426,13 +425,13 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
         </DialogContent>
       </Dialog>
 
-      {/* Apple-style Wide Screen Search Panel */}
-      <div className="w-full max-w-[1400px] mx-auto px-6 lg:px-8">
-        <Card className="bg-gray-50/90 dark:bg-gray-800/90 backdrop-blur-xl border border-gray-200/40 dark:border-gray-700/40 shadow-2xl transition-all duration-300 hover:shadow-3xl rounded-2xl">
-          <CardContent className="p-8 lg:p-12">
+      {/* Apple-style Full Wide Screen Search Panel */}
+      <div className="w-full max-w-[1600px] mx-auto px-8 lg:px-12">
+        <Card className="bg-gray-50/90 dark:bg-gray-800/90 backdrop-blur-xl border border-gray-200/40 dark:border-gray-700/40 shadow-2xl transition-all duration-300 hover:shadow-3xl rounded-3xl">
+          <CardContent className="p-12 lg:p-16 xl:p-20">
 
-            {/* Property Type Toggle - Apple Style */}
-            <div className="mb-8">
+            {/* Property Type Toggle - Full Width */}
+            <div className="mb-12">
               <IPhoneToggleGroup
                 options={[
                   { value: "", label: language === "id" ? "Semua Jenis" : "All Types", colorClass: "bg-blue-600 hover:bg-blue-700 text-white shadow-lg border-0" },
@@ -443,18 +442,18 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
                 ]}
                 value={propertyType}
                 onChange={setPropertyType}
-                className="flex flex-wrap justify-center gap-3 lg:gap-4"
+                className="flex flex-wrap justify-center gap-4 lg:gap-6 xl:gap-8"
               />
             </div>
 
-            {/* Main Search Bar - Wide Screen Optimized */}
-            <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-6 mb-8">
+            {/* Main Search Bar - Extra Wide */}
+            <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-8 mb-12">
               <div className="w-full">
                 <div className="relative w-full">
-                  <Search className="absolute left-6 top-1/2 transform -translate-y-1/2 h-6 w-6 text-gray-400" />
+                  <Search className="absolute left-8 top-1/2 transform -translate-y-1/2 h-8 w-8 text-gray-400" />
                   <Input
                     placeholder={currentText.search}
-                    className="pl-16 h-16 text-lg bg-white dark:bg-gray-900 border-gray-300/50 dark:border-gray-600/50 rounded-2xl shadow-lg focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-300 hover:shadow-xl"
+                    className="pl-20 h-20 text-xl lg:text-2xl bg-white dark:bg-gray-900 border-gray-300/50 dark:border-gray-600/50 rounded-3xl shadow-lg focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-300 hover:shadow-xl font-medium"
                     value={searchQuery}
                     onChange={handleSearchInputChange}
                     onKeyDown={handleKeyPress}
@@ -464,22 +463,22 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
               <div className="flex justify-center lg:justify-end">
                 <Button
                   onClick={handleManualSearch}
-                  className="h-16 px-10 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-2xl shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105 text-lg"
+                  className="h-20 px-12 lg:px-16 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-3xl shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105 text-xl lg:text-2xl"
                 >
-                  <Search className="h-6 w-6 mr-3" />
+                  <Search className="h-8 w-8 mr-4" />
                   {currentText.searchBtn}
                 </Button>
               </div>
             </div>
 
             {/* Advanced Filters Toggle */}
-            <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center justify-between mb-12">
               <Button
                 variant="ghost"
                 onClick={() => setShowAdvanced(v => !v)}
-                className="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-100/50 dark:hover:bg-gray-700/50 rounded-xl px-6 py-3 transition-all duration-200"
+                className="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-100/50 dark:hover:bg-gray-700/50 rounded-2xl px-8 py-4 transition-all duration-200 text-lg font-medium"
               >
-                <Filter className="h-5 w-5 mr-3" />
+                <Filter className="h-6 w-6 mr-4" />
                 {showAdvanced
                   ? (language === "id" ? "Sembunyikan Filter" : "Hide Filters")
                   : (language === "id" ? "Filter Lanjutan" : "Advanced Filters")}
@@ -487,27 +486,27 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
               {hasActiveFilters && (
                 <Button
                   variant="outline"
-                  size="sm"
+                  size="lg"
                   onClick={handleClearFilters}
-                  className="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 border-gray-300/50 dark:border-gray-600/50 rounded-xl px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-all duration-200"
+                  className="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 border-gray-300/50 dark:border-gray-600/50 rounded-2xl px-6 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-all duration-200 text-lg"
                 >
-                  <X className="h-4 w-4 mr-2" />
+                  <X className="h-5 w-5 mr-3" />
                   {language === "id" ? "Hapus semua" : "Clear all"}
                 </Button>
               )}
             </div>
             
-            {/* Animated Advanced Filters Section - Wide Screen Layout */}
+            {/* Animated Advanced Filters Section - Full Width Layout */}
             <div
               className={`overflow-hidden ${filterAnimBase} ${showAdvanced ? filterAnimVisible : filterAnimHidden}`}
-              style={{ minHeight: showAdvanced ? 280 : 0, maxHeight: showAdvanced ? 800 : 0 }}
+              style={{ minHeight: showAdvanced ? 400 : 0, maxHeight: showAdvanced ? 1000 : 0 }}
               onTransitionEnd={() => {
                 if (!showAdvanced) setFiltersMounted(false);
               }}
             >
               {filtersMounted && (
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-8 p-8 bg-white/80 dark:bg-gray-900/80 rounded-2xl border border-gray-200/40 dark:border-gray-700/40 shadow-lg">
-                  {/* Location Selector - Takes more space on wide screens */}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 mb-12 p-12 bg-white/80 dark:bg-gray-900/80 rounded-3xl border border-gray-200/40 dark:border-gray-700/40 shadow-lg">
+                  {/* Location Selector - Takes more space */}
                   <div className="lg:col-span-6">
                     <LocationSelector
                       selectedState={selectedState}
@@ -520,9 +519,9 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
                     />
                   </div>
                   
-                  {/* Bedrooms and Bathrooms - Side by side */}
+                  {/* Bedrooms and Bathrooms - Larger */}
                   <div className="lg:col-span-3">
-                    <label className="block mb-3 text-gray-700 dark:text-gray-300 text-sm font-semibold">
+                    <label className="block mb-4 text-gray-700 dark:text-gray-300 text-lg font-semibold">
                       {language === "id" ? "Kamar Tidur" : "Bedrooms"}
                     </label>
                     <PillToggleGroup
@@ -539,7 +538,7 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
                   </div>
                   
                   <div className="lg:col-span-3">
-                    <label className="block mb-3 text-gray-700 dark:text-gray-300 text-sm font-semibold">
+                    <label className="block mb-4 text-gray-700 dark:text-gray-300 text-lg font-semibold">
                       {language === "id" ? "Kamar Mandi" : "Bathrooms"}
                     </label>
                     <PillToggleGroup
@@ -555,22 +554,22 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
                     />
                   </div>
                   
-                  {/* Smart Filter grouped pills - Full width on second row */}
-                  <div className="lg:col-span-12 space-y-6">
-                    <label className="block mb-4 text-gray-700 dark:text-gray-300 text-sm font-semibold">
+                  {/* Smart Filter grouped pills - Full width with larger spacing */}
+                  <div className="lg:col-span-12 space-y-8">
+                    <label className="block mb-6 text-gray-700 dark:text-gray-300 text-lg font-semibold">
                       {language === "id" ? "Filter Pintar" : "Smart Filters"}
                     </label>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8">
                       {smartFilterCategories.map((cat) => (
-                        <div key={cat.key} className="space-y-3">
-                          <div className="text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wider">{cat.label}</div>
-                          <div className="flex flex-wrap gap-2">
+                        <div key={cat.key} className="space-y-4">
+                          <div className="text-sm font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wider">{cat.label}</div>
+                          <div className="flex flex-wrap gap-3">
                             {cat.options.map((option) => (
                               <button
                                 type="button"
                                 key={option.value}
                                 onClick={() => handleSmartFacilityToggle(option.value)}
-                                className={`px-4 py-2 rounded-xl border text-xs font-medium transition-all duration-300 hover:scale-105
+                                className={`px-5 py-3 rounded-2xl border text-sm font-medium transition-all duration-300 hover:scale-105
                                   ${selectedSmartFacilities.includes(option.value)
                                     ? "bg-blue-600 text-white border-blue-600 shadow-lg"
                                     : "bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 border-gray-300/50 dark:border-gray-600/50 hover:bg-gray-50 dark:hover:bg-gray-700/50 shadow-sm"}
@@ -589,12 +588,12 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
               )}
             </div>
 
-            {/* Popular Searches - Wide Screen Layout */}
+            {/* Popular Searches - Larger */}
             <div className="text-center lg:text-left">
-              <p className="text-gray-600 dark:text-gray-400 mb-6 font-semibold text-sm">
+              <p className="text-gray-600 dark:text-gray-400 mb-8 font-semibold text-lg">
                 {language === "id" ? "Pencarian populer:" : "Popular searches:"}
               </p>
-              <div className="flex flex-wrap justify-center lg:justify-start gap-4">
+              <div className="flex flex-wrap justify-center lg:justify-start gap-6">
                 {
                   (language === "id"
                     ? ["Apartemen Jakarta", "Villa Bali", "Rumah Surabaya", "Kost Bandung"]
@@ -603,7 +602,7 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
                     <Badge
                       key={idx}
                       variant="secondary"
-                      className="cursor-pointer bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-300/50 dark:border-gray-600/50 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:border-blue-300/50 dark:hover:border-blue-600/50 transition-all duration-300 px-6 py-3 rounded-xl font-medium shadow-sm hover:shadow-md hover:scale-105"
+                      className="cursor-pointer bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-300/50 dark:border-gray-600/50 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:border-blue-300/50 dark:hover:border-blue-600/50 transition-all duration-300 px-8 py-4 rounded-2xl font-medium shadow-sm hover:shadow-md hover:scale-105 text-lg"
                       onClick={() => {
                         setSearchQuery(term);
                         setPropertyType("");

@@ -136,11 +136,11 @@ const Index = () => {
     <div className="min-h-screen bg-white dark:bg-black text-foreground">
       <Navigation />
       
-      {/* Hero Section - Apple Wide Screen Style */}
-      <section className="relative py-16 lg:py-24 px-4 bg-white dark:bg-black">
-        <div className="max-w-[1400px] mx-auto text-center">
-          <div className="mb-12 lg:mb-16 animate-fade-in">
-            <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+      {/* Hero Section - Full Wide Screen */}
+      <section className="relative py-20 lg:py-32 px-4 bg-white dark:bg-black">
+        <div className="max-w-[1600px] mx-auto text-center">
+          <div className="mb-16 lg:mb-24 animate-fade-in">
+            <h1 className="text-4xl md:text-6xl lg:text-8xl xl:text-9xl font-bold mb-8 leading-tight">
               <span className="inline-block bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 dark:from-blue-300 dark:via-purple-400 dark:to-cyan-300 bg-clip-text text-transparent animate-gradient bg-[length:300%_300%] font-extrabold tracking-tight">
                 Find Your Perfect
               </span>
@@ -150,16 +150,16 @@ const Index = () => {
               </span>
             </h1>
             
-            <div className="relative mb-6">
-              <h2 className="text-lg md:text-xl lg:text-2xl font-semibold text-white dark:text-white drop-shadow-lg">
-                <span className="inline-block px-6 py-3 bg-gradient-to-r from-blue-500/90 to-purple-600/90 dark:from-blue-400/90 dark:to-purple-500/90 rounded-2xl backdrop-blur-sm border border-white/20 shadow-xl">
+            <div className="relative mb-8">
+              <h2 className="text-xl md:text-2xl lg:text-4xl xl:text-5xl font-semibold text-white dark:text-white drop-shadow-lg">
+                <span className="inline-block px-8 py-4 lg:px-12 lg:py-6 bg-gradient-to-r from-blue-500/90 to-purple-600/90 dark:from-blue-400/90 dark:to-purple-500/90 rounded-3xl backdrop-blur-sm border border-white/20 shadow-xl">
                   AI-Powered Real Estate Platform
                 </span>
               </h2>
             </div>
             
-            <p className="text-sm md:text-base lg:text-lg max-w-2xl mx-auto leading-relaxed">
-              <span className="inline-block px-4 py-2 bg-gray-100/95 dark:bg-slate-800/95 text-slate-800 dark:text-slate-100 rounded-xl backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 shadow-lg font-medium">
+            <p className="text-base md:text-lg lg:text-2xl xl:text-3xl max-w-4xl mx-auto leading-relaxed">
+              <span className="inline-block px-6 py-3 lg:px-8 lg:py-4 bg-gray-100/95 dark:bg-slate-800/95 text-slate-800 dark:text-slate-100 rounded-2xl backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 shadow-lg font-medium">
                 Discover premium properties with advanced AI search technology
               </span>
             </p>
@@ -175,31 +175,31 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Quick Actions - Apple Wide Screen Style */}
-      <section className="py-12 lg:py-16 bg-gray-50/50 dark:bg-gray-900/30">
-        <div className="max-w-[1400px] mx-auto px-6 lg:px-8">
-          <div className="flex flex-wrap justify-center gap-4 lg:gap-6">
+      {/* Quick Actions - Full Wide Screen */}
+      <section className="py-16 lg:py-24 bg-gray-50/50 dark:bg-gray-900/30">
+        <div className="max-w-[1600px] mx-auto px-8 lg:px-12">
+          <div className="flex flex-wrap justify-center gap-6 lg:gap-8 xl:gap-12">
             <Button 
               onClick={() => handleSearch({ listingType: 'buy' })}
-              className="apple-button-primary flex items-center gap-2 px-6 py-3 text-sm lg:text-base hover:scale-105 transition-all duration-200 rounded-2xl shadow-lg"
+              className="apple-button-primary flex items-center gap-3 px-8 py-4 lg:px-12 lg:py-6 text-base lg:text-xl font-semibold hover:scale-105 transition-all duration-200 rounded-3xl shadow-lg"
             >
               🏠 Buy Properties
             </Button>
             <Button 
               onClick={() => handleSearch({ listingType: 'rent' })}
-              className="apple-button-secondary flex items-center gap-2 px-6 py-3 text-sm lg:text-base hover:scale-105 transition-all duration-200 rounded-2xl shadow-lg"
+              className="apple-button-secondary flex items-center gap-3 px-8 py-4 lg:px-12 lg:py-6 text-base lg:text-xl font-semibold hover:scale-105 transition-all duration-200 rounded-3xl shadow-lg"
             >
               🔑 Rent Properties
             </Button>
             <Button 
               onClick={() => handleSearch({ development_status: 'pre_launching' })}
-              className="apple-button-secondary flex items-center gap-2 px-6 py-3 text-sm lg:text-base hover:scale-105 transition-all duration-200 rounded-2xl shadow-lg"
+              className="apple-button-secondary flex items-center gap-3 px-8 py-4 lg:px-12 lg:py-6 text-base lg:text-xl font-semibold hover:scale-105 transition-all duration-200 rounded-3xl shadow-lg"
             >
               🚀 Pre-Launch
             </Button>
             <Button 
               onClick={() => handleSearch({ development_status: 'new_project' })}
-              className="apple-button-secondary flex items-center gap-2 px-6 py-3 text-sm lg:text-base hover:scale-105 transition-all duration-200 rounded-2xl shadow-lg"
+              className="apple-button-secondary flex items-center gap-3 px-8 py-4 lg:px-12 lg:py-6 text-base lg:text-xl font-semibold hover:scale-105 transition-all duration-200 rounded-3xl shadow-lg"
             >
               🏗️ New Projects
             </Button>
@@ -209,18 +209,18 @@ const Index = () => {
 
       {/* Error Message */}
       {searchError && (
-        <section className="py-6">
-          <div className="max-w-[1400px] mx-auto px-6 lg:px-8">
-            <div className="apple-glass border border-destructive/40 text-destructive text-center p-6 rounded-2xl max-w-2xl mx-auto shadow-lg">
-              <p className="font-medium text-sm lg:text-base">⚠️ {searchError}</p>
+        <section className="py-8">
+          <div className="max-w-[1600px] mx-auto px-8 lg:px-12">
+            <div className="apple-glass border border-destructive/40 text-destructive text-center p-8 rounded-3xl max-w-3xl mx-auto shadow-lg">
+              <p className="font-medium text-lg lg:text-xl">⚠️ {searchError}</p>
             </div>
           </div>
         </section>
       )}
 
-      {/* Property Listings - Wide Screen Container */}
-      <div className="px-6 lg:px-8 bg-white dark:bg-black">
-        <div className="max-w-[1400px] mx-auto">
+      {/* Property Listings - Full Wide Screen Container */}
+      <div className="px-8 lg:px-12 bg-white dark:bg-black">
+        <div className="max-w-[1600px] mx-auto">
           <PropertyListingsSection
             language={language}
             searchResults={hasSearched ? searchResults : featuredProperties}
