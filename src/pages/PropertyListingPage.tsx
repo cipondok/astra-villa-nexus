@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import Navigation from '@/components/Navigation';
 import ProfessionalFooter from '@/components/ProfessionalFooter';
@@ -10,6 +9,132 @@ interface PropertyListingPageProps {
   title: string;
   subtitle: string;
 }
+
+const mockRentProperties = [
+  {
+    id: 'mock-rent-1',
+    title: 'Modern 2BR Apartment for Rent',
+    description: 'Beautiful modern apartment with city views, fully furnished, perfect for professionals.',
+    property_type: 'apartment',
+    listing_type: 'rent',
+    location: 'Central Jakarta, Jakarta',
+    price: 15000000,
+    bedrooms: 2,
+    bathrooms: 2,
+    area_sqm: 85,
+    status: 'active',
+    development_status: 'completed',
+    images: ['https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=2080&auto=format&fit=crop'],
+    thumbnail_url: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=2080&auto=format&fit=crop',
+    created_at: new Date().toISOString(),
+    state: 'Jakarta',
+    city: 'Central Jakarta',
+    area: 'Sudirman'
+  },
+  {
+    id: 'mock-rent-2',
+    title: '3BR House for Rent in BSD',
+    description: 'Spacious family house with garden, located in quiet residential area with good access to schools.',
+    property_type: 'house',
+    listing_type: 'rent',
+    location: 'BSD City, Tangerang',
+    price: 25000000,
+    bedrooms: 3,
+    bathrooms: 3,
+    area_sqm: 150,
+    status: 'active',
+    development_status: 'completed',
+    images: ['https://images.unsplash.com/photo-1449844908441-8829872d2607?q=80&w=2070&auto=format&fit=crop'],
+    thumbnail_url: 'https://images.unsplash.com/photo-1449844908441-8829872d2607?q=80&w=2070&auto=format&fit=crop',
+    created_at: new Date().toISOString(),
+    state: 'Banten',
+    city: 'Tangerang',
+    area: 'BSD City'
+  },
+  {
+    id: 'mock-rent-3',
+    title: 'Studio Apartment - Kemang Area',
+    description: 'Cozy studio apartment in trendy Kemang area, perfect for young professionals.',
+    property_type: 'apartment',
+    listing_type: 'rent',
+    location: 'Kemang, South Jakarta',
+    price: 8000000,
+    bedrooms: 1,
+    bathrooms: 1,
+    area_sqm: 35,
+    status: 'active',
+    development_status: 'completed',
+    images: ['https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=2070&auto=format&fit=crop'],
+    thumbnail_url: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=2070&auto=format&fit=crop',
+    created_at: new Date().toISOString(),
+    state: 'Jakarta',
+    city: 'South Jakarta',
+    area: 'Kemang'
+  },
+  {
+    id: 'mock-rent-4',
+    title: 'Luxury Villa with Pool - Alam Sutera',
+    description: 'Exclusive villa with private swimming pool and garden, fully furnished.',
+    property_type: 'villa',
+    listing_type: 'rent',
+    location: 'Alam Sutera, Tangerang',
+    price: 45000000,
+    bedrooms: 4,
+    bathrooms: 4,
+    area_sqm: 280,
+    status: 'active',
+    development_status: 'completed',
+    images: ['https://images.unsplash.com/photo-1564013799919-ab600027ffc6?q=80&w=2070&auto=format&fit=crop'],
+    thumbnail_url: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?q=80&w=2070&auto=format&fit=crop',
+    created_at: new Date().toISOString(),
+    state: 'Banten',
+    city: 'Tangerang',
+    area: 'Alam Sutera'
+  }
+];
+
+const mockBuyProperties = [
+  {
+    id: 'mock-buy-1',
+    title: 'Modern Townhouse for Sale',
+    description: 'Brand new townhouse in gated community with modern amenities and security.',
+    property_type: 'house',
+    listing_type: 'sale',
+    location: 'Bekasi, West Java',
+    price: 850000000,
+    bedrooms: 3,
+    bathrooms: 2,
+    area_sqm: 120,
+    status: 'active',
+    development_status: 'completed',
+    images: ['https://images.unsplash.com/photo-1558618666-fcd25c85cd64?q=80&w=2070&auto=format&fit=crop'],
+    thumbnail_url: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?q=80&w=2070&auto=format&fit=crop',
+    created_at: new Date().toISOString(),
+    state: 'West Java',
+    city: 'Bekasi',
+    area: 'Grand Wisata'
+  },
+  {
+    id: 'mock-buy-2',
+    title: 'Luxury Condo - Sudirman Area',
+    description: 'Premium condominium unit with panoramic city views in prime business district.',
+    property_type: 'condo',
+    listing_type: 'sale',
+    location: 'Sudirman, Central Jakarta',
+    price: 2800000000,
+    bedrooms: 2,
+    bathrooms: 2,
+    area_sqm: 95,
+    status: 'active',
+    development_status: 'completed',
+    images: ['https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?q=80&w=2070&auto=format&fit=crop'],
+    thumbnail_url: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?q=80&w=2070&auto=format&fit=crop',
+    created_at: new Date().toISOString(),
+    state: 'Jakarta',
+    city: 'Central Jakarta',
+    area: 'Sudirman'
+  }
+];
 
 const mockPreLaunchingProperties = [
   {
@@ -100,7 +225,7 @@ const mockNewProjectProperties = [
 const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageProps) => {
   const [properties, setProperties] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const language = 'en'; // Hardcoding for now, could be dynamic later
+  const language = 'en';
 
   useEffect(() => {
     const fetchProperties = async () => {
@@ -108,66 +233,71 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
       console.log(`Fetching ${pageType} properties...`);
       
       try {
+        // Always use mock data first to ensure page loads with content
+        let fallbackData: any[] = [];
+        if (pageType === 'rent') {
+          fallbackData = mockRentProperties;
+        } else if (pageType === 'buy') {
+          fallbackData = mockBuyProperties;
+        } else if (pageType === 'pre-launching') {
+          fallbackData = mockPreLaunchingProperties;
+        } else if (pageType === 'new-projects') {
+          fallbackData = mockNewProjectProperties;
+        }
+
+        // Set fallback data immediately
+        setProperties(fallbackData);
+
+        // Try to fetch real data with short timeout
+        const timeoutPromise = new Promise<never>((_, reject) => {
+          setTimeout(() => reject(new Error('Request timeout')), 3000);
+        });
+
         let query = supabase
           .from('properties')
           .select('*')
           .eq('status', 'active');
 
         if (pageType === 'buy') {
-          query = query.eq('listing_type', 'sale').eq('development_status', 'completed');
+          query = query.eq('listing_type', 'sale').in('development_status', ['completed', 'ready']);
         } else if (pageType === 'rent') {
-          query = query.eq('listing_type', 'rent').eq('development_status', 'completed');
+          query = query.eq('listing_type', 'rent').in('development_status', ['completed', 'ready']);
         } else if (pageType === 'new-projects') {
           query = query.eq('development_status', 'new_project');
         } else if (pageType === 'pre-launching') {
           query = query.eq('development_status', 'pre_launching');
         }
 
-        // Add timeout to prevent infinite loading
-        const timeoutPromise = new Promise<never>((_, reject) => {
-          setTimeout(() => reject(new Error('Request timeout')), 5000);
-        });
+        try {
+          const { data, error } = await Promise.race([
+            query.order('created_at', { ascending: false }).limit(20),
+            timeoutPromise
+          ]);
 
-        const { data, error } = await Promise.race([
-          query.order('created_at', { ascending: false }).limit(20),
-          timeoutPromise
-        ]);
-
-        if (error) {
-          console.error(`Error fetching ${pageType} properties:`, error);
-          // Use mock data on error
-          if (pageType === 'pre-launching') {
-            setProperties(mockPreLaunchingProperties);
-          } else if (pageType === 'new-projects') {
-            setProperties(mockNewProjectProperties);
-          } else {
-            setProperties([]);
-          }
-        } else {
-          console.log(`Found ${data?.length || 0} ${pageType} properties`);
-          if (data && data.length > 0) {
-            setProperties(data);
-          } else {
-            // Use mock data if no real data found
-            if (pageType === 'pre-launching') {
-              setProperties(mockPreLaunchingProperties);
-            } else if (pageType === 'new-projects') {
-              setProperties(mockNewProjectProperties);
-            } else {
-              setProperties([]);
+          if (!error && data && data.length > 0) {
+            console.log(`Found ${data.length} real ${pageType} properties, updating display`);
+            // Filter valid properties
+            const validProperties = data.filter(property => 
+              property.title && 
+              property.title.trim() !== '' &&
+              property.price && 
+              property.price > 0
+            );
+            
+            if (validProperties.length > 0) {
+              setProperties(validProperties);
             }
+            // Keep fallback data if no valid real properties
+          } else if (error) {
+            console.log(`Database error for ${pageType}:`, error.message);
           }
+        } catch (fetchError) {
+          console.log(`Fetch timeout for ${pageType}, keeping mock data`);
         }
+
       } catch (error) {
         console.error(`Error in fetchProperties for ${pageType}:`, error);
-        // Use mock data on any error
-        if (pageType === 'pre-launching') {
-          setProperties(mockPreLaunchingProperties);
-        } else if (pageType === 'new-projects') {
-          setProperties(mockNewProjectProperties);
-        } else {
-          setProperties([]);
-        }
+        // Fallback data is already set above
       } finally {
         setIsLoading(false);
       }
@@ -183,21 +313,13 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
         <h1 className="text-4xl font-bold mb-2">{title}</h1>
         <p className="text-muted-foreground mb-4">{subtitle}</p>
         <div className="mt-6">
-          {isLoading ? (
-            <div className="flex items-center justify-center py-12">
-              <div className="text-center">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
-                <p className="text-gray-600">Loading {pageType} properties...</p>
-              </div>
-            </div>
-          ) : (
-            <PropertyListingsSection
-              language={language}
-              searchResults={properties}
-              hasSearched={true}
-              hideTitle={true}
-            />
-          )}
+          <PropertyListingsSection
+            language={language}
+            searchResults={properties}
+            hasSearched={true}
+            hideTitle={true}
+            isSearching={isLoading}
+          />
         </div>
       </main>
       <ProfessionalFooter language="en" />
