@@ -24,11 +24,12 @@ const SmartSearchPanel = ({ language, onSearch, onLiveSearch }: SmartSearchPanel
     listingType: '',
     priceMin: '',
     priceMax: '',
-    bedrooms: [],
-    bathrooms: [],
+    bedrooms: [] as number[],
+    bathrooms: [] as number[],
     amenities: [] as string[],
     state: '',
     city: '',
+    development_status: '',
   });
   
   const filtersRef = useRef<HTMLDivElement>(null);
@@ -95,7 +96,12 @@ const SmartSearchPanel = ({ language, onSearch, onLiveSearch }: SmartSearchPanel
       security: "Security",
       gym: "Gym",
       furnished: "Furnished",
-      filtersApplied: "filters applied"
+      filtersApplied: "filters applied",
+      developmentStatus: "Development Status",
+      completed: "Completed",
+      preLaunching: "Pre-Launching",
+      newProject: "New Project",
+      ready: "Ready"
     },
     id: {
       searchPlaceholder: "Cari berdasarkan lokasi, jenis properti, atau kata kunci...",
@@ -126,11 +132,36 @@ const SmartSearchPanel = ({ language, onSearch, onLiveSearch }: SmartSearchPanel
       security: "Keamanan",
       gym: "Gym",
       furnished: "Furnished",
-      filtersApplied: "filter diterapkan"
+      filtersApplied: "filter diterapkan",
+      developmentStatus: "Status Pembangunan",
+      completed: "Selesai",
+      preLaunching: "Pra-Peluncuran",
+      newProject: "Proyek Baru",
+      ready: "Siap"
     }
   };
 
   const currentText = text[language];
+
+  // Filter Categories
+  const filterCategories = {
+    basic: {
+      title: language === 'en' ? 'Basic Filters' : 'Filter Dasar',
+      filters: ['propertyType', 'listingType', 'state']
+    },
+    details: {
+      title: language === 'en' ? 'Property Details' : 'Detail Properti',
+      filters: ['bedrooms', 'bathrooms', 'developmentStatus']
+    },
+    price: {
+      title: language === 'en' ? 'Price Range' : 'Range Harga',
+      filters: ['priceRange']
+    },
+    amenities: {
+      title: language === 'en' ? 'Amenities & Features' : 'Fasilitas & Fitur',
+      filters: ['amenities']
+    }
+  };
 
   const propertyTypes = [
     { value: 'villa', label: currentText.villa, icon: '🏖️' },
@@ -143,6 +174,13 @@ const SmartSearchPanel = ({ language, onSearch, onLiveSearch }: SmartSearchPanel
   const listingTypes = [
     { value: 'sale', label: currentText.forSale, icon: '💰' },
     { value: 'rent', label: currentText.forRent, icon: '🔑' },
+  ];
+
+  const developmentStatuses = [
+    { value: 'completed', label: currentText.completed, icon: '✅' },
+    { value: 'ready', label: currentText.ready, icon: '🏠' },
+    { value: 'pre_launching', label: currentText.preLaunching, icon: '🚀' },
+    { value: 'new_project', label: currentText.newProject, icon: '🏗️' },
   ];
 
   const amenitiesList = [
@@ -230,11 +268,12 @@ const SmartSearchPanel = ({ language, onSearch, onLiveSearch }: SmartSearchPanel
       amenities: [],
       state: '',
       city: '',
+      development_status: '',
     });
   };
 
   // Count active filters
-  const activeFiltersCount = Object.values(filters).reduce((count, value) => {
+  const activeFiltersCount = Object.entries(filters).reduce((count, [key, value]) => {
     if (Array.isArray(value)) {
       return count + value.length;
     }
@@ -323,114 +362,154 @@ const SmartSearchPanel = ({ language, onSearch, onLiveSearch }: SmartSearchPanel
                     {activeFiltersCount}
                   </Badge>
                 )}
-                <ChevronDown className={`h-4 w-4 ml-1 transition-transform duration-200 ${showAdvanced ? 'rotate-180' : ''}`} />
+                <ChevronDown className={`h-4 w-4 ml-1 transition-transform duration-300 ${showAdvanced ? 'rotate-180' : ''}`} />
               </Button>
             </div>
 
-            {/* Advanced Filters with Smooth Animation */}
-            <div className={`overflow-hidden transition-all duration-300 ease-in-out ${showAdvanced ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
-              <div className="space-y-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-                {/* Price Range */}
-                <div className="grid grid-cols-2 gap-3">
-                  <Input
-                    placeholder={currentText.from}
-                    value={filters.priceMin}
-                    onChange={(e) => handleFilterChange('priceMin', e.target.value)}
-                    className="h-10 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg transition-all duration-200"
-                    type="number"
-                  />
-                  <Input
-                    placeholder={currentText.to}
-                    value={filters.priceMax}
-                    onChange={(e) => handleFilterChange('priceMax', e.target.value)}
-                    className="h-10 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg transition-all duration-200"
-                    type="number"
-                  />
-                </div>
-
-                {/* Smart Bedrooms & Bathrooms Selection */}
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <label className="text-xs font-medium text-gray-700 dark:text-gray-300 flex items-center gap-1">
-                      <Bed className="h-3 w-3" />
-                      {currentText.bedrooms}
-                      {filters.bedrooms.length > 0 && (
-                        <Badge variant="secondary" className="ml-1 text-xs">
-                          {filters.bedrooms.length}
-                        </Badge>
-                      )}
-                    </label>
-                    <div className="flex gap-1 flex-wrap">
-                      {bedroomOptions.map((option) => (
-                        <Button
-                          key={option}
-                          variant={filters.bedrooms.includes(option) ? "default" : "outline"}
-                          size="sm"
-                          onClick={() => handleSmartSelection('bedrooms', option)}
-                          className="text-xs h-8 transition-all duration-200 hover:scale-105"
-                        >
-                          {option}+
-                        </Button>
-                      ))}
-                      {filters.bedrooms.length > 0 && (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => setFilters(prev => ({ ...prev, bedrooms: [] }))}
-                          className="text-xs h-8 text-red-500 hover:text-red-700"
-                        >
-                          <X className="h-3 w-3" />
-                        </Button>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="text-xs font-medium text-gray-700 dark:text-gray-300 flex items-center gap-1">
-                      <Bath className="h-3 w-3" />
-                      {currentText.bathrooms}
-                      {filters.bathrooms.length > 0 && (
-                        <Badge variant="secondary" className="ml-1 text-xs">
-                          {filters.bathrooms.length}
-                        </Badge>
-                      )}
-                    </label>
-                    <div className="flex gap-1 flex-wrap">
-                      {bathroomOptions.map((option) => (
-                        <Button
-                          key={option}
-                          variant={filters.bathrooms.includes(option) ? "default" : "outline"}
-                          size="sm"
-                          onClick={() => handleSmartSelection('bathrooms', option)}
-                          className="text-xs h-8 transition-all duration-200 hover:scale-105"
-                        >
-                          {option}+
-                        </Button>
-                      ))}
-                      {filters.bathrooms.length > 0 && (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => setFilters(prev => ({ ...prev, bathrooms: [] }))}
-                          className="text-xs h-8 text-red-500 hover:text-red-700"
-                        >
-                          <X className="h-3 w-3" />
-                        </Button>
-                      )}
-                    </div>
+            {/* Advanced Filters with Smooth Animation and Categories */}
+            <div className={`overflow-hidden transition-all duration-500 ease-in-out ${
+              showAdvanced 
+                ? 'max-h-[800px] opacity-100 transform translate-y-0' 
+                : 'max-h-0 opacity-0 transform -translate-y-4'
+            }`}>
+              <div className="space-y-6 pt-4 border-t border-gray-200 dark:border-gray-700">
+                
+                {/* Basic Filters Category */}
+                <div className="space-y-3">
+                  <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-200 flex items-center gap-2">
+                    <Home className="h-4 w-4" />
+                    {filterCategories.basic.title}
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <Select value={filters.development_status || "all"} onValueChange={(value) => handleFilterChange('development_status', value)}>
+                      <SelectTrigger className="h-10">
+                        <SelectValue placeholder={currentText.developmentStatus} />
+                      </SelectTrigger>
+                      <SelectContent className="bg-white dark:bg-gray-800 z-50">
+                        <SelectItem value="all">{currentText.any}</SelectItem>
+                        {developmentStatuses.map((status) => (
+                          <SelectItem key={status.value} value={status.value}>
+                            {status.icon} {status.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
 
-                {/* Amenities */}
-                <div className="space-y-2">
-                  <label className="text-xs font-medium text-gray-700 dark:text-gray-300 flex items-center gap-1">
-                    {currentText.amenities}
+                {/* Property Details Category */}
+                <div className="space-y-3">
+                  <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-200 flex items-center gap-2">
+                    <Bed className="h-4 w-4" />
+                    {filterCategories.details.title}
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <label className="text-xs font-medium text-gray-700 dark:text-gray-300 flex items-center gap-1">
+                        <Bed className="h-3 w-3" />
+                        {currentText.bedrooms}
+                        {filters.bedrooms.length > 0 && (
+                          <Badge variant="secondary" className="ml-1 text-xs">
+                            {filters.bedrooms.length}
+                          </Badge>
+                        )}
+                      </label>
+                      <div className="flex gap-1 flex-wrap">
+                        {bedroomOptions.map((option) => (
+                          <Button
+                            key={option}
+                            variant={filters.bedrooms.includes(option) ? "default" : "outline"}
+                            size="sm"
+                            onClick={() => handleSmartSelection('bedrooms', option)}
+                            className="text-xs h-8 transition-all duration-200 hover:scale-105"
+                          >
+                            {option}+
+                          </Button>
+                        ))}
+                        {filters.bedrooms.length > 0 && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setFilters(prev => ({ ...prev, bedrooms: [] }))}
+                            className="text-xs h-8 text-red-500 hover:text-red-700"
+                          >
+                            <X className="h-3 w-3" />
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-xs font-medium text-gray-700 dark:text-gray-300 flex items-center gap-1">
+                        <Bath className="h-3 w-3" />
+                        {currentText.bathrooms}
+                        {filters.bathrooms.length > 0 && (
+                          <Badge variant="secondary" className="ml-1 text-xs">
+                            {filters.bathrooms.length}
+                          </Badge>
+                        )}
+                      </label>
+                      <div className="flex gap-1 flex-wrap">
+                        {bathroomOptions.map((option) => (
+                          <Button
+                            key={option}
+                            variant={filters.bathrooms.includes(option) ? "default" : "outline"}
+                            size="sm"
+                            onClick={() => handleSmartSelection('bathrooms', option)}
+                            className="text-xs h-8 transition-all duration-200 hover:scale-105"
+                          >
+                            {option}+
+                          </Button>
+                        ))}
+                        {filters.bathrooms.length > 0 && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setFilters(prev => ({ ...prev, bathrooms: [] }))}
+                            className="text-xs h-8 text-red-500 hover:text-red-700"
+                          >
+                            <X className="h-3 w-3" />
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Price Range Category */}
+                <div className="space-y-3">
+                  <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-200 flex items-center gap-2">
+                    <DollarSign className="h-4 w-4" />
+                    {filterCategories.price.title}
+                  </h3>
+                  <div className="grid grid-cols-2 gap-3">
+                    <Input
+                      placeholder={currentText.from}
+                      value={filters.priceMin}
+                      onChange={(e) => handleFilterChange('priceMin', e.target.value)}
+                      className="h-10 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg transition-all duration-200"
+                      type="number"
+                    />
+                    <Input
+                      placeholder={currentText.to}
+                      value={filters.priceMax}
+                      onChange={(e) => handleFilterChange('priceMax', e.target.value)}
+                      className="h-10 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg transition-all duration-200"
+                      type="number"
+                    />
+                  </div>
+                </div>
+
+                {/* Amenities Category */}
+                <div className="space-y-3">
+                  <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-200 flex items-center gap-2">
+                    ⭐ {filterCategories.amenities.title}
                     {filters.amenities.length > 0 && (
                       <Badge variant="secondary" className="ml-1 text-xs">
                         {filters.amenities.length}
                       </Badge>
                     )}
-                  </label>
+                  </h3>
                   <div className="flex gap-1.5 flex-wrap">
                     {amenitiesList.map((amenity) => (
                       <Badge
@@ -476,7 +555,7 @@ const SmartSearchPanel = ({ language, onSearch, onLiveSearch }: SmartSearchPanel
 
             {/* Active Filters Summary */}
             {activeFiltersCount > 0 && (
-              <div className="text-xs text-gray-600 dark:text-gray-400 text-center">
+              <div className="text-xs text-gray-600 dark:text-gray-400 text-center animate-fade-in">
                 {activeFiltersCount} {currentText.filtersApplied}
               </div>
             )}

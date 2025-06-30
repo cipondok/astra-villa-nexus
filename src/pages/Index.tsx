@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Navigation from "@/components/Navigation";
@@ -18,6 +19,15 @@ const Index = () => {
   const [isSearching, setIsSearching] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
+
+  // Background wallpaper - optimized for performance
+  const backgroundStyle = {
+    backgroundImage: `url('https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1920&q=80')`,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
+    backgroundAttachment: 'fixed',
+  };
 
   // Optimized featured properties query with better filtering
   const { data: featuredProperties = [], isLoading: isFeaturedLoading } = useQuery({
@@ -179,171 +189,189 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white dark:bg-black text-foreground">
-      <Navigation />
+    <div className="min-h-screen text-foreground relative">
+      {/* Background Wallpaper Layer */}
+      <div 
+        className="fixed inset-0 z-0 opacity-30 dark:opacity-20"
+        style={backgroundStyle}
+      />
       
-      {/* Hero Section - More Compact */}
-      <section className="relative py-2 lg:py-3 px-4 bg-white dark:bg-black">
-        <div className="max-w-[1800px] mx-auto text-center">
-          <div className="mb-2 lg:mb-3 animate-fade-in">
-            <h1 className="text-base md:text-lg lg:text-xl xl:text-2xl font-bold mb-1 leading-tight">
-              <span className="inline-block bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 dark:from-blue-300 dark:via-purple-400 dark:to-cyan-300 bg-clip-text text-transparent animate-gradient bg-[length:300%_300%] font-extrabold tracking-tight">
-                Find Your Perfect
-              </span>
-              <br />
-              <span className="inline-block bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 dark:from-purple-300 dark:via-pink-400 dark:to-orange-300 bg-clip-text text-transparent animate-gradient bg-[length:300%_300%] font-extrabold tracking-tight">
-                Property
-              </span>
-            </h1>
-            
-            <div className="relative mb-1">
-              <h2 className="text-xs md:text-sm font-semibold text-white dark:text-white drop-shadow-lg">
-                <span className="inline-block px-2 py-0.5 lg:px-2 lg:py-1 bg-gradient-to-r from-blue-500/90 to-purple-600/90 dark:from-blue-400/90 dark:to-purple-500/90 rounded-lg backdrop-blur-sm border border-white/20 shadow-lg">
-                  AI-Powered Real Estate Platform
+      {/* Content Layer with backdrop */}
+      <div className="relative z-10 bg-white/90 dark:bg-black/90 backdrop-blur-sm min-h-screen">
+        <Navigation />
+        
+        {/* Hero Section - More Compact */}
+        <section className="relative py-2 lg:py-3 px-4">
+          <div className="max-w-[1800px] mx-auto text-center">
+            <div className="mb-2 lg:mb-3 animate-fade-in">
+              <h1 className="text-base md:text-lg lg:text-xl xl:text-2xl font-bold mb-1 leading-tight">
+                <span className="inline-block bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 dark:from-blue-300 dark:via-purple-400 dark:to-cyan-300 bg-clip-text text-transparent animate-gradient bg-[length:300%_300%] font-extrabold tracking-tight">
+                  Find Your Perfect
                 </span>
-              </h2>
+                <br />
+                <span className="inline-block bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 dark:from-purple-300 dark:via-pink-400 dark:to-orange-300 bg-clip-text text-transparent animate-gradient bg-[length:300%_300%] font-extrabold tracking-tight">
+                  Property
+                </span>
+              </h1>
+              
+              <div className="relative mb-1">
+                <h2 className="text-xs md:text-sm font-semibold text-white dark:text-white drop-shadow-lg">
+                  <span className="inline-block px-2 py-0.5 lg:px-2 lg:py-1 bg-gradient-to-r from-blue-500/90 to-purple-600/90 dark:from-blue-400/90 dark:to-purple-500/90 rounded-lg backdrop-blur-sm border border-white/20 shadow-lg">
+                    AI-Powered Real Estate Platform
+                  </span>
+                </h2>
+              </div>
+              
+              <p className="text-xs md:text-xs lg:text-xs max-w-2xl mx-auto leading-relaxed">
+                <span className="inline-block px-1.5 py-0.5 lg:px-2 lg:py-0.5 bg-gray-100/95 dark:bg-slate-800/95 text-slate-800 dark:text-slate-100 rounded-md backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 shadow-md font-medium">
+                  Discover premium properties with advanced AI search technology
+                </span>
+              </p>
             </div>
             
-            <p className="text-xs md:text-xs lg:text-xs max-w-2xl mx-auto leading-relaxed">
-              <span className="inline-block px-1.5 py-0.5 lg:px-2 lg:py-0.5 bg-gray-100/95 dark:bg-slate-800/95 text-slate-800 dark:text-slate-100 rounded-md backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 shadow-md font-medium">
-                Discover premium properties with advanced AI search technology
-              </span>
-            </p>
+            <div className="animate-scale-in">
+              <SmartSearchPanel
+                language={language}
+                onSearch={handleSearch}
+                onLiveSearch={handleLiveSearch}
+              />
+            </div>
           </div>
-          
-          <div className="animate-scale-in">
-            <SmartSearchPanel
-              language={language}
-              onSearch={handleSearch}
-              onLiveSearch={handleLiveSearch}
-            />
-          </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Quick Actions - More Compact */}
-      <section className="py-2 lg:py-3 bg-gray-50/50 dark:bg-gray-900/30">
-        <div className="max-w-[1800px] mx-auto px-6 lg:px-8">
-          <div className="flex flex-wrap justify-center gap-1.5 lg:gap-2">
-            <Button 
-              onClick={handleBuyProperties}
-              className="apple-button-primary flex items-center gap-1.5 px-2 py-1 lg:px-2.5 lg:py-1.5 text-xs font-semibold hover:scale-105 transition-all duration-200 rounded-lg shadow-md"
-            >
-              🏠 Buy Properties
-            </Button>
-            <Button 
-              onClick={handleRentProperties}
-              className="apple-button-secondary flex items-center gap-1.5 px-2 py-1 lg:px-2.5 lg:py-1.5 text-xs font-semibold hover:scale-105 transition-all duration-200 rounded-lg shadow-md"
-            >
-              🔑 Rent Properties
-            </Button>
-            <Button 
-              onClick={handlePreLaunch}
-              className="apple-button-secondary flex items-center gap-1.5 px-2 py-1 lg:px-2.5 lg:py-1.5 text-xs font-semibold hover:scale-105 transition-all duration-200 rounded-lg shadow-md"
-            >
-              🚀 Pre-Launch
-            </Button>
-            <Button 
-              onClick={handleNewProjects}
-              className="apple-button-secondary flex items-center gap-1.5 px-2 py-1 lg:px-2.5 lg:py-1.5 text-xs font-semibold hover:scale-105 transition-all duration-200 rounded-lg shadow-md"
-            >
-              🏗️ New Projects
-            </Button>
-          </div>
-        </div>
-      </section>
-
-      {/* Error Message - Compact */}
-      {searchError && (
-        <section className="py-1">
+        {/* Quick Actions - More Compact */}
+        <section className="py-2 lg:py-3 bg-gray-50/50 dark:bg-gray-900/30">
           <div className="max-w-[1800px] mx-auto px-6 lg:px-8">
-            <div className="apple-glass border border-destructive/40 text-destructive text-center p-2 rounded-xl max-w-xl mx-auto shadow-md">
-              <p className="font-medium text-xs lg:text-sm">⚠️ {searchError}</p>
+            <div className="flex flex-wrap justify-center gap-1.5 lg:gap-2">
               <Button 
-                onClick={() => {
-                  setSearchError(null);
-                  setSearchResults([]);
-                  setHasSearched(false);
-                }}
-                variant="outline"
-                size="sm"
-                className="mt-1 text-xs"
+                onClick={handleBuyProperties}
+                className="apple-button-primary flex items-center gap-1.5 px-2 py-1 lg:px-2.5 lg:py-1.5 text-xs font-semibold hover:scale-105 transition-all duration-200 rounded-lg shadow-md"
               >
-                Clear Error
+                🏠 Buy Properties
+              </Button>
+              <Button 
+                onClick={handleRentProperties}
+                className="apple-button-secondary flex items-center gap-1.5 px-2 py-1 lg:px-2.5 lg:py-1.5 text-xs font-semibold hover:scale-105 transition-all duration-200 rounded-lg shadow-md"
+              >
+                🔑 Rent Properties
+              </Button>
+              <Button 
+                onClick={handlePreLaunch}
+                className="apple-button-secondary flex items-center gap-1.5 px-2 py-1 lg:px-2.5 lg:py-1.5 text-xs font-semibold hover:scale-105 transition-all duration-200 rounded-lg shadow-md"
+              >
+                🚀 Pre-Launch
+              </Button>
+              <Button 
+                onClick={handleNewProjects}
+                className="apple-button-secondary flex items-center gap-1.5 px-2 py-1 lg:px-2.5 lg:py-1.5 text-xs font-semibold hover:scale-105 transition-all duration-200 rounded-lg shadow-md"
+              >
+                🏗️ New Projects
               </Button>
             </div>
           </div>
         </section>
-      )}
 
-      {/* Property Sections with Slides */}
-      <div className="px-6 lg:px-8 bg-white dark:bg-black space-y-12 py-8">
-        <div className="max-w-[1800px] mx-auto space-y-12">
-          {/* Search Results or Featured Properties */}
-          {hasSearched ? (
-            <PropertyListingsSection
-              language={language}
-              searchResults={searchResults}
-              isSearching={isSearching}
-              hasSearched={hasSearched}
-              fallbackResults={[]}
-            />
-          ) : (
-            <>
-              {/* Featured Properties Slide */}
-              <PropertySlideSection
-                title="Featured Properties"
-                subtitle="Handpicked premium properties for you"
-                type="featured"
-                language={language}
-                limit={12}
-              />
+        {/* Error Message - Compact */}
+        {searchError && (
+          <section className="py-1">
+            <div className="max-w-[1800px] mx-auto px-6 lg:px-8">
+              <div className="apple-glass border border-destructive/40 text-destructive text-center p-2 rounded-xl max-w-xl mx-auto shadow-md">
+                <p className="font-medium text-xs lg:text-sm">⚠️ {searchError}</p>
+                <Button 
+                  onClick={() => {
+                    setSearchError(null);
+                    setSearchResults([]);
+                    setHasSearched(false);
+                  }}
+                  variant="outline"
+                  size="sm"
+                  className="mt-1 text-xs"
+                >
+                  Clear Error
+                </Button>
+              </div>
+            </div>
+          </section>
+        )}
 
-              {/* Buy Properties Slide */}
-              <PropertySlideSection
-                title="Properties for Sale"
-                subtitle="Find your dream home to purchase"
-                type="buy"
+        {/* Property Sections with Slides */}
+        <div className="px-6 lg:px-8 space-y-12 py-8">
+          <div className="max-w-[1800px] mx-auto space-y-12">
+            {/* Search Results or Featured Properties */}
+            {hasSearched ? (
+              <PropertyListingsSection
                 language={language}
-                limit={8}
+                searchResults={searchResults}
+                isSearching={isSearching}
+                hasSearched={hasSearched}
+                fallbackResults={[]}
               />
+            ) : (
+              <>
+                {/* Featured Properties Slide */}
+                <PropertySlideSection
+                  title="Featured Properties"
+                  subtitle="Handpicked premium properties for you"
+                  type="featured"
+                  language={language}
+                  limit={12}
+                />
 
-              {/* Rent Properties Slide */}
-              <PropertySlideSection
-                title="Properties for Rent"
-                subtitle="Discover rental properties in prime locations"
-                type="rent"
-                language={language}
-                limit={8}
-              />
+                {/* Buy Properties Slide */}
+                <PropertySlideSection
+                  title="Properties for Sale"
+                  subtitle="Find your dream home to purchase"
+                  type="buy"
+                  language={language}
+                  limit={8}
+                />
 
-              {/* Pre-Launch Properties Slide */}
-              <PropertySlideSection
-                title="Pre-Launch Offers"
-                subtitle="Exclusive early access to upcoming properties"
-                type="pre-launch"
-                language={language}
-                limit={6}
-              />
+                {/* Rent Properties Slide */}
+                <PropertySlideSection
+                  title="Properties for Rent"
+                  subtitle="Discover rental properties in prime locations"
+                  type="rent"
+                  language={language}
+                  limit={8}
+                />
 
-              {/* New Projects Slide */}
-              <PropertySlideSection
-                title="New Projects"
-                subtitle="Latest development projects and opportunities"
-                type="new-projects"
-                language={language}
-                limit={6}
-              />
-            </>
-          )}
+                {/* Pre-Launch Properties Slide */}
+                <PropertySlideSection
+                  title="Pre-Launch Offers"
+                  subtitle="Exclusive early access to upcoming properties"
+                  type="pre-launch"
+                  language={language}
+                  limit={6}
+                />
+
+                {/* New Projects Slide */}
+                <PropertySlideSection
+                  title="New Projects"
+                  subtitle="Latest development projects and opportunities"
+                  type="new-projects"
+                  language={language}
+                  limit={6}
+                />
+
+                {/* Vendor Services Slide */}
+                <PropertySlideSection
+                  title="Vendor Services"
+                  subtitle="Professional real estate services and solutions"
+                  type="vendor-services"
+                  language={language}
+                  limit={6}
+                />
+              </>
+            )}
+          </div>
         </div>
+
+        {/* AI Chat Widget */}
+        <ResponsiveAIChatWidget />
+
+        {/* Footer */}
+        <ProfessionalFooter language={language} />
       </div>
-
-      {/* AI Chat Widget */}
-      <ResponsiveAIChatWidget />
-
-      {/* Footer */}
-      <ProfessionalFooter language={language} />
     </div>
   );
 };
