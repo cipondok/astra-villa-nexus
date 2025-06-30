@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -81,12 +80,13 @@ const AutoScrollCarousel = ({
     }
   }, [currentPropertyId, queryType, ownerId, propertyData, propertyType, location, customProperties]);
 
-  // Auto-scroll functionality
+  // Auto-scroll functionality with looping
   useEffect(() => {
     if (isAutoScrolling && properties.length > itemsPerView) {
       intervalRef.current = setInterval(() => {
         setCurrentIndex(prev => {
           const maxIndex = Math.max(0, properties.length - itemsPerView);
+          // Loop back to 0 when reaching the end
           return prev >= maxIndex ? 0 : prev + 1;
         });
       }, autoScrollInterval);
@@ -170,12 +170,19 @@ const AutoScrollCarousel = ({
   };
 
   const handlePrevious = () => {
-    setCurrentIndex(prev => Math.max(0, prev - 1));
+    setCurrentIndex(prev => {
+      const maxIndex = Math.max(0, properties.length - itemsPerView);
+      // Loop to end when going back from 0
+      return prev <= 0 ? maxIndex : prev - 1;
+    });
   };
 
   const handleNext = () => {
-    const maxIndex = Math.max(0, properties.length - itemsPerView);
-    setCurrentIndex(prev => Math.min(maxIndex, prev + 1));
+    setCurrentIndex(prev => {
+      const maxIndex = Math.max(0, properties.length - itemsPerView);
+      // Loop to 0 when reaching the end
+      return prev >= maxIndex ? 0 : prev + 1;
+    });
   };
 
   const toggleAutoScroll = () => {
@@ -226,8 +233,7 @@ const AutoScrollCarousel = ({
   }
 
   const maxIndex = Math.max(0, properties.length - itemsPerView);
-  const canScrollLeft = currentIndex > 0;
-  const canScrollRight = currentIndex < maxIndex;
+  const showNavigation = properties.length > itemsPerView;
 
   return (
     <Card>
@@ -242,46 +248,48 @@ const AutoScrollCarousel = ({
             
             <div className="flex items-center gap-2">
               {/* Auto-scroll toggle */}
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={toggleAutoScroll}
-                className="flex items-center gap-1"
-              >
-                {isAutoScrolling ? (
-                  <>
-                    <Pause className="h-3 w-3" />
-                    <span className="hidden sm:inline">Auto</span>
-                  </>
-                ) : (
-                  <>
-                    <Play className="h-3 w-3" />
-                    <span className="hidden sm:inline">Play</span>
-                  </>
-                )}
-              </Button>
+              {showNavigation && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={toggleAutoScroll}
+                  className="flex items-center gap-1"
+                >
+                  {isAutoScrolling ? (
+                    <>
+                      <Pause className="h-3 w-3" />
+                      <span className="hidden sm:inline">Auto</span>
+                    </>
+                  ) : (
+                    <>
+                      <Play className="h-3 w-3" />
+                      <span className="hidden sm:inline">Play</span>
+                    </>
+                  )}
+                </Button>
+              )}
 
-              {/* Navigation buttons */}
-              <div className="flex gap-1">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handlePrevious}
-                  disabled={!canScrollLeft}
-                  className="h-8 w-8 p-0"
-                >
-                  <ChevronLeft className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handleNext}
-                  disabled={!canScrollRight}
-                  className="h-8 w-8 p-0"
-                >
-                  <ChevronRight className="h-4 w-4" />
-                </Button>
-              </div>
+              {/* Navigation buttons - always show if more than itemsPerView */}
+              {showNavigation && (
+                <div className="flex gap-1">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handlePrevious}
+                    className="h-8 w-8 p-0"
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleNext}
+                    className="h-8 w-8 p-0"
+                  >
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
+                </div>
+              )}
             </div>
           </div>
         </CardHeader>
@@ -316,47 +324,14 @@ const AutoScrollCarousel = ({
           </div>
         </div>
 
-        {/* Navigation Controls - only show if not hideTitle */}
-        {!hideTitle && (
-          <>
-            {/* Pagination dots */}
-            {properties.length > itemsPerView && (
-              <div className="flex justify-center gap-2 mt-4">
-                {[...Array(maxIndex + 1)].map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setCurrentIndex(index)}
-                    className={`w-2 h-2 rounded-full transition-colors ${
-                      index === currentIndex ? 'bg-blue-600' : 'bg-gray-300'
-                    }`}
-                  />
-                ))}
-              </div>
-            )}
-
-            {/* Auto-scroll progress bar */}
-            {isAutoScrolling && properties.length > itemsPerView && (
-              <div className="mt-2 w-full bg-gray-200 rounded-full h-1">
-                <div 
-                  className="bg-blue-600 h-1 rounded-full transition-all duration-100"
-                  style={{
-                    width: `${((Date.now() % autoScrollInterval) / autoScrollInterval) * 100}%`
-                  }}
-                />
-              </div>
-            )}
-          </>
-        )}
-
         {/* Show navigation controls on main page even when hideTitle is true */}
-        {hideTitle && properties.length > itemsPerView && (
+        {hideTitle && showNavigation && (
           <div className="flex items-center justify-between mt-4">
             <div className="flex gap-1">
               <Button
                 variant="outline"
                 size="sm"
                 onClick={handlePrevious}
-                disabled={!canScrollLeft}
                 className="h-8 w-8 p-0"
               >
                 <ChevronLeft className="h-4 w-4" />
@@ -365,7 +340,6 @@ const AutoScrollCarousel = ({
                 variant="outline"
                 size="sm"
                 onClick={handleNext}
-                disabled={!canScrollRight}
                 className="h-8 w-8 p-0"
               >
                 <ChevronRight className="h-4 w-4" />
@@ -404,6 +378,36 @@ const AutoScrollCarousel = ({
               ))}
             </div>
           </div>
+        )}
+
+        {/* Navigation Controls for regular carousel */}
+        {!hideTitle && showNavigation && (
+          <>
+            {/* Pagination dots */}
+            <div className="flex justify-center gap-2 mt-4">
+              {[...Array(maxIndex + 1)].map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentIndex(index)}
+                  className={`w-2 h-2 rounded-full transition-colors ${
+                    index === currentIndex ? 'bg-blue-600' : 'bg-gray-300'
+                  }`}
+                />
+              ))}
+            </div>
+
+            {/* Auto-scroll progress bar */}
+            {isAutoScrolling && (
+              <div className="mt-2 w-full bg-gray-200 rounded-full h-1">
+                <div 
+                  className="bg-blue-600 h-1 rounded-full transition-all duration-100"
+                  style={{
+                    width: `${((Date.now() % autoScrollInterval) / autoScrollInterval) * 100}%`
+                  }}
+                />
+              </div>
+            )}
+          </>
         )}
       </CardContent>
     </Card>
