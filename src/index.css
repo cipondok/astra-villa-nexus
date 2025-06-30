@@ -108,13 +108,13 @@
   .compact .text-4xl { font-size: 1.5rem; }
   .compact .text-5xl { font-size: 1.75rem; }
 
-  /* Apple Background System */
+  /* Apple Background System - FIXED */
   body:not(.dark) {
-    background: rgb(255, 255, 255);
+    background: rgb(255, 255, 255) !important;
   }
 
   body.dark {
-    background: hsl(var(--background));
+    background: rgb(0, 0, 0) !important;
   }
 }
 
@@ -237,14 +237,14 @@
     transform: scale(0.98);
   }
 
-  /* Search Panel - Clean White Background */
+  /* Search Panel - Responsive Background */
   .search-panel {
-    background: rgb(255, 255, 255);
+    background: hsl(var(--card));
     border: 1px solid hsl(var(--border));
   }
 
   .search-panel-input {
-    background: rgb(255, 255, 255);
+    background: hsl(var(--input));
     border: 1px solid hsl(var(--border));
     color: hsl(var(--foreground));
   }
