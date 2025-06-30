@@ -92,13 +92,36 @@ const EnhancedPropertyCard = ({
     }
   };
 
-  const handleLikeToggle = () => {
+  const handleLikeToggle = (e: React.MouseEvent) => {
+    e.stopPropagation();
     if (onSave) {
       onSave(property.id);
     }
   };
 
-  const handleImageNavigation = (direction: 'prev' | 'next') => {
+  const handleShare = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (onShare) {
+      onShare(property.id);
+    }
+  };
+
+  const handleViewProperty = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (onView) {
+      onView(property.id);
+    }
+  };
+
+  const handleView3D = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (onView3D) {
+      onView3D(property);
+    }
+  };
+
+  const handleImageNavigation = (direction: 'prev' | 'next', e: React.MouseEvent) => {
+    e.stopPropagation();
     if (!property.image_urls?.length) return;
     
     if (direction === 'next') {
@@ -113,7 +136,7 @@ const EnhancedPropertyCard = ({
   };
 
   return (
-    <Card className="group hover:shadow-xl transition-all duration-300 overflow-hidden">
+    <Card className="group hover:shadow-xl transition-all duration-300 overflow-hidden cursor-pointer" onClick={handleViewProperty}>
       {/* Image Section */}
       <div className="relative aspect-[4/3] overflow-hidden">
         <img
@@ -127,14 +150,14 @@ const EnhancedPropertyCard = ({
           <>
             {/* Arrow buttons */}
             <button
-              onClick={() => handleImageNavigation('prev')}
-              className="absolute left-2 top-1/2 -translate-y-1/2 bg-background/80 p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-10"
+              onClick={(e) => handleImageNavigation('prev', e)}
+              className="absolute left-2 top-1/2 -translate-y-1/2 bg-background/80 p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-10 hover:bg-background"
             >
               ←
             </button>
             <button
-              onClick={() => handleImageNavigation('next')}
-              className="absolute right-2 top-1/2 -translate-y-1/2 bg-background/80 p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-10"
+              onClick={(e) => handleImageNavigation('next', e)}
+              className="absolute right-2 top-1/2 -translate-y-1/2 bg-background/80 p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-10 hover:bg-background"
             >
               →
             </button>
@@ -174,22 +197,19 @@ const EnhancedPropertyCard = ({
           <Button
             size="sm"
             variant={isSaved ? "default" : "ghost"}
-            className={isSaved ? "ring-2 ring-green-400" : ""}
+            className={`bg-white/90 hover:bg-white ${isSaved ? "ring-2 ring-green-400" : ""}`}
             onClick={handleLikeToggle}
             aria-label={isSaved ? "Remove from favorites" : "Save property"}
           >
-            <Heart className={`h-4 w-4 ${isSaved ? 'fill-red-500 text-red-500' : ''}`} />
+            <Heart className={`h-4 w-4 ${isSaved ? 'fill-red-500 text-red-500' : 'text-gray-600'}`} />
           </Button>
           {/* Direct 3D View button - only if available */}
           {(property.three_d_model_url || property.virtual_tour_url) && (
             <Button
               size="sm"
               variant="ghost"
-              className="rounded-full bg-white/90 hover:bg-white text-blue-500 transition-all duration-300"
-              onClick={(e) => {
-                e.stopPropagation();
-                onView3D?.(property);
-              }}
+              className="bg-white/90 hover:bg-white text-blue-500 transition-all duration-300"
+              onClick={handleView3D}
               aria-label="Open 3D View"
             >
               <ViewIcon className="h-4 w-4" />
@@ -199,7 +219,8 @@ const EnhancedPropertyCard = ({
           <Button
             size="sm"
             variant="ghost"
-            onClick={() => onShare?.(property.id)}
+            className="bg-white/90 hover:bg-white text-gray-600"
+            onClick={handleShare}
             aria-label="Share property"
           >
             <Share2 className="h-4 w-4" />
@@ -272,17 +293,17 @@ const EnhancedPropertyCard = ({
             className="flex-1"
             variant="default"
             size="lg"
-            onClick={() => onView?.(property.id)}
+            onClick={handleViewProperty}
           >
             <Eye className="h-4 w-4 mr-2" />
             {currentText.view}
           </Button>
           {(property.three_d_model_url || property.virtual_tour_url) && (
             <Button 
-               variant="default"
+               variant="outline"
                size="lg"
                className="flex-1"
-               onClick={() => onView3D?.(property)}
+               onClick={handleView3D}
              >
                <ViewIcon className="h-4 w-4 mr-2" />
                {currentText.view3D}
