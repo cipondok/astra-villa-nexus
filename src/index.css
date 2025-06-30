@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -32,18 +31,18 @@
     --ring: 217 91 60;                          /* Blue focus ring */
     --radius: 12px;
     
-    /* Light Mode Glass Colors - Distinct for each section */
-    --glass-light-nav: rgba(255, 255, 255, 0.95);          /* Almost opaque white for header */
-    --glass-light-search: rgba(248, 250, 252, 0.85);       /* Slate-50 for search panel */
-    --glass-light-content: rgba(255, 255, 255, 0.75);      /* Pure white for content */
-    --glass-light-footer: rgba(241, 245, 249, 0.90);       /* Slate-100 for footer */
+    /* Light Mode Glass Colors - Sky Blue Transparent for all sections */
+    --glass-light-nav: rgba(135, 206, 235, 0.7);           /* Sky blue 70% transparent for header */
+    --glass-light-search: rgba(135, 206, 235, 0.7);        /* Sky blue 70% transparent for search */
+    --glass-light-content: rgba(135, 206, 235, 0.7);       /* Sky blue 70% transparent for content */
+    --glass-light-footer: rgba(135, 206, 235, 0.7);        /* Sky blue 70% transparent for footer */
     
-    --glass-light-border-nav: rgba(59, 130, 246, 0.15);
-    --glass-light-border-search: rgba(16, 185, 129, 0.20);
-    --glass-light-border-content: rgba(59, 130, 246, 0.10);
-    --glass-light-border-footer: rgba(100, 116, 139, 0.25);
+    --glass-light-border-nav: rgba(59, 130, 246, 0.3);
+    --glass-light-border-search: rgba(59, 130, 246, 0.3);
+    --glass-light-border-content: rgba(59, 130, 246, 0.3);
+    --glass-light-border-footer: rgba(59, 130, 246, 0.3);
     
-    --glass-light-shadow: rgba(59, 130, 246, 0.08);
+    --glass-light-shadow: rgba(59, 130, 246, 0.15);
   }
 
   .dark {
