@@ -5,7 +5,6 @@ import Navigation from "@/components/Navigation";
 import EnhancedModernSearchPanel from "@/components/EnhancedModernSearchPanel";
 import PropertyListingsSection from "@/components/PropertyListingsSection";
 import ProfessionalFooter from "@/components/ProfessionalFooter";
-import PropertySlideshow from "@/components/PropertySlideshow";
 import { useLanguage } from "@/contexts/LanguageContext";
 import ResponsiveAIChatWidget from "@/components/ai/ResponsiveAIChatWidget";
 import { supabase } from "@/integrations/supabase/client";
@@ -137,7 +136,7 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Navigation />
       
-      {/* Hero Section with Apple Styling */}
+      {/* Hero Section */}
       <section className="relative py-20 px-4 bg-gradient-to-b from-background to-secondary/20">
         <div className="container mx-auto text-center">
           <div className="mb-12 animate-fade-in">
@@ -148,7 +147,7 @@ const Index = () => {
               </span>
             </h1>
             <p className="apple-subtitle max-w-2xl mx-auto">
-              Discover amazing properties with our advanced AI search platform
+              Discover premium properties with advanced AI search technology
             </p>
           </div>
           
@@ -162,7 +161,7 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Quick Action Buttons with Apple Styling */}
+      {/* Quick Actions */}
       <section className="py-12 bg-secondary/10">
         <div className="container mx-auto px-4">
           <div className="flex flex-wrap justify-center gap-4">
@@ -194,27 +193,11 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Featured Properties Section */}
-      <section className="py-16 bg-background">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12 animate-fade-in">
-            <h2 className="text-2xl font-semibold text-foreground mb-4 apple-text-gradient">
-              Featured Properties
-            </h2>
-            <p className="apple-subtitle">
-              Discover our handpicked selection of premium properties
-            </p>
-          </div>
-          <PropertySlideshow />
-        </div>
-      </section>
-
-      {/* Error Message with Apple Styling */}
+      {/* Error Message */}
       {searchError && (
         <section className="py-6">
           <div className="container mx-auto px-4">
             <div className="apple-glass border border-destructive/40 text-destructive text-center p-6 rounded-2xl max-w-2xl mx-auto">
-              <i className="fas fa-exclamation-triangle text-xl mb-3"></i>
               <p className="font-medium">⚠️ {searchError}</p>
             </div>
           </div>
