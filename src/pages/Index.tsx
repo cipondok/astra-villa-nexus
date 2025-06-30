@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Navigation from "@/components/Navigation";
@@ -16,15 +17,16 @@ const Index = () => {
   const [hasSearched, setHasSearched] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
 
-  // Optimized featured properties query
+  // Optimized featured properties query with shorter timeout
   const { data: featuredProperties = [], isLoading: isFeaturedLoading } = useQuery({
     queryKey: ['featured-properties-fast'],
     queryFn: async () => {
       console.log('Fetching featured properties...');
       
       try {
+        // Reduced timeout to 2 seconds for faster failure
         const timeoutPromise = new Promise<never>((_, reject) => {
-          setTimeout(() => reject(new Error('Query timeout')), 3000);
+          setTimeout(() => reject(new Error('Featured properties timeout')), 2000);
         });
 
         const queryPromise = supabase
@@ -32,7 +34,7 @@ const Index = () => {
           .select('id, title, property_type, listing_type, price, location, bedrooms, bathrooms, area_sqm, images, thumbnail_url, state, city, development_status')
           .eq('status', 'active')
           .order('created_at', { ascending: false })
-          .limit(12);
+          .limit(8); // Reduced limit for faster loading
 
         const { data, error } = await Promise.race([queryPromise, timeoutPromise]);
 
@@ -50,10 +52,10 @@ const Index = () => {
       }
     },
     retry: 1,
-    retryDelay: 1000,
+    retryDelay: 500,
     refetchOnWindowFocus: false,
-    staleTime: 60000,
-    gcTime: 300000,
+    staleTime: 30000, // Consider data fresh for 30 seconds
+    gcTime: 60000, // Keep in cache for 1 minute
   });
 
   const handleSearch = async (searchData: any) => {
@@ -64,18 +66,21 @@ const Index = () => {
     setSearchError(null);
     
     try {
+      // Reduced timeout to 3 seconds for better UX
       const timeoutPromise = new Promise<never>((_, reject) => {
-        setTimeout(() => reject(new Error('Search timeout')), 5000);
+        setTimeout(() => reject(new Error('Search timeout')), 3000);
       });
 
+      // Simplified query for better performance
       let query = supabase
         .from('properties')
         .select('id, title, property_type, listing_type, price, location, bedrooms, bathrooms, area_sqm, images, thumbnail_url, state, city')
         .eq('status', 'active');
 
+      // Only add filters if they have values to reduce query complexity
       if (searchData.query && searchData.query.trim()) {
         const searchTerm = searchData.query.toLowerCase().trim();
-        query = query.or(`title.ilike.%${searchTerm}%,location.ilike.%${searchTerm}%`);
+        query = query.or(`title.ilike.%${searchTerm}%,location.ilike.%${searchTerm}%,city.ilike.%${searchTerm}%,state.ilike.%${searchTerm}%`);
       }
 
       if (searchData.state) {
@@ -94,8 +99,9 @@ const Index = () => {
         query = query.eq('listing_type', searchData.listingType);
       }
 
+      // Limit results and add ordering for better performance
       const queryWithTimeout = Promise.race([
-        query.order('created_at', { ascending: false }).limit(24),
+        query.order('created_at', { ascending: false }).limit(20),
         timeoutPromise
       ]);
 
@@ -112,7 +118,11 @@ const Index = () => {
       }
     } catch (error) {
       console.error('Search error:', error);
-      setSearchError('Search timeout. Please try again.');
+      if (error instanceof Error && error.message.includes('timeout')) {
+        setSearchError('Search is taking too long. Please try with more specific filters.');
+      } else {
+        setSearchError('Search failed. Please check your connection and try again.');
+      }
       setSearchResults([]);
     } finally {
       setIsSearching(false);
@@ -212,6 +222,18 @@ const Index = () => {
           <div className="max-w-[1800px] mx-auto px-6 lg:px-8">
             <div className="apple-glass border border-destructive/40 text-destructive text-center p-3 rounded-xl max-w-xl mx-auto shadow-md">
               <p className="font-medium text-xs lg:text-sm">⚠️ {searchError}</p>
+              <Button 
+                onClick={() => {
+                  setSearchError(null);
+                  setSearchResults([]);
+                  setHasSearched(false);
+                }}
+                variant="outline"
+                size="sm"
+                className="mt-2 text-xs"
+              >
+                Clear Error
+              </Button>
             </div>
           </div>
         </section>
