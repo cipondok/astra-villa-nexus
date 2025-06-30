@@ -136,16 +136,16 @@ const AdvancedAdminDashboard = () => {
               <Users className="h-3 w-3 text-blue-800 dark:text-blue-400" />
             </div>
             <div className="text-gray-900 dark:text-gray-100 text-lg font-bold">12,547</div>
-            <div className="text-green-800 dark:text-green-400 text-[10px] font-medium">+18.5%</div>
+            <div className="text-blue-800 dark:text-blue-400 text-[10px] font-medium">+18.5%</div>
           </div>
           
           <div className="bg-white dark:bg-gray-800 rounded-xl p-3 border border-gray-300 dark:border-gray-700 shadow-sm">
             <div className="flex items-center justify-between mb-1">
-              <div className="text-green-800 dark:text-green-400 text-xs font-semibold">Active Users</div>
-              <Activity className="h-3 w-3 text-green-800 dark:text-green-400" />
+              <div className="text-purple-800 dark:text-purple-400 text-xs font-semibold">Active Users</div>
+              <Activity className="h-3 w-3 text-purple-800 dark:text-purple-400" />
             </div>
             <div className="text-gray-900 dark:text-gray-100 text-lg font-bold">8,234</div>
-            <div className="text-green-800 dark:text-green-400 text-[10px] font-medium">Online</div>
+            <div className="text-purple-800 dark:text-purple-400 text-[10px] font-medium">Online</div>
           </div>
 
           <div className="bg-white dark:bg-gray-800 rounded-xl p-3 border border-gray-300 dark:border-gray-700 shadow-sm">
@@ -154,7 +154,7 @@ const AdvancedAdminDashboard = () => {
               <Shield className="h-3 w-3 text-orange-800 dark:text-orange-400" />
             </div>
             <div className="text-gray-900 dark:text-gray-100 text-lg font-bold">0</div>
-            <div className="text-green-800 dark:text-green-400 text-[10px] font-medium">All good</div>
+            <div className="text-blue-800 dark:text-blue-400 text-[10px] font-medium">All good</div>
           </div>
 
           <div className="bg-white dark:bg-gray-800 rounded-xl p-3 border border-gray-300 dark:border-gray-700 shadow-sm">
@@ -163,7 +163,7 @@ const AdvancedAdminDashboard = () => {
               <TrendingUp className="h-3 w-3 text-blue-800 dark:text-blue-400" />
             </div>
             <div className="text-gray-900 dark:text-gray-100 text-lg font-bold">$45,789</div>
-            <div className="text-green-800 dark:text-green-400 text-[10px] font-medium">+12.3%</div>
+            <div className="text-blue-800 dark:text-blue-400 text-[10px] font-medium">+12.3%</div>
           </div>
 
           <div className="bg-white dark:bg-gray-800 rounded-xl p-3 border border-gray-300 dark:border-gray-700 shadow-sm">
@@ -172,7 +172,7 @@ const AdvancedAdminDashboard = () => {
               <Zap className="h-3 w-3 text-purple-800 dark:text-purple-400" />
             </div>
             <div className="text-gray-900 dark:text-gray-100 text-lg font-bold">98.5%</div>
-            <div className="text-green-800 dark:text-green-400 text-[10px] font-medium">Excellent</div>
+            <div className="text-blue-800 dark:text-blue-400 text-[10px] font-medium">Excellent</div>
           </div>
 
           <div className="bg-white dark:bg-gray-800 rounded-xl p-3 border border-gray-300 dark:border-gray-700 shadow-sm">
@@ -181,7 +181,7 @@ const AdvancedAdminDashboard = () => {
               <Activity className="h-3 w-3 text-amber-800 dark:text-yellow-400" />
             </div>
             <div className="text-gray-900 dark:text-gray-100 text-sm font-bold">Online</div>
-            <div className="inline-block w-2 h-2 bg-green-600 dark:bg-green-400 rounded-full animate-pulse"></div>
+            <div className="inline-block w-2 h-2 bg-blue-600 dark:bg-blue-400 rounded-full animate-pulse"></div>
           </div>
         </div>
         
