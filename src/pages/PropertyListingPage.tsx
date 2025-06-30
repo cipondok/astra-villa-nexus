@@ -4,7 +4,6 @@ import Navigation from '@/components/Navigation';
 import ProfessionalFooter from '@/components/ProfessionalFooter';
 import PropertyListingsSection from '@/components/PropertyListingsSection';
 import { supabase } from '@/integrations/supabase/client';
-import LoadingPopup from '@/components/LoadingPopup';
 
 interface PropertyListingPageProps {
   pageType: 'buy' | 'rent' | 'new-projects' | 'pre-launching';
@@ -24,12 +23,14 @@ const mockPreLaunchingProperties = [
     bedrooms: 2,
     bathrooms: 2,
     area_sqm: 95,
-    status: 'approved',
+    status: 'active',
     development_status: 'pre_launching',
-    image_urls: ['https://images.unsplash.com/photo-1531297484001-80022131f5a1?q=80&w=2020&auto=format&fit=crop'],
-    three_d_model_url: 'https://example.com/model.glb',
-    virtual_tour_url: 'https://example.com/tour',
+    images: ['https://images.unsplash.com/photo-1531297484001-80022131f5a1?q=80&w=2020&auto=format&fit=crop'],
+    thumbnail_url: 'https://images.unsplash.com/photo-1531297484001-80022131f5a1?q=80&w=2020&auto=format&fit=crop',
     created_at: new Date().toISOString(),
+    state: 'Jakarta',
+    city: 'Central Jakarta',
+    area: 'CBD'
   },
   {
     id: 'mock-pre-2',
@@ -42,11 +43,14 @@ const mockPreLaunchingProperties = [
     bedrooms: 4,
     bathrooms: 4,
     area_sqm: 320,
-    status: 'approved',
+    status: 'active',
     development_status: 'pre_launching',
-    image_urls: ['https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?q=80&w=2070&auto=format&fit=crop'],
-    three_d_model_url: 'https://example.com/model2.glb',
+    images: ['https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?q=80&w=2070&auto=format&fit=crop'],
+    thumbnail_url: 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?q=80&w=2070&auto=format&fit=crop',
     created_at: new Date().toISOString(),
+    state: 'West Java',
+    city: 'Bogor',
+    area: 'Greenville'
   },
 ];
 
@@ -62,11 +66,14 @@ const mockNewProjectProperties = [
     bedrooms: 3,
     bathrooms: 2,
     area_sqm: 120,
-    status: 'approved',
+    status: 'active',
     development_status: 'new_project',
-    image_urls: ['https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7?q=80&w=2070&auto=format&fit=crop'],
-    virtual_tour_url: 'https://example.com/tour-new',
+    images: ['https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7?q=80&w=2070&auto=format&fit=crop'],
+    thumbnail_url: 'https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7?q=80&w=2070&auto=format&fit=crop',
     created_at: new Date().toISOString(),
+    state: 'Jakarta',
+    city: 'Central Jakarta',
+    area: 'Downtown'
   },
   {
     id: 'mock-new-2',
@@ -79,12 +86,14 @@ const mockNewProjectProperties = [
     bedrooms: 3,
     bathrooms: 3,
     area_sqm: 180,
-    status: 'approved',
+    status: 'active',
     development_status: 'new_project',
-    image_urls: ['https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?q=80&w=2070&auto=format&fit=crop'],
-    three_d_model_url: 'https://example.com/model3.glb',
-    virtual_tour_url: 'https://example.com/tour-new2',
+    images: ['https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?q=80&w=2070&auto=format&fit=crop'],
+    thumbnail_url: 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?q=80&w=2070&auto=format&fit=crop',
     created_at: new Date().toISOString(),
+    state: 'Banten',
+    city: 'Tangerang',
+    area: 'BSD City'
   },
 ];
 
@@ -96,41 +105,72 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
   useEffect(() => {
     const fetchProperties = async () => {
       setIsLoading(true);
-      let query = supabase
-        .from('properties')
-        .select('*')
-        .eq('status', 'approved');
+      console.log(`Fetching ${pageType} properties...`);
+      
+      try {
+        let query = supabase
+          .from('properties')
+          .select('*')
+          .eq('status', 'active');
 
-      if (pageType === 'buy') {
-        query = query.eq('listing_type', 'sale').eq('development_status', 'completed');
-      } else if (pageType === 'rent') {
-        query = query.eq('listing_type', 'rent').eq('development_status', 'completed');
-      } else if (pageType === 'new-projects') {
-        query = query.eq('development_status', 'new_project');
-      } else if (pageType === 'pre-launching') {
-        query = query.eq('development_status', 'pre_launching');
-      }
+        if (pageType === 'buy') {
+          query = query.eq('listing_type', 'sale').eq('development_status', 'completed');
+        } else if (pageType === 'rent') {
+          query = query.eq('listing_type', 'rent').eq('development_status', 'completed');
+        } else if (pageType === 'new-projects') {
+          query = query.eq('development_status', 'new_project');
+        } else if (pageType === 'pre-launching') {
+          query = query.eq('development_status', 'pre_launching');
+        }
 
-      const { data, error } = await query.order('created_at', { ascending: false });
+        // Add timeout to prevent infinite loading
+        const timeoutPromise = new Promise<never>((_, reject) => {
+          setTimeout(() => reject(new Error('Request timeout')), 5000);
+        });
 
-      if (error) {
-        console.error(`Error fetching ${pageType} properties:`, error);
-        setProperties([]);
-      } else {
-        if (data && data.length > 0) {
-          setProperties(data);
-        } else {
-          // If no properties from DB, show mock data for specific pages
+        const { data, error } = await Promise.race([
+          query.order('created_at', { ascending: false }).limit(20),
+          timeoutPromise
+        ]);
+
+        if (error) {
+          console.error(`Error fetching ${pageType} properties:`, error);
+          // Use mock data on error
           if (pageType === 'pre-launching') {
             setProperties(mockPreLaunchingProperties);
           } else if (pageType === 'new-projects') {
             setProperties(mockNewProjectProperties);
           } else {
-            setProperties(data || []);
+            setProperties([]);
+          }
+        } else {
+          console.log(`Found ${data?.length || 0} ${pageType} properties`);
+          if (data && data.length > 0) {
+            setProperties(data);
+          } else {
+            // Use mock data if no real data found
+            if (pageType === 'pre-launching') {
+              setProperties(mockPreLaunchingProperties);
+            } else if (pageType === 'new-projects') {
+              setProperties(mockNewProjectProperties);
+            } else {
+              setProperties([]);
+            }
           }
         }
+      } catch (error) {
+        console.error(`Error in fetchProperties for ${pageType}:`, error);
+        // Use mock data on any error
+        if (pageType === 'pre-launching') {
+          setProperties(mockPreLaunchingProperties);
+        } else if (pageType === 'new-projects') {
+          setProperties(mockNewProjectProperties);
+        } else {
+          setProperties([]);
+        }
+      } finally {
+        setIsLoading(false);
       }
-      setIsLoading(false);
     };
 
     fetchProperties();
@@ -144,11 +184,12 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
         <p className="text-muted-foreground mb-4">{subtitle}</p>
         <div className="mt-6">
           {isLoading ? (
-             <LoadingPopup 
-                isOpen={isLoading} 
-                message={language === "en" ? "Fetching properties..." : "Mengambil properti..."}
-                language={language}
-            />
+            <div className="flex items-center justify-center py-12">
+              <div className="text-center">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                <p className="text-gray-600">Loading {pageType} properties...</p>
+              </div>
+            </div>
           ) : (
             <PropertyListingsSection
               language={language}
