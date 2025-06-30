@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -21,7 +22,7 @@
     --apple-text-secondary: #3C3C43;
     --apple-white: #FFFFFF;
     
-    /* Theme Variables - Light Mode */
+    /* Theme Variables - Light Mode - Clean Apple Colors */
     --background: 255 255 255;
     --foreground: 0 0 0;
     --card: 255 255 255;
@@ -30,16 +31,16 @@
     --popover-foreground: 0 0 0;
     --primary: 0 122 255;
     --primary-foreground: 255 255 255;
-    --secondary: 242 242 247;
+    --secondary: 248 249 250;
     --secondary-foreground: 60 60 67;
-    --muted: 242 242 247;
+    --muted: 248 249 250;
     --muted-foreground: 142 142 147;
     --accent: 0 122 255;
     --accent-foreground: 255 255 255;
     --destructive: 255 59 48;
     --destructive-foreground: 255 255 255;
     --border: 229 229 234;
-    --input: 242 242 247;
+    --input: 248 249 250;
     --ring: 0 122 255;
     --radius: 12px;
   }
@@ -236,7 +237,7 @@
     transform: scale(0.98);
   }
 
-  /* Search Panel - Remove all yellow colors */
+  /* Search Panel - Clean Apple Colors */
   .search-panel {
     background: hsl(var(--card));
     border: 1px solid hsl(var(--border));
