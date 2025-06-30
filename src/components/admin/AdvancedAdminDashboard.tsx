@@ -13,6 +13,7 @@ import AnalyticsDashboard from './AnalyticsDashboard';
 import LoadingPageCustomization from './LoadingPageCustomization';
 import SimpleThemeToggle from '@/components/SimpleThemeToggle';
 import APIConfiguration from './APIConfiguration';
+import EnhancedNavigation from '@/components/navigation/EnhancedNavigation';
 
 const AdvancedAdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('analytics');
@@ -119,59 +120,65 @@ const AdvancedAdminDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-all duration-300">
-      <div className="container mx-auto px-4 py-4 space-y-4">
+      {/* Add Navigation from Home Page */}
+      <EnhancedNavigation 
+        language="en" 
+        onLanguageToggle={() => {}} 
+      />
+      
+      <div className="container mx-auto px-4 py-4 space-y-4 mt-20">
         
-        {/* Compact Stats Overview with Better Light Mode Colors */}
+        {/* Improved Stats Overview with Better Light Mode Colors */}
         <div className="grid grid-cols-3 lg:grid-cols-6 gap-3">
           <div className="bg-white dark:bg-gray-800 rounded-xl p-3 border border-gray-300 dark:border-gray-700 shadow-sm">
             <div className="flex items-center justify-between mb-1">
-              <div className="text-blue-700 dark:text-blue-400 text-xs font-semibold">Total Users</div>
-              <Users className="h-3 w-3 text-blue-700 dark:text-blue-400" />
+              <div className="text-blue-800 dark:text-blue-400 text-xs font-semibold">Total Users</div>
+              <Users className="h-3 w-3 text-blue-800 dark:text-blue-400" />
             </div>
             <div className="text-gray-900 dark:text-gray-100 text-lg font-bold">12,547</div>
-            <div className="text-green-700 dark:text-green-400 text-[10px] font-medium">+18.5%</div>
+            <div className="text-green-800 dark:text-green-400 text-[10px] font-medium">+18.5%</div>
           </div>
           
           <div className="bg-white dark:bg-gray-800 rounded-xl p-3 border border-gray-300 dark:border-gray-700 shadow-sm">
             <div className="flex items-center justify-between mb-1">
-              <div className="text-green-700 dark:text-green-400 text-xs font-semibold">Active Users</div>
-              <Activity className="h-3 w-3 text-green-700 dark:text-green-400" />
+              <div className="text-green-800 dark:text-green-400 text-xs font-semibold">Active Users</div>
+              <Activity className="h-3 w-3 text-green-800 dark:text-green-400" />
             </div>
             <div className="text-gray-900 dark:text-gray-100 text-lg font-bold">8,234</div>
-            <div className="text-green-700 dark:text-green-400 text-[10px] font-medium">Online</div>
+            <div className="text-green-800 dark:text-green-400 text-[10px] font-medium">Online</div>
           </div>
 
           <div className="bg-white dark:bg-gray-800 rounded-xl p-3 border border-gray-300 dark:border-gray-700 shadow-sm">
             <div className="flex items-center justify-between mb-1">
-              <div className="text-orange-700 dark:text-orange-400 text-xs font-semibold">Errors</div>
-              <Shield className="h-3 w-3 text-orange-700 dark:text-orange-400" />
+              <div className="text-orange-800 dark:text-orange-400 text-xs font-semibold">Errors</div>
+              <Shield className="h-3 w-3 text-orange-800 dark:text-orange-400" />
             </div>
             <div className="text-gray-900 dark:text-gray-100 text-lg font-bold">0</div>
-            <div className="text-green-700 dark:text-green-400 text-[10px] font-medium">All good</div>
+            <div className="text-green-800 dark:text-green-400 text-[10px] font-medium">All good</div>
           </div>
 
           <div className="bg-white dark:bg-gray-800 rounded-xl p-3 border border-gray-300 dark:border-gray-700 shadow-sm">
             <div className="flex items-center justify-between mb-1">
-              <div className="text-blue-700 dark:text-blue-400 text-xs font-semibold">Transfers</div>
-              <TrendingUp className="h-3 w-3 text-blue-700 dark:text-blue-400" />
+              <div className="text-blue-800 dark:text-blue-400 text-xs font-semibold">Transfers</div>
+              <TrendingUp className="h-3 w-3 text-blue-800 dark:text-blue-400" />
             </div>
             <div className="text-gray-900 dark:text-gray-100 text-lg font-bold">$45,789</div>
-            <div className="text-green-700 dark:text-green-400 text-[10px] font-medium">+12.3%</div>
+            <div className="text-green-800 dark:text-green-400 text-[10px] font-medium">+12.3%</div>
           </div>
 
           <div className="bg-white dark:bg-gray-800 rounded-xl p-3 border border-gray-300 dark:border-gray-700 shadow-sm">
             <div className="flex items-center justify-between mb-1">
-              <div className="text-purple-700 dark:text-purple-400 text-xs font-semibold">Health</div>
-              <Zap className="h-3 w-3 text-purple-700 dark:text-purple-400" />
+              <div className="text-purple-800 dark:text-purple-400 text-xs font-semibold">Health</div>
+              <Zap className="h-3 w-3 text-purple-800 dark:text-purple-400" />
             </div>
             <div className="text-gray-900 dark:text-gray-100 text-lg font-bold">98.5%</div>
-            <div className="text-green-700 dark:text-green-400 text-[10px] font-medium">Excellent</div>
+            <div className="text-green-800 dark:text-green-400 text-[10px] font-medium">Excellent</div>
           </div>
 
           <div className="bg-white dark:bg-gray-800 rounded-xl p-3 border border-gray-300 dark:border-gray-700 shadow-sm">
             <div className="flex items-center justify-between mb-1">
-              <div className="text-amber-700 dark:text-yellow-400 text-xs font-semibold">AI Status</div>
-              <Activity className="h-3 w-3 text-amber-700 dark:text-yellow-400" />
+              <div className="text-amber-800 dark:text-yellow-400 text-xs font-semibold">AI Status</div>
+              <Activity className="h-3 w-3 text-amber-800 dark:text-yellow-400" />
             </div>
             <div className="text-gray-900 dark:text-gray-100 text-sm font-bold">Online</div>
             <div className="inline-block w-2 h-2 bg-green-600 dark:bg-green-400 rounded-full animate-pulse"></div>
