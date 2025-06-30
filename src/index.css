@@ -236,16 +236,20 @@
     box-shadow: 0 4px 16px hsl(var(--foreground) / 0.08);
   }
 
-  /* Search Panel - Responsive Background */
+  /* Search Panel - Light Blue Background with 60% Transparency */
   .search-panel {
-    background: hsl(var(--card));
-    border: 1px solid hsl(var(--border));
+    background: rgba(173, 216, 230, 0.6);
+    border: 1px solid rgba(173, 216, 230, 0.8);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
   }
 
   .search-panel-input {
-    background: hsl(var(--input));
-    border: 1px solid hsl(var(--border));
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(173, 216, 230, 0.6);
     color: hsl(var(--foreground));
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
   }
 
   .search-panel-input:focus {
@@ -254,9 +258,11 @@
   }
 
   .trending-tag {
-    background: hsl(var(--secondary));
+    background: rgba(255, 255, 255, 0.8);
     color: hsl(var(--secondary-foreground));
-    border: 1px solid hsl(var(--border));
+    border: 1px solid rgba(173, 216, 230, 0.6);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
   }
 
   .trending-tag:hover {
@@ -279,9 +285,15 @@
     box-shadow: 0 4px 12px rgba(255, 153, 0, 0.1);
   }
 
-  /* Navigation Styles */
+  /* Navigation Styles - Light Blue Background with 60% Transparency */
   .apple-nav {
-    @apply bg-background/95 backdrop-blur-xl border-b border-border sticky top-0 z-50;
+    background: rgba(173, 216, 230, 0.6);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(173, 216, 230, 0.8);
+    position: sticky;
+    top: 0;
+    z-index: 50;
     transition: all 0.2s ease;
     padding: 12px 0;
   }
