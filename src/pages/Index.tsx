@@ -1,8 +1,6 @@
-
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Navigation from "@/components/Navigation";
-import EnhancedModernSearchPanel from "@/components/EnhancedModernSearchPanel";
 import PropertyListingsSection from "@/components/PropertyListingsSection";
 import ProfessionalFooter from "@/components/ProfessionalFooter";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -10,6 +8,8 @@ import ResponsiveAIChatWidget from "@/components/ai/ResponsiveAIChatWidget";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import SmartSearchPanel from "@/components/search/SmartSearchPanel";
+import PropertySlideSection from "@/components/property/PropertySlideSection";
 
 const Index = () => {
   const { language } = useLanguage();
@@ -212,7 +212,7 @@ const Index = () => {
           </div>
           
           <div className="animate-scale-in">
-            <EnhancedModernSearchPanel
+            <SmartSearchPanel
               language={language}
               onSearch={handleSearch}
               onLiveSearch={handleLiveSearch}
@@ -276,16 +276,66 @@ const Index = () => {
         </section>
       )}
 
-      {/* Property Listings - Reduced Margin */}
-      <div className="px-6 lg:px-8 bg-white dark:bg-black">
-        <div className="max-w-[1800px] mx-auto">
-          <PropertyListingsSection
-            language={language}
-            searchResults={hasSearched ? searchResults : featuredProperties}
-            isSearching={isSearching}
-            hasSearched={hasSearched}
-            fallbackResults={featuredProperties}
-          />
+      {/* Property Sections with Slides */}
+      <div className="px-6 lg:px-8 bg-white dark:bg-black space-y-12 py-8">
+        <div className="max-w-[1800px] mx-auto space-y-12">
+          {/* Search Results or Featured Properties */}
+          {hasSearched ? (
+            <PropertyListingsSection
+              language={language}
+              searchResults={searchResults}
+              isSearching={isSearching}
+              hasSearched={hasSearched}
+              fallbackResults={[]}
+            />
+          ) : (
+            <>
+              {/* Featured Properties Slide */}
+              <PropertySlideSection
+                title="Featured Properties"
+                subtitle="Handpicked premium properties for you"
+                type="featured"
+                language={language}
+                limit={12}
+              />
+
+              {/* Buy Properties Slide */}
+              <PropertySlideSection
+                title="Properties for Sale"
+                subtitle="Find your dream home to purchase"
+                type="buy"
+                language={language}
+                limit={8}
+              />
+
+              {/* Rent Properties Slide */}
+              <PropertySlideSection
+                title="Properties for Rent"
+                subtitle="Discover rental properties in prime locations"
+                type="rent"
+                language={language}
+                limit={8}
+              />
+
+              {/* Pre-Launch Properties Slide */}
+              <PropertySlideSection
+                title="Pre-Launch Offers"
+                subtitle="Exclusive early access to upcoming properties"
+                type="pre-launch"
+                language={language}
+                limit={6}
+              />
+
+              {/* New Projects Slide */}
+              <PropertySlideSection
+                title="New Projects"
+                subtitle="Latest development projects and opportunities"
+                type="new-projects"
+                language={language}
+                limit={6}
+              />
+            </>
+          )}
         </div>
       </div>
 

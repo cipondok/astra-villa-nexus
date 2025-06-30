@@ -1,9 +1,7 @@
-
 import { useState, useEffect } from 'react';
 import Navigation from '@/components/Navigation';
 import ProfessionalFooter from '@/components/ProfessionalFooter';
 import PropertyListingsSection from '@/components/PropertyListingsSection';
-import SearchFilters from '@/components/SearchFilters';
 import { supabase } from '@/integrations/supabase/client';
 
 interface PropertyListingPageProps {
@@ -11,6 +9,8 @@ interface PropertyListingPageProps {
   title: string;
   subtitle: string;
 }
+
+import SmartSearchPanel from '@/components/search/SmartSearchPanel';
 
 const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageProps) => {
   const [properties, setProperties] = useState<any[]>([]);
@@ -126,28 +126,32 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
         query = query.eq('property_type', searchData.propertyType);
       }
 
-      if (searchData.bedrooms) {
-        const bedroomCount = searchData.bedrooms === '4+' ? 4 : parseInt(searchData.bedrooms);
-        if (searchData.bedrooms === '4+') {
-          query = query.gte('bedrooms', bedroomCount);
+      // Smart bedroom filtering
+      if (searchData.bedrooms && searchData.bedrooms.length > 0) {
+        const bedroomConditions = searchData.bedrooms.map((count: number) => `bedrooms.gte.${count}`);
+        if (bedroomConditions.length === 1) {
+          query = query.gte('bedrooms', searchData.bedrooms[0]);
         } else {
-          query = query.eq('bedrooms', bedroomCount);
+          query = query.or(bedroomConditions.join(','));
         }
       }
 
-      if (searchData.bathrooms) {
-        const bathroomCount = searchData.bathrooms === '4+' ? 4 : parseInt(searchData.bathrooms);
-        if (searchData.bathrooms === '4+') {
-          query = query.gte('bathrooms', bathroomCount);
+      // Smart bathroom filtering
+      if (searchData.bathrooms && searchData.bathrooms.length > 0) {
+        const bathroomConditions = searchData.bathrooms.map((count: number) => `bathrooms.gte.${count}`);
+        if (bathroomConditions.length === 1) {
+          query = query.gte('bathrooms', searchData.bathrooms[0]);
         } else {
-          query = query.eq('bathrooms', bathroomCount);
+          query = query.or(bathroomConditions.join(','));
         }
       }
 
-      if (searchData.priceRange) {
-        const [minPrice, maxPrice] = searchData.priceRange.split('-').map(Number);
-        if (minPrice) query = query.gte('price', minPrice);
-        if (maxPrice && maxPrice < 999999999999) query = query.lte('price', maxPrice);
+      if (searchData.priceMin) {
+        query = query.gte('price', parseInt(searchData.priceMin));
+      }
+
+      if (searchData.priceMax) {
+        query = query.lte('price', parseInt(searchData.priceMax));
       }
 
       const { data, error } = await query
@@ -184,7 +188,7 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
         
         {/* Search Filters */}
         <div className="mb-8">
-          <SearchFilters
+          <SmartSearchPanel
             language={language}
             onSearch={handleSearch}
           />
