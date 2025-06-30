@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -73,21 +74,36 @@ const AutoScrollCarousel = ({
   // Use custom properties if provided, otherwise fetch from database
   useEffect(() => {
     if (customProperties) {
-      setProperties(customProperties);
+      // Filter out properties with missing essential data
+      const validProperties = customProperties.filter(property => 
+        property && 
+        property.id &&
+        property.title && 
+        property.title.trim() !== '' &&
+        property.price && 
+        property.price > 0 &&
+        (property.images?.length > 0 || property.thumbnail_url)
+      );
+      setProperties(validProperties);
       setIsLoading(false);
     } else {
       fetchProperties();
     }
   }, [currentPropertyId, queryType, ownerId, propertyData, propertyType, location, customProperties]);
 
-  // Auto-scroll functionality with looping
+  // Auto-scroll functionality with seamless looping
   useEffect(() => {
-    if (isAutoScrolling && properties.length > itemsPerView) {
+    if (isAutoScrolling && properties.length > 0) {
       intervalRef.current = setInterval(() => {
         setCurrentIndex(prev => {
-          const maxIndex = Math.max(0, properties.length - itemsPerView);
-          // Loop back to 0 when reaching the end
-          return prev >= maxIndex ? 0 : prev + 1;
+          // If we have enough properties to fill the view, use normal pagination
+          if (properties.length > itemsPerView) {
+            const maxIndex = properties.length - itemsPerView;
+            return prev >= maxIndex ? 0 : prev + 1;
+          } else {
+            // If we have fewer properties than items per view, just loop through all
+            return (prev + 1) % properties.length;
+          }
         });
       }, autoScrollInterval);
     }
@@ -113,6 +129,9 @@ const AutoScrollCarousel = ({
               .eq('owner_id', ownerId)
               .neq('id', currentPropertyId)
               .eq('status', 'active')
+              .not('title', 'is', null)
+              .not('title', 'eq', '')
+              .gt('price', 0)
               .limit(limit);
             data = ownerProps || [];
           }
@@ -132,6 +151,9 @@ const AutoScrollCarousel = ({
               .eq('listing_type', propertyData.listing_type || 'sale')
               .gte('price', priceMin)
               .lte('price', priceMax)
+              .not('title', 'is', null)
+              .not('title', 'eq', '')
+              .gt('price', 0)
               .or(`city.ilike.%${propertyData.city || ''}%,state.ilike.%${propertyData.state || ''}%`)
               .limit(limit);
 
@@ -145,6 +167,9 @@ const AutoScrollCarousel = ({
             .select('*')
             .eq('status', 'active')
             .neq('id', currentPropertyId)
+            .not('title', 'is', null)
+            .not('title', 'eq', '')
+            .gt('price', 0)
             .limit(limit);
 
           if (propertyType) {
@@ -160,7 +185,16 @@ const AutoScrollCarousel = ({
           break;
       }
 
-      setProperties(data);
+      // Additional filtering to ensure only valid properties with images
+      const validData = data.filter(property => 
+        property.title && 
+        property.title.trim() !== '' &&
+        property.price && 
+        property.price > 0 &&
+        (property.images?.length > 0 || property.thumbnail_url)
+      );
+
+      setProperties(validData);
     } catch (error) {
       console.error('Error fetching properties:', error);
       setProperties([]);
@@ -171,17 +205,23 @@ const AutoScrollCarousel = ({
 
   const handlePrevious = () => {
     setCurrentIndex(prev => {
-      const maxIndex = Math.max(0, properties.length - itemsPerView);
-      // Loop to end when going back from 0
-      return prev <= 0 ? maxIndex : prev - 1;
+      if (properties.length > itemsPerView) {
+        const maxIndex = properties.length - itemsPerView;
+        return prev <= 0 ? maxIndex : prev - 1;
+      } else {
+        return prev <= 0 ? properties.length - 1 : prev - 1;
+      }
     });
   };
 
   const handleNext = () => {
     setCurrentIndex(prev => {
-      const maxIndex = Math.max(0, properties.length - itemsPerView);
-      // Loop to 0 when reaching the end
-      return prev >= maxIndex ? 0 : prev + 1;
+      if (properties.length > itemsPerView) {
+        const maxIndex = properties.length - itemsPerView;
+        return prev >= maxIndex ? 0 : prev + 1;
+      } else {
+        return (prev + 1) % properties.length;
+      }
     });
   };
 
@@ -232,8 +272,10 @@ const AutoScrollCarousel = ({
     return null;
   }
 
-  const maxIndex = Math.max(0, properties.length - itemsPerView);
-  const showNavigation = properties.length > itemsPerView;
+  // Calculate pagination based on available properties
+  const showNavigation = properties.length > 1;
+  const maxIndex = properties.length > itemsPerView ? properties.length - itemsPerView : properties.length - 1;
+  const totalPages = properties.length > itemsPerView ? maxIndex + 1 : properties.length;
 
   return (
     <Card>
@@ -269,7 +311,7 @@ const AutoScrollCarousel = ({
                 </Button>
               )}
 
-              {/* Navigation buttons - always show if more than itemsPerView */}
+              {/* Navigation buttons */}
               {showNavigation && (
                 <div className="flex gap-1">
                   <Button
@@ -301,15 +343,23 @@ const AutoScrollCarousel = ({
             ref={carouselRef}
             className="flex transition-transform duration-500 ease-in-out gap-4"
             style={{
-              transform: `translateX(-${currentIndex * (100 / itemsPerView)}%)`,
-              width: `${(properties.length / itemsPerView) * 100}%`
+              transform: properties.length > itemsPerView 
+                ? `translateX(-${currentIndex * (100 / itemsPerView)}%)`
+                : `translateX(-${currentIndex * (100 / Math.min(properties.length, itemsPerView))}%)`,
+              width: properties.length > itemsPerView 
+                ? `${(properties.length / itemsPerView) * 100}%`
+                : `100%`
             }}
           >
-            {properties.map((property) => (
+            {properties.map((property, index) => (
               <div 
-                key={property.id} 
+                key={`${property.id}-${index}`} 
                 className="flex-shrink-0"
-                style={{ width: `${100 / properties.length}%` }}
+                style={{ 
+                  width: properties.length > itemsPerView 
+                    ? `${100 / properties.length}%`
+                    : `${100 / Math.min(properties.length, itemsPerView)}%`
+                }}
               >
                 <CompactPropertyCard
                   property={property}
@@ -367,7 +417,7 @@ const AutoScrollCarousel = ({
 
             {/* Pagination dots for main page */}
             <div className="flex gap-2">
-              {[...Array(maxIndex + 1)].map((_, index) => (
+              {[...Array(totalPages)].map((_, index) => (
                 <button
                   key={index}
                   onClick={() => setCurrentIndex(index)}
@@ -385,7 +435,7 @@ const AutoScrollCarousel = ({
           <>
             {/* Pagination dots */}
             <div className="flex justify-center gap-2 mt-4">
-              {[...Array(maxIndex + 1)].map((_, index) => (
+              {[...Array(totalPages)].map((_, index) => (
                 <button
                   key={index}
                   onClick={() => setCurrentIndex(index)}
