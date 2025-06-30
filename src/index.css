@@ -145,6 +145,25 @@
     background: #0066CC;
   }
 
+  /* Glassy Popups/Modals */
+  .glass-popup {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    max-width: 600px;
+  }
+
+  /* Dark mode support for glass popup */
+  .dark .glass-popup {
+    background: rgba(30, 30, 30, 0.85);
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  }
+
   /* Updated component button styles to use Amazon colors */
   .macos-button-primary {
     background: #FF9900;

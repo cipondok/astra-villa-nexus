@@ -62,7 +62,7 @@ const LoadingPopup = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-md bg-white border shadow-lg">
+      <DialogContent className="max-w-md glass-popup shadow-lg">
         <div className="flex flex-col items-center justify-center py-8 space-y-6">
           {/* Animated ASTRA Villa Logo */}
           <div className="text-center">
