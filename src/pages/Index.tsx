@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Navigation from "@/components/Navigation";
@@ -135,11 +136,11 @@ const Index = () => {
     <div className="min-h-screen bg-white dark:bg-black text-foreground">
       <Navigation />
       
-      {/* Hero Section - Full Wide Screen */}
-      <section className="relative py-12 lg:py-16 px-4 bg-white dark:bg-black">
+      {/* Hero Section - Compact and Clean */}
+      <section className="relative py-8 lg:py-12 px-4 bg-white dark:bg-black">
         <div className="max-w-[1800px] mx-auto text-center">
-          <div className="mb-10 lg:mb-14 animate-fade-in">
-            <h1 className="text-3xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-6 leading-tight">
+          <div className="mb-8 lg:mb-12 animate-fade-in">
+            <h1 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold mb-4 leading-tight">
               <span className="inline-block bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 dark:from-blue-300 dark:via-purple-400 dark:to-cyan-300 bg-clip-text text-transparent animate-gradient bg-[length:300%_300%] font-extrabold tracking-tight">
                 Find Your Perfect
               </span>
@@ -149,16 +150,16 @@ const Index = () => {
               </span>
             </h1>
             
-            <div className="relative mb-6">
-              <h2 className="text-lg md:text-xl lg:text-2xl xl:text-3xl font-semibold text-white dark:text-white drop-shadow-lg">
-                <span className="inline-block px-6 py-3 lg:px-8 lg:py-4 bg-gradient-to-r from-blue-500/90 to-purple-600/90 dark:from-blue-400/90 dark:to-purple-500/90 rounded-2xl backdrop-blur-sm border border-white/20 shadow-xl">
+            <div className="relative mb-4">
+              <h2 className="text-base md:text-lg lg:text-xl font-semibold text-white dark:text-white drop-shadow-lg">
+                <span className="inline-block px-4 py-2 lg:px-6 lg:py-3 bg-gradient-to-r from-blue-500/90 to-purple-600/90 dark:from-blue-400/90 dark:to-purple-500/90 rounded-xl backdrop-blur-sm border border-white/20 shadow-lg">
                   AI-Powered Real Estate Platform
                 </span>
               </h2>
             </div>
             
-            <p className="text-sm md:text-base lg:text-lg xl:text-xl max-w-3xl mx-auto leading-relaxed">
-              <span className="inline-block px-4 py-2 lg:px-6 lg:py-3 bg-gray-100/95 dark:bg-slate-800/95 text-slate-800 dark:text-slate-100 rounded-xl backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 shadow-lg font-medium">
+            <p className="text-xs md:text-sm lg:text-base max-w-2xl mx-auto leading-relaxed">
+              <span className="inline-block px-3 py-2 lg:px-4 lg:py-2 bg-gray-100/95 dark:bg-slate-800/95 text-slate-800 dark:text-slate-100 rounded-lg backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 shadow-md font-medium">
                 Discover premium properties with advanced AI search technology
               </span>
             </p>
@@ -174,31 +175,31 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Quick Actions - Full Wide Screen */}
-      <section className="py-8 lg:py-12 bg-gray-50/50 dark:bg-gray-900/30">
+      {/* Quick Actions - Compact */}
+      <section className="py-6 lg:py-8 bg-gray-50/50 dark:bg-gray-900/30">
         <div className="max-w-[1800px] mx-auto px-6 lg:px-8">
-          <div className="flex flex-wrap justify-center gap-3 lg:gap-4 xl:gap-6">
+          <div className="flex flex-wrap justify-center gap-2 lg:gap-3">
             <Button 
               onClick={() => handleSearch({ listingType: 'buy' })}
-              className="apple-button-primary flex items-center gap-2 px-4 py-2 lg:px-6 lg:py-3 text-sm lg:text-base font-semibold hover:scale-105 transition-all duration-200 rounded-xl shadow-md"
+              className="apple-button-primary flex items-center gap-2 px-3 py-2 lg:px-4 lg:py-2 text-xs lg:text-sm font-semibold hover:scale-105 transition-all duration-200 rounded-lg shadow-md"
             >
               🏠 Buy Properties
             </Button>
             <Button 
               onClick={() => handleSearch({ listingType: 'rent' })}
-              className="apple-button-secondary flex items-center gap-2 px-4 py-2 lg:px-6 lg:py-3 text-sm lg:text-base font-semibold hover:scale-105 transition-all duration-200 rounded-xl shadow-md"
+              className="apple-button-secondary flex items-center gap-2 px-3 py-2 lg:px-4 lg:py-2 text-xs lg:text-sm font-semibold hover:scale-105 transition-all duration-200 rounded-lg shadow-md"
             >
               🔑 Rent Properties
             </Button>
             <Button 
               onClick={() => handleSearch({ development_status: 'pre_launching' })}
-              className="apple-button-secondary flex items-center gap-2 px-4 py-2 lg:px-6 lg:py-3 text-sm lg:text-base font-semibold hover:scale-105 transition-all duration-200 rounded-xl shadow-md"
+              className="apple-button-secondary flex items-center gap-2 px-3 py-2 lg:px-4 lg:py-2 text-xs lg:text-sm font-semibold hover:scale-105 transition-all duration-200 rounded-lg shadow-md"
             >
               🚀 Pre-Launch
             </Button>
             <Button 
               onClick={() => handleSearch({ development_status: 'new_project' })}
-              className="apple-button-secondary flex items-center gap-2 px-4 py-2 lg:px-6 lg:py-3 text-sm lg:text-base font-semibold hover:scale-105 transition-all duration-200 rounded-xl shadow-md"
+              className="apple-button-secondary flex items-center gap-2 px-3 py-2 lg:px-4 lg:py-2 text-xs lg:text-sm font-semibold hover:scale-105 transition-all duration-200 rounded-lg shadow-md"
             >
               🏗️ New Projects
             </Button>
@@ -206,12 +207,12 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Error Message */}
+      {/* Error Message - Compact */}
       {searchError && (
-        <section className="py-6">
+        <section className="py-4">
           <div className="max-w-[1800px] mx-auto px-6 lg:px-8">
-            <div className="apple-glass border border-destructive/40 text-destructive text-center p-6 rounded-2xl max-w-2xl mx-auto shadow-lg">
-              <p className="font-medium text-base lg:text-lg">⚠️ {searchError}</p>
+            <div className="apple-glass border border-destructive/40 text-destructive text-center p-4 rounded-xl max-w-xl mx-auto shadow-md">
+              <p className="font-medium text-sm lg:text-base">⚠️ {searchError}</p>
             </div>
           </div>
         </section>
