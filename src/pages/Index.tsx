@@ -9,22 +9,23 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import ResponsiveAIChatWidget from "@/components/ai/ResponsiveAIChatWidget";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 const Index = () => {
   const { language } = useLanguage();
+  const navigate = useNavigate();
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
 
-  // Optimized featured properties query with shorter timeout
+  // Optimized featured properties query with better filtering
   const { data: featuredProperties = [], isLoading: isFeaturedLoading } = useQuery({
     queryKey: ['featured-properties-fast'],
     queryFn: async () => {
       console.log('Fetching featured properties...');
       
       try {
-        // Reduced timeout to 2 seconds for faster failure
         const timeoutPromise = new Promise<never>((_, reject) => {
           setTimeout(() => reject(new Error('Featured properties timeout')), 2000);
         });
@@ -33,8 +34,10 @@ const Index = () => {
           .from('properties')
           .select('id, title, property_type, listing_type, price, location, bedrooms, bathrooms, area_sqm, images, thumbnail_url, state, city, development_status')
           .eq('status', 'active')
+          .not('title', 'is', null)
+          .not('title', 'eq', '')
           .order('created_at', { ascending: false })
-          .limit(8); // Reduced limit for faster loading
+          .limit(8);
 
         const { data, error } = await Promise.race([queryPromise, timeoutPromise]);
 
@@ -43,8 +46,17 @@ const Index = () => {
           return [];
         }
 
-        console.log('Featured properties loaded:', data?.length || 0);
-        return data || [];
+        // Filter out properties with empty or invalid data
+        const filteredData = (data || []).filter(property => 
+          property.title && 
+          property.title.trim() !== '' &&
+          property.price && 
+          property.price > 0 &&
+          (property.images?.length > 0 || property.thumbnail_url)
+        );
+
+        console.log('Featured properties loaded:', filteredData.length);
+        return filteredData;
         
       } catch (err) {
         console.error('Featured properties fetch error:', err);
@@ -54,8 +66,8 @@ const Index = () => {
     retry: 1,
     retryDelay: 500,
     refetchOnWindowFocus: false,
-    staleTime: 30000, // Consider data fresh for 30 seconds
-    gcTime: 60000, // Keep in cache for 1 minute
+    staleTime: 30000,
+    gcTime: 60000,
   });
 
   const handleSearch = async (searchData: any) => {
@@ -66,18 +78,17 @@ const Index = () => {
     setSearchError(null);
     
     try {
-      // Reduced timeout to 3 seconds for better UX
       const timeoutPromise = new Promise<never>((_, reject) => {
         setTimeout(() => reject(new Error('Search timeout')), 3000);
       });
 
-      // Simplified query for better performance
       let query = supabase
         .from('properties')
         .select('id, title, property_type, listing_type, price, location, bedrooms, bathrooms, area_sqm, images, thumbnail_url, state, city')
-        .eq('status', 'active');
+        .eq('status', 'active')
+        .not('title', 'is', null)
+        .not('title', 'eq', '');
 
-      // Only add filters if they have values to reduce query complexity
       if (searchData.query && searchData.query.trim()) {
         const searchTerm = searchData.query.toLowerCase().trim();
         query = query.or(`title.ilike.%${searchTerm}%,location.ilike.%${searchTerm}%,city.ilike.%${searchTerm}%,state.ilike.%${searchTerm}%`);
@@ -99,7 +110,10 @@ const Index = () => {
         query = query.eq('listing_type', searchData.listingType);
       }
 
-      // Limit results and add ordering for better performance
+      if (searchData.development_status) {
+        query = query.eq('development_status', searchData.development_status);
+      }
+
       const queryWithTimeout = Promise.race([
         query.order('created_at', { ascending: false }).limit(20),
         timeoutPromise
@@ -112,8 +126,14 @@ const Index = () => {
         setSearchError('Search failed. Please try again.');
         setSearchResults([]);
       } else {
-        console.log('Search results:', data?.length || 0);
-        setSearchResults(data || []);
+        const filteredResults = (data || []).filter(property => 
+          property.title && 
+          property.title.trim() !== '' &&
+          property.price && 
+          property.price > 0
+        );
+        console.log('Search results:', filteredResults.length);
+        setSearchResults(filteredResults);
         setSearchError(null);
       }
     } catch (error) {
@@ -141,15 +161,32 @@ const Index = () => {
     await handleSearch({ query: searchTerm });
   };
 
+  // Functional button handlers
+  const handleBuyProperties = () => {
+    navigate('/buy');
+  };
+
+  const handleRentProperties = () => {
+    navigate('/rent');
+  };
+
+  const handlePreLaunch = () => {
+    navigate('/pre-launching');
+  };
+
+  const handleNewProjects = () => {
+    navigate('/new-projects');
+  };
+
   return (
     <div className="min-h-screen bg-white dark:bg-black text-foreground">
       <Navigation />
       
-      {/* Hero Section - Much More Compact */}
-      <section className="relative py-4 lg:py-6 px-4 bg-white dark:bg-black">
+      {/* Hero Section - More Compact */}
+      <section className="relative py-2 lg:py-3 px-4 bg-white dark:bg-black">
         <div className="max-w-[1800px] mx-auto text-center">
-          <div className="mb-4 lg:mb-6 animate-fade-in">
-            <h1 className="text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold mb-2 leading-tight">
+          <div className="mb-2 lg:mb-3 animate-fade-in">
+            <h1 className="text-base md:text-lg lg:text-xl xl:text-2xl font-bold mb-1 leading-tight">
               <span className="inline-block bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 dark:from-blue-300 dark:via-purple-400 dark:to-cyan-300 bg-clip-text text-transparent animate-gradient bg-[length:300%_300%] font-extrabold tracking-tight">
                 Find Your Perfect
               </span>
@@ -159,16 +196,16 @@ const Index = () => {
               </span>
             </h1>
             
-            <div className="relative mb-2">
-              <h2 className="text-xs md:text-sm lg:text-base font-semibold text-white dark:text-white drop-shadow-lg">
-                <span className="inline-block px-2 py-1 lg:px-3 lg:py-1.5 bg-gradient-to-r from-blue-500/90 to-purple-600/90 dark:from-blue-400/90 dark:to-purple-500/90 rounded-lg backdrop-blur-sm border border-white/20 shadow-lg">
+            <div className="relative mb-1">
+              <h2 className="text-xs md:text-sm font-semibold text-white dark:text-white drop-shadow-lg">
+                <span className="inline-block px-2 py-0.5 lg:px-2 lg:py-1 bg-gradient-to-r from-blue-500/90 to-purple-600/90 dark:from-blue-400/90 dark:to-purple-500/90 rounded-lg backdrop-blur-sm border border-white/20 shadow-lg">
                   AI-Powered Real Estate Platform
                 </span>
               </h2>
             </div>
             
-            <p className="text-xs md:text-xs lg:text-sm max-w-2xl mx-auto leading-relaxed">
-              <span className="inline-block px-2 py-1 lg:px-3 lg:py-1 bg-gray-100/95 dark:bg-slate-800/95 text-slate-800 dark:text-slate-100 rounded-md backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 shadow-md font-medium">
+            <p className="text-xs md:text-xs lg:text-xs max-w-2xl mx-auto leading-relaxed">
+              <span className="inline-block px-1.5 py-0.5 lg:px-2 lg:py-0.5 bg-gray-100/95 dark:bg-slate-800/95 text-slate-800 dark:text-slate-100 rounded-md backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 shadow-md font-medium">
                 Discover premium properties with advanced AI search technology
               </span>
             </p>
@@ -184,31 +221,31 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Quick Actions - Compact */}
-      <section className="py-3 lg:py-4 bg-gray-50/50 dark:bg-gray-900/30">
+      {/* Quick Actions - More Compact */}
+      <section className="py-2 lg:py-3 bg-gray-50/50 dark:bg-gray-900/30">
         <div className="max-w-[1800px] mx-auto px-6 lg:px-8">
-          <div className="flex flex-wrap justify-center gap-2 lg:gap-3">
+          <div className="flex flex-wrap justify-center gap-1.5 lg:gap-2">
             <Button 
-              onClick={() => handleSearch({ listingType: 'buy' })}
-              className="apple-button-primary flex items-center gap-2 px-2 py-1.5 lg:px-3 lg:py-1.5 text-xs lg:text-xs font-semibold hover:scale-105 transition-all duration-200 rounded-lg shadow-md"
+              onClick={handleBuyProperties}
+              className="apple-button-primary flex items-center gap-1.5 px-2 py-1 lg:px-2.5 lg:py-1.5 text-xs font-semibold hover:scale-105 transition-all duration-200 rounded-lg shadow-md"
             >
               🏠 Buy Properties
             </Button>
             <Button 
-              onClick={() => handleSearch({ listingType: 'rent' })}
-              className="apple-button-secondary flex items-center gap-2 px-2 py-1.5 lg:px-3 lg:py-1.5 text-xs lg:text-xs font-semibold hover:scale-105 transition-all duration-200 rounded-lg shadow-md"
+              onClick={handleRentProperties}
+              className="apple-button-secondary flex items-center gap-1.5 px-2 py-1 lg:px-2.5 lg:py-1.5 text-xs font-semibold hover:scale-105 transition-all duration-200 rounded-lg shadow-md"
             >
               🔑 Rent Properties
             </Button>
             <Button 
-              onClick={() => handleSearch({ development_status: 'pre_launching' })}
-              className="apple-button-secondary flex items-center gap-2 px-2 py-1.5 lg:px-3 lg:py-1.5 text-xs lg:text-xs font-semibold hover:scale-105 transition-all duration-200 rounded-lg shadow-md"
+              onClick={handlePreLaunch}
+              className="apple-button-secondary flex items-center gap-1.5 px-2 py-1 lg:px-2.5 lg:py-1.5 text-xs font-semibold hover:scale-105 transition-all duration-200 rounded-lg shadow-md"
             >
               🚀 Pre-Launch
             </Button>
             <Button 
-              onClick={() => handleSearch({ development_status: 'new_project' })}
-              className="apple-button-secondary flex items-center gap-2 px-2 py-1.5 lg:px-3 lg:py-1.5 text-xs lg:text-xs font-semibold hover:scale-105 transition-all duration-200 rounded-lg shadow-md"
+              onClick={handleNewProjects}
+              className="apple-button-secondary flex items-center gap-1.5 px-2 py-1 lg:px-2.5 lg:py-1.5 text-xs font-semibold hover:scale-105 transition-all duration-200 rounded-lg shadow-md"
             >
               🏗️ New Projects
             </Button>
@@ -218,9 +255,9 @@ const Index = () => {
 
       {/* Error Message - Compact */}
       {searchError && (
-        <section className="py-2">
+        <section className="py-1">
           <div className="max-w-[1800px] mx-auto px-6 lg:px-8">
-            <div className="apple-glass border border-destructive/40 text-destructive text-center p-3 rounded-xl max-w-xl mx-auto shadow-md">
+            <div className="apple-glass border border-destructive/40 text-destructive text-center p-2 rounded-xl max-w-xl mx-auto shadow-md">
               <p className="font-medium text-xs lg:text-sm">⚠️ {searchError}</p>
               <Button 
                 onClick={() => {
@@ -230,7 +267,7 @@ const Index = () => {
                 }}
                 variant="outline"
                 size="sm"
-                className="mt-2 text-xs"
+                className="mt-1 text-xs"
               >
                 Clear Error
               </Button>
@@ -239,7 +276,7 @@ const Index = () => {
         </section>
       )}
 
-      {/* Property Listings - Full Wide Screen Container */}
+      {/* Property Listings - Reduced Margin */}
       <div className="px-6 lg:px-8 bg-white dark:bg-black">
         <div className="max-w-[1800px] mx-auto">
           <PropertyListingsSection

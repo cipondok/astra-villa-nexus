@@ -92,12 +92,12 @@ const PropertyListingsSection = ({
   // Optimized loading state
   if (isSearching) {
     return (
-      <section className="py-6 sm:py-8 min-h-[400px]">
+      <section className="py-3 sm:py-4 min-h-[300px]">
         <div className="container mx-auto px-2 sm:px-4">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-8 w-8 sm:h-12 sm:w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-            <p className="text-base sm:text-lg text-gray-600">{currentText.loadingProperties}</p>
-            <p className="text-sm text-gray-500 mt-2">This should only take a few seconds...</p>
+            <div className="animate-spin rounded-full h-6 w-6 sm:h-8 sm:w-8 border-b-2 border-blue-600 mx-auto mb-3"></div>
+            <p className="text-sm sm:text-base text-gray-600">{currentText.loadingProperties}</p>
+            <p className="text-xs text-gray-500 mt-1">This should only take a few seconds...</p>
           </div>
         </div>
       </section>
@@ -108,44 +108,44 @@ const PropertyListingsSection = ({
 
   return (
     <>
-      <section className="py-6 sm:py-8 min-h-[500px]">
+      <section className="py-3 sm:py-4 min-h-[400px]">
         <div className="container mx-auto px-2 sm:px-4">
           {!hideTitle && (
-            <div className="text-center mb-6 sm:mb-8">
-              <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-2">{sectionData.sectionTitle}</h2>
+            <div className="text-center mb-3 sm:mb-4">
+              <h2 className="text-lg sm:text-xl lg:text-2xl font-bold mb-1">{sectionData.sectionTitle}</h2>
               {sectionData.sectionSubtitle && (
-                <p className="text-base sm:text-lg text-muted-foreground">{sectionData.sectionSubtitle}</p>
+                <p className="text-sm sm:text-base text-muted-foreground">{sectionData.sectionSubtitle}</p>
               )}
             </div>
           )}
 
           {!displayProperties || displayProperties.length === 0 ? (
-            <div className="text-center py-8 sm:py-12">
+            <div className="text-center py-6 sm:py-8">
               <div className="max-w-md mx-auto px-4">
-                <div className="mb-6">
-                  <div className="w-16 h-16 sm:w-24 sm:h-24 mx-auto mb-4 bg-gray-200 rounded-full flex items-center justify-center">
-                    <svg className="w-8 h-8 sm:w-12 sm:h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="mb-4">
+                  <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 bg-gray-200 rounded-full flex items-center justify-center">
+                    <svg className="w-6 h-6 sm:w-8 sm:h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                     </svg>
                   </div>
                 </div>
-                <h3 className="text-lg sm:text-xl font-semibold mb-4">
+                <h3 className="text-base sm:text-lg font-semibold mb-3">
                   {hasSearched ? currentText.noResults : currentText.noFeaturedProperties}
                 </h3>
                 {hasSearched && (
-                  <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 mb-6">
+                  <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 mb-4">
                     {currentText.tryDifferentSearch}
                   </p>
                 )}
                 <div className="space-y-2">
-                  <Button onClick={() => window.location.reload()} variant="outline" className="w-full">
+                  <Button onClick={() => window.location.reload()} variant="outline" className="w-full text-sm">
                     Refresh
                   </Button>
-                  <Button onClick={() => navigate('/properties')} className="w-full">
+                  <Button onClick={() => navigate('/properties')} className="w-full text-sm">
                     {currentText.browseAll}
                   </Button>
                 </div>
-                <p className="text-xs text-gray-500 mt-4">{currentText.connectionIssue}</p>
+                <p className="text-xs text-gray-500 mt-3">{currentText.connectionIssue}</p>
               </div>
             </div>
           ) : displayProperties.length >= 4 ? (
@@ -157,14 +157,14 @@ const PropertyListingsSection = ({
               propertyData={{
                 properties: displayProperties
               }}
-              autoScrollInterval={8000} // Slower auto-scroll
+              autoScrollInterval={8000}
               limit={displayProperties.length}
               hideTitle={true}
               customProperties={displayProperties}
             />
           ) : (
             // Use regular grid for less than 4 properties
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-3 lg:gap-4">
               {displayProperties.map((property, index) => (
                 <CompactPropertyCard
                   key={`${property.id}-${index}`}
