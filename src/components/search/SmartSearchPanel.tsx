@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
@@ -6,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Slider } from "@/components/ui/slider";
 import { Search, MapPin, Home, DollarSign, Filter, X, Bed, Bath, ChevronDown } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -24,6 +24,7 @@ const SmartSearchPanel = ({ language, onSearch, onLiveSearch }: SmartSearchPanel
     listingType: '',
     priceMin: '',
     priceMax: '',
+    priceRange: [100000000, 1000000000] as [number, number],
     bedrooms: [] as number[],
     bathrooms: [] as number[],
     amenities: [] as string[],
@@ -33,6 +34,7 @@ const SmartSearchPanel = ({ language, onSearch, onLiveSearch }: SmartSearchPanel
   });
   
   const filtersRef = useRef<HTMLDivElement>(null);
+  const [isClosing, setIsClosing] = useState(false);
 
   // Load locations from database
   const { data: locations = [] } = useQuery({
@@ -195,11 +197,31 @@ const SmartSearchPanel = ({ language, onSearch, onLiveSearch }: SmartSearchPanel
   const bedroomOptions = [1, 2, 3, 4, 5, 6];
   const bathroomOptions = [1, 2, 3, 4, 5];
 
-  // Close filters when clicking outside
+  // Format Indonesian currency
+  const formatIDR = (amount: number): string => {
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(amount);
+  };
+
+  // Parse Indonesian currency input
+  const parseIDRInput = (value: string): number => {
+    return parseInt(value.replace(/[^\d]/g, '')) || 0;
+  };
+
+  // Format number for input display
+  const formatNumberInput = (num: number): string => {
+    return new Intl.NumberFormat('id-ID').format(num);
+  };
+
+  // Close filters when clicking outside with delay to prevent errors
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (filtersRef.current && !filtersRef.current.contains(event.target as Node)) {
-        setShowAdvanced(false);
+        handleCloseFilters();
       }
     };
 
@@ -211,6 +233,14 @@ const SmartSearchPanel = ({ language, onSearch, onLiveSearch }: SmartSearchPanel
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [showAdvanced]);
+
+  const handleCloseFilters = () => {
+    setIsClosing(true);
+    setTimeout(() => {
+      setShowAdvanced(false);
+      setIsClosing(false);
+    }, 150); // Small delay to prevent selection errors
+  };
 
   const handleSearchChange = (value: string) => {
     setSearchQuery(value);
@@ -248,6 +278,32 @@ const SmartSearchPanel = ({ language, onSearch, onLiveSearch }: SmartSearchPanel
     handleFilterChange('amenities', newAmenities);
   };
 
+  const handlePriceRangeChange = (values: number[]) => {
+    setFilters(prev => ({ 
+      ...prev, 
+      priceRange: [values[0], values[1]] as [number, number],
+      priceMin: values[0].toString(),
+      priceMax: values[1].toString()
+    }));
+  };
+
+  const handleManualPriceChange = (type: 'min' | 'max', value: string) => {
+    const numValue = parseIDRInput(value);
+    if (type === 'min') {
+      setFilters(prev => ({
+        ...prev,
+        priceMin: numValue.toString(),
+        priceRange: [numValue, prev.priceRange[1]] as [number, number]
+      }));
+    } else {
+      setFilters(prev => ({
+        ...prev,
+        priceMax: numValue.toString(),
+        priceRange: [prev.priceRange[0], numValue] as [number, number]
+      }));
+    }
+  };
+
   const handleSearch = () => {
     onSearch({
       query: searchQuery,
@@ -263,6 +319,7 @@ const SmartSearchPanel = ({ language, onSearch, onLiveSearch }: SmartSearchPanel
       listingType: '',
       priceMin: '',
       priceMax: '',
+      priceRange: [100000000, 1000000000],
       bedrooms: [],
       bathrooms: [],
       amenities: [],
@@ -274,6 +331,10 @@ const SmartSearchPanel = ({ language, onSearch, onLiveSearch }: SmartSearchPanel
 
   // Count active filters
   const activeFiltersCount = Object.entries(filters).reduce((count, [key, value]) => {
+    if (key === 'priceRange') {
+      const [min, max] = value as [number, number];
+      return count + (min !== 100000000 || max !== 1000000000 ? 1 : 0);
+    }
     if (Array.isArray(value)) {
       return count + value.length;
     }
@@ -351,9 +412,10 @@ const SmartSearchPanel = ({ language, onSearch, onLiveSearch }: SmartSearchPanel
               </Select>
 
               <Button
-                onClick={() => setShowAdvanced(!showAdvanced)}
+                onClick={() => !isClosing && setShowAdvanced(!showAdvanced)}
                 variant="outline"
                 className="h-10 lg:h-11 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-all duration-200 relative"
+                disabled={isClosing}
               >
                 <Filter className="h-4 w-4 mr-2" />
                 {currentText.advancedFilters}
@@ -368,7 +430,7 @@ const SmartSearchPanel = ({ language, onSearch, onLiveSearch }: SmartSearchPanel
 
             {/* Advanced Filters with Smooth Animation and Categories */}
             <div className={`overflow-hidden transition-all duration-500 ease-in-out ${
-              showAdvanced 
+              showAdvanced && !isClosing
                 ? 'max-h-[800px] opacity-100 transform translate-y-0' 
                 : 'max-h-0 opacity-0 transform -translate-y-4'
             }`}>
@@ -482,21 +544,52 @@ const SmartSearchPanel = ({ language, onSearch, onLiveSearch }: SmartSearchPanel
                     <DollarSign className="h-4 w-4" />
                     {filterCategories.price.title}
                   </h3>
-                  <div className="grid grid-cols-2 gap-3">
-                    <Input
-                      placeholder={currentText.from}
-                      value={filters.priceMin}
-                      onChange={(e) => handleFilterChange('priceMin', e.target.value)}
-                      className="h-10 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg transition-all duration-200"
-                      type="number"
-                    />
-                    <Input
-                      placeholder={currentText.to}
-                      value={filters.priceMax}
-                      onChange={(e) => handleFilterChange('priceMax', e.target.value)}
-                      className="h-10 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg transition-all duration-200"
-                      type="number"
-                    />
+                  <div className="space-y-4">
+                    {/* Price Range Slider */}
+                    <div className="px-2">
+                      <div className="flex justify-between text-xs text-gray-600 dark:text-gray-400 mb-2">
+                        <span>{formatIDR(filters.priceRange[0])}</span>
+                        <span>{formatIDR(filters.priceRange[1])}</span>
+                      </div>
+                      <Slider
+                        value={filters.priceRange}
+                        onValueChange={handlePriceRangeChange}
+                        min={100000000}
+                        max={50000000000}
+                        step={50000000}
+                        className="w-full"
+                      />
+                      <div className="flex justify-between text-xs text-gray-500 mt-1">
+                        <span>100M</span>
+                        <span>50B</span>
+                      </div>
+                    </div>
+                    
+                    {/* Manual Price Input */}
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="space-y-1">
+                        <label className="text-xs font-medium text-gray-700 dark:text-gray-300">
+                          {currentText.from}
+                        </label>
+                        <Input
+                          placeholder="100,000,000"
+                          value={filters.priceMin ? formatNumberInput(parseInt(filters.priceMin)) : ''}
+                          onChange={(e) => handleManualPriceChange('min', e.target.value)}
+                          className="h-10 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg transition-all duration-200"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-xs font-medium text-gray-700 dark:text-gray-300">
+                          {currentText.to}
+                        </label>
+                        <Input
+                          placeholder="1,000,000,000"
+                          value={filters.priceMax ? formatNumberInput(parseInt(filters.priceMax)) : ''}
+                          onChange={(e) => handleManualPriceChange('max', e.target.value)}
+                          className="h-10 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg transition-all duration-200"
+                        />
+                      </div>
+                    </div>
                   </div>
                 </div>
 
