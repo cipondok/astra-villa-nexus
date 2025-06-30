@@ -137,13 +137,13 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: SearchP
 
   return (
     <div className="w-full max-w-5xl mx-auto px-2 sm:px-4">
-      <div className="apple-glass border-2 border-border/30 shadow-lg rounded-2xl">
+      <div className="search-panel rounded-2xl shadow-lg">
         <div className="p-4 sm:p-6">
           {/* Active Filters Display */}
           {activeFiltersCount > 0 && (
             <div className="flex items-center justify-between mb-4 p-3 bg-primary/5 rounded-xl border border-primary/20">
               <div className="flex items-center gap-2">
-                <Sparkles className="h-4 w-4 text-primary" />
+                <Sparkles className="h-4 w-4 text-primary no-hover-effect" />
                 <span className="text-sm font-medium text-primary">
                   {currentText.activeFilters}: {activeFiltersCount}
                 </span>
@@ -154,7 +154,7 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: SearchP
                 onClick={clearAllFilters}
                 className="text-destructive hover:text-destructive hover:bg-destructive/10 border-destructive/30 hover:border-destructive/50"
               >
-                <X className="h-4 w-4 mr-1" />
+                <X className="h-4 w-4 mr-1 no-hover-effect" />
                 {currentText.clearFilters}
               </Button>
             </div>
@@ -164,10 +164,10 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: SearchP
           <div className="space-y-3 mb-6">
             {/* Main Search Input */}
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4 no-hover-effect" />
               <Input
                 placeholder={currentText.search}
-                className="apple-input pl-10 h-12 text-sm font-medium"
+                className="search-panel-input pl-10 h-12 text-sm font-medium macos-select"
                 value={searchQuery}
                 onChange={(e) => handleInputChange(e.target.value)}
               />
@@ -176,13 +176,13 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: SearchP
             {/* Filter Grid */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
               <Select value={selectedState} onValueChange={setSelectedState}>
-                <SelectTrigger className="apple-input h-12">
+                <SelectTrigger className="macos-select h-12">
                   <div className="flex items-center gap-2">
-                    <MapPin className="h-4 w-4 text-muted-foreground" />
+                    <MapPin className="h-4 w-4 text-muted-foreground no-hover-effect" />
                     <SelectValue placeholder={currentText.state} />
                   </div>
                 </SelectTrigger>
-                <SelectContent className="apple-dropdown">
+                <SelectContent className="macos-select">
                   <SelectItem value="all" className="font-semibold text-primary">
                     {currentText.allStates}
                   </SelectItem>
@@ -195,13 +195,13 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: SearchP
               </Select>
               
               <Select value={propertyType} onValueChange={setPropertyType}>
-                <SelectTrigger className="apple-input h-12">
+                <SelectTrigger className="macos-select h-12">
                   <div className="flex items-center gap-2">
-                    <Home className="h-4 w-4 text-muted-foreground" />
+                    <Home className="h-4 w-4 text-muted-foreground no-hover-effect" />
                     <SelectValue placeholder={currentText.type} />
                   </div>
                 </SelectTrigger>
-                <SelectContent className="apple-dropdown">
+                <SelectContent className="macos-select">
                   <SelectItem value="all" className="font-semibold text-primary">
                     {currentText.allTypes}
                   </SelectItem>
@@ -214,13 +214,13 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: SearchP
               </Select>
 
               <Select value={bedrooms} onValueChange={setBedrooms}>
-                <SelectTrigger className="apple-input h-12">
+                <SelectTrigger className="macos-select h-12">
                   <div className="flex items-center gap-2">
-                    <Bed className="h-4 w-4 text-muted-foreground" />
+                    <Bed className="h-4 w-4 text-muted-foreground no-hover-effect" />
                     <SelectValue placeholder={currentText.bedrooms} />
                   </div>
                 </SelectTrigger>
-                <SelectContent className="apple-dropdown">
+                <SelectContent className="macos-select">
                   <SelectItem value="any" className="font-semibold text-primary">
                     {currentText.anyBedroom}
                   </SelectItem>
@@ -232,13 +232,13 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: SearchP
               </Select>
 
               <Select value={bathrooms} onValueChange={setBathrooms}>
-                <SelectTrigger className="apple-input h-12">
+                <SelectTrigger className="macos-select h-12">
                   <div className="flex items-center gap-2">
-                    <Bath className="h-4 w-4 text-muted-foreground" />
+                    <Bath className="h-4 w-4 text-muted-foreground no-hover-effect" />
                     <SelectValue placeholder={currentText.bathrooms} />
                   </div>
                 </SelectTrigger>
-                <SelectContent className="apple-dropdown">
+                <SelectContent className="macos-select">
                   <SelectItem value="any" className="font-semibold text-primary">
                     {currentText.anyBathroom}
                   </SelectItem>
@@ -253,9 +253,9 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: SearchP
             {/* Search Button */}
             <Button 
               onClick={handleSearch}
-              className="w-full h-12 apple-button-primary text-sm shadow-lg hover:shadow-xl transition-all duration-200 rounded-xl"
+              className="w-full h-12 macos-button-primary text-sm rounded-lg"
             >
-              <Search className="h-4 w-4 mr-2" />
+              <Search className="h-4 w-4 mr-2 no-hover-effect" />
               {currentText.searchBtn}
             </Button>
           </div>
@@ -263,14 +263,14 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: SearchP
           {/* Popular Searches */}
           <div className="space-y-3">
             <div className="flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-primary" />
+              <Sparkles className="h-4 w-4 text-primary no-hover-effect" />
               <p className="text-foreground font-medium text-sm">{currentText.trending}</p>
             </div>
             <div className="flex flex-wrap gap-2">
               {trendingSearches.map((term, index) => (
                 <button
                   key={index} 
-                  className="cursor-pointer hover:bg-primary/10 hover:text-primary hover:border-primary/20 transition-all duration-200 px-3 py-1.5 text-sm font-medium rounded-full bg-secondary/80 text-secondary-foreground border border-border"
+                  className="trending-tag cursor-pointer transition-all duration-200 px-3 py-1.5 text-sm font-medium rounded-full"
                   onClick={() => handleQuickSearch(term)}
                 >
                   {term}

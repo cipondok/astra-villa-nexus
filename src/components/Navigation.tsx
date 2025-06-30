@@ -77,8 +77,8 @@ const Navigation = () => {
               onClick={() => navigate('/')}
             >
               <div className="relative">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-primary to-accent flex items-center justify-center transform transition-all duration-200 group-hover:scale-110 shadow-lg">
-                  <Brain className="h-4 w-4 text-primary-foreground" />
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-primary to-accent flex items-center justify-center shadow-lg">
+                  <Brain className="h-4 w-4 text-primary-foreground no-hover-effect" />
                 </div>
               </div>
               <div className="hidden sm:block">
@@ -123,7 +123,7 @@ const Navigation = () => {
                   className="text-accent hover:text-accent/80 hover:bg-accent/20 apple-nav-item"
                   onClick={() => navigate('/admin')}
                 >
-                  <Crown className="h-4 w-4 mr-1" />
+                  <Crown className="h-4 w-4 mr-1 no-hover-effect" />
                   Admin
                 </Button>
               )}
@@ -133,8 +133,8 @@ const Navigation = () => {
             <div className="flex items-center space-x-3">
               {/* Smart AI Icon */}
               <div className="relative group">
-                <div className="w-7 h-7 rounded-lg bg-gradient-to-r from-primary/20 to-accent/20 backdrop-blur-sm border border-primary/30 flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-110">
-                  <Sparkles className="h-3 w-3 text-primary" />
+                <div className="w-7 h-7 rounded-lg bg-gradient-to-r from-primary/20 to-accent/20 backdrop-blur-sm border border-primary/30 flex items-center justify-center cursor-pointer">
+                  <Sparkles className="h-3 w-3 text-primary no-hover-effect" />
                 </div>
               </div>
 
@@ -146,9 +146,9 @@ const Navigation = () => {
                 className="apple-nav-item w-7 h-7 p-0 rounded-lg bg-secondary/50 hover:bg-secondary/80"
               >
                 {theme === "light" ? (
-                  <Moon className="h-4 w-4 transition-transform group-hover:rotate-12" />
+                  <Moon className="h-4 w-4 no-hover-effect" />
                 ) : (
-                  <Sun className="h-4 w-4 transition-transform group-hover:rotate-12" />
+                  <Sun className="h-4 w-4 no-hover-effect" />
                 )}
               </Button>
 
@@ -167,7 +167,7 @@ const Navigation = () => {
                     </div>
                   </div>
                   <div className="w-7 h-7 rounded-full bg-gradient-to-r from-primary to-accent flex items-center justify-center shadow-lg">
-                    <User className="h-4 w-4 text-primary-foreground" />
+                    <User className="h-4 w-4 text-primary-foreground no-hover-effect" />
                   </div>
                   <Button 
                     variant="ghost" 
@@ -175,13 +175,13 @@ const Navigation = () => {
                     onClick={handleSignOut}
                     className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg"
                   >
-                    <LogOut className="h-4 w-4" />
+                    <LogOut className="h-4 w-4 no-hover-effect" />
                   </Button>
                 </div>
               ) : (
                 <Button
                   onClick={() => setShowAuthModal(true)}
-                  className="apple-button-primary text-sm px-4 py-2"
+                  className="macos-button-primary text-sm px-4 py-2"
                 >
                   {currentText.signIn}
                 </Button>
@@ -194,7 +194,7 @@ const Navigation = () => {
                 className="lg:hidden apple-nav-item w-7 h-7 p-0"
                 onClick={toggleMenu}
               >
-                {isMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+                {isMenuOpen ? <X className="h-4 w-4 no-hover-effect" /> : <Menu className="h-4 w-4 no-hover-effect" />}
               </Button>
             </div>
           </div>
@@ -226,7 +226,7 @@ const Navigation = () => {
                     onClick={toggleTheme}
                     className="apple-nav-item"
                   >
-                    {theme === "light" ? <Moon className="h-4 w-4 mr-2" /> : <Sun className="h-4 w-4 mr-2" />}
+                    {theme === "light" ? <Moon className="h-4 w-4 mr-2 no-hover-effect" /> : <Sun className="h-4 w-4 mr-2 no-hover-effect" />}
                     {theme === "light" ? "Dark" : "Light"}
                   </Button>
                   <LanguageToggleSwitch />
