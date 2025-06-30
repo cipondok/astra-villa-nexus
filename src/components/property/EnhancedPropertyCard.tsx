@@ -1,3 +1,4 @@
+
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -172,7 +173,7 @@ const EnhancedPropertyCard = ({
           {/* Favorite button */}
           <Button
             size="sm"
-            variant={isSaved ? "ios" : "ghost"}
+            variant={isSaved ? "default" : "ghost"}
             className={isSaved ? "ring-2 ring-green-400" : ""}
             onClick={handleLikeToggle}
             aria-label={isSaved ? "Remove from favorites" : "Save property"}
@@ -269,7 +270,7 @@ const EnhancedPropertyCard = ({
         <div className="flex w-full mt-3 gap-2 flex-wrap">
           <Button 
             className="flex-1"
-            variant="ios"
+            variant="default"
             size="lg"
             onClick={() => onView?.(property.id)}
           >
@@ -278,7 +279,7 @@ const EnhancedPropertyCard = ({
           </Button>
           {(property.three_d_model_url || property.virtual_tour_url) && (
             <Button 
-               variant="ios"
+               variant="default"
                size="lg"
                className="flex-1"
                onClick={() => onView3D?.(property)}
