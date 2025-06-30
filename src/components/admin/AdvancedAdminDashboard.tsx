@@ -121,82 +121,82 @@ const AdvancedAdminDashboard = () => {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-all duration-300">
       <div className="container mx-auto px-4 py-4 space-y-4">
         
-        {/* Compact Stats Overview */}
+        {/* Compact Stats Overview with Better Light Mode Colors */}
         <div className="grid grid-cols-3 lg:grid-cols-6 gap-3">
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-3 border border-gray-200 dark:border-gray-700 shadow-sm">
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-3 border border-gray-300 dark:border-gray-700 shadow-sm">
             <div className="flex items-center justify-between mb-1">
-              <div className="text-blue-600 dark:text-blue-400 text-xs font-medium">Total Users</div>
-              <Users className="h-3 w-3 text-blue-600 dark:text-blue-400" />
+              <div className="text-blue-700 dark:text-blue-400 text-xs font-semibold">Total Users</div>
+              <Users className="h-3 w-3 text-blue-700 dark:text-blue-400" />
             </div>
             <div className="text-gray-900 dark:text-gray-100 text-lg font-bold">12,547</div>
-            <div className="text-green-600 dark:text-green-400 text-[10px]">+18.5%</div>
+            <div className="text-green-700 dark:text-green-400 text-[10px] font-medium">+18.5%</div>
           </div>
           
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-3 border border-gray-200 dark:border-gray-700 shadow-sm">
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-3 border border-gray-300 dark:border-gray-700 shadow-sm">
             <div className="flex items-center justify-between mb-1">
-              <div className="text-green-600 dark:text-green-400 text-xs font-medium">Active Users</div>
-              <Activity className="h-3 w-3 text-green-600 dark:text-green-400" />
+              <div className="text-green-700 dark:text-green-400 text-xs font-semibold">Active Users</div>
+              <Activity className="h-3 w-3 text-green-700 dark:text-green-400" />
             </div>
             <div className="text-gray-900 dark:text-gray-100 text-lg font-bold">8,234</div>
-            <div className="text-green-600 dark:text-green-400 text-[10px]">Online</div>
+            <div className="text-green-700 dark:text-green-400 text-[10px] font-medium">Online</div>
           </div>
 
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-3 border border-gray-200 dark:border-gray-700 shadow-sm">
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-3 border border-gray-300 dark:border-gray-700 shadow-sm">
             <div className="flex items-center justify-between mb-1">
-              <div className="text-orange-600 dark:text-orange-400 text-xs font-medium">Errors</div>
-              <Shield className="h-3 w-3 text-orange-600 dark:text-orange-400" />
+              <div className="text-orange-700 dark:text-orange-400 text-xs font-semibold">Errors</div>
+              <Shield className="h-3 w-3 text-orange-700 dark:text-orange-400" />
             </div>
             <div className="text-gray-900 dark:text-gray-100 text-lg font-bold">0</div>
-            <div className="text-green-600 dark:text-green-400 text-[10px]">All good</div>
+            <div className="text-green-700 dark:text-green-400 text-[10px] font-medium">All good</div>
           </div>
 
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-3 border border-gray-200 dark:border-gray-700 shadow-sm">
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-3 border border-gray-300 dark:border-gray-700 shadow-sm">
             <div className="flex items-center justify-between mb-1">
-              <div className="text-blue-600 dark:text-blue-400 text-xs font-medium">Transfers</div>
-              <TrendingUp className="h-3 w-3 text-blue-600 dark:text-blue-400" />
+              <div className="text-blue-700 dark:text-blue-400 text-xs font-semibold">Transfers</div>
+              <TrendingUp className="h-3 w-3 text-blue-700 dark:text-blue-400" />
             </div>
             <div className="text-gray-900 dark:text-gray-100 text-lg font-bold">$45,789</div>
-            <div className="text-green-600 dark:text-green-400 text-[10px]">+12.3%</div>
+            <div className="text-green-700 dark:text-green-400 text-[10px] font-medium">+12.3%</div>
           </div>
 
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-3 border border-gray-200 dark:border-gray-700 shadow-sm">
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-3 border border-gray-300 dark:border-gray-700 shadow-sm">
             <div className="flex items-center justify-between mb-1">
-              <div className="text-purple-600 dark:text-purple-400 text-xs font-medium">Health</div>
-              <Zap className="h-3 w-3 text-purple-600 dark:text-purple-400" />
+              <div className="text-purple-700 dark:text-purple-400 text-xs font-semibold">Health</div>
+              <Zap className="h-3 w-3 text-purple-700 dark:text-purple-400" />
             </div>
             <div className="text-gray-900 dark:text-gray-100 text-lg font-bold">98.5%</div>
-            <div className="text-green-600 dark:text-green-400 text-[10px]">Excellent</div>
+            <div className="text-green-700 dark:text-green-400 text-[10px] font-medium">Excellent</div>
           </div>
 
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-3 border border-gray-200 dark:border-gray-700 shadow-sm">
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-3 border border-gray-300 dark:border-gray-700 shadow-sm">
             <div className="flex items-center justify-between mb-1">
-              <div className="text-yellow-600 dark:text-yellow-400 text-xs font-medium">AI Status</div>
-              <Activity className="h-3 w-3 text-yellow-600 dark:text-yellow-400" />
+              <div className="text-amber-700 dark:text-yellow-400 text-xs font-semibold">AI Status</div>
+              <Activity className="h-3 w-3 text-amber-700 dark:text-yellow-400" />
             </div>
             <div className="text-gray-900 dark:text-gray-100 text-sm font-bold">Online</div>
-            <div className="inline-block w-2 h-2 bg-green-500 dark:bg-green-400 rounded-full animate-pulse"></div>
+            <div className="inline-block w-2 h-2 bg-green-600 dark:bg-green-400 rounded-full animate-pulse"></div>
           </div>
         </div>
         
         <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-4">
-          <TabsList className="grid w-full grid-cols-5 lg:grid-cols-10 bg-white dark:bg-gray-800 rounded-xl p-1 border border-gray-200 dark:border-gray-700">
+          <TabsList className="grid w-full grid-cols-5 lg:grid-cols-10 bg-white dark:bg-gray-800 rounded-xl p-1 border border-gray-300 dark:border-gray-700 shadow-sm">
             {tabs.map((tab) => (
               <TabsTrigger
                 key={tab.id}
                 value={tab.id}
                 className={`
-                  flex items-center justify-center gap-1 px-2 py-2 rounded-lg transition-all text-xs
+                  flex items-center justify-center gap-1 px-2 py-2 rounded-lg transition-all text-xs font-medium
                   data-[state=active]:bg-blue-600 data-[state=active]:text-white data-[state=active]:shadow-lg
-                  text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700
+                  text-gray-800 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700
                 `}
               >
                 <tab.icon className="h-3 w-3" />
-                <span className="hidden sm:inline font-medium">{tab.label}</span>
+                <span className="hidden sm:inline">{tab.label}</span>
               </TabsTrigger>
             ))}
           </TabsList>
           
-          <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 shadow-sm">
+          <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-300 dark:border-gray-700 p-4 shadow-sm">
             {renderTabContent()}
           </div>
         </Tabs>

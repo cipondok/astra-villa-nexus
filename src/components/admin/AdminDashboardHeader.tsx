@@ -132,38 +132,38 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
 
   return (
     <div className="relative bg-gradient-to-r from-blue-600 to-blue-700 dark:from-gray-800 dark:to-gray-900 text-white transition-all duration-300">
-      {/* Compact Header */}
-      <div className="relative container mx-auto px-4 py-4">
+      {/* Ultra Compact Header */}
+      <div className="relative container mx-auto px-4 py-2">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-white/20 dark:bg-gray-700/60 backdrop-blur-sm rounded-lg border border-white/30 dark:border-gray-600/50">
-              <Shield className="h-6 w-6 text-white" />
+          <div className="flex items-center gap-2">
+            <div className="p-1.5 bg-white/20 dark:bg-gray-700/60 backdrop-blur-sm rounded-lg border border-white/30 dark:border-gray-600/50">
+              <Shield className="h-5 w-5 text-white" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-white">
-                ASTRA AI Control Center
+              <h1 className="text-lg font-bold text-white">
+                ASTRA Control Center
               </h1>
-              <p className="text-blue-100 dark:text-gray-300 text-sm">
-                Welcome back, {displayName}
+              <p className="text-blue-100 dark:text-gray-300 text-xs">
+                Welcome, {displayName}
               </p>
             </div>
           </div>
           
           <div className="flex items-center gap-2">
             {/* Compact Status Badges */}
-            <Badge variant="outline" className="bg-green-500/20 text-green-100 border-green-400/50 px-3 py-1 text-xs">
-              <Activity className="h-3 w-3 mr-1" />
+            <Badge variant="outline" className="bg-green-500/20 text-green-100 border-green-400/50 px-2 py-0.5 text-xs">
+              <Activity className="h-2 w-2 mr-1" />
               Online
             </Badge>
             
             {sessionTime && (
               <Badge 
                 variant="outline" 
-                className="bg-blue-500/20 text-blue-100 border-blue-400/50 px-3 py-1 text-xs cursor-pointer hover:bg-blue-500/30"
+                className="bg-blue-500/20 text-blue-100 border-blue-400/50 px-2 py-0.5 text-xs cursor-pointer hover:bg-blue-500/30"
                 onClick={handleExtendSession}
                 title="Click to extend session"
               >
-                <Clock className="h-3 w-3 mr-1" />
+                <Clock className="h-2 w-2 mr-1" />
                 {sessionTime}
               </Badge>
             )}
@@ -173,14 +173,14 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
               onClick={() => navigate('/')}
               variant="ghost"
               size="sm"
-              className="bg-white/10 hover:bg-white/20 text-white border border-white/20 px-3 py-1"
+              className="bg-white/10 hover:bg-white/20 text-white border border-white/20 px-2 py-1 h-8"
             >
-              <Home className="h-4 w-4" />
+              <Home className="h-3 w-3" />
             </Button>
 
             {/* Theme Switcher */}
             <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg">
-              <ThemeSwitcher variant="compact" className="px-2" />
+              <ThemeSwitcher variant="compact" className="px-1" />
             </div>
 
             {/* Enhanced Real-time Alerts Button */}
@@ -194,13 +194,13 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="bg-white/10 hover:bg-white/20 text-white border border-white/20 px-3 py-1 flex items-center gap-2"
+                  className="bg-white/10 hover:bg-white/20 text-white border border-white/20 px-2 py-1 h-8 flex items-center gap-1"
                 >
-                  <div className="w-6 h-6 bg-blue-600 dark:bg-blue-700 rounded-full flex items-center justify-center">
-                    <User className="h-3 w-3 text-white" />
+                  <div className="w-5 h-5 bg-blue-600 dark:bg-blue-700 rounded-full flex items-center justify-center">
+                    <User className="h-2 w-2 text-white" />
                   </div>
-                  <span className="hidden md:block text-sm">{displayName}</span>
-                  <ChevronDown className="h-3 w-3" />
+                  <span className="hidden md:block text-xs">{displayName}</span>
+                  <ChevronDown className="h-2 w-2" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-64 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 z-50">
