@@ -279,27 +279,31 @@ const SmartSearchPanel = ({ language, onSearch, onLiveSearch }: SmartSearchPanel
   };
 
   const handlePriceRangeChange = (values: number[]) => {
-    setFilters(prev => ({ 
-      ...prev, 
-      priceRange: [values[0], values[1]] as [number, number],
-      priceMin: values[0].toString(),
-      priceMax: values[1].toString()
-    }));
+    if (values.length === 2) {
+      setFilters(prev => ({ 
+        ...prev, 
+        priceRange: [values[0], values[1]] as [number, number],
+        priceMin: values[0].toString(),
+        priceMax: values[1].toString()
+      }));
+    }
   };
 
   const handleManualPriceChange = (type: 'min' | 'max', value: string) => {
     const numValue = parseIDRInput(value);
     if (type === 'min') {
+      const newMin = Math.min(numValue, filters.priceRange[1] - 50000000); // Ensure min is less than max
       setFilters(prev => ({
         ...prev,
-        priceMin: numValue.toString(),
-        priceRange: [numValue, prev.priceRange[1]] as [number, number]
+        priceMin: newMin.toString(),
+        priceRange: [newMin, prev.priceRange[1]] as [number, number]
       }));
     } else {
+      const newMax = Math.max(numValue, filters.priceRange[0] + 50000000); // Ensure max is greater than min
       setFilters(prev => ({
         ...prev,
-        priceMax: numValue.toString(),
-        priceRange: [prev.priceRange[0], numValue] as [number, number]
+        priceMax: newMax.toString(),
+        priceRange: [prev.priceRange[0], newMax] as [number, number]
       }));
     }
   };
