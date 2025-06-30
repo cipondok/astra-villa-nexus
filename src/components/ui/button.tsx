@@ -10,12 +10,13 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "macos-button-primary",
+        default: "btn-primary",
         destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90 border border-destructive",
-        outline: "macos-button border-input hover:bg-accent hover:text-accent-foreground",
-        secondary: "macos-button-secondary",
+        outline: "macos-button-secondary border-input hover:bg-accent hover:text-accent-foreground",
+        secondary: "btn-secondary",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
+        cta: "btn-cta",
       },
       size: {
         default: "h-10 px-4 py-2",

@@ -16,19 +16,19 @@
     --card-foreground: 0 0 0;
     --popover: 255 255 255;
     --popover-foreground: 0 0 0;
-    --primary: 0 122 255;
-    --primary-foreground: 255 255 255;
-    --secondary: 246 246 246;
-    --secondary-foreground: 0 0 0;
-    --muted: 246 246 246;
+    --primary: 255 153 0;
+    --primary-foreground: 0 0 0;
+    --secondary: 240 242 242;
+    --secondary-foreground: 15 17 17;
+    --muted: 240 242 242;
     --muted-foreground: 107 114 126;
     --accent: 0 122 255;
     --accent-foreground: 255 255 255;
     --destructive: 255 59 48;
     --destructive-foreground: 255 255 255;
-    --border: 229 229 234;
+    --border: 213 217 217;
     --input: 255 255 255;
-    --ring: 0 122 255;
+    --ring: 255 153 0;
     --radius: 12px;
   }
 
@@ -40,32 +40,31 @@
     --card-foreground: 255 255 255;
     --popover: 17 17 17;
     --popover-foreground: 255 255 255;
-    --primary: 10 132 255;
-    --primary-foreground: 255 255 255;
+    --primary: 255 153 0;
+    --primary-foreground: 0 0 0;
     --secondary: 39 39 42;
     --secondary-foreground: 255 255 255;
     --muted: 39 39 42;
     --muted-foreground: 161 161 170;
-    --accent: 10 132 255;
+    --accent: 0 122 255;
     --accent-foreground: 255 255 255;
     --destructive: 255 69 58;
     --destructive-foreground: 255 255 255;
     --border: 39 39 42;
     --input: 39 39 42;
-    --ring: 10 132 255;
+    --ring: 255 153 0;
   }
 
   * {
     @apply border-border;
   }
 
-  /* Force background colors with high specificity */
   html {
-    background-color: rgb(255, 255, 255);
+    background-color: rgb(255, 255, 255) !important;
   }
 
   html.dark {
-    background-color: rgb(0, 0, 0);
+    background-color: rgb(0, 0, 0) !important;
   }
 
   body {
@@ -102,55 +101,78 @@
 }
 
 @layer components {
-  /* Apple Glass Effect */
-  .apple-glass {
-    @apply backdrop-blur-xl border transition-all duration-300;
-    background: hsl(var(--card) / 0.95);
-    border-color: hsl(var(--border));
-    box-shadow: 0 4px 16px hsl(var(--foreground) / 0.08);
+  /* Amazon-Style Button Colors */
+  .btn-primary {
+    background: #FF9900;
+    color: #000000;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .btn-primary:hover {
+    background: #FF8C00;
   }
 
-  /* macOS Button Styles */
-  .macos-button {
-    @apply inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200;
-    border: 1px solid hsl(var(--border));
-    background: hsl(var(--background));
-    color: hsl(var(--foreground));
-    box-shadow: 0 1px 3px hsl(var(--foreground) / 0.08);
+  .btn-secondary {
+    background: #F0F2F2;
+    color: #0F1111;
+    border: 1px solid #D5D9D9;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .btn-secondary:hover {
+    background: #E2E5E5;
   }
 
-  .macos-button:hover {
-    background: hsl(var(--muted));
-    transform: none;
+  .btn-cta {
+    background: #007AFF;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .btn-cta:hover {
+    background: #0066CC;
   }
 
-  .macos-button:active {
-    transform: scale(0.98);
-    background: hsl(var(--muted) / 0.8);
-  }
-
+  /* Updated component button styles to use Amazon colors */
   .macos-button-primary {
-    background: hsl(var(--primary));
-    color: hsl(var(--primary-foreground));
-    border-color: hsl(var(--primary));
-    box-shadow: 0 1px 3px hsl(var(--primary) / 0.3);
+    background: #FF9900;
+    color: #000000;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
   }
 
   .macos-button-primary:hover {
-    background: hsl(var(--primary) / 0.9);
+    background: #FF8C00;
     transform: none;
   }
 
   .macos-button-primary:active {
     transform: scale(0.98);
-    background: hsl(var(--primary) / 0.8);
+    background: #E6800A;
   }
 
   .macos-button-secondary {
-    @apply bg-secondary text-secondary-foreground border;
-    border-color: hsl(var(--border));
+    background: #F0F2F2;
+    color: #0F1111;
+    border: 1px solid #D5D9D9;
     padding: 8px 16px;
-    border-radius: 8px;
+    border-radius: 6px;
     font-weight: 500;
     font-size: 14px;
     cursor: pointer;
@@ -158,7 +180,7 @@
   }
 
   .macos-button-secondary:hover {
-    @apply bg-secondary/80;
+    background: #E2E5E5;
     transform: none;
   }
 
@@ -166,58 +188,33 @@
     transform: scale(0.98);
   }
 
-  /* macOS Select/Dropdown Styles */
-  .macos-select {
-    @apply border-2 rounded-lg transition-all duration-200;
-    border-color: hsl(var(--border));
-    background: hsl(var(--background));
-    color: hsl(var(--foreground));
-    box-shadow: 0 1px 3px hsl(var(--foreground) / 0.08);
-  }
-
-  .macos-select:hover {
-    border-color: hsl(var(--primary) / 0.5);
-    transform: none;
-  }
-
-  .macos-select:focus {
-    border-color: hsl(var(--primary));
-    box-shadow: 0 0 0 3px hsl(var(--primary) / 0.2);
-    outline: none;
-  }
-
-  /* Remove all icon hover effects */
-  .no-hover-effect {
-    transition: none !important;
-  }
-
-  .no-hover-effect:hover {
-    transform: none !important;
-    scale: none !important;
-    color: inherit !important;
-  }
-
-  /* Apple Buttons - Updated without hover effects */
   .apple-button-primary {
-    background: hsl(var(--primary));
-    color: hsl(var(--primary-foreground));
-    padding: 8px 16px;
+    background: #FF9900;
+    color: #000000;
+    padding: 10px 20px;
     border-radius: 8px;
-    font-weight: 500;
+    font-weight: bold;
     font-size: 14px;
     border: none;
     cursor: pointer;
     transition: background-color 0.2s ease;
-    box-shadow: 0 1px 3px hsl(var(--primary) / 0.2);
   }
 
   .apple-button-primary:hover {
-    background: hsl(var(--primary) / 0.9);
+    background: #FF8C00;
     transform: none;
   }
 
   .apple-button-primary:active {
     transform: scale(0.98);
+  }
+
+  /* Apple Glass Effect */
+  .apple-glass {
+    @apply backdrop-blur-xl border transition-all duration-300;
+    background: hsl(var(--card) / 0.95);
+    border-color: hsl(var(--border));
+    box-shadow: 0 4px 16px hsl(var(--foreground) / 0.08);
   }
 
   /* Search Panel - Responsive Background */
@@ -233,8 +230,8 @@
   }
 
   .search-panel-input:focus {
-    border-color: hsl(var(--primary));
-    box-shadow: 0 0 0 2px hsl(var(--primary) / 0.2);
+    border-color: #FF9900;
+    box-shadow: 0 0 0 2px rgba(255, 153, 0, 0.2);
   }
 
   .trending-tag {
@@ -244,9 +241,9 @@
   }
 
   .trending-tag:hover {
-    background: hsl(var(--primary) / 0.1);
-    color: hsl(var(--primary));
-    border-color: hsl(var(--primary) / 0.3);
+    background: rgba(255, 153, 0, 0.1);
+    color: #FF9900;
+    border-color: rgba(255, 153, 0, 0.3);
   }
 
   /* Apple Cards */
@@ -260,7 +257,7 @@
 
   .apple-card:hover {
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px hsl(var(--primary) / 0.1);
+    box-shadow: 0 4px 12px rgba(255, 153, 0, 0.1);
   }
 
   /* Navigation Styles */
@@ -281,11 +278,13 @@
   }
 
   .apple-nav-item:hover {
-    @apply text-primary bg-primary/10;
+    color: #FF9900;
+    background: rgba(255, 153, 0, 0.1);
   }
 
   .apple-nav-item.active {
-    @apply text-primary bg-primary/15;
+    color: #FF9900;
+    background: rgba(255, 153, 0, 0.15);
   }
 
   /* Input Styles */
@@ -301,14 +300,9 @@
     box-shadow: 0 1px 3px hsl(var(--foreground) / 0.06);
   }
 
-  /* Dropdown Enhancement */
-  .apple-dropdown {
-    @apply backdrop-blur-xl border border-border;
-    background: hsl(var(--popover));
-    border-radius: calc(var(--radius) + 4px);
-    box-shadow: 0 4px 16px hsl(var(--foreground) / 0.08);
-    animation: dropdown-appear 0.15s ease;
-    z-index: 50;
+  .apple-input:focus {
+    border-color: #FF9900;
+    box-shadow: 0 0 0 2px rgba(255, 153, 0, 0.2);
   }
 
   /* Text Styles */
@@ -327,19 +321,7 @@
   }
 
   .apple-text-gradient {
-    color: hsl(var(--primary));
-  }
-}
-
-/* Keyframe Animations */
-@keyframes dropdown-appear {
-  from {
-    opacity: 0;
-    transform: translateY(-4px) scale(0.98);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
+    color: #FF9900;
   }
 }
 
