@@ -133,20 +133,20 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background text-foreground">
       <Navigation />
       
-      {/* Hero Section */}
-      <section className="relative py-20 px-4 bg-gradient-to-b from-background to-secondary/20">
+      {/* Hero Section - Clean White Background */}
+      <section className="relative py-20 px-4 bg-white">
         <div className="container mx-auto text-center">
           <div className="mb-12 animate-fade-in">
-            <h1 className="apple-title mb-4">
+            <h1 className="apple-title mb-4 text-black">
               Find Your Perfect Property
               <span className="block text-xl apple-text-gradient font-medium mt-2">
                 AI-Powered Real Estate Platform
               </span>
             </h1>
-            <p className="apple-subtitle max-w-2xl mx-auto">
+            <p className="apple-subtitle max-w-2xl mx-auto text-gray-600">
               Discover premium properties with advanced AI search technology
             </p>
           </div>
@@ -162,7 +162,7 @@ const Index = () => {
       </section>
 
       {/* Quick Actions */}
-      <section className="py-12 bg-secondary/10">
+      <section className="py-12 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="flex flex-wrap justify-center gap-4">
             <Button 
@@ -205,7 +205,7 @@ const Index = () => {
       )}
 
       {/* Property Listings */}
-      <div className="px-4 bg-secondary/5">
+      <div className="px-4 bg-white">
         <PropertyListingsSection
           language={language}
           searchResults={hasSearched ? searchResults : featuredProperties}
