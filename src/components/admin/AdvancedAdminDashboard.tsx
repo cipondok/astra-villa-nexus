@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -38,15 +39,15 @@ const AdvancedAdminDashboard = () => {
       case 'system':
         return <SystemSettings />;
       case 'blockchain':
-        return <div className="text-white">Blockchain Tools - Coming Soon</div>;
+        return <div className="text-foreground dark:text-white">Blockchain Tools - Coming Soon</div>;
       case 'monitor':
         return <AdminOverview />;
       case 'errors':
-        return <div className="text-white">Error Management - Coming Soon</div>;
+        return <div className="text-foreground dark:text-white">Error Management - Coming Soon</div>;
       case 'chat':
-        return <div className="text-white">Chat Management - Coming Soon</div>;
+        return <div className="text-foreground dark:text-white">Chat Management - Coming Soon</div>;
       case 'database':
-        return <div className="text-white">Database Management - Coming Soon</div>;
+        return <div className="text-foreground dark:text-white">Database Management - Coming Soon</div>;
       default:
         console.log('AdvancedAdminDashboard - Unknown tab, showing analytics');
         return <AnalyticsDashboard />;
@@ -117,17 +118,17 @@ const AdvancedAdminDashboard = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-blue-900">
+    <div className="min-h-screen bg-gradient-to-br from-background via-secondary/20 to-primary/10 dark:from-slate-900 dark:via-purple-900/20 dark:to-blue-900/20 transition-all duration-300">
       <div className="container mx-auto px-4 py-6 space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-r from-purple-600 to-blue-600 flex items-center justify-center">
-              <Crown className="h-6 w-6 text-white" />
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-r from-primary to-secondary dark:from-purple-600 dark:to-blue-600 flex items-center justify-center">
+              <Crown className="h-6 w-6 text-primary-foreground" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-white">ASTRA AI Control Center</h1>
-              <p className="text-purple-300">
+              <h1 className="text-3xl font-bold text-foreground dark:text-white">ASTRA AI Control Center</h1>
+              <p className="text-muted-foreground dark:text-purple-300">
                 Advanced System Monitoring & Management
               </p>
             </div>
@@ -135,10 +136,10 @@ const AdvancedAdminDashboard = () => {
           <div className="flex items-center space-x-3">
             <SimpleThemeToggle />
             <div className="text-right">
-              <div className="text-sm text-gray-300">Welcome back,</div>
-              <div className="text-cyan-400 font-medium">admin@astra.com</div>
+              <div className="text-sm text-muted-foreground dark:text-slate-300">Welcome back,</div>
+              <div className="text-primary dark:text-cyan-400 font-medium">admin@astra.com</div>
             </div>
-            <Button variant="outline" className="bg-slate-800/50 border-purple-500/20 text-white hover:bg-slate-700/50">
+            <Button variant="outline" className="border-border dark:border-purple-500/20 text-foreground dark:text-white hover:bg-accent dark:hover:bg-slate-700/50">
               Sign Out
             </Button>
           </div>
@@ -146,72 +147,73 @@ const AdvancedAdminDashboard = () => {
 
         {/* Stats Overview */}
         <div className="grid grid-cols-2 lg:grid-cols-6 gap-4">
-          <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-4 border border-cyan-500/20">
+          <div className="bg-card/80 dark:bg-slate-800/50 backdrop-blur-sm rounded-2xl p-4 border border-border dark:border-cyan-500/20">
             <div className="flex items-center justify-between mb-2">
-              <div className="text-cyan-400 text-sm">Total Users</div>
-              <Users className="h-4 w-4 text-cyan-400" />
+              <div className="text-primary dark:text-cyan-400 text-sm">Total Users</div>
+              <Users className="h-4 w-4 text-primary dark:text-cyan-400" />
             </div>
-            <div className="text-white text-2xl font-bold">12,547</div>
-            <div className="text-green-400 text-xs">+18.5% from last month</div>
+            <div className="text-foreground dark:text-white text-2xl font-bold">12,547</div>
+            <div className="text-green-600 dark:text-green-400 text-xs">+18.5% from last month</div>
           </div>
           
-          <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-4 border border-green-500/20">
+          <div className="bg-card/80 dark:bg-slate-800/50 backdrop-blur-sm rounded-2xl p-4 border border-border dark:border-green-500/20">
             <div className="flex items-center justify-between mb-2">
-              <div className="text-green-400 text-sm">Active Users</div>
-              <Activity className="h-4 w-4 text-green-400" />
+              <div className="text-green-600 dark:text-green-400 text-sm">Active Users</div>
+              <Activity className="h-4 w-4 text-green-600 dark:text-green-400" />
             </div>
-            <div className="text-white text-2xl font-bold">8,234</div>
-            <div className="text-green-400 text-xs">Currently online</div>
+            <div className="text-foreground dark:text-white text-2xl font-bold">8,234</div>
+            <div className="text-green-600 dark:text-green-400 text-xs">Currently online</div>
           </div>
 
-          <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-4 border border-orange-500/20">
+          <div className="bg-card/80 dark:bg-slate-800/50 backdrop-blur-sm rounded-2xl p-4 border border-border dark:border-orange-500/20">
             <div className="flex items-center justify-between mb-2">
-              <div className="text-orange-400 text-sm">Unresolved Errors</div>
-              <Shield className="h-4 w-4 text-orange-400" />
+              <div className="text-orange-600 dark:text-orange-400 text-sm">Unresolved Errors</div>
+              <Shield className="h-4 w-4 text-orange-600 dark:text-orange-400" />
             </div>
-            <div className="text-white text-2xl font-bold">0</div>
-            <div className="text-green-400 text-xs">All systems operational</div>
+            <div className="text-foreground dark:text-white text-2xl font-bold">0</div>
+            <div className="text-green-600 dark:text-green-400 text-xs">All systems operational</div>
           </div>
 
-          <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-4 border border-blue-500/20">
+          <div className="bg-card/80 dark:bg-slate-800/50 backdrop-blur-sm rounded-2xl p-4 border border-border dark:border-blue-500/20">
             <div className="flex items-center justify-between mb-2">
-              <div className="text-blue-400 text-sm">Total Transfers</div>
-              <TrendingUp className="h-4 w-4 text-blue-400" />
+              <div className="text-blue-600 dark:text-blue-400 text-sm">Total Transfers</div>
+              <TrendingUp className="h-4 w-4 text-blue-600 dark:text-blue-400" />
             </div>
-            <div className="text-white text-2xl font-bold">$45,789</div>
-            <div className="text-green-400 text-xs">+12.3% this week</div>
+            <div className="text-foreground dark:text-white text-2xl font-bold">$45,789</div>
+            <div className="text-green-600 dark:text-green-400 text-xs">+12.3% this week</div>
           </div>
 
-          <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-4 border border-purple-500/20">
+          <div className="bg-card/80 dark:bg-slate-800/50 backdrop-blur-sm rounded-2xl p-4 border border-border dark:border-purple-500/20">
             <div className="flex items-center justify-between mb-2">
-              <div className="text-purple-400 text-sm">System Health</div>
-              <Zap className="h-4 w-4 text-purple-400" />
+              <div className="text-purple-600 dark:text-purple-400 text-sm">System Health</div>
+              <Zap className="h-4 w-4 text-purple-600 dark:text-purple-400" />
             </div>
-            <div className="text-white text-2xl font-bold">98.5%</div>
-            <div className="text-green-400 text-xs">Excellent performance</div>
+            <div className="text-foreground dark:text-white text-2xl font-bold">98.5%</div>
+            <div className="text-green-600 dark:text-green-400 text-xs">Excellent performance</div>
           </div>
 
-          <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-4 border border-yellow-500/20">
+          <div className="bg-card/80 dark:bg-slate-800/50 backdrop-blur-sm rounded-2xl p-4 border border-border dark:border-yellow-500/20">
             <div className="flex items-center justify-between mb-2">
-              <div className="text-yellow-400 text-sm">AI Status</div>
-              <Activity className="h-4 w-4 text-yellow-400" />
+              <div className="text-yellow-600 dark:text-yellow-400 text-sm">AI Status</div>
+              <Activity className="h-4 w-4 text-yellow-600 dark:text-yellow-400" />
             </div>
-            <div className="text-white text-lg font-bold">Online</div>
-            <div className="inline-block w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+            <div className="text-foreground dark:text-white text-lg font-bold">Online</div>
+            <div className="inline-block w-2 h-2 bg-green-500 dark:bg-green-400 rounded-full animate-pulse"></div>
           </div>
         </div>
         
         <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5 lg:grid-cols-10 bg-slate-800/50 rounded-2xl p-2 border border-purple-500/20">
+          <TabsList className="grid w-full grid-cols-5 lg:grid-cols-10 bg-card/50 dark:bg-slate-800/50 rounded-2xl p-2 border border-border dark:border-purple-500/20">
             {tabs.map((tab) => (
               <TabsTrigger
                 key={tab.id}
                 value={tab.id}
                 className={`
                   flex items-center justify-center gap-2 px-3 py-3 rounded-xl transition-all
-                  data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600 
-                  data-[state=active]:text-white data-[state=active]:shadow-lg
-                  text-gray-400 hover:text-white hover:bg-slate-700/50
+                  data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-secondary 
+                  dark:data-[state=active]:from-purple-600 dark:data-[state=active]:to-blue-600
+                  data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg
+                  text-muted-foreground dark:text-slate-400 hover:text-foreground dark:hover:text-white hover:bg-accent dark:hover:bg-slate-700/50
                 `}
               >
                 <tab.icon className="h-4 w-4" />
@@ -220,7 +222,7 @@ const AdvancedAdminDashboard = () => {
             ))}
           </TabsList>
           
-          <div className="mt-6 bg-slate-900/50 rounded-2xl border border-slate-700/50 p-6">
+          <div className="mt-6 bg-card/50 dark:bg-slate-900/50 rounded-2xl border border-border dark:border-slate-700/50 p-6">
             {renderTabContent()}
           </div>
         </Tabs>

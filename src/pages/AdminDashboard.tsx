@@ -45,11 +45,11 @@ const AdminDashboard = () => {
 
   if (!isAdmin) {
     return (
-      <div className="min-h-screen bg-background dark:bg-gray-900 text-foreground dark:text-gray-100 transition-colors duration-300">
+      <div className="min-h-screen bg-background dark:bg-slate-900 text-foreground dark:text-slate-100 transition-colors duration-300">
         <div className="container mx-auto px-4 py-8">
-          <Alert className="bg-card dark:bg-gray-800 border-border dark:border-gray-700">
+          <Alert className="bg-card dark:bg-slate-800 border-border dark:border-slate-700">
             <AlertTriangle className="h-4 w-4 text-destructive dark:text-red-400" />
-            <AlertDescription className="text-foreground dark:text-gray-200">
+            <AlertDescription className="text-foreground dark:text-slate-200">
               Admin access required to view this dashboard
             </AlertDescription>
           </Alert>
@@ -62,7 +62,7 @@ const AdminDashboard = () => {
             </button>
             <button 
               onClick={() => navigate('/?auth=true', { replace: true })}
-              className="bg-secondary dark:bg-gray-700 text-secondary-foreground dark:text-gray-200 px-4 py-2 rounded hover:bg-secondary/90 dark:hover:bg-gray-600 transition-colors"
+              className="bg-secondary dark:bg-slate-700 text-secondary-foreground dark:text-slate-200 px-4 py-2 rounded hover:bg-secondary/90 dark:hover:bg-slate-600 transition-colors"
             >
               Re-login
             </button>
@@ -73,7 +73,7 @@ const AdminDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background dark:bg-gray-900 text-foreground dark:text-gray-100 transition-colors duration-300">
+    <div className="min-h-screen bg-background dark:bg-slate-900 text-foreground dark:text-slate-100 transition-colors duration-300">
       <AlertMonitoringProvider>
         <AdvancedAdminDashboard />
       </AlertMonitoringProvider>

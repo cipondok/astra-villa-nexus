@@ -56,20 +56,20 @@ const AdminDashboardPage = () => {
   
   if (!isAdmin) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background dark:bg-gray-900 text-foreground dark:text-gray-100 transition-colors duration-300">
+      <div className="min-h-screen flex items-center justify-center bg-background dark:bg-slate-900 text-foreground dark:text-slate-100 transition-colors duration-300">
         <div className="text-center">
-          <h2 className="text-xl font-semibold mb-2 dark:text-gray-100">Access Denied</h2>
-          <p className="text-muted-foreground dark:text-gray-400 mb-4">Admin privileges required to access this dashboard</p>
+          <h2 className="text-xl font-semibold mb-2 dark:text-slate-100">Access Denied</h2>
+          <p className="text-muted-foreground dark:text-slate-400 mb-4">Admin privileges required to access this dashboard</p>
           <div className="space-x-2">
             <button 
               onClick={() => navigate('/dashboard', { replace: true })}
-              className="bg-blue-500 dark:bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-600 dark:hover:bg-blue-700 transition-colors"
+              className="bg-primary dark:bg-blue-600 text-primary-foreground px-4 py-2 rounded hover:bg-primary/90 dark:hover:bg-blue-700 transition-colors"
             >
               Go to Dashboard
             </button>
             <button 
               onClick={() => navigate('/?auth=true', { replace: true })}
-              className="bg-gray-500 dark:bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-600 dark:hover:bg-gray-700 transition-colors"
+              className="bg-secondary dark:bg-slate-600 text-secondary-foreground px-4 py-2 rounded hover:bg-secondary/90 dark:hover:bg-slate-700 transition-colors"
             >
               Re-login
             </button>
