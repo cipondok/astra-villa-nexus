@@ -137,10 +137,10 @@ const Index = () => {
       <Navigation />
       
       {/* Hero Section - Apple WWDC 2025 Style */}
-      <section className="relative py-20 px-4 bg-background">
+      <section className="relative py-16 px-4 bg-background">
         <div className="container mx-auto text-center">
-          <div className="mb-12 animate-fade-in">
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+          <div className="mb-10 animate-fade-in">
+            <h1 className="text-3xl md:text-5xl font-bold mb-4 leading-tight">
               <span className="inline-block bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 dark:from-blue-300 dark:via-purple-400 dark:to-cyan-300 bg-clip-text text-transparent animate-gradient bg-[length:300%_300%] font-extrabold tracking-tight">
                 Find Your Perfect
               </span>
@@ -150,16 +150,16 @@ const Index = () => {
               </span>
             </h1>
             
-            <div className="relative mb-6">
-              <h2 className="text-2xl md:text-3xl font-semibold text-white dark:text-white drop-shadow-2xl">
-                <span className="inline-block px-6 py-3 bg-gradient-to-r from-blue-500/90 to-purple-600/90 dark:from-blue-400/90 dark:to-purple-500/90 rounded-2xl backdrop-blur-sm border border-white/20 shadow-2xl">
+            <div className="relative mb-4">
+              <h2 className="text-lg md:text-xl font-semibold text-white dark:text-white drop-shadow-lg">
+                <span className="inline-block px-4 py-2 bg-gradient-to-r from-blue-500/90 to-purple-600/90 dark:from-blue-400/90 dark:to-purple-500/90 rounded-xl backdrop-blur-sm border border-white/20 shadow-lg">
                   AI-Powered Real Estate Platform
                 </span>
               </h2>
             </div>
             
-            <p className="text-lg md:text-xl max-w-3xl mx-auto leading-relaxed">
-              <span className="inline-block px-4 py-2 bg-white/95 dark:bg-slate-800/95 text-slate-800 dark:text-slate-100 rounded-xl backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 shadow-lg font-medium">
+            <p className="text-sm md:text-base max-w-2xl mx-auto leading-relaxed">
+              <span className="inline-block px-3 py-1.5 bg-white/95 dark:bg-slate-800/95 text-slate-800 dark:text-slate-100 rounded-lg backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 shadow-md font-medium">
                 Discover premium properties with advanced AI search technology
               </span>
             </p>
