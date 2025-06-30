@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Navigation from "@/components/Navigation";
@@ -193,7 +194,7 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Single Featured Properties Section */}
+      {/* Featured Properties Section */}
       <section className="py-16 bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12 animate-fade-in">
