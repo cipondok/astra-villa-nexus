@@ -340,7 +340,21 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
     setSearchQuery(value);
   }, []);
 
-  const hasActiveFilters = searchQuery || propertyType || bedrooms || bathrooms || location || has3D || selectedState || selectedCity || selectedArea || bedPills || bathPills || smartFacilities.length;
+  // Calculate active filter count
+  const activeFilterCount = useMemo(() => {
+    let count = 0;
+    if (propertyType) count++;
+    if (selectedState) count++;
+    if (selectedCity) count++;
+    if (selectedArea) count++;
+    if (bedPills) count++;
+    if (bathPills) count++;
+    if (has3D) count++;
+    if (selectedSmartFacilities.length > 0) count++;
+    return count;
+  }, [propertyType, selectedState, selectedCity, selectedArea, bedPills, bathPills, has3D, selectedSmartFacilities]);
+
+  const hasActiveFilters = searchQuery || activeFilterCount > 0;
 
   // Pill group change handlers for toggle-off by clicking again
   const handleBedPillsChange = (val: string | string[]) => {
@@ -409,13 +423,13 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
         </DialogContent>
       </Dialog>
 
-      {/* Slim, Centered Search Panel for Wide Screens */}
-      <div className="w-full max-w-6xl mx-auto px-3 sm:px-4 lg:px-6">
-        <Card className="bg-gray-50/90 dark:bg-gray-800/90 backdrop-blur-xl border border-gray-200/40 dark:border-gray-700/40 shadow-lg transition-all duration-300 hover:shadow-xl rounded-xl">
-          <CardContent className="p-3 lg:p-4">
+      {/* Ultra Slim, Centered Search Panel */}
+      <div className="w-full max-w-5xl mx-auto px-2 sm:px-3">
+        <Card className="bg-gray-50/95 dark:bg-gray-800/95 backdrop-blur-xl border border-gray-200/50 dark:border-gray-700/50 shadow-md transition-all duration-300 hover:shadow-lg rounded-lg">
+          <CardContent className="p-2 lg:p-3">
 
-            {/* Property Type Toggle - Centered and Compact */}
-            <div className="mb-2 flex justify-center">
+            {/* Property Type Toggle - Ultra Compact */}
+            <div className="mb-1.5 flex justify-center">
               <IPhoneToggleGroup
                 options={[
                   { value: "", label: language === "id" ? "All" : "All", colorClass: "bg-blue-600 hover:bg-blue-700 text-white shadow-sm border-0" },
@@ -426,18 +440,18 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
                 ]}
                 value={propertyType}
                 onChange={setPropertyType}
-                className="flex gap-1"
+                className="flex gap-0.5"
               />
             </div>
 
-            {/* Main Search Bar - Centered Single Row */}
-            <div className="flex items-center justify-center gap-2 mb-2">
-              <div className="flex-1 max-w-2xl">
+            {/* Main Search Bar - Ultra Compact */}
+            <div className="flex items-center justify-center gap-1.5 mb-1.5">
+              <div className="flex-1 max-w-xl">
                 <div className="relative">
                   <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-3 w-3 text-gray-400" />
                   <Input
                     placeholder={currentText.search}
-                    className="pl-7 h-8 text-xs bg-white dark:bg-gray-900 border-gray-300/50 dark:border-gray-600/50 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-300 hover:shadow-md font-medium"
+                    className="pl-6 h-7 text-xs bg-white dark:bg-gray-900 border-gray-300/50 dark:border-gray-600/50 rounded-md shadow-sm focus:ring-1 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-300 hover:shadow-sm font-medium"
                     value={searchQuery}
                     onChange={handleSearchInputChange}
                     onKeyDown={handleKeyPress}
@@ -446,53 +460,105 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
               </div>
               <Button
                 onClick={handleManualSearch}
-                className="h-8 px-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-sm transition-all duration-300 hover:shadow-md hover:scale-105 text-xs"
+                className="h-7 px-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-md shadow-sm transition-all duration-300 hover:shadow-md hover:scale-105 text-xs"
               >
                 <Search className="h-3 w-3 mr-1" />
                 {language === "id" ? "Cari" : "Search"}
               </Button>
             </div>
 
-            {/* Advanced Filters Toggle - Centered */}
-            <div className="flex items-center justify-center gap-2 mb-2">
-              <Button
-                variant="ghost"
-                onClick={() => setShowAdvanced(v => !v)}
-                className="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-100/50 dark:hover:bg-gray-700/50 rounded-lg px-2 py-1 transition-all duration-200 text-xs font-medium"
-              >
-                <Filter className="h-3 w-3 mr-1" />
-                {showAdvanced
-                  ? (language === "id" ? "Hide" : "Hide")
-                  : (language === "id" ? "Filters" : "Filters")}
-              </Button>
-              {hasActiveFilters && (
+            {/* Filters and Popular in One Line - Ultra Compact */}
+            <div className="flex items-center justify-between gap-2 mb-1.5">
+              {/* Left: Filter Controls */}
+              <div className="flex items-center gap-1.5">
                 <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handleClearFilters}
-                  className="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 border-gray-300/50 dark:border-gray-600/50 rounded-lg px-2 py-1 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-all duration-200 text-xs"
+                  variant="ghost"
+                  onClick={() => setShowAdvanced(v => !v)}
+                  className="relative text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-100/50 dark:hover:bg-gray-700/50 rounded-md px-1.5 py-0.5 transition-all duration-200 text-xs font-medium h-6"
                 >
-                  <X className="h-3 w-3 mr-1" />
-                  {language === "id" ? "Clear" : "Clear"}
+                  <Filter className="h-3 w-3 mr-1" />
+                  {showAdvanced
+                    ? (language === "id" ? "Hide" : "Hide")
+                    : (language === "id" ? "Filters" : "Filters")}
+                  {activeFilterCount > 0 && (
+                    <Badge className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-red-500 text-white text-xs flex items-center justify-center p-0 border-0">
+                      {activeFilterCount}
+                    </Badge>
+                  )}
                 </Button>
-              )}
+                {hasActiveFilters && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleClearFilters}
+                    className="h-6 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 border-gray-300/50 dark:border-gray-600/50 rounded-md px-1.5 py-0.5 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-all duration-200 text-xs"
+                  >
+                    <X className="h-3 w-3 mr-0.5" />
+                    {language === "id" ? "Clear" : "Clear"}
+                  </Button>
+                )}
+              </div>
+
+              {/* Right: Popular Searches - Ultra Compact */}
+              <div className="flex items-center gap-1">
+                <span className="text-gray-500 dark:text-gray-400 text-xs font-medium hidden sm:inline">
+                  {language === "id" ? "Popular:" : "Popular:"}
+                </span>
+                <div className="flex gap-0.5">
+                  {
+                    (language === "id"
+                      ? ["Jakarta", "Bali", "Surabaya"]
+                      : ["Jakarta", "Bali", "Surabaya"]
+                    ).map((term, idx) => (
+                      <Badge
+                        key={idx}
+                        variant="secondary"
+                        className="cursor-pointer bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-300/50 dark:border-gray-600/50 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:border-blue-300/50 dark:hover:border-blue-600/50 transition-all duration-300 px-1.5 py-0.5 rounded-sm font-medium shadow-sm hover:shadow-md hover:scale-105 text-xs h-5"
+                        onClick={() => {
+                          const fullTerm = language === "id" 
+                            ? ["Apartemen Jakarta", "Villa Bali", "Rumah Surabaya"][idx]
+                            : ["Apartment Jakarta", "Villa Bali", "House Surabaya"][idx];
+                          setSearchQuery(fullTerm);
+                          setPropertyType("");
+                          setBedrooms("");
+                          setBathrooms("");
+                          setLocation("");
+                          setHas3D(false);
+                          const searchData = {
+                            query: fullTerm,
+                            propertyType: "",
+                            bedrooms: "",
+                            bathrooms: "",
+                            location: "",
+                            has3D: false
+                          };
+                          triggerSearch();
+                          setTimeout(() => onSearch(searchData), 600);
+                        }}
+                      >
+                        {term}
+                      </Badge>
+                    ))
+                  }
+                </div>
+              </div>
             </div>
             
-            {/* Slim Advanced Filters Section */}
+            {/* Ultra Compact Advanced Filters Section */}
             <div
               className={`overflow-hidden ${filterAnimBase} ${showAdvanced ? filterAnimVisible : filterAnimHidden}`}
-              style={{ minHeight: showAdvanced ? 120 : 0, maxHeight: showAdvanced ? 400 : 0 }}
+              style={{ minHeight: showAdvanced ? 80 : 0, maxHeight: showAdvanced ? 300 : 0 }}
               onTransitionEnd={() => {
                 if (!showAdvanced) setFiltersMounted(false);
               }}
             >
               {filtersMounted && (
-                <div className="p-2 bg-white/80 dark:bg-gray-900/80 rounded-lg border border-gray-200/50 dark:border-gray-700/50 shadow-sm">
-                  {/* Compact Filter Grid */}
-                  <div className="grid grid-cols-1 lg:grid-cols-5 gap-2 mb-2">
-                    {/* Location - Condensed */}
+                <div className="p-1.5 bg-white/90 dark:bg-gray-900/90 rounded-md border border-gray-200/50 dark:border-gray-700/50 shadow-sm">
+                  {/* Ultra Compact Filter Grid */}
+                  <div className="grid grid-cols-2 lg:grid-cols-6 gap-1.5 mb-1.5">
+                    {/* Location - Ultra Condensed */}
                     <div className="lg:col-span-2">
-                      <label className="block mb-1 text-gray-700 dark:text-gray-300 text-xs font-semibold">
+                      <label className="block mb-0.5 text-gray-700 dark:text-gray-300 text-xs font-semibold">
                         {language === "id" ? "Lokasi" : "Location"}
                       </label>
                       <LocationSelector
@@ -506,9 +572,9 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
                       />
                     </div>
                     
-                    {/* Bedrooms */}
+                    {/* Bedrooms - Ultra Compact */}
                     <div>
-                      <label className="block mb-1 text-gray-700 dark:text-gray-300 text-xs font-semibold">
+                      <label className="block mb-0.5 text-gray-700 dark:text-gray-300 text-xs font-semibold">
                         {language === "id" ? "Bed" : "Bed"}
                       </label>
                       <PillToggleGroup
@@ -524,9 +590,9 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
                       />
                     </div>
                     
-                    {/* Bathrooms */}
+                    {/* Bathrooms - Ultra Compact */}
                     <div>
-                      <label className="block mb-1 text-gray-700 dark:text-gray-300 text-xs font-semibold">
+                      <label className="block mb-0.5 text-gray-700 dark:text-gray-300 text-xs font-semibold">
                         {language === "id" ? "Bath" : "Bath"}
                       </label>
                       <PillToggleGroup
@@ -542,26 +608,26 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
                       />
                     </div>
                     
-                    {/* Smart Filters - Compact */}
-                    <div>
-                      <label className="block mb-1 text-gray-700 dark:text-gray-300 text-xs font-semibold">
+                    {/* Smart Filters - Ultra Compact */}
+                    <div className="lg:col-span-2">
+                      <label className="block mb-0.5 text-gray-700 dark:text-gray-300 text-xs font-semibold">
                         {language === "id" ? "Smart" : "Smart"}
                       </label>
-                      <div className="space-y-1">
-                        {smartFilterCategories.slice(0, 2).map((cat) => (
-                          <div key={cat.key} className="flex flex-wrap gap-1">
-                            {cat.options.slice(0, 2).map((option) => (
+                      <div className="flex flex-wrap gap-0.5">
+                        {smartFilterCategories.slice(0, 1).map((cat) => (
+                          <div key={cat.key} className="flex gap-0.5">
+                            {cat.options.slice(0, 3).map((option) => (
                               <button
                                 type="button"
                                 key={option.value}
                                 onClick={() => handleSmartFacilityToggle(option.value)}
-                                className={`px-1 py-0.5 rounded text-xs font-medium transition-all duration-300
+                                className={`px-1 py-0.5 rounded text-xs font-medium transition-all duration-300 h-5
                                   ${selectedSmartFacilities.includes(option.value)
                                     ? "bg-blue-600 text-white shadow-sm"
                                     : "bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-300 dark:hover:bg-gray-600"}
                                 `}
                               >
-                                {option.label.split(' ')[0]}
+                                {option.label.split(' ')[0].slice(0, 3)}
                               </button>
                             ))}
                           </div>
@@ -571,50 +637,6 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
                   </div>
                 </div>
               )}
-            </div>
-
-            {/* Popular Searches - Centered and Compact */}
-            <div className="text-center">
-              <p className="text-gray-600 dark:text-gray-400 mb-1 font-semibold text-xs">
-                {language === "id" ? "Popular:" : "Popular:"}
-              </p>
-              <div className="flex flex-wrap justify-center gap-1">
-                {
-                  (language === "id"
-                    ? ["Jakarta Apt", "Bali Villa", "Surabaya House"]
-                    : ["Jakarta Apt", "Bali Villa", "Surabaya House"]
-                  ).map((term, idx) => (
-                    <Badge
-                      key={idx}
-                      variant="secondary"
-                      className="cursor-pointer bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-300/50 dark:border-gray-600/50 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:border-blue-300/50 dark:hover:border-blue-600/50 transition-all duration-300 px-2 py-0.5 rounded-md font-medium shadow-sm hover:shadow-md hover:scale-105 text-xs"
-                      onClick={() => {
-                        const fullTerm = language === "id" 
-                          ? ["Apartemen Jakarta", "Villa Bali", "Rumah Surabaya"][idx]
-                          : ["Apartment Jakarta", "Villa Bali", "House Surabaya"][idx];
-                        setSearchQuery(fullTerm);
-                        setPropertyType("");
-                        setBedrooms("");
-                        setBathrooms("");
-                        setLocation("");
-                        setHas3D(false);
-                        const searchData = {
-                          query: fullTerm,
-                          propertyType: "",
-                          bedrooms: "",
-                          bathrooms: "",
-                          location: "",
-                          has3D: false
-                        };
-                        triggerSearch();
-                        setTimeout(() => onSearch(searchData), 600);
-                      }}
-                    >
-                      {term}
-                    </Badge>
-                  ))
-                }
-              </div>
             </div>
           </CardContent>
         </Card>
