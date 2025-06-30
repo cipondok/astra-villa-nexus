@@ -9,50 +9,56 @@
 /* Apple Design System Color Variables */
 @layer base {
   :root {
-    /* Light Mode - High Contrast Colors */
-    --background: 255 255 255;
+    /* Your Custom Color Scheme */
+    --primary: rgba(67, 97, 238, 0.8);        /* Blue-ish primary color */
+    --primary-dark: rgba(58, 12, 163, 0.8);   /* Darker purple variant */
+    --accent: rgba(247, 37, 133, 0.8);        /* Pink accent color */
+    --glass: rgba(255, 255, 255, 0.6);        /* Semi-transparent white for glass effect */
+    
+    /* Light Mode - Updated with your color scheme */
+    --background: 240 248 255;
     --foreground: 0 0 0;
     --card: 255 255 255;
     --card-foreground: 0 0 0;
     --popover: 255 255 255;
     --popover-foreground: 0 0 0;
-    --primary: 255 153 0;
-    --primary-foreground: 0 0 0;
+    --primary-hsl: 67 97 238;
+    --primary-foreground: 255 255 255;
     --secondary: 240 242 242;
     --secondary-foreground: 15 17 17;
     --muted: 240 242 242;
     --muted-foreground: 107 114 126;
-    --accent: 0 122 255;
+    --accent-hsl: 247 37 133;
     --accent-foreground: 255 255 255;
     --destructive: 255 59 48;
     --destructive-foreground: 255 255 255;
     --border: 213 217 217;
     --input: 255 255 255;
-    --ring: 255 153 0;
+    --ring: 67 97 238;
     --radius: 12px;
   }
 
   .dark {
-    /* Dark Mode - High Contrast Colors */
+    /* Dark Mode - Updated with your color scheme */
     --background: 0 0 0;
     --foreground: 255 255 255;
     --card: 17 17 17;
     --card-foreground: 255 255 255;
     --popover: 17 17 17;
     --popover-foreground: 255 255 255;
-    --primary: 255 153 0;
-    --primary-foreground: 0 0 0;
+    --primary-hsl: 67 97 238;
+    --primary-foreground: 255 255 255;
     --secondary: 39 39 42;
     --secondary-foreground: 255 255 255;
     --muted: 39 39 42;
     --muted-foreground: 161 161 170;
-    --accent: 0 122 255;
+    --accent-hsl: 247 37 133;
     --accent-foreground: 255 255 255;
     --destructive: 255 69 58;
     --destructive-foreground: 255 255 255;
     --border: 39 39 42;
     --input: 39 39 42;
-    --ring: 255 153 0;
+    --ring: 67 97 238;
   }
 
   * {
@@ -60,7 +66,7 @@
   }
 
   html {
-    background: rgba(240, 248, 255, 0.8) !important;
+    background: var(--glass) !important;
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
   }
@@ -72,7 +78,7 @@
   }
 
   body {
-    background: rgba(255, 255, 255, 0.3) !important;
+    background: var(--glass) !important;
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
     color: rgb(0, 0, 0) !important;
@@ -108,28 +114,31 @@
 }
 
 @layer components {
-  /* Amazon-Style Button Colors */
+  /* Button Colors with Your Color Scheme */
   .btn-primary {
-    background: #FF9900;
-    color: #000000;
+    background: var(--primary);
+    color: #ffffff;
     border: none;
     padding: 10px 20px;
     border-radius: 8px;
     font-weight: bold;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
   }
   
   .btn-primary:hover {
-    background: #FF8C00;
+    background: var(--primary-dark);
+    transform: translateY(-1px);
   }
 
   .btn-secondary {
-    background: rgba(240, 242, 242, 0.8);
+    background: var(--glass);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     color: #0F1111;
-    border: 1px solid rgba(213, 217, 217, 0.6);
+    border: 1px solid rgba(67, 97, 238, 0.3);
     padding: 8px 16px;
     border-radius: 6px;
     cursor: pointer;
@@ -137,31 +146,35 @@
   }
   
   .btn-secondary:hover {
-    background: rgba(226, 229, 229, 0.9);
+    background: rgba(67, 97, 238, 0.1);
+    border-color: var(--primary);
   }
 
   .btn-cta {
-    background: #007AFF;
+    background: var(--accent);
     color: white;
     padding: 12px 24px;
     border-radius: 8px;
     border: none;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
   }
   
   .btn-cta:hover {
-    background: #0066CC;
+    background: rgba(247, 37, 133, 1);
+    transform: translateY(-1px);
   }
 
   /* Glassy Popups/Modals */
   .glass-popup {
-    background: rgba(255, 255, 255, 0.85);
+    background: var(--glass);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    border: 1px solid rgba(67, 97, 238, 0.3);
     border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 20px rgba(67, 97, 238, 0.2);
     padding: 20px;
     max-width: 600px;
   }
@@ -169,38 +182,54 @@
   /* Dark mode support for glass popup */
   .dark .glass-popup {
     background: rgba(30, 30, 30, 0.85);
-    border-color: rgba(255, 255, 255, 0.1);
+    border-color: rgba(67, 97, 238, 0.2);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   }
 
-  /* Updated component button styles to use Amazon colors */
+  /* Glass Card */
+  .glass-card {
+    background: var(--glass);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(67, 97, 238, 0.2);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(67, 97, 238, 0.1);
+  }
+
+  /* Gradient combinations */
+  .gradient-primary-to-accent {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+  }
+
+  /* Updated component button styles */
   .macos-button-primary {
-    background: #FF9900;
-    color: #000000;
+    background: var(--primary);
+    color: #ffffff;
     border: none;
     padding: 10px 20px;
     border-radius: 8px;
     font-weight: bold;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
   }
 
   .macos-button-primary:hover {
-    background: #FF8C00;
-    transform: none;
+    background: var(--primary-dark);
+    transform: translateY(-1px);
   }
 
   .macos-button-primary:active {
     transform: scale(0.98);
-    background: #E6800A;
   }
 
   .macos-button-secondary {
-    background: rgba(240, 242, 242, 0.8);
+    background: var(--glass);
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
     color: #0F1111;
-    border: 1px solid rgba(213, 217, 217, 0.6);
+    border: 1px solid rgba(67, 97, 238, 0.3);
     padding: 8px 16px;
     border-radius: 6px;
     font-weight: 500;
@@ -210,8 +239,8 @@
   }
 
   .macos-button-secondary:hover {
-    background: rgba(226, 229, 229, 0.9);
-    transform: none;
+    background: rgba(67, 97, 238, 0.1);
+    border-color: var(--primary);
   }
 
   .macos-button-secondary:active {
@@ -219,20 +248,22 @@
   }
 
   .apple-button-primary {
-    background: #FF9900;
-    color: #000000;
+    background: var(--primary);
+    color: #ffffff;
     padding: 10px 20px;
     border-radius: 8px;
     font-weight: bold;
     font-size: 14px;
     border: none;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
   }
 
   .apple-button-primary:hover {
-    background: #FF8C00;
-    transform: none;
+    background: var(--primary-dark);
+    transform: translateY(-1px);
   }
 
   .apple-button-primary:active {
@@ -240,35 +271,35 @@
   }
 
   /* Apple Glass Effect */
-  .apple-glass {
-    background: rgba(255, 255, 255, 0.8);
+  .apple-glass, .glass-astra, .glass-ios {
+    background: var(--glass);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    border: 1px solid rgba(67, 97, 238, 0.2);
     border-radius: var(--radius);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 16px rgba(67, 97, 238, 0.15);
     transition: all 0.3s ease;
   }
 
-  .dark .apple-glass {
+  .dark .apple-glass, .dark .glass-astra, .dark .glass-ios {
     background: rgba(17, 17, 17, 0.8);
-    border-color: rgba(255, 255, 255, 0.1);
+    border-color: rgba(67, 97, 238, 0.2);
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
   }
 
   /* Search Panel - Light Blue Background with 60% Transparency */
   .search-panel {
     background: rgba(173, 216, 230, 0.6);
-    border: 1px solid rgba(173, 216, 230, 0.8);
+    border: 1px solid rgba(67, 97, 238, 0.3);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 20px rgba(67, 97, 238, 0.15);
   }
 
   .search-panel-input {
-    background: rgba(255, 255, 255, 0.8);
-    border: 1px solid rgba(173, 216, 230, 0.6);
+    background: var(--glass);
+    border: 1px solid rgba(67, 97, 238, 0.3);
     color: hsl(var(--foreground));
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
@@ -276,52 +307,53 @@
   }
 
   .search-panel-input:focus {
-    border-color: #FF9900;
-    box-shadow: 0 0 0 2px rgba(255, 153, 0, 0.2);
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.2);
   }
 
   .trending-tag {
-    background: rgba(255, 255, 255, 0.8);
+    background: var(--glass);
     color: hsl(var(--secondary-foreground));
-    border: 1px solid rgba(173, 216, 230, 0.6);
+    border: 1px solid rgba(67, 97, 238, 0.3);
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
     border-radius: 6px;
   }
 
   .trending-tag:hover {
-    background: rgba(255, 153, 0, 0.1);
-    color: #FF9900;
-    border-color: rgba(255, 153, 0, 0.3);
+    background: rgba(67, 97, 238, 0.1);
+    color: var(--primary);
+    border-color: var(--primary);
   }
 
   /* Apple Cards - Glassy Style */
   .apple-card {
-    background: rgba(255, 255, 255, 0.75);
+    background: var(--glass);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    border: 1px solid rgba(67, 97, 238, 0.2);
     border-radius: var(--radius);
     padding: 16px;
     transition: all 0.2s ease;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 20px rgba(67, 97, 238, 0.1);
   }
 
   .apple-card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 30px rgba(255, 153, 0, 0.15);
-    background: rgba(255, 255, 255, 0.85);
+    box-shadow: 0 8px 30px rgba(67, 97, 238, 0.2);
+    background: rgba(255, 255, 255, 0.8);
+    border-color: var(--primary);
   }
 
   .dark .apple-card {
     background: rgba(17, 17, 17, 0.75);
-    border-color: rgba(255, 255, 255, 0.1);
+    border-color: rgba(67, 97, 238, 0.2);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   }
 
   .dark .apple-card:hover {
     background: rgba(17, 17, 17, 0.85);
-    box-shadow: 0 8px 30px rgba(255, 153, 0, 0.2);
+    box-shadow: 0 8px 30px rgba(67, 97, 238, 0.2);
   }
 
   /* Navigation Styles - Light Blue Background with 60% Transparency */
@@ -329,13 +361,13 @@
     background: rgba(173, 216, 230, 0.6);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    border-bottom: 1px solid rgba(173, 216, 230, 0.8);
+    border-bottom: 1px solid rgba(67, 97, 238, 0.3);
     position: sticky;
     top: 0;
     z-index: 50;
     transition: all 0.2s ease;
     padding: 12px 0;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 10px rgba(67, 97, 238, 0.15);
   }
 
   .apple-nav-item {
@@ -346,50 +378,54 @@
     border-radius: calc(var(--radius) * 0.75);
     text-decoration: none;
     transition: all 0.2s ease;
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--glass);
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
+    border: 1px solid rgba(67, 97, 238, 0.1);
   }
 
   .apple-nav-item:hover {
-    color: #FF9900;
-    background: rgba(255, 153, 0, 0.15);
+    color: var(--primary);
+    background: rgba(67, 97, 238, 0.1);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
+    border-color: var(--primary);
   }
 
   .apple-nav-item.active {
-    color: #FF9900;
-    background: rgba(255, 153, 0, 0.2);
+    color: var(--primary);
+    background: rgba(67, 97, 238, 0.15);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
+    border-color: var(--primary);
   }
 
   /* Input Styles - Glassy */
   .apple-input {
-    background: rgba(255, 255, 255, 0.8);
+    background: var(--glass);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
-    border: 1px solid rgba(213, 217, 217, 0.6);
+    border: 1px solid rgba(67, 97, 238, 0.3);
     border-radius: var(--radius);
     transition: all 0.2s ease;
     font-size: 14px;
   }
 
   .apple-input:hover {
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 2px 8px rgba(67, 97, 238, 0.1);
+    background: rgba(255, 255, 255, 0.8);
+    border-color: var(--primary);
   }
 
   .apple-input:focus {
-    border-color: #FF9900;
-    box-shadow: 0 0 0 2px rgba(255, 153, 0, 0.2);
-    background: rgba(255, 255, 255, 0.95);
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.2);
+    background: rgba(255, 255, 255, 0.9);
   }
 
   .dark .apple-input {
     background: rgba(39, 39, 42, 0.8);
-    border-color: rgba(255, 255, 255, 0.1);
+    border-color: rgba(67, 97, 238, 0.2);
   }
 
   .dark .apple-input:hover {
@@ -416,34 +452,83 @@
   }
 
   .apple-text-gradient {
-    color: #FF9900;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* Color utility classes */
+  .text-primary-custom {
+    color: var(--primary);
+  }
+
+  .bg-primary-custom {
+    background-color: var(--primary);
+  }
+
+  .text-accent-custom {
+    color: var(--accent);
+  }
+
+  .bg-accent-custom {
+    background-color: var(--accent);
   }
 
   /* Section Backgrounds - Glassy */
   .glass-section {
-    background: rgba(255, 255, 255, 0.4);
+    background: var(--glass);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(67, 97, 238, 0.2);
     border-radius: 16px;
   }
 
   .dark .glass-section {
     background: rgba(0, 0, 0, 0.4);
-    border-color: rgba(255, 255, 255, 0.1);
+    border-color: rgba(67, 97, 238, 0.2);
   }
 
   /* Footer Styles - Glassy */
   .glass-footer {
-    background: rgba(240, 248, 255, 0.7);
+    background: rgba(173, 216, 230, 0.6);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    border-top: 1px solid rgba(173, 216, 230, 0.6);
+    border-top: 1px solid rgba(67, 97, 238, 0.3);
   }
 
   .dark .glass-footer {
     background: rgba(0, 0, 0, 0.7);
-    border-top-color: rgba(255, 255, 255, 0.1);
+    border-top-color: rgba(67, 97, 238, 0.2);
+  }
+
+  /* Animations for gradient effects */
+  @keyframes astra-glow {
+    0%, 100% { box-shadow: 0 0 20px rgba(67, 97, 238, 0.3); }
+    50% { box-shadow: 0 0 30px rgba(247, 37, 133, 0.4); }
+  }
+
+  @keyframes astra-float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-2px); }
+  }
+
+  @keyframes gradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  .animate-astra-glow {
+    animation: astra-glow 3s ease-in-out infinite;
+  }
+
+  .animate-astra-float {
+    animation: astra-float 2s ease-in-out infinite;
+  }
+
+  .animate-gradient {
+    animation: gradient 3s ease infinite;
   }
 }
 
