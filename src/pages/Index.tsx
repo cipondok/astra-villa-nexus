@@ -136,18 +136,32 @@ const Index = () => {
     <div className="min-h-screen bg-background text-foreground">
       <Navigation />
       
-      {/* Hero Section - Theme Aware Background */}
+      {/* Hero Section - Apple WWDC 2025 Style */}
       <section className="relative py-20 px-4 bg-background">
         <div className="container mx-auto text-center">
           <div className="mb-12 animate-fade-in">
-            <h1 className="apple-title mb-4 text-foreground">
-              Find Your Perfect Property
-              <span className="block text-xl apple-text-gradient font-medium mt-2">
-                AI-Powered Real Estate Platform
+            <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+              <span className="inline-block bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 dark:from-blue-300 dark:via-purple-400 dark:to-cyan-300 bg-clip-text text-transparent animate-gradient bg-[length:300%_300%] font-extrabold tracking-tight">
+                Find Your Perfect
+              </span>
+              <br />
+              <span className="inline-block bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 dark:from-purple-300 dark:via-pink-400 dark:to-orange-300 bg-clip-text text-transparent animate-gradient bg-[length:300%_300%] font-extrabold tracking-tight">
+                Property
               </span>
             </h1>
-            <p className="apple-subtitle max-w-2xl mx-auto text-muted-foreground">
-              Discover premium properties with advanced AI search technology
+            
+            <div className="relative mb-6">
+              <h2 className="text-2xl md:text-3xl font-semibold text-white dark:text-white drop-shadow-2xl">
+                <span className="inline-block px-6 py-3 bg-gradient-to-r from-blue-500/90 to-purple-600/90 dark:from-blue-400/90 dark:to-purple-500/90 rounded-2xl backdrop-blur-sm border border-white/20 shadow-2xl">
+                  AI-Powered Real Estate Platform
+                </span>
+              </h2>
+            </div>
+            
+            <p className="text-lg md:text-xl max-w-3xl mx-auto leading-relaxed">
+              <span className="inline-block px-4 py-2 bg-white/95 dark:bg-slate-800/95 text-slate-800 dark:text-slate-100 rounded-xl backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 shadow-lg font-medium">
+                Discover premium properties with advanced AI search technology
+              </span>
             </p>
           </div>
           
