@@ -19,6 +19,10 @@ import Loading from "./pages/Loading";
 import Services from "./pages/Services";
 import ServiceForm from "./pages/ServiceForm";
 import VendorDashboard from "./pages/VendorDashboard";
+import Buy from "./pages/Buy";
+import Rent from "./pages/Rent";
+import NewProjects from "./pages/NewProjects";
+import PreLaunching from "./pages/PreLaunching";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -45,6 +49,10 @@ const App: React.FC = () => {
                       <SessionMonitor />
                       <Routes>
                         <Route path="/" element={<Index />} />
+                        <Route path="/buy" element={<Buy />} />
+                        <Route path="/rent" element={<Rent />} />
+                        <Route path="/new-projects" element={<NewProjects />} />
+                        <Route path="/pre-launching" element={<PreLaunching />} />
                         <Route path="/dashboard" element={<Dashboard />} />
                         <Route path="/vendor-dashboard" element={<VendorDashboard />} />
                         <Route path="/admin" element={<AdminDashboard />} />
