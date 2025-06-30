@@ -82,8 +82,8 @@ const Navigation = () => {
     <>
       <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled 
-          ? 'bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-b border-gray-200/50 dark:border-slate-700/50' 
-          : 'bg-white/80 dark:bg-slate-900/80 backdrop-blur-md'
+          ? 'bg-white/90 dark:bg-black/90 backdrop-blur-xl border-b border-gray-200/20 dark:border-white/10' 
+          : 'bg-white/80 dark:bg-black/80 backdrop-blur-md'
       }`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-11">
@@ -207,7 +207,7 @@ const Navigation = () => {
 
           {/* Mobile Navigation - Slide down */}
           {isMenuOpen && (
-            <div className="lg:hidden absolute top-full left-0 right-0 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-b border-gray-200/50 dark:border-slate-700/50 shadow-lg">
+            <div className="lg:hidden absolute top-full left-0 right-0 bg-white/95 dark:bg-black/95 backdrop-blur-xl border-b border-gray-200/20 dark:border-white/10 shadow-lg">
               <div className="px-4 py-3 space-y-2">
                 <Button variant="ghost" className="w-full justify-start text-sm font-medium" onClick={() => { navigate('/'); toggleMenu(); }}>
                   {currentText.home}

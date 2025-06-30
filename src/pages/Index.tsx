@@ -133,14 +133,14 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-white dark:bg-black text-foreground">
       <Navigation />
       
-      {/* Hero Section - Apple WWDC 2025 Style */}
-      <section className="relative py-16 px-4 bg-background">
-        <div className="container mx-auto text-center">
-          <div className="mb-10 animate-fade-in">
-            <h1 className="text-3xl md:text-5xl font-bold mb-4 leading-tight">
+      {/* Hero Section - Apple Style */}
+      <section className="relative py-12 px-4 bg-white dark:bg-black">
+        <div className="container mx-auto text-center max-w-4xl">
+          <div className="mb-8 animate-fade-in">
+            <h1 className="text-2xl md:text-4xl font-bold mb-3 leading-tight">
               <span className="inline-block bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 dark:from-blue-300 dark:via-purple-400 dark:to-cyan-300 bg-clip-text text-transparent animate-gradient bg-[length:300%_300%] font-extrabold tracking-tight">
                 Find Your Perfect
               </span>
@@ -150,22 +150,22 @@ const Index = () => {
               </span>
             </h1>
             
-            <div className="relative mb-4">
-              <h2 className="text-lg md:text-xl font-semibold text-white dark:text-white drop-shadow-lg">
-                <span className="inline-block px-4 py-2 bg-gradient-to-r from-blue-500/90 to-purple-600/90 dark:from-blue-400/90 dark:to-purple-500/90 rounded-xl backdrop-blur-sm border border-white/20 shadow-lg">
+            <div className="relative mb-3">
+              <h2 className="text-base md:text-lg font-semibold text-white dark:text-white drop-shadow-lg">
+                <span className="inline-block px-3 py-1.5 bg-gradient-to-r from-blue-500/90 to-purple-600/90 dark:from-blue-400/90 dark:to-purple-500/90 rounded-lg backdrop-blur-sm border border-white/20 shadow-lg">
                   AI-Powered Real Estate Platform
                 </span>
               </h2>
             </div>
             
-            <p className="text-sm md:text-base max-w-2xl mx-auto leading-relaxed">
-              <span className="inline-block px-3 py-1.5 bg-white/95 dark:bg-slate-800/95 text-slate-800 dark:text-slate-100 rounded-lg backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 shadow-md font-medium">
+            <p className="text-xs md:text-sm max-w-xl mx-auto leading-relaxed">
+              <span className="inline-block px-2 py-1 bg-gray-100/95 dark:bg-slate-800/95 text-slate-800 dark:text-slate-100 rounded-md backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 shadow-sm font-medium">
                 Discover premium properties with advanced AI search technology
               </span>
             </p>
           </div>
           
-          <div className="max-w-4xl mx-auto animate-scale-in">
+          <div className="max-w-3xl mx-auto animate-scale-in">
             <EnhancedModernSearchPanel
               language={language}
               onSearch={handleSearch}
@@ -175,31 +175,31 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Quick Actions */}
-      <section className="py-12 bg-secondary/30">
+      {/* Quick Actions - Compact */}
+      <section className="py-8 bg-gray-50/50 dark:bg-gray-900/30">
         <div className="container mx-auto px-4">
-          <div className="flex flex-wrap justify-center gap-4">
+          <div className="flex flex-wrap justify-center gap-3 max-w-2xl mx-auto">
             <Button 
               onClick={() => handleSearch({ listingType: 'buy' })}
-              className="apple-button-primary flex items-center gap-2 px-6 py-3 hover:scale-105 transition-all duration-200"
+              className="apple-button-primary flex items-center gap-1.5 px-4 py-2 text-sm hover:scale-105 transition-all duration-200"
             >
               🏠 Buy Properties
             </Button>
             <Button 
               onClick={() => handleSearch({ listingType: 'rent' })}
-              className="apple-button-secondary flex items-center gap-2 px-6 py-3 hover:scale-105 transition-all duration-200"
+              className="apple-button-secondary flex items-center gap-1.5 px-4 py-2 text-sm hover:scale-105 transition-all duration-200"
             >
               🔑 Rent Properties
             </Button>
             <Button 
               onClick={() => handleSearch({ development_status: 'pre_launching' })}
-              className="apple-button-secondary flex items-center gap-2 px-6 py-3 hover:scale-105 transition-all duration-200"
+              className="apple-button-secondary flex items-center gap-1.5 px-4 py-2 text-sm hover:scale-105 transition-all duration-200"
             >
               🚀 Pre-Launch
             </Button>
             <Button 
               onClick={() => handleSearch({ development_status: 'new_project' })}
-              className="apple-button-secondary flex items-center gap-2 px-6 py-3 hover:scale-105 transition-all duration-200"
+              className="apple-button-secondary flex items-center gap-1.5 px-4 py-2 text-sm hover:scale-105 transition-all duration-200"
             >
               🏗️ New Projects
             </Button>
@@ -209,17 +209,17 @@ const Index = () => {
 
       {/* Error Message */}
       {searchError && (
-        <section className="py-6">
+        <section className="py-4">
           <div className="container mx-auto px-4">
-            <div className="apple-glass border border-destructive/40 text-destructive text-center p-6 rounded-2xl max-w-2xl mx-auto">
-              <p className="font-medium">⚠️ {searchError}</p>
+            <div className="apple-glass border border-destructive/40 text-destructive text-center p-4 rounded-xl max-w-xl mx-auto">
+              <p className="font-medium text-sm">⚠️ {searchError}</p>
             </div>
           </div>
         </section>
       )}
 
       {/* Property Listings */}
-      <div className="px-4 bg-background">
+      <div className="px-4 bg-white dark:bg-black">
         <PropertyListingsSection
           language={language}
           searchResults={hasSearched ? searchResults : featuredProperties}
