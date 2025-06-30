@@ -45,24 +45,24 @@ const AdminDashboard = () => {
 
   if (!isAdmin) {
     return (
-      <div className="min-h-screen bg-background text-foreground">
+      <div className="min-h-screen bg-background dark:bg-gray-900 text-foreground dark:text-gray-100 transition-colors duration-300">
         <div className="container mx-auto px-4 py-8">
-          <Alert className="bg-card border-border">
-            <AlertTriangle className="h-4 w-4 text-destructive" />
-            <AlertDescription className="text-foreground">
+          <Alert className="bg-card dark:bg-gray-800 border-border dark:border-gray-700">
+            <AlertTriangle className="h-4 w-4 text-destructive dark:text-red-400" />
+            <AlertDescription className="text-foreground dark:text-gray-200">
               Admin access required to view this dashboard
             </AlertDescription>
           </Alert>
           <div className="mt-4 space-x-2">
             <button 
               onClick={() => navigate('/dashboard', { replace: true })}
-              className="bg-primary text-primary-foreground px-4 py-2 rounded hover:bg-primary/90 transition-colors"
+              className="bg-primary dark:bg-blue-600 text-primary-foreground dark:text-white px-4 py-2 rounded hover:bg-primary/90 dark:hover:bg-blue-700 transition-colors"
             >
               Go to Dashboard
             </button>
             <button 
               onClick={() => navigate('/?auth=true', { replace: true })}
-              className="bg-secondary text-secondary-foreground px-4 py-2 rounded hover:bg-secondary/90 transition-colors"
+              className="bg-secondary dark:bg-gray-700 text-secondary-foreground dark:text-gray-200 px-4 py-2 rounded hover:bg-secondary/90 dark:hover:bg-gray-600 transition-colors"
             >
               Re-login
             </button>
@@ -73,7 +73,7 @@ const AdminDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-background dark:bg-gray-900 text-foreground dark:text-gray-100 transition-colors duration-300">
       <AlertMonitoringProvider>
         <AdvancedAdminDashboard />
       </AlertMonitoringProvider>
