@@ -4,6 +4,8 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Heart, MapPin, Bed, Bath, Square, Eye, Share2, Car, View as ViewIcon } from 'lucide-react';
 import { useState } from 'react';
+import PropertyDetailModal from './PropertyDetailModal';
+import Property3DViewModal from './Property3DViewModal';
 
 interface Property {
   id: string;
@@ -42,6 +44,8 @@ const EnhancedPropertyCard = ({
   onView3D
 }: EnhancedPropertyCardProps) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [showDetailModal, setShowDetailModal] = useState(false);
+  const [show3DModal, setShow3DModal] = useState(false);
 
   const text = {
     en: {
@@ -108,6 +112,7 @@ const EnhancedPropertyCard = ({
 
   const handleViewProperty = (e: React.MouseEvent) => {
     e.stopPropagation();
+    setShowDetailModal(true);
     if (onView) {
       onView(property.id);
     }
@@ -115,6 +120,7 @@ const EnhancedPropertyCard = ({
 
   const handleView3D = (e: React.MouseEvent) => {
     e.stopPropagation();
+    setShow3DModal(true);
     if (onView3D) {
       onView3D(property);
     }
@@ -136,182 +142,204 @@ const EnhancedPropertyCard = ({
   };
 
   return (
-    <Card className="group hover:shadow-xl transition-all duration-300 overflow-hidden cursor-pointer" onClick={handleViewProperty}>
-      {/* Image Section */}
-      <div className="relative aspect-[4/3] overflow-hidden">
-        <img
-          src={property.image_urls?.[currentImageIndex] || "/placeholder.svg"}
-          alt={property.title}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-        />
+    <>
+      <Card className="group hover:shadow-xl transition-all duration-300 overflow-hidden cursor-pointer" onClick={handleViewProperty}>
+        {/* Image Section */}
+        <div className="relative aspect-[4/3] overflow-hidden">
+          <img
+            src={property.image_urls?.[currentImageIndex] || "/placeholder.svg"}
+            alt={property.title}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          />
 
-        {/* Image Navigation */}
-        {property.image_urls && property.image_urls.length > 1 && (
-          <>
-            {/* Arrow buttons */}
-            <button
-              onClick={(e) => handleImageNavigation('prev', e)}
-              className="absolute left-2 top-1/2 -translate-y-1/2 bg-background/80 p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-10 hover:bg-background"
-            >
-              ←
-            </button>
-            <button
-              onClick={(e) => handleImageNavigation('next', e)}
-              className="absolute right-2 top-1/2 -translate-y-1/2 bg-background/80 p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-10 hover:bg-background"
-            >
-              →
-            </button>
-            {/* Image Indicators */}
-            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1 z-10">
-              {property.image_urls.map((_, index) => (
-                <div
-                  key={index}
-                  className={`w-2 h-2 rounded-full ${
-                    index === currentImageIndex ? 'bg-white' : 'bg-white/50'
-                  }`}
-                />
-              ))}
-            </div>
-          </>
-        )}
-
-        {/* Top Badges */}
-        <div className="absolute top-3 left-3 flex flex-wrap gap-2 z-10">
-          <Badge variant="secondary" className="bg-background/90">
-            {getListingTypeLabel(property.listing_type)}
-          </Badge>
-          <Badge variant="outline" className="bg-background/90 capitalize">
-            {property.property_type}
-          </Badge>
-          {(property.three_d_model_url || property.virtual_tour_url) && (
-            <Badge variant="secondary" className="bg-black/70 text-white backdrop-blur-sm border-none flex items-center gap-1">
-              <ViewIcon className="h-4 w-4" />
-              <span>3D</span>
-            </Badge>
+          {/* Image Navigation */}
+          {property.image_urls && property.image_urls.length > 1 && (
+            <>
+              {/* Arrow buttons */}
+              <button
+                onClick={(e) => handleImageNavigation('prev', e)}
+                className="absolute left-2 top-1/2 -translate-y-1/2 bg-background/80 p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-10 hover:bg-background"
+              >
+                ←
+              </button>
+              <button
+                onClick={(e) => handleImageNavigation('next', e)}
+                className="absolute right-2 top-1/2 -translate-y-1/2 bg-background/80 p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-10 hover:bg-background"
+              >
+                →
+              </button>
+              {/* Image Indicators */}
+              <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1 z-10">
+                {property.image_urls.map((_, index) => (
+                  <div
+                    key={index}
+                    className={`w-2 h-2 rounded-full ${
+                      index === currentImageIndex ? 'bg-white' : 'bg-white/50'
+                    }`}
+                  />
+                ))}
+              </div>
+            </>
           )}
-        </div>
 
-        {/* Top-right: Favorite & DIRECT 3D View */}
-        <div className="absolute top-3 right-3 flex gap-2 z-20">
-          {/* Favorite button */}
-          <Button
-            size="sm"
-            variant={isSaved ? "default" : "ghost"}
-            className={`bg-white/90 hover:bg-white ${isSaved ? "ring-2 ring-green-400" : ""}`}
-            onClick={handleLikeToggle}
-            aria-label={isSaved ? "Remove from favorites" : "Save property"}
-          >
-            <Heart className={`h-4 w-4 ${isSaved ? 'fill-red-500 text-red-500' : 'text-gray-600'}`} />
-          </Button>
-          {/* Direct 3D View button - only if available */}
-          {(property.three_d_model_url || property.virtual_tour_url) && (
+          {/* Top Badges */}
+          <div className="absolute top-3 left-3 flex flex-wrap gap-2 z-10">
+            <Badge variant="secondary" className="bg-background/90">
+              {getListingTypeLabel(property.listing_type)}
+            </Badge>
+            <Badge variant="outline" className="bg-background/90 capitalize">
+              {property.property_type}
+            </Badge>
+            {(property.three_d_model_url || property.virtual_tour_url) && (
+              <Badge variant="secondary" className="bg-black/70 text-white backdrop-blur-sm border-none flex items-center gap-1">
+                <ViewIcon className="h-4 w-4" />
+                <span>3D</span>
+              </Badge>
+            )}
+          </div>
+
+          {/* Top-right: Favorite & DIRECT 3D View */}
+          <div className="absolute top-3 right-3 flex gap-2 z-20">
+            {/* Favorite button */}
+            <Button
+              size="sm"
+              variant={isSaved ? "default" : "ghost"}
+              className={`bg-white/90 hover:bg-white ${isSaved ? "ring-2 ring-green-400" : ""}`}
+              onClick={handleLikeToggle}
+              aria-label={isSaved ? "Remove from favorites" : "Save property"}
+            >
+              <Heart className={`h-4 w-4 ${isSaved ? 'fill-red-500 text-red-500' : 'text-gray-600'}`} />
+            </Button>
+            {/* Direct 3D View button - only if available */}
+            {(property.three_d_model_url || property.virtual_tour_url) && (
+              <Button
+                size="sm"
+                variant="ghost"
+                className="bg-white/90 hover:bg-white text-blue-500 transition-all duration-300"
+                onClick={handleView3D}
+                aria-label="Open 3D View"
+              >
+                <ViewIcon className="h-4 w-4" />
+              </Button>
+            )}
+            {/* Share button */}
             <Button
               size="sm"
               variant="ghost"
-              className="bg-white/90 hover:bg-white text-blue-500 transition-all duration-300"
-              onClick={handleView3D}
-              aria-label="Open 3D View"
+              className="bg-white/90 hover:bg-white text-gray-600"
+              onClick={handleShare}
+              aria-label="Share property"
             >
-              <ViewIcon className="h-4 w-4" />
+              <Share2 className="h-4 w-4" />
             </Button>
-          )}
-          {/* Share button */}
-          <Button
-            size="sm"
-            variant="ghost"
-            className="bg-white/90 hover:bg-white text-gray-600"
-            onClick={handleShare}
-            aria-label="Share property"
-          >
-            <Share2 className="h-4 w-4" />
-          </Button>
-        </div>
-      </div>
-
-      {/* Content Section */}
-      <CardContent className="p-4 space-y-3">
-        {/* Price */}
-        <div className="flex items-center justify-between">
-          <h3 className="text-xl font-bold text-primary">
-            {formatPrice(property.price)}
-          </h3>
-          {property.listing_type === 'rent' && (
-            <span className="text-sm text-muted-foreground">/month</span>
-          )}
+          </div>
         </div>
 
-        {/* Title - allow more lines if needed, shift other content down */}
-        <h4 className="font-semibold text-foreground line-clamp-2 min-h-[3rem] mb-1">
-          {property.title}
-        </h4>
+        {/* Content Section */}
+        <CardContent className="p-4 space-y-3">
+          {/* Price */}
+          <div className="flex items-center justify-between">
+            <h3 className="text-xl font-bold text-primary">
+              {formatPrice(property.price)}
+            </h3>
+            {property.listing_type === 'rent' && (
+              <span className="text-sm text-muted-foreground">/month</span>
+            )}
+          </div>
 
-        {/* Location */}
-        <div className="flex items-center gap-1 text-muted-foreground">
-          <MapPin className="h-4 w-4 flex-shrink-0" />
-          <span className="text-sm truncate">{property.location}</span>
-        </div>
+          {/* Title - allow more lines if needed, shift other content down */}
+          <h4 className="font-semibold text-foreground line-clamp-2 min-h-[3rem] mb-1">
+            {property.title}
+          </h4>
 
-        {/* Property Details */}
-        <div className="flex items-center gap-4 text-sm text-muted-foreground">
-          <div className="flex items-center gap-1">
-            <Bed className="h-4 w-4" />
-            <span>{property.bedrooms}</span>
+          {/* Location */}
+          <div className="flex items-center gap-1 text-muted-foreground">
+            <MapPin className="h-4 w-4 flex-shrink-0" />
+            <span className="text-sm truncate">{property.location}</span>
           </div>
-          <div className="flex items-center gap-1">
-            <Bath className="h-4 w-4" />
-            <span>{property.bathrooms}</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <Square className="h-4 w-4" />
-            <span>{property.area_sqm} sqm</span>
-          </div>
-          {property.property_features?.parking && (
+
+          {/* Property Details */}
+          <div className="flex items-center gap-4 text-sm text-muted-foreground">
             <div className="flex items-center gap-1">
-              <Car className="h-4 w-4" />
-              <span>{property.property_features.parking}</span>
+              <Bed className="h-4 w-4" />
+              <span>{property.bedrooms}</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <Bath className="h-4 w-4" />
+              <span>{property.bathrooms}</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <Square className="h-4 w-4" />
+              <span>{property.area_sqm} sqm</span>
+            </div>
+            {property.property_features?.parking && (
+              <div className="flex items-center gap-1">
+                <Car className="h-4 w-4" />
+                <span>{property.property_features.parking}</span>
+              </div>
+            )}
+          </div>
+
+          {/* Features */}
+          {property.property_features && (
+            <div className="flex flex-wrap gap-1">
+              {Object.entries(property.property_features)
+                .filter(([key, value]) => value && key !== 'parking')
+                .slice(0, 3)
+                .map(([key, value]) => (
+                  <Badge key={key} variant="outline" className="text-xs">
+                    {key.replace('_', ' ')}
+                  </Badge>
+                ))}
             </div>
           )}
-        </div>
 
-        {/* Features */}
-        {property.property_features && (
-          <div className="flex flex-wrap gap-1">
-            {Object.entries(property.property_features)
-              .filter(([key, value]) => value && key !== 'parking')
-              .slice(0, 3)
-              .map(([key, value]) => (
-                <Badge key={key} variant="outline" className="text-xs">
-                  {key.replace('_', ' ')}
-                </Badge>
-              ))}
-          </div>
-        )}
-
-        {/* Action Buttons */}
-        <div className="flex w-full mt-3 gap-2 flex-wrap">
-          <Button 
-            className="flex-1"
-            variant="default"
-            size="lg"
-            onClick={handleViewProperty}
-          >
-            <Eye className="h-4 w-4 mr-2" />
-            {currentText.view}
-          </Button>
-          {(property.three_d_model_url || property.virtual_tour_url) && (
+          {/* Action Buttons */}
+          <div className="flex w-full mt-3 gap-2 flex-wrap">
             <Button 
-               variant="outline"
-               size="lg"
-               className="flex-1"
-               onClick={handleView3D}
-             >
-               <ViewIcon className="h-4 w-4 mr-2" />
-               {currentText.view3D}
-           </Button>
-          )}
-        </div>
-      </CardContent>
-    </Card>
+              className="flex-1"
+              variant="default"
+              size="lg"
+              onClick={handleViewProperty}
+            >
+              <Eye className="h-4 w-4 mr-2" />
+              {currentText.view}
+            </Button>
+            {(property.three_d_model_url || property.virtual_tour_url) && (
+              <Button 
+                 variant="outline"
+                 size="lg"
+                 className="flex-1"
+                 onClick={handleView3D}
+               >
+                 <ViewIcon className="h-4 w-4 mr-2" />
+                 {currentText.view3D}
+             </Button>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Property Detail Modal */}
+      <PropertyDetailModal
+        property={property}
+        isOpen={showDetailModal}
+        onClose={() => setShowDetailModal(false)}
+        language={language}
+        onView3D={() => {
+          setShowDetailModal(false);
+          setShow3DModal(true);
+        }}
+      />
+
+      {/* 3D View Modal */}
+      <Property3DViewModal
+        property={property}
+        isOpen={show3DModal}
+        onClose={() => setShow3DModal(false)}
+        language={language}
+      />
+    </>
   );
 };
 
