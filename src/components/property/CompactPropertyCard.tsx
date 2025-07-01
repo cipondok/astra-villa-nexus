@@ -1,262 +1,258 @@
 
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Heart, MapPin, Bed, Bath, Square, Star, Eye, Box } from "lucide-react";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState } from 'react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { MapPin, Bed, Bath, Square, Eye, Heart, Share2, View as ViewIcon } from 'lucide-react';
+import PropertyDetailModal from './PropertyDetailModal';
+import Property3DViewModal from './Property3DViewModal';
 
 interface Property {
   id: string;
   title: string;
-  location?: string;
-  price: string | number;
+  price: number;
+  location: string;
+  bedrooms?: number;
+  bathrooms?: number;
+  area_sqm?: number;
   property_type?: string;
-  listing_type?: string;
-  bedrooms: number;
-  bathrooms: number;
-  area_sqm: number;
-  images?: string[] | string;
-  status?: string;
-  created_at?: string;
+  listing_type: string;
+  images?: string[];
+  thumbnail_url?: string;
+  description?: string;
+  three_d_model_url?: string;
+  virtual_tour_url?: string;
   state?: string;
   city?: string;
-  area?: string;
 }
 
 interface CompactPropertyCardProps {
   property: Property;
   language: "en" | "id";
-  isSaved?: boolean;
-  onSave?: () => void;
-  onView?: () => void;
-  onView3D?: (property: Property) => void;
+  onView?: (id: string) => void;
 }
 
-const CompactPropertyCard = ({ 
-  property, 
-  language, 
-  isSaved = false, 
-  onSave, 
-  onView, 
-  onView3D 
-}: CompactPropertyCardProps) => {
-  const navigate = useNavigate();
+const CompactPropertyCard = ({ property, language, onView }: CompactPropertyCardProps) => {
+  const [showDetailModal, setShowDetailModal] = useState(false);
+  const [show3DModal, setShow3DModal] = useState(false);
+  const [isLiked, setIsLiked] = useState(false);
 
   const text = {
     en: {
       viewDetails: "View Details",
+      view3D: "3D View",
       forSale: "For Sale",
       forRent: "For Rent",
       bedrooms: "bed",
-      bathrooms: "bath",
-      area: "sqm",
-      view3D: "3D View"
+      bathrooms: "bath"
     },
     id: {
       viewDetails: "Lihat Detail",
+      view3D: "Tampilan 3D",
       forSale: "Dijual",
       forRent: "Disewa",
       bedrooms: "kmr",
-      bathrooms: "km",
-      area: "m²",
-      view3D: "Tampilan 3D"
+      bathrooms: "kmdi"
     }
   };
 
   const currentText = text[language];
 
-  // Enhanced image handling function
-  const getPropertyImage = () => {
-    // Default fallback image
-    const defaultImage = "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400&h=300&fit=crop";
-    
-    if (!property.images) {
-      console.log('No images found for property:', property.id);
-      return defaultImage;
-    }
-    
-    // Handle array format
-    if (Array.isArray(property.images)) {
-      const firstImage = property.images[0];
-      console.log('Using first image from array:', firstImage);
-      return firstImage || defaultImage;
-    }
-    
-    // Handle string format (could be JSON or URL)
-    if (typeof property.images === 'string') {
-      try {
-        // Try to parse as JSON
-        const parsed = JSON.parse(property.images);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          console.log('Parsed JSON images, using first:', parsed[0]);
-          return parsed[0];
-        }
-      } catch (e) {
-        // If not JSON, treat as direct URL
-        console.log('Using image as direct URL:', property.images);
-        return property.images;
-      }
-    }
-    
-    console.log('Falling back to default image for property:', property.id);
-    return defaultImage;
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(price);
   };
 
-  const getTypeColor = (type: string) => {
-    switch (type?.toLowerCase()) {
-      case 'sale':
-      case 'buy':
-        return 'bg-green-500 text-white';
-      case 'rent':
-        return 'bg-blue-500 text-white';
-      case 'new-project':
-        return 'bg-orange-500 text-white';
-      default:
-        return 'bg-gray-500 text-white';
+  const getImageUrl = () => {
+    if (property.images && property.images.length > 0) {
+      return property.images[0];
     }
+    if (property.thumbnail_url) {
+      return property.thumbnail_url;
+    }
+    return "/placeholder.svg";
   };
 
-  const getTypeLabel = (type: string) => {
-    switch (type?.toLowerCase()) {
-      case 'sale':
-      case 'buy':
-        return currentText.forSale;
-      case 'rent':
-        return currentText.forRent;
-      default:
-        return type || 'Property';
-    }
-  };
-
-  const formatPrice = (price: string | number) => {
-    if (typeof price === 'number') {
-      return `Rp ${price.toLocaleString('id-ID')}`;
-    }
-    return price || 'Contact for price';
-  };
-
-  const handleViewDetails = () => {
+  const handleViewDetails = (e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    console.log('Opening detail modal for property:', property.id);
+    setShowDetailModal(true);
     if (onView) {
-      onView();
-    } else {
-      navigate(`/property/${property.id}`);
+      onView(property.id);
     }
   };
 
-  const displayLocation = property.location || 
-    `${property.city || ''}, ${property.state || ''}`.trim().replace(/^,|,$/, '') || 
-    'Location not specified';
+  const handleView3D = (e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    console.log('Opening 3D modal for property:', property.id);
+    setShow3DModal(true);
+  };
 
-  const propertyImage = getPropertyImage();
+  const handleShare = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    // Share functionality
+  };
+
+  const handleLike = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsLiked(!isLiked);
+  };
 
   return (
-    <Card 
-      className="group overflow-hidden hover:shadow-lg transition-all duration-300 transform hover:scale-[1.02] border border-gray-200 dark:border-gray-700 rounded-2xl bg-white dark:bg-gray-800 cursor-pointer"
-      onClick={handleViewDetails}
-    >
-      <div className="relative overflow-hidden">
-        <img
-          src={propertyImage}
-          alt={property.title}
-          className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-          onError={(e) => {
-            console.log('Image failed to load, using fallback');
-            e.currentTarget.src = "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400&h=300&fit=crop";
-          }}
-        />
-        
-        {/* Compact Badges */}
-        <div className="absolute top-2 left-2">
-          <Badge className={`${getTypeColor(property.listing_type || property.property_type || '')} text-xs px-2 py-1 rounded-full`}>
-            {getTypeLabel(property.listing_type || property.property_type || '')}
-          </Badge>
-        </div>
+    <>
+      <Card className="group hover:shadow-xl transition-all duration-300 overflow-hidden cursor-pointer" onClick={handleViewDetails}>
+        {/* Image Section */}
+        <div className="relative aspect-[4/3] overflow-hidden">
+          <img
+            src={getImageUrl()}
+            alt={property.title}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          />
 
-        {/* Action Buttons */}
-        <div className="absolute top-2 right-2 flex gap-1">
-          {onSave && (
+          {/* Top Badges */}
+          <div className="absolute top-3 left-3 flex flex-wrap gap-2">
+            <Badge variant="secondary" className="bg-background/90">
+              {property.listing_type === 'sale' ? currentText.forSale : currentText.forRent}
+            </Badge>
+            {property.property_type && (
+              <Badge variant="outline" className="bg-background/90 capitalize">
+                {property.property_type}
+              </Badge>
+            )}
+            {(property.three_d_model_url || property.virtual_tour_url) && (
+              <Badge variant="secondary" className="bg-black/70 text-white backdrop-blur-sm border-none flex items-center gap-1">
+                <ViewIcon className="h-4 w-4" />
+                <span>3D</span>
+              </Badge>
+            )}
+          </div>
+
+          {/* Top-right: Actions */}
+          <div className="absolute top-3 right-3 flex gap-2">
             <Button
-              variant="ghost"
               size="sm"
-              className={`h-7 w-7 rounded-full bg-white/90 hover:bg-white transition-all duration-300 ${
-                isSaved ? 'text-red-500 scale-110' : 'text-gray-600'
-              }`}
-              onClick={(e) => {
-                e.stopPropagation();
-                onSave();
-              }}
+              variant="ghost"
+              className={`bg-white/90 hover:bg-white ${isLiked ? "ring-2 ring-red-400" : ""}`}
+              onClick={handleLike}
             >
-              <Heart className={`h-3 w-3 transition-all duration-300 ${isSaved ? 'fill-current' : ''}`} />
+              <Heart className={`h-4 w-4 ${isLiked ? 'fill-red-500 text-red-500' : 'text-gray-600'}`} />
             </Button>
-          )}
-          
-          {onView3D && (
+            {(property.three_d_model_url || property.virtual_tour_url) && (
+              <Button
+                size="sm"
+                variant="ghost"
+                className="bg-white/90 hover:bg-white text-blue-500"
+                onClick={handleView3D}
+              >
+                <ViewIcon className="h-4 w-4" />
+              </Button>
+            )}
             <Button
-              variant="ghost"
               size="sm"
-              className="h-7 w-7 rounded-full bg-white/90 hover:bg-white text-blue-500 transition-all duration-300"
-              onClick={(e) => {
-                e.stopPropagation();
-                onView3D(property);
-              }}
+              variant="ghost"
+              className="bg-white/90 hover:bg-white text-gray-600"
+              onClick={handleShare}
             >
-              <Box className="h-3 w-3" />
+              <Share2 className="h-4 w-4" />
             </Button>
-          )}
-        </div>
-
-        {/* Rating Badge */}
-        <div className="absolute bottom-2 right-2 bg-black/70 text-white px-2 py-1 rounded-lg flex items-center gap-1 backdrop-blur-sm">
-          <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-          <span className="text-xs font-medium">{(Math.random() * 2 + 3).toFixed(1)}</span>
-        </div>
-      </div>
-
-      <CardContent className="p-4">
-        <h3 className="text-lg font-semibold mb-2 group-hover:text-blue-600 transition-colors duration-300 line-clamp-2">
-          {property.title}
-        </h3>
-        
-        <div className="flex items-center text-gray-500 dark:text-gray-400 mb-3">
-          <MapPin className="h-4 w-4 mr-1 flex-shrink-0" />
-          <span className="text-sm line-clamp-1">{displayLocation}</span>
-        </div>
-
-        <div className="text-xl font-bold text-blue-600 mb-3">
-          {formatPrice(property.price)}
-        </div>
-
-        <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400 mb-4">
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-1">
-              <Bed className="h-4 w-4" />
-              <span>{property.bedrooms || 0}</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <Bath className="h-4 w-4" />
-              <span>{property.bathrooms || 0}</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <Square className="h-4 w-4" />
-              <span>{property.area_sqm || 0}m²</span>
-            </div>
           </div>
         </div>
 
-        <Button 
-          size="sm"
-          className="w-full bg-gradient-to-r from-blue-600 to-orange-500 hover:from-blue-700 hover:to-orange-600 text-white font-medium transition-all duration-300 rounded-xl"
-          onClick={(e) => {
-            e.stopPropagation();
-            handleViewDetails();
-          }}
-        >
-          <Eye className="h-4 w-4 mr-2" />
-          {currentText.viewDetails}
-        </Button>
-      </CardContent>
-    </Card>
+        {/* Content Section */}
+        <CardContent className="p-4 space-y-3">
+          {/* Price */}
+          <div className="flex items-center justify-between">
+            <h3 className="text-xl font-bold text-primary">
+              {formatPrice(property.price)}
+            </h3>
+            {property.listing_type === 'rent' && (
+              <span className="text-sm text-muted-foreground">/month</span>
+            )}
+          </div>
+
+          {/* Title */}
+          <h4 className="font-semibold text-foreground line-clamp-2 min-h-[3rem]">
+            {property.title}
+          </h4>
+
+          {/* Location */}
+          <div className="flex items-center gap-1 text-muted-foreground">
+            <MapPin className="h-4 w-4 flex-shrink-0" />
+            <span className="text-sm truncate">{property.location}</span>
+          </div>
+
+          {/* Property Details */}
+          {(property.bedrooms || property.bathrooms || property.area_sqm) && (
+            <div className="flex items-center gap-4 text-sm text-muted-foreground">
+              {property.bedrooms && (
+                <div className="flex items-center gap-1">
+                  <Bed className="h-4 w-4" />
+                  <span>{property.bedrooms} {currentText.bedrooms}</span>
+                </div>
+              )}
+              {property.bathrooms && (
+                <div className="flex items-center gap-1">
+                  <Bath className="h-4 w-4" />
+                  <span>{property.bathrooms} {currentText.bathrooms}</span>
+                </div>
+              )}
+              {property.area_sqm && (
+                <div className="flex items-center gap-1">
+                  <Square className="h-4 w-4" />
+                  <span>{property.area_sqm} sqm</span>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Action Buttons */}
+          <div className="flex gap-2 mt-3">
+            <Button 
+              className="flex-1"
+              variant="default"
+              onClick={handleViewDetails}
+            >
+              <Eye className="h-4 w-4 mr-2" />
+              {currentText.viewDetails}
+            </Button>
+            {(property.three_d_model_url || property.virtual_tour_url) && (
+              <Button 
+                variant="outline"
+                className="flex-1"
+                onClick={handleView3D}
+              >
+                <ViewIcon className="h-4 w-4 mr-2" />
+                {currentText.view3D}
+              </Button>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Property Detail Modal */}
+      <PropertyDetailModal
+        property={property}
+        isOpen={showDetailModal}
+        onClose={() => setShowDetailModal(false)}
+        language={language}
+        onView3D={() => {
+          setShowDetailModal(false);
+          setShow3DModal(true);
+        }}
+      />
+
+      {/* 3D View Modal */}
+      <Property3DViewModal
+        property={property}
+        isOpen={show3DModal}
+        onClose={() => setShow3DModal(false)}
+        language={language}
+      />
+    </>
   );
 };
 

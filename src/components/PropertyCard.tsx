@@ -4,7 +4,6 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Heart, MapPin, Bed, Bath, Square, Eye } from "lucide-react";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import PropertyDetailModal from "./property/PropertyDetailModal";
 import Property3DViewModal from "./property/Property3DViewModal";
 
@@ -33,7 +32,6 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
   const [isLiked, setIsLiked] = useState(false);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [show3DModal, setShow3DModal] = useState(false);
-  const navigate = useNavigate();
 
   const getTypeColor = (type: string) => {
     switch (type) {
@@ -61,13 +59,15 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
     }
   };
 
-  const handleViewDetails = (e: React.MouseEvent) => {
-    e.stopPropagation();
+  const handleViewDetails = (e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    console.log('Opening detail modal for property:', property.id);
     setShowDetailModal(true);
   };
 
-  const handleView3D = (e: React.MouseEvent) => {
-    e.stopPropagation();
+  const handleView3D = (e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    console.log('Opening 3D modal for property:', property.id);
     setShow3DModal(true);
   };
 
@@ -90,7 +90,7 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
 
   return (
     <>
-      <Card className="enhanced-card group cursor-pointer transition-all duration-300 hover:scale-105 glow-gold">
+      <Card className="enhanced-card group cursor-pointer transition-all duration-300 hover:scale-105 glow-gold" onClick={handleViewDetails}>
         <div className="relative overflow-hidden rounded-t-lg">
           <img
             src={property.image}
@@ -130,7 +130,7 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
           </Button>
         </div>
 
-        <CardContent className="p-6 bg-binance-dark-gray" onClick={handleViewDetails}>
+        <CardContent className="p-6 bg-binance-dark-gray">
           <h3 className="font-bold text-lg mb-3 line-clamp-2 text-binance-white">
             {property.title}
           </h3>
