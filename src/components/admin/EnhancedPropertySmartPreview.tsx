@@ -282,6 +282,31 @@ const EnhancedPropertySmartPreview = () => {
     setHasUnsavedChanges(true);
   };
 
+  const updateBackgroundColor = (color: string) => {
+    setPreviewSettings(prev => ({ ...prev, backgroundColor: color }));
+    setHasUnsavedChanges(true);
+  };
+
+  const updateTextColor = (color: string) => {
+    setPreviewSettings(prev => ({ ...prev, textColor: color }));
+    setHasUnsavedChanges(true);
+  };
+
+  const updateAccentColor = (color: string) => {
+    setPreviewSettings(prev => ({ ...prev, accentColor: color }));
+    setHasUnsavedChanges(true);
+  };
+
+  const applyColorPreset = (preset: { bg: string; text: string; accent: string }) => {
+    setPreviewSettings(prev => ({
+      ...prev,
+      backgroundColor: preset.bg,
+      textColor: preset.text,
+      accentColor: preset.accent
+    }));
+    setHasUnsavedChanges(true);
+  };
+
   const applyTemplate = (templateName: string) => {
     const template = designTemplates.find(t => t.name === templateName);
     if (template) {
@@ -1024,13 +1049,13 @@ const EnhancedPropertySmartPreview = () => {
                     <Input
                       type="color"
                       value={previewSettings.backgroundColor}
-                      onChange={(e) => updateSetting('backgroundColor', e.target.value)}
+                      onChange={(e) => updateBackgroundColor(e.target.value)}
                       className="w-16 h-10 p-1 border-2 rounded"
                     />
                     <Input
                       type="text"
                       value={previewSettings.backgroundColor}
-                      onChange={(e) => updateSetting('backgroundColor', e.target.value)}
+                      onChange={(e) => updateBackgroundColor(e.target.value)}
                       className="flex-1 bg-slate-700/50 border-slate-600 text-white"
                       placeholder="#ffffff"
                     />
@@ -1043,13 +1068,13 @@ const EnhancedPropertySmartPreview = () => {
                     <Input
                       type="color"
                       value={previewSettings.textColor}
-                      onChange={(e) => updateSetting('textColor', e.target.value)}
+                      onChange={(e) => updateTextColor(e.target.value)}
                       className="w-16 h-10 p-1 border-2 rounded"
                     />
                     <Input
                       type="text"
                       value={previewSettings.textColor}
-                      onChange={(e) => updateSetting('textColor', e.target.value)}
+                      onChange={(e) => updateTextColor(e.target.value)}
                       className="flex-1 bg-slate-700/50 border-slate-600 text-white"
                       placeholder="#1f2937"
                     />
@@ -1062,13 +1087,13 @@ const EnhancedPropertySmartPreview = () => {
                     <Input
                       type="color"
                       value={previewSettings.accentColor}
-                      onChange={(e) => updateSetting('accentColor', e.target.value)}
+                      onChange={(e) => updateAccentColor(e.target.value)}
                       className="w-16 h-10 p-1 border-2 rounded"
                     />
                     <Input
                       type="text"
                       value={previewSettings.accentColor}
-                      onChange={(e) => updateSetting('accentColor', e.target.value)}
+                      onChange={(e) => updateAccentColor(e.target.value)}
                       className="flex-1 bg-slate-700/50 border-slate-600 text-white"
                       placeholder="#3b82f6"
                     />
@@ -1090,11 +1115,7 @@ const EnhancedPropertySmartPreview = () => {
                         size="sm"
                         variant="outline"
                         className="flex flex-col h-16 p-1"
-                        onClick={() => {
-                          updateSetting('backgroundColor', preset.bg);
-                          updateSetting('textColor', preset.text);
-                          updateSetting('accentColor', preset.accent);
-                        }}
+                        onClick={() => applyColorPreset(preset)}
                       >
                         <div 
                           className="w-full h-8 rounded mb-1 border"
