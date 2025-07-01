@@ -2470,6 +2470,7 @@ export type Database = {
           duration_minutes: number | null
           id: string
           location_address: string | null
+          payment_status: string | null
           service_id: string | null
           status: string | null
           total_amount: number | null
@@ -2488,6 +2489,7 @@ export type Database = {
           duration_minutes?: number | null
           id?: string
           location_address?: string | null
+          payment_status?: string | null
           service_id?: string | null
           status?: string | null
           total_amount?: number | null
@@ -2506,6 +2508,7 @@ export type Database = {
           duration_minutes?: number | null
           id?: string
           location_address?: string | null
+          payment_status?: string | null
           service_id?: string | null
           status?: string | null
           total_amount?: number | null
