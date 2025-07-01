@@ -118,14 +118,16 @@ const PropertySlideSettings = () => {
         { key: 'property_slides_maxSlides', value: settings.maxSlides.toString(), category: 'property_slides', description: 'Maximum slides to show' }
       ];
 
-      for (const setting of settingsToSave) {
-        const { error } = await supabase
-          .from('system_settings')
-          .upsert(setting, { onConflict: 'key' });
+      // Use a single batch upsert operation instead of individual calls
+      const { error } = await supabase
+        .from('system_settings')
+        .upsert(settingsToSave, { 
+          onConflict: 'key',
+          ignoreDuplicates: false 
+        });
 
-        if (error) {
-          throw error;
-        }
+      if (error) {
+        throw error;
       }
 
       showSuccess('Settings Saved', 'Property slide settings have been saved successfully');

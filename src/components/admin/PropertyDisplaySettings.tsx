@@ -125,14 +125,16 @@ const PropertyDisplaySettings = () => {
         { key: 'property_display_showContactInfo', value: settings.showContactInfo.toString(), category: 'property_display', description: 'Show contact info' }
       ];
 
-      for (const setting of settingsToSave) {
-        const { error } = await supabase
-          .from('system_settings')
-          .upsert(setting, { onConflict: 'key' });
+      // Use a single batch upsert operation instead of individual calls
+      const { error } = await supabase
+        .from('system_settings')
+        .upsert(settingsToSave, { 
+          onConflict: 'key',
+          ignoreDuplicates: false 
+        });
 
-        if (error) {
-          throw error;
-        }
+      if (error) {
+        throw error;
       }
 
       showSuccess('Settings Saved', 'Property display settings have been saved successfully');
