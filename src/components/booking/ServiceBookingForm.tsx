@@ -13,6 +13,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { useToast } from "@/hooks/use-toast";
 import { CalendarIcon, CreditCard, Banknote, Smartphone, Coins } from "lucide-react";
 import { format } from "date-fns";
+import PaymentInstructions from "./PaymentInstructions";
 
 interface ServiceBookingFormProps {
   service: any;
@@ -40,7 +41,8 @@ const ServiceBookingForm = ({ service, onBookingCreated }: ServiceBookingFormPro
   });
 
   const [isLoading, setIsLoading] = useState(false);
-  const [showPayment, setShowPayment] = useState(false);
+  const [bookingCreated, setBookingCreated] = useState<string | null>(null);
+  const [paymentData, setPaymentData] = useState<any>(null);
 
   const calculateTotal = () => {
     const basePrice = service?.price_range?.min || 0;
@@ -83,7 +85,7 @@ const ServiceBookingForm = ({ service, onBookingCreated }: ServiceBookingFormPro
 
       if (bookingError) throw bookingError;
 
-      setShowPayment(true);
+      setBookingCreated(booking.id);
       
       toast({
         title: "Booking Created",
@@ -103,13 +105,13 @@ const ServiceBookingForm = ({ service, onBookingCreated }: ServiceBookingFormPro
   };
 
   const handlePayment = async () => {
-    if (!showPayment) return;
+    if (!bookingCreated) return;
     
     setIsLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke('create-booking-payment', {
         body: {
-          bookingId: showPayment,
+          bookingId: bookingCreated,
           paymentMethod: formData.paymentMethod,
           amount: calculateTotal(),
           currency: 'IDR',
@@ -121,14 +123,15 @@ const ServiceBookingForm = ({ service, onBookingCreated }: ServiceBookingFormPro
 
       if (error) throw error;
 
+      setPaymentData(data);
+
       if (data.status === 'succeeded') {
         toast({
           title: "Payment Successful",
           description: "Your booking has been confirmed!",
         });
-        onBookingCreated?.(showPayment);
+        onBookingCreated?.(bookingCreated);
       } else {
-        // Show payment instructions for Indonesian methods
         toast({
           title: "Payment Instructions",
           description: data.paymentInstructions?.instructions || "Please complete payment",
@@ -146,6 +149,19 @@ const ServiceBookingForm = ({ service, onBookingCreated }: ServiceBookingFormPro
       setIsLoading(false);
     }
   };
+
+  const handlePaymentConfirmed = () => {
+    onBookingCreated?.(bookingCreated || '');
+  };
+
+  if (paymentData) {
+    return (
+      <PaymentInstructions 
+        paymentData={paymentData} 
+        onPaymentConfirmed={handlePaymentConfirmed}
+      />
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -263,7 +279,7 @@ const ServiceBookingForm = ({ service, onBookingCreated }: ServiceBookingFormPro
       </Card>
 
       {/* Payment Options */}
-      {showPayment && (
+      {bookingCreated && (
         <Card>
           <CardHeader>
             <CardTitle>Choose Payment Method</CardTitle>

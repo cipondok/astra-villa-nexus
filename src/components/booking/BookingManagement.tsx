@@ -5,8 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Calendar, Clock, MapPin, User, Phone, Mail, DollarSign } from "lucide-react";
+import { Calendar, Clock, MapPin, Phone, Mail, DollarSign } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface Booking {
@@ -43,7 +42,6 @@ const BookingManagement = () => {
   const [filter, setFilter] = useState('all');
 
   const isVendor = profile?.role === 'vendor';
-  const isCustomer = !isVendor;
 
   useEffect(() => {
     if (user) {
@@ -78,7 +76,27 @@ const BookingManagement = () => {
       const { data, error } = await query.order('created_at', { ascending: false });
 
       if (error) throw error;
-      setBookings(data || []);
+      
+      // Map the data to ensure it matches our Booking interface
+      const mappedBookings: Booking[] = (data || []).map(booking => ({
+        id: booking.id,
+        booking_date: booking.booking_date,
+        booking_time: booking.booking_time,
+        duration_minutes: booking.duration_minutes,
+        total_amount: booking.total_amount,
+        status: booking.status,
+        payment_status: booking.payment_status || 'pending',
+        customer_notes: booking.customer_notes,
+        vendor_notes: booking.vendor_notes,
+        location_address: booking.location_address,
+        contact_phone: booking.contact_phone,
+        contact_email: booking.contact_email,
+        service: booking.service,
+        customer: booking.customer,
+        vendor: booking.vendor
+      }));
+      
+      setBookings(mappedBookings);
     } catch (error: any) {
       console.error('Error fetching bookings:', error);
       toast({
