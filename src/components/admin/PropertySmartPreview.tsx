@@ -18,7 +18,8 @@ import {
   Square,
   Heart,
   Share2,
-  ExternalLink
+  ExternalLink,
+  AlertCircle
 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -46,28 +47,53 @@ const PropertySmartPreview = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedProperty, setSelectedProperty] = useState<PreviewProperty | null>(null);
   const [previewMode, setPreviewMode] = useState<'card' | 'list' | 'detailed'>('card');
+  const [statusFilter, setStatusFilter] = useState<'all' | 'approved' | 'pending_approval'>('all');
 
-  const { data: properties, isLoading, refetch } = useQuery({
-    queryKey: ['preview-properties', searchTerm],
+  const { data: properties, isLoading, error, refetch } = useQuery({
+    queryKey: ['preview-properties', searchTerm, statusFilter],
     queryFn: async () => {
+      console.log('Fetching properties for preview...', { searchTerm, statusFilter });
+      
       let query = supabase
         .from('properties')
         .select('*')
-        .eq('status', 'approved')
         .order('created_at', { ascending: false })
-        .limit(20);
+        .limit(50); // Increased limit for better preview
+
+      // Apply status filter
+      if (statusFilter === 'approved') {
+        query = query.eq('status', 'approved');
+      } else if (statusFilter === 'pending_approval') {
+        query = query.eq('status', 'pending_approval');
+      } else {
+        // Show both approved and pending for preview purposes
+        query = query.in('status', ['approved', 'pending_approval']);
+      }
 
       if (searchTerm) {
         query = query.or(`title.ilike.%${searchTerm}%,location.ilike.%${searchTerm}%`);
       }
 
       const { data, error } = await query;
-      if (error) throw error;
+      
+      console.log('Properties query result:', { 
+        data: data?.length, 
+        error, 
+        statusFilter, 
+        searchTerm 
+      });
+      
+      if (error) {
+        console.error('Error fetching properties:', error);
+        throw error;
+      }
+      
       return data as PreviewProperty[];
     },
   });
 
   const handleRefresh = () => {
+    console.log('Refreshing properties...');
     refetch();
   };
 
@@ -93,6 +119,9 @@ const PropertySmartPreview = () => {
           <div className="flex items-start justify-between">
             <h3 className="font-semibold text-sm line-clamp-1">{property.title}</h3>
             <div className="flex items-center space-x-1">
+              {property.status === 'pending_approval' && (
+                <Badge variant="secondary" className="text-xs">Pending</Badge>
+              )}
               {property.three_d_model_url && (
                 <Badge variant="secondary" className="text-xs">3D</Badge>
               )}
@@ -166,6 +195,9 @@ const PropertySmartPreview = () => {
             <div className="flex items-start justify-between">
               <h3 className="font-semibold text-sm truncate pr-2">{property.title}</h3>
               <div className="flex items-center space-x-1 flex-shrink-0">
+                {property.status === 'pending_approval' && (
+                  <Badge variant="secondary" className="text-xs">Pending</Badge>
+                )}
                 {property.three_d_model_url && (
                   <Badge variant="secondary" className="text-xs">3D</Badge>
                 )}
@@ -298,6 +330,9 @@ const PropertySmartPreview = () => {
               <Badge variant="outline" className="capitalize">
                 {property.listing_type}
               </Badge>
+              {property.status === 'pending_approval' && (
+                <Badge variant="secondary">Pending Approval</Badge>
+              )}
               {property.development_status !== 'completed' && (
                 <Badge variant="secondary" className="capitalize">
                   {property.development_status?.replace('_', ' ')}
@@ -350,6 +385,16 @@ const PropertySmartPreview = () => {
                     />
                   </div>
                 </div>
+                <Select value={statusFilter} onValueChange={(value: 'all' | 'approved' | 'pending_approval') => setStatusFilter(value)}>
+                  <SelectTrigger className="w-40 bg-slate-700/50 border-slate-600 text-white">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Properties</SelectItem>
+                    <SelectItem value="approved">Approved Only</SelectItem>
+                    <SelectItem value="pending_approval">Pending Only</SelectItem>
+                  </SelectContent>
+                </Select>
                 <Select value={previewMode} onValueChange={(value: 'card' | 'list' | 'detailed') => setPreviewMode(value)}>
                   <SelectTrigger className="w-40 bg-slate-700/50 border-slate-600 text-white">
                     <SelectValue />
@@ -364,10 +409,30 @@ const PropertySmartPreview = () => {
             </CardContent>
           </Card>
 
+          {/* Debug Info */}
+          {error && (
+            <Card className="bg-red-900/20 border-red-700/50">
+              <CardContent className="p-4 flex items-center space-x-2">
+                <AlertCircle className="h-5 w-5 text-red-400" />
+                <div>
+                  <p className="text-red-300 font-medium">Error Loading Properties</p>
+                  <p className="text-red-200 text-sm">{error.message}</p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
           {/* Preview Area */}
           <Card className="bg-white dark:bg-slate-800/50 border-slate-700/50">
             <CardHeader>
-              <CardTitle className="text-white">Live Preview</CardTitle>
+              <CardTitle className="text-white flex items-center justify-between">
+                <span>Live Preview</span>
+                {properties && (
+                  <Badge variant="outline" className="text-white border-slate-600">
+                    {properties.length} properties
+                  </Badge>
+                )}
+              </CardTitle>
             </CardHeader>
             <CardContent>
               {isLoading ? (
@@ -377,8 +442,13 @@ const PropertySmartPreview = () => {
                 </div>
               ) : !properties || properties.length === 0 ? (
                 <div className="text-center py-8">
-                  <Building2 className="h-12 w-12 text-gray-400 mx-auto mb-2" />
-                  <p className="text-gray-400">No properties found</p>
+                  <Building2 className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-white mb-2">No Properties Found</h3>
+                  <div className="space-y-2 text-gray-400">
+                    <p>Current filters: Status = {statusFilter}, Search = "{searchTerm || 'none'}"</p>
+                    <p>Try changing the status filter or clearing the search to see more properties.</p>
+                    <p>You may need to add some properties first in the "Add Property" tab.</p>
+                  </div>
                 </div>
               ) : (
                 <div className={`grid gap-4 ${
