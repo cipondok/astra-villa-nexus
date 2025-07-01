@@ -1,3 +1,4 @@
+
 import React from "react";
 import { TabsContent } from "@/components/ui/tabs";
 import AdminOverview from "./AdminOverview";
@@ -29,6 +30,7 @@ import ASTRATokenAnalytics from "./ASTRATokenAnalytics";
 import ASTRATokenSettings from "./ASTRATokenSettings";
 import ErrorManagement from "./ErrorManagement";
 import ChatManagement from "./ChatManagement";
+import DiagnosticDashboard from "./DiagnosticDashboard";
 
 interface AdminDashboardContentProps {
   isAdmin: boolean;
@@ -49,6 +51,10 @@ const AdminDashboardContent = ({ isAdmin, setActiveTab }: AdminDashboardContentP
     <>
       <TabsContent value="overview">
         <AdminOverview />
+      </TabsContent>
+
+      <TabsContent value="diagnostic">
+        <DiagnosticDashboard />
       </TabsContent>
 
       <TabsContent value="astra-token">
