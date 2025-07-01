@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -225,25 +224,25 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
   };
 
   return (
-    <div className="fixed inset-0 z-[10000] flex items-start justify-end p-4 pt-20">
-      {/* Backdrop */}
+    <div className="fixed inset-0 z-[10000] flex items-start justify-end p-3 pt-16">
+      {/* 90% Transparent Backdrop */}
       <div 
-        className="absolute inset-0 bg-black/20 backdrop-blur-sm"
+        className="absolute inset-0 bg-black/10 backdrop-blur-[2px]"
         onClick={handleClose}
       />
       
-      {/* Modal */}
-      <div className="relative w-full max-w-md animate-in slide-in-from-right-5 duration-300">
-        {/* Glassy Card */}
-        <div className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border border-white/20 dark:border-gray-700/30 rounded-2xl shadow-2xl shadow-black/10 dark:shadow-black/30 overflow-hidden">
-          {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b border-white/10 dark:border-gray-700/30">
+      {/* Compact Modal with Animations */}
+      <div className="relative w-full max-w-sm animate-in slide-in-from-right-5 fade-in-0 duration-300 ease-out">
+        {/* Ultra Glassy Compact Card */}
+        <div className="bg-white/5 dark:bg-gray-900/5 backdrop-blur-2xl border border-white/10 dark:border-gray-700/10 rounded-xl shadow-2xl shadow-black/5 dark:shadow-black/20 overflow-hidden transform transition-all duration-300 hover:scale-[1.02]">
+          {/* Compact Header */}
+          <div className="flex items-center justify-between p-4 border-b border-white/5 dark:border-gray-700/10">
             <div>
-              <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-orange-500 bg-clip-text text-transparent">
+              <h2 className="text-lg font-bold bg-gradient-to-r from-blue-600 to-orange-500 bg-clip-text text-transparent">
                 Astra Villa
               </h2>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                {isLogin ? 'Welcome back!' : 'Create your account'}
+              <p className="text-xs text-gray-600 dark:text-gray-400">
+                {isLogin ? 'Welcome back!' : 'Join us today'}
               </p>
             </div>
             <Button 
@@ -251,19 +250,19 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
               size="sm" 
               onClick={handleClose} 
               disabled={isLoading}
-              className="h-8 w-8 p-0 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 rounded-full"
+              className="h-6 w-6 p-0 hover:bg-gray-100/20 dark:hover:bg-gray-800/20 rounded-full transition-all duration-200"
             >
-              <X className="h-4 w-4" />
+              <X className="h-3 w-3" />
             </Button>
           </div>
 
-          {/* Content */}
-          <div className="p-6">
+          {/* Compact Content */}
+          <div className="p-4 space-y-4">
             {/* Success State */}
             {isSuccess && (
-              <Alert className="mb-6 border-green-200/50 bg-green-50/50 dark:bg-green-900/20">
-                <CheckCircle className="h-4 w-4 text-green-600" />
-                <AlertDescription className="text-green-800 dark:text-green-300">
+              <Alert className="border-green-200/30 bg-green-50/20 dark:bg-green-900/10 animate-in fade-in-0 duration-200">
+                <CheckCircle className="h-3 w-3 text-green-600" />
+                <AlertDescription className="text-xs text-green-800 dark:text-green-300">
                   {isLogin ? currentText.loginSuccess : currentText.signupSuccess}
                 </AlertDescription>
               </Alert>
@@ -271,21 +270,21 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
 
             {/* General Error */}
             {(errors.login || errors.register) && (
-              <Alert variant="destructive" className="mb-6 bg-red-50/50 dark:bg-red-900/20 border-red-200/50">
-                <AlertTriangle className="h-4 w-4" />
-                <AlertDescription>{errors.login || errors.register}</AlertDescription>
+              <Alert variant="destructive" className="bg-red-50/20 dark:bg-red-900/10 border-red-200/30 animate-in fade-in-0 duration-200">
+                <AlertTriangle className="h-3 w-3" />
+                <AlertDescription className="text-xs">{errors.login || errors.register}</AlertDescription>
               </Alert>
             )}
 
-            {/* Toggle Buttons */}
-            <div className="flex mb-6 bg-gray-100/50 dark:bg-gray-800/50 rounded-xl p-1">
+            {/* Compact Toggle Buttons */}
+            <div className="flex bg-gray-100/20 dark:bg-gray-800/20 rounded-lg p-0.5">
               <button
                 type="button"
                 onClick={() => { setIsLogin(true); setErrors({}); }}
                 disabled={isLoading}
-                className={`flex-1 py-2 px-4 text-sm font-medium rounded-lg transition-all duration-200 ${
+                className={`flex-1 py-1.5 px-3 text-xs font-medium rounded-md transition-all duration-200 ${
                   isLogin 
-                    ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm' 
+                    ? 'bg-white/50 dark:bg-gray-700/50 text-gray-900 dark:text-white shadow-sm' 
                     : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
                 }`}
               >
@@ -295,9 +294,9 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
                 type="button"
                 onClick={() => { setIsLogin(false); setErrors({}); }}
                 disabled={isLoading}
-                className={`flex-1 py-2 px-4 text-sm font-medium rounded-lg transition-all duration-200 ${
+                className={`flex-1 py-1.5 px-3 text-xs font-medium rounded-md transition-all duration-200 ${
                   !isLogin 
-                    ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm' 
+                    ? 'bg-white/50 dark:bg-gray-700/50 text-gray-900 dark:text-white shadow-sm' 
                     : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
                 }`}
               >
@@ -307,9 +306,9 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
 
             {/* Login Form */}
             {isLogin && (
-              <form onSubmit={handleLogin} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="login-email" className="text-sm font-medium">
+              <form onSubmit={handleLogin} className="space-y-3 animate-in fade-in-0 duration-200">
+                <div className="space-y-1">
+                  <Label htmlFor="login-email" className="text-xs font-medium">
                     {currentText.email}
                   </Label>
                   <Input
@@ -319,17 +318,17 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
                     value={loginData.email}
                     onChange={(e) => setLoginData(prev => ({ ...prev, email: e.target.value }))}
                     disabled={isLoading}
-                    className={`bg-white/50 dark:bg-gray-800/50 border-gray-200/50 dark:border-gray-700/50 ${
-                      errors.email ? "border-red-500" : ""
+                    className={`h-8 text-xs bg-white/20 dark:bg-gray-800/20 border-gray-200/30 dark:border-gray-700/30 ${
+                      errors.email ? "border-red-500/50" : ""
                     }`}
                   />
                   {errors.email && (
-                    <p className="text-sm text-red-600 dark:text-red-400">{errors.email}</p>
+                    <p className="text-xs text-red-600 dark:text-red-400">{errors.email}</p>
                   )}
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="login-password" className="text-sm font-medium">
+                <div className="space-y-1">
+                  <Label htmlFor="login-password" className="text-xs font-medium">
                     {currentText.password}
                   </Label>
                   <div className="relative">
@@ -340,39 +339,39 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
                       value={loginData.password}
                       onChange={(e) => setLoginData(prev => ({ ...prev, password: e.target.value }))}
                       disabled={isLoading}
-                      className={`bg-white/50 dark:bg-gray-800/50 border-gray-200/50 dark:border-gray-700/50 pr-10 ${
-                        errors.password ? "border-red-500" : ""
+                      className={`h-8 text-xs bg-white/20 dark:bg-gray-800/20 border-gray-200/30 dark:border-gray-700/30 pr-8 ${
+                        errors.password ? "border-red-500/50" : ""
                       }`}
                     />
                     <Button
                       type="button"
                       variant="ghost"
                       size="sm"
-                      className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
+                      className="absolute right-0 top-0 h-8 w-8 p-0 hover:bg-transparent"
                       onClick={() => setShowPassword(!showPassword)}
                       disabled={isLoading}
                     >
-                      {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      {showPassword ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
                     </Button>
                   </div>
                   {errors.password && (
-                    <p className="text-sm text-red-600 dark:text-red-400">{errors.password}</p>
+                    <p className="text-xs text-red-600 dark:text-red-400">{errors.password}</p>
                   )}
                 </div>
 
                 <Button 
                   type="submit" 
-                  className="w-full bg-gradient-to-r from-blue-600 to-orange-500 hover:from-blue-700 hover:to-orange-600 text-white font-medium py-2.5 rounded-lg transition-all duration-200"
+                  className="w-full h-8 bg-gradient-to-r from-blue-600 to-orange-500 hover:from-blue-700 hover:to-orange-600 text-white font-medium text-xs rounded-md transition-all duration-200 transform hover:scale-105"
                   disabled={isLoading || isSuccess}
                 >
                   {isLoading ? (
                     <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      <Loader2 className="mr-1 h-3 w-3 animate-spin" />
                       {currentText.signingIn}
                     </>
                   ) : isSuccess ? (
                     <>
-                      <CheckCircle className="mr-2 h-4 w-4" />
+                      <CheckCircle className="mr-1 h-3 w-3" />
                       {currentText.success}
                     </>
                   ) : (
@@ -384,9 +383,9 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
 
             {/* Register Form */}
             {!isLogin && (
-              <form onSubmit={handleRegister} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="register-name" className="text-sm font-medium">
+              <form onSubmit={handleRegister} className="space-y-3 animate-in fade-in-0 duration-200">
+                <div className="space-y-1">
+                  <Label htmlFor="register-name" className="text-xs font-medium">
                     {currentText.fullName}
                   </Label>
                   <Input
@@ -396,17 +395,17 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
                     value={registerData.fullName}
                     onChange={(e) => setRegisterData(prev => ({ ...prev, fullName: e.target.value }))}
                     disabled={isLoading}
-                    className={`bg-white/50 dark:bg-gray-800/50 border-gray-200/50 dark:border-gray-700/50 ${
-                      errors.fullName ? "border-red-500" : ""
+                    className={`h-8 text-xs bg-white/20 dark:bg-gray-800/20 border-gray-200/30 dark:border-gray-700/30 ${
+                      errors.fullName ? "border-red-500/50" : ""
                     }`}
                   />
                   {errors.fullName && (
-                    <p className="text-sm text-red-600 dark:text-red-400">{errors.fullName}</p>
+                    <p className="text-xs text-red-600 dark:text-red-400">{errors.fullName}</p>
                   )}
                 </div>
                 
-                <div className="space-y-2">
-                  <Label htmlFor="register-email" className="text-sm font-medium">
+                <div className="space-y-1">
+                  <Label htmlFor="register-email" className="text-xs font-medium">
                     {currentText.email}
                   </Label>
                   <Input
@@ -416,17 +415,17 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
                     value={registerData.email}
                     onChange={(e) => setRegisterData(prev => ({ ...prev, email: e.target.value }))}
                     disabled={isLoading}
-                    className={`bg-white/50 dark:bg-gray-800/50 border-gray-200/50 dark:border-gray-700/50 ${
-                      errors.email ? "border-red-500" : ""
+                    className={`h-8 text-xs bg-white/20 dark:bg-gray-800/20 border-gray-200/30 dark:border-gray-700/30 ${
+                      errors.email ? "border-red-500/50" : ""
                     }`}
                   />
                   {errors.email && (
-                    <p className="text-sm text-red-600 dark:text-red-400">{errors.email}</p>
+                    <p className="text-xs text-red-600 dark:text-red-400">{errors.email}</p>
                   )}
                 </div>
                 
-                <div className="space-y-2">
-                  <Label htmlFor="register-password" className="text-sm font-medium">
+                <div className="space-y-1">
+                  <Label htmlFor="register-password" className="text-xs font-medium">
                     {currentText.password}
                   </Label>
                   <div className="relative">
@@ -437,28 +436,28 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
                       value={registerData.password}
                       onChange={(e) => setRegisterData(prev => ({ ...prev, password: e.target.value }))}
                       disabled={isLoading}
-                      className={`bg-white/50 dark:bg-gray-800/50 border-gray-200/50 dark:border-gray-700/50 pr-10 ${
-                        errors.password ? "border-red-500" : ""
+                      className={`h-8 text-xs bg-white/20 dark:bg-gray-800/20 border-gray-200/30 dark:border-gray-700/30 pr-8 ${
+                        errors.password ? "border-red-500/50" : ""
                       }`}
                     />
                     <Button
                       type="button"
                       variant="ghost"
                       size="sm"
-                      className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
+                      className="absolute right-0 top-0 h-8 w-8 p-0 hover:bg-transparent"
                       onClick={() => setShowPassword(!showPassword)}
                       disabled={isLoading}
                     >
-                      {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      {showPassword ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
                     </Button>
                   </div>
                   {errors.password && (
-                    <p className="text-sm text-red-600 dark:text-red-400">{errors.password}</p>
+                    <p className="text-xs text-red-600 dark:text-red-400">{errors.password}</p>
                   )}
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="register-confirm-password" className="text-sm font-medium">
+                <div className="space-y-1">
+                  <Label htmlFor="register-confirm-password" className="text-xs font-medium">
                     {currentText.confirmPassword}
                   </Label>
                   <div className="relative">
@@ -469,39 +468,39 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
                       value={registerData.confirmPassword}
                       onChange={(e) => setRegisterData(prev => ({ ...prev, confirmPassword: e.target.value }))}
                       disabled={isLoading}
-                      className={`bg-white/50 dark:bg-gray-800/50 border-gray-200/50 dark:border-gray-700/50 pr-10 ${
-                        errors.confirmPassword ? "border-red-500" : ""
+                      className={`h-8 text-xs bg-white/20 dark:bg-gray-800/20 border-gray-200/30 dark:border-gray-700/30 pr-8 ${
+                        errors.confirmPassword ? "border-red-500/50" : ""
                       }`}
                     />
                     <Button
                       type="button"
                       variant="ghost"
                       size="sm"
-                      className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
+                      className="absolute right-0 top-0 h-8 w-8 p-0 hover:bg-transparent"
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                       disabled={isLoading}
                     >
-                      {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      {showConfirmPassword ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
                     </Button>
                   </div>
                   {errors.confirmPassword && (
-                    <p className="text-sm text-red-600 dark:text-red-400">{errors.confirmPassword}</p>
+                    <p className="text-xs text-red-600 dark:text-red-400">{errors.confirmPassword}</p>
                   )}
                 </div>
 
                 <Button 
                   type="submit" 
-                  className="w-full bg-gradient-to-r from-blue-600 to-orange-500 hover:from-blue-700 hover:to-orange-600 text-white font-medium py-2.5 rounded-lg transition-all duration-200"
+                  className="w-full h-8 bg-gradient-to-r from-blue-600 to-orange-500 hover:from-blue-700 hover:to-orange-600 text-white font-medium text-xs rounded-md transition-all duration-200 transform hover:scale-105"
                   disabled={isLoading || isSuccess}
                 >
                   {isLoading ? (
                     <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      <Loader2 className="mr-1 h-3 w-3 animate-spin" />
                       {currentText.creatingAccount}
                     </>
                   ) : isSuccess ? (
                     <>
-                      <CheckCircle className="mr-2 h-4 w-4" />
+                      <CheckCircle className="mr-1 h-3 w-3" />
                       {currentText.success}
                     </>
                   ) : (
@@ -512,12 +511,12 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
             )}
 
             {/* Switch Form Link */}
-            <div className="text-center mt-6 pt-4 border-t border-gray-200/20 dark:border-gray-700/20">
+            <div className="text-center pt-2 border-t border-gray-200/10 dark:border-gray-700/10">
               <button
                 type="button"
                 onClick={() => { setIsLogin(!isLogin); setErrors({}); }}
                 disabled={isLoading}
-                className="text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
+                className="text-xs text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
               >
                 {isLogin ? currentText.switchToRegister : currentText.switchToLogin}
               </button>
