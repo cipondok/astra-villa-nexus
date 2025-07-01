@@ -26,8 +26,16 @@ interface AdminTabNavigationProps {
   isAdmin: boolean;
 }
 
+interface TabItem {
+  id: string;
+  label: string;
+  icon: React.ComponentType<any>;
+  category: string;
+  badge?: string;
+}
+
 const AdminTabNavigation = ({ isAdmin }: AdminTabNavigationProps) => {
-  const adminTabs = [
+  const adminTabs: TabItem[] = [
     { 
       id: "overview", 
       label: "Overview", 
@@ -212,7 +220,7 @@ const AdminTabNavigation = ({ isAdmin }: AdminTabNavigationProps) => {
     }
   ];
 
-  const nonAdminTabs = [
+  const nonAdminTabs: TabItem[] = [
     { 
       id: "overview", 
       label: "Overview", 
