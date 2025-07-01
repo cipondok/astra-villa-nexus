@@ -41,33 +41,35 @@ interface PreviewProperty {
   three_d_model_url?: string;
   virtual_tour_url?: string;
   development_status?: string;
+  approval_status?: string;
 }
 
 const PropertySmartPreview = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedProperty, setSelectedProperty] = useState<PreviewProperty | null>(null);
   const [previewMode, setPreviewMode] = useState<'card' | 'list' | 'detailed'>('card');
-  const [statusFilter, setStatusFilter] = useState<'all' | 'approved' | 'pending_approval'>('all');
+  const [statusFilter, setStatusFilter] = useState<'all' | 'approved' | 'pending_approval' | 'active'>('all');
 
   const { data: properties, isLoading, error, refetch } = useQuery({
     queryKey: ['preview-properties', searchTerm, statusFilter],
     queryFn: async () => {
       console.log('Fetching properties for preview...', { searchTerm, statusFilter });
       
+      // First, let's try a simple query to see all properties
       let query = supabase
         .from('properties')
         .select('*')
-        .order('created_at', { ascending: false })
-        .limit(50); // Increased limit for better preview
+        .order('created_at', { ascending: false });
 
-      // Apply status filter
-      if (statusFilter === 'approved') {
-        query = query.eq('status', 'approved');
-      } else if (statusFilter === 'pending_approval') {
-        query = query.eq('status', 'pending_approval');
-      } else {
-        // Show both approved and pending for preview purposes
-        query = query.in('status', ['approved', 'pending_approval']);
+      // Don't apply status filter initially to see what we get
+      if (statusFilter !== 'all') {
+        if (statusFilter === 'approved') {
+          query = query.or('status.eq.approved,approval_status.eq.approved');
+        } else if (statusFilter === 'pending_approval') {
+          query = query.or('status.eq.pending_approval,approval_status.eq.pending');
+        } else if (statusFilter === 'active') {
+          query = query.eq('status', 'active');
+        }
       }
 
       if (searchTerm) {
@@ -77,10 +79,11 @@ const PropertySmartPreview = () => {
       const { data, error } = await query;
       
       console.log('Properties query result:', { 
-        data: data?.length, 
+        data: data?.length || 0, 
         error, 
         statusFilter, 
-        searchTerm 
+        searchTerm,
+        firstProperty: data?.[0] || null
       });
       
       if (error) {
@@ -120,6 +123,9 @@ const PropertySmartPreview = () => {
             <h3 className="font-semibold text-sm line-clamp-1">{property.title}</h3>
             <div className="flex items-center space-x-1">
               {property.status === 'pending_approval' && (
+                <Badge variant="secondary" className="text-xs">Pending</Badge>
+              )}
+              {property.approval_status === 'pending' && (
                 <Badge variant="secondary" className="text-xs">Pending</Badge>
               )}
               {property.three_d_model_url && (
@@ -195,7 +201,7 @@ const PropertySmartPreview = () => {
             <div className="flex items-start justify-between">
               <h3 className="font-semibold text-sm truncate pr-2">{property.title}</h3>
               <div className="flex items-center space-x-1 flex-shrink-0">
-                {property.status === 'pending_approval' && (
+                {(property.status === 'pending_approval' || property.approval_status === 'pending') && (
                   <Badge variant="secondary" className="text-xs">Pending</Badge>
                 )}
                 {property.three_d_model_url && (
@@ -330,7 +336,7 @@ const PropertySmartPreview = () => {
               <Badge variant="outline" className="capitalize">
                 {property.listing_type}
               </Badge>
-              {property.status === 'pending_approval' && (
+              {(property.status === 'pending_approval' || property.approval_status === 'pending') && (
                 <Badge variant="secondary">Pending Approval</Badge>
               )}
               {property.development_status !== 'completed' && (
@@ -385,13 +391,14 @@ const PropertySmartPreview = () => {
                     />
                   </div>
                 </div>
-                <Select value={statusFilter} onValueChange={(value: 'all' | 'approved' | 'pending_approval') => setStatusFilter(value)}>
+                <Select value={statusFilter} onValueChange={(value: 'all' | 'approved' | 'pending_approval' | 'active') => setStatusFilter(value)}>
                   <SelectTrigger className="w-40 bg-slate-700/50 border-slate-600 text-white">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Properties</SelectItem>
                     <SelectItem value="approved">Approved Only</SelectItem>
+                    <SelectItem value="active">Active Only</SelectItem>
                     <SelectItem value="pending_approval">Pending Only</SelectItem>
                   </SelectContent>
                 </Select>
@@ -429,7 +436,7 @@ const PropertySmartPreview = () => {
                 <span>Live Preview</span>
                 {properties && (
                   <Badge variant="outline" className="text-white border-slate-600">
-                    {properties.length} properties
+                    {properties.length} properties found
                   </Badge>
                 )}
               </CardTitle>
@@ -446,8 +453,10 @@ const PropertySmartPreview = () => {
                   <h3 className="text-lg font-semibold text-white mb-2">No Properties Found</h3>
                   <div className="space-y-2 text-gray-400">
                     <p>Current filters: Status = {statusFilter}, Search = "{searchTerm || 'none'}"</p>
-                    <p>Try changing the status filter or clearing the search to see more properties.</p>
-                    <p>You may need to add some properties first in the "Add Property" tab.</p>
+                    <p>Database query returned {properties?.length || 0} results</p>
+                    {error && <p className="text-red-400">Error: {error.message}</p>}
+                    <p>Check the Properties Management tab to see if properties exist in the database.</p>
+                    <p>If properties exist, they might have different status values than expected.</p>
                   </div>
                 </div>
               ) : (
