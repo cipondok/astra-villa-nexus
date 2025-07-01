@@ -7,14 +7,11 @@ import ProfessionalFooter from "@/components/ProfessionalFooter";
 import { useLanguage } from "@/contexts/LanguageContext";
 import ResponsiveAIChatWidget from "@/components/ai/ResponsiveAIChatWidget";
 import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
 import SmartSearchPanel from "@/components/search/SmartSearchPanel";
 import PropertySlideSection from "@/components/property/PropertySlideSection";
 
 const Index = () => {
   const { language } = useLanguage();
-  const navigate = useNavigate();
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
@@ -171,23 +168,6 @@ const Index = () => {
     await handleSearch({ query: searchTerm });
   };
 
-  // Functional button handlers
-  const handleBuyProperties = () => {
-    navigate('/buy');
-  };
-
-  const handleRentProperties = () => {
-    navigate('/rent');
-  };
-
-  const handlePreLaunch = () => {
-    navigate('/pre-launching');
-  };
-
-  const handleNewProjects = () => {
-    navigate('/new-projects');
-  };
-
   return (
     <div className="min-h-screen text-foreground relative">
       {/* Background Wallpaper Layer */}
@@ -201,10 +181,10 @@ const Index = () => {
         <Navigation />
         
         {/* Hero Section - More Compact */}
-        <section className="relative py-2 lg:py-3 px-4">
+        <section className="relative py-4 lg:py-6 px-4">
           <div className="max-w-[1800px] mx-auto text-center">
-            <div className="mb-2 lg:mb-3 animate-fade-in">
-              <h1 className="text-base md:text-lg lg:text-xl xl:text-2xl font-bold mb-1 leading-tight">
+            <div className="mb-4 lg:mb-6 animate-fade-in">
+              <h1 className="text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold mb-2 leading-tight">
                 <span className="inline-block bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 dark:from-blue-300 dark:via-purple-400 dark:to-cyan-300 bg-clip-text text-transparent animate-gradient bg-[length:300%_300%] font-extrabold tracking-tight">
                   Find Your Perfect
                 </span>
@@ -214,16 +194,16 @@ const Index = () => {
                 </span>
               </h1>
               
-              <div className="relative mb-1">
-                <h2 className="text-xs md:text-sm font-semibold text-white dark:text-white drop-shadow-lg">
-                  <span className="inline-block px-2 py-0.5 lg:px-2 lg:py-1 bg-gradient-to-r from-blue-500/90 to-purple-600/90 dark:from-blue-400/90 dark:to-purple-500/90 rounded-lg backdrop-blur-sm border border-white/20 shadow-lg">
+              <div className="relative mb-2">
+                <h2 className="text-sm md:text-base font-semibold text-white dark:text-white drop-shadow-lg">
+                  <span className="inline-block px-3 py-1 lg:px-4 lg:py-2 bg-gradient-to-r from-blue-500/90 to-purple-600/90 dark:from-blue-400/90 dark:to-purple-500/90 rounded-lg backdrop-blur-sm border border-white/20 shadow-lg">
                     AI-Powered Real Estate Platform
                   </span>
                 </h2>
               </div>
               
-              <p className="text-xs md:text-xs lg:text-xs max-w-2xl mx-auto leading-relaxed">
-                <span className="inline-block px-1.5 py-0.5 lg:px-2 lg:py-0.5 bg-gray-100/95 dark:bg-slate-800/95 text-slate-800 dark:text-slate-100 rounded-md backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 shadow-md font-medium">
+              <p className="text-sm md:text-sm lg:text-base max-w-2xl mx-auto leading-relaxed">
+                <span className="inline-block px-2 py-1 lg:px-3 lg:py-1 bg-gray-100/95 dark:bg-slate-800/95 text-slate-800 dark:text-slate-100 rounded-md backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 shadow-md font-medium">
                   Discover premium properties with advanced AI search technology
                 </span>
               </p>
@@ -239,56 +219,22 @@ const Index = () => {
           </div>
         </section>
 
-        {/* Quick Actions - More Compact */}
-        <section className="py-2 lg:py-3 bg-gray-50/50 dark:bg-gray-900/30">
-          <div className="max-w-[1800px] mx-auto px-6 lg:px-8">
-            <div className="flex flex-wrap justify-center gap-1.5 lg:gap-2">
-              <Button 
-                onClick={handleBuyProperties}
-                className="apple-button-primary flex items-center gap-1.5 px-2 py-1 lg:px-2.5 lg:py-1.5 text-xs font-semibold hover:scale-105 transition-all duration-200 rounded-lg shadow-md"
-              >
-                🏠 Buy Properties
-              </Button>
-              <Button 
-                onClick={handleRentProperties}
-                className="apple-button-secondary flex items-center gap-1.5 px-2 py-1 lg:px-2.5 lg:py-1.5 text-xs font-semibold hover:scale-105 transition-all duration-200 rounded-lg shadow-md"
-              >
-                🔑 Rent Properties
-              </Button>
-              <Button 
-                onClick={handlePreLaunch}
-                className="apple-button-secondary flex items-center gap-1.5 px-2 py-1 lg:px-2.5 lg:py-1.5 text-xs font-semibold hover:scale-105 transition-all duration-200 rounded-lg shadow-md"
-              >
-                🚀 Pre-Launch
-              </Button>
-              <Button 
-                onClick={handleNewProjects}
-                className="apple-button-secondary flex items-center gap-1.5 px-2 py-1 lg:px-2.5 lg:py-1.5 text-xs font-semibold hover:scale-105 transition-all duration-200 rounded-lg shadow-md"
-              >
-                🏗️ New Projects
-              </Button>
-            </div>
-          </div>
-        </section>
-
         {/* Error Message - Compact */}
         {searchError && (
-          <section className="py-1">
+          <section className="py-2">
             <div className="max-w-[1800px] mx-auto px-6 lg:px-8">
-              <div className="apple-glass border border-destructive/40 text-destructive text-center p-2 rounded-xl max-w-xl mx-auto shadow-md">
-                <p className="font-medium text-xs lg:text-sm">⚠️ {searchError}</p>
-                <Button 
+              <div className="apple-glass border border-destructive/40 text-destructive text-center p-3 rounded-xl max-w-xl mx-auto shadow-md">
+                <p className="font-medium text-sm lg:text-base">⚠️ {searchError}</p>
+                <button 
                   onClick={() => {
                     setSearchError(null);
                     setSearchResults([]);
                     setHasSearched(false);
                   }}
-                  variant="outline"
-                  size="sm"
-                  className="mt-1 text-xs"
+                  className="mt-2 px-4 py-1 text-sm bg-red-100 hover:bg-red-200 text-red-700 rounded-md transition-colors"
                 >
                   Clear Error
-                </Button>
+                </button>
               </div>
             </div>
           </section>

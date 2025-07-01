@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Menu, X, User, Settings, LogOut, Crown, Moon, Sun, Sparkles, Brain } from "lucide-react";
+import { Menu, X, User, Settings, LogOut, Crown, Moon, Sun, Sparkles, Brain, Home as HomeIcon, Building, Key, Rocket, Hammer } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useTheme } from "@/components/ThemeProvider";
@@ -59,7 +59,11 @@ const Navigation = () => {
       settings: "Settings",
       properties: "Properties",
       saved: "Saved",
-      messages: "Messages"
+      messages: "Messages",
+      buyProperties: "Buy Properties",
+      rentProperties: "Rent Properties",
+      preLaunch: "Pre Launch",
+      newProjects: "New Projects"
     },
     id: {
       home: "Beranda",
@@ -72,11 +76,43 @@ const Navigation = () => {
       settings: "Pengaturan",
       properties: "Properti",
       saved: "Disimpan",
-      messages: "Pesan"
+      messages: "Pesan",
+      buyProperties: "Beli Properti",
+      rentProperties: "Sewa Properti",
+      preLaunch: "Pra Peluncuran",
+      newProjects: "Proyek Baru"
     }
   };
 
   const currentText = text[language] || text.en;
+
+  // Property navigation items
+  const propertyNavItems = [
+    { 
+      icon: Building, 
+      label: currentText.buyProperties, 
+      path: '/buy',
+      color: 'text-green-600 dark:text-green-400'
+    },
+    { 
+      icon: Key, 
+      label: currentText.rentProperties, 
+      path: '/rent',
+      color: 'text-blue-600 dark:text-blue-400'
+    },
+    { 
+      icon: Rocket, 
+      label: currentText.preLaunch, 
+      path: '/pre-launching',
+      color: 'text-purple-600 dark:text-purple-400'
+    },
+    { 
+      icon: Hammer, 
+      label: currentText.newProjects, 
+      path: '/new-projects',
+      color: 'text-orange-600 dark:text-orange-400'
+    }
+  ];
 
   return (
     <>
@@ -84,56 +120,79 @@ const Navigation = () => {
         scrolled 
           ? 'bg-white/98 dark:bg-gray-900/98 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-800/50 shadow-sm' 
           : 'bg-white/95 dark:bg-gray-900/95 backdrop-blur-md'
-      }`} style={{ position: 'fixed' }}>
+      }`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-12">
-            {/* ASTRA Villa Logo - Simple, No Animation */}
+          <div className="flex items-center justify-between h-16">
+            {/* ASTRA Villa Logo */}
             <div 
               className="flex items-center space-x-2 cursor-pointer" 
               onClick={() => navigate('/')}
             >
-              <div className="w-6 h-6 rounded-lg bg-blue-600 dark:bg-blue-700 flex items-center justify-center">
-                <Brain className="h-4 w-4 text-white" />
+              <div className="w-8 h-8 rounded-lg bg-blue-600 dark:bg-blue-700 flex items-center justify-center">
+                <Brain className="h-5 w-5 text-white" />
               </div>
               <div className="flex items-center space-x-1">
-                <span className="text-lg font-bold text-blue-600 dark:text-blue-400">ASTRA</span>
-                <span className="text-lg font-bold text-gray-900 dark:text-white">Villa</span>
+                <span className="text-xl font-bold text-blue-600 dark:text-blue-400">ASTRA</span>
+                <span className="text-xl font-bold text-gray-900 dark:text-white">Villa</span>
               </div>
             </div>
 
-            {/* Desktop Navigation - Centered */}
-            <div className="hidden lg:flex items-center space-x-2">
+            {/* Desktop Navigation - Main Menu */}
+            <div className="hidden lg:flex items-center space-x-1">
               <Button 
                 variant="ghost" 
                 size="sm"
-                className="h-8 px-3 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-all"
+                className="h-10 px-3 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-all"
                 onClick={() => navigate('/')}
               >
+                <HomeIcon className="h-4 w-4 mr-2" />
                 {currentText.home}
               </Button>
+
+              {/* Property Navigation Items with Tooltips */}
+              {propertyNavItems.map((item) => (
+                <div key={item.path} className="relative group">
+                  <Button 
+                    variant="ghost" 
+                    size="sm"
+                    className={`h-10 px-3 text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-all ${item.color}`}
+                    onClick={() => navigate(item.path)}
+                  >
+                    <item.icon className="h-4 w-4" />
+                  </Button>
+                  {/* Tooltip */}
+                  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap pointer-events-none z-50">
+                    {item.label}
+                    <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900 dark:border-t-gray-100"></div>
+                  </div>
+                </div>
+              ))}
+
               <Button 
                 variant="ghost" 
                 size="sm"
-                className="h-8 px-3 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-all"
+                className="h-10 px-3 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-all"
                 onClick={() => navigate('/services')}
               >
                 {currentText.services}
               </Button>
+
               {user && (
                 <Button 
                   variant="ghost" 
                   size="sm"
-                  className="h-8 px-3 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-all"
+                  className="h-10 px-3 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-all"
                   onClick={() => navigate('/dashboard')}
                 >
                   {currentText.dashboard}
                 </Button>
               )}
+
               {profile?.role === 'admin' && (
                 <Button 
                   variant="ghost" 
                   size="sm"
-                  className="h-8 px-3 text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-all"
+                  className="h-10 px-3 text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-all"
                   onClick={() => navigate('/admin')}
                 >
                   <Crown className="h-4 w-4 mr-1" />
@@ -149,7 +208,7 @@ const Navigation = () => {
                 variant="ghost"
                 size="sm"
                 onClick={toggleTheme}
-                className="w-8 h-8 p-0 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all border border-gray-200 dark:border-gray-700"
+                className="w-10 h-10 p-0 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all border border-gray-200 dark:border-gray-700"
               >
                 {theme === "light" ? (
                   <Moon className="h-4 w-4 text-gray-700 dark:text-gray-300" />
@@ -166,14 +225,14 @@ const Navigation = () => {
               {/* User Section */}
               {user ? (
                 <div className="flex items-center space-x-2">
-                  <div className="w-8 h-8 rounded-full bg-blue-600 dark:bg-blue-700 flex items-center justify-center border border-blue-300 dark:border-blue-500">
-                    <User className="h-4 w-4 text-white" />
+                  <div className="w-10 h-10 rounded-full bg-blue-600 dark:bg-blue-700 flex items-center justify-center border border-blue-300 dark:border-blue-500">
+                    <User className="h-5 w-5 text-white" />
                   </div>
                   <Button 
                     variant="ghost" 
                     size="sm"
                     onClick={handleSignOut}
-                    className="w-8 h-8 p-0 text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all"
+                    className="w-10 h-10 p-0 text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all"
                   >
                     <LogOut className="h-4 w-4" />
                   </Button>
@@ -182,7 +241,7 @@ const Navigation = () => {
                 <Button
                   onClick={() => setShowAuthModal(true)}
                   size="sm"
-                  className="h-8 px-3 text-sm font-medium bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 text-white rounded-lg transition-all border border-blue-700 dark:border-blue-500"
+                  className="h-10 px-4 text-sm font-medium bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 text-white rounded-lg transition-all border border-blue-700 dark:border-blue-500"
                 >
                   {currentText.signIn}
                 </Button>
@@ -192,10 +251,10 @@ const Navigation = () => {
               <Button
                 variant="ghost"
                 size="sm"
-                className="lg:hidden w-8 h-8 p-0 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800"
+                className="lg:hidden w-10 h-10 p-0 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800"
                 onClick={toggleMenu}
               >
-                {isMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+                {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
               </Button>
             </div>
           </div>
@@ -205,8 +264,23 @@ const Navigation = () => {
             <div className="lg:hidden absolute top-full left-0 right-0 bg-white/98 dark:bg-gray-900/98 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-800/50 shadow-lg z-[9998]">
               <div className="px-4 py-3 space-y-2">
                 <Button variant="ghost" className="w-full justify-start text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800" onClick={() => { navigate('/'); toggleMenu(); }}>
+                  <HomeIcon className="h-4 w-4 mr-2" />
                   {currentText.home}
                 </Button>
+
+                {/* Mobile Property Navigation */}
+                {propertyNavItems.map((item) => (
+                  <Button 
+                    key={item.path}
+                    variant="ghost" 
+                    className={`w-full justify-start text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-800 ${item.color}`} 
+                    onClick={() => { navigate(item.path); toggleMenu(); }}
+                  >
+                    <item.icon className="h-4 w-4 mr-2" />
+                    {item.label}
+                  </Button>
+                ))}
+
                 <Button variant="ghost" className="w-full justify-start text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800" onClick={() => { navigate('/services'); toggleMenu(); }}>
                   {currentText.services}
                 </Button>
@@ -244,7 +318,7 @@ const Navigation = () => {
       </nav>
 
       {/* Spacer to prevent content from hiding behind fixed header */}
-      <div className="h-12"></div>
+      <div className="h-16"></div>
 
       {/* Auth Modal */}
       <AuthModal
