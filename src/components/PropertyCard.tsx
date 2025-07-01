@@ -6,6 +6,7 @@ import { Heart, MapPin, Bed, Bath, Square, Eye } from "lucide-react";
 import { useState } from "react";
 import PropertyDetailModal from "./property/PropertyDetailModal";
 import Property3DViewModal from "./property/Property3DViewModal";
+import { BaseProperty } from "@/types/property";
 
 interface Property {
   id: number;
@@ -72,7 +73,7 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
   };
 
   // Convert old property format to new format for modal compatibility
-  const convertedProperty = {
+  const convertedProperty: BaseProperty = {
     id: property.id.toString(),
     title: property.title,
     price: parseFloat(property.price.replace(/[^0-9.-]+/g, "")) || 0,
@@ -81,8 +82,8 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
     bathrooms: property.bathrooms,
     area_sqm: property.area,
     property_type: property.type,
-    listing_type: property.type,
-    image_urls: [property.image],
+    listing_type: (property.type === 'sale' || property.type === 'rent') ? property.type as 'sale' | 'rent' : 'sale',
+    images: [property.image],
     description: property.description,
     three_d_model_url: property.three_d_model_url,
     virtual_tour_url: property.virtual_tour_url,

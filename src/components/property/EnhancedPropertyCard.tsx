@@ -1,4 +1,3 @@
-
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -6,6 +5,7 @@ import { Heart, MapPin, Bed, Bath, Square, Eye, Share2, Car, View as ViewIcon } 
 import { useState } from 'react';
 import PropertyDetailModal from './PropertyDetailModal';
 import Property3DViewModal from './Property3DViewModal';
+import { BaseProperty } from '@/types/property';
 
 interface Property {
   id: string;
@@ -139,6 +139,14 @@ const EnhancedPropertyCard = ({
         prev === 0 ? property.image_urls!.length - 1 : prev - 1
       );
     }
+  };
+
+  // Convert property to BaseProperty format for modals
+  const convertedProperty: BaseProperty = {
+    ...property,
+    listing_type: (property.listing_type === 'sale' || property.listing_type === 'rent' || property.listing_type === 'lease') 
+      ? property.listing_type as 'sale' | 'rent' | 'lease'
+      : 'sale'
   };
 
   return (
@@ -322,7 +330,7 @@ const EnhancedPropertyCard = ({
 
       {/* Property Detail Modal */}
       <PropertyDetailModal
-        property={property}
+        property={convertedProperty}
         isOpen={showDetailModal}
         onClose={() => setShowDetailModal(false)}
         language={language}
@@ -334,7 +342,7 @@ const EnhancedPropertyCard = ({
 
       {/* 3D View Modal */}
       <Property3DViewModal
-        property={property}
+        property={convertedProperty}
         isOpen={show3DModal}
         onClose={() => setShow3DModal(false)}
         language={language}

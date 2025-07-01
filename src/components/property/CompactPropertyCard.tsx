@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -6,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { MapPin, Bed, Bath, Square, Eye, Heart, Share2, View as ViewIcon } from 'lucide-react';
 import PropertyDetailModal from './PropertyDetailModal';
 import Property3DViewModal from './Property3DViewModal';
+import { BaseProperty } from '@/types/property';
 
 interface CompactProperty {
   id: string;
@@ -120,6 +120,14 @@ const CompactPropertyCard = ({
     if (onSave) {
       onSave(property.id);
     }
+  };
+
+  // Convert property to BaseProperty format for modals
+  const convertedProperty: BaseProperty = {
+    ...property,
+    listing_type: (property.listing_type === 'sale' || property.listing_type === 'rent' || property.listing_type === 'lease') 
+      ? property.listing_type as 'sale' | 'rent' | 'lease'
+      : 'sale'
   };
 
   return (
@@ -255,7 +263,7 @@ const CompactPropertyCard = ({
 
       {/* Property Detail Modal */}
       <PropertyDetailModal
-        property={property}
+        property={convertedProperty}
         isOpen={showDetailModal}
         onClose={() => setShowDetailModal(false)}
         language={language}
@@ -267,7 +275,7 @@ const CompactPropertyCard = ({
 
       {/* 3D View Modal */}
       <Property3DViewModal
-        property={property}
+        property={convertedProperty}
         isOpen={show3DModal}
         onClose={() => setShow3DModal(false)}
         language={language}
