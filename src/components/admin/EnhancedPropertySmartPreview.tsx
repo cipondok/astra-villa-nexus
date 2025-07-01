@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -177,7 +176,7 @@ const EnhancedPropertySmartPreview = () => {
         .from('system_settings')
         .upsert({
           key: 'property_preview_settings',
-          value: previewSettings,
+          value: previewSettings as any, // Cast to any to satisfy Json type
           category: 'property_display',
           description: 'Enhanced property preview settings'
         });
@@ -221,6 +220,10 @@ const EnhancedPropertySmartPreview = () => {
     });
   };
 
+  const handleRefresh = () => {
+    refetch();
+  };
+
   const CustomPropertyCard = ({ property }: { property: PreviewProperty }) => {
     const cardStyle = {
       borderRadius: `${previewSettings.cardBorderRadius}px`,
@@ -232,7 +235,7 @@ const EnhancedPropertySmartPreview = () => {
 
     const imageStyle = {
       height: `${previewSettings.imageHeight}px`,
-      objectFit: previewSettings.imageStyle,
+      objectFit: previewSettings.imageStyle as any,
       borderRadius: previewSettings.imageStyle === 'cover' ? `${previewSettings.cardBorderRadius - 4}px` : '0px'
     };
 
@@ -406,7 +409,7 @@ const EnhancedPropertySmartPreview = () => {
             {isLivePreview ? <Pause className="h-4 w-4 mr-2" /> : <Play className="h-4 w-4 mr-2" />}
             {isLivePreview ? 'Live Preview On' : 'Live Preview Off'}
           </Button>
-          <Button onClick={refetch} variant="outline" size="sm">
+          <Button onClick={handleRefresh} variant="outline" size="sm">
             <RefreshCw className="h-4 w-4 mr-2" />
             Refresh
           </Button>
