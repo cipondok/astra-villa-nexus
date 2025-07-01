@@ -44,6 +44,11 @@ interface SystemControl {
   errorMessage?: string;
 }
 
+interface SystemControlValue {
+  enabled?: boolean;
+  errorMessage?: string;
+}
+
 const DiagnosticDashboard = () => {
   const [systemControls, setSystemControls] = useState<SystemControl[]>([]);
   const { showSuccess, showError } = useAlert();
@@ -136,15 +141,18 @@ const DiagnosticDashboard = () => {
       
       if (error) throw error;
       
-      return data?.map(setting => ({
-        id: setting.key,
-        name: setting.key.replace('_', ' ').toUpperCase(),
-        type: setting.key.includes('property') ? 'property' : 
-              setting.key.includes('vendor') ? 'vendor' : 'system',
-        isEnabled: setting.value?.enabled || false,
-        description: setting.description || '',
-        errorMessage: setting.value?.errorMessage
-      })) || [];
+      return data?.map(setting => {
+        const value = setting.value as SystemControlValue;
+        return {
+          id: setting.key,
+          name: setting.key.replace('_', ' ').toUpperCase(),
+          type: setting.key.includes('property') ? 'property' as const : 
+                setting.key.includes('vendor') ? 'vendor' as const : 'system' as const,
+          isEnabled: value?.enabled || false,
+          description: setting.description || '',
+          errorMessage: value?.errorMessage
+        };
+      }) || [];
     }
   });
 

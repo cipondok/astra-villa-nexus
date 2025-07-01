@@ -8,6 +8,11 @@ interface SystemControl {
   errorMessage?: string;
 }
 
+interface SystemControlValue {
+  enabled?: boolean;
+  errorMessage?: string;
+}
+
 export const useSystemControls = () => {
   const { data: controls, isLoading, error } = useQuery({
     queryKey: ['system-controls'],
@@ -22,10 +27,11 @@ export const useSystemControls = () => {
       const controlsMap: Record<string, SystemControl> = {};
       
       data?.forEach(setting => {
+        const value = setting.value as SystemControlValue;
         controlsMap[setting.key] = {
           id: setting.key,
-          isEnabled: setting.value?.enabled || false,
-          errorMessage: setting.value?.errorMessage
+          isEnabled: value?.enabled || false,
+          errorMessage: value?.errorMessage
         };
       });
       
