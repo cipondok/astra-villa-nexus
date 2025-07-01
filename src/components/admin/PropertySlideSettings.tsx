@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import { useAlert } from '@/contexts/AlertContext';
 import { supabase } from '@/integrations/supabase/client';
+import PropertySlideshow from '@/components/PropertySlideshow';
 
 interface SlideSettings {
   autoplay: boolean;
@@ -52,10 +53,18 @@ const PropertySlideSettings = () => {
   });
   const [loading, setLoading] = useState(false);
   const [isPreviewMode, setIsPreviewMode] = useState(false);
+  const [previewKey, setPreviewKey] = useState(0);
 
   useEffect(() => {
     loadSettings();
   }, []);
+
+  // Force re-render of preview when settings change
+  useEffect(() => {
+    if (isPreviewMode) {
+      setPreviewKey(prev => prev + 1);
+    }
+  }, [settings, isPreviewMode]);
 
   const loadSettings = async () => {
     try {
@@ -120,11 +129,23 @@ const PropertySlideSettings = () => {
       }
 
       showSuccess('Settings Saved', 'Property slide settings have been saved successfully');
+      
+      // Refresh preview after saving
+      if (isPreviewMode) {
+        setPreviewKey(prev => prev + 1);
+      }
     } catch (error) {
       console.error('Error saving settings:', error);
       showError('Save Error', 'Failed to save slide settings');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const togglePreviewMode = () => {
+    setIsPreviewMode(!isPreviewMode);
+    if (!isPreviewMode) {
+      setPreviewKey(prev => prev + 1);
     }
   };
 
@@ -138,7 +159,7 @@ const PropertySlideSettings = () => {
         </div>
         <div className="flex items-center space-x-2">
           <Button
-            onClick={() => setIsPreviewMode(!isPreviewMode)}
+            onClick={togglePreviewMode}
             variant="outline"
             size="sm"
           >
@@ -160,7 +181,7 @@ const PropertySlideSettings = () => {
         <TabsList className="grid w-full grid-cols-3 bg-slate-800/50">
           <TabsTrigger value="basic">Basic Settings</TabsTrigger>
           <TabsTrigger value="advanced">Advanced</TabsTrigger>
-          <TabsTrigger value="preview">Preview</TabsTrigger>
+          <TabsTrigger value="preview">Live Preview</TabsTrigger>
         </TabsList>
 
         <TabsContent value="basic" className="space-y-4">
@@ -321,14 +342,55 @@ const PropertySlideSettings = () => {
         <TabsContent value="preview" className="space-y-4">
           <Card className="bg-slate-800/50 border-slate-700/50">
             <CardHeader>
-              <CardTitle className="text-white">Live Preview</CardTitle>
+              <CardTitle className="text-white flex items-center justify-between">
+                <span>Live Preview</span>
+                <Badge variant={isPreviewMode ? "default" : "secondary"}>
+                  {isPreviewMode ? "Active" : "Inactive"}
+                </Badge>
+              </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="bg-slate-900/50 rounded-lg p-4 min-h-[300px] flex items-center justify-center">
-                <p className="text-gray-400 text-center">
-                  {isPreviewMode ? 'Preview mode active - slide settings are being applied in real-time' : 'Click "Live Preview" to see changes in real-time'}
-                </p>
-              </div>
+              {isPreviewMode ? (
+                <div className="bg-slate-900/50 rounded-lg p-4 min-h-[400px]">
+                  <div className="mb-4">
+                    <p className="text-sm text-gray-400 mb-2">
+                      Current Settings Applied:
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      <Badge variant="outline" className="text-xs">
+                        Autoplay: {settings.autoplay ? 'On' : 'Off'}
+                      </Badge>
+                      <Badge variant="outline" className="text-xs">
+                        Interval: {settings.interval / 1000}s
+                      </Badge>
+                      <Badge variant="outline" className="text-xs">
+                        Dots: {settings.showDots ? 'On' : 'Off'}
+                      </Badge>
+                      <Badge variant="outline" className="text-xs">
+                        Arrows: {settings.showArrows ? 'On' : 'Off'}
+                      </Badge>
+                      <Badge variant="outline" className="text-xs">
+                        Effect: {settings.slideEffect}
+                      </Badge>
+                    </div>
+                  </div>
+                  <div className="border border-slate-700 rounded-lg overflow-hidden bg-white">
+                    <PropertySlideshow key={previewKey} />
+                  </div>
+                </div>
+              ) : (
+                <div className="bg-slate-900/50 rounded-lg p-8 min-h-[400px] flex items-center justify-center">
+                  <div className="text-center">
+                    <Play className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+                    <h3 className="text-lg font-semibold text-white mb-2">Preview Mode Inactive</h3>
+                    <p className="text-gray-400 mb-4">Click "Live Preview" to see changes in real-time</p>
+                    <Button onClick={togglePreviewMode} variant="outline">
+                      <Play className="h-4 w-4 mr-2" />
+                      Start Live Preview
+                    </Button>
+                  </div>
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
