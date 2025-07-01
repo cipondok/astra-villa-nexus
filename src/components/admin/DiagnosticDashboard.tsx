@@ -16,23 +16,13 @@ import {
   Building,
   ShoppingCart,
   Wrench,
-  Activity
+  Activity,
+  RefreshCw
 } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAlert } from '@/contexts/AlertContext';
-
-interface ProjectFunction {
-  id: string;
-  name: string;
-  category: string;
-  status: 'completed' | 'in_progress' | 'pending' | 'error';
-  progress: number;
-  description: string;
-  nextStep?: string;
-  dependencies?: string[];
-  lastUpdated: string;
-}
+import { useDynamicDiagnostics } from '@/hooks/useDynamicDiagnostics';
 
 interface SystemControl {
   id: string;
@@ -52,82 +42,9 @@ const DiagnosticDashboard = () => {
   const [systemControls, setSystemControls] = useState<SystemControl[]>([]);
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
-
-  // Project functions status
-  const projectFunctions: ProjectFunction[] = [
-    {
-      id: 'user_auth',
-      name: 'User Authentication',
-      category: 'Security',
-      status: 'completed',
-      progress: 100,
-      description: 'User login, registration, and profile management',
-      lastUpdated: new Date().toISOString()
-    },
-    {
-      id: 'property_management',
-      name: 'Property Management',
-      category: 'Core',
-      status: 'completed',
-      progress: 95,
-      description: 'Property CRUD operations, listings, and search',
-      nextStep: 'Implement advanced filters',
-      lastUpdated: new Date().toISOString()
-    },
-    {
-      id: 'vendor_system',
-      name: 'Vendor Management',
-      category: 'Business',
-      status: 'in_progress',
-      progress: 85,
-      description: 'Vendor registration, services, and verification',
-      nextStep: 'Complete payment integration',
-      dependencies: ['user_auth'],
-      lastUpdated: new Date().toISOString()
-    },
-    {
-      id: 'payment_system',
-      name: 'Payment Processing',
-      category: 'Commerce',
-      status: 'in_progress',
-      progress: 60,
-      description: 'Payment gateway integration and transaction handling',
-      nextStep: 'Add multiple payment methods',
-      dependencies: ['vendor_system'],
-      lastUpdated: new Date().toISOString()
-    },
-    {
-      id: 'admin_panel',
-      name: 'Admin Panel',
-      category: 'Management',
-      status: 'in_progress',
-      progress: 75,
-      description: 'Administrative controls and monitoring',
-      nextStep: 'Add reporting dashboards',
-      lastUpdated: new Date().toISOString()
-    },
-    {
-      id: 'notification_system',
-      name: 'Notification System',
-      category: 'Communication',
-      status: 'pending',
-      progress: 30,
-      description: 'Email, SMS, and in-app notifications',
-      nextStep: 'Set up email templates',
-      dependencies: ['user_auth'],
-      lastUpdated: new Date().toISOString()
-    },
-    {
-      id: 'analytics',
-      name: 'Analytics & Reporting',
-      category: 'Intelligence',
-      status: 'pending',
-      progress: 20,
-      description: 'User behavior tracking and business insights',
-      nextStep: 'Implement tracking events',
-      lastUpdated: new Date().toISOString()
-    }
-  ];
+  
+  // Use dynamic diagnostics instead of static data
+  const { diagnostics: projectFunctions, isRunning, runFullDiagnostics, lastRun } = useDynamicDiagnostics();
 
   // Fetch system controls from database
   const { data: controls, isLoading } = useQuery({
@@ -238,9 +155,9 @@ const DiagnosticDashboard = () => {
     }
   };
 
-  const overallProgress = Math.round(
+  const overallProgress = projectFunctions.length > 0 ? Math.round(
     projectFunctions.reduce((sum, func) => sum + func.progress, 0) / projectFunctions.length
-  );
+  ) : 0;
 
   return (
     <div className="space-y-6">
@@ -250,9 +167,17 @@ const DiagnosticDashboard = () => {
             Project Diagnostic Dashboard
           </h2>
           <p className="text-gray-600 dark:text-gray-300 mt-1">
-            Monitor project progress and system controls
+            Real-time monitoring of project progress and system controls
           </p>
         </div>
+        <Button
+          onClick={runFullDiagnostics}
+          disabled={isRunning}
+          variant="outline"
+        >
+          <RefreshCw className={`h-4 w-4 mr-2 ${isRunning ? 'animate-spin' : ''}`} />
+          {isRunning ? 'Running Tests...' : 'Refresh Diagnostics'}
+        </Button>
       </div>
 
       {/* Overall Progress */}
@@ -272,6 +197,11 @@ const DiagnosticDashboard = () => {
               </Badge>
             </div>
             <Progress value={overallProgress} className="h-3" />
+            {lastRun && (
+              <div className="text-sm text-gray-500">
+                Last updated: {new Date(lastRun).toLocaleString()}
+              </div>
+            )}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
               <div className="text-center">
                 <div className="text-green-600 font-semibold">
@@ -309,64 +239,81 @@ const DiagnosticDashboard = () => {
         </TabsList>
 
         <TabsContent value="functions" className="space-y-4">
-          <div className="grid gap-4">
-            {projectFunctions.map((func) => (
-              <Card key={func.id}>
-                <CardContent className="p-6">
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-start gap-3 flex-1">
-                      <div className="flex items-center gap-2">
-                        {getCategoryIcon(func.category)}
-                        {getStatusIcon(func.status)}
-                      </div>
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-2">
-                          <h3 className="font-semibold">{func.name}</h3>
-                          <Badge className={getStatusColor(func.status)}>
-                            {func.status.replace('_', ' ').toUpperCase()}
-                          </Badge>
+          {projectFunctions.length === 0 ? (
+            <Card>
+              <CardContent className="p-6 text-center">
+                <p className="text-gray-500">Running initial diagnostics...</p>
+                <Button onClick={runFullDiagnostics} className="mt-4">
+                  Start Diagnostics
+                </Button>
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="grid gap-4">
+              {projectFunctions.map((func) => (
+                <Card key={func.id}>
+                  <CardContent className="p-6">
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-start gap-3 flex-1">
+                        <div className="flex items-center gap-2">
+                          {getCategoryIcon(func.category)}
+                          {getStatusIcon(func.status)}
                         </div>
-                        <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
-                          {func.description}
-                        </p>
-                        <div className="space-y-2">
-                          <div className="flex items-center justify-between">
-                            <span className="text-sm font-medium">Progress</span>
-                            <span className="text-sm text-gray-500">{func.progress}%</span>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-2">
+                            <h3 className="font-semibold">{func.name}</h3>
+                            <Badge className={getStatusColor(func.status)}>
+                              {func.status.replace('_', ' ').toUpperCase()}
+                            </Badge>
                           </div>
-                          <Progress value={func.progress} className="h-2" />
-                        </div>
-                        {func.nextStep && (
-                          <div className="mt-3">
-                            <span className="text-sm font-medium text-blue-600">Next Step: </span>
-                            <span className="text-sm text-gray-600">{func.nextStep}</span>
-                          </div>
-                        )}
-                        {func.dependencies && func.dependencies.length > 0 && (
-                          <div className="mt-2">
-                            <span className="text-sm font-medium">Dependencies: </span>
-                            <div className="flex flex-wrap gap-1 mt-1">
-                              {func.dependencies.map((dep) => (
-                                <Badge key={dep} variant="outline" className="text-xs">
-                                  {dep.replace('_', ' ')}
-                                </Badge>
-                              ))}
+                          <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                            {func.description}
+                          </p>
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between">
+                              <span className="text-sm font-medium">Progress</span>
+                              <span className="text-sm text-gray-500">{func.progress}%</span>
                             </div>
+                            <Progress value={func.progress} className="h-2" />
                           </div>
-                        )}
+                          {func.nextStep && (
+                            <div className="mt-3">
+                              <span className="text-sm font-medium text-blue-600">Next Step: </span>
+                              <span className="text-sm text-gray-600">{func.nextStep}</span>
+                            </div>
+                          )}
+                          {func.testResults && func.status === 'error' && (
+                            <div className="mt-3 p-2 bg-red-50 rounded text-sm text-red-700">
+                              <strong>Error: </strong>
+                              {func.testResults.error || 'Unknown error occurred'}
+                            </div>
+                          )}
+                          {func.dependencies && func.dependencies.length > 0 && (
+                            <div className="mt-2">
+                              <span className="text-sm font-medium">Dependencies: </span>
+                              <div className="flex flex-wrap gap-1 mt-1">
+                                {func.dependencies.map((dep) => (
+                                  <Badge key={dep} variant="outline" className="text-xs">
+                                    {dep.replace('_', ' ')}
+                                  </Badge>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <Badge variant="outline">{func.category}</Badge>
+                        <div className="text-xs text-gray-500 mt-1">
+                          Updated: {new Date(func.lastUpdated).toLocaleDateString()}
+                        </div>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <Badge variant="outline">{func.category}</Badge>
-                      <div className="text-xs text-gray-500 mt-1">
-                        Updated: {new Date(func.lastUpdated).toLocaleDateString()}
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
         </TabsContent>
 
         <TabsContent value="controls" className="space-y-4">
