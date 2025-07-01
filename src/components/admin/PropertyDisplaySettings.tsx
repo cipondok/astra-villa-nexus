@@ -16,7 +16,8 @@ import {
   List,
   Layout,
   Eye,
-  Palette
+  Palette,
+  AlertCircle
 } from 'lucide-react';
 import { useAlert } from '@/contexts/AlertContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -66,13 +67,23 @@ const PropertyDisplaySettings = () => {
 
   const loadSettings = async () => {
     try {
-      const { data, error } = await supabase
+      console.log('Loading display settings...');
+      
+      // Add timeout to the query
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Database connection timeout')), 10000);
+      });
+
+      const queryPromise = supabase
         .from('system_settings')
         .select('*')
         .eq('category', 'property_display');
 
+      const { data, error } = await Promise.race([queryPromise, timeoutPromise]) as any;
+
       if (error) {
         console.error('Error loading display settings:', error);
+        showError('Database Error', 'Failed to load display settings. Please check your connection.');
         return;
       }
 
@@ -97,15 +108,23 @@ const PropertyDisplaySettings = () => {
           showDescription: settingsMap.showDescription === 'true',
           showContactInfo: settingsMap.showContactInfo === 'true',
         }));
+        
+        console.log('Display settings loaded successfully');
       }
     } catch (error) {
       console.error('Error loading settings:', error);
-      showError('Settings Error', 'Failed to load display settings');
+      if (error.message === 'Database connection timeout') {
+        showError('Connection Timeout', 'Database connection timed out. Please check your internet connection and try again.');
+      } else {
+        showError('Settings Error', 'Failed to load display settings');
+      }
     }
   };
 
   const saveSettings = async () => {
     setLoading(true);
+    console.log('Starting to save display settings...');
+    
     try {
       const settingsToSave = [
         { key: 'property_display_layoutType', value: settings.layoutType, category: 'property_display', description: 'Property layout type' },
@@ -125,24 +144,41 @@ const PropertyDisplaySettings = () => {
         { key: 'property_display_showContactInfo', value: settings.showContactInfo.toString(), category: 'property_display', description: 'Show contact info' }
       ];
 
-      // Use a single batch upsert operation instead of individual calls
-      const { error } = await supabase
+      console.log('Attempting to save settings to database...');
+
+      // Add timeout to the save operation
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Database save timeout')), 15000);
+      });
+
+      const savePromise = supabase
         .from('system_settings')
         .upsert(settingsToSave, { 
           onConflict: 'key',
           ignoreDuplicates: false 
         });
 
+      const { error } = await Promise.race([savePromise, timeoutPromise]) as any;
+
       if (error) {
+        console.error('Database save error:', error);
         throw error;
       }
 
+      console.log('Settings saved successfully to database');
       showSuccess('Settings Saved', 'Property display settings have been saved successfully');
     } catch (error) {
       console.error('Error saving settings:', error);
-      showError('Save Error', 'Failed to save display settings');
+      if (error.message === 'Database save timeout') {
+        showError('Save Timeout', 'The save operation timed out. Please check your connection and try again.');
+      } else if (error.message?.includes('timeout')) {
+        showError('Connection Issue', 'Database connection is unstable. Please try again in a moment.');
+      } else {
+        showError('Save Error', 'Failed to save display settings. Please try again.');
+      }
     } finally {
       setLoading(false);
+      console.log('Save operation completed');
     }
   };
 
@@ -162,6 +198,19 @@ const PropertyDisplaySettings = () => {
           <RefreshCw className="h-4 w-4 mr-2" />
           Refresh
         </Button>
+      </div>
+
+      {/* Connection Status Warning */}
+      <div className="bg-yellow-900/20 border border-yellow-700/50 rounded-lg p-4">
+        <div className="flex items-center space-x-2">
+          <AlertCircle className="h-5 w-5 text-yellow-400" />
+          <div>
+            <p className="text-yellow-300 font-medium">Database Connection Status</p>
+            <p className="text-yellow-200 text-sm">
+              If saving takes too long, there might be connection issues. Please ensure your internet connection is stable.
+            </p>
+          </div>
+        </div>
       </div>
 
       <Tabs defaultValue="layout" className="space-y-4">
@@ -401,10 +450,19 @@ const PropertyDisplaySettings = () => {
         <Button
           onClick={saveSettings}
           disabled={loading}
-          className="bg-blue-600 hover:bg-blue-700"
+          className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50"
         >
-          <Save className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-          {loading ? 'Saving...' : 'Save Settings'}
+          {loading ? (
+            <>
+              <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+              Saving... (This may take a moment)
+            </>
+          ) : (
+            <>
+              <Save className="h-4 w-4 mr-2" />
+              Save Settings
+            </>
+          )}
         </Button>
       </div>
     </div>

@@ -18,7 +18,8 @@ import {
   Settings,
   Image,
   Timer,
-  Shuffle
+  Shuffle,
+  AlertCircle
 } from 'lucide-react';
 import { useAlert } from '@/contexts/AlertContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -68,13 +69,23 @@ const PropertySlideSettings = () => {
 
   const loadSettings = async () => {
     try {
-      const { data, error } = await supabase
+      console.log('Loading slide settings...');
+      
+      // Add timeout to the query
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Database connection timeout')), 10000);
+      });
+
+      const queryPromise = supabase
         .from('system_settings')
         .select('*')
         .eq('category', 'property_slides');
 
+      const { data, error } = await Promise.race([queryPromise, timeoutPromise]) as any;
+
       if (error) {
         console.error('Error loading slide settings:', error);
+        showError('Database Error', 'Failed to load slide settings. Please check your connection.');
         return;
       }
 
@@ -95,15 +106,23 @@ const PropertySlideSettings = () => {
           infiniteLoop: settingsMap.infiniteLoop === 'true',
           randomOrder: settingsMap.randomOrder === 'true',
         }));
+        
+        console.log('Slide settings loaded successfully');
       }
     } catch (error) {
       console.error('Error loading settings:', error);
-      showError('Settings Error', 'Failed to load slide settings');
+      if (error.message === 'Database connection timeout') {
+        showError('Connection Timeout', 'Database connection timed out. Please check your internet connection and try again.');
+      } else {
+        showError('Settings Error', 'Failed to load slide settings');
+      }
     }
   };
 
   const saveSettings = async () => {
     setLoading(true);
+    console.log('Starting to save slide settings...');
+    
     try {
       const settingsToSave = [
         { key: 'property_slides_autoplay', value: settings.autoplay.toString(), category: 'property_slides', description: 'Auto-play slides' },
@@ -118,18 +137,28 @@ const PropertySlideSettings = () => {
         { key: 'property_slides_maxSlides', value: settings.maxSlides.toString(), category: 'property_slides', description: 'Maximum slides to show' }
       ];
 
-      // Use a single batch upsert operation instead of individual calls
-      const { error } = await supabase
+      console.log('Attempting to save settings to database...');
+
+      // Add timeout to the save operation
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Database save timeout')), 15000);
+      });
+
+      const savePromise = supabase
         .from('system_settings')
         .upsert(settingsToSave, { 
           onConflict: 'key',
           ignoreDuplicates: false 
         });
 
+      const { error } = await Promise.race([savePromise, timeoutPromise]) as any;
+
       if (error) {
+        console.error('Database save error:', error);
         throw error;
       }
 
+      console.log('Settings saved successfully to database');
       showSuccess('Settings Saved', 'Property slide settings have been saved successfully');
       
       // Refresh preview after saving
@@ -138,9 +167,16 @@ const PropertySlideSettings = () => {
       }
     } catch (error) {
       console.error('Error saving settings:', error);
-      showError('Save Error', 'Failed to save slide settings');
+      if (error.message === 'Database save timeout') {
+        showError('Save Timeout', 'The save operation timed out. Please check your connection and try again.');
+      } else if (error.message?.includes('timeout')) {
+        showError('Connection Issue', 'Database connection is unstable. Please try again in a moment.');
+      } else {
+        showError('Save Error', 'Failed to save slide settings. Please try again.');
+      }
     } finally {
       setLoading(false);
+      console.log('Save operation completed');
     }
   };
 
@@ -176,6 +212,19 @@ const PropertySlideSettings = () => {
             <RefreshCw className="h-4 w-4 mr-2" />
             Refresh
           </Button>
+        </div>
+      </div>
+
+      {/* Connection Status Warning */}
+      <div className="bg-yellow-900/20 border border-yellow-700/50 rounded-lg p-4">
+        <div className="flex items-center space-x-2">
+          <AlertCircle className="h-5 w-5 text-yellow-400" />
+          <div>
+            <p className="text-yellow-300 font-medium">Database Connection Status</p>
+            <p className="text-yellow-200 text-sm">
+              If saving takes too long, there might be connection issues. Please ensure your internet connection is stable.
+            </p>
+          </div>
         </div>
       </div>
 
@@ -403,10 +452,19 @@ const PropertySlideSettings = () => {
         <Button
           onClick={saveSettings}
           disabled={loading}
-          className="bg-blue-600 hover:bg-blue-700"
+          className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50"
         >
-          <Save className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-          {loading ? 'Saving...' : 'Save Settings'}
+          {loading ? (
+            <>
+              <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+              Saving... (This may take a moment)
+            </>
+          ) : (
+            <>
+              <Save className="h-4 w-4 mr-2" />
+              Save Settings
+            </>
+          )}
         </Button>
       </div>
     </div>
