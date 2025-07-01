@@ -17,7 +17,8 @@ import {
   TestTube,
   Key,
   Globe,
-  Shield
+  Shield,
+  RefreshCw
 } from 'lucide-react';
 import { useAlert } from '@/contexts/AlertContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -28,9 +29,6 @@ interface ASTRASettings {
   isEnabled: boolean;
   testMode: boolean;
   webhookUrl: string;
-  tokenSymbol: string;
-  defaultGasLimit: string;
-  networkId: string;
 }
 
 const ASTRATokenSettings = () => {
@@ -40,14 +38,12 @@ const ASTRATokenSettings = () => {
     baseUrl: 'https://api.astra-token.com',
     isEnabled: false,
     testMode: true,
-    webhookUrl: '',
-    tokenSymbol: 'ASTRA',
-    defaultGasLimit: '21000',
-    networkId: '1'
+    webhookUrl: ''
   });
   const [loading, setLoading] = useState(false);
   const [testing, setTesting] = useState(false);
   const [connectionStatus, setConnectionStatus] = useState<'connected' | 'disconnected' | 'testing'>('disconnected');
+  const [lastTestResult, setLastTestResult] = useState<string>('');
 
   useEffect(() => {
     loadSettings();
@@ -79,9 +75,9 @@ const ASTRATokenSettings = () => {
           testMode: settingsMap.testMode === 'true'
         }));
 
-        // Check connection status if enabled
+        // Auto-check connection status if API is enabled and configured
         if (settingsMap.isEnabled === 'true' && settingsMap.apiKey && settingsMap.baseUrl) {
-          testConnection(settingsMap);
+          setTimeout(() => testConnection(settingsMap), 1000);
         }
       }
     } catch (error) {
@@ -94,14 +90,11 @@ const ASTRATokenSettings = () => {
     setLoading(true);
     try {
       const settingsToSave = [
-        { key: 'astra_api_apiKey', value: settings.apiKey, category: 'astra_api' },
-        { key: 'astra_api_baseUrl', value: settings.baseUrl, category: 'astra_api' },
-        { key: 'astra_api_isEnabled', value: settings.isEnabled.toString(), category: 'astra_api' },
-        { key: 'astra_api_testMode', value: settings.testMode.toString(), category: 'astra_api' },
-        { key: 'astra_api_webhookUrl', value: settings.webhookUrl, category: 'astra_api' },
-        { key: 'astra_api_tokenSymbol', value: settings.tokenSymbol, category: 'astra_api' },
-        { key: 'astra_api_defaultGasLimit', value: settings.defaultGasLimit, category: 'astra_api' },
-        { key: 'astra_api_networkId', value: settings.networkId, category: 'astra_api' }
+        { key: 'astra_api_apiKey', value: settings.apiKey, category: 'astra_api', description: 'ASTRA API Key' },
+        { key: 'astra_api_baseUrl', value: settings.baseUrl, category: 'astra_api', description: 'ASTRA API Base URL' },
+        { key: 'astra_api_isEnabled', value: settings.isEnabled.toString(), category: 'astra_api', description: 'ASTRA API Enabled Status' },
+        { key: 'astra_api_testMode', value: settings.testMode.toString(), category: 'astra_api', description: 'ASTRA API Test Mode' },
+        { key: 'astra_api_webhookUrl', value: settings.webhookUrl, category: 'astra_api', description: 'ASTRA API Webhook URL' }
       ];
 
       for (const setting of settingsToSave) {
@@ -116,9 +109,9 @@ const ASTRATokenSettings = () => {
 
       showSuccess('Settings Saved', 'ASTRA token settings have been saved successfully');
       
-      // Test connection if enabled
+      // Auto-test connection after saving if enabled
       if (settings.isEnabled && settings.apiKey && settings.baseUrl) {
-        await testConnection(settings);
+        setTimeout(() => testConnection(settings), 500);
       }
     } catch (error) {
       console.error('Error saving settings:', error);
@@ -130,30 +123,52 @@ const ASTRATokenSettings = () => {
 
   const testConnection = async (testSettings?: ASTRASettings) => {
     const settingsToTest = testSettings || settings;
+    
+    if (!settingsToTest.apiKey || !settingsToTest.baseUrl) {
+      setConnectionStatus('disconnected');
+      setLastTestResult('API Key and Base URL are required');
+      showError('Test Failed', 'Please provide API Key and Base URL before testing');
+      return;
+    }
+
     setTesting(true);
     setConnectionStatus('testing');
+    setLastTestResult('Testing connection...');
 
     try {
-      const response = await fetch(`${settingsToTest.baseUrl}/health`, {
+      const testUrl = settingsToTest.testMode 
+        ? `${settingsToTest.baseUrl}/test/health` 
+        : `${settingsToTest.baseUrl}/health`;
+
+      const response = await fetch(testUrl, {
         method: 'GET',
         headers: {
           'x-api-key': settingsToTest.apiKey,
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
         },
-        signal: AbortSignal.timeout(10000)
+        signal: AbortSignal.timeout(15000)
       });
 
       if (response.ok) {
+        const data = await response.json().catch(() => ({}));
         setConnectionStatus('connected');
+        setLastTestResult(`Connection successful! Response: ${response.status} ${response.statusText}`);
         showSuccess('Connection Test', 'ASTRA Token API connection successful');
       } else {
         setConnectionStatus('disconnected');
+        const errorText = await response.text().catch(() => 'Unknown error');
+        setLastTestResult(`Connection failed: ${response.status} ${response.statusText} - ${errorText}`);
         showError('Connection Test', `API returned status: ${response.status}`);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Connection test failed:', error);
       setConnectionStatus('disconnected');
-      showError('Connection Test', 'Failed to connect to ASTRA Token API');
+      const errorMessage = error.name === 'AbortError' 
+        ? 'Connection timeout (15s)' 
+        : error.message || 'Unknown error';
+      setLastTestResult(`Connection failed: ${errorMessage}`);
+      showError('Connection Test', `Failed to connect: ${errorMessage}`);
     } finally {
       setTesting(false);
     }
@@ -171,7 +186,7 @@ const ASTRATokenSettings = () => {
       case 'testing':
         return (
           <Badge className="bg-blue-100 text-blue-800 border-blue-200">
-            <TestTube className="h-3 w-3 mr-1" />
+            <RefreshCw className="h-3 w-3 mr-1 animate-spin" />
             Testing...
           </Badge>
         );
@@ -192,7 +207,7 @@ const ASTRATokenSettings = () => {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-white">ASTRA Token Settings</h2>
-          <p className="text-gray-400">Configure ASTRA token API and blockchain settings</p>
+          <p className="text-gray-400">Configure ASTRA token API settings and connection</p>
         </div>
         <div className="flex items-center space-x-2">
           {getConnectionBadge()}
@@ -203,15 +218,24 @@ const ASTRATokenSettings = () => {
             size="sm"
           >
             <TestTube className={`h-4 w-4 mr-2 ${testing ? 'animate-spin' : ''}`} />
-            Test Connection
+            {testing ? 'Testing...' : 'Test API'}
           </Button>
         </div>
       </div>
 
+      {/* Connection Status Alert */}
+      {lastTestResult && (
+        <Alert className={connectionStatus === 'connected' ? 'border-green-500 bg-green-50' : 'border-red-500 bg-red-50'}>
+          <AlertTriangle className="h-4 w-4" />
+          <AlertDescription className="font-medium">
+            <strong>Last Test Result:</strong> {lastTestResult}
+          </AlertDescription>
+        </Alert>
+      )}
+
       <Tabs defaultValue="api" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-3 bg-slate-800/50">
+        <TabsList className="grid w-full grid-cols-2 bg-slate-800/50">
           <TabsTrigger value="api">API Configuration</TabsTrigger>
-          <TabsTrigger value="blockchain">Blockchain Settings</TabsTrigger>
           <TabsTrigger value="webhooks">Webhooks & Events</TabsTrigger>
         </TabsList>
 
@@ -233,7 +257,7 @@ const ASTRATokenSettings = () => {
               </div>
 
               <div className="space-y-2">
-                <Label className="text-white">API Key</Label>
+                <Label className="text-white">API Key *</Label>
                 <Input
                   type="password"
                   value={settings.apiKey}
@@ -241,16 +265,22 @@ const ASTRATokenSettings = () => {
                   placeholder="Enter your ASTRA API key"
                   className="bg-slate-700/50 border-slate-600 text-white"
                 />
+                <p className="text-xs text-gray-400">
+                  Required for API authentication. Keep this secure.
+                </p>
               </div>
 
               <div className="space-y-2">
-                <Label className="text-white">Base URL</Label>
+                <Label className="text-white">Base URL *</Label>
                 <Input
                   value={settings.baseUrl}
                   onChange={(e) => setSettings(prev => ({ ...prev, baseUrl: e.target.value }))}
                   placeholder="https://api.astra-token.com"
                   className="bg-slate-700/50 border-slate-600 text-white"
                 />
+                <p className="text-xs text-gray-400">
+                  The base URL for ASTRA API endpoints.
+                </p>
               </div>
 
               <div className="flex items-center space-x-2">
@@ -260,48 +290,9 @@ const ASTRATokenSettings = () => {
                 />
                 <Label className="text-white">Test Mode (Sandbox)</Label>
               </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="blockchain" className="space-y-4">
-          <Card className="bg-slate-800/50 border-slate-700/50">
-            <CardHeader>
-              <CardTitle className="text-white flex items-center">
-                <Coins className="h-5 w-5 mr-2" />
-                Blockchain Configuration
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label className="text-white">Token Symbol</Label>
-                <Input
-                  value={settings.tokenSymbol}
-                  onChange={(e) => setSettings(prev => ({ ...prev, tokenSymbol: e.target.value }))}
-                  placeholder="ASTRA"
-                  className="bg-slate-700/50 border-slate-600 text-white"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label className="text-white">Network ID</Label>
-                <Input
-                  value={settings.networkId}
-                  onChange={(e) => setSettings(prev => ({ ...prev, networkId: e.target.value }))}
-                  placeholder="1 (Ethereum Mainnet)"
-                  className="bg-slate-700/50 border-slate-600 text-white"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label className="text-white">Default Gas Limit</Label>
-                <Input
-                  value={settings.defaultGasLimit}
-                  onChange={(e) => setSettings(prev => ({ ...prev, defaultGasLimit: e.target.value }))}
-                  placeholder="21000"
-                  className="bg-slate-700/50 border-slate-600 text-white"
-                />
-              </div>
+              <p className="text-xs text-gray-400">
+                When enabled, uses test endpoints for safe testing without affecting live data.
+              </p>
             </CardContent>
           </Card>
         </TabsContent>
@@ -324,7 +315,7 @@ const ASTRATokenSettings = () => {
                   className="bg-slate-700/50 border-slate-600 text-white"
                 />
                 <p className="text-xs text-gray-400">
-                  URL to receive webhook notifications for token events
+                  URL to receive webhook notifications for token events (optional)
                 </p>
               </div>
 
@@ -340,7 +331,15 @@ const ASTRATokenSettings = () => {
       </Tabs>
 
       {/* Save Button */}
-      <div className="flex justify-end">
+      <div className="flex justify-end space-x-2">
+        <Button
+          onClick={() => testConnection()}
+          disabled={testing || !settings.apiKey || !settings.baseUrl}
+          variant="outline"
+        >
+          <TestTube className={`h-4 w-4 mr-2 ${testing ? 'animate-spin' : ''}`} />
+          Test Connection
+        </Button>
         <Button
           onClick={saveSettings}
           disabled={loading}
