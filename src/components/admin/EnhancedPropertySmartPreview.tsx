@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Slider } from '@/components/ui/slider';
+import { Textarea } from '@/components/ui/textarea';
 import { 
   Eye, 
   RefreshCw, 
@@ -31,7 +32,18 @@ import {
   Edit3,
   Save,
   Play,
-  Pause
+  Pause,
+  Download,
+  Upload,
+  Code,
+  Monitor,
+  Smartphone,
+  Tablet,
+  Copy,
+  Check,
+  RotateCcw,
+  Zap,
+  Database
 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -94,6 +106,11 @@ const EnhancedPropertySmartPreview = () => {
   const [statusFilter, setStatusFilter] = useState<'all' | 'approved' | 'pending_approval' | 'active'>('all');
   const [isLivePreview, setIsLivePreview] = useState(true);
   const [previewKey, setPreviewKey] = useState(0);
+  const [exportedSettings, setExportedSettings] = useState<string>('');
+  const [importSettings, setImportSettings] = useState<string>('');
+  const [devicePreview, setDevicePreview] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
+  const [customCSS, setCustomCSS] = useState<string>('');
+  const [isSettingsCopied, setIsSettingsCopied] = useState(false);
   
   const [previewSettings, setPreviewSettings] = useState<PreviewSettings>({
     showTitle: true,
@@ -218,6 +235,40 @@ const EnhancedPropertySmartPreview = () => {
       pricePosition: 'bottom',
       buttonStyle: 'rounded'
     });
+  };
+
+  const exportSettingsToJSON = () => {
+    const settingsJSON = JSON.stringify(previewSettings, null, 2);
+    setExportedSettings(settingsJSON);
+    
+    // Copy to clipboard
+    navigator.clipboard.writeText(settingsJSON).then(() => {
+      setIsSettingsCopied(true);
+      showSuccess('Settings Exported', 'Settings copied to clipboard and displayed below');
+      setTimeout(() => setIsSettingsCopied(false), 2000);
+    });
+  };
+
+  const importSettingsFromJSON = () => {
+    try {
+      const parsedSettings = JSON.parse(importSettings);
+      setPreviewSettings(parsedSettings);
+      showSuccess('Settings Imported', 'Settings imported successfully');
+      setImportSettings('');
+    } catch (error) {
+      showError('Import Error', 'Invalid JSON format. Please check your settings data.');
+    }
+  };
+
+  const getDevicePreviewStyles = () => {
+    switch (devicePreview) {
+      case 'mobile':
+        return { maxWidth: '375px', margin: '0 auto' };
+      case 'tablet':
+        return { maxWidth: '768px', margin: '0 auto' };
+      default:
+        return {};
+    }
   };
 
   const handleRefresh = () => {
@@ -427,29 +478,62 @@ const EnhancedPropertySmartPreview = () => {
           {/* Search Controls */}
           <Card className="bg-slate-800/50 border-slate-700/50">
             <CardContent className="p-4">
-              <div className="flex items-center space-x-4">
-                <div className="flex-1">
-                  <div className="relative">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                    <Input
-                      placeholder="Search properties..."
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                      className="pl-10 bg-slate-700/50 border-slate-600 text-white"
-                    />
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center space-x-4 flex-1">
+                  <div className="flex-1">
+                    <div className="relative">
+                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                      <Input
+                        placeholder="Search properties..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="pl-10 bg-slate-700/50 border-slate-600 text-white"
+                      />
+                    </div>
+                  </div>
+                  <Select value={statusFilter} onValueChange={(value: any) => setStatusFilter(value)}>
+                    <SelectTrigger className="w-40 bg-slate-700/50 border-slate-600 text-white">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Properties</SelectItem>
+                      <SelectItem value="approved">Approved Only</SelectItem>
+                      <SelectItem value="active">Active Only</SelectItem>
+                      <SelectItem value="pending_approval">Pending Only</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                {/* Device Preview Toggle */}
+                <div className="flex items-center space-x-2">
+                  <Label className="text-white text-sm">Device:</Label>
+                  <div className="flex border border-slate-600 rounded-md overflow-hidden">
+                    <Button
+                      size="sm"
+                      variant={devicePreview === 'desktop' ? 'default' : 'ghost'}
+                      onClick={() => setDevicePreview('desktop')}
+                      className="rounded-none px-3"
+                    >
+                      <Monitor className="h-3 w-3" />
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant={devicePreview === 'tablet' ? 'default' : 'ghost'}
+                      onClick={() => setDevicePreview('tablet')}
+                      className="rounded-none px-3"
+                    >
+                      <Tablet className="h-3 w-3" />
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant={devicePreview === 'mobile' ? 'default' : 'ghost'}
+                      onClick={() => setDevicePreview('mobile')}
+                      className="rounded-none px-3"
+                    >
+                      <Smartphone className="h-3 w-3" />
+                    </Button>
                   </div>
                 </div>
-                <Select value={statusFilter} onValueChange={(value: any) => setStatusFilter(value)}>
-                  <SelectTrigger className="w-40 bg-slate-700/50 border-slate-600 text-white">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Properties</SelectItem>
-                    <SelectItem value="approved">Approved Only</SelectItem>
-                    <SelectItem value="active">Active Only</SelectItem>
-                    <SelectItem value="pending_approval">Pending Only</SelectItem>
-                  </SelectContent>
-                </Select>
               </div>
             </CardContent>
           </Card>
@@ -459,30 +543,41 @@ const EnhancedPropertySmartPreview = () => {
             <CardHeader>
               <CardTitle className="text-gray-900 flex items-center justify-between">
                 <span>Live Preview ({properties?.length || 0} properties)</span>
-                <Badge variant={isLivePreview ? "default" : "secondary"}>
-                  {isLivePreview ? "Live Updates" : "Static"}
-                </Badge>
+                <div className="flex items-center space-x-2">
+                  <Badge variant={isLivePreview ? "default" : "secondary"}>
+                    {isLivePreview ? "Live Updates" : "Static"}
+                  </Badge>
+                  <Badge variant="outline">
+                    {devicePreview.charAt(0).toUpperCase() + devicePreview.slice(1)} View
+                  </Badge>
+                </div>
               </CardTitle>
             </CardHeader>
             <CardContent>
-              {isLoading ? (
-                <div className="text-center py-8">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-2"></div>
-                  <p className="text-gray-500">Loading properties...</p>
-                </div>
-              ) : !properties || properties.length === 0 ? (
-                <div className="text-center py-8">
-                  <Building2 className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">No Properties Found</h3>
-                  <p className="text-gray-500">No properties match your current filters.</p>
-                </div>
-              ) : (
-                <div key={previewKey} className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-                  {properties.slice(0, 6).map((property) => (
-                    <CustomPropertyCard key={property.id} property={property} />
-                  ))}
-                </div>
-              )}
+              <div style={getDevicePreviewStyles()}>
+                {isLoading ? (
+                  <div className="text-center py-8">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-2"></div>
+                    <p className="text-gray-500">Loading properties...</p>
+                  </div>
+                ) : !properties || properties.length === 0 ? (
+                  <div className="text-center py-8">
+                    <Building2 className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">No Properties Found</h3>
+                    <p className="text-gray-500">No properties match your current filters.</p>
+                  </div>
+                ) : (
+                  <div key={previewKey} className={`grid gap-4 ${
+                    devicePreview === 'mobile' ? 'grid-cols-1' : 
+                    devicePreview === 'tablet' ? 'grid-cols-2' : 
+                    'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
+                  }`}>
+                    {properties.slice(0, 6).map((property) => (
+                      <CustomPropertyCard key={property.id} property={property} />
+                    ))}
+                  </div>
+                )}
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
@@ -715,37 +810,205 @@ const EnhancedPropertySmartPreview = () => {
         </TabsContent>
 
         <TabsContent value="settings" className="space-y-4">
-          <Card className="bg-slate-800/50 border-slate-700/50">
-            <CardHeader>
-              <CardTitle className="text-white flex items-center">
-                <Settings className="h-5 w-5 mr-2" />
-                Advanced Settings
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-white font-medium">Save Current Settings</h3>
-                  <p className="text-gray-400 text-sm">Save these settings as default for the property preview</p>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Settings Management */}
+            <Card className="bg-slate-800/50 border-slate-700/50">
+              <CardHeader>
+                <CardTitle className="text-white flex items-center">
+                  <Settings className="h-5 w-5 mr-2" />
+                  Settings Management
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-white font-medium">Save Current Settings</h3>
+                    <p className="text-gray-400 text-sm">Save these settings as default for the property preview</p>
+                  </div>
+                  <Button onClick={savePreviewSettings} className="bg-blue-600 hover:bg-blue-700">
+                    <Save className="h-4 w-4 mr-2" />
+                    Save Settings
+                  </Button>
                 </div>
-                <Button onClick={savePreviewSettings} className="bg-blue-600 hover:bg-blue-700">
-                  <Save className="h-4 w-4 mr-2" />
-                  Save Settings
-                </Button>
-              </div>
 
-              <div className="flex items-center justify-between pt-4 border-t border-slate-600">
-                <div>
-                  <h3 className="text-white font-medium">Reset to Defaults</h3>
-                  <p className="text-gray-400 text-sm">Restore all settings to their default values</p>
+                <div className="flex items-center justify-between pt-4 border-t border-slate-600">
+                  <div>
+                    <h3 className="text-white font-medium">Reset to Defaults</h3>
+                    <p className="text-gray-400 text-sm">Restore all settings to their default values</p>
+                  </div>
+                  <Button onClick={resetToDefaults} variant="outline">
+                    <RotateCcw className="h-4 w-4 mr-2" />
+                    Reset Defaults
+                  </Button>
                 </div>
-                <Button onClick={resetToDefaults} variant="outline">
+
+                <div className="pt-4 border-t border-slate-600">
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="text-white font-medium">Export Settings</h3>
+                    <Button onClick={exportSettingsToJSON} variant="outline" size="sm">
+                      {isSettingsCopied ? <Check className="h-4 w-4 mr-2" /> : <Download className="h-4 w-4 mr-2" />}
+                      {isSettingsCopied ? 'Copied!' : 'Export'}
+                    </Button>
+                  </div>
+                  <p className="text-gray-400 text-sm mb-3">Export current settings as JSON for backup or sharing</p>
+                  {exportedSettings && (
+                    <Textarea
+                      value={exportedSettings}
+                      readOnly
+                      className="bg-slate-700/50 border-slate-600 text-white text-xs font-mono"
+                      rows={6}
+                    />
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Import & Advanced Options */}
+            <Card className="bg-slate-800/50 border-slate-700/50">
+              <CardHeader>
+                <CardTitle className="text-white flex items-center">
+                  <Upload className="h-5 w-5 mr-2" />
+                  Import & Advanced
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <Label className="text-white font-medium">Import Settings</Label>
+                  <p className="text-gray-400 text-sm mb-3">Paste JSON settings to import configuration</p>
+                  <Textarea
+                    value={importSettings}
+                    onChange={(e) => setImportSettings(e.target.value)}
+                    placeholder="Paste JSON settings here..."
+                    className="bg-slate-700/50 border-slate-600 text-white text-xs font-mono mb-2"
+                    rows={6}
+                  />
+                  <Button 
+                    onClick={importSettingsFromJSON} 
+                    disabled={!importSettings.trim()}
+                    className="w-full"
+                  >
+                    <Upload className="h-4 w-4 mr-2" />
+                    Import Settings
+                  </Button>
+                </div>
+
+                <div className="pt-4 border-t border-slate-600">
+                  <Label className="text-white font-medium">Custom CSS</Label>
+                  <p className="text-gray-400 text-sm mb-3">Add custom CSS for advanced styling (Coming Soon)</p>
+                  <Textarea
+                    value={customCSS}
+                    onChange={(e) => setCustomCSS(e.target.value)}
+                    placeholder="/* Custom CSS rules will go here */
+.property-card {
+  /* Your custom styles */
+}"
+                    className="bg-slate-700/50 border-slate-600 text-white text-xs font-mono"
+                    rows={8}
+                    disabled
+                  />
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Performance & Debug */}
+            <Card className="bg-slate-800/50 border-slate-700/50">
+              <CardHeader>
+                <CardTitle className="text-white flex items-center">
+                  <Zap className="h-5 w-5 mr-2" />
+                  Performance & Debug
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-white font-medium">Live Preview Mode</h3>
+                    <p className="text-gray-400 text-sm">Toggle real-time updates for better performance</p>
+                  </div>
+                  <Switch
+                    checked={isLivePreview}
+                    onCheckedChange={setIsLivePreview}
+                  />
+                </div>
+
+                <div className="pt-4 border-t border-slate-600">
+                  <h3 className="text-white font-medium mb-2">Preview Statistics</h3>
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div className="bg-slate-700/30 p-3 rounded">
+                      <div className="text-gray-400">Properties Loaded</div>
+                      <div className="text-white font-semibold">{properties?.length || 0}</div>
+                    </div>
+                    <div className="bg-slate-700/30 p-3 rounded">
+                      <div className="text-gray-400">Render Updates</div>
+                      <div className="text-white font-semibold">{previewKey}</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-4 border-t border-slate-600">
+                  <Button 
+                    onClick={() => window.location.reload()} 
+                    variant="outline" 
+                    className="w-full"
+                  >
+                    <RefreshCw className="h-4 w-4 mr-2" />
+                    Hard Refresh Preview
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Database & Sync */}
+            <Card className="bg-slate-800/50 border-slate-700/50">
+              <CardHeader>
+                <CardTitle className="text-white flex items-center">
+                  <Database className="h-5 w-5 mr-2" />
+                  Database & Sync
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="bg-slate-700/30 p-4 rounded">
+                  <h3 className="text-white font-medium mb-2">Data Source Information</h3>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">Table:</span>
+                      <span className="text-white">properties</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">Status Filter:</span>
+                      <span className="text-white">{statusFilter}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">Search Term:</span>
+                      <span className="text-white">{searchTerm || 'None'}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">Loading:</span>
+                      <span className="text-white">{isLoading ? 'Yes' : 'No'}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <Button 
+                  onClick={handleRefresh} 
+                  variant="outline" 
+                  className="w-full"
+                  disabled={isLoading}
+                >
                   <RefreshCw className="h-4 w-4 mr-2" />
-                  Reset Defaults
+                  Refresh Data
                 </Button>
-              </div>
-            </CardContent>
-          </Card>
+
+                {error && (
+                  <div className="bg-red-900/20 border border-red-500/30 p-3 rounded">
+                    <div className="text-red-400 text-sm">
+                      <AlertCircle className="h-4 w-4 inline mr-2" />
+                      Database Error: {error.message}
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
         </TabsContent>
       </Tabs>
     </div>
