@@ -56,7 +56,18 @@ const BookingManagement = () => {
       let query = supabase
         .from('vendor_bookings')
         .select(`
-          *,
+          id,
+          booking_date,
+          booking_time,
+          duration_minutes,
+          total_amount,
+          status,
+          payment_status,
+          customer_notes,
+          vendor_notes,
+          location_address,
+          contact_phone,
+          contact_email,
           service:vendor_services(service_name),
           customer:profiles!vendor_bookings_customer_id_fkey(full_name, email),
           vendor:profiles!vendor_bookings_vendor_id_fkey(full_name, email)
@@ -85,11 +96,11 @@ const BookingManagement = () => {
         total_amount: booking.total_amount,
         status: booking.status,
         payment_status: booking.payment_status || 'pending',
-        customer_notes: booking.customer_notes,
-        vendor_notes: booking.vendor_notes,
-        location_address: booking.location_address,
-        contact_phone: booking.contact_phone,
-        contact_email: booking.contact_email,
+        customer_notes: booking.customer_notes || '',
+        vendor_notes: booking.vendor_notes || '',
+        location_address: booking.location_address || '',
+        contact_phone: booking.contact_phone || '',
+        contact_email: booking.contact_email || '',
         service: booking.service,
         customer: booking.customer,
         vendor: booking.vendor
@@ -100,7 +111,7 @@ const BookingManagement = () => {
       console.error('Error fetching bookings:', error);
       toast({
         title: "Error",
-        description: "Failed to load bookings",
+        description: error.message || "Failed to load bookings",
         variant: "destructive"
       });
     } finally {
