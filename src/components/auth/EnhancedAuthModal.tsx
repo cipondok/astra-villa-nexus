@@ -1,13 +1,12 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useAuth } from "@/contexts/AuthContext";
-import { X, Eye, EyeOff, Mail, AlertTriangle, Loader2 } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { X, Eye, EyeOff, AlertTriangle, Loader2, CheckCircle } from "lucide-react";
+import { toast } from "sonner";
 
 interface EnhancedAuthModalProps {
   isOpen: boolean;
@@ -16,13 +15,14 @@ interface EnhancedAuthModalProps {
 }
 
 const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps) => {
+  const [isLogin, setIsLogin] = useState(true);
   const [loginData, setLoginData] = useState({ email: "", password: "" });
   const [registerData, setRegisterData] = useState({ email: "", password: "", fullName: "", confirmPassword: "" });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [errors, setErrors] = useState<{[key: string]: string}>({});
-  const [activeTab, setActiveTab] = useState("login");
   const [isLoading, setIsLoading] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
   
   const { signIn, signUp } = useAuth();
 
@@ -37,19 +37,19 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
       loginBtn: "Sign In",
       registerBtn: "Create Account",
       close: "Close",
-      googleLogin: "Continue with Google",
+      switchToLogin: "Already have an account? Sign in here",
+      switchToRegister: "Don't have an account? Sign up here",
       passwordsDontMatch: "Passwords do not match",
       emailRequired: "Email is required",
       passwordRequired: "Password is required",
       nameRequired: "Full name is required",
       invalidEmail: "Please enter a valid email address",
       passwordTooShort: "Password must be at least 6 characters",
-      alreadyHaveAccount: "Already have an account?",
-      dontHaveAccount: "Don't have an account?",
-      switchToLogin: "Sign in here",
-      switchToRegister: "Sign up here",
-      networkError: "Network error. Please check your connection and try again.",
-      timeout: "Request timed out. Please try again."
+      signingIn: "Signing in...",
+      creatingAccount: "Creating account...",
+      success: "Success!",
+      loginSuccess: "Welcome back!",
+      signupSuccess: "Account created successfully!"
     },
     id: {
       login: "Masuk",
@@ -61,46 +61,25 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
       loginBtn: "Masuk",
       registerBtn: "Buat Akun",
       close: "Tutup",
-      googleLogin: "Lanjutkan dengan Google",
+      switchToLogin: "Sudah punya akun? Masuk di sini",
+      switchToRegister: "Belum punya akun? Daftar di sini",
       passwordsDontMatch: "Kata sandi tidak cocok",
       emailRequired: "Email wajib diisi",
       passwordRequired: "Kata sandi wajib diisi",
       nameRequired: "Nama lengkap wajib diisi",
       invalidEmail: "Masukkan alamat email yang valid",
       passwordTooShort: "Kata sandi minimal 6 karakter",
-      alreadyHaveAccount: "Sudah punya akun?",
-      dontHaveAccount: "Belum punya akun?",
-      switchToLogin: "Masuk di sini",
-      switchToRegister: "Daftar di sini",
-      networkError: "Kesalahan jaringan. Periksa koneksi dan coba lagi.",
-      timeout: "Permintaan habis waktu. Silakan coba lagi."
+      signingIn: "Sedang masuk...",
+      creatingAccount: "Membuat akun...",
+      success: "Berhasil!",
+      loginSuccess: "Selamat datang kembali!",
+      signupSuccess: "Akun berhasil dibuat!"
     }
   };
 
   const currentText = text[language];
 
   if (!isOpen) return null;
-
-  const handleGoogleLogin = async () => {
-    setIsLoading(true);
-    setErrors({});
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: `${window.location.origin}/dashboard`
-        }
-      });
-      
-      if (error) {
-        setErrors({ google: error.message });
-      }
-    } catch (error: any) {
-      setErrors({ google: error.message || currentText.networkError });
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -163,26 +142,28 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
       
       if (result.error) {
         console.error('Login error:', result.error);
-        let errorMessage = result.error.message || currentText.networkError;
+        let errorMessage = result.error.message || 'Login failed. Please try again.';
         
-        // Handle specific error messages
         if (errorMessage.includes('Invalid login credentials')) {
           errorMessage = 'Invalid email or password. Please check your credentials and try again.';
-        } else if (errorMessage.includes('timeout') || errorMessage.includes('Load failed')) {
-          errorMessage = currentText.timeout;
-        } else if (errorMessage.includes('Network error')) {
-          errorMessage = currentText.networkError;
         }
         
         setErrors({ login: errorMessage });
+        toast.error(errorMessage);
       } else if (result.success) {
-        onClose();
-        setLoginData({ email: "", password: "" });
-        setErrors({});
+        setIsSuccess(true);
+        toast.success(currentText.loginSuccess);
+        
+        setTimeout(() => {
+          onClose();
+          resetForms();
+        }, 1500);
       }
     } catch (error: any) {
       console.error('Login catch error:', error);
-      setErrors({ login: currentText.networkError });
+      const errorMessage = 'Network error. Please check your connection and try again.';
+      setErrors({ login: errorMessage });
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -200,28 +181,28 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
       
       if (result.error) {
         console.error('Register error:', result.error);
-        let errorMessage = result.error.message || currentText.networkError;
+        let errorMessage = result.error.message || 'Registration failed. Please try again.';
         
-        // Handle specific error messages
-        if (errorMessage.includes('email rate limit exceeded')) {
-          errorMessage = 'Too many signup attempts. Please wait a few minutes before trying again.';
-        } else if (errorMessage.includes('User already registered')) {
+        if (errorMessage.includes('User already registered')) {
           errorMessage = 'An account with this email already exists. Please try logging in instead.';
-        } else if (errorMessage.includes('timeout') || errorMessage.includes('Load failed')) {
-          errorMessage = currentText.timeout;
-        } else if (errorMessage.includes('Network error')) {
-          errorMessage = currentText.networkError;
         }
         
         setErrors({ register: errorMessage });
+        toast.error(errorMessage);
       } else if (result.success) {
-        onClose();
-        setRegisterData({ email: "", password: "", fullName: "", confirmPassword: "" });
-        setErrors({});
+        setIsSuccess(true);
+        toast.success(currentText.signupSuccess);
+        
+        setTimeout(() => {
+          onClose();
+          resetForms();
+        }, 1500);
       }
     } catch (error: any) {
       console.error('Register catch error:', error);
-      setErrors({ register: currentText.networkError });
+      const errorMessage = 'Network error. Please check your connection and try again.';
+      setErrors({ register: errorMessage });
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -231,76 +212,106 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
     setLoginData({ email: "", password: "" });
     setRegisterData({ email: "", password: "", fullName: "", confirmPassword: "" });
     setErrors({});
+    setIsSuccess(false);
     setIsLoading(false);
+    setIsLogin(true);
   };
 
   const handleClose = () => {
-    resetForms();
-    onClose();
+    if (!isLoading) {
+      resetForms();
+      onClose();
+    }
   };
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <Card className="w-full max-w-md bg-white/10 backdrop-blur-md border-white/20 shadow-2xl">
-        <CardHeader className="flex flex-row items-center justify-between pb-4">
-          <CardTitle className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-orange-400 bg-clip-text text-transparent">
-            Astra Villa
-          </CardTitle>
-          <Button variant="ghost" size="sm" onClick={handleClose} disabled={isLoading} className="text-white hover:bg-white/10">
-            <X className="h-4 w-4" />
-          </Button>
-        </CardHeader>
-        
-        <CardContent className="text-white">
-          <div className="space-y-4 mb-6">
+    <div className="fixed inset-0 z-[10000] flex items-start justify-end p-4 pt-20">
+      {/* Backdrop */}
+      <div 
+        className="absolute inset-0 bg-black/20 backdrop-blur-sm"
+        onClick={handleClose}
+      />
+      
+      {/* Modal */}
+      <div className="relative w-full max-w-md animate-in slide-in-from-right-5 duration-300">
+        {/* Glassy Card */}
+        <div className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border border-white/20 dark:border-gray-700/30 rounded-2xl shadow-2xl shadow-black/10 dark:shadow-black/30 overflow-hidden">
+          {/* Header */}
+          <div className="flex items-center justify-between p-6 border-b border-white/10 dark:border-gray-700/30">
+            <div>
+              <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-orange-500 bg-clip-text text-transparent">
+                Astra Villa
+              </h2>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                {isLogin ? 'Welcome back!' : 'Create your account'}
+              </p>
+            </div>
             <Button 
-              onClick={handleGoogleLogin}
+              variant="ghost" 
+              size="sm" 
+              onClick={handleClose} 
               disabled={isLoading}
-              className="w-full bg-white/10 hover:bg-white/20 text-white border border-white/20 backdrop-blur-sm"
-              variant="outline"
+              className="h-8 w-8 p-0 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 rounded-full"
             >
-              {isLoading ? (
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-              ) : (
-                <Mail className="h-4 w-4 mr-2" />
-              )}
-              {currentText.googleLogin}
+              <X className="h-4 w-4" />
             </Button>
+          </div>
 
-            {errors.google && (
-              <Alert variant="destructive" className="bg-red-500/20 border-red-500/50">
-                <AlertTriangle className="h-4 w-4" />
-                <AlertDescription className="text-white">{errors.google}</AlertDescription>
+          {/* Content */}
+          <div className="p-6">
+            {/* Success State */}
+            {isSuccess && (
+              <Alert className="mb-6 border-green-200/50 bg-green-50/50 dark:bg-green-900/20">
+                <CheckCircle className="h-4 w-4 text-green-600" />
+                <AlertDescription className="text-green-800 dark:text-green-300">
+                  {isLogin ? currentText.loginSuccess : currentText.signupSuccess}
+                </AlertDescription>
               </Alert>
             )}
 
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t border-white/20" />
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-transparent px-2 text-gray-300">Or continue with email</span>
-              </div>
+            {/* General Error */}
+            {(errors.login || errors.register) && (
+              <Alert variant="destructive" className="mb-6 bg-red-50/50 dark:bg-red-900/20 border-red-200/50">
+                <AlertTriangle className="h-4 w-4" />
+                <AlertDescription>{errors.login || errors.register}</AlertDescription>
+              </Alert>
+            )}
+
+            {/* Toggle Buttons */}
+            <div className="flex mb-6 bg-gray-100/50 dark:bg-gray-800/50 rounded-xl p-1">
+              <button
+                type="button"
+                onClick={() => { setIsLogin(true); setErrors({}); }}
+                disabled={isLoading}
+                className={`flex-1 py-2 px-4 text-sm font-medium rounded-lg transition-all duration-200 ${
+                  isLogin 
+                    ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm' 
+                    : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                }`}
+              >
+                {currentText.login}
+              </button>
+              <button
+                type="button"
+                onClick={() => { setIsLogin(false); setErrors({}); }}
+                disabled={isLoading}
+                className={`flex-1 py-2 px-4 text-sm font-medium rounded-lg transition-all duration-200 ${
+                  !isLogin 
+                    ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm' 
+                    : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                }`}
+              >
+                {currentText.register}
+              </button>
             </div>
-          </div>
 
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-2 bg-white/10 backdrop-blur-sm">
-              <TabsTrigger value="login" className="text-white data-[state=active]:bg-blue-600">{currentText.login}</TabsTrigger>
-              <TabsTrigger value="register" className="text-white data-[state=active]:bg-blue-600">{currentText.register}</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="login" className="space-y-4">
-              {errors.login && (
-                <Alert variant="destructive" className="bg-red-500/20 border-red-500/50">
-                  <AlertTriangle className="h-4 w-4" />
-                  <AlertDescription className="text-white">{errors.login}</AlertDescription>
-                </Alert>
-              )}
-              
+            {/* Login Form */}
+            {isLogin && (
               <form onSubmit={handleLogin} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="login-email" className="text-white">{currentText.email}</Label>
+                  <Label htmlFor="login-email" className="text-sm font-medium">
+                    {currentText.email}
+                  </Label>
                   <Input
                     id="login-email"
                     type="email"
@@ -308,17 +319,19 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
                     value={loginData.email}
                     onChange={(e) => setLoginData(prev => ({ ...prev, email: e.target.value }))}
                     disabled={isLoading}
-                    className={`bg-white/10 border-white/20 text-white placeholder:text-gray-400 ${errors.email ? "border-red-500" : ""}`}
+                    className={`bg-white/50 dark:bg-gray-800/50 border-gray-200/50 dark:border-gray-700/50 ${
+                      errors.email ? "border-red-500" : ""
+                    }`}
                   />
                   {errors.email && (
-                    <Alert variant="destructive" className="bg-red-500/20 border-red-500/50">
-                      <AlertDescription className="text-white">{errors.email}</AlertDescription>
-                    </Alert>
+                    <p className="text-sm text-red-600 dark:text-red-400">{errors.email}</p>
                   )}
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="login-password" className="text-white">{currentText.password}</Label>
+                  <Label htmlFor="login-password" className="text-sm font-medium">
+                    {currentText.password}
+                  </Label>
                   <div className="relative">
                     <Input
                       id="login-password"
@@ -327,64 +340,55 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
                       value={loginData.password}
                       onChange={(e) => setLoginData(prev => ({ ...prev, password: e.target.value }))}
                       disabled={isLoading}
-                      className={`bg-white/10 border-white/20 text-white placeholder:text-gray-400 pr-10 ${errors.password ? "border-red-500" : ""}`}
+                      className={`bg-white/50 dark:bg-gray-800/50 border-gray-200/50 dark:border-gray-700/50 pr-10 ${
+                        errors.password ? "border-red-500" : ""
+                      }`}
                     />
                     <Button
                       type="button"
                       variant="ghost"
                       size="sm"
-                      className="absolute right-0 top-0 h-full px-3 text-gray-400 hover:text-white"
+                      className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
                       onClick={() => setShowPassword(!showPassword)}
+                      disabled={isLoading}
                     >
                       {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </Button>
                   </div>
                   {errors.password && (
-                    <Alert variant="destructive" className="bg-red-500/20 border-red-500/50">
-                      <AlertDescription className="text-white">{errors.password}</AlertDescription>
-                    </Alert>
+                    <p className="text-sm text-red-600 dark:text-red-400">{errors.password}</p>
                   )}
                 </div>
-                
+
                 <Button 
                   type="submit" 
-                  className="w-full bg-gradient-to-r from-blue-600 to-orange-500 hover:from-blue-700 hover:to-orange-600"
-                  disabled={isLoading}
+                  className="w-full bg-gradient-to-r from-blue-600 to-orange-500 hover:from-blue-700 hover:to-orange-600 text-white font-medium py-2.5 rounded-lg transition-all duration-200"
+                  disabled={isLoading || isSuccess}
                 >
                   {isLoading ? (
                     <>
-                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                      Signing in...
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      {currentText.signingIn}
+                    </>
+                  ) : isSuccess ? (
+                    <>
+                      <CheckCircle className="mr-2 h-4 w-4" />
+                      {currentText.success}
                     </>
                   ) : (
                     currentText.loginBtn
                   )}
                 </Button>
-
-                <p className="text-center text-sm text-gray-300">
-                  {currentText.dontHaveAccount}{" "}
-                  <button
-                    type="button"
-                    onClick={() => setActiveTab("register")}
-                    className="text-blue-400 hover:underline"
-                  >
-                    {currentText.switchToRegister}
-                  </button>
-                </p>
               </form>
-            </TabsContent>
-            
-            <TabsContent value="register" className="space-y-4">
-              {errors.register && (
-                <Alert variant="destructive" className="bg-red-500/20 border-red-500/50">
-                  <AlertTriangle className="h-4 w-4" />
-                  <AlertDescription className="text-white">{errors.register}</AlertDescription>
-                </Alert>
-              )}
-              
+            )}
+
+            {/* Register Form */}
+            {!isLogin && (
               <form onSubmit={handleRegister} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="register-name" className="text-white">{currentText.fullName}</Label>
+                  <Label htmlFor="register-name" className="text-sm font-medium">
+                    {currentText.fullName}
+                  </Label>
                   <Input
                     id="register-name"
                     type="text"
@@ -392,17 +396,19 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
                     value={registerData.fullName}
                     onChange={(e) => setRegisterData(prev => ({ ...prev, fullName: e.target.value }))}
                     disabled={isLoading}
-                    className={`bg-white/10 border-white/20 text-white placeholder:text-gray-400 ${errors.fullName ? "border-red-500" : ""}`}
+                    className={`bg-white/50 dark:bg-gray-800/50 border-gray-200/50 dark:border-gray-700/50 ${
+                      errors.fullName ? "border-red-500" : ""
+                    }`}
                   />
                   {errors.fullName && (
-                    <Alert variant="destructive" className="bg-red-500/20 border-red-500/50">
-                      <AlertDescription className="text-white">{errors.fullName}</AlertDescription>
-                    </Alert>
+                    <p className="text-sm text-red-600 dark:text-red-400">{errors.fullName}</p>
                   )}
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="register-email" className="text-white">{currentText.email}</Label>
+                  <Label htmlFor="register-email" className="text-sm font-medium">
+                    {currentText.email}
+                  </Label>
                   <Input
                     id="register-email"
                     type="email"
@@ -410,17 +416,19 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
                     value={registerData.email}
                     onChange={(e) => setRegisterData(prev => ({ ...prev, email: e.target.value }))}
                     disabled={isLoading}
-                    className={`bg-white/10 border-white/20 text-white placeholder:text-gray-400 ${errors.email ? "border-red-500" : ""}`}
+                    className={`bg-white/50 dark:bg-gray-800/50 border-gray-200/50 dark:border-gray-700/50 ${
+                      errors.email ? "border-red-500" : ""
+                    }`}
                   />
                   {errors.email && (
-                    <Alert variant="destructive" className="bg-red-500/20 border-red-500/50">
-                      <AlertDescription className="text-white">{errors.email}</AlertDescription>
-                    </Alert>
+                    <p className="text-sm text-red-600 dark:text-red-400">{errors.email}</p>
                   )}
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="register-password" className="text-white">{currentText.password}</Label>
+                  <Label htmlFor="register-password" className="text-sm font-medium">
+                    {currentText.password}
+                  </Label>
                   <div className="relative">
                     <Input
                       id="register-password"
@@ -429,27 +437,30 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
                       value={registerData.password}
                       onChange={(e) => setRegisterData(prev => ({ ...prev, password: e.target.value }))}
                       disabled={isLoading}
-                      className={`bg-white/10 border-white/20 text-white placeholder:text-gray-400 pr-10 ${errors.password ? "border-red-500" : ""}`}
+                      className={`bg-white/50 dark:bg-gray-800/50 border-gray-200/50 dark:border-gray-700/50 pr-10 ${
+                        errors.password ? "border-red-500" : ""
+                      }`}
                     />
                     <Button
                       type="button"
                       variant="ghost"
                       size="sm"
-                      className="absolute right-0 top-0 h-full px-3 text-gray-400 hover:text-white"
+                      className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
                       onClick={() => setShowPassword(!showPassword)}
+                      disabled={isLoading}
                     >
                       {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </Button>
                   </div>
                   {errors.password && (
-                    <Alert variant="destructive" className="bg-red-500/20 border-red-500/50">
-                      <AlertDescription className="text-white">{errors.password}</AlertDescription>
-                    </Alert>
+                    <p className="text-sm text-red-600 dark:text-red-400">{errors.password}</p>
                   )}
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="register-confirm-password" className="text-white">{currentText.confirmPassword}</Label>
+                  <Label htmlFor="register-confirm-password" className="text-sm font-medium">
+                    {currentText.confirmPassword}
+                  </Label>
                   <div className="relative">
                     <Input
                       id="register-confirm-password"
@@ -458,55 +469,62 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
                       value={registerData.confirmPassword}
                       onChange={(e) => setRegisterData(prev => ({ ...prev, confirmPassword: e.target.value }))}
                       disabled={isLoading}
-                      className={`bg-white/10 border-white/20 text-white placeholder:text-gray-400 pr-10 ${errors.confirmPassword ? "border-red-500" : ""}`}
+                      className={`bg-white/50 dark:bg-gray-800/50 border-gray-200/50 dark:border-gray-700/50 pr-10 ${
+                        errors.confirmPassword ? "border-red-500" : ""
+                      }`}
                     />
                     <Button
                       type="button"
                       variant="ghost"
                       size="sm"
-                      className="absolute right-0 top-0 h-full px-3 text-gray-400 hover:text-white"
+                      className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      disabled={isLoading}
                     >
                       {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </Button>
                   </div>
                   {errors.confirmPassword && (
-                    <Alert variant="destructive" className="bg-red-500/20 border-red-500/50">
-                      <AlertDescription className="text-white">{errors.confirmPassword}</AlertDescription>
-                    </Alert>
+                    <p className="text-sm text-red-600 dark:text-red-400">{errors.confirmPassword}</p>
                   )}
                 </div>
 
                 <Button 
                   type="submit" 
-                  className="w-full bg-gradient-to-r from-blue-600 to-orange-500 hover:from-blue-700 hover:to-orange-600"
-                  disabled={isLoading}
+                  className="w-full bg-gradient-to-r from-blue-600 to-orange-500 hover:from-blue-700 hover:to-orange-600 text-white font-medium py-2.5 rounded-lg transition-all duration-200"
+                  disabled={isLoading || isSuccess}
                 >
                   {isLoading ? (
                     <>
-                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                      Creating account...
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      {currentText.creatingAccount}
+                    </>
+                  ) : isSuccess ? (
+                    <>
+                      <CheckCircle className="mr-2 h-4 w-4" />
+                      {currentText.success}
                     </>
                   ) : (
                     currentText.registerBtn
                   )}
                 </Button>
-
-                <p className="text-center text-sm text-gray-300">
-                  {currentText.alreadyHaveAccount}{" "}
-                  <button
-                    type="button"
-                    onClick={() => setActiveTab("login")}
-                    className="text-blue-400 hover:underline"
-                  >
-                    {currentText.switchToLogin}
-                  </button>
-                </p>
               </form>
-            </TabsContent>
-          </Tabs>
-        </CardContent>
-      </Card>
+            )}
+
+            {/* Switch Form Link */}
+            <div className="text-center mt-6 pt-4 border-t border-gray-200/20 dark:border-gray-700/20">
+              <button
+                type="button"
+                onClick={() => { setIsLogin(!isLogin); setErrors({}); }}
+                disabled={isLoading}
+                className="text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
+              >
+                {isLogin ? currentText.switchToRegister : currentText.switchToLogin}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

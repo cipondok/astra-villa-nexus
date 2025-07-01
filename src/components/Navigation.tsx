@@ -6,7 +6,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useTheme } from "@/components/ThemeProvider";
 import LanguageToggleSwitch from "./LanguageToggleSwitch";
-import AuthModal from "./AuthModal";
+import EnhancedAuthModal from "./auth/EnhancedAuthModal";
 import { useNavigate, useLocation } from "react-router-dom";
 
 const Navigation = () => {
@@ -330,8 +330,8 @@ const Navigation = () => {
       {/* Spacer to prevent content from hiding behind fixed header */}
       <div className="h-16"></div>
 
-      {/* Auth Modal */}
-      <AuthModal
+      {/* Enhanced Auth Modal */}
+      <EnhancedAuthModal
         isOpen={showAuthModal}
         onClose={() => setShowAuthModal(false)}
         language={language}
