@@ -1,33 +1,16 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { X, MapPin, Bed, Bath, Square, Car, Home, Eye, Share2, Heart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-
-interface Property {
-  id: string;
-  title: string;
-  price: number;
-  location: string;
-  bedrooms: number;
-  bathrooms: number;
-  area_sqm: number;
-  property_type: string;
-  listing_type: string;
-  image_urls?: string[];
-  description?: string;
-  property_features?: any;
-  three_d_model_url?: string;
-  virtual_tour_url?: string;
-}
+import { BaseProperty } from "@/types/property";
 
 interface PropertyDetailModalProps {
-  property: Property;
+  property: BaseProperty;
   isOpen: boolean;
   onClose: () => void;
   language: "en" | "id";
-  onView3D?: (property: Property) => void;
+  onView3D?: (property: BaseProperty) => void;
 }
 
 const PropertyDetailModal = ({ 
@@ -109,18 +92,21 @@ const PropertyDetailModal = ({
   };
 
   const handleImageNavigation = (direction: 'prev' | 'next') => {
-    if (!property.image_urls?.length) return;
+    const imageUrls = property.image_urls || property.images || [];
+    if (!imageUrls.length) return;
     
     if (direction === 'next') {
       setCurrentImageIndex((prev) => 
-        prev === property.image_urls!.length - 1 ? 0 : prev + 1
+        prev === imageUrls.length - 1 ? 0 : prev + 1
       );
     } else {
       setCurrentImageIndex((prev) => 
-        prev === 0 ? property.image_urls!.length - 1 : prev - 1
+        prev === 0 ? imageUrls.length - 1 : prev - 1
       );
     }
   };
+
+  const imageUrls = property.image_urls || property.images || [];
 
   return (
     <div className="fixed inset-0 z-[10001] flex items-center justify-center p-4">
@@ -174,13 +160,13 @@ const PropertyDetailModal = ({
             <div className="space-y-4">
               <div className="relative aspect-[4/3] overflow-hidden rounded-xl">
                 <img
-                  src={property.image_urls?.[currentImageIndex] || "/placeholder.svg"}
+                  src={imageUrls[currentImageIndex] || property.thumbnail_url || "/placeholder.svg"}
                   alt={property.title}
                   className="w-full h-full object-cover"
                 />
                 
                 {/* Image Navigation */}
-                {property.image_urls && property.image_urls.length > 1 && (
+                {imageUrls.length > 1 && (
                   <>
                     <button
                       onClick={() => handleImageNavigation('prev')}
@@ -197,7 +183,7 @@ const PropertyDetailModal = ({
                     
                     {/* Image Indicators */}
                     <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
-                      {property.image_urls.map((_, index) => (
+                      {imageUrls.map((_, index) => (
                         <button
                           key={index}
                           onClick={() => setCurrentImageIndex(index)}
@@ -238,27 +224,33 @@ const PropertyDetailModal = ({
 
               {/* Property Details */}
               <div className="grid grid-cols-2 gap-4">
-                <div className="flex items-center gap-2 p-3 bg-gray-100/50 dark:bg-gray-800/50 rounded-lg">
-                  <Bed className="h-5 w-5 text-primary" />
-                  <div>
-                    <div className="font-semibold">{property.bedrooms}</div>
-                    <div className="text-sm text-muted-foreground">{currentText.bedrooms}</div>
+                {property.bedrooms && (
+                  <div className="flex items-center gap-2 p-3 bg-gray-100/50 dark:bg-gray-800/50 rounded-lg">
+                    <Bed className="h-5 w-5 text-primary" />
+                    <div>
+                      <div className="font-semibold">{property.bedrooms}</div>
+                      <div className="text-sm text-muted-foreground">{currentText.bedrooms}</div>
+                    </div>
                   </div>
-                </div>
-                <div className="flex items-center gap-2 p-3 bg-gray-100/50 dark:bg-gray-800/50 rounded-lg">
-                  <Bath className="h-5 w-5 text-primary" />
-                  <div>
-                    <div className="font-semibold">{property.bathrooms}</div>
-                    <div className="text-sm text-muted-foreground">{currentText.bathrooms}</div>
+                )}
+                {property.bathrooms && (
+                  <div className="flex items-center gap-2 p-3 bg-gray-100/50 dark:bg-gray-800/50 rounded-lg">
+                    <Bath className="h-5 w-5 text-primary" />
+                    <div>
+                      <div className="font-semibold">{property.bathrooms}</div>
+                      <div className="text-sm text-muted-foreground">{currentText.bathrooms}</div>
+                    </div>
                   </div>
-                </div>
-                <div className="flex items-center gap-2 p-3 bg-gray-100/50 dark:bg-gray-800/50 rounded-lg">
-                  <Square className="h-5 w-5 text-primary" />
-                  <div>
-                    <div className="font-semibold">{property.area_sqm} sqm</div>
-                    <div className="text-sm text-muted-foreground">{currentText.area}</div>
+                )}
+                {property.area_sqm && (
+                  <div className="flex items-center gap-2 p-3 bg-gray-100/50 dark:bg-gray-800/50 rounded-lg">
+                    <Square className="h-5 w-5 text-primary" />
+                    <div>
+                      <div className="font-semibold">{property.area_sqm} sqm</div>
+                      <div className="text-sm text-muted-foreground">{currentText.area}</div>
+                    </div>
                   </div>
-                </div>
+                )}
                 {property.property_features?.parking && (
                   <div className="flex items-center gap-2 p-3 bg-gray-100/50 dark:bg-gray-800/50 rounded-lg">
                     <Car className="h-5 w-5 text-primary" />

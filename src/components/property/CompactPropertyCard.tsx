@@ -7,7 +7,7 @@ import { MapPin, Bed, Bath, Square, Eye, Heart, Share2, View as ViewIcon } from 
 import PropertyDetailModal from './PropertyDetailModal';
 import Property3DViewModal from './Property3DViewModal';
 
-interface Property {
+interface CompactProperty {
   id: string;
   title: string;
   price: number;
@@ -27,15 +27,27 @@ interface Property {
 }
 
 interface CompactPropertyCardProps {
-  property: Property;
+  property: CompactProperty;
   language: "en" | "id";
   onView?: (id: string) => void;
+  isSaved?: boolean;
+  onSave?: (id: string) => void;
+  onShare?: (id: string) => void;
+  onView3D?: (property: CompactProperty) => void;
 }
 
-const CompactPropertyCard = ({ property, language, onView }: CompactPropertyCardProps) => {
+const CompactPropertyCard = ({ 
+  property, 
+  language, 
+  onView, 
+  isSaved = false,
+  onSave,
+  onShare,
+  onView3D
+}: CompactPropertyCardProps) => {
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [show3DModal, setShow3DModal] = useState(false);
-  const [isLiked, setIsLiked] = useState(false);
+  const [isLiked, setIsLiked] = useState(isSaved);
 
   const text = {
     en: {
@@ -90,16 +102,24 @@ const CompactPropertyCard = ({ property, language, onView }: CompactPropertyCard
     if (e) e.stopPropagation();
     console.log('Opening 3D modal for property:', property.id);
     setShow3DModal(true);
+    if (onView3D) {
+      onView3D(property);
+    }
   };
 
   const handleShare = (e: React.MouseEvent) => {
     e.stopPropagation();
-    // Share functionality
+    if (onShare) {
+      onShare(property.id);
+    }
   };
 
   const handleLike = (e: React.MouseEvent) => {
     e.stopPropagation();
     setIsLiked(!isLiked);
+    if (onSave) {
+      onSave(property.id);
+    }
   };
 
   return (

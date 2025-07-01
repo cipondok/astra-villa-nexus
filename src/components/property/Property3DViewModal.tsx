@@ -2,16 +2,10 @@
 import { Button } from "@/components/ui/button";
 import { X, Home } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-
-interface Property {
-  id: string;
-  title: string;
-  three_d_model_url?: string;
-  virtual_tour_url?: string;
-}
+import { BaseProperty } from "@/types/property";
 
 interface Property3DViewModalProps {
-  property: Property;
+  property: BaseProperty;
   isOpen: boolean;
   onClose: () => void;
   language: "en" | "id";
