@@ -1,4 +1,3 @@
-
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -6,6 +5,8 @@ import SearchLoadingAnimation from "@/components/SearchLoadingAnimation";
 import PropertyViewer3D from "@/components/PropertyViewer3D";
 import CompactPropertyCard from "@/components/property/CompactPropertyCard";
 import AutoScrollCarousel from "@/components/property/AutoScrollCarousel";
+import MaintenanceMode from './MaintenanceMode';
+import { useSystemControls } from '@/hooks/useSystemControls';
 
 interface PropertyListingsSectionProps {
   language: "en" | "id";
@@ -91,6 +92,18 @@ const PropertyListingsSection = ({
     
     return { sectionTitle, sectionSubtitle };
   }, [hasSearched, searchResults.length, currentText]);
+
+  const { isFeatureEnabled, getFeatureErrorMessage } = useSystemControls();
+
+  // Check if property listings are enabled
+  if (!isFeatureEnabled('property_listings')) {
+    return (
+      <MaintenanceMode
+        feature="Property Listings"
+        message={getFeatureErrorMessage('property_listings')}
+      />
+    );
+  }
 
   // Optimized loading state
   if (isSearching) {

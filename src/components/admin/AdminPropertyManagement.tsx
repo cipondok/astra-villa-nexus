@@ -1,15 +1,16 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Building2, Plus, List, Settings, MapPin } from "lucide-react";
+import { Building2, Plus, List, Settings, MapPin, Activity } from "lucide-react";
 import PropertyListManagement from "./PropertyListManagement";
 import EnhancedPropertyInsertForm from "./EnhancedPropertyInsertForm";
 import PropertyCategoriesManagement from "./PropertyCategoriesManagement";
 import LocationDatabaseManager from "./LocationDatabaseManager";
+import DiagnosticDashboard from "./DiagnosticDashboard";
+import SystemStatusChecker from "./SystemStatusChecker";
 
 const AdminPropertyManagement = () => {
-  const [activeTab, setActiveTab] = useState("properties");
+  const [activeTab, setActiveTab] = useState("diagnostic");
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleAddProperty = () => {
@@ -27,14 +28,21 @@ const AdminPropertyManagement = () => {
         <div>
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Property Management Hub</h2>
           <p className="text-gray-600 dark:text-gray-300 mt-1">
-            Comprehensive property management for administrators
+            Comprehensive property management and system diagnostics
           </p>
         </div>
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
         <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-xl border border-white/20 dark:border-slate-700/50 p-2">
-          <TabsList className="grid w-full grid-cols-4 bg-transparent">
+          <TabsList className="grid w-full grid-cols-6 bg-transparent">
+            <TabsTrigger 
+              value="diagnostic" 
+              className="flex items-center gap-2 data-[state=active]:bg-blue-500 data-[state=active]:text-white dark:data-[state=active]:bg-blue-600"
+            >
+              <Activity className="h-4 w-4" />
+              Diagnostic
+            </TabsTrigger>
             <TabsTrigger 
               value="properties" 
               className="flex items-center gap-2 data-[state=active]:bg-blue-500 data-[state=active]:text-white dark:data-[state=active]:bg-blue-600"
@@ -63,8 +71,23 @@ const AdminPropertyManagement = () => {
               <MapPin className="h-4 w-4" />
               Locations
             </TabsTrigger>
+            <TabsTrigger 
+              value="status" 
+              className="flex items-center gap-2 data-[state=active]:bg-blue-500 data-[state=active]:text-white dark:data-[state=active]:bg-blue-600"
+            >
+              <Activity className="h-4 w-4" />
+              Status
+            </TabsTrigger>
           </TabsList>
         </div>
+
+        <TabsContent value="diagnostic">
+          <DiagnosticDashboard />
+        </TabsContent>
+
+        <TabsContent value="status">
+          <SystemStatusChecker />
+        </TabsContent>
 
         <TabsContent value="properties">
           <PropertyListManagement onAddProperty={handleAddProperty} />
