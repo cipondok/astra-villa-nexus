@@ -43,7 +43,9 @@ import {
   Check,
   RotateCcw,
   Zap,
-  Database
+  Database,
+  Wand2,
+  Lightbulb
 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -98,6 +100,96 @@ interface PreviewSettings {
   buttonStyle: 'rounded' | 'square' | 'pill';
 }
 
+interface DesignTemplate {
+  name: string;
+  description: string;
+  settings: Partial<PreviewSettings>;
+  preview: string;
+}
+
+const designTemplates: DesignTemplate[] = [
+  {
+    name: 'Modern Minimal',
+    description: 'Clean and minimal design with subtle shadows',
+    preview: '🎨',
+    settings: {
+      backgroundColor: '#ffffff',
+      textColor: '#1f2937',
+      accentColor: '#3b82f6',
+      cardBorderRadius: 12,
+      layoutStyle: 'minimal',
+      imageHeight: 180,
+      titleSize: 16,
+      priceSize: 18,
+      buttonStyle: 'rounded'
+    }
+  },
+  {
+    name: 'Luxury Gold',
+    description: 'Premium design with gold accents',
+    preview: '✨',
+    settings: {
+      backgroundColor: '#fefdf8',
+      textColor: '#292524',
+      accentColor: '#f59e0b',
+      cardBorderRadius: 16,
+      layoutStyle: 'spacious',
+      imageHeight: 220,
+      titleSize: 20,
+      priceSize: 22,
+      buttonStyle: 'rounded'
+    }
+  },
+  {
+    name: 'Dark Mode',
+    description: 'Sleek dark theme for modern appeal',
+    preview: '🌙',
+    settings: {
+      backgroundColor: '#1f2937',
+      textColor: '#f9fafb',
+      accentColor: '#10b981',
+      cardBorderRadius: 8,
+      layoutStyle: 'compact',
+      imageHeight: 200,
+      titleSize: 18,
+      priceSize: 20,
+      buttonStyle: 'square'
+    }
+  },
+  {
+    name: 'Warm Tones',
+    description: 'Cozy design with warm colors',
+    preview: '🏠',
+    settings: {
+      backgroundColor: '#fef7ed',
+      textColor: '#7c2d12',
+      accentColor: '#ea580c',
+      cardBorderRadius: 20,
+      layoutStyle: 'spacious',
+      imageHeight: 240,
+      titleSize: 19,
+      priceSize: 21,
+      buttonStyle: 'pill'
+    }
+  },
+  {
+    name: 'Corporate Blue',
+    description: 'Professional blue theme for business',
+    preview: '💼',
+    settings: {
+      backgroundColor: '#f8fafc',
+      textColor: '#1e293b',
+      accentColor: '#0f172a',
+      cardBorderRadius: 6,
+      layoutStyle: 'compact',
+      imageHeight: 160,
+      titleSize: 17,
+      priceSize: 19,
+      buttonStyle: 'square'
+    }
+  }
+];
+
 const EnhancedPropertySmartPreview = () => {
   const { showSuccess, showError } = useAlert();
   const [searchTerm, setSearchTerm] = useState('');
@@ -111,6 +203,8 @@ const EnhancedPropertySmartPreview = () => {
   const [devicePreview, setDevicePreview] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
   const [customCSS, setCustomCSS] = useState<string>('');
   const [isSettingsCopied, setIsSettingsCopied] = useState(false);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [selectedTemplate, setSelectedTemplate] = useState<string>('');
   
   const [previewSettings, setPreviewSettings] = useState<PreviewSettings>({
     showTitle: true,
@@ -185,6 +279,17 @@ const EnhancedPropertySmartPreview = () => {
 
   const updateSetting = (key: keyof PreviewSettings, value: any) => {
     setPreviewSettings(prev => ({ ...prev, [key]: value }));
+    setHasUnsavedChanges(true);
+  };
+
+  const applyTemplate = (templateName: string) => {
+    const template = designTemplates.find(t => t.name === templateName);
+    if (template) {
+      setPreviewSettings(prev => ({ ...prev, ...template.settings }));
+      setSelectedTemplate(templateName);
+      setHasUnsavedChanges(true);
+      showSuccess('Template Applied', `${templateName} template has been applied successfully`);
+    }
   };
 
   const savePreviewSettings = async () => {
@@ -199,6 +304,7 @@ const EnhancedPropertySmartPreview = () => {
         });
 
       if (error) throw error;
+      setHasUnsavedChanges(false);
       showSuccess('Settings Saved', 'Preview settings saved successfully');
     } catch (error) {
       console.error('Error saving settings:', error);
@@ -235,6 +341,8 @@ const EnhancedPropertySmartPreview = () => {
       pricePosition: 'bottom',
       buttonStyle: 'rounded'
     });
+    setSelectedTemplate('');
+    setHasUnsavedChanges(true);
   };
 
   const exportSettingsToJSON = () => {
@@ -253,6 +361,7 @@ const EnhancedPropertySmartPreview = () => {
     try {
       const parsedSettings = JSON.parse(importSettings);
       setPreviewSettings(parsedSettings);
+      setHasUnsavedChanges(true);
       showSuccess('Settings Imported', 'Settings imported successfully');
       setImportSettings('');
     } catch (error) {
@@ -273,6 +382,14 @@ const EnhancedPropertySmartPreview = () => {
 
   const handleRefresh = () => {
     refetch();
+  };
+
+  const getSizeIndicator = (value: number, min: number, max: number) => {
+    const percentage = ((value - min) / (max - min)) * 100;
+    if (percentage < 25) return { color: 'text-green-500', text: 'Small' };
+    if (percentage < 50) return { color: 'text-blue-500', text: 'Medium' };
+    if (percentage < 75) return { color: 'text-orange-500', text: 'Large' };
+    return { color: 'text-red-500', text: 'Extra Large' };
   };
 
   const CustomPropertyCard = ({ property }: { property: PreviewProperty }) => {
@@ -464,12 +581,21 @@ const EnhancedPropertySmartPreview = () => {
             <RefreshCw className="h-4 w-4 mr-2" />
             Refresh
           </Button>
+          <Button 
+            onClick={savePreviewSettings} 
+            disabled={!hasUnsavedChanges}
+            className="bg-green-600 hover:bg-green-700 disabled:opacity-50"
+          >
+            <Save className="h-4 w-4 mr-2" />
+            {hasUnsavedChanges ? 'Save Changes' : 'Saved'}
+          </Button>
         </div>
       </div>
 
       <Tabs defaultValue="preview" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-3 bg-slate-800/50">
+        <TabsList className="grid w-full grid-cols-4 bg-slate-800/50">
           <TabsTrigger value="preview">Live Preview</TabsTrigger>
+          <TabsTrigger value="templates">Templates</TabsTrigger>
           <TabsTrigger value="customize">Customize</TabsTrigger>
           <TabsTrigger value="settings">Advanced Settings</TabsTrigger>
         </TabsList>
@@ -550,6 +676,11 @@ const EnhancedPropertySmartPreview = () => {
                   <Badge variant="outline">
                     {devicePreview.charAt(0).toUpperCase() + devicePreview.slice(1)} View
                   </Badge>
+                  {hasUnsavedChanges && (
+                    <Badge variant="destructive">
+                      Unsaved Changes
+                    </Badge>
+                  )}
                 </div>
               </CardTitle>
             </CardHeader>
@@ -577,6 +708,82 @@ const EnhancedPropertySmartPreview = () => {
                     ))}
                   </div>
                 )}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="templates" className="space-y-4">
+          <Card className="bg-slate-800/50 border-slate-700/50">
+            <CardHeader>
+              <CardTitle className="text-white flex items-center">
+                <Wand2 className="h-5 w-5 mr-2" />
+                Design Templates
+              </CardTitle>
+              <p className="text-gray-400">Choose from pre-designed templates to quickly style your property cards</p>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {designTemplates.map((template) => (
+                  <Card 
+                    key={template.name}
+                    className={`cursor-pointer transition-all hover:shadow-lg ${
+                      selectedTemplate === template.name 
+                        ? 'ring-2 ring-blue-500 bg-slate-700/50' 
+                        : 'bg-slate-700/30 hover:bg-slate-700/50'
+                    }`}
+                    onClick={() => applyTemplate(template.name)}
+                  >
+                    <CardContent className="p-4">
+                      <div className="flex items-center space-x-3 mb-3">
+                        <span className="text-2xl">{template.preview}</span>
+                        <div>
+                          <h3 className="text-white font-medium">{template.name}</h3>
+                          <p className="text-gray-400 text-sm">{template.description}</p>
+                        </div>
+                      </div>
+                      
+                      {/* Mini Preview */}
+                      <div 
+                        className="w-full h-20 rounded-lg border-2 flex items-center justify-center text-xs font-medium"
+                        style={{
+                          backgroundColor: template.settings.backgroundColor,
+                          color: template.settings.textColor,
+                          borderColor: template.settings.accentColor,
+                          borderRadius: `${template.settings.cardBorderRadius || 8}px`
+                        }}
+                      >
+                        <div className="text-center">
+                          <div className="font-semibold">Property Title</div>
+                          <div style={{ color: template.settings.accentColor }}>
+                            $500,000
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <Button 
+                        className="w-full mt-3"
+                        variant={selectedTemplate === template.name ? "default" : "outline"}
+                        size="sm"
+                      >
+                        {selectedTemplate === template.name ? 'Applied' : 'Apply Template'}
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+              
+              <div className="mt-6 p-4 bg-blue-900/20 border border-blue-500/30 rounded-lg">
+                <div className="flex items-start space-x-3">
+                  <Lightbulb className="h-5 w-5 text-blue-400 mt-0.5" />
+                  <div>
+                    <h4 className="text-blue-300 font-medium">Template Tips</h4>
+                    <p className="text-blue-200 text-sm mt-1">
+                      Templates provide a quick starting point. After applying a template, you can further customize 
+                      colors, sizes, and layout in the Customize tab to match your brand perfectly.
+                    </p>
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -707,7 +914,7 @@ const EnhancedPropertySmartPreview = () => {
               </CardContent>
             </Card>
 
-            {/* Size Settings */}
+            {/* Enhanced Size Settings */}
             <Card className="bg-slate-800/50 border-slate-700/50">
               <CardHeader>
                 <CardTitle className="text-white flex items-center">
@@ -717,7 +924,12 @@ const EnhancedPropertySmartPreview = () => {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <Label className="text-white">Image Height: {previewSettings.imageHeight}px</Label>
+                  <div className="flex items-center justify-between">
+                    <Label className="text-white">Image Height: {previewSettings.imageHeight}px</Label>
+                    <Badge variant="outline" className={getSizeIndicator(previewSettings.imageHeight, 100, 400).color}>
+                      {getSizeIndicator(previewSettings.imageHeight, 100, 400).text}
+                    </Badge>
+                  </div>
                   <Slider
                     value={[previewSettings.imageHeight]}
                     onValueChange={([value]) => updateSetting('imageHeight', value)}
@@ -726,10 +938,19 @@ const EnhancedPropertySmartPreview = () => {
                     step={10}
                     className="w-full"
                   />
+                  <div className="flex justify-between text-xs text-gray-400">
+                    <span>100px</span>
+                    <span>400px</span>
+                  </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label className="text-white">Title Size: {previewSettings.titleSize}px</Label>
+                  <div className="flex items-center justify-between">
+                    <Label className="text-white">Title Size: {previewSettings.titleSize}px</Label>
+                    <Badge variant="outline" className={getSizeIndicator(previewSettings.titleSize, 12, 32).color}>
+                      {getSizeIndicator(previewSettings.titleSize, 12, 32).text}
+                    </Badge>
+                  </div>
                   <Slider
                     value={[previewSettings.titleSize]}
                     onValueChange={([value]) => updateSetting('titleSize', value)}
@@ -738,10 +959,19 @@ const EnhancedPropertySmartPreview = () => {
                     step={1}
                     className="w-full"
                   />
+                  <div className="flex justify-between text-xs text-gray-400">
+                    <span>12px</span>
+                    <span>32px</span>
+                  </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label className="text-white">Price Size: {previewSettings.priceSize}px</Label>
+                  <div className="flex items-center justify-between">
+                    <Label className="text-white">Price Size: {previewSettings.priceSize}px</Label>
+                    <Badge variant="outline" className={getSizeIndicator(previewSettings.priceSize, 14, 36).color}>
+                      {getSizeIndicator(previewSettings.priceSize, 14, 36).text}
+                    </Badge>
+                  </div>
                   <Slider
                     value={[previewSettings.priceSize]}
                     onValueChange={([value]) => updateSetting('priceSize', value)}
@@ -750,10 +980,19 @@ const EnhancedPropertySmartPreview = () => {
                     step={1}
                     className="w-full"
                   />
+                  <div className="flex justify-between text-xs text-gray-400">
+                    <span>14px</span>
+                    <span>36px</span>
+                  </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label className="text-white">Card Border Radius: {previewSettings.cardBorderRadius}px</Label>
+                  <div className="flex items-center justify-between">
+                    <Label className="text-white">Card Border Radius: {previewSettings.cardBorderRadius}px</Label>
+                    <Badge variant="outline" className={getSizeIndicator(previewSettings.cardBorderRadius, 0, 24).color}>
+                      {getSizeIndicator(previewSettings.cardBorderRadius, 0, 24).text}
+                    </Badge>
+                  </div>
                   <Slider
                     value={[previewSettings.cardBorderRadius]}
                     onValueChange={([value]) => updateSetting('cardBorderRadius', value)}
@@ -762,11 +1001,15 @@ const EnhancedPropertySmartPreview = () => {
                     step={1}
                     className="w-full"
                   />
+                  <div className="flex justify-between text-xs text-gray-400">
+                    <span>0px (Square)</span>
+                    <span>24px (Very Round)</span>
+                  </div>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Color Settings */}
+            {/* Enhanced Color Settings */}
             <Card className="bg-slate-800/50 border-slate-700/50">
               <CardHeader>
                 <CardTitle className="text-white flex items-center">
@@ -777,32 +1020,93 @@ const EnhancedPropertySmartPreview = () => {
               <CardContent className="space-y-4">
                 <div className="space-y-2">
                   <Label className="text-white">Background Color</Label>
-                  <Input
-                    type="color"
-                    value={previewSettings.backgroundColor}
-                    onChange={(e) => updateSetting('backgroundColor', e.target.value)}
-                    className="w-full h-10"
-                  />
+                  <div className="flex items-center space-x-3">
+                    <Input
+                      type="color"
+                      value={previewSettings.backgroundColor}
+                      onChange={(e) => updateSetting('backgroundColor', e.target.value)}
+                      className="w-16 h-10 p-1 border-2 rounded"
+                    />
+                    <Input
+                      type="text"
+                      value={previewSettings.backgroundColor}
+                      onChange={(e) => updateSetting('backgroundColor', e.target.value)}
+                      className="flex-1 bg-slate-700/50 border-slate-600 text-white"
+                      placeholder="#ffffff"
+                    />
+                  </div>
                 </div>
 
                 <div className="space-y-2">
                   <Label className="text-white">Text Color</Label>
-                  <Input
-                    type="color"
-                    value={previewSettings.textColor}
-                    onChange={(e) => updateSetting('textColor', e.target.value)}
-                    className="w-full h-10"
-                  />
+                  <div className="flex items-center space-x-3">
+                    <Input
+                      type="color"
+                      value={previewSettings.textColor}
+                      onChange={(e) => updateSetting('textColor', e.target.value)}
+                      className="w-16 h-10 p-1 border-2 rounded"
+                    />
+                    <Input
+                      type="text"
+                      value={previewSettings.textColor}
+                      onChange={(e) => updateSetting('textColor', e.target.value)}
+                      className="flex-1 bg-slate-700/50 border-slate-600 text-white"
+                      placeholder="#1f2937"
+                    />
+                  </div>
                 </div>
 
                 <div className="space-y-2">
                   <Label className="text-white">Accent Color</Label>
-                  <Input
-                    type="color"
-                    value={previewSettings.accentColor}
-                    onChange={(e) => updateSetting('accentColor', e.target.value)}
-                    className="w-full h-10"
-                  />
+                  <div className="flex items-center space-x-3">
+                    <Input
+                      type="color"
+                      value={previewSettings.accentColor}
+                      onChange={(e) => updateSetting('accentColor', e.target.value)}
+                      className="w-16 h-10 p-1 border-2 rounded"
+                    />
+                    <Input
+                      type="text"
+                      value={previewSettings.accentColor}
+                      onChange={(e) => updateSetting('accentColor', e.target.value)}
+                      className="flex-1 bg-slate-700/50 border-slate-600 text-white"
+                      placeholder="#3b82f6"
+                    />
+                  </div>
+                </div>
+
+                {/* Color Preset Buttons */}
+                <div className="pt-2">
+                  <Label className="text-white text-sm mb-2 block">Quick Color Presets</Label>
+                  <div className="grid grid-cols-4 gap-2">
+                    {[
+                      { name: 'Default', bg: '#ffffff', text: '#1f2937', accent: '#3b82f6' },
+                      { name: 'Dark', bg: '#1f2937', text: '#f9fafb', accent: '#10b981' },
+                      { name: 'Warm', bg: '#fef7ed', text: '#7c2d12', accent: '#ea580c' },
+                      { name: 'Cool', bg: '#f0f9ff', text: '#0c4a6e', accent: '#0284c7' }
+                    ].map((preset) => (
+                      <Button
+                        key={preset.name}
+                        size="sm"
+                        variant="outline"
+                        className="flex flex-col h-16 p-1"
+                        onClick={() => {
+                          updateSetting('backgroundColor', preset.bg);
+                          updateSetting('textColor', preset.text);
+                          updateSetting('accentColor', preset.accent);
+                        }}
+                      >
+                        <div 
+                          className="w-full h-8 rounded mb-1 border"
+                          style={{ 
+                            backgroundColor: preset.bg,
+                            borderColor: preset.accent
+                          }}
+                        />
+                        <span className="text-xs">{preset.name}</span>
+                      </Button>
+                    ))}
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -825,7 +1129,11 @@ const EnhancedPropertySmartPreview = () => {
                     <h3 className="text-white font-medium">Save Current Settings</h3>
                     <p className="text-gray-400 text-sm">Save these settings as default for the property preview</p>
                   </div>
-                  <Button onClick={savePreviewSettings} className="bg-blue-600 hover:bg-blue-700">
+                  <Button 
+                    onClick={savePreviewSettings} 
+                    disabled={!hasUnsavedChanges}
+                    className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50"
+                  >
                     <Save className="h-4 w-4 mr-2" />
                     Save Settings
                   </Button>
