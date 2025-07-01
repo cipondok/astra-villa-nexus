@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -437,7 +436,7 @@ const DiagnosticDashboard = () => {
                           <div className="flex items-center gap-2">
                             {control.type === 'property' && <Building className="h-4 w-4" />}
                             {control.type === 'vendor' && <Users className="h-4 w-4" />}
-                            {control.type === 'system' && <Settings className="h-4 w-4" />}
+                            {control.type !== 'property' && control.type !== 'vendor' && <Settings className="h-4 w-4" />}
                           </div>
                           <h3 className="font-semibold">{control.name}</h3>
                           <Badge variant={isEnabled ? 'default' : 'destructive'}>
