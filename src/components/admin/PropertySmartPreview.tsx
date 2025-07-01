@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -67,6 +66,10 @@ const PropertySmartPreview = () => {
       return data as PreviewProperty[];
     },
   });
+
+  const handleRefresh = () => {
+    refetch();
+  };
 
   const PropertyCard = ({ property }: { property: PreviewProperty }) => (
     <Card 
@@ -316,7 +319,7 @@ const PropertySmartPreview = () => {
           <p className="text-gray-400">Preview how properties appear to users on the website</p>
         </div>
         <Button
-          onClick={refetch}
+          onClick={handleRefresh}
           variant="outline"
           size="sm"
         >
