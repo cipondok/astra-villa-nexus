@@ -149,7 +149,7 @@ const Navigation = () => {
                 {currentText.home}
               </Button>
 
-              {/* Property Navigation Items with Tooltips */}
+              {/* Property Navigation Items with Tooltips - Positioned Below */}
               {propertyNavItems.map((item) => (
                 <div key={item.path} className="relative group">
                   <Button 
@@ -160,10 +160,10 @@ const Navigation = () => {
                   >
                     <item.icon className="h-4 w-4" />
                   </Button>
-                  {/* Tooltip */}
-                  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap pointer-events-none z-50">
+                  {/* Tooltip - Positioned Below */}
+                  <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-2 py-1 bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap pointer-events-none z-50">
                     {item.label}
-                    <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900 dark:border-t-gray-100"></div>
+                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 border-l-4 border-r-4 border-b-4 border-transparent border-b-gray-900 dark:border-b-gray-100"></div>
                   </div>
                 </div>
               ))}
