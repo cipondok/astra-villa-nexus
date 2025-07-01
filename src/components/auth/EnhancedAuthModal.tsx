@@ -225,9 +225,9 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
 
   return (
     <div className="fixed inset-0 z-[10000] flex items-start justify-end p-3 pt-16">
-      {/* 90% Transparent Backdrop */}
+      {/* 70% Transparent Backdrop */}
       <div 
-        className="absolute inset-0 bg-black/10 backdrop-blur-[2px]"
+        className="absolute inset-0 bg-black/30 backdrop-blur-[2px]"
         onClick={handleClose}
       />
       
