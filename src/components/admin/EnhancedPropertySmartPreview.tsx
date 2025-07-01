@@ -319,21 +319,41 @@ const EnhancedPropertySmartPreview = () => {
 
   const savePreviewSettings = async () => {
     try {
+      console.log('Saving preview settings:', previewSettings);
+      
+      // Convert the settings to a proper JSON structure
+      const settingsToSave = {
+        ...previewSettings,
+        // Ensure all values are serializable
+        cardBorderRadius: Number(previewSettings.cardBorderRadius),
+        cardSpacing: Number(previewSettings.cardSpacing),
+        imageHeight: Number(previewSettings.imageHeight),
+        titleSize: Number(previewSettings.titleSize),
+        priceSize: Number(previewSettings.priceSize)
+      };
+
       const { error } = await supabase
         .from('system_settings')
         .upsert({
           key: 'property_preview_settings',
-          value: previewSettings as any, // Cast to any to satisfy Json type
+          value: settingsToSave,
           category: 'property_display',
           description: 'Enhanced property preview settings'
+        }, {
+          onConflict: 'category,key'
         });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase error:', error);
+        throw error;
+      }
+      
       setHasUnsavedChanges(false);
       showSuccess('Settings Saved', 'Preview settings saved successfully');
+      console.log('Settings saved successfully');
     } catch (error) {
       console.error('Error saving settings:', error);
-      showError('Save Error', 'Failed to save preview settings');
+      showError('Save Error', `Failed to save preview settings: ${error.message || 'Unknown error'}`);
     }
   };
 
