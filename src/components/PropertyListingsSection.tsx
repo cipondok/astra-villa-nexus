@@ -61,6 +61,7 @@ const PropertyListingsSection = ({
   const currentText = text[language];
 
   const toggleFavorite = (propertyId: string) => {
+    console.log('Toggling favorite for property:', propertyId);
     setFavoriteProperties(prev => {
       const newFavorites = new Set(prev);
       if (newFavorites.has(propertyId)) {
@@ -73,10 +74,12 @@ const PropertyListingsSection = ({
   };
 
   const handleViewDetails = (propertyId: string) => {
-    navigate(`/property/${propertyId}`);
+    console.log('Viewing details for property:', propertyId);
+    // Don't navigate, the CompactPropertyCard already handles modals
   };
 
   const handleView3D = (property: any) => {
+    console.log('Opening 3D view for property:', property.id);
     setPropertyFor3DView(property);
   }
 
@@ -105,6 +108,7 @@ const PropertyListingsSection = ({
   }
   
   const displayProperties = hasSearched ? searchResults : fallbackResults;
+  console.log('PropertyListingsSection - displayProperties count:', displayProperties?.length || 0);
 
   return (
     <>
@@ -163,19 +167,22 @@ const PropertyListingsSection = ({
               customProperties={displayProperties}
             />
           ) : (
-            // Use regular grid for less than 4 properties
+            // Use regular grid for less than 4 properties with proper logging
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-3 lg:gap-4">
-              {displayProperties.map((property, index) => (
-                <CompactPropertyCard
-                  key={`${property.id}-${index}`}
-                  property={property}
-                  language={language}
-                  isSaved={favoriteProperties.has(property.id)}
-                  onSave={() => toggleFavorite(property.id)}
-                  onView={() => handleViewDetails(property.id)}
-                  onView3D={handleView3D}
-                />
-              ))}
+              {displayProperties.map((property, index) => {
+                console.log('Rendering CompactPropertyCard for property:', property.id);
+                return (
+                  <CompactPropertyCard
+                    key={`${property.id}-${index}`}
+                    property={property}
+                    language={language}
+                    isSaved={favoriteProperties.has(property.id)}
+                    onSave={() => toggleFavorite(property.id)}
+                    onView={() => handleViewDetails(property.id)}
+                    onView3D={handleView3D}
+                  />
+                );
+              })}
             </div>
           )}
         </div>
