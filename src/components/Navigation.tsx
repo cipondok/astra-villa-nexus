@@ -114,6 +114,9 @@ const Navigation = () => {
     }
   ];
 
+  // Check if user is admin
+  const isAdmin = profile?.role === 'admin' || user?.email === 'mycode103@gmail.com';
+
   return (
     <>
       <nav className={`fixed top-0 left-0 right-0 z-[9999] transition-all duration-300 ${
@@ -177,7 +180,8 @@ const Navigation = () => {
                 {currentText.services}
               </Button>
 
-              {user && (
+              {/* Dashboard link - only show for non-admin users */}
+              {user && !isAdmin && (
                 <Button 
                   variant="ghost" 
                   size="sm"
@@ -188,7 +192,8 @@ const Navigation = () => {
                 </Button>
               )}
 
-              {profile?.role === 'admin' && (
+              {/* Admin Panel - only show for admin users */}
+              {isAdmin && (
                 <Button 
                   variant="ghost" 
                   size="sm"
@@ -284,16 +289,21 @@ const Navigation = () => {
                 <Button variant="ghost" className="w-full justify-start text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800" onClick={() => { navigate('/services'); toggleMenu(); }}>
                   {currentText.services}
                 </Button>
-                {user && (
+                
+                {/* Dashboard link - only show for non-admin users */}
+                {user && !isAdmin && (
                   <Button variant="ghost" className="w-full justify-start text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800" onClick={() => { navigate('/dashboard'); toggleMenu(); }}>
                     {currentText.dashboard}
                   </Button>
                 )}
-                {profile?.role === 'admin' && (
+                
+                {/* Admin Panel - only show for admin users */}
+                {isAdmin && (
                   <Button variant="ghost" className="w-full justify-start text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20" onClick={() => { navigate('/admin'); toggleMenu(); }}>
                     {currentText.adminPanel}
                   </Button>
                 )}
+                
                 <div className="flex items-center justify-between pt-2 border-t border-gray-200/50 dark:border-gray-700/50">
                   <Button
                     variant="ghost"
