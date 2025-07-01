@@ -1,12 +1,12 @@
 
-import React, { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { MapPin, Bed, Bath, Square, Eye } from 'lucide-react';
-import PropertyDetailModal from './PropertyDetailModal';
-import Property3DViewModal from './Property3DViewModal';
-import { BaseProperty } from '@/types/property';
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Heart, MapPin, Bed, Bath, Square, Eye } from "lucide-react";
+import { useState } from "react";
+import PropertyDetailModal from "./PropertyDetailModal";
+import Property3DViewModal from "./Property3DViewModal";
+import { BaseProperty } from "@/types/property";
 
 interface PropertyCardProps {
   id: string;
@@ -52,14 +52,22 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
   };
 
   const handleViewDetails = (e?: React.MouseEvent) => {
-    if (e) e.stopPropagation();
-    console.log('Opening detail modal for property:', id);
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    console.log('PropertyCard - Opening detail modal for property:', id);
+    console.log('PropertyCard - Modal state before:', showDetailModal);
     setShowDetailModal(true);
+    console.log('PropertyCard - Modal state after setting to true');
   };
 
   const handleView3D = (e?: React.MouseEvent) => {
-    if (e) e.stopPropagation();
-    console.log('Opening 3D modal for property:', id);
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    console.log('PropertyCard - Opening 3D modal for property:', id);
     setShow3DModal(true);
   };
 
@@ -81,6 +89,9 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
     three_d_model_url: three_d_model_url,
     virtual_tour_url: virtual_tour_url,
   };
+
+  console.log('PropertyCard - Rendering with showDetailModal:', showDetailModal);
+  console.log('PropertyCard - Rendering with show3DModal:', show3DModal);
 
   return (
     <>
@@ -169,24 +180,35 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
       </Card>
 
       {/* Property Detail Modal */}
-      <PropertyDetailModal
-        property={convertedProperty}
-        isOpen={showDetailModal}
-        onClose={() => setShowDetailModal(false)}
-        language="en"
-        onView3D={() => {
-          setShowDetailModal(false);
-          setShow3DModal(true);
-        }}
-      />
+      {showDetailModal && (
+        <PropertyDetailModal
+          property={convertedProperty}
+          isOpen={showDetailModal}
+          onClose={() => {
+            console.log('PropertyCard - Closing detail modal');
+            setShowDetailModal(false);
+          }}
+          language="en"
+          onView3D={() => {
+            console.log('PropertyCard - Opening 3D from detail modal');
+            setShowDetailModal(false);
+            setShow3DModal(true);
+          }}
+        />
+      )}
 
       {/* 3D View Modal */}
-      <Property3DViewModal
-        property={convertedProperty}
-        isOpen={show3DModal}
-        onClose={() => setShow3DModal(false)}
-        language="en"
-      />
+      {show3DModal && (
+        <Property3DViewModal
+          property={convertedProperty}
+          isOpen={show3DModal}
+          onClose={() => {
+            console.log('PropertyCard - Closing 3D modal');
+            setShow3DModal(false);
+          }}
+          language="en"
+        />
+      )}
     </>
   );
 };

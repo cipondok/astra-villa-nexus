@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -63,7 +64,7 @@ const CompactPropertyCard = ({
       view3D: "Tampilan 3D",
       forSale: "Dijual",
       forRent: "Disewa",
-      bedrooms: "kmr",
+      bedrooms: "kmr", 
       bathrooms: "kmdi"
     }
   };
@@ -90,17 +91,25 @@ const CompactPropertyCard = ({
   };
 
   const handleViewDetails = (e?: React.MouseEvent) => {
-    if (e) e.stopPropagation();
-    console.log('Opening detail modal for property:', property.id);
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    console.log('CompactPropertyCard - Opening detail modal for property:', property.id);
+    console.log('CompactPropertyCard - Modal state before:', showDetailModal);
     setShowDetailModal(true);
+    console.log('CompactPropertyCard - Modal state after setting to true');
     if (onView) {
       onView(property.id);
     }
   };
 
   const handleView3D = (e?: React.MouseEvent) => {
-    if (e) e.stopPropagation();
-    console.log('Opening 3D modal for property:', property.id);
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    console.log('CompactPropertyCard - Opening 3D modal for property:', property.id);
     setShow3DModal(true);
     if (onView3D) {
       onView3D(property);
@@ -108,6 +117,7 @@ const CompactPropertyCard = ({
   };
 
   const handleShare = (e: React.MouseEvent) => {
+    e.preventDefault();
     e.stopPropagation();
     if (onShare) {
       onShare(property.id);
@@ -115,6 +125,7 @@ const CompactPropertyCard = ({
   };
 
   const handleLike = (e: React.MouseEvent) => {
+    e.preventDefault();
     e.stopPropagation();
     setIsLiked(!isLiked);
     if (onSave) {
@@ -129,6 +140,9 @@ const CompactPropertyCard = ({
       ? property.listing_type as 'sale' | 'rent' | 'lease'
       : 'sale'
   };
+
+  console.log('CompactPropertyCard - Rendering with showDetailModal:', showDetailModal);
+  console.log('CompactPropertyCard - Rendering with show3DModal:', show3DModal);
 
   return (
     <>
@@ -262,24 +276,35 @@ const CompactPropertyCard = ({
       </Card>
 
       {/* Property Detail Modal */}
-      <PropertyDetailModal
-        property={convertedProperty}
-        isOpen={showDetailModal}
-        onClose={() => setShowDetailModal(false)}
-        language={language}
-        onView3D={() => {
-          setShowDetailModal(false);
-          setShow3DModal(true);
-        }}
-      />
+      {showDetailModal && (
+        <PropertyDetailModal
+          property={convertedProperty}
+          isOpen={showDetailModal}
+          onClose={() => {
+            console.log('CompactPropertyCard - Closing detail modal');
+            setShowDetailModal(false);
+          }}
+          language={language}
+          onView3D={() => {
+            console.log('CompactPropertyCard - Opening 3D from detail modal');
+            setShowDetailModal(false);
+            setShow3DModal(true);
+          }}
+        />
+      )}
 
       {/* 3D View Modal */}
-      <Property3DViewModal
-        property={convertedProperty}
-        isOpen={show3DModal}
-        onClose={() => setShow3DModal(false)}
-        language={language}
-      />
+      {show3DModal && (
+        <Property3DViewModal
+          property={convertedProperty}
+          isOpen={show3DModal}
+          onClose={() => {
+            console.log('CompactPropertyCard - Closing 3D modal');
+            setShow3DModal(false);
+          }}
+          language={language}
+        />
+      )}
     </>
   );
 };
