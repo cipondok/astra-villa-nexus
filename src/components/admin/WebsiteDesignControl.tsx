@@ -171,39 +171,53 @@ const WebsiteDesignControl = () => {
       console.log('Starting to save website design settings...');
       console.log('Current settings to save:', settings);
       
-      // Create a more reliable save function with proper upsert
-      const retryableQuery = createRetryableQuery(async () => {
-        const settingsEntries = Object.entries(settings);
+      // Use a more direct approach with proper conflict resolution
+      const settingsEntries = Object.entries(settings);
+      
+      for (const [key, value] of settingsEntries) {
+        console.log(`Processing setting: ${key} with value:`, value);
         
-        // Process settings with proper upsert using ON CONFLICT
-        for (const [key, value] of settingsEntries) {
-          console.log(`Saving setting: ${key}`);
-          
-          // Use upsert with ON CONFLICT to handle duplicates
-          const { error } = await supabase
+        try {
+          // First try to update if exists
+          const { data: updateData, error: updateError } = await supabase
             .from('system_settings')
-            .upsert({
-              key,
+            .update({ 
               value: value,
-              category: 'website_design',
-              description: `Website design setting for ${key}`,
-              is_public: true,
               updated_at: new Date().toISOString()
-            }, {
-              onConflict: 'category,key',
-              ignoreDuplicates: false
-            });
-          
-          if (error) {
-            console.error(`Error saving setting ${key}:`, error);
-            throw error;
-          }
-          
-          console.log(`Successfully saved setting: ${key}`);
-        }
-      }, 2);
+            })
+            .eq('key', key)
+            .eq('category', 'website_design')
+            .select();
 
-      await retryableQuery();
+          if (updateError) {
+            console.log(`Update failed for ${key}, trying insert:`, updateError.message);
+            
+            // If update fails (no rows), try insert
+            const { error: insertError } = await supabase
+              .from('system_settings')
+              .insert({
+                key,
+                value: value,
+                category: 'website_design',
+                description: `Website design setting for ${key}`,
+                is_public: true,
+                updated_at: new Date().toISOString()
+              });
+            
+            if (insertError) {
+              console.error(`Insert also failed for ${key}:`, insertError);
+              throw insertError;
+            }
+            
+            console.log(`Successfully inserted setting: ${key}`);
+          } else {
+            console.log(`Successfully updated setting: ${key}`, updateData);
+          }
+        } catch (settingError) {
+          console.error(`Failed to save setting ${key}:`, settingError);
+          throw settingError;
+        }
+      }
       
       // Apply settings to CSS immediately
       applySettingsToCSS();
