@@ -67,6 +67,7 @@ const WebsiteDesignControl = () => {
       for (const [key, value] of settingsEntries) {
         console.log(`Processing setting: ${key} with value:`, value);
         
+        // Use a proper upsert with conflict resolution
         const { error } = await supabase
           .from('system_settings')
           .upsert({
@@ -76,6 +77,9 @@ const WebsiteDesignControl = () => {
             description: `Website design setting for ${key}`,
             is_public: true,
             updated_at: new Date().toISOString()
+          }, {
+            onConflict: 'key,category',
+            ignoreDuplicates: false
           });
         
         if (error) {
