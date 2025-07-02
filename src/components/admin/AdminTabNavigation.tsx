@@ -239,19 +239,35 @@ const AdminTabNavigation = ({ isAdmin }: AdminTabNavigationProps) => {
 
   return (
     <div className="w-full">
-      <TabsList className="grid w-full grid-cols-4 lg:grid-cols-8 xl:grid-cols-12 gap-1 h-auto p-1 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
+      <TabsList className="grid w-full grid-cols-4 lg:grid-cols-8 xl:grid-cols-12 gap-1 h-auto p-2 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 rounded-xl shadow-lg border border-gray-200 dark:border-gray-600">
         {tabs.map((tab) => (
           <TabsTrigger
             key={tab.id}
             value={tab.id}
-            className="flex flex-col items-center gap-1 p-2 text-xs font-medium rounded-md transition-all duration-200 data-[state=active]:bg-blue-500 data-[state=active]:text-white data-[state=active]:shadow-md hover:bg-gray-100 dark:hover:bg-gray-700 relative"
+            className="flex flex-col items-center gap-1 p-3 text-xs font-medium rounded-lg transition-all duration-300 
+              text-gray-700 dark:text-gray-300 
+              hover:bg-white dark:hover:bg-gray-600 
+              hover:text-gray-900 dark:hover:text-white 
+              hover:shadow-md 
+              data-[state=active]:bg-blue-600 dark:data-[state=active]:bg-blue-500 
+              data-[state=active]:text-white dark:data-[state=active]:text-white 
+              data-[state=active]:shadow-lg 
+              data-[state=active]:scale-105 
+              border border-transparent 
+              hover:border-gray-200 dark:hover:border-gray-500 
+              data-[state=active]:border-blue-500 dark:data-[state=active]:border-blue-400
+              relative"
           >
             <tab.icon className="h-4 w-4" />
-            <span className="hidden sm:block">{tab.label}</span>
+            <span className="hidden sm:block font-semibold">{tab.label}</span>
             {tab.badge && (
               <Badge 
                 variant={tab.badge === "New" ? "default" : "secondary"} 
-                className="absolute -top-1 -right-1 text-xs px-1 py-0 h-4 min-w-4"
+                className={`absolute -top-1 -right-1 text-xs px-1 py-0 h-4 min-w-4 ${
+                  tab.badge === "New" 
+                    ? "bg-green-500 text-white dark:bg-green-600" 
+                    : "bg-orange-500 text-white dark:bg-orange-600"
+                }`}
               >
                 {tab.badge}
               </Badge>
