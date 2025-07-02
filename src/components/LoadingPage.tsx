@@ -43,22 +43,19 @@ const LoadingPage: React.FC<LoadingPageProps> = ({
   };
 
   return (
-    <div className="bg-black text-white flex items-center justify-center min-h-screen font-orbitron">
+    <div className="bg-black text-white flex items-center justify-center min-h-screen">
       <div className="flex flex-col items-center space-y-6">
-        <div 
-          className="text-4xl md:text-6xl font-extrabold tracking-widest animate-pulse-glow"
-          style={{
-            textShadow: '0 0 8px #7f5af0, 0 0 12px #2cb67d',
-            animation: 'pulseGlow 2s ease-in-out infinite'
-          }}
-        >
-          ASTRA <span className="text-indigo-400">Villa</span>
+        <div className="text-4xl md:text-6xl font-extrabold tracking-widest">
+          <span className="bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 bg-clip-text text-transparent animate-pulse">
+            ASTRA
+          </span>{' '}
+          <span className="text-indigo-400">Villa</span>
         </div>
         
         <div className="flex space-x-2">
-          <div className="w-3 h-3 bg-indigo-400 rounded-full animate-dot-flash"></div>
-          <div className="w-3 h-3 bg-purple-400 rounded-full animate-dot-flash" style={{ animationDelay: '0.2s' }}></div>
-          <div className="w-3 h-3 bg-cyan-400 rounded-full animate-dot-flash" style={{ animationDelay: '0.4s' }}></div>
+          <div className="w-3 h-3 bg-indigo-400 rounded-full animate-bounce"></div>
+          <div className="w-3 h-3 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+          <div className="w-3 h-3 bg-cyan-400 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
         </div>
         
         <p className="text-sm text-gray-400 tracking-wide">{message}</p>

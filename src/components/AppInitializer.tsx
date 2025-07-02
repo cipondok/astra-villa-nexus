@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import CustomizableLoadingPage from './CustomizableLoadingPage';
+import LoadingPage from './LoadingPage';
 import { useWebsiteSettings } from '@/contexts/WebsiteSettingsContext';
 
 interface AppInitializerProps {
@@ -18,10 +18,10 @@ const AppInitializer: React.FC<AppInitializerProps> = ({ children }) => {
     }
   }, [settingsLoading]);
 
-  // Show loading only while settings are actually loading
+  // Show simple loading while settings are loading
   if (!initializationComplete || settingsLoading) {
     return (
-      <CustomizableLoadingPage
+      <LoadingPage
         message="Loading ASTRA Villa..."
         showConnectionStatus={false}
       />
