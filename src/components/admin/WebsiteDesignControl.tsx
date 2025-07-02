@@ -11,6 +11,7 @@ import { Label } from '@/components/ui/label';
 import { useAlert } from '@/contexts/AlertContext';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { useSupabaseErrorHandler } from '@/hooks/useSupabaseErrorHandler';
 import { 
   Palette, 
   Image, 
@@ -109,6 +110,7 @@ const WebsiteDesignControl = () => {
   const [lastSaveAttempt, setLastSaveAttempt] = useState<Date | null>(null);
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'success' | 'error'>('idle');
   const { showSuccess, showError } = useAlert();
+  const { createRetryableQuery, handleError } = useSupabaseErrorHandler();
 
   useEffect(() => {
     loadSettings();
@@ -118,23 +120,18 @@ const WebsiteDesignControl = () => {
     try {
       console.log('Loading website design settings...');
       
-      // Add timeout to the request
-      const timeoutPromise = new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('Request timeout')), 10000)
-      );
-      
-      const queryPromise = supabase
-        .from('system_settings')
-        .select('*')
-        .eq('category', 'website_design');
-      
-      const { data, error } = await Promise.race([queryPromise, timeoutPromise]) as any;
-      
-      if (error) {
-        console.error('Error loading settings:', error);
-        throw error;
-      }
+      const retryableQuery = createRetryableQuery(async () => {
+        const { data, error } = await supabase
+          .from('system_settings')
+          .select('key, value')
+          .eq('category', 'website_design');
+        
+        if (error) throw error;
+        return data;
+      });
 
+      const data = await retryableQuery();
+      
       console.log('Loaded settings data:', data);
 
       if (data && data.length > 0) {
@@ -159,97 +156,8 @@ const WebsiteDesignControl = () => {
       toast.success('Settings loaded successfully');
     } catch (error) {
       console.error('Error loading settings:', error);
-      if (error.message === 'Request timeout') {
-        toast.error('Connection timeout - please check your network and try again');
-      } else {
-        toast.error('Failed to load website design settings');
-      }
-    }
-  };
-
-  const saveSettingsWithRetry = async (retryCount = 0) => {
-    const maxRetries = 3;
-    
-    try {
-      console.log(`Save attempt ${retryCount + 1}/${maxRetries + 1}`);
-      
-      // Create timeout promise
-      const timeoutPromise = new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('Save operation timeout')), 15000)
-      );
-      
-      // Process settings in smaller chunks
-      const settingsEntries = Object.entries(settings);
-      const chunkSize = 3; // Reduced chunk size
-      
-      const savePromise = (async () => {
-        for (let i = 0; i < settingsEntries.length; i += chunkSize) {
-          const chunk = settingsEntries.slice(i, i + chunkSize);
-          console.log(`Processing chunk ${Math.floor(i/chunkSize) + 1}:`, chunk.map(([key]) => key));
-          
-          // Use upsert for better reliability
-          const upsertData = chunk.map(([key, value]) => ({
-            key,
-            value: value,
-            category: 'website_design',
-            description: `Website design setting for ${key}`,
-            is_public: true
-          }));
-          
-          const { error } = await supabase
-            .from('system_settings')
-            .upsert(upsertData, {
-              onConflict: 'key,category',
-              ignoreDuplicates: false
-            });
-          
-          if (error) {
-            console.error(`Error saving chunk:`, error);
-            throw error;
-          }
-          
-          console.log(`Successfully saved chunk ${Math.floor(i/chunkSize) + 1}`);
-          
-          // Small delay between chunks
-          if (i + chunkSize < settingsEntries.length) {
-            await new Promise(resolve => setTimeout(resolve, 200));
-          }
-        }
-      })();
-      
-      // Race between save operation and timeout
-      await Promise.race([savePromise, timeoutPromise]);
-      
-      // Apply settings to CSS immediately
-      applySettingsToCSS();
-      
-      setHasUnsavedChanges(false);
-      setSaveStatus('success');
-      setLastSaveAttempt(new Date());
-      
-      console.log('All settings saved successfully');
-      toast.success('Website design settings saved successfully!');
-      
-    } catch (error) {
-      console.error(`Save attempt ${retryCount + 1} failed:`, error);
-      
-      if (retryCount < maxRetries) {
-        console.log(`Retrying save operation... (${retryCount + 1}/${maxRetries})`);
-        toast.info(`Save failed, retrying... (${retryCount + 1}/${maxRetries})`);
-        
-        // Wait before retry with exponential backoff
-        await new Promise(resolve => setTimeout(resolve, (retryCount + 1) * 1000));
-        
-        return await saveSettingsWithRetry(retryCount + 1);
-      } else {
-        setSaveStatus('error');
-        const errorMessage = error.message === 'Save operation timeout' 
-          ? 'Save operation timed out. Please check your connection and try again.'
-          : `Failed to save settings: ${error.message}`;
-          
-        toast.error(errorMessage);
-        throw error;
-      }
+      handleError(error);
+      toast.error('Failed to load website design settings');
     }
   };
 
@@ -263,11 +171,69 @@ const WebsiteDesignControl = () => {
       console.log('Starting to save website design settings...');
       console.log('Current settings to save:', settings);
       
-      await saveSettingsWithRetry();
+      // Create a more reliable save function with smaller batches
+      const retryableQuery = createRetryableQuery(async () => {
+        const settingsEntries = Object.entries(settings);
+        
+        // Process one setting at a time for maximum reliability
+        for (const [key, value] of settingsEntries) {
+          console.log(`Saving setting: ${key}`);
+          
+          // Check if setting already exists
+          const { data: existing } = await supabase
+            .from('system_settings')
+            .select('id')
+            .eq('key', key)
+            .eq('category', 'website_design')
+            .maybeSingle();
+
+          if (existing) {
+            // Update existing setting
+            const { error } = await supabase
+              .from('system_settings')
+              .update({ 
+                value: value,
+                updated_at: new Date().toISOString()
+              })
+              .eq('id', existing.id);
+            
+            if (error) throw error;
+          } else {
+            // Insert new setting
+            const { error } = await supabase
+              .from('system_settings')
+              .insert({
+                key,
+                value: value,
+                category: 'website_design',
+                description: `Website design setting for ${key}`,
+                is_public: true
+              });
+            
+            if (error) throw error;
+          }
+          
+          console.log(`Successfully saved setting: ${key}`);
+        }
+      }, 2); // Reduce max retries to 2 for faster feedback
+
+      await retryableQuery();
+      
+      // Apply settings to CSS immediately
+      applySettingsToCSS();
+      
+      setHasUnsavedChanges(false);
+      setSaveStatus('success');
+      setLastSaveAttempt(new Date());
+      
+      console.log('All settings saved successfully');
+      toast.success('Website design settings saved successfully!');
       
     } catch (error) {
-      console.error('Final save error:', error);
-      // Error handling already done in saveSettingsWithRetry
+      console.error('Save error:', error);
+      setSaveStatus('error');
+      const errorInfo = handleError(error);
+      toast.error(`Failed to save settings: ${errorInfo.message}`);
     } finally {
       setLoading(false);
     }
