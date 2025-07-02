@@ -252,9 +252,13 @@ const WebsiteDesignControl = () => {
       root.style.setProperty('--text-light', settings.lightTextColor);
       root.style.setProperty('--accent-light', settings.lightAccentColor);
       
-      // Apply dark mode colors
+      // Apply dark mode colors with transparency for secondary
       root.style.setProperty('--primary-dark', settings.darkPrimaryColor);
-      root.style.setProperty('--secondary-dark', settings.darkSecondaryColor);
+      
+      // Convert dark secondary color to have 70% transparency
+      const darkSecondaryWithTransparency = hexToRgbaString(settings.darkSecondaryColor, 0.7);
+      root.style.setProperty('--secondary-dark', darkSecondaryWithTransparency);
+      
       root.style.setProperty('--background-dark', settings.darkBackgroundColor);
       root.style.setProperty('--surface-dark', settings.darkSurfaceColor);
       root.style.setProperty('--text-dark', settings.darkTextColor);
@@ -274,6 +278,19 @@ const WebsiteDesignControl = () => {
     } catch (error) {
       console.error('Error applying CSS variables:', error);
     }
+  };
+
+  // Helper function to convert hex color to rgba string
+  const hexToRgbaString = (hex: string, alpha: number) => {
+    // Remove # if present
+    const cleanHex = hex.replace('#', '');
+    
+    // Parse RGB values
+    const r = parseInt(cleanHex.substr(0, 2), 16);
+    const g = parseInt(cleanHex.substr(2, 2), 16);
+    const b = parseInt(cleanHex.substr(4, 2), 16);
+    
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
   };
 
   const handleInputChange = (key: string, value: any) => {
@@ -634,11 +651,12 @@ const WebsiteDesignControl = () => {
                   <Moon className="h-5 w-5" />
                   Dark Mode Colors
                 </CardTitle>
+                <CardDescription>Secondary color will be applied with 70% transparency</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 {[
                   { key: 'darkPrimaryColor', label: 'Primary Color' },
-                  { key: 'darkSecondaryColor', label: 'Secondary Color' },
+                  { key: 'darkSecondaryColor', label: 'Secondary Color (70% transparent)' },
                   { key: 'darkBackgroundColor', label: 'Background' },
                   { key: 'darkSurfaceColor', label: 'Surface' },
                   { key: 'darkTextColor', label: 'Text Color' },
