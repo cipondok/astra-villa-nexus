@@ -24,9 +24,9 @@ import {
   Moon,
   Paintbrush,
   FileImage,
-  Header,
   Navigation,
-  Globe
+  Globe,
+  Menu
 } from 'lucide-react';
 
 const WebsiteDesignControl = () => {
@@ -285,7 +285,7 @@ const WebsiteDesignControl = () => {
             Layout
           </TabsTrigger>
           <TabsTrigger value="header" className="flex items-center gap-2">
-            <Header className="h-4 w-4" />
+            <Menu className="h-4 w-4" />
             Header
           </TabsTrigger>
           <TabsTrigger value="footer" className="flex items-center gap-2">
