@@ -27,6 +27,7 @@ import SearchFiltersManagement from './SearchFiltersManagement';
 import BillingManagement from './BillingManagement';
 import SecurityMonitoring from './SecurityMonitoring';
 import SystemReports from './SystemReports';
+import VendorCategoryDashboard from './VendorCategoryDashboard';
 
 interface AdminDashboardContentProps {
   isAdmin: boolean;
@@ -81,7 +82,7 @@ const AdminDashboardContent: React.FC<AdminDashboardContentProps> = ({ isAdmin, 
       </TabsContent>
 
       <TabsContent value="vendor-service-categories">
-        <VendorCategoryManagement />
+        <VendorCategoryDashboard />
       </TabsContent>
 
       <TabsContent value="vendor-services">
