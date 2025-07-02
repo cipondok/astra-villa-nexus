@@ -34,26 +34,22 @@ const AdvancedAdminDashboard = () => {
   const isAdmin = profile?.role === 'admin' || user?.email === 'mycode103@gmail.com';
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-all duration-300">
       {/* Add Navigation from Home Page */}
       <EnhancedNavigation 
         language="en" 
         onLanguageToggle={() => {}} 
       />
       
-      <div className="container mx-auto px-4 py-4 space-y-6 mt-16">
+      <div className="container mx-auto px-4 py-4 space-y-4 mt-16">
         
         {/* Real-time Dashboard Stats */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
-          <RealTimeDashboardStats />
-        </div>
+        <RealTimeDashboardStats />
         
-        <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-6">
-          <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-2">
-            <AdminTabNavigation isAdmin={isAdmin} />
-          </div>
+        <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-4">
+          <AdminTabNavigation isAdmin={isAdmin} />
           
-          <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
+          <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-300 dark:border-gray-700 p-4 shadow-sm">
             <AdminDashboardContent isAdmin={isAdmin} setActiveTab={setActiveTab} />
           </div>
         </Tabs>

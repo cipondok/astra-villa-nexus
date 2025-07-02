@@ -1,170 +1,145 @@
 
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Activity, Users, Building, ShoppingCart, TrendingUp, AlertCircle, CheckCircle, Clock, Zap } from "lucide-react";
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { Users, Building, Activity, ShoppingCart, AlertTriangle, CheckCircle } from 'lucide-react';
 
 const RealTimeDashboardStats = () => {
-  // Fetch real-time stats
   const { data: stats, isLoading } = useQuery({
     queryKey: ['admin-dashboard-stats'],
     queryFn: async () => {
       const [
-        { count: totalUsers },
-        { count: totalProperties },
-        { count: totalVendors },
-        { count: activeBookings }
+        usersResult,
+        propertiesResult,
+        vendorsResult,
+        ordersResult,
+        errorsResult
       ] = await Promise.all([
         supabase.from('profiles').select('*', { count: 'exact', head: true }),
         supabase.from('properties').select('*', { count: 'exact', head: true }),
         supabase.from('vendor_business_profiles').select('*', { count: 'exact', head: true }),
-        supabase.from('vendor_bookings').select('*', { count: 'exact', head: true }).eq('status', 'confirmed')
+        supabase.from('orders').select('*', { count: 'exact', head: true }),
+        supabase.from('system_error_logs').select('*', { count: 'exact', head: true })
       ]);
 
+      // Get active users (users who logged in within last 24 hours)
+      const { data: activeUsers } = await supabase
+        .from('user_activity_logs')
+        .select('user_id')
+        .gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
+        .not('user_id', 'is', null);
+
+      const uniqueActiveUsers = new Set(activeUsers?.map(log => log.user_id) || []).size;
+
       return {
-        totalUsers: totalUsers || 0,
-        totalProperties: totalProperties || 0,
-        totalVendors: totalVendors || 0,
-        activeBookings: activeBookings || 0
+        totalUsers: usersResult.count || 0,
+        activeUsers: uniqueActiveUsers,
+        totalProperties: propertiesResult.count || 0,
+        totalVendors: vendorsResult.count || 0,
+        totalOrders: ordersResult.count || 0,
+        systemErrors: errorsResult.count || 0,
       };
     },
-    refetchInterval: 30000 // Refresh every 30 seconds
+    refetchInterval: 30000, // Refresh every 30 seconds
   });
 
-  const statsCards = [
+  if (isLoading) {
+    return (
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-6">
+        {[...Array(6)].map((_, i) => (
+          <Card key={i} className="animate-pulse">
+            <CardContent className="p-4">
+              <div className="h-4 bg-gray-200 rounded mb-2"></div>
+              <div className="h-6 bg-gray-200 rounded mb-1"></div>
+              <div className="h-3 bg-gray-200 rounded"></div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    );
+  }
+
+  const statCards = [
     {
-      title: "Total Users",
+      title: 'Total Users',
       value: stats?.totalUsers || 0,
       icon: Users,
-      color: "text-blue-600 dark:text-blue-400",
-      bgColor: "bg-blue-50 dark:bg-blue-900/20",
-      borderColor: "border-blue-200 dark:border-blue-700"
+      color: 'text-blue-600',
+      bgColor: 'bg-blue-50',
+      status: 'active'
     },
     {
-      title: "Properties",
+      title: 'Active Users',
+      value: stats?.activeUsers || 0,
+      icon: Activity,
+      color: 'text-green-600',
+      bgColor: 'bg-green-50',
+      status: 'online',
+      subtitle: '24h'
+    },
+    {
+      title: 'Properties',
       value: stats?.totalProperties || 0,
       icon: Building,
-      color: "text-green-600 dark:text-green-400",
-      bgColor: "bg-green-50 dark:bg-green-900/20",
-      borderColor: "border-green-200 dark:border-green-700"
+      color: 'text-indigo-600',
+      bgColor: 'bg-indigo-50',
+      status: 'active'
     },
     {
-      title: "Vendors",
+      title: 'Vendors',
       value: stats?.totalVendors || 0,
-      icon: ShoppingCart,
-      color: "text-purple-600 dark:text-purple-400",
-      bgColor: "bg-purple-50 dark:bg-purple-900/20",
-      borderColor: "border-purple-200 dark:border-purple-700"
+      icon: Users,
+      color: 'text-purple-600',
+      bgColor: 'bg-purple-50',
+      status: 'active'
     },
     {
-      title: "Active Bookings",
-      value: stats?.activeBookings || 0,
-      icon: Activity,
-      color: "text-orange-600 dark:text-orange-400",
-      bgColor: "bg-orange-50 dark:bg-orange-900/20",
-      borderColor: "border-orange-200 dark:border-orange-700"
+      title: 'Orders',
+      value: stats?.totalOrders || 0,
+      icon: ShoppingCart,
+      color: 'text-orange-600',
+      bgColor: 'bg-orange-50',
+      status: 'active'
+    },
+    {
+      title: 'System Health',
+      value: stats?.systemErrors === 0 ? 'Healthy' : 'Issues',
+      icon: stats?.systemErrors === 0 ? CheckCircle : AlertTriangle,
+      color: stats?.systemErrors === 0 ? 'text-green-600' : 'text-red-600',
+      bgColor: stats?.systemErrors === 0 ? 'bg-green-50' : 'bg-red-50',
+      status: stats?.systemErrors === 0 ? 'healthy' : 'warning',
+      subtitle: stats?.systemErrors === 0 ? 'All systems operational' : `${stats?.systemErrors} errors`
     }
   ];
 
   return (
-    <div className="p-6">
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-            <Activity className="h-6 w-6 text-blue-600 dark:text-blue-400" />
-            Admin Dashboard Overview
-          </h2>
-          <p className="text-gray-600 dark:text-gray-400 mt-1">
-            Real-time system statistics and monitoring
-          </p>
-        </div>
-        <Badge variant="outline" className="bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 border-green-200 dark:border-green-700">
-          <CheckCircle className="h-3 w-3 mr-1" />
-          System Online
-        </Badge>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {statsCards.map((stat, index) => {
-          const Icon = stat.icon;
-          return (
-            <Card key={index} className={`${stat.bgColor} ${stat.borderColor} border-2 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1`}>
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">
-                      {stat.title}
-                    </p>
-                    <p className={`text-3xl font-bold ${stat.color}`}>
-                      {isLoading ? (
-                        <span className="animate-pulse">--</span>
-                      ) : (
-                        stat.value.toLocaleString()
-                      )}
-                    </p>
-                  </div>
-                  <div className={`p-3 rounded-full ${stat.bgColor} border ${stat.borderColor}`}>
-                    <Icon className={`h-6 w-6 ${stat.color}`} />
-                  </div>
-                </div>
-                <div className="mt-4 flex items-center">
-                  <TrendingUp className="h-4 w-4 text-green-500 mr-1" />
-                  <span className="text-sm text-green-600 dark:text-green-400 font-medium">
-                    +12% from last month
-                  </span>
-                </div>
-              </CardContent>
-            </Card>
-          );
-        })}
-      </div>
-
-      {/* System Health Indicators */}
-      <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-6">
+      {statCards.map((stat, index) => (
+        <Card key={index} className="relative overflow-hidden">
           <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Zap className="h-5 w-5 text-yellow-600 dark:text-yellow-400" />
-                <span className="font-medium text-gray-900 dark:text-white">Database</span>
+            <div className="flex items-center justify-between mb-2">
+              <div className={`p-2 rounded-lg ${stat.bgColor}`}>
+                <stat.icon className={`h-4 w-4 ${stat.color}`} />
               </div>
-              <Badge className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300">
-                Healthy
+              <Badge 
+                variant={stat.status === 'healthy' ? 'default' : stat.status === 'warning' ? 'destructive' : 'secondary'}
+                className="text-xs"
+              >
+                {stat.status}
               </Badge>
+            </div>
+            <div className="space-y-1">
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{stat.title}</p>
+              <p className="text-lg font-bold text-gray-900 dark:text-white">{stat.value}</p>
+              {stat.subtitle && (
+                <p className="text-xs text-gray-500 dark:text-gray-400">{stat.subtitle}</p>
+              )}
             </div>
           </CardContent>
         </Card>
-
-        <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Activity className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                <span className="font-medium text-gray-900 dark:text-white">API Status</span>
-              </div>
-              <Badge className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300">
-                Online
-              </Badge>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Clock className="h-5 w-5 text-purple-600 dark:text-purple-400" />
-                <span className="font-medium text-gray-900 dark:text-white">Response Time</span>
-              </div>
-              <Badge className="bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300">
-                ~120ms
-              </Badge>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+      ))}
     </div>
   );
 };
