@@ -23,6 +23,7 @@ import ASTRATokenAnalytics from "./ASTRATokenAnalytics";
 import ASTRATokenSettings from "./ASTRATokenSettings";
 import ToolsManagementDashboard from "./ToolsManagementDashboard";
 import SEOSettings from "./SEOSettings";
+import ProjectDiagnosticSystem from "./ProjectDiagnosticSystem";
 
 interface AdminDashboardContentProps {
   activeSection: string;
@@ -34,7 +35,7 @@ const AdminDashboardContent = ({ activeSection }: AdminDashboardContentProps) =>
       case "overview":
         return <AdminOverview />;
       case "diagnostic":
-        return <VendorManagementHub />;
+        return <ProjectDiagnosticSystem />;
       case "user-management":
         return <EnhancedUserManagement />;
       case "property-management-hub":
