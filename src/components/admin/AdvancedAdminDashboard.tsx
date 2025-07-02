@@ -20,7 +20,7 @@ import RealTimeDashboardStats from './RealTimeDashboardStats';
 import { useAuth } from '@/contexts/AuthContext';
 
 const AdvancedAdminDashboard = () => {
-  const [activeTab, setActiveTab] = useState('diagnostic');
+  const [activeTab, setActiveTab] = useState('overview');
   const { user, profile } = useAuth();
 
   console.log('AdvancedAdminDashboard - Current active tab:', activeTab);

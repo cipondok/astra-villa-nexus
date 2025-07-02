@@ -88,17 +88,10 @@ const AdminTabNavigation = ({ isAdmin }: AdminTabNavigationProps) => {
       category: "management" 
     },
     { 
-      id: "property-management", 
+      id: "property-management-hub", 
       label: "Properties", 
       icon: Building, 
-      category: "management" 
-    },
-    { 
-      id: "property-management-hub", 
-      label: "Property Hub", 
-      icon: Building, 
-      category: "management",
-      badge: "Updated"
+      category: "management"
     },
     { 
       id: "customer-service", 
@@ -119,27 +112,9 @@ const AdminTabNavigation = ({ isAdmin }: AdminTabNavigationProps) => {
       category: "service" 
     },
     { 
-      id: "ai-vendor-management", 
-      label: "AI Vendors", 
-      icon: Zap, 
-      category: "vendor" 
-    },
-    { 
-      id: "vendor-management", 
+      id: "vendor-management-hub", 
       label: "Vendors", 
       icon: Users, 
-      category: "vendor" 
-    },
-    { 
-      id: "vendor-service-categories", 
-      label: "Categories", 
-      icon: Settings, 
-      category: "vendor" 
-    },
-    { 
-      id: "vendor-services", 
-      label: "Services", 
-      icon: Star, 
       category: "vendor" 
     },
     { 

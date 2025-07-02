@@ -33,10 +33,10 @@ const AdminDashboardContent = ({ activeSection }: AdminDashboardContentProps) =>
     switch (activeSection) {
       case "overview":
         return <AdminOverview />;
+      case "diagnostic":
+        return <VendorManagementHub />;
       case "user-management":
         return <EnhancedUserManagement />;
-      case "property-management":
-        return <PropertyManagementAdvanced />;
       case "property-management-hub":
         return <PropertyManagementAdvanced />;
       case "system-settings":
@@ -53,10 +53,6 @@ const AdminDashboardContent = ({ activeSection }: AdminDashboardContentProps) =>
         return <ContactManagement />;
       case "vendor-management-hub":
         return <VendorManagementHub />;
-      case "vendor-service-categories":
-        return <VendorCategoryManagement />;
-      case "vendor-inventory":
-        return <VendorInventoryManagement />;
       case "content-management":
         return <ContentManagement />;
       case "search-filters":
