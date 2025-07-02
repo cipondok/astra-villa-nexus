@@ -334,14 +334,15 @@ const EnhancedVendorServiceForm = ({ service, onClose, onSuccess }: ServiceFormP
             </div>
           </div>
 
+          {/* Service Description */}
           <div className="space-y-2">
             <Label htmlFor="service_description">Service Description</Label>
             <Textarea
               id="service_description"
               value={formData.service_description}
               onChange={(e) => setFormData({ ...formData, service_description: e.target.value })}
-              placeholder="Describe your service in detail"
-              rows={4}
+              placeholder="Describe your service in detail..."
+              rows={3}
             />
           </div>
 
@@ -349,33 +350,33 @@ const EnhancedVendorServiceForm = ({ service, onClose, onSuccess }: ServiceFormP
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <Label>Service Items & Pricing</Label>
-              <Button type="button" onClick={addServiceItem} size="sm">
+              <Button type="button" variant="outline" size="sm" onClick={addServiceItem}>
                 <Plus className="h-4 w-4 mr-2" />
                 Add Item
               </Button>
             </div>
-            
+
             {serviceItems.map((item, index) => (
               <Card key={index} className="p-4">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                  <div>
+                  <div className="space-y-2">
                     <Label>Item Name</Label>
                     <Input
                       value={item.item_name}
                       onChange={(e) => updateServiceItem(index, 'item_name', e.target.value)}
-                      placeholder="Item name"
+                      placeholder="Service item name"
                     />
                   </div>
-                  <div>
-                    <Label>Price</Label>
+                  <div className="space-y-2">
+                    <Label>Price (IDR)</Label>
                     <Input
                       type="number"
                       value={item.price}
                       onChange={(e) => updateServiceItem(index, 'price', parseFloat(e.target.value) || 0)}
-                      placeholder="0.00"
+                      placeholder="0"
                     />
                   </div>
-                  <div>
+                  <div className="space-y-2">
                     <Label>Unit</Label>
                     <Select
                       value={item.unit}
@@ -388,8 +389,8 @@ const EnhancedVendorServiceForm = ({ service, onClose, onSuccess }: ServiceFormP
                         <SelectItem value="per_item">Per Item</SelectItem>
                         <SelectItem value="per_hour">Per Hour</SelectItem>
                         <SelectItem value="per_day">Per Day</SelectItem>
-                        <SelectItem value="per_project">Per Project</SelectItem>
-                        <SelectItem value="per_sqft">Per Sq Ft</SelectItem>
+                        <SelectItem value="per_sqm">Per Square Meter</SelectItem>
+                        <SelectItem value="fixed">Fixed Price</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -406,12 +407,12 @@ const EnhancedVendorServiceForm = ({ service, onClose, onSuccess }: ServiceFormP
                     )}
                   </div>
                 </div>
-                <div className="mt-2">
-                  <Label>Description</Label>
+                <div className="mt-4 space-y-2">
+                  <Label>Item Description</Label>
                   <Textarea
                     value={item.item_description}
                     onChange={(e) => updateServiceItem(index, 'item_description', e.target.value)}
-                    placeholder="Item description"
+                    placeholder="Describe this service item..."
                     rows={2}
                   />
                 </div>
@@ -419,57 +420,57 @@ const EnhancedVendorServiceForm = ({ service, onClose, onSuccess }: ServiceFormP
             ))}
           </div>
 
-          {/* Additional Information */}
-          <div className="space-y-4">
+          {/* Additional Details */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <Label htmlFor="requirements">Requirements</Label>
               <Textarea
                 id="requirements"
                 value={formData.requirements}
                 onChange={(e) => setFormData({ ...formData, requirements: e.target.value })}
-                placeholder="Any requirements or preparations needed"
+                placeholder="Any special requirements or preparations needed..."
                 rows={3}
               />
             </div>
-
             <div className="space-y-2">
               <Label htmlFor="cancellation_policy">Cancellation Policy</Label>
               <Textarea
                 id="cancellation_policy"
                 value={formData.cancellation_policy}
                 onChange={(e) => setFormData({ ...formData, cancellation_policy: e.target.value })}
-                placeholder="Your cancellation policy"
+                placeholder="Your cancellation policy..."
                 rows={3}
               />
             </div>
           </div>
 
-          <div className="flex items-center space-x-6">
+          {/* Settings */}
+          <div className="flex items-center space-x-8">
             <div className="flex items-center space-x-2">
               <Switch
                 id="is_active"
                 checked={formData.is_active}
                 onCheckedChange={(checked) => setFormData({ ...formData, is_active: checked })}
               />
-              <Label htmlFor="is_active">Active</Label>
+              <Label htmlFor="is_active">Active Service</Label>
             </div>
-
             <div className="flex items-center space-x-2">
               <Switch
                 id="featured"
                 checked={formData.featured}
                 onCheckedChange={(checked) => setFormData({ ...formData, featured: checked })}
               />
-              <Label htmlFor="featured">Featured</Label>
+              <Label htmlFor="featured">Featured Service</Label>
             </div>
           </div>
 
-          <div className="flex justify-end space-x-2">
-            <Button type="button" variant="outline" onClick={onClose}>
-              Cancel
-            </Button>
+          {/* Submit Button */}
+          <div className="flex gap-4">
             <Button type="submit" disabled={saving}>
               {saving ? "Saving..." : service ? "Update Service" : "Create Service"}
+            </Button>
+            <Button type="button" variant="outline" onClick={onClose}>
+              Cancel
             </Button>
           </div>
         </form>

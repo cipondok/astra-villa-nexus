@@ -7,53 +7,41 @@ import PropertyManagement from './PropertyManagement';
 import VendorManagementHub from './VendorManagementHub';
 import SystemSettings from './SystemSettings';
 import AnalyticsDashboard from './AnalyticsDashboard';
+import LoadingPageCustomization from './LoadingPageCustomization';
+import APIConfiguration from './APIConfiguration';
+import VendorCategoryManagement from './VendorCategoryManagement';
+import VendorServiceCategoryManagement from './VendorServiceCategoryManagement';
+import AdminVendorServiceManagement from './AdminVendorServiceManagement';
+import AIVendorMatching from './AIVendorMatching';
+import EnhancedVendorDirectory from './EnhancedVendorDirectory';
 import DiagnosticDashboard from './DiagnosticDashboard';
-import ASTRATokenAnalytics from './ASTRATokenAnalytics';
-import ASTRATokenSettings from './ASTRATokenSettings';
-import ToolsManagementDashboard from './ToolsManagementDashboard';
+import AstraTokenManagement from './AstraTokenManagement';
+import AstraTokenSettings from './AstraTokenSettings';
+import ToolsManagement from './ToolsManagement';
 import SEOSettings from './SEOSettings';
-import CustomerServiceCenter from './CustomerServiceCenter';
+import WebsiteDesignSettings from './WebsiteDesignSettings';
+import CustomerServiceDashboard from './CustomerServiceDashboard';
 import ContactManagement from './ContactManagement';
 import ChatManagement from './ChatManagement';
-import AIVendorMatching from './AIVendorMatching';
-import VendorManagement from './VendorManagement';
-import VendorServiceCategoryManagement from './VendorServiceCategoryManagement';
-import EnhancedVendorServiceManagement from './EnhancedVendorServiceManagement';
-import AdminKYCManagement from './AdminKYCManagement';
-import AdminMembershipManagement from './AdminMembershipManagement';
+import KYCManagement from './KYCManagement';
+import MembershipManagement from './MembershipManagement';
 import AIBotManagement from './AIBotManagement';
 import FeedbackManagement from './FeedbackManagement';
-import DailyCheckInManagement from './DailyCheckInManagement';
+import DailyCheckinManagement from './DailyCheckinManagement';
 import ErrorManagement from './ErrorManagement';
 import ContentManagement from './ContentManagement';
 import SearchFiltersManagement from './SearchFiltersManagement';
 import BillingManagement from './BillingManagement';
-import DatabaseTableManagement from './DatabaseTableManagement';
+import DatabaseManagement from './DatabaseManagement';
 import SecurityMonitoring from './SecurityMonitoring';
 import SystemReports from './SystemReports';
-import WebsiteDesignControl from './WebsiteDesignControl';
 
 interface AdminDashboardContentProps {
   isAdmin: boolean;
   setActiveTab: (tab: string) => void;
 }
 
-const AdminDashboardContent = ({ isAdmin, setActiveTab }: AdminDashboardContentProps) => {
-  if (!isAdmin) {
-    return (
-      <div className="flex flex-col items-center justify-center py-12 text-center">
-        <div className="max-w-md mx-auto">
-          <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-            Access Restricted
-          </h3>
-          <p className="text-gray-600 dark:text-gray-400 mb-6">
-            You don't have permission to access the admin dashboard. Please contact an administrator for access.
-          </p>
-        </div>
-      </div>
-    );
-  }
-
+const AdminDashboardContent: React.FC<AdminDashboardContentProps> = ({ isAdmin, setActiveTab }) => {
   return (
     <>
       <TabsContent value="overview">
@@ -65,15 +53,15 @@ const AdminDashboardContent = ({ isAdmin, setActiveTab }: AdminDashboardContentP
       </TabsContent>
 
       <TabsContent value="astra-token">
-        <ASTRATokenAnalytics />
+        <AstraTokenManagement />
       </TabsContent>
 
       <TabsContent value="astra-token-settings">
-        <ASTRATokenSettings />
+        <AstraTokenSettings />
       </TabsContent>
 
       <TabsContent value="tools-management">
-        <ToolsManagementDashboard />
+        <ToolsManagement />
       </TabsContent>
 
       <TabsContent value="seo-settings">
@@ -81,7 +69,7 @@ const AdminDashboardContent = ({ isAdmin, setActiveTab }: AdminDashboardContentP
       </TabsContent>
 
       <TabsContent value="website-design">
-        <WebsiteDesignControl />
+        <WebsiteDesignSettings />
       </TabsContent>
 
       <TabsContent value="user-management">
@@ -97,7 +85,7 @@ const AdminDashboardContent = ({ isAdmin, setActiveTab }: AdminDashboardContentP
       </TabsContent>
 
       <TabsContent value="customer-service">
-        <CustomerServiceCenter />
+        <CustomerServiceDashboard />
       </TabsContent>
 
       <TabsContent value="contact-management">
@@ -113,23 +101,23 @@ const AdminDashboardContent = ({ isAdmin, setActiveTab }: AdminDashboardContentP
       </TabsContent>
 
       <TabsContent value="vendor-management">
-        <VendorManagement />
+        <VendorManagementHub />
       </TabsContent>
 
       <TabsContent value="vendor-service-categories">
-        <VendorServiceCategoryManagement />
+        <VendorCategoryManagement />
       </TabsContent>
 
       <TabsContent value="vendor-services">
-        <EnhancedVendorServiceManagement />
+        <AdminVendorServiceManagement />
       </TabsContent>
 
       <TabsContent value="kyc-management">
-        <AdminKYCManagement />
+        <KYCManagement />
       </TabsContent>
 
       <TabsContent value="membership-management">
-        <AdminMembershipManagement />
+        <MembershipManagement />
       </TabsContent>
 
       <TabsContent value="analytics">
@@ -145,7 +133,7 @@ const AdminDashboardContent = ({ isAdmin, setActiveTab }: AdminDashboardContentP
       </TabsContent>
 
       <TabsContent value="daily-checkin">
-        <DailyCheckInManagement />
+        <DailyCheckinManagement />
       </TabsContent>
 
       <TabsContent value="error-management">
@@ -169,7 +157,7 @@ const AdminDashboardContent = ({ isAdmin, setActiveTab }: AdminDashboardContentP
       </TabsContent>
 
       <TabsContent value="database-management">
-        <DatabaseTableManagement />
+        <DatabaseManagement />
       </TabsContent>
 
       <TabsContent value="security-monitoring">
