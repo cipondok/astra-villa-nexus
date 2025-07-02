@@ -33,13 +33,11 @@ export function ThemeProvider({
 
   useEffect(() => {
     const root = window.document.documentElement;
-    const body = window.document.body;
 
     console.log('Theme changed to:', theme);
 
     // Remove all theme classes first
     root.classList.remove("light", "dark");
-    body.classList.remove("dark", "light");
 
     let effectiveTheme = theme;
 
@@ -52,71 +50,61 @@ export function ThemeProvider({
       console.log('System theme detected:', systemTheme);
     }
 
-    // Apply theme classes
+    // Apply theme class
     root.classList.add(effectiveTheme);
-    body.classList.add(effectiveTheme);
 
-    // Enhanced CSS custom properties with better color combinations
-    const updateCSSVariables = () => {
-      if (effectiveTheme === "dark") {
-        // Dark mode - Rich dark theme
-        root.style.setProperty('--background', '2 6 23');           // Deep navy
-        root.style.setProperty('--foreground', '248 250 252');      // Soft white
-        root.style.setProperty('--card', '15 23 42');               // Dark blue-gray
-        root.style.setProperty('--card-foreground', '248 250 252');
-        root.style.setProperty('--primary', '99 102 241');          // Bright indigo
-        root.style.setProperty('--primary-foreground', '255 255 255');
-        root.style.setProperty('--secondary', '30 41 59');          // Dark blue
-        root.style.setProperty('--secondary-foreground', '203 213 225');
-        root.style.setProperty('--muted', '30 41 59');
-        root.style.setProperty('--muted-foreground', '148 163 184');
-        root.style.setProperty('--border', '51 65 85');
-        root.style.setProperty('--input', '30 41 59');
-        root.style.setProperty('--ring', '99 102 241');
-        root.style.setProperty('--destructive', '248 113 113');
-        root.style.setProperty('--destructive-foreground', '255 255 255');
-        root.style.setProperty('--popover', '15 23 42');
-        root.style.setProperty('--popover-foreground', '248 250 252');
-        root.style.setProperty('--accent', '34 197 94');            // Bright green
-        root.style.setProperty('--accent-foreground', '255 255 255');
-      } else {
-        // Light mode - Clean and modern
-        root.style.setProperty('--background', '248 250 252');      // Soft gray-blue
-        root.style.setProperty('--foreground', '15 23 42');         // Rich dark blue-gray
-        root.style.setProperty('--card', '255 255 255');            // Pure white
-        root.style.setProperty('--card-foreground', '15 23 42');
-        root.style.setProperty('--primary', '59 130 246');          // Vibrant blue
-        root.style.setProperty('--primary-foreground', '255 255 255');
-        root.style.setProperty('--secondary', '241 245 249');       // Light blue-gray
-        root.style.setProperty('--secondary-foreground', '51 65 85');
-        root.style.setProperty('--muted', '248 250 252');
-        root.style.setProperty('--muted-foreground', '100 116 139');
-        root.style.setProperty('--border', '226 232 240');
-        root.style.setProperty('--input', '255 255 255');
-        root.style.setProperty('--ring', '59 130 246');
-        root.style.setProperty('--destructive', '239 68 68');
-        root.style.setProperty('--destructive-foreground', '255 255 255');
-        root.style.setProperty('--popover', '255 255 255');
-        root.style.setProperty('--popover-foreground', '15 23 42');
-        root.style.setProperty('--accent', '16 185 129');           // Fresh emerald
-        root.style.setProperty('--accent-foreground', '255 255 255');
-      }
-    };
+    // Apply CSS custom properties based on effective theme
+    if (effectiveTheme === "dark") {
+      // Dark mode - Dark backgrounds, light text
+      root.style.setProperty('--background', '8 10 23');           // Very dark blue
+      root.style.setProperty('--foreground', '248 250 252');       // Light text
+      root.style.setProperty('--card', '15 23 42');                // Dark card
+      root.style.setProperty('--card-foreground', '248 250 252');  // Light card text
+      root.style.setProperty('--primary', '59 130 246');           // Blue primary
+      root.style.setProperty('--primary-foreground', '255 255 255');
+      root.style.setProperty('--secondary', '30 41 59');           // Dark secondary
+      root.style.setProperty('--secondary-foreground', '203 213 225');
+      root.style.setProperty('--muted', '30 41 59');
+      root.style.setProperty('--muted-foreground', '148 163 184');
+      root.style.setProperty('--border', '51 65 85');
+      root.style.setProperty('--input', '30 41 59');
+      root.style.setProperty('--ring', '59 130 246');
+      root.style.setProperty('--destructive', '248 113 113');
+      root.style.setProperty('--destructive-foreground', '255 255 255');
+      root.style.setProperty('--popover', '15 23 42');
+      root.style.setProperty('--popover-foreground', '248 250 252');
+      root.style.setProperty('--accent', '34 197 94');
+      root.style.setProperty('--accent-foreground', '255 255 255');
+    } else {
+      // Light mode - Light backgrounds, dark text
+      root.style.setProperty('--background', '255 255 255');       // Pure white
+      root.style.setProperty('--foreground', '15 23 42');          // Dark text
+      root.style.setProperty('--card', '255 255 255');             // White card
+      root.style.setProperty('--card-foreground', '15 23 42');     // Dark card text
+      root.style.setProperty('--primary', '59 130 246');           // Blue primary
+      root.style.setProperty('--primary-foreground', '255 255 255');
+      root.style.setProperty('--secondary', '241 245 249');        // Light secondary
+      root.style.setProperty('--secondary-foreground', '51 65 85');
+      root.style.setProperty('--muted', '248 250 252');
+      root.style.setProperty('--muted-foreground', '100 116 139');
+      root.style.setProperty('--border', '226 232 240');
+      root.style.setProperty('--input', '255 255 255');
+      root.style.setProperty('--ring', '59 130 246');
+      root.style.setProperty('--destructive', '239 68 68');
+      root.style.setProperty('--destructive-foreground', '255 255 255');
+      root.style.setProperty('--popover', '255 255 255');
+      root.style.setProperty('--popover-foreground', '15 23 42');
+      root.style.setProperty('--accent', '16 185 129');
+      root.style.setProperty('--accent-foreground', '255 255 255');
+    }
 
-    // Apply CSS variables immediately
-    updateCSSVariables();
-
-    // Force a reflow to ensure changes are applied
-    document.body.offsetHeight;
-
-    console.log('Enhanced theme applied:', effectiveTheme);
+    console.log('Theme applied:', effectiveTheme);
 
     // Listen for system theme changes
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
     const handleChange = () => {
       if (theme === "system") {
         console.log('System theme changed, re-applying');
-        // Force re-render
         setTheme("system");
       }
     };
