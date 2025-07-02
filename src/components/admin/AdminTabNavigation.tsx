@@ -1,249 +1,288 @@
 
-import React from 'react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import React from "react";
+import { TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
 import { 
-  Users, 
-  Building2, 
-  Settings, 
+  Activity, 
   BarChart3, 
+  Building, 
+  Settings, 
+  Users, 
   Shield, 
-  MessageSquare, 
   FileText, 
-  AlertTriangle, 
-  Database,
-  Palette,
-  Share2,
+  MessageSquare,
   Wrench,
+  Database,
   Globe,
-  HelpCircle,
-  Calendar,
-  MapPin,
-  CreditCard,
+  Crown,
   Zap,
-  Brain,
-  Star,
   TrendingUp,
-  UserCheck,
-  Home,
-  Search,
-  Filter,
-  Image,
-  Eye,
-  Bell,
-  Package,
-  Mail,
-  PhoneCall,
+  Calendar,
+  Star,
   Headphones,
-  Bug,
-  Activity,
-  Lock,
-  Smartphone,
-  Cloud,
-  Code,
-  Layers,
-  PieChart,
-  LineChart,
-  BarChart,
-  DollarSign,
-  Target,
-  Briefcase,
-  Award,
-  BookOpen,
-  Calculator,
-  Camera,
-  CheckCircle,
-  Circle,
-  Clipboard,
-  Clock,
-  Download,
-  Edit,
-  ExternalLink,
-  Facebook,
-  Github,
-  Instagram,
-  Linkedin,
-  Play,
-  Plus,
-  RefreshCw,
-  Save,
-  Trash2,
-  Twitter,
-  Upload,
-  Youtube,
-  Zap as ZapIcon
-} from 'lucide-react';
+  Paintbrush
+} from "lucide-react";
 
-interface TabNavigationProps {
-  activeTab: string;
-  setActiveTab: (tab: string) => void;
-  alertCounts: Record<string, number>;
+interface AdminTabNavigationProps {
+  isAdmin: boolean;
 }
 
-const AdminTabNavigation: React.FC<TabNavigationProps> = ({
-  activeTab,
-  setActiveTab,
-  alertCounts
-}) => {
-  const getAlertBadge = (tabKey: string) => {
-    const count = alertCounts[tabKey] || 0;
-    return count > 0 ? (
-      <Badge variant="destructive" className="ml-2 h-5 w-5 flex items-center justify-center p-0 text-xs">
-        {count > 99 ? '99+' : count}
-      </Badge>
-    ) : null;
-  };
+interface TabItem {
+  id: string;
+  label: string;
+  icon: React.ComponentType<any>;
+  category: string;
+  badge?: string;
+}
 
-  const tabGroups = [
-    {
-      title: "Dashboard & Analytics",
-      tabs: [
-        { key: 'overview', label: 'Overview', icon: Home },
-        { key: 'analytics', label: 'Analytics', icon: BarChart3 },
-        { key: 'real-time-stats', label: 'Real-Time Stats', icon: Activity },
-        { key: 'business-intelligence', label: 'Business Intelligence', icon: Brain },
-        { key: 'performance-analytics', label: 'Performance Analytics', icon: TrendingUp },
-        { key: 'web-traffic', label: 'Web Traffic', icon: Globe }
-      ]
+const AdminTabNavigation = ({ isAdmin }: AdminTabNavigationProps) => {
+  const adminTabs: TabItem[] = [
+    { 
+      id: "overview", 
+      label: "Overview", 
+      icon: Activity, 
+      category: "dashboard" 
     },
-    {
-      title: "User Management",
-      tabs: [
-        { key: 'users', label: 'User Management', icon: Users },
-        { key: 'user-roles', label: 'User Roles', icon: UserCheck },
-        { key: 'user-levels', label: 'User Levels', icon: Star },
-        { key: 'user-departments', label: 'User Departments', icon: Building2 },
-        { key: 'agent-users', label: 'Agent Users', icon: Briefcase },
-        { key: 'property-owner-users', label: 'Property Owner Users', icon: Home },
-        { key: 'vendor-users', label: 'Vendor Users', icon: Wrench },
-        { key: 'database-users', label: 'Database Users', icon: Database }
-      ]
+    { 
+      id: "diagnostic", 
+      label: "Diagnostic", 
+      icon: Wrench, 
+      category: "dashboard",
+      badge: "New"
     },
-    {
-      title: "Property Management",
-      tabs: [
-        { key: 'properties', label: 'Properties', icon: Building2 },
-        { key: 'property-management', label: 'Property Management', icon: Home },
-        { key: 'property-categories', label: 'Property Categories', icon: Layers },
-        { key: 'property-filters', label: 'Property Filters', icon: Filter },
-        { key: 'property-display', label: 'Property Display', icon: Eye },
-        { key: 'property-3d', label: '3D View Settings', icon: Camera },
-        { key: 'property-slideshow', label: 'Slideshow Settings', icon: Image },
-        { key: 'property-watermark', label: 'Watermark Settings', icon: Shield },
-        { key: 'search-filters', label: 'Search Filters', icon: Search }
-      ]
+    { 
+      id: "astra-token", 
+      label: "ASTRA Token", 
+      icon: Crown, 
+      category: "analytics" 
     },
-    {
-      title: "Vendor Management",
-      tabs: [
-        { key: 'vendors', label: 'Vendor Management', icon: Wrench },
-        { key: 'vendor-services', label: 'Vendor Services', icon: Settings },
-        { key: 'vendor-categories', label: 'Service Categories', icon: Package },
-        { key: 'vendor-performance', label: 'Vendor Performance', icon: BarChart },
-        { key: 'vendor-verification', label: 'Vendor Verification', icon: CheckCircle },
-        { key: 'vendor-fraud', label: 'Fraud Detection', icon: Shield },
-        { key: 'vendor-matching', label: 'AI Matching', icon: Brain }
-      ]
+    { 
+      id: "astra-token-settings", 
+      label: "ASTRA Settings", 
+      icon: Zap, 
+      category: "settings" 
     },
-    {
-      title: "Communication & Support",
-      tabs: [
-        { key: 'communications', label: 'Communications', icon: MessageSquare },
-        { key: 'chat-management', label: 'Chat Management', icon: MessageSquare },
-        { key: 'live-chat', label: 'Live Chat', icon: PhoneCall },
-        { key: 'customer-service', label: 'Customer Service', icon: Headphones },
-        { key: 'help-desk', label: 'Help Desk', icon: HelpCircle },
-        { key: 'contact-management', label: 'Contact Management', icon: Mail },
-        { key: 'social-media', label: 'Social Media', icon: Share2 }
-      ]
+    { 
+      id: "tools-management", 
+      label: "Tools", 
+      icon: Settings, 
+      category: "management" 
     },
-    {
-      title: "Content & Design",
-      tabs: [
-        { key: 'content', label: 'Content Management', icon: FileText },
-        { key: 'website-design', label: 'Website Design', icon: Palette },
-        { key: 'seo-management', label: 'SEO Management', icon: Search },
-        { key: 'loading-page', label: 'Loading Page', icon: RefreshCw }
-      ]
+    { 
+      id: "seo-settings", 
+      label: "SEO", 
+      icon: Globe, 
+      category: "settings" 
     },
-    {
-      title: "System & Security",
-      tabs: [
-        { key: 'system-settings', label: 'System Settings', icon: Settings },
-        { key: 'security', label: 'Security', icon: Shield },
-        { key: 'security-monitoring', label: 'Security Monitoring', icon: Eye },
-        { key: 'system-monitor', label: 'System Monitor', icon: Activity },
-        { key: 'database-management', label: 'Database Management', icon: Database },
-        { key: 'maintenance', label: 'Maintenance', icon: Wrench },
-        { key: 'diagnostics', label: 'Diagnostics', icon: Bug },
-        { key: 'system-health', label: 'System Health', icon: Heart },
-        { key: 'alerts', label: 'Alert Management', icon: Bell },
-        { key: 'error-management', label: 'Error Management', icon: AlertTriangle },
-        { key: 'system-reports', label: 'System Reports', icon: FileText }
-      ]
+    { 
+      id: "website-design", 
+      label: "Design", 
+      icon: Paintbrush, 
+      category: "settings",
+      badge: "New"
     },
-    {
-      title: "AI & Automation",
-      tabs: [
-        { key: 'ai-management', label: 'AI Bot Management', icon: Brain },
-        { key: 'ai-insights', label: 'AI Insights', icon: Zap },
-        { key: 'automation', label: 'Automation Features', icon: ZapIcon }
-      ]
+    { 
+      id: "user-management", 
+      label: "Users", 
+      icon: Users, 
+      category: "management" 
     },
-    {
-      title: "Financial & Billing",
-      tabs: [
-        { key: 'billing', label: 'Billing Management', icon: CreditCard },
-        { key: 'membership-management', label: 'Membership Management', icon: Award },
-        { key: 'astra-token', label: 'ASTRA Token', icon: DollarSign },
-        { key: 'astra-analytics', label: 'ASTRA Analytics', icon: PieChart }
-      ]
+    { 
+      id: "property-management", 
+      label: "Properties", 
+      icon: Building, 
+      category: "management" 
     },
-    {
-      title: "Tools & Integrations",
-      tabs: [
-        { key: 'tools-management', label: 'Tools Management', icon: Wrench },
-        { key: 'api-config', label: 'API Configuration', icon: Code },
-        { key: 'smtp-settings', label: 'SMTP Settings', icon: Mail },
-        { key: 'office-management', label: 'Office Management', icon: Building2 },
-        { key: 'location-database', label: 'Location Database', icon: MapPin },
-        { key: 'market-trends', label: 'Market Trends', icon: TrendingUp },
-        { key: 'trending-topics', label: 'Trending Topics', icon: Star },
-        { key: 'major-topics', label: 'Major Topics Dashboard', icon: BookOpen }
-      ]
+    { 
+      id: "property-management-hub", 
+      label: "Property Hub", 
+      icon: Building, 
+      category: "management",
+      badge: "Updated"
+    },
+    { 
+      id: "customer-service", 
+      label: "Support", 
+      icon: Headphones, 
+      category: "service" 
+    },
+    { 
+      id: "contact-management", 
+      label: "Contacts", 
+      icon: MessageSquare, 
+      category: "service" 
+    },
+    { 
+      id: "chat-management", 
+      label: "Chats", 
+      icon: MessageSquare, 
+      category: "service" 
+    },
+    { 
+      id: "ai-vendor-management", 
+      label: "AI Vendors", 
+      icon: Zap, 
+      category: "vendor" 
+    },
+    { 
+      id: "vendor-management", 
+      label: "Vendors", 
+      icon: Users, 
+      category: "vendor" 
+    },
+    { 
+      id: "vendor-service-categories", 
+      label: "Categories", 
+      icon: Settings, 
+      category: "vendor" 
+    },
+    { 
+      id: "vendor-services", 
+      label: "Services", 
+      icon: Star, 
+      category: "vendor" 
+    },
+    { 
+      id: "kyc-management", 
+      label: "KYC", 
+      icon: Shield, 
+      category: "compliance" 
+    },
+    { 
+      id: "membership-management", 
+      label: "Membership", 
+      icon: Crown, 
+      category: "management" 
+    },
+    { 
+      id: "analytics", 
+      label: "Analytics", 
+      icon: BarChart3, 
+      category: "analytics" 
+    },
+    { 
+      id: "ai-bot-management", 
+      label: "AI Bot", 
+      icon: Zap, 
+      category: "ai" 
+    },
+    { 
+      id: "feedback-management", 
+      label: "Feedback", 
+      icon: MessageSquare, 
+      category: "service" 
+    },
+    { 
+      id: "daily-checkin", 
+      label: "Check-in", 
+      icon: Calendar, 
+      category: "management" 
+    },
+    { 
+      id: "error-management", 
+      label: "Errors", 
+      icon: Shield, 
+      category: "technical" 
+    },
+    { 
+      id: "content-management", 
+      label: "Content", 
+      icon: FileText, 
+      category: "management" 
+    },
+    { 
+      id: "search-filters", 
+      label: "Filters", 
+      icon: Settings, 
+      category: "settings" 
+    },
+    { 
+      id: "system-settings", 
+      label: "System", 
+      icon: Settings, 
+      category: "settings" 
+    },
+    { 
+      id: "billing-management", 
+      label: "Billing", 
+      icon: TrendingUp, 
+      category: "finance" 
+    },
+    { 
+      id: "database-management", 
+      label: "Database", 
+      icon: Database, 
+      category: "technical" 
+    },
+    { 
+      id: "security-monitoring", 
+      label: "Security", 
+      icon: Shield, 
+      category: "technical" 
+    },
+    { 
+      id: "system-reports", 
+      label: "Reports", 
+      icon: FileText, 
+      category: "analytics" 
     }
   ];
 
+  const nonAdminTabs: TabItem[] = [
+    { 
+      id: "overview", 
+      label: "Overview", 
+      icon: Activity, 
+      category: "dashboard" 
+    },
+    { 
+      id: "support", 
+      label: "Support", 
+      icon: Headphones, 
+      category: "service" 
+    }
+  ];
+
+  const tabs = isAdmin ? adminTabs : nonAdminTabs;
+
   return (
-    <div className="space-y-6">
-      {tabGroups.map((group) => (
-        <div key={group.title} className="space-y-2">
-          <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider px-3">
-            {group.title}
-          </h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
-            {group.tabs.map((tab) => {
-              const Icon = tab.icon;
-              return (
-                <Button
-                  key={tab.key}
-                  variant={activeTab === tab.key ? "default" : "ghost"}
-                  className={`justify-start h-auto p-3 text-left ${
-                    activeTab === tab.key 
-                      ? "bg-blue-600 text-white shadow-lg" 
-                      : "hover:bg-gray-100 dark:hover:bg-gray-800"
-                  }`}
-                  onClick={() => setActiveTab(tab.key)}
-                >
-                  <Icon className="h-4 w-4 mr-2 flex-shrink-0" />
-                  <span className="truncate">{tab.label}</span>
-                  {getAlertBadge(tab.key)}
-                </Button>
-              );
-            })}
-          </div>
-        </div>
-      ))}
+    <div className="w-full">
+      <TabsList className="grid w-full grid-cols-4 lg:grid-cols-8 xl:grid-cols-12 gap-1 h-auto p-2 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 rounded-xl shadow-lg border border-gray-200 dark:border-gray-600">
+        {tabs.map((tab) => (
+          <TabsTrigger
+            key={tab.id}
+            value={tab.id}
+            className="flex flex-col items-center gap-1 p-3 text-xs font-medium rounded-lg transition-all duration-300 
+              text-gray-700 dark:text-gray-300 
+              hover:bg-white dark:hover:bg-gray-600 
+              hover:text-gray-900 dark:hover:text-white 
+              hover:shadow-md 
+              data-[state=active]:bg-blue-600 dark:data-[state=active]:bg-blue-500 
+              data-[state=active]:text-white dark:data-[state=active]:text-white 
+              data-[state=active]:shadow-lg 
+              data-[state=active]:scale-105 
+              border border-transparent 
+              hover:border-gray-200 dark:hover:border-gray-500 
+              data-[state=active]:border-blue-500 dark:data-[state=active]:border-blue-400
+              relative"
+          >
+            <tab.icon className="h-4 w-4" />
+            <span className="hidden sm:block font-semibold">{tab.label}</span>
+            {tab.badge && (
+              <Badge 
+                variant={tab.badge === "New" ? "default" : "secondary"} 
+                className={`absolute -top-1 -right-1 text-xs px-1 py-0 h-4 min-w-4 ${
+                  tab.badge === "New" 
+                    ? "bg-green-500 text-white dark:bg-green-600" 
+                    : "bg-orange-500 text-white dark:bg-orange-600"
+                }`}
+              >
+                {tab.badge}
+              </Badge>
+            )}
+          </TabsTrigger>
+        ))}
+      </TabsList>
     </div>
   );
 };
