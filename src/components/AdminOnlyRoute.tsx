@@ -4,9 +4,9 @@ import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 
 const AdminOnlyRoute: React.FC = () => {
-  const { user, profile, isLoading } = useAuth();
+  const { user, profile, loading } = useAuth();
 
-  if (isLoading) {
+  if (loading) {
     return <div>Loading...</div>;
   }
 
