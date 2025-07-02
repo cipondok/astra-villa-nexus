@@ -13,11 +13,31 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { supabase } from "@/integrations/supabase/client";
 import { useAlert } from "@/contexts/AlertContext";
-import { List, Plus, Edit, Trash2, FolderTree } from "lucide-react";
+import { List, Plus, Edit, Trash2 } from "lucide-react";
+
+interface MainCategory {
+  id: string;
+  name: string;
+  icon?: string;
+}
+
+interface Subcategory {
+  id: string;
+  name: string;
+  slug?: string;
+  description?: string;
+  icon?: string;
+  main_category_id?: string;
+  display_order: number;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+  vendor_main_categories?: MainCategory;
+}
 
 const VendorSubcategoryManagement = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [editingSubcategory, setEditingSubcategory] = useState<any>(null);
+  const [editingSubcategory, setEditingSubcategory] = useState<Subcategory | null>(null);
   const [formData, setFormData] = useState({
     name: "",
     slug: "",
@@ -42,7 +62,7 @@ const VendorSubcategoryManagement = () => {
         .order('display_order', { ascending: true });
       
       if (error) throw error;
-      return data;
+      return data as MainCategory[];
     }
   });
 
@@ -62,7 +82,7 @@ const VendorSubcategoryManagement = () => {
         .order('display_order', { ascending: true });
       
       if (error) throw error;
-      return data;
+      return data as Subcategory[];
     }
   });
 
@@ -156,7 +176,7 @@ const VendorSubcategoryManagement = () => {
     }
   };
 
-  const handleEdit = (subcategory: any) => {
+  const handleEdit = (subcategory: Subcategory) => {
     setEditingSubcategory(subcategory);
     setFormData({
       name: subcategory.name,
@@ -337,7 +357,7 @@ const VendorSubcategoryManagement = () => {
                       <span className="text-lg">{subcategory.icon}</span>
                     </TableCell>
                     <TableCell className="font-medium">{subcategory.name}</TableCell>
-                    <TableCell className="text-sm text-muted-foreground">{subcategory.slug}</TableCell>
+                    <TableCell className="text-sm text-muted-foreground">{subcategory.slug || 'No slug'}</TableCell>
                     <TableCell className="max-w-xs truncate">
                       {subcategory.description || 'No description'}
                     </TableCell>

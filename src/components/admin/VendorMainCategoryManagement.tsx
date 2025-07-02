@@ -12,11 +12,23 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { supabase } from "@/integrations/supabase/client";
 import { useAlert } from "@/contexts/AlertContext";
-import { FolderTree, Plus, Edit, Trash2, MoveUp, MoveDown } from "lucide-react";
+import { FolderTree, Plus, Edit, Trash2 } from "lucide-react";
+
+interface MainCategory {
+  id: string;
+  name: string;
+  slug?: string;
+  description?: string;
+  icon?: string;
+  display_order: number;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
 
 const VendorMainCategoryManagement = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [editingCategory, setEditingCategory] = useState<any>(null);
+  const [editingCategory, setEditingCategory] = useState<MainCategory | null>(null);
   const [formData, setFormData] = useState({
     name: "",
     slug: "",
@@ -39,7 +51,7 @@ const VendorMainCategoryManagement = () => {
         .order('display_order', { ascending: true });
       
       if (error) throw error;
-      return data;
+      return data as MainCategory[];
     }
   });
 
@@ -127,7 +139,7 @@ const VendorMainCategoryManagement = () => {
     }
   };
 
-  const handleEdit = (category: any) => {
+  const handleEdit = (category: MainCategory) => {
     setEditingCategory(category);
     setFormData({
       name: category.name,
@@ -281,7 +293,7 @@ const VendorMainCategoryManagement = () => {
                       <span className="text-lg">{category.icon}</span>
                     </TableCell>
                     <TableCell className="font-medium">{category.name}</TableCell>
-                    <TableCell className="text-sm text-muted-foreground">{category.slug}</TableCell>
+                    <TableCell className="text-sm text-muted-foreground">{category.slug || 'No slug'}</TableCell>
                     <TableCell className="max-w-xs truncate">
                       {category.description || 'No description'}
                     </TableCell>

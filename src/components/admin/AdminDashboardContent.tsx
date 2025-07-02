@@ -15,24 +15,16 @@ import AdminVendorServiceManagement from './AdminVendorServiceManagement';
 import AIVendorMatching from './AIVendorMatching';
 import EnhancedVendorDirectory from './EnhancedVendorDirectory';
 import DiagnosticDashboard from './DiagnosticDashboard';
-import AstraTokenManagement from './AstraTokenManagement';
-import AstraTokenSettings from './AstraTokenSettings';
-import ToolsManagement from './ToolsManagement';
 import SEOSettings from './SEOSettings';
 import WebsiteDesignSettings from './WebsiteDesignSettings';
-import CustomerServiceDashboard from './CustomerServiceDashboard';
 import ContactManagement from './ContactManagement';
 import ChatManagement from './ChatManagement';
-import KYCManagement from './KYCManagement';
-import MembershipManagement from './MembershipManagement';
 import AIBotManagement from './AIBotManagement';
 import FeedbackManagement from './FeedbackManagement';
-import DailyCheckinManagement from './DailyCheckinManagement';
 import ErrorManagement from './ErrorManagement';
 import ContentManagement from './ContentManagement';
 import SearchFiltersManagement from './SearchFiltersManagement';
 import BillingManagement from './BillingManagement';
-import DatabaseManagement from './DatabaseManagement';
 import SecurityMonitoring from './SecurityMonitoring';
 import SystemReports from './SystemReports';
 
@@ -50,18 +42,6 @@ const AdminDashboardContent: React.FC<AdminDashboardContentProps> = ({ isAdmin, 
 
       <TabsContent value="diagnostic">
         <DiagnosticDashboard />
-      </TabsContent>
-
-      <TabsContent value="astra-token">
-        <AstraTokenManagement />
-      </TabsContent>
-
-      <TabsContent value="astra-token-settings">
-        <AstraTokenSettings />
-      </TabsContent>
-
-      <TabsContent value="tools-management">
-        <ToolsManagement />
       </TabsContent>
 
       <TabsContent value="seo-settings">
@@ -82,10 +62,6 @@ const AdminDashboardContent: React.FC<AdminDashboardContentProps> = ({ isAdmin, 
 
       <TabsContent value="property-management-hub">
         <PropertyManagement />
-      </TabsContent>
-
-      <TabsContent value="customer-service">
-        <CustomerServiceDashboard />
       </TabsContent>
 
       <TabsContent value="contact-management">
@@ -112,14 +88,6 @@ const AdminDashboardContent: React.FC<AdminDashboardContentProps> = ({ isAdmin, 
         <AdminVendorServiceManagement />
       </TabsContent>
 
-      <TabsContent value="kyc-management">
-        <KYCManagement />
-      </TabsContent>
-
-      <TabsContent value="membership-management">
-        <MembershipManagement />
-      </TabsContent>
-
       <TabsContent value="analytics">
         <AnalyticsDashboard />
       </TabsContent>
@@ -130,10 +98,6 @@ const AdminDashboardContent: React.FC<AdminDashboardContentProps> = ({ isAdmin, 
 
       <TabsContent value="feedback-management">
         <FeedbackManagement />
-      </TabsContent>
-
-      <TabsContent value="daily-checkin">
-        <DailyCheckinManagement />
       </TabsContent>
 
       <TabsContent value="error-management">
@@ -154,10 +118,6 @@ const AdminDashboardContent: React.FC<AdminDashboardContentProps> = ({ isAdmin, 
 
       <TabsContent value="billing-management">
         <BillingManagement />
-      </TabsContent>
-
-      <TabsContent value="database-management">
-        <DatabaseManagement />
       </TabsContent>
 
       <TabsContent value="security-monitoring">
