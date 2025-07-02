@@ -19,7 +19,8 @@ import {
   TrendingUp,
   Calendar,
   Star,
-  Headphones
+  Headphones,
+  Paintbrush
 } from "lucide-react";
 
 interface AdminTabNavigationProps {
@@ -72,6 +73,13 @@ const AdminTabNavigation = ({ isAdmin }: AdminTabNavigationProps) => {
       label: "SEO", 
       icon: Globe, 
       category: "settings" 
+    },
+    { 
+      id: "website-design", 
+      label: "Design", 
+      icon: Paintbrush, 
+      category: "settings",
+      badge: "New"
     },
     { 
       id: "user-management", 
