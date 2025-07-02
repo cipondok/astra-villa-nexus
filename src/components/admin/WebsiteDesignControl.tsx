@@ -10,6 +10,7 @@ import { Slider } from '@/components/ui/slider';
 import { Label } from '@/components/ui/label';
 import { useAlert } from '@/contexts/AlertContext';
 import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 import { 
   Palette, 
   Image, 
@@ -26,7 +27,9 @@ import {
   FileImage,
   Navigation,
   Globe,
-  Menu
+  Menu,
+  Save,
+  CheckCircle
 } from 'lucide-react';
 
 const WebsiteDesignControl = () => {
@@ -100,6 +103,7 @@ const WebsiteDesignControl = () => {
 
   const [loading, setLoading] = useState(false);
   const [previewMode, setPreviewMode] = useState('desktop');
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const { showSuccess, showError } = useAlert();
 
   useEffect(() => {
@@ -108,16 +112,23 @@ const WebsiteDesignControl = () => {
 
   const loadSettings = async () => {
     try {
+      console.log('Loading website design settings...');
       const { data, error } = await supabase
         .from('system_settings')
         .select('*')
         .eq('category', 'website_design');
       
-      if (error) throw error;
+      if (error) {
+        console.error('Error loading settings:', error);
+        throw error;
+      }
+
+      console.log('Loaded settings data:', data);
 
       if (data && data.length > 0) {
         const settingsObj = data.reduce((acc, setting) => {
           let value = setting.value;
+          // Handle different value types
           if (typeof value === 'string') {
             try {
               value = JSON.parse(value);
@@ -128,106 +139,228 @@ const WebsiteDesignControl = () => {
           acc[setting.key] = value;
           return acc;
         }, {} as any);
+        
+        console.log('Processed settings object:', settingsObj);
         setSettings(prev => ({ ...prev, ...settingsObj }));
       }
     } catch (error) {
       console.error('Error loading settings:', error);
-      showError('Error', 'Failed to load website design settings');
+      toast.error('Failed to load website design settings');
     }
   };
 
   const saveSettings = async () => {
     setLoading(true);
     try {
-      // Process settings one by one to avoid conflicts
-      for (const [key, value] of Object.entries(settings)) {
-        const { error } = await supabase
-          .from('system_settings')
-          .upsert({
-            key,
-            value: value,
-            category: 'website_design',
-            description: `Website design setting for ${key}`,
-            is_public: true
-          }, {
-            onConflict: 'key,category',
-            ignoreDuplicates: false
-          });
+      console.log('Starting to save website design settings...');
+      console.log('Current settings to save:', settings);
+
+      // Process settings in batches to avoid conflicts
+      const settingsEntries = Object.entries(settings);
+      const batchSize = 5;
+      
+      for (let i = 0; i < settingsEntries.length; i += batchSize) {
+        const batch = settingsEntries.slice(i, i + batchSize);
+        console.log(`Processing batch ${Math.floor(i/batchSize) + 1}:`, batch);
         
-        if (error) {
-          console.error('Error saving setting:', key, error);
-          throw error;
+        for (const [key, value] of batch) {
+          console.log(`Saving setting: ${key} = ${value}`);
+          
+          // First, check if the setting exists
+          const { data: existing, error: selectError } = await supabase
+            .from('system_settings')
+            .select('id')
+            .eq('key', key)
+            .eq('category', 'website_design')
+            .maybeSingle();
+          
+          if (selectError) {
+            console.error(`Error checking existing setting for ${key}:`, selectError);
+            throw selectError;
+          }
+
+          let result;
+          if (existing) {
+            // Update existing setting
+            console.log(`Updating existing setting for ${key}`);
+            result = await supabase
+              .from('system_settings')
+              .update({
+                value: value,
+                description: `Website design setting for ${key}`,
+                is_public: true,
+                updated_at: new Date().toISOString()
+              })
+              .eq('key', key)
+              .eq('category', 'website_design');
+          } else {
+            // Insert new setting
+            console.log(`Inserting new setting for ${key}`);
+            result = await supabase
+              .from('system_settings')
+              .insert({
+                key,
+                value: value,
+                category: 'website_design',
+                description: `Website design setting for ${key}`,
+                is_public: true
+              });
+          }
+          
+          if (result.error) {
+            console.error(`Error saving setting ${key}:`, result.error);
+            throw result.error;
+          }
+          
+          console.log(`Successfully saved setting: ${key}`);
+        }
+        
+        // Small delay between batches to prevent overwhelming the database
+        if (i + batchSize < settingsEntries.length) {
+          await new Promise(resolve => setTimeout(resolve, 100));
         }
       }
 
-      // Apply settings to CSS variables
+      // Apply settings to CSS variables immediately
       applySettingsToCSS();
       
-      showSuccess('Settings Saved', 'Website design settings updated successfully');
+      setHasUnsavedChanges(false);
+      console.log('All settings saved successfully');
+      toast.success('Website design settings saved successfully!');
+      
     } catch (error) {
       console.error('Error saving settings:', error);
-      showError('Error', 'Failed to save website design settings');
+      toast.error(`Failed to save website design settings: ${error.message}`);
     } finally {
       setLoading(false);
     }
   };
 
   const applySettingsToCSS = () => {
-    const root = document.documentElement;
-    
-    // Apply light mode colors
-    root.style.setProperty('--primary-light', settings.lightPrimaryColor);
-    root.style.setProperty('--secondary-light', settings.lightSecondaryColor);
-    root.style.setProperty('--background-light', settings.lightBackgroundColor);
-    root.style.setProperty('--surface-light', settings.lightSurfaceColor);
-    root.style.setProperty('--text-light', settings.lightTextColor);
-    root.style.setProperty('--accent-light', settings.lightAccentColor);
-    
-    // Apply dark mode colors
-    root.style.setProperty('--primary-dark', settings.darkPrimaryColor);
-    root.style.setProperty('--secondary-dark', settings.darkSecondaryColor);
-    root.style.setProperty('--background-dark', settings.darkBackgroundColor);
-    root.style.setProperty('--surface-dark', settings.darkSurfaceColor);
-    root.style.setProperty('--text-dark', settings.darkTextColor);
-    root.style.setProperty('--accent-dark', settings.darkAccentColor);
-    
-    // Apply typography
-    root.style.setProperty('--font-primary', settings.primaryFont);
-    root.style.setProperty('--font-secondary', settings.secondaryFont);
-    root.style.setProperty('--font-size-base', `${settings.baseFontSize}px`);
-    
-    // Apply layout
-    root.style.setProperty('--container-max-width', `${settings.containerMaxWidth}px`);
-    root.style.setProperty('--border-radius', `${settings.borderRadius}px`);
-    root.style.setProperty('--spacing-base', `${settings.spacing}px`);
+    try {
+      console.log('Applying settings to CSS variables...');
+      const root = document.documentElement;
+      
+      // Apply light mode colors
+      root.style.setProperty('--primary-light', settings.lightPrimaryColor);
+      root.style.setProperty('--secondary-light', settings.lightSecondaryColor);
+      root.style.setProperty('--background-light', settings.lightBackgroundColor);
+      root.style.setProperty('--surface-light', settings.lightSurfaceColor);
+      root.style.setProperty('--text-light', settings.lightTextColor);
+      root.style.setProperty('--accent-light', settings.lightAccentColor);
+      
+      // Apply dark mode colors
+      root.style.setProperty('--primary-dark', settings.darkPrimaryColor);
+      root.style.setProperty('--secondary-dark', settings.darkSecondaryColor);
+      root.style.setProperty('--background-dark', settings.darkBackgroundColor);
+      root.style.setProperty('--surface-dark', settings.darkSurfaceColor);
+      root.style.setProperty('--text-dark', settings.darkTextColor);
+      root.style.setProperty('--accent-dark', settings.darkAccentColor);
+      
+      // Apply typography
+      root.style.setProperty('--font-primary', settings.primaryFont);
+      root.style.setProperty('--font-secondary', settings.secondaryFont);
+      root.style.setProperty('--font-size-base', `${settings.baseFontSize}px`);
+      
+      // Apply layout
+      root.style.setProperty('--container-max-width', `${settings.containerMaxWidth}px`);
+      root.style.setProperty('--border-radius', `${settings.borderRadius}px`);
+      root.style.setProperty('--spacing-base', `${settings.spacing}px`);
+      
+      console.log('CSS variables applied successfully');
+    } catch (error) {
+      console.error('Error applying CSS variables:', error);
+    }
   };
 
   const handleInputChange = (key: string, value: any) => {
+    console.log(`Setting changed: ${key} = ${value}`);
     setSettings(prev => ({ ...prev, [key]: value }));
+    setHasUnsavedChanges(true);
   };
 
   const handleFileUpload = async (file: File, settingKey: string) => {
     try {
+      console.log(`Uploading file for ${settingKey}:`, file.name);
       const fileExt = file.name.split('.').pop();
       const fileName = `${Date.now()}.${fileExt}`;
       const filePath = `website-assets/${fileName}`;
 
       const { error: uploadError } = await supabase.storage
-        .from('website-assets')
+        .from('property-images')
         .upload(filePath, file);
 
-      if (uploadError) throw uploadError;
+      if (uploadError) {
+        console.error('Upload error:', uploadError);
+        throw uploadError;
+      }
 
       const { data } = supabase.storage
-        .from('website-assets')
+        .from('property-images')
         .getPublicUrl(filePath);
 
+      console.log(`File uploaded successfully: ${data.publicUrl}`);
       handleInputChange(settingKey, data.publicUrl);
-      showSuccess('Upload Success', 'File uploaded successfully');
+      toast.success('File uploaded successfully');
     } catch (error) {
       console.error('Upload error:', error);
-      showError('Upload Error', 'Failed to upload file');
+      toast.error('Failed to upload file');
     }
+  };
+
+  const resetToDefaults = () => {
+    setSettings({
+      siteLogo: '',
+      siteName: 'AstraVilla',
+      siteTagline: 'Premium Real Estate Platform',
+      faviconUrl: '',
+      lightPrimaryColor: '#3B82F6',
+      lightSecondaryColor: '#10B981',
+      lightBackgroundColor: '#FFFFFF',
+      lightSurfaceColor: '#F8FAFC',
+      lightTextColor: '#1E293B',
+      lightAccentColor: '#F59E0B',
+      darkPrimaryColor: '#60A5FA',
+      darkSecondaryColor: '#34D399',
+      darkBackgroundColor: '#0F172A',
+      darkSurfaceColor: '#1E293B',
+      darkTextColor: '#F1F5F9',
+      darkAccentColor: '#FBBF24',
+      primaryFont: 'Inter',
+      secondaryFont: 'SF Pro Display',
+      baseFontSize: 16,
+      headingFontWeight: 600,
+      bodyFontWeight: 400,
+      containerMaxWidth: 1200,
+      borderRadius: 12,
+      spacing: 16,
+      shadowIntensity: 3,
+      headerHeight: 80,
+      headerBackground: 'glass',
+      headerPosition: 'sticky',
+      showNavigation: true,
+      showUserMenu: true,
+      showThemeToggle: true,
+      footerBackground: '#1F2937',
+      footerTextColor: '#F9FAFB',
+      showFooterLinks: true,
+      showSocialMedia: true,
+      copyrightText: '© 2024 AstraVilla. All rights reserved.',
+      heroBackgroundType: 'gradient',
+      heroBackgroundImage: '',
+      heroGradientStart: '#667EEA',
+      heroGradientEnd: '#764BA2',
+      bodyBackgroundPattern: 'none',
+      bodyBackgroundImage: '',
+      animations: true,
+      glassEffect: true,
+      particleEffects: false,
+      darkModeDefault: false,
+      rtlSupport: false,
+      customCSS: ''
+    });
+    setHasUnsavedChanges(true);
+    toast.info('Settings reset to defaults. Click Save to apply changes.');
   };
 
   const colorPresets = [
@@ -249,6 +382,12 @@ const WebsiteDesignControl = () => {
         <div>
           <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Website Design Control</h2>
           <p className="text-gray-600 dark:text-gray-300 mt-2">Complete control over your website's appearance and design</p>
+          {hasUnsavedChanges && (
+            <p className="text-orange-600 dark:text-orange-400 text-sm mt-1 flex items-center gap-1">
+              <Settings className="h-4 w-4" />
+              You have unsaved changes
+            </p>
+          )}
         </div>
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2 bg-white dark:bg-gray-800 rounded-lg p-2 border border-gray-200 dark:border-gray-600">
@@ -259,9 +398,36 @@ const WebsiteDesignControl = () => {
             <Smartphone className={`h-5 w-5 cursor-pointer ${previewMode === 'mobile' ? 'text-blue-600' : 'text-gray-400'}`} 
               onClick={() => setPreviewMode('mobile')} />
           </div>
-          <Button onClick={saveSettings} disabled={loading} className="bg-blue-600 hover:bg-blue-700 text-white">
-            <Settings className="h-4 w-4 mr-2" />
-            {loading ? 'Saving...' : 'Save All Changes'}
+          
+          <Button 
+            onClick={resetToDefaults} 
+            variant="outline" 
+            className="border-gray-300 dark:border-gray-600"
+          >
+            Reset to Defaults
+          </Button>
+          
+          <Button 
+            onClick={saveSettings} 
+            disabled={loading || !hasUnsavedChanges} 
+            className="bg-blue-600 hover:bg-blue-700 text-white disabled:bg-gray-400"
+          >
+            {loading ? (
+              <>
+                <Settings className="h-4 w-4 mr-2 animate-spin" />
+                Saving...
+              </>
+            ) : hasUnsavedChanges ? (
+              <>
+                <Save className="h-4 w-4 mr-2" />
+                Save All Changes
+              </>
+            ) : (
+              <>
+                <CheckCircle className="h-4 w-4 mr-2" />
+                All Saved
+              </>
+            )}
           </Button>
         </div>
       </div>
