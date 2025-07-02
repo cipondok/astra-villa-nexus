@@ -171,51 +171,37 @@ const WebsiteDesignControl = () => {
       console.log('Starting to save website design settings...');
       console.log('Current settings to save:', settings);
       
-      // Create a more reliable save function with smaller batches
+      // Create a more reliable save function with proper upsert
       const retryableQuery = createRetryableQuery(async () => {
         const settingsEntries = Object.entries(settings);
         
-        // Process one setting at a time for maximum reliability
+        // Process settings with proper upsert using ON CONFLICT
         for (const [key, value] of settingsEntries) {
           console.log(`Saving setting: ${key}`);
           
-          // Check if setting already exists
-          const { data: existing } = await supabase
+          // Use upsert with ON CONFLICT to handle duplicates
+          const { error } = await supabase
             .from('system_settings')
-            .select('id')
-            .eq('key', key)
-            .eq('category', 'website_design')
-            .maybeSingle();
-
-          if (existing) {
-            // Update existing setting
-            const { error } = await supabase
-              .from('system_settings')
-              .update({ 
-                value: value,
-                updated_at: new Date().toISOString()
-              })
-              .eq('id', existing.id);
-            
-            if (error) throw error;
-          } else {
-            // Insert new setting
-            const { error } = await supabase
-              .from('system_settings')
-              .insert({
-                key,
-                value: value,
-                category: 'website_design',
-                description: `Website design setting for ${key}`,
-                is_public: true
-              });
-            
-            if (error) throw error;
+            .upsert({
+              key,
+              value: value,
+              category: 'website_design',
+              description: `Website design setting for ${key}`,
+              is_public: true,
+              updated_at: new Date().toISOString()
+            }, {
+              onConflict: 'category,key',
+              ignoreDuplicates: false
+            });
+          
+          if (error) {
+            console.error(`Error saving setting ${key}:`, error);
+            throw error;
           }
           
           console.log(`Successfully saved setting: ${key}`);
         }
-      }, 2); // Reduce max retries to 2 for faster feedback
+      }, 2);
 
       await retryableQuery();
       
