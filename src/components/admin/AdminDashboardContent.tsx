@@ -2,7 +2,6 @@
 import React from "react";
 import AdminOverview from "./AdminOverview";
 import EnhancedUserManagement from "./EnhancedUserManagement";
-import EnhancedPropertyManagement from "./EnhancedPropertyManagement";
 import PropertyManagementAdvanced from "./PropertyManagementAdvanced";
 import SystemSettings from "./SystemSettings";
 import WebTrafficAnalytics from "./WebTrafficAnalytics";
@@ -37,7 +36,7 @@ const AdminDashboardContent = ({ activeSection }: AdminDashboardContentProps) =>
       case "user-management":
         return <EnhancedUserManagement />;
       case "property-management":
-        return <EnhancedPropertyManagement />;
+        return <PropertyManagementAdvanced />;
       case "property-management-hub":
         return <PropertyManagementAdvanced />;
       case "system-settings":

@@ -50,7 +50,7 @@ const AdvancedAdminDashboard = () => {
           <AdminTabNavigation isAdmin={isAdmin} />
           
           <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-lg dark:shadow-2xl">
-            <AdminDashboardContent isAdmin={isAdmin} setActiveTab={setActiveTab} />
+            <AdminDashboardContent activeSection={activeTab} />
           </div>
         </Tabs>
       </div>
