@@ -29,7 +29,9 @@ import {
   Globe,
   Menu,
   Save,
-  CheckCircle
+  CheckCircle,
+  AlertTriangle,
+  RefreshCw
 } from 'lucide-react';
 
 const WebsiteDesignControl = () => {
@@ -104,6 +106,8 @@ const WebsiteDesignControl = () => {
   const [loading, setLoading] = useState(false);
   const [previewMode, setPreviewMode] = useState('desktop');
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [lastSaveAttempt, setLastSaveAttempt] = useState<Date | null>(null);
+  const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'success' | 'error'>('idle');
   const { showSuccess, showError } = useAlert();
 
   useEffect(() => {
@@ -113,10 +117,18 @@ const WebsiteDesignControl = () => {
   const loadSettings = async () => {
     try {
       console.log('Loading website design settings...');
-      const { data, error } = await supabase
+      
+      // Add timeout to the request
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Request timeout')), 10000)
+      );
+      
+      const queryPromise = supabase
         .from('system_settings')
         .select('*')
         .eq('category', 'website_design');
+      
+      const { data, error } = await Promise.race([queryPromise, timeoutPromise]) as any;
       
       if (error) {
         console.error('Error loading settings:', error);
@@ -143,94 +155,119 @@ const WebsiteDesignControl = () => {
         console.log('Processed settings object:', settingsObj);
         setSettings(prev => ({ ...prev, ...settingsObj }));
       }
+      
+      toast.success('Settings loaded successfully');
     } catch (error) {
       console.error('Error loading settings:', error);
-      toast.error('Failed to load website design settings');
+      if (error.message === 'Request timeout') {
+        toast.error('Connection timeout - please check your network and try again');
+      } else {
+        toast.error('Failed to load website design settings');
+      }
     }
   };
 
-  const saveSettings = async () => {
-    setLoading(true);
+  const saveSettingsWithRetry = async (retryCount = 0) => {
+    const maxRetries = 3;
+    
     try {
-      console.log('Starting to save website design settings...');
-      console.log('Current settings to save:', settings);
-
-      // Process settings in batches to avoid conflicts
-      const settingsEntries = Object.entries(settings);
-      const batchSize = 5;
+      console.log(`Save attempt ${retryCount + 1}/${maxRetries + 1}`);
       
-      for (let i = 0; i < settingsEntries.length; i += batchSize) {
-        const batch = settingsEntries.slice(i, i + batchSize);
-        console.log(`Processing batch ${Math.floor(i/batchSize) + 1}:`, batch);
-        
-        for (const [key, value] of batch) {
-          console.log(`Saving setting: ${key} = ${value}`);
+      // Create timeout promise
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Save operation timeout')), 15000)
+      );
+      
+      // Process settings in smaller chunks
+      const settingsEntries = Object.entries(settings);
+      const chunkSize = 3; // Reduced chunk size
+      
+      const savePromise = (async () => {
+        for (let i = 0; i < settingsEntries.length; i += chunkSize) {
+          const chunk = settingsEntries.slice(i, i + chunkSize);
+          console.log(`Processing chunk ${Math.floor(i/chunkSize) + 1}:`, chunk.map(([key]) => key));
           
-          // First, check if the setting exists
-          const { data: existing, error: selectError } = await supabase
+          // Use upsert for better reliability
+          const upsertData = chunk.map(([key, value]) => ({
+            key,
+            value: value,
+            category: 'website_design',
+            description: `Website design setting for ${key}`,
+            is_public: true
+          }));
+          
+          const { error } = await supabase
             .from('system_settings')
-            .select('id')
-            .eq('key', key)
-            .eq('category', 'website_design')
-            .maybeSingle();
+            .upsert(upsertData, {
+              onConflict: 'key,category',
+              ignoreDuplicates: false
+            });
           
-          if (selectError) {
-            console.error(`Error checking existing setting for ${key}:`, selectError);
-            throw selectError;
-          }
-
-          let result;
-          if (existing) {
-            // Update existing setting
-            console.log(`Updating existing setting for ${key}`);
-            result = await supabase
-              .from('system_settings')
-              .update({
-                value: value,
-                description: `Website design setting for ${key}`,
-                is_public: true,
-                updated_at: new Date().toISOString()
-              })
-              .eq('key', key)
-              .eq('category', 'website_design');
-          } else {
-            // Insert new setting
-            console.log(`Inserting new setting for ${key}`);
-            result = await supabase
-              .from('system_settings')
-              .insert({
-                key,
-                value: value,
-                category: 'website_design',
-                description: `Website design setting for ${key}`,
-                is_public: true
-              });
+          if (error) {
+            console.error(`Error saving chunk:`, error);
+            throw error;
           }
           
-          if (result.error) {
-            console.error(`Error saving setting ${key}:`, result.error);
-            throw result.error;
-          }
+          console.log(`Successfully saved chunk ${Math.floor(i/chunkSize) + 1}`);
           
-          console.log(`Successfully saved setting: ${key}`);
+          // Small delay between chunks
+          if (i + chunkSize < settingsEntries.length) {
+            await new Promise(resolve => setTimeout(resolve, 200));
+          }
         }
-        
-        // Small delay between batches to prevent overwhelming the database
-        if (i + batchSize < settingsEntries.length) {
-          await new Promise(resolve => setTimeout(resolve, 100));
-        }
-      }
-
-      // Apply settings to CSS variables immediately
+      })();
+      
+      // Race between save operation and timeout
+      await Promise.race([savePromise, timeoutPromise]);
+      
+      // Apply settings to CSS immediately
       applySettingsToCSS();
       
       setHasUnsavedChanges(false);
+      setSaveStatus('success');
+      setLastSaveAttempt(new Date());
+      
       console.log('All settings saved successfully');
       toast.success('Website design settings saved successfully!');
       
     } catch (error) {
-      console.error('Error saving settings:', error);
-      toast.error(`Failed to save website design settings: ${error.message}`);
+      console.error(`Save attempt ${retryCount + 1} failed:`, error);
+      
+      if (retryCount < maxRetries) {
+        console.log(`Retrying save operation... (${retryCount + 1}/${maxRetries})`);
+        toast.info(`Save failed, retrying... (${retryCount + 1}/${maxRetries})`);
+        
+        // Wait before retry with exponential backoff
+        await new Promise(resolve => setTimeout(resolve, (retryCount + 1) * 1000));
+        
+        return await saveSettingsWithRetry(retryCount + 1);
+      } else {
+        setSaveStatus('error');
+        const errorMessage = error.message === 'Save operation timeout' 
+          ? 'Save operation timed out. Please check your connection and try again.'
+          : `Failed to save settings: ${error.message}`;
+          
+        toast.error(errorMessage);
+        throw error;
+      }
+    }
+  };
+
+  const saveSettings = async () => {
+    if (loading) return;
+    
+    setLoading(true);
+    setSaveStatus('saving');
+    
+    try {
+      console.log('Starting to save website design settings...');
+      console.log('Current settings to save:', settings);
+      
+      await saveSettingsWithRetry();
+      
+    } catch (error) {
+      console.error('Final save error:', error);
+      // Error handling already done in saveSettingsWithRetry
     } finally {
       setLoading(false);
     }
@@ -277,6 +314,7 @@ const WebsiteDesignControl = () => {
     console.log(`Setting changed: ${key} = ${value}`);
     setSettings(prev => ({ ...prev, [key]: value }));
     setHasUnsavedChanges(true);
+    setSaveStatus('idle');
   };
 
   const handleFileUpload = async (file: File, settingKey: string) => {
@@ -360,7 +398,47 @@ const WebsiteDesignControl = () => {
       customCSS: ''
     });
     setHasUnsavedChanges(true);
+    setSaveStatus('idle');
     toast.info('Settings reset to defaults. Click Save to apply changes.');
+  };
+
+  const getSaveButtonIcon = () => {
+    switch (saveStatus) {
+      case 'saving':
+        return <RefreshCw className="h-4 w-4 mr-2 animate-spin" />;
+      case 'success':
+        return <CheckCircle className="h-4 w-4 mr-2" />;
+      case 'error':
+        return <AlertTriangle className="h-4 w-4 mr-2" />;
+      default:
+        return <Save className="h-4 w-4 mr-2" />;
+    }
+  };
+
+  const getSaveButtonText = () => {
+    switch (saveStatus) {
+      case 'saving':
+        return 'Saving...';
+      case 'success':
+        return hasUnsavedChanges ? 'Save Changes' : 'All Saved';
+      case 'error':
+        return 'Retry Save';
+      default:
+        return hasUnsavedChanges ? 'Save Changes' : 'No Changes';
+    }
+  };
+
+  const getSaveButtonColor = () => {
+    switch (saveStatus) {
+      case 'saving':
+        return 'bg-blue-500 hover:bg-blue-600';
+      case 'success':
+        return hasUnsavedChanges ? 'bg-blue-600 hover:bg-blue-700' : 'bg-green-600 hover:bg-green-700';
+      case 'error':
+        return 'bg-red-600 hover:bg-red-700';
+      default:
+        return hasUnsavedChanges ? 'bg-blue-600 hover:bg-blue-700' : 'bg-gray-400';
+    }
   };
 
   const colorPresets = [
@@ -388,6 +466,11 @@ const WebsiteDesignControl = () => {
               You have unsaved changes
             </p>
           )}
+          {lastSaveAttempt && (
+            <p className="text-gray-500 dark:text-gray-400 text-xs mt-1">
+              Last saved: {lastSaveAttempt.toLocaleTimeString()}
+            </p>
+          )}
         </div>
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2 bg-white dark:bg-gray-800 rounded-lg p-2 border border-gray-200 dark:border-gray-600">
@@ -403,31 +486,18 @@ const WebsiteDesignControl = () => {
             onClick={resetToDefaults} 
             variant="outline" 
             className="border-gray-300 dark:border-gray-600"
+            disabled={loading}
           >
             Reset to Defaults
           </Button>
           
           <Button 
             onClick={saveSettings} 
-            disabled={loading || !hasUnsavedChanges} 
-            className="bg-blue-600 hover:bg-blue-700 text-white disabled:bg-gray-400"
+            disabled={loading || (!hasUnsavedChanges && saveStatus !== 'error')} 
+            className={`text-white disabled:bg-gray-400 ${getSaveButtonColor()}`}
           >
-            {loading ? (
-              <>
-                <Settings className="h-4 w-4 mr-2 animate-spin" />
-                Saving...
-              </>
-            ) : hasUnsavedChanges ? (
-              <>
-                <Save className="h-4 w-4 mr-2" />
-                Save All Changes
-              </>
-            ) : (
-              <>
-                <CheckCircle className="h-4 w-4 mr-2" />
-                All Saved
-              </>
-            )}
+            {getSaveButtonIcon()}
+            {getSaveButtonText()}
           </Button>
         </div>
       </div>
