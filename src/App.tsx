@@ -22,7 +22,6 @@ import PropertyOwnerDashboard from '@/pages/PropertyOwnerDashboard';
 import AgentDashboard from '@/pages/AgentDashboard';
 import NotFound from '@/pages/NotFound';
 import ProtectedRoute from '@/components/ProtectedRoute';
-import PublicOnlyRoute from '@/components/PublicOnlyRoute';
 import AdminOnlyRoute from '@/components/AdminOnlyRoute';
 import VendorOnlyRoute from '@/components/VendorOnlyRoute';
 
@@ -31,6 +30,8 @@ const queryClient = new QueryClient({
     queries: {
       retry: 1,
       refetchOnWindowFocus: false,
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      gcTime: 10 * 60 * 1000, // 10 minutes
     },
   },
 });
@@ -39,11 +40,11 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider defaultTheme="light" storageKey="astra-villa-theme">
-        <WebsiteSettingsProvider>
-          <ThemeSettingsProvider>
-            <AuthProvider>
-              <AlertProvider>
-                <LanguageProvider>
+        <AlertProvider>
+          <LanguageProvider>
+            <WebsiteSettingsProvider>
+              <ThemeSettingsProvider>
+                <AuthProvider>
                   <AppInitializer>
                     <Router>
                       <div className="min-h-screen bg-background text-foreground theme-transition">
@@ -75,11 +76,11 @@ function App() {
                       </div>
                     </Router>
                   </AppInitializer>
-                </LanguageProvider>
-              </AlertProvider>
-            </AuthProvider>
-          </ThemeSettingsProvider>
-        </WebsiteSettingsProvider>
+                </AuthProvider>
+              </ThemeSettingsProvider>
+            </WebsiteSettingsProvider>
+          </LanguageProvider>
+        </AlertProvider>
       </ThemeProvider>
     </QueryClientProvider>
   );

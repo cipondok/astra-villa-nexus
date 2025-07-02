@@ -26,44 +26,27 @@ const Index = () => {
     backgroundAttachment: 'fixed',
   };
 
-  // Optimized featured properties query with better filtering
+  // Simplified featured properties query
   const { data: featuredProperties = [], isLoading: isFeaturedLoading } = useQuery({
-    queryKey: ['featured-properties-fast'],
+    queryKey: ['featured-properties-simple'],
     queryFn: async () => {
       console.log('Fetching featured properties...');
       
       try {
-        const timeoutPromise = new Promise<never>((_, reject) => {
-          setTimeout(() => reject(new Error('Featured properties timeout')), 2000);
-        });
-
-        const queryPromise = supabase
+        const { data, error } = await supabase
           .from('properties')
           .select('id, title, property_type, listing_type, price, location, bedrooms, bathrooms, area_sqm, images, thumbnail_url, state, city, development_status')
           .eq('status', 'active')
           .not('title', 'is', null)
-          .not('title', 'eq', '')
-          .order('created_at', { ascending: false })
-          .limit(8);
-
-        const { data, error } = await Promise.race([queryPromise, timeoutPromise]);
+          .limit(6);
 
         if (error) {
           console.error('Properties query error:', error);
           return [];
         }
 
-        // Filter out properties with empty or invalid data
-        const filteredData = (data || []).filter(property => 
-          property.title && 
-          property.title.trim() !== '' &&
-          property.price && 
-          property.price > 0 &&
-          (property.images?.length > 0 || property.thumbnail_url)
-        );
-
-        console.log('Featured properties loaded:', filteredData.length);
-        return filteredData;
+        console.log('Featured properties loaded:', data?.length || 0);
+        return data || [];
         
       } catch (err) {
         console.error('Featured properties fetch error:', err);
@@ -71,10 +54,8 @@ const Index = () => {
       }
     },
     retry: 1,
-    retryDelay: 500,
     refetchOnWindowFocus: false,
-    staleTime: 30000,
-    gcTime: 60000,
+    staleTime: 60000,
   });
 
   const handleSearch = async (searchData: any) => {
@@ -85,16 +66,11 @@ const Index = () => {
     setSearchError(null);
     
     try {
-      const timeoutPromise = new Promise<never>((_, reject) => {
-        setTimeout(() => reject(new Error('Search timeout')), 3000);
-      });
-
       let query = supabase
         .from('properties')
         .select('id, title, property_type, listing_type, price, location, bedrooms, bathrooms, area_sqm, images, thumbnail_url, state, city')
         .eq('status', 'active')
-        .not('title', 'is', null)
-        .not('title', 'eq', '');
+        .not('title', 'is', null);
 
       if (searchData.query && searchData.query.trim()) {
         const searchTerm = searchData.query.toLowerCase().trim();
@@ -117,39 +93,20 @@ const Index = () => {
         query = query.eq('listing_type', searchData.listingType);
       }
 
-      if (searchData.development_status) {
-        query = query.eq('development_status', searchData.development_status);
-      }
-
-      const queryWithTimeout = Promise.race([
-        query.order('created_at', { ascending: false }).limit(20),
-        timeoutPromise
-      ]);
-
-      const { data, error } = await queryWithTimeout;
+      const { data, error } = await query.order('created_at', { ascending: false }).limit(20);
 
       if (error) {
         console.error('Search error:', error);
         setSearchError('Search failed. Please try again.');
         setSearchResults([]);
       } else {
-        const filteredResults = (data || []).filter(property => 
-          property.title && 
-          property.title.trim() !== '' &&
-          property.price && 
-          property.price > 0
-        );
-        console.log('Search results:', filteredResults.length);
-        setSearchResults(filteredResults);
+        console.log('Search results:', data?.length || 0);
+        setSearchResults(data || []);
         setSearchError(null);
       }
     } catch (error) {
       console.error('Search error:', error);
-      if (error instanceof Error && error.message.includes('timeout')) {
-        setSearchError('Search is taking too long. Please try with more specific filters.');
-      } else {
-        setSearchError('Search failed. Please check your connection and try again.');
-      }
+      setSearchError('Search failed. Please check your connection and try again.');
       setSearchResults([]);
     } finally {
       setIsSearching(false);
@@ -180,7 +137,7 @@ const Index = () => {
       <div className="relative z-10 bg-white/90 dark:bg-black/90 backdrop-blur-sm min-h-screen">
         <Navigation />
         
-        {/* Hero Section - More Compact */}
+        {/* Hero Section */}
         <section className="relative py-4 lg:py-6 px-4">
           <div className="max-w-[1800px] mx-auto text-center">
             <div className="mb-4 lg:mb-6 animate-fade-in">
@@ -219,7 +176,7 @@ const Index = () => {
           </div>
         </section>
 
-        {/* Error Message - Compact */}
+        {/* Error Message */}
         {searchError && (
           <section className="py-2">
             <div className="max-w-[1800px] mx-auto px-6 lg:px-8">
@@ -240,10 +197,9 @@ const Index = () => {
           </section>
         )}
 
-        {/* Property Sections with Slides */}
+        {/* Property Sections */}
         <div className="px-6 lg:px-8 space-y-12 py-8">
           <div className="max-w-[1800px] mx-auto space-y-12">
-            {/* Search Results or Featured Properties */}
             {hasSearched ? (
               <PropertyListingsSection
                 language={language}
@@ -254,56 +210,26 @@ const Index = () => {
               />
             ) : (
               <>
-                {/* Featured Properties Slide */}
                 <PropertySlideSection
                   title="Featured Properties"
                   subtitle="Handpicked premium properties for you"
                   type="featured"
                   language={language}
-                  limit={12}
+                  limit={8}
                 />
 
-                {/* Buy Properties Slide */}
                 <PropertySlideSection
                   title="Properties for Sale"
                   subtitle="Find your dream home to purchase"
                   type="buy"
                   language={language}
-                  limit={8}
+                  limit={6}
                 />
 
-                {/* Rent Properties Slide */}
                 <PropertySlideSection
                   title="Properties for Rent"
                   subtitle="Discover rental properties in prime locations"
                   type="rent"
-                  language={language}
-                  limit={8}
-                />
-
-                {/* Pre-Launch Properties Slide */}
-                <PropertySlideSection
-                  title="Pre-Launch Offers"
-                  subtitle="Exclusive early access to upcoming properties"
-                  type="pre-launch"
-                  language={language}
-                  limit={6}
-                />
-
-                {/* New Projects Slide */}
-                <PropertySlideSection
-                  title="New Projects"
-                  subtitle="Latest development projects and opportunities"
-                  type="new-projects"
-                  language={language}
-                  limit={6}
-                />
-
-                {/* Vendor Services Slide */}
-                <PropertySlideSection
-                  title="Vendor Services"
-                  subtitle="Professional real estate services and solutions"
-                  type="vendor-services"
                   language={language}
                   limit={6}
                 />
