@@ -10,6 +10,7 @@ import AdminVendorServiceManagement from "./AdminVendorServiceManagement";
 import VendorServicesCategoryShowcase from "./VendorServicesCategoryShowcase";
 import VendorProgressReports from "./VendorProgressReports";
 import VendorDiagnostics from "./VendorDiagnostics";
+import DiagnosticAnalyticsOverview from "./DiagnosticAnalyticsOverview";
 
 const VendorManagementHub = () => {
   const [activeTab, setActiveTab] = useState("overview");
@@ -29,13 +30,14 @@ const VendorManagementHub = () => {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-7">
+        <TabsList className="grid w-full grid-cols-8">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="categories">Categories</TabsTrigger>
           <TabsTrigger value="services">Services</TabsTrigger>
           <TabsTrigger value="inventory">Inventory</TabsTrigger>
           <TabsTrigger value="progress">Progress</TabsTrigger>
           <TabsTrigger value="diagnostics">Diagnostics</TabsTrigger>
+          <TabsTrigger value="analytics">Analytics</TabsTrigger>
           <TabsTrigger value="showcase">Showcase</TabsTrigger>
         </TabsList>
 
@@ -219,6 +221,10 @@ const VendorManagementHub = () => {
 
         <TabsContent value="diagnostics">
           <VendorDiagnostics />
+        </TabsContent>
+
+        <TabsContent value="analytics">
+          <DiagnosticAnalyticsOverview />
         </TabsContent>
 
         <TabsContent value="showcase">
