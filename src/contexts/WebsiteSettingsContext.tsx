@@ -169,9 +169,7 @@ export const WebsiteSettingsProvider: React.FC<{ children: React.ReactNode }> = 
       if (error) throw error;
       return data;
     },
-    staleTime: 30000, // Cache for 30 seconds
-    refetchInterval: false, // Don't auto-refetch
-    refetchOnWindowFocus: false, // Don't refetch on window focus
+    refetchInterval: 5000, // Refresh every 5 seconds to pick up changes
   });
 
   // Load settings from database
@@ -213,6 +211,8 @@ export const WebsiteSettingsProvider: React.FC<{ children: React.ReactNode }> = 
   // Apply CSS variables to document root
   const applyCSSVariables = () => {
     const root = document.documentElement;
+    
+    console.log('Applying CSS variables with settings:', settings);
     
     // Apply light mode colors
     root.style.setProperty('--primary-light', settings.lightPrimaryColor);
@@ -263,6 +263,8 @@ export const WebsiteSettingsProvider: React.FC<{ children: React.ReactNode }> = 
       }
       customStyleElement.textContent = settings.customCSS;
     }
+    
+    console.log('CSS variables applied successfully');
   };
 
   // Apply CSS variables whenever settings change
