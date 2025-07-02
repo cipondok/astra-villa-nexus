@@ -71,7 +71,8 @@ import {
   Twitter,
   Upload,
   Youtube,
-  Zap as ZapIcon
+  Zap as ZapIcon,
+  Heart
 } from 'lucide-react';
 
 interface TabNavigationProps {
