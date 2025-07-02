@@ -131,8 +131,8 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
   const userRole = profile?.role || 'admin';
 
   return (
-    <div className="relative bg-blue-600/80 dark:bg-gray-900/80 backdrop-blur-md text-white transition-all duration-300 border-b border-blue-500/30 dark:border-gray-700/50">
-      {/* Ultra Compact Header with 80% Transparency */}
+    <div className="relative bg-blue-600/70 dark:bg-gray-900/70 backdrop-blur-md text-white transition-all duration-300 border-b border-blue-500/30 dark:border-gray-700/50">
+      {/* Ultra Compact Header with 70% Transparency */}
       <div className="relative container mx-auto px-4 py-2">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">

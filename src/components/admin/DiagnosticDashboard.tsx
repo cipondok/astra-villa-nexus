@@ -26,7 +26,6 @@ import {
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-import AdminTopMenu from './AdminTopMenu';
 
 interface SystemHealth {
   database: 'healthy' | 'warning' | 'critical';
@@ -182,12 +181,31 @@ const DiagnosticDashboard = () => {
   ];
 
   return (
-    <div className="space-y-6 bg-white dark:bg-gray-900 min-h-screen p-6 rounded-lg">
-      <AdminTopMenu 
-        title="System Diagnostics" 
-        subtitle="Monitor system health and performance metrics"
-        showSearch={false}
-      />
+    <div className="space-y-6 bg-gray-50 dark:bg-gray-900 min-h-screen p-6 rounded-lg">
+      {/* Header */}
+      <div className="flex items-center justify-between p-6 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-700 rounded-xl border border-gray-200 dark:border-gray-600">
+        <div>
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white">System Diagnostics</h2>
+          <p className="text-gray-600 dark:text-gray-300 mt-2">Monitor system health and performance metrics</p>
+        </div>
+        <Button 
+          onClick={refreshDiagnostics} 
+          disabled={isRefreshing}
+          className="bg-blue-600 hover:bg-blue-700 text-white"
+        >
+          {isRefreshing ? (
+            <>
+              <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+              Refreshing...
+            </>
+          ) : (
+            <>
+              <RefreshCw className="h-4 w-4 mr-2" />
+              Refresh
+            </>
+          )}
+        </Button>
+      </div>
 
       {/* System Status Overview */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">

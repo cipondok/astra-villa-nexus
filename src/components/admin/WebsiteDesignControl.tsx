@@ -139,24 +139,23 @@ const WebsiteDesignControl = () => {
   const saveSettings = async () => {
     setLoading(true);
     try {
-      const settingsArray = Object.entries(settings).map(([key, value]) => ({
-        key,
-        value: value,
-        category: 'website_design',
-        description: `Website design setting for ${key}`,
-        is_public: true
-      }));
-
-      for (const setting of settingsArray) {
+      // Process settings one by one to avoid conflicts
+      for (const [key, value] of Object.entries(settings)) {
         const { error } = await supabase
           .from('system_settings')
-          .upsert(setting, {
+          .upsert({
+            key,
+            value: value,
+            category: 'website_design',
+            description: `Website design setting for ${key}`,
+            is_public: true
+          }, {
             onConflict: 'key,category',
             ignoreDuplicates: false
           });
         
         if (error) {
-          console.error('Error saving setting:', setting.key, error);
+          console.error('Error saving setting:', key, error);
           throw error;
         }
       }
