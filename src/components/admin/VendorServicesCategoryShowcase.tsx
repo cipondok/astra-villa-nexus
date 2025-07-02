@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
-import { Search, Star, MapPin, Clock, DollarSign, Users, Zap } from "lucide-react";
+import { Search, Star, MapPin, Clock, DollarSign, Users, Zap, Package, Wrench } from "lucide-react";
 
 interface MainCategory {
   id: string;
@@ -16,6 +16,7 @@ interface MainCategory {
   icon: string;
   display_order: number;
   is_active: boolean;
+  category_type: string;
   created_at: string;
   updated_at: string;
 }
@@ -41,6 +42,9 @@ interface VendorService {
   price_range: any;
   duration_minutes: number;
   location_type: string;
+  business_model: string;
+  has_inventory: boolean;
+  stock_quantity: number;
   is_active: boolean;
   featured: boolean;
 }
@@ -48,6 +52,7 @@ interface VendorService {
 const VendorServicesCategoryShowcase = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [filterByType, setFilterByType] = useState<string>("all");
 
   // Fetch main categories
   const { data: mainCategories } = useQuery({
@@ -99,7 +104,13 @@ const VendorServicesCategoryShowcase = () => {
   };
 
   const getServicesForSubcategory = (subcategoryId: string) => {
-    return vendorServices?.filter(service => service.subcategory_id === subcategoryId) || [];
+    let services = vendorServices?.filter(service => service.subcategory_id === subcategoryId) || [];
+    
+    if (filterByType !== "all") {
+      services = services.filter(service => service.business_model === filterByType);
+    }
+    
+    return services;
   };
 
   const formatPrice = (priceRange: any) => {
@@ -136,6 +147,24 @@ const VendorServicesCategoryShowcase = () => {
     }
   };
 
+  const getBusinessModelIcon = (businessModel: string) => {
+    switch (businessModel) {
+      case 'product_sales': return <Package className="h-4 w-4" />;
+      case 'service_only': return <Wrench className="h-4 w-4" />;
+      case 'both': return <Zap className="h-4 w-4" />;
+      default: return <Wrench className="h-4 w-4" />;
+    }
+  };
+
+  const getCategoryTypeColor = (categoryType: string) => {
+    switch (categoryType) {
+      case 'products': return 'bg-blue-500';
+      case 'services': return 'bg-green-500';
+      case 'mixed': return 'bg-purple-500';
+      default: return 'bg-gray-500';
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -144,18 +173,48 @@ const VendorServicesCategoryShowcase = () => {
           Vendor Services Categories
         </h1>
         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-          Comprehensive marketplace for all your service needs - from property services to subscription plans
+          Comprehensive marketplace for products and services - from electronics sales to repair services
         </p>
         
-        {/* Search Bar */}
-        <div className="relative max-w-md mx-auto">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-          <Input
-            placeholder="Search services..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10"
-          />
+        {/* Search and Filter Bar */}
+        <div className="flex flex-col md:flex-row gap-4 items-center justify-center max-w-4xl mx-auto">
+          <div className="relative flex-1 max-w-md">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+            <Input
+              placeholder="Search services..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10"
+            />
+          </div>
+          
+          <div className="flex gap-2">
+            <Button
+              variant={filterByType === "all" ? "default" : "outline"}
+              size="sm"
+              onClick={() => setFilterByType("all")}
+            >
+              All Types
+            </Button>
+            <Button
+              variant={filterByType === "product_sales" ? "default" : "outline"}
+              size="sm"
+              onClick={() => setFilterByType("product_sales")}
+              className="flex items-center gap-1"
+            >
+              <Package className="h-4 w-4" />
+              Products
+            </Button>
+            <Button
+              variant={filterByType === "service_only" ? "default" : "outline"}
+              size="sm"
+              onClick={() => setFilterByType("service_only")}
+              className="flex items-center gap-1"
+            >
+              <Wrench className="h-4 w-4" />
+              Services
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -189,10 +248,10 @@ const VendorServicesCategoryShowcase = () => {
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Services</p>
-                <p className="text-2xl font-bold">{vendorServices?.length || 0}</p>
+                <p className="text-sm text-muted-foreground">Products</p>
+                <p className="text-2xl font-bold">{vendorServices?.filter(s => s.business_model === 'product_sales').length || 0}</p>
               </div>
-              <Star className="h-8 w-8 text-yellow-600" />
+              <Package className="h-8 w-8 text-purple-600" />
             </div>
           </CardContent>
         </Card>
@@ -201,10 +260,10 @@ const VendorServicesCategoryShowcase = () => {
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Featured</p>
-                <p className="text-2xl font-bold">{vendorServices?.filter(s => s.featured).length || 0}</p>
+                <p className="text-sm text-muted-foreground">Services</p>
+                <p className="text-2xl font-bold">{vendorServices?.filter(s => s.business_model === 'service_only').length || 0}</p>
               </div>
-              <DollarSign className="h-8 w-8 text-purple-600" />
+              <Wrench className="h-8 w-8 text-orange-600" />
             </div>
           </CardContent>
         </Card>
@@ -215,7 +274,10 @@ const VendorServicesCategoryShowcase = () => {
         <TabsList className="grid w-full grid-cols-7 gap-1">
           {mainCategories?.map((category) => (
             <TabsTrigger key={category.id} value={category.id} className="flex flex-col items-center gap-1 p-2 text-xs">
-              <span className="text-lg">{category.icon}</span>
+              <div className="flex items-center gap-1">
+                <span className="text-lg">{category.icon}</span>
+                <div className={`w-2 h-2 rounded-full ${getCategoryTypeColor(category.category_type)}`} />
+              </div>
               <span className="hidden sm:inline text-center leading-tight">{category.name}</span>
             </TabsTrigger>
           ))}
@@ -226,9 +288,15 @@ const VendorServicesCategoryShowcase = () => {
             {/* Category Header */}
             <Card className="bg-gradient-to-r from-blue-50 to-purple-50 border-none">
               <CardHeader className="text-center">
-                <div className="flex justify-center mb-4">
+                <div className="flex justify-center items-center gap-4 mb-4">
                   <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center text-4xl shadow-lg">
                     {mainCategory.icon}
+                  </div>
+                  <div className="text-left">
+                    <Badge variant="secondary" className="mb-2">
+                      {mainCategory.category_type === 'products' ? 'Products Only' : 
+                       mainCategory.category_type === 'services' ? 'Services Only' : 'Products & Services'}
+                    </Badge>
                   </div>
                 </div>
                 <CardTitle className="text-3xl">{mainCategory.name}</CardTitle>
@@ -240,6 +308,8 @@ const VendorServicesCategoryShowcase = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {getSubcategoriesForMain(mainCategory.id).map((subcategory) => {
                 const services = getServicesForSubcategory(subcategory.id);
+                const productCount = services.filter(s => s.business_model === 'product_sales').length;
+                const serviceCount = services.filter(s => s.business_model === 'service_only').length;
                 
                 return (
                   <Card key={subcategory.id} className="hover:shadow-lg transition-shadow">
@@ -249,7 +319,20 @@ const VendorServicesCategoryShowcase = () => {
                           <span className="text-2xl">{subcategory.icon}</span>
                           <div>
                             <CardTitle className="text-lg">{subcategory.name}</CardTitle>
-                            <Badge variant="secondary">{services.length} services</Badge>
+                            <div className="flex gap-2 mt-1">
+                              {productCount > 0 && (
+                                <Badge variant="outline" className="text-xs">
+                                  <Package className="h-3 w-3 mr-1" />
+                                  {productCount} products
+                                </Badge>
+                              )}
+                              {serviceCount > 0 && (
+                                <Badge variant="outline" className="text-xs">
+                                  <Wrench className="h-3 w-3 mr-1" />
+                                  {serviceCount} services
+                                </Badge>
+                              )}
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -263,10 +346,20 @@ const VendorServicesCategoryShowcase = () => {
                           {services.slice(0, 2).map((service) => (
                             <div key={service.id} className="p-3 bg-muted/50 rounded-lg">
                               <div className="flex items-start justify-between mb-2">
-                                <h4 className="font-medium text-sm">{service.service_name}</h4>
-                                {service.featured && (
-                                  <Star className="h-4 w-4 text-yellow-500 fill-current" />
-                                )}
+                                <div className="flex items-center gap-2">
+                                  <h4 className="font-medium text-sm">{service.service_name}</h4>
+                                  {getBusinessModelIcon(service.business_model)}
+                                </div>
+                                <div className="flex items-center gap-1">
+                                  {service.featured && (
+                                    <Star className="h-4 w-4 text-yellow-500 fill-current" />
+                                  )}
+                                  {service.has_inventory && (
+                                    <Badge variant="secondary" className="text-xs">
+                                      Stock: {service.stock_quantity}
+                                    </Badge>
+                                  )}
+                                </div>
                               </div>
                               
                               <p className="text-xs text-muted-foreground mb-2 line-clamp-2">
@@ -279,10 +372,12 @@ const VendorServicesCategoryShowcase = () => {
                                   <span>{formatPrice(service.price_range)}</span>
                                 </div>
                                 
-                                <div className="flex items-center gap-1">
-                                  <Clock className="h-3 w-3" />
-                                  <span>{formatDuration(service.duration_minutes)}</span>
-                                </div>
+                                {service.business_model === 'service_only' && (
+                                  <div className="flex items-center gap-1">
+                                    <Clock className="h-3 w-3" />
+                                    <span>{formatDuration(service.duration_minutes)}</span>
+                                  </div>
+                                )}
                                 
                                 <div className="flex items-center gap-1">
                                   <span>{getLocationIcon(service.location_type)}</span>
@@ -294,15 +389,15 @@ const VendorServicesCategoryShowcase = () => {
                           
                           {services.length > 2 && (
                             <Button variant="outline" size="sm" className="w-full">
-                              View {services.length - 2} more services
+                              View {services.length - 2} more items
                             </Button>
                           )}
                         </div>
                       ) : (
                         <div className="text-center py-4 text-muted-foreground">
-                          <p className="text-sm">No services available yet</p>
+                          <p className="text-sm">No items available yet</p>
                           <Button variant="outline" size="sm" className="mt-2">
-                            Add First Service
+                            Add First Item
                           </Button>
                         </div>
                       )}
@@ -320,10 +415,10 @@ const VendorServicesCategoryShowcase = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Star className="h-5 w-5 text-yellow-500" />
-            Featured Services
+            Featured Items
           </CardTitle>
           <CardDescription>
-            Popular and recommended services across all categories
+            Popular products and services across all categories
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -339,10 +434,18 @@ const VendorServicesCategoryShowcase = () => {
                       <div className="flex items-center gap-2">
                         <span className="text-lg">{subcategory?.icon || mainCategory?.icon}</span>
                         <Star className="h-4 w-4 text-yellow-500 fill-current" />
+                        {getBusinessModelIcon(service.business_model)}
                       </div>
-                      <Badge variant="secondary" className="text-xs">
-                        {mainCategory?.name}
-                      </Badge>
+                      <div className="flex flex-col items-end gap-1">
+                        <Badge variant="secondary" className="text-xs">
+                          {mainCategory?.name}
+                        </Badge>
+                        {service.has_inventory && (
+                          <Badge variant="outline" className="text-xs">
+                            {service.stock_quantity} in stock
+                          </Badge>
+                        )}
+                      </div>
                     </div>
                     
                     <h3 className="font-semibold mb-2">{service.service_name}</h3>
