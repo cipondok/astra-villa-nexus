@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -27,11 +28,45 @@ interface WebsiteSettings {
   primaryFont: string;
   secondaryFont: string;
   baseFontSize: number;
+  headingFontWeight: number;
+  bodyFontWeight: number;
   
   // Layout
   containerMaxWidth: number;
   borderRadius: number;
   spacing: number;
+  shadowIntensity: number;
+  
+  // Header
+  headerHeight: number;
+  headerBackground: string;
+  headerPosition: string;
+  showNavigation: boolean;
+  showUserMenu: boolean;
+  showThemeToggle: boolean;
+  
+  // Footer
+  copyrightText: string;
+  footerBackground: string;
+  footerTextColor: string;
+  showFooterLinks: boolean;
+  showSocialMedia: boolean;
+  
+  // Backgrounds
+  heroBackgroundType: string;
+  heroBackgroundImage: string;
+  heroGradientStart: string;
+  heroGradientEnd: string;
+  bodyBackgroundPattern: string;
+  bodyBackgroundImage: string;
+  
+  // Advanced
+  animations: boolean;
+  glassEffect: boolean;
+  particleEffects: boolean;
+  darkModeDefault: boolean;
+  rtlSupport: boolean;
+  customCSS: string;
   
   // Social Media
   facebookUrl?: string;
@@ -39,11 +74,6 @@ interface WebsiteSettings {
   instagramUrl?: string;
   linkedinUrl?: string;
   youtubeUrl?: string;
-  
-  // Footer
-  copyrightText: string;
-  footerBackground: string;
-  footerTextColor: string;
   
   // General
   maintenanceMode: boolean;
@@ -78,12 +108,35 @@ const defaultSettings: WebsiteSettings = {
   primaryFont: 'Inter',
   secondaryFont: 'SF Pro Display',
   baseFontSize: 16,
+  headingFontWeight: 600,
+  bodyFontWeight: 400,
   containerMaxWidth: 1200,
   borderRadius: 12,
   spacing: 16,
+  shadowIntensity: 3,
+  headerHeight: 80,
+  headerBackground: 'glass',
+  headerPosition: 'sticky',
+  showNavigation: true,
+  showUserMenu: true,
+  showThemeToggle: true,
   copyrightText: '© 2024 AstraVilla. All rights reserved.',
   footerBackground: '#1F2937',
   footerTextColor: '#F9FAFB',
+  showFooterLinks: true,
+  showSocialMedia: true,
+  heroBackgroundType: 'gradient',
+  heroBackgroundImage: '',
+  heroGradientStart: '#667EEA',
+  heroGradientEnd: '#764BA2',
+  bodyBackgroundPattern: 'none',
+  bodyBackgroundImage: '',
+  animations: true,
+  glassEffect: true,
+  particleEffects: false,
+  darkModeDefault: false,
+  rtlSupport: false,
+  customCSS: '',
   maintenanceMode: false,
   registrationEnabled: true,
   emailNotifications: true,
