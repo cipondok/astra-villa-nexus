@@ -1,134 +1,94 @@
 
-import React from 'react';
-import { TabsContent } from '@/components/ui/tabs';
-import AdminOverview from './AdminOverview';
-import UserManagement from './UserManagement';
-import PropertyManagement from './PropertyManagement';
-import VendorManagementHub from './VendorManagementHub';
-import SystemSettings from './SystemSettings';
-import AnalyticsDashboard from './AnalyticsDashboard';
-import LoadingPageCustomization from './LoadingPageCustomization';
-import APIConfiguration from './APIConfiguration';
-import VendorCategoryManagement from './VendorCategoryManagement';
-import VendorServiceCategoryManagement from './VendorServiceCategoryManagement';
-import AdminVendorServiceManagement from './AdminVendorServiceManagement';
-import AIVendorMatching from './AIVendorMatching';
-import EnhancedVendorDirectory from './EnhancedVendorDirectory';
-import DiagnosticDashboard from './DiagnosticDashboard';
-import SEOSettings from './SEOSettings';
-import WebsiteDesignSettings from './WebsiteDesignSettings';
-import ContactManagement from './ContactManagement';
-import ChatManagement from './ChatManagement';
-import AIBotManagement from './AIBotManagement';
-import FeedbackManagement from './FeedbackManagement';
-import ErrorManagement from './ErrorManagement';
-import ContentManagement from './ContentManagement';
-import SearchFiltersManagement from './SearchFiltersManagement';
-import BillingManagement from './BillingManagement';
-import SecurityMonitoring from './SecurityMonitoring';
-import SystemReports from './SystemReports';
-import VendorCategoryDashboard from './VendorCategoryDashboard';
+import React from "react";
+import AdminOverview from "./AdminOverview";
+import EnhancedUserManagement from "./EnhancedUserManagement";
+import EnhancedPropertyManagement from "./EnhancedPropertyManagement";
+import PropertyManagementAdvanced from "./PropertyManagementAdvanced";
+import SystemSettings from "./SystemSettings";
+import WebTrafficAnalytics from "./WebTrafficAnalytics";
+import AIBotManagement from "./AIBotManagement";
+import FeedbackManagement from "./FeedbackManagement";
+import CustomerServiceCenter from "./CustomerServiceCenter";
+import ContactManagement from "./ContactManagement";
+import VendorManagementHub from "./VendorManagementHub";
+import VendorCategoryManagement from "./VendorCategoryManagement";
+import VendorInventoryManagement from "./VendorInventoryManagement";
+import ContentManagement from "./ContentManagement";
+import SearchFiltersManagement from "./SearchFiltersManagement";
+import BillingManagement from "./BillingManagement";
+import DatabaseTableManagement from "./DatabaseTableManagement";
+import SecurityMonitoring from "./SecurityMonitoring";
+import SystemReports from "./SystemReports";
+import DailyCheckInManagement from "./DailyCheckInManagement";
+import ASTRATokenAnalytics from "./ASTRATokenAnalytics";
+import ASTRATokenSettings from "./ASTRATokenSettings";
+import ToolsManagementDashboard from "./ToolsManagementDashboard";
+import SEOSettings from "./SEOSettings";
 
 interface AdminDashboardContentProps {
-  isAdmin: boolean;
-  setActiveTab: (tab: string) => void;
+  activeSection: string;
 }
 
-const AdminDashboardContent: React.FC<AdminDashboardContentProps> = ({ isAdmin, setActiveTab }) => {
+const AdminDashboardContent = ({ activeSection }: AdminDashboardContentProps) => {
+  const renderContent = () => {
+    switch (activeSection) {
+      case "overview":
+        return <AdminOverview />;
+      case "user-management":
+        return <EnhancedUserManagement />;
+      case "property-management":
+        return <EnhancedPropertyManagement />;
+      case "property-management-hub":
+        return <PropertyManagementAdvanced />;
+      case "system-settings":
+        return <SystemSettings />;
+      case "analytics":
+        return <WebTrafficAnalytics />;
+      case "ai-bot-management":
+        return <AIBotManagement />;
+      case "feedback-management":
+        return <FeedbackManagement />;
+      case "customer-service":
+        return <CustomerServiceCenter />;
+      case "contact-management":
+        return <ContactManagement />;
+      case "vendor-management-hub":
+        return <VendorManagementHub />;
+      case "vendor-service-categories":
+        return <VendorCategoryManagement />;
+      case "vendor-inventory":
+        return <VendorInventoryManagement />;
+      case "content-management":
+        return <ContentManagement />;
+      case "search-filters":
+        return <SearchFiltersManagement />;
+      case "billing-management":
+        return <BillingManagement />;
+      case "database-management":
+        return <DatabaseTableManagement />;
+      case "security-monitoring":
+        return <SecurityMonitoring />;
+      case "system-reports":
+        return <SystemReports />;
+      case "daily-checkin":
+        return <DailyCheckInManagement />;
+      case "astra-token":
+        return <ASTRATokenAnalytics />;
+      case "astra-token-settings":
+        return <ASTRATokenSettings />;
+      case "tools-management":
+        return <ToolsManagementDashboard />;
+      case "seo-settings":
+        return <SEOSettings />;
+      default:
+        return <AdminOverview />;
+    }
+  };
+
   return (
-    <>
-      <TabsContent value="overview">
-        <AdminOverview />
-      </TabsContent>
-
-      <TabsContent value="diagnostic">
-        <DiagnosticDashboard />
-      </TabsContent>
-
-      <TabsContent value="seo-settings">
-        <SEOSettings />
-      </TabsContent>
-
-      <TabsContent value="website-design">
-        <WebsiteDesignSettings />
-      </TabsContent>
-
-      <TabsContent value="user-management">
-        <UserManagement />
-      </TabsContent>
-
-      <TabsContent value="property-management">
-        <PropertyManagement />
-      </TabsContent>
-
-      <TabsContent value="property-management-hub">
-        <PropertyManagement />
-      </TabsContent>
-
-      <TabsContent value="contact-management">
-        <ContactManagement />
-      </TabsContent>
-
-      <TabsContent value="chat-management">
-        <ChatManagement />
-      </TabsContent>
-
-      <TabsContent value="ai-vendor-management">
-        <AIVendorMatching />
-      </TabsContent>
-
-      <TabsContent value="vendor-management">
-        <VendorManagementHub />
-      </TabsContent>
-
-      <TabsContent value="vendor-service-categories">
-        <VendorCategoryDashboard />
-      </TabsContent>
-
-      <TabsContent value="vendor-services">
-        <AdminVendorServiceManagement />
-      </TabsContent>
-
-      <TabsContent value="analytics">
-        <AnalyticsDashboard />
-      </TabsContent>
-
-      <TabsContent value="ai-bot-management">
-        <AIBotManagement />
-      </TabsContent>
-
-      <TabsContent value="feedback-management">
-        <FeedbackManagement />
-      </TabsContent>
-
-      <TabsContent value="error-management">
-        <ErrorManagement />
-      </TabsContent>
-
-      <TabsContent value="content-management">
-        <ContentManagement />
-      </TabsContent>
-
-      <TabsContent value="search-filters">
-        <SearchFiltersManagement />
-      </TabsContent>
-
-      <TabsContent value="system-settings">
-        <SystemSettings />
-      </TabsContent>
-
-      <TabsContent value="billing-management">
-        <BillingManagement />
-      </TabsContent>
-
-      <TabsContent value="security-monitoring">
-        <SecurityMonitoring />
-      </TabsContent>
-
-      <TabsContent value="system-reports">
-        <SystemReports />
-      </TabsContent>
-    </>
+    <div className="flex-1 p-6">
+      {renderContent()}
+    </div>
   );
 };
 

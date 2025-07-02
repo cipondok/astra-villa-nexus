@@ -44,7 +44,7 @@ export const categories = [
   "tools",
   "core-management",
   "customer-service", 
-  "ai-vendor-management",
+  "vendor-management",
   "analytics-monitoring",
   "content-settings",
   "system-settings",
@@ -134,30 +134,24 @@ export const navigationSections = {
     }
   ],
 
-  "ai-vendor-management": [
+  "vendor-management": [
     {
-      key: "ai-vendor-management",
-      label: "AI Vendor Management",
+      key: "vendor-management-hub",
+      label: "Vendor Management Hub",
       icon: ShoppingBag,
-      description: "Manage AI and vendor integrations"
-    },
-    {
-      key: "vendor-management",
-      label: "Vendor Management",
-      icon: Users,
-      description: "Manage vendor accounts and services"
+      description: "Complete vendor management dashboard"
     },
     {
       key: "vendor-service-categories",
-      label: "Vendor Service Categories",
+      label: "Categories & Services",
       icon: ListChecks,
-      description: "Manage categories for vendor services"
+      description: "Manage vendor categories and services"
     },
     {
-      key: "vendor-services",
-      label: "Vendor Services",
-      icon: ShoppingBag,
-      description: "Manage individual vendor services"
+      key: "vendor-inventory",
+      label: "Inventory Management",
+      icon: Database,
+      description: "Manage vendor product inventory"
     }
   ],
 
@@ -255,7 +249,7 @@ export const sectionTitles = {
   tools: "Tools & Management",
   "core-management": "Core Management",
   "customer-service": "Customer Service",
-  "ai-vendor-management": "AI & Vendor Management", 
+  "vendor-management": "Vendor Management", 
   "analytics-monitoring": "Analytics & Monitoring",
   "content-settings": "Content & Settings",
   "system-settings": "System Settings",
