@@ -212,11 +212,11 @@ const VendorServicesCategoryShowcase = () => {
 
       {/* Main Categories Showcase */}
       <Tabs value={selectedCategory || mainCategories?.[0]?.id} onValueChange={setSelectedCategory}>
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-7 gap-1">
           {mainCategories?.map((category) => (
-            <TabsTrigger key={category.id} value={category.id} className="flex items-center gap-2">
+            <TabsTrigger key={category.id} value={category.id} className="flex flex-col items-center gap-1 p-2 text-xs">
               <span className="text-lg">{category.icon}</span>
-              <span className="hidden md:inline">{category.name}</span>
+              <span className="hidden sm:inline text-center leading-tight">{category.name}</span>
             </TabsTrigger>
           ))}
         </TabsList>
