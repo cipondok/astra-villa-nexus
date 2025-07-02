@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Slider } from '@/components/ui/slider';
 import { Label } from '@/components/ui/label';
 import { useAlert } from '@/contexts/AlertContext';
+import { useWebsiteSettings } from '@/contexts/WebsiteSettingsContext';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useSupabaseErrorHandler } from '@/hooks/useSupabaseErrorHandler';
@@ -36,74 +37,8 @@ import {
 } from 'lucide-react';
 
 const WebsiteDesignControl = () => {
-  const [settings, setSettings] = useState({
-    // Logo & Branding
-    siteLogo: '',
-    siteName: 'AstraVilla',
-    siteTagline: 'Premium Real Estate Platform',
-    faviconUrl: '',
-    
-    // Colors - Light Mode
-    lightPrimaryColor: '#3B82F6',
-    lightSecondaryColor: '#10B981',
-    lightBackgroundColor: '#FFFFFF',
-    lightSurfaceColor: '#F8FAFC',
-    lightTextColor: '#1E293B',
-    lightAccentColor: '#F59E0B',
-    
-    // Colors - Dark Mode
-    darkPrimaryColor: '#60A5FA',
-    darkSecondaryColor: '#424242',
-    darkBackgroundColor: '#424242',
-    darkSurfaceColor: '#1E293B',
-    darkTextColor: '#F1F5F9',
-    darkAccentColor: '#FBBF24',
-    
-    // Typography
-    primaryFont: 'Inter',
-    secondaryFont: 'SF Pro Display',
-    baseFontSize: 16,
-    headingFontWeight: 600,
-    bodyFontWeight: 400,
-    
-    // Layout
-    containerMaxWidth: 1200,
-    borderRadius: 12,
-    spacing: 16,
-    shadowIntensity: 3,
-    
-    // Header
-    headerHeight: 80,
-    headerBackground: 'glass',
-    headerPosition: 'sticky',
-    showNavigation: true,
-    showUserMenu: true,
-    showThemeToggle: true,
-    
-    // Footer
-    footerBackground: '#1F2937',
-    footerTextColor: '#F9FAFB',
-    showFooterLinks: true,
-    showSocialMedia: true,
-    copyrightText: '© 2024 AstraVilla. All rights reserved.',
-    
-    // Backgrounds
-    heroBackgroundType: 'gradient',
-    heroBackgroundImage: '',
-    heroGradientStart: '#667EEA',
-    heroGradientEnd: '#764BA2',
-    bodyBackgroundPattern: 'none',
-    bodyBackgroundImage: '',
-    
-    // Advanced
-    animations: true,
-    glassEffect: true,
-    particleEffects: false,
-    darkModeDefault: false,
-    rtlSupport: false,
-    customCSS: ''
-  });
-
+  const { settings: websiteSettings, applyCSSVariables } = useWebsiteSettings();
+  const [settings, setSettings] = useState(websiteSettings);
   const [loading, setLoading] = useState(false);
   const [previewMode, setPreviewMode] = useState('desktop');
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
@@ -112,54 +47,10 @@ const WebsiteDesignControl = () => {
   const { showSuccess, showError } = useAlert();
   const { createRetryableQuery, handleError } = useSupabaseErrorHandler();
 
+  // Sync with website settings
   useEffect(() => {
-    loadSettings();
-  }, []);
-
-  const loadSettings = async () => {
-    try {
-      console.log('Loading website design settings...');
-      
-      const retryableQuery = createRetryableQuery(async () => {
-        const { data, error } = await supabase
-          .from('system_settings')
-          .select('key, value')
-          .eq('category', 'website_design');
-        
-        if (error) throw error;
-        return data;
-      });
-
-      const data = await retryableQuery();
-      
-      console.log('Loaded settings data:', data);
-
-      if (data && data.length > 0) {
-        const settingsObj = data.reduce((acc, setting) => {
-          let value = setting.value;
-          // Handle different value types
-          if (typeof value === 'string') {
-            try {
-              value = JSON.parse(value);
-            } catch {
-              // Keep as string if not valid JSON
-            }
-          }
-          acc[setting.key] = value;
-          return acc;
-        }, {} as any);
-        
-        console.log('Processed settings object:', settingsObj);
-        setSettings(prev => ({ ...prev, ...settingsObj }));
-      }
-      
-      toast.success('Settings loaded successfully');
-    } catch (error) {
-      console.error('Error loading settings:', error);
-      handleError(error);
-      toast.error('Failed to load website design settings');
-    }
-  };
+    setSettings(websiteSettings);
+  }, [websiteSettings]);
 
   const saveSettings = async () => {
     if (loading) return;
@@ -171,63 +62,44 @@ const WebsiteDesignControl = () => {
       console.log('Starting to save website design settings...');
       console.log('Current settings to save:', settings);
       
-      // Use a more direct approach with proper conflict resolution
       const settingsEntries = Object.entries(settings);
       
       for (const [key, value] of settingsEntries) {
         console.log(`Processing setting: ${key} with value:`, value);
         
-        try {
-          // First try to update if exists
-          const { data: updateData, error: updateError } = await supabase
-            .from('system_settings')
-            .update({ 
-              value: value,
-              updated_at: new Date().toISOString()
-            })
-            .eq('key', key)
-            .eq('category', 'website_design')
-            .select();
-
-          if (updateError) {
-            console.log(`Update failed for ${key}, trying insert:`, updateError.message);
-            
-            // If update fails (no rows), try insert
-            const { error: insertError } = await supabase
-              .from('system_settings')
-              .insert({
-                key,
-                value: value,
-                category: 'website_design',
-                description: `Website design setting for ${key}`,
-                is_public: true,
-                updated_at: new Date().toISOString()
-              });
-            
-            if (insertError) {
-              console.error(`Insert also failed for ${key}:`, insertError);
-              throw insertError;
-            }
-            
-            console.log(`Successfully inserted setting: ${key}`);
-          } else {
-            console.log(`Successfully updated setting: ${key}`, updateData);
-          }
-        } catch (settingError) {
-          console.error(`Failed to save setting ${key}:`, settingError);
-          throw settingError;
+        const { error } = await supabase
+          .from('system_settings')
+          .upsert({
+            key,
+            value: value,
+            category: 'website_design',
+            description: `Website design setting for ${key}`,
+            is_public: true,
+            updated_at: new Date().toISOString()
+          });
+        
+        if (error) {
+          console.error(`Failed to save setting ${key}:`, error);
+          throw error;
         }
+        
+        console.log(`Successfully saved setting: ${key}`);
       }
       
       // Apply settings to CSS immediately
-      applySettingsToCSS();
+      applyCSSVariables();
       
       setHasUnsavedChanges(false);
       setSaveStatus('success');
       setLastSaveAttempt(new Date());
       
       console.log('All settings saved successfully');
-      toast.success('Website design settings saved successfully!');
+      toast.success('Website design settings saved and applied successfully!');
+      
+      // Force a page refresh to show changes
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
       
     } catch (error) {
       console.error('Save error:', error);
@@ -237,60 +109,6 @@ const WebsiteDesignControl = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const applySettingsToCSS = () => {
-    try {
-      console.log('Applying settings to CSS variables...');
-      const root = document.documentElement;
-      
-      // Apply light mode colors
-      root.style.setProperty('--primary-light', settings.lightPrimaryColor);
-      root.style.setProperty('--secondary-light', settings.lightSecondaryColor);
-      root.style.setProperty('--background-light', settings.lightBackgroundColor);
-      root.style.setProperty('--surface-light', settings.lightSurfaceColor);
-      root.style.setProperty('--text-light', settings.lightTextColor);
-      root.style.setProperty('--accent-light', settings.lightAccentColor);
-      
-      // Apply dark mode colors with transparency for secondary
-      root.style.setProperty('--primary-dark', settings.darkPrimaryColor);
-      
-      // Convert dark secondary color to have 70% transparency
-      const darkSecondaryWithTransparency = hexToRgbaString(settings.darkSecondaryColor, 0.7);
-      root.style.setProperty('--secondary-dark', darkSecondaryWithTransparency);
-      
-      root.style.setProperty('--background-dark', settings.darkBackgroundColor);
-      root.style.setProperty('--surface-dark', settings.darkSurfaceColor);
-      root.style.setProperty('--text-dark', settings.darkTextColor);
-      root.style.setProperty('--accent-dark', settings.darkAccentColor);
-      
-      // Apply typography
-      root.style.setProperty('--font-primary', settings.primaryFont);
-      root.style.setProperty('--font-secondary', settings.secondaryFont);
-      root.style.setProperty('--font-size-base', `${settings.baseFontSize}px`);
-      
-      // Apply layout
-      root.style.setProperty('--container-max-width', `${settings.containerMaxWidth}px`);
-      root.style.setProperty('--border-radius', `${settings.borderRadius}px`);
-      root.style.setProperty('--spacing-base', `${settings.spacing}px`);
-      
-      console.log('CSS variables applied successfully');
-    } catch (error) {
-      console.error('Error applying CSS variables:', error);
-    }
-  };
-
-  // Helper function to convert hex color to rgba string
-  const hexToRgbaString = (hex: string, alpha: number) => {
-    // Remove # if present
-    const cleanHex = hex.replace('#', '');
-    
-    // Parse RGB values
-    const r = parseInt(cleanHex.substr(0, 2), 16);
-    const g = parseInt(cleanHex.substr(2, 2), 16);
-    const b = parseInt(cleanHex.substr(4, 2), 16);
-    
-    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
   };
 
   const handleInputChange = (key: string, value: any) => {
@@ -378,8 +196,11 @@ const WebsiteDesignControl = () => {
       particleEffects: false,
       darkModeDefault: false,
       rtlSupport: false,
-      customCSS: ''
-    });
+      customCSS: '',
+      maintenanceMode: false,
+      registrationEnabled: true,
+      emailNotifications: true,
+    } as any);
     setHasUnsavedChanges(true);
     setSaveStatus('idle');
     toast.info('Settings reset to defaults. Click Save to apply changes.');
@@ -401,13 +222,13 @@ const WebsiteDesignControl = () => {
   const getSaveButtonText = () => {
     switch (saveStatus) {
       case 'saving':
-        return 'Saving...';
+        return 'Saving & Applying...';
       case 'success':
-        return hasUnsavedChanges ? 'Save Changes' : 'All Saved';
+        return hasUnsavedChanges ? 'Save & Apply Changes' : 'Applied Successfully';
       case 'error':
         return 'Retry Save';
       default:
-        return hasUnsavedChanges ? 'Save Changes' : 'No Changes';
+        return hasUnsavedChanges ? 'Save & Apply Changes' : 'No Changes';
     }
   };
 
@@ -442,11 +263,11 @@ const WebsiteDesignControl = () => {
       <div className="flex items-center justify-between p-6 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-700 rounded-xl border border-gray-200 dark:border-gray-600">
         <div>
           <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Website Design Control</h2>
-          <p className="text-gray-600 dark:text-gray-300 mt-2">Complete control over your website's appearance and design</p>
+          <p className="text-gray-600 dark:text-gray-300 mt-2">Design changes will be applied immediately to the live website</p>
           {hasUnsavedChanges && (
             <p className="text-orange-600 dark:text-orange-400 text-sm mt-1 flex items-center gap-1">
               <Settings className="h-4 w-4" />
-              You have unsaved changes
+              You have unsaved changes - they will apply after saving
             </p>
           )}
           {lastSaveAttempt && (
