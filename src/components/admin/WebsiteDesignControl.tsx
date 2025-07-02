@@ -53,8 +53,8 @@ const WebsiteDesignControl = () => {
     
     // Colors - Dark Mode
     darkPrimaryColor: '#60A5FA',
-    darkSecondaryColor: '#34D399',
-    darkBackgroundColor: '#0F172A',
+    darkSecondaryColor: '#424242',
+    darkBackgroundColor: '#424242',
     darkSurfaceColor: '#1E293B',
     darkTextColor: '#F1F5F9',
     darkAccentColor: '#FBBF24',
@@ -342,8 +342,8 @@ const WebsiteDesignControl = () => {
       lightTextColor: '#1E293B',
       lightAccentColor: '#F59E0B',
       darkPrimaryColor: '#60A5FA',
-      darkSecondaryColor: '#34D399',
-      darkBackgroundColor: '#0F172A',
+      darkSecondaryColor: '#424242',
+      darkBackgroundColor: '#424242',
       darkSurfaceColor: '#1E293B',
       darkTextColor: '#F1F5F9',
       darkAccentColor: '#FBBF24',
