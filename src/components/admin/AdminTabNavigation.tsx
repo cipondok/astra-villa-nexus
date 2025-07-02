@@ -1,265 +1,111 @@
 
-import React from "react";
+import React from 'react';
 import { TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { 
   Activity, 
-  BarChart3, 
-  Building, 
-  Settings, 
   Users, 
-  Shield, 
-  FileText, 
+  Building, 
+  ShoppingCart, 
+  Settings, 
+  BarChart3, 
   MessageSquare,
-  Wrench,
+  Shield,
   Database,
-  Globe,
-  Crown,
-  Zap,
-  TrendingUp,
-  Calendar,
-  Star,
-  Headphones
+  Wrench,
+  FileText,
+  Zap
 } from "lucide-react";
 
 interface AdminTabNavigationProps {
   isAdmin: boolean;
 }
 
-interface TabItem {
-  id: string;
-  label: string;
-  icon: React.ComponentType<any>;
-  category: string;
-  badge?: string;
-}
-
 const AdminTabNavigation = ({ isAdmin }: AdminTabNavigationProps) => {
-  const adminTabs: TabItem[] = [
-    { 
-      id: "overview", 
-      label: "Overview", 
-      icon: Activity, 
-      category: "dashboard" 
+  const tabs = [
+    {
+      value: "diagnostic",
+      label: "System Health",
+      icon: Activity,
+      color: "text-blue-600 dark:text-blue-400",
+      bgColor: "hover:bg-blue-50 dark:hover:bg-blue-900/20"
     },
-    { 
-      id: "diagnostic", 
-      label: "Diagnostic", 
-      icon: Wrench, 
-      category: "dashboard",
-      badge: "New"
+    {
+      value: "overview",
+      label: "Overview",
+      icon: BarChart3,
+      color: "text-green-600 dark:text-green-400",
+      bgColor: "hover:bg-green-50 dark:hover:bg-green-900/20"
     },
-    { 
-      id: "astra-token", 
-      label: "ASTRA Token", 
-      icon: Crown, 
-      category: "analytics" 
+    {
+      value: "users",
+      label: "Users",
+      icon: Users,
+      color: "text-purple-600 dark:text-purple-400",
+      bgColor: "hover:bg-purple-50 dark:hover:bg-purple-900/20"
     },
-    { 
-      id: "astra-token-settings", 
-      label: "ASTRA Settings", 
-      icon: Zap, 
-      category: "settings" 
+    {
+      value: "properties",
+      label: "Properties",
+      icon: Building,
+      color: "text-orange-600 dark:text-orange-400",
+      bgColor: "hover:bg-orange-50 dark:hover:bg-orange-900/20"
     },
-    { 
-      id: "tools-management", 
-      label: "Tools", 
-      icon: Settings, 
-      category: "management" 
+    {
+      value: "vendors",
+      label: "Vendors",
+      icon: ShoppingCart,
+      color: "text-pink-600 dark:text-pink-400",
+      bgColor: "hover:bg-pink-50 dark:hover:bg-pink-900/20"
     },
-    { 
-      id: "seo-settings", 
-      label: "SEO", 
-      icon: Globe, 
-      category: "settings" 
+    {
+      value: "analytics",
+      label: "Analytics",
+      icon: Database,
+      color: "text-indigo-600 dark:text-indigo-400",
+      bgColor: "hover:bg-indigo-50 dark:hover:bg-indigo-900/20"
     },
-    { 
-      id: "user-management", 
-      label: "Users", 
-      icon: Users, 
-      category: "management" 
-    },
-    { 
-      id: "property-management", 
-      label: "Properties", 
-      icon: Building, 
-      category: "management" 
-    },
-    { 
-      id: "property-management-hub", 
-      label: "Property Hub", 
-      icon: Building, 
-      category: "management",
-      badge: "Updated"
-    },
-    { 
-      id: "customer-service", 
-      label: "Support", 
-      icon: Headphones, 
-      category: "service" 
-    },
-    { 
-      id: "contact-management", 
-      label: "Contacts", 
-      icon: MessageSquare, 
-      category: "service" 
-    },
-    { 
-      id: "chat-management", 
-      label: "Chats", 
-      icon: MessageSquare, 
-      category: "service" 
-    },
-    { 
-      id: "ai-vendor-management", 
-      label: "AI Vendors", 
-      icon: Zap, 
-      category: "vendor" 
-    },
-    { 
-      id: "vendor-management", 
-      label: "Vendors", 
-      icon: Users, 
-      category: "vendor" 
-    },
-    { 
-      id: "vendor-service-categories", 
-      label: "Categories", 
-      icon: Settings, 
-      category: "vendor" 
-    },
-    { 
-      id: "vendor-services", 
-      label: "Services", 
-      icon: Star, 
-      category: "vendor" 
-    },
-    { 
-      id: "kyc-management", 
-      label: "KYC", 
-      icon: Shield, 
-      category: "compliance" 
-    },
-    { 
-      id: "membership-management", 
-      label: "Membership", 
-      icon: Crown, 
-      category: "management" 
-    },
-    { 
-      id: "analytics", 
-      label: "Analytics", 
-      icon: BarChart3, 
-      category: "analytics" 
-    },
-    { 
-      id: "ai-bot-management", 
-      label: "AI Bot", 
-      icon: Zap, 
-      category: "ai" 
-    },
-    { 
-      id: "feedback-management", 
-      label: "Feedback", 
-      icon: MessageSquare, 
-      category: "service" 
-    },
-    { 
-      id: "daily-checkin", 
-      label: "Check-in", 
-      icon: Calendar, 
-      category: "management" 
-    },
-    { 
-      id: "error-management", 
-      label: "Errors", 
-      icon: Shield, 
-      category: "technical" 
-    },
-    { 
-      id: "content-management", 
-      label: "Content", 
-      icon: FileText, 
-      category: "management" 
-    },
-    { 
-      id: "search-filters", 
-      label: "Filters", 
-      icon: Settings, 
-      category: "settings" 
-    },
-    { 
-      id: "system-settings", 
-      label: "System", 
-      icon: Settings, 
-      category: "settings" 
-    },
-    { 
-      id: "billing-management", 
-      label: "Billing", 
-      icon: TrendingUp, 
-      category: "finance" 
-    },
-    { 
-      id: "database-management", 
-      label: "Database", 
-      icon: Database, 
-      category: "technical" 
-    },
-    { 
-      id: "security-monitoring", 
-      label: "Security", 
-      icon: Shield, 
-      category: "technical" 
-    },
-    { 
-      id: "system-reports", 
-      label: "Reports", 
-      icon: FileText, 
-      category: "analytics" 
+    {
+      value: "settings",
+      label: "Settings",
+      icon: Settings,
+      color: "text-slate-600 dark:text-slate-400",
+      bgColor: "hover:bg-slate-50 dark:hover:bg-slate-900/20"
     }
   ];
-
-  const nonAdminTabs: TabItem[] = [
-    { 
-      id: "overview", 
-      label: "Overview", 
-      icon: Activity, 
-      category: "dashboard" 
-    },
-    { 
-      id: "support", 
-      label: "Support", 
-      icon: Headphones, 
-      category: "service" 
-    }
-  ];
-
-  const tabs = isAdmin ? adminTabs : nonAdminTabs;
 
   return (
-    <div className="w-full">
-      <TabsList className="grid w-full grid-cols-4 lg:grid-cols-8 xl:grid-cols-12 gap-1 h-auto p-1 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
-        {tabs.map((tab) => (
+    <TabsList className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 h-auto p-2 bg-transparent gap-2">
+      {tabs.map((tab) => {
+        const Icon = tab.icon;
+        return (
           <TabsTrigger
-            key={tab.id}
-            value={tab.id}
-            className="flex flex-col items-center gap-1 p-2 text-xs font-medium rounded-md transition-all duration-200 data-[state=active]:bg-blue-500 data-[state=active]:text-white data-[state=active]:shadow-md hover:bg-gray-100 dark:hover:bg-gray-700 relative"
+            key={tab.value}
+            value={tab.value}
+            className={`
+              flex flex-col items-center gap-2 p-4 h-auto min-h-[80px] 
+              bg-white/60 dark:bg-slate-700/60 
+              border border-slate-200 dark:border-slate-600 
+              rounded-lg transition-all duration-300
+              data-[state=active]:bg-blue-600 data-[state=active]:text-white
+              data-[state=active]:border-blue-600 data-[state=active]:shadow-lg
+              ${tab.bgColor}
+              hover:shadow-md hover:scale-105 transform
+            `}
           >
-            <tab.icon className="h-4 w-4" />
-            <span className="hidden sm:block">{tab.label}</span>
-            {tab.badge && (
-              <Badge 
-                variant={tab.badge === "New" ? "default" : "secondary"} 
-                className="absolute -top-1 -right-1 text-xs px-1 py-0 h-4 min-w-4"
-              >
-                {tab.badge}
+            <Icon className="h-5 w-5" />
+            <span className="text-xs font-medium text-center leading-tight">
+              {tab.label}
+            </span>
+            {tab.value === "diagnostic" && (
+              <Badge variant="outline" className="text-xs px-1 py-0 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 border-green-300 dark:border-green-600">
+                Live
               </Badge>
             )}
           </TabsTrigger>
-        ))}
-      </TabsList>
-    </div>
+        );
+      })}
+    </TabsList>
   );
 };
 
