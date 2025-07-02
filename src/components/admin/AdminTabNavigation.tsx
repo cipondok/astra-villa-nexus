@@ -97,120 +97,35 @@ const AdminTabNavigation: React.FC<TabNavigationProps> = ({
 
   const tabGroups = [
     {
-      title: "Dashboard & Analytics",
+      title: "Main Dashboard",
       tabs: [
-        { key: 'overview', label: 'Overview', icon: Home },
-        { key: 'analytics', label: 'Analytics', icon: BarChart3 },
-        { key: 'real-time-stats', label: 'Real-Time Stats', icon: Activity },
-        { key: 'business-intelligence', label: 'Business Intelligence', icon: Brain },
-        { key: 'performance-analytics', label: 'Performance Analytics', icon: TrendingUp },
-        { key: 'web-traffic', label: 'Web Traffic', icon: Globe }
+        { key: 'overview', label: 'Overview', icon: Home, color: 'bg-blue-500' },
+        { key: 'analytics', label: 'Analytics', icon: BarChart3, color: 'bg-green-500' },
+        { key: 'alerts', label: 'Alerts', icon: Bell, color: 'bg-red-500' }
       ]
     },
     {
-      title: "User Management",
+      title: "User & Property Management",
       tabs: [
-        { key: 'users', label: 'User Management', icon: Users },
-        { key: 'user-roles', label: 'User Roles', icon: UserCheck },
-        { key: 'user-levels', label: 'User Levels', icon: Star },
-        { key: 'user-departments', label: 'User Departments', icon: Building2 },
-        { key: 'agent-users', label: 'Agent Users', icon: Briefcase },
-        { key: 'property-owner-users', label: 'Property Owner Users', icon: Home },
-        { key: 'vendor-users', label: 'Vendor Users', icon: Wrench },
-        { key: 'database-users', label: 'Database Users', icon: Database }
-      ]
-    },
-    {
-      title: "Property Management",
-      tabs: [
-        { key: 'properties', label: 'Properties', icon: Building2 },
-        { key: 'property-management', label: 'Property Management', icon: Home },
-        { key: 'property-categories', label: 'Property Categories', icon: Layers },
-        { key: 'property-filters', label: 'Property Filters', icon: Filter },
-        { key: 'property-display', label: 'Property Display', icon: Eye },
-        { key: 'property-3d', label: '3D View Settings', icon: Camera },
-        { key: 'property-slideshow', label: 'Slideshow Settings', icon: Image },
-        { key: 'property-watermark', label: 'Watermark Settings', icon: Shield },
-        { key: 'search-filters', label: 'Search Filters', icon: Search }
-      ]
-    },
-    {
-      title: "Vendor Management",
-      tabs: [
-        { key: 'vendors', label: 'Vendor Management', icon: Wrench },
-        { key: 'vendor-services', label: 'Vendor Services', icon: Settings },
-        { key: 'vendor-categories', label: 'Service Categories', icon: Package },
-        { key: 'vendor-performance', label: 'Vendor Performance', icon: BarChart },
-        { key: 'vendor-verification', label: 'Vendor Verification', icon: CheckCircle },
-        { key: 'vendor-fraud', label: 'Fraud Detection', icon: Shield },
-        { key: 'vendor-matching', label: 'AI Matching', icon: Brain }
-      ]
-    },
-    {
-      title: "Communication & Support",
-      tabs: [
-        { key: 'communications', label: 'Communications', icon: MessageSquare },
-        { key: 'chat-management', label: 'Chat Management', icon: MessageSquare },
-        { key: 'live-chat', label: 'Live Chat', icon: PhoneCall },
-        { key: 'customer-service', label: 'Customer Service', icon: Headphones },
-        { key: 'help-desk', label: 'Help Desk', icon: HelpCircle },
-        { key: 'contact-management', label: 'Contact Management', icon: Mail },
-        { key: 'social-media', label: 'Social Media', icon: Share2 }
+        { key: 'users', label: 'Users', icon: Users, color: 'bg-purple-500' },
+        { key: 'properties', label: 'Properties', icon: Building2, color: 'bg-orange-500' },
+        { key: 'vendors', label: 'Vendors', icon: Wrench, color: 'bg-yellow-500' }
       ]
     },
     {
       title: "Content & Design",
       tabs: [
-        { key: 'content', label: 'Content Management', icon: FileText },
-        { key: 'website-design', label: 'Website Design', icon: Palette },
-        { key: 'seo-management', label: 'SEO Management', icon: Search },
-        { key: 'loading-page', label: 'Loading Page', icon: RefreshCw }
+        { key: 'content', label: 'Content', icon: FileText, color: 'bg-indigo-500' },
+        { key: 'website-design', label: 'Website Design', icon: Palette, color: 'bg-pink-500' },
+        { key: 'social-media', label: 'Social Media', icon: Share2, color: 'bg-cyan-500' }
       ]
     },
     {
       title: "System & Security",
       tabs: [
-        { key: 'system-settings', label: 'System Settings', icon: Settings },
-        { key: 'security', label: 'Security', icon: Shield },
-        { key: 'security-monitoring', label: 'Security Monitoring', icon: Eye },
-        { key: 'system-monitor', label: 'System Monitor', icon: Activity },
-        { key: 'database-management', label: 'Database Management', icon: Database },
-        { key: 'maintenance', label: 'Maintenance', icon: Wrench },
-        { key: 'diagnostics', label: 'Diagnostics', icon: Bug },
-        { key: 'system-health', label: 'System Health', icon: Heart },
-        { key: 'alerts', label: 'Alert Management', icon: Bell },
-        { key: 'error-management', label: 'Error Management', icon: AlertTriangle },
-        { key: 'system-reports', label: 'System Reports', icon: FileText }
-      ]
-    },
-    {
-      title: "AI & Automation",
-      tabs: [
-        { key: 'ai-management', label: 'AI Bot Management', icon: Brain },
-        { key: 'ai-insights', label: 'AI Insights', icon: Zap },
-        { key: 'automation', label: 'Automation Features', icon: ZapIcon }
-      ]
-    },
-    {
-      title: "Financial & Billing",
-      tabs: [
-        { key: 'billing', label: 'Billing Management', icon: CreditCard },
-        { key: 'membership-management', label: 'Membership Management', icon: Award },
-        { key: 'astra-token', label: 'ASTRA Token', icon: DollarSign },
-        { key: 'astra-analytics', label: 'ASTRA Analytics', icon: PieChart }
-      ]
-    },
-    {
-      title: "Tools & Integrations",
-      tabs: [
-        { key: 'tools-management', label: 'Tools Management', icon: Wrench },
-        { key: 'api-config', label: 'API Configuration', icon: Code },
-        { key: 'smtp-settings', label: 'SMTP Settings', icon: Mail },
-        { key: 'office-management', label: 'Office Management', icon: Building2 },
-        { key: 'location-database', label: 'Location Database', icon: MapPin },
-        { key: 'market-trends', label: 'Market Trends', icon: TrendingUp },
-        { key: 'trending-topics', label: 'Trending Topics', icon: Star },
-        { key: 'major-topics', label: 'Major Topics Dashboard', icon: BookOpen }
+        { key: 'system-settings', label: 'System Settings', icon: Settings, color: 'bg-gray-500' },
+        { key: 'security', label: 'Security', icon: Shield, color: 'bg-red-600' },
+        { key: 'database-management', label: 'Database', icon: Database, color: 'bg-blue-600' }
       ]
     }
   ];
@@ -218,26 +133,28 @@ const AdminTabNavigation: React.FC<TabNavigationProps> = ({
   return (
     <div className="space-y-6">
       {tabGroups.map((group) => (
-        <div key={group.title} className="space-y-2">
-          <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider px-3">
+        <div key={group.title} className="space-y-3">
+          <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider px-2">
             {group.title}
           </h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
+          <div className="space-y-2">
             {group.tabs.map((tab) => {
               const Icon = tab.icon;
+              const isActive = activeTab === tab.key;
+              
               return (
                 <Button
                   key={tab.key}
-                  variant={activeTab === tab.key ? "default" : "ghost"}
-                  className={`justify-start h-auto p-3 text-left ${
-                    activeTab === tab.key 
-                      ? "bg-blue-600 text-white shadow-lg" 
-                      : "hover:bg-gray-100 dark:hover:bg-gray-800"
+                  variant={isActive ? "default" : "ghost"}
+                  className={`w-full justify-start h-12 px-4 text-left font-medium transition-all ${
+                    isActive 
+                      ? `${tab.color} text-white shadow-lg hover:opacity-90` 
+                      : "text-gray-300 hover:text-white hover:bg-white/10"
                   }`}
                   onClick={() => setActiveTab(tab.key)}
                 >
-                  <Icon className="h-4 w-4 mr-2 flex-shrink-0" />
-                  <span className="truncate">{tab.label}</span>
+                  <Icon className="h-5 w-5 mr-3 flex-shrink-0" />
+                  <span className="flex-1">{tab.label}</span>
                   {getAlertBadge(tab.key)}
                 </Button>
               );
@@ -245,6 +162,41 @@ const AdminTabNavigation: React.FC<TabNavigationProps> = ({
           </div>
         </div>
       ))}
+      
+      {/* Quick Access Tools */}
+      <div className="pt-4 border-t border-white/10">
+        <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider px-2 mb-3">
+          Quick Tools
+        </h3>
+        <div className="grid grid-cols-2 gap-2">
+          {[
+            { key: 'real-time-stats', label: 'Live Stats', icon: Activity },
+            { key: 'system-monitor', label: 'Monitor', icon: Eye },
+            { key: 'error-management', label: 'Errors', icon: AlertTriangle },
+            { key: 'maintenance', label: 'Maintenance', icon: Wrench }
+          ].map((tool) => {
+            const Icon = tool.icon;
+            const isActive = activeTab === tool.key;
+            
+            return (
+              <Button
+                key={tool.key}
+                variant={isActive ? "default" : "outline"}
+                size="sm"
+                className={`h-10 text-xs ${
+                  isActive 
+                    ? "bg-white/20 text-white border-white/30" 
+                    : "border-white/20 text-gray-400 hover:text-white hover:bg-white/10"
+                }`}
+                onClick={() => setActiveTab(tool.key)}
+              >
+                <Icon className="h-3 w-3 mr-1" />
+                {tool.label}
+              </Button>
+            );
+          })}
+        </div>
+      </div>
     </div>
   );
 };
