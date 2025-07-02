@@ -56,48 +56,50 @@ export function ThemeProvider({
     root.classList.add(effectiveTheme);
     body.classList.add(effectiveTheme);
 
-    // Force update CSS custom properties
+    // Enhanced CSS custom properties with better color combinations
     const updateCSSVariables = () => {
       if (effectiveTheme === "dark") {
-        root.style.setProperty('--background', '0 0 0');
-        root.style.setProperty('--foreground', '255 255 255');
-        root.style.setProperty('--card', '28 28 30');
-        root.style.setProperty('--card-foreground', '255 255 255');
-        root.style.setProperty('--primary', '217 91 60');
+        // Dark mode - Rich dark theme
+        root.style.setProperty('--background', '2 6 23');           // Deep navy
+        root.style.setProperty('--foreground', '248 250 252');      // Soft white
+        root.style.setProperty('--card', '15 23 42');               // Dark blue-gray
+        root.style.setProperty('--card-foreground', '248 250 252');
+        root.style.setProperty('--primary', '99 102 241');          // Bright indigo
         root.style.setProperty('--primary-foreground', '255 255 255');
-        root.style.setProperty('--secondary', '44 44 46');
-        root.style.setProperty('--secondary-foreground', '255 255 255');
-        root.style.setProperty('--muted', '44 44 46');
-        root.style.setProperty('--muted-foreground', '174 174 178');
-        root.style.setProperty('--border', '58 58 60');
-        root.style.setProperty('--input', '28 28 30');
-        root.style.setProperty('--ring', '217 91 60');
-        root.style.setProperty('--destructive', '239 68 68');
+        root.style.setProperty('--secondary', '30 41 59');          // Dark blue
+        root.style.setProperty('--secondary-foreground', '203 213 225');
+        root.style.setProperty('--muted', '30 41 59');
+        root.style.setProperty('--muted-foreground', '148 163 184');
+        root.style.setProperty('--border', '51 65 85');
+        root.style.setProperty('--input', '30 41 59');
+        root.style.setProperty('--ring', '99 102 241');
+        root.style.setProperty('--destructive', '248 113 113');
         root.style.setProperty('--destructive-foreground', '255 255 255');
-        root.style.setProperty('--popover', '28 28 30');
-        root.style.setProperty('--popover-foreground', '255 255 255');
-        root.style.setProperty('--accent', '44 44 46');
+        root.style.setProperty('--popover', '15 23 42');
+        root.style.setProperty('--popover-foreground', '248 250 252');
+        root.style.setProperty('--accent', '34 197 94');            // Bright green
         root.style.setProperty('--accent-foreground', '255 255 255');
       } else {
-        root.style.setProperty('--background', '255 255 255');
-        root.style.setProperty('--foreground', '0 0 0');
-        root.style.setProperty('--card', '255 255 255');
-        root.style.setProperty('--card-foreground', '0 0 0');
-        root.style.setProperty('--primary', '217 91 60');
+        // Light mode - Clean and modern
+        root.style.setProperty('--background', '248 250 252');      // Soft gray-blue
+        root.style.setProperty('--foreground', '15 23 42');         // Rich dark blue-gray
+        root.style.setProperty('--card', '255 255 255');            // Pure white
+        root.style.setProperty('--card-foreground', '15 23 42');
+        root.style.setProperty('--primary', '59 130 246');          // Vibrant blue
         root.style.setProperty('--primary-foreground', '255 255 255');
-        root.style.setProperty('--secondary', '245 245 247');
-        root.style.setProperty('--secondary-foreground', '0 0 0');
-        root.style.setProperty('--muted', '248 248 248');
-        root.style.setProperty('--muted-foreground', '99 99 102');
-        root.style.setProperty('--border', '229 229 234');
+        root.style.setProperty('--secondary', '241 245 249');       // Light blue-gray
+        root.style.setProperty('--secondary-foreground', '51 65 85');
+        root.style.setProperty('--muted', '248 250 252');
+        root.style.setProperty('--muted-foreground', '100 116 139');
+        root.style.setProperty('--border', '226 232 240');
         root.style.setProperty('--input', '255 255 255');
-        root.style.setProperty('--ring', '217 91 60');
+        root.style.setProperty('--ring', '59 130 246');
         root.style.setProperty('--destructive', '239 68 68');
         root.style.setProperty('--destructive-foreground', '255 255 255');
         root.style.setProperty('--popover', '255 255 255');
-        root.style.setProperty('--popover-foreground', '0 0 0');
-        root.style.setProperty('--accent', '245 245 247');
-        root.style.setProperty('--accent-foreground', '0 0 0');
+        root.style.setProperty('--popover-foreground', '15 23 42');
+        root.style.setProperty('--accent', '16 185 129');           // Fresh emerald
+        root.style.setProperty('--accent-foreground', '255 255 255');
       }
     };
 
@@ -107,7 +109,7 @@ export function ThemeProvider({
     // Force a reflow to ensure changes are applied
     document.body.offsetHeight;
 
-    console.log('Theme applied:', effectiveTheme);
+    console.log('Enhanced theme applied:', effectiveTheme);
 
     // Listen for system theme changes
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
