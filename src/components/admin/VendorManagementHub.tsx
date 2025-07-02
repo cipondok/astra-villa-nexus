@@ -3,11 +3,13 @@ import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { ShoppingBag, Users, Package, FolderTree, BarChart3 } from "lucide-react";
+import { ShoppingBag, Users, Package, FolderTree, BarChart3, Activity, TrendingUp } from "lucide-react";
 import VendorCategoryManagement from "./VendorCategoryManagement";
 import VendorInventoryManagement from "./VendorInventoryManagement";
 import AdminVendorServiceManagement from "./AdminVendorServiceManagement";
 import VendorServicesCategoryShowcase from "./VendorServicesCategoryShowcase";
+import VendorProgressReports from "./VendorProgressReports";
+import VendorDiagnostics from "./VendorDiagnostics";
 
 const VendorManagementHub = () => {
   const [activeTab, setActiveTab] = useState("overview");
@@ -27,11 +29,13 @@ const VendorManagementHub = () => {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-7">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="categories">Categories</TabsTrigger>
           <TabsTrigger value="services">Services</TabsTrigger>
           <TabsTrigger value="inventory">Inventory</TabsTrigger>
+          <TabsTrigger value="progress">Progress</TabsTrigger>
+          <TabsTrigger value="diagnostics">Diagnostics</TabsTrigger>
           <TabsTrigger value="showcase">Showcase</TabsTrigger>
         </TabsList>
 
@@ -131,6 +135,32 @@ const VendorManagementHub = () => {
                     <Badge variant="secondary">12 Low Stock</Badge>
                   </div>
                 </div>
+
+                <div 
+                  className="p-3 border rounded-lg cursor-pointer hover:bg-muted/50 transition-colors"
+                  onClick={() => setActiveTab("progress")}
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="font-medium">Progress Reports</h4>
+                      <p className="text-sm text-muted-foreground">Track vendor progress</p>
+                    </div>
+                    <TrendingUp className="h-5 w-5" />
+                  </div>
+                </div>
+
+                <div 
+                  className="p-3 border rounded-lg cursor-pointer hover:bg-muted/50 transition-colors"
+                  onClick={() => setActiveTab("diagnostics")}
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="font-medium">System Diagnostics</h4>
+                      <p className="text-sm text-muted-foreground">Real-time monitoring</p>
+                    </div>
+                    <Activity className="h-5 w-5" />
+                  </div>
+                </div>
               </CardContent>
             </Card>
 
@@ -181,6 +211,14 @@ const VendorManagementHub = () => {
 
         <TabsContent value="inventory">
           <VendorInventoryManagement />
+        </TabsContent>
+
+        <TabsContent value="progress">
+          <VendorProgressReports />
+        </TabsContent>
+
+        <TabsContent value="diagnostics">
+          <VendorDiagnostics />
         </TabsContent>
 
         <TabsContent value="showcase">
