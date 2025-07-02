@@ -131,12 +131,12 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
   const userRole = profile?.role || 'admin';
 
   return (
-    <div className="relative bg-gradient-to-r from-blue-600 to-blue-700 dark:from-gray-800 dark:to-gray-900 text-white transition-all duration-300">
-      {/* Ultra Compact Header */}
+    <div className="relative bg-blue-600/80 dark:bg-gray-900/80 backdrop-blur-md text-white transition-all duration-300 border-b border-blue-500/30 dark:border-gray-700/50">
+      {/* Ultra Compact Header with 80% Transparency */}
       <div className="relative container mx-auto px-4 py-2">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="p-1.5 bg-white/20 dark:bg-gray-700/60 backdrop-blur-sm rounded-lg border border-white/30 dark:border-gray-600/50">
+            <div className="p-1.5 bg-white/20 dark:bg-gray-800/60 backdrop-blur-sm rounded-lg border border-white/30 dark:border-gray-600/50">
               <Shield className="h-5 w-5 text-white" />
             </div>
             <div>
@@ -151,7 +151,7 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
           
           <div className="flex items-center gap-2">
             {/* Compact Status Badges */}
-            <Badge variant="outline" className="bg-green-500/20 text-green-100 border-green-400/50 px-2 py-0.5 text-xs">
+            <Badge variant="outline" className="bg-green-500/20 text-green-100 border-green-400/50 px-2 py-0.5 text-xs backdrop-blur-sm">
               <Activity className="h-2 w-2 mr-1" />
               Online
             </Badge>
@@ -159,7 +159,7 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
             {sessionTime && (
               <Badge 
                 variant="outline" 
-                className="bg-blue-500/20 text-blue-100 border-blue-400/50 px-2 py-0.5 text-xs cursor-pointer hover:bg-blue-500/30"
+                className="bg-blue-500/20 text-blue-100 border-blue-400/50 px-2 py-0.5 text-xs cursor-pointer hover:bg-blue-500/30 backdrop-blur-sm"
                 onClick={handleExtendSession}
                 title="Click to extend session"
               >
@@ -173,7 +173,7 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
               onClick={() => navigate('/')}
               variant="ghost"
               size="sm"
-              className="bg-white/10 hover:bg-white/20 text-white border border-white/20 px-2 py-1 h-8"
+              className="bg-white/10 hover:bg-white/20 text-white border border-white/20 px-2 py-1 h-8 backdrop-blur-sm"
             >
               <Home className="h-3 w-3" />
             </Button>
@@ -194,7 +194,7 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="bg-white/10 hover:bg-white/20 text-white border border-white/20 px-2 py-1 h-8 flex items-center gap-1"
+                  className="bg-white/10 hover:bg-white/20 text-white border border-white/20 px-2 py-1 h-8 flex items-center gap-1 backdrop-blur-sm"
                 >
                   <div className="w-5 h-5 bg-blue-600 dark:bg-blue-700 rounded-full flex items-center justify-center">
                     <User className="h-2 w-2 text-white" />
