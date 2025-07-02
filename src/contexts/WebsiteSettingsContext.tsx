@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -170,7 +169,7 @@ export const WebsiteSettingsProvider: React.FC<{ children: React.ReactNode }> = 
       if (error) throw error;
       return data;
     },
-    refetchInterval: 30000, // Refresh every 30 seconds
+    refetchInterval: 5000, // Refresh every 5 seconds to pick up changes
   });
 
   // Load settings from database
@@ -213,6 +212,8 @@ export const WebsiteSettingsProvider: React.FC<{ children: React.ReactNode }> = 
   const applyCSSVariables = () => {
     const root = document.documentElement;
     
+    console.log('Applying CSS variables with settings:', settings);
+    
     // Apply light mode colors
     root.style.setProperty('--primary-light', settings.lightPrimaryColor);
     root.style.setProperty('--secondary-light', settings.lightSecondaryColor);
@@ -239,6 +240,10 @@ export const WebsiteSettingsProvider: React.FC<{ children: React.ReactNode }> = 
     root.style.setProperty('--border-radius', `${settings.borderRadius}px`);
     root.style.setProperty('--spacing-base', `${settings.spacing}px`);
     
+    // Apply colors to body for immediate effect
+    document.body.style.setProperty('background-color', settings.lightBackgroundColor);
+    document.body.style.setProperty('color', settings.lightTextColor);
+    
     // Update document title and favicon
     document.title = settings.siteName;
     if (settings.faviconUrl) {
@@ -247,6 +252,19 @@ export const WebsiteSettingsProvider: React.FC<{ children: React.ReactNode }> = 
         favicon.href = settings.faviconUrl;
       }
     }
+    
+    // Apply custom CSS if provided
+    if (settings.customCSS) {
+      let customStyleElement = document.getElementById('custom-website-styles');
+      if (!customStyleElement) {
+        customStyleElement = document.createElement('style');
+        customStyleElement.id = 'custom-website-styles';
+        document.head.appendChild(customStyleElement);
+      }
+      customStyleElement.textContent = settings.customCSS;
+    }
+    
+    console.log('CSS variables applied successfully');
   };
 
   // Apply CSS variables whenever settings change
