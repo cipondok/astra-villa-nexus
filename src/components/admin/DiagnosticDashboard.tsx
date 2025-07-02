@@ -21,11 +21,14 @@ import {
   HardDrive,
   Wifi,
   Monitor,
-  Settings
+  Settings,
+  PlayCircle,
+  Loader
 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { useDynamicDiagnostics } from '@/hooks/useDynamicDiagnostics';
 
 interface SystemHealth {
   database: 'healthy' | 'warning' | 'critical';
@@ -37,6 +40,7 @@ interface SystemHealth {
 
 const DiagnosticDashboard = () => {
   const { user, profile } = useAuth();
+  const { diagnostics, isRunning, runFullDiagnostics, lastRun } = useDynamicDiagnostics();
   const [systemHealth, setSystemHealth] = useState<SystemHealth>({
     database: 'healthy',
     authentication: 'healthy',
@@ -117,20 +121,28 @@ const DiagnosticDashboard = () => {
     setIsRefreshing(true);
     setLastCheck(new Date());
     
-    // Simulate refresh delay
-    setTimeout(() => {
+    try {
+      await runFullDiagnostics();
+    } catch (error) {
+      console.error('Error running diagnostics:', error);
+    } finally {
       setIsRefreshing(false);
-    }, 2000);
+    }
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'healthy':
+      case 'completed':
         return 'text-green-600 dark:text-green-400';
       case 'warning':
+      case 'in_progress':
         return 'text-yellow-600 dark:text-yellow-400';
       case 'critical':
+      case 'error':
         return 'text-red-600 dark:text-red-400';
+      case 'pending':
+        return 'text-blue-600 dark:text-blue-400';
       default:
         return 'text-gray-600 dark:text-gray-400';
     }
@@ -139,13 +151,40 @@ const DiagnosticDashboard = () => {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'healthy':
+      case 'completed':
         return <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400" />;
       case 'warning':
         return <AlertTriangle className="h-5 w-5 text-yellow-600 dark:text-yellow-400" />;
       case 'critical':
+      case 'error':
         return <AlertTriangle className="h-5 w-5 text-red-600 dark:text-red-400" />;
+      case 'in_progress':
+        return <Loader className="h-5 w-5 text-blue-600 dark:text-blue-400 animate-spin" />;
+      case 'pending':
+        return <Clock className="h-5 w-5 text-blue-600 dark:text-blue-400" />;
       default:
         return <Monitor className="h-5 w-5 text-gray-600 dark:text-gray-400" />;
+    }
+  };
+
+  const getCategoryIcon = (category: string) => {
+    switch (category) {
+      case 'Security':
+        return Shield;
+      case 'Core':
+        return Database;
+      case 'Business':
+        return Users;
+      case 'Commerce':
+        return Activity;
+      case 'Management':
+        return Settings;
+      case 'Communication':
+        return Globe;
+      case 'Intelligence':
+        return Zap;
+      default:
+        return Monitor;
     }
   };
 
@@ -187,24 +226,31 @@ const DiagnosticDashboard = () => {
         <div>
           <h2 className="text-3xl font-bold text-gray-900 dark:text-white">System Diagnostics</h2>
           <p className="text-gray-600 dark:text-gray-300 mt-2">Monitor system health and performance metrics</p>
-        </div>
-        <Button 
-          onClick={refreshDiagnostics} 
-          disabled={isRefreshing}
-          className="bg-blue-600 hover:bg-blue-700 text-white"
-        >
-          {isRefreshing ? (
-            <>
-              <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
-              Refreshing...
-            </>
-          ) : (
-            <>
-              <RefreshCw className="h-4 w-4 mr-2" />
-              Refresh
-            </>
+          {lastRun && (
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+              Last diagnostic run: {new Date(lastRun).toLocaleString()}
+            </p>
           )}
-        </Button>
+        </div>
+        <div className="flex gap-3">
+          <Button 
+            onClick={refreshDiagnostics} 
+            disabled={isRefreshing || isRunning}
+            className="bg-blue-600 hover:bg-blue-700 text-white"
+          >
+            {(isRefreshing || isRunning) ? (
+              <>
+                <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                {isRunning ? 'Running Tests...' : 'Refreshing...'}
+              </>
+            ) : (
+              <>
+                <PlayCircle className="h-4 w-4 mr-2" />
+                Run Full Diagnostics
+              </>
+            )}
+          </Button>
+        </div>
       </div>
 
       {/* System Status Overview */}
@@ -233,6 +279,99 @@ const DiagnosticDashboard = () => {
         ))}
       </div>
 
+      {/* Dynamic Diagnostics Results */}
+      {diagnostics.length > 0 && (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {diagnostics.map((diagnostic) => {
+            const IconComponent = getCategoryIcon(diagnostic.category);
+            return (
+              <Card key={diagnostic.id} className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <IconComponent className={`h-5 w-5 ${getStatusColor(diagnostic.status)}`} />
+                      <CardTitle className="text-lg text-gray-900 dark:text-gray-100">
+                        {diagnostic.name}
+                      </CardTitle>
+                    </div>
+                    <Badge 
+                      variant="outline" 
+                      className={`${
+                        diagnostic.status === 'completed' 
+                          ? 'bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 border-green-200 dark:border-green-600'
+                          : diagnostic.status === 'in_progress'
+                          ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-600'
+                          : diagnostic.status === 'error'
+                          ? 'bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-300 border-red-200 dark:border-red-600'
+                          : 'bg-yellow-50 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300 border-yellow-200 dark:border-yellow-600'
+                      }`}
+                    >
+                      {diagnostic.status.replace('_', ' ').toUpperCase()}
+                    </Badge>
+                  </div>
+                  <CardDescription className="text-gray-600 dark:text-gray-400">
+                    {diagnostic.category} • {diagnostic.description}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Progress</span>
+                      <span className="text-sm text-gray-600 dark:text-gray-400">{diagnostic.progress}%</span>
+                    </div>
+                    <Progress 
+                      value={diagnostic.progress} 
+                      className="w-full bg-gray-200 dark:bg-gray-700"
+                    />
+                  </div>
+                  
+                  {diagnostic.nextStep && (
+                    <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-600/30">
+                      <p className="text-sm font-medium text-blue-800 dark:text-blue-300 mb-1">Next Step:</p>
+                      <p className="text-sm text-blue-700 dark:text-blue-400">{diagnostic.nextStep}</p>
+                    </div>
+                  )}
+                  
+                  {diagnostic.dependencies && diagnostic.dependencies.length > 0 && (
+                    <div>
+                      <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Dependencies:</p>
+                      <div className="flex flex-wrap gap-1">
+                        {diagnostic.dependencies.map((dep, idx) => (
+                          <Badge key={idx} variant="outline" className="text-xs">
+                            {dep.replace('_', ' ')}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  
+                  <div className="text-xs text-gray-500 dark:text-gray-400">
+                    Last updated: {new Date(diagnostic.lastUpdated).toLocaleString()}
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Show message if no diagnostics are available */}
+      {diagnostics.length === 0 && !isRunning && (
+        <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+          <CardContent className="text-center py-12">
+            <Monitor className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">No Diagnostic Data Available</h3>
+            <p className="text-gray-600 dark:text-gray-400 mb-4">
+              Click "Run Full Diagnostics" to start comprehensive system testing
+            </p>
+            <Button onClick={runFullDiagnostics} className="bg-blue-600 hover:bg-blue-700 text-white">
+              <PlayCircle className="h-4 w-4 mr-2" />
+              Start Diagnostics
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Detailed Diagnostics */}
       <Tabs defaultValue="overview" className="space-y-4">
         <TabsList className="bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
@@ -260,7 +399,9 @@ const DiagnosticDashboard = () => {
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-gray-700 dark:text-gray-300">Overall Status</span>
                   <Badge variant="outline" className="bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 border-green-200 dark:border-green-600">
-                    Healthy
+                    {diagnostics.length > 0 ? 
+                      (diagnostics.every(d => d.status === 'completed') ? 'Healthy' : 'Running Tests') 
+                      : 'Healthy'}
                   </Badge>
                 </div>
                 <div className="flex items-center justify-between">
@@ -269,15 +410,21 @@ const DiagnosticDashboard = () => {
                     {lastCheck.toLocaleTimeString()}
                   </span>
                 </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-700 dark:text-gray-300">Tests Completed</span>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">
+                    {diagnostics.filter(d => d.status === 'completed').length} / {diagnostics.length || 7}
+                  </span>
+                </div>
                 <Button 
                   onClick={refreshDiagnostics} 
-                  disabled={isRefreshing}
+                  disabled={isRefreshing || isRunning}
                   className="w-full bg-blue-600 hover:bg-blue-700 text-white"
                 >
-                  {isRefreshing ? (
+                  {(isRefreshing || isRunning) ? (
                     <>
                       <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
-                      Refreshing...
+                      {isRunning ? 'Running Tests...' : 'Refreshing...'}
                     </>
                   ) : (
                     <>
