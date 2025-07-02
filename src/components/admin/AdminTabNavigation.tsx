@@ -69,13 +69,13 @@ const AdminTabNavigation = ({ isAdmin }: AdminTabNavigationProps) => {
       value: "settings",
       label: "Settings",
       icon: Settings,
-      color: "text-slate-600 dark:text-slate-400",
-      bgColor: "hover:bg-slate-50 dark:hover:bg-slate-900/20"
+      color: "text-gray-600 dark:text-gray-400",
+      bgColor: "hover:bg-gray-50 dark:hover:bg-gray-700"
     }
   ];
 
   return (
-    <TabsList className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 h-auto p-2 bg-transparent gap-2">
+    <TabsList className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 h-auto p-2 bg-gray-100 dark:bg-gray-700 gap-2 rounded-lg">
       {tabs.map((tab) => {
         const Icon = tab.icon;
         return (
@@ -84,13 +84,13 @@ const AdminTabNavigation = ({ isAdmin }: AdminTabNavigationProps) => {
             value={tab.value}
             className={`
               flex flex-col items-center gap-2 p-4 h-auto min-h-[80px] 
-              bg-white/60 dark:bg-slate-700/60 
-              border border-slate-200 dark:border-slate-600 
-              rounded-lg transition-all duration-300
+              bg-white dark:bg-gray-600 
+              border border-gray-200 dark:border-gray-500 
+              rounded-lg transition-all duration-200
               data-[state=active]:bg-blue-600 data-[state=active]:text-white
-              data-[state=active]:border-blue-600 data-[state=active]:shadow-lg
+              data-[state=active]:border-blue-600 data-[state=active]:shadow-md
               ${tab.bgColor}
-              hover:shadow-md hover:scale-105 transform
+              hover:shadow-sm hover:scale-[1.02] transform
             `}
           >
             <Icon className="h-5 w-5" />

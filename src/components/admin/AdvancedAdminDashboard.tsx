@@ -34,7 +34,7 @@ const AdvancedAdminDashboard = () => {
   const isAdmin = profile?.role === 'admin' || user?.email === 'mycode103@gmail.com';
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 transition-all duration-300">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
       {/* Add Navigation from Home Page */}
       <EnhancedNavigation 
         language="en" 
@@ -44,16 +44,16 @@ const AdvancedAdminDashboard = () => {
       <div className="container mx-auto px-4 py-4 space-y-6 mt-16">
         
         {/* Real-time Dashboard Stats */}
-        <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-xl border border-slate-200 dark:border-slate-600 shadow-lg">
+        <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
           <RealTimeDashboardStats />
         </div>
         
         <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-6">
-          <div className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-xl border border-slate-200 dark:border-slate-600 shadow-lg p-2">
+          <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-2">
             <AdminTabNavigation isAdmin={isAdmin} />
           </div>
           
-          <div className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-xl border border-slate-200 dark:border-slate-600 shadow-lg p-6">
+          <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
             <AdminDashboardContent isAdmin={isAdmin} setActiveTab={setActiveTab} />
           </div>
         </Tabs>

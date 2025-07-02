@@ -72,11 +72,11 @@ const RealTimeDashboardStats = () => {
     <div className="p-6">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
             <Activity className="h-6 w-6 text-blue-600 dark:text-blue-400" />
             Admin Dashboard Overview
           </h2>
-          <p className="text-slate-600 dark:text-slate-400 mt-1">
+          <p className="text-gray-600 dark:text-gray-400 mt-1">
             Real-time system statistics and monitoring
           </p>
         </div>
@@ -94,7 +94,7 @@ const RealTimeDashboardStats = () => {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-slate-600 dark:text-slate-400 mb-2">
+                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">
                       {stat.title}
                     </p>
                     <p className={`text-3xl font-bold ${stat.color}`}>
@@ -123,12 +123,12 @@ const RealTimeDashboardStats = () => {
 
       {/* System Health Indicators */}
       <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card className="bg-white/80 dark:bg-slate-800/80 border-slate-200 dark:border-slate-600">
+        <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Zap className="h-5 w-5 text-yellow-500" />
-                <span className="font-medium text-slate-900 dark:text-white">Database</span>
+                <Zap className="h-5 w-5 text-yellow-600 dark:text-yellow-400" />
+                <span className="font-medium text-gray-900 dark:text-white">Database</span>
               </div>
               <Badge className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300">
                 Healthy
@@ -137,12 +137,12 @@ const RealTimeDashboardStats = () => {
           </CardContent>
         </Card>
 
-        <Card className="bg-white/80 dark:bg-slate-800/80 border-slate-200 dark:border-slate-600">
+        <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Activity className="h-5 w-5 text-blue-500" />
-                <span className="font-medium text-slate-900 dark:text-white">API Status</span>
+                <Activity className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                <span className="font-medium text-gray-900 dark:text-white">API Status</span>
               </div>
               <Badge className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300">
                 Online
@@ -151,12 +151,12 @@ const RealTimeDashboardStats = () => {
           </CardContent>
         </Card>
 
-        <Card className="bg-white/80 dark:bg-slate-800/80 border-slate-200 dark:border-slate-600">
+        <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Clock className="h-5 w-5 text-purple-500" />
-                <span className="font-medium text-slate-900 dark:text-white">Response Time</span>
+                <Clock className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+                <span className="font-medium text-gray-900 dark:text-white">Response Time</span>
               </div>
               <Badge className="bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300">
                 ~120ms
