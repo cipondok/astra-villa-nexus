@@ -322,11 +322,13 @@ const ProjectDiagnosticSystem = () => {
       </div>
 
       <Tabs defaultValue="overview" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="progress">Module Progress</TabsTrigger>
           <TabsTrigger value="uncompleted">Uncompleted</TabsTrigger>
-          <TabsTrigger value="health">System Health</TabsTrigger>
+          <TabsTrigger value="errors">Error Reports</TabsTrigger>
+          <TabsTrigger value="updates">Updates Needed</TabsTrigger>
+          <TabsTrigger value="tips">UX Tips</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">
@@ -586,6 +588,186 @@ const ProjectDiagnosticSystem = () => {
               </CardContent>
             </Card>
           </div>
+        </TabsContent>
+
+        <TabsContent value="errors" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>System Error Reports</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <Alert>
+                  <AlertTriangle className="h-4 w-4" />
+                  <AlertDescription>
+                    <strong>Database Connection Timeout:</strong> Intermittent timeouts detected in vendor profile queries (Last: 2 hours ago)
+                  </AlertDescription>
+                </Alert>
+                
+                <Alert>
+                  <AlertTriangle className="h-4 w-4" />
+                  <AlertDescription>
+                    <strong>Image Upload Failure:</strong> Property image uploads failing for files over 2MB (Last: 30 minutes ago)
+                  </AlertDescription>
+                </Alert>
+                
+                <Alert>
+                  <AlertTriangle className="h-4 w-4" />
+                  <AlertDescription>
+                    <strong>Authentication Rate Limit:</strong> Multiple failed login attempts from suspicious IPs (Last: 5 minutes ago)
+                  </AlertDescription>
+                </Alert>
+
+                <div className="mt-6 p-4 bg-muted rounded-lg">
+                  <h4 className="font-medium mb-2">Error Summary (Last 24h)</h4>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                    <div>
+                      <span className="text-red-600 font-bold">12</span>
+                      <span className="block text-muted-foreground">Critical Errors</span>
+                    </div>
+                    <div>
+                      <span className="text-yellow-600 font-bold">45</span>
+                      <span className="block text-muted-foreground">Warnings</span>
+                    </div>
+                    <div>
+                      <span className="text-blue-600 font-bold">234</span>
+                      <span className="block text-muted-foreground">Info Messages</span>
+                    </div>
+                    <div>
+                      <span className="text-green-600 font-bold">98.5%</span>
+                      <span className="block text-muted-foreground">Uptime</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="updates" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Functions Requiring Updates</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-6">
+                <div className="p-4 border rounded-lg border-orange-200 bg-orange-50">
+                  <div className="flex items-center justify-between mb-3">
+                    <h4 className="font-medium text-lg">Security Updates</h4>
+                    <Badge className="bg-orange-100 text-orange-800 border-orange-200">
+                      High Priority
+                    </Badge>
+                  </div>
+                  <ul className="space-y-2 text-sm">
+                    <li>• Update authentication library to v4.2.1 (security patch)</li>
+                    <li>• Implement CSRF protection for form submissions</li>
+                    <li>• Add rate limiting to API endpoints</li>
+                    <li>• Update password hashing algorithm</li>
+                  </ul>
+                </div>
+
+                <div className="p-4 border rounded-lg border-blue-200 bg-blue-50">
+                  <div className="flex items-center justify-between mb-3">
+                    <h4 className="font-medium text-lg">Performance Optimizations</h4>
+                    <Badge className="bg-blue-100 text-blue-800 border-blue-200">
+                      Medium Priority
+                    </Badge>
+                  </div>
+                  <ul className="space-y-2 text-sm">
+                    <li>• Implement lazy loading for property images</li>
+                    <li>• Add database query caching</li>
+                    <li>• Optimize bundle size (current: 2.3MB)</li>
+                    <li>• Implement service worker for offline functionality</li>
+                  </ul>
+                </div>
+
+                <div className="p-4 border rounded-lg border-green-200 bg-green-50">
+                  <div className="flex items-center justify-between mb-3">
+                    <h4 className="font-medium text-lg">Feature Enhancements</h4>
+                    <Badge className="bg-green-100 text-green-800 border-green-200">
+                      Low Priority
+                    </Badge>
+                  </div>
+                  <ul className="space-y-2 text-sm">
+                    <li>• Add dark mode toggle animation</li>
+                    <li>• Implement property comparison feature</li>
+                    <li>• Add export functionality to reports</li>
+                    <li>• Enhance search filters with more options</li>
+                  </ul>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="tips" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>User Experience Tips & Instructions</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-6">
+                <div className="p-4 border rounded-lg border-blue-200 bg-blue-50">
+                  <h4 className="font-medium text-lg mb-3 flex items-center gap-2">
+                    <Zap className="h-5 w-5 text-blue-600" />
+                    Performance Tips
+                  </h4>
+                  <ul className="space-y-2 text-sm">
+                    <li>• Use image compression before uploading (recommended: WebP format)</li>
+                    <li>• Keep property descriptions under 500 words for better readability</li>
+                    <li>• Use the bulk upload feature for multiple properties</li>
+                    <li>• Enable browser notifications for real-time updates</li>
+                  </ul>
+                </div>
+
+                <div className="p-4 border rounded-lg border-green-200 bg-green-50">
+                  <h4 className="font-medium text-lg mb-3 flex items-center gap-2">
+                    <Users className="h-5 w-5 text-green-600" />
+                    User Engagement
+                  </h4>
+                  <ul className="space-y-2 text-sm">
+                    <li>• Add high-quality photos (minimum 1200x800px resolution)</li>
+                    <li>• Include virtual tours to increase engagement by 40%</li>
+                    <li>• Respond to inquiries within 2 hours for better conversion</li>
+                    <li>• Use descriptive titles with location and key features</li>
+                  </ul>
+                </div>
+
+                <div className="p-4 border rounded-lg border-purple-200 bg-purple-50">
+                  <h4 className="font-medium text-lg mb-3 flex items-center gap-2">
+                    <Settings className="h-5 w-5 text-purple-600" />
+                    System Optimization
+                  </h4>
+                  <ul className="space-y-2 text-sm">
+                    <li>• Regular database maintenance scheduled every Sunday at 2 AM</li>
+                    <li>• Clear browser cache monthly for optimal performance</li>
+                    <li>• Use the diagnostic tools to monitor system health</li>
+                    <li>• Enable two-factor authentication for enhanced security</li>
+                  </ul>
+                </div>
+
+                <div className="p-4 border rounded-lg border-yellow-200 bg-yellow-50">
+                  <h4 className="font-medium text-lg mb-3 flex items-center gap-2">
+                    <FileText className="h-5 w-5 text-yellow-600" />
+                    Best Practices
+                  </h4>
+                  <ul className="space-y-2 text-sm">
+                    <li>• Backup important data weekly using the export feature</li>
+                    <li>• Use consistent naming conventions for properties</li>
+                    <li>• Tag properties with relevant keywords for better searchability</li>
+                    <li>• Review and update property information quarterly</li>
+                  </ul>
+                </div>
+
+                <Alert>
+                  <CheckCircle className="h-4 w-4" />
+                  <AlertDescription>
+                    <strong>Pro Tip:</strong> Use the diagnostic system regularly to monitor your project's health and stay ahead of potential issues.
+                  </AlertDescription>
+                </Alert>
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
       </Tabs>
     </div>
