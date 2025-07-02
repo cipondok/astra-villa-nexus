@@ -12,22 +12,24 @@ import { Search, Star, MapPin, Clock, DollarSign, Users, Zap } from "lucide-reac
 interface MainCategory {
   id: string;
   name: string;
-  slug: string;
   description: string;
   icon: string;
   display_order: number;
   is_active: boolean;
+  created_at: string;
+  updated_at: string;
 }
 
 interface Subcategory {
   id: string;
   name: string;
-  slug: string;
   description: string;
   icon: string;
   main_category_id: string;
   display_order: number;
   is_active: boolean;
+  created_at: string;
+  updated_at: string;
 }
 
 interface VendorService {

@@ -17,6 +17,42 @@ import {
   MapPin
 } from "lucide-react";
 
+interface MainCategory {
+  id: string;
+  name: string;
+  description: string;
+  icon: string;
+  display_order: number;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+interface Subcategory {
+  id: string;
+  name: string;
+  description: string;
+  icon: string;
+  main_category_id: string;
+  display_order: number;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+interface VendorService {
+  id: string;
+  service_name: string;
+  service_description: string;
+  main_category_id: string;
+  subcategory_id: string;
+  price_range: any;
+  duration_minutes: number;
+  location_type: string;
+  is_active: boolean;
+  featured: boolean;
+}
+
 interface BlogPost {
   id: string;
   title: string;
@@ -39,7 +75,7 @@ const VendorCategoryBlogView = () => {
   // Fetch categories for blog context
   const { data: mainCategories } = useQuery({
     queryKey: ['blog-main-categories'],
-    queryFn: async () => {
+    queryFn: async (): Promise<MainCategory[]> => {
       const { data, error } = await supabase
         .from('vendor_main_categories')
         .select('*')
@@ -53,7 +89,7 @@ const VendorCategoryBlogView = () => {
 
   const { data: subcategories } = useQuery({
     queryKey: ['blog-subcategories'],
-    queryFn: async () => {
+    queryFn: async (): Promise<Subcategory[]> => {
       const { data, error } = await supabase
         .from('vendor_subcategories')
         .select('*')
@@ -67,7 +103,7 @@ const VendorCategoryBlogView = () => {
 
   const { data: vendorServices } = useQuery({
     queryKey: ['blog-vendor-services'],
-    queryFn: async () => {
+    queryFn: async (): Promise<VendorService[]> => {
       const { data, error } = await supabase
         .from('vendor_services')
         .select('*')
