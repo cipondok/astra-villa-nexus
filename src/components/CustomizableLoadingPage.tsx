@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -11,7 +12,6 @@ interface LoadingPageSettings {
   enabled: boolean;
   message: string;
   subMessage: string;
-  duration: number;
   logoText: string;
   logoSubtext: string;
   showConnectionStatus: boolean;
@@ -35,7 +35,7 @@ interface LoadingPageSettings {
 }
 
 const CustomizableLoadingPage: React.FC<LoadingPageProps> = ({ 
-  message: propMessage,
+  message: propMessage = 'Initializing ASTRA Villa...',
   showConnectionStatus: propShowConnectionStatus = false,
   connectionStatus = 'connecting'
 }) => {
@@ -43,7 +43,6 @@ const CustomizableLoadingPage: React.FC<LoadingPageProps> = ({
     enabled: true,
     message: 'Initializing ASTRA Villa...',
     subMessage: 'Please wait while we prepare your experience',
-    duration: 3000,
     logoText: 'ASTRA Villa',
     logoSubtext: '',
     showConnectionStatus: true,
@@ -259,8 +258,8 @@ const CustomizableLoadingPage: React.FC<LoadingPageProps> = ({
     }
   };
 
+  // If settings are still loading, show a simple fallback
   if (isLoading) {
-    // Fallback loading while settings are being loaded
     return (
       <div className="bg-black text-white flex items-center justify-center min-h-screen">
         <div className="flex flex-col items-center space-y-6">
@@ -272,6 +271,7 @@ const CustomizableLoadingPage: React.FC<LoadingPageProps> = ({
             <div className="w-3 h-3 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
             <div className="w-3 h-3 bg-cyan-400 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
           </div>
+          <p className="text-sm text-gray-400">Loading configuration...</p>
         </div>
       </div>
     );

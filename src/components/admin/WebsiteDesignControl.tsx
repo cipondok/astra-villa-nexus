@@ -72,13 +72,13 @@ const WebsiteDesignControl = () => {
           .from('system_settings')
           .upsert({
             key,
-            value: value,
+            value: JSON.stringify(value), // Always stringify values
             category: 'website_design',
             description: `Website design setting for ${key}`,
             is_public: true,
             updated_at: new Date().toISOString()
           }, {
-            onConflict: 'key,category',
+            onConflict: 'key',
             ignoreDuplicates: false
           });
         
@@ -99,11 +99,6 @@ const WebsiteDesignControl = () => {
       
       console.log('All settings saved successfully');
       toast.success('Website design settings saved and applied successfully!');
-      
-      // Force a page refresh to show changes
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
       
     } catch (error) {
       console.error('Save error:', error);

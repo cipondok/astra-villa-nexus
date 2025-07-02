@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
-import LoadingPage from './LoadingPage';
+import CustomizableLoadingPage from './CustomizableLoadingPage';
+import { useWebsiteSettings } from '@/contexts/WebsiteSettingsContext';
 
 interface AppInitializerProps {
   children: React.ReactNode;
@@ -8,22 +9,25 @@ interface AppInitializerProps {
 
 const AppInitializer: React.FC<AppInitializerProps> = ({ children }) => {
   const [initializationComplete, setInitializationComplete] = useState(false);
+  const { isLoading: settingsLoading } = useWebsiteSettings();
 
   useEffect(() => {
-    // Quick initialization without delays
-    const timer = setTimeout(() => {
-      setInitializationComplete(true);
-    }, 100);
+    // Wait for settings to load before showing the app
+    if (!settingsLoading) {
+      const timer = setTimeout(() => {
+        setInitializationComplete(true);
+      }, 1000); // Give a bit more time for settings to apply
 
-    return () => clearTimeout(timer);
-  }, []);
+      return () => clearTimeout(timer);
+    }
+  }, [settingsLoading]);
 
-  // Show minimal loading screen only briefly
-  if (!initializationComplete) {
+  // Show customizable loading screen while initializing
+  if (!initializationComplete || settingsLoading) {
     return (
-      <LoadingPage
-        message="Initializing..."
-        showConnectionStatus={false}
+      <CustomizableLoadingPage
+        message="Initializing ASTRA Villa..."
+        showConnectionStatus={true}
       />
     );
   }
