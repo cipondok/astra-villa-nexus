@@ -151,7 +151,8 @@ const WebsiteDesignControl = () => {
         const { error } = await supabase
           .from('system_settings')
           .upsert(setting, {
-            onConflict: 'key,category'
+            onConflict: 'key,category',
+            ignoreDuplicates: false
           });
         
         if (error) {
