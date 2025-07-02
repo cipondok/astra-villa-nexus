@@ -265,31 +265,31 @@ const ProjectDiagnosticSystem = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'completed': return 'text-green-600';
-      case 'in_progress': return 'text-blue-600';
-      case 'pending': return 'text-yellow-600';
-      case 'error': return 'text-red-600';
-      default: return 'text-gray-600';
+      case 'completed': return 'text-green-600 dark:text-green-400';
+      case 'in_progress': return 'text-primary dark:text-primary';
+      case 'pending': return 'text-yellow-600 dark:text-yellow-400';
+      case 'error': return 'text-destructive dark:text-destructive';
+      default: return 'text-muted-foreground';
     }
   };
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'completed': return <CheckCircle className="h-5 w-5 text-green-600" />;
-      case 'in_progress': return <Clock className="h-5 w-5 text-blue-600" />;
-      case 'pending': return <AlertTriangle className="h-5 w-5 text-yellow-600" />;
-      case 'error': return <AlertTriangle className="h-5 w-5 text-red-600" />;
-      default: return <Activity className="h-5 w-5 text-gray-600" />;
+      case 'completed': return <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400" />;
+      case 'in_progress': return <Clock className="h-5 w-5 text-primary" />;
+      case 'pending': return <AlertTriangle className="h-5 w-5 text-yellow-600 dark:text-yellow-400" />;
+      case 'error': return <AlertTriangle className="h-5 w-5 text-destructive" />;
+      default: return <Activity className="h-5 w-5 text-muted-foreground" />;
     }
   };
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'Critical': return 'bg-red-100 text-red-800 border-red-200';
-      case 'High': return 'bg-orange-100 text-orange-800 border-orange-200';
-      case 'Medium': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 'Low': return 'bg-green-100 text-green-800 border-green-200';
-      default: return 'bg-gray-100 text-gray-800 border-gray-200';
+      case 'Critical': return 'bg-red-100 text-red-800 border-red-200 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800';
+      case 'High': return 'bg-orange-100 text-orange-800 border-orange-200 dark:bg-orange-900/20 dark:text-orange-400 dark:border-orange-800';
+      case 'Medium': return 'bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-900/20 dark:text-yellow-400 dark:border-yellow-800';
+      case 'Low': return 'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800';
+      default: return 'bg-muted text-muted-foreground border-border';
     }
   };
 
@@ -341,7 +341,7 @@ const ProjectDiagnosticSystem = () => {
                     <p className="text-sm text-muted-foreground">Overall Progress</p>
                     <p className="text-2xl font-bold">{Math.round(totalProgress)}%</p>
                   </div>
-                  <BarChart3 className="h-8 w-8 text-blue-600" />
+                  <BarChart3 className="h-8 w-8 text-primary" />
                 </div>
                 <Progress value={totalProgress} className="mt-2" />
               </CardContent>
@@ -354,7 +354,7 @@ const ProjectDiagnosticSystem = () => {
                     <p className="text-sm text-muted-foreground">Completed</p>
                     <p className="text-2xl font-bold">{completedModules}</p>
                   </div>
-                  <CheckCircle className="h-8 w-8 text-green-600" />
+                  <CheckCircle className="h-8 w-8 text-green-600 dark:text-green-400" />
                 </div>
               </CardContent>
             </Card>
@@ -366,7 +366,7 @@ const ProjectDiagnosticSystem = () => {
                     <p className="text-sm text-muted-foreground">In Progress</p>
                     <p className="text-2xl font-bold">{inProgressModules}</p>
                   </div>
-                  <Clock className="h-8 w-8 text-blue-600" />
+                  <Clock className="h-8 w-8 text-primary" />
                 </div>
               </CardContent>
             </Card>
@@ -378,7 +378,7 @@ const ProjectDiagnosticSystem = () => {
                     <p className="text-sm text-muted-foreground">Pending</p>
                     <p className="text-2xl font-bold">{pendingModules}</p>
                   </div>
-                  <AlertTriangle className="h-8 w-8 text-yellow-600" />
+                  <AlertTriangle className="h-8 w-8 text-yellow-600 dark:text-yellow-400" />
                 </div>
               </CardContent>
             </Card>
@@ -512,7 +512,7 @@ const ProjectDiagnosticSystem = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                       {category.functions.map((func, funcIndex) => (
                         <div key={funcIndex} className="flex items-center gap-2 text-sm">
-                          <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+                          <div className="w-2 h-2 bg-orange-500 dark:bg-orange-400 rounded-full"></div>
                           {func}
                         </div>
                       ))}
