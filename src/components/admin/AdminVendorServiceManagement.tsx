@@ -56,6 +56,21 @@ const CreateServiceForm = () => {
     }
   });
 
+  // Fetch vendor service categories
+  const { data: categories } = useQuery({
+    queryKey: ['vendor-service-categories'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('vendor_service_categories')
+        .select('*')
+        .eq('is_active', true)
+        .order('display_order');
+      
+      if (error) throw error;
+      return data;
+    }
+  });
+
   // Create service mutation
   const createServiceMutation = useMutation({
     mutationFn: async () => {
@@ -152,13 +167,23 @@ const CreateServiceForm = () => {
         </div>
         
         <div className="space-y-2">
-          <Label htmlFor="service_category">Category</Label>
-          <Input
-            id="service_category"
-            value={serviceData.service_category}
-            onChange={(e) => setServiceData(prev => ({...prev, service_category: e.target.value}))}
-            placeholder="e.g., Home Maintenance"
-          />
+          <Label htmlFor="service_category">Service Category *</Label>
+          <Select 
+            value={serviceData.service_category} 
+            onValueChange={(value) => setServiceData(prev => ({...prev, service_category: value}))}
+          >
+            <SelectTrigger className="bg-background">
+              <SelectValue placeholder="Select a category" />
+            </SelectTrigger>
+            <SelectContent className="bg-background border z-50">
+              {categories?.map((category) => (
+                <SelectItem key={category.id} value={category.name}>
+                  {category.name}
+                </SelectItem>
+              ))}
+              <SelectItem value="other">Other (specify in description)</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </div>
 
