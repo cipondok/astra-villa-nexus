@@ -868,6 +868,51 @@ export type Database = {
         }
         Relationships: []
       }
+      document_requirements: {
+        Row: {
+          accepted_formats: string[] | null
+          category_filter: Json | null
+          compliance_region: string
+          description: string | null
+          document_name: string
+          document_type: string
+          id: string
+          is_required: boolean | null
+          max_file_size_mb: number | null
+          template_url: string | null
+          validation_requirements: Json | null
+          vendor_type: string
+        }
+        Insert: {
+          accepted_formats?: string[] | null
+          category_filter?: Json | null
+          compliance_region: string
+          description?: string | null
+          document_name: string
+          document_type: string
+          id?: string
+          is_required?: boolean | null
+          max_file_size_mb?: number | null
+          template_url?: string | null
+          validation_requirements?: Json | null
+          vendor_type: string
+        }
+        Update: {
+          accepted_formats?: string[] | null
+          category_filter?: Json | null
+          compliance_region?: string
+          description?: string | null
+          document_name?: string
+          document_type?: string
+          id?: string
+          is_required?: boolean | null
+          max_file_size_mb?: number | null
+          template_url?: string | null
+          validation_requirements?: Json | null
+          vendor_type?: string
+        }
+        Relationships: []
+      }
       feedback_monitoring: {
         Row: {
           admin_response: string | null
@@ -914,6 +959,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      fraud_patterns: {
+        Row: {
+          auto_reject: boolean | null
+          created_at: string | null
+          detection_logic: Json
+          id: string
+          is_active: boolean | null
+          pattern_name: string
+          pattern_type: string
+          risk_score: number
+        }
+        Insert: {
+          auto_reject?: boolean | null
+          created_at?: string | null
+          detection_logic: Json
+          id?: string
+          is_active?: boolean | null
+          pattern_name: string
+          pattern_type: string
+          risk_score: number
+        }
+        Update: {
+          auto_reject?: boolean | null
+          created_at?: string | null
+          detection_logic?: Json
+          id?: string
+          is_active?: boolean | null
+          pattern_name?: string
+          pattern_type?: string
+          risk_score?: number
+        }
+        Relationships: []
       }
       inquiries: {
         Row: {
@@ -1695,6 +1773,83 @@ export type Database = {
           },
         ]
       }
+      rejection_codes: {
+        Row: {
+          auto_resubmit_allowed: boolean | null
+          category: string
+          code: string
+          description: string
+          estimated_fix_time_hours: number | null
+          is_active: boolean | null
+          requires_admin_review: boolean | null
+          resolution_steps: Json
+        }
+        Insert: {
+          auto_resubmit_allowed?: boolean | null
+          category: string
+          code: string
+          description: string
+          estimated_fix_time_hours?: number | null
+          is_active?: boolean | null
+          requires_admin_review?: boolean | null
+          resolution_steps?: Json
+        }
+        Update: {
+          auto_resubmit_allowed?: boolean | null
+          category?: string
+          code?: string
+          description?: string
+          estimated_fix_time_hours?: number | null
+          is_active?: boolean | null
+          requires_admin_review?: boolean | null
+          resolution_steps?: Json
+        }
+        Relationships: []
+      }
+      resubmission_history: {
+        Row: {
+          admin_notes: string | null
+          application_id: string
+          changes_made: Json | null
+          id: string
+          new_status: string
+          previous_status: string
+          rejection_codes: string[] | null
+          resubmitted_at: string | null
+          resubmitted_by: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          application_id: string
+          changes_made?: Json | null
+          id?: string
+          new_status: string
+          previous_status: string
+          rejection_codes?: string[] | null
+          resubmitted_at?: string | null
+          resubmitted_by: string
+        }
+        Update: {
+          admin_notes?: string | null
+          application_id?: string
+          changes_made?: Json | null
+          id?: string
+          new_status?: string
+          previous_status?: string
+          rejection_codes?: string[] | null
+          resubmitted_at?: string | null
+          resubmitted_by?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "resubmission_history_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "vendor_applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       search_analytics: {
         Row: {
           clicked_result_id: string | null
@@ -2464,6 +2619,102 @@ export type Database = {
           },
         ]
       }
+      validation_logs: {
+        Row: {
+          application_id: string
+          error_message: string | null
+          field_name: string
+          field_value: string | null
+          id: string
+          validated_at: string | null
+          validation_result: string
+          validation_rule_id: string | null
+        }
+        Insert: {
+          application_id: string
+          error_message?: string | null
+          field_name: string
+          field_value?: string | null
+          id?: string
+          validated_at?: string | null
+          validation_result: string
+          validation_rule_id?: string | null
+        }
+        Update: {
+          application_id?: string
+          error_message?: string | null
+          field_name?: string
+          field_value?: string | null
+          id?: string
+          validated_at?: string | null
+          validation_result?: string
+          validation_rule_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "validation_logs_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "vendor_applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "validation_logs_validation_rule_id_fkey"
+            columns: ["validation_rule_id"]
+            isOneToOne: false
+            referencedRelation: "validation_rules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      validation_rules: {
+        Row: {
+          category_filter: Json | null
+          compliance_region: string | null
+          created_at: string | null
+          error_message: string
+          field_name: string
+          id: string
+          is_active: boolean | null
+          severity: string | null
+          trigger_event: string | null
+          updated_at: string | null
+          validation_logic: Json
+          validation_type: string
+          vendor_type: string
+        }
+        Insert: {
+          category_filter?: Json | null
+          compliance_region?: string | null
+          created_at?: string | null
+          error_message: string
+          field_name: string
+          id?: string
+          is_active?: boolean | null
+          severity?: string | null
+          trigger_event?: string | null
+          updated_at?: string | null
+          validation_logic: Json
+          validation_type: string
+          vendor_type: string
+        }
+        Update: {
+          category_filter?: Json | null
+          compliance_region?: string | null
+          created_at?: string | null
+          error_message?: string
+          field_name?: string
+          id?: string
+          is_active?: boolean | null
+          severity?: string | null
+          trigger_event?: string | null
+          updated_at?: string | null
+          validation_logic?: Json
+          validation_type?: string
+          vendor_type?: string
+        }
+        Relationships: []
+      }
       vendor_ai_alerts: {
         Row: {
           action_required: boolean | null
@@ -2629,6 +2880,93 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      vendor_applications: {
+        Row: {
+          application_status: string | null
+          approval_notes: string | null
+          bank_details: Json | null
+          business_address: Json
+          business_documents: Json | null
+          business_name: string
+          business_registration_number: string | null
+          business_type: string
+          category_selections: Json | null
+          compliance_region: string | null
+          contact_info: Json
+          created_at: string | null
+          fraud_score: number | null
+          id: string
+          license_info: Json | null
+          product_catalog: Json | null
+          rejection_details: Json | null
+          rejection_reason: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          service_areas: Json | null
+          submitted_at: string | null
+          tax_id: string | null
+          updated_at: string | null
+          user_id: string
+          vendor_type: string
+        }
+        Insert: {
+          application_status?: string | null
+          approval_notes?: string | null
+          bank_details?: Json | null
+          business_address?: Json
+          business_documents?: Json | null
+          business_name: string
+          business_registration_number?: string | null
+          business_type: string
+          category_selections?: Json | null
+          compliance_region?: string | null
+          contact_info?: Json
+          created_at?: string | null
+          fraud_score?: number | null
+          id?: string
+          license_info?: Json | null
+          product_catalog?: Json | null
+          rejection_details?: Json | null
+          rejection_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          service_areas?: Json | null
+          submitted_at?: string | null
+          tax_id?: string | null
+          updated_at?: string | null
+          user_id: string
+          vendor_type: string
+        }
+        Update: {
+          application_status?: string | null
+          approval_notes?: string | null
+          bank_details?: Json | null
+          business_address?: Json
+          business_documents?: Json | null
+          business_name?: string
+          business_registration_number?: string | null
+          business_type?: string
+          category_selections?: Json | null
+          compliance_region?: string | null
+          contact_info?: Json
+          created_at?: string | null
+          fraud_score?: number | null
+          id?: string
+          license_info?: Json | null
+          product_catalog?: Json | null
+          rejection_details?: Json | null
+          rejection_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          service_areas?: Json | null
+          submitted_at?: string | null
+          tax_id?: string | null
+          updated_at?: string | null
+          user_id?: string
+          vendor_type?: string
+        }
+        Relationships: []
       }
       vendor_bookings: {
         Row: {
