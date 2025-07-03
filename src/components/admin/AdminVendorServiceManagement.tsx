@@ -21,6 +21,9 @@ const CreateServiceForm = () => {
     service_description: '',
     service_category: '',
     location_type: 'on_site',
+    service_location_state: '',
+    service_location_city: '',
+    service_location_area: '',
     duration_value: 1,
     duration_unit: 'hours',
     requirements: '',
@@ -71,6 +74,69 @@ const CreateServiceForm = () => {
     }
   });
 
+  // Fetch locations for state selection
+  const { data: states } = useQuery({
+    queryKey: ['locations-states'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('locations')
+        .select('province_name')
+        .eq('is_active', true)
+        .not('province_name', 'is', null);
+      
+      if (error) throw error;
+      
+      // Get unique states
+      const uniqueStates = [...new Set(data.map(item => item.province_name))];
+      return uniqueStates.sort();
+    }
+  });
+
+  // Fetch cities based on selected state
+  const { data: cities } = useQuery({
+    queryKey: ['locations-cities', serviceData.service_location_state],
+    queryFn: async () => {
+      if (!serviceData.service_location_state) return [];
+      
+      const { data, error } = await supabase
+        .from('locations')
+        .select('city_name')
+        .eq('province_name', serviceData.service_location_state)
+        .eq('is_active', true)
+        .not('city_name', 'is', null);
+      
+      if (error) throw error;
+      
+      // Get unique cities
+      const uniqueCities = [...new Set(data.map(item => item.city_name))];
+      return uniqueCities.sort();
+    },
+    enabled: !!serviceData.service_location_state
+  });
+
+  // Fetch areas based on selected city
+  const { data: areas } = useQuery({
+    queryKey: ['locations-areas', serviceData.service_location_state, serviceData.service_location_city],
+    queryFn: async () => {
+      if (!serviceData.service_location_state || !serviceData.service_location_city) return [];
+      
+      const { data, error } = await supabase
+        .from('locations')
+        .select('area_name')
+        .eq('province_name', serviceData.service_location_state)
+        .eq('city_name', serviceData.service_location_city)
+        .eq('is_active', true)
+        .not('area_name', 'is', null);
+      
+      if (error) throw error;
+      
+      // Get unique areas
+      const uniqueAreas = [...new Set(data.map(item => item.area_name))];
+      return uniqueAreas.sort();
+    },
+    enabled: !!serviceData.service_location_state && !!serviceData.service_location_city
+  });
+
   // Create service mutation
   const createServiceMutation = useMutation({
     mutationFn: async () => {
@@ -98,6 +164,9 @@ const CreateServiceForm = () => {
         service_description: '',
         service_category: '',
         location_type: 'on_site',
+        service_location_state: '',
+        service_location_city: '',
+        service_location_area: '',
         duration_value: 1,
         duration_unit: 'hours',
         requirements: '',
@@ -244,6 +313,90 @@ const CreateServiceForm = () => {
               <SelectItem value="months">Months</SelectItem>
             </SelectContent>
           </Select>
+        </div>
+      </div>
+
+      {/* Required Service Location Selection */}
+      <div className="space-y-4">
+        <div className="border-l-4 border-primary pl-4">
+          <Label className="text-base font-semibold text-primary">Service Location *</Label>
+          <p className="text-sm text-muted-foreground">Select the specific area where this service will be provided</p>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="service_location_state">State/Province *</Label>
+            <Select 
+              value={serviceData.service_location_state || ''} 
+              onValueChange={(value) => setServiceData(prev => ({
+                ...prev, 
+                service_location_state: value,
+                service_location_city: '',
+                service_location_area: ''
+              }))}
+              required
+            >
+              <SelectTrigger className="bg-background">
+                <SelectValue placeholder="Select state" />
+              </SelectTrigger>
+              <SelectContent className="bg-background border z-50">
+                {states?.map((state) => (
+                  <SelectItem key={state} value={state}>
+                    {state}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="service_location_city">City *</Label>
+            <Select 
+              value={serviceData.service_location_city || ''} 
+              onValueChange={(value) => setServiceData(prev => ({
+                ...prev, 
+                service_location_city: value,
+                service_location_area: ''
+              }))}
+              disabled={!serviceData.service_location_state}
+              required
+            >
+              <SelectTrigger className="bg-background">
+                <SelectValue placeholder="Select city" />
+              </SelectTrigger>
+              <SelectContent className="bg-background border z-50">
+                {cities?.map((city) => (
+                  <SelectItem key={city} value={city}>
+                    {city}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="service_location_area">Area *</Label>
+            <Select 
+              value={serviceData.service_location_area || ''} 
+              onValueChange={(value) => setServiceData(prev => ({
+                ...prev, 
+                service_location_area: value
+              }))}
+              disabled={!serviceData.service_location_city}
+              required
+            >
+              <SelectTrigger className="bg-background">
+                <SelectValue placeholder="Select area" />
+              </SelectTrigger>
+              <SelectContent className="bg-background border z-50">
+                {areas?.map((area) => (
+                  <SelectItem key={area} value={area}>
+                    {area}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
       </div>
 
