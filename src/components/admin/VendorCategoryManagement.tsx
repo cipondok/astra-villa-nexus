@@ -18,7 +18,7 @@ const VendorCategoryManagement = () => {
       const [mainCats, serviceNames, serviceCategories] = await Promise.all([
         supabase.from('vendor_service_categories').select('*', { count: 'exact' }),
         supabase.from('approved_service_names').select('*', { count: 'exact' }),
-        supabase.from('vendor_subcategories').select('*', { count: 'exact' })
+        supabase.from('vendor_sub_categories').select('*', { count: 'exact' })
       ]);
       
       return {

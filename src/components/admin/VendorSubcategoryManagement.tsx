@@ -71,7 +71,7 @@ const VendorSubcategoryManagement = () => {
     queryKey: ['vendor-subcategories-with-main'],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('vendor_subcategories')
+        .from('vendor_sub_categories')
         .select(`
           *,
           vendor_main_categories (
@@ -90,7 +90,7 @@ const VendorSubcategoryManagement = () => {
   const createSubcategoryMutation = useMutation({
     mutationFn: async (subcategoryData: typeof formData) => {
       const { error } = await supabase
-        .from('vendor_subcategories')
+        .from('vendor_sub_categories')
         .insert(subcategoryData);
       
       if (error) throw error;
@@ -110,7 +110,7 @@ const VendorSubcategoryManagement = () => {
   const updateSubcategoryMutation = useMutation({
     mutationFn: async ({ id, data }: { id: string; data: typeof formData }) => {
       const { error } = await supabase
-        .from('vendor_subcategories')
+        .from('vendor_sub_categories')
         .update(data)
         .eq('id', id);
       
@@ -131,7 +131,7 @@ const VendorSubcategoryManagement = () => {
   const deleteSubcategoryMutation = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase
-        .from('vendor_subcategories')
+        .from('vendor_sub_categories')
         .delete()
         .eq('id', id);
       
