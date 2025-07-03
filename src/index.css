@@ -60,14 +60,14 @@
   }
 
   html {
-    background: rgb(var(--background));
-    color: rgb(var(--foreground));
+    background: hsl(var(--background));
+    color: hsl(var(--foreground));
     transition: background-color 0.2s ease, color 0.2s ease;
   }
 
   body {
-    background: rgb(var(--background));
-    color: rgb(var(--foreground));
+    background: hsl(var(--background));
+    color: hsl(var(--foreground));
     font-family: 'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
     font-size: 14px;
     line-height: 1.5;
@@ -181,20 +181,20 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: rgb(var(--muted));
+  background: hsl(var(--muted));
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgb(var(--muted-foreground));
+  background: hsl(var(--muted-foreground));
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgb(var(--primary));
+  background: hsl(var(--primary));
 }
 
 /* Selection Styling */
 ::selection {
-  background: rgb(var(--primary) / 0.2);
-  color: rgb(var(--primary-foreground));
+  background: hsl(var(--primary) / 0.2);
+  color: hsl(var(--primary-foreground));
 }
