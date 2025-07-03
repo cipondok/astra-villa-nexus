@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { FolderTree, List } from "lucide-react";
 import VendorMainCategoryManagement from "./VendorMainCategoryManagement";
 import VendorSubcategoryManagement from "./VendorSubcategoryManagement";
+import ApprovedServiceNamesManagement from "./ApprovedServiceNamesManagement";
 
 const VendorCategoryManagement = () => {
   const [activeTab, setActiveTab] = useState("main-categories");
@@ -92,10 +93,7 @@ const VendorCategoryManagement = () => {
         </TabsContent>
         
         <TabsContent value="service-names">
-          <div className="p-6 text-center text-muted-foreground">
-            <p>Service Names are managed through the Approved Service Names Management page.</p>
-            <p>You can access it from the main admin dashboard.</p>
-          </div>
+          <ApprovedServiceNamesManagement />
         </TabsContent>
         
         <TabsContent value="subcategories">
