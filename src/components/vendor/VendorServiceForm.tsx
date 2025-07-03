@@ -127,19 +127,46 @@ const VendorServiceForm = ({ service, onClose, onSuccess }: ServiceFormProps) =>
     }
   };
 
-  // Fetch approved service names
+  // Fetch approved service names with categories
   const { data: approvedServiceNames } = useQuery({
     queryKey: ['approved-service-names'],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('approved_service_names')
-        .select('*')
+        .select(`
+          *,
+          vendor_service_categories(*)
+        `)
         .eq('is_active', true)
         .order('service_name');
       
       if (error) throw error;
       return data;
     }
+  });
+
+  // Get categories for selected service name
+  const selectedServiceNameData = approvedServiceNames?.find(s => s.id === formData.approved_service_name_id);
+  const availableCategories = selectedServiceNameData?.vendor_service_categories ? 
+    [selectedServiceNameData.vendor_service_categories] : [];
+
+  // Fetch subcategories based on selected category
+  const { data: subcategories } = useQuery({
+    queryKey: ['vendor-subcategories', formData.category_id],
+    queryFn: async () => {
+      if (!formData.category_id) return [];
+      
+      const { data, error } = await supabase
+        .from('vendor_subcategories')
+        .select('*')
+        .eq('main_category_id', formData.category_id)
+        .eq('is_active', true)
+        .order('display_order');
+      
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!formData.category_id
   });
 
   // Fetch locations for state selection
@@ -410,7 +437,14 @@ const VendorServiceForm = ({ service, onClose, onSuccess }: ServiceFormProps) =>
                   <Label>Select from Approved Service Names</Label>
                   <Select 
                     value={formData.approved_service_name_id} 
-                    onValueChange={(value) => setFormData({ ...formData, approved_service_name_id: value })}
+                    onValueChange={(value) => {
+                      const selectedService = approvedServiceNames?.find(s => s.id === value);
+                      setFormData({ 
+                        ...formData, 
+                        approved_service_name_id: value,
+                        category_id: selectedService?.category_id || ''
+                      });
+                    }}
                   >
                     <SelectTrigger className="bg-background">
                       <SelectValue placeholder="Choose an approved service name" />
@@ -418,7 +452,14 @@ const VendorServiceForm = ({ service, onClose, onSuccess }: ServiceFormProps) =>
                     <SelectContent className="bg-background border z-50">
                       {approvedServiceNames?.map((serviceName) => (
                         <SelectItem key={serviceName.id} value={serviceName.id}>
-                          {serviceName.service_name}
+                          <div className="flex flex-col">
+                            <span>{serviceName.service_name}</span>
+                            {serviceName.vendor_service_categories && (
+                              <span className="text-xs text-muted-foreground">
+                                Category: {serviceName.vendor_service_categories.name}
+                              </span>
+                            )}
+                          </div>
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -441,27 +482,38 @@ const VendorServiceForm = ({ service, onClose, onSuccess }: ServiceFormProps) =>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
             <div className="space-y-2">
-              <Label htmlFor="category_id">Category *</Label>
+              <Label htmlFor="category_id">Service Category *</Label>
               <Select
                 value={formData.category_id}
                 onValueChange={(value) => setFormData({ ...formData, category_id: value })}
+                disabled={!selectedServiceNameData && !useCustomName}
                 required
               >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select category" />
+                <SelectTrigger className="bg-background">
+                  <SelectValue placeholder={
+                    !selectedServiceNameData && !useCustomName ? 
+                    "First select a service name" : 
+                    "Select category"
+                  } />
                 </SelectTrigger>
-                <SelectContent>
-                  {categories.length === 0 ? (
-                    <SelectItem value="" disabled>No categories available</SelectItem>
-                  ) : (
-                    categories.map((category) => (
-                      <SelectItem key={category.id} value={category.id}>
-                        {category.icon} {category.name}
-                      </SelectItem>
-                    ))
-                  )}
+                <SelectContent className="bg-background border z-50">
+                  {availableCategories.map((category) => (
+                    <SelectItem key={category.id} value={category.id}>
+                      {category.icon} {category.name}
+                    </SelectItem>
+                  ))}
+                  {useCustomName && categories?.map((category) => (
+                    <SelectItem key={category.id} value={category.id}>
+                      {category.icon} {category.name}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
+              {selectedServiceNameData && (
+                <p className="text-sm text-muted-foreground">
+                  ✓ Category automatically selected based on service name
+                </p>
+              )}
             </div>
 
             <div className="space-y-2">
