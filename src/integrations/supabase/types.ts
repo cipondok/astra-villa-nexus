@@ -454,6 +454,8 @@ export type Database = {
           id: string
           is_active: boolean
           service_name: string
+          sub_category_id: string | null
+          type: string | null
           updated_at: string
         }
         Insert: {
@@ -464,6 +466,8 @@ export type Database = {
           id?: string
           is_active?: boolean
           service_name: string
+          sub_category_id?: string | null
+          type?: string | null
           updated_at?: string
         }
         Update: {
@@ -474,6 +478,8 @@ export type Database = {
           id?: string
           is_active?: boolean
           service_name?: string
+          sub_category_id?: string | null
+          type?: string | null
           updated_at?: string
         }
         Relationships: [
@@ -489,6 +495,13 @@ export type Database = {
             columns: ["created_by"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approved_service_names_sub_category_id_fkey"
+            columns: ["sub_category_id"]
+            isOneToOne: false
+            referencedRelation: "vendor_sub_categories"
             referencedColumns: ["id"]
           },
         ]
@@ -3328,6 +3341,7 @@ export type Database = {
           id: string
           is_active: boolean | null
           name: string
+          type: string
           updated_at: string | null
         }
         Insert: {
@@ -3338,6 +3352,7 @@ export type Database = {
           id?: string
           is_active?: boolean | null
           name: string
+          type?: string
           updated_at?: string | null
         }
         Update: {
@@ -3348,6 +3363,7 @@ export type Database = {
           id?: string
           is_active?: boolean | null
           name?: string
+          type?: string
           updated_at?: string | null
         }
         Relationships: []
@@ -3772,36 +3788,50 @@ export type Database = {
       }
       vendor_service_categories: {
         Row: {
+          approved_service_name_id: string | null
           created_at: string | null
           description: string | null
           display_order: number | null
           icon: string | null
           id: string
+          implementation_type: string | null
           is_active: boolean | null
           name: string
           updated_at: string | null
         }
         Insert: {
+          approved_service_name_id?: string | null
           created_at?: string | null
           description?: string | null
           display_order?: number | null
           icon?: string | null
           id?: string
+          implementation_type?: string | null
           is_active?: boolean | null
           name: string
           updated_at?: string | null
         }
         Update: {
+          approved_service_name_id?: string | null
           created_at?: string | null
           description?: string | null
           display_order?: number | null
           icon?: string | null
           id?: string
+          implementation_type?: string | null
           is_active?: boolean | null
           name?: string
           updated_at?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "vendor_service_categories_approved_service_name_id_fkey"
+            columns: ["approved_service_name_id"]
+            isOneToOne: false
+            referencedRelation: "approved_service_names"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       vendor_service_categories_ai: {
         Row: {
@@ -3929,8 +3959,12 @@ export type Database = {
           service_category: string | null
           service_description: string | null
           service_images: Json | null
+          service_location_area: string | null
+          service_location_city: string | null
+          service_location_state: string | null
           service_location_types: string[] | null
           service_name: string
+          sub_category_id: string | null
           subcategory_id: string | null
           total_bookings: number | null
           updated_at: string | null
@@ -3964,8 +3998,12 @@ export type Database = {
           service_category?: string | null
           service_description?: string | null
           service_images?: Json | null
+          service_location_area?: string | null
+          service_location_city?: string | null
+          service_location_state?: string | null
           service_location_types?: string[] | null
           service_name: string
+          sub_category_id?: string | null
           subcategory_id?: string | null
           total_bookings?: number | null
           updated_at?: string | null
@@ -3999,8 +4037,12 @@ export type Database = {
           service_category?: string | null
           service_description?: string | null
           service_images?: Json | null
+          service_location_area?: string | null
+          service_location_city?: string | null
+          service_location_state?: string | null
           service_location_types?: string[] | null
           service_name?: string
+          sub_category_id?: string | null
           subcategory_id?: string | null
           total_bookings?: number | null
           updated_at?: string | null
@@ -4047,6 +4089,13 @@ export type Database = {
             columns: ["main_category_id"]
             isOneToOne: false
             referencedRelation: "vendor_main_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vendor_services_sub_category_id_fkey"
+            columns: ["sub_category_id"]
+            isOneToOne: false
+            referencedRelation: "vendor_sub_categories"
             referencedColumns: ["id"]
           },
           {
@@ -4099,6 +4148,50 @@ export type Database = {
             columns: ["vendor_id"]
             isOneToOne: true
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vendor_sub_categories: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          display_order: number | null
+          icon: string | null
+          id: string
+          is_active: boolean | null
+          main_category_id: string | null
+          name: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          display_order?: number | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean | null
+          main_category_id?: string | null
+          name: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          display_order?: number | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean | null
+          main_category_id?: string | null
+          name?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendor_sub_categories_main_category_id_fkey"
+            columns: ["main_category_id"]
+            isOneToOne: false
+            referencedRelation: "vendor_main_categories"
             referencedColumns: ["id"]
           },
         ]
