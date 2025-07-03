@@ -2,19 +2,25 @@ import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Switch } from "@/components/ui/switch";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useAlert } from "@/contexts/AlertContext";
 import { useAuth } from "@/contexts/AuthContext";
-import { Plus, Edit, Trash2, Eye, X, DollarSign, Clock, MapPin } from "lucide-react";
+import { Plus, Edit, Trash2, Eye, DollarSign, Clock, MapPin } from "lucide-react";
+import VendorServiceForm from "./VendorServiceForm";
+
+interface ServiceItem {
+  item_name: string;
+  item_description: string;
+  price: number;
+  duration_minutes: number;
+  unit: string;
+  discount_percentage?: number;
+  discount_type?: string;
+}
 
 interface ServiceItem {
   item_name: string;
@@ -45,7 +51,7 @@ interface ServiceFormData {
   discount_valid_until?: string;
 }
 
-const ServiceForm = ({ 
+const ServiceFormWrapper = ({ 
   initialData, 
   initialItems, 
   onSubmit, 
@@ -58,467 +64,29 @@ const ServiceForm = ({
   onCancel: () => void;
   isLoading: boolean;
 }) => {
-  const [serviceData, setServiceData] = useState<ServiceFormData>(
-    initialData || {
-      service_name: '',
-      service_description: '',
-      service_category: '',
-      location_type: 'on_site',
-      duration_value: 1,
-      duration_unit: 'hours',
-      requirements: '',
-      cancellation_policy: '',
-      currency: 'IDR',
-      is_active: true
-    }
-  );
-  
-  const [serviceItems, setServiceItems] = useState<ServiceItem[]>(
-    initialItems || [{ 
-      item_name: '', 
-      item_description: '', 
-      price: 0, 
-      duration_minutes: 60, 
-      unit: 'per_item' 
-    }]
-  );
-
-  // Fetch vendor service categories
-  const { data: categories } = useQuery({
-    queryKey: ['vendor-service-categories'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('vendor_service_categories')
-        .select('*')
-        .eq('is_active', true)
-        .order('display_order');
-      
-      if (error) throw error;
-      return data;
-    }
-  });
-
-  // Fetch locations for state selection
-  const { data: states } = useQuery({
-    queryKey: ['locations-states'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('locations')
-        .select('province_name')
-        .eq('is_active', true)
-        .not('province_name', 'is', null);
-      
-      if (error) throw error;
-      
-      // Get unique states
-      const uniqueStates = [...new Set(data.map(item => item.province_name))];
-      return uniqueStates.sort();
-    }
-  });
-
-  // Fetch cities based on selected state
-  const { data: cities } = useQuery({
-    queryKey: ['locations-cities', serviceData.service_location_state],
-    queryFn: async () => {
-      if (!serviceData.service_location_state) return [];
-      
-      const { data, error } = await supabase
-        .from('locations')
-        .select('city_name')
-        .eq('province_name', serviceData.service_location_state)
-        .eq('is_active', true)
-        .not('city_name', 'is', null);
-      
-      if (error) throw error;
-      
-      // Get unique cities
-      const uniqueCities = [...new Set(data.map(item => item.city_name))];
-      return uniqueCities.sort();
-    },
-    enabled: !!serviceData.service_location_state
-  });
-
-  // Fetch areas based on selected city
-  const { data: areas } = useQuery({
-    queryKey: ['locations-areas', serviceData.service_location_state, serviceData.service_location_city],
-    queryFn: async () => {
-      if (!serviceData.service_location_state || !serviceData.service_location_city) return [];
-      
-      const { data, error } = await supabase
-        .from('locations')
-        .select('area_name')
-        .eq('province_name', serviceData.service_location_state)
-        .eq('city_name', serviceData.service_location_city)
-        .eq('is_active', true)
-        .not('area_name', 'is', null);
-      
-      if (error) throw error;
-      
-      // Get unique areas
-      const uniqueAreas = [...new Set(data.map(item => item.area_name))];
-      return uniqueAreas.sort();
-    },
-    enabled: !!serviceData.service_location_state && !!serviceData.service_location_city
-  });
-
-  const addServiceItem = () => {
-    setServiceItems([...serviceItems, { 
-      item_name: '', 
-      item_description: '', 
-      price: 0, 
-      duration_minutes: 60, 
-      unit: 'per_item' 
-    }]);
-  };
-
-  const removeServiceItem = (index: number) => {
-    if (serviceItems.length > 1) {
-      setServiceItems(serviceItems.filter((_, i) => i !== index));
-    }
-  };
-
-  const updateServiceItem = (index: number, field: string, value: any) => {
-    const updated = [...serviceItems];
-    updated[index] = { ...updated[index], [field]: value };
-    setServiceItems(updated);
-  };
-
-  const handleSubmit = () => {
-    if (!serviceData.service_name.trim()) return;
-    onSubmit(serviceData, serviceItems.filter(item => item.item_name.trim()));
-  };
-
   return (
-    <div className="space-y-6">
-      {/* Service Basic Info */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="service_name">Service Name *</Label>
-          <Input
-            id="service_name"
-            value={serviceData.service_name}
-            onChange={(e) => setServiceData(prev => ({...prev, service_name: e.target.value}))}
-            placeholder="e.g., AC Repair Service"
-          />
-        </div>
-        
-        <div className="space-y-2">
-          <Label htmlFor="service_category">Service Category *</Label>
-          <Select 
-            value={serviceData.service_category} 
-            onValueChange={(value) => setServiceData(prev => ({...prev, service_category: value}))}
-          >
-            <SelectTrigger className="bg-background">
-              <SelectValue placeholder="Select a category" />
-            </SelectTrigger>
-            <SelectContent className="bg-background border z-50">
-              {categories?.map((category) => (
-                <SelectItem key={category.id} value={category.name}>
-                  {category.name}
-                </SelectItem>
-              ))}
-              <SelectItem value="other">Other (specify in description)</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="service_description">Description</Label>
-        <Textarea
-          id="service_description"
-          value={serviceData.service_description}
-          onChange={(e) => setServiceData(prev => ({...prev, service_description: e.target.value}))}
-          placeholder="Describe your service in detail..."
-          rows={3}
-        />
-      </div>
-
-      {/* Service Details */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="location_type">Location Type</Label>
-          <Select 
-            value={serviceData.location_type} 
-            onValueChange={(value) => setServiceData(prev => ({...prev, location_type: value}))}
-          >
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="on_site">On-site</SelectItem>
-              <SelectItem value="remote">Remote</SelectItem>
-              <SelectItem value="both">Both</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="duration_value">Duration</Label>
-          <Input
-            id="duration_value"
-            type="number"
-            min="1"
-            value={serviceData.duration_value}
-            onChange={(e) => setServiceData(prev => ({...prev, duration_value: parseInt(e.target.value) || 1}))}
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="duration_unit">Duration Unit</Label>
-          <Select 
-            value={serviceData.duration_unit} 
-            onValueChange={(value) => setServiceData(prev => ({...prev, duration_unit: value}))}
-          >
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="hours">Hours</SelectItem>
-              <SelectItem value="days">Days</SelectItem>
-              <SelectItem value="weeks">Weeks</SelectItem>
-              <SelectItem value="months">Months</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
-
-      {/* Service Location Selection */}
-      {serviceData.location_type !== 'remote' && (
-        <div className="space-y-4">
-          <Label className="text-base font-medium">Service Location (Optional)</Label>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="space-y-2">
-              <Label>State/Province</Label>
-              <Select 
-                value={serviceData.service_location_state || ''} 
-                onValueChange={(value) => setServiceData(prev => ({
-                  ...prev, 
-                  service_location_state: value,
-                  service_location_city: '',
-                  service_location_area: ''
-                }))}
-              >
-                <SelectTrigger className="bg-background">
-                  <SelectValue placeholder="Select state" />
-                </SelectTrigger>
-                <SelectContent className="bg-background border z-50">
-                  {states?.map((state) => (
-                    <SelectItem key={state} value={state}>
-                      {state}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <Label>City</Label>
-              <Select 
-                value={serviceData.service_location_city || ''} 
-                onValueChange={(value) => setServiceData(prev => ({
-                  ...prev, 
-                  service_location_city: value,
-                  service_location_area: ''
-                }))}
-                disabled={!serviceData.service_location_state}
-              >
-                <SelectTrigger className="bg-background">
-                  <SelectValue placeholder="Select city" />
-                </SelectTrigger>
-                <SelectContent className="bg-background border z-50">
-                  {cities?.map((city) => (
-                    <SelectItem key={city} value={city}>
-                      {city}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <Label>Area</Label>
-              <Select 
-                value={serviceData.service_location_area || ''} 
-                onValueChange={(value) => setServiceData(prev => ({
-                  ...prev, 
-                  service_location_area: value
-                }))}
-                disabled={!serviceData.service_location_city}
-              >
-                <SelectTrigger className="bg-background">
-                  <SelectValue placeholder="Select area" />
-                </SelectTrigger>
-                <SelectContent className="bg-background border z-50">
-                  {areas?.map((area) => (
-                    <SelectItem key={area} value={area}>
-                      {area}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Service Discount Section */}
-      <div className="space-y-4">
-        <Label className="text-base font-medium">Service Discount (Optional)</Label>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="space-y-2">
-            <Label>Discount Type</Label>
-            <Select 
-              value={serviceData.discount_type || ''} 
-              onValueChange={(value) => setServiceData(prev => ({...prev, discount_type: value}))}
-            >
-              <SelectTrigger className="bg-background">
-                <SelectValue placeholder="Select discount type" />
-              </SelectTrigger>
-              <SelectContent className="bg-background border z-50">
-                <SelectItem value="percentage">Percentage Off</SelectItem>
-                <SelectItem value="fixed">Fixed Amount Off</SelectItem>
-                <SelectItem value="seasonal">Seasonal Discount</SelectItem>
-                <SelectItem value="bulk">Bulk Discount</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="space-y-2">
-            <Label>Discount Value</Label>
-            <Input
-              type="number"
-              min="0"
-              max={serviceData.discount_type === 'percentage' ? 100 : undefined}
-              value={serviceData.discount_percentage || ''}
-              onChange={(e) => setServiceData(prev => ({...prev, discount_percentage: parseFloat(e.target.value) || 0}))}
-              placeholder={serviceData.discount_type === 'percentage' ? "e.g., 15 (%)" : "e.g., 50000 (IDR)"}
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label>Valid Until (Optional)</Label>
-            <Input
-              type="date"
-              value={serviceData.discount_valid_until || ''}
-              onChange={(e) => setServiceData(prev => ({...prev, discount_valid_until: e.target.value}))}
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* Service Items & Pricing */}
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <Label className="text-base font-medium">Service Items & Pricing</Label>
-          <Button type="button" variant="outline" size="sm" onClick={addServiceItem}>
-            <Plus className="h-4 w-4 mr-1" />
-            Add Item
-          </Button>
-        </div>
-        
-        {serviceItems.map((item, index) => (
-          <Card key={index} className="p-4">
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <h4 className="font-medium">Item {index + 1}</h4>
-                {serviceItems.length > 1 && (
-                  <Button 
-                    type="button" 
-                    variant="ghost" 
-                    size="sm"
-                    onClick={() => removeServiceItem(index)}
-                  >
-                    <X className="h-4 w-4" />
-                  </Button>
-                )}
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>Item Name *</Label>
-                  <Input
-                    value={item.item_name}
-                    onChange={(e) => updateServiceItem(index, 'item_name', e.target.value)}
-                    placeholder="e.g., Basic AC Cleaning"
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label>Price (IDR) *</Label>
-                  <Input
-                    type="number"
-                    min="0"
-                    value={item.price}
-                    onChange={(e) => updateServiceItem(index, 'price', parseFloat(e.target.value) || 0)}
-                    placeholder="150000"
-                  />
-                </div>
-              </div>
-              
-              <div className="space-y-2">
-                <Label>Item Description</Label>
-                <Textarea
-                  value={item.item_description}
-                  onChange={(e) => updateServiceItem(index, 'item_description', e.target.value)}
-                  placeholder="Describe this service item..."
-                  rows={2}
-                />
-              </div>
-            </div>
-          </Card>
-        ))}
-      </div>
-
-      {/* Additional Info */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="requirements">Requirements</Label>
-          <Textarea
-            id="requirements"
-            value={serviceData.requirements}
-            onChange={(e) => setServiceData(prev => ({...prev, requirements: e.target.value}))}
-            placeholder="Any special requirements or preparations needed..."
-            rows={3}
-          />
-        </div>
-        
-        <div className="space-y-2">
-          <Label htmlFor="cancellation_policy">Cancellation Policy</Label>
-          <Textarea
-            id="cancellation_policy"
-            value={serviceData.cancellation_policy}
-            onChange={(e) => setServiceData(prev => ({...prev, cancellation_policy: e.target.value}))}
-            placeholder="Cancellation terms and conditions..."
-            rows={3}
-          />
-        </div>
-      </div>
-
-      {/* Active Status */}
-      <div className="flex items-center space-x-2">
-        <Switch
-          id="is_active"
-          checked={serviceData.is_active}
-          onCheckedChange={(checked) => setServiceData(prev => ({...prev, is_active: checked}))}
-        />
-        <Label htmlFor="is_active">Activate service</Label>
-      </div>
-
-      {/* Action Buttons */}
-      <div className="flex gap-2 pt-4">
-        <Button 
-          onClick={handleSubmit} 
-          disabled={!serviceData.service_name.trim() || isLoading}
-          className="flex-1"
-        >
-          {isLoading ? 'Saving...' : initialData ? 'Update Service' : 'Create Service'}
-        </Button>
-        <Button variant="outline" onClick={onCancel}>
-          Cancel
-        </Button>
-      </div>
-    </div>
+    <VendorServiceForm
+      service={initialData ? {
+        id: 'temp',
+        service_name: initialData.service_name,
+        service_description: initialData.service_description,
+        category_id: '',
+        duration_value: initialData.duration_value,
+        duration_unit: initialData.duration_unit,
+        location_type: initialData.location_type,
+        service_location_types: [initialData.location_type],
+        delivery_options: {},
+        requirements: initialData.requirements,
+        cancellation_policy: initialData.cancellation_policy,
+        is_active: initialData.is_active,
+        featured: false
+      } : undefined}
+      onClose={onCancel}
+      onSuccess={() => {
+        // Handle success - the onSubmit will be called from within VendorServiceForm
+        onCancel();
+      }}
+    />
   );
 };
 
@@ -779,7 +347,7 @@ const VendorServiceManagement = () => {
           <DialogHeader>
             <DialogTitle>Create New Service</DialogTitle>
           </DialogHeader>
-          <ServiceForm
+          <ServiceFormWrapper
             onSubmit={handleCreateService}
             onCancel={() => setIsCreateDialogOpen(false)}
             isLoading={createServiceMutation.isPending}
@@ -794,7 +362,7 @@ const VendorServiceManagement = () => {
             <DialogTitle>Edit Service</DialogTitle>
           </DialogHeader>
           {editingService && (
-            <ServiceForm
+            <ServiceFormWrapper
               initialData={{
                 service_name: editingService.service_name,
                 service_description: editingService.service_description || '',
