@@ -445,6 +445,54 @@ export type Database = {
         }
         Relationships: []
       }
+      approved_service_names: {
+        Row: {
+          category_id: string | null
+          created_at: string
+          created_by: string | null
+          description: string | null
+          id: string
+          is_active: boolean
+          service_name: string
+          updated_at: string
+        }
+        Insert: {
+          category_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          service_name: string
+          updated_at?: string
+        }
+        Update: {
+          category_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          service_name?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "approved_service_names_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "vendor_service_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approved_service_names_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       billing_plans: {
         Row: {
           billing_cycle: string | null
@@ -1655,6 +1703,67 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      service_name_requests: {
+        Row: {
+          admin_notes: string | null
+          category_id: string | null
+          created_at: string
+          description: string | null
+          id: string
+          requested_by: string
+          requested_name: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          category_id?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          requested_by: string
+          requested_name: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+        }
+        Update: {
+          admin_notes?: string | null
+          category_id?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          requested_by?: string
+          requested_name?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_name_requests_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "vendor_service_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_name_requests_requested_by_fkey"
+            columns: ["requested_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_name_requests_reviewed_by_fkey"
+            columns: ["reviewed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       social_media_settings: {
         Row: {
@@ -3793,6 +3902,11 @@ export type Database = {
       }
       vendor_services: {
         Row: {
+          admin_approval_notes: string | null
+          admin_approval_status: string | null
+          approved_at: string | null
+          approved_by: string | null
+          approved_service_name_id: string | null
           availability: Json | null
           business_profile_id: string | null
           cancellation_policy: string | null
@@ -3823,6 +3937,11 @@ export type Database = {
           vendor_id: string | null
         }
         Insert: {
+          admin_approval_notes?: string | null
+          admin_approval_status?: string | null
+          approved_at?: string | null
+          approved_by?: string | null
+          approved_service_name_id?: string | null
           availability?: Json | null
           business_profile_id?: string | null
           cancellation_policy?: string | null
@@ -3853,6 +3972,11 @@ export type Database = {
           vendor_id?: string | null
         }
         Update: {
+          admin_approval_notes?: string | null
+          admin_approval_status?: string | null
+          approved_at?: string | null
+          approved_by?: string | null
+          approved_service_name_id?: string | null
           availability?: Json | null
           business_profile_id?: string | null
           cancellation_policy?: string | null
@@ -3883,6 +4007,20 @@ export type Database = {
           vendor_id?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "vendor_services_approved_by_fkey"
+            columns: ["approved_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vendor_services_approved_service_name_id_fkey"
+            columns: ["approved_service_name_id"]
+            isOneToOne: false
+            referencedRelation: "approved_service_names"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "vendor_services_business_profile_id_fkey"
             columns: ["business_profile_id"]

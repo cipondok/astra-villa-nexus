@@ -536,7 +536,7 @@ const AdminVendorServiceManagement = () => {
         .select(`
           *,
           vendor_business_profiles(business_name, vendor_id),
-          profiles(full_name, email),
+          profiles!vendor_services_vendor_id_fkey(full_name, email),
           vendor_service_items(*)
         `)
         .order('created_at', { ascending: false });
@@ -676,7 +676,7 @@ const AdminVendorServiceManagement = () => {
                   <div className="flex items-center justify-between">
                     <div>
                       <CardTitle className="text-lg">{service.service_name}</CardTitle>
-                      <CardDescription>
+                       <CardDescription>
                         {service.vendor_business_profiles?.business_name} • {service.profiles?.email}
                       </CardDescription>
                     </div>

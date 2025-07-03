@@ -36,7 +36,7 @@ const EnhancedVendorServiceManagement = () => {
         .select(`
           *,
           vendor_business_profiles(business_name, vendor_id, business_email),
-          profiles(full_name, email),
+          profiles!vendor_services_vendor_id_fkey(full_name, email),
           vendor_service_items(*),
           vendor_service_categories(name, icon)
         `)

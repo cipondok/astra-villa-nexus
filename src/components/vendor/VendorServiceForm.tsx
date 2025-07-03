@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { X } from "lucide-react";
 
@@ -34,7 +35,8 @@ const VendorServiceForm = ({ service, onClose, onSuccess }: ServiceFormProps) =>
   const [categories, setCategories] = useState<ServiceCategory[]>([]);
   const [allowedDurationUnits, setAllowedDurationUnits] = useState<string[]>(['hours']);
   const [formData, setFormData] = useState({
-    service_name: '',
+    approved_service_name_id: '',
+    custom_service_name: '',
     service_description: '',
     category_id: '',
     duration_value: 1,
@@ -50,6 +52,9 @@ const VendorServiceForm = ({ service, onClose, onSuccess }: ServiceFormProps) =>
     is_active: true,
     featured: false
   });
+  const [useCustomName, setUseCustomName] = useState(false);
+  const [serviceNameRequest, setServiceNameRequest] = useState('');
+  const [showRequestDialog, setShowRequestDialog] = useState(false);
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -58,7 +63,8 @@ const VendorServiceForm = ({ service, onClose, onSuccess }: ServiceFormProps) =>
     fetchAllowedDurationUnits();
     if (service) {
       setFormData({
-        service_name: service.service_name || '',
+        approved_service_name_id: service.approved_service_name_id || '',
+        custom_service_name: service.service_name || '',
         service_description: service.service_description || '',
         category_id: service.category_id || '',
         duration_value: service.duration_value || 1,
@@ -74,6 +80,7 @@ const VendorServiceForm = ({ service, onClose, onSuccess }: ServiceFormProps) =>
         is_active: service.is_active ?? true,
         featured: service.featured ?? false
       });
+      setUseCustomName(!service.approved_service_name_id);
     }
   }, [service]);
 
@@ -119,6 +126,21 @@ const VendorServiceForm = ({ service, onClose, onSuccess }: ServiceFormProps) =>
       console.error('Error fetching duration units:', error);
     }
   };
+
+  // Fetch approved service names
+  const { data: approvedServiceNames } = useQuery({
+    queryKey: ['approved-service-names'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('approved_service_names')
+        .select('*')
+        .eq('is_active', true)
+        .order('service_name');
+      
+      if (error) throw error;
+      return data;
+    }
+  });
 
   // Fetch locations for state selection
   const { data: states } = useQuery({
@@ -187,10 +209,19 @@ const VendorServiceForm = ({ service, onClose, onSuccess }: ServiceFormProps) =>
     e.preventDefault();
     if (!user) return;
 
-    if (!formData.service_name.trim()) {
+    if (!useCustomName && !formData.approved_service_name_id) {
       toast({
         title: "Error",
-        description: "Service name is required",
+        description: "Please select a service name or request a new one",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (useCustomName && !formData.custom_service_name.trim()) {
+      toast({
+        title: "Error",
+        description: "Custom service name is required",
         variant: "destructive"
       });
       return;
@@ -210,7 +241,10 @@ const VendorServiceForm = ({ service, onClose, onSuccess }: ServiceFormProps) =>
     try {
       const serviceData = {
         ...formData,
-        vendor_id: user.id
+        service_name: useCustomName ? formData.custom_service_name : 
+          approvedServiceNames?.find(s => s.id === formData.approved_service_name_id)?.service_name || '',
+        vendor_id: user.id,
+        admin_approval_status: 'pending' // All new services need approval
       };
 
       let result;
@@ -229,7 +263,7 @@ const VendorServiceForm = ({ service, onClose, onSuccess }: ServiceFormProps) =>
 
       toast({
         title: "Success",
-        description: `Service ${service ? 'updated' : 'created'} successfully`
+        description: `Service ${service ? 'updated' : 'created'} successfully and sent for admin approval`
       });
       
       if (onSuccess) onSuccess();
@@ -279,35 +313,132 @@ const VendorServiceForm = ({ service, onClose, onSuccess }: ServiceFormProps) =>
     );
   }
 
+  // Handle service name request
+  const handleServiceNameRequest = async () => {
+    if (!serviceNameRequest.trim()) return;
+    
+    try {
+      const { error } = await supabase
+        .from('service_name_requests')
+        .insert({
+          requested_name: serviceNameRequest,
+          description: `Requested from vendor service form`,
+          requested_by: user?.id
+        });
+      
+      if (error) throw error;
+      
+      toast({
+        title: "Success",
+        description: "Service name request submitted for admin approval"
+      });
+      
+      setShowRequestDialog(false);
+      setServiceNameRequest('');
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to submit request",
+        variant: "destructive"
+      });
+    }
+  };
+
   return (
-    <Card className="mb-6">
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <div>
-            <CardTitle>{service ? 'Edit Service' : 'Add New Service'}</CardTitle>
-            <CardDescription>
-              {service ? 'Update your service details' : 'Create a new service offering'}
-            </CardDescription>
+    <div className="space-y-6">
+      <Card className="border-l-4 border-l-primary bg-gradient-to-r from-primary/5 to-transparent">
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="text-xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
+                {service ? 'Edit Service' : 'Create New Service'}
+              </CardTitle>
+              <CardDescription className="text-base">
+                {service ? 'Update your service details' : 'Create a new service offering for your business'}
+              </CardDescription>
+            </div>
+            <Button variant="ghost" size="sm" onClick={onClose} className="hover:bg-destructive/10">
+              <X className="h-4 w-4" />
+            </Button>
           </div>
-          <Button variant="ghost" size="sm" onClick={onClose}>
-            <X className="h-4 w-4" />
-          </Button>
-        </div>
-      </CardHeader>
+        </CardHeader>
       
       <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <Label htmlFor="service_name">Service Name *</Label>
-              <Input
-                id="service_name"
-                value={formData.service_name}
-                onChange={(e) => setFormData({ ...formData, service_name: e.target.value })}
-                placeholder="Enter service name"
-                required
-              />
+        <form onSubmit={handleSubmit} className="space-y-8">
+          {/* Service Name Selection */}
+          <Card className="p-6 bg-muted/50">
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <Label className="text-base font-semibold">Service Name Selection *</Label>
+                <Dialog open={showRequestDialog} onOpenChange={setShowRequestDialog}>
+                  <DialogTrigger asChild>
+                    <Button variant="outline" size="sm">
+                      Request New Service Name
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Request New Service Name</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <Label>Service Name</Label>
+                        <Input
+                          value={serviceNameRequest}
+                          onChange={(e) => setServiceNameRequest(e.target.value)}
+                          placeholder="Enter new service name"
+                        />
+                      </div>
+                      <Button onClick={handleServiceNameRequest} className="w-full">
+                        Submit Request
+                      </Button>
+                    </div>
+                  </DialogContent>
+                </Dialog>
+              </div>
+              
+              <div className="flex items-center space-x-2">
+                <Switch
+                  checked={useCustomName}
+                  onCheckedChange={setUseCustomName}
+                />
+                <Label>Use custom service name (requires admin approval)</Label>
+              </div>
+
+              {!useCustomName ? (
+                <div className="space-y-2">
+                  <Label>Select from Approved Service Names</Label>
+                  <Select 
+                    value={formData.approved_service_name_id} 
+                    onValueChange={(value) => setFormData({ ...formData, approved_service_name_id: value })}
+                  >
+                    <SelectTrigger className="bg-background">
+                      <SelectValue placeholder="Choose an approved service name" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-background border z-50">
+                      {approvedServiceNames?.map((serviceName) => (
+                        <SelectItem key={serviceName.id} value={serviceName.id}>
+                          {serviceName.service_name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <Label>Custom Service Name</Label>
+                  <Input
+                    value={formData.custom_service_name}
+                    onChange={(e) => setFormData({ ...formData, custom_service_name: e.target.value })}
+                    placeholder="Enter custom service name"
+                  />
+                  <p className="text-sm text-yellow-600">⚠️ Custom service names require admin approval before going live</p>
+                </div>
+              )}
             </div>
+          </Card>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
             <div className="space-y-2">
               <Label htmlFor="category_id">Category *</Label>
@@ -527,17 +658,18 @@ const VendorServiceForm = ({ service, onClose, onSuccess }: ServiceFormProps) =>
             </div>
           </div>
 
-          <div className="flex justify-end space-x-2">
+          <div className="flex justify-end space-x-2 pt-4 border-t">
             <Button type="button" variant="outline" onClick={onClose}>
               Cancel
             </Button>
-            <Button type="submit" disabled={saving}>
+            <Button type="submit" disabled={saving} className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70">
               {saving ? "Saving..." : service ? "Update Service" : "Create Service"}
             </Button>
           </div>
         </form>
       </CardContent>
     </Card>
+    </div>
   );
 };
 
