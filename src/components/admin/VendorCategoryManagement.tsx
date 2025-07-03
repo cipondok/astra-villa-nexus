@@ -15,14 +15,16 @@ const VendorCategoryManagement = () => {
   const { data: stats } = useQuery({
     queryKey: ['vendor-category-stats'],
     queryFn: async () => {
-      const [mainCats, subCats] = await Promise.all([
-        supabase.from('vendor_main_categories').select('*', { count: 'exact' }),
+      const [mainCats, serviceNames, serviceCategories] = await Promise.all([
+        supabase.from('vendor_service_categories').select('*', { count: 'exact' }),
+        supabase.from('approved_service_names').select('*', { count: 'exact' }),
         supabase.from('vendor_subcategories').select('*', { count: 'exact' })
       ]);
       
       return {
-        mainCategories: mainCats.count || 0,
-        subcategories: subCats.count || 0
+        serviceCategories: mainCats.count || 0,
+        serviceNames: serviceNames.count || 0,
+        subcategories: serviceCategories.count || 0
       };
     }
   });
@@ -39,15 +41,27 @@ const VendorCategoryManagement = () => {
       </div>
 
       {/* Quick Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card>
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Main Categories</p>
-                <p className="text-2xl font-bold">{stats?.mainCategories || 0}</p>
+                <p className="text-sm text-muted-foreground">Service Categories</p>
+                <p className="text-2xl font-bold">{stats?.serviceCategories || 0}</p>
               </div>
               <FolderTree className="h-8 w-8 text-blue-600" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-muted-foreground">Approved Service Names</p>
+                <p className="text-2xl font-bold">{stats?.serviceNames || 0}</p>
+              </div>
+              <List className="h-8 w-8 text-green-600" />
             </div>
           </CardContent>
         </Card>
@@ -59,7 +73,7 @@ const VendorCategoryManagement = () => {
                 <p className="text-sm text-muted-foreground">Subcategories</p>
                 <p className="text-2xl font-bold">{stats?.subcategories || 0}</p>
               </div>
-              <List className="h-8 w-8 text-green-600" />
+              <List className="h-8 w-8 text-purple-600" />
             </div>
           </CardContent>
         </Card>
@@ -67,13 +81,21 @@ const VendorCategoryManagement = () => {
 
       {/* Main Content */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="main-categories">Main Categories</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="service-categories">Service Categories</TabsTrigger>
+          <TabsTrigger value="service-names">Service Names</TabsTrigger>
           <TabsTrigger value="subcategories">Subcategories</TabsTrigger>
         </TabsList>
         
-        <TabsContent value="main-categories">
+        <TabsContent value="service-categories">
           <VendorMainCategoryManagement />
+        </TabsContent>
+        
+        <TabsContent value="service-names">
+          <div className="p-6 text-center text-muted-foreground">
+            <p>Service Names are managed through the Approved Service Names Management page.</p>
+            <p>You can access it from the main admin dashboard.</p>
+          </div>
         </TabsContent>
         
         <TabsContent value="subcategories">
