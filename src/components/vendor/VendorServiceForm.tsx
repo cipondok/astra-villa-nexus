@@ -1,5 +1,6 @@
 
 import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -40,6 +41,9 @@ const VendorServiceForm = ({ service, onClose, onSuccess }: ServiceFormProps) =>
     duration_unit: 'hours',
     location_type: 'on_site',
     service_location_types: ['on_site'],
+    service_location_state: '',
+    service_location_city: '',
+    service_location_area: '',
     delivery_options: {},
     requirements: '',
     cancellation_policy: '',
@@ -61,6 +65,9 @@ const VendorServiceForm = ({ service, onClose, onSuccess }: ServiceFormProps) =>
         duration_unit: service.duration_unit || 'hours',
         location_type: service.location_type || 'on_site',
         service_location_types: service.service_location_types || ['on_site'],
+        service_location_state: service.service_location_state || '',
+        service_location_city: service.service_location_city || '',
+        service_location_area: service.service_location_area || '',
         delivery_options: service.delivery_options || {},
         requirements: service.requirements || '',
         cancellation_policy: service.cancellation_policy || '',
@@ -113,6 +120,69 @@ const VendorServiceForm = ({ service, onClose, onSuccess }: ServiceFormProps) =>
     }
   };
 
+  // Fetch locations for state selection
+  const { data: states } = useQuery({
+    queryKey: ['locations-states'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('locations')
+        .select('province_name')
+        .eq('is_active', true)
+        .not('province_name', 'is', null);
+      
+      if (error) throw error;
+      
+      // Get unique states
+      const uniqueStates = [...new Set(data.map(item => item.province_name))];
+      return uniqueStates.sort();
+    }
+  });
+
+  // Fetch cities based on selected state
+  const { data: cities } = useQuery({
+    queryKey: ['locations-cities', formData.service_location_state],
+    queryFn: async () => {
+      if (!formData.service_location_state) return [];
+      
+      const { data, error } = await supabase
+        .from('locations')
+        .select('city_name')
+        .eq('province_name', formData.service_location_state)
+        .eq('is_active', true)
+        .not('city_name', 'is', null);
+      
+      if (error) throw error;
+      
+      // Get unique cities
+      const uniqueCities = [...new Set(data.map(item => item.city_name))];
+      return uniqueCities.sort();
+    },
+    enabled: !!formData.service_location_state
+  });
+
+  // Fetch areas based on selected city
+  const { data: areas } = useQuery({
+    queryKey: ['locations-areas', formData.service_location_state, formData.service_location_city],
+    queryFn: async () => {
+      if (!formData.service_location_state || !formData.service_location_city) return [];
+      
+      const { data, error } = await supabase
+        .from('locations')
+        .select('area_name')
+        .eq('province_name', formData.service_location_state)
+        .eq('city_name', formData.service_location_city)
+        .eq('is_active', true)
+        .not('area_name', 'is', null);
+      
+      if (error) throw error;
+      
+      // Get unique areas
+      const uniqueAreas = [...new Set(data.map(item => item.area_name))];
+      return uniqueAreas.sort();
+    },
+    enabled: !!formData.service_location_state && !!formData.service_location_city
+  });
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
@@ -121,6 +191,16 @@ const VendorServiceForm = ({ service, onClose, onSuccess }: ServiceFormProps) =>
       toast({
         title: "Error",
         description: "Service name is required",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Check required location fields
+    if (!formData.service_location_state || !formData.service_location_city || !formData.service_location_area) {
+      toast({
+        title: "Error",
+        description: "Service location (State, City, Area) is required",
         variant: "destructive"
       });
       return;
@@ -319,6 +399,90 @@ const VendorServiceForm = ({ service, onClose, onSuccess }: ServiceFormProps) =>
               placeholder="Describe your service"
               rows={4}
             />
+          </div>
+
+          {/* Required Service Location Selection */}
+          <div className="space-y-4">
+            <div className="border-l-4 border-primary pl-4">
+              <Label className="text-base font-semibold text-primary">Service Location *</Label>
+              <p className="text-sm text-muted-foreground">Select the specific area where you provide this service</p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="service_location_state">State/Province *</Label>
+                <Select 
+                  value={formData.service_location_state} 
+                  onValueChange={(value) => setFormData({
+                    ...formData, 
+                    service_location_state: value,
+                    service_location_city: '',
+                    service_location_area: ''
+                  })}
+                  required
+                >
+                  <SelectTrigger className="bg-background">
+                    <SelectValue placeholder="Select state" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-background border z-50">
+                    {states?.map((state) => (
+                      <SelectItem key={state} value={state}>
+                        {state}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="service_location_city">City *</Label>
+                <Select 
+                  value={formData.service_location_city} 
+                  onValueChange={(value) => setFormData({
+                    ...formData, 
+                    service_location_city: value,
+                    service_location_area: ''
+                  })}
+                  disabled={!formData.service_location_state}
+                  required
+                >
+                  <SelectTrigger className="bg-background">
+                    <SelectValue placeholder="Select city" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-background border z-50">
+                    {cities?.map((city) => (
+                      <SelectItem key={city} value={city}>
+                        {city}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="service_location_area">Area *</Label>
+                <Select 
+                  value={formData.service_location_area} 
+                  onValueChange={(value) => setFormData({
+                    ...formData, 
+                    service_location_area: value
+                  })}
+                  disabled={!formData.service_location_city}
+                  required
+                >
+                  <SelectTrigger className="bg-background">
+                    <SelectValue placeholder="Select area" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-background border z-50">
+                    {areas?.map((area) => (
+                      <SelectItem key={area} value={area}>
+                        {area}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
           </div>
 
           <div className="space-y-2">
