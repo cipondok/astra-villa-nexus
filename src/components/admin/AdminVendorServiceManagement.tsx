@@ -17,9 +17,12 @@ import { Settings, Eye, CheckCircle, XCircle, Pause, Edit, Plus, Trash2, X } fro
 
 const CreateServiceForm = () => {
   const [serviceData, setServiceData] = useState({
-    service_name: '',
+    main_category_id: '',
+    sub_category_id: '',
+    approved_service_name_id: '',
+    category_id: '', // Implementation type
+    custom_service_name: '',
     service_description: '',
-    service_category: '',
     location_type: 'on_site',
     service_location_state: '',
     service_location_city: '',
@@ -36,6 +39,7 @@ const CreateServiceForm = () => {
   const [serviceItems, setServiceItems] = useState([
     { item_name: '', item_description: '', price: 0, duration_minutes: 60, unit: 'per_item' }
   ]);
+  const [useCustomName, setUseCustomName] = useState(false);
   
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
@@ -59,8 +63,61 @@ const CreateServiceForm = () => {
     }
   });
 
-  // Fetch vendor service categories
-  const { data: categories } = useQuery({
+  // Fetch main categories
+  const { data: mainCategories } = useQuery({
+    queryKey: ['vendor-main-categories'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('vendor_main_categories' as any)
+        .select('*')
+        .eq('is_active', true)
+        .order('display_order');
+      
+      if (error) throw error;
+      return data as any[];
+    }
+  });
+
+  // Fetch sub categories based on selected main category
+  const { data: subCategories } = useQuery({
+    queryKey: ['vendor-sub-categories', serviceData.main_category_id],
+    queryFn: async () => {
+      if (!serviceData.main_category_id) return [];
+      
+      const { data, error } = await supabase
+        .from('vendor_sub_categories' as any)
+        .select('*')
+        .eq('main_category_id', serviceData.main_category_id)
+        .eq('is_active', true)
+        .order('display_order');
+      
+      if (error) throw error;
+      return data as any[];
+    },
+    enabled: !!serviceData.main_category_id
+  });
+
+  // Fetch approved service names based on selected sub category
+  const { data: approvedServiceNames } = useQuery({
+    queryKey: ['approved-service-names', serviceData.sub_category_id],
+    queryFn: async () => {
+      if (!serviceData.sub_category_id) return [];
+      
+      const { data, error } = await supabase
+        .from('approved_service_names' as any)
+        .select('*')
+        .eq('sub_category_id', serviceData.sub_category_id)
+        .eq('is_active', true)
+        .order('service_name');
+      
+      if (error) throw error;
+      return data as any[];
+    },
+    enabled: !!serviceData.sub_category_id
+  });
+
+  // Fetch vendor service categories for implementation types
+  const { data: implementationTypes } = useQuery({
     queryKey: ['vendor-service-categories'],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -70,7 +127,7 @@ const CreateServiceForm = () => {
         .order('display_order');
       
       if (error) throw error;
-      return data;
+      return data as any[];
     }
   });
 
@@ -142,12 +199,21 @@ const CreateServiceForm = () => {
     mutationFn: async () => {
       if (!selectedVendor) throw new Error('Please select a vendor');
       
+      // Prepare service data for the new hierarchy
+      const selectedServiceName = approvedServiceNames?.find(s => s.id === serviceData.approved_service_name_id);
+      const finalServiceData = {
+        ...serviceData,
+        service_name: useCustomName ? serviceData.custom_service_name : selectedServiceName?.service_name || '',
+        vendor_id: selectedVendor,
+        admin_approval_status: 'approved' // Admin created services are auto-approved
+      };
+
       const response = await supabase.functions.invoke('vendor-service-management', {
         method: 'POST',
         body: {
           action: 'create',
           vendor_id: selectedVendor,
-          serviceData,
+          serviceData: finalServiceData,
           serviceItems: serviceItems.filter(item => item.item_name.trim())
         }
       });
@@ -160,9 +226,12 @@ const CreateServiceForm = () => {
       queryClient.invalidateQueries({ queryKey: ['admin-vendor-services'] });
       // Reset form
       setServiceData({
-        service_name: '',
+        main_category_id: '',
+        sub_category_id: '',
+        approved_service_name_id: '',
+        category_id: '',
+        custom_service_name: '',
         service_description: '',
-        service_category: '',
         location_type: 'on_site',
         service_location_state: '',
         service_location_city: '',
@@ -175,6 +244,7 @@ const CreateServiceForm = () => {
         is_active: true
       });
       setSelectedVendor('');
+      setUseCustomName(false);
       setServiceItems([{ item_name: '', item_description: '', price: 0, duration_minutes: 60, unit: 'per_item' }]);
     },
     onError: (error: any) => {
@@ -223,38 +293,153 @@ const CreateServiceForm = () => {
         </Select>
       </div>
 
-      {/* Service Basic Info */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="service_name">Service Name *</Label>
-          <Input
-            id="service_name"
-            value={serviceData.service_name}
-            onChange={(e) => setServiceData(prev => ({...prev, service_name: e.target.value}))}
-            placeholder="e.g., AC Repair Service"
-          />
+      {/* 4-Level Hierarchy Selection */}
+      <Card className="p-6 bg-muted/50">
+        <div className="space-y-6">
+          <div className="flex items-center justify-between">
+            <Label className="text-lg font-semibold">Service Category Hierarchy *</Label>
+            <Badge variant="outline" className="text-xs">
+              4-Level Structure
+            </Badge>
+          </div>
+          
+          {/* Step 1: Main Category */}
+          <div className="space-y-2">
+            <Label htmlFor="main_category_id">1. Main Category (Product/Service Type) *</Label>
+            <Select 
+              value={serviceData.main_category_id} 
+              onValueChange={(value) => setServiceData(prev => ({
+                ...prev, 
+                main_category_id: value,
+                sub_category_id: '',
+                approved_service_name_id: '',
+                category_id: ''
+              }))}
+            >
+              <SelectTrigger className="bg-background">
+                <SelectValue placeholder="Select main category" />
+              </SelectTrigger>
+              <SelectContent className="bg-background border z-50">
+                {mainCategories?.map((category) => (
+                  <SelectItem key={category.id} value={category.id}>
+                    <div className="flex items-center space-x-2">
+                      <span>{category.icon}</span>
+                      <span>{category.name}</span>
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Step 2: Sub Category */}
+          <div className="space-y-2">
+            <Label htmlFor="sub_category_id">2. Sub Category (Service Area/Product Class) *</Label>
+            <Select 
+              value={serviceData.sub_category_id} 
+              onValueChange={(value) => setServiceData(prev => ({
+                ...prev, 
+                sub_category_id: value,
+                approved_service_name_id: '',
+                category_id: ''
+              }))}
+              disabled={!serviceData.main_category_id}
+            >
+              <SelectTrigger className="bg-background">
+                <SelectValue placeholder="Select sub category" />
+              </SelectTrigger>
+              <SelectContent className="bg-background border z-50">
+                {subCategories?.map((subCategory) => (
+                  <SelectItem key={subCategory.id} value={subCategory.id}>
+                    <div className="flex items-center space-x-2">
+                      <span>{subCategory.icon}</span>
+                      <span>{subCategory.name}</span>
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Step 3: Service Name */}
+          <div className="space-y-4">
+            <Label className="text-base font-semibold">3. Service Name (Specific Offering) *</Label>
+            
+            <div className="flex items-center space-x-2">
+              <Switch
+                checked={useCustomName}
+                onCheckedChange={setUseCustomName}
+                disabled={!serviceData.sub_category_id}
+              />
+              <Label>Use custom service name (admin approved automatically)</Label>
+            </div>
+
+            {!useCustomName ? (
+              <div className="space-y-2">
+                <Label>Select from Approved Service Names</Label>
+                <Select 
+                  value={serviceData.approved_service_name_id} 
+                  onValueChange={(value) => setServiceData(prev => ({ ...prev, approved_service_name_id: value, category_id: '' }))}
+                  disabled={!serviceData.sub_category_id}
+                >
+                  <SelectTrigger className="bg-background">
+                    <SelectValue placeholder="Choose an approved service name" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-background border z-50">
+                    {approvedServiceNames?.map((serviceName) => (
+                      <SelectItem key={serviceName.id} value={serviceName.id}>
+                        <div className="flex flex-col">
+                          <span>{serviceName.service_name}</span>
+                          {serviceName.description && (
+                            <span className="text-xs text-muted-foreground">
+                              {serviceName.description}
+                            </span>
+                          )}
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                <Label>Custom Service Name</Label>
+                <Input
+                  value={serviceData.custom_service_name}
+                  onChange={(e) => setServiceData(prev => ({ ...prev, custom_service_name: e.target.value }))}
+                  placeholder="Enter custom service name"
+                  disabled={!serviceData.sub_category_id}
+                />
+                <p className="text-sm text-green-600">✓ Admin created services are automatically approved</p>
+              </div>
+            )}
+          </div>
+
+          {/* Step 4: Implementation Type */}
+          <div className="space-y-2">
+            <Label htmlFor="category_id">4. Implementation Type *</Label>
+            <Select
+              value={serviceData.category_id}
+              onValueChange={(value) => setServiceData(prev => ({ ...prev, category_id: value }))}
+              disabled={!serviceData.approved_service_name_id && !useCustomName}
+            >
+              <SelectTrigger className="bg-background">
+                <SelectValue placeholder="Select implementation type" />
+              </SelectTrigger>
+              <SelectContent className="bg-background border z-50">
+                {implementationTypes?.map((type) => (
+                  <SelectItem key={type.id} value={type.id}>
+                    <div className="flex items-center space-x-2">
+                      <span>{type.icon}</span>
+                      <span>{type.name}</span>
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
-        
-        <div className="space-y-2">
-          <Label htmlFor="service_category">Service Category *</Label>
-          <Select 
-            value={serviceData.service_category} 
-            onValueChange={(value) => setServiceData(prev => ({...prev, service_category: value}))}
-          >
-            <SelectTrigger className="bg-background">
-              <SelectValue placeholder="Select a category" />
-            </SelectTrigger>
-            <SelectContent className="bg-background border z-50">
-              {categories?.map((category) => (
-                <SelectItem key={category.id} value={category.name}>
-                  {category.name}
-                </SelectItem>
-              ))}
-              <SelectItem value="other">Other (specify in description)</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
+      </Card>
 
       <div className="space-y-2">
         <Label htmlFor="service_description">Description</Label>
@@ -501,7 +686,7 @@ const CreateServiceForm = () => {
       {/* Submit Button */}
       <Button 
         onClick={() => createServiceMutation.mutate()} 
-        disabled={!selectedVendor || !serviceData.service_name || createServiceMutation.isPending}
+        disabled={!selectedVendor || (!serviceData.approved_service_name_id && !useCustomName) || createServiceMutation.isPending}
         className="w-full"
       >
         {createServiceMutation.isPending ? 'Creating...' : 'Create Service'}
