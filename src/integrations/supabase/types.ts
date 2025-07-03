@@ -542,6 +542,56 @@ export type Database = {
         }
         Relationships: []
       }
+      categories: {
+        Row: {
+          created_at: string | null
+          display_order: number | null
+          id: string
+          is_active: boolean | null
+          level: number
+          meta: Json
+          name: string
+          parent_id: string | null
+          slug: string
+          type: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          display_order?: number | null
+          id: string
+          is_active?: boolean | null
+          level: number
+          meta?: Json
+          name: string
+          parent_id?: string | null
+          slug: string
+          type: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          display_order?: number | null
+          id?: string
+          is_active?: boolean | null
+          level?: number
+          meta?: Json
+          name?: string
+          parent_id?: string | null
+          slug?: string
+          type?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "categories_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       cms_content: {
         Row: {
           author_id: string | null
@@ -3941,6 +3991,7 @@ export type Database = {
           business_profile_id: string | null
           cancellation_policy: string | null
           category_id: string | null
+          category_ref: string | null
           created_at: string | null
           currency: string | null
           delivery_options: Json | null
@@ -3980,6 +4031,7 @@ export type Database = {
           business_profile_id?: string | null
           cancellation_policy?: string | null
           category_id?: string | null
+          category_ref?: string | null
           created_at?: string | null
           currency?: string | null
           delivery_options?: Json | null
@@ -4019,6 +4071,7 @@ export type Database = {
           business_profile_id?: string | null
           cancellation_policy?: string | null
           category_id?: string | null
+          category_ref?: string | null
           created_at?: string | null
           currency?: string | null
           delivery_options?: Json | null
@@ -4075,6 +4128,13 @@ export type Database = {
             columns: ["category_id"]
             isOneToOne: false
             referencedRelation: "vendor_service_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vendor_services_category_ref_fkey"
+            columns: ["category_ref"]
+            isOneToOne: false
+            referencedRelation: "categories"
             referencedColumns: ["id"]
           },
           {
