@@ -293,150 +293,228 @@ const CreateServiceForm = () => {
         </Select>
       </div>
 
-      {/* 4-Level Hierarchy Selection */}
-      <Card className="p-6 bg-muted/50">
-        <div className="space-y-6">
+      {/* Enhanced 4-Level Hierarchy Selection */}
+      <Card className="p-6 bg-gradient-to-br from-primary/5 via-primary/3 to-transparent border-l-4 border-l-primary">
+        <div className="space-y-8">
           <div className="flex items-center justify-between">
-            <Label className="text-lg font-semibold">Service Category Hierarchy *</Label>
-            <Badge variant="outline" className="text-xs">
+            <div>
+              <Label className="text-xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
+                Service Category Hierarchy
+              </Label>
+              <p className="text-muted-foreground mt-1">Follow the 4-step process to categorize your service</p>
+            </div>
+            <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">
               4-Level Structure
             </Badge>
           </div>
           
-          {/* Step 1: Main Category */}
-          <div className="space-y-2">
-            <Label htmlFor="main_category_id">1. Main Category (Product/Service Type) *</Label>
-            <Select 
-              value={serviceData.main_category_id} 
-              onValueChange={(value) => setServiceData(prev => ({
-                ...prev, 
-                main_category_id: value,
-                sub_category_id: '',
-                approved_service_name_id: '',
-                category_id: ''
-              }))}
-            >
-              <SelectTrigger className="bg-background">
-                <SelectValue placeholder="Select main category" />
-              </SelectTrigger>
-              <SelectContent className="bg-background border z-50">
-                {mainCategories?.map((category) => (
-                  <SelectItem key={category.id} value={category.id}>
-                    <div className="flex items-center space-x-2">
-                      <span>{category.icon}</span>
-                      <span>{category.name}</span>
-                    </div>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Step 2: Sub Category */}
-          <div className="space-y-2">
-            <Label htmlFor="sub_category_id">2. Sub Category (Service Area/Product Class) *</Label>
-            <Select 
-              value={serviceData.sub_category_id} 
-              onValueChange={(value) => setServiceData(prev => ({
-                ...prev, 
-                sub_category_id: value,
-                approved_service_name_id: '',
-                category_id: ''
-              }))}
-              disabled={!serviceData.main_category_id}
-            >
-              <SelectTrigger className="bg-background">
-                <SelectValue placeholder="Select sub category" />
-              </SelectTrigger>
-              <SelectContent className="bg-background border z-50">
-                {subCategories?.map((subCategory) => (
-                  <SelectItem key={subCategory.id} value={subCategory.id}>
-                    <div className="flex items-center space-x-2">
-                      <span>{subCategory.icon}</span>
-                      <span>{subCategory.name}</span>
-                    </div>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Step 3: Service Name */}
-          <div className="space-y-4">
-            <Label className="text-base font-semibold">3. Service Name (Specific Offering) *</Label>
-            
-            <div className="flex items-center space-x-2">
-              <Switch
-                checked={useCustomName}
-                onCheckedChange={setUseCustomName}
-                disabled={!serviceData.sub_category_id}
-              />
-              <Label>Use custom service name (admin approved automatically)</Label>
+          {/* Step Progress Indicator */}
+          <div className="flex items-center space-x-4">
+            <div className={`flex items-center space-x-2 ${serviceData.main_category_id ? 'text-primary' : 'text-muted-foreground'}`}>
+              <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium ${serviceData.main_category_id ? 'bg-primary text-white' : 'bg-muted text-muted-foreground'}`}>1</div>
+              <span className="text-sm font-medium">Main</span>
             </div>
+            <div className={`w-8 h-0.5 ${serviceData.main_category_id ? 'bg-primary' : 'bg-muted'}`}></div>
+            <div className={`flex items-center space-x-2 ${serviceData.sub_category_id ? 'text-primary' : 'text-muted-foreground'}`}>
+              <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium ${serviceData.sub_category_id ? 'bg-primary text-white' : 'bg-muted text-muted-foreground'}`}>2</div>
+              <span className="text-sm font-medium">Sub</span>
+            </div>
+            <div className={`w-8 h-0.5 ${serviceData.sub_category_id ? 'bg-primary' : 'bg-muted'}`}></div>
+            <div className={`flex items-center space-x-2 ${(serviceData.approved_service_name_id || useCustomName) ? 'text-primary' : 'text-muted-foreground'}`}>
+              <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium ${(serviceData.approved_service_name_id || useCustomName) ? 'bg-primary text-white' : 'bg-muted text-muted-foreground'}`}>3</div>
+              <span className="text-sm font-medium">Service</span>
+            </div>
+            <div className={`w-8 h-0.5 ${(serviceData.approved_service_name_id || useCustomName) ? 'bg-primary' : 'bg-muted'}`}></div>
+            <div className={`flex items-center space-x-2 ${serviceData.category_id ? 'text-primary' : 'text-muted-foreground'}`}>
+              <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium ${serviceData.category_id ? 'bg-primary text-white' : 'bg-muted text-muted-foreground'}`}>4</div>
+              <span className="text-sm font-medium">Type</span>
+            </div>
+          </div>
 
-            {!useCustomName ? (
-              <div className="space-y-2">
-                <Label>Select from Approved Service Names</Label>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Step 1: Main Category */}
+            <Card className={`p-4 transition-all duration-200 ${serviceData.main_category_id ? 'ring-2 ring-primary/20 bg-primary/5' : 'bg-muted/30'}`}>
+              <div className="space-y-3">
+                <div className="flex items-center space-x-2">
+                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                    <span className="text-primary font-bold text-sm">1</span>
+                  </div>
+                  <Label className="font-semibold text-base">Main Category</Label>
+                </div>
+                <p className="text-sm text-muted-foreground">Product or Service Type</p>
                 <Select 
-                  value={serviceData.approved_service_name_id} 
-                  onValueChange={(value) => setServiceData(prev => ({ ...prev, approved_service_name_id: value, category_id: '' }))}
-                  disabled={!serviceData.sub_category_id}
+                  value={serviceData.main_category_id} 
+                  onValueChange={(value) => setServiceData(prev => ({
+                    ...prev, 
+                    main_category_id: value,
+                    sub_category_id: '',
+                    approved_service_name_id: '',
+                    category_id: ''
+                  }))}
                 >
-                  <SelectTrigger className="bg-background">
-                    <SelectValue placeholder="Choose an approved service name" />
+                  <SelectTrigger className="bg-background border-2 hover:border-primary/50 transition-colors">
+                    <SelectValue placeholder="Choose main category..." />
                   </SelectTrigger>
                   <SelectContent className="bg-background border z-50">
-                    {approvedServiceNames?.map((serviceName) => (
-                      <SelectItem key={serviceName.id} value={serviceName.id}>
-                        <div className="flex flex-col">
-                          <span>{serviceName.service_name}</span>
-                          {serviceName.description && (
-                            <span className="text-xs text-muted-foreground">
-                              {serviceName.description}
-                            </span>
-                          )}
+                    {mainCategories?.map((category) => (
+                      <SelectItem key={category.id} value={category.id}>
+                        <div className="flex items-center space-x-3 py-1">
+                          <span className="text-lg">{category.icon}</span>
+                          <div>
+                            <div className="font-medium">{category.name}</div>
+                            <div className="text-xs text-muted-foreground">{category.description}</div>
+                          </div>
                         </div>
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
-            ) : (
-              <div className="space-y-2">
-                <Label>Custom Service Name</Label>
-                <Input
-                  value={serviceData.custom_service_name}
-                  onChange={(e) => setServiceData(prev => ({ ...prev, custom_service_name: e.target.value }))}
-                  placeholder="Enter custom service name"
-                  disabled={!serviceData.sub_category_id}
-                />
-                <p className="text-sm text-green-600">✓ Admin created services are automatically approved</p>
+            </Card>
+
+            {/* Step 2: Sub Category */}
+            <Card className={`p-4 transition-all duration-200 ${serviceData.sub_category_id ? 'ring-2 ring-primary/20 bg-primary/5' : serviceData.main_category_id ? 'bg-muted/30' : 'bg-muted/10 opacity-50'}`}>
+              <div className="space-y-3">
+                <div className="flex items-center space-x-2">
+                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                    <span className="text-primary font-bold text-sm">2</span>
+                  </div>
+                  <Label className="font-semibold text-base">Sub Category</Label>
+                </div>
+                <p className="text-sm text-muted-foreground">Service Area or Product Class</p>
+                <Select 
+                  value={serviceData.sub_category_id} 
+                  onValueChange={(value) => setServiceData(prev => ({
+                    ...prev, 
+                    sub_category_id: value,
+                    approved_service_name_id: '',
+                    category_id: ''
+                  }))}
+                  disabled={!serviceData.main_category_id}
+                >
+                  <SelectTrigger className="bg-background border-2 hover:border-primary/50 transition-colors">
+                    <SelectValue placeholder="Choose sub category..." />
+                  </SelectTrigger>
+                  <SelectContent className="bg-background border z-50">
+                    {subCategories?.map((subCategory) => (
+                      <SelectItem key={subCategory.id} value={subCategory.id}>
+                        <div className="flex items-center space-x-3 py-1">
+                          <span className="text-lg">{subCategory.icon}</span>
+                          <div>
+                            <div className="font-medium">{subCategory.name}</div>
+                            <div className="text-xs text-muted-foreground">{subCategory.description}</div>
+                          </div>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
-            )}
+            </Card>
           </div>
 
-          {/* Step 4: Implementation Type */}
-          <div className="space-y-2">
-            <Label htmlFor="category_id">4. Implementation Type *</Label>
-            <Select
-              value={serviceData.category_id}
-              onValueChange={(value) => setServiceData(prev => ({ ...prev, category_id: value }))}
-              disabled={!serviceData.approved_service_name_id && !useCustomName}
-            >
-              <SelectTrigger className="bg-background">
-                <SelectValue placeholder="Select implementation type" />
-              </SelectTrigger>
-              <SelectContent className="bg-background border z-50">
-                {implementationTypes?.map((type) => (
-                  <SelectItem key={type.id} value={type.id}>
-                    <div className="flex items-center space-x-2">
-                      <span>{type.icon}</span>
-                      <span>{type.name}</span>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Step 3: Service Name */}
+            <Card className={`p-4 transition-all duration-200 ${(serviceData.approved_service_name_id || useCustomName) ? 'ring-2 ring-primary/20 bg-primary/5' : serviceData.sub_category_id ? 'bg-muted/30' : 'bg-muted/10 opacity-50'}`}>
+              <div className="space-y-4">
+                <div className="flex items-center space-x-2">
+                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                    <span className="text-primary font-bold text-sm">3</span>
+                  </div>
+                  <Label className="font-semibold text-base">Service Name</Label>
+                </div>
+                <p className="text-sm text-muted-foreground">Specific Service Offering</p>
+                
+                <div className="flex items-center space-x-3 p-3 bg-background/50 rounded-lg border">
+                  <Switch
+                    checked={useCustomName}
+                    onCheckedChange={setUseCustomName}
+                    disabled={!serviceData.sub_category_id}
+                  />
+                  <div className="flex-1">
+                    <Label className="text-sm font-medium">Custom Service Name</Label>
+                    <p className="text-xs text-muted-foreground">Create your own service name</p>
+                  </div>
+                </div>
+
+                {!useCustomName ? (
+                  <Select 
+                    value={serviceData.approved_service_name_id} 
+                    onValueChange={(value) => setServiceData(prev => ({ ...prev, approved_service_name_id: value, category_id: '' }))}
+                    disabled={!serviceData.sub_category_id}
+                  >
+                    <SelectTrigger className="bg-background border-2 hover:border-primary/50 transition-colors">
+                      <SelectValue placeholder="Choose approved service..." />
+                    </SelectTrigger>
+                    <SelectContent className="bg-background border z-50">
+                      {approvedServiceNames?.map((serviceName) => (
+                        <SelectItem key={serviceName.id} value={serviceName.id}>
+                          <div className="py-1">
+                            <div className="font-medium">{serviceName.service_name}</div>
+                            {serviceName.description && (
+                              <div className="text-xs text-muted-foreground mt-1">
+                                {serviceName.description}
+                              </div>
+                            )}
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                ) : (
+                  <div className="space-y-2">
+                    <Input
+                      value={serviceData.custom_service_name}
+                      onChange={(e) => setServiceData(prev => ({ ...prev, custom_service_name: e.target.value }))}
+                      placeholder="Enter custom service name..."
+                      disabled={!serviceData.sub_category_id}
+                      className="border-2 hover:border-primary/50 transition-colors"
+                    />
+                    <div className="flex items-center space-x-2 text-green-600 bg-green-50 p-2 rounded">
+                      <div className="w-4 h-4 rounded-full bg-green-600 flex items-center justify-center">
+                        <span className="text-white text-xs">✓</span>
+                      </div>
+                      <span className="text-sm font-medium">Admin approval automatic</span>
                     </div>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+                  </div>
+                )}
+              </div>
+            </Card>
+
+            {/* Step 4: Implementation Type */}
+            <Card className={`p-4 transition-all duration-200 ${serviceData.category_id ? 'ring-2 ring-primary/20 bg-primary/5' : (serviceData.approved_service_name_id || useCustomName) ? 'bg-muted/30' : 'bg-muted/10 opacity-50'}`}>
+              <div className="space-y-3">
+                <div className="flex items-center space-x-2">
+                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                    <span className="text-primary font-bold text-sm">4</span>
+                  </div>
+                  <Label className="font-semibold text-base">Implementation Type</Label>
+                </div>
+                <p className="text-sm text-muted-foreground">How this service is implemented</p>
+                <Select
+                  value={serviceData.category_id}
+                  onValueChange={(value) => setServiceData(prev => ({ ...prev, category_id: value }))}
+                  disabled={!serviceData.approved_service_name_id && !useCustomName}
+                >
+                  <SelectTrigger className="bg-background border-2 hover:border-primary/50 transition-colors">
+                    <SelectValue placeholder="Choose implementation..." />
+                  </SelectTrigger>
+                  <SelectContent className="bg-background border z-50">
+                    {implementationTypes?.map((type) => (
+                      <SelectItem key={type.id} value={type.id}>
+                        <div className="flex items-center space-x-3 py-1">
+                          <span className="text-lg">{type.icon}</span>
+                          <div>
+                            <div className="font-medium">{type.name}</div>
+                            <div className="text-xs text-muted-foreground">{type.description}</div>
+                          </div>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </Card>
           </div>
         </div>
       </Card>
@@ -585,68 +663,93 @@ const CreateServiceForm = () => {
         </div>
       </div>
 
-      {/* Service Items & Pricing */}
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <Label className="text-base font-medium">Service Items & Pricing</Label>
-          <Button type="button" variant="outline" size="sm" onClick={addServiceItem}>
-            <Plus className="h-4 w-4 mr-1" />
-            Add Item
-          </Button>
-        </div>
-        
-        {serviceItems.map((item, index) => (
-          <Card key={index} className="p-4">
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <h4 className="font-medium">Item {index + 1}</h4>
-                {serviceItems.length > 1 && (
-                  <Button 
-                    type="button" 
-                    variant="ghost" 
-                    size="sm"
-                    onClick={() => removeServiceItem(index)}
-                  >
-                    <X className="h-4 w-4" />
-                  </Button>
-                )}
+      {/* Optional Service Items & Pricing */}
+      <Card className="p-6 bg-gradient-to-br from-blue-50 to-indigo-50 border-l-4 border-l-blue-500">
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <Label className="text-lg font-semibold text-blue-900">Service Items & Pricing</Label>
+              <p className="text-sm text-blue-700 mt-1">
+                Optional: Add specific pricing items for this service. If skipped, vendors can add their own pricing later.
+              </p>
+            </div>
+            <Button type="button" variant="outline" size="sm" onClick={addServiceItem} className="border-blue-200 text-blue-700 hover:bg-blue-100">
+              <Plus className="h-4 w-4 mr-1" />
+              Add Pricing Item
+            </Button>
+          </div>
+          
+          <div className="bg-blue-100/50 p-3 rounded-lg border border-blue-200">
+            <div className="flex items-start space-x-3">
+              <div className="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center mt-0.5">
+                <span className="text-white text-xs">i</span>
               </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>Item Name *</Label>
-                  <Input
-                    value={item.item_name}
-                    onChange={(e) => updateServiceItem(index, 'item_name', e.target.value)}
-                    placeholder="e.g., Basic AC Cleaning"
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label>Price (IDR) *</Label>
-                  <Input
-                    type="number"
-                    min="0"
-                    value={item.price}
-                    onChange={(e) => updateServiceItem(index, 'price', parseFloat(e.target.value) || 0)}
-                    placeholder="150000"
-                  />
-                </div>
-              </div>
-              
-              <div className="space-y-2">
-                <Label>Item Description</Label>
-                <Textarea
-                  value={item.item_description}
-                  onChange={(e) => updateServiceItem(index, 'item_description', e.target.value)}
-                  placeholder="Describe this service item..."
-                  rows={2}
-                />
+              <div className="text-sm text-blue-800">
+                <p className="font-medium">Service Items are Optional</p>
+                <p>You can create the service without pricing items. Vendors can add their own pricing structure later through their dashboard.</p>
               </div>
             </div>
-          </Card>
-        ))}
-      </div>
+          </div>
+          
+          {serviceItems.length > 0 && serviceItems[0].item_name && (
+            <div className="space-y-3">
+              {serviceItems.map((item, index) => (
+                <Card key={index} className="p-4 bg-white border border-blue-200">
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <h4 className="font-medium text-blue-900">Pricing Item {index + 1}</h4>
+                      <Button 
+                        type="button" 
+                        variant="ghost" 
+                        size="sm"
+                        onClick={() => removeServiceItem(index)}
+                        className="text-red-500 hover:bg-red-50"
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label>Item Name *</Label>
+                        <Input
+                          value={item.item_name}
+                          onChange={(e) => updateServiceItem(index, 'item_name', e.target.value)}
+                          placeholder="e.g., Basic Service Package"
+                          className="border-blue-200 focus:ring-blue-500"
+                        />
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label>Starting Price (IDR) *</Label>
+                        <Input
+                          type="number"
+                          min="0"
+                          value={item.price}
+                          onChange={(e) => updateServiceItem(index, 'price', parseFloat(e.target.value) || 0)}
+                          placeholder="150000"
+                          className="border-blue-200 focus:ring-blue-500"
+                        />
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label>Description</Label>
+                      <Textarea
+                        value={item.item_description}
+                        onChange={(e) => updateServiceItem(index, 'item_description', e.target.value)}
+                        placeholder="Describe what's included in this pricing item..."
+                        rows={2}
+                        className="border-blue-200 focus:ring-blue-500"
+                      />
+                    </div>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          )}
+        </div>
+      </Card>
 
       {/* Additional Info */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -684,13 +787,20 @@ const CreateServiceForm = () => {
       </div>
 
       {/* Submit Button */}
-      <Button 
-        onClick={() => createServiceMutation.mutate()} 
-        disabled={!selectedVendor || (!serviceData.approved_service_name_id && !useCustomName) || createServiceMutation.isPending}
-        className="w-full"
-      >
-        {createServiceMutation.isPending ? 'Creating...' : 'Create Service'}
-      </Button>
+      <div className="flex justify-end pt-6 border-t">
+        <Button 
+          onClick={() => createServiceMutation.mutate()} 
+          disabled={!selectedVendor || (!serviceData.approved_service_name_id && !useCustomName) || !serviceData.category_id || createServiceMutation.isPending}
+          className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 px-8 py-2 text-white font-medium"
+        >
+          {createServiceMutation.isPending ? (
+            <div className="flex items-center space-x-2">
+              <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+              <span>Creating Service...</span>
+            </div>
+          ) : 'Create Vendor Service'}
+        </Button>
+      </div>
     </div>
   );
 };
