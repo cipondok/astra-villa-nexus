@@ -22,6 +22,8 @@ interface ServiceItem {
   price: number;
   duration_minutes: number;
   unit: string;
+  discount_percentage?: number;
+  discount_type?: string;
 }
 
 interface ServiceFormData {
@@ -29,12 +31,18 @@ interface ServiceFormData {
   service_description: string;
   service_category: string;
   location_type: string;
+  service_location_state?: string;
+  service_location_city?: string;
+  service_location_area?: string;
   duration_value: number;
   duration_unit: string;
   requirements: string;
   cancellation_policy: string;
   currency: string;
   is_active: boolean;
+  discount_percentage?: number;
+  discount_type?: string;
+  discount_valid_until?: string;
 }
 
 const ServiceForm = ({ 
@@ -74,6 +82,84 @@ const ServiceForm = ({
       unit: 'per_item' 
     }]
   );
+
+  // Fetch vendor service categories
+  const { data: categories } = useQuery({
+    queryKey: ['vendor-service-categories'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('vendor_service_categories')
+        .select('*')
+        .eq('is_active', true)
+        .order('display_order');
+      
+      if (error) throw error;
+      return data;
+    }
+  });
+
+  // Fetch locations for state selection
+  const { data: states } = useQuery({
+    queryKey: ['locations-states'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('locations')
+        .select('province_name')
+        .eq('is_active', true)
+        .not('province_name', 'is', null);
+      
+      if (error) throw error;
+      
+      // Get unique states
+      const uniqueStates = [...new Set(data.map(item => item.province_name))];
+      return uniqueStates.sort();
+    }
+  });
+
+  // Fetch cities based on selected state
+  const { data: cities } = useQuery({
+    queryKey: ['locations-cities', serviceData.service_location_state],
+    queryFn: async () => {
+      if (!serviceData.service_location_state) return [];
+      
+      const { data, error } = await supabase
+        .from('locations')
+        .select('city_name')
+        .eq('province_name', serviceData.service_location_state)
+        .eq('is_active', true)
+        .not('city_name', 'is', null);
+      
+      if (error) throw error;
+      
+      // Get unique cities
+      const uniqueCities = [...new Set(data.map(item => item.city_name))];
+      return uniqueCities.sort();
+    },
+    enabled: !!serviceData.service_location_state
+  });
+
+  // Fetch areas based on selected city
+  const { data: areas } = useQuery({
+    queryKey: ['locations-areas', serviceData.service_location_state, serviceData.service_location_city],
+    queryFn: async () => {
+      if (!serviceData.service_location_state || !serviceData.service_location_city) return [];
+      
+      const { data, error } = await supabase
+        .from('locations')
+        .select('area_name')
+        .eq('province_name', serviceData.service_location_state)
+        .eq('city_name', serviceData.service_location_city)
+        .eq('is_active', true)
+        .not('area_name', 'is', null);
+      
+      if (error) throw error;
+      
+      // Get unique areas
+      const uniqueAreas = [...new Set(data.map(item => item.area_name))];
+      return uniqueAreas.sort();
+    },
+    enabled: !!serviceData.service_location_state && !!serviceData.service_location_city
+  });
 
   const addServiceItem = () => {
     setServiceItems([...serviceItems, { 
@@ -117,13 +203,23 @@ const ServiceForm = ({
         </div>
         
         <div className="space-y-2">
-          <Label htmlFor="service_category">Category</Label>
-          <Input
-            id="service_category"
-            value={serviceData.service_category}
-            onChange={(e) => setServiceData(prev => ({...prev, service_category: e.target.value}))}
-            placeholder="e.g., Home Maintenance"
-          />
+          <Label htmlFor="service_category">Service Category *</Label>
+          <Select 
+            value={serviceData.service_category} 
+            onValueChange={(value) => setServiceData(prev => ({...prev, service_category: value}))}
+          >
+            <SelectTrigger className="bg-background">
+              <SelectValue placeholder="Select a category" />
+            </SelectTrigger>
+            <SelectContent className="bg-background border z-50">
+              {categories?.map((category) => (
+                <SelectItem key={category.id} value={category.name}>
+                  {category.name}
+                </SelectItem>
+              ))}
+              <SelectItem value="other">Other (specify in description)</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </div>
 
@@ -184,6 +280,130 @@ const ServiceForm = ({
               <SelectItem value="months">Months</SelectItem>
             </SelectContent>
           </Select>
+        </div>
+      </div>
+
+      {/* Service Location Selection */}
+      {serviceData.location_type !== 'remote' && (
+        <div className="space-y-4">
+          <Label className="text-base font-medium">Service Location (Optional)</Label>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="space-y-2">
+              <Label>State/Province</Label>
+              <Select 
+                value={serviceData.service_location_state || ''} 
+                onValueChange={(value) => setServiceData(prev => ({
+                  ...prev, 
+                  service_location_state: value,
+                  service_location_city: '',
+                  service_location_area: ''
+                }))}
+              >
+                <SelectTrigger className="bg-background">
+                  <SelectValue placeholder="Select state" />
+                </SelectTrigger>
+                <SelectContent className="bg-background border z-50">
+                  {states?.map((state) => (
+                    <SelectItem key={state} value={state}>
+                      {state}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label>City</Label>
+              <Select 
+                value={serviceData.service_location_city || ''} 
+                onValueChange={(value) => setServiceData(prev => ({
+                  ...prev, 
+                  service_location_city: value,
+                  service_location_area: ''
+                }))}
+                disabled={!serviceData.service_location_state}
+              >
+                <SelectTrigger className="bg-background">
+                  <SelectValue placeholder="Select city" />
+                </SelectTrigger>
+                <SelectContent className="bg-background border z-50">
+                  {cities?.map((city) => (
+                    <SelectItem key={city} value={city}>
+                      {city}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Area</Label>
+              <Select 
+                value={serviceData.service_location_area || ''} 
+                onValueChange={(value) => setServiceData(prev => ({
+                  ...prev, 
+                  service_location_area: value
+                }))}
+                disabled={!serviceData.service_location_city}
+              >
+                <SelectTrigger className="bg-background">
+                  <SelectValue placeholder="Select area" />
+                </SelectTrigger>
+                <SelectContent className="bg-background border z-50">
+                  {areas?.map((area) => (
+                    <SelectItem key={area} value={area}>
+                      {area}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Service Discount Section */}
+      <div className="space-y-4">
+        <Label className="text-base font-medium">Service Discount (Optional)</Label>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="space-y-2">
+            <Label>Discount Type</Label>
+            <Select 
+              value={serviceData.discount_type || ''} 
+              onValueChange={(value) => setServiceData(prev => ({...prev, discount_type: value}))}
+            >
+              <SelectTrigger className="bg-background">
+                <SelectValue placeholder="Select discount type" />
+              </SelectTrigger>
+              <SelectContent className="bg-background border z-50">
+                <SelectItem value="percentage">Percentage Off</SelectItem>
+                <SelectItem value="fixed">Fixed Amount Off</SelectItem>
+                <SelectItem value="seasonal">Seasonal Discount</SelectItem>
+                <SelectItem value="bulk">Bulk Discount</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <Label>Discount Value</Label>
+            <Input
+              type="number"
+              min="0"
+              max={serviceData.discount_type === 'percentage' ? 100 : undefined}
+              value={serviceData.discount_percentage || ''}
+              onChange={(e) => setServiceData(prev => ({...prev, discount_percentage: parseFloat(e.target.value) || 0}))}
+              placeholder={serviceData.discount_type === 'percentage' ? "e.g., 15 (%)" : "e.g., 50000 (IDR)"}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label>Valid Until (Optional)</Label>
+            <Input
+              type="date"
+              value={serviceData.discount_valid_until || ''}
+              onChange={(e) => setServiceData(prev => ({...prev, discount_valid_until: e.target.value}))}
+            />
+          </div>
         </div>
       </div>
 

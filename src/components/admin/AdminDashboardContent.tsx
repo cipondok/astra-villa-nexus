@@ -11,6 +11,7 @@ import CustomerServiceCenter from "./CustomerServiceCenter";
 import ContactManagement from "./ContactManagement";
 import VendorManagementHub from "./VendorManagementHub";
 import AdminVendorServiceManagement from "./AdminVendorServiceManagement";
+import VendorServiceCategoryManagement from "./VendorServiceCategoryManagement";
 import VendorInventoryManagement from "./VendorInventoryManagement";
 import ContentManagement from "./ContentManagement";
 import SearchFiltersManagement from "./SearchFiltersManagement";
@@ -57,6 +58,8 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
         return <VendorManagementHub />;
       case "vendor-service-management":
         return <AdminVendorServiceManagement />;
+      case "vendor-category-management":
+        return <VendorServiceCategoryManagement />;
       case "content-management":
         return <ContentManagement />;
       case "search-filters":

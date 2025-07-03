@@ -124,6 +124,12 @@ const AdminTabNavigation = ({ isAdmin }: AdminTabNavigationProps) => {
       category: "vendor" 
     },
     { 
+      id: "vendor-category-management", 
+      label: "Categories", 
+      icon: FileText, 
+      category: "vendor" 
+    },
+    { 
       id: "kyc-management", 
       label: "KYC", 
       icon: Shield, 
