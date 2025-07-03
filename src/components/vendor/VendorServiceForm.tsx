@@ -35,10 +35,12 @@ const VendorServiceForm = ({ service, onClose, onSuccess }: ServiceFormProps) =>
   const [categories, setCategories] = useState<ServiceCategory[]>([]);
   const [allowedDurationUnits, setAllowedDurationUnits] = useState<string[]>(['hours']);
   const [formData, setFormData] = useState({
+    main_category_id: '',
+    sub_category_id: '',
     approved_service_name_id: '',
+    category_id: '', // Implementation type
     custom_service_name: '',
     service_description: '',
-    category_id: '',
     duration_value: 1,
     duration_unit: 'hours',
     location_type: 'on_site',
@@ -63,10 +65,12 @@ const VendorServiceForm = ({ service, onClose, onSuccess }: ServiceFormProps) =>
     fetchAllowedDurationUnits();
     if (service) {
       setFormData({
+        main_category_id: service.main_category_id || '',
+        sub_category_id: service.sub_category_id || '',
         approved_service_name_id: service.approved_service_name_id || '',
+        category_id: service.category_id || '',
         custom_service_name: service.service_name || '',
         service_description: service.service_description || '',
-        category_id: service.category_id || '',
         duration_value: service.duration_value || 1,
         duration_unit: service.duration_unit || 'hours',
         location_type: service.location_type || 'on_site',
@@ -127,16 +131,13 @@ const VendorServiceForm = ({ service, onClose, onSuccess }: ServiceFormProps) =>
     }
   };
 
-  // Fetch approved service names with categories
+  // Fetch approved service names
   const { data: approvedServiceNames } = useQuery({
     queryKey: ['approved-service-names'],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('approved_service_names')
-        .select(`
-          *,
-          vendor_service_categories(*)
-        `)
+        .select('*')
         .eq('is_active', true)
         .order('service_name');
       
@@ -145,28 +146,19 @@ const VendorServiceForm = ({ service, onClose, onSuccess }: ServiceFormProps) =>
     }
   });
 
-  // Get categories for selected service name
-  const selectedServiceNameData = approvedServiceNames?.find(s => s.id === formData.approved_service_name_id);
-  const availableCategories = selectedServiceNameData?.vendor_service_categories ? 
-    [selectedServiceNameData.vendor_service_categories] : [];
-
-  // Fetch subcategories based on selected category
-  const { data: subcategories } = useQuery({
-    queryKey: ['vendor-subcategories', formData.category_id],
+  // Fetch service categories for implementation types
+  const { data: implementationTypes } = useQuery({
+    queryKey: ['vendor-service-categories'],
     queryFn: async () => {
-      if (!formData.category_id) return [];
-      
       const { data, error } = await supabase
-        .from('vendor_subcategories')
+        .from('vendor_service_categories')
         .select('*')
-        .eq('main_category_id', formData.category_id)
         .eq('is_active', true)
         .order('display_order');
       
       if (error) throw error;
       return data;
-    },
-    enabled: !!formData.category_id
+    }
   });
 
   // Fetch locations for state selection
@@ -266,10 +258,11 @@ const VendorServiceForm = ({ service, onClose, onSuccess }: ServiceFormProps) =>
 
     setSaving(true);
     try {
+      const selectedServiceName = approvedServiceNames?.find(s => s.id === formData.approved_service_name_id);
+      
       const serviceData = {
         ...formData,
-        service_name: useCustomName ? formData.custom_service_name : 
-          approvedServiceNames?.find(s => s.id === formData.approved_service_name_id)?.service_name || '',
+        service_name: useCustomName ? formData.custom_service_name : selectedServiceName?.service_name || '',
         vendor_id: user.id,
         admin_approval_status: 'pending' // All new services need approval
       };
@@ -437,14 +430,7 @@ const VendorServiceForm = ({ service, onClose, onSuccess }: ServiceFormProps) =>
                   <Label>Select from Approved Service Names</Label>
                   <Select 
                     value={formData.approved_service_name_id} 
-                    onValueChange={(value) => {
-                      const selectedService = approvedServiceNames?.find(s => s.id === value);
-                      setFormData({ 
-                        ...formData, 
-                        approved_service_name_id: value,
-                        category_id: selectedService?.category_id || ''
-                      });
-                    }}
+                    onValueChange={(value) => setFormData({ ...formData, approved_service_name_id: value })}
                   >
                     <SelectTrigger className="bg-background">
                       <SelectValue placeholder="Choose an approved service name" />
@@ -454,9 +440,9 @@ const VendorServiceForm = ({ service, onClose, onSuccess }: ServiceFormProps) =>
                         <SelectItem key={serviceName.id} value={serviceName.id}>
                           <div className="flex flex-col">
                             <span>{serviceName.service_name}</span>
-                            {serviceName.vendor_service_categories && (
+                            {serviceName.description && (
                               <span className="text-xs text-muted-foreground">
-                                Category: {serviceName.vendor_service_categories.name}
+                                {serviceName.description}
                               </span>
                             )}
                           </div>
@@ -473,240 +459,233 @@ const VendorServiceForm = ({ service, onClose, onSuccess }: ServiceFormProps) =>
                     onChange={(e) => setFormData({ ...formData, custom_service_name: e.target.value })}
                     placeholder="Enter custom service name"
                   />
-                  <p className="text-sm text-yellow-600">⚠️ Custom service names require admin approval before going live</p>
+                  <p className="text-sm text-yellow-600">⚠️ Custom service names require admin approval</p>
                 </div>
               )}
             </div>
           </Card>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
             <div className="space-y-2">
-              <Label htmlFor="category_id">Service Category *</Label>
+              <Label htmlFor="category_id">Implementation Type</Label>
               <Select
                 value={formData.category_id}
                 onValueChange={(value) => setFormData({ ...formData, category_id: value })}
-                disabled={!selectedServiceNameData && !useCustomName}
-                required
               >
                 <SelectTrigger className="bg-background">
-                  <SelectValue placeholder={
-                    !selectedServiceNameData && !useCustomName ? 
-                    "First select a service name" : 
-                    "Select category"
-                  } />
+                  <SelectValue placeholder="Select implementation type" />
                 </SelectTrigger>
                 <SelectContent className="bg-background border z-50">
-                  {availableCategories.map((category) => (
-                    <SelectItem key={category.id} value={category.id}>
-                      {category.icon} {category.name}
-                    </SelectItem>
-                  ))}
-                  {useCustomName && categories?.map((category) => (
-                    <SelectItem key={category.id} value={category.id}>
-                      {category.icon} {category.name}
+                  {implementationTypes?.map((type) => (
+                    <SelectItem key={type.id} value={type.id}>
+                      <div className="flex items-center space-x-2">
+                        <span>{type.icon}</span>
+                        <span>{type.name}</span>
+                      </div>
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
-              {selectedServiceNameData && (
-                <p className="text-sm text-muted-foreground">
-                  ✓ Category automatically selected based on service name
-                </p>
-              )}
+            </div>
+          </div>
+
+          {/* Service Details */}
+          <div className="space-y-6">
+            <div className="space-y-2">
+              <Label htmlFor="service_description">Service Description</Label>
+              <Textarea
+                id="service_description"
+                value={formData.service_description}
+                onChange={(e) => setFormData({ ...formData, service_description: e.target.value })}
+                placeholder="Describe your service in detail"
+                rows={4}
+              />
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="duration_value">Service Duration</Label>
-              <div className="flex gap-2">
-                <Input
-                  id="duration_value"
-                  type="number"
-                  value={formData.duration_value}
-                  onChange={(e) => setFormData({ ...formData, duration_value: parseInt(e.target.value) || 1 })}
-                  placeholder="Duration"
-                  min="1"
-                  className="flex-1"
-                />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label htmlFor="duration_value">Service Duration</Label>
+                <div className="flex gap-2">
+                  <Input
+                    id="duration_value"
+                    type="number"
+                    value={formData.duration_value}
+                    onChange={(e) => setFormData({ ...formData, duration_value: parseInt(e.target.value) || 1 })}
+                    placeholder="Duration"
+                    min="1"
+                    className="flex-1"
+                  />
+                  <Select
+                    value={formData.duration_unit}
+                    onValueChange={(value) => setFormData({ ...formData, duration_unit: value })}
+                  >
+                    <SelectTrigger className="w-32">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {allowedDurationUnits.map((unit) => (
+                        <SelectItem key={unit} value={unit}>
+                          {unit.charAt(0).toUpperCase() + unit.slice(1)}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex gap-1 mt-1">
+                  {allowedDurationUnits.map((unit) => (
+                    <Badge key={unit} variant="secondary" className="text-xs">
+                      {unit}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="location_type">Location Type</Label>
                 <Select
-                  value={formData.duration_unit}
-                  onValueChange={(value) => setFormData({ ...formData, duration_unit: value })}
+                  value={formData.location_type}
+                  onValueChange={(value) => setFormData({ ...formData, location_type: value })}
                 >
-                  <SelectTrigger className="w-32">
-                    <SelectValue />
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select location type" />
                   </SelectTrigger>
                   <SelectContent>
-                    {allowedDurationUnits.map((unit) => (
-                      <SelectItem key={unit} value={unit}>
-                        {unit.charAt(0).toUpperCase() + unit.slice(1)}
+                    {locationTypeOptions.map((type) => (
+                      <SelectItem key={type.id} value={type.id}>
+                        {type.icon} {type.label}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
-              <div className="flex gap-1 mt-1">
-                {allowedDurationUnits.map((unit) => (
-                  <Badge key={unit} variant="secondary" className="text-xs">
-                    {unit}
-                  </Badge>
-                ))}
+            </div>
+
+            {/* Required Service Location Selection */}
+            <div className="space-y-4">
+              <div className="border-l-4 border-primary pl-4">
+                <Label className="text-base font-semibold text-primary">Service Location *</Label>
+                <p className="text-sm text-muted-foreground">Select the specific area where you provide this service</p>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="service_location_state">State/Province *</Label>
+                  <Select 
+                    value={formData.service_location_state} 
+                    onValueChange={(value) => setFormData({
+                      ...formData, 
+                      service_location_state: value,
+                      service_location_city: '',
+                      service_location_area: ''
+                    })}
+                    required
+                  >
+                    <SelectTrigger className="bg-background">
+                      <SelectValue placeholder="Select state" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-background border z-50">
+                      {states?.map((state) => (
+                        <SelectItem key={state} value={state}>
+                          {state}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="service_location_city">City *</Label>
+                  <Select 
+                    value={formData.service_location_city} 
+                    onValueChange={(value) => setFormData({
+                      ...formData, 
+                      service_location_city: value,
+                      service_location_area: ''
+                    })}
+                    disabled={!formData.service_location_state}
+                    required
+                  >
+                    <SelectTrigger className="bg-background">
+                      <SelectValue placeholder="Select city" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-background border z-50">
+                      {cities?.map((city) => (
+                        <SelectItem key={city} value={city}>
+                          {city}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="service_location_area">Area *</Label>
+                  <Select 
+                    value={formData.service_location_area} 
+                    onValueChange={(value) => setFormData({
+                      ...formData, 
+                      service_location_area: value
+                    })}
+                    disabled={!formData.service_location_city}
+                    required
+                  >
+                    <SelectTrigger className="bg-background">
+                      <SelectValue placeholder="Select area" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-background border z-50">
+                      {areas?.map((area) => (
+                        <SelectItem key={area} value={area}>
+                          {area}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="location_type">Location Type</Label>
-              <Select
-                value={formData.location_type}
-                onValueChange={(value) => setFormData({ ...formData, location_type: value })}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select location type" />
-                </SelectTrigger>
-                <SelectContent>
-                  {locationTypeOptions.map((type) => (
-                    <SelectItem key={type.id} value={type.id}>
-                      {type.icon} {type.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="service_description">Service Description</Label>
-            <Textarea
-              id="service_description"
-              value={formData.service_description}
-              onChange={(e) => setFormData({ ...formData, service_description: e.target.value })}
-              placeholder="Describe your service"
-              rows={4}
-            />
-          </div>
-
-          {/* Required Service Location Selection */}
-          <div className="space-y-4">
-            <div className="border-l-4 border-primary pl-4">
-              <Label className="text-base font-semibold text-primary">Service Location *</Label>
-              <p className="text-sm text-muted-foreground">Select the specific area where you provide this service</p>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <Label htmlFor="service_location_state">State/Province *</Label>
-                <Select 
-                  value={formData.service_location_state} 
-                  onValueChange={(value) => setFormData({
-                    ...formData, 
-                    service_location_state: value,
-                    service_location_city: '',
-                    service_location_area: ''
-                  })}
-                  required
-                >
-                  <SelectTrigger className="bg-background">
-                    <SelectValue placeholder="Select state" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-background border z-50">
-                    {states?.map((state) => (
-                      <SelectItem key={state} value={state}>
-                        {state}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <Label htmlFor="requirements">Requirements</Label>
+                <Textarea
+                  id="requirements"
+                  value={formData.requirements}
+                  onChange={(e) => setFormData({ ...formData, requirements: e.target.value })}
+                  placeholder="Any requirements or preparations needed"
+                  rows={3}
+                />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="service_location_city">City *</Label>
-                <Select 
-                  value={formData.service_location_city} 
-                  onValueChange={(value) => setFormData({
-                    ...formData, 
-                    service_location_city: value,
-                    service_location_area: ''
-                  })}
-                  disabled={!formData.service_location_state}
-                  required
-                >
-                  <SelectTrigger className="bg-background">
-                    <SelectValue placeholder="Select city" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-background border z-50">
-                    {cities?.map((city) => (
-                      <SelectItem key={city} value={city}>
-                        {city}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="service_location_area">Area *</Label>
-                <Select 
-                  value={formData.service_location_area} 
-                  onValueChange={(value) => setFormData({
-                    ...formData, 
-                    service_location_area: value
-                  })}
-                  disabled={!formData.service_location_city}
-                  required
-                >
-                  <SelectTrigger className="bg-background">
-                    <SelectValue placeholder="Select area" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-background border z-50">
-                    {areas?.map((area) => (
-                      <SelectItem key={area} value={area}>
-                        {area}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <Label htmlFor="cancellation_policy">Cancellation Policy</Label>
+                <Textarea
+                  id="cancellation_policy"
+                  value={formData.cancellation_policy}
+                  onChange={(e) => setFormData({ ...formData, cancellation_policy: e.target.value })}
+                  placeholder="Your cancellation policy"
+                  rows={3}
+                />
               </div>
             </div>
-          </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="requirements">Requirements</Label>
-            <Textarea
-              id="requirements"
-              value={formData.requirements}
-              onChange={(e) => setFormData({ ...formData, requirements: e.target.value })}
-              placeholder="Any requirements or preparations needed"
-              rows={3}
-            />
-          </div>
+            <div className="flex items-center space-x-6">
+              <div className="flex items-center space-x-2">
+                <Switch
+                  id="is_active"
+                  checked={formData.is_active}
+                  onCheckedChange={(checked) => setFormData({ ...formData, is_active: checked })}
+                />
+                <Label htmlFor="is_active">Active Service</Label>
+              </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="cancellation_policy">Cancellation Policy</Label>
-            <Textarea
-              id="cancellation_policy"
-              value={formData.cancellation_policy}
-              onChange={(e) => setFormData({ ...formData, cancellation_policy: e.target.value })}
-              placeholder="Your cancellation policy"
-              rows={3}
-            />
-          </div>
-
-          <div className="flex items-center space-x-6">
-            <div className="flex items-center space-x-2">
-              <Switch
-                id="is_active"
-                checked={formData.is_active}
-                onCheckedChange={(checked) => setFormData({ ...formData, is_active: checked })}
-              />
-              <Label htmlFor="is_active">Active</Label>
-            </div>
-
-            <div className="flex items-center space-x-2">
-              <Switch
-                id="featured"
-                checked={formData.featured}
-                onCheckedChange={(checked) => setFormData({ ...formData, featured: checked })}
-              />
-              <Label htmlFor="featured">Featured</Label>
+              <div className="flex items-center space-x-2">
+                <Switch
+                  id="featured"
+                  checked={formData.featured}
+                  onCheckedChange={(checked) => setFormData({ ...formData, featured: checked })}
+                />
+                <Label htmlFor="featured">Featured Service</Label>
+              </div>
             </div>
           </div>
 
