@@ -57,11 +57,20 @@ const VendorDashboardNavigation = ({ activeSection, onSectionChange }: VendorDas
     },
     {
       id: 'services',
-      label: 'Service Management',
+      label: 'Service Listings',
       icon: Settings,
-      description: 'Create and manage your services',
+      description: 'View your service offerings',
       isImplemented: true,
       onClick: () => handleToolClick('services')
+    },
+    {
+      id: 'service-management',
+      label: 'Service Management',
+      icon: Plus,
+      description: 'Create, edit, and delete services',
+      isImplemented: true,
+      badge: 'New',
+      onClick: () => handleToolClick('service-management')
     },
     {
       id: 'bookings',

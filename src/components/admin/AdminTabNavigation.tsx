@@ -118,6 +118,12 @@ const AdminTabNavigation = ({ isAdmin }: AdminTabNavigationProps) => {
       category: "vendor" 
     },
     { 
+      id: "vendor-service-management", 
+      label: "Services", 
+      icon: Star, 
+      category: "vendor" 
+    },
+    { 
       id: "kyc-management", 
       label: "KYC", 
       icon: Shield, 

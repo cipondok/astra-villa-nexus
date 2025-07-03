@@ -29,6 +29,7 @@ import {
 import EnhancedVendorDashboard from '@/components/vendor/EnhancedVendorDashboard';
 import VendorBusinessProfile from '@/components/vendor/VendorBusinessProfile';
 import VendorServices from '@/components/vendor/VendorServices';
+import VendorServiceManagement from '@/components/vendor/VendorServiceManagement';
 import VendorBookings from '@/components/vendor/VendorBookings';
 import VendorAnalytics from '@/components/vendor/VendorAnalytics';
 import VendorSettings from '@/components/vendor/VendorSettings';
@@ -98,6 +99,8 @@ const VendorDashboard = () => {
         );
       case 'services':
         return <VendorServices />;
+      case 'service-management':
+        return <VendorServiceManagement />;
       case 'bookings':
         console.log('Rendering VendorBookings component');
         return <VendorBookings />;
