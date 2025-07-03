@@ -13,7 +13,324 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useAlert } from "@/contexts/AlertContext";
-import { Settings, Eye, CheckCircle, XCircle, Pause, Edit, Plus, Trash2 } from "lucide-react";
+import { Settings, Eye, CheckCircle, XCircle, Pause, Edit, Plus, Trash2, X } from "lucide-react";
+
+const CreateServiceForm = () => {
+  const [serviceData, setServiceData] = useState({
+    service_name: '',
+    service_description: '',
+    service_category: '',
+    location_type: 'on_site',
+    duration_value: 1,
+    duration_unit: 'hours',
+    requirements: '',
+    cancellation_policy: '',
+    currency: 'IDR',
+    is_active: true
+  });
+  
+  const [selectedVendor, setSelectedVendor] = useState('');
+  const [serviceItems, setServiceItems] = useState([
+    { item_name: '', item_description: '', price: 0, duration_minutes: 60, unit: 'per_item' }
+  ]);
+  
+  const { showSuccess, showError } = useAlert();
+  const queryClient = useQueryClient();
+
+  // Fetch vendors for admin selection
+  const { data: vendors } = useQuery({
+    queryKey: ['vendors-for-service'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('vendor_business_profiles')
+        .select(`
+          id,
+          vendor_id,
+          business_name,
+          profiles!inner(full_name, email)
+        `)
+        .eq('is_active', true);
+      
+      if (error) throw error;
+      return data;
+    }
+  });
+
+  // Create service mutation
+  const createServiceMutation = useMutation({
+    mutationFn: async () => {
+      if (!selectedVendor) throw new Error('Please select a vendor');
+      
+      const response = await supabase.functions.invoke('vendor-service-management', {
+        method: 'POST',
+        body: {
+          action: 'create',
+          vendor_id: selectedVendor,
+          serviceData,
+          serviceItems: serviceItems.filter(item => item.item_name.trim())
+        }
+      });
+
+      if (response.error) throw response.error;
+      return response.data;
+    },
+    onSuccess: () => {
+      showSuccess("Success", "Vendor service created successfully");
+      queryClient.invalidateQueries({ queryKey: ['admin-vendor-services'] });
+      // Reset form
+      setServiceData({
+        service_name: '',
+        service_description: '',
+        service_category: '',
+        location_type: 'on_site',
+        duration_value: 1,
+        duration_unit: 'hours',
+        requirements: '',
+        cancellation_policy: '',
+        currency: 'IDR',
+        is_active: true
+      });
+      setSelectedVendor('');
+      setServiceItems([{ item_name: '', item_description: '', price: 0, duration_minutes: 60, unit: 'per_item' }]);
+    },
+    onError: (error: any) => {
+      showError("Error", error.message || "Failed to create service");
+    }
+  });
+
+  const addServiceItem = () => {
+    setServiceItems([...serviceItems, { 
+      item_name: '', 
+      item_description: '', 
+      price: 0, 
+      duration_minutes: 60, 
+      unit: 'per_item' 
+    }]);
+  };
+
+  const removeServiceItem = (index: number) => {
+    if (serviceItems.length > 1) {
+      setServiceItems(serviceItems.filter((_, i) => i !== index));
+    }
+  };
+
+  const updateServiceItem = (index: number, field: string, value: any) => {
+    const updated = [...serviceItems];
+    updated[index] = { ...updated[index], [field]: value };
+    setServiceItems(updated);
+  };
+
+  return (
+    <div className="space-y-6">
+      {/* Vendor Selection */}
+      <div className="space-y-2">
+        <Label htmlFor="vendor">Select Vendor *</Label>
+        <Select value={selectedVendor} onValueChange={setSelectedVendor}>
+          <SelectTrigger>
+            <SelectValue placeholder="Choose a vendor" />
+          </SelectTrigger>
+          <SelectContent>
+            {vendors?.map((vendor) => (
+              <SelectItem key={vendor.vendor_id} value={vendor.vendor_id}>
+                {vendor.business_name} ({vendor.profiles.email})
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      {/* Service Basic Info */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="service_name">Service Name *</Label>
+          <Input
+            id="service_name"
+            value={serviceData.service_name}
+            onChange={(e) => setServiceData(prev => ({...prev, service_name: e.target.value}))}
+            placeholder="e.g., AC Repair Service"
+          />
+        </div>
+        
+        <div className="space-y-2">
+          <Label htmlFor="service_category">Category</Label>
+          <Input
+            id="service_category"
+            value={serviceData.service_category}
+            onChange={(e) => setServiceData(prev => ({...prev, service_category: e.target.value}))}
+            placeholder="e.g., Home Maintenance"
+          />
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="service_description">Description</Label>
+        <Textarea
+          id="service_description"
+          value={serviceData.service_description}
+          onChange={(e) => setServiceData(prev => ({...prev, service_description: e.target.value}))}
+          placeholder="Describe the service in detail..."
+          rows={3}
+        />
+      </div>
+
+      {/* Service Details */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="location_type">Location Type</Label>
+          <Select 
+            value={serviceData.location_type} 
+            onValueChange={(value) => setServiceData(prev => ({...prev, location_type: value}))}
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="on_site">On-site</SelectItem>
+              <SelectItem value="remote">Remote</SelectItem>
+              <SelectItem value="both">Both</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="duration_value">Duration</Label>
+          <Input
+            id="duration_value"
+            type="number"
+            min="1"
+            value={serviceData.duration_value}
+            onChange={(e) => setServiceData(prev => ({...prev, duration_value: parseInt(e.target.value) || 1}))}
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="duration_unit">Duration Unit</Label>
+          <Select 
+            value={serviceData.duration_unit} 
+            onValueChange={(value) => setServiceData(prev => ({...prev, duration_unit: value}))}
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="hours">Hours</SelectItem>
+              <SelectItem value="days">Days</SelectItem>
+              <SelectItem value="weeks">Weeks</SelectItem>
+              <SelectItem value="months">Months</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      {/* Service Items & Pricing */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <Label className="text-base font-medium">Service Items & Pricing</Label>
+          <Button type="button" variant="outline" size="sm" onClick={addServiceItem}>
+            <Plus className="h-4 w-4 mr-1" />
+            Add Item
+          </Button>
+        </div>
+        
+        {serviceItems.map((item, index) => (
+          <Card key={index} className="p-4">
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h4 className="font-medium">Item {index + 1}</h4>
+                {serviceItems.length > 1 && (
+                  <Button 
+                    type="button" 
+                    variant="ghost" 
+                    size="sm"
+                    onClick={() => removeServiceItem(index)}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                )}
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Item Name *</Label>
+                  <Input
+                    value={item.item_name}
+                    onChange={(e) => updateServiceItem(index, 'item_name', e.target.value)}
+                    placeholder="e.g., Basic AC Cleaning"
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label>Price (IDR) *</Label>
+                  <Input
+                    type="number"
+                    min="0"
+                    value={item.price}
+                    onChange={(e) => updateServiceItem(index, 'price', parseFloat(e.target.value) || 0)}
+                    placeholder="150000"
+                  />
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                <Label>Item Description</Label>
+                <Textarea
+                  value={item.item_description}
+                  onChange={(e) => updateServiceItem(index, 'item_description', e.target.value)}
+                  placeholder="Describe this service item..."
+                  rows={2}
+                />
+              </div>
+            </div>
+          </Card>
+        ))}
+      </div>
+
+      {/* Additional Info */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="requirements">Requirements</Label>
+          <Textarea
+            id="requirements"
+            value={serviceData.requirements}
+            onChange={(e) => setServiceData(prev => ({...prev, requirements: e.target.value}))}
+            placeholder="Any special requirements or preparations needed..."
+            rows={3}
+          />
+        </div>
+        
+        <div className="space-y-2">
+          <Label htmlFor="cancellation_policy">Cancellation Policy</Label>
+          <Textarea
+            id="cancellation_policy"
+            value={serviceData.cancellation_policy}
+            onChange={(e) => setServiceData(prev => ({...prev, cancellation_policy: e.target.value}))}
+            placeholder="Cancellation terms and conditions..."
+            rows={3}
+          />
+        </div>
+      </div>
+
+      {/* Active Status */}
+      <div className="flex items-center space-x-2">
+        <Switch
+          id="is_active"
+          checked={serviceData.is_active}
+          onCheckedChange={(checked) => setServiceData(prev => ({...prev, is_active: checked}))}
+        />
+        <Label htmlFor="is_active">Activate service immediately</Label>
+      </div>
+
+      {/* Submit Button */}
+      <Button 
+        onClick={() => createServiceMutation.mutate()} 
+        disabled={!selectedVendor || !serviceData.service_name || createServiceMutation.isPending}
+        className="w-full"
+      >
+        {createServiceMutation.isPending ? 'Creating...' : 'Create Service'}
+      </Button>
+    </div>
+  );
+};
 
 const AdminVendorServiceManagement = () => {
   const [selectedService, setSelectedService] = useState<any>(null);
@@ -150,6 +467,20 @@ const AdminVendorServiceManagement = () => {
           <h2 className="text-2xl font-bold">Vendor Service Management</h2>
           <p className="text-muted-foreground">Manage vendor services, pricing, and approvals</p>
         </div>
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button className="bg-primary hover:bg-primary/90">
+              <Plus className="h-4 w-4 mr-2" />
+              Create Vendor Service
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>Create New Vendor Service</DialogTitle>
+            </DialogHeader>
+            <CreateServiceForm />
+          </DialogContent>
+        </Dialog>
       </div>
 
       <Tabs defaultValue="services" className="space-y-4">
