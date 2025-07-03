@@ -27,13 +27,14 @@ import ProjectDiagnosticSystem from "./ProjectDiagnosticSystem";
 
 interface AdminDashboardContentProps {
   activeSection: string;
+  onSectionChange?: (section: string) => void;
 }
 
-const AdminDashboardContent = ({ activeSection }: AdminDashboardContentProps) => {
+const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboardContentProps) => {
   const renderContent = () => {
     switch (activeSection) {
       case "overview":
-        return <AdminOverview />;
+        return <AdminOverview onSectionChange={onSectionChange} />;
       case "diagnostic":
         return <ProjectDiagnosticSystem />;
       case "user-management":

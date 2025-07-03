@@ -4,7 +4,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { BarChart3, Activity, Globe, Users, FileText, TrendingUp } from "lucide-react";
 
-const AdminOverview = () => {
+interface AdminOverviewProps {
+  onSectionChange?: (section: string) => void;
+}
+
+const AdminOverview = ({ onSectionChange }: AdminOverviewProps) => {
+  
+  const handleQuickAction = (section: string) => {
+    if (onSectionChange) {
+      onSectionChange(section);
+    }
+  };
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -25,7 +35,7 @@ const AdminOverview = () => {
                 <p className="text-sm font-medium text-muted-foreground">Total Users</p>
                 <p className="text-2xl font-bold">1,234</p>
               </div>
-              <Users className="h-8 w-8 text-blue-500" />
+              <Users className="h-8 w-8 text-primary" />
             </div>
           </CardContent>
         </Card>
@@ -37,7 +47,7 @@ const AdminOverview = () => {
                 <p className="text-sm font-medium text-muted-foreground">Active Properties</p>
                 <p className="text-2xl font-bold">567</p>
               </div>
-              <Activity className="h-8 w-8 text-green-500" />
+              <Activity className="h-8 w-8 text-green-600 dark:text-green-400" />
             </div>
           </CardContent>
         </Card>
@@ -49,7 +59,7 @@ const AdminOverview = () => {
                 <p className="text-sm font-medium text-muted-foreground">Monthly Traffic</p>
                 <p className="text-2xl font-bold">89K</p>
               </div>
-              <Globe className="h-8 w-8 text-purple-500" />
+              <Globe className="h-8 w-8 text-purple-600 dark:text-purple-400" />
             </div>
           </CardContent>
         </Card>
@@ -61,7 +71,7 @@ const AdminOverview = () => {
                 <p className="text-sm font-medium text-muted-foreground">System Health</p>
                 <p className="text-2xl font-bold">98%</p>
               </div>
-              <TrendingUp className="h-8 w-8 text-orange-500" />
+              <TrendingUp className="h-8 w-8 text-orange-600 dark:text-orange-400" />
             </div>
           </CardContent>
         </Card>
@@ -80,7 +90,11 @@ const AdminOverview = () => {
             <p className="text-sm text-muted-foreground mb-4">
               View detailed analytics and performance metrics
             </p>
-            <Button variant="outline" className="w-full">
+            <Button 
+              variant="outline" 
+              className="w-full" 
+              onClick={() => handleQuickAction('analytics')}
+            >
               View Analytics
             </Button>
           </CardContent>
@@ -97,7 +111,11 @@ const AdminOverview = () => {
             <p className="text-sm text-muted-foreground mb-4">
               Manage user accounts and permissions
             </p>
-            <Button variant="outline" className="w-full">
+            <Button 
+              variant="outline" 
+              className="w-full"
+              onClick={() => handleQuickAction('user-management')}
+            >
               Manage Users
             </Button>
           </CardContent>
@@ -114,7 +132,11 @@ const AdminOverview = () => {
             <p className="text-sm text-muted-foreground mb-4">
               Generate and view system reports
             </p>
-            <Button variant="outline" className="w-full">
+            <Button 
+              variant="outline" 
+              className="w-full"
+              onClick={() => handleQuickAction('system-reports')}
+            >
               View Reports
             </Button>
           </CardContent>
