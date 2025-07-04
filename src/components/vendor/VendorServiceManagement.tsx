@@ -311,7 +311,14 @@ const VendorServiceManagement = () => {
       </div>
 
       {/* Create Service Dialog */}
-      <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+      <Dialog open={isCreateDialogOpen} onOpenChange={(open) => {
+        // Only allow closing if user explicitly cancels, not by clicking outside
+        if (!open) {
+          // Dialog will only close through the onCancel handler in ServiceFormWrapper
+          return;
+        }
+        setIsCreateDialogOpen(open);
+      }}>
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Create New Service</DialogTitle>
@@ -325,7 +332,14 @@ const VendorServiceManagement = () => {
       </Dialog>
 
       {/* Edit Service Dialog */}
-      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+      <Dialog open={isEditDialogOpen} onOpenChange={(open) => {
+        // Only allow closing if user explicitly cancels, not by clicking outside
+        if (!open) {
+          // Dialog will only close through the onCancel handler in ServiceFormWrapper
+          return;
+        }
+        setIsEditDialogOpen(open);
+      }}>
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Edit Service</DialogTitle>
