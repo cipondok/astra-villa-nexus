@@ -131,14 +131,16 @@ const VendorServiceForm = ({ service, onClose, onSuccess }: ServiceFormProps) =>
     }
   };
 
-  // Fetch main categories
+  // Fetch main categories (Indonesian)
   const { data: mainCategories } = useQuery({
-    queryKey: ['vendor-main-categories'],
+    queryKey: ['indonesian-business-categories-main'],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('vendor_main_categories' as any)
+        .from('indonesian_business_categories')
         .select('*')
         .eq('is_active', true)
+        .eq('level', 1)
+        .eq('vendor_type', 'service')
         .order('display_order');
       
       if (error) throw error;
@@ -146,17 +148,18 @@ const VendorServiceForm = ({ service, onClose, onSuccess }: ServiceFormProps) =>
     }
   });
 
-  // Fetch sub categories based on selected main category
+  // Fetch sub categories based on selected main category (Indonesian)
   const { data: subCategories } = useQuery({
-    queryKey: ['vendor-sub-categories', formData.main_category_id],
+    queryKey: ['indonesian-business-categories-sub', formData.main_category_id],
     queryFn: async () => {
       if (!formData.main_category_id) return [];
       
       const { data, error } = await supabase
-        .from('vendor_sub_categories' as any)
+        .from('indonesian_business_categories')
         .select('*')
-        .eq('main_category_id', formData.main_category_id)
+        .eq('parent_id', formData.main_category_id)
         .eq('is_active', true)
+        .eq('level', 2)
         .order('display_order');
       
       if (error) throw error;
@@ -165,18 +168,19 @@ const VendorServiceForm = ({ service, onClose, onSuccess }: ServiceFormProps) =>
     enabled: !!formData.main_category_id
   });
 
-  // Fetch approved service names based on selected sub category
-  const { data: approvedServiceNames } = useQuery({
-    queryKey: ['approved-service-names', formData.sub_category_id],
+  // Fetch service types based on selected sub category (Indonesian)
+  const { data: serviceTypes } = useQuery({
+    queryKey: ['indonesian-business-categories-service', formData.sub_category_id],
     queryFn: async () => {
       if (!formData.sub_category_id) return [];
       
       const { data, error } = await supabase
-        .from('approved_service_names' as any)
+        .from('indonesian_business_categories')
         .select('*')
-        .eq('sub_category_id', formData.sub_category_id)
+        .eq('parent_id', formData.sub_category_id)
         .eq('is_active', true)
-        .order('service_name');
+        .eq('level', 3)
+        .order('display_order');
       
       if (error) throw error;
       return data as any[];
@@ -199,36 +203,36 @@ const VendorServiceForm = ({ service, onClose, onSuccess }: ServiceFormProps) =>
     }
   });
 
-  // Fetch locations for state selection
-  const { data: states } = useQuery({
-    queryKey: ['locations-states'],
+  // Fetch Indonesian provinces
+  const { data: provinces } = useQuery({
+    queryKey: ['indonesian-provinces'],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('locations')
+        .from('indonesian_locations')
         .select('province_name')
         .eq('is_active', true)
-        .not('province_name', 'is', null);
+        .is('city_code', null);
       
       if (error) throw error;
       
-      // Get unique states
-      const uniqueStates = [...new Set(data.map(item => item.province_name))];
-      return uniqueStates.sort();
+      // Get unique provinces
+      const uniqueProvinces = [...new Set(data.map(item => item.province_name))];
+      return uniqueProvinces.sort();
     }
   });
 
-  // Fetch cities based on selected state
+  // Fetch cities based on selected province
   const { data: cities } = useQuery({
-    queryKey: ['locations-cities', formData.service_location_state],
+    queryKey: ['indonesian-cities', formData.service_location_state],
     queryFn: async () => {
       if (!formData.service_location_state) return [];
       
       const { data, error } = await supabase
-        .from('locations')
+        .from('indonesian_locations')
         .select('city_name')
         .eq('province_name', formData.service_location_state)
         .eq('is_active', true)
-        .not('city_name', 'is', null);
+        .not('city_code', 'is', null);
       
       if (error) throw error;
       
@@ -269,7 +273,7 @@ const VendorServiceForm = ({ service, onClose, onSuccess }: ServiceFormProps) =>
     if (!useCustomName && !formData.approved_service_name_id) {
       toast({
         title: "Error",
-        description: "Please select a service name or request a new one",
+        description: "Please select a service type or use custom name",
         variant: "destructive"
       });
       return;
@@ -296,11 +300,11 @@ const VendorServiceForm = ({ service, onClose, onSuccess }: ServiceFormProps) =>
 
     setSaving(true);
     try {
-      const selectedServiceName = approvedServiceNames?.find(s => s.id === formData.approved_service_name_id);
+      const selectedServiceType = serviceTypes?.find(s => s.id === formData.approved_service_name_id);
       
       const serviceData = {
         ...formData,
-        service_name: useCustomName ? formData.custom_service_name : selectedServiceName?.service_name || '',
+        service_name: useCustomName ? formData.custom_service_name : selectedServiceType?.name_id || '',
         vendor_id: user.id,
         admin_approval_status: 'pending' // All new services need approval
       };
@@ -454,7 +458,7 @@ const VendorServiceForm = ({ service, onClose, onSuccess }: ServiceFormProps) =>
                       <SelectItem key={category.id} value={category.id}>
                         <div className="flex items-center space-x-2">
                           <span>{category.icon}</span>
-                          <span>{category.name}</span>
+                          <span>{category.name_id}</span>
                         </div>
                       </SelectItem>
                     ))}
@@ -483,7 +487,7 @@ const VendorServiceForm = ({ service, onClose, onSuccess }: ServiceFormProps) =>
                       <SelectItem key={subCategory.id} value={subCategory.id}>
                         <div className="flex items-center space-x-2">
                           <span>{subCategory.icon}</span>
-                          <span>{subCategory.name}</span>
+                          <span>{subCategory.name_id}</span>
                         </div>
                       </SelectItem>
                     ))}
@@ -491,10 +495,10 @@ const VendorServiceForm = ({ service, onClose, onSuccess }: ServiceFormProps) =>
                 </Select>
               </div>
 
-              {/* Step 3: Service Name */}
+              {/* Step 3: Service Type */}
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <Label className="text-base font-semibold">3. Service Name (Specific Offering) *</Label>
+                  <Label className="text-base font-semibold">3. Service Type (Specific Offering) *</Label>
                   <Dialog open={showRequestDialog} onOpenChange={setShowRequestDialog}>
                     <DialogTrigger asChild>
                       <Button variant="outline" size="sm" disabled={!formData.sub_category_id}>
@@ -533,23 +537,23 @@ const VendorServiceForm = ({ service, onClose, onSuccess }: ServiceFormProps) =>
 
                 {!useCustomName ? (
                   <div className="space-y-2">
-                    <Label>Select from Approved Service Names</Label>
+                    <Label>Select Service Type</Label>
                     <Select 
                       value={formData.approved_service_name_id} 
                       onValueChange={(value) => setFormData({ ...formData, approved_service_name_id: value, category_id: '' })}
                       disabled={!formData.sub_category_id}
                     >
                       <SelectTrigger className="bg-background">
-                        <SelectValue placeholder="Choose an approved service name" />
+                        <SelectValue placeholder="Choose a service type" />
                       </SelectTrigger>
                       <SelectContent className="bg-background border z-50">
-                        {approvedServiceNames?.map((serviceName) => (
-                          <SelectItem key={serviceName.id} value={serviceName.id}>
+                        {serviceTypes?.map((serviceType) => (
+                          <SelectItem key={serviceType.id} value={serviceType.id}>
                             <div className="flex flex-col">
-                              <span>{serviceName.service_name}</span>
-                              {serviceName.description && (
+                              <span>{serviceType.name_id}</span>
+                              {serviceType.description_id && (
                                 <span className="text-xs text-muted-foreground">
-                                  {serviceName.description}
+                                  {serviceType.description_id}
                                 </span>
                               )}
                             </div>
@@ -693,9 +697,9 @@ const VendorServiceForm = ({ service, onClose, onSuccess }: ServiceFormProps) =>
                       <SelectValue placeholder="Select state" />
                     </SelectTrigger>
                     <SelectContent className="bg-background border z-50">
-                      {states?.map((state) => (
-                        <SelectItem key={state} value={state}>
-                          {state}
+                      {provinces?.map((province) => (
+                        <SelectItem key={province} value={province}>
+                          {province}
                         </SelectItem>
                       ))}
                     </SelectContent>
