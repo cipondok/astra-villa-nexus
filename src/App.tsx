@@ -21,6 +21,8 @@ import VendorDashboard from '@/pages/VendorDashboard';
 import PropertyOwnerDashboard from '@/pages/PropertyOwnerDashboard';
 import AgentDashboard from '@/pages/AgentDashboard';
 import Analytics from '@/pages/Analytics';
+import Services from '@/pages/Services';
+import ServiceForm from '@/pages/ServiceForm';
 import NotFound from '@/pages/NotFound';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import AdminOnlyRoute from '@/components/AdminOnlyRoute';
@@ -54,6 +56,8 @@ function App() {
                           <Route path="/properties" element={<Properties />} />
                           <Route path="/properties/:id" element={<PropertyDetail />} />
                           <Route path="/about" element={<About />} />
+                          <Route path="/services" element={<Services />} />
+                          <Route path="/services/new" element={<ServiceForm />} />
 
                           <Route element={<ProtectedRoute />}>
                             <Route path="/dashboard" element={<Dashboard />} />
