@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft, ArrowRight, CheckCircle } from "lucide-react";
+import SmartTypeSelector from "./SmartTypeSelector";
 
 interface CategoryHierarchy {
   id: string;
@@ -145,12 +146,6 @@ const ProgressiveVendorServiceForm = ({ onClose, onSuccess }: ProgressiveService
   const currentCategory = level3Categories?.find(cat => cat.id === formData.level3_category) || 
                          level4Categories?.find(cat => cat.id === formData.level4_category);
 
-  const vendorTypeOptions = [
-    { id: 'product', name: 'Product Seller', name_id: 'Penjual Produk', icon: '🛒', description: 'Sell physical products' },
-    { id: 'service', name: 'Service Provider', name_id: 'Penyedia Layanan', icon: '🛠️', description: 'Provide services' },
-    { id: 'both', name: 'Both Products & Services', name_id: 'Produk & Layanan', icon: '🔀', description: 'Hybrid business model' }
-  ];
-
   const handleNext = () => {
     if (currentStep < totalSteps) {
       setCurrentStep(currentStep + 1);
@@ -252,37 +247,10 @@ const ProgressiveVendorServiceForm = ({ onClose, onSuccess }: ProgressiveService
     switch (currentStep) {
       case 1:
         return (
-          <div className="space-y-6">
-            <div className="text-center">
-              <h3 className="text-xl font-semibold mb-2">Pilih Jenis Bisnis Anda</h3>
-              <p className="text-muted-foreground">Choose Your Business Type</p>
-            </div>
-            <div className="grid grid-cols-1 gap-4">
-              {vendorTypeOptions.map((type) => (
-                <Card 
-                  key={type.id}
-                  className={`cursor-pointer transition-all hover:shadow-md ${
-                    formData.vendor_type === type.id ? 'ring-2 ring-primary bg-primary/5' : ''
-                  }`}
-                  onClick={() => setFormData({ ...formData, vendor_type: type.id })}
-                >
-                  <CardContent className="p-6">
-                    <div className="flex items-center space-x-4">
-                      <div className="text-3xl">{type.icon}</div>
-                      <div className="flex-1">
-                        <h4 className="font-semibold">{type.name}</h4>
-                        <p className="text-sm text-muted-foreground">{type.name_id}</p>
-                        <p className="text-xs text-muted-foreground mt-1">{type.description}</p>
-                      </div>
-                      {formData.vendor_type === type.id && (
-                        <CheckCircle className="h-6 w-6 text-primary" />
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
+          <SmartTypeSelector
+            onSelect={(type) => setFormData({ ...formData, vendor_type: type })}
+            selectedType={formData.vendor_type as 'product' | 'service' | null}
+          />
         );
 
       case 2:
@@ -294,7 +262,7 @@ const ProgressiveVendorServiceForm = ({ onClose, onSuccess }: ProgressiveService
             </div>
             <div className="grid grid-cols-1 gap-4">
               {level1Categories?.filter(cat => 
-                formData.vendor_type === 'both' || cat.vendor_type === formData.vendor_type || cat.vendor_type === 'both'
+                cat.vendor_type === formData.vendor_type || cat.vendor_type === 'both'
               ).map((category) => (
                 <Card 
                   key={category.id}
@@ -634,7 +602,7 @@ const ProgressiveVendorServiceForm = ({ onClose, onSuccess }: ProgressiveService
             <div className="p-4 bg-green-50 rounded-lg border border-green-200">
               <h4 className="font-semibold text-green-800 mb-2">Ringkasan Layanan</h4>
               <div className="space-y-1 text-sm text-green-700">
-                <p><strong>Jenis:</strong> {vendorTypeOptions.find(t => t.id === formData.vendor_type)?.name_id}</p>
+                <p><strong>Jenis:</strong> {formData.vendor_type === 'product' ? 'Jual Produk' : 'Tawarkan Jasa'}</p>
                 <p><strong>Kategori:</strong> {level3Categories?.find(c => c.id === formData.level3_category)?.name_id}</p>
                 {level4Categories?.find(c => c.id === formData.level4_category) && (
                   <p><strong>Detail:</strong> {level4Categories.find(c => c.id === formData.level4_category)?.name_id}</p>
