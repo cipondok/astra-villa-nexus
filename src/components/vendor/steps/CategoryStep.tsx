@@ -45,7 +45,26 @@ const CategoryStep: React.FC<CategoryStepProps> = ({ formData, updateFormData })
           .order('display_order');
 
         if (error) throw error;
-        setMainCategories(data || []);
+        
+        // If no categories exist, create default ones
+        if (!data || data.length === 0) {
+          const defaultCategories = [
+            { name: 'Home Services', description: 'Professional home maintenance and repair services', type: 'services', icon: 'wrench' },
+            { name: 'Construction', description: 'Building and construction services', type: 'services', icon: 'hammer' },
+            { name: 'Professional Services', description: 'Expert consultation and professional services', type: 'services', icon: 'briefcase' },
+            { name: 'Products & Supplies', description: 'Physical products and supplies', type: 'products', icon: 'package' }
+          ];
+          
+          const { data: insertedData, error: insertError } = await supabase
+            .from('vendor_main_categories')
+            .insert(defaultCategories)
+            .select();
+            
+          if (insertError) throw insertError;
+          setMainCategories(insertedData || []);
+        } else {
+          setMainCategories(data);
+        }
         setIsLoading(false);
       } catch (error: any) {
         console.error('Error fetching main categories:', error);

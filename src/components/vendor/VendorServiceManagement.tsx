@@ -10,17 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAlert } from "@/contexts/AlertContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { Plus, Edit, Trash2, Eye, DollarSign, Clock, MapPin } from "lucide-react";
-import VendorServiceForm from "./VendorServiceForm";
-
-interface ServiceItem {
-  item_name: string;
-  item_description: string;
-  price: number;
-  duration_minutes: number;
-  unit: string;
-  discount_percentage?: number;
-  discount_type?: string;
-}
+import MultiStepServiceForm from "./MultiStepServiceForm";
 
 interface ServiceItem {
   item_name: string;
@@ -52,39 +42,20 @@ interface ServiceFormData {
 }
 
 const ServiceFormWrapper = ({ 
-  initialData, 
-  initialItems, 
-  onSubmit, 
   onCancel, 
-  isLoading 
+  isLoading,
+  onSuccess 
 }: {
-  initialData?: ServiceFormData;
-  initialItems?: ServiceItem[];
-  onSubmit: (data: ServiceFormData, items: ServiceItem[]) => void;
   onCancel: () => void;
   isLoading: boolean;
+  onSuccess?: () => void;
 }) => {
   return (
-    <VendorServiceForm
-      service={initialData ? {
-        id: 'temp',
-        service_name: initialData.service_name,
-        service_description: initialData.service_description,
-        category_id: '',
-        duration_value: initialData.duration_value,
-        duration_unit: initialData.duration_unit,
-        location_type: initialData.location_type,
-        service_location_types: [initialData.location_type],
-        delivery_options: {},
-        requirements: initialData.requirements,
-        cancellation_policy: initialData.cancellation_policy,
-        is_active: initialData.is_active,
-        featured: false
-      } : undefined}
+    <MultiStepServiceForm
       onClose={onCancel}
       onSuccess={() => {
-        // Handle success - the onSubmit will be called from within VendorServiceForm
         onCancel();
+        onSuccess?.();
       }}
     />
   );
@@ -203,17 +174,15 @@ const VendorServiceManagement = () => {
     }
   });
 
-  const handleCreateService = (serviceData: ServiceFormData, serviceItems: ServiceItem[]) => {
-    createServiceMutation.mutate({ serviceData, serviceItems });
+  const handleCreateService = () => {
+    // MultiStepServiceForm handles its own service creation
+    setIsCreateDialogOpen(false);
   };
 
-  const handleUpdateService = (serviceData: ServiceFormData, serviceItems: ServiceItem[]) => {
-    if (!editingService) return;
-    updateServiceMutation.mutate({ 
-      serviceId: editingService.id, 
-      serviceData, 
-      serviceItems 
-    });
+  const handleUpdateService = () => {
+    // MultiStepServiceForm handles its own service updates
+    setIsEditDialogOpen(false);
+    setEditingService(null);
   };
 
   const handleEditService = (service: any) => {
@@ -348,9 +317,9 @@ const VendorServiceManagement = () => {
             <DialogTitle>Create New Service</DialogTitle>
           </DialogHeader>
           <ServiceFormWrapper
-            onSubmit={handleCreateService}
             onCancel={() => setIsCreateDialogOpen(false)}
             isLoading={createServiceMutation.isPending}
+            onSuccess={() => queryClient.invalidateQueries({ queryKey: ['vendor-services'] })}
           />
         </DialogContent>
       </Dialog>
@@ -363,25 +332,12 @@ const VendorServiceManagement = () => {
           </DialogHeader>
           {editingService && (
             <ServiceFormWrapper
-              initialData={{
-                service_name: editingService.service_name,
-                service_description: editingService.service_description || '',
-                service_category: editingService.service_category || '',
-                location_type: editingService.location_type || 'on_site',
-                duration_value: editingService.duration_value || 1,
-                duration_unit: editingService.duration_unit || 'hours',
-                requirements: editingService.requirements || '',
-                cancellation_policy: editingService.cancellation_policy || '',
-                currency: editingService.currency || 'IDR',
-                is_active: editingService.is_active
-              }}
-              initialItems={editingService.vendor_service_items || []}
-              onSubmit={handleUpdateService}
               onCancel={() => {
                 setIsEditDialogOpen(false);
                 setEditingService(null);
               }}
               isLoading={updateServiceMutation.isPending}
+              onSuccess={() => queryClient.invalidateQueries({ queryKey: ['vendor-services'] })}
             />
           )}
         </DialogContent>

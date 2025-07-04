@@ -104,6 +104,42 @@ const MultiStepServiceForm: React.FC<MultiStepServiceFormProps> = ({ onClose, on
     }
   };
 
+  // Save draft functionality
+  const saveDraft = async () => {
+    try {
+      const draftKey = `service_draft_${user?.id}`;
+      localStorage.setItem(draftKey, JSON.stringify(formData));
+      toast.success('Draft saved successfully!');
+    } catch (error) {
+      toast.error('Failed to save draft');
+    }
+  };
+
+  // Load draft functionality
+  const loadDraft = () => {
+    try {
+      const draftKey = `service_draft_${user?.id}`;
+      const savedDraft = localStorage.getItem(draftKey);
+      if (savedDraft) {
+        const draftData = JSON.parse(savedDraft);
+        setFormData(draftData);
+        toast.success('Draft loaded successfully!');
+      }
+    } catch (error) {
+      toast.error('Failed to load draft');
+    }
+  };
+
+  // Clear draft
+  const clearDraft = () => {
+    try {
+      const draftKey = `service_draft_${user?.id}`;
+      localStorage.removeItem(draftKey);
+    } catch (error) {
+      console.error('Failed to clear draft:', error);
+    }
+  };
+
   const handleSubmit = async () => {
     setIsSubmitting(true);
     try {
@@ -159,6 +195,8 @@ const MultiStepServiceForm: React.FC<MultiStepServiceFormProps> = ({ onClose, on
 
       if (serviceError) throw serviceError;
 
+      // Clear draft on successful submission
+      clearDraft();
       toast.success('Service created successfully!');
       onSuccess();
     } catch (error: any) {
@@ -249,13 +287,27 @@ const MultiStepServiceForm: React.FC<MultiStepServiceFormProps> = ({ onClose, on
 
       {/* Navigation */}
       <div className="flex items-center justify-between">
-        <Button
-          variant="outline"
-          onClick={currentStep === 1 ? onClose : prevStep}
-        >
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          {currentStep === 1 ? 'Cancel' : 'Previous'}
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            onClick={currentStep === 1 ? onClose : prevStep}
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            {currentStep === 1 ? 'Cancel' : 'Previous'}
+          </Button>
+          <Button
+            variant="ghost"
+            onClick={saveDraft}
+          >
+            Save Draft
+          </Button>
+          <Button
+            variant="ghost"
+            onClick={loadDraft}
+          >
+            Load Draft
+          </Button>
+        </div>
 
         {currentStep < steps.length ? (
           <Button
