@@ -542,6 +542,48 @@ export type Database = {
         }
         Relationships: []
       }
+      bpjs_verifications: {
+        Row: {
+          bpjs_type: string
+          created_at: string | null
+          expires_at: string | null
+          id: string
+          is_valid: boolean | null
+          updated_at: string | null
+          vendor_id: string
+          verification_number: string
+          verification_response: Json | null
+          verification_status: string
+          verified_at: string | null
+        }
+        Insert: {
+          bpjs_type: string
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          is_valid?: boolean | null
+          updated_at?: string | null
+          vendor_id: string
+          verification_number: string
+          verification_response?: Json | null
+          verification_status: string
+          verified_at?: string | null
+        }
+        Update: {
+          bpjs_type?: string
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          is_valid?: boolean | null
+          updated_at?: string | null
+          vendor_id?: string
+          verification_number?: string
+          verification_response?: Json | null
+          verification_status?: string
+          verified_at?: string | null
+        }
+        Relationships: []
+      }
       categories: {
         Row: {
           created_at: string | null
@@ -990,6 +1032,257 @@ export type Database = {
           pattern_name?: string
           pattern_type?: string
           risk_score?: number
+        }
+        Relationships: []
+      }
+      indonesian_business_categories: {
+        Row: {
+          category_code: string
+          created_at: string | null
+          description_en: string | null
+          description_id: string | null
+          display_order: number | null
+          icon: string | null
+          id: string
+          is_active: boolean | null
+          level: number
+          name_en: string
+          name_id: string
+          parent_id: string | null
+          required_licenses: Json | null
+          vendor_type: string
+        }
+        Insert: {
+          category_code: string
+          created_at?: string | null
+          description_en?: string | null
+          description_id?: string | null
+          display_order?: number | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean | null
+          level: number
+          name_en: string
+          name_id: string
+          parent_id?: string | null
+          required_licenses?: Json | null
+          vendor_type: string
+        }
+        Update: {
+          category_code?: string
+          created_at?: string | null
+          description_en?: string | null
+          description_id?: string | null
+          display_order?: number | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean | null
+          level?: number
+          name_en?: string
+          name_id?: string
+          parent_id?: string | null
+          required_licenses?: Json | null
+          vendor_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "indonesian_business_categories_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "indonesian_business_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      indonesian_license_types: {
+        Row: {
+          created_at: string | null
+          government_api_endpoint: string | null
+          id: string
+          is_active: boolean | null
+          issuing_authority: string
+          issuing_authority_id: string
+          license_code: string
+          license_name: string
+          license_name_id: string
+          renewal_required: boolean | null
+          required_for_categories: Json | null
+          validation_regex: string
+          validity_period_months: number | null
+          vendor_type: string
+        }
+        Insert: {
+          created_at?: string | null
+          government_api_endpoint?: string | null
+          id?: string
+          is_active?: boolean | null
+          issuing_authority: string
+          issuing_authority_id: string
+          license_code: string
+          license_name: string
+          license_name_id: string
+          renewal_required?: boolean | null
+          required_for_categories?: Json | null
+          validation_regex: string
+          validity_period_months?: number | null
+          vendor_type: string
+        }
+        Update: {
+          created_at?: string | null
+          government_api_endpoint?: string | null
+          id?: string
+          is_active?: boolean | null
+          issuing_authority?: string
+          issuing_authority_id?: string
+          license_code?: string
+          license_name?: string
+          license_name_id?: string
+          renewal_required?: boolean | null
+          required_for_categories?: Json | null
+          validation_regex?: string
+          validity_period_months?: number | null
+          vendor_type?: string
+        }
+        Relationships: []
+      }
+      indonesian_locations: {
+        Row: {
+          city_code: string | null
+          city_name: string | null
+          city_type: string | null
+          created_at: string | null
+          district_code: string | null
+          district_name: string | null
+          id: string
+          is_active: boolean | null
+          postal_code: string | null
+          province_code: string
+          province_name: string
+          subdistrict_code: string | null
+          subdistrict_name: string | null
+        }
+        Insert: {
+          city_code?: string | null
+          city_name?: string | null
+          city_type?: string | null
+          created_at?: string | null
+          district_code?: string | null
+          district_name?: string | null
+          id?: string
+          is_active?: boolean | null
+          postal_code?: string | null
+          province_code: string
+          province_name: string
+          subdistrict_code?: string | null
+          subdistrict_name?: string | null
+        }
+        Update: {
+          city_code?: string | null
+          city_name?: string | null
+          city_type?: string | null
+          created_at?: string | null
+          district_code?: string | null
+          district_name?: string | null
+          id?: string
+          is_active?: boolean | null
+          postal_code?: string | null
+          province_code?: string
+          province_name?: string
+          subdistrict_code?: string | null
+          subdistrict_name?: string | null
+        }
+        Relationships: []
+      }
+      indonesian_rejection_codes: {
+        Row: {
+          auto_resubmit_allowed: boolean | null
+          category: string
+          code: string
+          created_at: string | null
+          description_en: string
+          description_id: string
+          estimated_fix_time_hours: number | null
+          is_active: boolean | null
+          reason_en: string
+          reason_id: string
+          requires_document_upload: boolean | null
+          resolution_steps_en: Json | null
+          resolution_steps_id: Json | null
+        }
+        Insert: {
+          auto_resubmit_allowed?: boolean | null
+          category: string
+          code: string
+          created_at?: string | null
+          description_en: string
+          description_id: string
+          estimated_fix_time_hours?: number | null
+          is_active?: boolean | null
+          reason_en: string
+          reason_id: string
+          requires_document_upload?: boolean | null
+          resolution_steps_en?: Json | null
+          resolution_steps_id?: Json | null
+        }
+        Update: {
+          auto_resubmit_allowed?: boolean | null
+          category?: string
+          code?: string
+          created_at?: string | null
+          description_en?: string
+          description_id?: string
+          estimated_fix_time_hours?: number | null
+          is_active?: boolean | null
+          reason_en?: string
+          reason_id?: string
+          requires_document_upload?: boolean | null
+          resolution_steps_en?: Json | null
+          resolution_steps_id?: Json | null
+        }
+        Relationships: []
+      }
+      indonesian_validation_rules: {
+        Row: {
+          compliance_region: string | null
+          created_at: string | null
+          error_message_en: string
+          error_message_id: string
+          field_name: string
+          field_name_id: string
+          id: string
+          is_active: boolean | null
+          severity: string | null
+          validation_logic: Json
+          validation_type: string
+          vendor_type: string
+        }
+        Insert: {
+          compliance_region?: string | null
+          created_at?: string | null
+          error_message_en: string
+          error_message_id: string
+          field_name: string
+          field_name_id: string
+          id?: string
+          is_active?: boolean | null
+          severity?: string | null
+          validation_logic: Json
+          validation_type: string
+          vendor_type: string
+        }
+        Update: {
+          compliance_region?: string | null
+          created_at?: string | null
+          error_message_en?: string
+          error_message_id?: string
+          field_name?: string
+          field_name_id?: string
+          id?: string
+          is_active?: boolean | null
+          severity?: string | null
+          validation_logic?: Json
+          validation_type?: string
+          vendor_type?: string
         }
         Relationships: []
       }
@@ -2883,9 +3176,12 @@ export type Database = {
       }
       vendor_applications: {
         Row: {
+          akta_notaris: string | null
           application_status: string | null
           approval_notes: string | null
           bank_details: Json | null
+          bpjs_kesehatan: boolean | null
+          bpjs_ketenagakerjaan: boolean | null
           business_address: Json
           business_documents: Json | null
           business_name: string
@@ -2898,22 +3194,31 @@ export type Database = {
           fraud_score: number | null
           id: string
           license_info: Json | null
+          nomor_iujk: string | null
+          nomor_npwp: string | null
+          nomor_skt: string | null
           product_catalog: Json | null
           rejection_details: Json | null
           rejection_reason: string | null
           reviewed_at: string | null
           reviewed_by: string | null
           service_areas: Json | null
+          siup_number: string | null
           submitted_at: string | null
           tax_id: string | null
+          tdp_number: string | null
+          umkm_status: boolean | null
           updated_at: string | null
           user_id: string
           vendor_type: string
         }
         Insert: {
+          akta_notaris?: string | null
           application_status?: string | null
           approval_notes?: string | null
           bank_details?: Json | null
+          bpjs_kesehatan?: boolean | null
+          bpjs_ketenagakerjaan?: boolean | null
           business_address?: Json
           business_documents?: Json | null
           business_name: string
@@ -2926,22 +3231,31 @@ export type Database = {
           fraud_score?: number | null
           id?: string
           license_info?: Json | null
+          nomor_iujk?: string | null
+          nomor_npwp?: string | null
+          nomor_skt?: string | null
           product_catalog?: Json | null
           rejection_details?: Json | null
           rejection_reason?: string | null
           reviewed_at?: string | null
           reviewed_by?: string | null
           service_areas?: Json | null
+          siup_number?: string | null
           submitted_at?: string | null
           tax_id?: string | null
+          tdp_number?: string | null
+          umkm_status?: boolean | null
           updated_at?: string | null
           user_id: string
           vendor_type: string
         }
         Update: {
+          akta_notaris?: string | null
           application_status?: string | null
           approval_notes?: string | null
           bank_details?: Json | null
+          bpjs_kesehatan?: boolean | null
+          bpjs_ketenagakerjaan?: boolean | null
           business_address?: Json
           business_documents?: Json | null
           business_name?: string
@@ -2954,14 +3268,20 @@ export type Database = {
           fraud_score?: number | null
           id?: string
           license_info?: Json | null
+          nomor_iujk?: string | null
+          nomor_npwp?: string | null
+          nomor_skt?: string | null
           product_catalog?: Json | null
           rejection_details?: Json | null
           rejection_reason?: string | null
           reviewed_at?: string | null
           reviewed_by?: string | null
           service_areas?: Json | null
+          siup_number?: string | null
           submitted_at?: string | null
           tax_id?: string | null
+          tdp_number?: string | null
+          umkm_status?: boolean | null
           updated_at?: string | null
           user_id?: string
           vendor_type?: string
