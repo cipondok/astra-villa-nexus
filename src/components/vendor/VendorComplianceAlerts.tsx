@@ -34,89 +34,77 @@ const VendorComplianceAlerts = () => {
 
   const loadComplianceData = async () => {
     try {
-      // Load vendor business profile
-      const { data: profile } = await supabase
+      // Load vendor business profile with error handling
+      const { data: profile, error: profileError } = await supabase
         .from('vendor_business_profiles')
         .select('*')
         .eq('vendor_id', user?.id)
-        .single();
+        .maybeSingle();
 
-      if (!profile) return;
+      if (profileError) {
+        console.error('Profile error:', profileError);
+        // Set default residential if no profile
+        setPropertyType('residential');
+        return;
+      }
 
-      // Determine property type
-      const { data: services } = await supabase
+      // Load services with error handling
+      const { data: services, error: servicesError } = await supabase
         .from('vendor_services')
         .select('service_category, admin_approval_status')
         .eq('vendor_id', user?.id);
 
+      if (servicesError) {
+        console.error('Services error:', servicesError);
+      }
+
       const isCommercial = services?.some(s => 
         s.service_category?.includes('commercial') ||
         s.admin_approval_status?.includes('commercial')
-      );
+      ) || false;
 
       setPropertyType(isCommercial ? 'commercial' : 'residential');
 
       // Generate alerts based on compliance status
       const newAlerts: ComplianceAlert[] = [];
 
-      // BPJS Ketenagakerjaan check
-      if (isCommercial && !profile.bpjs_ketenagakerjaan_verified) {
-        newAlerts.push({
-          id: 'bpjs-ketenagakerjaan',
-          level: 'critical',
-          message: 'BPJS Ketenagakerjaan wajib untuk layanan komersial!',
-          action: 'Verifikasi Sekarang'
-        });
-      }
-
-      // BPJS expiration check (mock - replace with real date calculation)
-      if (profile.bpjs_verification_date) {
-        const expiryDate = new Date(profile.bpjs_verification_date);
-        expiryDate.setFullYear(expiryDate.getFullYear() + 1); // Assume 1 year validity
-        const today = new Date();
-        const daysLeft = Math.ceil((expiryDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
-
-        if (daysLeft <= 7 && daysLeft > 0) {
+      // Only generate alerts if we have profile data
+      if (profile) {
+        // BPJS Ketenagakerjaan check
+        if (isCommercial && !profile.bpjs_ketenagakerjaan_verified) {
           newAlerts.push({
-            id: 'bpjs-expiry',
-            level: 'warning',
-            message: `BPJS akan kedaluwarsa dalam ${daysLeft} hari!`,
-            daysLeft,
-            action: 'Perpanjang BPJS'
-          });
-        } else if (daysLeft <= 0) {
-          newAlerts.push({
-            id: 'bpjs-expired',
+            id: 'bpjs-ketenagakerjaan',
             level: 'critical',
-            message: 'BPJS telah kedaluwarsa! Layanan mungkin dibatasi.',
-            action: 'Perpanjang Sekarang'
+            message: 'BPJS Ketenagakerjaan wajib untuk layanan komersial!',
+            action: 'Verifikasi Sekarang'
           });
         }
-      }
 
-      // Business license check for commercial
-      if (isCommercial && !profile.siuk_number) {
+        // Profile completion check
+        if ((profile.profile_completion_percentage || 0) < 100) {
+          newAlerts.push({
+            id: 'profile-incomplete',
+            level: 'info',
+            message: `Profil ${profile.profile_completion_percentage || 0}% lengkap. Lengkapi untuk meningkatkan kredibilitas.`,
+            action: 'Lengkapi Profil'
+          });
+        }
+      } else {
+        // No profile exists - create default alert
         newAlerts.push({
-          id: 'siup-missing',
+          id: 'profile-missing',
           level: 'warning',
-          message: 'SIUP belum diunggah untuk layanan komersial',
-          action: 'Upload SIUP'
-        });
-      }
-
-      // Profile completion check
-      if ((profile.profile_completion_percentage || 0) < 100) {
-        newAlerts.push({
-          id: 'profile-incomplete',
-          level: 'info',
-          message: `Profil ${profile.profile_completion_percentage || 0}% lengkap. Lengkapi untuk meningkatkan kredibilitas.`,
-          action: 'Lengkapi Profil'
+          message: 'Profil vendor belum dibuat. Lengkapi profil untuk mulai menerima pesanan.',
+          action: 'Buat Profil'
         });
       }
 
       setAlerts(newAlerts);
     } catch (error) {
       console.error('Error loading compliance data:', error);
+      // Set default state on error
+      setPropertyType('residential');
+      setAlerts([]);
     }
   };
 

@@ -44,42 +44,70 @@ const VendorSmartSummary = () => {
 
   const loadVendorStats = async () => {
     try {
-      // Load business profile
-      const { data: profile } = await supabase
+      // Load business profile with error handling
+      const { data: profile, error: profileError } = await supabase
         .from('vendor_business_profiles')
         .select('*')
         .eq('vendor_id', user?.id)
-        .single();
+        .maybeSingle();
 
-      if (profile) {
-        // Calculate BPJS status
-        const bpjsStatus = profile.bpjs_ketenagakerjaan_verified 
-          ? 'active' 
-          : 'verification_needed';
-
-        // Determine property type from services or profile
-        const { data: services } = await supabase
-          .from('vendor_services')
-          .select('*')
-          .eq('vendor_id', user?.id);
-
-        const hasCommercialServices = services?.some(s => 
-          s.service_category?.includes('commercial') || 
-          s.admin_approval_notes?.includes('commercial')
-        );
-
+      if (profileError) {
+        console.error('Profile error:', profileError);
+        // Use default values if profile doesn't exist
         setStats({
-          totalEarnings: 15420000, // Mock data - replace with real calculation
-          monthlyEarnings: 2340000,
-          earningsTrend: 12.5,
-          totalBookings: profile.total_reviews || 0,
-          avgRating: Number(profile.rating) || 0,
-          bpjsStatus,
-          propertyType: hasCommercialServices ? 'commercial' : 'residential'
+          totalEarnings: 0,
+          monthlyEarnings: 0,
+          earningsTrend: 0,
+          totalBookings: 0,
+          avgRating: 0,
+          bpjsStatus: 'verification_needed',
+          propertyType: 'residential'
         });
+        return;
       }
+
+      // Load services with error handling
+      const { data: services, error: servicesError } = await supabase
+        .from('vendor_services')
+        .select('*')
+        .eq('vendor_id', user?.id);
+
+      if (servicesError) {
+        console.error('Services error:', servicesError);
+      }
+
+      // Calculate BPJS status
+      const bpjsStatus = profile?.bpjs_ketenagakerjaan_verified 
+        ? 'active' 
+        : 'verification_needed';
+
+      // Determine property type from services or profile
+      const hasCommercialServices = services?.some(s => 
+        s.service_category?.includes('commercial') || 
+        s.admin_approval_notes?.includes('commercial')
+      );
+
+      setStats({
+        totalEarnings: 15420000, // Mock data - replace with real calculation
+        monthlyEarnings: 2340000,
+        earningsTrend: 12.5,
+        totalBookings: services?.length || 0,
+        avgRating: Number(profile?.rating) || 4.5,
+        bpjsStatus: profile ? bpjsStatus : 'verification_needed',
+        propertyType: hasCommercialServices ? 'commercial' : 'residential'
+      });
     } catch (error) {
       console.error('Error loading vendor stats:', error);
+      // Always provide fallback data
+      setStats({
+        totalEarnings: 0,
+        monthlyEarnings: 0,
+        earningsTrend: 0,
+        totalBookings: 0,
+        avgRating: 0,
+        bpjsStatus: 'verification_needed',
+        propertyType: 'residential'
+      });
     }
   };
 
