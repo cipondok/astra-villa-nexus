@@ -26,13 +26,15 @@ interface FormField {
 interface DynamicFormGeneratorProps {
   categoryId: string;
   categoryCode: string;
+  propertyType?: 'residential' | 'commercial'; // Add property type
   onFormChange: (data: { [key: string]: any }) => void;
   initialData?: { [key: string]: any };
 }
 
 const DynamicFormGenerator = ({ 
   categoryId, 
-  categoryCode, 
+  categoryCode,
+  propertyType = 'residential', 
   onFormChange, 
   initialData = {} 
 }: DynamicFormGeneratorProps) => {
@@ -40,8 +42,8 @@ const DynamicFormGenerator = ({
   const [validationErrors, setValidationErrors] = useState<{ [key: string]: string }>({});
   const [uploadedFiles, setUploadedFiles] = useState<{ [key: string]: File }>({});
 
-  // Category-specific form fields
-  const getFormFields = (categoryCode: string): FormField[] => {
+  // Category-specific form fields with property type considerations
+  const getFormFields = (categoryCode: string, propertyType: string): FormField[] => {
     const fieldDefinitions: { [key: string]: FormField[] } = {
       // AC Repair Services
       'ac_repair': [
@@ -76,32 +78,46 @@ const DynamicFormGenerator = ({
         }
       ],
 
-      // Cleaning Services
+      // Cleaning Services - dynamically adjust based on property type
       'cleaning_residential': [
         {
           name: 'sertifikat_kebersihan',
           type: 'file',
-          label: 'Sertifikat Pelatihan Kebersihan',
+          label: propertyType === 'commercial' ? 'Sertifikat Kebersihan Komersial' : 'Sertifikat Pelatihan Kebersihan',
+          accept: '.pdf,.jpg,.png',
+          maxSize: 5,
+          required: propertyType === 'commercial'
+        },
+        ...(propertyType === 'commercial' ? [{
+          name: 'surat_izin_usaha',
+          type: 'file',
+          label: 'Surat Izin Usaha *',
+          labelId: 'Business License',
+          required: true,
           accept: '.pdf,.jpg,.png',
           maxSize: 5
-        },
+        }] as FormField[] : []),
         {
           name: 'cleaning_types',
           type: 'checkbox',
           label: 'Jenis Layanan Kebersihan',
-          options: ['General Cleaning', 'Deep Cleaning', 'Post Construction', 'Move In/Out']
+          options: propertyType === 'commercial' 
+            ? ['Office Cleaning', 'Industrial Cleaning', 'Retail Space', 'Post Construction', 'Sanitization']
+            : ['General Cleaning', 'Deep Cleaning', 'Post Construction', 'Move In/Out']
         },
         {
           name: 'equipment_owned',
           type: 'checkbox',
           label: 'Peralatan yang Dimiliki',
-          options: ['Vacuum Cleaner', 'Mop & Bucket', 'Cleaning Chemicals', 'Floor Polisher', 'Window Squeegee']
+          options: propertyType === 'commercial'
+            ? ['Industrial Vacuum', 'Floor Scrubber', 'Pressure Washer', 'Safety Equipment', 'Commercial Chemicals']
+            : ['Vacuum Cleaner', 'Mop & Bucket', 'Cleaning Chemicals', 'Floor Polisher', 'Window Squeegee']
         },
         {
           name: 'team_size',
           type: 'number',
           label: 'Jumlah Tim',
-          placeholder: 'Jumlah anggota tim'
+          placeholder: propertyType === 'commercial' ? 'Minimal 3 orang untuk komersial' : 'Jumlah anggota tim'
         }
       ],
 
@@ -194,7 +210,7 @@ const DynamicFormGenerator = ({
     return fieldDefinitions[categoryCode] || [];
   };
 
-  const formFields = getFormFields(categoryCode);
+  const formFields = getFormFields(categoryCode, propertyType);
 
   useEffect(() => {
     onFormChange(formData);
@@ -440,9 +456,24 @@ const DynamicFormGenerator = ({
         <CardTitle className="flex items-center gap-2">
           📋 Category Requirements
           <Badge variant="outline">{formFields.length} fields</Badge>
+          <Badge variant={propertyType === 'commercial' ? 'destructive' : 'secondary'}>
+            {propertyType === 'commercial' ? '🏢 Komersial' : '🏠 Perumahan'}
+          </Badge>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
+        {propertyType === 'commercial' && (
+          <div className="p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg border border-orange-200">
+            <h4 className="font-semibold text-orange-800 dark:text-orange-200 mb-2">
+              ⚠️ Persyaratan Komersial Tambahan
+            </h4>
+            <ul className="text-sm text-orange-700 dark:text-orange-300 space-y-1">
+              <li>• Surat Izin Usaha wajib dilampirkan</li>
+              <li>• Tarif akan disesuaikan 50% lebih tinggi</li>
+              <li>• Asuransi komersial mungkin diperlukan</li>
+            </ul>
+          </div>
+        )}
         {formFields.map(renderField)}
       </CardContent>
     </Card>

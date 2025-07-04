@@ -43,6 +43,7 @@ const ProgressiveVendorServiceForm = ({ onClose, onSuccess }: ProgressiveService
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
     vendor_type: '', // product, service, both
+    property_type: 'residential', // New field for commercial/residential
     level1_category: '',
     level2_category: '',
     level3_category: '',
@@ -173,7 +174,7 @@ const ProgressiveVendorServiceForm = ({ onClose, onSuccess }: ProgressiveService
 
   const validateStep = (step: number): boolean => {
     switch (step) {
-      case 1: return !!formData.vendor_type;
+      case 1: return !!formData.vendor_type && !!formData.property_type;
       case 2: return !!formData.level1_category;
       case 3: return !!formData.level2_category;
       case 4: return !!formData.level3_category || level3Categories?.length === 0;
@@ -209,7 +210,10 @@ const ProgressiveVendorServiceForm = ({ onClose, onSuccess }: ProgressiveService
 
       if (error) throw error;
 
-      // Update vendor business profile with compliance data
+      // Update vendor business profile with compliance data and property type pricing
+      const baseRate = 100000;
+      const commercialMultiplier = formData.property_type === 'commercial' ? 1.5 : 1.0;
+      
       const complianceData = {
         vendor_id: user.id,
         business_name: formData.service_name, // Use service name as business name for now
@@ -218,8 +222,13 @@ const ProgressiveVendorServiceForm = ({ onClose, onSuccess }: ProgressiveService
         siuk_number: formData.compliance_data.siuk_number,
         bpjs_ketenagakerjaan_status: formData.compliance_data.bpjs_ketenagakerjaan_status,
         bpjs_kesehatan_status: formData.compliance_data.bpjs_kesehatan_status,
-        tarif_harian_min: formData.compliance_data.tarif_harian_min ? parseFloat(formData.compliance_data.tarif_harian_min) : null,
-        tarif_harian_max: formData.compliance_data.tarif_harian_max ? parseFloat(formData.compliance_data.tarif_harian_max) : null
+        // Apply property type pricing adjustments
+        tarif_harian_min: formData.compliance_data.tarif_harian_min ? 
+          parseFloat(formData.compliance_data.tarif_harian_min) * commercialMultiplier : 
+          baseRate * commercialMultiplier,
+        tarif_harian_max: formData.compliance_data.tarif_harian_max ? 
+          parseFloat(formData.compliance_data.tarif_harian_max) * commercialMultiplier : 
+          (baseRate * 2) * commercialMultiplier
       };
 
       const { error: profileError } = await supabase
@@ -249,10 +258,64 @@ const ProgressiveVendorServiceForm = ({ onClose, onSuccess }: ProgressiveService
     switch (currentStep) {
       case 1:
         return (
-          <SmartTypeSelector
-            onSelect={(type) => setFormData({ ...formData, vendor_type: type })}
-            selectedType={formData.vendor_type as 'product' | 'service' | null}
-          />
+          <div className="space-y-6">
+            <SmartTypeSelector
+              onSelect={(type) => setFormData({ ...formData, vendor_type: type })}
+              selectedType={formData.vendor_type as 'product' | 'service' | null}
+            />
+            
+            {/* Property Type Selection */}
+            {formData.vendor_type && (
+              <div className="space-y-4">
+                <div className="text-center">
+                  <h3 className="text-lg font-semibold mb-2">Tipe Properti Target</h3>
+                  <p className="text-muted-foreground">Target Property Type</p>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Card
+                    className={`cursor-pointer transition-all hover:shadow-md ${
+                      formData.property_type === 'residential' 
+                        ? 'ring-2 ring-primary bg-primary/5' 
+                        : 'hover:bg-muted/30'
+                    }`}
+                    onClick={() => setFormData({ ...formData, property_type: 'residential' })}
+                  >
+                    <CardContent className="p-6 text-center">
+                      <div className="text-4xl mb-3">🏠</div>
+                      <h4 className="font-semibold text-lg">Perumahan</h4>
+                      <p className="text-sm text-muted-foreground mb-3">Residential</p>
+                      <div className="text-sm space-y-1">
+                        <p className="text-green-600">✓ Dokumen standar</p>
+                        <p className="text-green-600">✓ Tarif normal</p>
+                        <p className="text-green-600">✓ Proses cepat</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card
+                    className={`cursor-pointer transition-all hover:shadow-md ${
+                      formData.property_type === 'commercial' 
+                        ? 'ring-2 ring-primary bg-primary/5' 
+                        : 'hover:bg-muted/30'
+                    }`}
+                    onClick={() => setFormData({ ...formData, property_type: 'commercial' })}
+                  >
+                    <CardContent className="p-6 text-center">
+                      <div className="text-4xl mb-3">🏢</div>
+                      <h4 className="font-semibold text-lg">Komersial</h4>
+                      <p className="text-sm text-muted-foreground mb-3">Commercial</p>
+                      <div className="text-sm space-y-1">
+                        <p className="text-orange-600">⚠ Surat izin usaha</p>
+                        <p className="text-orange-600">⚠ Tarif +50%</p>
+                        <p className="text-orange-600">⚠ Review tambahan</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+            )}
+          </div>
         );
 
       case 2:

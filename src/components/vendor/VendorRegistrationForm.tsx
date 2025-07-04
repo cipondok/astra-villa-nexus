@@ -21,11 +21,13 @@ const VendorRegistrationForm = ({ onSuccess }: VendorRegistrationFormProps) => {
   const [formData, setFormData] = useState({
     business_name: '',
     business_type: '',
+    property_type: 'residential', // New field for commercial/residential toggle
     full_name: '',
     email: user?.email || '',
     phone: '',
     company_name: '',
     license_number: '',
+    surat_izin_usaha: '', // Required for commercial
     verification_documents: null
   });
   const [submitting, setSubmitting] = useState(false);
@@ -76,7 +78,7 @@ const VendorRegistrationForm = ({ onSuccess }: VendorRegistrationFormProps) => {
 
       console.log('Profile updated successfully');
 
-      // Step 2: Create vendor registration request
+      // Step 2: Create vendor registration request with property type
       const { error: requestError } = await supabase
         .from('vendor_requests')
         .insert([{
@@ -84,6 +86,9 @@ const VendorRegistrationForm = ({ onSuccess }: VendorRegistrationFormProps) => {
           business_name: formData.business_name,
           business_type: formData.business_type,
           verification_documents: formData.verification_documents,
+          // Add property type and conditional requirements
+          compliance_region: 'ID', // Indonesia
+          nomor_skt: formData.property_type === 'commercial' ? formData.surat_izin_usaha : null,
           status: 'pending'
         }]);
 
@@ -94,7 +99,10 @@ const VendorRegistrationForm = ({ onSuccess }: VendorRegistrationFormProps) => {
 
       console.log('Vendor request created successfully');
 
-      // Step 3: Create vendor business profile
+      // Step 3: Create vendor business profile with property type adjustments
+      const baseRate = 100000; // Base residential rate
+      const commercialMultiplier = formData.property_type === 'commercial' ? 1.5 : 1.0;
+      
       const { error: businessProfileError } = await supabase
         .from('vendor_business_profiles')
         .insert([{
@@ -103,6 +111,9 @@ const VendorRegistrationForm = ({ onSuccess }: VendorRegistrationFormProps) => {
           business_type: formData.business_type,
           business_phone: formData.phone,
           business_email: formData.email,
+          // Apply property type pricing
+          tarif_harian_min: baseRate * commercialMultiplier,
+          tarif_harian_max: (baseRate * 2) * commercialMultiplier,
           is_active: false, // Will be activated when approved
           is_verified: false
         }]);
@@ -140,6 +151,30 @@ const VendorRegistrationForm = ({ onSuccess }: VendorRegistrationFormProps) => {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Property Type Toggle */}
+              <div className="space-y-2 md:col-span-2">
+                <Label htmlFor="property_type">Tipe Properti / Property Type *</Label>
+                <Select
+                  value={formData.property_type}
+                  onValueChange={(value) => setFormData({ ...formData, property_type: value })}
+                  required
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Pilih tipe properti" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="residential">🏠 Perumahan (Residential)</SelectItem>
+                    <SelectItem value="commercial">🏢 Komersial (Commercial)</SelectItem>
+                  </SelectContent>
+                </Select>
+                <p className="text-sm text-muted-foreground">
+                  {formData.property_type === 'commercial' 
+                    ? 'Komersial memerlukan dokumen tambahan dan tarif yang berbeda'
+                    : 'Layanan untuk rumah dan properti pribadi'
+                  }
+                </p>
+              </div>
+
               <div className="space-y-2">
                 <Label htmlFor="full_name">Full Name *</Label>
                 <Input
@@ -212,9 +247,81 @@ const VendorRegistrationForm = ({ onSuccess }: VendorRegistrationFormProps) => {
                   placeholder="Enter license number (if applicable)"
                 />
               </div>
+
+              {/* Commercial-only requirement */}
+              {formData.property_type === 'commercial' && (
+                <div className="space-y-2">
+                  <Label htmlFor="surat_izin_usaha">Surat Izin Usaha *</Label>
+                  <Input
+                    id="surat_izin_usaha"
+                    value={formData.surat_izin_usaha}
+                    onChange={(e) => setFormData({ ...formData, surat_izin_usaha: e.target.value })}
+                    placeholder="Nomor surat izin usaha"
+                    required
+                  />
+                  <p className="text-sm text-orange-600">
+                    📋 Wajib untuk layanan komersial
+                  </p>
+                </div>
+              )}
             </div>
 
             <div className="space-y-4">
+              {/* Property Type Requirements Info */}
+              <div className={`p-4 rounded-lg ${
+                formData.property_type === 'commercial' 
+                  ? 'bg-orange-50 dark:bg-orange-900/20' 
+                  : 'bg-green-50 dark:bg-green-900/20'
+              }`}>
+                <h3 className={`font-semibold mb-2 ${
+                  formData.property_type === 'commercial'
+                    ? 'text-orange-800 dark:text-orange-200'
+                    : 'text-green-800 dark:text-green-200'
+                }`}>
+                  {formData.property_type === 'commercial' 
+                    ? '🏢 Persyaratan Komersial' 
+                    : '🏠 Persyaratan Perumahan'
+                  }
+                </h3>
+                <ul className={`space-y-1 text-sm ${
+                  formData.property_type === 'commercial'
+                    ? 'text-orange-700 dark:text-orange-300'
+                    : 'text-green-700 dark:text-green-300'
+                }`}>
+                  {formData.property_type === 'commercial' ? (
+                    <>
+                      <li className="flex items-center gap-2">
+                        <CheckCircle className="h-4 w-4" />
+                        Surat Izin Usaha diperlukan
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <CheckCircle className="h-4 w-4" />
+                        Tarif 50% lebih tinggi dari residensial
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <CheckCircle className="h-4 w-4" />
+                        Asuransi komersial mungkin diperlukan
+                      </li>
+                    </>
+                  ) : (
+                    <>
+                      <li className="flex items-center gap-2">
+                        <CheckCircle className="h-4 w-4" />
+                        Dokumen standar sudah cukup
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <CheckCircle className="h-4 w-4" />
+                        Tarif residensial standar
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <CheckCircle className="h-4 w-4" />
+                        Proses persetujuan lebih cepat
+                      </li>
+                    </>
+                  )}
+                </ul>
+              </div>
+
               <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
                 <h3 className="font-semibold text-blue-800 dark:text-blue-200 mb-2">
                   What happens next?
