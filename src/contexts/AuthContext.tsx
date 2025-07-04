@@ -310,12 +310,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       console.log('Attempting sign in for:', email);
       setLoading(true);
       
+      // Check if user is already signed in elsewhere
+      const { data: existingSession } = await supabase.auth.getSession();
+      if (existingSession.session && existingSession.session.user?.email !== email) {
+        setLoading(false);
+        return { 
+          error: { message: 'Another user is already signed in. Please refresh the page and try again.' }, 
+          success: false 
+        };
+      }
+      
       // Add timeout to sign in
       const controller = new AbortController();
       const timeoutId = setTimeout(() => {
         controller.abort();
         setLoading(false);
-      }, 10000); // 10 second timeout
+      }, 8000); // 8 second timeout
 
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
@@ -327,6 +337,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (error) {
         console.error('Sign in error:', error);
         setLoading(false);
+        
+        // Provide specific error messages
+        if (error.message.includes('Invalid login credentials')) {
+          return { error: { message: 'Invalid email or password. Please check your credentials and try again.' }, success: false };
+        }
+        
         return { error, success: false };
       }
 
@@ -343,6 +359,42 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
       
       return { error: { message: 'Network error. Please check your connection and try again.' }, success: false };
+    }
+  };
+
+  const signOut = async () => {
+    try {
+      console.log('Instant logout initiated...');
+      
+      // Clear state immediately for instant UI update
+      setUser(null);
+      setProfile(null);
+      setSession(null);
+      setLoading(false);
+      
+      // Clear storage immediately
+      localStorage.clear();
+      sessionStorage.clear();
+      
+      // Force immediate navigation
+      window.location.href = '/';
+      
+      // Supabase sign out in background - don't await this
+      setTimeout(() => {
+        supabase.auth.signOut().catch(error => {
+          console.error('Background sign out error:', error);
+        });
+      }, 100);
+      
+    } catch (error: any) {
+      console.error('Sign out error:', error);
+      // Force cleanup on error
+      setUser(null);
+      setProfile(null);
+      setSession(null);
+      localStorage.clear();
+      sessionStorage.clear();
+      window.location.href = '/';
     }
   };
 
