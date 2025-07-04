@@ -3115,6 +3115,45 @@ export type Database = {
         }
         Relationships: []
       }
+      vendor_access_permissions: {
+        Row: {
+          conditions: Json | null
+          created_at: string | null
+          expires_at: string | null
+          granted_at: string | null
+          granted_by: string | null
+          id: string
+          is_granted: boolean | null
+          permission_type: string
+          updated_at: string | null
+          vendor_id: string | null
+        }
+        Insert: {
+          conditions?: Json | null
+          created_at?: string | null
+          expires_at?: string | null
+          granted_at?: string | null
+          granted_by?: string | null
+          id?: string
+          is_granted?: boolean | null
+          permission_type: string
+          updated_at?: string | null
+          vendor_id?: string | null
+        }
+        Update: {
+          conditions?: Json | null
+          created_at?: string | null
+          expires_at?: string | null
+          granted_at?: string | null
+          granted_by?: string | null
+          id?: string
+          is_granted?: boolean | null
+          permission_type?: string
+          updated_at?: string | null
+          vendor_id?: string | null
+        }
+        Relationships: []
+      }
       vendor_ai_alerts: {
         Row: {
           action_required: boolean | null
@@ -4191,6 +4230,72 @@ export type Database = {
           },
         ]
       }
+      vendor_kyc_status: {
+        Row: {
+          access_level: string | null
+          compliance_score: number | null
+          created_at: string | null
+          documents_required: Json | null
+          documents_submitted: Json | null
+          documents_verified: Json | null
+          id: string
+          kyc_status:
+            | Database["public"]["Enums"]["vendor_verification_status"]
+            | null
+          next_review_date: string | null
+          payment_verified: boolean | null
+          risk_assessment: Json | null
+          updated_at: string | null
+          vendor_id: string | null
+          verification_level: string | null
+          verification_notes: string | null
+          verified_at: string | null
+          verified_by: string | null
+        }
+        Insert: {
+          access_level?: string | null
+          compliance_score?: number | null
+          created_at?: string | null
+          documents_required?: Json | null
+          documents_submitted?: Json | null
+          documents_verified?: Json | null
+          id?: string
+          kyc_status?:
+            | Database["public"]["Enums"]["vendor_verification_status"]
+            | null
+          next_review_date?: string | null
+          payment_verified?: boolean | null
+          risk_assessment?: Json | null
+          updated_at?: string | null
+          vendor_id?: string | null
+          verification_level?: string | null
+          verification_notes?: string | null
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Update: {
+          access_level?: string | null
+          compliance_score?: number | null
+          created_at?: string | null
+          documents_required?: Json | null
+          documents_submitted?: Json | null
+          documents_verified?: Json | null
+          id?: string
+          kyc_status?:
+            | Database["public"]["Enums"]["vendor_verification_status"]
+            | null
+          next_review_date?: string | null
+          payment_verified?: boolean | null
+          risk_assessment?: Json | null
+          updated_at?: string | null
+          vendor_id?: string | null
+          verification_level?: string | null
+          verification_notes?: string | null
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Relationships: []
+      }
       vendor_kyc_verification: {
         Row: {
           created_at: string | null
@@ -5263,6 +5368,57 @@ export type Database = {
           },
         ]
       }
+      vendor_verification_documents: {
+        Row: {
+          created_at: string | null
+          document_number: string | null
+          document_type: Database["public"]["Enums"]["indonesian_document_type"]
+          document_url: string | null
+          expiry_date: string | null
+          id: string
+          metadata: Json | null
+          rejection_reason: string | null
+          updated_at: string | null
+          uploaded_at: string | null
+          vendor_id: string | null
+          verification_status: string | null
+          verified_at: string | null
+          verified_by: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          document_number?: string | null
+          document_type: Database["public"]["Enums"]["indonesian_document_type"]
+          document_url?: string | null
+          expiry_date?: string | null
+          id?: string
+          metadata?: Json | null
+          rejection_reason?: string | null
+          updated_at?: string | null
+          uploaded_at?: string | null
+          vendor_id?: string | null
+          verification_status?: string | null
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          document_number?: string | null
+          document_type?: Database["public"]["Enums"]["indonesian_document_type"]
+          document_url?: string | null
+          expiry_date?: string | null
+          id?: string
+          metadata?: Json | null
+          rejection_reason?: string | null
+          updated_at?: string | null
+          uploaded_at?: string | null
+          vendor_id?: string | null
+          verification_status?: string | null
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Relationships: []
+      }
       web_analytics: {
         Row: {
           browser: string | null
@@ -5406,6 +5562,19 @@ export type Database = {
         | "security_monitoring"
         | "order_tracking"
         | "ai_bot_management"
+      indonesian_document_type:
+        | "ktp"
+        | "npwp"
+        | "siup"
+        | "skdp"
+        | "skt"
+        | "iujk"
+        | "bpjs_ketenagakerjaan"
+        | "bpjs_kesehatan"
+        | "akta_notaris"
+        | "tdp"
+        | "domisili_usaha"
+        | "izin_gangguan"
       pricing_model:
         | "hourly"
         | "sqm"
@@ -5420,6 +5589,14 @@ export type Database = {
         | "vendor"
         | "admin"
         | "customer_service"
+      vendor_verification_status:
+        | "unverified"
+        | "pending_review"
+        | "documents_submitted"
+        | "under_verification"
+        | "verified"
+        | "rejected"
+        | "suspended"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -5546,6 +5723,20 @@ export const Constants = {
         "order_tracking",
         "ai_bot_management",
       ],
+      indonesian_document_type: [
+        "ktp",
+        "npwp",
+        "siup",
+        "skdp",
+        "skt",
+        "iujk",
+        "bpjs_ketenagakerjaan",
+        "bpjs_kesehatan",
+        "akta_notaris",
+        "tdp",
+        "domisili_usaha",
+        "izin_gangguan",
+      ],
       pricing_model: ["hourly", "sqm", "project", "per_item", "daily", "fixed"],
       user_role: [
         "general_user",
@@ -5554,6 +5745,15 @@ export const Constants = {
         "vendor",
         "admin",
         "customer_service",
+      ],
+      vendor_verification_status: [
+        "unverified",
+        "pending_review",
+        "documents_submitted",
+        "under_verification",
+        "verified",
+        "rejected",
+        "suspended",
       ],
     },
   },

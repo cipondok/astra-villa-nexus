@@ -10,7 +10,7 @@ import FeedbackManagement from "./FeedbackManagement";
 import CustomerServiceCenter from "./CustomerServiceCenter";
 import ContactManagement from "./ContactManagement";
 import VendorManagementHub from "./VendorManagementHub";
-import AdminVendorServiceManagement from "./AdminVendorServiceManagement";
+import ComprehensiveVendorServiceManagement from "./ComprehensiveVendorServiceManagement";
 import VendorServiceCategoryManagement from "./VendorServiceCategoryManagement";
 import VendorInventoryManagement from "./VendorInventoryManagement";
 import VendorApplicationManagement from "./VendorApplicationManagement";
@@ -58,7 +58,7 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
       case "vendor-management-hub":
         return <VendorManagementHub />;
       case "vendor-service-management":
-        return <AdminVendorServiceManagement />;
+        return <ComprehensiveVendorServiceManagement />;
       case "vendor-category-management":
         return <VendorServiceCategoryManagement />;
       case "vendor-applications":
