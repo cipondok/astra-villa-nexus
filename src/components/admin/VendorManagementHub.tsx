@@ -11,6 +11,7 @@ import VendorServicesCategoryShowcase from "./VendorServicesCategoryShowcase";
 import VendorProgressReports from "./VendorProgressReports";
 import VendorDiagnostics from "./VendorDiagnostics";
 import DiagnosticAnalyticsOverview from "./DiagnosticAnalyticsOverview";
+import HierarchicalCategoryManagement from "./HierarchicalCategoryManagement";
 
 const VendorManagementHub = () => {
   const [activeTab, setActiveTab] = useState("overview");
@@ -208,7 +209,10 @@ const VendorManagementHub = () => {
         </TabsContent>
 
         <TabsContent value="services">
-          <IndonesianVendorManagement />
+          <div className="space-y-6">
+            <HierarchicalCategoryManagement />
+            <IndonesianVendorManagement />
+          </div>
         </TabsContent>
 
         <TabsContent value="inventory">

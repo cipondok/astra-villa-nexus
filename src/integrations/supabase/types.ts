@@ -3187,6 +3187,7 @@ export type Database = {
           business_name: string
           business_registration_number: string | null
           business_type: string
+          category_hierarchy_selections: Json | null
           category_selections: Json | null
           compliance_region: string | null
           contact_info: Json
@@ -3194,6 +3195,7 @@ export type Database = {
           fraud_score: number | null
           id: string
           license_info: Json | null
+          multi_service_bundle: Json | null
           nomor_iujk: string | null
           nomor_npwp: string | null
           nomor_skt: string | null
@@ -3203,6 +3205,7 @@ export type Database = {
           reviewed_at: string | null
           reviewed_by: string | null
           service_areas: Json | null
+          service_areas_detailed: Json | null
           siup_number: string | null
           submitted_at: string | null
           tax_id: string | null
@@ -3224,6 +3227,7 @@ export type Database = {
           business_name: string
           business_registration_number?: string | null
           business_type: string
+          category_hierarchy_selections?: Json | null
           category_selections?: Json | null
           compliance_region?: string | null
           contact_info?: Json
@@ -3231,6 +3235,7 @@ export type Database = {
           fraud_score?: number | null
           id?: string
           license_info?: Json | null
+          multi_service_bundle?: Json | null
           nomor_iujk?: string | null
           nomor_npwp?: string | null
           nomor_skt?: string | null
@@ -3240,6 +3245,7 @@ export type Database = {
           reviewed_at?: string | null
           reviewed_by?: string | null
           service_areas?: Json | null
+          service_areas_detailed?: Json | null
           siup_number?: string | null
           submitted_at?: string | null
           tax_id?: string | null
@@ -3261,6 +3267,7 @@ export type Database = {
           business_name?: string
           business_registration_number?: string | null
           business_type?: string
+          category_hierarchy_selections?: Json | null
           category_selections?: Json | null
           compliance_region?: string | null
           contact_info?: Json
@@ -3268,6 +3275,7 @@ export type Database = {
           fraud_score?: number | null
           id?: string
           license_info?: Json | null
+          multi_service_bundle?: Json | null
           nomor_iujk?: string | null
           nomor_npwp?: string | null
           nomor_skt?: string | null
@@ -3277,6 +3285,7 @@ export type Database = {
           reviewed_at?: string | null
           reviewed_by?: string | null
           service_areas?: Json | null
+          service_areas_detailed?: Json | null
           siup_number?: string | null
           submitted_at?: string | null
           tax_id?: string | null
@@ -3409,6 +3418,8 @@ export type Database = {
       vendor_business_profiles: {
         Row: {
           banner_url: string | null
+          bpjs_kesehatan_status: string | null
+          bpjs_ketenagakerjaan_status: string | null
           business_address: string | null
           business_description: string | null
           business_email: string | null
@@ -3421,6 +3432,7 @@ export type Database = {
           business_website: string | null
           can_change_nature: boolean | null
           certifications: Json | null
+          compliance_documents: Json | null
           created_at: string | null
           gallery_images: Json | null
           id: string
@@ -3433,7 +3445,11 @@ export type Database = {
           profile_completion_percentage: number | null
           rating: number | null
           service_areas: Json | null
+          siuk_number: string | null
+          skk_number: string | null
           social_media: Json | null
+          tarif_harian_max: number | null
+          tarif_harian_min: number | null
           tax_id: string | null
           total_reviews: number | null
           updated_at: string | null
@@ -3441,6 +3457,8 @@ export type Database = {
         }
         Insert: {
           banner_url?: string | null
+          bpjs_kesehatan_status?: string | null
+          bpjs_ketenagakerjaan_status?: string | null
           business_address?: string | null
           business_description?: string | null
           business_email?: string | null
@@ -3453,6 +3471,7 @@ export type Database = {
           business_website?: string | null
           can_change_nature?: boolean | null
           certifications?: Json | null
+          compliance_documents?: Json | null
           created_at?: string | null
           gallery_images?: Json | null
           id?: string
@@ -3465,7 +3484,11 @@ export type Database = {
           profile_completion_percentage?: number | null
           rating?: number | null
           service_areas?: Json | null
+          siuk_number?: string | null
+          skk_number?: string | null
           social_media?: Json | null
+          tarif_harian_max?: number | null
+          tarif_harian_min?: number | null
           tax_id?: string | null
           total_reviews?: number | null
           updated_at?: string | null
@@ -3473,6 +3496,8 @@ export type Database = {
         }
         Update: {
           banner_url?: string | null
+          bpjs_kesehatan_status?: string | null
+          bpjs_ketenagakerjaan_status?: string | null
           business_address?: string | null
           business_description?: string | null
           business_email?: string | null
@@ -3485,6 +3510,7 @@ export type Database = {
           business_website?: string | null
           can_change_nature?: boolean | null
           certifications?: Json | null
+          compliance_documents?: Json | null
           created_at?: string | null
           gallery_images?: Json | null
           id?: string
@@ -3497,7 +3523,11 @@ export type Database = {
           profile_completion_percentage?: number | null
           rating?: number | null
           service_areas?: Json | null
+          siuk_number?: string | null
+          skk_number?: string | null
           social_media?: Json | null
+          tarif_harian_max?: number | null
+          tarif_harian_min?: number | null
           tax_id?: string | null
           total_reviews?: number | null
           updated_at?: string | null
@@ -3516,6 +3546,65 @@ export type Database = {
             columns: ["vendor_id"]
             isOneToOne: true
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vendor_categories_hierarchy: {
+        Row: {
+          category_code: string
+          commission_rate: number | null
+          created_at: string | null
+          display_order: number | null
+          icon: string | null
+          id: string
+          is_active: boolean | null
+          level: number
+          name_en: string
+          name_id: string
+          parent_id: string | null
+          requirements: Json | null
+          updated_at: string | null
+          vendor_type: string
+        }
+        Insert: {
+          category_code: string
+          commission_rate?: number | null
+          created_at?: string | null
+          display_order?: number | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean | null
+          level: number
+          name_en: string
+          name_id: string
+          parent_id?: string | null
+          requirements?: Json | null
+          updated_at?: string | null
+          vendor_type: string
+        }
+        Update: {
+          category_code?: string
+          commission_rate?: number | null
+          created_at?: string | null
+          display_order?: number | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean | null
+          level?: number
+          name_en?: string
+          name_id?: string
+          parent_id?: string | null
+          requirements?: Json | null
+          updated_at?: string | null
+          vendor_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendor_categories_hierarchy_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "vendor_categories_hierarchy"
             referencedColumns: ["id"]
           },
         ]
@@ -4648,6 +4737,7 @@ export type Database = {
           availability: Json | null
           business_profile_id: string | null
           cancellation_policy: string | null
+          category_hierarchy_id: string | null
           category_id: string | null
           category_ref: string | null
           created_at: string | null
@@ -4657,14 +4747,17 @@ export type Database = {
           duration_unit: string | null
           duration_value: number | null
           featured: boolean | null
+          geofencing_areas: Json | null
           holiday_schedule_id: string | null
           id: string
           is_active: boolean | null
           location_type: string | null
           main_category_id: string | null
           price_range: Json | null
+          pricing_rules: Json | null
           rating: number | null
           requirements: string | null
+          service_capacity: Json | null
           service_category: string | null
           service_description: string | null
           service_images: Json | null
@@ -4688,6 +4781,7 @@ export type Database = {
           availability?: Json | null
           business_profile_id?: string | null
           cancellation_policy?: string | null
+          category_hierarchy_id?: string | null
           category_id?: string | null
           category_ref?: string | null
           created_at?: string | null
@@ -4697,14 +4791,17 @@ export type Database = {
           duration_unit?: string | null
           duration_value?: number | null
           featured?: boolean | null
+          geofencing_areas?: Json | null
           holiday_schedule_id?: string | null
           id?: string
           is_active?: boolean | null
           location_type?: string | null
           main_category_id?: string | null
           price_range?: Json | null
+          pricing_rules?: Json | null
           rating?: number | null
           requirements?: string | null
+          service_capacity?: Json | null
           service_category?: string | null
           service_description?: string | null
           service_images?: Json | null
@@ -4728,6 +4825,7 @@ export type Database = {
           availability?: Json | null
           business_profile_id?: string | null
           cancellation_policy?: string | null
+          category_hierarchy_id?: string | null
           category_id?: string | null
           category_ref?: string | null
           created_at?: string | null
@@ -4737,14 +4835,17 @@ export type Database = {
           duration_unit?: string | null
           duration_value?: number | null
           featured?: boolean | null
+          geofencing_areas?: Json | null
           holiday_schedule_id?: string | null
           id?: string
           is_active?: boolean | null
           location_type?: string | null
           main_category_id?: string | null
           price_range?: Json | null
+          pricing_rules?: Json | null
           rating?: number | null
           requirements?: string | null
+          service_capacity?: Json | null
           service_category?: string | null
           service_description?: string | null
           service_images?: Json | null
@@ -4779,6 +4880,13 @@ export type Database = {
             columns: ["business_profile_id"]
             isOneToOne: false
             referencedRelation: "vendor_business_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vendor_services_category_hierarchy_id_fkey"
+            columns: ["category_hierarchy_id"]
+            isOneToOne: false
+            referencedRelation: "vendor_categories_hierarchy"
             referencedColumns: ["id"]
           },
           {
