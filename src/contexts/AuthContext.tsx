@@ -69,11 +69,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return;
       }
       
-      // Check for vendor@astravilla.com as vendor
-      if (authUser.user?.email === 'vendor@astravilla.com') {
+      // Check for vendor emails
+      const vendorEmails = ['vendor@astravilla.com', 'vendor@test.com'];
+      if (vendorEmails.includes(authUser.user?.email || '')) {
         const vendorProfile: Profile = {
           id: userId,
-          email: authUser.user.email,
+          email: authUser.user.email!,
           full_name: authUser.user.user_metadata?.full_name || 'Vendor User',
           role: 'vendor',
           verification_status: 'approved',
