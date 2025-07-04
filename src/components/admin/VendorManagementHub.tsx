@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { ShoppingBag, Users, Package, FolderTree, BarChart3, Activity, TrendingUp } from "lucide-react";
 import VendorCategoryManagement from "./VendorCategoryManagement";
 import VendorInventoryManagement from "./VendorInventoryManagement";
-import AdminVendorServiceManagement from "./AdminVendorServiceManagement";
+import IndonesianVendorManagement from "./IndonesianVendorManagement";
 import VendorServicesCategoryShowcase from "./VendorServicesCategoryShowcase";
 import VendorProgressReports from "./VendorProgressReports";
 import VendorDiagnostics from "./VendorDiagnostics";
@@ -208,7 +208,7 @@ const VendorManagementHub = () => {
         </TabsContent>
 
         <TabsContent value="services">
-          <AdminVendorServiceManagement />
+          <IndonesianVendorManagement />
         </TabsContent>
 
         <TabsContent value="inventory">
