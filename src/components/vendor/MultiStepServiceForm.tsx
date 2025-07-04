@@ -15,8 +15,9 @@ import { toast } from 'sonner';
 
 interface ServiceFormData {
   // Step 1: Category
-  category: string;
+  mainCategory: string;
   subcategory: string;
+  implementationType: string;
   serviceName: string;
   serviceDescription: string;
   
@@ -66,8 +67,9 @@ const MultiStepServiceForm: React.FC<MultiStepServiceFormProps> = ({ onClose, on
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState<ServiceFormData>({
-    category: '',
+    mainCategory: '',
     subcategory: '',
+    implementationType: '',
     serviceName: '',
     serviceDescription: '',
     serviceAreas: [],
@@ -132,7 +134,7 @@ const MultiStepServiceForm: React.FC<MultiStepServiceFormProps> = ({ onClose, on
         vendor_id: user?.id,
         service_name: formData.serviceName,
         service_description: formData.serviceDescription,
-        service_category: formData.category,
+        service_category: formData.mainCategory,
         service_location_types: [formData.locationType],
         service_location_state: formData.serviceAreas.join(', '),
         duration_value: formData.duration,
@@ -181,7 +183,7 @@ const MultiStepServiceForm: React.FC<MultiStepServiceFormProps> = ({ onClose, on
   const isStepComplete = (stepNumber: number) => {
     switch (stepNumber) {
       case 1:
-        return formData.category && formData.serviceName;
+        return formData.mainCategory && formData.serviceName;
       case 2:
         return formData.serviceAreas.length > 0;
       case 3:

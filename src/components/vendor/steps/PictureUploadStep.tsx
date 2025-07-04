@@ -3,7 +3,7 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Upload, X, Camera, Image as ImageIcon } from 'lucide-react';
+import { Upload, X, Camera, Image as ImageIcon, Package, Wrench } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface PictureUploadStepProps {
@@ -13,6 +13,17 @@ interface PictureUploadStepProps {
 
 const PictureUploadStep: React.FC<PictureUploadStepProps> = ({ formData, updateFormData }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  
+  // Check if this is a product category
+  const isProductCategory = formData.implementationType === 'products' || formData.implementationType === 'mixed';
+  
+  // Default images based on category
+  const getDefaultImage = () => {
+    if (isProductCategory) {
+      return '/api/placeholder/400/300'; // Product placeholder
+    }
+    return '/api/placeholder/400/300'; // Service placeholder
+  };
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);

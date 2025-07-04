@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -6,20 +6,59 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Slider } from '@/components/ui/slider';
-import { MapPin, Plus, X } from 'lucide-react';
+import { MapPin, Plus, X, Loader2 } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 interface LocationStepProps {
   formData: any;
   updateFormData: (data: any) => void;
 }
 
-const indonesianAreas = [
-  'Jakarta', 'Surabaya', 'Bandung', 'Medan', 'Bekasi', 'Tangerang', 'Depok',
-  'Semarang', 'Palembang', 'Makassar', 'Batam', 'Bogor', 'Pekanbaru', 'Bandar Lampung'
-];
+interface Location {
+  id: string;
+  area_name: string;
+  city_name: string;
+  province_name: string;
+  city_type: string;
+}
 
 const LocationStep: React.FC<LocationStepProps> = ({ formData, updateFormData }) => {
   const [newArea, setNewArea] = useState('');
+  const [locations, setLocations] = useState<Location[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
+
+  // Load locations from database
+  useEffect(() => {
+    const fetchLocations = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('locations')
+          .select('id, area_name, city_name, province_name, city_type')
+          .eq('is_active', true)
+          .order('province_name, city_name, area_name')
+          .limit(100);
+
+        if (error) throw error;
+        setLocations(data || []);
+      } catch (error: any) {
+        console.error('Error fetching locations:', error);
+        toast.error('Failed to load locations');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchLocations();
+  }, []);
+
+  // Filter locations based on search term
+  const filteredLocations = locations.filter(location => 
+    location.area_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    location.city_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    location.province_name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const addServiceArea = (area: string) => {
     if (area && !formData.serviceAreas.includes(area)) {
@@ -64,24 +103,63 @@ const LocationStep: React.FC<LocationStepProps> = ({ formData, updateFormData })
       <div>
         <Label className="text-base font-medium mb-4 block">Service Areas</Label>
         
-        {/* Quick Add from Popular Areas */}
+        {/* Search and Select from Database */}
         <div className="mb-4">
-          <Label className="text-sm font-medium mb-2 block">Popular Areas in Indonesia</Label>
-          <div className="flex flex-wrap gap-2">
-            {indonesianAreas.map((area) => (
-              <Button
-                key={area}
-                variant="outline"
-                size="sm"
-                onClick={() => addServiceArea(area)}
-                disabled={formData.serviceAreas.includes(area)}
-                className="text-xs"
-              >
-                <Plus className="h-3 w-3 mr-1" />
-                {area}
-              </Button>
-            ))}
-          </div>
+          <Label className="text-sm font-medium mb-2 block">Search Locations</Label>
+          <Input
+            type="text"
+            placeholder="Search for cities, areas, or provinces..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="mb-3"
+          />
+          
+          {isLoading ? (
+            <div className="flex items-center justify-center p-4">
+              <Loader2 className="h-4 w-4 animate-spin mr-2" />
+              <span className="text-sm text-muted-foreground">Loading locations...</span>
+            </div>
+          ) : (
+            <div className="max-h-48 overflow-y-auto border rounded-md">
+              {filteredLocations.slice(0, 20).map((location) => {
+                const locationDisplay = `${location.area_name}, ${location.city_name}, ${location.province_name}`;
+                const isSelected = formData.serviceAreas.includes(locationDisplay);
+                
+                return (
+                  <div
+                    key={location.id}
+                    className={`p-3 border-b last:border-b-0 cursor-pointer hover:bg-muted ${
+                      isSelected ? 'bg-primary/10' : ''
+                    }`}
+                    onClick={() => isSelected ? removeServiceArea(locationDisplay) : addServiceArea(locationDisplay)}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="font-medium text-sm">{location.area_name}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {location.city_name}, {location.province_name}
+                        </p>
+                      </div>
+                      {isSelected ? (
+                        <Badge variant="default" className="text-xs">Selected</Badge>
+                      ) : (
+                        <Button variant="outline" size="sm" className="text-xs">
+                          <Plus className="h-3 w-3 mr-1" />
+                          Add
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+              
+              {filteredLocations.length === 0 && searchTerm && (
+                <div className="p-4 text-center text-sm text-muted-foreground">
+                  No locations found matching "{searchTerm}"
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Custom Area Input */}
