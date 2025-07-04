@@ -259,27 +259,33 @@ const VendorControlPanel = () => {
               </div>
             </CardHeader>
             <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Vendor</TableHead>
-                    <TableHead>Category</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Verification</TableHead>
-                    <TableHead>Rating</TableHead>
-                    <TableHead>Revenue</TableHead>
-                    <TableHead>Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {vendors.map((vendor) => (
-                    <TableRow key={vendor.id}>
-                      <TableCell>
-                        <div>
-                          <div className="font-medium">{vendor.name}</div>
-                          <div className="text-sm text-gray-500">{vendor.email}</div>
-                        </div>
-                      </TableCell>
+                  <Table>
+                 <TableHeader>
+                   <TableRow>
+                     <TableHead>ID</TableHead>
+                     <TableHead>Vendor</TableHead>
+                     <TableHead>Category</TableHead>
+                     <TableHead>Status</TableHead>
+                     <TableHead>Verification</TableHead>
+                     <TableHead>Rating</TableHead>
+                     <TableHead>Revenue</TableHead>
+                     <TableHead>Actions</TableHead>
+                   </TableRow>
+                 </TableHeader>
+                 <TableBody>
+                   {vendors.map((vendor) => (
+                     <TableRow key={vendor.id}>
+                       <TableCell>
+                         <div className="font-mono text-xs bg-muted px-2 py-1 rounded">
+                           {vendor.id}
+                         </div>
+                       </TableCell>
+                       <TableCell>
+                         <div>
+                           <div className="font-medium">{vendor.name}</div>
+                           <div className="text-sm text-gray-500">{vendor.email}</div>
+                         </div>
+                       </TableCell>
                       <TableCell>{vendor.category}</TableCell>
                       <TableCell>{getStatusBadge(vendor.status)}</TableCell>
                       <TableCell>{getVerificationBadge(vendor.verification)}</TableCell>
