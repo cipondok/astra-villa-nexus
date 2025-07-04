@@ -2215,6 +2215,47 @@ export type Database = {
         }
         Relationships: []
       }
+      service_area_mappings: {
+        Row: {
+          area_type: string
+          category_id: string | null
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          pricing_multiplier: number | null
+          size_ranges: Json | null
+          special_requirements: Json | null
+        }
+        Insert: {
+          area_type: string
+          category_id?: string | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          pricing_multiplier?: number | null
+          size_ranges?: Json | null
+          special_requirements?: Json | null
+        }
+        Update: {
+          area_type?: string
+          category_id?: string | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          pricing_multiplier?: number | null
+          size_ranges?: Json | null
+          special_requirements?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_area_mappings_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "vendor_categories_hierarchy"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       service_name_requests: {
         Row: {
           admin_notes: string | null
@@ -3552,6 +3593,7 @@ export type Database = {
       }
       vendor_categories_hierarchy: {
         Row: {
+          base_price_range: Json | null
           category_code: string
           commission_rate: number | null
           created_at: string | null
@@ -3563,11 +3605,14 @@ export type Database = {
           name_en: string
           name_id: string
           parent_id: string | null
+          pricing_model: Database["public"]["Enums"]["pricing_model"] | null
           requirements: Json | null
+          service_area_types: Json | null
           updated_at: string | null
           vendor_type: string
         }
         Insert: {
+          base_price_range?: Json | null
           category_code: string
           commission_rate?: number | null
           created_at?: string | null
@@ -3579,11 +3624,14 @@ export type Database = {
           name_en: string
           name_id: string
           parent_id?: string | null
+          pricing_model?: Database["public"]["Enums"]["pricing_model"] | null
           requirements?: Json | null
+          service_area_types?: Json | null
           updated_at?: string | null
           vendor_type: string
         }
         Update: {
+          base_price_range?: Json | null
           category_code?: string
           commission_rate?: number | null
           created_at?: string | null
@@ -3595,7 +3643,9 @@ export type Database = {
           name_en?: string
           name_id?: string
           parent_id?: string | null
+          pricing_model?: Database["public"]["Enums"]["pricing_model"] | null
           requirements?: Json | null
+          service_area_types?: Json | null
           updated_at?: string | null
           vendor_type?: string
         }
@@ -5269,6 +5319,13 @@ export type Database = {
         | "security_monitoring"
         | "order_tracking"
         | "ai_bot_management"
+      pricing_model:
+        | "hourly"
+        | "sqm"
+        | "project"
+        | "per_item"
+        | "daily"
+        | "fixed"
       user_role:
         | "general_user"
         | "property_owner"
@@ -5402,6 +5459,7 @@ export const Constants = {
         "order_tracking",
         "ai_bot_management",
       ],
+      pricing_model: ["hourly", "sqm", "project", "per_item", "daily", "fixed"],
       user_role: [
         "general_user",
         "property_owner",

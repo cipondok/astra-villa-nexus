@@ -14,6 +14,8 @@ import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft, ArrowRight, CheckCircle } from "lucide-react";
 import SmartTypeSelector from "./SmartTypeSelector";
+import DynamicSubcategorySelector from "./DynamicSubcategorySelector";
+import { CategoryLoader, CategoryNode } from "@/utils/categoryLoader";
 
 interface CategoryHierarchy {
   id: string;
