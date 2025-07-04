@@ -129,7 +129,13 @@ const MultiStepServiceForm: React.FC<MultiStepServiceFormProps> = ({ onClose, on
         }
       }
 
-      // Create the service
+      // Create the service with default image if none provided
+      const finalImageUrls = uploadedImageUrls.length > 0 ? uploadedImageUrls : [
+        formData.implementationType === 'products' 
+          ? 'https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?w=400&h=300&fit=crop'
+          : 'https://images.unsplash.com/photo-1500673922987-e212871fec22?w=400&h=300&fit=crop'
+      ];
+
       const serviceData = {
         vendor_id: user?.id,
         service_name: formData.serviceName,
@@ -143,7 +149,7 @@ const MultiStepServiceForm: React.FC<MultiStepServiceFormProps> = ({ onClose, on
         cancellation_policy: formData.cancellationPolicy,
         currency: formData.currency,
         is_active: true,
-        service_images: uploadedImageUrls,
+        service_images: finalImageUrls,
         admin_approval_status: 'pending'
       };
 

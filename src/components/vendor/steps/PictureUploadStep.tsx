@@ -20,10 +20,13 @@ const PictureUploadStep: React.FC<PictureUploadStepProps> = ({ formData, updateF
   // Default images based on category
   const getDefaultImage = () => {
     if (isProductCategory) {
-      return '/api/placeholder/400/300'; // Product placeholder
+      return 'https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?w=400&h=300&fit=crop'; // Product placeholder
     }
-    return '/api/placeholder/400/300'; // Service placeholder
+    return 'https://images.unsplash.com/photo-1500673922987-e212871fec22?w=400&h=300&fit=crop'; // Service placeholder
   };
+
+  // Show default image if no images uploaded
+  const showDefaultImage = formData.serviceImages.length === 0;
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);
@@ -121,6 +124,31 @@ const PictureUploadStep: React.FC<PictureUploadStepProps> = ({ formData, updateF
           className="hidden"
         />
       </div>
+
+      {/* Default Image Preview */}
+      {showDefaultImage && (
+        <div>
+          <Label className="text-sm font-medium mb-3 block">Default Service Image</Label>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Card className="relative">
+              <CardContent className="p-2">
+                <div className="aspect-square relative overflow-hidden rounded-md">
+                  <img
+                    src={getDefaultImage()}
+                    alt="Default service image"
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute bottom-2 left-2 right-2">
+                    <Badge variant="secondary" className="text-xs">
+                      Default Image (will be used if no images uploaded)
+                    </Badge>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      )}
 
       {/* Image Preview Grid */}
       {formData.serviceImages.length > 0 && (

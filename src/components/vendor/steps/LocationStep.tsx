@@ -38,13 +38,18 @@ const LocationStep: React.FC<LocationStepProps> = ({ formData, updateFormData })
           .select('id, area_name, city_name, province_name, city_type')
           .eq('is_active', true)
           .order('province_name, city_name, area_name')
-          .limit(100);
+          .limit(200);
 
-        if (error) throw error;
+        if (error) {
+          console.error('Locations query error:', error);
+          throw error;
+        }
+        
+        console.log('Loaded locations:', data?.length || 0);
         setLocations(data || []);
       } catch (error: any) {
         console.error('Error fetching locations:', error);
-        toast.error('Failed to load locations');
+        toast.error('Failed to load locations: ' + error.message);
       } finally {
         setIsLoading(false);
       }
@@ -114,10 +119,14 @@ const LocationStep: React.FC<LocationStepProps> = ({ formData, updateFormData })
             className="mb-3"
           />
           
-          {isLoading ? (
+           {isLoading ? (
             <div className="flex items-center justify-center p-4">
               <Loader2 className="h-4 w-4 animate-spin mr-2" />
               <span className="text-sm text-muted-foreground">Loading locations...</span>
+            </div>
+          ) : locations.length === 0 ? (
+            <div className="p-4 text-center text-sm text-muted-foreground">
+              No locations available. Please check your connection.
             </div>
           ) : (
             <div className="max-h-48 overflow-y-auto border rounded-md">

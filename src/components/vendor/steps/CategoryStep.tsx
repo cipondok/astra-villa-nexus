@@ -46,9 +46,11 @@ const CategoryStep: React.FC<CategoryStepProps> = ({ formData, updateFormData })
 
         if (error) throw error;
         setMainCategories(data || []);
+        setIsLoading(false);
       } catch (error: any) {
         console.error('Error fetching main categories:', error);
         toast.error('Failed to load categories');
+        setIsLoading(false);
       }
     };
 
@@ -73,11 +75,14 @@ const CategoryStep: React.FC<CategoryStepProps> = ({ formData, updateFormData })
 
         if (error) throw error;
         setSubCategories(data || []);
+        
+        // Auto-select first subcategory if only one exists
+        if (data && data.length === 1) {
+          updateFormData({ subcategory: data[0].id });
+        }
       } catch (error: any) {
         console.error('Error fetching subcategories:', error);
         toast.error('Failed to load subcategories');
-      } finally {
-        setIsLoading(false);
       }
     };
 
@@ -90,14 +95,14 @@ const CategoryStep: React.FC<CategoryStepProps> = ({ formData, updateFormData })
   const getDefaultCategoryImage = (categoryName: string) => {
     // Generate a default image URL based on category name
     const categoryImages: { [key: string]: string } = {
-      'construction': '/api/placeholder/400/300',
-      'maintenance': '/api/placeholder/400/300',
-      'professional': '/api/placeholder/400/300',
-      'home': '/api/placeholder/400/300',
-      'creative': '/api/placeholder/400/300',
-      'technology': '/api/placeholder/400/300',
-      'cleaning': '/api/placeholder/400/300',
-      'default': '/api/placeholder/400/300'
+      'construction': 'https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?w=400&h=300&fit=crop',
+      'maintenance': 'https://images.unsplash.com/photo-1500673922987-e212871fec22?w=400&h=300&fit=crop',
+      'professional': 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=400&h=300&fit=crop',
+      'home': 'https://images.unsplash.com/photo-1466442929976-97f336a657be?w=400&h=300&fit=crop',
+      'creative': 'https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?w=400&h=300&fit=crop',
+      'technology': 'https://images.unsplash.com/photo-1500673922987-e212871fec22?w=400&h=300&fit=crop',
+      'cleaning': 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=400&h=300&fit=crop',
+      'default': 'https://images.unsplash.com/photo-1466442929976-97f336a657be?w=400&h=300&fit=crop'
     };
     
     const key = categoryName.toLowerCase().split(' ')[0];
@@ -109,8 +114,14 @@ const CategoryStep: React.FC<CategoryStepProps> = ({ formData, updateFormData })
       {/* Main Category Selection */}
       <div>
         <Label className="text-base font-medium mb-4 block">Select Main Category</Label>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {mainCategories.map((category) => (
+        {isLoading ? (
+          <div className="flex items-center justify-center p-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            <span className="ml-2 text-muted-foreground">Loading categories...</span>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {mainCategories.map((category) => (
             <Card 
               key={category.id}
               className={`cursor-pointer transition-all hover:shadow-md ${
@@ -145,14 +156,21 @@ const CategoryStep: React.FC<CategoryStepProps> = ({ formData, updateFormData })
                   </div>
                 </div>
                 {/* Default category image */}
-                <div className="mt-3 w-full h-24 bg-muted rounded-md flex items-center justify-center">
-                  <ImageIcon className="h-8 w-8 text-muted-foreground" />
-                  <span className="text-xs text-muted-foreground ml-2">Default Image</span>
+                <div className="mt-3 w-full h-24 bg-muted rounded-md overflow-hidden">
+                  <img 
+                    src={getDefaultCategoryImage(category.name)} 
+                    alt={`${category.name} category`}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.currentTarget.src = 'https://images.unsplash.com/photo-1466442929976-97f336a657be?w=400&h=300&fit=crop';
+                    }}
+                  />
                 </div>
               </CardContent>
             </Card>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Subcategory Selection */}
