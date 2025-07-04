@@ -20,12 +20,16 @@ const AdminDashboard = () => {
     console.log('User:', user);
     console.log('Profile:', profile);
     
-    // Quick loading timeout to prevent hanging
-    const timer = setTimeout(() => {
+    // Remove artificial loading delay - check immediately
+    if (user && profile) {
       setIsLoading(false);
-    }, 1500); // Reduced to 1.5 seconds
-
-    return () => clearTimeout(timer);
+    } else {
+      // Quick timeout if no user/profile
+      const timer = setTimeout(() => {
+        setIsLoading(false);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
   }, [user, profile]);
 
   // Check if user is admin or super admin
@@ -36,7 +40,7 @@ const AdminDashboard = () => {
   if (isLoading) {
     return (
       <LoadingPage
-        message="Initializing admin dashboard..."
+        message="Loading admin dashboard..."
         showConnectionStatus={true}
         connectionStatus={connectionStatus}
       />
