@@ -20,6 +20,7 @@ import UserDashboard from '@/pages/UserDashboard';
 import VendorDashboard from '@/pages/VendorDashboard';
 import PropertyOwnerDashboard from '@/pages/PropertyOwnerDashboard';
 import AgentDashboard from '@/pages/AgentDashboard';
+import Analytics from '@/pages/Analytics';
 import NotFound from '@/pages/NotFound';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import AdminOnlyRoute from '@/components/AdminOnlyRoute';
@@ -58,6 +59,7 @@ function App() {
                             <Route path="/dashboard" element={<Dashboard />} />
                             <Route path="/profile" element={<Profile />} />
                             <Route path="/user-dashboard" element={<UserDashboard />} />
+                            <Route path="/analytics" element={<Analytics />} />
                           </Route>
 
                           <Route element={<AdminOnlyRoute />}>
