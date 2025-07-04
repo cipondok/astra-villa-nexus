@@ -35,6 +35,7 @@ const VendorServiceForm = ({ service, onClose, onSuccess }: ServiceFormProps) =>
   const [categories, setCategories] = useState<ServiceCategory[]>([]);
   const [allowedDurationUnits, setAllowedDurationUnits] = useState<string[]>(['hours']);
   const [formData, setFormData] = useState({
+    marketplace_type: '', // Products or Services
     main_category_id: '',
     sub_category_id: '',
     approved_service_name_id: '',
@@ -65,6 +66,7 @@ const VendorServiceForm = ({ service, onClose, onSuccess }: ServiceFormProps) =>
     fetchAllowedDurationUnits();
     if (service) {
       setFormData({
+        marketplace_type: service.marketplace_type || 'service',
         main_category_id: service.main_category_id || '',
         sub_category_id: service.sub_category_id || '',
         approved_service_name_id: service.approved_service_name_id || '',
@@ -131,21 +133,24 @@ const VendorServiceForm = ({ service, onClose, onSuccess }: ServiceFormProps) =>
     }
   };
 
-  // Fetch main categories (Indonesian)
+  // Fetch main categories (Indonesian) based on marketplace type
   const { data: mainCategories } = useQuery({
-    queryKey: ['indonesian-business-categories-main'],
+    queryKey: ['indonesian-business-categories-main', formData.marketplace_type],
     queryFn: async () => {
+      if (!formData.marketplace_type) return [];
+      
       const { data, error } = await supabase
         .from('indonesian_business_categories')
         .select('*')
         .eq('is_active', true)
         .eq('level', 1)
-        .eq('vendor_type', 'service')
+        .eq('vendor_type', formData.marketplace_type)
         .order('display_order');
       
       if (error) throw error;
       return data as any[];
-    }
+    },
+    enabled: !!formData.marketplace_type
   });
 
   // Fetch sub categories based on selected main category (Indonesian)
@@ -427,14 +432,48 @@ const VendorServiceForm = ({ service, onClose, onSuccess }: ServiceFormProps) =>
       
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-8">
-          {/* 4-Level Hierarchy Selection */}
+          {/* 5-Level Hierarchy Selection */}
           <Card className="p-6 bg-muted/50">
             <div className="space-y-6">
               <div className="flex items-center justify-between">
-                <Label className="text-lg font-semibold">Service Category Hierarchy *</Label>
+                <Label className="text-lg font-semibold">Marketplace Category Hierarchy *</Label>
                 <Badge variant="outline" className="text-xs">
-                  4-Level Structure
+                  Marketplace → Main Category → Subcategory → Product/Service → Specifications
                 </Badge>
+              </div>
+              
+              {/* Step 0: Marketplace Selection */}
+              <div className="space-y-2">
+                <Label htmlFor="marketplace_type">0. Marketplace Type *</Label>
+                <Select 
+                  value={formData.marketplace_type} 
+                  onValueChange={(value) => setFormData({
+                    ...formData, 
+                    marketplace_type: value,
+                    main_category_id: '',
+                    sub_category_id: '',
+                    approved_service_name_id: '',
+                    category_id: ''
+                  })}
+                >
+                  <SelectTrigger className="bg-background">
+                    <SelectValue placeholder="Select marketplace type" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-background border z-50">
+                    <SelectItem value="service">
+                      <div className="flex items-center space-x-2">
+                        <span>🔧</span>
+                        <span>Services Marketplace</span>
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="product">
+                      <div className="flex items-center space-x-2">
+                        <span>📦</span>
+                        <span>Products Marketplace</span>
+                      </div>
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               
               {/* Step 1: Main Category */}
