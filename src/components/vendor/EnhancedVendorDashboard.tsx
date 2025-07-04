@@ -18,9 +18,14 @@ import {
   Star,
   AlertTriangle,
   CheckCircle,
-  User
+  User,
+  Settings
 } from 'lucide-react';
 import VendorProfileProgress from './VendorProfileProgress';
+import VendorSmartSummary from './VendorSmartSummary';
+import VendorComplianceAlerts from './VendorComplianceAlerts';
+import VendorPropertyTypeToggle from './VendorPropertyTypeToggle';
+import VendorServiceMatrix from './VendorServiceMatrix';
 
 const EnhancedVendorDashboard = () => {
   const { user } = useAuth();
@@ -92,164 +97,96 @@ const EnhancedVendorDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Vendor Dashboard</h1>
-          <p className="text-gray-600 dark:text-gray-300 mt-2">Manage your business and track performance</p>
-        </div>
+    <div className="space-y-8">
+      {/* Smart Summary Header */}
+      <VendorSmartSummary />
 
-        {/* Quick Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Total Bookings</p>
-                  <p className="text-2xl font-bold">{dashboardData.totalBookings}</p>
-                </div>
-                <Calendar className="h-8 w-8 text-blue-500" />
-              </div>
-            </CardContent>
-          </Card>
+      {/* Compliance Alerts */}
+      <VendorComplianceAlerts />
 
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Monthly Revenue</p>
-                  <p className="text-2xl font-bold">${dashboardData.monthlyRevenue.toFixed(2)}</p>
-                </div>
-                <DollarSign className="h-8 w-8 text-green-500" />
-              </div>
-            </CardContent>
-          </Card>
+      {/* Enhanced Control Panels */}
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+        <TabsList className="grid w-full grid-cols-5">
+          <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="services">Services</TabsTrigger>
+          <TabsTrigger value="settings">Settings</TabsTrigger>
+          <TabsTrigger value="profile">Profile</TabsTrigger>
+          <TabsTrigger value="analytics">Analytics</TabsTrigger>
+        </TabsList>
 
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Average Rating</p>
-                  <p className="text-2xl font-bold">{dashboardData.avgRating.toFixed(1)}</p>
-                </div>
-                <Star className="h-8 w-8 text-yellow-500" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Profile Completion</p>
-                  <p className="text-2xl font-bold">{dashboardData.profileCompletion}%</p>
-                </div>
-                <User className="h-8 w-8 text-purple-500" />
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Main Content */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="bookings">Bookings</TabsTrigger>
-            <TabsTrigger value="profile">Profile</TabsTrigger>
-            <TabsTrigger value="analytics">Analytics</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="overview" className="space-y-6">
-            {/* Profile Completion Alert */}
-            {dashboardData.profileCompletion < 100 && (
-              <Alert>
-                <AlertTriangle className="h-4 w-4" />
-                <AlertDescription>
-                  Your profile is {dashboardData.profileCompletion}% complete. Complete your profile to attract more customers.
-                </AlertDescription>
-              </Alert>
-            )}
-
-            {/* Booking Status Overview */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Clock className="h-5 w-5 text-orange-500" />
-                    Pending Bookings
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-3xl font-bold">{dashboardData.pendingBookings}</div>
-                  <p className="text-sm text-gray-600">Awaiting confirmation</p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <CheckCircle className="h-5 w-5 text-green-500" />
-                    Completed
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-3xl font-bold">{dashboardData.completedBookings}</div>
-                  <p className="text-sm text-gray-600">Successfully completed</p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <AlertTriangle className="h-5 w-5 text-red-500" />
-                    Cancelled
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-3xl font-bold">{dashboardData.cancelledBookings}</div>
-                  <p className="text-sm text-gray-600">Cancelled bookings</p>
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
-
-          <TabsContent value="bookings" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Recent Bookings</CardTitle>
-                <CardDescription>Manage your recent booking requests</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-8">
-                  <p className="text-gray-500">No recent bookings to display</p>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="profile" className="space-y-6">
-            <VendorProfileProgress />
-          </TabsContent>
-
-          <TabsContent value="analytics" className="space-y-6">
+        <TabsContent value="overview" className="space-y-6">
+          {/* Booking Status Overview */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <BarChart3 className="h-5 w-5" />
-                  Business Analytics
+                  <Clock className="h-5 w-5 text-orange-500" />
+                  Pending Bookings
                 </CardTitle>
-                <CardDescription>Track your business performance over time</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="text-center py-8">
-                  <p className="text-gray-500">Analytics data will be available once you have more booking activity</p>
-                </div>
+                <div className="text-3xl font-bold">{dashboardData.pendingBookings}</div>
+                <p className="text-sm text-muted-foreground">Awaiting confirmation</p>
               </CardContent>
             </Card>
-          </TabsContent>
-        </Tabs>
-      </div>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <CheckCircle className="h-5 w-5 text-green-500" />
+                  Completed
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold">{dashboardData.completedBookings}</div>
+                <p className="text-sm text-muted-foreground">Successfully completed</p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <AlertTriangle className="h-5 w-5 text-red-500" />
+                  Cancelled
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold">{dashboardData.cancelledBookings}</div>
+                <p className="text-sm text-muted-foreground">Cancelled bookings</p>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="services" className="space-y-6">
+          <VendorServiceMatrix />
+        </TabsContent>
+
+        <TabsContent value="settings" className="space-y-6">
+          <VendorPropertyTypeToggle />
+        </TabsContent>
+
+        <TabsContent value="profile" className="space-y-6">
+          <VendorProfileProgress />
+        </TabsContent>
+
+        <TabsContent value="analytics" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <BarChart3 className="h-5 w-5" />
+                Business Analytics
+              </CardTitle>
+              <CardDescription>Track your business performance over time</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="text-center py-8">
+                <p className="text-muted-foreground">Analytics data will be available once you have more booking activity</p>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
