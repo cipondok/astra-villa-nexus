@@ -44,7 +44,9 @@ const VendorSmartSummary = () => {
 
   const loadVendorStats = async () => {
     try {
-      // Load business profile with error handling
+      console.log('Loading vendor stats for user:', user?.id);
+      
+      // Load business profile with comprehensive error handling
       const { data: profile, error: profileError } = await supabase
         .from('vendor_business_profiles')
         .select('*')
@@ -53,7 +55,7 @@ const VendorSmartSummary = () => {
 
       if (profileError) {
         console.error('Profile error:', profileError);
-        // Use default values if profile doesn't exist
+        // Set fallback data and continue execution
         setStats({
           totalEarnings: 0,
           monthlyEarnings: 0,
@@ -66,7 +68,7 @@ const VendorSmartSummary = () => {
         return;
       }
 
-      // Load services with error handling
+      // Load services with comprehensive error handling
       const { data: services, error: servicesError } = await supabase
         .from('vendor_services')
         .select('*')
@@ -74,7 +76,11 @@ const VendorSmartSummary = () => {
 
       if (servicesError) {
         console.error('Services error:', servicesError);
+        // Continue with empty services array
       }
+
+      console.log('Loaded profile:', profile);
+      console.log('Loaded services:', services);
 
       // Calculate BPJS status
       const bpjsStatus = profile?.bpjs_ketenagakerjaan_verified 
@@ -87,18 +93,21 @@ const VendorSmartSummary = () => {
         s.admin_approval_notes?.includes('commercial')
       );
 
-      setStats({
-        totalEarnings: 15420000, // Mock data - replace with real calculation
-        monthlyEarnings: 2340000,
-        earningsTrend: 12.5,
+      const finalStats = {
+        totalEarnings: 0, // Mock data for now since field doesn't exist
+        monthlyEarnings: 0, // Mock data for now since field doesn't exist  
+        earningsTrend: 0, // Mock data for now since field doesn't exist
         totalBookings: services?.length || 0,
-        avgRating: Number(profile?.rating) || 4.5,
-        bpjsStatus: profile ? bpjsStatus : 'verification_needed',
-        propertyType: hasCommercialServices ? 'commercial' : 'residential'
-      });
+        avgRating: Number(profile?.rating) || 0,
+        bpjsStatus: (profile ? bpjsStatus : 'verification_needed') as 'active' | 'verification_needed' | 'expired',
+        propertyType: (hasCommercialServices ? 'commercial' : 'residential') as 'residential' | 'commercial'
+      };
+
+      console.log('Setting stats:', finalStats);
+      setStats(finalStats);
     } catch (error) {
       console.error('Error loading vendor stats:', error);
-      // Always provide fallback data
+      // Always provide fallback data to prevent UI failures
       setStats({
         totalEarnings: 0,
         monthlyEarnings: 0,

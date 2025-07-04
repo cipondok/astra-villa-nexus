@@ -64,6 +64,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           verification_status: 'approved',
           is_admin: true
         };
+        console.log('Setting admin profile:', adminProfile);
         setProfile(adminProfile);
         setLoading(false);
         return;
@@ -80,6 +81,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           verification_status: 'approved',
           company_name: 'AstraVilla Services'
         };
+        console.log('Setting vendor profile:', vendorProfile);
         setProfile(vendorProfile);
         setLoading(false);
         return;

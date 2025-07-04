@@ -34,7 +34,9 @@ const VendorComplianceAlerts = () => {
 
   const loadComplianceData = async () => {
     try {
-      // Load vendor business profile with error handling
+      console.log('Loading compliance data for user:', user?.id);
+      
+      // Load vendor business profile with comprehensive error handling
       const { data: profile, error: profileError } = await supabase
         .from('vendor_business_profiles')
         .select('*')
@@ -43,12 +45,18 @@ const VendorComplianceAlerts = () => {
 
       if (profileError) {
         console.error('Profile error:', profileError);
-        // Set default residential if no profile
+        // Set default residential if no profile and continue
         setPropertyType('residential');
+        setAlerts([{
+          id: 'profile-missing',
+          level: 'warning',
+          message: 'Profil vendor belum dibuat. Lengkapi profil untuk mulai menerima pesanan.',
+          action: 'Buat Profil'
+        }]);
         return;
       }
 
-      // Load services with error handling
+      // Load services with comprehensive error handling
       const { data: services, error: servicesError } = await supabase
         .from('vendor_services')
         .select('service_category, admin_approval_status')
@@ -56,7 +64,11 @@ const VendorComplianceAlerts = () => {
 
       if (servicesError) {
         console.error('Services error:', servicesError);
+        // Continue with empty services array
       }
+
+      console.log('Loaded compliance profile:', profile);
+      console.log('Loaded compliance services:', services);
 
       const isCommercial = services?.some(s => 
         s.service_category?.includes('commercial') ||
@@ -99,12 +111,18 @@ const VendorComplianceAlerts = () => {
         });
       }
 
+      console.log('Setting compliance alerts:', newAlerts);
       setAlerts(newAlerts);
     } catch (error) {
       console.error('Error loading compliance data:', error);
       // Set default state on error
       setPropertyType('residential');
-      setAlerts([]);
+      setAlerts([{
+        id: 'system-error',
+        level: 'warning',
+        message: 'Gagal memuat data compliance. Silakan refresh halaman.',
+        action: 'Refresh'
+      }]);
     }
   };
 

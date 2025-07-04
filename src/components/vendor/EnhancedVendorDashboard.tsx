@@ -48,22 +48,30 @@ const EnhancedVendorDashboard = () => {
 
   const loadDashboardData = async () => {
     try {
-      // Load bookings data
+      console.log('Loading dashboard data for user:', user?.id);
+      
+      // Load bookings data with error handling
       const { data: bookings, error: bookingsError } = await supabase
         .from('vendor_bookings')
         .select('*')
         .eq('vendor_id', user?.id);
 
-      if (bookingsError) throw bookingsError;
+      if (bookingsError) {
+        console.error('Bookings error:', bookingsError);
+        // Continue with empty bookings instead of throwing
+      }
 
-      // Load business profile for rating
+      // Load business profile for rating with error handling
       const { data: profile, error: profileError } = await supabase
         .from('vendor_business_profiles')
         .select('rating, profile_completion_percentage')
         .eq('vendor_id', user?.id)
-        .single();
+        .maybeSingle();
 
-      if (profileError && profileError.code !== 'PGRST116') throw profileError;
+      if (profileError) {
+        console.error('Profile error:', profileError);
+        // Continue with null profile instead of throwing
+      }
 
       // Calculate stats
       const totalBookings = bookings?.length || 0;
