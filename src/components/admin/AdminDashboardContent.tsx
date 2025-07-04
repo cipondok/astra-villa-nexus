@@ -58,7 +58,7 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
       case "vendor-management-hub":
         return <VendorManagementHub />;
       case "vendor-service-management":
-        return <AdminVendorServiceManagement />;
+        return <VendorManagementHub />;
       case "vendor-category-management":
         return <VendorServiceCategoryManagement />;
       case "vendor-applications":
