@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAlert } from "@/contexts/AlertContext";
 import { Building2, FileText, CheckCircle } from "lucide-react";
+import BPJSVerification from "./BPJSVerification";
 
 interface VendorRegistrationFormProps {
   onSuccess: () => void;
@@ -28,7 +29,11 @@ const VendorRegistrationForm = ({ onSuccess }: VendorRegistrationFormProps) => {
     company_name: '',
     license_number: '',
     surat_izin_usaha: '', // Required for commercial
-    verification_documents: null
+    verification_documents: null,
+    bpjs_ketenagakerjaan_status: 'unregistered',
+    bpjs_kesehatan_status: 'unregistered',
+    bpjs_ketenagakerjaan_number: '',
+    bpjs_kesehatan_number: ''
   });
   const [submitting, setSubmitting] = useState(false);
 
@@ -78,7 +83,7 @@ const VendorRegistrationForm = ({ onSuccess }: VendorRegistrationFormProps) => {
 
       console.log('Profile updated successfully');
 
-      // Step 2: Create vendor registration request with property type
+      // Step 2: Create vendor registration request with property type and BPJS data
       const { error: requestError } = await supabase
         .from('vendor_requests')
         .insert([{
@@ -99,7 +104,7 @@ const VendorRegistrationForm = ({ onSuccess }: VendorRegistrationFormProps) => {
 
       console.log('Vendor request created successfully');
 
-      // Step 3: Create vendor business profile with property type adjustments
+      // Step 3: Create vendor business profile with property type adjustments and BPJS data
       const baseRate = 100000; // Base residential rate
       const commercialMultiplier = formData.property_type === 'commercial' ? 1.5 : 1.0;
       
@@ -114,6 +119,12 @@ const VendorRegistrationForm = ({ onSuccess }: VendorRegistrationFormProps) => {
           // Apply property type pricing
           tarif_harian_min: baseRate * commercialMultiplier,
           tarif_harian_max: (baseRate * 2) * commercialMultiplier,
+          // BPJS verification status
+          bpjs_ketenagakerjaan_status: formData.bpjs_ketenagakerjaan_status,
+          bpjs_kesehatan_status: formData.bpjs_kesehatan_status,
+          bpjs_ketenagakerjaan_verified: formData.bpjs_ketenagakerjaan_status === 'verified',
+          bpjs_kesehatan_verified: formData.bpjs_kesehatan_status === 'verified',
+          bpjs_verification_method: 'registration_form',
           is_active: false, // Will be activated when approved
           is_verified: false
         }]);
@@ -265,6 +276,22 @@ const VendorRegistrationForm = ({ onSuccess }: VendorRegistrationFormProps) => {
                 </div>
               )}
             </div>
+
+            {/* BPJS Verification Section */}
+            <BPJSVerification
+              propertyType={formData.property_type as 'residential' | 'commercial'}
+              onVerificationChange={(bpjsData) => {
+                setFormData(prev => ({
+                  ...prev,
+                  bpjs_ketenagakerjaan_status: bpjsData.bpjs_ketenagakerjaan_status,
+                  bpjs_kesehatan_status: bpjsData.bpjs_kesehatan_status,
+                  bpjs_ketenagakerjaan_number: bpjsData.bpjs_ketenagakerjaan_number || '',
+                  bpjs_kesehatan_number: bpjsData.bpjs_kesehatan_number || ''
+                }));
+              }}
+              showKetenagakerjaan={true}
+              showKesehatan={formData.property_type === 'commercial'}
+            />
 
             <div className="space-y-4">
               {/* Property Type Requirements Info */}

@@ -542,6 +542,39 @@ export type Database = {
         }
         Relationships: []
       }
+      bpjs_verification_logs: {
+        Row: {
+          api_response: Json | null
+          bpjs_number: string
+          created_at: string | null
+          id: string
+          vendor_id: string
+          verification_status: string
+          verification_type: string
+          verified_at: string | null
+        }
+        Insert: {
+          api_response?: Json | null
+          bpjs_number: string
+          created_at?: string | null
+          id?: string
+          vendor_id: string
+          verification_status: string
+          verification_type: string
+          verified_at?: string | null
+        }
+        Update: {
+          api_response?: Json | null
+          bpjs_number?: string
+          created_at?: string | null
+          id?: string
+          vendor_id?: string
+          verification_status?: string
+          verification_type?: string
+          verified_at?: string | null
+        }
+        Relationships: []
+      }
       bpjs_verifications: {
         Row: {
           bpjs_type: string
@@ -2317,6 +2350,39 @@ export type Database = {
           },
         ]
       }
+      service_pricing_rules: {
+        Row: {
+          base_multiplier: number | null
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          minimum_price: number | null
+          property_type: string
+          service_category: string
+          updated_at: string | null
+        }
+        Insert: {
+          base_multiplier?: number | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          minimum_price?: number | null
+          property_type: string
+          service_category: string
+          updated_at?: string | null
+        }
+        Update: {
+          base_multiplier?: number | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          minimum_price?: number | null
+          property_type?: string
+          service_category?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       social_media_settings: {
         Row: {
           account_name: string | null
@@ -3222,7 +3288,9 @@ export type Database = {
           approval_notes: string | null
           bank_details: Json | null
           bpjs_kesehatan: boolean | null
+          bpjs_kesehatan_verified: boolean | null
           bpjs_ketenagakerjaan: boolean | null
+          bpjs_ketenagakerjaan_verified: boolean | null
           business_address: Json
           business_documents: Json | null
           business_name: string
@@ -3241,6 +3309,7 @@ export type Database = {
           nomor_npwp: string | null
           nomor_skt: string | null
           product_catalog: Json | null
+          property_type: string | null
           rejection_details: Json | null
           rejection_reason: string | null
           reviewed_at: string | null
@@ -3262,7 +3331,9 @@ export type Database = {
           approval_notes?: string | null
           bank_details?: Json | null
           bpjs_kesehatan?: boolean | null
+          bpjs_kesehatan_verified?: boolean | null
           bpjs_ketenagakerjaan?: boolean | null
+          bpjs_ketenagakerjaan_verified?: boolean | null
           business_address?: Json
           business_documents?: Json | null
           business_name: string
@@ -3281,6 +3352,7 @@ export type Database = {
           nomor_npwp?: string | null
           nomor_skt?: string | null
           product_catalog?: Json | null
+          property_type?: string | null
           rejection_details?: Json | null
           rejection_reason?: string | null
           reviewed_at?: string | null
@@ -3302,7 +3374,9 @@ export type Database = {
           approval_notes?: string | null
           bank_details?: Json | null
           bpjs_kesehatan?: boolean | null
+          bpjs_kesehatan_verified?: boolean | null
           bpjs_ketenagakerjaan?: boolean | null
+          bpjs_ketenagakerjaan_verified?: boolean | null
           business_address?: Json
           business_documents?: Json | null
           business_name?: string
@@ -3321,6 +3395,7 @@ export type Database = {
           nomor_npwp?: string | null
           nomor_skt?: string | null
           product_catalog?: Json | null
+          property_type?: string | null
           rejection_details?: Json | null
           rejection_reason?: string | null
           reviewed_at?: string | null
@@ -3460,7 +3535,11 @@ export type Database = {
         Row: {
           banner_url: string | null
           bpjs_kesehatan_status: string | null
+          bpjs_kesehatan_verified: boolean | null
           bpjs_ketenagakerjaan_status: string | null
+          bpjs_ketenagakerjaan_verified: boolean | null
+          bpjs_verification_date: string | null
+          bpjs_verification_method: string | null
           business_address: string | null
           business_description: string | null
           business_email: string | null
@@ -3499,7 +3578,11 @@ export type Database = {
         Insert: {
           banner_url?: string | null
           bpjs_kesehatan_status?: string | null
+          bpjs_kesehatan_verified?: boolean | null
           bpjs_ketenagakerjaan_status?: string | null
+          bpjs_ketenagakerjaan_verified?: boolean | null
+          bpjs_verification_date?: string | null
+          bpjs_verification_method?: string | null
           business_address?: string | null
           business_description?: string | null
           business_email?: string | null
@@ -3538,7 +3621,11 @@ export type Database = {
         Update: {
           banner_url?: string | null
           bpjs_kesehatan_status?: string | null
+          bpjs_kesehatan_verified?: boolean | null
           bpjs_ketenagakerjaan_status?: string | null
+          bpjs_ketenagakerjaan_verified?: boolean | null
+          bpjs_verification_date?: string | null
+          bpjs_verification_method?: string | null
           business_address?: string | null
           business_description?: string | null
           business_email?: string | null

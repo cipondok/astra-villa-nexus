@@ -15,6 +15,8 @@ import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft, ArrowRight, CheckCircle } from "lucide-react";
 import SmartTypeSelector from "./SmartTypeSelector";
 import DynamicSubcategorySelector from "./DynamicSubcategorySelector";
+import BPJSVerification from "./BPJSVerification";
+import EnhancedAutoPricingCalculator from "./EnhancedAutoPricingCalculator";
 import { CategoryLoader, CategoryNode } from "@/utils/categoryLoader";
 
 interface CategoryHierarchy {
@@ -57,8 +59,17 @@ const ProgressiveVendorServiceForm = ({ onClose, onSuccess }: ProgressiveService
       siuk_number: '',
       bpjs_ketenagakerjaan_status: 'unregistered',
       bpjs_kesehatan_status: 'unregistered',
+      bpjs_ketenagakerjaan_number: '',
+      bpjs_kesehatan_number: '',
       tarif_harian_min: '',
       tarif_harian_max: ''
+    },
+    enhanced_pricing: {
+      basePrice: 0,
+      commercialPrice: 0,
+      multiplier: 1.0,
+      minimumPrice: 0,
+      currency: 'IDR'
     },
     service_capacity: {},
     geofencing_areas: [],
@@ -178,7 +189,8 @@ const ProgressiveVendorServiceForm = ({ onClose, onSuccess }: ProgressiveService
       case 2: return !!formData.level1_category;
       case 3: return !!formData.level2_category;
       case 4: return !!formData.level3_category || level3Categories?.length === 0;
-      case 5: return !!formData.service_name && !!formData.service_description;
+      case 5: return !!formData.service_name && !!formData.service_description && 
+                     (formData.property_type === 'residential' || formData.compliance_data.bpjs_ketenagakerjaan_status === 'verified');
       case 6: return !!formData.service_location_state && !!formData.service_location_city;
       default: return true;
     }
@@ -222,13 +234,20 @@ const ProgressiveVendorServiceForm = ({ onClose, onSuccess }: ProgressiveService
         siuk_number: formData.compliance_data.siuk_number,
         bpjs_ketenagakerjaan_status: formData.compliance_data.bpjs_ketenagakerjaan_status,
         bpjs_kesehatan_status: formData.compliance_data.bpjs_kesehatan_status,
-        // Apply property type pricing adjustments
-        tarif_harian_min: formData.compliance_data.tarif_harian_min ? 
-          parseFloat(formData.compliance_data.tarif_harian_min) * commercialMultiplier : 
-          baseRate * commercialMultiplier,
-        tarif_harian_max: formData.compliance_data.tarif_harian_max ? 
-          parseFloat(formData.compliance_data.tarif_harian_max) * commercialMultiplier : 
-          (baseRate * 2) * commercialMultiplier
+        // Apply property type pricing adjustments and enhanced pricing
+        tarif_harian_min: formData.enhanced_pricing.basePrice > 0 ? 
+          (formData.property_type === 'commercial' ? formData.enhanced_pricing.commercialPrice : formData.enhanced_pricing.basePrice) :
+          (formData.compliance_data.tarif_harian_min ? 
+            parseFloat(formData.compliance_data.tarif_harian_min) * commercialMultiplier : 
+            baseRate * commercialMultiplier),
+        tarif_harian_max: formData.enhanced_pricing.basePrice > 0 ? 
+          (formData.property_type === 'commercial' ? formData.enhanced_pricing.commercialPrice * 1.5 : formData.enhanced_pricing.basePrice * 1.5) :
+          (formData.compliance_data.tarif_harian_max ? 
+            parseFloat(formData.compliance_data.tarif_harian_max) * commercialMultiplier : 
+            (baseRate * 2) * commercialMultiplier),
+        // BPJS verification status
+        bpjs_ketenagakerjaan_verified: formData.compliance_data.bpjs_ketenagakerjaan_status === 'verified',
+        bpjs_kesehatan_verified: formData.compliance_data.bpjs_kesehatan_status === 'verified'
       };
 
       const { error: profileError } = await supabase
@@ -490,26 +509,73 @@ const ProgressiveVendorServiceForm = ({ onClose, onSuccess }: ProgressiveService
               <p className="text-muted-foreground">Service Details</p>
             </div>
 
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="service_name">Nama Layanan *</Label>
-                <Input
-                  id="service_name"
-                  value={formData.service_name}
-                  onChange={(e) => setFormData({ ...formData, service_name: e.target.value })}
-                  placeholder="Masukkan nama layanan"
-                />
+            <div className="space-y-6">
+              {/* Service Details */}
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="service_name">Nama Layanan *</Label>
+                  <Input
+                    id="service_name"
+                    value={formData.service_name}
+                    onChange={(e) => setFormData({ ...formData, service_name: e.target.value })}
+                    placeholder="Masukkan nama layanan"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="service_description">Deskripsi Layanan *</Label>
+                  <Textarea
+                    id="service_description"
+                    value={formData.service_description}
+                    onChange={(e) => setFormData({ ...formData, service_description: e.target.value })}
+                    placeholder="Deskripsikan layanan Anda secara detail"
+                    rows={4}
+                  />
+                </div>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="service_description">Deskripsi Layanan *</Label>
-                <Textarea
-                  id="service_description"
-                  value={formData.service_description}
-                  onChange={(e) => setFormData({ ...formData, service_description: e.target.value })}
-                  placeholder="Deskripsikan layanan Anda secara detail"
-                  rows={4}
+              {/* Enhanced Pricing Calculator */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <EnhancedAutoPricingCalculator
+                  categoryCode={formData.level3_category || formData.level2_category || 'default'}
+                  location={{
+                    province: formData.service_location_state || 'DKI Jakarta',
+                    city: formData.service_location_city || 'Jakarta Pusat'
+                  }}
+                  propertyType={formData.property_type as 'residential' | 'commercial'}
+                  onPriceChange={(pricing) => {
+                    setFormData(prev => ({
+                      ...prev,
+                      enhanced_pricing: pricing,
+                      compliance_data: {
+                        ...prev.compliance_data,
+                        tarif_harian_min: (formData.property_type === 'commercial' ? pricing.commercialPrice : pricing.basePrice).toString(),
+                        tarif_harian_max: (formData.property_type === 'commercial' ? pricing.commercialPrice * 1.5 : pricing.basePrice * 1.5).toString()
+                      }
+                    }));
+                  }}
                 />
+
+                {/* BPJS Verification for Commercial */}
+                {formData.property_type === 'commercial' && (
+                  <BPJSVerification
+                    propertyType={formData.property_type as 'residential' | 'commercial'}
+                    onVerificationChange={(bpjsData) => {
+                      setFormData(prev => ({
+                        ...prev,
+                        compliance_data: {
+                          ...prev.compliance_data,
+                          bpjs_ketenagakerjaan_status: bpjsData.bpjs_ketenagakerjaan_status,
+                          bpjs_kesehatan_status: bpjsData.bpjs_kesehatan_status,
+                          bpjs_ketenagakerjaan_number: bpjsData.bpjs_ketenagakerjaan_number || '',
+                          bpjs_kesehatan_number: bpjsData.bpjs_kesehatan_number || ''
+                        }
+                      }));
+                    }}
+                    showKetenagakerjaan={true}
+                    showKesehatan={false}
+                  />
+                )}
               </div>
 
               {currentCategory?.requirements && (
