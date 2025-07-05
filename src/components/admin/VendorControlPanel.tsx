@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { formatIDR } from '@/utils/currency';
 import { 
   UserCheck, 
   Store, 
@@ -210,7 +211,7 @@ const VendorControlPanel = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Total Revenue</p>
-                <p className="text-2xl font-bold">$2.4M</p>
+                <p className="text-2xl font-bold">{formatIDR(2400000000)}</p>
                 <p className="text-xs text-green-600">+18% from last month</p>
               </div>
               <DollarSign className="h-8 w-8 text-purple-500" />
@@ -295,7 +296,7 @@ const VendorControlPanel = () => {
                           <span>{vendor.rating}</span>
                         </div>
                       </TableCell>
-                      <TableCell>${vendor.revenue.toLocaleString()}</TableCell>
+                      <TableCell>{formatIDR(vendor.revenue)}</TableCell>
                       <TableCell>
                         <div className="flex gap-1">
                           <Button size="sm" variant="outline">
