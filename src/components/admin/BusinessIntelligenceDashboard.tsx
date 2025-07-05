@@ -5,6 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { formatIDR } from "@/utils/currency";
 import { 
   DollarSign, 
   TrendingUp, 
@@ -115,7 +116,7 @@ const BusinessIntelligenceDashboard = () => {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-muted-foreground">Total Revenue</p>
-                    <p className="text-2xl font-bold">$328,000</p>
+                    <p className="text-2xl font-bold">{formatIDR(328000000)}</p>
                     <div className="flex items-center gap-1 mt-1">
                       <TrendingUp className="h-3 w-3 text-green-500" />
                       <span className="text-xs text-green-600">+23.5%</span>
@@ -130,7 +131,7 @@ const BusinessIntelligenceDashboard = () => {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-muted-foreground">Total Profit</p>
-                    <p className="text-2xl font-bold">$96,000</p>
+                    <p className="text-2xl font-bold">{formatIDR(96000000)}</p>
                     <div className="flex items-center gap-1 mt-1">
                       <TrendingUp className="h-3 w-3 text-green-500" />
                       <span className="text-xs text-green-600">+18.2%</span>
@@ -167,7 +168,7 @@ const BusinessIntelligenceDashboard = () => {
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="month" />
                   <YAxis />
-                  <Tooltip formatter={(value) => [`$${value.toLocaleString()}`, '']} />
+                  <Tooltip formatter={(value) => [formatIDR(Number(value) * 1000000), '']} />
                   <Area type="monotone" dataKey="revenue" stackId="1" stroke="#3B82F6" fill="#3B82F6" fillOpacity={0.6} name="Revenue" />
                   <Area type="monotone" dataKey="profit" stackId="2" stroke="#10B981" fill="#10B981" fillOpacity={0.6} name="Profit" />
                 </AreaChart>
@@ -191,7 +192,7 @@ const BusinessIntelligenceDashboard = () => {
                       <p className="text-sm text-muted-foreground">{area.volume} properties</p>
                     </div>
                     <div className="text-right">
-                      <p className="font-bold">${area.avgPrice.toLocaleString()}</p>
+                      <p className="font-bold">{formatIDR(area.avgPrice * 15000)}</p>
                       <div className="flex items-center gap-1">
                         <TrendingUp className="h-3 w-3 text-green-500" />
                         <span className="text-xs text-green-600">+{area.growth}%</span>
@@ -227,7 +228,7 @@ const BusinessIntelligenceDashboard = () => {
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="font-bold">${vendor.revenue.toLocaleString()}</p>
+                      <p className="font-bold">{formatIDR(vendor.revenue)}</p>
                       <p className="text-sm text-muted-foreground">Revenue</p>
                     </div>
                   </div>
