@@ -26,6 +26,7 @@ import ASTRATokenSettings from "./ASTRATokenSettings";
 import ToolsManagementDashboard from "./ToolsManagementDashboard";
 import SEOSettings from "./SEOSettings";
 import ProjectDiagnosticSystem from "./ProjectDiagnosticSystem";
+import IndonesianPaymentMerchantConfig from "./IndonesianPaymentMerchantConfig";
 
 interface AdminDashboardContentProps {
   activeSection: string;
@@ -45,6 +46,8 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
         return <PropertyManagementAdvanced />;
       case "system-settings":
         return <SystemSettings />;
+      case "indonesian-payment-config":
+        return <IndonesianPaymentMerchantConfig />;
       case "analytics":
         return <WebTrafficAnalytics />;
       case "ai-bot-management":

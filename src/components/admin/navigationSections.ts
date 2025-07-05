@@ -27,7 +27,8 @@ import {
   Headphones,
   CheckCircle,
   Database,
-  Shield
+  Shield,
+  CreditCard
 } from "lucide-react";
 
 export interface NavigationSection {
@@ -210,6 +211,12 @@ export const navigationSections = {
       label: "System Settings",
       icon: Settings,
       description: "Configure global system settings"
+    },
+    {
+      key: "indonesian-payment-config",
+      label: "Indonesian Payment Config",
+      icon: CreditCard,
+      description: "Configure Indonesian payment merchant APIs"
     },
     {
       key: "billing-management",
