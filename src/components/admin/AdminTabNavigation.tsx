@@ -34,9 +34,50 @@ interface TabItem {
   icon: React.ComponentType<any>;
   category: string;
   badge?: string;
+  badgeType?: 'new' | 'updating' | 'beta';
+  addedDate?: string; // ISO date string
+  updatedDate?: string; // ISO date string
 }
 
 const AdminTabNavigation = ({ isAdmin }: AdminTabNavigationProps) => {
+  // Helper function to check if badge should be shown (within 1 month)
+  const shouldShowBadge = (tab: TabItem): string | null => {
+    const now = new Date();
+    const oneMonthAgo = new Date(now.getTime() - (30 * 24 * 60 * 60 * 1000));
+    
+    // Check if added within last month
+    if (tab.addedDate) {
+      const addedDate = new Date(tab.addedDate);
+      if (addedDate > oneMonthAgo) {
+        return "New";
+      }
+    }
+    
+    // Check if updated within last month
+    if (tab.updatedDate) {
+      const updatedDate = new Date(tab.updatedDate);
+      if (updatedDate > oneMonthAgo) {
+        return "Updated";
+      }
+    }
+    
+    // Return existing badge if no date-based logic applies
+    return tab.badge || null;
+  };
+
+  // Get badge color based on type
+  const getBadgeColor = (badgeText: string, badgeType?: string) => {
+    switch (badgeText) {
+      case "New":
+        return "bg-green-500 text-white dark:bg-green-600";
+      case "Updated":
+        return "bg-blue-500 text-white dark:bg-blue-600";
+      case "Beta":
+        return "bg-purple-500 text-white dark:bg-purple-600";
+      default:
+        return "bg-orange-500 text-white dark:bg-orange-600";
+    }
+  };
   const adminTabs: TabItem[] = [
     { 
       id: "overview", 
@@ -200,7 +241,8 @@ const AdminTabNavigation = ({ isAdmin }: AdminTabNavigationProps) => {
       id: "indonesian-payment-config", 
       label: "ID Payment", 
       icon: CreditCard, 
-      category: "finance" 
+      category: "finance",
+      addedDate: new Date().toISOString() // Just added today
     },
     { 
       id: "database-management", 
@@ -262,16 +304,14 @@ const AdminTabNavigation = ({ isAdmin }: AdminTabNavigationProps) => {
           >
             <tab.icon className="h-4 w-4" />
             <span className="hidden sm:block font-semibold">{tab.label}</span>
-            {tab.badge && (
+            {shouldShowBadge(tab) && (
               <Badge 
-                variant={tab.badge === "New" ? "default" : "secondary"} 
+                variant="default"
                 className={`absolute -top-1 -right-1 text-xs px-1 py-0 h-4 min-w-4 ${
-                  tab.badge === "New" 
-                    ? "bg-green-500 text-white dark:bg-green-600" 
-                    : "bg-orange-500 text-white dark:bg-orange-600"
+                  getBadgeColor(shouldShowBadge(tab)!, tab.badgeType)
                 }`}
               >
-                {tab.badge}
+                {shouldShowBadge(tab)}
               </Badge>
             )}
           </TabsTrigger>
