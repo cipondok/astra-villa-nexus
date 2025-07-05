@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,6 +8,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { 
   Code, 
   Zap, 
@@ -24,9 +27,16 @@ import {
   MapPin,
   Star,
   TrendingUp,
-  CheckCircle
+  CheckCircle,
+  ExternalLink,
+  Eye,
+  Trash2,
+  Play,
+  Copy
 } from "lucide-react";
 import { useAlert } from "@/contexts/AlertContext";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface FunctionTemplate {
   id: string;
@@ -44,7 +54,75 @@ const VendorFunctionGenerator = () => {
   const [customFunctionName, setCustomFunctionName] = useState("");
   const [customDescription, setCustomDescription] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
+  const [activeTab, setActiveTab] = useState("templates");
   const { showSuccess, showError } = useAlert();
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+
+  // Fetch generated functions
+  const { data: generatedFunctions, isLoading: functionsLoading } = useQuery({
+    queryKey: ['generated-functions'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('generated_functions')
+        .select('*')
+        .order('created_at', { ascending: false });
+      
+      if (error) throw error;
+      return data || [];
+    }
+  });
+
+  // Generate function mutation
+  const generateFunctionMutation = useMutation({
+    mutationFn: async ({ functionTemplate, customName, customDescription }: {
+      functionTemplate?: FunctionTemplate;
+      customName?: string;
+      customDescription?: string;
+    }) => {
+      const { data, error } = await supabase.functions.invoke('vendor-function-generator', {
+        body: {
+          functionTemplate,
+          customName,
+          customDescription,
+          userId: user?.id
+        }
+      });
+
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: (data) => {
+      showSuccess("Function Generated!", data.message);
+      queryClient.invalidateQueries({ queryKey: ['generated-functions'] });
+      if (activeTab === "custom") {
+        setCustomFunctionName("");
+        setCustomDescription("");
+      }
+    },
+    onError: (error: any) => {
+      showError("Generation Failed", error.message || "Failed to generate function");
+    }
+  });
+
+  // Delete function mutation
+  const deleteFunctionMutation = useMutation({
+    mutationFn: async (functionId: string) => {
+      const { error } = await supabase
+        .from('generated_functions')
+        .delete()
+        .eq('id', functionId);
+      
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      showSuccess("Function Deleted", "Function has been successfully removed");
+      queryClient.invalidateQueries({ queryKey: ['generated-functions'] });
+    },
+    onError: () => {
+      showError("Delete Failed", "Failed to delete function");
+    }
+  });
 
   const functionTemplates: FunctionTemplate[] = [
     {
@@ -194,19 +272,7 @@ const VendorFunctionGenerator = () => {
   };
 
   const generateFunction = async (functionTemplate: FunctionTemplate) => {
-    setIsGenerating(true);
-    try {
-      // Simulate function generation
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      showSuccess(
-        "Function Generated!", 
-        `${functionTemplate.name} has been successfully created and integrated into the vendor management system.`
-      );
-    } catch (error) {
-      showError("Generation Failed", "Failed to generate the function. Please try again.");
-    } finally {
-      setIsGenerating(false);
-    }
+    generateFunctionMutation.mutate({ functionTemplate });
   };
 
   const generateCustomFunction = async () => {
@@ -215,20 +281,23 @@ const VendorFunctionGenerator = () => {
       return;
     }
 
-    setIsGenerating(true);
-    try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      showSuccess(
-        "Custom Function Generated!", 
-        `${customFunctionName} has been successfully created and integrated.`
-      );
-      setCustomFunctionName("");
-      setCustomDescription("");
-    } catch (error) {
-      showError("Generation Failed", "Failed to generate custom function. Please try again.");
-    } finally {
-      setIsGenerating(false);
-    }
+    generateFunctionMutation.mutate({ 
+      customName: customFunctionName, 
+      customDescription: customDescription 
+    });
+  };
+
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text);
+    showSuccess("Copied!", "Code copied to clipboard");
+  };
+
+  const getStatusBadge = (isDeployed: boolean) => {
+    return (
+      <Badge variant={isDeployed ? "default" : "secondary"}>
+        {isDeployed ? "Deployed" : "Generated"}
+      </Badge>
+    );
   };
 
   const categories = [...new Set(functionTemplates.map(f => f.category))];
@@ -250,10 +319,11 @@ const VendorFunctionGenerator = () => {
         </Badge>
       </div>
 
-      <Tabs defaultValue="templates" className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="templates">Function Templates</TabsTrigger>
           <TabsTrigger value="custom">Custom Function</TabsTrigger>
+          <TabsTrigger value="generated">Generated Functions ({generatedFunctions?.length || 0})</TabsTrigger>
         </TabsList>
 
         <TabsContent value="templates" className="space-y-4">
@@ -304,7 +374,7 @@ const VendorFunctionGenerator = () => {
                                     size="sm" 
                                     className="w-full mt-2"
                                     onClick={() => generateFunction(func)}
-                                    disabled={isGenerating}
+                                    disabled={generateFunctionMutation.isPending}
                                   >
                                     {isGenerating ? 'Generating...' : 'Generate Function'}
                                   </Button>
@@ -353,11 +423,152 @@ const VendorFunctionGenerator = () => {
 
               <Button 
                 onClick={generateCustomFunction}
-                disabled={isGenerating || !customFunctionName || !customDescription}
+                disabled={generateFunctionMutation.isPending || !customFunctionName || !customDescription}
                 className="w-full"
               >
-                {isGenerating ? 'Generating Custom Function...' : 'Generate Custom Function'}
+                {generateFunctionMutation.isPending ? 'Generating Custom Function...' : 'Generate Custom Function'}
               </Button>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="generated" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Generated Functions Registry</CardTitle>
+              <CardDescription>
+                Manage and monitor your generated vendor management functions
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {functionsLoading ? (
+                <div className="text-center py-8">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+                  <p className="text-sm text-muted-foreground mt-2">Loading functions...</p>
+                </div>
+              ) : generatedFunctions && generatedFunctions.length > 0 ? (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Function Name</TableHead>
+                      <TableHead>Type</TableHead>
+                      <TableHead>Category</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Created</TableHead>
+                      <TableHead>Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {generatedFunctions.map((func: any) => (
+                      <TableRow key={func.id}>
+                        <TableCell>
+                          <div>
+                            <p className="font-medium">{func.function_name}</p>
+                            <p className="text-xs text-muted-foreground truncate max-w-48">
+                              {func.function_description}
+                            </p>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant="outline">
+                            {func.function_type === 'template' ? 'Template' : 'Custom'}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          <span className={getCategoryColor(func.function_category || 'Custom')}>
+                            {func.function_category || 'Custom'}
+                          </span>
+                        </TableCell>
+                        <TableCell>
+                          {getStatusBadge(func.is_deployed)}
+                        </TableCell>
+                        <TableCell>
+                          {new Date(func.created_at).toLocaleDateString()}
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <Dialog>
+                              <DialogTrigger asChild>
+                                <Button size="sm" variant="outline">
+                                  <Eye className="h-4 w-4" />
+                                </Button>
+                              </DialogTrigger>
+                              <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+                                <DialogHeader>
+                                  <DialogTitle>{func.function_name}</DialogTitle>
+                                  <DialogDescription>
+                                    Generated code for {func.function_name}
+                                  </DialogDescription>
+                                </DialogHeader>
+                                <div className="space-y-4">
+                                  <div className="flex items-center justify-between">
+                                    <Badge variant="outline">{func.function_type}</Badge>
+                                    <Button
+                                      size="sm"
+                                      variant="outline"
+                                      onClick={() => copyToClipboard(func.generated_code)}
+                                    >
+                                      <Copy className="h-4 w-4 mr-1" />
+                                      Copy Code
+                                    </Button>
+                                  </div>
+                                  <pre className="bg-muted p-4 rounded-lg text-sm overflow-x-auto">
+                                    <code>{func.generated_code}</code>
+                                  </pre>
+                                  {func.deployment_url && (
+                                    <div className="flex items-center gap-2">
+                                      <ExternalLink className="h-4 w-4" />
+                                      <a 
+                                        href={func.deployment_url} 
+                                        target="_blank" 
+                                        rel="noopener noreferrer"
+                                        className="text-blue-600 hover:underline text-sm"
+                                      >
+                                        {func.deployment_url}
+                                      </a>
+                                    </div>
+                                  )}
+                                </div>
+                              </DialogContent>
+                            </Dialog>
+                            
+                            {func.deployment_url && (
+                              <Button size="sm" variant="outline">
+                                <Play className="h-4 w-4" />
+                              </Button>
+                            )}
+                            
+                            <Button 
+                              size="sm" 
+                              variant="outline" 
+                              onClick={() => deleteFunctionMutation.mutate(func.id)}
+                              disabled={deleteFunctionMutation.isPending}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              ) : (
+                <div className="text-center py-8">
+                  <Code className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                  <h3 className="text-lg font-medium">No Functions Generated Yet</h3>
+                  <p className="text-muted-foreground mb-4">
+                    Generate your first function using the templates or create a custom one
+                  </p>
+                  <div className="flex gap-2 justify-center">
+                    <Button onClick={() => setActiveTab("templates")} variant="outline">
+                      Browse Templates
+                    </Button>
+                    <Button onClick={() => setActiveTab("custom")}>
+                      Create Custom Function
+                    </Button>
+                  </div>
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>

@@ -1104,6 +1104,119 @@ export type Database = {
         }
         Relationships: []
       }
+      function_execution_logs: {
+        Row: {
+          created_at: string | null
+          error_message: string | null
+          executed_by: string | null
+          execution_result: string | null
+          execution_time_ms: number | null
+          function_id: string | null
+          id: string
+          success: boolean | null
+        }
+        Insert: {
+          created_at?: string | null
+          error_message?: string | null
+          executed_by?: string | null
+          execution_result?: string | null
+          execution_time_ms?: number | null
+          function_id?: string | null
+          id?: string
+          success?: boolean | null
+        }
+        Update: {
+          created_at?: string | null
+          error_message?: string | null
+          executed_by?: string | null
+          execution_result?: string | null
+          execution_time_ms?: number | null
+          function_id?: string | null
+          id?: string
+          success?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "function_execution_logs_executed_by_fkey"
+            columns: ["executed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "function_execution_logs_function_id_fkey"
+            columns: ["function_id"]
+            isOneToOne: false
+            referencedRelation: "generated_functions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      generated_functions: {
+        Row: {
+          complexity: string | null
+          created_at: string | null
+          created_by: string | null
+          deployment_url: string | null
+          function_category: string | null
+          function_description: string | null
+          function_name: string
+          function_type: string
+          generated_code: string
+          id: string
+          is_active: boolean | null
+          is_deployed: boolean | null
+          requirements: Json | null
+          template_id: string | null
+          updated_at: string | null
+          usage_count: number | null
+        }
+        Insert: {
+          complexity?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          deployment_url?: string | null
+          function_category?: string | null
+          function_description?: string | null
+          function_name: string
+          function_type: string
+          generated_code: string
+          id?: string
+          is_active?: boolean | null
+          is_deployed?: boolean | null
+          requirements?: Json | null
+          template_id?: string | null
+          updated_at?: string | null
+          usage_count?: number | null
+        }
+        Update: {
+          complexity?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          deployment_url?: string | null
+          function_category?: string | null
+          function_description?: string | null
+          function_name?: string
+          function_type?: string
+          generated_code?: string
+          id?: string
+          is_active?: boolean | null
+          is_deployed?: boolean | null
+          requirements?: Json | null
+          template_id?: string | null
+          updated_at?: string | null
+          usage_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "generated_functions_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       indonesian_business_categories: {
         Row: {
           category_code: string
