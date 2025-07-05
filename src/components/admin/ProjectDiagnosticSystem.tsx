@@ -531,6 +531,18 @@ const ProjectDiagnosticSystem = () => {
                   <BarChart3 className="h-8 w-8 text-primary" />
                 </div>
                 <Progress value={totalProgress} className="mt-2" />
+                {totalProgress < 100 && (
+                  <Button 
+                    size="sm" 
+                    variant="outline" 
+                    className="w-full mt-3"
+                    onClick={() => {
+                      console.log('Show completion guide');
+                    }}
+                  >
+                    View Completion Guide
+                  </Button>
+                )}
               </CardContent>
             </Card>
 
@@ -623,6 +635,76 @@ const ProjectDiagnosticSystem = () => {
               </div>
             </CardContent>
           </Card>
+
+          {/* Project Completion Guide */}
+          {totalProgress < 100 && (
+            <Card className="border-primary/20 bg-primary/5">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <TrendingUp className="h-5 w-5 text-primary" />
+                  Project Completion Roadmap
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="p-4 bg-background rounded-lg border">
+                    <h4 className="font-medium mb-3">Next Steps to 100% Completion</h4>
+                    <div className="space-y-3">
+                      <div className="flex items-start gap-3">
+                        <div className="w-6 h-6 bg-red-100 text-red-700 rounded-full flex items-center justify-center text-sm font-bold">1</div>
+                        <div>
+                          <h5 className="font-medium text-red-700">Complete Payment System (Critical Priority)</h5>
+                          <p className="text-sm text-muted-foreground mt-1">
+                            Essential for vendor monetization and business operations. Estimated: 65 hours
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-3">
+                        <div className="w-6 h-6 bg-orange-100 text-orange-700 rounded-full flex items-center justify-center text-sm font-bold">2</div>
+                        <div>
+                          <h5 className="font-medium text-orange-700">Finalize KYC & Vendor Management</h5>
+                          <p className="text-sm text-muted-foreground mt-1">
+                            Required for regulatory compliance and vendor trust. Estimated: 42 hours
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-3">
+                        <div className="w-6 h-6 bg-blue-100 text-blue-700 rounded-full flex items-center justify-center text-sm font-bold">3</div>
+                        <div>
+                          <h5 className="font-medium text-blue-700">Optimize Image Processing & Performance</h5>
+                          <p className="text-sm text-muted-foreground mt-1">
+                            Critical for user experience and platform performance. Estimated: 28 hours
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                    <div className="p-3 bg-background rounded border">
+                      <div className="font-medium text-primary mb-1">Total Remaining</div>
+                      <div className="text-2xl font-bold">{(100 - totalProgress).toFixed(0)}%</div>
+                    </div>
+                    <div className="p-3 bg-background rounded border">
+                      <div className="font-medium text-primary mb-1">Est. Completion</div>
+                      <div className="text-lg font-semibold">8-12 weeks</div>
+                    </div>
+                    <div className="p-3 bg-background rounded border">
+                      <div className="font-medium text-primary mb-1">Priority Tasks</div>
+                      <div className="text-lg font-semibold text-red-600">{pendingModules + inProgressModules}</div>
+                    </div>
+                  </div>
+
+                  <Alert>
+                    <CheckCircle className="h-4 w-4" />
+                    <AlertDescription>
+                      <strong>Pro Tip:</strong> Focus on Critical and High priority items first. Completing the Payment System will unlock 25% of overall progress and enable full business functionality.
+                    </AlertDescription>
+                  </Alert>
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </TabsContent>
 
         <TabsContent value="progress" className="space-y-6">
@@ -644,6 +726,18 @@ const ProjectDiagnosticSystem = () => {
                       </div>
                       
                       <div className="flex items-center gap-2">
+                        {module.status !== 'completed' && (
+                          <Button 
+                            size="sm" 
+                            variant="outline"
+                            onClick={() => {
+                              // Navigate to specific module completion instructions
+                              console.log(`Complete module: ${module.id}`);
+                            }}
+                          >
+                            Complete Module
+                          </Button>
+                        )}
                         <Badge variant="outline" className={getStatusColor(module.status)}>
                           {module.status.replace('_', ' ')}
                         </Badge>
@@ -832,51 +926,193 @@ const ProjectDiagnosticSystem = () => {
         <TabsContent value="errors" className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle>System Error Reports</CardTitle>
+              <CardTitle className="flex items-center justify-between">
+                <span>System Error Reports & Resolution Guide</span>
+                <Badge variant="destructive" className="animate-pulse">
+                  {12} Active Issues
+                </Badge>
+              </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                <Alert>
-                  <AlertTriangle className="h-4 w-4" />
+              <div className="space-y-6">
+                <Alert className="border-red-200 bg-red-50">
+                  <AlertTriangle className="h-4 w-4 text-red-600" />
                   <AlertDescription>
-                    <strong>Database Connection Timeout:</strong> Intermittent timeouts detected in vendor profile queries (Last: 2 hours ago)
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <strong className="text-red-800">Database Connection Timeout</strong>
+                        <Badge variant="destructive" className="text-xs">Critical</Badge>
+                      </div>
+                      <p className="text-sm text-red-700">
+                        Intermittent timeouts detected in vendor profile queries (Last: 2 hours ago)
+                      </p>
+                      <div className="mt-3 p-3 bg-red-100 rounded border-l-4 border-red-500">
+                        <h5 className="font-medium text-red-800 mb-2">Resolution Steps:</h5>
+                        <ol className="text-sm text-red-700 space-y-1 list-decimal list-inside">
+                          <li>Check database connection pool settings in Supabase</li>
+                          <li>Review slow query logs for vendor_business_profiles table</li>
+                          <li>Add database indexes on frequently queried columns</li>
+                          <li>Implement query timeout handling in frontend</li>
+                          <li>Consider database connection retry logic</li>
+                        </ol>
+                        <p className="text-xs text-red-600 mt-2">
+                          <strong>Impact:</strong> Affects vendor dashboard loading and profile updates
+                        </p>
+                      </div>
+                    </div>
                   </AlertDescription>
                 </Alert>
                 
-                <Alert>
-                  <AlertTriangle className="h-4 w-4" />
+                <Alert className="border-orange-200 bg-orange-50">
+                  <AlertTriangle className="h-4 w-4 text-orange-600" />
                   <AlertDescription>
-                    <strong>Image Upload Failure:</strong> Property image uploads failing for files over 2MB (Last: 30 minutes ago)
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <strong className="text-orange-800">Image Upload Failure</strong>
+                        <Badge variant="secondary" className="text-xs bg-orange-100 text-orange-800">High</Badge>
+                      </div>
+                      <p className="text-sm text-orange-700">
+                        Property image uploads failing for files over 2MB (Last: 30 minutes ago)
+                      </p>
+                      <div className="mt-3 p-3 bg-orange-100 rounded border-l-4 border-orange-500">
+                        <h5 className="font-medium text-orange-800 mb-2">Resolution Steps:</h5>
+                        <ol className="text-sm text-orange-700 space-y-1 list-decimal list-inside">
+                          <li>Implement client-side image compression using browser-image-compression</li>
+                          <li>Add file size validation before upload (max 2MB)</li>
+                          <li>Create image optimization pipeline with WebP conversion</li>
+                          <li>Implement chunked upload for large files</li>
+                          <li>Add progress indicators and error handling</li>
+                          <li>Configure Supabase storage bucket size limits</li>
+                        </ol>
+                        <p className="text-xs text-orange-600 mt-2">
+                          <strong>Impact:</strong> Users cannot upload high-quality property images
+                        </p>
+                      </div>
+                    </div>
                   </AlertDescription>
                 </Alert>
                 
-                <Alert>
-                  <AlertTriangle className="h-4 w-4" />
+                <Alert className="border-yellow-200 bg-yellow-50">
+                  <AlertTriangle className="h-4 w-4 text-yellow-600" />
                   <AlertDescription>
-                    <strong>Authentication Rate Limit:</strong> Multiple failed login attempts from suspicious IPs (Last: 5 minutes ago)
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <strong className="text-yellow-800">Authentication Rate Limit</strong>
+                        <Badge variant="secondary" className="text-xs bg-yellow-100 text-yellow-800">Medium</Badge>
+                      </div>
+                      <p className="text-sm text-yellow-700">
+                        Multiple failed login attempts from suspicious IPs (Last: 5 minutes ago)
+                      </p>
+                      <div className="mt-3 p-3 bg-yellow-100 rounded border-l-4 border-yellow-500">
+                        <h5 className="font-medium text-yellow-800 mb-2">Resolution Steps:</h5>
+                        <ol className="text-sm text-yellow-700 space-y-1 list-decimal list-inside">
+                          <li>Implement progressive delay for failed login attempts</li>
+                          <li>Add CAPTCHA after 3 failed attempts</li>
+                          <li>Set up IP-based rate limiting (max 5 attempts per hour)</li>
+                          <li>Configure account lockout after 5 failed attempts</li>
+                          <li>Add email notifications for suspicious login activity</li>
+                          <li>Implement geolocation-based login verification</li>
+                        </ol>
+                        <p className="text-xs text-yellow-600 mt-2">
+                          <strong>Impact:</strong> Potential security breach and user account compromise
+                        </p>
+                      </div>
+                    </div>
                   </AlertDescription>
                 </Alert>
 
-                <div className="mt-6 p-4 bg-muted rounded-lg">
-                  <h4 className="font-medium mb-2">Error Summary (Last 24h)</h4>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                    <div>
-                      <span className="text-red-600 font-bold">12</span>
-                      <span className="block text-muted-foreground">Critical Errors</span>
+                <Alert className="border-blue-200 bg-blue-50">
+                  <AlertTriangle className="h-4 w-4 text-blue-600" />
+                  <AlertDescription>
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <strong className="text-blue-800">API Response Delays</strong>
+                        <Badge variant="secondary" className="text-xs bg-blue-100 text-blue-800">Medium</Badge>
+                      </div>
+                      <p className="text-sm text-blue-700">
+                        Property search API taking 3-5 seconds to respond (Last: 1 hour ago)
+                      </p>
+                      <div className="mt-3 p-3 bg-blue-100 rounded border-l-4 border-blue-500">
+                        <h5 className="font-medium text-blue-800 mb-2">Resolution Steps:</h5>
+                        <ol className="text-sm text-blue-700 space-y-1 list-decimal list-inside">
+                          <li>Add database indexes on search columns (location, price, type)</li>
+                          <li>Implement search result caching with Redis</li>
+                          <li>Optimize SQL queries with EXPLAIN ANALYZE</li>
+                          <li>Add pagination to limit result sets</li>
+                          <li>Implement search suggestions with autocomplete</li>
+                          <li>Add loading states and skeleton screens</li>
+                        </ol>
+                        <p className="text-xs text-blue-600 mt-2">
+                          <strong>Impact:</strong> Poor user experience and reduced search engagement
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <span className="text-yellow-600 font-bold">45</span>
-                      <span className="block text-muted-foreground">Warnings</span>
+                  </AlertDescription>
+                </Alert>
+
+                <div className="mt-8 p-6 bg-muted rounded-lg border">
+                  <h4 className="font-medium mb-4 flex items-center gap-2">
+                    <BarChart3 className="h-5 w-5" />
+                    Error Analytics Summary (Last 24h)
+                  </h4>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-red-600 mb-1">12</div>
+                      <div className="text-sm text-muted-foreground">Critical Errors</div>
+                      <div className="text-xs text-red-500 mt-1">↗ +3 from yesterday</div>
                     </div>
-                    <div>
-                      <span className="text-blue-600 font-bold">234</span>
-                      <span className="block text-muted-foreground">Info Messages</span>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-yellow-600 mb-1">45</div>
+                      <div className="text-sm text-muted-foreground">Warnings</div>
+                      <div className="text-xs text-yellow-500 mt-1">↘ -8 from yesterday</div>
                     </div>
-                    <div>
-                      <span className="text-green-600 font-bold">98.5%</span>
-                      <span className="block text-muted-foreground">Uptime</span>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-blue-600 mb-1">234</div>
+                      <div className="text-sm text-muted-foreground">Info Messages</div>
+                      <div className="text-xs text-blue-500 mt-1">→ Same as yesterday</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-green-600 mb-1">98.5%</div>
+                      <div className="text-sm text-muted-foreground">System Uptime</div>
+                      <div className="text-xs text-green-500 mt-1">↗ +0.2% from yesterday</div>
                     </div>
                   </div>
+                  
+                  <div className="mt-6 pt-4 border-t border-muted-foreground/20">
+                    <h5 className="font-medium mb-3">Quick Actions</h5>
+                    <div className="flex flex-wrap gap-2">
+                      <Button size="sm" variant="outline">
+                        <Database className="h-4 w-4 mr-2" />
+                        Check DB Health
+                      </Button>
+                      <Button size="sm" variant="outline">
+                        <Settings className="h-4 w-4 mr-2" />
+                        Review Logs
+                      </Button>
+                      <Button size="sm" variant="outline">
+                        <Wrench className="h-4 w-4 mr-2" />
+                        Run Diagnostics
+                      </Button>
+                      <Button size="sm" variant="outline">
+                        <AlertTriangle className="h-4 w-4 mr-2" />
+                        Create Alert Rule
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
+                  <h5 className="font-medium text-green-800 mb-2 flex items-center gap-2">
+                    <CheckCircle className="h-4 w-4" />
+                    Monitoring Best Practices
+                  </h5>
+                  <ul className="text-sm text-green-700 space-y-1">
+                    <li>• Set up automated alerts for critical system components</li>
+                    <li>• Monitor error rates and response times continuously</li>
+                    <li>• Implement health checks for all external dependencies</li>
+                    <li>• Create runbooks for common error scenarios</li>
+                    <li>• Schedule regular system maintenance windows</li>
+                  </ul>
                 </div>
               </div>
             </CardContent>
