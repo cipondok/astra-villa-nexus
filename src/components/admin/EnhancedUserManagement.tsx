@@ -222,6 +222,25 @@ const EnhancedUserManagement = () => {
     },
   });
 
+  // Update user role mutation
+  const updateUserRoleMutation = useMutation({
+    mutationFn: async ({ userId, role }: { userId: string; role: UserRole }) => {
+      const { error } = await supabase
+        .from('profiles')
+        .update({ role })
+        .eq('id', userId);
+      
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      showSuccess("Role Updated", "User role updated successfully.");
+      queryClient.invalidateQueries({ queryKey: ['enhanced-users'] });
+    },
+    onError: (error: any) => {
+      showError("Role Update Failed", error.message);
+    },
+  });
+
   // Filter users
   const filteredUsers = users?.filter((user) => {
     const matchesSearch = 
@@ -349,7 +368,25 @@ const EnhancedUserManagement = () => {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <Badge variant="outline">{user.role.replace('_', ' ').toUpperCase()}</Badge>
+                      <div className="flex flex-col gap-1">
+                        <Badge variant="outline">{user.role.replace('_', ' ').toUpperCase()}</Badge>
+                        <Select 
+                          value={user.role} 
+                          onValueChange={(role: UserRole) => updateUserRoleMutation.mutate({ userId: user.id, role })}
+                        >
+                          <SelectTrigger className="w-[100px] h-6 text-xs">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="general_user">General User</SelectItem>
+                            <SelectItem value="property_owner">Property Owner</SelectItem>
+                            <SelectItem value="agent">Agent</SelectItem>
+                            <SelectItem value="vendor">Vendor</SelectItem>
+                            <SelectItem value="customer_service">Customer Service</SelectItem>
+                            <SelectItem value="admin">Admin</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
                     </TableCell>
                     <TableCell>
                       {user.user_levels ? (

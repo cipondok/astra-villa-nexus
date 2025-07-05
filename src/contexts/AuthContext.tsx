@@ -70,7 +70,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return;
       }
       
-      // Check for vendor emails
+      // Check for hardcoded vendor emails for backwards compatibility
       const vendorEmails = ['vendor@astravilla.com', 'vendor@test.com'];
       if (vendorEmails.includes(authUser.user?.email || '')) {
         const vendorProfile: Profile = {
@@ -81,7 +81,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           verification_status: 'approved',
           company_name: 'AstraVilla Services'
         };
-        console.log('Setting vendor profile:', vendorProfile);
+        console.log('Setting hardcoded vendor profile:', vendorProfile);
         setProfile(vendorProfile);
         setLoading(false);
         return;
