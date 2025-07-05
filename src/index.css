@@ -9,26 +9,26 @@
 
 @layer base {
   :root {
-    /* Light Mode Colors - Proper HSL Values */
-    --background: 0 0% 100%;
+    /* Light Mode Colors - Enhanced Admin Overview */
+    --background: 220 20% 98%;
     --foreground: 222 84% 4.9%;
     --card: 0 0% 100%;
     --card-foreground: 222 84% 4.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 222 84% 4.9%;
-    --primary: 221 83% 53%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 215 20% 25%;
-    --muted: 210 40% 98%;
-    --muted-foreground: 215 16% 47%;
-    --accent: 142 76% 36%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 72% 51%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214 32% 91%;
+    --primary: 220 100% 60%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 220 20% 95%;
+    --secondary-foreground: 220 15% 30%;
+    --muted: 220 15% 96%;  
+    --muted-foreground: 220 10% 45%;
+    --accent: 160 85% 45%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 85% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 15% 88%;
     --input: 0 0% 100%;
-    --ring: 221 83% 53%;
+    --ring: 220 100% 60%;
     --radius: 12px;
   }
 
