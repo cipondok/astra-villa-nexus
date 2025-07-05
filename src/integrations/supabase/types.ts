@@ -9,6 +9,42 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      account_lockouts: {
+        Row: {
+          created_at: string | null
+          email: string
+          failed_attempts: number
+          id: string
+          is_active: boolean | null
+          locked_at: string
+          locked_by_ip: unknown | null
+          unlock_at: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email: string
+          failed_attempts?: number
+          id?: string
+          is_active?: boolean | null
+          locked_at?: string
+          locked_by_ip?: unknown | null
+          unlock_at: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string
+          failed_attempts?: number
+          id?: string
+          is_active?: boolean | null
+          locked_at?: string
+          locked_by_ip?: unknown | null
+          unlock_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       admin_alert_rules: {
         Row: {
           alert_template: Json
@@ -1477,6 +1513,51 @@ export type Database = {
           subdistrict_code?: string | null
           subdistrict_name?: string | null
           updated_at?: string | null
+        }
+        Relationships: []
+      }
+      login_attempts: {
+        Row: {
+          attempt_time: string
+          blocked: boolean | null
+          created_at: string | null
+          device_fingerprint: string | null
+          email: string | null
+          geolocation: Json | null
+          id: string
+          ip_address: unknown
+          risk_score: number | null
+          success: boolean
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          attempt_time?: string
+          blocked?: boolean | null
+          created_at?: string | null
+          device_fingerprint?: string | null
+          email?: string | null
+          geolocation?: Json | null
+          id?: string
+          ip_address: unknown
+          risk_score?: number | null
+          success?: boolean
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          attempt_time?: string
+          blocked?: boolean | null
+          created_at?: string | null
+          device_fingerprint?: string | null
+          email?: string | null
+          geolocation?: Json | null
+          id?: string
+          ip_address?: unknown
+          risk_score?: number | null
+          success?: boolean
+          user_agent?: string | null
+          user_id?: string | null
         }
         Relationships: []
       }
@@ -5487,8 +5568,16 @@ export type Database = {
         Args: { user_id: string; dev_status: string }
         Returns: boolean
       }
+      check_account_lockout: {
+        Args: { p_email: string }
+        Returns: boolean
+      }
       check_admin_access: {
         Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
+      check_ip_rate_limit: {
+        Args: { p_ip_address: unknown }
         Returns: boolean
       }
       check_super_admin_access: {
@@ -5502,6 +5591,15 @@ export type Database = {
       cleanup_expired_sessions: {
         Args: Record<PropertyKey, never>
         Returns: undefined
+      }
+      create_account_lockout: {
+        Args: {
+          p_email: string
+          p_user_id?: string
+          p_ip_address?: unknown
+          p_duration_minutes?: number
+        }
+        Returns: string
       }
       create_login_alert: {
         Args: {

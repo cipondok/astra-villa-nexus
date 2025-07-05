@@ -7,7 +7,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useAuth } from "@/contexts/AuthContext";
-import { X, Eye, EyeOff } from "lucide-react";
+import { useAdvancedAuthSecurity } from "@/hooks/useAdvancedAuthSecurity";
+import { X, Eye, EyeOff, Shield, Clock } from "lucide-react";
+import CaptchaVerification from "./CaptchaVerification";
 
 interface SimpleAuthModalProps {
   isOpen: boolean;
@@ -22,15 +24,23 @@ const SimpleAuthModal = ({ isOpen, onClose }: SimpleAuthModalProps) => {
   const [error, setError] = useState("");
   const [activeTab, setActiveTab] = useState("login");
   const [isLoading, setIsLoading] = useState(false);
+  const [showCaptcha, setShowCaptcha] = useState(false);
   
   const { signIn, signUp } = useAuth();
+  const { 
+    secureLogin, 
+    captchaRequired, 
+    progressiveDelay, 
+    isProcessing,
+    setCaptchaRequired 
+  } = useAdvancedAuthSecurity();
 
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   };
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent, captchaToken?: string) => {
     e.preventDefault();
     setError("");
     
@@ -45,10 +55,16 @@ const SimpleAuthModal = ({ isOpen, onClose }: SimpleAuthModalProps) => {
     }
 
     setIsLoading(true);
-    console.log("Attempting login with:", loginData.email);
+    console.log("Attempting secure login with:", loginData.email);
     
     try {
-      const result = await signIn(loginData.email, loginData.password);
+      const result = await secureLogin(loginData.email, loginData.password, captchaToken);
+      
+      if (result.requiresCaptcha) {
+        setShowCaptcha(true);
+        setIsLoading(false);
+        return;
+      }
       
       if (result.error) {
         console.error("Login error:", result.error);
@@ -58,10 +74,12 @@ const SimpleAuthModal = ({ isOpen, onClose }: SimpleAuthModalProps) => {
           setError(result.error.message || "Login failed. Please try again.");
         }
       } else if (result.success) {
-        console.log("Login successful");
+        console.log("Login successful with enhanced security");
         onClose();
         setLoginData({ email: "", password: "" });
         setError("");
+        setShowCaptcha(false);
+        setCaptchaRequired(false);
       }
     } catch (err: any) {
       console.error("Login exception:", err);
@@ -69,6 +87,17 @@ const SimpleAuthModal = ({ isOpen, onClose }: SimpleAuthModalProps) => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleCaptchaVerify = (token: string) => {
+    setShowCaptcha(false);
+    handleLogin({ preventDefault: () => {} } as React.FormEvent, token);
+  };
+
+  const handleCaptchaCancel = () => {
+    setShowCaptcha(false);
+    setCaptchaRequired(false);
+    setError("");
   };
 
   const handleRegister = async (e: React.FormEvent) => {
@@ -200,12 +229,30 @@ const SimpleAuthModal = ({ isOpen, onClose }: SimpleAuthModalProps) => {
                   </div>
                 </div>
 
+                {progressiveDelay > 0 && (
+                  <Alert className="mb-4">
+                    <Clock className="h-4 w-4" />
+                    <AlertDescription>
+                      Please wait {Math.ceil(progressiveDelay / 1000)} seconds before trying again.
+                    </AlertDescription>
+                  </Alert>
+                )}
+
+                {captchaRequired && !showCaptcha && (
+                  <Alert className="mb-4">
+                    <Shield className="h-4 w-4" />
+                    <AlertDescription>
+                      Multiple failed attempts detected. CAPTCHA verification required.
+                    </AlertDescription>
+                  </Alert>
+                )}
+
                 <Button 
                   type="submit" 
                   className="w-full bg-gradient-to-r from-blue-600 to-orange-500"
-                  disabled={isLoading}
+                  disabled={isLoading || isProcessing || progressiveDelay > 0}
                 >
-                  {isLoading ? "Signing in..." : "Sign In"}
+                  {isLoading || isProcessing ? "Signing in..." : "Sign In"}
                 </Button>
               </form>
             </TabsContent>
@@ -301,6 +348,15 @@ const SimpleAuthModal = ({ isOpen, onClose }: SimpleAuthModalProps) => {
           </Tabs>
         </CardContent>
       </Card>
+
+      {/* CAPTCHA Verification Modal */}
+      {showCaptcha && (
+        <CaptchaVerification
+          onVerify={handleCaptchaVerify}
+          onCancel={handleCaptchaCancel}
+          isLoading={isLoading}
+        />
+      )}
     </div>
   );
 };
