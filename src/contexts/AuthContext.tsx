@@ -144,10 +144,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } catch (error) {
       console.error('Profile fetch error:', error);
       // Always clear loading state and provide default profile
+      const { data: authUser } = await supabase.auth.getUser();
       const defaultProfile: Profile = {
         id: userId,
-        email: '',
-        full_name: 'User',
+        email: authUser.user?.email || '',
+        full_name: authUser.user?.user_metadata?.full_name || 'User',
         role: 'general_user',
         verification_status: 'pending'
       };
@@ -345,16 +346,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (error.message.includes('Invalid login credentials')) {
           return { 
             error: { 
-              message: `Invalid email or password. 
-              
-              Test accounts available:
-              - Admin: mycode103@gmail.com  
-              - Vendor: vendor@astravilla.com (or test-vendor@astravilla.com)
-              - Agent: agant@astravilla.com (or test-agent@astravilla.com)
-              - Property Owner: test-property-owner@astravilla.com
-              (All passwords: testpass123)
-              
-              New users: Sign up first, then apply for vendor/agent roles in your profile.` 
+              message: 'Invalid email or password. Please check your credentials and try again.' 
             }, 
             success: false 
           };

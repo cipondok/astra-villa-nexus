@@ -7,6 +7,7 @@ import VendorPerformanceDashboard from "./VendorPerformanceDashboard";
 import VendorInsightsPanel from "./VendorInsightsPanel";
 import PerformanceMetricsCard from "./PerformanceMetricsCard";
 import { TrendingUp, Calendar, Star, DollarSign, Users, BarChart3, Clock, Target } from "lucide-react";
+import { formatIDR } from "@/utils/currency";
 
 const VendorAnalytics = () => {
   const { user } = useAuth();
@@ -168,7 +169,7 @@ const VendorAnalytics = () => {
             
             <PerformanceMetricsCard
               title="Total Revenue"
-              value={`$${analytics.totalRevenue.toFixed(2)}`}
+              value={formatIDR(analytics.totalRevenue)}
               icon={DollarSign}
               color="green"
               description="All time earnings"
@@ -228,7 +229,7 @@ const VendorAnalytics = () => {
                       <span className="text-sm font-medium">Revenue</span>
                     </div>
                     <span className="text-sm font-semibold">
-                      ${analytics.monthlyRevenue.toFixed(2)}
+                      {formatIDR(analytics.monthlyRevenue)}
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
@@ -237,7 +238,7 @@ const VendorAnalytics = () => {
                       <span className="text-sm font-medium">Avg per Booking</span>
                     </div>
                     <span className="text-sm font-semibold">
-                      ${analytics.monthlyBookings > 0 ? (analytics.monthlyRevenue / analytics.monthlyBookings).toFixed(2) : '0.00'}
+                      {formatIDR(analytics.monthlyBookings > 0 ? analytics.monthlyRevenue / analytics.monthlyBookings : 0)}
                     </span>
                   </div>
                 </div>
