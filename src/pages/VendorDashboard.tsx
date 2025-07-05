@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useNavigate } from 'react-router-dom';
+import { formatIDR } from '@/utils/currency';
 import { 
   Store, 
   Users, 
@@ -168,7 +169,7 @@ const VendorDashboard = () => {
                   <DollarSign className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">$0</div>
+                  <div className="text-2xl font-bold">{formatIDR(0)}</div>
                   <p className="text-xs text-muted-foreground">This month</p>
                 </CardContent>
               </Card>

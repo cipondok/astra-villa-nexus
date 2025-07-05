@@ -3,6 +3,7 @@ import React from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { formatIDR } from '@/utils/currency';
 import { Wallet, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -50,7 +51,7 @@ const WalletPage = () => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-green-600">$0.00</div>
+              <div className="text-2xl font-bold text-green-600">{formatIDR(0)}</div>
               <p className="text-sm text-muted-foreground">Available balance</p>
             </CardContent>
           </Card>

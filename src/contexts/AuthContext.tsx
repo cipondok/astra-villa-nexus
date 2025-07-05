@@ -146,8 +146,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // Always clear loading state and provide default profile
       const defaultProfile: Profile = {
         id: userId,
-        email: user?.email || '',
-        full_name: user?.user_metadata?.full_name || 'User',
+        email: '',
+        full_name: 'User',
         role: 'general_user',
         verification_status: 'pending'
       };
