@@ -13,6 +13,7 @@ import VendorDiagnostics from "./VendorDiagnostics";
 import DiagnosticAnalyticsOverview from "./DiagnosticAnalyticsOverview";
 import HierarchicalCategoryManagement from "./HierarchicalCategoryManagement";
 import VendorIssuesOverview from "./VendorIssuesOverview";
+import VendorFunctionGenerator from "./VendorFunctionGenerator";
 
 const VendorManagementHub = () => {
   const [activeTab, setActiveTab] = useState("overview");
@@ -32,9 +33,10 @@ const VendorManagementHub = () => {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-9">
+        <TabsList className="grid w-full grid-cols-10">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="issues">Issues</TabsTrigger>
+          <TabsTrigger value="functions">Functions</TabsTrigger>
           <TabsTrigger value="categories">Categories</TabsTrigger>
           <TabsTrigger value="services">Services</TabsTrigger>
           <TabsTrigger value="inventory">Inventory</TabsTrigger>
@@ -112,6 +114,19 @@ const VendorManagementHub = () => {
                       <p className="text-sm text-orange-600">KYC & Payment integration issues</p>
                     </div>
                     <Badge variant="destructive">1 Active</Badge>
+                  </div>
+                </div>
+
+                <div 
+                  className="p-3 border rounded-lg cursor-pointer hover:bg-muted/50 transition-colors border-blue-200 bg-blue-50/50"
+                  onClick={() => setActiveTab("functions")}
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="font-medium text-blue-800">Generate Functions</h4>
+                      <p className="text-sm text-blue-600">Create new vendor system capabilities</p>
+                    </div>
+                    <Badge variant="outline" className="text-blue-600 border-blue-200">12 Templates</Badge>
                   </div>
                 </div>
 
@@ -221,6 +236,10 @@ const VendorManagementHub = () => {
 
         <TabsContent value="issues" className="space-y-6">
           <VendorIssuesOverview />
+        </TabsContent>
+
+        <TabsContent value="functions" className="space-y-6">
+          <VendorFunctionGenerator />
         </TabsContent>
 
         <TabsContent value="categories">
