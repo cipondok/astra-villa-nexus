@@ -310,6 +310,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       console.log('Attempting sign in for:', email);
       setLoading(true);
       
+      // Clear any existing auth state first
+      await supabase.auth.signOut();
+      
       // Check if user is already signed in elsewhere
       const { data: existingSession } = await supabase.auth.getSession();
       if (existingSession.session && existingSession.session.user?.email !== email) {
@@ -340,7 +343,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         
         // Provide specific error messages
         if (error.message.includes('Invalid login credentials')) {
-          return { error: { message: 'Invalid email or password. Please check your credentials and try again.' }, success: false };
+          return { 
+            error: { 
+              message: `Invalid email or password. Account may not exist - try signing up first, or use test account: mycode103@gmail.com` 
+            }, 
+            success: false 
+          };
         }
         
         return { error, success: false };
