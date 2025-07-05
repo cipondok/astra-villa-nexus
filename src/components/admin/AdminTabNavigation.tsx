@@ -20,7 +20,8 @@ import {
   Calendar,
   Star,
   Headphones,
-  Paintbrush
+  Paintbrush,
+  CreditCard
 } from "lucide-react";
 
 interface AdminTabNavigationProps {
@@ -193,6 +194,12 @@ const AdminTabNavigation = ({ isAdmin }: AdminTabNavigationProps) => {
       id: "billing-management", 
       label: "Billing", 
       icon: TrendingUp, 
+      category: "finance" 
+    },
+    { 
+      id: "indonesian-payment-config", 
+      label: "ID Payment", 
+      icon: CreditCard, 
       category: "finance" 
     },
     { 
