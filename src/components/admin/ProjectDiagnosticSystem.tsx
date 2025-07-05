@@ -585,14 +585,28 @@ const ProjectDiagnosticSystem = () => {
         <TabsContent value="uncompleted" className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle>Uncompleted Functions Analysis</CardTitle>
+              <CardTitle className="flex items-center justify-between">
+                <span>Uncompleted Functions Analysis</span>
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <span>Total: {uncompletedFunctions?.reduce((acc, cat) => acc + cat.functions.length, 0) || 0} functions</span>
+                  <span>•</span>
+                  <span>~{uncompletedFunctions?.reduce((acc, cat) => acc + cat.estimatedHours, 0) || 0}h estimated</span>
+                </div>
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-6">
                 {uncompletedFunctions?.map((category, index) => (
-                  <div key={index} className="p-4 border rounded-lg">
+                  <div key={index} className="p-4 border rounded-lg hover:shadow-md transition-shadow">
                     <div className="flex items-center justify-between mb-3">
-                      <h4 className="font-medium text-lg">{category.category}</h4>
+                      <div className="flex items-center gap-3">
+                        <h4 className="font-medium text-lg">{category.category}</h4>
+                        {category.moduleId && (
+                          <Badge variant="outline" className="text-xs">
+                            Module: {category.moduleId}
+                          </Badge>
+                        )}
+                      </div>
                       <div className="flex items-center gap-2">
                         <Badge className={getPriorityColor(category.priority)}>
                           {category.priority} Priority
@@ -603,16 +617,54 @@ const ProjectDiagnosticSystem = () => {
                       </div>
                     </div>
                     
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                    {category.issues && category.issues.length > 0 && (
+                      <Alert className="mb-3">
+                        <AlertTriangle className="h-4 w-4" />
+                        <AlertDescription className="text-sm">
+                          <strong>Current Issues:</strong> {category.issues.join(', ')}
+                        </AlertDescription>
+                      </Alert>
+                    )}
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                       {category.functions.map((func, funcIndex) => (
-                        <div key={funcIndex} className="flex items-center gap-2 text-sm">
-                          <div className="w-2 h-2 bg-orange-500 dark:bg-orange-400 rounded-full"></div>
-                          {func}
+                        <div key={funcIndex} className="flex items-center justify-between p-2 bg-muted/50 rounded text-sm">
+                          <div className="flex items-center gap-2">
+                            <div className={`w-2 h-2 rounded-full ${
+                              category.priority === 'Critical' ? 'bg-red-500' :
+                              category.priority === 'High' ? 'bg-orange-500' :
+                              category.priority === 'Medium' ? 'bg-yellow-500' :
+                              'bg-green-500'
+                            }`}></div>
+                            <span className="font-medium">{func}</span>
+                          </div>
+                          <Badge variant="secondary" className="text-xs">
+                            {Math.round(category.estimatedHours / category.functions.length)}h
+                          </Badge>
                         </div>
                       ))}
                     </div>
+                    
+                    <div className="mt-3 pt-3 border-t border-muted">
+                      <div className="flex items-center justify-between text-xs text-muted-foreground">
+                        <span>Completion Impact: {category.priority === 'Critical' ? 'System Critical' : category.priority === 'High' ? 'Major Feature' : 'Enhancement'}</span>
+                        <span>Functions: {category.functions.length}</span>
+                      </div>
+                    </div>
                   </div>
                 ))}
+                
+                {!uncompletedFunctions || uncompletedFunctions.length === 0 && (
+                  <div className="text-center py-12">
+                    <CheckCircle className="mx-auto h-12 w-12 text-green-500 mb-4" />
+                    <h3 className="text-lg font-medium text-green-700 dark:text-green-400 mb-2">
+                      All Functions Complete!
+                    </h3>
+                    <p className="text-muted-foreground">
+                      No uncompleted functions detected in the current project modules.
+                    </p>
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>
