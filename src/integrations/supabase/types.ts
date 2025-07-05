@@ -2259,9 +2259,11 @@ export type Database = {
       }
       search_analytics: {
         Row: {
+          cache_hit: boolean | null
           clicked_result_id: string | null
           created_at: string
           id: string
+          response_time_ms: number | null
           results_count: number | null
           search_filters: Json | null
           search_query: string
@@ -2270,9 +2272,11 @@ export type Database = {
           visitor_id: string
         }
         Insert: {
+          cache_hit?: boolean | null
           clicked_result_id?: string | null
           created_at?: string
           id?: string
+          response_time_ms?: number | null
           results_count?: number | null
           search_filters?: Json | null
           search_query: string
@@ -2281,9 +2285,11 @@ export type Database = {
           visitor_id: string
         }
         Update: {
+          cache_hit?: boolean | null
           clicked_result_id?: string | null
           created_at?: string
           id?: string
+          response_time_ms?: number | null
           results_count?: number | null
           search_filters?: Json | null
           search_query?: string
@@ -5647,6 +5653,44 @@ export type Database = {
           p_risk_score?: number
         }
         Returns: string
+      }
+      search_properties_optimized: {
+        Args: {
+          p_search_text?: string
+          p_property_type?: string
+          p_listing_type?: string
+          p_city?: string
+          p_min_price?: number
+          p_max_price?: number
+          p_min_bedrooms?: number
+          p_max_bedrooms?: number
+          p_min_bathrooms?: number
+          p_max_bathrooms?: number
+          p_min_area?: number
+          p_max_area?: number
+          p_limit?: number
+          p_offset?: number
+        }
+        Returns: {
+          id: string
+          title: string
+          description: string
+          price: number
+          property_type: string
+          listing_type: string
+          location: string
+          city: string
+          area: string
+          state: string
+          bedrooms: number
+          bathrooms: number
+          area_sqm: number
+          images: string[]
+          image_urls: string[]
+          status: string
+          created_at: string
+          total_count: number
+        }[]
       }
     }
     Enums: {
