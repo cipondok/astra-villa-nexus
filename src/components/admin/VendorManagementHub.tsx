@@ -12,6 +12,7 @@ import VendorProgressReports from "./VendorProgressReports";
 import VendorDiagnostics from "./VendorDiagnostics";
 import DiagnosticAnalyticsOverview from "./DiagnosticAnalyticsOverview";
 import HierarchicalCategoryManagement from "./HierarchicalCategoryManagement";
+import VendorIssuesOverview from "./VendorIssuesOverview";
 
 const VendorManagementHub = () => {
   const [activeTab, setActiveTab] = useState("overview");
@@ -31,8 +32,9 @@ const VendorManagementHub = () => {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-8">
+        <TabsList className="grid w-full grid-cols-9">
           <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="issues">Issues</TabsTrigger>
           <TabsTrigger value="categories">Categories</TabsTrigger>
           <TabsTrigger value="services">Services</TabsTrigger>
           <TabsTrigger value="inventory">Inventory</TabsTrigger>
@@ -100,6 +102,19 @@ const VendorManagementHub = () => {
                 <CardDescription>Common vendor management tasks</CardDescription>
               </CardHeader>
               <CardContent className="space-y-3">
+                <div 
+                  className="p-3 border rounded-lg cursor-pointer hover:bg-muted/50 transition-colors border-orange-200 bg-orange-50/50"
+                  onClick={() => setActiveTab("issues")}
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="font-medium text-orange-800">Resolve Issues</h4>
+                      <p className="text-sm text-orange-600">KYC & Payment integration issues</p>
+                    </div>
+                    <Badge variant="destructive">1 Active</Badge>
+                  </div>
+                </div>
+
                 <div 
                   className="p-3 border rounded-lg cursor-pointer hover:bg-muted/50 transition-colors"
                   onClick={() => setActiveTab("categories")}
@@ -202,6 +217,10 @@ const VendorManagementHub = () => {
               </CardContent>
             </Card>
           </div>
+        </TabsContent>
+
+        <TabsContent value="issues" className="space-y-6">
+          <VendorIssuesOverview />
         </TabsContent>
 
         <TabsContent value="categories">
