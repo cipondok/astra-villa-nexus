@@ -10,37 +10,72 @@ const RealTimeDashboardStats = () => {
   const { data: stats, isLoading } = useQuery({
     queryKey: ['admin-dashboard-stats'],
     queryFn: async () => {
-      const [
-        usersResult,
-        propertiesResult,
-        vendorsResult,
-        ordersResult,
-        errorsResult
-      ] = await Promise.all([
-        supabase.from('profiles').select('*', { count: 'exact', head: true }),
-        supabase.from('properties').select('*', { count: 'exact', head: true }),
-        supabase.from('vendor_business_profiles').select('*', { count: 'exact', head: true }),
-        supabase.from('orders').select('*', { count: 'exact', head: true }),
-        supabase.from('system_error_logs').select('*', { count: 'exact', head: true })
-      ]);
+      try {
+        const [
+          usersResult,
+          propertiesResult,
+          vendorsResult
+        ] = await Promise.all([
+          supabase.from('profiles').select('*', { count: 'exact', head: true }),
+          supabase.from('properties').select('*', { count: 'exact', head: true }),
+          supabase.from('vendor_business_profiles').select('*', { count: 'exact', head: true })
+        ]);
 
-      // Get active users (users who logged in within last 24 hours)
-      const { data: activeUsers } = await supabase
-        .from('user_activity_logs')
-        .select('user_id')
-        .gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
-        .not('user_id', 'is', null);
+        // Try to get orders and errors with fallback
+        let ordersCount = 0;
+        let errorsCount = 0;
 
-      const uniqueActiveUsers = new Set(activeUsers?.map(log => log.user_id) || []).size;
+        try {
+          const { count: orderCount } = await supabase
+            .from('orders')
+            .select('*', { count: 'exact', head: true });
+          ordersCount = orderCount || 0;
+        } catch (error) {
+          console.log('Orders table not accessible:', error);
+        }
 
-      return {
-        totalUsers: usersResult.count || 0,
-        activeUsers: uniqueActiveUsers,
-        totalProperties: propertiesResult.count || 0,
-        totalVendors: vendorsResult.count || 0,
-        totalOrders: ordersResult.count || 0,
-        systemErrors: errorsResult.count || 0,
-      };
+        try {
+          const { count: errorCount } = await supabase
+            .from('system_error_logs')
+            .select('*', { count: 'exact', head: true });
+          errorsCount = errorCount || 0;
+        } catch (error) {
+          console.log('System error logs not accessible:', error);
+        }
+
+        // Get active users (users who logged in within last 24 hours)
+        let uniqueActiveUsers = 0;
+        try {
+          const { data: activeUsers } = await supabase
+            .from('user_activity_logs')
+            .select('user_id')
+            .gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
+            .not('user_id', 'is', null);
+
+          uniqueActiveUsers = new Set(activeUsers?.map(log => log.user_id) || []).size;
+        } catch (error) {
+          console.log('User activity logs not accessible:', error);
+        }
+
+        return {
+          totalUsers: usersResult.count || 0,
+          activeUsers: uniqueActiveUsers,
+          totalProperties: propertiesResult.count || 0,
+          totalVendors: vendorsResult.count || 0,
+          totalOrders: ordersCount,
+          systemErrors: errorsCount,
+        };
+      } catch (error) {
+        console.error('Error fetching dashboard stats:', error);
+        return {
+          totalUsers: 0,
+          activeUsers: 0,
+          totalProperties: 0,
+          totalVendors: 0,
+          totalOrders: 0,
+          systemErrors: 0,
+        };
+      }
     },
     refetchInterval: 30000, // Refresh every 30 seconds
   });

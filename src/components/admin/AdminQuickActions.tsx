@@ -42,35 +42,45 @@ const AdminQuickActions = ({ onTabChange }: QuickActionProps) => {
     queryFn: async () => {
       const today = new Date().toISOString().split('T')[0];
       
-      // Total properties
-      const { count: totalProperties } = await supabase
-        .from('properties')
-        .select('*', { count: 'exact', head: true });
+      try {
+        // Total properties
+        const { count: totalProperties } = await supabase
+          .from('properties')
+          .select('*', { count: 'exact', head: true });
 
-      // New today
-      const { count: newToday } = await supabase
-        .from('properties')
-        .select('*', { count: 'exact', head: true })
-        .gte('created_at', today);
+        // New today
+        const { count: newToday } = await supabase
+          .from('properties')
+          .select('*', { count: 'exact', head: true })
+          .gte('created_at', today);
 
-      // Approved properties
-      const { count: approved } = await supabase
-        .from('properties')
-        .select('*', { count: 'exact', head: true })
-        .eq('status', 'approved');
+        // Approved properties
+        const { count: approved } = await supabase
+          .from('properties')
+          .select('*', { count: 'exact', head: true })
+          .eq('status', 'approved');
 
-      // Pending properties
-      const { count: pending } = await supabase
-        .from('properties')
-        .select('*', { count: 'exact', head: true })
-        .eq('status', 'pending_approval');
+        // Pending properties
+        const { count: pending } = await supabase
+          .from('properties')
+          .select('*', { count: 'exact', head: true })
+          .eq('status', 'pending_approval');
 
-      return {
-        total: totalProperties || 0,
-        newToday: newToday || 0,
-        approved: approved || 0,
-        pending: pending || 0
-      };
+        return {
+          total: totalProperties || 0,
+          newToday: newToday || 0,
+          approved: approved || 0,
+          pending: pending || 0
+        };
+      } catch (error) {
+        console.error('Error fetching property stats:', error);
+        return {
+          total: 0,
+          newToday: 0,
+          approved: 0,
+          pending: 0
+        };
+      }
     },
   });
 
@@ -80,35 +90,45 @@ const AdminQuickActions = ({ onTabChange }: QuickActionProps) => {
     queryFn: async () => {
       const today = new Date().toISOString().split('T')[0];
       
-      // Total users
-      const { count: totalUsers } = await supabase
-        .from('profiles')
-        .select('*', { count: 'exact', head: true });
+      try {
+        // Total users
+        const { count: totalUsers } = await supabase
+          .from('profiles')
+          .select('*', { count: 'exact', head: true });
 
-      // New users today
-      const { count: newUsersToday } = await supabase
-        .from('profiles')
-        .select('*', { count: 'exact', head: true })
-        .gte('created_at', today);
+        // New users today
+        const { count: newUsersToday } = await supabase
+          .from('profiles')
+          .select('*', { count: 'exact', head: true })
+          .gte('created_at', today);
 
-      // Vendors
-      const { count: vendors } = await supabase
-        .from('profiles')
-        .select('*', { count: 'exact', head: true })
-        .eq('role', 'vendor');
+        // Vendors
+        const { count: vendors } = await supabase
+          .from('profiles')
+          .select('*', { count: 'exact', head: true })
+          .eq('role', 'vendor');
 
-      // Agents
-      const { count: agents } = await supabase
-        .from('profiles')
-        .select('*', { count: 'exact', head: true })
-        .eq('role', 'agent');
+        // Agents
+        const { count: agents } = await supabase
+          .from('profiles')
+          .select('*', { count: 'exact', head: true })
+          .eq('role', 'agent');
 
-      return {
-        total: totalUsers || 0,
-        newToday: newUsersToday || 0,
-        vendors: vendors || 0,
-        agents: agents || 0
-      };
+        return {
+          total: totalUsers || 0,
+          newToday: newUsersToday || 0,
+          vendors: vendors || 0,
+          agents: agents || 0
+        };
+      } catch (error) {
+        console.error('Error fetching user stats:', error);
+        return {
+          total: 0,
+          newToday: 0,
+          vendors: 0,
+          agents: 0
+        };
+      }
     },
   });
 
@@ -171,61 +191,61 @@ const AdminQuickActions = ({ onTabChange }: QuickActionProps) => {
       title: "Total Properties",
       count: propertyStats?.total || 0,
       action: "View All",
-      tab: "properties",
+      tab: "property-management-hub",
       icon: Building2,
       variant: "default" as const,
       description: "All property listings in system",
-      onClick: () => handleQuickAction("properties")
+      onClick: () => handleQuickAction("property-management-hub")
     },
     {
       title: "New Today",
       count: propertyStats?.newToday || 0,
       action: "Review",
-      tab: "properties",
+      tab: "property-management-hub",
       icon: Calendar,
       variant: "secondary" as const,
       description: "Properties added today",
-      onClick: () => handleQuickAction("properties")
+      onClick: () => handleQuickAction("property-management-hub")
     },
     {
       title: "Approved Properties",
       count: propertyStats?.approved || 0,
       action: "Manage",
-      tab: "properties",
+      tab: "property-management-hub",
       icon: CheckCircle,
       variant: "default" as const,
       description: "Live approved properties",
-      onClick: () => handleQuickAction("properties")
+      onClick: () => handleQuickAction("property-management-hub")
     },
     {
       title: "Pending Approval",
       count: propertyStats?.pending || 0,
       action: "Review",
-      tab: "properties",
+      tab: "property-management-hub",
       icon: Clock,
       variant: "destructive" as const,
       description: "Properties awaiting approval",
-      onClick: () => handleQuickAction("properties")
+      onClick: () => handleQuickAction("property-management-hub")
     },
     {
       title: "Total Users",
       count: userStats?.total || 0,
       action: "Manage",
-      tab: "users",
+      tab: "user-management",
       icon: Users,
       variant: "default" as const,
       description: "All registered users",
-      onClick: () => handleQuickAction("users")
+      onClick: () => handleQuickAction("user-management")
     },
     {
       title: "Vendors",
       count: userStats?.vendors || 0,
       action: "View",
-      tab: "users",
+      tab: "user-management",
       icon: MessageSquare,
       variant: "secondary" as const,
       description: "Registered vendor accounts",
-      onClick: () => handleQuickAction("users")
+      onClick: () => handleQuickAction("user-management")
     }
   ];
 

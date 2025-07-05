@@ -3,6 +3,7 @@ import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { BarChart3, Activity, Globe, Users, FileText, TrendingUp } from "lucide-react";
+import AdminQuickActions from "./AdminQuickActions";
 
 interface AdminOverviewProps {
   onSectionChange?: (section: string) => void;
@@ -17,6 +18,9 @@ const AdminOverview = ({ onSectionChange }: AdminOverviewProps) => {
   };
   return (
     <div className="space-y-6">
+      {/* Quick Actions Component */}
+      <AdminQuickActions onTabChange={handleQuickAction} />
+      
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold">Admin Overview</h2>
