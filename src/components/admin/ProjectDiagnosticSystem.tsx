@@ -198,69 +198,163 @@ const ProjectDiagnosticSystem = () => {
     refetchInterval: 30000,
   });
 
-  // Uncompleted Functions Analysis
+  // Uncompleted Functions Analysis - Dynamic based on actual project issues
   const { data: uncompletedFunctions } = useQuery({
     queryKey: ['uncompleted-functions', refreshKey],
     queryFn: async () => {
       console.log('Analyzing uncompleted functions...');
       
-      return [
-        {
-          category: 'Authentication',
-          functions: [
-            'Two-Factor Authentication',
-            'Social Login (Google, Facebook)',
-            'Account Recovery via SMS'
-          ],
-          priority: 'High',
-          estimatedHours: 24
-        },
-        {
-          category: 'Payment System',
-          functions: [
-            'Stripe Integration',
-            'Invoice Generation',
-            'Subscription Management',
-            'Refund Processing'
-          ],
-          priority: 'Critical',
-          estimatedHours: 40
-        },
-        {
-          category: 'Mobile Features',
-          functions: [
-            'Push Notifications',
-            'Offline Mode',
-            'Camera Integration',
-            'GPS Location Services'
-          ],
-          priority: 'Medium',
-          estimatedHours: 32
-        },
-        {
-          category: 'Advanced Analytics',
-          functions: [
-            'Custom Report Builder',
-            'Data Export Features',
-            'Real-time Dashboard Widgets',
-            'Predictive Analytics'
-          ],
-          priority: 'Medium',
-          estimatedHours: 28
-        },
-        {
-          category: 'AI Enhancement',
-          functions: [
-            'Image Recognition',
-            'Natural Language Processing',
-            'Recommendation Engine',
-            'Automated Content Generation'
-          ],
-          priority: 'Low',
-          estimatedHours: 60
+      // Extract uncompleted functions from actual project modules
+      const uncompletedCategories = [];
+      
+      if (projectModules) {
+        // Group issues by project status and create dynamic categories
+        const pendingModules = projectModules.filter(m => m.status === 'pending' || m.status === 'in_progress');
+        
+        // Payment System Issues
+        const paymentModule = projectModules.find(m => m.id === 'payment-system');
+        if (paymentModule && paymentModule.status !== 'completed') {
+          uncompletedCategories.push({
+            category: 'Payment Processing',
+            functions: [
+              'Stripe Gateway Integration',
+              'Midtrans Payment Gateway (Indonesia)',
+              'ASTRA Token System Implementation',
+              'Vendor Payout Management',
+              'Payment Compliance & Verification',
+              'Invoice Generation System'
+            ],
+            priority: 'Critical',
+            estimatedHours: 45,
+            moduleId: paymentModule.id,
+            issues: paymentModule.issues
+          });
         }
-      ];
-    }
+
+        // Vendor Management Issues
+        const vendorModule = projectModules.find(m => m.id === 'vendor-system');
+        if (vendorModule && vendorModule.issues.length > 0) {
+          uncompletedCategories.push({
+            category: 'Vendor Management',
+            functions: [
+              'KYC Document Verification System',
+              'Indonesian Compliance Integration',
+              'Vendor Access Control Implementation',
+              'Document Upload & Review Workflow',
+              'Admin KYC Management Interface',
+              'Payment-KYC Linkage System'
+            ],
+            priority: 'High',
+            estimatedHours: 35,
+            moduleId: vendorModule.id,
+            issues: vendorModule.issues
+          });
+        }
+
+        // Property Management Issues
+        const propertyModule = projectModules.find(m => m.id === 'property-management');
+        if (propertyModule && propertyModule.issues.length > 0) {
+          uncompletedCategories.push({
+            category: 'Property Management Core',
+            functions: [
+              'Image Upload Optimization',
+              'Smart Image Compression',
+              'Progressive Image Loading',
+              'Bulk Property Upload',
+              'Image Processing Workers',
+              'Storage Optimization'
+            ],
+            priority: 'High',
+            estimatedHours: 25,
+            moduleId: propertyModule.id,
+            issues: propertyModule.issues
+          });
+        }
+
+        // AI Features Issues
+        const aiModule = projectModules.find(m => m.id === 'ai-features');
+        if (aiModule && aiModule.issues.length > 0) {
+          uncompletedCategories.push({
+            category: 'AI & Automation',
+            functions: [
+              'OpenAI API Rate Limiting Handler',
+              'Response Optimization & Caching',
+              'Smart Property Recommendations',
+              'AI Chat Performance Enhancement',
+              'Natural Language Search',
+              'Automated Content Generation'
+            ],
+            priority: 'Medium',
+            estimatedHours: 30,
+            moduleId: aiModule.id,
+            issues: aiModule.issues
+          });
+        }
+
+        // Security Features
+        const securityModule = projectModules.find(m => m.id === 'security-features');
+        if (securityModule && securityModule.issues.length > 0) {
+          uncompletedCategories.push({
+            category: 'Security Enhancement',
+            functions: [
+              'Two-Factor Authentication (2FA)',
+              'Advanced Session Management',
+              'Security Monitoring Dashboard',
+              'Fraud Detection System',
+              'Enhanced Password Security',
+              'Security Audit Logging'
+            ],
+            priority: 'High',
+            estimatedHours: 28,
+            moduleId: securityModule.id,
+            issues: securityModule.issues
+          });
+        }
+
+        // Mobile Optimization
+        const mobileModule = projectModules.find(m => m.id === 'mobile-optimization');
+        if (mobileModule && mobileModule.status !== 'completed') {
+          uncompletedCategories.push({
+            category: 'Mobile Experience',
+            functions: [
+              'Touch Gesture Implementation',
+              'Progressive Web App (PWA) Setup',
+              'Offline Mode Functionality',
+              'Push Notifications',
+              'Mobile-First Navigation',
+              'Touch-Optimized Controls'
+            ],
+            priority: 'Medium',
+            estimatedHours: 32,
+            moduleId: mobileModule.id,
+            issues: mobileModule.issues
+          });
+        }
+
+        // Analytics Issues
+        const analyticsModule = projectModules.find(m => m.id === 'analytics-system');
+        if (analyticsModule && analyticsModule.issues.length > 0) {
+          uncompletedCategories.push({
+            category: 'Analytics & Reporting',
+            functions: [
+              'Real-time Data Synchronization',
+              'Dashboard Performance Optimization',
+              'Custom Report Builder',
+              'Data Export Functionality',
+              'Performance Metrics Tracking',
+              'User Behavior Analytics'
+            ],
+            priority: 'Medium',
+            estimatedHours: 22,
+            moduleId: analyticsModule.id,
+            issues: analyticsModule.issues
+          });
+        }
+      }
+
+      return uncompletedCategories;
+    },
+    enabled: !!projectModules
   });
 
   const getStatusColor = (status: string) => {
