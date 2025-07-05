@@ -173,6 +173,23 @@
   .badge-secondary {
     @apply bg-secondary text-secondary-foreground border border-border rounded-full px-2 py-1 text-xs font-medium;
   }
+
+  /* iOS-Style Components */
+  .card-ios {
+    @apply bg-card text-card-foreground border border-border/30 rounded-2xl shadow-sm transition-all duration-300 hover:shadow-md hover:border-border/50;
+  }
+
+  .glass-ios {
+    @apply bg-card/80 backdrop-blur-lg border border-border/30 rounded-2xl shadow-sm;
+  }
+
+  .btn-primary-ios {
+    @apply bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-200 font-semibold rounded-xl px-6 py-2.5 shadow-md hover:shadow-lg active:scale-95;
+  }
+
+  .btn-secondary-ios {
+    @apply bg-secondary/50 text-secondary-foreground hover:bg-secondary/70 border border-border/30 transition-all duration-200 rounded-xl px-6 py-2.5 hover:shadow-sm active:scale-95;
+  }
 }
 
 /* Scrollbar Styling */
