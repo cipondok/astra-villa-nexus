@@ -83,18 +83,20 @@ const VendorRegistrationForm = ({ onSuccess }: VendorRegistrationFormProps) => {
 
       console.log('Profile updated successfully');
 
-      // Step 2: Create vendor registration request with property type and BPJS data
+      // Step 2: Create vendor application with property type and BPJS data
       const { error: requestError } = await supabase
-        .from('vendor_requests')
+        .from('vendor_applications')
         .insert([{
           user_id: user.id,
           business_name: formData.business_name,
           business_type: formData.business_type,
-          verification_documents: formData.verification_documents,
+          vendor_type: 'individual',
+          application_status: 'pending',
+          property_type: formData.property_type,
+          business_documents: formData.verification_documents || [],
           // Add property type and conditional requirements
           compliance_region: 'ID', // Indonesia
-          nomor_skt: formData.property_type === 'commercial' ? formData.surat_izin_usaha : null,
-          status: 'pending'
+          nomor_skt: formData.property_type === 'commercial' ? formData.surat_izin_usaha : null
         }]);
 
       if (requestError) {

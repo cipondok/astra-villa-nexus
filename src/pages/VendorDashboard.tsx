@@ -43,8 +43,8 @@ const VendorDashboard = () => {
   const { user, profile } = useAuth();
   const navigate = useNavigate();
 
-  // Check if user is a vendor (or admin for testing)
-  const isVendor = profile?.role === 'vendor' || profile?.role === 'admin';
+  // Check if user is a vendor only (not admin)
+  const isVendor = profile?.role === 'vendor';
 
   const handleHomeClick = () => {
     navigate('/', { replace: true });
@@ -73,7 +73,7 @@ const VendorDashboard = () => {
         <Alert>
           <AlertTriangle className="h-4 w-4" />
           <AlertDescription>
-            Vendor or Admin access required to view this dashboard
+            Vendor access required. Please apply for vendor status in your profile settings.
           </AlertDescription>
         </Alert>
       </div>

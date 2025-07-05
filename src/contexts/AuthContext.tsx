@@ -345,7 +345,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (error.message.includes('Invalid login credentials')) {
           return { 
             error: { 
-              message: `Invalid email or password. Account may not exist - try signing up first, or use test account: mycode103@gmail.com` 
+              message: `Invalid email or password. 
+              
+For Vendors: First register normally, then apply for vendor status in your profile.
+For Agents: First register normally, then apply for agent status.
+
+Test accounts:
+- Admin: mycode103@gmail.com
+- Vendor: vendor@astravilla.com  
+- Agent: agant@astravilla.com
+(All use password: testpass123)` 
             }, 
             success: false 
           };
