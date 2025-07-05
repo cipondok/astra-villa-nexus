@@ -347,14 +347,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             error: { 
               message: `Invalid email or password. 
               
-For Vendors: First register normally, then apply for vendor status in your profile.
-For Agents: First register normally, then apply for agent status.
-
-Test accounts:
-- Admin: mycode103@gmail.com
-- Vendor: vendor@astravilla.com  
-- Agent: agant@astravilla.com
-(All use password: testpass123)` 
+              Test accounts available:
+              - Admin: mycode103@gmail.com  
+              - Vendor: vendor@astravilla.com (or test-vendor@astravilla.com)
+              - Agent: agant@astravilla.com (or test-agent@astravilla.com)
+              - Property Owner: test-property-owner@astravilla.com
+              (All passwords: testpass123)
+              
+              New users: Sign up first, then apply for vendor/agent roles in your profile.` 
             }, 
             success: false 
           };

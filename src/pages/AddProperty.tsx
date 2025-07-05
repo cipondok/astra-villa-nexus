@@ -16,10 +16,36 @@ const AddProperty = () => {
     if (!isAuthenticated) {
       navigate('/');
     }
-  }, [isAuthenticated, navigate]);
+    // Only vendors can create properties for sale/rent
+    // Agents and property owners can update/manage existing properties
+    if (isAuthenticated && profile?.role === 'general_user') {
+      navigate('/dashboard');
+    }
+  }, [isAuthenticated, profile, navigate]);
 
   if (!isAuthenticated) {
     return null;
+  }
+
+  // Restrict access based on role
+  if (profile?.role === 'general_user') {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center p-8">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">Access Restricted</h2>
+          <p className="text-gray-600 mb-4">
+            Only vendors can create new property listings for sale/rent.
+            Agents and property owners can manage existing properties.
+          </p>
+          <button 
+            onClick={() => navigate('/dashboard')}
+            className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
+          >
+            Back to Dashboard
+          </button>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -44,6 +70,11 @@ const AddProperty = () => {
           <div className="text-center mb-8">
             <h1 className="text-4xl font-bold text-gray-900 mb-4">
               {language === "en" ? "Add New Property" : "Tambah Properti Baru"}
+              {profile?.role === 'vendor' && (
+                <span className="text-sm font-normal text-blue-600 block">
+                  {language === "en" ? "Create property for sale/rent" : "Buat properti untuk dijual/disewa"}
+                </span>
+              )}
             </h1>
             <p className="text-xl text-gray-600">
               {language === "en" 

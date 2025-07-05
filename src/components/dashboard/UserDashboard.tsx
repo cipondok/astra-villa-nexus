@@ -8,6 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useNavigate } from "react-router-dom";
 import ASTRATokenDisplay from "@/components/ASTRATokenDisplay";
+import ProfileUpgradeCard from "@/components/ProfileUpgradeCard";
 import { 
   Home, 
   Building, 
@@ -241,6 +242,11 @@ const UserDashboard = () => {
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">
+          {/* Profile Upgrade Card for General Users */}
+          {userRole === 'general_user' && (
+            <ProfileUpgradeCard />
+          )}
+          
           {/* Main Dashboard Content */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Quick Actions */}
