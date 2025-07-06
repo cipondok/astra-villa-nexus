@@ -137,6 +137,12 @@ export const navigationSections = {
 
   "vendor-management": [
     {
+      key: "vendors-hub",
+      label: "Vendors Hub",
+      icon: ShoppingBag,
+      description: "Comprehensive vendors management platform"
+    },
+    {
       key: "vendor-management-hub",
       label: "Vendor Management Hub",
       icon: ShoppingBag,

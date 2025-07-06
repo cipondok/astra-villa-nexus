@@ -58,6 +58,11 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
         return <CustomerServiceCenter />;
       case "contact-management":
         return <ContactManagement />;
+      case "vendors-hub":
+        if (onSectionChange) {
+          window.location.href = '/vendors-hub';
+        }
+        return <div className="text-center p-8"><p>Redirecting to Vendors Hub...</p></div>;
       case "vendor-management-hub":
         return <VendorManagementHub />;
       case "vendor-service-management":

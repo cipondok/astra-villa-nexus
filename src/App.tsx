@@ -18,6 +18,7 @@ import Profile from '@/pages/Profile';
 import AdminDashboard from '@/pages/AdminDashboard';
 import UserDashboard from '@/pages/UserDashboard';
 import VendorDashboard from '@/pages/VendorDashboard';
+import VendorsHub from '@/pages/VendorsHub';
 import PropertyOwnerDashboard from '@/pages/PropertyOwnerDashboard';
 import AgentDashboard from '@/pages/AgentDashboard';
 import Analytics from '@/pages/Analytics';
@@ -68,6 +69,7 @@ function App() {
 
                           <Route element={<AdminOnlyRoute />}>
                             <Route path="/admin" element={<AdminDashboard />} />
+                            <Route path="/vendors-hub" element={<VendorsHub />} />
                           </Route>
 
                           <Route element={<VendorOnlyRoute />}>
