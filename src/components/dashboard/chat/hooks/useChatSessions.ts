@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -45,8 +45,33 @@ export const useChatSessions = () => {
       if (error) throw error;
       return (data || []) as ChatSession[];
     },
-    refetchInterval: 5000, // Refresh every 5 seconds
+    refetchInterval: 10000, // Refresh every 10 seconds (real-time handles updates)
   });
+
+  // Real-time subscription for session updates
+  useEffect(() => {
+    if (!user) return;
+
+    const channel = supabase
+      .channel('chat-sessions-updates')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'live_chat_sessions',
+        },
+        () => {
+          // Invalidate and refetch sessions when any change occurs
+          queryClient.invalidateQueries({ queryKey: ['live-chat-sessions'] });
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [user, queryClient]);
 
   // Memoized filtered and sorted sessions for performance
   const filteredSessions = useMemo(() => {
