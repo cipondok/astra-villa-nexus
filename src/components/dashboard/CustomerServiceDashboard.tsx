@@ -6,44 +6,41 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { useAlert } from "@/contexts/AlertContext";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@/components/ThemeProvider";
 import { 
-  Headphones, 
-  MessageSquare, 
-  Clock, 
-  CheckCircle, 
-  AlertTriangle,
-  Plus,
-  Send,
-  Star,
-  User,
-  FileText,
-  BarChart3,
   Phone,
   Search,
   Timer,
   TrendingUp,
   Users,
   Award,
-  Menu,
   Home,
   Settings,
   HelpCircle,
   LogOut,
   ArrowLeft,
   Moon,
-  Sun
+  Sun,
+  Send,
+  Star,
+  FileText,
+  BarChart3,
+  CheckCircle,
+  User,
+  MessageSquare,
+  Clock
 } from "lucide-react";
 import LiveChatManager from "./LiveChatManager";
-import { Switch } from "@/components/ui/switch";
+import CSNavSidebar from "./cs/CSNavSidebar";
+import CSQuickStats from "./cs/CSQuickStats";
+import CSTicketsTable from "./cs/CSTicketsTable";
+import CSInquiriesTable from "./cs/CSInquiriesTable";
+import CSSettings from "./cs/CSSettings";
 
 const CustomerServiceDashboard = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -350,36 +347,6 @@ const CustomerServiceDashboard = () => {
     }
   };
 
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case 'open':
-      case 'new':
-        return <Badge className="bg-blue-500 text-white">Open</Badge>;
-      case 'in_progress':
-      case 'pending':
-        return <Badge className="bg-yellow-500 text-white">In Progress</Badge>;
-      case 'resolved':
-      case 'responded':
-        return <Badge className="bg-green-500 text-white">Resolved</Badge>;
-      case 'closed':
-        return <Badge className="bg-gray-500 text-white">Closed</Badge>;
-      default:
-        return <Badge variant="outline">{status}</Badge>;
-    }
-  };
-
-  const getPriorityBadge = (priority: string) => {
-    switch (priority) {
-      case 'high':
-        return <Badge className="bg-red-500 text-white">High</Badge>;
-      case 'medium':
-        return <Badge className="bg-orange-500 text-white">Medium</Badge>;
-      case 'low':
-        return <Badge className="bg-blue-500 text-white">Low</Badge>;
-      default:
-        return <Badge variant="outline">{priority}</Badge>;
-    }
-  };
 
   // Calculate stats
   const myOpenTickets = myTickets?.filter(t => t.status !== 'resolved').length || 0;
@@ -390,78 +357,17 @@ const CustomerServiceDashboard = () => {
   const pendingInquiries = inquiries?.length || 0;
   const availableTickets = unassignedTickets?.length || 0;
 
-  // Navigation menu items
-  const navItems = [
-    { title: "Dashboard", value: "dashboard", icon: Home },
-    { title: "My Tickets", value: "my-tickets", icon: FileText, badge: myOpenTickets },
-    { title: "Inquiries", value: "inquiries", icon: MessageSquare, badge: pendingInquiries },
-    { title: "Available", value: "available", icon: Clock, badge: availableTickets },
-    { title: "Analytics", value: "analytics", icon: BarChart3 },
-    { title: "Settings", value: "settings", icon: Settings },
-  ];
-
-  // Create the sidebar component
-  const CSNavSidebar = () => (
-    <Sidebar className="border-r">
-      <SidebarContent>
-        <div className="p-4">
-          <div className="flex items-center gap-2 mb-4">
-            <Headphones className="h-6 w-6 text-blue-600" />
-            <h2 className="font-semibold text-lg">CS Dashboard</h2>
-          </div>
-        </div>
-        
-        <SidebarGroup>
-          <SidebarGroupLabel>Navigation</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {navItems.map((item) => (
-                <SidebarMenuItem key={item.value}>
-                  <SidebarMenuButton 
-                    onClick={() => setActiveTab(item.value)}
-                    className={activeTab === item.value ? "bg-blue-100 text-blue-700" : ""}
-                  >
-                    <item.icon className="h-4 w-4" />
-                    <span>{item.title}</span>
-                    {item.badge !== undefined && item.badge > 0 && (
-                      <Badge className="ml-auto bg-red-500 text-white text-xs">
-                        {item.badge}
-                      </Badge>
-                    )}
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarGroup className="mt-auto">
-          <SidebarGroupLabel>Quick Actions</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton>
-                  <Phone className="h-4 w-4" />
-                  <span>Live Chat</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton>
-                  <HelpCircle className="h-4 w-4" />
-                  <span>Help Center</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-      </SidebarContent>
-    </Sidebar>
-  );
 
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full">
-        <CSNavSidebar />
+        <CSNavSidebar 
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          myOpenTickets={myOpenTickets}
+          pendingInquiries={pendingInquiries}
+          availableTickets={availableTickets}
+        />
         
         <main className="flex-1">
           {/* Header with top menu navigation */}
@@ -550,55 +456,12 @@ const CustomerServiceDashboard = () => {
           <div className="p-6 space-y-6">
 
       {/* Quick Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">My Open Tickets</p>
-                <p className="text-2xl font-bold text-orange-600">{myOpenTickets}</p>
-              </div>
-              <FileText className="h-8 w-8 text-orange-500" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Resolved Today</p>
-                <p className="text-2xl font-bold text-green-600">{myResolvedToday}</p>
-              </div>
-              <CheckCircle className="h-8 w-8 text-green-500" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Pending Inquiries</p>
-                <p className="text-2xl font-bold text-blue-600">{pendingInquiries}</p>
-              </div>
-              <MessageSquare className="h-8 w-8 text-blue-500" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Available Tickets</p>
-                <p className="text-2xl font-bold text-purple-600">{availableTickets}</p>
-              </div>
-              <Clock className="h-8 w-8 text-purple-500" />
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+      <CSQuickStats 
+        myOpenTickets={myOpenTickets}
+        myResolvedToday={myResolvedToday}
+        pendingInquiries={pendingInquiries}
+        availableTickets={availableTickets}
+      />
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
         <TabsList className="grid w-full grid-cols-6">
@@ -704,195 +567,32 @@ const CustomerServiceDashboard = () => {
 
         {/* My Tickets */}
         <TabsContent value="my-tickets" className="space-y-4">
-          <div className="border rounded-lg">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Subject</TableHead>
-                  <TableHead>Type</TableHead>
-                  <TableHead>Priority</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Created</TableHead>
-                  <TableHead>Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {myTicketsLoading ? (
-                  <TableRow>
-                    <TableCell colSpan={6} className="text-center py-8">
-                      Loading your tickets...
-                    </TableCell>
-                  </TableRow>
-                ) : myTickets?.length === 0 ? (
-                  <TableRow>
-                    <TableCell colSpan={6} className="text-center py-8">
-                      No tickets assigned to you
-                    </TableCell>
-                  </TableRow>
-                ) : (
-                  myTickets?.map((ticket) => (
-                    <TableRow key={ticket.id}>
-                      <TableCell>
-                        <div>
-                          <div className="font-medium">{ticket.subject}</div>
-                          <div className="text-sm text-muted-foreground">
-                            {ticket.description?.substring(0, 100)}...
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline">{ticket.complaint_type}</Badge>
-                      </TableCell>
-                      <TableCell>{getPriorityBadge(ticket.priority)}</TableCell>
-                      <TableCell>{getStatusBadge(ticket.status)}</TableCell>
-                      <TableCell>{new Date(ticket.created_at).toLocaleDateString()}</TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          {ticket.status !== 'resolved' && (
-                            <Button
-                              size="sm"
-                              onClick={() => setReplyDialog({ open: true, item: ticket })}
-                            >
-                              <Send className="h-3 w-3 mr-1" />
-                              Resolve
-                            </Button>
-                          )}
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))
-                )}
-              </TableBody>
-            </Table>
-          </div>
+          <CSTicketsTable 
+            tickets={myTickets}
+            isLoading={myTicketsLoading}
+            type="my-tickets"
+            onReply={(ticket) => setReplyDialog({ open: true, item: ticket })}
+          />
         </TabsContent>
 
         {/* Inquiries */}
         <TabsContent value="inquiries" className="space-y-4">
-          <div className="border rounded-lg">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Subject</TableHead>
-                  <TableHead>Type</TableHead>
-                  <TableHead>Contact</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Created</TableHead>
-                  <TableHead>Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {inquiriesLoading ? (
-                  <TableRow>
-                    <TableCell colSpan={6} className="text-center py-8">
-                      Loading inquiries...
-                    </TableCell>
-                  </TableRow>
-                ) : inquiries?.length === 0 ? (
-                  <TableRow>
-                    <TableCell colSpan={6} className="text-center py-8">
-                      No pending inquiries
-                    </TableCell>
-                  </TableRow>
-                ) : (
-                  inquiries?.map((inquiry) => (
-                    <TableRow key={inquiry.id}>
-                      <TableCell>
-                        <div>
-                          <div className="font-medium">{inquiry.subject}</div>
-                          <div className="text-sm text-muted-foreground">
-                            {inquiry.message?.substring(0, 100)}...
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline">{inquiry.inquiry_type}</Badge>
-                      </TableCell>
-                      <TableCell>
-                        <div className="text-sm">
-                          <div>{inquiry.contact_email}</div>
-                          {inquiry.contact_phone && (
-                            <div className="text-muted-foreground">{inquiry.contact_phone}</div>
-                          )}
-                        </div>
-                      </TableCell>
-                      <TableCell>{getStatusBadge(inquiry.status)}</TableCell>
-                      <TableCell>{new Date(inquiry.created_at).toLocaleDateString()}</TableCell>
-                      <TableCell>
-                        <Button
-                          size="sm"
-                          onClick={() => setReplyDialog({ open: true, item: inquiry })}
-                        >
-                          <Send className="h-3 w-3 mr-1" />
-                          Reply
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))
-                )}
-              </TableBody>
-            </Table>
-          </div>
+          <CSInquiriesTable 
+            inquiries={inquiries}
+            isLoading={inquiriesLoading}
+            onReply={(inquiry) => setReplyDialog({ open: true, item: inquiry })}
+          />
         </TabsContent>
 
         {/* Available Tickets */}
         <TabsContent value="available" className="space-y-4">
-          <div className="border rounded-lg">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Subject</TableHead>
-                  <TableHead>Type</TableHead>
-                  <TableHead>Priority</TableHead>
-                  <TableHead>Created</TableHead>
-                  <TableHead>Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {unassignedLoading ? (
-                  <TableRow>
-                    <TableCell colSpan={5} className="text-center py-8">
-                      Loading available tickets...
-                    </TableCell>
-                  </TableRow>
-                ) : unassignedTickets?.length === 0 ? (
-                  <TableRow>
-                    <TableCell colSpan={5} className="text-center py-8">
-                      No available tickets
-                    </TableCell>
-                  </TableRow>
-                ) : (
-                  unassignedTickets?.map((ticket) => (
-                    <TableRow key={ticket.id}>
-                      <TableCell>
-                        <div>
-                          <div className="font-medium">{ticket.subject}</div>
-                          <div className="text-sm text-muted-foreground">
-                            {ticket.description?.substring(0, 100)}...
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline">{ticket.complaint_type}</Badge>
-                      </TableCell>
-                      <TableCell>{getPriorityBadge(ticket.priority)}</TableCell>
-                      <TableCell>{new Date(ticket.created_at).toLocaleDateString()}</TableCell>
-                      <TableCell>
-                        <Button
-                          size="sm"
-                          onClick={() => assignTicketMutation.mutate(ticket.id)}
-                          disabled={assignTicketMutation.isPending}
-                        >
-                          <User className="h-3 w-3 mr-1" />
-                          Take
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))
-                )}
-              </TableBody>
-            </Table>
-          </div>
+          <CSTicketsTable 
+            tickets={unassignedTickets}
+            isLoading={unassignedLoading}
+            type="available"
+            onAssign={(ticketId) => assignTicketMutation.mutate(ticketId)}
+            isAssigning={assignTicketMutation.isPending}
+          />
         </TabsContent>
 
         {/* Analytics Tab */}
@@ -971,177 +671,12 @@ const CustomerServiceDashboard = () => {
 
         {/* Settings Tab */}
         <TabsContent value="settings" className="space-y-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>CS Preferences</CardTitle>
-                <CardDescription>Customize your customer service settings</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <label className="text-sm font-medium">Auto-assign tickets</label>
-                    <p className="text-xs text-muted-foreground">Automatically assign new tickets to you</p>
-                  </div>
-                  <Switch
-                    checked={csSettings.autoAssignTickets}
-                    onCheckedChange={(checked) => 
-                      setCsSettings(prev => ({ ...prev, autoAssignTickets: checked }))
-                    }
-                  />
-                </div>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <label className="text-sm font-medium">Email notifications</label>
-                    <p className="text-xs text-muted-foreground">Get notified about new tickets</p>
-                  </div>
-                  <Switch
-                    checked={csSettings.emailNotifications}
-                    onCheckedChange={(checked) => 
-                      setCsSettings(prev => ({ ...prev, emailNotifications: checked }))
-                    }
-                  />
-                </div>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <label className="text-sm font-medium">Response templates</label>
-                    <p className="text-xs text-muted-foreground">Manage your quick response templates</p>
-                  </div>
-                  <Button variant="outline" size="sm" onClick={() => showSuccess("Templates", "Template management coming soon!")}>
-                    <FileText className="h-4 w-4 mr-2" />
-                    Manage
-                  </Button>
-                </div>
-                <Button 
-                  className="w-full" 
-                  onClick={saveSettings}
-                  disabled={saveSettingsMutation.isPending}
-                >
-                  {saveSettingsMutation.isPending ? (
-                    <>
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                      Saving...
-                    </>
-                  ) : (
-                    <>
-                      <Settings className="h-4 w-4 mr-2" />
-                      Save Preferences
-                    </>
-                  )}
-                </Button>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Account Settings</CardTitle>
-                <CardDescription>Manage your CS account preferences</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Display Name</label>
-                  <Input 
-                    value={csSettings.displayName}
-                    onChange={(e) => setCsSettings(prev => ({ ...prev, displayName: e.target.value }))}
-                    placeholder="Enter your display name"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Status Message</label>
-                  <Input 
-                    value={csSettings.statusMessage}
-                    onChange={(e) => setCsSettings(prev => ({ ...prev, statusMessage: e.target.value }))}
-                    placeholder="Enter your status message"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Working Hours</label>
-                  <Select 
-                    value={csSettings.workingHours}
-                    onValueChange={(value) => setCsSettings(prev => ({ ...prev, workingHours: value }))}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="9-5">9 AM - 5 PM</SelectItem>
-                      <SelectItem value="24-7">24/7 Available</SelectItem>
-                      <SelectItem value="custom">Custom Hours</SelectItem>
-                      <SelectItem value="flexible">Flexible Schedule</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <Button 
-                  className="w-full"
-                  onClick={saveSettings}
-                  disabled={saveSettingsMutation.isPending}
-                >
-                  {saveSettingsMutation.isPending ? (
-                    <>
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                      Saving...
-                    </>
-                  ) : (
-                    <>
-                      <Settings className="h-4 w-4 mr-2" />
-                      Save Settings
-                    </>
-                  )}
-                </Button>
-              </CardContent>
-            </Card>
-            
-            {/* Current Settings Preview */}
-            <Card className="lg:col-span-2">
-              <CardHeader>
-                <CardTitle>Current Settings</CardTitle>
-                <CardDescription>Preview of your current CS configuration</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                  <div className="p-4 border rounded-lg">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Settings className="h-4 w-4 text-blue-500" />
-                      <span className="text-sm font-medium">Auto-assign</span>
-                    </div>
-                    <p className="text-xs text-muted-foreground">
-                      {csSettings.autoAssignTickets ? "Enabled" : "Disabled"}
-                    </p>
-                  </div>
-                  <div className="p-4 border rounded-lg">
-                    <div className="flex items-center gap-2 mb-2">
-                      <MessageSquare className="h-4 w-4 text-green-500" />
-                      <span className="text-sm font-medium">Notifications</span>
-                    </div>
-                    <p className="text-xs text-muted-foreground">
-                      {csSettings.emailNotifications ? "Enabled" : "Disabled"}
-                    </p>
-                  </div>
-                  <div className="p-4 border rounded-lg">
-                    <div className="flex items-center gap-2 mb-2">
-                      <User className="h-4 w-4 text-purple-500" />
-                      <span className="text-sm font-medium">Display Name</span>
-                    </div>
-                    <p className="text-xs text-muted-foreground">
-                      {csSettings.displayName}
-                    </p>
-                  </div>
-                  <div className="p-4 border rounded-lg">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Clock className="h-4 w-4 text-orange-500" />
-                      <span className="text-sm font-medium">Working Hours</span>
-                    </div>
-                    <p className="text-xs text-muted-foreground">
-                      {csSettings.workingHours === '9-5' ? '9 AM - 5 PM' :
-                       csSettings.workingHours === '24-7' ? '24/7 Available' :
-                       csSettings.workingHours === 'custom' ? 'Custom Hours' :
-                       'Flexible Schedule'}
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+          <CSSettings 
+            settings={csSettings}
+            onSettingsChange={setCsSettings}
+            onSave={saveSettings}
+            isSaving={saveSettingsMutation.isPending}
+          />
         </TabsContent>
       </Tabs>
 
