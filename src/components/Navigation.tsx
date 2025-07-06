@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Menu, X, User, Settings, LogOut, Crown, Moon, Sun, Sparkles, Brain, Home as HomeIcon, Building, Key, Rocket, Hammer } from "lucide-react";
+import { Menu, X, User, Settings, LogOut, Crown, Moon, Sun, Sparkles, Brain, Home as HomeIcon, Building, Key, Rocket, Hammer, BarChart3, Headphones } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useTheme } from "@/components/ThemeProvider";
@@ -64,7 +64,9 @@ const Navigation = () => {
       rentProperties: "Rent Properties",
       preLaunch: "Pre Launch",
       newProjects: "New Projects",
-      profile: "Profile"
+      profile: "Profile",
+      dashboard: "Dashboard",
+      csDashboard: "CS Dashboard"
     },
     id: {
       home: "Beranda",
@@ -82,7 +84,9 @@ const Navigation = () => {
       rentProperties: "Sewa Properti",
       preLaunch: "Pra Peluncuran",
       newProjects: "Proyek Baru",
-      profile: "Profil"
+      profile: "Profil",
+      dashboard: "Dashboard",
+      csDashboard: "Dashboard CS"
     }
   };
 
@@ -182,16 +186,40 @@ const Navigation = () => {
                 {currentText.services}
               </Button>
 
-              {/* Dashboard link - only show for non-admin users */}
+              {/* Dashboard/Profile links - show for authenticated users */}
               {user && !isAdmin && (
-                <Button 
-                  variant="ghost" 
-                  size="sm"
-                  className="h-10 px-3 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-all"
-                  onClick={() => navigate('/profile')}
-                >
-                  {currentText.profile}
-                </Button>
+                <>
+                  {profile?.role === 'customer_service' ? (
+                    <Button 
+                      variant="ghost" 
+                      size="sm"
+                      className="h-10 px-3 text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-all"
+                      onClick={() => navigate('/dashboard')}
+                    >
+                      <Headphones className="h-4 w-4 mr-1" />
+                      {currentText.csDashboard}
+                    </Button>
+                  ) : (
+                    <Button 
+                      variant="ghost" 
+                      size="sm"
+                      className="h-10 px-3 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-all"
+                      onClick={() => navigate('/user-dashboard')}
+                    >
+                      <BarChart3 className="h-4 w-4 mr-1" />
+                      {currentText.dashboard}
+                    </Button>
+                  )}
+                  <Button 
+                    variant="ghost" 
+                    size="sm"
+                    className="h-10 px-3 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-all"
+                    onClick={() => navigate('/profile')}
+                  >
+                    <User className="h-4 w-4 mr-1" />
+                    {currentText.profile}
+                  </Button>
+                </>
               )}
 
               {/* Admin Panel - only show for admin users */}
@@ -292,11 +320,25 @@ const Navigation = () => {
                   {currentText.services}
                 </Button>
                 
-                {/* Dashboard link - only show for non-admin users */}
+                {/* Dashboard/Profile links - show for authenticated users */}
                 {user && !isAdmin && (
-                  <Button variant="ghost" className="w-full justify-start text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800" onClick={() => { navigate('/profile'); toggleMenu(); }}>
-                    {currentText.profile}
-                  </Button>
+                  <>
+                    {profile?.role === 'customer_service' ? (
+                      <Button variant="ghost" className="w-full justify-start text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20" onClick={() => { navigate('/dashboard'); toggleMenu(); }}>
+                        <Headphones className="h-4 w-4 mr-2" />
+                        {currentText.csDashboard}
+                      </Button>
+                    ) : (
+                      <Button variant="ghost" className="w-full justify-start text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800" onClick={() => { navigate('/user-dashboard'); toggleMenu(); }}>
+                        <BarChart3 className="h-4 w-4 mr-2" />
+                        {currentText.dashboard}
+                      </Button>
+                    )}
+                    <Button variant="ghost" className="w-full justify-start text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800" onClick={() => { navigate('/profile'); toggleMenu(); }}>
+                      <User className="h-4 w-4 mr-2" />
+                      {currentText.profile}
+                    </Button>
+                  </>
                 )}
                 
                 {/* Admin Panel - only show for admin users */}

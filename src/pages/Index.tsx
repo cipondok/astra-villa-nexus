@@ -5,6 +5,8 @@ import Navigation from "@/components/Navigation";
 import PropertyListingsSection from "@/components/PropertyListingsSection";
 import ProfessionalFooter from "@/components/ProfessionalFooter";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 import ResponsiveAIChatWidget from "@/components/ai/ResponsiveAIChatWidget";
 import { supabase } from "@/integrations/supabase/client";
 import SmartSearchPanel from "@/components/search/SmartSearchPanel";
@@ -12,10 +14,27 @@ import PropertySlideSection from "@/components/property/PropertySlideSection";
 
 const Index = () => {
   const { language } = useLanguage();
+  const { user, profile, loading } = useAuth();
+  const navigate = useNavigate();
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
+
+  // Redirect authenticated users to their dashboard
+  useEffect(() => {
+    if (!loading && user && profile) {
+      // Redirect customer service users to dashboard
+      if (profile.role === 'customer_service') {
+        navigate('/dashboard');
+      }
+      // Redirect admin users to admin panel  
+      else if (profile.role === 'admin' || user.email === 'mycode103@gmail.com') {
+        navigate('/admin');
+      }
+      // For other authenticated users, show dashboard link in nav but stay on home
+    }
+  }, [user, profile, loading, navigate]);
 
   // Background wallpaper - optimized for performance
   const backgroundStyle = {
