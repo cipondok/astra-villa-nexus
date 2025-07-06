@@ -21,7 +21,8 @@ import {
   Star,
   Headphones,
   Paintbrush,
-  CreditCard
+  CreditCard,
+  AlertTriangle
 } from "lucide-react";
 
 interface AdminTabNavigationProps {
