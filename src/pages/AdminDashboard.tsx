@@ -59,10 +59,10 @@ const AdminDashboard = () => {
           </Alert>
           <div className="mt-4 space-x-2">
             <button 
-              onClick={() => navigate('/dashboard', { replace: true })}
+              onClick={() => navigate('/', { replace: true })}
               className="bg-blue-600 dark:bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-700 dark:hover:bg-blue-800 transition-colors"
             >
-              Go to Dashboard
+              Go to Home
             </button>
             <button 
               onClick={() => navigate('/?auth=true', { replace: true })}

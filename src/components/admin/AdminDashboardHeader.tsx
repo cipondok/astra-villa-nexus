@@ -222,23 +222,6 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
                   Admin Profile
                 </DropdownMenuItem>
                 
-                {/* Dashboard Navigation */}
-                <DropdownMenuItem 
-                  onClick={() => navigate('/dashboard/admin')}
-                  className="text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
-                >
-                  <Shield className="h-4 w-4 mr-2" />
-                  Admin Panel
-                </DropdownMenuItem>
-                
-                <DropdownMenuItem 
-                  onClick={() => navigate('/dashboard')}
-                  className="text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
-                >
-                  <User className="h-4 w-4 mr-2" />
-                  User Dashboard
-                </DropdownMenuItem>
-                
                 <DropdownMenuItem 
                   onClick={() => navigate('/wallet')}
                   className="text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"

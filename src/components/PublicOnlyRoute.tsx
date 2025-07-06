@@ -10,7 +10,7 @@ const PublicOnlyRoute: React.FC = () => {
     return <div>Loading...</div>;
   }
 
-  return !user ? <Outlet /> : <Navigate to="/dashboard" replace />;
+  return !user ? <Outlet /> : <Navigate to="/" replace />;
 };
 
 export default PublicOnlyRoute;
