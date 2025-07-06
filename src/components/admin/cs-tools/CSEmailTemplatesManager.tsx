@@ -212,7 +212,7 @@ const CSEmailTemplatesManager = () => {
                     rows={8}
                   />
                   <p className="text-xs text-muted-foreground mt-1">
-                    Use variables: {{customer_name}}, {{ticket_id}}, {{agent_name}}
+                    Use variables: {`{{customer_name}}, {{ticket_id}}, {{agent_name}}`}
                   </p>
                 </div>
                 
