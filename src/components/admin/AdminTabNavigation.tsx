@@ -261,6 +261,27 @@ const AdminTabNavigation = ({ isAdmin }: AdminTabNavigationProps) => {
       label: "Reports", 
       icon: FileText, 
       category: "analytics" 
+    },
+    { 
+      id: "vendor-agent-control", 
+      label: "V&A Control", 
+      icon: Users, 
+      category: "management",
+      badge: "New"
+    },
+    { 
+      id: "authorization-monitoring", 
+      label: "Auth Monitor", 
+      icon: Shield, 
+      category: "security",
+      badge: "New"
+    },
+    { 
+      id: "admin-alerts", 
+      label: "Alerts", 
+      icon: AlertTriangle, 
+      category: "monitoring",
+      badge: "New"
     }
   ];
 

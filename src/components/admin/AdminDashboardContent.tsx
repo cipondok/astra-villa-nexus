@@ -28,6 +28,9 @@ import SEOSettings from "./SEOSettings";
 import ProjectDiagnosticSystem from "./ProjectDiagnosticSystem";
 import IndonesianPaymentMerchantConfig from "./IndonesianPaymentMerchantConfig";
 import VendorsHubContent from "./VendorsHubContent";
+import EnhancedVendorAgentControl from "./EnhancedVendorAgentControl";
+import AuthorizationMonitoringSystem from "./AuthorizationMonitoringSystem";
+import AdminAlertSystem from "./AdminAlertSystem";
 
 interface AdminDashboardContentProps {
   activeSection: string;
@@ -91,6 +94,12 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
         return <ToolsManagementDashboard />;
       case "seo-settings":
         return <SEOSettings />;
+      case "vendor-agent-control":
+        return <EnhancedVendorAgentControl />;
+      case "authorization-monitoring":
+        return <AuthorizationMonitoringSystem />;
+      case "admin-alerts":
+        return <AdminAlertSystem />;
       default:
         return <AdminOverview />;
     }
