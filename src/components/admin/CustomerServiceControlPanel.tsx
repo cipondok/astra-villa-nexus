@@ -38,6 +38,7 @@ import CSEmailTemplatesManager from "./cs-tools/CSEmailTemplatesManager";
 import CSKnowledgeBaseManager from "./cs-tools/CSKnowledgeBaseManager";
 import CSAutomationRulesManager from "./cs-tools/CSAutomationRulesManager";
 import CSPerformanceMonitor from "./cs-tools/CSPerformanceMonitor";
+import DatabaseErrorManager from "./cs-tools/DatabaseErrorManager";
 
 const CustomerServiceControlPanel = () => {
   const [activeTab, setActiveTab] = useState("agents");
@@ -634,7 +635,7 @@ const CustomerServiceControlPanel = () => {
             {/* CS Tools Tab */}
             <TabsContent value="tools" className="space-y-4">
               <Tabs defaultValue="live-chat" className="space-y-4">
-                <TabsList className="grid w-full grid-cols-5">
+                <TabsList className="grid w-full grid-cols-6">
                   <TabsTrigger value="live-chat" className="flex items-center gap-2">
                     <MessageSquare className="h-4 w-4" />
                     Live Chat
@@ -654,6 +655,10 @@ const CustomerServiceControlPanel = () => {
                   <TabsTrigger value="performance" className="flex items-center gap-2">
                     <Activity className="h-4 w-4" />
                     Performance
+                  </TabsTrigger>
+                  <TabsTrigger value="database-errors" className="flex items-center gap-2">
+                    <AlertTriangle className="h-4 w-4" />
+                    DB Errors
                   </TabsTrigger>
                 </TabsList>
 
@@ -692,6 +697,10 @@ const CustomerServiceControlPanel = () => {
 
                 <TabsContent value="performance">
                   <CSPerformanceMonitor />
+                </TabsContent>
+
+                <TabsContent value="database-errors">
+                  <DatabaseErrorManager />
                 </TabsContent>
               </Tabs>
             </TabsContent>
