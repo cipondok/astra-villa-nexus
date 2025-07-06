@@ -28,6 +28,7 @@ import AdminOnlyRoute from '@/components/AdminOnlyRoute';
 import VendorOnlyRoute from '@/components/VendorOnlyRoute';
 import AddProperty from '@/pages/AddProperty';
 import MyProperties from '@/pages/MyProperties';
+import PropertyEdit from '@/pages/PropertyEdit';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -79,6 +80,7 @@ function App() {
                           <Route path="/agent" element={<AgentDashboard />} />
                           <Route path="/add-property" element={<AddProperty />} />
                           <Route path="/my-properties" element={<MyProperties />} />
+                          <Route path="/property/:id/edit" element={<PropertyEdit />} />
                           <Route path="*" element={<NotFound />} />
                         </Routes>
                         <Toaster />

@@ -51,84 +51,23 @@ const AgentOverview = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  // Sample properties for agent cs@astravilla.com
-  const sampleProperties = [
-    {
-      id: "1",
-      title: "Luxury Villa in Seminyak",
-      location: "Seminyak, Bali",
-      price: 15000000000,
-      property_type: "villa",
-      listing_type: "sale",
-      bedrooms: 4,
-      bathrooms: 3,
-      area_sqm: 350,
-      status: "active",
-      approval_status: "approved",
-      created_at: "2024-01-15T10:00:00Z",
-      image_url: "https://images.unsplash.com/photo-1721322800607-8c38375eef04?w=400&h=300&fit=crop"
+  // Fetch real properties from database
+  const { data: properties, isLoading, refetch } = useQuery({
+    queryKey: ['agent-properties', user?.id],
+    queryFn: async () => {
+      if (!user) return [];
+      
+      const { data, error } = await supabase
+        .from('properties')
+        .select('*')
+        .eq('agent_id', user.id)
+        .order('created_at', { ascending: false });
+      
+      if (error) throw error;
+      return data || [];
     },
-    {
-      id: "2",
-      title: "Modern Apartment in Kuningan",
-      location: "Kuningan, Jakarta Selatan",
-      price: 150000000,
-      property_type: "apartment",
-      listing_type: "rent",
-      bedrooms: 2,
-      bathrooms: 2,
-      area_sqm: 85,
-      status: "active",
-      approval_status: "approved",
-      created_at: "2024-01-20T14:30:00Z",
-      image_url: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=400&h=300&fit=crop"
-    },
-    {
-      id: "3",
-      title: "Townhouse in Pondok Indah",
-      location: "Pondok Indah, Jakarta Selatan",
-      price: 8500000000,
-      property_type: "townhouse",
-      listing_type: "sale",
-      bedrooms: 3,
-      bathrooms: 3,
-      area_sqm: 180,
-      status: "active",
-      approval_status: "approved",
-      created_at: "2024-02-01T09:15:00Z",
-      image_url: "https://images.unsplash.com/photo-1605810230434-7631ac76ec81?w=400&h=300&fit=crop"
-    },
-    {
-      id: "4",
-      title: "Penthouse in SCBD",
-      location: "SCBD, Jakarta Selatan",
-      price: 450000000,
-      property_type: "apartment",
-      listing_type: "rent",
-      bedrooms: 3,
-      bathrooms: 2,
-      area_sqm: 120,
-      status: "active",
-      approval_status: "approved",
-      created_at: "2024-02-10T16:45:00Z",
-      image_url: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&h=300&fit=crop"
-    },
-    {
-      id: "5",
-      title: "Beach House in Canggu",
-      location: "Canggu, Bali",
-      price: 12000000000,
-      property_type: "house",
-      listing_type: "sale",
-      bedrooms: 5,
-      bathrooms: 4,
-      area_sqm: 280,
-      status: "pending_approval",
-      approval_status: "pending",
-      created_at: "2024-02-15T11:20:00Z",
-      image_url: "https://images.unsplash.com/photo-1520637836862-4d197d17c13a?w=400&h=300&fit=crop"
-    }
-  ];
+    enabled: !!user,
+  });
 
   // Agent membership data
   const agentMembership = {
@@ -159,9 +98,9 @@ const AgentOverview = () => {
   };
 
   const stats = {
-    totalListings: sampleProperties.length,
-    activeListings: sampleProperties.filter(p => p.status === 'active').length,
-    pendingListings: sampleProperties.filter(p => p.approval_status === 'pending').length,
+    totalListings: properties?.length || 0,
+    activeListings: properties?.filter(p => p.status === 'active').length || 0,
+    pendingListings: properties?.filter(p => p.approval_status === 'pending').length || 0,
     totalClients: 12,
   };
 
@@ -177,7 +116,25 @@ const AgentOverview = () => {
   };
 
   const handleEditProperty = (propertyId: string) => {
-    alert(`Edit property ${propertyId} - This feature will be implemented soon`);
+    navigate(`/property/${propertyId}/edit`);
+  };
+
+  const handleDeleteProperty = async (propertyId: string) => {
+    if (!confirm('Are you sure you want to delete this property?')) return;
+    
+    try {
+      const { error } = await supabase
+        .from('properties')
+        .delete()
+        .eq('id', propertyId)
+        .eq('agent_id', user?.id);
+      
+      if (error) throw error;
+      refetch();
+    } catch (error) {
+      console.error('Error deleting property:', error);
+      alert('Failed to delete property');
+    }
   };
 
   const handleAddListing = () => {
@@ -460,87 +417,112 @@ const AgentOverview = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {sampleProperties.map((property) => (
-              <Card key={property.id} className="overflow-hidden hover:shadow-xl transition-all duration-300 group border-0 shadow-lg">
-                <div className="aspect-video relative overflow-hidden">
-                  <img 
-                    src={property.image_url} 
-                    alt={property.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                  <div className="absolute top-3 right-3 flex gap-2">
-                    <Badge variant={property.status === 'active' ? 'default' : 'secondary'} className="shadow-lg">
-                      {property.status}
-                    </Badge>
-                  </div>
-                  <div className="absolute bottom-3 left-3">
-                    <Badge variant="outline" className="bg-white/90 backdrop-blur-sm capitalize">
-                      {property.property_type}
-                    </Badge>
-                  </div>
-                </div>
-                <CardContent className="p-5">
-                  <div className="space-y-4">
-                    <div>
-                      <h3 className="font-bold text-lg line-clamp-1 group-hover:text-primary transition-colors">
-                        {property.title}
-                      </h3>
-                      <p className="text-sm text-muted-foreground flex items-center gap-1 mt-1">
-                        <MapPin className="h-3 w-3" />
-                        {property.location}
-                      </p>
+          {isLoading ? (
+            <div className="text-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+              <p>Loading properties...</p>
+            </div>
+          ) : properties?.length === 0 ? (
+            <div className="text-center py-12">
+              <Building className="h-16 w-16 text-muted-foreground mx-auto mb-6" />
+              <h3 className="text-2xl font-semibold mb-4">No Properties Listed</h3>
+              <p className="text-muted-foreground mb-6">Start building your portfolio by creating your first listing</p>
+              <Button onClick={handleAddListing} size="lg">
+                <PlusCircle className="h-5 w-5 mr-2" />
+                Create First Property
+              </Button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {properties?.map((property) => (
+                <Card key={property.id} className="overflow-hidden hover:shadow-xl transition-all duration-300 group border-0 shadow-lg bg-white/90 backdrop-blur-sm">
+                  <div className="aspect-video relative overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200">
+                    {property.images?.[0] || property.image_urls?.[0] ? (
+                      <img 
+                        src={property.images?.[0] || property.image_urls?.[0]} 
+                        alt={property.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <Building className="h-12 w-12 text-muted-foreground" />
+                      </div>
+                    )}
+                    <div className="absolute top-3 right-3 flex gap-2">
+                      <Badge variant={property.status === 'active' ? 'default' : 'secondary'} className="shadow-lg">
+                        {property.status?.replace('_', ' ')}
+                      </Badge>
                     </div>
-                    
-                    <div className="text-xl font-bold text-primary">
-                      {formatPrice(property.price, property.listing_type)}
-                    </div>
-                    
-                    <div className="flex justify-between text-sm text-muted-foreground bg-muted/50 rounded-lg p-3">
-                      <span className="flex items-center gap-1">
-                        <strong>{property.bedrooms}</strong>BR
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <strong>{property.bathrooms}</strong>BA
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <strong>{property.area_sqm}</strong>m²
-                      </span>
-                    </div>
-                    
-                    <div className="flex gap-2 pt-2">
-                      <Button 
-                        size="sm" 
-                        variant="outline" 
-                        className="flex-1"
-                        onClick={() => handleViewProperty(property.id)}
-                      >
-                        <Eye className="h-4 w-4 mr-1" />
-                        View
-                      </Button>
-                      <Button 
-                        size="sm" 
-                        variant="outline" 
-                        className="flex-1"
-                        onClick={() => handleEditProperty(property.id)}
-                      >
-                        <Edit className="h-4 w-4 mr-1" />
-                        Edit
-                      </Button>
-                      <Button 
-                        size="sm" 
-                        variant="outline" 
-                        className="flex-1 text-red-600 hover:text-red-700"
-                      >
-                        <Trash2 className="h-4 w-4 mr-1" />
-                        Delete
-                      </Button>
+                    <div className="absolute bottom-3 left-3">
+                      <Badge variant="outline" className="bg-white/90 backdrop-blur-sm capitalize">
+                        {property.listing_type}
+                      </Badge>
                     </div>
                   </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+                  
+                  <CardContent className="p-5">
+                    <div className="space-y-4">
+                      <div>
+                        <h3 className="font-bold text-lg line-clamp-1 group-hover:text-primary transition-colors">
+                          {property.title}
+                        </h3>
+                        <p className="text-sm text-muted-foreground flex items-center gap-1 mt-1">
+                          <MapPin className="h-3 w-3" />
+                          {property.location}
+                        </p>
+                      </div>
+                      
+                      <div className="text-xl font-bold text-primary">
+                        {formatPrice(property.price, property.listing_type)}
+                      </div>
+                      
+                      <div className="flex justify-between text-sm text-muted-foreground bg-muted/50 rounded-lg p-3">
+                        <span className="flex items-center gap-1">
+                          <strong>{property.bedrooms}</strong>BR
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <strong>{property.bathrooms}</strong>BA
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <strong>{property.area_sqm}</strong>m²
+                        </span>
+                      </div>
+                      
+                      <div className="flex gap-2 pt-2">
+                        <Button 
+                          size="sm" 
+                          variant="outline" 
+                          className="flex-1"
+                          onClick={() => handleViewProperty(property.id)}
+                        >
+                          <Eye className="h-4 w-4 mr-1" />
+                          View
+                        </Button>
+                        <Button 
+                          size="sm" 
+                          variant="outline" 
+                          className="flex-1"
+                          onClick={() => handleEditProperty(property.id)}
+                        >
+                          <Edit className="h-4 w-4 mr-1" />
+                          Edit
+                        </Button>
+                        <Button 
+                          size="sm" 
+                          variant="outline" 
+                          className="flex-1 text-red-600 hover:text-red-700"
+                          onClick={() => handleDeleteProperty(property.id)}
+                        >
+                          <Trash2 className="h-4 w-4 mr-1" />
+                          Delete
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
         </TabsContent>
 
         <TabsContent value="clients">
