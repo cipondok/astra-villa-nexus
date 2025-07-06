@@ -10,7 +10,6 @@ import { LanguageProvider } from '@/contexts/LanguageContext';
 import { Toaster } from '@/components/ui/sonner';
 import AppInitializer from '@/components/AppInitializer';
 import Index from '@/pages/Index';
-import Dashboard from '@/pages/Dashboard';
 import Properties from '@/pages/Properties';
 import PropertyDetail from '@/pages/PropertyDetail';
 import About from '@/pages/About';
@@ -60,7 +59,6 @@ function App() {
                           <Route path="/services/new" element={<ServiceForm />} />
 
                           <Route element={<ProtectedRoute />}>
-                            <Route path="/dashboard" element={<Dashboard />} />
                             <Route path="/profile" element={<Profile />} />
                             <Route path="/user-dashboard" element={<UserDashboard />} />
                             <Route path="/analytics" element={<Analytics />} />
