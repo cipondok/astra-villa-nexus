@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Phone, Clock, User } from "lucide-react";
 
 const CallLog = () => {
-  const [calls] = useState([
+  const [calls, setCalls] = useState([
     {
       id: 1,
       client: "Sarah Johnson",
@@ -42,6 +42,10 @@ const CallLog = () => {
     }
   ]);
 
+  const handleCallClient = (phone: string) => {
+    window.open(`tel:${phone}`, '_self');
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -54,29 +58,46 @@ const CallLog = () => {
       <CardContent>
         <div className="space-y-4">
           {calls.map((call) => (
-            <div key={call.id} className="flex items-center justify-between p-3 border rounded-lg">
-              <div className="flex items-center gap-3">
+            <div key={call.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors">
+              <div className="flex items-center gap-3 flex-1">
                 <div className="flex items-center gap-2">
                   <User className="h-4 w-4 text-muted-foreground" />
-                  <span className="font-medium">{call.client}</span>
+                  <div>
+                    <span className="font-medium">{call.client}</span>
+                    <p className="text-xs text-muted-foreground">{call.phone}</p>
+                  </div>
                 </div>
                 <Badge variant={call.status === 'completed' ? 'default' : call.status === 'missed' ? 'destructive' : 'secondary'}>
                   {call.type}
                 </Badge>
+                {call.notes && (
+                  <p className="text-sm text-muted-foreground italic">{call.notes}</p>
+                )}
               </div>
-              <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                <div className="flex items-center gap-1">
-                  <Clock className="h-3 w-3" />
-                  {call.duration}
+              <div className="flex items-center gap-4">
+                <div className="text-sm text-muted-foreground">
+                  <div className="flex items-center gap-1">
+                    <Clock className="h-3 w-3" />
+                    {call.duration}
+                  </div>
+                  <span className="text-xs">{call.date} {call.time}</span>
                 </div>
-                <span>{call.date} {call.time}</span>
+                <Button 
+                  size="sm" 
+                  variant="outline"
+                  onClick={() => handleCallClient(call.phone)}
+                >
+                  <Phone className="h-3 w-3" />
+                </Button>
               </div>
             </div>
           ))}
-          <Button className="w-full" variant="outline">
-            <Phone className="h-4 w-4 mr-2" />
-            Make New Call
-          </Button>
+          <div className="pt-4 border-t">
+            <Button className="w-full" variant="outline">
+              <Phone className="h-4 w-4 mr-2" />
+              Add New Call Entry
+            </Button>
+          </div>
         </div>
       </CardContent>
     </Card>

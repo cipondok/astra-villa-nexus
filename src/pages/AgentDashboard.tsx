@@ -16,7 +16,7 @@ const AgentDashboard = () => {
       navigate('/?auth=true');
     }
     if (!loading && isAuthenticated && profile?.role !== 'agent') {
-      navigate('/dashboard');
+      navigate('/');
     }
   }, [isAuthenticated, loading, profile, navigate]);
 
