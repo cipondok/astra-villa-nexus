@@ -1,355 +1,415 @@
-import { useState, useEffect } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import React, { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/contexts/AuthContext";
-import { useAlert } from "@/contexts/AlertContext";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Send, MessageSquare, Users, Clock, CheckCircle, Activity } from "lucide-react";
-
-type ChatSession = {
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { useAlert } from "@/contexts/AlertContext";
+import { 
+  MessageSquare, 
+  Users, 
+  Clock, 
+  Activity, 
+  TrendingUp, 
+  AlertCircle,
+  Eye,
+  UserCheck,
+  Ban
+} from "lucide-react";
+import LiveChatManager from "@/components/dashboard/LiveChatManager";
+interface AdminChatSession {
   id: string;
-  customer_id: string;
-  agent_id: string | null;
-  status: 'pending' | 'active' | 'closed';
+  customer_user_id?: string | null;
+  agent_user_id?: string | null;
+  customer_name: string;
+  customer_email?: string | null;
+  status: string;
+  priority: string;
+  subject?: string | null;
+  started_at: string;
+  ended_at?: string | null;
   created_at: string;
-  customer: { full_name: string; email: string; avatar_url: string | null };
-};
+}
 
-type ChatMessage = {
+interface AgentUser {
   id: string;
-  session_id: string;
-  sender_id: string;
-  content: string;
-  created_at: string;
-  sender: { full_name: string; avatar_url: string | null };
-};
+  email: string;
+  full_name: string;
+  availability_status?: string;
+  last_seen_at?: string;
+}
 
 const LiveChatManagement = () => {
-  const { profile } = useAuth();
-  const queryClient = useQueryClient();
   const { showSuccess, showError } = useAlert();
-  const [selectedSession, setSelectedSession] = useState<ChatSession | null>(null);
-  const [message, setMessage] = useState("");
+  const [activeTab, setActiveTab] = useState("overview");
+  const [showChatManager, setShowChatManager] = useState(false);
 
-  const { data: sessions, isLoading: isLoadingSessions } = useQuery<ChatSession[]>({
-    queryKey: ['live-chat-sessions'],
+  // Fetch all chat sessions for admin oversight
+  const { data: allSessions, isLoading: isLoadingSessions } = useQuery<AdminChatSession[]>({
+    queryKey: ['admin-live-chat-sessions'],
     queryFn: async () => {
-      const { data, error } = await (supabase as any)
+      const { data, error } = await supabase
         .from('live_chat_sessions')
-        .select(`*, customer:profiles!customer_id ( full_name, email, avatar_url )`)
-        .in('status', ['pending', 'active'])
-        .order('created_at', { ascending: true });
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(50);
       if (error) throw error;
       return data || [];
     },
   });
 
-  const { data: messages, isLoading: isLoadingMessages } = useQuery<ChatMessage[]>({
-    queryKey: ['live-chat-messages', selectedSession?.id],
+  // Fetch customer service agents
+  const { data: agents, isLoading: isLoadingAgents } = useQuery<AgentUser[]>({
+    queryKey: ['customer-service-agents'],
     queryFn: async () => {
-      if (!selectedSession) return [];
-      const { data, error } = await (supabase as any)
-        .from('live_chat_messages')
-        .select(`*, sender:profiles!sender_id ( full_name, avatar_url )`)
-        .eq('session_id', selectedSession.id)
-        .order('created_at', { ascending: true });
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('id, email, full_name, availability_status, last_seen_at')
+        .eq('role', 'customer_service')
+        .order('full_name');
       if (error) throw error;
       return data || [];
     },
-    enabled: !!selectedSession,
-  });
-  
-  const takeChatMutation = useMutation({
-    mutationFn: async (sessionId: string) => {
-      const { error } = await (supabase as any)
-        .from('live_chat_sessions')
-        .update({ agent_id: profile?.id, status: 'active' })
-        .eq('id', sessionId);
-      if (error) throw error;
-    },
-    onSuccess: (_, sessionId) => {
-      showSuccess("Chat taken!", "You are now handling this chat.");
-      queryClient.invalidateQueries({ queryKey: ['live-chat-sessions'] });
-      const newSelectedSession = sessions?.find(s => s.id === sessionId);
-      if(newSelectedSession) {
-        setSelectedSession({...newSelectedSession, agent_id: profile?.id || null, status: 'active'});
-      }
-    },
-    onError: (error: any) => showError("Error", error.message),
   });
 
-  const sendMessageMutation = useMutation({
-    mutationFn: async (newMessage: { session_id: string, content: string }) => {
-      if (!profile?.id) throw new Error("User not authenticated.");
-      const { error } = await (supabase as any)
-        .from('live_chat_messages')
-        .insert({ session_id: newMessage.session_id, content: newMessage.content, sender_id: profile.id });
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      setMessage("");
-      queryClient.invalidateQueries({ queryKey: ['live-chat-messages', selectedSession?.id] });
-    },
-    onError: (error: any) => showError("Error", error.message),
-  });
-
-  useEffect(() => {
-    const sessionChannel = supabase
-      .channel('live-chat-sessions-realtime')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'live_chat_sessions' }, () => {
-        queryClient.invalidateQueries({ queryKey: ['live-chat-sessions'] });
-      })
-      .subscribe();
-    
-    return () => { supabase.removeChannel(sessionChannel); };
-  }, [queryClient]);
-  
-  useEffect(() => {
-    if (!selectedSession?.id) return;
-    const messageChannel = supabase
-      .channel(`live-chat-messages-${selectedSession.id}`)
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'live_chat_messages', filter: `session_id=eq.${selectedSession.id}` }, () => {
-        queryClient.invalidateQueries({ queryKey: ['live-chat-messages', selectedSession.id] });
-      })
-      .subscribe();
-    return () => { supabase.removeChannel(messageChannel); };
-  }, [selectedSession?.id, queryClient]);
-
-  const handleSendMessage = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (message.trim() && selectedSession) {
-      sendMessageMutation.mutate({ session_id: selectedSession.id, content: message.trim() });
-    }
+  // Calculate stats
+  const stats = {
+    totalSessions: allSessions?.length || 0,
+    waitingSessions: allSessions?.filter(s => s.status === 'waiting').length || 0,
+    activeSessions: allSessions?.filter(s => s.status === 'active').length || 0,
+    resolvedToday: allSessions?.filter(s => 
+      s.status === 'resolved' && 
+      new Date(s.ended_at || '').toDateString() === new Date().toDateString()
+    ).length || 0,
+    onlineAgents: agents?.filter(a => a.availability_status === 'online').length || 0,
+    totalAgents: agents?.length || 0
+  };
+  const getPriorityBadge = (priority: string) => {
+    const colors = {
+      urgent: "bg-red-500 text-white",
+      high: "bg-orange-500 text-white",
+      medium: "bg-blue-500 text-white",
+      low: "bg-gray-500 text-white"
+    };
+    return (
+      <Badge className={colors[priority as keyof typeof colors] || colors.medium}>
+        {priority.toUpperCase()}
+      </Badge>
+    );
   };
 
-  const pendingSessions = sessions?.filter(s => s.status === 'pending');
-  const activeSessions = sessions?.filter(s => s.status === 'active' && s.agent_id === profile?.id);
+  const getStatusBadge = (status: string) => {
+    const colors = {
+      waiting: "bg-orange-100 text-orange-800",
+      active: "bg-green-100 text-green-800",
+      resolved: "bg-gray-100 text-gray-800"
+    };
+    return (
+      <Badge className={colors[status as keyof typeof colors] || colors.waiting}>
+        {status.toUpperCase()}
+      </Badge>
+    );
+  };
+
+  const getAvailabilityBadge = (status?: string) => {
+    const colors = {
+      online: "bg-green-100 text-green-800",
+      busy: "bg-yellow-100 text-yellow-800",
+      offline: "bg-gray-100 text-gray-800"
+    };
+    return (
+      <Badge className={colors[status as keyof typeof colors] || colors.offline}>
+        {(status || 'offline').toUpperCase()}
+      </Badge>
+    );
+  };
 
   return (
     <div className="space-y-6">
-      {/* Professional Customer Service Header */}
-      <div className="bg-gradient-to-br from-green-900 via-teal-900 to-cyan-800 text-white rounded-2xl overflow-hidden shadow-2xl">
-        <div className="relative p-8">
-          {/* Background Pattern */}
-          <div className="absolute inset-0 bg-grid-white/5 [mask-image:radial-gradient(ellipse_at_center,white,transparent_75%)]"></div>
-          
-          <div className="relative z-10">
-            {/* Header Content */}
-            <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6 mb-8">
-              <div className="flex-1">
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center backdrop-blur-sm">
-                    <MessageSquare className="h-8 w-8" />
-                  </div>
-                  <div>
-                    <h1 className="text-3xl lg:text-4xl font-bold mb-2">Live Chat Management</h1>
-                    <p className="text-blue-100 text-lg">Customer Support Control Center</p>
-                  </div>
+      {/* Admin Live Chat Header */}
+      <Card className="bg-gradient-to-br from-primary/5 via-primary/10 to-secondary/5 border-none">
+        <CardContent className="p-6">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h1 className="text-3xl font-bold text-foreground flex items-center gap-3">
+                <MessageSquare className="h-8 w-8" />
+                Live Chat Administration
+              </h1>
+              <p className="text-muted-foreground text-lg mt-2">
+                Monitor and manage customer support chat operations
+              </p>
+            </div>
+            <Button 
+              onClick={() => setShowChatManager(true)}
+              className="flex items-center gap-2"
+            >
+              <Activity className="h-4 w-4" />
+              Open Chat Manager
+            </Button>
+          </div>
+
+          {/* Admin Stats Grid */}
+          <div className="grid grid-cols-2 lg:grid-cols-6 gap-4">
+            <div className="bg-background/50 backdrop-blur-sm rounded-xl p-4 border">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-orange-500/20 rounded-lg flex items-center justify-center">
+                  <Clock className="h-5 w-5 text-orange-600" />
                 </div>
-                
-                {/* Service Status */}
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="flex items-center gap-2 bg-green-500/20 px-4 py-2 rounded-full border border-green-400/30">
-                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                    <span className="text-green-100 text-sm font-medium">Service Active</span>
-                  </div>
-                  <div className="flex items-center gap-2 bg-blue-500/20 px-4 py-2 rounded-full border border-blue-400/30">
-                    <Users className="h-4 w-4 text-blue-400" />
-                    <span className="text-blue-100 text-sm font-medium">Support Agent</span>
-                  </div>
+                <div>
+                  <div className="text-2xl font-bold text-foreground">{stats.waitingSessions}</div>
+                  <div className="text-muted-foreground text-sm">Waiting</div>
                 </div>
               </div>
             </div>
             
-            {/* Performance Stats Grid */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-orange-500/20 rounded-lg flex items-center justify-center">
-                    <Clock className="h-5 w-5 text-orange-300" />
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold">{pendingSessions?.length || 0}</div>
-                    <div className="text-blue-100 text-sm">Pending Chats</div>
-                  </div>
+            <div className="bg-background/50 backdrop-blur-sm rounded-xl p-4 border">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
+                  <Activity className="h-5 w-5 text-green-600" />
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-foreground">{stats.activeSessions}</div>
+                  <div className="text-muted-foreground text-sm">Active</div>
                 </div>
               </div>
-              
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
-                    <Activity className="h-5 w-5 text-green-300" />
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold">{activeSessions?.length || 0}</div>
-                    <div className="text-blue-100 text-sm">Active Chats</div>
-                  </div>
+            </div>
+            
+            <div className="bg-background/50 backdrop-blur-sm rounded-xl p-4 border">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                  <MessageSquare className="h-5 w-5 text-blue-600" />
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-foreground">{stats.totalSessions}</div>
+                  <div className="text-muted-foreground text-sm">Total</div>
                 </div>
               </div>
-              
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
-                    <MessageSquare className="h-5 w-5 text-blue-300" />
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold">{(sessions?.length || 0)}</div>
-                    <div className="text-blue-100 text-sm">Total Sessions</div>
-                  </div>
+            </div>
+            
+            <div className="bg-background/50 backdrop-blur-sm rounded-xl p-4 border">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                  <TrendingUp className="h-5 w-5 text-purple-600" />
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-foreground">{stats.resolvedToday}</div>
+                  <div className="text-muted-foreground text-sm">Resolved Today</div>
                 </div>
               </div>
-              
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
-                    <CheckCircle className="h-5 w-5 text-purple-300" />
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold">98%</div>
-                    <div className="text-blue-100 text-sm">Resolution Rate</div>
-                  </div>
+            </div>
+
+            <div className="bg-background/50 backdrop-blur-sm rounded-xl p-4 border">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-cyan-500/20 rounded-lg flex items-center justify-center">
+                  <UserCheck className="h-5 w-5 text-cyan-600" />
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-foreground">{stats.onlineAgents}</div>
+                  <div className="text-muted-foreground text-sm">Online Agents</div>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-background/50 backdrop-blur-sm rounded-xl p-4 border">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-indigo-500/20 rounded-lg flex items-center justify-center">
+                  <Users className="h-5 w-5 text-indigo-600" />
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-foreground">{stats.totalAgents}</div>
+                  <div className="text-muted-foreground text-sm">Total Agents</div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
 
-      {/* Chat Management Interface */}
-      <div className="flex h-[70vh] gap-6">
-        <Card className="w-1/3 flex flex-col shadow-lg border-0">
-          <CardHeader className="bg-gradient-to-r from-slate-50 to-gray-50 rounded-t-lg">
-            <CardTitle className="flex items-center gap-2">
-              <Users className="h-5 w-5" />
-              Chat Queue
-            </CardTitle>
-            <CardDescription>Manage customer conversations</CardDescription>
-          </CardHeader>
-          <CardContent className="flex-grow overflow-y-auto p-4">
-            <div className="space-y-4">
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <h3 className="text-sm font-semibold text-muted-foreground">Pending Requests</h3>
-                  <Badge variant="outline" className="text-orange-600 border-orange-200">
-                    {pendingSessions?.length || 0}
-                  </Badge>
-                </div>
-                {isLoadingSessions && <p className="text-center text-sm text-muted-foreground">Loading...</p>}
-                {pendingSessions?.map(session => (
-                  <div key={session.id} onClick={() => setSelectedSession(session)} className="p-3 mb-2 rounded-lg cursor-pointer hover:bg-muted border border-gray-200 hover:border-gray-300 transition-all">
-                    <div className="flex items-center justify-between mb-2">
-                      <p className="font-medium">{session.customer.full_name}</p>
-                      <Button size="sm" variant="outline" className="text-xs" onClick={(e) => { e.stopPropagation(); takeChatMutation.mutate(session.id); }}>
-                        Take Chat
-                      </Button>
-                    </div>
-                    <p className="text-sm text-muted-foreground">{session.customer.email}</p>
-                    <div className="flex items-center gap-2 mt-2">
-                      <Badge variant="secondary" className="text-xs">New</Badge>
-                      <span className="text-xs text-muted-foreground">
-                        {new Date(session.created_at).toLocaleTimeString()}
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              
-              <div className="border-t pt-4">
-                <div className="flex items-center justify-between mb-3">
-                  <h3 className="text-sm font-semibold text-muted-foreground">My Active Chats</h3>
-                  <Badge variant="outline" className="text-green-600 border-green-200">
-                    {activeSessions?.length || 0}
-                  </Badge>
-                </div>
-                {activeSessions?.map(session => (
-                  <div key={session.id} onClick={() => setSelectedSession(session)} className={`p-3 mb-2 rounded-lg cursor-pointer transition-all border ${selectedSession?.id === session.id ? 'bg-primary/10 border-primary/20' : 'hover:bg-muted border-gray-200 hover:border-gray-300'}`}>
-                    <p className="font-medium">{session.customer.full_name}</p>
-                    <p className="text-sm text-muted-foreground">{session.customer.email}</p>
-                    <div className="flex items-center gap-2 mt-2">
-                      <Badge className="text-xs bg-green-500">Active</Badge>
-                      <span className="text-xs text-muted-foreground">
-                        {new Date(session.created_at).toLocaleTimeString()}
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        
-        <Card className="w-2/3 flex flex-col shadow-lg border-0">
-          {selectedSession ? (
-            <>
-              <CardHeader className="border-b bg-gradient-to-r from-slate-50 to-gray-50 rounded-t-lg">
-                <div className="flex items-center gap-3">
-                  <Avatar className="h-10 w-10">
-                    <AvatarImage src={selectedSession.customer.avatar_url || ''} />
-                    <AvatarFallback>{selectedSession.customer.full_name?.charAt(0) || 'U'}</AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <CardTitle className="text-lg">{selectedSession.customer.full_name}</CardTitle>
-                    <CardDescription>{selectedSession.customer.email}</CardDescription>
-                  </div>
-                  <div className="ml-auto">
-                    <Badge className={selectedSession.status === 'active' ? 'bg-green-500' : 'bg-orange-500'}>
-                      {selectedSession.status.toUpperCase()}
-                    </Badge>
-                  </div>
-                </div>
+      {/* Admin Management Tabs */}
+      <Tabs value={activeTab} onValueChange={setActiveTab}>
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="overview" className="flex items-center gap-2">
+            <Activity className="h-4 w-4" />
+            Overview
+          </TabsTrigger>
+          <TabsTrigger value="sessions" className="flex items-center gap-2">
+            <MessageSquare className="h-4 w-4" />
+            Chat Sessions
+          </TabsTrigger>
+          <TabsTrigger value="agents" className="flex items-center gap-2">
+            <Users className="h-4 w-4" />
+            Agents
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="overview" className="space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <AlertCircle className="h-5 w-5" />
+                  Recent Activity
+                </CardTitle>
               </CardHeader>
-              <ScrollArea className="flex-grow p-4 bg-gray-50/50">
-                <div className="space-y-4">
-                  {isLoadingMessages && <p className="text-center text-sm text-muted-foreground">Loading messages...</p>}
-                  {messages?.map(msg => (
-                    <div key={msg.id} className={`flex items-end gap-3 ${msg.sender_id === profile?.id ? 'justify-end' : 'justify-start'}`}>
-                      {msg.sender_id !== profile?.id && (
-                        <Avatar className="h-8 w-8">
-                          <AvatarImage src={msg.sender?.avatar_url || ''} />
-                          <AvatarFallback>{msg.sender?.full_name?.charAt(0) || 'U'}</AvatarFallback>
-                        </Avatar>
-                      )}
-                      <div className={`rounded-lg px-4 py-2 max-w-sm shadow-sm ${msg.sender_id === profile?.id ? 'bg-primary text-primary-foreground' : 'bg-white border'}`}>
-                        <p className="text-sm">{msg.content}</p>
-                        <p className="text-xs opacity-70 mt-1">
-                          {new Date(msg.created_at).toLocaleTimeString()}
-                        </p>
+              <CardContent>
+                <div className="space-y-3">
+                  {isLoadingSessions ? (
+                    <div className="text-center py-4 text-muted-foreground">Loading...</div>
+                  ) : (
+                    allSessions?.slice(0, 5).map(session => (
+                      <div key={session.id} className="flex items-center justify-between p-3 bg-background/50 rounded-lg border">
+                        <div>
+                          <p className="font-medium">{session.customer_name}</p>
+                          <p className="text-sm text-muted-foreground">
+                            {new Date(session.started_at).toLocaleString()}
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          {getPriorityBadge(session.priority)}
+                          {getStatusBadge(session.status)}
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))
+                  )}
                 </div>
-              </ScrollArea>
-              <div className="p-4 border-t bg-white">
-                <form onSubmit={handleSendMessage} className="flex gap-2">
-                  <Input 
-                    value={message} 
-                    onChange={e => setMessage(e.target.value)} 
-                    placeholder="Type your message..." 
-                    disabled={sendMessageMutation.isPending || !profile?.id}
-                    className="flex-1"
-                  />
-                  <Button type="submit" disabled={sendMessageMutation.isPending || !profile?.id} className="px-6">
-                    <Send className="h-4 w-4" />
-                  </Button>
-                </form>
-              </div>
-            </>
-          ) : (
-            <div className="flex flex-col items-center justify-center h-full text-muted-foreground bg-gray-50/50">
-              <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mb-4">
-                <MessageSquare className="h-8 w-8 text-primary" />
-              </div>
-              <p className="text-lg font-medium">Select a chat to start conversation</p>
-              <p className="text-sm">Choose from pending or active chats to begin helping customers</p>
-            </div>
-          )}
-        </Card>
-      </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Users className="h-5 w-5" />
+                  Agent Status
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {isLoadingAgents ? (
+                    <div className="text-center py-4 text-muted-foreground">Loading...</div>
+                  ) : (
+                    agents?.slice(0, 5).map(agent => (
+                      <div key={agent.id} className="flex items-center justify-between p-3 bg-background/50 rounded-lg border">
+                        <div>
+                          <p className="font-medium">{agent.full_name || 'No Name'}</p>
+                          <p className="text-sm text-muted-foreground">{agent.email}</p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          {getAvailabilityBadge(agent.availability_status)}
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="sessions">
+          <Card>
+            <CardHeader>
+              <CardTitle>All Chat Sessions</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {isLoadingSessions ? (
+                <div className="text-center py-8 text-muted-foreground">Loading sessions...</div>
+              ) : (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Customer</TableHead>
+                      <TableHead>Subject</TableHead>
+                      <TableHead>Priority</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Started</TableHead>
+                      <TableHead>Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {allSessions?.map(session => (
+                      <TableRow key={session.id}>
+                        <TableCell>
+                          <div>
+                            <div className="font-medium">{session.customer_name}</div>
+                            <div className="text-sm text-muted-foreground">{session.customer_email}</div>
+                          </div>
+                        </TableCell>
+                        <TableCell>{session.subject || 'General Inquiry'}</TableCell>
+                        <TableCell>{getPriorityBadge(session.priority)}</TableCell>
+                        <TableCell>{getStatusBadge(session.status)}</TableCell>
+                        <TableCell>{new Date(session.started_at).toLocaleString()}</TableCell>
+                        <TableCell>
+                          <Button size="sm" variant="outline">
+                            <Eye className="h-4 w-4" />
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="agents">
+          <Card>
+            <CardHeader>
+              <CardTitle>Customer Service Agents</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {isLoadingAgents ? (
+                <div className="text-center py-8 text-muted-foreground">Loading agents...</div>
+              ) : (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Agent</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Last Seen</TableHead>
+                      <TableHead>Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {agents?.map(agent => (
+                      <TableRow key={agent.id}>
+                        <TableCell>
+                          <div>
+                            <div className="font-medium">{agent.full_name || 'No Name'}</div>
+                            <div className="text-sm text-muted-foreground">{agent.email}</div>
+                          </div>
+                        </TableCell>
+                        <TableCell>{getAvailabilityBadge(agent.availability_status)}</TableCell>
+                        <TableCell>
+                          {agent.last_seen_at ? new Date(agent.last_seen_at).toLocaleString() : 'Never'}
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex gap-2">
+                            <Button size="sm" variant="outline">
+                              <Eye className="h-4 w-4" />
+                            </Button>
+                            <Button size="sm" variant="outline">
+                              <Ban className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+
+      {/* Live Chat Manager Modal */}
+      <LiveChatManager 
+        isOpen={showChatManager}
+        onClose={() => setShowChatManager(false)}
+      />
     </div>
   );
 };
