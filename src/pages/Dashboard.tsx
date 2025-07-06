@@ -70,6 +70,14 @@ const Dashboard = () => {
     );
   }
 
+  // Redirect admin users automatically to admin dashboard
+  useEffect(() => {
+    if (profile?.role === 'admin' || user?.email === 'mycode103@gmail.com') {
+      console.log('Admin user detected, redirecting to admin dashboard');
+      navigate('/admin', { replace: true });
+    }
+  }, [profile, user, navigate]);
+
   // Redirect agents to admin dashboard if they're admin role
   if (profile?.role === 'admin' || user?.email === 'mycode103@gmail.com') {
     return (
@@ -77,23 +85,9 @@ const Dashboard = () => {
         <Alert>
           <AlertTriangle className="h-4 w-4" />
           <AlertDescription>
-            Admin users should use the admin dashboard.
+            Redirecting to admin dashboard...
           </AlertDescription>
         </Alert>
-        <div className="mt-4 space-x-2">
-          <button 
-            onClick={() => navigate('/admin', { replace: true })}
-            className="bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600"
-          >
-            Go to Admin Dashboard
-          </button>
-          <button 
-            onClick={() => navigate('/', { replace: true })}
-            className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
-          >
-            Go to Home
-          </button>
-        </div>
       </div>
     );
   }

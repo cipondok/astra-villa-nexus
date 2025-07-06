@@ -10,7 +10,7 @@ const AdminOnlyRoute: React.FC = () => {
     return <div>Loading...</div>;
   }
 
-  if (!user || !profile || profile.role !== 'admin') {
+  if (!user || !profile || (profile.role !== 'admin' && !profile.is_admin)) {
     return <Navigate to="/" replace />;
   }
 
