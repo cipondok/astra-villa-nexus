@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, User, LogOut, Shield, Settings } from "lucide-react";
+import { Menu, X, User, LogOut, Shield, Settings, Headphones } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useThemeSettings } from "@/contexts/ThemeSettingsContext";
 import { useQuery } from "@tanstack/react-query";
@@ -18,7 +18,7 @@ interface EnhancedNavigationProps {
 
 const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: EnhancedNavigationProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const { user, signOut } = useAuth();
+  const { user, signOut, profile } = useAuth();
   const { themeSettings } = useThemeSettings();
   const navigate = useNavigate();
 
@@ -132,6 +132,18 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
                   </Button>
                 )}
                 
+                {profile?.role === 'customer_service' && (
+                  <Button
+                    onClick={() => navigate('/dashboard')}
+                    variant="ghost"
+                    size="sm"
+                    className="bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 hover:text-blue-700 border-blue-500/30 hover:border-blue-500/50 transition-all duration-300"
+                  >
+                    <Headphones className="h-4 w-4 mr-2" />
+                    <span className="hidden sm:inline">CS Dashboard</span>
+                  </Button>
+                )}
+                
                 <Button
                   onClick={handleSignOut}
                   variant="ghost"
@@ -193,6 +205,20 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
                   >
                     <Shield className="h-4 w-4 mr-3" />
                     {currentText.admin}
+                  </Button>
+                )}
+                
+                {profile?.role === 'customer_service' && (
+                  <Button
+                    onClick={() => {
+                      navigate('/dashboard');
+                      setIsOpen(false);
+                    }}
+                    variant="ghost"
+                    className="w-full justify-start bg-blue-500/10 hover:bg-blue-500/20 text-blue-600"
+                  >
+                    <Headphones className="h-4 w-4 mr-3" />
+                    CS Dashboard
                   </Button>
                 )}
                 
