@@ -4,6 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import CustomerServiceDashboard from '@/components/dashboard/CustomerServiceDashboard';
 import { 
   User, 
   Home, 
@@ -24,6 +25,15 @@ const UserDashboardPage = () => {
         <div className="text-center">
           <h1 className="text-2xl font-bold mb-4">Please sign in to view your dashboard</h1>
         </div>
+      </div>
+    );
+  }
+
+  // Render Customer Service Dashboard for CS users
+  if (profile?.role === 'customer_service') {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <CustomerServiceDashboard />
       </div>
     );
   }

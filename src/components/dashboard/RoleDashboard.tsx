@@ -17,7 +17,8 @@ import {
   Crown,
   RefreshCw,
   LifeBuoy,
-  MessageSquare
+  MessageSquare,
+  Clock
 } from "lucide-react";
 
 interface RoleDashboardProps {
@@ -111,10 +112,12 @@ const RoleDashboard = ({ language }: RoleDashboardProps) => {
       },
       customer_service: {
         title: "Customer Service Dashboard",
-        description: "Manage support tickets and user feedback.",
+        description: "Manage support tickets and customer inquiries.",
         actions: [
-          { label: "Manage Tickets", icon: LifeBuoy, path: "/admin", tab: "support" },
-          { label: "Manage Feedback", icon: MessageSquare, path: "/admin", tab: "feedback" }
+          { label: "Dashboard", icon: BarChart3, path: "/dashboard" },
+          { label: "My Tickets", icon: LifeBuoy, path: "/dashboard" },
+          { label: "Customer Inquiries", icon: MessageSquare, path: "/dashboard" },
+          { label: "Available Tickets", icon: Clock, path: "/dashboard" }
         ]
       }
     },
