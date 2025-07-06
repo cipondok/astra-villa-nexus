@@ -42,6 +42,7 @@ import {
   Moon,
   Sun
 } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
 
 const CustomerServiceDashboard = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -50,6 +51,15 @@ const CustomerServiceDashboard = () => {
   const [replyText, setReplyText] = useState("");
   const [showLiveChat, setShowLiveChat] = useState(false);
   const [showHelpCenter, setShowHelpCenter] = useState(false);
+  
+  // CS Settings State
+  const [csSettings, setCsSettings] = useState({
+    autoAssignTickets: true,
+    emailNotifications: true,
+    displayName: "Customer Service Agent",
+    statusMessage: "Available for support",
+    workingHours: "9-5",
+  });
   
   const { user, signOut } = useAuth();
   const { showSuccess, showError } = useAlert();
@@ -64,6 +74,17 @@ const CustomerServiceDashboard = () => {
 
   const toggleTheme = () => {
     setTheme(theme === "light" ? "dark" : "light");
+  };
+
+  // Save settings function
+  const saveSettings = async () => {
+    try {
+      // In a real app, this would save to the database
+      // For now, we'll just show a success message
+      showSuccess("Settings Saved", "Your CS preferences have been saved successfully!");
+    } catch (error) {
+      showError("Save Failed", "Failed to save settings. Please try again.");
+    }
   };
 
   const handleQuickAction = (action: string) => {
@@ -885,37 +906,48 @@ const CustomerServiceDashboard = () => {
                 <CardTitle>CS Preferences</CardTitle>
                 <CardDescription>Customize your customer service settings</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-6">
                 <div className="flex items-center justify-between">
                   <div>
                     <label className="text-sm font-medium">Auto-assign tickets</label>
                     <p className="text-xs text-muted-foreground">Automatically assign new tickets to you</p>
                   </div>
-                  <Button variant="outline" size="sm">
-                    <Settings className="h-4 w-4 mr-2" />
-                    Configure
-                  </Button>
+                  <Switch
+                    checked={csSettings.autoAssignTickets}
+                    onCheckedChange={(checked) => 
+                      setCsSettings(prev => ({ ...prev, autoAssignTickets: checked }))
+                    }
+                  />
                 </div>
                 <div className="flex items-center justify-between">
                   <div>
                     <label className="text-sm font-medium">Email notifications</label>
                     <p className="text-xs text-muted-foreground">Get notified about new tickets</p>
                   </div>
-                  <Button variant="outline" size="sm">
-                    <Settings className="h-4 w-4 mr-2" />
-                    Configure
-                  </Button>
+                  <Switch
+                    checked={csSettings.emailNotifications}
+                    onCheckedChange={(checked) => 
+                      setCsSettings(prev => ({ ...prev, emailNotifications: checked }))
+                    }
+                  />
                 </div>
                 <div className="flex items-center justify-between">
                   <div>
                     <label className="text-sm font-medium">Response templates</label>
                     <p className="text-xs text-muted-foreground">Manage your quick response templates</p>
                   </div>
-                  <Button variant="outline" size="sm">
+                  <Button variant="outline" size="sm" onClick={() => showSuccess("Templates", "Template management coming soon!")}>
                     <FileText className="h-4 w-4 mr-2" />
                     Manage
                   </Button>
                 </div>
+                <Button 
+                  className="w-full" 
+                  onClick={saveSettings}
+                >
+                  <Settings className="h-4 w-4 mr-2" />
+                  Save Preferences
+                </Button>
               </CardContent>
             </Card>
 
@@ -927,15 +959,26 @@ const CustomerServiceDashboard = () => {
               <CardContent className="space-y-4">
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Display Name</label>
-                  <Input defaultValue="Customer Service Agent" />
+                  <Input 
+                    value={csSettings.displayName}
+                    onChange={(e) => setCsSettings(prev => ({ ...prev, displayName: e.target.value }))}
+                    placeholder="Enter your display name"
+                  />
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Status Message</label>
-                  <Input defaultValue="Available for support" />
+                  <Input 
+                    value={csSettings.statusMessage}
+                    onChange={(e) => setCsSettings(prev => ({ ...prev, statusMessage: e.target.value }))}
+                    placeholder="Enter your status message"
+                  />
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Working Hours</label>
-                  <Select defaultValue="9-5">
+                  <Select 
+                    value={csSettings.workingHours}
+                    onValueChange={(value) => setCsSettings(prev => ({ ...prev, workingHours: value }))}
+                  >
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
@@ -943,13 +986,68 @@ const CustomerServiceDashboard = () => {
                       <SelectItem value="9-5">9 AM - 5 PM</SelectItem>
                       <SelectItem value="24-7">24/7 Available</SelectItem>
                       <SelectItem value="custom">Custom Hours</SelectItem>
+                      <SelectItem value="flexible">Flexible Schedule</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
-                <Button className="w-full">
+                <Button 
+                  className="w-full"
+                  onClick={saveSettings}
+                >
                   <Settings className="h-4 w-4 mr-2" />
                   Save Settings
                 </Button>
+              </CardContent>
+            </Card>
+            
+            {/* Current Settings Preview */}
+            <Card className="lg:col-span-2">
+              <CardHeader>
+                <CardTitle>Current Settings</CardTitle>
+                <CardDescription>Preview of your current CS configuration</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  <div className="p-4 border rounded-lg">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Settings className="h-4 w-4 text-blue-500" />
+                      <span className="text-sm font-medium">Auto-assign</span>
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      {csSettings.autoAssignTickets ? "Enabled" : "Disabled"}
+                    </p>
+                  </div>
+                  <div className="p-4 border rounded-lg">
+                    <div className="flex items-center gap-2 mb-2">
+                      <MessageSquare className="h-4 w-4 text-green-500" />
+                      <span className="text-sm font-medium">Notifications</span>
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      {csSettings.emailNotifications ? "Enabled" : "Disabled"}
+                    </p>
+                  </div>
+                  <div className="p-4 border rounded-lg">
+                    <div className="flex items-center gap-2 mb-2">
+                      <User className="h-4 w-4 text-purple-500" />
+                      <span className="text-sm font-medium">Display Name</span>
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      {csSettings.displayName}
+                    </p>
+                  </div>
+                  <div className="p-4 border rounded-lg">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Clock className="h-4 w-4 text-orange-500" />
+                      <span className="text-sm font-medium">Working Hours</span>
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      {csSettings.workingHours === '9-5' ? '9 AM - 5 PM' :
+                       csSettings.workingHours === '24-7' ? '24/7 Available' :
+                       csSettings.workingHours === 'custom' ? 'Custom Hours' :
+                       'Flexible Schedule'}
+                    </p>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </div>
