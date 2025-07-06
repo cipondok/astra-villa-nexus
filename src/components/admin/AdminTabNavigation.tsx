@@ -209,9 +209,9 @@ const AdminTabNavigation = ({ isAdmin }: AdminTabNavigationProps) => {
       category: "management" 
     },
     { 
-      id: "error-management", 
-      label: "Errors", 
-      icon: Shield, 
+      id: "database-errors", 
+      label: "DB Errors", 
+      icon: AlertTriangle, 
       category: "technical" 
     },
     { 
