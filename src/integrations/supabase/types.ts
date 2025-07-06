@@ -806,6 +806,42 @@ export type Database = {
           },
         ]
       }
+      cs_user_settings: {
+        Row: {
+          auto_assign_tickets: boolean
+          created_at: string
+          display_name: string
+          email_notifications: boolean
+          id: string
+          status_message: string
+          updated_at: string
+          user_id: string
+          working_hours: string
+        }
+        Insert: {
+          auto_assign_tickets?: boolean
+          created_at?: string
+          display_name?: string
+          email_notifications?: boolean
+          id?: string
+          status_message?: string
+          updated_at?: string
+          user_id: string
+          working_hours?: string
+        }
+        Update: {
+          auto_assign_tickets?: boolean
+          created_at?: string
+          display_name?: string
+          email_notifications?: boolean
+          id?: string
+          status_message?: string
+          updated_at?: string
+          user_id?: string
+          working_hours?: string
+        }
+        Relationships: []
+      }
       customer_complaints: {
         Row: {
           assigned_to: string | null

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -52,6 +52,12 @@ const CustomerServiceDashboard = () => {
   const [showLiveChat, setShowLiveChat] = useState(false);
   const [showHelpCenter, setShowHelpCenter] = useState(false);
   
+  const { user, signOut } = useAuth();
+  const { showSuccess, showError } = useAlert();
+  const { theme, setTheme } = useTheme();
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+  
   // CS Settings State
   const [csSettings, setCsSettings] = useState({
     autoAssignTickets: true,
@@ -60,12 +66,41 @@ const CustomerServiceDashboard = () => {
     statusMessage: "Available for support",
     workingHours: "9-5",
   });
-  
-  const { user, signOut } = useAuth();
-  const { showSuccess, showError } = useAlert();
-  const { theme, setTheme } = useTheme();
-  const queryClient = useQueryClient();
-  const navigate = useNavigate();
+
+  // Load CS settings from database
+  const { data: userSettings, isLoading: settingsLoading } = useQuery({
+    queryKey: ['cs-user-settings', user?.id],
+    queryFn: async () => {
+      if (!user?.id) return null;
+      
+      const { data, error } = await supabase
+        .from('cs_user_settings')
+        .select('*')
+        .eq('user_id', user.id)
+        .maybeSingle();
+      
+      if (error) {
+        console.error('Error loading CS settings:', error);
+        return null;
+      }
+      
+      return data;
+    },
+    enabled: !!user?.id,
+  });
+
+  // Update local state when database data is loaded
+  useEffect(() => {
+    if (userSettings) {
+      setCsSettings({
+        autoAssignTickets: userSettings.auto_assign_tickets,
+        emailNotifications: userSettings.email_notifications,
+        displayName: userSettings.display_name,
+        statusMessage: userSettings.status_message,
+        workingHours: userSettings.working_hours,
+      });
+    }
+  }, [userSettings]);
 
   const handleSignOut = async () => {
     await signOut();
@@ -76,15 +111,46 @@ const CustomerServiceDashboard = () => {
     setTheme(theme === "light" ? "dark" : "light");
   };
 
+  // Save settings mutation
+  const saveSettingsMutation = useMutation({
+    mutationFn: async () => {
+      if (!user?.id) throw new Error('No user ID');
+      
+      const settingsData = {
+        user_id: user.id,
+        auto_assign_tickets: csSettings.autoAssignTickets,
+        email_notifications: csSettings.emailNotifications,
+        display_name: csSettings.displayName,
+        status_message: csSettings.statusMessage,
+        working_hours: csSettings.workingHours,
+      };
+
+      // Try to update existing settings first
+      const { data, error } = await supabase
+        .from('cs_user_settings')
+        .upsert(settingsData, { 
+          onConflict: 'user_id',
+          ignoreDuplicates: false 
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['cs-user-settings', user?.id] });
+      showSuccess("Settings Saved", "Your CS preferences have been saved successfully!");
+    },
+    onError: (error) => {
+      console.error('Error saving settings:', error);
+      showError("Save Failed", "Failed to save settings. Please try again.");
+    },
+  });
+
   // Save settings function
   const saveSettings = async () => {
-    try {
-      // In a real app, this would save to the database
-      // For now, we'll just show a success message
-      showSuccess("Settings Saved", "Your CS preferences have been saved successfully!");
-    } catch (error) {
-      showError("Save Failed", "Failed to save settings. Please try again.");
-    }
+    saveSettingsMutation.mutate();
   };
 
   const handleQuickAction = (action: string) => {
@@ -944,9 +1010,19 @@ const CustomerServiceDashboard = () => {
                 <Button 
                   className="w-full" 
                   onClick={saveSettings}
+                  disabled={saveSettingsMutation.isPending}
                 >
-                  <Settings className="h-4 w-4 mr-2" />
-                  Save Preferences
+                  {saveSettingsMutation.isPending ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                      Saving...
+                    </>
+                  ) : (
+                    <>
+                      <Settings className="h-4 w-4 mr-2" />
+                      Save Preferences
+                    </>
+                  )}
                 </Button>
               </CardContent>
             </Card>
@@ -993,9 +1069,19 @@ const CustomerServiceDashboard = () => {
                 <Button 
                   className="w-full"
                   onClick={saveSettings}
+                  disabled={saveSettingsMutation.isPending}
                 >
-                  <Settings className="h-4 w-4 mr-2" />
-                  Save Settings
+                  {saveSettingsMutation.isPending ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                      Saving...
+                    </>
+                  ) : (
+                    <>
+                      <Settings className="h-4 w-4 mr-2" />
+                      Save Settings
+                    </>
+                  )}
                 </Button>
               </CardContent>
             </Card>
