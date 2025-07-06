@@ -112,7 +112,7 @@ const AgentOverview = () => {
   };
 
   const handleViewProperty = (propertyId: string) => {
-    navigate(`/property/${propertyId}`);
+    window.open(`/properties/${propertyId}`, '_blank');
   };
 
   const handleEditProperty = (propertyId: string) => {
@@ -149,110 +149,56 @@ const AgentOverview = () => {
 
   return (
     <div className="space-y-6">
-      {/* Professional Agent Header */}
-      <div className="bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 text-white rounded-2xl overflow-hidden shadow-2xl">
-        <div className="relative p-8">
-          {/* Background Pattern */}
-          <div className="absolute inset-0 bg-grid-white/5 [mask-image:radial-gradient(ellipse_at_center,white,transparent_75%)]"></div>
-          
-          <div className="relative z-10">
-            {/* Header Content */}
-            <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6 mb-8">
-              <div className="flex-1">
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center backdrop-blur-sm">
-                    <Users className="h-8 w-8" />
-                  </div>
-                  <div>
-                    <h1 className="text-3xl lg:text-4xl font-bold mb-2">Agent Control Panel</h1>
-                    <p className="text-blue-100 text-lg">Professional Property Management Dashboard</p>
-                  </div>
-                </div>
-                
-                {/* Agent Status */}
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="flex items-center gap-2 bg-green-500/20 px-4 py-2 rounded-full border border-green-400/30">
-                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                    <span className="text-green-100 text-sm font-medium">Online & Active</span>
-                  </div>
-                  <div className={`flex items-center gap-2 ${agentMembership.currentLevel.color} px-4 py-2 rounded-full`}>
-                    <CurrentIcon className="h-4 w-4 text-white" />
-                    <span className="text-white text-sm font-medium">{agentMembership.currentLevel.name} Agent</span>
-                  </div>
-                </div>
+      {/* Compact Agent Control Panel */}
+      <div className="bg-gradient-to-r from-slate-800 to-slate-900 text-white rounded-xl overflow-hidden shadow-lg">
+        <div className="p-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center">
+                <Users className="h-6 w-6" />
               </div>
-              
-              {/* Main Action Button */}
-              <div className="flex flex-col sm:flex-row gap-3">
-                <Button 
-                  onClick={handleAddListing}
-                  size="lg"
-                  className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white border-0 shadow-lg shadow-orange-500/25 hover:shadow-xl hover:shadow-orange-500/30"
-                >
-                  <PlusCircle className="h-5 w-5 mr-2" />
-                  Add New Property
-                </Button>
-                <Button 
-                  onClick={handleViewPortfolio}
-                  size="lg"
-                  variant="outline"
-                  className="bg-white/10 hover:bg-white/20 text-white border-white/30 backdrop-blur-sm"
-                >
-                  <Building className="h-5 w-5 mr-2" />
-                  My Properties
-                </Button>
+              <div>
+                <h1 className="text-2xl font-bold">Control Panel</h1>
+                <div className="flex items-center gap-2 mt-1">
+                  <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                  <span className="text-sm text-slate-300">Online</span>
+                  <div className={`flex items-center gap-1 ml-2 ${agentMembership.currentLevel.color} px-2 py-1 rounded-md text-xs`}>
+                    <CurrentIcon className="h-3 w-3" />
+                    <span>{agentMembership.currentLevel.name}</span>
+                  </div>
+                </div>
               </div>
             </div>
             
-            {/* Performance Stats Grid */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
-                    <Building className="h-5 w-5 text-blue-300" />
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold">{stats.totalListings}</div>
-                    <div className="text-blue-100 text-sm">Total Properties</div>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
-                    <Activity className="h-5 w-5 text-green-300" />
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold">{stats.activeListings}</div>
-                    <div className="text-blue-100 text-sm">Active Listings</div>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-yellow-500/20 rounded-lg flex items-center justify-center">
-                    <Target className="h-5 w-5 text-yellow-300" />
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold">{stats.pendingListings}</div>
-                    <div className="text-blue-100 text-sm">Pending Review</div>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
-                    <Users className="h-5 w-5 text-purple-300" />
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold">{stats.totalClients}</div>
-                    <div className="text-blue-100 text-sm">Active Clients</div>
-                  </div>
-                </div>
-              </div>
+            <div className="flex gap-2">
+              <Button 
+                onClick={handleAddListing}
+                size="sm"
+                className="bg-orange-600 hover:bg-orange-700"
+              >
+                <PlusCircle className="h-4 w-4 mr-1" />
+                Add Property
+              </Button>
+            </div>
+          </div>
+          
+          {/* Stats Row */}
+          <div className="grid grid-cols-4 gap-4 mt-4 pt-4 border-t border-white/10">
+            <div className="text-center">
+              <div className="text-xl font-bold">{stats.totalListings}</div>
+              <div className="text-xs text-slate-300">Properties</div>
+            </div>
+            <div className="text-center">
+              <div className="text-xl font-bold">{stats.activeListings}</div>
+              <div className="text-xs text-slate-300">Active</div>
+            </div>
+            <div className="text-center">
+              <div className="text-xl font-bold">{stats.pendingListings}</div>
+              <div className="text-xs text-slate-300">Pending</div>
+            </div>
+            <div className="text-center">
+              <div className="text-xl font-bold">{stats.totalClients}</div>
+              <div className="text-xs text-slate-300">Clients</div>
             </div>
           </div>
         </div>
