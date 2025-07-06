@@ -12,6 +12,8 @@ import { useNavigate } from "react-router-dom";
 import AgentTools from "./AgentTools";
 import AgentSettings from "./AgentSettings";
 import AgentNotifications from "./AgentNotifications";
+import RoleBasedPropertyForm from "@/components/property/RoleBasedPropertyForm";
+import ClientManagement from "./tools/ClientManagement";
 import { 
   Building, 
   PlusCircle, 
@@ -29,7 +31,20 @@ import {
   Eye,
   Edit,
   Activity,
-  Target
+  Target,
+  MessageSquare,
+  Clock,
+  Trash2,
+  BookOpen,
+  HelpCircle,
+  HeadphonesIcon,
+  Reply,
+  ThumbsUp,
+  ThumbsDown,
+  Send,
+  FileText,
+  Settings,
+  Trophy
 } from "lucide-react";
 
 const AgentOverview = () => {
@@ -335,21 +350,113 @@ const AgentOverview = () => {
       </Card>
 
       {/* Main Dashboard Tabs */}
-      <Tabs defaultValue="listings" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-6 h-14 p-1 bg-muted/50">
-          <TabsTrigger value="listings" className="text-sm font-medium">My Properties</TabsTrigger>
-          <TabsTrigger value="clients" className="text-sm font-medium">Clients</TabsTrigger>
-          <TabsTrigger value="analytics" className="text-sm font-medium">Analytics</TabsTrigger>
-          <TabsTrigger value="tools" className="text-sm font-medium">Tools</TabsTrigger>
-          <TabsTrigger value="notifications" className="text-sm font-medium">Notifications</TabsTrigger>
-          <TabsTrigger value="settings" className="text-sm font-medium">Settings</TabsTrigger>
+      <Tabs defaultValue="overview" className="space-y-6">
+        <TabsList className="grid w-full grid-cols-10 h-14 p-1 bg-muted/50 overflow-x-auto">
+          <TabsTrigger value="overview" className="text-xs font-medium">Overview</TabsTrigger>
+          <TabsTrigger value="add-property" className="text-xs font-medium">Add Property</TabsTrigger>
+          <TabsTrigger value="my-properties" className="text-xs font-medium">My Properties</TabsTrigger>
+          <TabsTrigger value="clients" className="text-xs font-medium">Clients</TabsTrigger>
+          <TabsTrigger value="analytics" className="text-xs font-medium">Analytics</TabsTrigger>
+          <TabsTrigger value="bookings" className="text-xs font-medium">Bookings</TabsTrigger>
+          <TabsTrigger value="feedback" className="text-xs font-medium">Feedback</TabsTrigger>
+          <TabsTrigger value="support" className="text-xs font-medium">Support</TabsTrigger>
+          <TabsTrigger value="tools" className="text-xs font-medium">Tools</TabsTrigger>
+          <TabsTrigger value="settings" className="text-xs font-medium">Settings</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="listings" className="space-y-6">
+        <TabsContent value="overview" className="space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Agent Profile Summary */}
+            <Card className="lg:col-span-2">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Users className="h-5 w-5" />
+                  Agent Profile Overview
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="text-center p-4 bg-muted/50 rounded-lg">
+                    <Calendar className="h-6 w-6 mx-auto mb-2 text-primary" />
+                    <div className="text-sm text-muted-foreground">Member Since</div>
+                    <div className="font-bold">Jan 2024</div>
+                  </div>
+                  <div className="text-center p-4 bg-muted/50 rounded-lg">
+                    <TrendingUp className="h-6 w-6 mx-auto mb-2 text-green-600" />
+                    <div className="text-sm text-muted-foreground">Total Sales</div>
+                    <div className="font-bold">Rp 2.5B</div>
+                  </div>
+                  <div className="text-center p-4 bg-muted/50 rounded-lg">
+                    <Star className="h-6 w-6 mx-auto mb-2 text-yellow-600" />
+                    <div className="text-sm text-muted-foreground">Rating</div>
+                    <div className="font-bold">4.8/5</div>
+                  </div>
+                  <div className="text-center p-4 bg-muted/50 rounded-lg">
+                    <Trophy className="h-6 w-6 mx-auto mb-2 text-purple-600" />
+                    <div className="text-sm text-muted-foreground">Rank</div>
+                    <div className="font-bold">#12</div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Quick Actions */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Quick Actions</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <Button className="w-full justify-start" variant="outline">
+                  <PlusCircle className="h-4 w-4 mr-2" />
+                  Add New Property
+                </Button>
+                <Button className="w-full justify-start" variant="outline">
+                  <Users className="h-4 w-4 mr-2" />
+                  Add New Client
+                </Button>
+                <Button className="w-full justify-start" variant="outline">
+                  <Calendar className="h-4 w-4 mr-2" />
+                  Schedule Viewing
+                </Button>
+                <Button className="w-full justify-start" variant="outline">
+                  <MessageSquare className="h-4 w-4 mr-2" />
+                  Send Message
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="add-property" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <PlusCircle className="h-5 w-5" />
+                Add New Property Listing
+              </CardTitle>
+              <CardDescription>Create a new property listing for sale or rent</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <RoleBasedPropertyForm />
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="my-properties" className="space-y-6">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
-              <h2 className="text-2xl font-bold">Property Portfolio</h2>
-              <p className="text-muted-foreground">Manage your property listings and track performance</p>
+              <h2 className="text-2xl font-bold">Property Portfolio Management</h2>
+              <p className="text-muted-foreground">Manage your property listings with advanced tools</p>
+            </div>
+            <div className="flex gap-2">
+              <Button>
+                <PlusCircle className="h-4 w-4 mr-2" />
+                Add Property
+              </Button>
+              <Button variant="outline">
+                <FileText className="h-4 w-4 mr-2" />
+                Export List
+              </Button>
             </div>
           </div>
 
@@ -368,7 +475,7 @@ const AgentOverview = () => {
                     </Badge>
                   </div>
                   <div className="absolute bottom-3 left-3">
-                    <Badge variant="outline" className="bg-white/90 backdrop-blur-sm">
+                    <Badge variant="outline" className="bg-white/90 backdrop-blur-sm capitalize">
                       {property.property_type}
                     </Badge>
                   </div>
@@ -385,10 +492,8 @@ const AgentOverview = () => {
                       </p>
                     </div>
                     
-                    <div className="flex justify-between items-center">
-                      <div className="text-xl font-bold text-primary">
-                        {formatPrice(property.price, property.listing_type)}
-                      </div>
+                    <div className="text-xl font-bold text-primary">
+                      {formatPrice(property.price, property.listing_type)}
                     </div>
                     
                     <div className="flex justify-between text-sm text-muted-foreground bg-muted/50 rounded-lg p-3">
@@ -422,6 +527,14 @@ const AgentOverview = () => {
                         <Edit className="h-4 w-4 mr-1" />
                         Edit
                       </Button>
+                      <Button 
+                        size="sm" 
+                        variant="outline" 
+                        className="flex-1 text-red-600 hover:text-red-700"
+                      >
+                        <Trash2 className="h-4 w-4 mr-1" />
+                        Delete
+                      </Button>
                     </div>
                   </div>
                 </CardContent>
@@ -431,48 +544,222 @@ const AgentOverview = () => {
         </TabsContent>
 
         <TabsContent value="clients">
-          <Card className="shadow-lg">
+          <ClientManagement />
+        </TabsContent>
+
+        <TabsContent value="analytics" className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <Card>
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-muted-foreground">Total Revenue</p>
+                    <p className="text-2xl font-bold">Rp 2.5B</p>
+                    <p className="text-xs text-green-600">+12% from last month</p>
+                  </div>
+                  <DollarSign className="h-8 w-8 text-primary" />
+                </div>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-muted-foreground">Properties Sold</p>
+                    <p className="text-2xl font-bold">24</p>
+                    <p className="text-xs text-green-600">+8% from last month</p>
+                  </div>
+                  <Building className="h-8 w-8 text-primary" />
+                </div>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-muted-foreground">Active Clients</p>
+                    <p className="text-2xl font-bold">48</p>
+                    <p className="text-xs text-blue-600">+5 new this week</p>
+                  </div>
+                  <Users className="h-8 w-8 text-primary" />
+                </div>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-muted-foreground">Avg. Deal Time</p>
+                    <p className="text-2xl font-bold">21 days</p>
+                    <p className="text-xs text-green-600">-3 days improved</p>
+                  </div>
+                  <Clock className="h-8 w-8 text-primary" />
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+          
+          <Card>
             <CardHeader>
-              <CardTitle className="text-xl">Client Management</CardTitle>
-              <CardDescription>Manage your client relationships and track interactions</CardDescription>
+              <CardTitle>Performance Analytics</CardTitle>
+              <CardDescription>Detailed insights about your agent performance</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="text-center py-16">
-                <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                  <Users className="h-8 w-8 text-primary" />
-                </div>
-                <h3 className="text-xl font-semibold mb-2">Client Management System</h3>
-                <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-                  Track your clients, their preferences, and communication history in one centralized location
+                <BarChart3 className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+                <h3 className="text-xl font-semibold mb-2">Advanced Analytics Dashboard</h3>
+                <p className="text-muted-foreground mb-6">
+                  View detailed charts, trends, and performance metrics
                 </p>
                 <Button size="lg">
-                  <PlusCircle className="h-5 w-5 mr-2" />
-                  Add New Client
+                  <TrendingUp className="h-5 w-5 mr-2" />
+                  View Full Analytics
                 </Button>
               </div>
             </CardContent>
           </Card>
         </TabsContent>
 
-        <TabsContent value="analytics">
-          <Card className="shadow-lg">
+        <TabsContent value="bookings" className="space-y-6">
+          <Card>
             <CardHeader>
-              <CardTitle className="text-xl">Performance Analytics</CardTitle>
-              <CardDescription>Track your sales and listing performance metrics</CardDescription>
+              <CardTitle className="flex items-center gap-2">
+                <Calendar className="h-5 w-5" />
+                Survey & Viewing Bookings
+              </CardTitle>
+              <CardDescription>Manage property surveys and client viewing appointments</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-center py-16">
-                <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                  <BarChart3 className="h-8 w-8 text-primary" />
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Button className="h-20 flex-col gap-2">
+                    <Calendar className="h-6 w-6" />
+                    Schedule Property Survey
+                  </Button>
+                  <Button variant="outline" className="h-20 flex-col gap-2">
+                    <Clock className="h-6 w-6" />
+                    Schedule Client Viewing
+                  </Button>
                 </div>
-                <h3 className="text-xl font-semibold mb-2">Analytics Dashboard</h3>
-                <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-                  View detailed insights about your performance, market trends, and client engagement
-                </p>
-                <Button size="lg">
-                  <TrendingUp className="h-5 w-5 mr-2" />
-                  View Analytics
-                </Button>
+                
+                <div className="border rounded-lg p-4">
+                  <h4 className="font-semibold mb-3">Upcoming Appointments</h4>
+                  <div className="space-y-3">
+                    {[1, 2, 3].map((item) => (
+                      <div key={item} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                        <div>
+                          <p className="font-medium">Property Survey - Villa in Seminyak</p>
+                          <p className="text-sm text-muted-foreground">Tomorrow, 10:00 AM</p>
+                        </div>
+                        <Button size="sm" variant="outline">
+                          <Edit className="h-4 w-4 mr-1" />
+                          Edit
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="feedback" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <MessageSquare className="h-5 w-5" />
+                Client Feedback & Reviews
+              </CardTitle>
+              <CardDescription>Manage and respond to client feedback</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {[1, 2, 3].map((item) => (
+                  <div key={item} className="border rounded-lg p-4">
+                    <div className="flex items-start justify-between mb-3">
+                      <div>
+                        <h4 className="font-semibold">Sarah Johnson</h4>
+                        <div className="flex items-center gap-1 mt-1">
+                          {[1, 2, 3, 4, 5].map((star) => (
+                            <Star key={star} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                          ))}
+                        </div>
+                      </div>
+                      <Badge>New</Badge>
+                    </div>
+                    <p className="text-sm text-muted-foreground mb-3">
+                      "Excellent service! The agent was very professional and helped me find the perfect property."
+                    </p>
+                    <div className="flex items-center gap-2">
+                      <Button size="sm">
+                        <Reply className="h-4 w-4 mr-1" />
+                        Reply
+                      </Button>
+                      <Button size="sm" variant="outline">
+                        <ThumbsUp className="h-4 w-4 mr-1" />
+                        Thank
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="support" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <HeadphonesIcon className="h-5 w-5" />
+                Customer Service Communication
+              </CardTitle>
+              <CardDescription>Get help and communicate with customer service team</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <h4 className="font-semibold mb-3">Quick Help</h4>
+                  <div className="space-y-2">
+                    <Button variant="outline" className="w-full justify-start">
+                      <HelpCircle className="h-4 w-4 mr-2" />
+                      Property Listing Help
+                    </Button>
+                    <Button variant="outline" className="w-full justify-start">
+                      <BookOpen className="h-4 w-4 mr-2" />
+                      Agent Guidelines
+                    </Button>
+                    <Button variant="outline" className="w-full justify-start">
+                      <MessageSquare className="h-4 w-4 mr-2" />
+                      Contact Support
+                    </Button>
+                  </div>
+                </div>
+                
+                <div>
+                  <h4 className="font-semibold mb-3">Recent Support Tickets</h4>
+                  <div className="space-y-3">
+                    {[1, 2].map((item) => (
+                      <div key={item} className="border rounded-lg p-3">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="font-medium text-sm">Property Approval Issue</span>
+                          <Badge variant="secondary">In Progress</Badge>
+                        </div>
+                        <p className="text-xs text-muted-foreground">
+                          Need help with property approval process...
+                        </p>
+                        <Button size="sm" className="mt-2">
+                          <MessageSquare className="h-3 w-3 mr-1" />
+                          View Conversation
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -480,10 +767,6 @@ const AgentOverview = () => {
 
         <TabsContent value="tools">
           <AgentTools />
-        </TabsContent>
-
-        <TabsContent value="notifications">
-          <AgentNotifications />
         </TabsContent>
 
         <TabsContent value="settings">
@@ -495,3 +778,18 @@ const AgentOverview = () => {
 };
 
 export default AgentOverview;
+
+/**
+ * Note: This AgentOverview component is getting quite large (780+ lines). 
+ * Consider refactoring it into smaller, focused components:
+ * - AgentDashboardHeader
+ * - AgentMembershipCard  
+ * - AgentOverviewTab
+ * - AgentPropertiesTab
+ * - AgentAnalyticsTab
+ * - AgentBookingsTab
+ * - AgentFeedbackTab
+ * - AgentSupportTab
+ * 
+ * This would improve maintainability and make the code more modular.
+ */
