@@ -16,8 +16,7 @@ const AddProperty = () => {
     if (!isAuthenticated) {
       navigate('/');
     }
-    // Only vendors can create properties for sale/rent
-    // Agents and property owners can update/manage existing properties
+    // Allow vendors, agents, and property owners to create properties
     if (isAuthenticated && profile?.role === 'general_user') {
       navigate('/dashboard');
     }
@@ -34,8 +33,7 @@ const AddProperty = () => {
         <div className="text-center p-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">Access Restricted</h2>
           <p className="text-gray-600 mb-4">
-            Only vendors can create new property listings for sale/rent.
-            Agents and property owners can manage existing properties.
+            You need to be a registered agent, vendor, or property owner to create property listings.
           </p>
           <button 
             onClick={() => navigate('/dashboard')}
@@ -70,7 +68,7 @@ const AddProperty = () => {
           <div className="text-center mb-8">
             <h1 className="text-4xl font-bold text-gray-900 mb-4">
               {language === "en" ? "Add New Property" : "Tambah Properti Baru"}
-              {profile?.role === 'vendor' && (
+              {(profile?.role === 'vendor' || profile?.role === 'agent' || profile?.role === 'property_owner') && (
                 <span className="text-sm font-normal text-blue-600 block">
                   {language === "en" ? "Create property for sale/rent" : "Buat properti untuk dijual/disewa"}
                 </span>

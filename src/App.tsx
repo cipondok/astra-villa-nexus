@@ -26,6 +26,8 @@ import NotFound from '@/pages/NotFound';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import AdminOnlyRoute from '@/components/AdminOnlyRoute';
 import VendorOnlyRoute from '@/components/VendorOnlyRoute';
+import AddProperty from '@/pages/AddProperty';
+import MyProperties from '@/pages/MyProperties';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -74,6 +76,9 @@ function App() {
 
                           <Route path="/property-owner-dashboard" element={<PropertyOwnerDashboard />} />
                           <Route path="/agent-dashboard" element={<AgentDashboard />} />
+                          <Route path="/agent" element={<AgentDashboard />} />
+                          <Route path="/add-property" element={<AddProperty />} />
+                          <Route path="/my-properties" element={<MyProperties />} />
                           <Route path="*" element={<NotFound />} />
                         </Routes>
                         <Toaster />

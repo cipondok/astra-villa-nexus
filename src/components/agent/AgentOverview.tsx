@@ -169,6 +169,10 @@ const AgentOverview = () => {
     navigate('/add-property');
   };
 
+  const handleViewPortfolio = () => {
+    navigate('/my-properties');
+  };
+
   const CurrentIcon = agentMembership.currentLevel.icon;
 
   return (
@@ -217,13 +221,13 @@ const AgentOverview = () => {
                   Add New Property
                 </Button>
                 <Button 
-                  onClick={() => navigate('/properties')}
+                  onClick={handleViewPortfolio}
                   size="lg"
                   variant="outline"
                   className="bg-white/10 hover:bg-white/20 text-white border-white/30 backdrop-blur-sm"
                 >
                   <Building className="h-5 w-5 mr-2" />
-                  View Portfolio
+                  My Properties
                 </Button>
               </div>
             </div>
