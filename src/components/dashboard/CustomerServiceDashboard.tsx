@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { useAlert } from "@/contexts/AlertContext";
 import { 
   Headphones, 
@@ -29,7 +30,11 @@ import {
   Timer,
   TrendingUp,
   Users,
-  Award
+  Award,
+  Menu,
+  Home,
+  Settings,
+  HelpCircle
 } from "lucide-react";
 
 const CustomerServiceDashboard = () => {
@@ -251,20 +256,101 @@ const CustomerServiceDashboard = () => {
   const pendingInquiries = inquiries?.length || 0;
   const availableTickets = unassignedTickets?.length || 0;
 
+  // Navigation menu items
+  const navItems = [
+    { title: "Dashboard", value: "dashboard", icon: Home },
+    { title: "My Tickets", value: "my-tickets", icon: FileText, badge: myOpenTickets },
+    { title: "Inquiries", value: "inquiries", icon: MessageSquare, badge: pendingInquiries },
+    { title: "Available", value: "available", icon: Clock, badge: availableTickets },
+    { title: "Analytics", value: "analytics", icon: BarChart3 },
+    { title: "Settings", value: "settings", icon: Settings },
+  ];
+
+  // Create the sidebar component
+  const CSNavSidebar = () => (
+    <Sidebar className="border-r">
+      <SidebarContent>
+        <div className="p-4">
+          <div className="flex items-center gap-2 mb-4">
+            <Headphones className="h-6 w-6 text-blue-600" />
+            <h2 className="font-semibold text-lg">CS Dashboard</h2>
+          </div>
+        </div>
+        
+        <SidebarGroup>
+          <SidebarGroupLabel>Navigation</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {navItems.map((item) => (
+                <SidebarMenuItem key={item.value}>
+                  <SidebarMenuButton 
+                    onClick={() => setActiveTab(item.value)}
+                    className={activeTab === item.value ? "bg-blue-100 text-blue-700" : ""}
+                  >
+                    <item.icon className="h-4 w-4" />
+                    <span>{item.title}</span>
+                    {item.badge !== undefined && item.badge > 0 && (
+                      <Badge className="ml-auto bg-red-500 text-white text-xs">
+                        {item.badge}
+                      </Badge>
+                    )}
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup className="mt-auto">
+          <SidebarGroupLabel>Quick Actions</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton>
+                  <Phone className="h-4 w-4" />
+                  <span>Live Chat</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton>
+                  <HelpCircle className="h-4 w-4" />
+                  <span>Help Center</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
+    </Sidebar>
+  );
+
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Customer Service Dashboard</h1>
-          <p className="text-muted-foreground">Manage support tickets and customer inquiries</p>
-        </div>
-        <div className="flex items-center gap-2">
-          <Badge className="bg-green-500 text-white">
-            <Users className="h-3 w-3 mr-1" />
-            Online
-          </Badge>
-        </div>
-      </div>
+    <SidebarProvider>
+      <div className="min-h-screen flex w-full">
+        <CSNavSidebar />
+        
+        <main className="flex-1">
+          {/* Header with menu trigger */}
+          <div className="border-b bg-background p-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <SidebarTrigger />
+                <div>
+                  <h1 className="text-2xl font-bold text-foreground">Customer Service Dashboard</h1>
+                  <p className="text-muted-foreground">Manage support tickets and customer inquiries</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <Badge className="bg-green-500 text-white">
+                  <Users className="h-3 w-3 mr-1" />
+                  Online
+                </Badge>
+              </div>
+            </div>
+          </div>
+
+          {/* Dashboard Content */}
+          <div className="p-6 space-y-6">
 
       {/* Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -626,7 +712,10 @@ const CustomerServiceDashboard = () => {
           </div>
         </DialogContent>
       </Dialog>
-    </div>
+          </div>
+        </main>
+      </div>
+    </SidebarProvider>
   );
 };
 
