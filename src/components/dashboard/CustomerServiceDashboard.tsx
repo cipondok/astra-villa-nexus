@@ -13,6 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { useAlert } from "@/contexts/AlertContext";
+import { useNavigate } from "react-router-dom";
 import { 
   Headphones, 
   MessageSquare, 
@@ -34,7 +35,9 @@ import {
   Menu,
   Home,
   Settings,
-  HelpCircle
+  HelpCircle,
+  LogOut,
+  ArrowLeft
 } from "lucide-react";
 
 const CustomerServiceDashboard = () => {
@@ -43,9 +46,15 @@ const CustomerServiceDashboard = () => {
   const [newTicketDialog, setNewTicketDialog] = useState(false);
   const [replyText, setReplyText] = useState("");
   
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/');
+  };
 
   // Fetch tickets assigned to me
   const { data: myTickets, isLoading: myTicketsLoading } = useQuery({
@@ -330,9 +339,58 @@ const CustomerServiceDashboard = () => {
         <CSNavSidebar />
         
         <main className="flex-1">
-          {/* Header with menu trigger */}
-          <div className="border-b bg-background p-4">
-            <div className="flex items-center justify-between">
+          {/* Header with top menu navigation */}
+          <div className="border-b bg-background">
+            {/* Top Navigation Bar */}
+            <div className="flex items-center justify-between px-4 py-2 border-b bg-muted/30">
+              <div className="flex items-center gap-4">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => navigate('/')}
+                  className="flex items-center gap-2 hover:bg-primary/10"
+                >
+                  <ArrowLeft className="h-4 w-4" />
+                  <Home className="h-4 w-4" />
+                  <span>Home</span>
+                </Button>
+              </div>
+              
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => navigate('/profile')}
+                  className="flex items-center gap-2 hover:bg-primary/10"
+                >
+                  <User className="h-4 w-4" />
+                  <span>Profile</span>
+                </Button>
+                
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setActiveTab('settings')}
+                  className="flex items-center gap-2 hover:bg-primary/10"
+                >
+                  <Settings className="h-4 w-4" />
+                  <span>Settings</span>
+                </Button>
+                
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleSignOut}
+                  className="flex items-center gap-2 hover:bg-destructive/10 text-destructive hover:text-destructive"
+                >
+                  <LogOut className="h-4 w-4" />
+                  <span>Logout</span>
+                </Button>
+              </div>
+            </div>
+            
+            {/* Main Header */}
+            <div className="flex items-center justify-between p-4">
               <div className="flex items-center gap-4">
                 <SidebarTrigger />
                 <div>
