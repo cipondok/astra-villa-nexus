@@ -1563,6 +1563,148 @@ export type Database = {
           },
         ]
       }
+      live_chat_messages: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          is_read: boolean
+          message_type: string
+          metadata: Json | null
+          sender_type: string
+          sender_user_id: string | null
+          session_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          message_type?: string
+          metadata?: Json | null
+          sender_type: string
+          sender_user_id?: string | null
+          session_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          message_type?: string
+          metadata?: Json | null
+          sender_type?: string
+          sender_user_id?: string | null
+          session_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "live_chat_messages_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "live_chat_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      live_chat_participants: {
+        Row: {
+          id: string
+          is_online: boolean
+          joined_at: string
+          last_seen_at: string
+          left_at: string | null
+          participant_type: string
+          session_id: string
+          user_id: string | null
+        }
+        Insert: {
+          id?: string
+          is_online?: boolean
+          joined_at?: string
+          last_seen_at?: string
+          left_at?: string | null
+          participant_type: string
+          session_id: string
+          user_id?: string | null
+        }
+        Update: {
+          id?: string
+          is_online?: boolean
+          joined_at?: string
+          last_seen_at?: string
+          left_at?: string | null
+          participant_type?: string
+          session_id?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "live_chat_participants_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "live_chat_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      live_chat_sessions: {
+        Row: {
+          agent_user_id: string | null
+          created_at: string
+          customer_email: string | null
+          customer_ip: unknown | null
+          customer_name: string
+          customer_user_id: string | null
+          ended_at: string | null
+          id: string
+          last_activity_at: string
+          priority: string | null
+          referrer_url: string | null
+          started_at: string
+          status: string
+          subject: string | null
+          updated_at: string
+          user_agent: string | null
+        }
+        Insert: {
+          agent_user_id?: string | null
+          created_at?: string
+          customer_email?: string | null
+          customer_ip?: unknown | null
+          customer_name?: string
+          customer_user_id?: string | null
+          ended_at?: string | null
+          id?: string
+          last_activity_at?: string
+          priority?: string | null
+          referrer_url?: string | null
+          started_at?: string
+          status?: string
+          subject?: string | null
+          updated_at?: string
+          user_agent?: string | null
+        }
+        Update: {
+          agent_user_id?: string | null
+          created_at?: string
+          customer_email?: string | null
+          customer_ip?: unknown | null
+          customer_name?: string
+          customer_user_id?: string | null
+          ended_at?: string | null
+          id?: string
+          last_activity_at?: string
+          priority?: string | null
+          referrer_url?: string | null
+          started_at?: string
+          status?: string
+          subject?: string | null
+          updated_at?: string
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       location_admin_settings: {
         Row: {
           created_at: string | null

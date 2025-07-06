@@ -42,6 +42,7 @@ import {
   Moon,
   Sun
 } from "lucide-react";
+import LiveChatManager from "./LiveChatManager";
 import { Switch } from "@/components/ui/switch";
 
 const CustomerServiceDashboard = () => {
@@ -58,7 +59,6 @@ const CustomerServiceDashboard = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   
-  // CS Settings State
   const [csSettings, setCsSettings] = useState({
     autoAssignTickets: true,
     emailNotifications: true,
@@ -66,6 +66,11 @@ const CustomerServiceDashboard = () => {
     statusMessage: "Available for support",
     workingHours: "9-5",
   });
+  
+  // Live Chat State
+  const [selectedChatSession, setSelectedChatSession] = useState<any>(null);
+  const [newMessage, setNewMessage] = useState("");
+  const [chatMessages, setChatMessages] = useState<any[]>([]);
 
   // Load CS settings from database
   const { data: userSettings, isLoading: settingsLoading } = useQuery({
@@ -1182,76 +1187,11 @@ const CustomerServiceDashboard = () => {
         </DialogContent>
       </Dialog>
 
-      {/* Live Chat Modal */}
-      <Dialog open={showLiveChat} onOpenChange={setShowLiveChat}>
-        <DialogContent className="max-w-4xl max-h-[600px]">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Phone className="h-5 w-5" />
-              Live Chat Session
-            </DialogTitle>
-            <DialogDescription>
-              Manage real-time customer conversations
-            </DialogDescription>
-          </DialogHeader>
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 h-[500px]">
-            {/* Chat List */}
-            <div className="border rounded-lg p-4 space-y-3">
-              <h3 className="font-semibold text-sm">Active Chats</h3>
-              <div className="space-y-2">
-                {[1, 2, 3].map((i) => (
-                  <div key={i} className="p-3 border rounded-lg hover:bg-muted cursor-pointer">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm font-medium">Customer {i}</p>
-                        <p className="text-xs text-muted-foreground">Property inquiry...</p>
-                      </div>
-                      <Badge className="bg-green-500 text-white text-xs">Online</Badge>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-            
-            {/* Chat Window */}
-            <div className="lg:col-span-2 border rounded-lg flex flex-col">
-              <div className="p-4 border-b">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h4 className="font-semibold">Customer 1</h4>
-                    <p className="text-sm text-muted-foreground">Online • Property inquiry</p>
-                  </div>
-                  <Badge className="bg-green-500 text-white">Active</Badge>
-                </div>
-              </div>
-              
-              <div className="flex-1 p-4 space-y-3 overflow-y-auto">
-                <div className="flex justify-start">
-                  <div className="bg-muted p-3 rounded-lg max-w-xs">
-                    <p className="text-sm">Hi, I'm interested in the property listing on Jalan Sudirman. Can you provide more details?</p>
-                    <p className="text-xs text-muted-foreground mt-1">2:30 PM</p>
-                  </div>
-                </div>
-                <div className="flex justify-end">
-                  <div className="bg-blue-500 text-white p-3 rounded-lg max-w-xs">
-                    <p className="text-sm">Hello! I'd be happy to help you with that property. Let me get the details for you.</p>
-                    <p className="text-xs text-blue-100 mt-1">2:32 PM</p>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="p-4 border-t">
-                <div className="flex gap-2">
-                  <Input placeholder="Type your message..." className="flex-1" />
-                  <Button size="sm">
-                    <Send className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+      {/* Live Chat Manager */}
+      <LiveChatManager 
+        isOpen={showLiveChat} 
+        onClose={() => setShowLiveChat(false)} 
+      />
 
       {/* Help Center Modal */}
       <Dialog open={showHelpCenter} onOpenChange={setShowHelpCenter}>
