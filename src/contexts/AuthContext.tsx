@@ -262,47 +262,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
   }, []);
 
-  // Auto-extend session on user activity
+  // Simplified activity tracking - no aggressive session extension
   React.useEffect(() => {
     if (!user || !session) return;
 
-    let activityTimeout: NodeJS.Timeout;
-    let lastExtension = Date.now();
-
     const handleActivity = () => {
-      const now = Date.now();
-      const lastActivity = localStorage.getItem('last_activity');
-      const timeSinceLastActivity = lastActivity ? now - parseInt(lastActivity) : 0;
-      const timeSinceLastExtension = now - lastExtension;
-
-      localStorage.setItem('last_activity', now.toString());
-
-      if (timeSinceLastExtension > 10 * 60 * 1000 && timeSinceLastActivity < 5 * 60 * 1000) {
-        extendSession();
-        lastExtension = now;
-      }
-
-      clearTimeout(activityTimeout);
-      activityTimeout = setTimeout(() => {
-        if (user && session) {
-          extendSession();
-          lastExtension = Date.now();
-        }
-      }, 15 * 60 * 1000);
+      localStorage.setItem('last_activity', Date.now().toString());
     };
 
-    const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'];
+    // Only track activity, don't auto-extend sessions
+    const events = ['click', 'keypress'];
     events.forEach(event => {
       document.addEventListener(event, handleActivity, { passive: true });
     });
-
-    handleActivity();
 
     return () => {
       events.forEach(event => {
         document.removeEventListener(event, handleActivity);
       });
-      clearTimeout(activityTimeout);
     };
   }, [user, session]);
 
@@ -314,15 +291,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // Clear any existing auth state first
       await supabase.auth.signOut();
       
-      // Check if user is already signed in elsewhere
-      const { data: existingSession } = await supabase.auth.getSession();
-      if (existingSession.session && existingSession.session.user?.email !== email) {
-        setLoading(false);
-        return { 
-          error: { message: 'Another user is already signed in. Please refresh the page and try again.' }, 
-          success: false 
-        };
-      }
+      // Simplified sign in - remove conflicting session checks
       
       // Add timeout to sign in
       const controller = new AbortController();
