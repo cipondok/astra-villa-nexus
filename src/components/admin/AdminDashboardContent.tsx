@@ -31,6 +31,7 @@ import VendorsHubContent from "./VendorsHubContent";
 import EnhancedVendorAgentControl from "./EnhancedVendorAgentControl";
 import AuthorizationMonitoringSystem from "./AuthorizationMonitoringSystem";
 import AdminAlertSystem from "./AdminAlertSystem";
+import CustomerServiceControlPanel from "./CustomerServiceControlPanel";
 
 interface AdminDashboardContentProps {
   activeSection: string;
@@ -92,6 +93,8 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
         return <ASTRATokenSettings />;
       case "tools-management":
         return <ToolsManagementDashboard />;
+      case "customer-service-control":
+        return <CustomerServiceControlPanel />;
       case "seo-settings":
         return <SEOSettings />;
       case "vendor-agent-control":

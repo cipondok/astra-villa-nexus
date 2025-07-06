@@ -283,6 +283,13 @@ const AdminTabNavigation = ({ isAdmin }: AdminTabNavigationProps) => {
       icon: AlertTriangle, 
       category: "monitoring",
       badge: "New"
+    },
+    { 
+      id: "customer-service-control", 
+      label: "CS Control", 
+      icon: Headphones, 
+      category: "service",
+      badge: "New"
     }
   ];
 
