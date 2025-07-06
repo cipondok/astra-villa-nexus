@@ -284,10 +284,17 @@ const AuthenticatedNavigation = ({
                   </div>
                 </div>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => navigate('/profile')}>
-                  <User className="mr-2 h-4 w-4" />
-                  <span>{currentText.profile}</span>
-                </DropdownMenuItem>
+                {profile?.role === 'agent' ? (
+                  <DropdownMenuItem onClick={() => navigate('/agent-dashboard')}>
+                    <User className="mr-2 h-4 w-4" />
+                    <span>Agent Dashboard</span>
+                  </DropdownMenuItem>
+                ) : (
+                  <DropdownMenuItem onClick={() => navigate('/profile')}>
+                    <User className="mr-2 h-4 w-4" />
+                    <span>{currentText.profile}</span>
+                  </DropdownMenuItem>
+                )}
                 {canAccessPropertyManagement && (
                   <>
                     <DropdownMenuItem onClick={() => navigate('/my-properties')}>
@@ -364,12 +371,12 @@ const AuthenticatedNavigation = ({
                   </button>
                 </>
               )}
-              {canAccessAdmin && (
+               {profile?.role === 'agent' && (
                 <button
-                  onClick={() => navigate('/admin')}
-                  className="block px-3 py-2 rounded-md text-base font-medium text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20"
+                  onClick={() => navigate('/agent-dashboard')}
+                  className="block px-3 py-2 rounded-md text-base font-medium text-blue-600 hover:text-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900/20"
                 >
-                  {currentText.admin}
+                  Agent Dashboard
                 </button>
               )}
             </div>
