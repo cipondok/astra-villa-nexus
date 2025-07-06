@@ -186,12 +186,6 @@ export const navigationSections = {
       label: "Daily Check-in",
       icon: CheckCircle,
       description: "Monitor daily check-in activity"
-    },
-    {
-      key: "database-errors",
-      label: "Database Errors",
-      icon: AlertTriangle,
-      description: "Monitor and fix database errors automatically"
     }
   ],
 
@@ -237,6 +231,12 @@ export const navigationSections = {
       label: "Database Management",
       icon: Database,
       description: "Manage database tables and entries"
+    },
+    {
+      key: "database-errors",
+      label: "Database Errors",
+      icon: AlertTriangle,
+      description: "Monitor and fix database errors automatically"
     },
     {
       key: "security-monitoring",
