@@ -135,12 +135,12 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
                 {profile?.role === 'customer_service' && (
                   <Button
                     onClick={() => navigate('/dashboard')}
-                    variant="ghost"
+                    variant="default"
                     size="sm"
-                    className="bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 hover:text-blue-700 border-blue-500/30 hover:border-blue-500/50 transition-all duration-300"
+                    className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 shadow-sm"
                   >
                     <Headphones className="h-4 w-4 mr-2" />
-                    <span className="hidden sm:inline">CS Dashboard</span>
+                    CS Dashboard
                   </Button>
                 )}
                 
@@ -214,8 +214,8 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
                       navigate('/dashboard');
                       setIsOpen(false);
                     }}
-                    variant="ghost"
-                    className="w-full justify-start bg-blue-500/10 hover:bg-blue-500/20 text-blue-600"
+                    variant="default"
+                    className="w-full justify-start bg-blue-600 hover:bg-blue-700 text-white font-medium"
                   >
                     <Headphones className="h-4 w-4 mr-3" />
                     CS Dashboard

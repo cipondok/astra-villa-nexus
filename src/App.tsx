@@ -9,6 +9,7 @@ import { AlertProvider } from '@/contexts/AlertContext';
 import { LanguageProvider } from '@/contexts/LanguageContext';
 import { Toaster } from '@/components/ui/sonner';
 import AppInitializer from '@/components/AppInitializer';
+import CustomerServiceDashboard from '@/pages/CustomerServiceDashboard';
 import Index from '@/pages/Index';
 import Properties from '@/pages/Properties';
 import PropertyDetail from '@/pages/PropertyDetail';
@@ -63,6 +64,7 @@ function App() {
 
                           <Route element={<ProtectedRoute />}>
                             <Route path="/profile" element={<Profile />} />
+                            <Route path="/dashboard" element={<CustomerServiceDashboard />} />
                             <Route path="/user-dashboard" element={<UserDashboard />} />
                             <Route path="/analytics" element={<Analytics />} />
                           </Route>
