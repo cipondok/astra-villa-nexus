@@ -48,6 +48,8 @@ const CustomerServiceDashboard = () => {
   const [replyDialog, setReplyDialog] = useState<{ open: boolean; item: any }>({ open: false, item: null });
   const [newTicketDialog, setNewTicketDialog] = useState(false);
   const [replyText, setReplyText] = useState("");
+  const [showLiveChat, setShowLiveChat] = useState(false);
+  const [showHelpCenter, setShowHelpCenter] = useState(false);
   
   const { user, signOut } = useAuth();
   const { showSuccess, showError } = useAlert();
@@ -67,16 +69,20 @@ const CustomerServiceDashboard = () => {
   const handleQuickAction = (action: string) => {
     switch (action) {
       case 'live-chat':
-        showSuccess("Live Chat", "Starting live chat session...");
-        // In a real app, this would open a live chat interface
+        setShowLiveChat(true);
+        showSuccess("Live Chat", "Opening live chat interface...");
         break;
       case 'search-customer':
         setActiveTab('inquiries');
         showSuccess("Customer Search", "Switching to customer inquiries...");
         break;
       case 'knowledge-base':
-        window.open('https://docs.astravilla.com', '_blank');
-        showSuccess("Knowledge Base", "Opening knowledge base in new tab...");
+        setShowHelpCenter(true);
+        showSuccess("Help Center", "Opening help center...");
+        break;
+      case 'help-center':
+        setShowHelpCenter(true);
+        showSuccess("Help Center", "Opening help center...");
         break;
       default:
         break;
@@ -591,6 +597,14 @@ const CustomerServiceDashboard = () => {
                   <FileText className="h-4 w-4 mr-2" />
                   Knowledge Base
                 </Button>
+                <Button 
+                  className="w-full justify-start" 
+                  variant="outline"
+                  onClick={() => handleQuickAction('help-center')}
+                >
+                  <HelpCircle className="h-4 w-4 mr-2" />
+                  Help Center
+                </Button>
               </CardContent>
             </Card>
           </div>
@@ -980,6 +994,143 @@ const CustomerServiceDashboard = () => {
                 {replyDialog.item?.complaint_type ? 'Resolve' : 'Send Reply'}
               </Button>
             </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Live Chat Modal */}
+      <Dialog open={showLiveChat} onOpenChange={setShowLiveChat}>
+        <DialogContent className="max-w-4xl max-h-[600px]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Phone className="h-5 w-5" />
+              Live Chat Session
+            </DialogTitle>
+            <DialogDescription>
+              Manage real-time customer conversations
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 h-[500px]">
+            {/* Chat List */}
+            <div className="border rounded-lg p-4 space-y-3">
+              <h3 className="font-semibold text-sm">Active Chats</h3>
+              <div className="space-y-2">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="p-3 border rounded-lg hover:bg-muted cursor-pointer">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-medium">Customer {i}</p>
+                        <p className="text-xs text-muted-foreground">Property inquiry...</p>
+                      </div>
+                      <Badge className="bg-green-500 text-white text-xs">Online</Badge>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            
+            {/* Chat Window */}
+            <div className="lg:col-span-2 border rounded-lg flex flex-col">
+              <div className="p-4 border-b">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h4 className="font-semibold">Customer 1</h4>
+                    <p className="text-sm text-muted-foreground">Online • Property inquiry</p>
+                  </div>
+                  <Badge className="bg-green-500 text-white">Active</Badge>
+                </div>
+              </div>
+              
+              <div className="flex-1 p-4 space-y-3 overflow-y-auto">
+                <div className="flex justify-start">
+                  <div className="bg-muted p-3 rounded-lg max-w-xs">
+                    <p className="text-sm">Hi, I'm interested in the property listing on Jalan Sudirman. Can you provide more details?</p>
+                    <p className="text-xs text-muted-foreground mt-1">2:30 PM</p>
+                  </div>
+                </div>
+                <div className="flex justify-end">
+                  <div className="bg-blue-500 text-white p-3 rounded-lg max-w-xs">
+                    <p className="text-sm">Hello! I'd be happy to help you with that property. Let me get the details for you.</p>
+                    <p className="text-xs text-blue-100 mt-1">2:32 PM</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="p-4 border-t">
+                <div className="flex gap-2">
+                  <Input placeholder="Type your message..." className="flex-1" />
+                  <Button size="sm">
+                    <Send className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Help Center Modal */}
+      <Dialog open={showHelpCenter} onOpenChange={setShowHelpCenter}>
+        <DialogContent className="max-w-4xl max-h-[600px]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <HelpCircle className="h-5 w-5" />
+              Help Center
+            </DialogTitle>
+            <DialogDescription>
+              Access knowledge base and support resources
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-[500px] overflow-y-auto">
+            {/* Quick Help Categories */}
+            <div className="space-y-4">
+              <h3 className="font-semibold">Quick Help</h3>
+              <div className="grid grid-cols-1 gap-3">
+                {[
+                  { title: "Property Listings", desc: "Help with property management", icon: FileText },
+                  { title: "Customer Inquiries", desc: "Handling customer questions", icon: MessageSquare },
+                  { title: "Ticket Resolution", desc: "Best practices for tickets", icon: CheckCircle },
+                  { title: "System Navigation", desc: "Using the CS dashboard", icon: Settings },
+                ].map((item, i) => (
+                  <div key={i} className="p-4 border rounded-lg hover:bg-muted cursor-pointer">
+                    <div className="flex items-start gap-3">
+                      <item.icon className="h-5 w-5 text-blue-500 mt-0.5" />
+                      <div>
+                        <h4 className="font-medium text-sm">{item.title}</h4>
+                        <p className="text-xs text-muted-foreground">{item.desc}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            
+            {/* FAQ Section */}
+            <div className="space-y-4">
+              <h3 className="font-semibold">Frequently Asked Questions</h3>
+              <div className="space-y-3">
+                {[
+                  { q: "How do I assign a ticket to myself?", a: "Go to Available tab and click 'Take' on any unassigned ticket." },
+                  { q: "What's the best response time?", a: "Aim to respond within 15 minutes for optimal customer satisfaction." },
+                  { q: "How do I escalate a complex issue?", a: "Use the priority settings and contact your supervisor if needed." },
+                  { q: "Can I create response templates?", a: "Yes, go to Settings > Response Templates to manage your templates." },
+                ].map((item, i) => (
+                  <div key={i} className="p-4 border rounded-lg">
+                    <h4 className="font-medium text-sm mb-2">{item.q}</h4>
+                    <p className="text-sm text-muted-foreground">{item.a}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+          <div className="flex justify-end gap-2 pt-4 border-t">
+            <Button variant="outline" onClick={() => setShowHelpCenter(false)}>
+              Close
+            </Button>
+            <Button onClick={() => window.open('https://docs.astravilla.com', '_blank')}>
+              <FileText className="h-4 w-4 mr-2" />
+              Full Documentation
+            </Button>
           </div>
         </DialogContent>
       </Dialog>
