@@ -34,6 +34,10 @@ import {
   BarChart3,
   Activity
 } from "lucide-react";
+import CSEmailTemplatesManager from "./cs-tools/CSEmailTemplatesManager";
+import CSKnowledgeBaseManager from "./cs-tools/CSKnowledgeBaseManager";
+import CSAutomationRulesManager from "./cs-tools/CSAutomationRulesManager";
+import CSPerformanceMonitor from "./cs-tools/CSPerformanceMonitor";
 
 const CustomerServiceControlPanel = () => {
   const [activeTab, setActiveTab] = useState("agents");
@@ -629,109 +633,67 @@ const CustomerServiceControlPanel = () => {
 
             {/* CS Tools Tab */}
             <TabsContent value="tools" className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <MessageSquare className="h-5 w-5" />
-                      Live Chat
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground mb-4">
-                      Manage live chat conversations with customers
-                    </p>
-                    <Button className="w-full">
-                      Open Chat Dashboard
-                    </Button>
-                  </CardContent>
-                </Card>
+              <Tabs defaultValue="live-chat" className="space-y-4">
+                <TabsList className="grid w-full grid-cols-5">
+                  <TabsTrigger value="live-chat" className="flex items-center gap-2">
+                    <MessageSquare className="h-4 w-4" />
+                    Live Chat
+                  </TabsTrigger>
+                  <TabsTrigger value="email-templates" className="flex items-center gap-2">
+                    <Mail className="h-4 w-4" />
+                    Templates
+                  </TabsTrigger>
+                  <TabsTrigger value="knowledge-base" className="flex items-center gap-2">
+                    <FileText className="h-4 w-4" />
+                    Knowledge
+                  </TabsTrigger>
+                  <TabsTrigger value="automation" className="flex items-center gap-2">
+                    <Settings className="h-4 w-4" />
+                    Automation
+                  </TabsTrigger>
+                  <TabsTrigger value="performance" className="flex items-center gap-2">
+                    <Activity className="h-4 w-4" />
+                    Performance
+                  </TabsTrigger>
+                </TabsList>
 
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Mail className="h-5 w-5" />
-                      Email Templates
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground mb-4">
-                      Pre-written email templates for common responses
-                    </p>
-                    <Button className="w-full" variant="outline">
-                      Manage Templates
-                    </Button>
-                  </CardContent>
-                </Card>
+                <TabsContent value="live-chat">
+                  <Card>
+                    <CardContent className="p-6">
+                      <div className="text-center">
+                        <MessageSquare className="h-12 w-12 text-blue-500 mx-auto mb-4" />
+                        <h3 className="text-lg font-semibold mb-2">Live Chat Management</h3>
+                        <p className="text-muted-foreground mb-4">
+                          Access the complete live chat system for real-time customer support
+                        </p>
+                        <Button 
+                          className="w-full max-w-sm"
+                          onClick={() => window.open('/admin#chat-management', '_blank')}
+                        >
+                          <MessageSquare className="h-4 w-4 mr-2" />
+                          Open Live Chat Dashboard
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
 
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Phone className="h-5 w-5" />
-                      Call Center
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground mb-4">
-                      Integrated call center and phone support tools
-                    </p>
-                    <Button className="w-full" variant="outline">
-                      Launch Dialer
-                    </Button>
-                  </CardContent>
-                </Card>
+                <TabsContent value="email-templates">
+                  <CSEmailTemplatesManager />
+                </TabsContent>
 
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <FileText className="h-5 w-5" />
-                      Knowledge Base
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground mb-4">
-                      Internal knowledge base and FAQ management
-                    </p>
-                    <Button className="w-full" variant="outline">
-                      Edit Knowledge Base
-                    </Button>
-                  </CardContent>
-                </Card>
+                <TabsContent value="knowledge-base">
+                  <CSKnowledgeBaseManager />
+                </TabsContent>
 
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Settings className="h-5 w-5" />
-                      Automation Rules
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground mb-4">
-                      Set up automated responses and ticket routing
-                    </p>
-                    <Button className="w-full" variant="outline">
-                      Configure Rules
-                    </Button>
-                  </CardContent>
-                </Card>
+                <TabsContent value="automation">
+                  <CSAutomationRulesManager />
+                </TabsContent>
 
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Activity className="h-5 w-5" />
-                      Performance Monitor
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground mb-4">
-                      Real-time performance monitoring and alerts
-                    </p>
-                    <Button className="w-full" variant="outline">
-                      View Metrics
-                    </Button>
-                  </CardContent>
-                </Card>
-              </div>
+                <TabsContent value="performance">
+                  <CSPerformanceMonitor />
+                </TabsContent>
+              </Tabs>
             </TabsContent>
 
             {/* Analytics Tab */}
