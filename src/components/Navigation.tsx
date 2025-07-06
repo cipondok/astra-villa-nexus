@@ -51,7 +51,7 @@ const Navigation = () => {
     en: {
       home: "Home",
       services: "Services",
-      dashboard: "Dashboard",
+      admin: "Admin",
       signIn: "Sign In",
       signOut: "Sign Out",
       user: "User",
@@ -63,12 +63,13 @@ const Navigation = () => {
       buyProperties: "Buy Properties",
       rentProperties: "Rent Properties",
       preLaunch: "Pre Launch",
-      newProjects: "New Projects"
+      newProjects: "New Projects",
+      profile: "Profile"
     },
     id: {
       home: "Beranda",
       services: "Layanan",
-      dashboard: "Dasbor",
+      admin: "Admin",
       signIn: "Masuk",
       signOut: "Keluar",
       user: "Pengguna",
@@ -80,7 +81,8 @@ const Navigation = () => {
       buyProperties: "Beli Properti",
       rentProperties: "Sewa Properti",
       preLaunch: "Pra Peluncuran",
-      newProjects: "Proyek Baru"
+      newProjects: "Proyek Baru",
+      profile: "Profil"
     }
   };
 
@@ -186,9 +188,9 @@ const Navigation = () => {
                   variant="ghost" 
                   size="sm"
                   className="h-10 px-3 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-all"
-                  onClick={() => navigate('/dashboard')}
+                  onClick={() => navigate('/profile')}
                 >
-                  {currentText.dashboard}
+                  {currentText.profile}
                 </Button>
               )}
 
@@ -292,8 +294,8 @@ const Navigation = () => {
                 
                 {/* Dashboard link - only show for non-admin users */}
                 {user && !isAdmin && (
-                  <Button variant="ghost" className="w-full justify-start text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800" onClick={() => { navigate('/dashboard'); toggleMenu(); }}>
-                    {currentText.dashboard}
+                  <Button variant="ghost" className="w-full justify-start text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800" onClick={() => { navigate('/profile'); toggleMenu(); }}>
+                    {currentText.profile}
                   </Button>
                 )}
                 

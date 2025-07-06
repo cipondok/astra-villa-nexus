@@ -44,7 +44,6 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
       home: "Home",
       properties: "Properties", 
       about: "About",
-      dashboard: "Dashboard",
       admin: "Admin",
       signIn: "Sign In",
       signOut: "Sign Out",
@@ -54,7 +53,6 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
       home: "Beranda",
       properties: "Properti",
       about: "Tentang", 
-      dashboard: "Dashboard",
       admin: "Admin",
       signIn: "Masuk",
       signOut: "Keluar",
@@ -77,12 +75,7 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
   };
 
   const handleAdminClick = () => {
-    navigate('/dashboard/admin');
-    setIsOpen(false);
-  };
-
-  const handleDashboardClick = () => {
-    navigate('/dashboard');
+    navigate('/admin');
     setIsOpen(false);
   };
 
@@ -138,16 +131,6 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
                     <span className="hidden sm:inline">{currentText.admin}</span>
                   </Button>
                 )}
-                
-                <Button
-                  onClick={handleDashboardClick}
-                  variant="ghost"
-                  size="sm"
-                  className="bg-primary/10 hover:bg-primary/20 text-primary hover:text-primary border-primary/30 hover:border-primary/50 transition-all duration-300"
-                >
-                  <User className="h-4 w-4 mr-2" />
-                  <span className="hidden sm:inline">{currentText.dashboard}</span>
-                </Button>
                 
                 <Button
                   onClick={handleSignOut}
@@ -212,15 +195,6 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
                     {currentText.admin}
                   </Button>
                 )}
-                
-                <Button
-                  onClick={handleDashboardClick}
-                  variant="ghost"
-                  className="w-full justify-start bg-primary/10 hover:bg-primary/20 text-primary"
-                >
-                  <User className="h-4 w-4 mr-3" />
-                  {currentText.dashboard}
-                </Button>
                 
                 <Button
                   onClick={handleSignOut}

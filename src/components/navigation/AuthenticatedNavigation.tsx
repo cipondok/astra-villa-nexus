@@ -235,17 +235,6 @@ const AuthenticatedNavigation = ({
                   </NavigationMenuItem>
                 )}
 
-                {/* Dashboard */}
-                <NavigationMenuItem>
-                  <NavigationMenuLink
-                    className="flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-blue-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors cursor-pointer"
-                    onClick={() => navigate('/dashboard')}
-                  >
-                    <User className="h-4 w-4" />
-                    <span>{currentText.dashboard}</span>
-                  </NavigationMenuLink>
-                </NavigationMenuItem>
-
                 {/* Admin (Role-based) */}
                 {canAccessAdmin && (
                   <NavigationMenuItem>
@@ -295,7 +284,7 @@ const AuthenticatedNavigation = ({
                   </div>
                 </div>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => navigate('/dashboard')}>
+                <DropdownMenuItem onClick={() => navigate('/profile')}>
                   <User className="mr-2 h-4 w-4" />
                   <span>{currentText.profile}</span>
                 </DropdownMenuItem>
@@ -311,7 +300,7 @@ const AuthenticatedNavigation = ({
                     </DropdownMenuItem>
                   </>
                 )}
-                <DropdownMenuItem onClick={() => navigate('/dashboard')}>
+                <DropdownMenuItem onClick={() => navigate('/profile')}>
                   <Settings className="mr-2 h-4 w-4" />
                   <span>{currentText.settings}</span>
                 </DropdownMenuItem>
@@ -375,12 +364,6 @@ const AuthenticatedNavigation = ({
                   </button>
                 </>
               )}
-              <button
-                onClick={() => navigate('/dashboard')}
-                className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-blue-600 hover:bg-gray-100 dark:hover:bg-gray-700"
-              >
-                {currentText.dashboard}
-              </button>
               {canAccessAdmin && (
                 <button
                   onClick={() => navigate('/admin')}
