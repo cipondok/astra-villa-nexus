@@ -21,18 +21,27 @@ const Index = () => {
   const [hasSearched, setHasSearched] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
 
-  // Redirect authenticated users to their dashboard
+  // Redirect authenticated users to their dashboard (only on initial load, not on navigation)
   useEffect(() => {
-    if (!loading && user && profile) {
-      // Redirect customer service users to dashboard
-      if (profile.role === 'customer_service') {
-        navigate('/dashboard');
+    if (!loading && user && profile && !window.location.search.includes('stay')) {
+      // Only redirect on initial app load, not when user navigates to home
+      const hasVisitedBefore = sessionStorage.getItem('hasVisitedHome');
+      
+      if (!hasVisitedBefore) {
+        // Redirect customer service users to dashboard
+        if (profile.role === 'customer_service') {
+          navigate('/dashboard');
+          return;
+        }
+        // Redirect admin users to admin panel  
+        else if (profile.role === 'admin' || user.email === 'mycode103@gmail.com') {
+          navigate('/admin');
+          return;
+        }
       }
-      // Redirect admin users to admin panel  
-      else if (profile.role === 'admin' || user.email === 'mycode103@gmail.com') {
-        navigate('/admin');
-      }
-      // For other authenticated users, show dashboard link in nav but stay on home
+      
+      // Mark that user has visited home page
+      sessionStorage.setItem('hasVisitedHome', 'true');
     }
   }, [user, profile, loading, navigate]);
 

@@ -14,6 +14,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { useAlert } from "@/contexts/AlertContext";
 import { useNavigate } from "react-router-dom";
+import { useTheme } from "@/components/ThemeProvider";
 import { 
   Headphones, 
   MessageSquare, 
@@ -37,7 +38,9 @@ import {
   Settings,
   HelpCircle,
   LogOut,
-  ArrowLeft
+  ArrowLeft,
+  Moon,
+  Sun
 } from "lucide-react";
 
 const CustomerServiceDashboard = () => {
@@ -48,12 +51,17 @@ const CustomerServiceDashboard = () => {
   
   const { user, signOut } = useAuth();
   const { showSuccess, showError } = useAlert();
+  const { theme, setTheme } = useTheme();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
   const handleSignOut = async () => {
     await signOut();
     navigate('/');
+  };
+
+  const toggleTheme = () => {
+    setTheme(theme === "light" ? "dark" : "light");
   };
 
   // Fetch tickets assigned to me
@@ -357,6 +365,16 @@ const CustomerServiceDashboard = () => {
               </div>
               
               <div className="flex items-center gap-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={toggleTheme}
+                  className="flex items-center gap-2 hover:bg-primary/10"
+                >
+                  {theme === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+                  <span>{theme === "light" ? "Dark" : "Light"}</span>
+                </Button>
+                
                 <Button
                   variant="ghost"
                   size="sm"
