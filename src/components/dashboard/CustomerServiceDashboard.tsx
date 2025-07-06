@@ -64,6 +64,25 @@ const CustomerServiceDashboard = () => {
     setTheme(theme === "light" ? "dark" : "light");
   };
 
+  const handleQuickAction = (action: string) => {
+    switch (action) {
+      case 'live-chat':
+        showSuccess("Live Chat", "Starting live chat session...");
+        // In a real app, this would open a live chat interface
+        break;
+      case 'search-customer':
+        setActiveTab('inquiries');
+        showSuccess("Customer Search", "Switching to customer inquiries...");
+        break;
+      case 'knowledge-base':
+        window.open('https://docs.astravilla.com', '_blank');
+        showSuccess("Knowledge Base", "Opening knowledge base in new tab...");
+        break;
+      default:
+        break;
+    }
+  };
+
   // Fetch tickets assigned to me
   const { data: myTickets, isLoading: myTicketsLoading } = useQuery({
     queryKey: ['my-tickets', user?.id],
@@ -355,7 +374,11 @@ const CustomerServiceDashboard = () => {
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => navigate('/')}
+                  onClick={() => {
+                    // Clear the redirect logic so user can visit home
+                    sessionStorage.setItem('hasVisitedHome', 'true');
+                    navigate('/?stay=true');
+                  }}
                   className="flex items-center gap-2 hover:bg-primary/10"
                 >
                   <ArrowLeft className="h-4 w-4" />
@@ -480,7 +503,7 @@ const CustomerServiceDashboard = () => {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="dashboard" className="flex items-center gap-2">
             <BarChart3 className="h-4 w-4" />
             Dashboard
@@ -496,6 +519,14 @@ const CustomerServiceDashboard = () => {
           <TabsTrigger value="available" className="flex items-center gap-2">
             <Clock className="h-4 w-4" />
             Available ({availableTickets})
+          </TabsTrigger>
+          <TabsTrigger value="analytics" className="flex items-center gap-2">
+            <BarChart3 className="h-4 w-4" />
+            Analytics
+          </TabsTrigger>
+          <TabsTrigger value="settings" className="flex items-center gap-2">
+            <Settings className="h-4 w-4" />
+            Settings
           </TabsTrigger>
         </TabsList>
 
@@ -536,15 +567,27 @@ const CustomerServiceDashboard = () => {
                 <CardTitle>Quick Actions</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                <Button className="w-full justify-start" variant="outline">
+                <Button 
+                  className="w-full justify-start" 
+                  variant="outline"
+                  onClick={() => handleQuickAction('live-chat')}
+                >
                   <Phone className="h-4 w-4 mr-2" />
                   Start Live Chat Session
                 </Button>
-                <Button className="w-full justify-start" variant="outline">
+                <Button 
+                  className="w-full justify-start" 
+                  variant="outline"
+                  onClick={() => handleQuickAction('search-customer')}
+                >
                   <Search className="h-4 w-4 mr-2" />
                   Search Customer History
                 </Button>
-                <Button className="w-full justify-start" variant="outline">
+                <Button 
+                  className="w-full justify-start" 
+                  variant="outline"
+                  onClick={() => handleQuickAction('knowledge-base')}
+                >
                   <FileText className="h-4 w-4 mr-2" />
                   Knowledge Base
                 </Button>
@@ -743,6 +786,158 @@ const CustomerServiceDashboard = () => {
                 )}
               </TableBody>
             </Table>
+          </div>
+        </TabsContent>
+
+        {/* Analytics Tab */}
+        <TabsContent value="analytics" className="space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Weekly Performance</CardTitle>
+                <CardDescription>Your performance metrics this week</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">Total Tickets Handled</span>
+                  <div className="flex items-center gap-2">
+                    <span className="font-bold text-2xl">{myTickets?.length || 0}</span>
+                    <FileText className="h-4 w-4 text-blue-500" />
+                  </div>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">Resolution Rate</span>
+                  <div className="flex items-center gap-2">
+                    <span className="font-bold text-2xl">
+                      {myTickets?.length ? Math.round((myTickets.filter(t => t.status === 'resolved').length / myTickets.length) * 100) : 0}%
+                    </span>
+                    <TrendingUp className="h-4 w-4 text-green-500" />
+                  </div>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">Average Response Time</span>
+                  <div className="flex items-center gap-2">
+                    <span className="font-bold text-2xl">12 min</span>
+                    <Timer className="h-4 w-4 text-orange-500" />
+                  </div>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">Customer Satisfaction</span>
+                  <div className="flex items-center gap-2">
+                    <span className="font-bold text-2xl">4.7</span>
+                    <Star className="h-4 w-4 text-yellow-500" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Ticket Types Breakdown</CardTitle>
+                <CardDescription>Distribution of ticket types you handle</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {['technical', 'billing', 'general', 'account'].map((type) => {
+                  const count = myTickets?.filter(t => t.complaint_type === type).length || 0;
+                  const percentage = myTickets?.length ? Math.round((count / myTickets.length) * 100) : 0;
+                  return (
+                    <div key={type} className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Badge variant="outline" className="capitalize">{type}</Badge>
+                        <span className="text-sm text-muted-foreground">{count} tickets</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-24 bg-gray-200 rounded-full h-2">
+                          <div 
+                            className="bg-blue-600 h-2 rounded-full" 
+                            style={{ width: `${percentage}%` }}
+                          ></div>
+                        </div>
+                        <span className="text-sm font-medium">{percentage}%</span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        {/* Settings Tab */}
+        <TabsContent value="settings" className="space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>CS Preferences</CardTitle>
+                <CardDescription>Customize your customer service settings</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <label className="text-sm font-medium">Auto-assign tickets</label>
+                    <p className="text-xs text-muted-foreground">Automatically assign new tickets to you</p>
+                  </div>
+                  <Button variant="outline" size="sm">
+                    <Settings className="h-4 w-4 mr-2" />
+                    Configure
+                  </Button>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <label className="text-sm font-medium">Email notifications</label>
+                    <p className="text-xs text-muted-foreground">Get notified about new tickets</p>
+                  </div>
+                  <Button variant="outline" size="sm">
+                    <Settings className="h-4 w-4 mr-2" />
+                    Configure
+                  </Button>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <label className="text-sm font-medium">Response templates</label>
+                    <p className="text-xs text-muted-foreground">Manage your quick response templates</p>
+                  </div>
+                  <Button variant="outline" size="sm">
+                    <FileText className="h-4 w-4 mr-2" />
+                    Manage
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Account Settings</CardTitle>
+                <CardDescription>Manage your CS account preferences</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Display Name</label>
+                  <Input defaultValue="Customer Service Agent" />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Status Message</label>
+                  <Input defaultValue="Available for support" />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Working Hours</label>
+                  <Select defaultValue="9-5">
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="9-5">9 AM - 5 PM</SelectItem>
+                      <SelectItem value="24-7">24/7 Available</SelectItem>
+                      <SelectItem value="custom">Custom Hours</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <Button className="w-full">
+                  <Settings className="h-4 w-4 mr-2" />
+                  Save Settings
+                </Button>
+              </CardContent>
+            </Card>
           </div>
         </TabsContent>
       </Tabs>
