@@ -188,11 +188,10 @@ export const navigationSections = {
       description: "Monitor daily check-in activity"
     },
     {
-      key: "error-management",
-      label: "Error Management",
+      key: "database-errors",
+      label: "Database Errors",
       icon: AlertTriangle,
-      description: "Monitor and manage system errors",
-      badge: "Coming Soon"
+      description: "Monitor and fix database errors automatically"
     }
   ],
 

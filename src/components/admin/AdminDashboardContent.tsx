@@ -32,6 +32,7 @@ import EnhancedVendorAgentControl from "./EnhancedVendorAgentControl";
 import AuthorizationMonitoringSystem from "./AuthorizationMonitoringSystem";
 import AdminAlertSystem from "./AdminAlertSystem";
 import CustomerServiceControlPanel from "./CustomerServiceControlPanel";
+import DatabaseErrorManager from "./cs-tools/DatabaseErrorManager";
 
 interface AdminDashboardContentProps {
   activeSection: string;
@@ -103,6 +104,8 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
         return <AuthorizationMonitoringSystem />;
       case "admin-alerts":
         return <AdminAlertSystem />;
+      case "database-errors":
+        return <DatabaseErrorManager />;
       default:
         return <AdminOverview />;
     }
