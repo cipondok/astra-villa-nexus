@@ -27,6 +27,7 @@ import ToolsManagementDashboard from "./ToolsManagementDashboard";
 import SEOSettings from "./SEOSettings";
 import ProjectDiagnosticSystem from "./ProjectDiagnosticSystem";
 import IndonesianPaymentMerchantConfig from "./IndonesianPaymentMerchantConfig";
+import VendorsHubContent from "./VendorsHubContent";
 
 interface AdminDashboardContentProps {
   activeSection: string;
@@ -59,10 +60,7 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
       case "contact-management":
         return <ContactManagement />;
       case "vendors-hub":
-        if (onSectionChange) {
-          window.location.href = '/vendors-hub';
-        }
-        return <div className="text-center p-8"><p>Redirecting to Vendors Hub...</p></div>;
+        return <VendorsHubContent />;
       case "vendor-management-hub":
         return <VendorManagementHub />;
       case "vendor-service-management":
