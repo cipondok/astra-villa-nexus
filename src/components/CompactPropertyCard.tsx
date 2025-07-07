@@ -2,7 +2,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Heart, MapPin, Bed, Bath, Square, Star, Eye } from "lucide-react";
+import { Heart, MapPin, Bed, Bath, Square, Star, Eye, Box } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -19,6 +19,8 @@ interface Property {
   rating: number;
   featured?: boolean;
   isHotDeal?: boolean;
+  three_d_model_url?: string;
+  virtual_tour_url?: string;
 }
 
 interface CompactPropertyCardProps {
@@ -72,10 +74,16 @@ const CompactPropertyCard = ({ property }: CompactPropertyCardProps) => {
         />
         
         {/* Compact Badges */}
-        <div className="absolute top-2 left-2">
+        <div className="absolute top-2 left-2 flex gap-1 flex-wrap">
           <Badge className={`${getTypeColor(property.type)} text-white text-xs px-2 py-1 rounded-full`}>
             {getTypeLabel(property.type)}
           </Badge>
+          {(property.three_d_model_url || property.virtual_tour_url) && (
+            <Badge className="bg-blue-600 text-white text-xs px-2 py-1 rounded-full flex items-center gap-1">
+              <Box className="h-2 w-2" />
+              3D
+            </Badge>
+          )}
         </div>
 
         {/* Heart Button */}

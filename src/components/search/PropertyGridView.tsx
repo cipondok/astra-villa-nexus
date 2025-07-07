@@ -1,7 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Bed, Bath, Square, Heart, Share2, Eye, Phone } from "lucide-react";
+import { MapPin, Bed, Bath, Square, Heart, Share2, Eye, Phone, Box } from "lucide-react";
 import PropertyComparisonButton from "@/components/property/PropertyComparisonButton";
 import { BaseProperty } from "@/types/property";
 import { useState } from "react";
@@ -104,8 +104,9 @@ const PropertyGridView = ({
                 </Badge>
               )}
               {(property.three_d_model_url || property.virtual_tour_url) && (
-                <Badge className="bg-blue-600/90 text-white backdrop-blur-sm">
-                  3D
+                <Badge className="bg-blue-600/90 text-white backdrop-blur-sm flex items-center gap-1">
+                  <Box className="h-3 w-3" />
+                  3D View Available
                 </Badge>
               )}
             </div>
@@ -215,11 +216,12 @@ const PropertyGridView = ({
                   className="flex-1"
                   onClick={(e) => {
                     e.stopPropagation();
-                    onView3D?.(property);
-                  }}
-                >
-                  3D
-                </Button>
+                     onView3D?.(property);
+                   }}
+                 >
+                   <Box className="h-4 w-4 mr-1" />
+                   3D View
+                 </Button>
               )}
               <PropertyComparisonButton 
                 property={property} 

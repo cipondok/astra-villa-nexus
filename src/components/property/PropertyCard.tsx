@@ -2,7 +2,7 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Heart, MapPin, Bed, Bath, Square, Eye } from "lucide-react";
+import { Heart, MapPin, Bed, Bath, Square, Eye, Box } from "lucide-react";
 import { useState } from "react";
 import PropertyDetailModal from "./PropertyDetailModal";
 import Property3DViewModal from "./Property3DViewModal";
@@ -109,10 +109,16 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
             </div>
           )}
           
-          <div className="absolute top-2 left-2 flex gap-2">
+          <div className="absolute top-2 left-2 flex gap-2 flex-wrap">
             <Badge variant={listing_type === 'sale' ? 'default' : 'secondary'}>
               {listing_type === 'sale' ? 'For Sale' : 'For Rent'}
             </Badge>
+            {(three_d_model_url || virtual_tour_url) && (
+              <Badge className="bg-blue-600 text-white flex items-center gap-1">
+                <Box className="h-3 w-3" />
+                3D Available
+              </Badge>
+            )}
           </div>
 
           {development_status !== 'completed' && (
@@ -171,8 +177,9 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
               View Details
             </Button>
             {(three_d_model_url || virtual_tour_url) && (
-              <Button variant="outline" onClick={handleView3D}>
-                3D
+              <Button variant="outline" onClick={handleView3D} className="bg-blue-50 hover:bg-blue-100 text-blue-700 border-blue-200">
+                <Box className="h-4 w-4 mr-1" />
+                3D View
               </Button>
             )}
           </div>

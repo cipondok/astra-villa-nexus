@@ -2,7 +2,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Heart, MapPin, Bed, Bath, Square, Eye } from "lucide-react";
+import { Heart, MapPin, Bed, Bath, Square, Eye, Box } from "lucide-react";
 import { useState } from "react";
 import PropertyDetailModal from "./property/PropertyDetailModal";
 import Property3DViewModal from "./property/Property3DViewModal";
@@ -100,10 +100,16 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
           />
           
           {/* Status Badge */}
-          <div className="absolute top-3 left-3">
+          <div className="absolute top-3 left-3 flex gap-2 flex-wrap">
             <Badge className={`${getTypeColor(property.type)} shadow-lg`}>
               {getTypeLabel(property.type)}
             </Badge>
+            {(property.three_d_model_url || property.virtual_tour_url) && (
+              <Badge className="bg-blue-600 text-white shadow-lg flex items-center gap-1">
+                <Box className="h-3 w-3" />
+                3D Available
+              </Badge>
+            )}
           </div>
 
           {/* Featured Badge */}
@@ -173,10 +179,11 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
             {(property.three_d_model_url || property.virtual_tour_url) && (
               <Button 
                 variant="outline"
-                className="btn font-semibold transition-all duration-300 hover:scale-105" 
+                className="btn font-semibold transition-all duration-300 hover:scale-105 bg-blue-50 hover:bg-blue-100 text-blue-700 border-blue-200" 
                 onClick={handleView3D}
               >
-                3D
+                <Box className="h-4 w-4 mr-1" />
+                3D View
               </Button>
             )}
           </div>
