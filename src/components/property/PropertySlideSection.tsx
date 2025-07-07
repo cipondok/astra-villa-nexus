@@ -105,7 +105,7 @@ const PropertySlideSection = ({ title, subtitle, type, language, limit = 8 }: Pr
     return price.toString();
   };
 
-  const itemsPerSlide = 6; // Show more items per slide (smaller cards)
+  const itemsPerSlide = 8; // Show more items per slide (smaller cards)
   const maxSlides = Math.ceil(properties.length / itemsPerSlide);
 
   const nextSlide = () => {
@@ -144,7 +144,7 @@ const PropertySlideSection = ({ title, subtitle, type, language, limit = 8 }: Pr
             {subtitle && <p className="text-gray-600 dark:text-gray-400">{subtitle}</p>}
           </div>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-2">
           {[...Array(6)].map((_, i) => (
             <Card key={i} className="animate-pulse">
               <div className="h-32 bg-gray-200 dark:bg-gray-700 rounded-t-lg"></div>
@@ -215,7 +215,7 @@ const PropertySlideSection = ({ title, subtitle, type, language, limit = 8 }: Pr
         >
           {Array.from({ length: maxSlides }).map((_, slideIndex) => (
             <div key={slideIndex} className="w-full flex-shrink-0">
-              <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-3">
+              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-2">
                 {properties
                   .slice(slideIndex * itemsPerSlide, (slideIndex + 1) * itemsPerSlide)
                   .map((property) => (
