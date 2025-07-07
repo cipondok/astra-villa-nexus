@@ -123,7 +123,22 @@ const EnhancedVendorDashboard = () => {
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">
-          {/* Booking Status Overview */}
+          {/* Enhanced Booking Status Overview with Samsung Gradient */}
+          <Card className="samsung-gradient border-0 shadow-lg mb-6">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <h3 className="text-xl font-bold text-white">Booking Overview</h3>
+                  <p className="text-white/80">Quick view of your booking status</p>
+                </div>
+                <Badge className="bg-white/20 border-white/30 text-white">
+                  {dashboardData.totalBookings} Total
+                </Badge>
+              </div>
+            </CardContent>
+          </Card>
+          
+          {/* Booking Status Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <Card>
               <CardHeader>

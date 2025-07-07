@@ -180,34 +180,41 @@ const VendorSmartSummary = () => {
   return (
     <div className="space-y-6">
       {/* Property Type Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          {getPropertyTypeIcon()}
-          <div>
-            <h2 className="text-2xl font-bold">
-              Dashboard {stats.propertyType === 'commercial' ? 'Komersial' : 'Perumahan'}
-            </h2>
-            <p className="text-muted-foreground">
-              {stats.propertyType === 'commercial' 
-                ? 'Layanan untuk kantor dan toko' 
-                : 'Layanan untuk rumah dan properti pribadi'
-              }
-            </p>
+      <Card className="samsung-gradient border-0 shadow-lg">
+        <CardContent className="p-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              {getPropertyTypeIcon()}
+              <div>
+                <h2 className="text-2xl font-bold text-white">
+                  Dashboard {stats.propertyType === 'commercial' ? 'Komersial' : 'Perumahan'}
+                </h2>
+                <p className="text-white/80">
+                  {stats.propertyType === 'commercial' 
+                    ? 'Layanan untuk kantor dan toko' 
+                    : 'Layanan untuk rumah dan properti pribadi'
+                  }
+                </p>
+              </div>
+            </div>
+            <Badge 
+              variant="outline" 
+              className="bg-white/20 border-white/30 text-white hover:bg-white/30"
+            >
+              {stats.propertyType === 'commercial' ? 'Commercial' : 'Residential'}
+            </Badge>
           </div>
-        </div>
-        <Badge variant={stats.propertyType === 'commercial' ? 'destructive' : 'secondary'}>
-          {stats.propertyType === 'commercial' ? 'Commercial' : 'Residential'}
-        </Badge>
-      </div>
+        </CardContent>
+      </Card>
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {summaryCards.map((card, index) => (
-          <Card key={index} className={`bg-gradient-to-br ${card.bgColor} text-white border-0`}>
+          <Card key={index} className="samsung-gradient border-0 shadow-lg">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div className="space-y-2">
-                  <p className="text-sm font-medium text-white/80">{card.title}</p>
+                  <p className="text-sm font-medium text-white">{card.title}</p>
                   {typeof card.value === 'string' ? (
                     <p className="text-2xl font-bold">{card.value}</p>
                   ) : (

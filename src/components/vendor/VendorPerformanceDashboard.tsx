@@ -138,25 +138,29 @@ const VendorPerformanceDashboard = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold flex items-center gap-2">
-            <BarChart3 className="h-6 w-6" />
-            Performance Dashboard
-          </h2>
-          <p className="text-muted-foreground">Real-time analytics and performance insights</p>
-        </div>
-        <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
-          <SelectTrigger className="w-40">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="7">Last 7 days</SelectItem>
-            <SelectItem value="30">Last 30 days</SelectItem>
-            <SelectItem value="90">Last 3 months</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
+      <Card className="samsung-gradient border-0 shadow-lg">
+        <CardContent className="p-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-2xl font-bold flex items-center gap-2 text-white">
+                <BarChart3 className="h-6 w-6" />
+                Performance Dashboard
+              </h2>
+              <p className="text-white/80">Real-time analytics and performance insights</p>
+            </div>
+            <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
+              <SelectTrigger className="w-40 bg-white/20 border-white/30 text-white">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="7">Last 7 days</SelectItem>
+                <SelectItem value="30">Last 30 days</SelectItem>
+                <SelectItem value="90">Last 3 months</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Performance Score Overview */}
       <Card className="border-l-4 border-l-blue-500">
