@@ -87,9 +87,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return;
       }
       
-      // Try to fetch profile with timeout and error handling
+      // Try to fetch profile with aggressive timeout
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 3000); // 3 second timeout
+      const timeoutId = setTimeout(() => controller.abort(), 1500); // Reduced to 1.5 seconds
 
       try {
         const { data, error } = await supabase
@@ -196,8 +196,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setUser(session?.user ?? null);
         
         if (session?.user && event !== 'TOKEN_REFRESHED') {
-          setLoading(true);
-          await fetchProfile(session.user.id);
+          // Fast profile fetch with timeout
+          setTimeout(() => {
+            if (mounted) {
+              fetchProfile(session.user.id);
+            }
+          }, 0);
+          
           if (event === 'SIGNED_IN') {
             localStorage.setItem('login_time', Date.now().toString());
             localStorage.setItem('last_activity', Date.now().toString());
@@ -221,10 +226,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     );
 
-    // Get initial session with timeout
+    // Fast initial session check
     const initializeAuth = async () => {
       try {
+        // Quick timeout for session check
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 2000);
+        
         const { data: { session }, error } = await supabase.auth.getSession();
+        clearTimeout(timeoutId);
         
         if (!mounted) return;
         
@@ -238,8 +248,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (session?.user) {
           setSession(session);
           setUser(session.user);
-          setLoading(true);
-          await fetchProfile(session.user.id);
+          // Quick profile fetch
+          setTimeout(() => {
+            if (mounted) {
+              fetchProfile(session.user.id);
+            }
+          }, 0);
+          
           if (!localStorage.getItem('last_activity')) {
             localStorage.setItem('last_activity', Date.now().toString());
           }
@@ -354,15 +369,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       localStorage.clear();
       sessionStorage.clear();
       
-      // Force immediate navigation
-      window.location.href = '/';
+      // Use router instead of window.location for faster navigation
+      window.history.replaceState({}, '', '/');
+      window.dispatchEvent(new PopStateEvent('popstate'));
       
       // Supabase sign out in background - don't await this
-      setTimeout(() => {
-        supabase.auth.signOut().catch(error => {
-          console.error('Background sign out error:', error);
-        });
-      }, 100);
+      supabase.auth.signOut().catch(error => {
+        console.error('Background sign out error:', error);
+      });
       
     } catch (error: any) {
       console.error('Sign out error:', error);
