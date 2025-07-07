@@ -42,6 +42,9 @@ serve(async (req) => {
       case 'get_errors':
         result = await getDatabaseErrors(supabase);
         break;
+      case 'get_postgres_logs':
+        result = await getPostgresLogs(supabase);
+        break;
       case 'health_check':
         result = await performHealthCheck(supabase);
         break;
@@ -204,6 +207,40 @@ async function detectConstraintIssues(supabase: any): Promise<DatabaseError[]> {
   }
   
   return issues;
+}
+
+async function getPostgresLogs(supabase: any) {
+  try {
+    // Fetch recent postgres logs with errors
+    const { data: logs, error } = await supabase
+      .from('postgres_logs')
+      .select('*')
+      .eq('error_severity', 'ERROR')
+      .order('timestamp', { ascending: false })
+      .limit(50);
+
+    if (error) {
+      console.error('Failed to fetch postgres logs:', error);
+      return {
+        success: false,
+        logs: [],
+        error: error.message
+      };
+    }
+
+    return {
+      success: true,
+      logs: logs || [],
+      timestamp: new Date().toISOString()
+    };
+  } catch (error) {
+    console.error('Error fetching postgres logs:', error);
+    return {
+      success: false,
+      logs: [],
+      error: error.message
+    };
+  }
 }
 
 async function performHealthCheck(supabase: any) {

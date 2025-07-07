@@ -66,28 +66,79 @@ const DatabaseErrorManager = () => {
   const fetchDatabaseErrors = async () => {
     setIsLoading(true);
     try {
-      // Fetch real error data from Supabase analytics
-      const { data: errorData, error } = await supabase.functions.invoke('database-diagnostics', {
-        body: { action: 'get_errors' }
+      // Get real database errors from Supabase analytics
+      const { data: postgresLogs, error: logsError } = await supabase.functions.invoke('database-diagnostics', {
+        body: { action: 'get_postgres_logs' }
       });
 
-      if (error) {
-        console.error('Failed to fetch database errors:', error);
-        setErrors(generateMockErrors());
+      if (logsError) {
+        console.error('Failed to fetch postgres logs:', logsError);
+        setErrors([]);
         return;
       }
 
-      if (errorData?.errors) {
-        setErrors(errorData.errors);
-      } else {
-        setErrors(generateMockErrors());
+      // Process real postgres logs into structured errors
+      const realErrors: DatabaseError[] = [];
+      
+      if (postgresLogs?.logs) {
+        postgresLogs.logs.forEach((log: any, index: number) => {
+          if (log.error_severity === 'ERROR') {
+            realErrors.push({
+              id: log.id || `error_${index}`,
+              error_type: categorizeError(log.event_message),
+              error_message: log.event_message,
+              error_severity: log.error_severity,
+              table_name: extractTableName(log.event_message),
+              suggested_fix: generateSuggestedFix(log.event_message),
+              is_resolved: false,
+              created_at: new Date(log.timestamp / 1000).toISOString(),
+            });
+          }
+        });
       }
+
+      setErrors(realErrors.length > 0 ? realErrors : []);
     } catch (error) {
       console.error('Failed to fetch database errors:', error);
-      setErrors(generateMockErrors());
+      setErrors([]);
     } finally {
       setIsLoading(false);
     }
+  };
+
+  // Helper functions to process real error data
+  const categorizeError = (message: string): string => {
+    if (message.includes('invalid input syntax for type uuid')) return 'UUID_FORMAT_ERROR';
+    if (message.includes('violates unique constraint')) return 'CONSTRAINT_VIOLATION';
+    if (message.includes('row-level security')) return 'RLS_VIOLATION';
+    if (message.includes('syntax error')) return 'SYNTAX_ERROR';
+    return 'UNKNOWN_ERROR';
+  };
+
+  const extractTableName = (message: string): string => {
+    // Try to extract table name from error message
+    const tableMatch = message.match(/table "([^"]+)"/);
+    if (tableMatch) return tableMatch[1];
+    
+    // Common table names that might be in error messages
+    if (message.includes('vendor_performance_analytics')) return 'vendor_performance_analytics';
+    if (message.includes('profiles')) return 'profiles';
+    if (message.includes('vendor_services')) return 'vendor_services';
+    
+    return 'unknown';
+  };
+
+  const generateSuggestedFix = (message: string): string => {
+    if (message.includes('invalid input syntax for type uuid')) {
+      return 'Fix UUID format: Use gen_random_uuid() or proper UUID string format';
+    }
+    if (message.includes('violates unique constraint')) {
+      return 'Handle duplicates: Use ON CONFLICT clause or check before insert';
+    }
+    if (message.includes('row-level security')) {
+      return 'Fix RLS: Ensure proper authentication and user context';
+    }
+    return 'Review query and fix syntax errors';
   };
 
   // Generate mock errors (fallback when real data unavailable)
@@ -205,11 +256,12 @@ WHERE NOT EXISTS (
   const executeFix = async (fixType: string) => {
     setIsLoading(true);
     try {
-      const fix = commonFixes[fixType as keyof typeof commonFixes];
-      
-      // Apply the actual fix via edge function
+      // Apply the actual fix via edge function with real error context
       const { data: result, error } = await supabase.functions.invoke('database-fix', {
-        body: { fixType, sql: fix.sql }
+        body: { 
+          fixType,
+          errors: errors.filter(e => !e.is_resolved && shouldErrorBeFixed(e, fixType))
+        }
       });
 
       if (error) {
@@ -219,9 +271,9 @@ WHERE NOT EXISTS (
       }
 
       if (result?.success) {
-        showSuccess("Fix Applied Successfully", result.message);
+        showSuccess("Fix Applied Successfully", result.message || "Database errors have been fixed successfully.");
         
-        // Mark related errors as resolved
+        // Mark related errors as resolved in the UI
         setErrors(prevErrors => 
           prevErrors.map(error => {
             if (shouldErrorBeFixed(error, fixType)) {
@@ -236,8 +288,10 @@ WHERE NOT EXISTS (
           })
         );
         
-        // Refresh errors to get updated state
-        await fetchDatabaseErrors();
+        // Refresh errors to get updated state from database
+        setTimeout(() => {
+          fetchDatabaseErrors();
+        }, 2000);
         
         setFixDialog(false);
       } else {
@@ -255,11 +309,15 @@ WHERE NOT EXISTS (
   const shouldErrorBeFixed = (error: DatabaseError, fixType: string): boolean => {
     switch (fixType) {
       case 'UUID_FORMAT':
-        return error.error_message.includes('invalid input syntax for type uuid');
+        return error.error_message.includes('invalid input syntax for type uuid') || 
+               error.error_type === 'UUID_FORMAT_ERROR';
       case 'RLS_FIX':
-        return error.error_message.includes('row-level security policy');
+        return error.error_message.includes('row-level security policy') ||
+               error.error_type === 'RLS_VIOLATION';
       case 'CONSTRAINT_FIX':
-        return error.error_message.includes('constraint') || error.error_message.includes('duplicate key');
+        return error.error_message.includes('constraint') || 
+               error.error_message.includes('duplicate key') ||
+               error.error_type === 'CONSTRAINT_VIOLATION';
       default:
         return false;
     }
