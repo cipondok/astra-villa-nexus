@@ -1,25 +1,47 @@
-
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Navigation from "@/components/Navigation";
-import PropertyListingsSection from "@/components/PropertyListingsSection";
 import ProfessionalFooter from "@/components/ProfessionalFooter";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import ResponsiveAIChatWidget from "@/components/ai/ResponsiveAIChatWidget";
 import { supabase } from "@/integrations/supabase/client";
-import SmartSearchPanel from "@/components/search/SmartSearchPanel";
+import PropertyViewModeToggle from "@/components/search/PropertyViewModeToggle";
+import PropertyListView from "@/components/search/PropertyListView";
+import PropertyGridView from "@/components/search/PropertyGridView";
+import AdvancedPropertyFilters, { PropertyFilters } from "@/components/search/AdvancedPropertyFilters";
+import { BaseProperty } from "@/types/property";
 import PropertySlideSection from "@/components/property/PropertySlideSection";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Search } from "lucide-react";
+
+type ViewMode = 'list' | 'grid' | 'map';
 
 const Index = () => {
   const { language } = useLanguage();
   const { user, profile, loading } = useAuth();
   const navigate = useNavigate();
-  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [searchResults, setSearchResults] = useState<BaseProperty[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
+  const [quickSearch, setQuickSearch] = useState("");
+  const [viewMode, setViewMode] = useState<ViewMode>('grid');
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const [filters, setFilters] = useState<PropertyFilters>({
+    searchQuery: "",
+    priceRange: [0, 50000000000],
+    location: "",
+    propertyTypes: [],
+    bedrooms: null,
+    bathrooms: null,
+    minArea: null,
+    maxArea: null,
+    listingType: "all",
+    sortBy: "newest"
+  });
 
   // Redirect authenticated users to their dashboard (only on initial load, not on navigation)
   useEffect(() => {
@@ -63,7 +85,7 @@ const Index = () => {
       try {
         const { data, error } = await supabase
           .from('properties')
-          .select('id, title, property_type, listing_type, price, location, bedrooms, bathrooms, area_sqm, images, thumbnail_url, state, city, development_status')
+          .select('id, title, property_type, listing_type, price, location, bedrooms, bathrooms, area_sqm, images, thumbnail_url, state, city, development_status, description, three_d_model_url, virtual_tour_url')
           .eq('status', 'active')
           .not('title', 'is', null)
           .limit(6);
@@ -74,7 +96,13 @@ const Index = () => {
         }
 
         console.log('Featured properties loaded:', data?.length || 0);
-        return data || [];
+        // Transform data to match BaseProperty interface
+        const transformedData = data?.map(property => ({
+          ...property,
+          listing_type: property.listing_type as "sale" | "rent" | "lease",
+          image_urls: property.images || []
+        })) || [];
+        return transformedData;
         
       } catch (err) {
         console.error('Featured properties fetch error:', err);
@@ -86,42 +114,24 @@ const Index = () => {
     staleTime: 60000,
   });
 
-  const handleSearch = async (searchData: any) => {
-    console.log('Search initiated:', searchData);
+  const handleQuickSearch = async () => {
+    if (!quickSearch.trim()) return;
+    
+    console.log('Quick search initiated:', quickSearch);
     
     setIsSearching(true);
     setHasSearched(true);
     setSearchError(null);
     
     try {
-      let query = supabase
+      const { data, error } = await supabase
         .from('properties')
-        .select('id, title, property_type, listing_type, price, location, bedrooms, bathrooms, area_sqm, images, thumbnail_url, state, city')
+        .select('id, title, property_type, listing_type, price, location, bedrooms, bathrooms, area_sqm, images, thumbnail_url, state, city, description, three_d_model_url, virtual_tour_url')
         .eq('status', 'active')
-        .not('title', 'is', null);
-
-      if (searchData.query && searchData.query.trim()) {
-        const searchTerm = searchData.query.toLowerCase().trim();
-        query = query.or(`title.ilike.%${searchTerm}%,location.ilike.%${searchTerm}%,city.ilike.%${searchTerm}%,state.ilike.%${searchTerm}%`);
-      }
-
-      if (searchData.state) {
-        query = query.eq('state', searchData.state);
-      }
-
-      if (searchData.city) {
-        query = query.ilike('city', `%${searchData.city}%`);
-      }
-
-      if (searchData.propertyType) {
-        query = query.eq('property_type', searchData.propertyType);
-      }
-
-      if (searchData.listingType) {
-        query = query.eq('listing_type', searchData.listingType);
-      }
-
-      const { data, error } = await query.order('created_at', { ascending: false }).limit(20);
+        .not('title', 'is', null)
+        .or(`title.ilike.%${quickSearch.trim()}%,location.ilike.%${quickSearch.trim()}%,city.ilike.%${quickSearch.trim()}%,state.ilike.%${quickSearch.trim()}%`)
+        .order('created_at', { ascending: false })
+        .limit(20);
 
       if (error) {
         console.error('Search error:', error);
@@ -129,7 +139,13 @@ const Index = () => {
         setSearchResults([]);
       } else {
         console.log('Search results:', data?.length || 0);
-        setSearchResults(data || []);
+        // Transform data to match BaseProperty interface
+        const transformedResults = data?.map(property => ({
+          ...property,
+          listing_type: property.listing_type as "sale" | "rent" | "lease",
+          image_urls: property.images || []
+        })) || [];
+        setSearchResults(transformedResults);
         setSearchError(null);
       }
     } catch (error) {
@@ -141,16 +157,31 @@ const Index = () => {
     }
   };
 
-  const handleLiveSearch = async (searchTerm: string) => {
-    if (!searchTerm.trim()) {
-      setSearchResults([]);
-      setHasSearched(false);
-      setSearchError(null);
-      return;
-    }
-    
-    console.log('Live search:', searchTerm);
-    await handleSearch({ query: searchTerm });
+  const handlePropertyClick = (property: BaseProperty) => {
+    navigate(`/properties/${property.id}`);
+  };
+
+  const handleFiltersChange = (newFilters: PropertyFilters) => {
+    setFilters(newFilters);
+    setQuickSearch(newFilters.searchQuery);
+  };
+
+  const handleClearFilters = () => {
+    setFilters({
+      searchQuery: "",
+      priceRange: [0, 50000000000],
+      location: "",
+      propertyTypes: [],
+      bedrooms: null,
+      bathrooms: null,
+      minArea: null,
+      maxArea: null,
+      listingType: "all",
+      sortBy: "newest"
+    });
+    setQuickSearch("");
+    setSearchResults([]);
+    setHasSearched(false);
   };
 
   return (
@@ -189,20 +220,68 @@ const Index = () => {
               
               <p className="text-sm md:text-sm lg:text-base max-w-2xl mx-auto leading-relaxed">
                 <span className="inline-block px-2 py-1 lg:px-3 lg:py-1 bg-gray-100/95 dark:bg-slate-800/95 text-slate-800 dark:text-slate-100 rounded-md backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 shadow-md font-medium">
-                  Discover premium properties with advanced AI search technology
+                  Discover premium properties with enhanced search and filtering
                 </span>
               </p>
             </div>
             
-            <div className="animate-scale-in">
-              <SmartSearchPanel
-                language={language}
-                onSearch={handleSearch}
-                onLiveSearch={handleLiveSearch}
-              />
+            {/* Enhanced Quick Search */}
+            <div className="animate-scale-in max-w-2xl mx-auto">
+              <div className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm rounded-xl p-6 shadow-lg border border-white/20 dark:border-slate-700/20">
+                <div className="flex gap-2 mb-4">
+                  <div className="relative flex-1">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5" />
+                    <Input
+                      placeholder="Search properties by location, type, or title..."
+                      value={quickSearch}
+                      onChange={(e) => setQuickSearch(e.target.value)}
+                      onKeyPress={(e) => e.key === 'Enter' && handleQuickSearch()}
+                      className="pl-10"
+                    />
+                  </div>
+                  <Button 
+                    onClick={handleQuickSearch}
+                    disabled={!quickSearch.trim() || isSearching}
+                  >
+                    {isSearching ? "Searching..." : "Search"}
+                  </Button>
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <Button
+                    variant="outline"
+                    onClick={() => setFiltersOpen(!filtersOpen)}
+                    size="sm"
+                  >
+                    Advanced Filters
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => navigate('/properties')}
+                    size="sm"
+                  >
+                    View All Properties
+                  </Button>
+                </div>
+              </div>
             </div>
           </div>
         </section>
+
+        {/* Advanced Filters */}
+        {filtersOpen && (
+          <section className="px-4 py-2">
+            <div className="max-w-[1800px] mx-auto">
+              <AdvancedPropertyFilters
+                filters={filters}
+                onFiltersChange={handleFiltersChange}
+                onClearFilters={handleClearFilters}
+                isOpen={filtersOpen}
+                onToggle={() => setFiltersOpen(!filtersOpen)}
+              />
+            </div>
+          </section>
+        )}
 
         {/* Error Message */}
         {searchError && (
@@ -225,37 +304,75 @@ const Index = () => {
           </section>
         )}
 
-        {/* Property List Section - Main Display */}
+        {/* Property Display Section */}
         <div className="px-6 lg:px-8 space-y-8 py-8">
           <div className="max-w-[1800px] mx-auto space-y-8">
             {hasSearched ? (
-              <PropertyListingsSection
-                language={language}
-                searchResults={searchResults}
-                isSearching={isSearching}
-                hasSearched={hasSearched}
-                fallbackResults={featuredProperties}
-              />
+              <section className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 dark:border-gray-700/20">
+                <div className="p-6">
+                  <div className="flex items-center justify-between mb-6">
+                    <div>
+                      <h2 className="text-2xl font-bold mb-2 bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-300 dark:to-purple-300 bg-clip-text text-transparent">
+                        Search Results
+                      </h2>
+                      <p className="text-muted-foreground">
+                        {isSearching ? "Searching..." : `${searchResults.length} properties found`}
+                        {quickSearch && (
+                          <span className="ml-2 text-primary font-medium">
+                            for "{quickSearch}"
+                          </span>
+                        )}
+                      </p>
+                    </div>
+                    <PropertyViewModeToggle 
+                      viewMode={viewMode} 
+                      onViewModeChange={(mode) => setViewMode(mode)} 
+                    />
+                  </div>
+                  
+                  {viewMode === 'grid' && (
+                    <PropertyGridView
+                      properties={searchResults}
+                      onPropertyClick={handlePropertyClick}
+                      onView3D={handlePropertyClick}
+                      onSave={(property) => console.log('Save property:', property.id)}
+                      onShare={(property) => console.log('Share property:', property.id)}
+                      onContact={(property) => console.log('Contact for property:', property.id)}
+                    />
+                  )}
+
+                  {viewMode === 'list' && (
+                    <PropertyListView
+                      properties={searchResults}
+                      onPropertyClick={handlePropertyClick}
+                      onView3D={handlePropertyClick}
+                      onSave={(property) => console.log('Save property:', property.id)}
+                      onShare={(property) => console.log('Share property:', property.id)}
+                      onContact={(property) => console.log('Contact for property:', property.id)}
+                    />
+                  )}
+                </div>
+              </section>
             ) : (
               <>
-                {/* Main Property List Display */}
+                {/* Featured Properties with Enhanced Display */}
                 <section className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20 dark:border-gray-700/20">
                   <div className="text-center mb-6">
                     <h2 className="text-2xl lg:text-3xl font-bold mb-2 bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-300 dark:to-purple-300 bg-clip-text text-transparent">
                       Featured Properties
                     </h2>
                     <p className="text-gray-600 dark:text-gray-300">
-                      Click on any property to view complete details and 3D tours
+                      Premium properties with enhanced display and 3D tours
                     </p>
                   </div>
                   
-                  <PropertyListingsSection
-                    language={language}
-                    searchResults={[]}
-                    isSearching={isFeaturedLoading}
-                    hasSearched={false}
-                    fallbackResults={featuredProperties}
-                    hideTitle={true}
+                  <PropertyGridView
+                    properties={featuredProperties}
+                    onPropertyClick={handlePropertyClick}
+                    onView3D={handlePropertyClick}
+                    onSave={(property) => console.log('Save property:', property.id)}
+                    onShare={(property) => console.log('Share property:', property.id)}
+                    onContact={(property) => console.log('Contact for property:', property.id)}
                   />
                 </section>
 
