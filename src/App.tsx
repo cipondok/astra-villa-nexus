@@ -64,8 +64,7 @@ function App() {
 
                           <Route element={<ProtectedRoute />}>
                             <Route path="/profile" element={<Profile />} />
-                            <Route path="/dashboard" element={<CustomerServiceDashboard />} />
-                            <Route path="/user-dashboard" element={<UserDashboard />} />
+                            <Route path="/dashboard" element={<UserDashboard />} />
                             <Route path="/analytics" element={<Analytics />} />
                           </Route>
 
