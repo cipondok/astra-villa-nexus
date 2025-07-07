@@ -1,12 +1,14 @@
 
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { supabase } from '@/integrations/supabase/client';
 import EnhancedImageGallery from '@/components/property/EnhancedImageGallery';
+import PropertyComparisonButton from '@/components/property/PropertyComparisonButton';
+import PropertyCard from '@/components/property/PropertyCard';
 import { 
   MapPin, 
   Bed, 
@@ -22,7 +24,10 @@ import {
   ChevronLeft,
   ChevronRight,
   Play,
-  Box
+  Box,
+  Home,
+  Menu,
+  ArrowLeft
 } from 'lucide-react';
 
 interface PropertyData {
@@ -49,11 +54,14 @@ interface PropertyData {
 
 const PropertyDetail = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const [property, setProperty] = useState<PropertyData | null>(null);
   const [loading, setLoading] = useState(true);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [ownerInfo, setOwnerInfo] = useState<any>(null);
   const [agentInfo, setAgentInfo] = useState<any>(null);
+  const [relatedProperties, setRelatedProperties] = useState<PropertyData[]>([]);
+  const [userMoreProperties, setUserMoreProperties] = useState<PropertyData[]>([]);
 
   useEffect(() => {
     if (id) {
@@ -93,6 +101,35 @@ const PropertyDetail = () => {
           .single();
         
         setAgentInfo(agent);
+      }
+
+      // Load related properties (same type and location)
+      const { data: related } = await supabase
+        .from('properties')
+        .select('*')
+        .eq('property_type', propertyData.property_type)
+        .eq('status', 'active')
+        .neq('id', id)
+        .limit(4);
+      
+      if (related) {
+        setRelatedProperties(related);
+      }
+
+      // Load more properties from the same user/agent
+      const userId = propertyData.agent_id || propertyData.owner_id;
+      if (userId) {
+        const { data: userProperties } = await supabase
+          .from('properties')
+          .select('*')
+          .or(`owner_id.eq.${userId},agent_id.eq.${userId}`)
+          .eq('status', 'active')
+          .neq('id', id)
+          .limit(4);
+        
+        if (userProperties) {
+          setUserMoreProperties(userProperties);
+        }
       }
 
     } catch (error) {
@@ -146,7 +183,56 @@ const PropertyDetail = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
+      {/* Navigation Header */}
+      <div className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            <div className="flex items-center gap-4">
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={() => navigate(-1)}
+                className="flex items-center gap-2"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                Back
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={() => navigate('/')}
+                className="flex items-center gap-2"
+              >
+                <Home className="h-4 w-4" />
+                Home
+              </Button>
+            </div>
+            
+            <div className="flex items-center gap-2">
+              <PropertyComparisonButton 
+                property={{
+                  ...property,
+                  image_urls: property.images || [],
+                  listing_type: property.listing_type as "sale" | "rent" | "lease"
+                }} 
+              />
+              <Button variant="outline" size="sm">
+                <Heart className="h-4 w-4 mr-2" />
+                Save
+              </Button>
+              <Button variant="outline" size="sm">
+                <Share2 className="h-4 w-4 mr-2" />
+                Share
+              </Button>
+              <Button variant="ghost" size="sm">
+                <Menu className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         
         {/* Enhanced Image Gallery */}
@@ -388,6 +474,84 @@ const PropertyDetail = () => {
             </Card>
           </div>
         </div>
+
+        {/* Related Properties Section */}
+        {relatedProperties.length > 0 && (
+          <div className="mt-12">
+            <h2 className="text-2xl font-bold mb-6">Related Properties</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {relatedProperties.map((relatedProperty) => (
+                <Card key={relatedProperty.id} className="cursor-pointer hover:shadow-lg transition-shadow">
+                  <div className="aspect-[4/3] overflow-hidden rounded-t-lg">
+                    <img
+                      src={relatedProperty.images?.[0] || "/placeholder.svg"}
+                      alt={relatedProperty.title}
+                      className="w-full h-full object-cover hover:scale-105 transition-transform"
+                      onClick={() => navigate(`/properties/${relatedProperty.id}`)}
+                    />
+                  </div>
+                  <CardContent className="p-4">
+                    <h3 className="font-semibold line-clamp-2 mb-2">{relatedProperty.title}</h3>
+                    <div className="flex items-center text-sm text-muted-foreground mb-2">
+                      <MapPin className="h-4 w-4 mr-1" />
+                      {relatedProperty.location}
+                    </div>
+                    <div className="font-bold text-primary">
+                      {formatPrice(relatedProperty.price)}
+                    </div>
+                    <Button 
+                      className="w-full mt-3" 
+                      size="sm"
+                      onClick={() => navigate(`/properties/${relatedProperty.id}`)}
+                    >
+                      View Details
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* More Properties from User Section */}
+        {userMoreProperties.length > 0 && (
+          <div className="mt-12">
+            <h2 className="text-2xl font-bold mb-6">
+              More from {agentInfo ? agentInfo.full_name : ownerInfo?.full_name || 'this user'}
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {userMoreProperties.map((userProperty) => (
+                <Card key={userProperty.id} className="cursor-pointer hover:shadow-lg transition-shadow">
+                  <div className="aspect-[4/3] overflow-hidden rounded-t-lg">
+                    <img
+                      src={userProperty.images?.[0] || "/placeholder.svg"}
+                      alt={userProperty.title}
+                      className="w-full h-full object-cover hover:scale-105 transition-transform"
+                      onClick={() => navigate(`/properties/${userProperty.id}`)}
+                    />
+                  </div>
+                  <CardContent className="p-4">
+                    <h3 className="font-semibold line-clamp-2 mb-2">{userProperty.title}</h3>
+                    <div className="flex items-center text-sm text-muted-foreground mb-2">
+                      <MapPin className="h-4 w-4 mr-1" />
+                      {userProperty.location}
+                    </div>
+                    <div className="font-bold text-primary">
+                      {formatPrice(userProperty.price)}
+                    </div>
+                    <Button 
+                      className="w-full mt-3" 
+                      size="sm"
+                      onClick={() => navigate(`/properties/${userProperty.id}`)}
+                    >
+                      View Details
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
