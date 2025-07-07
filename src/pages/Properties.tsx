@@ -1,23 +1,42 @@
-
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Search, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import AuthenticatedNavigation from "@/components/navigation/AuthenticatedNavigation";
 import { supabase } from "@/integrations/supabase/client";
-import CompactPropertyCard from "@/components/property/CompactPropertyCard";
+import PropertyViewModeToggle from "@/components/search/PropertyViewModeToggle";
+import PropertyListView from "@/components/search/PropertyListView";
+import PropertyGridView from "@/components/search/PropertyGridView";
+import PropertyMapView from "@/components/search/PropertyMapView";
+import AdvancedPropertyFilters, { PropertyFilters } from "@/components/search/AdvancedPropertyFilters";
+import { BaseProperty } from "@/types/property";
+
+type ViewMode = 'list' | 'grid' | 'map';
 
 const Properties = () => {
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
-  const [searchTerm, setSearchTerm] = useState("");
   const [language, setLanguage] = useState<"en" | "id">("en");
   const [theme, setTheme] = useState("light");
-  const [properties, setProperties] = useState<any[]>([]);
+  const [properties, setProperties] = useState<BaseProperty[]>([]);
+  const [filteredProperties, setFilteredProperties] = useState<BaseProperty[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [viewMode, setViewMode] = useState<ViewMode>('grid');
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const [filters, setFilters] = useState<PropertyFilters>({
+    searchQuery: "",
+    priceRange: [0, 50000000000],
+    location: "",
+    propertyTypes: [],
+    bedrooms: null,
+    bathrooms: null,
+    minArea: null,
+    maxArea: null,
+    listingType: "all",
+    sortBy: "newest"
+  });
 
   // Fetch properties from database
   useEffect(() => {
@@ -30,7 +49,7 @@ const Properties = () => {
         
         const { data, error } = await supabase
           .from('properties')
-          .select('*')
+          .select('id, title, property_type, listing_type, price, location, bedrooms, bathrooms, area_sqm, images, thumbnail_url, state, city, description, three_d_model_url, virtual_tour_url')
           .eq('status', 'active')
           .order('created_at', { ascending: false })
           .limit(50);
@@ -40,7 +59,13 @@ const Properties = () => {
           setError(error.message);
         } else {
           console.log(`Fetched ${data?.length || 0} properties`);
-          setProperties(data || []);
+          // Transform data to match BaseProperty interface
+          const transformedData = data?.map(property => ({
+            ...property,
+            listing_type: property.listing_type as "sale" | "rent" | "lease",
+            image_urls: property.images || []
+          })) || [];
+          setProperties(transformedData);
         }
       } catch (error) {
         console.error('Error fetching properties:', error);
@@ -53,13 +78,83 @@ const Properties = () => {
     fetchProperties();
   }, []);
 
-  // Filter properties based on search
-  const filteredProperties = properties.filter(property => 
-    !searchTerm || 
-    property.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    property.location?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    property.city?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Apply filters to properties
+  useEffect(() => {
+    let filtered = [...properties];
+
+    // Search query filter
+    if (filters.searchQuery.trim()) {
+      const query = filters.searchQuery.toLowerCase();
+      filtered = filtered.filter(property => 
+        property.title?.toLowerCase().includes(query) ||
+        property.location?.toLowerCase().includes(query) ||
+        property.city?.toLowerCase().includes(query) ||
+        property.description?.toLowerCase().includes(query)
+      );
+    }
+
+    // Location filter
+    if (filters.location) {
+      filtered = filtered.filter(property => 
+        property.location?.toLowerCase().includes(filters.location.toLowerCase()) ||
+        property.city?.toLowerCase().includes(filters.location.toLowerCase())
+      );
+    }
+
+    // Property type filter
+    if (filters.propertyTypes.length > 0) {
+      filtered = filtered.filter(property => 
+        filters.propertyTypes.includes(property.property_type || '')
+      );
+    }
+
+    // Listing type filter
+    if (filters.listingType !== 'all') {
+      filtered = filtered.filter(property => property.listing_type === filters.listingType);
+    }
+
+    // Price range filter
+    filtered = filtered.filter(property => 
+      property.price >= filters.priceRange[0] && property.price <= filters.priceRange[1]
+    );
+
+    // Bedrooms filter
+    if (filters.bedrooms) {
+      filtered = filtered.filter(property => (property.bedrooms || 0) >= filters.bedrooms!);
+    }
+
+    // Bathrooms filter
+    if (filters.bathrooms) {
+      filtered = filtered.filter(property => (property.bathrooms || 0) >= filters.bathrooms!);
+    }
+
+    // Area filters
+    if (filters.minArea) {
+      filtered = filtered.filter(property => (property.area_sqm || 0) >= filters.minArea!);
+    }
+    if (filters.maxArea) {
+      filtered = filtered.filter(property => (property.area_sqm || 0) <= filters.maxArea!);
+    }
+
+    // Sort results
+    switch (filters.sortBy) {
+      case 'price_low':
+        filtered.sort((a, b) => a.price - b.price);
+        break;
+      case 'price_high':
+        filtered.sort((a, b) => b.price - a.price);
+        break;
+      case 'area_large':
+        filtered.sort((a, b) => (b.area_sqm || 0) - (a.area_sqm || 0));
+        break;
+      case 'newest':
+      default:
+        // Already sorted by created_at desc from query
+        break;
+    }
+
+    setFilteredProperties(filtered);
+  }, [properties, filters]);
 
   const toggleLanguage = () => {
     setLanguage(prev => prev === "en" ? "id" : "en");
@@ -69,25 +164,40 @@ const Properties = () => {
     setTheme(prev => prev === "light" ? "dark" : "light");
   };
 
-  const handlePropertyClick = (propertyId: string) => {
-    navigate(`/property/${propertyId}`);
+  const handlePropertyClick = (property: BaseProperty) => {
+    navigate(`/properties/${property.id}`);
+  };
+
+  const handleFiltersChange = (newFilters: PropertyFilters) => {
+    setFilters(newFilters);
+  };
+
+  const handleClearFilters = () => {
+    setFilters({
+      searchQuery: "",
+      priceRange: [0, 50000000000],
+      location: "",
+      propertyTypes: [],
+      bedrooms: null,
+      bathrooms: null,
+      minArea: null,
+      maxArea: null,
+      listingType: "all",
+      sortBy: "newest"
+    });
   };
 
   const text = {
     en: {
       title: "Properties",
-      subtitle: "Find your perfect property",
-      search: "Search properties...",
-      noResults: "No properties found",
+      subtitle: "Find your perfect property with advanced search and filtering",
       loading: "Loading properties...",
       loadingError: "Error loading properties. Please try again.",
       totalFound: "properties found",
     },
     id: {
       title: "Properti",
-      subtitle: "Temukan properti impian Anda",
-      search: "Cari properti...",
-      noResults: "Tidak ada properti ditemukan",
+      subtitle: "Temukan properti impian Anda dengan pencarian dan filter canggih",
       loading: "Memuat properti...",
       loadingError: "Error memuat properti. Silakan coba lagi.",
       totalFound: "properti ditemukan",
@@ -97,9 +207,9 @@ const Properties = () => {
   const currentText = text[language];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       {/* Fixed Header */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-white border-b shadow-sm">
+      <div className="fixed top-0 left-0 right-0 z-50 bg-background border-b shadow-sm">
         {isAuthenticated ? (
           <AuthenticatedNavigation
             language={language}
@@ -110,7 +220,7 @@ const Properties = () => {
         ) : (
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <div className="flex items-center justify-between">
-              <h1 className="text-2xl font-bold text-blue-600">ASTRA Villa</h1>
+              <h1 className="text-2xl font-bold text-primary">ASTRA Villa</h1>
               <Button onClick={() => navigate('/')}>Back to Home</Button>
             </div>
           </div>
@@ -118,51 +228,46 @@ const Properties = () => {
       </div>
       
       {/* Main Content */}
-      <div className="pt-20 px-4 sm:px-6 lg:px-8">
+      <div className="pt-20 px-4 sm:px-6 lg:px-8 space-y-6">
         <div className="max-w-7xl mx-auto">
           {/* Page Header */}
-          <div className="mb-8 text-center bg-white rounded-lg p-8 shadow-sm">
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">
+          <div className="text-center bg-card rounded-lg p-8 shadow-sm">
+            <h1 className="text-4xl font-bold text-foreground mb-4">
               {currentText.title}
             </h1>
-            <p className="text-xl text-gray-600">
+            <p className="text-xl text-muted-foreground">
               {currentText.subtitle}
             </p>
           </div>
 
-          {/* Search */}
-          <div className="mb-8">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-              <Input
-                placeholder={currentText.search}
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 bg-white"
-              />
-            </div>
-          </div>
+          {/* Advanced Filters */}
+          <AdvancedPropertyFilters
+            filters={filters}
+            onFiltersChange={handleFiltersChange}
+            onClearFilters={handleClearFilters}
+            isOpen={filtersOpen}
+            onToggle={() => setFiltersOpen(!filtersOpen)}
+          />
 
-          {/* Results Count */}
-          {!loading && (
-            <div className="mb-6">
-              <p className="text-gray-600">
-                {filteredProperties.length} {currentText.totalFound}
-                {searchTerm && (
-                  <span className="ml-2 text-blue-600 font-medium">
-                    for "{searchTerm}"
-                  </span>
-                )}
-              </p>
+          {/* View Controls */}
+          <div className="flex items-center justify-between bg-card rounded-lg p-4 shadow-sm">
+            <div className="flex items-center gap-4">
+              <span className="text-sm text-muted-foreground">
+                {loading ? "Loading..." : `${filteredProperties.length} ${currentText.totalFound}`}
+              </span>
             </div>
-          )}
+            <PropertyViewModeToggle 
+              viewMode={viewMode} 
+              onViewModeChange={setViewMode} 
+            />
+          </div>
 
           {/* Loading State */}
           {loading && (
             <div className="flex items-center justify-center py-12">
               <div className="text-center">
-                <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-blue-500" />
-                <p className="text-gray-600">{currentText.loading}</p>
+                <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-primary" />
+                <p className="text-muted-foreground">{currentText.loading}</p>
               </div>
             </div>
           )}
@@ -170,8 +275,8 @@ const Properties = () => {
           {/* Error State */}
           {error && (
             <div className="text-center py-12">
-              <p className="text-red-500 text-lg mb-4">{currentText.loadingError}</p>
-              <p className="text-gray-600">{error}</p>
+              <p className="text-destructive text-lg mb-4">{currentText.loadingError}</p>
+              <p className="text-muted-foreground">{error}</p>
               <Button 
                 onClick={() => window.location.reload()} 
                 className="mt-4"
@@ -181,28 +286,41 @@ const Properties = () => {
             </div>
           )}
 
-          {/* Properties Grid */}
+          {/* Property Views */}
           {!loading && !error && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {filteredProperties.length > 0 ? (
-                filteredProperties.map((property) => (
-                  <CompactPropertyCard
-                    key={property.id}
-                    property={property}
-                    language={language}
-                    onView={() => handlePropertyClick(property.id)}
+            <div className="bg-card rounded-lg shadow-sm">
+              {viewMode === 'grid' && (
+                <div className="p-6">
+                  <PropertyGridView
+                    properties={filteredProperties}
+                    onPropertyClick={handlePropertyClick}
+                    onView3D={handlePropertyClick}
+                    onSave={(property) => console.log('Save property:', property.id)}
+                    onShare={(property) => console.log('Share property:', property.id)}
+                    onContact={(property) => console.log('Contact for property:', property.id)}
                   />
-                ))
-              ) : (
-                <div className="col-span-full text-center py-12">
-                  <p className="text-gray-600 text-lg">
-                    {searchTerm ? `No properties found for "${searchTerm}"` : currentText.noResults}
-                  </p>
-                  {searchTerm && (
-                    <p className="text-gray-500 text-sm mt-2">
-                      Try adjusting your search terms or browse all properties
-                    </p>
-                  )}
+                </div>
+              )}
+
+              {viewMode === 'list' && (
+                <div className="p-6">
+                  <PropertyListView
+                    properties={filteredProperties}
+                    onPropertyClick={handlePropertyClick}
+                    onView3D={handlePropertyClick}
+                    onSave={(property) => console.log('Save property:', property.id)}
+                    onShare={(property) => console.log('Share property:', property.id)}
+                    onContact={(property) => console.log('Contact for property:', property.id)}
+                  />
+                </div>
+              )}
+
+              {viewMode === 'map' && (
+                <div className="p-6">
+                  <PropertyMapView
+                    properties={filteredProperties}
+                    onPropertyClick={handlePropertyClick}
+                  />
                 </div>
               )}
             </div>
