@@ -109,15 +109,17 @@ const PropertyDetailModal = ({
   const imageUrls = property.image_urls || property.images || [];
 
   return (
-    <div className="fixed inset-0 z-[10001] flex items-center justify-center p-2 lg:p-4">
+    <div className="fixed inset-0 z-[10001] flex items-center justify-center p-2 lg:p-4" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}>
       {/* Backdrop - blocks all interaction */}
       <div 
         className="absolute inset-0 bg-black/80 backdrop-blur-md"
         onClick={onClose}
       />
       
-      {/* Modal Content - 80% of screen */}
-      <div className="relative w-[95%] max-w-7xl h-[90vh] bg-white/98 dark:bg-gray-900/98 backdrop-blur-xl rounded-2xl shadow-2xl overflow-hidden animate-in fade-in-0 scale-in-95 duration-300">
+      {/* Modal Content - 95% of screen */}
+      <div className="relative w-[95%] max-w-7xl h-[95vh] bg-white/98 dark:bg-gray-900/98 backdrop-blur-xl rounded-2xl shadow-2xl overflow-hidden animate-in fade-in-0 scale-in-95 duration-300 z-[10002]"
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200/50 dark:border-gray-700/50">
           <Button
