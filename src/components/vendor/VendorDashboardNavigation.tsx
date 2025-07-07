@@ -64,12 +64,29 @@ const VendorDashboardNavigation = ({ activeSection, onSectionChange }: VendorDas
       onClick: () => handleToolClick('services')
     },
     {
+      id: 'properties',
+      label: 'Property Management',
+      icon: Building2,
+      description: 'Manage your property listings',
+      isImplemented: true,
+      onClick: () => handleToolClick('properties')
+    },
+    {
+      id: 'add-property',
+      label: 'Add Property',
+      icon: Plus,
+      description: 'List a new property for rent or sale',
+      isImplemented: true,
+      badge: 'New',
+      onClick: () => handleToolClick('add-property')
+    },
+    {
       id: 'service-management',
       label: 'Service Management',
       icon: Plus,
       description: 'Create, edit, and delete services',
       isImplemented: true,
-      badge: 'New',
+      badge: 'Hot',
       onClick: () => handleToolClick('service-management')
     },
     {
@@ -187,10 +204,10 @@ const VendorDashboardNavigation = ({ activeSection, onSectionChange }: VendorDas
         return (
           <Card 
             key={section.id}
-            className={`cursor-pointer transition-all hover:shadow-md ${
+            className={`cursor-pointer transition-all hover:shadow-lg ${
               isActive 
-                ? 'ring-2 ring-samsung-blue bg-samsung-blue/5 dark:bg-samsung-blue/10' 
-                : 'hover:bg-gray-50 dark:hover:bg-gray-800'
+                ? 'samsung-gradient border-0 shadow-lg' 
+                : 'hover:bg-muted/50 border-border'
             } ${!section.isImplemented ? 'opacity-60' : ''}`}
             onClick={section.onClick}
           >
@@ -198,16 +215,16 @@ const VendorDashboardNavigation = ({ activeSection, onSectionChange }: VendorDas
               <CardTitle className="flex items-center gap-2 text-sm">
                 <Icon className={`h-4 w-4 ${
                   isActive 
-                    ? 'text-samsung-blue' 
+                    ? 'text-white' 
                     : section.isImplemented 
-                      ? 'text-gray-600 dark:text-gray-400' 
-                      : 'text-gray-400'
+                      ? 'text-muted-foreground' 
+                      : 'text-muted-foreground/50'
                 }`} />
-                <span className="flex-1">{section.label}</span>
+                <span className={`flex-1 ${isActive ? 'text-white' : 'text-foreground'}`}>{section.label}</span>
                 {section.badge && (
                   <Badge 
                     variant={section.badge === 'Required' ? 'destructive' : 'secondary'} 
-                    className="text-xs"
+                    className={`text-xs ${isActive ? 'bg-white/20 border-white/30 text-white' : ''}`}
                   >
                     {section.badge}
                   </Badge>
@@ -215,17 +232,19 @@ const VendorDashboardNavigation = ({ activeSection, onSectionChange }: VendorDas
               </CardTitle>
             </CardHeader>
             <CardContent className="pt-0">
-              <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">
+              <p className={`text-xs mb-3 ${
+                isActive ? 'text-white/80' : 'text-muted-foreground'
+              }`}>
                 {section.description}
               </p>
               <Button 
                 size="sm" 
-                variant={isActive ? "default" : "outline"}
+                variant={isActive ? "outline" : "outline"}
                 className={`w-full ${
                   isActive 
-                    ? 'bg-samsung-blue hover:bg-samsung-blue-dark' 
+                    ? 'bg-white/20 border-white/30 text-white hover:bg-white/30' 
                     : section.isImplemented 
-                      ? '' 
+                      ? 'border-border hover:bg-muted' 
                       : 'opacity-50 cursor-not-allowed'
                 }`}
                 disabled={!section.isImplemented}
