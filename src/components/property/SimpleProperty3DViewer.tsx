@@ -38,9 +38,9 @@ const SimpleProperty3DViewer: React.FC<SimpleProperty3DViewerProps> = ({
   const [activeTab, setActiveTab] = useState("virtual-tour");
   const [isMuted, setIsMuted] = useState(true);
 
-  // Sample 3D tour URLs for demo
-  const demoTourUrl = virtualTourUrl || "https://my.matterport.com/show/?m=SxQL3iGyoDo";
-  const demoModelUrl = threeDModelUrl || "https://sketchfab.com/models/76f0ff8d1c8a4e5a9b9c8c7c3c6c4c1c/embed";
+  // Sample 3D tour URLs for demo - only use if original URLs are null
+  const demoTourUrl = virtualTourUrl || null;
+  const demoModelUrl = threeDModelUrl || null;
 
   const formatPrice = (price: number) => {
     if (price >= 1000000000) {
