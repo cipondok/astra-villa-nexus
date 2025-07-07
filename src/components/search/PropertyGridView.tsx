@@ -2,6 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { MapPin, Bed, Bath, Square, Heart, Share2, Eye, Phone } from "lucide-react";
+import PropertyComparisonButton from "@/components/property/PropertyComparisonButton";
 import { BaseProperty } from "@/types/property";
 import { useState } from "react";
 
@@ -219,17 +220,11 @@ const PropertyGridView = ({
                   3D
                 </Button>
               )}
-              <Button 
+              <PropertyComparisonButton 
+                property={property} 
                 variant="secondary"
                 size="sm"
-                className="flex-1"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onContact?.(property);
-                }}
-              >
-                <Phone className="h-4 w-4" />
-              </Button>
+              />
             </div>
           </CardContent>
         </Card>

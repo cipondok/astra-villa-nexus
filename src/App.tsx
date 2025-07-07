@@ -13,6 +13,7 @@ import CustomerServiceDashboard from '@/pages/CustomerServiceDashboard';
 import Index from '@/pages/Index';
 import Properties from '@/pages/Properties';
 import PropertyDetail from '@/pages/PropertyDetail';
+import PropertyComparison from '@/pages/PropertyComparison';
 import About from '@/pages/About';
 import Profile from '@/pages/Profile';
 import AdminDashboard from '@/pages/AdminDashboard';
@@ -58,6 +59,7 @@ function App() {
                           <Route path="/" element={<Index />} />
                           <Route path="/properties" element={<Properties />} />
                           <Route path="/properties/:id" element={<PropertyDetail />} />
+                          <Route path="/property-comparison" element={<PropertyComparison />} />
                           <Route path="/about" element={<About />} />
                           <Route path="/services" element={<Services />} />
                           <Route path="/services/new" element={<ServiceForm />} />
