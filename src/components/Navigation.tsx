@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Menu, X, User, Settings, LogOut, Crown, Moon, Sun, Sparkles, Brain, Home as HomeIcon, Building, Key, Rocket, Hammer, BarChart3, Headphones } from "lucide-react";
+import { Menu, X, User, Settings, LogOut, Crown, Moon, Sun, Sparkles, Brain, Home as HomeIcon, Building, Key, Rocket, Hammer, BarChart3, Headphones, Box } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useTheme } from "@/components/ThemeProvider";
@@ -117,6 +117,12 @@ const Navigation = () => {
       label: currentText.newProjects, 
       path: '/new-projects',
       color: 'text-orange-600 dark:text-orange-400'
+    },
+    { 
+      icon: Box, 
+      label: '3D Showcase', 
+      path: '/3d-showcase',
+      color: 'text-indigo-600 dark:text-indigo-400'
     }
   ];
 

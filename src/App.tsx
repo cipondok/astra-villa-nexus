@@ -24,6 +24,7 @@ import PropertyOwnerDashboard from '@/pages/PropertyOwnerDashboard';
 import AgentDashboard from '@/pages/AgentDashboard';
 import Analytics from '@/pages/Analytics';
 import Services from '@/pages/Services';
+import Property3DShowcase from '@/pages/Property3DShowcase';
 import ServiceForm from '@/pages/ServiceForm';
 import NotFound from '@/pages/NotFound';
 import ProtectedRoute from '@/components/ProtectedRoute';
@@ -59,9 +60,10 @@ function App() {
                         <div className="min-h-screen bg-background text-foreground theme-transition">
                         <Routes>
                           <Route path="/" element={<Index />} />
-                          <Route path="/properties" element={<Properties />} />
-                          <Route path="/properties/:id" element={<PropertyDetail />} />
-                          <Route path="/property-comparison" element={<PropertyComparison />} />
+                           <Route path="/properties" element={<Properties />} />
+                           <Route path="/properties/:id" element={<PropertyDetail />} />
+                           <Route path="/property-comparison" element={<PropertyComparison />} />
+                           <Route path="/3d-showcase" element={<Property3DShowcase />} />
                           <Route path="/about" element={<About />} />
                           <Route path="/services" element={<Services />} />
                           <Route path="/services/new" element={<ServiceForm />} />
