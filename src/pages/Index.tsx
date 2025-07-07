@@ -225,27 +225,41 @@ const Index = () => {
           </section>
         )}
 
-        {/* Property Sections */}
-        <div className="px-6 lg:px-8 space-y-12 py-8">
-          <div className="max-w-[1800px] mx-auto space-y-12">
+        {/* Property List Section - Main Display */}
+        <div className="px-6 lg:px-8 space-y-8 py-8">
+          <div className="max-w-[1800px] mx-auto space-y-8">
             {hasSearched ? (
               <PropertyListingsSection
                 language={language}
                 searchResults={searchResults}
                 isSearching={isSearching}
                 hasSearched={hasSearched}
-                fallbackResults={[]}
+                fallbackResults={featuredProperties}
               />
             ) : (
               <>
-                <PropertySlideSection
-                  title="Featured Properties"
-                  subtitle="Handpicked premium properties for you"
-                  type="featured"
-                  language={language}
-                  limit={8}
-                />
+                {/* Main Property List Display */}
+                <section className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20 dark:border-gray-700/20">
+                  <div className="text-center mb-6">
+                    <h2 className="text-2xl lg:text-3xl font-bold mb-2 bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-300 dark:to-purple-300 bg-clip-text text-transparent">
+                      Featured Properties
+                    </h2>
+                    <p className="text-gray-600 dark:text-gray-300">
+                      Click on any property to view complete details and 3D tours
+                    </p>
+                  </div>
+                  
+                  <PropertyListingsSection
+                    language={language}
+                    searchResults={[]}
+                    isSearching={isFeaturedLoading}
+                    hasSearched={false}
+                    fallbackResults={featuredProperties}
+                    hideTitle={true}
+                  />
+                </section>
 
+                {/* Additional Property Sections */}
                 <PropertySlideSection
                   title="Properties for Sale"
                   subtitle="Find your dream home to purchase"
