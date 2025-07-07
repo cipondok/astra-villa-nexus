@@ -251,7 +251,7 @@ const AdminQuickActions = ({ onTabChange }: QuickActionProps) => {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-      <Card className="bg-samsung-gradient text-white border-0">
+      <Card className="samsung-gradient border-0 shadow-lg">
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-2 text-white">
@@ -277,10 +277,10 @@ const AdminQuickActions = ({ onTabChange }: QuickActionProps) => {
               onClick={action.onClick}
             >
               <div className="flex items-center gap-3">
-                <action.icon className="h-5 w-5 text-white/80" />
+                <action.icon className="h-5 w-5 text-white" />
                 <div>
                   <div className="font-medium text-white">{action.title}</div>
-                  <div className="text-xs text-white/70">{action.description}</div>
+                  <div className="text-xs text-white/80">{action.description}</div>
                 </div>
               </div>
               <div className="flex items-center gap-2">

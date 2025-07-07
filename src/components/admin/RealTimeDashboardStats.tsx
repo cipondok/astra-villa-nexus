@@ -152,7 +152,7 @@ const RealTimeDashboardStats = () => {
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
       {statCards.map((stat, index) => (
-        <Card key={index} className="border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200 bg-white dark:bg-gray-800">
+        <Card key={index} className="border border-border shadow-sm hover:shadow-md transition-all duration-200 bg-card">
           <CardContent className="p-3">
             <div className="flex items-center justify-between mb-2">
               <div className={`p-1.5 rounded-md ${stat.bgColor}`}>
@@ -162,20 +162,20 @@ const RealTimeDashboardStats = () => {
                 variant={stat.status === 'healthy' ? 'default' : stat.status === 'warning' ? 'destructive' : 'secondary'}
                 className={`text-xs px-1.5 py-0.5 h-5 ${
                   stat.status === 'healthy' 
-                    ? 'bg-green-100 text-green-700 dark:bg-green-900/20 dark:text-green-400 border-green-200 dark:border-green-800' 
+                    ? 'bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-400 border-green-200 dark:border-green-800' 
                     : stat.status === 'warning' 
-                    ? 'bg-red-100 text-red-700 dark:bg-red-900/20 dark:text-red-400 border-red-200 dark:border-red-800'
-                    : 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-600'
+                    ? 'bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-400 border-red-200 dark:border-red-800'
+                    : 'bg-muted text-muted-foreground border-border'
                 }`}
               >
                 {stat.status}
               </Badge>
             </div>
             <div className="space-y-1">
-              <p className="text-xs font-medium text-gray-600 dark:text-gray-400 leading-tight">{stat.title}</p>
-              <p className="text-lg font-bold text-gray-900 dark:text-white leading-none">{stat.value}</p>
+              <p className="text-xs font-medium text-muted-foreground leading-tight">{stat.title}</p>
+              <p className="text-lg font-bold text-foreground leading-none">{stat.value}</p>
               {stat.subtitle && (
-                <p className="text-xs text-gray-500 dark:text-gray-500 leading-none">{stat.subtitle}</p>
+                <p className="text-xs text-muted-foreground leading-none">{stat.subtitle}</p>
               )}
             </div>
           </CardContent>
