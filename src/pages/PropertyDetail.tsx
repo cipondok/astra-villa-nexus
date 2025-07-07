@@ -8,7 +8,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { supabase } from '@/integrations/supabase/client';
 import EnhancedImageGallery from '@/components/property/EnhancedImageGallery';
 import PropertyComparisonButton from '@/components/property/PropertyComparisonButton';
-import Enhanced3DPropertyViewer from '@/components/property/Enhanced3DPropertyViewer';
 import PropertyCard from '@/components/property/PropertyCard';
 import { 
   MapPin, 
@@ -354,18 +353,6 @@ const PropertyDetail = () => {
               </CardContent>
             </Card>
 
-            {/* Enhanced 3D Property Viewer */}
-            <div className="mb-6">
-              <Enhanced3DPropertyViewer
-                property={{
-                  ...property,
-                  image_urls: property.images || [],
-                  listing_type: property.listing_type as "sale" | "rent" | "lease"
-                }}
-                threeDModelUrl={property.three_d_model_url}
-                virtualTourUrl={property.virtual_tour_url}
-              />
-            </div>
 
             {/* Virtual Tour & 3D Model */}
             {(property.virtual_tour_url || property.three_d_model_url) && (
