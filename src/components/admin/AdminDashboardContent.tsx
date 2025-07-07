@@ -33,6 +33,7 @@ import AuthorizationMonitoringSystem from "./AuthorizationMonitoringSystem";
 import AdminAlertSystem from "./AdminAlertSystem";
 import CustomerServiceControlPanel from "./CustomerServiceControlPanel";
 import DatabaseErrorManager from "./cs-tools/DatabaseErrorManager";
+import Property3DViewSettings from "./Property3DViewSettings";
 
 interface AdminDashboardContentProps {
   activeSection: string;
@@ -106,6 +107,8 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
         return <AdminAlertSystem />;
       case "database-errors":
         return <DatabaseErrorManager />;
+      case "property-3d-settings":
+        return <Property3DViewSettings />;
       default:
         return <AdminOverview />;
     }

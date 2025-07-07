@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -18,7 +17,11 @@ import {
   Eye,
   Zap,
   TestTube,
-  AlertTriangle
+  AlertTriangle,
+  BookOpen,
+  ExternalLink,
+  Code2,
+  Lightbulb
 } from 'lucide-react';
 import { useAlert } from '@/contexts/AlertContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -203,11 +206,12 @@ const Property3DViewSettings = () => {
       </Alert>
 
       <Tabs defaultValue="general" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-4 bg-slate-800/50">
+        <TabsList className="grid w-full grid-cols-5 bg-slate-800/50">
           <TabsTrigger value="general">General</TabsTrigger>
           <TabsTrigger value="viewer">Viewer</TabsTrigger>
           <TabsTrigger value="advanced">Advanced</TabsTrigger>
           <TabsTrigger value="formats">File Formats</TabsTrigger>
+          <TabsTrigger value="guide">How-to Guide</TabsTrigger>
         </TabsList>
 
         <TabsContent value="general" className="space-y-4">
@@ -453,33 +457,111 @@ const Property3DViewSettings = () => {
                     className="flex-1"
                   />
                   <Badge variant="outline" className="text-white border-slate-600">
-                    {settings.maxFileSize}MB
+                    {settings.maxFileSize} MB
                   </Badge>
                 </div>
               </div>
 
               <div className="space-y-2">
                 <Label className="text-white">Supported Formats</Label>
-                <div className="flex flex-wrap gap-2">
-                  {['glb', 'gltf', 'fbx', 'obj', 'dae', 'ply'].map(format => (
-                    <Badge
+                <div className="grid grid-cols-4 gap-2">
+                  {['glb', 'gltf', 'fbx', 'obj', 'dae', 'ply'].map((format) => (
+                    <Badge 
                       key={format}
                       variant={settings.supportedFormats.includes(format) ? 'default' : 'outline'}
-                      className="cursor-pointer"
+                      className={`cursor-pointer text-center justify-center ${
+                        settings.supportedFormats.includes(format) 
+                          ? 'bg-blue-600 text-white' 
+                          : 'text-white border-slate-600'
+                      }`}
                       onClick={() => {
-                        setSettings(prev => ({
-                          ...prev,
-                          supportedFormats: prev.supportedFormats.includes(format)
-                            ? prev.supportedFormats.filter(f => f !== format)
-                            : [...prev.supportedFormats, format]
-                        }));
+                        const newFormats = settings.supportedFormats.includes(format)
+                          ? settings.supportedFormats.filter(f => f !== format)
+                          : [...settings.supportedFormats, format];
+                        setSettings(prev => ({ ...prev, supportedFormats: newFormats }));
                       }}
                     >
                       .{format}
                     </Badge>
                   ))}
                 </div>
-                <p className="text-xs text-gray-400">Click to toggle format support</p>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="guide" className="space-y-4">
+          <Card className="bg-slate-800/50 border-slate-700/50">
+            <CardHeader>
+              <CardTitle className="text-white flex items-center">
+                <BookOpen className="h-5 w-5 mr-2" />
+                3D Model Creation Guide
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {/* Step-by-step guide */}
+              <div className="space-y-4">
+                <div className="bg-blue-900/20 p-4 rounded-lg border border-blue-500/30">
+                  <h3 className="text-blue-300 font-semibold mb-2 flex items-center">
+                    <Lightbulb className="h-4 w-4 mr-2" />
+                    Step 1: Create 3D Models
+                  </h3>
+                  <ul className="text-gray-300 space-y-1 text-sm">
+                    <li>• Use Blender, SketchUp, or AutoCAD to create property models</li>
+                    <li>• Export as GLB/GLTF for best performance</li>
+                    <li>• Keep polygon count under 100k for smooth loading</li>
+                    <li>• Include textures and materials for realistic rendering</li>
+                  </ul>
+                </div>
+
+                <div className="bg-green-900/20 p-4 rounded-lg border border-green-500/30">
+                  <h3 className="text-green-300 font-semibold mb-2 flex items-center">
+                    <Code2 className="h-4 w-4 mr-2" />
+                    Step 2: Upload Models
+                  </h3>
+                  <ul className="text-gray-300 space-y-1 text-sm">
+                    <li>• Go to Property Management → Add/Edit Property</li>
+                    <li>• Upload 3D model files in the "3D Model" section</li>
+                    <li>• Add virtual tour URLs (Matterport, Kuula, etc.)</li>
+                    <li>• Test the 3D view before publishing</li>
+                  </ul>
+                </div>
+
+                <div className="bg-purple-900/20 p-4 rounded-lg border border-purple-500/30">
+                  <h3 className="text-purple-300 font-semibold mb-2 flex items-center">
+                    <ExternalLink className="h-4 w-4 mr-2" />
+                    Step 3: Virtual Tours
+                  </h3>
+                  <ul className="text-gray-300 space-y-1 text-sm">
+                    <li>• Create 360° tours using Matterport or similar tools</li>
+                    <li>• Generate shareable links for embedding</li>
+                    <li>• Add interactive hotspots for property details</li>
+                    <li>• Optimize for mobile viewing</li>
+                  </ul>
+                </div>
+              </div>
+
+              {/* Resource links */}
+              <div className="border-t border-slate-600 pt-4">
+                <h4 className="text-white font-semibold mb-2">Recommended Tools:</h4>
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <p className="text-blue-300 font-medium">3D Modeling:</p>
+                    <ul className="text-gray-400">
+                      <li>• Blender (Free)</li>
+                      <li>• SketchUp</li>
+                      <li>• AutoCAD</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <p className="text-green-300 font-medium">Virtual Tours:</p>
+                    <ul className="text-gray-400">
+                      <li>• Matterport</li>
+                      <li>• Kuula</li>
+                      <li>• Pano2VR</li>
+                    </ul>
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -493,7 +575,11 @@ const Property3DViewSettings = () => {
           disabled={loading}
           className="bg-blue-600 hover:bg-blue-700"
         >
-          <Save className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+          {loading ? (
+            <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+          ) : (
+            <Save className="h-4 w-4 mr-2" />
+          )}
           {loading ? 'Saving...' : 'Save Settings'}
         </Button>
       </div>

@@ -22,7 +22,8 @@ import {
   Headphones,
   Paintbrush,
   CreditCard,
-  AlertTriangle
+  AlertTriangle,
+  Blocks
 } from "lucide-react";
 
 interface AdminTabNavigationProps {
@@ -121,6 +122,13 @@ const AdminTabNavigation = ({ isAdmin }: AdminTabNavigationProps) => {
       id: "website-design", 
       label: "Design", 
       icon: Paintbrush, 
+      category: "settings",
+      badge: "New"
+    },
+    { 
+      id: "property-3d-settings", 
+      label: "3D View", 
+      icon: Blocks, 
       category: "settings",
       badge: "New"
     },
