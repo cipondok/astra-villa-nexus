@@ -63,14 +63,14 @@ const CompactPropertyCard = ({ property }: CompactPropertyCardProps) => {
 
   return (
     <Card 
-      className="group overflow-hidden hover:shadow-lg transition-all duration-300 transform hover:scale-[1.02] border border-gray-200 dark:border-gray-700 rounded-2xl bg-white dark:bg-gray-800"
+      className="group overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:scale-[1.03] border border-gray-200/50 dark:border-gray-700/50 rounded-2xl bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm cursor-pointer"
       onClick={handleViewDetails}
     >
       <div className="relative overflow-hidden">
         <img
           src={property.image}
           alt={property.title}
-          className="w-full h-32 sm:h-36 object-cover group-hover:scale-105 transition-transform duration-300"
+          className="w-full h-48 sm:h-56 object-cover group-hover:scale-110 transition-transform duration-500"
         />
         
         {/* Compact Badges */}
@@ -117,32 +117,32 @@ const CompactPropertyCard = ({ property }: CompactPropertyCardProps) => {
         )}
       </div>
 
-      <CardContent className="p-3">
-        <h3 className="text-sm font-semibold mb-1 group-hover:text-blue-600 transition-colors duration-300 line-clamp-1">
+      <CardContent className="p-4">
+        <h3 className="text-base font-semibold mb-2 group-hover:text-blue-600 transition-colors duration-300 line-clamp-2 min-h-[3rem]">
           {property.title}
         </h3>
         
-        <div className="flex items-center text-gray-500 dark:text-gray-400 mb-2">
-          <MapPin className="h-3 w-3 mr-1" />
-          <span className="text-xs line-clamp-1">{property.location}</span>
+        <div className="flex items-center text-gray-500 dark:text-gray-400 mb-3">
+          <MapPin className="h-4 w-4 mr-2 flex-shrink-0" />
+          <span className="text-sm line-clamp-1">{property.location}</span>
         </div>
 
-        <div className="text-lg font-bold text-blue-600 mb-2">
+        <div className="text-xl font-bold text-blue-600 mb-3">
           {property.price}
         </div>
 
-        <div className="flex items-center justify-between text-xs text-gray-600 dark:text-gray-400 mb-3">
+        <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400 mb-4">
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-1">
-              <Bed className="h-3 w-3" />
+              <Bed className="h-4 w-4" />
               <span>{property.bedrooms}</span>
             </div>
             <div className="flex items-center gap-1">
-              <Bath className="h-3 w-3" />
+              <Bath className="h-4 w-4" />
               <span>{property.bathrooms}</span>
             </div>
             <div className="flex items-center gap-1">
-              <Square className="h-3 w-3" />
+              <Square className="h-4 w-4" />
               <span>{property.area}m²</span>
             </div>
           </div>
@@ -150,14 +150,14 @@ const CompactPropertyCard = ({ property }: CompactPropertyCardProps) => {
 
         <Button 
           size="sm"
-          className="w-full h-8 bg-gradient-to-r from-blue-600 to-orange-500 hover:from-blue-700 hover:to-orange-600 text-white font-medium transition-all duration-300 text-xs rounded-xl"
+          className="w-full h-10 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium transition-all duration-300 text-sm rounded-xl shadow-md hover:shadow-lg"
           onClick={(e) => {
             e.stopPropagation();
             handleViewDetails();
           }}
         >
-          <Eye className="h-3 w-3 mr-1" />
-          View
+          <Eye className="h-4 w-4 mr-2" />
+          View Details
         </Button>
       </CardContent>
     </Card>
