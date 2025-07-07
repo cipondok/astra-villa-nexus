@@ -7,6 +7,7 @@ import { ThemeSettingsProvider } from '@/contexts/ThemeSettingsContext';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { AlertProvider } from '@/contexts/AlertContext';
 import { LanguageProvider } from '@/contexts/LanguageContext';
+import { PropertyComparisonProvider } from '@/contexts/PropertyComparisonContext';
 import { Toaster } from '@/components/ui/sonner';
 import AppInitializer from '@/components/AppInitializer';
 import CustomerServiceDashboard from '@/pages/CustomerServiceDashboard';
@@ -52,9 +53,10 @@ function App() {
             <WebsiteSettingsProvider>
               <ThemeSettingsProvider>
                 <AuthProvider>
-                  <AppInitializer>
-                    <Router>
-                      <div className="min-h-screen bg-background text-foreground theme-transition">
+                  <PropertyComparisonProvider>
+                    <AppInitializer>
+                      <Router>
+                        <div className="min-h-screen bg-background text-foreground theme-transition">
                         <Routes>
                           <Route path="/" element={<Index />} />
                           <Route path="/properties" element={<Properties />} />
@@ -86,8 +88,9 @@ function App() {
                         </Routes>
                         <Toaster />
                       </div>
-                    </Router>
-                  </AppInitializer>
+                     </Router>
+                    </AppInitializer>
+                  </PropertyComparisonProvider>
                 </AuthProvider>
               </ThemeSettingsProvider>
             </WebsiteSettingsProvider>

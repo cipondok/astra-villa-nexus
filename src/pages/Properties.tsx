@@ -11,7 +11,6 @@ import PropertyGridView from "@/components/search/PropertyGridView";
 import PropertyMapView from "@/components/search/PropertyMapView";
 import AdvancedPropertyFilters, { PropertyFilters } from "@/components/search/AdvancedPropertyFilters";
 import { BaseProperty } from "@/types/property";
-import { PropertyComparisonProvider } from "@/contexts/PropertyComparisonContext";
 import PropertyComparisonPanel from "@/components/property/PropertyComparisonPanel";
 
 type ViewMode = 'list' | 'grid' | 'map';
@@ -211,8 +210,7 @@ const Properties = () => {
   const currentText = text[language];
 
   return (
-    <PropertyComparisonProvider>
-      <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background">
       {/* Fixed Header */}
       <div className="fixed top-0 left-0 right-0 z-50 bg-background border-b shadow-sm">
         {isAuthenticated ? (
@@ -336,7 +334,6 @@ const Properties = () => {
       {/* Comparison Panel */}
       <PropertyComparisonPanel />
     </div>
-    </PropertyComparisonProvider>
   );
 };
 
