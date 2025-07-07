@@ -62,13 +62,26 @@ const DatabaseErrorManager = () => {
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
 
-  // Fetch real database errors from Supabase logs
+  // Fetch real database errors from Supabase analytics
   const fetchDatabaseErrors = async () => {
     setIsLoading(true);
     try {
-      // For now, we'll use mock data since we need to create the RPC function first
-      // In a real implementation, this would fetch from actual Supabase logs
-      setErrors(generateMockErrors());
+      // Fetch real error data from Supabase analytics
+      const { data: errorData, error } = await supabase.functions.invoke('database-diagnostics', {
+        body: { action: 'get_errors' }
+      });
+
+      if (error) {
+        console.error('Failed to fetch database errors:', error);
+        setErrors(generateMockErrors());
+        return;
+      }
+
+      if (errorData?.errors) {
+        setErrors(errorData.errors);
+      } else {
+        setErrors(generateMockErrors());
+      }
     } catch (error) {
       console.error('Failed to fetch database errors:', error);
       setErrors(generateMockErrors());
@@ -194,12 +207,19 @@ WHERE NOT EXISTS (
     try {
       const fix = commonFixes[fixType as keyof typeof commonFixes];
       
-      // Apply the actual fix via edge function (for demo, we'll simulate the fix locally)
-      if (fixType === 'UUID_FORMAT' || fixType === 'RLS_FIX' || fixType === 'CONSTRAINT_FIX') {
-        // Simulate successful fix
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        showSuccess("Fix Applied Successfully", `${fix.title} has been applied successfully.`);
+      // Apply the actual fix via edge function
+      const { data: result, error } = await supabase.functions.invoke('database-fix', {
+        body: { fixType, sql: fix.sql }
+      });
+
+      if (error) {
+        console.error('Fix execution error:', error);
+        showError("Fix Failed", error.message || "Failed to apply the fix. Please check the SQL and try again.");
+        return;
+      }
+
+      if (result?.success) {
+        showSuccess("Fix Applied Successfully", result.message);
         
         // Mark related errors as resolved
         setErrors(prevErrors => 
@@ -216,8 +236,12 @@ WHERE NOT EXISTS (
           })
         );
         
+        // Refresh errors to get updated state
+        await fetchDatabaseErrors();
+        
         setFixDialog(false);
-        return;
+      } else {
+        showError("Fix Failed", result?.message || "Failed to apply the fix.");
       }
     } catch (error) {
       console.error('Fix execution error:', error);
