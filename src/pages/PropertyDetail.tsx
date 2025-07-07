@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { supabase } from '@/integrations/supabase/client';
+import EnhancedImageGallery from '@/components/property/EnhancedImageGallery';
 import { 
   MapPin, 
   Bed, 
@@ -19,7 +20,9 @@ import {
   Share2,
   Camera,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Play,
+  Box
 } from 'lucide-react';
 
 interface PropertyData {
@@ -146,61 +149,14 @@ const PropertyDetail = () => {
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         
-        {/* Image Gallery */}
-        <div className="relative mb-8">
-          {property.images && property.images.length > 0 ? (
-            <div className="relative h-96 lg:h-[500px] rounded-lg overflow-hidden">
-              <img
-                src={property.images[currentImageIndex]}
-                alt={`${property.title} - Image ${currentImageIndex + 1}`}
-                className="w-full h-full object-cover"
-              />
-              
-              {/* Navigation buttons */}
-              {property.images.length > 1 && (
-                <>
-                  <button
-                    onClick={prevImage}
-                    disabled={currentImageIndex === 0}
-                    className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/50 text-white p-2 rounded-full disabled:opacity-50"
-                  >
-                    <ChevronLeft className="h-6 w-6" />
-                  </button>
-                  <button
-                    onClick={nextImage}
-                    disabled={currentImageIndex === property.images.length - 1}
-                    className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/50 text-white p-2 rounded-full disabled:opacity-50"
-                  >
-                    <ChevronRight className="h-6 w-6" />
-                  </button>
-                </>
-              )}
-              
-              {/* Image counter */}
-              <div className="absolute bottom-4 right-4 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
-                {currentImageIndex + 1} / {property.images.length}
-              </div>
-              
-              {/* Action buttons */}
-              <div className="absolute top-4 right-4 flex gap-2">
-                <Button size="sm" variant="outline" className="bg-white/90">
-                  <Heart className="h-4 w-4 mr-2" />
-                  Save
-                </Button>
-                <Button size="sm" variant="outline" className="bg-white/90">
-                  <Share2 className="h-4 w-4 mr-2" />
-                  Share
-                </Button>
-              </div>
-            </div>
-          ) : (
-            <div className="h-96 lg:h-[500px] bg-gray-200 rounded-lg flex items-center justify-center">
-              <div className="text-center">
-                <Camera className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-                <p className="text-gray-500">No images available</p>
-              </div>
-            </div>
-          )}
+        {/* Enhanced Image Gallery */}
+        <div className="mb-8">
+          <EnhancedImageGallery
+            images={property.images || []}
+            title={property.title}
+            propertyType={property.property_type}
+            listingType={property.listing_type}
+          />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

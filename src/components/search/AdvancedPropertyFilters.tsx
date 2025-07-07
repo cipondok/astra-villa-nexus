@@ -15,8 +15,8 @@ export interface PropertyFilters {
   priceRange: [number, number];
   location: string;
   propertyTypes: string[];
-  bedrooms: number | null;
-  bathrooms: number | null;
+  bedrooms: string | null;
+  bathrooms: string | null;
   minArea: number | null;
   maxArea: number | null;
   listingType: string;
@@ -73,7 +73,7 @@ const AdvancedPropertyFilters = ({
     let count = 0;
     if (localFilters.searchQuery) count++;
     if (localFilters.priceRange[0] > 0 || localFilters.priceRange[1] < 50000000000) count++;
-    if (localFilters.location) count++;
+    if (localFilters.location && localFilters.location !== 'all') count++;
     if (localFilters.propertyTypes.length > 0) count++;
     if (localFilters.bedrooms) count++;
     if (localFilters.bathrooms) count++;
@@ -104,7 +104,7 @@ const AdvancedPropertyFilters = ({
                   setLocalFilters({
                     searchQuery: "",
                     priceRange: [0, 50000000000],
-                    location: "",
+                    location: "all",
                     propertyTypes: [],
                     bedrooms: null,
                     bathrooms: null,
@@ -162,7 +162,7 @@ const AdvancedPropertyFilters = ({
                     <SelectValue placeholder="Select location" />
                   </SelectTrigger>
                   <SelectContent className="bg-background border">
-                    <SelectItem value="">All Locations</SelectItem>
+                    <SelectItem value="all">All Locations</SelectItem>
                     {locations.map((location) => (
                       <SelectItem key={location} value={location}>{location}</SelectItem>
                     ))}
@@ -212,14 +212,14 @@ const AdvancedPropertyFilters = ({
               <div className="space-y-2">
                 <Label>Bedrooms</Label>
                 <Select 
-                  value={localFilters.bedrooms?.toString() || ""} 
-                  onValueChange={(value) => updateFilter('bedrooms', value ? parseInt(value) : null)}
+                  value={localFilters.bedrooms || ""} 
+                  onValueChange={(value) => updateFilter('bedrooms', value === 'any' ? null : value)}
                 >
                   <SelectTrigger className="bg-background">
                     <SelectValue placeholder="Any" />
                   </SelectTrigger>
                   <SelectContent className="bg-background border">
-                    <SelectItem value="">Any</SelectItem>
+                    <SelectItem value="any">Any</SelectItem>
                     {[1, 2, 3, 4, 5, 6].map((num) => (
                       <SelectItem key={num} value={num.toString()}>{num}+ Bedrooms</SelectItem>
                     ))}
@@ -230,14 +230,14 @@ const AdvancedPropertyFilters = ({
               <div className="space-y-2">
                 <Label>Bathrooms</Label>
                 <Select 
-                  value={localFilters.bathrooms?.toString() || ""} 
-                  onValueChange={(value) => updateFilter('bathrooms', value ? parseInt(value) : null)}
+                  value={localFilters.bathrooms || ""} 
+                  onValueChange={(value) => updateFilter('bathrooms', value === 'any' ? null : value)}
                 >
                   <SelectTrigger className="bg-background">
                     <SelectValue placeholder="Any" />
                   </SelectTrigger>
                   <SelectContent className="bg-background border">
-                    <SelectItem value="">Any</SelectItem>
+                    <SelectItem value="any">Any</SelectItem>
                     {[1, 2, 3, 4, 5, 6].map((num) => (
                       <SelectItem key={num} value={num.toString()}>{num}+ Bathrooms</SelectItem>
                     ))}

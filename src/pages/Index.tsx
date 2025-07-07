@@ -33,7 +33,7 @@ const Index = () => {
   const [filters, setFilters] = useState<PropertyFilters>({
     searchQuery: "",
     priceRange: [0, 50000000000],
-    location: "",
+    location: "all",
     propertyTypes: [],
     bedrooms: null,
     bathrooms: null,
@@ -170,7 +170,7 @@ const Index = () => {
     setFilters({
       searchQuery: "",
       priceRange: [0, 50000000000],
-      location: "",
+      location: "all",
       propertyTypes: [],
       bedrooms: null,
       bathrooms: null,

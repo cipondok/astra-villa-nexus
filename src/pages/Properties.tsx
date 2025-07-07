@@ -28,7 +28,7 @@ const Properties = () => {
   const [filters, setFilters] = useState<PropertyFilters>({
     searchQuery: "",
     priceRange: [0, 50000000000],
-    location: "",
+    location: "all",
     propertyTypes: [],
     bedrooms: null,
     bathrooms: null,
@@ -94,7 +94,7 @@ const Properties = () => {
     }
 
     // Location filter
-    if (filters.location) {
+    if (filters.location && filters.location !== 'all') {
       filtered = filtered.filter(property => 
         property.location?.toLowerCase().includes(filters.location.toLowerCase()) ||
         property.city?.toLowerCase().includes(filters.location.toLowerCase())
@@ -119,13 +119,15 @@ const Properties = () => {
     );
 
     // Bedrooms filter
-    if (filters.bedrooms) {
-      filtered = filtered.filter(property => (property.bedrooms || 0) >= filters.bedrooms!);
+    if (filters.bedrooms && filters.bedrooms !== 'any') {
+      const bedroomCount = parseInt(filters.bedrooms);
+      filtered = filtered.filter(property => (property.bedrooms || 0) >= bedroomCount);
     }
 
     // Bathrooms filter
-    if (filters.bathrooms) {
-      filtered = filtered.filter(property => (property.bathrooms || 0) >= filters.bathrooms!);
+    if (filters.bathrooms && filters.bathrooms !== 'any') {
+      const bathroomCount = parseInt(filters.bathrooms);
+      filtered = filtered.filter(property => (property.bathrooms || 0) >= bathroomCount);
     }
 
     // Area filters
@@ -176,7 +178,7 @@ const Properties = () => {
     setFilters({
       searchQuery: "",
       priceRange: [0, 50000000000],
-      location: "",
+      location: "all",
       propertyTypes: [],
       bedrooms: null,
       bathrooms: null,
