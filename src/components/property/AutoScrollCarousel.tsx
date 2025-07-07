@@ -356,6 +356,8 @@ const AutoScrollCarousel = ({
                 ? `${(properties.length / itemsPerView) * 100}%`
                 : `100%`
             }}
+            onMouseEnter={() => setIsAutoScrolling(false)} // Stop auto-scroll on hover
+            onMouseLeave={() => setIsAutoScrolling(true)}   // Resume auto-scroll when hover ends
           >
             {properties.map((property, index) => (
               <div 

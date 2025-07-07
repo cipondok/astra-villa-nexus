@@ -212,6 +212,7 @@ const PropertySlideSection = ({ title, subtitle, type, language, limit = 8 }: Pr
         <div 
           className="flex transition-transform duration-500 ease-in-out"
           style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+          onMouseEnter={() => setCurrentSlide(currentSlide)} // Stop auto-scroll on hover
         >
           {Array.from({ length: maxSlides }).map((_, slideIndex) => (
             <div key={slideIndex} className="w-full flex-shrink-0">
