@@ -96,12 +96,7 @@ const CompactPropertyCard = ({
       e.stopPropagation();
     }
     console.log('CompactPropertyCard - Opening detail modal for property:', property.id);
-    console.log('CompactPropertyCard - Modal state before:', showDetailModal);
     setShowDetailModal(true);
-    console.log('CompactPropertyCard - Modal state after setting to true');
-    if (onView) {
-      onView(property.id);
-    }
   };
 
   const handleView3D = (e?: React.MouseEvent) => {
@@ -111,9 +106,6 @@ const CompactPropertyCard = ({
     }
     console.log('CompactPropertyCard - Opening 3D modal for property:', property.id);
     setShow3DModal(true);
-    if (onView3D) {
-      onView3D(property);
-    }
   };
 
   const handleShare = (e: React.MouseEvent) => {
@@ -146,7 +138,7 @@ const CompactPropertyCard = ({
 
   return (
     <>
-      <Card className="group hover:shadow-xl transition-all duration-300 overflow-hidden cursor-pointer" onClick={handleViewDetails}>
+      <Card className="group hover:shadow-xl transition-all duration-300 overflow-hidden">
         {/* Image Section */}
         <div className="relative aspect-[4/3] overflow-hidden">
           <img
