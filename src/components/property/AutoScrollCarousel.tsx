@@ -6,6 +6,9 @@ import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, User, Building2, TrendingUp, Play, Pause } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import CompactPropertyCard from "@/components/property/CompactPropertyCard";
+import PropertyDetailModal from "@/components/property/PropertyDetailModal";
+import Property3DViewModal from "@/components/property/Property3DViewModal";
+import { BaseProperty } from "@/types/property";
 
 interface AutoScrollCarouselProps {
   title: string;
@@ -49,6 +52,9 @@ const AutoScrollCarousel = ({
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoScrolling, setIsAutoScrolling] = useState(true);
   const [itemsPerView, setItemsPerView] = useState(4);
+  const [selectedProperty, setSelectedProperty] = useState<any | null>(null);
+  const [showDetailModal, setShowDetailModal] = useState(false);
+  const [show3DModal, setShow3DModal] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const carouselRef = useRef<HTMLDivElement>(null);
 
@@ -91,9 +97,9 @@ const AutoScrollCarousel = ({
     }
   }, [currentPropertyId, queryType, ownerId, propertyData, propertyType, location, customProperties]);
 
-  // Auto-scroll functionality with seamless looping
+  // Auto-scroll functionality with seamless looping - stops when modal is open
   useEffect(() => {
-    if (isAutoScrolling && properties.length > 0) {
+    if (isAutoScrolling && properties.length > 0 && !showDetailModal && !show3DModal) {
       intervalRef.current = setInterval(() => {
         setCurrentIndex(prev => {
           // If we have enough properties to fill the view, use normal pagination
@@ -113,7 +119,7 @@ const AutoScrollCarousel = ({
         clearInterval(intervalRef.current);
       }
     };
-  }, [isAutoScrolling, properties.length, itemsPerView, autoScrollInterval]);
+  }, [isAutoScrolling, properties.length, itemsPerView, autoScrollInterval, showDetailModal, show3DModal]);
 
   const fetchProperties = async () => {
     setIsLoading(true);
@@ -366,8 +372,14 @@ const AutoScrollCarousel = ({
                   language="en"
                   isSaved={false}
                   onSave={() => {}}
-                  onView={() => window.open(`/property/${property.id}`, '_blank')}
-                  onView3D={() => {}}
+                  onView={() => {
+                    setSelectedProperty(property);
+                    setShowDetailModal(true);
+                  }}
+                  onView3D={() => {
+                    setSelectedProperty(property);
+                    setShow3DModal(true);
+                  }}
                 />
               </div>
             ))}
@@ -460,6 +472,36 @@ const AutoScrollCarousel = ({
           </>
         )}
       </CardContent>
+      
+      {/* Property Detail Modal */}
+      {selectedProperty && showDetailModal && (
+        <PropertyDetailModal
+          property={selectedProperty as BaseProperty}
+          isOpen={showDetailModal}
+          onClose={() => {
+            setShowDetailModal(false);
+            setSelectedProperty(null);
+          }}
+          language="en"
+          onView3D={() => {
+            setShowDetailModal(false);
+            setShow3DModal(true);
+          }}
+        />
+      )}
+
+      {/* 3D View Modal */}
+      {selectedProperty && show3DModal && (
+        <Property3DViewModal
+          property={selectedProperty as BaseProperty}
+          isOpen={show3DModal}
+          onClose={() => {
+            setShow3DModal(false);
+            setSelectedProperty(null);
+          }}
+          language="en"
+        />
+      )}
     </Card>
   );
 };

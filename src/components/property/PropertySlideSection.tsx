@@ -6,6 +6,10 @@ import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, MapPin, Bed, Bath, Square } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useState } from "react";
+import CompactPropertyCard from "./CompactPropertyCard";
+import PropertyDetailModal from "./PropertyDetailModal";
+import Property3DViewModal from "./Property3DViewModal";
+import { BaseProperty } from "@/types/property";
 
 interface PropertySlideSectionProps {
   title: string;
@@ -17,6 +21,9 @@ interface PropertySlideSectionProps {
 
 const PropertySlideSection = ({ title, subtitle, type, language, limit = 8 }: PropertySlideSectionProps) => {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [selectedProperty, setSelectedProperty] = useState<any | null>(null);
+  const [showDetailModal, setShowDetailModal] = useState(false);
+  const [show3DModal, setShow3DModal] = useState(false);
 
   const { data: properties = [], isLoading } = useQuery({
     queryKey: [`properties-${type}`, limit],
@@ -98,15 +105,29 @@ const PropertySlideSection = ({ title, subtitle, type, language, limit = 8 }: Pr
     return price.toString();
   };
 
-  const itemsPerSlide = 4;
+  const itemsPerSlide = 6; // Show more items per slide (smaller cards)
   const maxSlides = Math.ceil(properties.length / itemsPerSlide);
 
   const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % maxSlides);
+    if (!showDetailModal && !show3DModal) { // Stop sliding when modal is open
+      setCurrentSlide((prev) => (prev + 1) % maxSlides);
+    }
   };
 
   const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + maxSlides) % maxSlides);
+    if (!showDetailModal && !show3DModal) { // Stop sliding when modal is open
+      setCurrentSlide((prev) => (prev - 1 + maxSlides) % maxSlides);
+    }
+  };
+
+  const handleViewProperty = (property: any) => {
+    setSelectedProperty(property);
+    setShowDetailModal(true);
+  };
+
+  const handleView3D = (property: any) => {
+    setSelectedProperty(property);
+    setShow3DModal(true);
   };
 
   const currentProperties = properties.slice(
@@ -123,14 +144,14 @@ const PropertySlideSection = ({ title, subtitle, type, language, limit = 8 }: Pr
             {subtitle && <p className="text-gray-600 dark:text-gray-400">{subtitle}</p>}
           </div>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {[...Array(4)].map((_, i) => (
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-3">
+          {[...Array(6)].map((_, i) => (
             <Card key={i} className="animate-pulse">
-              <div className="h-48 bg-gray-200 dark:bg-gray-700 rounded-t-lg"></div>
-              <CardContent className="p-4">
-                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded mb-2"></div>
-                <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded mb-1"></div>
-                <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
+              <div className="h-32 bg-gray-200 dark:bg-gray-700 rounded-t-lg"></div>
+              <CardContent className="p-3">
+                <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded mb-2"></div>
+                <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded mb-1"></div>
+                <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
               </CardContent>
             </Card>
           ))}
@@ -194,77 +215,20 @@ const PropertySlideSection = ({ title, subtitle, type, language, limit = 8 }: Pr
         >
           {Array.from({ length: maxSlides }).map((_, slideIndex) => (
             <div key={slideIndex} className="w-full flex-shrink-0">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-3">
                 {properties
                   .slice(slideIndex * itemsPerSlide, (slideIndex + 1) * itemsPerSlide)
                   .map((property) => (
-                    <Card key={property.id} className="group cursor-pointer hover:shadow-lg transition-all duration-300 overflow-hidden">
-                      <div className="relative">
-                        <img
-                          src={property.thumbnail_url || property.images?.[0] || '/placeholder.svg'}
-                          alt={property.title}
-                          className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-                        />
-                        <div className="absolute top-2 left-2">
-                          <Badge 
-                            variant={property.listing_type === 'sale' ? 'default' : 'secondary'}
-                            className="text-white"
-                          >
-                            {property.listing_type === 'sale' ? 'For Sale' : 'For Rent'}
-                          </Badge>
-                        </div>
-                        {property.development_status !== 'completed' && (
-                          <div className="absolute top-2 right-2">
-                            <Badge variant="outline" className="bg-white/90 text-gray-800">
-                              {property.development_status === 'pre_launching' ? 'Pre-Launch' : 'New Project'}
-                            </Badge>
-                          </div>
-                        )}
-                      </div>
-                      
-                      <CardContent className="p-4">
-                        <div className="space-y-2">
-                          <h3 className="font-semibold text-lg line-clamp-1 group-hover:text-blue-600 transition-colors">
-                            {property.title}
-                          </h3>
-                          
-                          <div className="flex items-center text-gray-600 dark:text-gray-400 text-sm">
-                            <MapPin className="h-3 w-3 mr-1" />
-                            <span className="line-clamp-1">{property.location}</span>
-                          </div>
-                          
-                          <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
-                            {property.bedrooms && (
-                              <div className="flex items-center gap-1">
-                                <Bed className="h-3 w-3" />
-                                <span>{property.bedrooms}</span>
-                              </div>
-                            )}
-                            {property.bathrooms && (
-                              <div className="flex items-center gap-1">
-                                <Bath className="h-3 w-3" />
-                                <span>{property.bathrooms}</span>
-                              </div>
-                            )}
-                            {property.area_sqm && (
-                              <div className="flex items-center gap-1">
-                                <Square className="h-3 w-3" />
-                                <span>{property.area_sqm}m²</span>
-                              </div>
-                            )}
-                          </div>
-                          
-                          <div className="flex items-center justify-between">
-                            <div className="text-xl font-bold text-green-600">
-                              IDR {formatPrice(property.price)}
-                            </div>
-                            <Badge variant="outline" className="text-xs">
-                              {property.property_type}
-                            </Badge>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
+                    <div key={property.id} className="w-full">
+                      <CompactPropertyCard
+                        property={property}
+                        language={language}
+                        onView={() => handleViewProperty(property)}
+                        onView3D={() => handleView3D(property)}
+                        isSaved={false}
+                        onSave={() => {}}
+                      />
+                    </div>
                   ))}
               </div>
             </div>
@@ -286,6 +250,36 @@ const PropertySlideSection = ({ title, subtitle, type, language, limit = 8 }: Pr
             />
           ))}
         </div>
+      )}
+      
+      {/* Property Detail Modal */}
+      {selectedProperty && showDetailModal && (
+        <PropertyDetailModal
+          property={selectedProperty as BaseProperty}
+          isOpen={showDetailModal}
+          onClose={() => {
+            setShowDetailModal(false);
+            setSelectedProperty(null);
+          }}
+          language={language}
+          onView3D={() => {
+            setShowDetailModal(false);
+            setShow3DModal(true);
+          }}
+        />
+      )}
+
+      {/* 3D View Modal */}
+      {selectedProperty && show3DModal && (
+        <Property3DViewModal
+          property={selectedProperty as BaseProperty}
+          isOpen={show3DModal}
+          onClose={() => {
+            setShow3DModal(false);
+            setSelectedProperty(null);
+          }}
+          language={language}
+        />
       )}
     </div>
   );
