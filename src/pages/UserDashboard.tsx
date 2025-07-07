@@ -3,6 +3,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import Navigation from "@/components/Navigation";
+import AgentOverview from "@/components/agent/AgentOverview";
+import CustomerServiceDashboard from "@/components/dashboard/CustomerServiceDashboard";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -41,17 +43,46 @@ const UserDashboard = () => {
     return null;
   }
 
+  // Render Agent Dashboard for agent users
+  if (profile?.role === 'agent') {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navigation />
+        <div className="pt-16 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-7xl mx-auto py-8">
+            <AgentOverview />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Render Customer Service Dashboard for CS users
+  if (profile?.role === 'customer_service') {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navigation />
+        <div className="pt-16 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-7xl mx-auto py-8">
+            <CustomerServiceDashboard />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Default user dashboard
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
       <div className="pt-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto py-8">
           {/* Welcome Section */}
-          <div className="bg-gradient-to-r from-blue-600 to-orange-500 text-white p-6 rounded-lg mb-6">
+          <div className="samsung-gradient text-white p-6 rounded-lg mb-6 border-0 shadow-lg">
             <div className="flex items-center justify-between">
               <div>
                 <h1 className="text-2xl font-bold">Welcome, {profile?.full_name || 'User'}!</h1>
-                <p className="text-blue-100 mt-2">Manage your profile and properties</p>
+                <p className="text-white/80 mt-2">Manage your profile and properties</p>
               </div>
               <User className="h-8 w-8" />
             </div>
@@ -149,11 +180,9 @@ const UserDashboard = () => {
                         <p className="text-sm text-muted-foreground capitalize">{profile?.verification_status || 'Not set'}</p>
                       </div>
                     </div>
-                    <div className="pt-4">
-                      <Button variant="outline">
-                        Edit Profile
-                      </Button>
-                    </div>
+                    <Button onClick={() => navigate('/profile')}>
+                      Edit Profile
+                    </Button>
                   </div>
                 </CardContent>
               </Card>

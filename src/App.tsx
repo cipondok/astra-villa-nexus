@@ -77,8 +77,6 @@ function App() {
                           </Route>
 
                           <Route path="/property-owner-dashboard" element={<PropertyOwnerDashboard />} />
-                          <Route path="/agent-dashboard" element={<AgentDashboard />} />
-                          <Route path="/agent" element={<AgentDashboard />} />
                           <Route path="/add-property" element={<AddProperty />} />
                           <Route path="/my-properties" element={<MyProperties />} />
                           <Route path="/property/:id/edit" element={<PropertyEdit />} />
