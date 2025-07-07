@@ -1137,6 +1137,74 @@ export type Database = {
         }
         Relationships: []
       }
+      database_error_tracking: {
+        Row: {
+          created_at: string | null
+          error_message: string
+          error_severity: string
+          error_signature: string
+          error_type: string
+          first_seen_at: string | null
+          fix_applied: string | null
+          id: string
+          is_resolved: boolean | null
+          last_seen_at: string | null
+          metadata: Json | null
+          occurrence_count: number | null
+          resolved_at: string | null
+          resolved_by: string | null
+          suggested_fix: string | null
+          table_name: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          error_message: string
+          error_severity?: string
+          error_signature: string
+          error_type: string
+          first_seen_at?: string | null
+          fix_applied?: string | null
+          id?: string
+          is_resolved?: boolean | null
+          last_seen_at?: string | null
+          metadata?: Json | null
+          occurrence_count?: number | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          suggested_fix?: string | null
+          table_name?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          error_message?: string
+          error_severity?: string
+          error_signature?: string
+          error_type?: string
+          first_seen_at?: string | null
+          fix_applied?: string | null
+          id?: string
+          is_resolved?: boolean | null
+          last_seen_at?: string | null
+          metadata?: Json | null
+          occurrence_count?: number | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          suggested_fix?: string | null
+          table_name?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "database_error_tracking_resolved_by_fkey"
+            columns: ["resolved_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       document_requirements: {
         Row: {
           accepted_formats: string[] | null
@@ -6031,6 +6099,10 @@ export type Database = {
         }
         Returns: string
       }
+      generate_error_signature: {
+        Args: { error_message: string; table_name?: string }
+        Returns: string
+      }
       is_admin_user: {
         Args: Record<PropertyKey, never>
         Returns: boolean
@@ -6055,6 +6127,17 @@ export type Database = {
         Args: { user_email?: string }
         Returns: boolean
       }
+      log_database_error: {
+        Args: {
+          p_error_type: string
+          p_error_message: string
+          p_error_severity?: string
+          p_table_name?: string
+          p_suggested_fix?: string
+          p_metadata?: Json
+        }
+        Returns: string
+      }
       log_security_event: {
         Args: {
           p_user_id: string
@@ -6066,6 +6149,14 @@ export type Database = {
           p_risk_score?: number
         }
         Returns: string
+      }
+      resolve_database_error: {
+        Args: {
+          p_error_signature: string
+          p_fix_applied: string
+          p_resolved_by?: string
+        }
+        Returns: boolean
       }
       search_properties_optimized: {
         Args: {
