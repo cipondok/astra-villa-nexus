@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { MapPin, Bed, Bath, Square, Heart, Share2, Eye, Phone } from "lucide-react";
 import PropertyComparisonButton from "@/components/property/PropertyComparisonButton";
+import Property3DModal from "@/components/property/Property3DModal";
 import { BaseProperty } from "@/types/property";
 import { useState } from "react";
 
@@ -24,6 +25,8 @@ const PropertyGridView = ({
   onContact 
 }: PropertyGridViewProps) => {
   const [savedProperties, setSavedProperties] = useState<Set<string>>(new Set());
+  const [selected3DProperty, setSelected3DProperty] = useState<BaseProperty | null>(null);
+  const [show3DModal, setShow3DModal] = useState(false);
 
   const formatPrice = (price: number) => {
     if (price >= 1000000000) {
@@ -62,6 +65,11 @@ const PropertyGridView = ({
     }
     setSavedProperties(newSaved);
     onSave?.(property);
+  };
+
+  const handle3DView = (property: BaseProperty) => {
+    setSelected3DProperty(property);
+    setShow3DModal(true);
   };
 
   if (properties.length === 0) {
@@ -207,14 +215,14 @@ const PropertyGridView = ({
                 <Eye className="h-4 w-4 mr-1" />
                 View
               </Button>
-              {(property.three_d_model_url || property.virtual_tour_url) && (
+               {(property.three_d_model_url || property.virtual_tour_url) && (
                 <Button 
                   variant="outline"
                   size="sm"
                   className="flex-1"
                   onClick={(e) => {
                     e.stopPropagation();
-                    onView3D?.(property);
+                    handle3DView(property);
                   }}
                 >
                   3D
@@ -229,6 +237,20 @@ const PropertyGridView = ({
           </CardContent>
         </Card>
       ))}
+      
+      {/* 3D Modal */}
+      {selected3DProperty && (
+        <Property3DModal
+          property={selected3DProperty}
+          isOpen={show3DModal}
+          onClose={() => {
+            setShow3DModal(false);
+            setSelected3DProperty(null);
+          }}
+          threeDModelUrl={selected3DProperty.three_d_model_url}
+          virtualTourUrl={selected3DProperty.virtual_tour_url}
+        />
+      )}
     </div>
   );
 };
