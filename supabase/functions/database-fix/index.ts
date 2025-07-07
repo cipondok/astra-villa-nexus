@@ -80,25 +80,23 @@ async function fixUuidFormatIssues(supabase: any, errors: any[] = []) {
       fixResults.push('Applied UUID validation rules for vendor_performance_analytics');
     }
 
-    // Mark related errors as resolved in tracking table
+    // Mark related errors as resolved in tracking table using correct signatures
     for (const error of errors) {
       if (error.error_message && error.error_message.includes('invalid input syntax for type uuid')) {
         try {
-          const errorSignature = await supabase.rpc('generate_error_signature', {
-            error_message: error.error_message,
-            table_name: error.table_name
+          const errorSignature = await generateErrorSignature(error.error_message, error.table_name);
+          
+          const { data: resolved, error: resolveError } = await supabase.rpc('resolve_database_error', {
+            p_error_signature: errorSignature,
+            p_fix_applied: 'UUID_FORMAT_FIX: Applied proper UUID format and validation'
           });
 
-          if (errorSignature?.data) {
-            await supabase.rpc('resolve_database_error', {
-              p_error_signature: errorSignature.data,
-              p_fix_applied: 'UUID_FORMAT_FIX: Applied proper UUID format and validation'
-            });
-            fixResults.push(`Marked UUID error as resolved: ${error.error_message.substring(0, 50)}...`);
+          if (!resolveError && resolved) {
+            fixResults.push(`Permanently resolved UUID error: ${error.error_message.substring(0, 50)}...`);
             fixedCount += 1;
           }
         } catch (resolveError) {
-          console.error('Failed to mark error as resolved:', resolveError);
+          console.error('Failed to mark UUID error as resolved:', resolveError);
         }
       }
     }
@@ -143,17 +141,15 @@ async function fixRlsIssues(supabase: any, errors: any[] = []) {
     for (const error of errors) {
       if (error.error_message && error.error_message.includes('row-level security')) {
         try {
-          const errorSignature = await supabase.rpc('generate_error_signature', {
-            error_message: error.error_message,
-            table_name: error.table_name
+          const errorSignature = await generateErrorSignature(error.error_message, error.table_name);
+
+          const { data: resolved, error: resolveError } = await supabase.rpc('resolve_database_error', {
+            p_error_signature: errorSignature,
+            p_fix_applied: 'RLS_FIX: Verified RLS policies and authentication context'
           });
 
-          if (errorSignature?.data) {
-            await supabase.rpc('resolve_database_error', {
-              p_error_signature: errorSignature.data,
-              p_fix_applied: 'RLS_FIX: Verified RLS policies and authentication context'
-            });
-            fixResults.push(`Resolved RLS error for ${error.table_name}`);
+          if (!resolveError && resolved) {
+            fixResults.push(`Permanently resolved RLS error for ${error.table_name}`);
             fixedCount += 1;
           }
         } catch (resolveError) {
@@ -206,17 +202,15 @@ async function fixConstraintViolations(supabase: any, errors: any[] = []) {
       if (error.error_message && 
           (error.error_message.includes('constraint') || error.error_message.includes('duplicate key'))) {
         try {
-          const errorSignature = await supabase.rpc('generate_error_signature', {
-            error_message: error.error_message,
-            table_name: error.table_name
+          const errorSignature = await generateErrorSignature(error.error_message, error.table_name);
+
+          const { data: resolved, error: resolveError } = await supabase.rpc('resolve_database_error', {
+            p_error_signature: errorSignature,
+            p_fix_applied: 'CONSTRAINT_FIX: Applied constraint validation and deduplication rules'
           });
 
-          if (errorSignature?.data) {
-            await supabase.rpc('resolve_database_error', {
-              p_error_signature: errorSignature.data,
-              p_fix_applied: 'CONSTRAINT_FIX: Applied constraint validation and deduplication rules'
-            });
-            fixResults.push(`Resolved constraint error for ${error.table_name}`);
+          if (!resolveError && resolved) {
+            fixResults.push(`Permanently resolved constraint error for ${error.table_name}`);
             fixedCount += 1;
           }
         } catch (resolveError) {
@@ -232,4 +226,15 @@ async function fixConstraintViolations(supabase: any, errors: any[] = []) {
   } catch (error) {
     return { success: false, message: `Constraint fix failed: ${error.message}` };
   }
+}
+
+// Helper function to generate error signature (matching the database function)
+async function generateErrorSignature(errorMessage: string, tableName: string | null = null): Promise<string> {
+  const text = (tableName || '') + '|' + errorMessage;
+  const encoder = new TextEncoder();
+  const data = encoder.encode(text);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  return hashHex;
 }

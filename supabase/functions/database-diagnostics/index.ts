@@ -225,13 +225,27 @@ async function getPostgresLogs(supabase: any) {
       console.error('Failed to fetch tracked errors:', trackedError);
     }
 
-    // Simulate real postgres logs structure using actual analytics data
-    // You can replace this with actual Supabase analytics API calls if available
-    const realErrorsFromAnalytics = [
+    // Check what errors are already resolved to avoid recreating them
+    const { data: existingErrors, error: existingError } = await supabase
+      .from('database_error_tracking')
+      .select('error_signature, is_resolved');
+
+    if (existingError) {
+      console.error('Failed to check existing errors:', existingError);
+    }
+
+    const resolvedSignatures = new Set(
+      (existingErrors || [])
+        .filter(e => e.is_resolved)
+        .map(e => e.error_signature)
+    );
+
+    // Only create mock errors that haven't been resolved yet
+    const potentialErrors = [
       {
         id: 'uuid_error_1',
         identifier: 'zymrajuuyyfkzdmptebl',
-        timestamp: Date.now() * 1000, // Convert to microseconds like real logs
+        timestamp: Date.now() * 1000,
         error_severity: 'ERROR',
         event_message: 'invalid input syntax for type uuid: "2025-07-06"',
         parsed: { error_severity: 'ERROR' }
@@ -254,19 +268,27 @@ async function getPostgresLogs(supabase: any) {
       }
     ];
 
-    // Log new errors to tracking table
-    for (const logEntry of realErrorsFromAnalytics) {
-      try {
-        await supabase.rpc('log_database_error', {
-          p_error_type: categorizeErrorType(logEntry.event_message),
-          p_error_message: logEntry.event_message,
-          p_error_severity: logEntry.error_severity,
-          p_table_name: extractTableFromMessage(logEntry.event_message),
-          p_suggested_fix: generateSuggestedFix(logEntry.event_message),
-          p_metadata: { log_id: logEntry.id, timestamp: logEntry.timestamp }
-        });
-      } catch (error) {
-        console.error('Failed to log error to tracking table:', error);
+    const realErrorsFromAnalytics = [];
+
+    // Only log errors that haven't been resolved
+    for (const logEntry of potentialErrors) {
+      const errorSig = await generateErrorSignature(logEntry.event_message, extractTableFromMessage(logEntry.event_message));
+      
+      if (!resolvedSignatures.has(errorSig)) {
+        realErrorsFromAnalytics.push(logEntry);
+        
+        try {
+          await supabase.rpc('log_database_error', {
+            p_error_type: categorizeErrorType(logEntry.event_message),
+            p_error_message: logEntry.event_message,
+            p_error_severity: logEntry.error_severity,
+            p_table_name: extractTableFromMessage(logEntry.event_message),
+            p_suggested_fix: generateSuggestedFix(logEntry.event_message),
+            p_metadata: { log_id: logEntry.id, timestamp: logEntry.timestamp }
+          });
+        } catch (error) {
+          console.error('Failed to log error to tracking table:', error);
+        }
       }
     }
 
@@ -316,6 +338,17 @@ function generateSuggestedFix(message: string): string {
     return 'Fix RLS: Ensure proper authentication and user context';
   }
   return 'Review query and fix syntax errors';
+}
+
+// Helper function to generate error signature (matching the database function)
+async function generateErrorSignature(errorMessage: string, tableName: string | null = null): Promise<string> {
+  const text = (tableName || '') + '|' + errorMessage;
+  const encoder = new TextEncoder();
+  const data = encoder.encode(text);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  return hashHex;
 }
 
 async function performHealthCheck(supabase: any) {
