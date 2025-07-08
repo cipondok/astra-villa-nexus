@@ -134,7 +134,7 @@ const CompactAdminNavigation = ({ activeTab, onTabChange, isAdmin }: CompactAdmi
   const isTabActive = (tabId: string) => activeTab === tabId;
 
   return (
-    <div className="flex items-center gap-2 p-3 admin-card border-b border-border">
+    <div className="flex items-center gap-2 p-2 admin-card border-b border-border h-12">
       {/* Quick Access Tabs */}
       <div className="flex items-center gap-1 mr-4">
         {quickAccess.map((tab) => (
@@ -142,7 +142,7 @@ const CompactAdminNavigation = ({ activeTab, onTabChange, isAdmin }: CompactAdmi
                   variant={isTabActive(tab.id) ? "default" : "ghost"}
                   size="sm"
                   onClick={() => onTabChange(tab.id)}
-                  className="relative h-8 px-3 text-xs font-medium gold-glow-hover"
+                  className="relative h-7 px-2 text-xs font-medium gold-glow-hover"
                 >
             <tab.icon className="h-3 w-3 mr-1" />
             <span className="hidden sm:inline">{tab.label}</span>
@@ -166,7 +166,7 @@ const CompactAdminNavigation = ({ activeTab, onTabChange, isAdmin }: CompactAdmi
               <Button
                 variant={group.items.some(item => isTabActive(item.id)) ? "default" : "ghost"}
                 size="sm"
-                className="h-8 px-3 text-xs font-medium"
+                className="h-7 px-2 text-xs font-medium"
               >
                 <group.icon className="h-3 w-3 mr-1" />
                 <span className="hidden md:inline">{group.label}</span>
