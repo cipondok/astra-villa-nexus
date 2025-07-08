@@ -23,7 +23,8 @@ import {
   Paintbrush,
   CreditCard,
   AlertTriangle,
-  Blocks
+  Blocks,
+  Mail
 } from "lucide-react";
 
 interface AdminTabNavigationProps {
@@ -238,6 +239,12 @@ const AdminTabNavigation = ({ isAdmin }: AdminTabNavigationProps) => {
       id: "system-settings", 
       label: "System", 
       icon: Settings, 
+      category: "settings" 
+    },
+    { 
+      id: "smtp-settings", 
+      label: "SMTP", 
+      icon: Mail, 
       category: "settings" 
     },
     { 
