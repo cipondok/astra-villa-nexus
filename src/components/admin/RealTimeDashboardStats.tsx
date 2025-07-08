@@ -190,13 +190,12 @@ const RealTimeDashboardStats = () => {
             <stat.icon className={`h-2.5 w-2.5 ${stat.color}`} />
           </div>
           
-          {/* Content */}
-          <div className="text-center space-y-0">
+          {/* Content - Only Number */}
+          <div className="text-center">
             <p className="text-sm font-bold text-white leading-none">{stat.value}</p>
-            <p className="text-xs font-medium text-slate-400 leading-tight truncate max-w-16 group-hover:hidden">{stat.title}</p>
           </div>
 
-          {/* Hover Tooltip */}
+          {/* Hover Tooltip - Show All Text */}
           <div className="absolute inset-0 bg-slate-900/95 rounded-full flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 p-2">
             <p className="text-xs font-semibold text-white text-center leading-tight">{stat.title}</p>
             <p className="text-lg font-bold text-white">{stat.value}</p>
