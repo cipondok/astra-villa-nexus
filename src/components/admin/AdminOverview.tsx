@@ -256,29 +256,27 @@ const AdminOverview = ({ onSectionChange }: AdminOverviewProps) => {
           {quickManagementActions.map((action, index) => (
             <div 
               key={index}
-              className="hud-border p-4 cursor-pointer hover:hud-glow transition-all duration-300 group"
+              className="hud-border p-4 cursor-pointer hover:hud-glow transition-all duration-300 group rounded-full aspect-square flex flex-col items-center justify-center relative"
               onClick={() => handleQuickAction(action.action)}
             >
-              <div className="flex items-center gap-3 mb-3">
-                <div className="p-2 rounded-lg bg-gradient-to-br from-cyan-900/40 to-blue-900/40">
-                  <action.icon className="h-5 w-5 hud-text" />
+              {/* Circular Background Animation */}
+              <div className="absolute inset-2 rounded-full border-2 border-cyan-900/30"></div>
+              <div className="absolute inset-2 rounded-full border-2 border-transparent border-t-cyan-400/50 group-hover:border-t-cyan-400 transition-colors"></div>
+              
+              <div className="text-center z-10">
+                <div className="p-3 rounded-full bg-gradient-to-br from-cyan-900/40 to-blue-900/40 mb-2">
+                  <action.icon className="h-6 w-6 hud-text" />
                 </div>
-                <div className="flex-1">
-                  <p className="font-medium hud-text group-hover:hud-accent transition-colors">
-                    {action.title}
-                  </p>
-                </div>
-              </div>
-              <p className="text-xs text-gray-400 mb-2">{action.description}</p>
-              <div className="flex items-center justify-between">
-                <span className={`text-xs px-2 py-1 rounded ${
+                <p className="font-medium hud-text group-hover:hud-accent transition-colors text-sm">
+                  {action.title}
+                </p>
+                <span className={`text-xs px-2 py-1 rounded-full mt-1 inline-block ${
                   action.priority === 'critical' ? 'bg-red-900/40 text-red-300' :
                   action.priority === 'high' ? 'bg-orange-900/40 text-orange-300' :
                   'bg-blue-900/40 text-blue-300'
                 }`}>
                   {action.priority}
                 </span>
-                <div className="w-2 h-2 bg-green-500 rounded-full pulse-dot"></div>
               </div>
             </div>
           ))}
