@@ -1,5 +1,12 @@
 /* Mobile-First Optimizations */
 
+/* PWA Display Support */
+@media (display-mode: standalone) {
+  body {
+    padding-top: env(safe-area-inset-top);
+  }
+}
+
 /* Safe area support for mobile devices */
 .safe-area-inset {
   padding-top: env(safe-area-inset-top);
@@ -16,6 +23,47 @@
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+}
+
+/* Advanced touch gestures */
+.gesture-enabled {
+  touch-action: pan-x pan-y pinch-zoom;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.swipe-target {
+  touch-action: pan-y;
+  overflow-x: hidden;
+}
+
+.pinch-zoom-target {
+  touch-action: pinch-zoom;
+}
+
+/* Haptic feedback simulation */
+.haptic-light {
+  transition: transform 0.1s ease;
+}
+
+.haptic-light:active {
+  transform: scale(0.98);
+}
+
+.haptic-medium {
+  transition: transform 0.15s ease;
+}
+
+.haptic-medium:active {
+  transform: scale(0.95);
+}
+
+.haptic-heavy {
+  transition: transform 0.2s ease;
+}
+
+.haptic-heavy:active {
+  transform: scale(0.92);
 }
 
 /* Smooth scrolling optimization */

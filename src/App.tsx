@@ -10,6 +10,7 @@ import { LanguageProvider } from '@/contexts/LanguageContext';
 import { PropertyComparisonProvider } from '@/contexts/PropertyComparisonContext';
 import { Toaster } from '@/components/ui/sonner';
 import AppInitializer from '@/components/AppInitializer';
+import PWAInstallPrompt from '@/components/PWAInstallPrompt';
 import CustomerServiceDashboard from '@/pages/CustomerServiceDashboard';
 import Index from '@/pages/Index';
 import Properties from '@/pages/Properties';
@@ -87,9 +88,10 @@ function App() {
                           <Route path="/my-properties" element={<MyProperties />} />
                           <Route path="/property/:id/edit" element={<PropertyEdit />} />
                           <Route path="*" element={<NotFound />} />
-                        </Routes>
-                        <Toaster />
-                      </div>
+                         </Routes>
+                         <Toaster />
+                         <PWAInstallPrompt />
+                       </div>
                      </Router>
                     </AppInitializer>
                   </PropertyComparisonProvider>
