@@ -82,13 +82,13 @@ const RealTimeDashboardStats = () => {
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-0.5 mb-2">
+      <div className="grid grid-cols-3 md:grid-cols-6 lg:grid-cols-6 gap-1 mb-2">
         {[...Array(6)].map((_, i) => (
-          <div key={i} className="animate-pulse bg-slate-800/50 border border-slate-700/30 rounded-full p-1.5 aspect-square flex items-center justify-center w-10 h-10">
-            <div className="text-center space-y-0">
-              <div className="h-2 w-2 bg-slate-700/50 rounded-full mx-auto"></div>
+          <div key={i} className="animate-pulse bg-slate-800/50 border border-slate-700/30 rounded-full p-2 aspect-square flex items-center justify-center w-16 h-16">
+            <div className="text-center space-y-0.5">
+              <div className="h-3 w-3 bg-slate-700/50 rounded-full mx-auto"></div>
+              <div className="h-1.5 bg-slate-700/50 rounded w-6"></div>
               <div className="h-1 bg-slate-700/50 rounded w-4"></div>
-              <div className="h-1 bg-slate-700/50 rounded w-3"></div>
             </div>
           </div>
         ))}
@@ -154,12 +154,12 @@ const RealTimeDashboardStats = () => {
   ];
 
   return (
-    <div className="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-0.5 mb-2">
+    <div className="grid grid-cols-3 md:grid-cols-6 lg:grid-cols-6 gap-1 mb-2">
       {statCards.map((stat, index) => (
-        <div key={index} className="relative overflow-hidden rounded-full bg-slate-800/90 border border-slate-700/50 p-1.5 hover:border-slate-600/50 transition-all duration-200 w-10 h-10 flex flex-col items-center justify-center">
+        <div key={index} className="relative overflow-hidden rounded-full bg-slate-800/90 border border-slate-700/50 p-2 hover:border-slate-600/50 transition-all duration-200 w-16 h-16 flex flex-col items-center justify-center">
           {/* Status Badge */}
-          <div className="absolute top-0 right-0">
-            <div className={`w-1 h-1 rounded-full ${
+          <div className="absolute top-0.5 right-0.5">
+            <div className={`w-1.5 h-1.5 rounded-full ${
               stat.status === 'healthy' 
                 ? 'bg-green-400 animate-pulse' 
                 : stat.status === 'warning' 
@@ -171,10 +171,10 @@ const RealTimeDashboardStats = () => {
           </div>
           
           {/* Circular Progress Background */}
-          <div className="absolute inset-0.5 rounded-full border border-slate-600/30"></div>
+          <div className="absolute inset-1 rounded-full border border-slate-600/30"></div>
           
           {/* Circular Progress (animated) */}
-          <div className={`absolute inset-0.5 rounded-full border border-transparent ${
+          <div className={`absolute inset-1 rounded-full border border-transparent ${
             stat.status === 'healthy' ? 'border-t-green-400 border-r-green-400' :
             stat.status === 'online' ? 'border-t-blue-400 border-r-blue-400' :
             stat.status === 'warning' ? 'border-t-red-400 border-r-red-400' :
@@ -182,13 +182,14 @@ const RealTimeDashboardStats = () => {
           } animate-spin`} style={{ animationDuration: '3s' }}></div>
           
           {/* Icon */}
-          <div className={`w-3 h-3 rounded-full flex items-center justify-center ${stat.bgColor}`}>
-            <stat.icon className={`h-1.5 w-1.5 ${stat.color}`} />
+          <div className={`w-4 h-4 rounded-full flex items-center justify-center mb-0.5 ${stat.bgColor}`}>
+            <stat.icon className={`h-2 w-2 ${stat.color}`} />
           </div>
           
           {/* Content */}
-          <div className="text-center absolute -bottom-2 left-1/2 transform -translate-x-1/2">
+          <div className="text-center space-y-0">
             <p className="text-xs font-bold text-white leading-none">{stat.value}</p>
+            <p className="text-xs font-medium text-slate-400 leading-tight truncate max-w-12">{stat.title}</p>
           </div>
         </div>
       ))}
