@@ -24,7 +24,8 @@ import {
   CreditCard,
   AlertTriangle,
   Blocks,
-  Mail
+  Mail,
+  ShoppingBag
 } from "lucide-react";
 
 interface AdminTabNavigationProps {
@@ -164,21 +165,9 @@ const AdminTabNavigation = ({ isAdmin }: AdminTabNavigationProps) => {
       category: "service" 
     },
     { 
-      id: "vendor-management-hub", 
-      label: "Vendors", 
-      icon: Users, 
-      category: "vendor" 
-    },
-    { 
-      id: "vendor-service-management", 
-      label: "Services", 
-      icon: Star, 
-      category: "vendor" 
-    },
-    { 
-      id: "vendor-category-management", 
-      label: "Categories", 
-      icon: FileText, 
+      id: "vendors-hub", 
+      label: "Vendors Hub", 
+      icon: ShoppingBag, 
       category: "vendor" 
     },
     { 

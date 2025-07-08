@@ -148,25 +148,7 @@ export const navigationSections = {
       key: "vendors-hub",
       label: "Vendors Hub",
       icon: ShoppingBag,
-      description: "Comprehensive vendors management platform"
-    },
-    {
-      key: "vendor-management-hub",
-      label: "Vendor Management Hub",
-      icon: ShoppingBag,
-      description: "Complete vendor management dashboard"
-    },
-    {
-      key: "vendor-service-categories",
-      label: "Categories & Services",
-      icon: ListChecks,
-      description: "Manage vendor categories and services"
-    },
-    {
-      key: "vendor-inventory",
-      label: "Inventory Management",
-      icon: Database,
-      description: "Manage vendor product inventory"
+      description: "Comprehensive vendor management platform with all vendor-related functionality including services, categories, KYC, analytics, and control panel"
     }
   ],
 
