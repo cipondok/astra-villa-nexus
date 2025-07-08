@@ -82,17 +82,17 @@ const RealTimeDashboardStats = () => {
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2 mb-4">
         {[...Array(6)].map((_, i) => (
-          <div key={i} className="animate-pulse bg-slate-800/50 border border-slate-700/30 rounded-xl p-3">
-            <div className="flex justify-between items-center mb-2">
-              <div className="h-8 w-8 bg-slate-700/50 rounded-lg"></div>
-              <div className="h-4 w-12 bg-slate-700/50 rounded-full"></div>
+          <div key={i} className="animate-pulse bg-slate-800/50 border border-slate-700/30 rounded-lg p-2">
+            <div className="flex justify-between items-center mb-1">
+              <div className="h-6 w-6 bg-slate-700/50 rounded-md"></div>
+              <div className="h-3 w-10 bg-slate-700/50 rounded-full"></div>
             </div>
-            <div className="space-y-1">
-              <div className="h-3 bg-slate-700/50 rounded w-20"></div>
-              <div className="h-5 bg-slate-700/50 rounded w-12"></div>
+            <div className="space-y-0.5">
               <div className="h-2 bg-slate-700/50 rounded w-16"></div>
+              <div className="h-4 bg-slate-700/50 rounded w-10"></div>
+              <div className="h-2 bg-slate-700/50 rounded w-12"></div>
             </div>
           </div>
         ))}
@@ -158,35 +158,35 @@ const RealTimeDashboardStats = () => {
   ];
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2 mb-4">
       {statCards.map((stat, index) => (
-        <div key={index} className="relative overflow-hidden rounded-xl bg-slate-800/90 border border-slate-700/50 p-3 hover:border-slate-600/50 transition-all duration-200">
+        <div key={index} className="relative overflow-hidden rounded-lg bg-slate-800/90 border border-slate-700/50 p-2 hover:border-slate-600/50 transition-all duration-200">
           {/* Status Badge */}
-          <div className="absolute top-2 right-2">
-            <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+          <div className="absolute top-1 right-1">
+            <span className={`text-xs px-1.5 py-0.5 rounded-full font-medium text-xs ${
               stat.status === 'healthy' 
-                ? 'bg-green-500/20 text-green-400 border border-green-500/30' 
+                ? 'bg-green-500/20 text-green-400' 
                 : stat.status === 'warning' 
-                ? 'bg-red-500/20 text-red-400 border border-red-500/30'
+                ? 'bg-red-500/20 text-red-400'
                 : stat.status === 'online'
-                ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
-                : 'bg-gray-500/20 text-gray-400 border border-gray-500/30'
+                ? 'bg-blue-500/20 text-blue-400'
+                : 'bg-gray-500/20 text-gray-400'
             }`}>
               {stat.status}
             </span>
           </div>
           
           {/* Icon */}
-          <div className={`w-8 h-8 rounded-lg flex items-center justify-center mb-2 ${stat.bgColor}`}>
-            <stat.icon className={`h-4 w-4 ${stat.color}`} />
+          <div className={`w-6 h-6 rounded-md flex items-center justify-center mb-1 ${stat.bgColor}`}>
+            <stat.icon className={`h-3 w-3 ${stat.color}`} />
           </div>
           
           {/* Content */}
-          <div className="space-y-1">
-            <p className="text-xs font-medium text-slate-400 leading-tight">{stat.title}</p>
-            <p className="text-lg font-bold text-white leading-none">{stat.value}</p>
+          <div className="space-y-0.5">
+            <p className="text-xs font-medium text-slate-400 leading-tight truncate">{stat.title}</p>
+            <p className="text-base font-bold text-white leading-none">{stat.value}</p>
             {stat.subtitle && (
-              <p className="text-xs text-slate-500 leading-none">{stat.subtitle}</p>
+              <p className="text-xs text-slate-500 leading-none truncate">{stat.subtitle}</p>
             )}
           </div>
         </div>
