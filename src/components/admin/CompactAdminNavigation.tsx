@@ -205,14 +205,6 @@ const CompactAdminNavigation = ({ activeTab, onTabChange, isAdmin }: CompactAdmi
           </DropdownMenu>
         ))}
       </div>
-
-      {/* Current Section Indicator */}
-      <div className="hidden lg:flex items-center gap-2 text-xs text-muted-foreground ml-auto">
-        <span>Current:</span>
-        <Badge variant="outline" className="text-xs">
-          {getCurrentGroupLabel()}
-        </Badge>
-      </div>
     </div>
   );
 };
