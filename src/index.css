@@ -210,24 +210,48 @@
     @apply bg-card/95 backdrop-blur-lg border border-border/30 rounded-2xl shadow-lg;
   }
 
-  /* Gold Pulse Glow Effect */
-  @keyframes gold-pulse {
+  /* Gold Pulse Glow Effect - Localized */
+  @keyframes gold-pulse-local {
     0%, 100% {
       box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.4);
     }
     50% {
-      box-shadow: 0 0 20px 8px rgba(255, 215, 0, 0.1);
+      box-shadow: 0 0 15px 4px rgba(255, 215, 0, 0.2);
     }
   }
 
   .gold-glow-hover {
     transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .gold-glow-hover::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 215, 0, 0.1) 0%, transparent 50%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .gold-glow-hover:hover::before {
+    opacity: 1;
   }
 
   .gold-glow-hover:hover {
-    box-shadow: 0 0 20px rgba(255, 215, 0, 0.6), 0 0 40px rgba(255, 215, 0, 0.3);
-    animation: gold-pulse 2s infinite;
-    transform: translateY(-2px);
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+    animation: gold-pulse-local 2s infinite;
+  }
+
+  .gold-glow-hover > * {
+    position: relative;
+    z-index: 2;
   }
 
   /* Admin Panel Background - Dark Mode Only */
