@@ -28,7 +28,8 @@ import {
   CheckCircle,
   Database,
   Shield,
-  CreditCard
+  CreditCard,
+  Calendar
 } from "lucide-react";
 
 export interface NavigationSection {
@@ -110,6 +111,12 @@ export const navigationSections = {
       label: "Property Management Hub",
       icon: LayoutDashboard,
       description: "Centralized property management dashboard"
+    },
+    {
+      key: "property-survey-management",
+      label: "Property Survey Booking",
+      icon: Calendar,
+      description: "Manage property viewing and survey appointments"
     }
   ],
 

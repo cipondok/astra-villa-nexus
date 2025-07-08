@@ -34,6 +34,7 @@ import AdminAlertSystem from "./AdminAlertSystem";
 import CustomerServiceControlPanel from "./CustomerServiceControlPanel";
 import DatabaseErrorManager from "./cs-tools/DatabaseErrorManager";
 import Property3DViewSettings from "./Property3DViewSettings";
+import PropertySurveyManagement from "./PropertySurveyManagement";
 
 interface AdminDashboardContentProps {
   activeSection: string;
@@ -109,6 +110,8 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
         return <DatabaseErrorManager />;
       case "property-3d-settings":
         return <Property3DViewSettings />;
+      case "property-survey-management":
+        return <PropertySurveyManagement />;
       default:
         return <AdminOverview />;
     }
