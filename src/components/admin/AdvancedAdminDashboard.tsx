@@ -34,7 +34,7 @@ const AdvancedAdminDashboard = () => {
   const isAdmin = profile?.role === 'admin' || user?.email === 'mycode103@gmail.com';
 
   return (
-    <div className="min-h-screen text-foreground transition-colors duration-300" style={{ backgroundColor: '#424242' }}>
+    <div className="min-h-screen admin-bg text-foreground transition-colors duration-300">
       {/* Add Navigation from Home Page */}
       <EnhancedNavigation 
         language="en" 
@@ -53,7 +53,7 @@ const AdvancedAdminDashboard = () => {
             isAdmin={isAdmin} 
           />
           
-          <div className="bg-card rounded-xl border p-6 shadow-lg">
+          <div className="admin-card gold-glow-hover rounded-xl border p-6 shadow-lg">
             <AdminDashboardContent activeSection={activeTab} onSectionChange={handleTabChange} />
           </div>
         </Tabs>

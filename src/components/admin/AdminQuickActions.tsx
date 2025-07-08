@@ -251,7 +251,7 @@ const AdminQuickActions = ({ onTabChange }: QuickActionProps) => {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-      <Card className="border shadow-sm bg-gradient-to-br from-primary/5 to-accent/5">
+      <Card className="admin-card gold-glow-hover border shadow-sm bg-gradient-to-br from-primary/5 to-accent/5">
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-2 text-foreground">
@@ -273,7 +273,7 @@ const AdminQuickActions = ({ onTabChange }: QuickActionProps) => {
           {quickActions.map((action, index) => (
             <div
               key={index}
-              className="flex items-center justify-between p-3 bg-card border border-border rounded-lg hover:bg-muted/50 transition-colors cursor-pointer"
+              className="flex items-center justify-between p-3 admin-card border border-border rounded-lg hover:bg-muted/50 transition-colors cursor-pointer gold-glow-hover"
               onClick={action.onClick}
             >
               <div className="flex items-center gap-3">
@@ -295,6 +295,7 @@ const AdminQuickActions = ({ onTabChange }: QuickActionProps) => {
                 <Button
                   size="sm"
                   variant="outline"
+                  className="gold-glow-hover"
                   onClick={(e) => {
                     e.stopPropagation();
                     action.onClick();
@@ -308,7 +309,7 @@ const AdminQuickActions = ({ onTabChange }: QuickActionProps) => {
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="admin-card gold-glow-hover">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Clock className="h-5 w-5" />

@@ -151,7 +151,7 @@ const AdminOverview = ({ onSectionChange }: AdminOverviewProps) => {
 
       {/* System Health & Alerts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="border-border/50">
+        <Card className="admin-card gold-glow-hover border-border/50">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-foreground">
               <Shield className="h-5 w-5 text-primary" />
@@ -200,7 +200,7 @@ const AdminOverview = ({ onSectionChange }: AdminOverviewProps) => {
 
             <Button 
               variant="outline" 
-              className="w-full" 
+              className="w-full gold-glow-hover" 
               onClick={() => handleQuickAction('diagnostic')}
             >
               <Wrench className="h-4 w-4 mr-2" />
@@ -209,7 +209,7 @@ const AdminOverview = ({ onSectionChange }: AdminOverviewProps) => {
           </CardContent>
         </Card>
 
-        <Card className="border-border/50">
+        <Card className="admin-card gold-glow-hover border-border/50">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-foreground">
               <AlertTriangle className="h-5 w-5 text-orange-600" />
@@ -260,7 +260,7 @@ const AdminOverview = ({ onSectionChange }: AdminOverviewProps) => {
       </div>
 
       {/* Quick Management Actions */}
-      <Card className="border-border/50">
+      <Card className="admin-card gold-glow-hover border-border/50">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-foreground">
             <Settings className="h-5 w-5 text-primary" />
@@ -272,7 +272,7 @@ const AdminOverview = ({ onSectionChange }: AdminOverviewProps) => {
             {quickManagementActions.map((action, index) => (
               <Card 
                 key={index}
-                className="border-border/30 hover:border-border transition-colors cursor-pointer group"
+                className="admin-card gold-glow-hover border-border/30 hover:border-border transition-colors cursor-pointer group"
                 onClick={() => handleQuickAction(action.action)}
               >
                 <CardContent className="p-4">

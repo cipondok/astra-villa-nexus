@@ -134,17 +134,16 @@ const CompactAdminNavigation = ({ activeTab, onTabChange, isAdmin }: CompactAdmi
   const isTabActive = (tabId: string) => activeTab === tabId;
 
   return (
-    <div className="flex items-center gap-2 p-3 bg-card border-b border-border">
+    <div className="flex items-center gap-2 p-3 admin-card border-b border-border">
       {/* Quick Access Tabs */}
       <div className="flex items-center gap-1 mr-4">
         {quickAccess.map((tab) => (
-          <Button
-            key={tab.id}
-            variant={isTabActive(tab.id) ? "default" : "ghost"}
-            size="sm"
-            onClick={() => onTabChange(tab.id)}
-            className="relative h-8 px-3 text-xs font-medium"
-          >
+                <Button
+                  variant={isTabActive(tab.id) ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => onTabChange(tab.id)}
+                  className="relative h-8 px-3 text-xs font-medium gold-glow-hover"
+                >
             <tab.icon className="h-3 w-3 mr-1" />
             <span className="hidden sm:inline">{tab.label}</span>
             {tab.badge && (
@@ -174,7 +173,7 @@ const CompactAdminNavigation = ({ activeTab, onTabChange, isAdmin }: CompactAdmi
                 <ChevronDown className="h-3 w-3 ml-1" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="w-48 bg-card border shadow-lg z-50">
+            <DropdownMenuContent align="start" className="w-48 admin-card border shadow-lg z-50">
               <DropdownMenuLabel className="text-xs font-semibold text-muted-foreground">
                 {group.label}
               </DropdownMenuLabel>

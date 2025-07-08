@@ -84,7 +84,7 @@ const RealTimeDashboardStats = () => {
     return (
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
         {[...Array(6)].map((_, i) => (
-          <Card key={i} className="animate-pulse bg-card border">
+          <Card key={i} className="animate-pulse admin-card border">
             <CardContent className="p-3">
               <div className="h-3 bg-muted rounded mb-2"></div>
               <div className="h-5 bg-muted rounded mb-1"></div>
@@ -152,7 +152,7 @@ const RealTimeDashboardStats = () => {
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
       {statCards.map((stat, index) => (
-        <Card key={index} className="border shadow-sm hover:shadow-md transition-all duration-200 bg-card">
+        <Card key={index} className="admin-card gold-glow-hover border shadow-sm hover:shadow-md transition-all duration-200">
           <CardContent className="p-3">
             <div className="flex items-center justify-between mb-2">
               <div className={`p-1.5 rounded-md ${stat.bgColor}`}>
