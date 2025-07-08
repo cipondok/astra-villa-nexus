@@ -74,13 +74,13 @@ const AdminTabNavigation = ({ isAdmin }: AdminTabNavigationProps) => {
   const getBadgeColor = (badgeText: string, badgeType?: string) => {
     switch (badgeText) {
       case "New":
-        return "bg-green-500 text-white dark:bg-green-600";
+        return "bg-green-600/10 text-green-600 border-green-600/20";
       case "Updated":
-        return "bg-blue-500 text-white dark:bg-blue-600";
+        return "bg-primary/10 text-primary border-primary/20";
       case "Beta":
-        return "bg-purple-500 text-white dark:bg-purple-600";
+        return "bg-purple-600/10 text-purple-600 border-purple-600/20";
       default:
-        return "bg-orange-500 text-white dark:bg-orange-600";
+        return "bg-orange-600/10 text-orange-600 border-orange-600/20";
     }
   };
   const adminTabs: TabItem[] = [
@@ -311,23 +311,23 @@ const AdminTabNavigation = ({ isAdmin }: AdminTabNavigationProps) => {
 
   return (
     <div className="w-full">
-      <TabsList className="grid w-full grid-cols-4 lg:grid-cols-8 xl:grid-cols-12 gap-1 h-auto p-2 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 rounded-xl shadow-lg border border-gray-200 dark:border-gray-600">
+      <TabsList className="grid w-full grid-cols-4 lg:grid-cols-8 xl:grid-cols-12 gap-1 h-auto p-2 bg-gradient-to-r from-muted/30 to-muted/50 rounded-xl shadow-lg border">
         {tabs.map((tab) => (
           <TabsTrigger
             key={tab.id}
             value={tab.id}
             className="flex flex-col items-center gap-1 p-3 text-xs font-medium rounded-lg transition-all duration-300 
-              text-gray-700 dark:text-gray-300 
-              hover:bg-white dark:hover:bg-gray-600 
-              hover:text-gray-900 dark:hover:text-white 
+              text-muted-foreground 
+              hover:bg-card 
+              hover:text-foreground 
               hover:shadow-md 
-              data-[state=active]:bg-blue-600 dark:data-[state=active]:bg-blue-500 
-              data-[state=active]:text-white dark:data-[state=active]:text-white 
+              data-[state=active]:bg-primary 
+              data-[state=active]:text-primary-foreground 
               data-[state=active]:shadow-lg 
               data-[state=active]:scale-105 
               border border-transparent 
-              hover:border-gray-200 dark:hover:border-gray-500 
-              data-[state=active]:border-blue-500 dark:data-[state=active]:border-blue-400
+              hover:border-border 
+              data-[state=active]:border-primary
               relative"
           >
             <tab.icon className="h-4 w-4" />
