@@ -36,13 +36,34 @@ const AdvancedAdminDashboard = () => {
   // Check if user is admin or super admin
   const isAdmin = profile?.role === 'admin' || user?.email === 'mycode103@gmail.com';
 
-  // Static header counts for display (can be made dynamic later)
-  const headerCounts = {
-    users: 156,
-    properties: 43,
-    alerts: 2,
-    vendors: 28
-  };
+  // Real header counts with basic state
+  const [headerCounts, setHeaderCounts] = React.useState({ 
+    users: 0, properties: 0, alerts: 0, vendors: 0 
+  });
+
+  React.useEffect(() => {
+    const fetchCounts = async () => {
+      try {
+        const [users, properties] = await Promise.all([
+          supabase.from('profiles').select('id', { count: 'exact', head: true }),
+          supabase.from('properties').select('id', { count: 'exact', head: true })
+        ]);
+        
+        setHeaderCounts({
+          users: users.count || 0,
+          properties: properties.count || 0,
+          alerts: 0, // Will be updated when admin_alerts table is available
+          vendors: 0  // Will be updated when vendor table is available
+        });
+      } catch (error) {
+        console.error('Error fetching counts:', error);
+      }
+    };
+
+    fetchCounts();
+    const interval = setInterval(fetchCounts, 30000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="min-h-screen admin-bg text-foreground transition-colors duration-300 flex flex-col">

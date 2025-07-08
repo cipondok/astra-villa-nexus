@@ -134,16 +134,17 @@ const CompactAdminNavigation = ({ activeTab, onTabChange, isAdmin }: CompactAdmi
   const isTabActive = (tabId: string) => activeTab === tabId;
 
   return (
-    <div className="flex items-center gap-2 p-2 admin-card border-b border-border h-12">
+    <div className="flex items-center gap-2 p-2 hud-border border-b border-border h-12 bg-gradient-to-r from-card/50 to-muted/30">
       {/* Quick Access Tabs */}
       <div className="flex items-center gap-1 mr-4">
         {quickAccess.map((tab) => (
-                <Button
-                  variant={isTabActive(tab.id) ? "default" : "ghost"}
-                  size="sm"
-                  onClick={() => onTabChange(tab.id)}
-                  className="relative h-7 px-2 text-xs font-medium gold-glow-hover"
-                >
+          <Button
+            key={tab.id}
+            variant={isTabActive(tab.id) ? "default" : "ghost"}
+            size="sm"
+            onClick={() => onTabChange(tab.id)}
+            className="relative h-7 px-2 text-xs font-medium gold-glow-hover"
+          >
             <tab.icon className="h-3 w-3 mr-1" />
             <span className="hidden sm:inline">{tab.label}</span>
             {tab.badge && (
@@ -166,14 +167,14 @@ const CompactAdminNavigation = ({ activeTab, onTabChange, isAdmin }: CompactAdmi
               <Button
                 variant={group.items.some(item => isTabActive(item.id)) ? "default" : "ghost"}
                 size="sm"
-                className="h-7 px-2 text-xs font-medium"
+                className="h-7 px-2 text-xs font-medium hud-border bg-gradient-to-r from-primary/10 to-accent/10"
               >
                 <group.icon className="h-3 w-3 mr-1" />
                 <span className="hidden md:inline">{group.label}</span>
                 <ChevronDown className="h-3 w-3 ml-1" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="w-48 admin-card border shadow-lg z-50">
+            <DropdownMenuContent align="start" className="w-48 hud-border border shadow-lg z-50 bg-card/95 backdrop-blur-sm">
               <DropdownMenuLabel className="text-xs font-semibold text-muted-foreground">
                 {group.label}
               </DropdownMenuLabel>
