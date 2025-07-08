@@ -34,7 +34,7 @@ const AdvancedAdminDashboard = () => {
   const isAdmin = profile?.role === 'admin' || user?.email === 'mycode103@gmail.com';
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-all duration-300">
+    <div className="min-h-screen bg-background text-foreground transition-colors duration-300">
       {/* Add Navigation from Home Page */}
       <EnhancedNavigation 
         language="en" 
@@ -49,7 +49,7 @@ const AdvancedAdminDashboard = () => {
         <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-6">
           <AdminTabNavigation isAdmin={isAdmin} />
           
-          <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-lg dark:shadow-2xl">
+          <div className="bg-card rounded-xl border p-6 shadow-lg">
             <AdminDashboardContent activeSection={activeTab} onSectionChange={handleTabChange} />
           </div>
         </Tabs>
