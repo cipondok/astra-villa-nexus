@@ -84,13 +84,17 @@ const RealTimeDashboardStats = () => {
     return (
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
         {[...Array(6)].map((_, i) => (
-          <Card key={i} className="animate-pulse admin-card border">
-            <CardContent className="p-3">
-              <div className="h-3 bg-muted rounded mb-2"></div>
-              <div className="h-5 bg-muted rounded mb-1"></div>
-              <div className="h-2 bg-muted rounded"></div>
-            </CardContent>
-          </Card>
+          <div key={i} className="animate-pulse bg-slate-800/50 border border-slate-700/30 rounded-xl p-3">
+            <div className="flex justify-between items-center mb-2">
+              <div className="h-8 w-8 bg-slate-700/50 rounded-lg"></div>
+              <div className="h-4 w-12 bg-slate-700/50 rounded-full"></div>
+            </div>
+            <div className="space-y-1">
+              <div className="h-3 bg-slate-700/50 rounded w-20"></div>
+              <div className="h-5 bg-slate-700/50 rounded w-12"></div>
+              <div className="h-2 bg-slate-700/50 rounded w-16"></div>
+            </div>
+          </div>
         ))}
       </div>
     );
@@ -101,16 +105,17 @@ const RealTimeDashboardStats = () => {
       title: 'Total Users',
       value: stats?.totalUsers || 0,
       icon: Users,
-      color: 'text-primary',
-      bgColor: 'bg-primary/10',
-      status: 'active'
+      color: 'text-blue-400',
+      bgColor: 'bg-blue-500/20',
+      status: 'active',
+      subtitle: 'Registered'
     },
     {
       title: 'Active Users',
       value: stats?.activeUsers || 0,
       icon: Activity,
-      color: 'text-green-600',
-      bgColor: 'bg-green-600/10',
+      color: 'text-green-400',
+      bgColor: 'bg-green-500/20',
       status: 'online',
       subtitle: '24h'
     },
@@ -118,32 +123,35 @@ const RealTimeDashboardStats = () => {
       title: 'Properties',
       value: stats?.totalProperties || 0,
       icon: Building,
-      color: 'text-accent',
-      bgColor: 'bg-accent/10',
-      status: 'active'
+      color: 'text-cyan-400',
+      bgColor: 'bg-cyan-500/20',
+      status: 'active',
+      subtitle: 'Listed'
     },
     {
       title: 'Vendors',
       value: stats?.totalVendors || 0,
       icon: Users,
-      color: 'text-purple-600',
-      bgColor: 'bg-purple-600/10',
-      status: 'active'
+      color: 'text-purple-400',
+      bgColor: 'bg-purple-500/20',
+      status: 'active',
+      subtitle: 'Verified'
     },
     {
       title: 'Orders',
       value: stats?.totalOrders || 0,
       icon: ShoppingCart,
-      color: 'text-orange-600',
-      bgColor: 'bg-orange-600/10',
-      status: 'active'
+      color: 'text-orange-400',
+      bgColor: 'bg-orange-500/20',
+      status: 'active',
+      subtitle: 'Processing'
     },
     {
       title: 'System Health',
       value: stats?.systemErrors === 0 ? 'Healthy' : 'Issues',
       icon: stats?.systemErrors === 0 ? CheckCircle : AlertTriangle,
-      color: stats?.systemErrors === 0 ? 'text-green-600' : 'text-destructive',
-      bgColor: stats?.systemErrors === 0 ? 'bg-green-600/10' : 'bg-destructive/10',
+      color: stats?.systemErrors === 0 ? 'text-green-400' : 'text-red-400',
+      bgColor: stats?.systemErrors === 0 ? 'bg-green-500/20' : 'bg-red-500/20',
       status: stats?.systemErrors === 0 ? 'healthy' : 'warning',
       subtitle: stats?.systemErrors === 0 ? 'All systems operational' : `${stats?.systemErrors} errors`
     }
@@ -152,34 +160,36 @@ const RealTimeDashboardStats = () => {
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
       {statCards.map((stat, index) => (
-        <Card key={index} className="admin-card gold-glow-hover border shadow-sm hover:shadow-md transition-all duration-200">
-          <CardContent className="p-3">
-            <div className="flex items-center justify-between mb-2">
-              <div className={`p-1.5 rounded-md ${stat.bgColor}`}>
-                <stat.icon className={`h-3 w-3 ${stat.color}`} />
-              </div>
-              <Badge 
-                variant={stat.status === 'healthy' ? 'default' : stat.status === 'warning' ? 'destructive' : 'secondary'}
-                className={`text-xs px-1.5 py-0.5 h-5 ${
-                  stat.status === 'healthy' 
-                    ? 'bg-green-600/10 text-green-600 border-green-600/20' 
-                    : stat.status === 'warning' 
-                    ? 'bg-destructive/10 text-destructive border-destructive/20'
-                    : 'bg-muted text-muted-foreground border'
-                }`}
-              >
-                {stat.status}
-              </Badge>
-            </div>
-            <div className="space-y-1">
-              <p className="text-xs font-medium text-muted-foreground leading-tight">{stat.title}</p>
-              <p className="text-lg font-bold text-foreground leading-none">{stat.value}</p>
-              {stat.subtitle && (
-                <p className="text-xs text-muted-foreground leading-none">{stat.subtitle}</p>
-              )}
-            </div>
-          </CardContent>
-        </Card>
+        <div key={index} className="relative overflow-hidden rounded-xl bg-slate-800/90 border border-slate-700/50 p-3 hover:border-slate-600/50 transition-all duration-200">
+          {/* Status Badge */}
+          <div className="absolute top-2 right-2">
+            <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+              stat.status === 'healthy' 
+                ? 'bg-green-500/20 text-green-400 border border-green-500/30' 
+                : stat.status === 'warning' 
+                ? 'bg-red-500/20 text-red-400 border border-red-500/30'
+                : stat.status === 'online'
+                ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
+                : 'bg-gray-500/20 text-gray-400 border border-gray-500/30'
+            }`}>
+              {stat.status}
+            </span>
+          </div>
+          
+          {/* Icon */}
+          <div className={`w-8 h-8 rounded-lg flex items-center justify-center mb-2 ${stat.bgColor}`}>
+            <stat.icon className={`h-4 w-4 ${stat.color}`} />
+          </div>
+          
+          {/* Content */}
+          <div className="space-y-1">
+            <p className="text-xs font-medium text-slate-400 leading-tight">{stat.title}</p>
+            <p className="text-lg font-bold text-white leading-none">{stat.value}</p>
+            {stat.subtitle && (
+              <p className="text-xs text-slate-500 leading-none">{stat.subtitle}</p>
+            )}
+          </div>
+        </div>
       ))}
     </div>
   );
