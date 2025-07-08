@@ -16,7 +16,7 @@ import { Plus, Home, MapPin, Camera, Sparkles, Bot, CheckCircle, AlertCircle, Ey
 import { useNavigate } from "react-router-dom";
 import { formatIDR } from "@/utils/currency";
 import LocationSelector from "./LocationSelector";
-import EnhancedImageUpload from "./EnhancedImageUpload";
+import OptimizedImageUpload from "./OptimizedImageUpload";
 import PropertySpecifications from "./PropertySpecifications";
 import PropertyPreview from "./PropertyPreview";
 import CelebrationPopup from "@/components/CelebrationPopup";
@@ -779,12 +779,14 @@ const PropertyInsertForm = () => {
 
             <TabsContent value="media" className="space-y-6 mt-6">
               <div className="space-y-6">
-                {/* Enhanced Image Upload */}
-                <EnhancedImageUpload
+                {/* Optimized Image Upload */}
+                <OptimizedImageUpload
                   images={formData.images}
                   onImagesChange={(images) => handleInputChange('images', images)}
                   thumbnailIndex={formData.thumbnailIndex}
                   onThumbnailChange={(index) => handleInputChange('thumbnailIndex', index)}
+                  maxFiles={15}
+                  maxSizePerFile={3}
                 />
 
                 {/* 3D Virtual Tour */}

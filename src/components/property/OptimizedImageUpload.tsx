@@ -15,7 +15,8 @@ import {
   CheckCircle, 
   Zap, 
   Settings,
-  Gauge
+  Gauge,
+  Image as ImageIcon
 } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import imageCompression from 'browser-image-compression';
@@ -45,8 +46,8 @@ const OptimizedImageUpload = ({
   onImagesChange, 
   thumbnailIndex, 
   onThumbnailChange,
-  maxFiles = 10,
-  maxSizePerFile = 2 // 2MB default limit
+  maxFiles = 15,
+  maxSizePerFile = 3 // 3MB default limit for properties
 }: OptimizedImageUploadProps) => {
   const [uploadTasks, setUploadTasks] = useState<UploadTask[]>([]);
   const [dragActive, setDragActive] = useState(false);
@@ -55,20 +56,20 @@ const OptimizedImageUpload = ({
   const { user } = useAuth();
   const { toast } = useToast();
 
-  // Advanced image compression options
+  // Advanced image compression options optimized for property images
   const compressionOptions = {
-    maxSizeMB: maxSizePerFile, // Target max size
-    maxWidthOrHeight: 1920, // Max dimension for high quality
-    useWebWorker: true, // Use web worker for better performance
-    fileType: 'image/webp', // Convert to WebP for better compression
-    initialQuality: 0.8, // Start with high quality
+    maxSizeMB: maxSizePerFile,
+    maxWidthOrHeight: 1920, // High quality for property images
+    useWebWorker: true,
+    fileType: 'image/webp', // Better compression
+    initialQuality: 0.85, // Higher quality for property photos
   };
 
   const compressImage = async (file: File): Promise<{ compressed: File; originalSize: number; compressedSize: number }> => {
     try {
       const originalSize = file.size;
       
-      // First pass: Basic compression
+      // First pass: High-quality compression
       let compressed = await imageCompression(file, {
         ...compressionOptions,
         maxSizeMB: maxSizePerFile,
@@ -78,78 +79,32 @@ const OptimizedImageUpload = ({
       if (compressed.size > maxSizePerFile * 1024 * 1024) {
         compressed = await imageCompression(file, {
           ...compressionOptions,
-          maxSizeMB: maxSizePerFile * 0.8, // 80% of target
-          maxWidthOrHeight: 1440, // Reduce dimensions
-          initialQuality: 0.6, // Lower quality
+          maxSizeMB: maxSizePerFile * 0.8,
+          initialQuality: 0.75,
         });
       }
 
-      // Final pass if still too large
-      if (compressed.size > maxSizePerFile * 1024 * 1024) {
-        compressed = await imageCompression(file, {
-          ...compressionOptions,
-          maxSizeMB: maxSizePerFile * 0.6, // 60% of target
-          maxWidthOrHeight: 1080, // Further reduce dimensions
-          initialQuality: 0.4, // Much lower quality but still acceptable
-        });
-      }
-
-      return {
-        compressed,
-        originalSize,
-        compressedSize: compressed.size
-      };
+      const compressedSize = compressed.size;
+      
+      return { compressed, originalSize, compressedSize };
     } catch (error) {
       console.error('Image compression failed:', error);
-      throw new Error('Failed to compress image. Please try a different image.');
+      throw new Error('Failed to compress image');
     }
   };
 
-  const uploadWithChunks = async (file: File, taskId: string): Promise<string> => {
-    const CHUNK_SIZE = 1024 * 1024; // 1MB chunks
-    const fileExt = file.name.split('.').pop() || 'webp';
-    const fileName = `${user?.id}/${Date.now()}_${Math.random().toString(36).substr(2, 9)}.${fileExt}`;
+  const uploadToSupabase = async (file: File, taskId: string): Promise<string> => {
+    if (!user?.id) {
+      throw new Error('User not authenticated');
+    }
 
     try {
-      // For files smaller than 2MB, upload directly
-      if (file.size <= CHUNK_SIZE * 2) {
-        const { data, error } = await supabase.storage
-          .from('property-images')
-          .upload(fileName, file, {
-            cacheControl: '3600',
-            upsert: false
-          });
-
-        if (error) throw error;
-
-        const { data: { publicUrl } } = supabase.storage
-          .from('property-images')
-          .getPublicUrl(fileName);
-
-        return publicUrl;
-      }
-
-      // For larger files, implement chunked upload simulation
-      // Note: Supabase doesn't support true chunked uploads, but we can simulate progress
-      const totalChunks = Math.ceil(file.size / CHUNK_SIZE);
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${user.id}/${Date.now()}_${Math.random().toString(36).substr(2, 9)}.${fileExt}`;
       
-      for (let i = 0; i < totalChunks; i++) {
-        const progress = Math.round(((i + 1) / totalChunks) * 90); // Up to 90%
-        setUploadTasks(prev => prev.map(task => 
-          task.id === taskId ? { ...task, progress } : task
-        ));
-        
-        // Small delay to show progress
-        await new Promise(resolve => setTimeout(resolve, 100));
-      }
-
-      // Final upload
       const { data, error } = await supabase.storage
         .from('property-images')
-        .upload(fileName, file, {
-          cacheControl: '3600',
-          upsert: false
-        });
+        .upload(fileName, file);
 
       if (error) throw error;
 
@@ -159,185 +114,193 @@ const OptimizedImageUpload = ({
 
       return publicUrl;
     } catch (error) {
-      console.error('Chunked upload failed:', error);
+      console.error('Upload to Supabase failed:', error);
       throw error;
     }
   };
 
-  const processUploadTask = async (task: UploadTask) => {
-    if (!user?.id) {
-      throw new Error("User not authenticated");
-    }
+  const processFile = async (file: File): Promise<void> => {
+    const taskId = Math.random().toString(36).substr(2, 9);
+    
+    const newTask: UploadTask = {
+      id: taskId,
+      file,
+      originalSize: file.size,
+      progress: 0,
+      status: 'pending'
+    };
+
+    setUploadTasks(prev => [...prev, newTask]);
 
     try {
-      // Step 1: Compress image
-      setUploadTasks(prev => prev.map(t => 
-        t.id === task.id ? { ...t, status: 'compressing', progress: 10 } : t
+      // Update status to compressing
+      setUploadTasks(prev => prev.map(task => 
+        task.id === taskId ? { ...task, status: 'compressing', progress: 10 } : task
       ));
 
-      const { compressed, originalSize, compressedSize } = await compressImage(task.file);
+      // Compress image
+      const { compressed, compressedSize } = await compressImage(file);
       
-      setUploadTasks(prev => prev.map(t => 
-        t.id === task.id ? { 
-          ...t, 
+      setUploadTasks(prev => prev.map(task => 
+        task.id === taskId ? { 
+          ...task, 
           compressedSize, 
-          progress: 30,
+          progress: 40, 
           status: 'uploading' 
-        } : t
+        } : task
       ));
 
-      // Step 2: Upload with chunks
-      const publicUrl = await uploadWithChunks(compressed, task.id);
+      // Upload to Supabase
+      const url = await uploadToSupabase(compressed, taskId);
+      
+      // Update progress
+      setUploadTasks(prev => prev.map(task => 
+        task.id === taskId ? { 
+          ...task, 
+          progress: 80, 
+          url 
+        } : task
+      ));
 
-      // Step 3: Complete
-      setUploadTasks(prev => prev.map(t => 
-        t.id === task.id ? { 
-          ...t, 
+      // Add to images array
+      onImagesChange([...images, url]);
+
+      // Mark as completed
+      setUploadTasks(prev => prev.map(task => 
+        task.id === taskId ? { 
+          ...task, 
           progress: 100, 
-          status: 'completed',
-          url: publicUrl
-        } : t
+          status: 'completed' 
+        } : task
       ));
 
-      return publicUrl;
-    } catch (error: any) {
-      setUploadTasks(prev => prev.map(t => 
-        t.id === task.id ? { 
-          ...t, 
-          status: 'error',
-          error: error.message 
-        } : t
+      // Show success toast
+      toast({
+        title: "Image Uploaded Successfully",
+        description: `Compressed from ${formatFileSize(file.size)} to ${formatFileSize(compressedSize)} (${Math.round(((file.size - compressedSize) / file.size) * 100)}% reduction)`,
+      });
+
+    } catch (error) {
+      console.error('Processing failed:', error);
+      
+      setUploadTasks(prev => prev.map(task => 
+        task.id === taskId ? { 
+          ...task, 
+          status: 'error', 
+          error: error instanceof Error ? error.message : 'Unknown error'
+        } : task
       ));
-      throw error;
+
+      toast({
+        title: "Upload Failed",
+        description: error instanceof Error ? error.message : 'Failed to process image',
+        variant: "destructive",
+      });
     }
   };
 
-  const handleFileUpload = useCallback(async (files: FileList | File[]) => {
+  const handleFileSelection = useCallback(async (files: FileList | File[]) => {
     if (!files || files.length === 0) return;
     
     const fileArray = Array.from(files);
-    
-    // Validate file count
-    if (images.length + fileArray.length > maxFiles) {
+    const validFiles = fileArray.filter(file => {
+      const isValidType = file.type.startsWith('image/');
+      const isValidSize = file.size <= maxSizePerFile * 1024 * 1024 * 2; // Allow larger initial files for compression
+      
+      if (!isValidType) {
+        toast({
+          title: "Invalid File Type",
+          description: `${file.name} is not a valid image file`,
+          variant: "destructive",
+        });
+        return false;
+      }
+      
+      if (!isValidSize) {
+        toast({
+          title: "File Too Large",
+          description: `${file.name} is too large. Maximum size is ${maxSizePerFile * 2}MB`,
+          variant: "destructive",
+        });
+        return false;
+      }
+      
+      return true;
+    });
+
+    if (images.length + validFiles.length > maxFiles) {
       toast({
         title: "Too Many Files",
-        description: `Maximum ${maxFiles} images allowed. You can upload ${maxFiles - images.length} more.`,
+        description: `Maximum ${maxFiles} images allowed`,
         variant: "destructive",
       });
       return;
     }
 
-    // Validate file types and create tasks
-    const validFiles = fileArray.filter(file => {
-      if (!file.type.startsWith('image/')) {
-        toast({
-          title: "Invalid File Type",
-          description: `${file.name} is not a valid image file.`,
-          variant: "destructive",
-        });
-        return false;
-      }
-      return true;
-    });
-
-    if (validFiles.length === 0) return;
-
     setIsProcessing(true);
     
-    // Create upload tasks
-    const newTasks: UploadTask[] = validFiles.map(file => ({
-      id: `${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-      file,
-      originalSize: file.size,
-      progress: 0,
-      status: 'pending'
-    }));
+    // Process files sequentially to avoid overwhelming the system
+    for (const file of validFiles) {
+      await processFile(file);
+    }
 
-    setUploadTasks(prev => [...prev, ...newTasks]);
-
-    // Process tasks sequentially for better progress tracking
-    const uploadedUrls: string[] = [];
+    setIsProcessing(false);
     
-    for (const task of newTasks) {
-      try {
-        const url = await processUploadTask(task);
-        uploadedUrls.push(url);
-      } catch (error: any) {
-        console.error(`Failed to upload ${task.file.name}:`, error);
-        toast({
-          title: "Upload Failed",
-          description: `Failed to upload ${task.file.name}: ${error.message}`,
-          variant: "destructive",
-        });
-      }
-    }
-
-    if (uploadedUrls.length > 0) {
-      const newImages = [...images, ...uploadedUrls];
-      onImagesChange(newImages);
-      
-      toast({
-        title: "Upload Successful",
-        description: `Successfully uploaded ${uploadedUrls.length} image(s).`,
-      });
-    }
-
-    // Clean up completed tasks after a delay
+    // Clear completed tasks after 3 seconds
     setTimeout(() => {
-      setUploadTasks(prev => prev.filter(task => task.status !== 'completed' && task.status !== 'error'));
-      setIsProcessing(false);
+      setUploadTasks(prev => prev.filter(task => task.status !== 'completed'));
     }, 3000);
-  }, [images, onImagesChange, user?.id, maxFiles, maxSizePerFile, toast]);
+    
+  }, [images.length, maxFiles, maxSizePerFile, toast]);
 
-  const handleDrag = useCallback((e: React.DragEvent) => {
+  const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
-    e.stopPropagation();
-    if (e.type === "dragenter" || e.type === "dragover") {
-      setDragActive(true);
-    } else if (e.type === "dragleave") {
-      setDragActive(false);
-    }
+    setDragActive(true);
+  }, []);
+
+  const handleDragLeave = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    setDragActive(false);
   }, []);
 
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
-    e.stopPropagation();
     setDragActive(false);
     
-    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      handleFileUpload(e.dataTransfer.files);
-    }
-  }, [handleFileUpload]);
+    const files = e.dataTransfer.files;
+    handleFileSelection(files);
+  }, [handleFileSelection]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      handleFileUpload(e.target.files);
+  const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files) {
+      handleFileSelection(files);
     }
-  };
-
-  const handleClickUpload = () => {
-    fileInputRef.current?.click();
+    // Reset input value to allow same file selection
+    e.target.value = '';
   };
 
   const removeImage = (index: number) => {
     const newImages = images.filter((_, i) => i !== index);
     onImagesChange(newImages);
     
-    // Adjust thumbnail index if needed
+    // Adjust thumbnail index if necessary
     if (thumbnailIndex >= newImages.length) {
       onThumbnailChange(Math.max(0, newImages.length - 1));
-    } else if (thumbnailIndex === index) {
-      onThumbnailChange(0);
-    } else if (thumbnailIndex > index) {
+    } else if (index <= thumbnailIndex && thumbnailIndex > 0) {
       onThumbnailChange(thumbnailIndex - 1);
     }
   };
 
-  const setThumbnail = (index: number) => {
+  const setAsThumbnail = (index: number) => {
     onThumbnailChange(index);
+    toast({
+      title: "Thumbnail Updated",
+      description: "Main property photo has been updated",
+    });
   };
 
-  const formatFileSize = (bytes: number) => {
+  const formatFileSize = (bytes: number): string => {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
@@ -345,119 +308,141 @@ const OptimizedImageUpload = ({
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   };
 
-  const getCompressionRatio = (originalSize: number, compressedSize: number) => {
-    return Math.round(((originalSize - compressedSize) / originalSize) * 100);
+  const getTotalCompressionSavings = () => {
+    const completedTasks = uploadTasks.filter(task => task.status === 'completed' && task.compressedSize);
+    if (completedTasks.length === 0) return { saved: 0, percent: 0 };
+    
+    const totalOriginal = completedTasks.reduce((sum, task) => sum + task.originalSize, 0);
+    const totalCompressed = completedTasks.reduce((sum, task) => sum + (task.compressedSize || 0), 0);
+    const saved = totalOriginal - totalCompressed;
+    const percent = Math.round((saved / totalOriginal) * 100);
+    
+    return { saved, percent };
   };
 
+  const compressionStats = getTotalCompressionSavings();
+  const hasActiveTasks = uploadTasks.some(task => ['pending', 'compressing', 'uploading'].includes(task.status));
+
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Camera className="h-5 w-5" />
-          Optimized Property Images
-          <Badge variant="secondary" className="bg-green-100 text-green-800">
-            <Zap className="h-3 w-3 mr-1" />
-            Auto-Compress
-          </Badge>
+    <Card className="w-full">
+      <CardHeader className="pb-4">
+        <CardTitle className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
+            <ImageIcon className="h-5 w-5 text-blue-600" />
+            <span>Property Photos</span>
+          </div>
+          <div className="flex items-center gap-2 ml-auto">
+            <Badge variant="outline" className="text-xs">
+              <Zap className="h-3 w-3 mr-1" />
+              AI Optimized
+            </Badge>
+            {compressionStats.saved > 0 && (
+              <Badge variant="secondary" className="text-xs bg-green-100 text-green-800">
+                <Gauge className="h-3 w-3 mr-1" />
+                {compressionStats.percent}% Compressed
+              </Badge>
+            )}
+          </div>
         </CardTitle>
+        <p className="text-sm text-muted-foreground">
+          Upload high-quality property photos. Images will be automatically optimized for web performance.
+        </p>
       </CardHeader>
+      
       <CardContent className="space-y-6">
         {/* Upload Area */}
         <div
-          className={`relative border-2 border-dashed rounded-lg p-8 text-center transition-colors cursor-pointer ${
-            dragActive 
-              ? 'border-primary bg-primary/5' 
-              : isProcessing
-              ? 'border-blue-300 bg-blue-50'
-              : 'border-border hover:border-border/80 hover:bg-muted/50'
-          }`}
-          onDragEnter={handleDrag}
-          onDragLeave={handleDrag}
-          onDragOver={handleDrag}
+          className={`
+            relative border-2 border-dashed rounded-lg p-8 text-center transition-all duration-200
+            ${dragActive 
+              ? 'border-blue-500 bg-blue-50 shadow-lg' 
+              : 'border-gray-300 hover:border-gray-400 hover:bg-gray-50'
+            }
+            ${hasActiveTasks ? 'pointer-events-none opacity-60' : 'cursor-pointer'}
+          `}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
           onDrop={handleDrop}
-          onClick={!isProcessing ? handleClickUpload : undefined}
+          onClick={() => !hasActiveTasks && fileInputRef.current?.click()}
         >
           <input
             ref={fileInputRef}
             type="file"
             multiple
             accept="image/*"
-            onChange={handleInputChange}
+            onChange={handleFileInputChange}
             className="hidden"
-            disabled={isProcessing}
+            disabled={hasActiveTasks}
           />
           
           <div className="space-y-4">
-            <div className="mx-auto w-16 h-16 bg-muted rounded-full flex items-center justify-center">
-              {isProcessing ? (
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
-              ) : (
-                <Upload className="h-8 w-8 text-muted-foreground" />
-              )}
+            <div className="flex justify-center">
+              <div className="p-4 bg-blue-100 rounded-full">
+                <Camera className="h-8 w-8 text-blue-600" />
+              </div>
             </div>
             
             <div>
-              <p className="text-lg font-medium">
-                {dragActive ? "Drop images here" : isProcessing ? "Processing images..." : "Upload Property Images"}
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                {hasActiveTasks ? 'Processing Images...' : 'Upload Property Photos'}
+              </h3>
+              <p className="text-gray-600 text-sm mb-4">
+                Drag and drop images here, or click to select files
               </p>
-              <p className="text-sm text-muted-foreground mt-1">
-                Supports JPG, PNG, WebP • Auto-compressed to {maxSizePerFile}MB • Up to {maxFiles} images
-              </p>
+              <div className="flex flex-wrap justify-center gap-2 text-xs text-gray-500">
+                <span>• Max {maxFiles} images</span>
+                <span>• Auto compression</span>
+                <span>• WebP optimization</span>
+                <span>• Up to {maxSizePerFile * 2}MB per file</span>
+              </div>
             </div>
             
-            <Button 
-              type="button" 
-              variant="outline" 
-              disabled={isProcessing}
-              onClick={(e) => {
-                e.stopPropagation();
-                handleClickUpload();
-              }}
-            >
-              <Upload className="h-4 w-4 mr-2" />
-              Choose Files
-            </Button>
+            {!hasActiveTasks && (
+              <Button variant="outline" size="sm" className="mt-4">
+                <Upload className="h-4 w-4 mr-2" />
+                Choose Files
+              </Button>
+            )}
           </div>
         </div>
 
         {/* Upload Progress */}
         {uploadTasks.length > 0 && (
           <div className="space-y-3">
-            <h4 className="font-medium flex items-center gap-2">
-              <Settings className="h-4 w-4" />
-              Processing Queue ({uploadTasks.length})
-            </h4>
+            <h4 className="text-sm font-medium text-gray-900">Upload Progress</h4>
             {uploadTasks.map((task) => (
-              <div key={task.id} className="p-3 border rounded-lg space-y-2">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="font-medium truncate">{task.file.name}</span>
+              <div key={task.id} className="bg-gray-50 rounded-lg p-3">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm font-medium truncate max-w-[200px]">
+                    {task.file.name}
+                  </span>
                   <div className="flex items-center gap-2">
-                    {task.status === 'completed' && <CheckCircle className="h-4 w-4 text-green-500" />}
-                    {task.status === 'error' && <AlertTriangle className="h-4 w-4 text-red-500" />}
-                    <Badge variant={
-                      task.status === 'completed' ? 'default' : 
-                      task.status === 'error' ? 'destructive' : 'secondary'
-                    }>
-                      {task.status}
-                    </Badge>
-                  </div>
-                </div>
-                <Progress value={task.progress} className="h-2" />
-                <div className="flex items-center justify-between text-xs text-muted-foreground">
-                  <div className="flex items-center gap-3">
-                    <span>Original: {formatFileSize(task.originalSize)}</span>
-                    {task.compressedSize && (
-                      <span className="text-green-600">
-                        Compressed: {formatFileSize(task.compressedSize)} 
-                        ({getCompressionRatio(task.originalSize, task.compressedSize)}% smaller)
-                      </span>
+                    {task.status === 'completed' && (
+                      <CheckCircle className="h-4 w-4 text-green-600" />
                     )}
+                    {task.status === 'error' && (
+                      <AlertTriangle className="h-4 w-4 text-red-600" />
+                    )}
+                    <span className="text-xs text-gray-600">
+                      {formatFileSize(task.originalSize)}
+                      {task.compressedSize && ` → ${formatFileSize(task.compressedSize)}`}
+                    </span>
                   </div>
-                  <span>{task.progress}%</span>
                 </div>
-                {task.error && (
-                  <p className="text-xs text-red-600">{task.error}</p>
-                )}
+                
+                <Progress value={task.progress} className="h-2 mb-1" />
+                
+                <div className="flex justify-between text-xs text-gray-600">
+                  <span className="capitalize">{task.status.replace('_', ' ')}</span>
+                  {task.compressedSize && task.status === 'completed' && (
+                    <span className="text-green-600">
+                      {Math.round(((task.originalSize - task.compressedSize) / task.originalSize) * 100)}% smaller
+                    </span>
+                  )}
+                  {task.error && (
+                    <span className="text-red-600">{task.error}</span>
+                  )}
+                </div>
               </div>
             ))}
           </div>
@@ -467,64 +452,69 @@ const OptimizedImageUpload = ({
         {images.length > 0 && (
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <h4 className="font-medium flex items-center gap-2">
-                <Gauge className="h-4 w-4" />
-                Optimized Gallery ({images.length}/{maxFiles})
+              <h4 className="text-sm font-medium text-gray-900">
+                Uploaded Images ({images.length}/{maxFiles})
               </h4>
-              <p className="text-sm text-muted-foreground">
-                Click image to set as thumbnail
-              </p>
+              {compressionStats.saved > 0 && (
+                <div className="text-xs text-green-600 bg-green-50 px-2 py-1 rounded">
+                  Saved {formatFileSize(compressionStats.saved)} total
+                </div>
+              )}
             </div>
             
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {images.map((image, index) => (
-                <div
-                  key={index}
-                  className={`relative group aspect-square rounded-lg overflow-hidden border-2 cursor-pointer transition-all ${
-                    thumbnailIndex === index
-                      ? 'border-primary ring-2 ring-primary/20'
-                      : 'border-border hover:border-border/80'
-                  }`}
-                  onClick={() => setThumbnail(index)}
-                >
-                  <img
-                    src={image}
-                    alt={`Property image ${index + 1}`}
-                    className="w-full h-full object-cover"
-                    loading="lazy"
-                  />
-                  
-                  {/* Thumbnail Badge */}
-                  {thumbnailIndex === index && (
-                    <div className="absolute top-2 left-2">
-                      <Badge className="bg-primary text-primary-foreground">
-                        <Star className="h-3 w-3 mr-1" />
-                        Thumbnail
-                      </Badge>
+              {images.map((url, index) => (
+                <div key={index} className="relative group bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                  <div className="aspect-square relative">
+                    <img
+                      src={url}
+                      alt={`Property ${index + 1}`}
+                      className="w-full h-full object-cover"
+                      loading="lazy"
+                    />
+                    
+                    {/* Thumbnail Badge */}
+                    {index === thumbnailIndex && (
+                      <div className="absolute top-2 left-2">
+                        <Badge className="bg-blue-600 text-white text-xs px-2 py-1">
+                          <Star className="h-3 w-3 mr-1" />
+                          Main Photo
+                        </Badge>
+                      </div>
+                    )}
+                    
+                    {/* Action Buttons */}
+                    <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="flex flex-col gap-1">
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          className="h-8 w-8 p-0"
+                          onClick={() => removeImage(index)}
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                        {index !== thumbnailIndex && (
+                          <Button
+                            variant="secondary"
+                            size="sm"
+                            className="h-8 w-8 p-0 bg-blue-600 hover:bg-blue-700 text-white"
+                            onClick={() => setAsThumbnail(index)}
+                          >
+                            <Star className="h-4 w-4" />
+                          </Button>
+                        )}
+                      </div>
                     </div>
-                  )}
-                  
-                  {/* Action Buttons */}
-                  <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <Button
-                      type="button"
-                      size="sm"
-                      variant="destructive"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        removeImage(index);
-                      }}
-                      className="h-8 w-8 p-0"
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
                   </div>
                   
-                  {/* Image Number */}
-                  <div className="absolute bottom-2 left-2">
-                    <Badge variant="secondary" className="text-xs">
-                      {index + 1}
-                    </Badge>
+                  <div className="p-2">
+                    <p className="text-xs text-gray-600 truncate">
+                      Photo {index + 1}
+                      {index === thumbnailIndex && (
+                        <span className="text-blue-600 font-medium"> • Main</span>
+                      )}
+                    </p>
                   </div>
                 </div>
               ))}
@@ -532,20 +522,16 @@ const OptimizedImageUpload = ({
           </div>
         )}
 
-        {/* Optimization Info */}
-        <Alert>
-          <CheckCircle className="h-4 w-4" />
-          <AlertDescription>
-            <strong>✅ Image Upload Issues Resolved:</strong>
-            <ul className="mt-2 text-sm space-y-1">
-              <li>• Auto-compression reduces file sizes by 60-80%</li>
-              <li>• WebP format for optimal quality and size</li>
-              <li>• Chunked upload for large files</li>
-              <li>• Real-time progress tracking</li>
-              <li>• Smart error handling and retry logic</li>
-            </ul>
-          </AlertDescription>
-        </Alert>
+        {/* Tips */}
+        {images.length === 0 && (
+          <Alert>
+            <Settings className="h-4 w-4" />
+            <AlertDescription className="text-sm">
+              <strong>Photography Tips:</strong> Include exterior views, living areas, bedrooms, kitchen, and bathrooms. 
+              First uploaded image becomes the main photo. Good lighting and clean spaces attract more interest.
+            </AlertDescription>
+          </Alert>
+        )}
       </CardContent>
     </Card>
   );
