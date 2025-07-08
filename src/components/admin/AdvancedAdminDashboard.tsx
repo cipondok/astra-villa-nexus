@@ -34,7 +34,7 @@ const AdvancedAdminDashboard = () => {
   const isAdmin = profile?.role === 'admin' || user?.email === 'mycode103@gmail.com';
 
   return (
-    <div className="min-h-screen bg-background text-foreground transition-colors duration-300">
+    <div className="min-h-screen text-foreground transition-colors duration-300" style={{ backgroundColor: '#424242' }}>
       {/* Add Navigation from Home Page */}
       <EnhancedNavigation 
         language="en" 
