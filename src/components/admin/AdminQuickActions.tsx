@@ -251,18 +251,18 @@ const AdminQuickActions = ({ onTabChange }: QuickActionProps) => {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-      <Card className="samsung-gradient border-0 shadow-lg">
+      <Card className="border shadow-sm bg-gradient-to-br from-primary/5 to-accent/5">
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle className="flex items-center gap-2 text-white">
-              <TrendingUp className="h-5 w-5" />
+            <CardTitle className="flex items-center gap-2 text-foreground">
+              <TrendingUp className="h-5 w-5 text-primary" />
               Quick Statistics & Actions
             </CardTitle>
             <Button 
               variant="outline" 
               size="sm"
               onClick={() => navigate('/')}
-              className="flex items-center gap-2 bg-white/20 border-white/30 text-white hover:bg-white/30"
+              className="flex items-center gap-2"
             >
               <Home className="h-4 w-4" />
               Home
@@ -273,27 +273,28 @@ const AdminQuickActions = ({ onTabChange }: QuickActionProps) => {
           {quickActions.map((action, index) => (
             <div
               key={index}
-              className="flex items-center justify-between p-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg hover:bg-white/20 transition-colors cursor-pointer"
+              className="flex items-center justify-between p-3 bg-card border border-border rounded-lg hover:bg-muted/50 transition-colors cursor-pointer"
               onClick={action.onClick}
             >
               <div className="flex items-center gap-3">
-                <action.icon className="h-5 w-5 text-white" />
+                <div className="p-2 rounded-lg bg-primary/10">
+                  <action.icon className="h-5 w-5 text-primary" />
+                </div>
                 <div>
-                  <div className="font-medium text-white">{action.title}</div>
-                  <div className="text-xs text-white/80">{action.description}</div>
+                  <div className="font-medium text-foreground">{action.title}</div>
+                  <div className="text-xs text-muted-foreground">{action.description}</div>
                 </div>
               </div>
               <div className="flex items-center gap-2">
                 <Badge 
-                  variant="outline" 
-                  className="bg-white/20 text-white border-white/30"
+                  variant="secondary"
+                  className="bg-primary/10 text-primary border-primary/20"
                 >
                   {action.count}
                 </Badge>
                 <Button
                   size="sm"
                   variant="outline"
-                  className="bg-white/20 border-white/30 text-white hover:bg-white/30"
                   onClick={(e) => {
                     e.stopPropagation();
                     action.onClick();
