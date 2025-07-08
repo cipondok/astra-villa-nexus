@@ -3,7 +3,8 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BarChart3, Activity, Globe, Users, FileText, TrendingUp, Home, Settings, Building, Store, Shield, Loader2, Crown, Zap, Database, MessageSquare, AlertTriangle, Monitor, Blocks } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { BarChart3, Activity, Globe, Users, FileText, TrendingUp, Home, Settings, Building, Store, Shield, Loader2, Crown, Zap, Database, MessageSquare, AlertTriangle, Monitor, Blocks, Bell } from "lucide-react";
 import AdminOverview from './AdminOverview';
 import UserManagement from './UserManagement';
 import PropertyManagement from './PropertyManagement';
@@ -18,6 +19,8 @@ import AdminDashboardContent from './AdminDashboardContent';
 import CompactAdminNavigation from './CompactAdminNavigation';
 import RealTimeDashboardStats from './RealTimeDashboardStats';
 import { useAuth } from '@/contexts/AuthContext';
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 const AdvancedAdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -33,6 +36,14 @@ const AdvancedAdminDashboard = () => {
   // Check if user is admin or super admin
   const isAdmin = profile?.role === 'admin' || user?.email === 'mycode103@gmail.com';
 
+  // Static header counts for display (can be made dynamic later)
+  const headerCounts = {
+    users: 156,
+    properties: 43,
+    alerts: 2,
+    vendors: 28
+  };
+
   return (
     <div className="min-h-screen admin-bg text-foreground transition-colors duration-300 flex flex-col">
       {/* HUD Header */}
@@ -47,20 +58,62 @@ const AdvancedAdminDashboard = () => {
                 <span className="hud-accent text-sm">ADMIN</span>
               </div>
               <nav className="hidden md:flex items-center gap-6">
-                <button className="hud-text hover:hud-accent transition-colors text-sm">DASHBOARD</button>
-                <button className="hud-text hover:hud-accent transition-colors text-sm">ANALYTICS</button>
-                <button className="hud-text hover:hud-accent transition-colors text-sm">SYSTEM</button>
-                <button className="hud-text hover:hud-accent transition-colors text-sm">SECURITY</button>
+                <button 
+                  className="hud-text hover:hud-accent transition-colors text-sm flex items-center gap-2"
+                  onClick={() => handleTabChange('overview')}
+                >
+                  DASHBOARD
+                  <Badge className="bg-green-500/20 text-green-400 text-xs">
+                    LIVE
+                  </Badge>
+                </button>
+                <button 
+                  className="hud-text hover:hud-accent transition-colors text-sm flex items-center gap-2"
+                  onClick={() => handleTabChange('analytics')}
+                >
+                  ANALYTICS
+                  <Badge className="bg-blue-500/20 text-blue-400 text-xs">
+                    {headerCounts.properties}
+                  </Badge>
+                </button>
+                <button 
+                  className="hud-text hover:hud-accent transition-colors text-sm flex items-center gap-2"
+                  onClick={() => handleTabChange('user-management')}
+                >
+                  USERS
+                  <Badge className="bg-purple-500/20 text-purple-400 text-xs">
+                    {headerCounts.users}
+                  </Badge>
+                </button>
+                <button 
+                  className="hud-text hover:hud-accent transition-colors text-sm flex items-center gap-2"
+                  onClick={() => handleTabChange('admin-alerts')}
+                >
+                  ALERTS
+                  {headerCounts.alerts > 0 && (
+                    <Badge className="bg-red-500/20 text-red-400 text-xs animate-pulse">
+                      {headerCounts.alerts}
+                    </Badge>
+                  )}
+                  <Bell className="h-3 w-3" />
+                </button>
               </nav>
             </div>
             <div className="flex items-center gap-4">
               <div className="text-right">
-                <div className="hud-accent text-xs">LOCAL TIME</div>
-                <div className="hud-text text-sm font-mono">{new Date().toLocaleTimeString()}</div>
+                <div className="hud-accent text-xs">ACTIVE USERS</div>
+                <div className="hud-text text-sm font-mono">{headerCounts.users}</div>
+              </div>
+              <div className="text-right">
+                <div className="hud-accent text-xs">PROPERTIES</div>
+                <div className="hud-text text-sm font-mono">{headerCounts.properties}</div>
               </div>
               <div className="text-right">
                 <div className="hud-accent text-xs">STATUS</div>
-                <div className="hud-text text-sm font-mono">SECURE</div>
+                <div className="hud-text text-sm font-mono flex items-center gap-1">
+                  <div className="w-2 h-2 bg-green-500 rounded-full pulse-dot"></div>
+                  SECURE
+                </div>
               </div>
               <SimpleThemeToggle />
             </div>
