@@ -15,7 +15,7 @@ import SimpleThemeToggle from '@/components/SimpleThemeToggle';
 import APIConfiguration from './APIConfiguration';
 import EnhancedNavigation from '@/components/navigation/EnhancedNavigation';
 import AdminDashboardContent from './AdminDashboardContent';
-import AdminTabNavigation from './AdminTabNavigation';
+import CompactAdminNavigation from './CompactAdminNavigation';
 import RealTimeDashboardStats from './RealTimeDashboardStats';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -47,7 +47,11 @@ const AdvancedAdminDashboard = () => {
         <RealTimeDashboardStats />
         
         <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-6">
-          <AdminTabNavigation isAdmin={isAdmin} />
+          <CompactAdminNavigation 
+            activeTab={activeTab} 
+            onTabChange={handleTabChange} 
+            isAdmin={isAdmin} 
+          />
           
           <div className="bg-card rounded-xl border p-6 shadow-lg">
             <AdminDashboardContent activeSection={activeTab} onSectionChange={handleTabChange} />

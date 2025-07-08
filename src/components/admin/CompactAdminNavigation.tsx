@@ -1,0 +1,220 @@
+import React from "react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { 
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { 
+  Activity, 
+  BarChart3, 
+  Building, 
+  Settings, 
+  Users, 
+  Shield, 
+  FileText, 
+  MessageSquare,
+  Wrench,
+  Database,
+  Globe,
+  Crown,
+  Zap,
+  TrendingUp,
+  Calendar,
+  Star,
+  Headphones,
+  Paintbrush,
+  CreditCard,
+  AlertTriangle,
+  Blocks,
+  Mail,
+  ShoppingBag,
+  Coins,
+  ChevronDown
+} from "lucide-react";
+
+interface CompactAdminNavigationProps {
+  activeTab: string;
+  onTabChange: (tab: string) => void;
+  isAdmin: boolean;
+}
+
+interface TabGroup {
+  id: string;
+  label: string;
+  icon: React.ComponentType<any>;
+  items: TabItem[];
+}
+
+interface TabItem {
+  id: string;
+  label: string;
+  icon: React.ComponentType<any>;
+  badge?: string;
+}
+
+const CompactAdminNavigation = ({ activeTab, onTabChange, isAdmin }: CompactAdminNavigationProps) => {
+  const quickAccess: TabItem[] = [
+    { id: "overview", label: "Overview", icon: Activity },
+    { id: "diagnostic", label: "Diagnostic", icon: Wrench, badge: "New" },
+    { id: "astra-token-hub", label: "ASTRA Hub", icon: Coins },
+  ];
+
+  const tabGroups: TabGroup[] = [
+    {
+      id: "management",
+      label: "Management",
+      icon: Users,
+      items: [
+        { id: "user-management", label: "Users", icon: Users },
+        { id: "property-management-hub", label: "Properties", icon: Building },
+        { id: "vendors-hub", label: "Vendors", icon: ShoppingBag },
+        { id: "tools-management", label: "Tools", icon: Settings },
+      ]
+    },
+    {
+      id: "analytics",
+      label: "Analytics",
+      icon: BarChart3,
+      items: [
+        { id: "analytics", label: "Analytics", icon: BarChart3 },
+        { id: "system-reports", label: "Reports", icon: FileText },
+        { id: "daily-checkin", label: "Check-in", icon: Calendar },
+      ]
+    },
+    {
+      id: "service",
+      label: "Service",
+      icon: Headphones,
+      items: [
+        { id: "customer-service", label: "Support", icon: Headphones },
+        { id: "contact-management", label: "Contacts", icon: MessageSquare },
+        { id: "chat-management", label: "Chats", icon: MessageSquare },
+        { id: "feedback-management", label: "Feedback", icon: MessageSquare },
+      ]
+    },
+    {
+      id: "settings",
+      label: "Settings",
+      icon: Settings,
+      items: [
+        { id: "system-settings", label: "System", icon: Settings },
+        { id: "smtp-settings", label: "SMTP", icon: Mail },
+        { id: "seo-settings", label: "SEO", icon: Globe },
+        { id: "property-3d-settings", label: "3D View", icon: Blocks, badge: "New" },
+        { id: "website-design", label: "Design", icon: Paintbrush, badge: "New" },
+      ]
+    },
+    {
+      id: "technical",
+      label: "Technical",
+      icon: Database,
+      items: [
+        { id: "database-management", label: "Database", icon: Database },
+        { id: "database-errors", label: "DB Errors", icon: AlertTriangle },
+        { id: "security-monitoring", label: "Security", icon: Shield },
+        { id: "indonesian-payment-config", label: "ID Payment", icon: CreditCard },
+      ]
+    }
+  ];
+
+  const getCurrentGroupLabel = () => {
+    for (const group of tabGroups) {
+      if (group.items.some(item => item.id === activeTab)) {
+        return group.label;
+      }
+    }
+    return "Management";
+  };
+
+  const isTabActive = (tabId: string) => activeTab === tabId;
+
+  return (
+    <div className="flex items-center gap-2 p-3 bg-card border-b border-border">
+      {/* Quick Access Tabs */}
+      <div className="flex items-center gap-1 mr-4">
+        {quickAccess.map((tab) => (
+          <Button
+            key={tab.id}
+            variant={isTabActive(tab.id) ? "default" : "ghost"}
+            size="sm"
+            onClick={() => onTabChange(tab.id)}
+            className="relative h-8 px-3 text-xs font-medium"
+          >
+            <tab.icon className="h-3 w-3 mr-1" />
+            <span className="hidden sm:inline">{tab.label}</span>
+            {tab.badge && (
+              <Badge 
+                variant="secondary"
+                className="absolute -top-1 -right-1 text-xs px-1 py-0 h-4 min-w-4 bg-green-600/10 text-green-600 border-green-600/20"
+              >
+                {tab.badge}
+              </Badge>
+            )}
+          </Button>
+        ))}
+      </div>
+
+      {/* Grouped Dropdowns */}
+      <div className="flex items-center gap-1 flex-1">
+        {tabGroups.map((group) => (
+          <DropdownMenu key={group.id}>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant={group.items.some(item => isTabActive(item.id)) ? "default" : "ghost"}
+                size="sm"
+                className="h-8 px-3 text-xs font-medium"
+              >
+                <group.icon className="h-3 w-3 mr-1" />
+                <span className="hidden md:inline">{group.label}</span>
+                <ChevronDown className="h-3 w-3 ml-1" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="w-48 bg-card border shadow-lg z-50">
+              <DropdownMenuLabel className="text-xs font-semibold text-muted-foreground">
+                {group.label}
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              {group.items.map((item) => (
+                <DropdownMenuItem
+                  key={item.id}
+                  onClick={() => onTabChange(item.id)}
+                  className={`flex items-center gap-2 px-3 py-2 text-xs cursor-pointer transition-colors ${
+                    isTabActive(item.id) 
+                      ? 'bg-primary/10 text-primary font-medium' 
+                      : 'text-foreground hover:bg-muted'
+                  }`}
+                >
+                  <item.icon className="h-3 w-3" />
+                  <span className="flex-1">{item.label}</span>
+                  {item.badge && (
+                    <Badge 
+                      variant="secondary"
+                      className="text-xs px-1 py-0 h-4 bg-green-600/10 text-green-600 border-green-600/20"
+                    >
+                      {item.badge}
+                    </Badge>
+                  )}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ))}
+      </div>
+
+      {/* Current Section Indicator */}
+      <div className="hidden lg:flex items-center gap-2 text-xs text-muted-foreground ml-auto">
+        <span>Current:</span>
+        <Badge variant="outline" className="text-xs">
+          {getCurrentGroupLabel()}
+        </Badge>
+      </div>
+    </div>
+  );
+};
+
+export default CompactAdminNavigation;
