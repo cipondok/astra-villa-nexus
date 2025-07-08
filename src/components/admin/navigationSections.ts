@@ -29,7 +29,8 @@ import {
   Database,
   Shield,
   CreditCard,
-  Calendar
+  Calendar,
+  Mail
 } from "lucide-react";
 
 export interface NavigationSection {
@@ -217,6 +218,12 @@ export const navigationSections = {
       label: "System Settings",
       icon: Settings,
       description: "Configure global system settings"
+    },
+    {
+      key: "smtp-settings",
+      label: "SMTP Settings",
+      icon: Mail,
+      description: "Configure SMTP email server settings"
     },
     {
       key: "indonesian-payment-config",

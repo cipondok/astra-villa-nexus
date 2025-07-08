@@ -35,6 +35,7 @@ import CustomerServiceControlPanel from "./CustomerServiceControlPanel";
 import DatabaseErrorManager from "./cs-tools/DatabaseErrorManager";
 import Property3DViewSettings from "./Property3DViewSettings";
 import PropertySurveyManagement from "./PropertySurveyManagement";
+import SMTPSettings from "./SMTPSettings";
 
 interface AdminDashboardContentProps {
   activeSection: string;
@@ -54,6 +55,8 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
         return <PropertyManagementAdvanced />;
       case "system-settings":
         return <SystemSettings />;
+      case "smtp-settings":
+        return <SMTPSettings />;
       case "indonesian-payment-config":
         return <IndonesianPaymentMerchantConfig />;
       case "analytics":
