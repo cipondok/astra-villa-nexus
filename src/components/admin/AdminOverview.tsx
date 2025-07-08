@@ -136,175 +136,154 @@ const AdminOverview = ({ onSectionChange }: AdminOverviewProps) => {
   ];
 
   return (
-    <div className="space-y-6">
-      {/* Quick Actions Component */}
-      <AdminQuickActions onTabChange={handleQuickAction} />
-      
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold text-foreground">Administrative Overview</h2>
-          <p className="text-muted-foreground">
-            Executive dashboard with system insights and critical alerts
-          </p>
+    <div className="space-y-6 hud-grid min-h-screen p-4">
+      {/* HUD Header */}
+      <div className="hud-border p-6 relative overflow-hidden">
+        <div className="data-stream"></div>
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-4">
+            <div className="w-3 h-3 bg-green-500 rounded-full pulse-dot"></div>
+            <h1 className="text-3xl font-bold hud-text">ADMIN CONTROL INTERFACE</h1>
+          </div>
+          <div className="text-right">
+            <div className="hud-accent text-sm">SYSTEM STATUS</div>
+            <div className="hud-text text-lg font-mono">ONLINE</div>
+          </div>
+        </div>
+        <div className="grid grid-cols-4 gap-4 text-center">
+          <div className="hud-border p-3">
+            <div className="hud-accent text-xs">UPTIME</div>
+            <div className="hud-text font-mono text-lg">99.9%</div>
+          </div>
+          <div className="hud-border p-3">
+            <div className="hud-accent text-xs">PROCESSES</div>
+            <div className="hud-text font-mono text-lg">{systemHealth?.activeUsers || 0}</div>
+          </div>
+          <div className="hud-border p-3">
+            <div className="hud-accent text-xs">MEMORY</div>
+            <div className="hud-text font-mono text-lg">2.1GB</div>
+          </div>
+          <div className="hud-border p-3">
+            <div className="hud-accent text-xs">LOAD</div>
+            <div className="hud-text font-mono text-lg">0.42</div>
+          </div>
         </div>
       </div>
 
-      {/* System Health & Alerts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="admin-card gold-glow-hover border-border/50">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-foreground">
-              <Shield className="h-5 w-5 text-primary" />
-              System Health Status
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-center justify-between p-3 rounded-lg bg-muted/30">
-              <div className="flex items-center gap-3">
-                {systemHealth?.systemStatus === 'healthy' ? (
-                  <CheckCircle className="h-5 w-5 text-green-600" />
-                ) : (
-                  <AlertTriangle className="h-5 w-5 text-destructive" />
-                )}
-                <div>
-                  <p className="font-medium text-foreground">Database Status</p>
-                  <p className="text-xs text-muted-foreground">
-                    {systemHealth?.dbErrors === 0 ? 'All systems operational' : `${systemHealth?.dbErrors} errors detected`}
-                  </p>
-                </div>
-              </div>
-              <Badge variant={systemHealth?.systemStatus === 'healthy' ? 'default' : 'destructive'}>
-                {systemHealth?.systemStatus === 'healthy' ? 'Healthy' : 'Issues'}
-              </Badge>
+      {/* System Analytics Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* System Health Matrix */}
+        <div className="lg:col-span-2">
+          <div className="hud-border p-6 hud-glow">
+            <div className="flex items-center gap-3 mb-4">
+              <Activity className="h-6 w-6 hud-text" />
+              <h3 className="text-xl font-bold hud-text">SYSTEM MATRIX</h3>
             </div>
-
-            <div className="grid grid-cols-2 gap-3">
-              <div className="p-3 rounded-lg bg-primary/5 border">
-                <div className="flex items-center gap-2 mb-1">
-                  <Activity className="h-4 w-4 text-primary" />
-                  <p className="text-sm font-medium text-foreground">Active Users</p>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="hud-border p-4 bg-gradient-to-br from-green-900/20 to-green-700/20">
+                <div className="flex items-center justify-between mb-2">
+                  <CheckCircle className="h-5 w-5 text-green-400" />
+                  <span className="text-xs hud-accent">OPERATIONAL</span>
                 </div>
-                <p className="text-xl font-bold text-primary">{systemHealth?.activeUsers || 0}</p>
-                <p className="text-xs text-muted-foreground">Last 24 hours</p>
+                <div className="text-2xl font-bold text-green-400">{systemHealth?.activeUsers || 0}</div>
+                <div className="text-xs text-green-300">Active Users</div>
               </div>
-
-              <div className="p-3 rounded-lg bg-orange-500/5 border">
-                <div className="flex items-center gap-2 mb-1">
-                  <Clock className="h-4 w-4 text-orange-600" />
-                  <p className="text-sm font-medium text-foreground">Pending Reviews</p>
+              <div className="hud-border p-4 bg-gradient-to-br from-blue-900/20 to-blue-700/20">
+                <div className="flex items-center justify-between mb-2">
+                  <Database className="h-5 w-5 text-blue-400" />
+                  <span className="text-xs hud-accent">STABLE</span>
                 </div>
-                <p className="text-xl font-bold text-orange-600">{systemHealth?.pendingVendors || 0}</p>
-                <p className="text-xs text-muted-foreground">Vendor applications</p>
+                <div className="text-2xl font-bold text-blue-400">{systemHealth?.dbErrors === 0 ? 'OK' : 'ERR'}</div>
+                <div className="text-xs text-blue-300">Database Status</div>
+              </div>
+              <div className="hud-border p-4 bg-gradient-to-br from-orange-900/20 to-orange-700/20">
+                <div className="flex items-center justify-between mb-2">
+                  <Clock className="h-5 w-5 text-orange-400" />
+                  <span className="text-xs hud-accent">PENDING</span>
+                </div>
+                <div className="text-2xl font-bold text-orange-400">{systemHealth?.pendingVendors || 0}</div>
+                <div className="text-xs text-orange-300">Vendor Reviews</div>
+              </div>
+              <div className="hud-border p-4 bg-gradient-to-br from-purple-900/20 to-purple-700/20">
+                <div className="flex items-center justify-between mb-2">
+                  <TrendingUp className="h-5 w-5 text-purple-400" />
+                  <span className="text-xs hud-accent">ANALYTICS</span>
+                </div>
+                <div className="text-2xl font-bold text-purple-400">2.4K</div>
+                <div className="text-xs text-purple-300">Daily Events</div>
               </div>
             </div>
+          </div>
+        </div>
 
-            <Button 
-              variant="outline" 
-              className="w-full gold-glow-hover" 
-              onClick={() => handleQuickAction('diagnostic')}
-            >
-              <Wrench className="h-4 w-4 mr-2" />
-              Run System Diagnostics
-            </Button>
-          </CardContent>
-        </Card>
-
-        <Card className="admin-card gold-glow-hover border-border/50">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-foreground">
-              <AlertTriangle className="h-5 w-5 text-orange-600" />
-              Recent Alerts
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
+        {/* Alert Stream */}
+        <div className="hud-border p-6">
+          <div className="flex items-center gap-3 mb-4">
+            <AlertTriangle className="h-6 w-6 hud-accent" />
+            <h3 className="text-xl font-bold hud-text">ALERT STREAM</h3>
+          </div>
+          <div className="space-y-3 max-h-64 overflow-y-auto">
             {recentAlerts && recentAlerts.length > 0 ? (
-              recentAlerts.slice(0, 4).map((alert) => (
-                <div key={alert.id} className="flex items-start gap-3 p-3 rounded-lg bg-muted/30">
-                  <div className={`p-1 rounded-full ${
-                    alert.priority === 'high' ? 'bg-destructive/20' :
-                    alert.priority === 'medium' ? 'bg-orange-500/20' :
-                    'bg-primary/20'
-                  }`}>
-                    {alert.priority === 'high' ? (
-                      <AlertTriangle className="h-3 w-3 text-destructive" />
-                    ) : (
-                      <AlertTriangle className="h-3 w-3 text-orange-600" />
-                    )}
+              recentAlerts.slice(0, 4).map((alert, index) => (
+                <div key={alert.id} className="hud-border p-3 bg-gradient-to-r from-red-900/20 to-transparent">
+                  <div className="flex items-center gap-2 mb-1">
+                    <div className="w-2 h-2 bg-red-500 rounded-full pulse-dot"></div>
+                    <span className="text-sm hud-text font-mono">{alert.title}</span>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-foreground truncate">{alert.title}</p>
-                    <p className="text-xs text-muted-foreground line-clamp-2">{alert.message}</p>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      {new Date(alert.created_at).toLocaleDateString()}
-                    </p>
+                  <div className="text-xs text-red-300 ml-4">{alert.message}</div>
+                  <div className="text-xs hud-accent mt-1 ml-4">
+                    {new Date(alert.created_at).toLocaleTimeString()}
                   </div>
                 </div>
               ))
             ) : (
-              <div className="text-center py-4 text-muted-foreground">
-                <CheckCircle className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                <p className="text-sm">No recent alerts</p>
+              <div className="text-center py-8 text-green-400">
+                <CheckCircle className="h-12 w-12 mx-auto mb-2 opacity-50" />
+                <p className="text-sm">ALL SYSTEMS NOMINAL</p>
               </div>
             )}
-            
-            <Button 
-              variant="outline" 
-              className="w-full mt-4" 
-              onClick={() => handleQuickAction('admin-alerts')}
-            >
-              <Eye className="h-4 w-4 mr-2" />
-              View All Alerts
-            </Button>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
 
-      {/* Quick Management Actions */}
-      <Card className="admin-card gold-glow-hover border-border/50">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-foreground">
-            <Settings className="h-5 w-5 text-primary" />
-            Quick Management Actions
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {quickManagementActions.map((action, index) => (
-              <Card 
-                key={index}
-                className="admin-card gold-glow-hover border-border/30 hover:border-border transition-colors cursor-pointer group"
-                onClick={() => handleQuickAction(action.action)}
-              >
-                <CardContent className="p-4">
-                  <div className="flex items-start gap-3">
-                    <div className={`p-2 rounded-lg ${action.color} group-hover:scale-110 transition-transform`}>
-                      <action.icon className="h-5 w-5" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium text-foreground group-hover:text-primary transition-colors">
-                        {action.title}
-                      </p>
-                      <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
-                        {action.description}
-                      </p>
-                      <Badge 
-                        variant="outline" 
-                        className={`mt-2 text-xs ${
-                          action.priority === 'critical' ? 'border-destructive text-destructive' :
-                          action.priority === 'high' ? 'border-orange-600 text-orange-600' :
-                          'border-primary text-primary'
-                        }`}
-                      >
-                        {action.priority}
-                      </Badge>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+      {/* Quick Actions Command Panel */}
+      <div className="hud-border p-6">
+        <div className="flex items-center gap-3 mb-6">
+          <Settings className="h-6 w-6 hud-text" />
+          <h3 className="text-xl font-bold hud-text">COMMAND INTERFACE</h3>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {quickManagementActions.map((action, index) => (
+            <div 
+              key={index}
+              className="hud-border p-4 cursor-pointer hover:hud-glow transition-all duration-300 group"
+              onClick={() => handleQuickAction(action.action)}
+            >
+              <div className="flex items-center gap-3 mb-3">
+                <div className="p-2 rounded-lg bg-gradient-to-br from-cyan-900/40 to-blue-900/40">
+                  <action.icon className="h-5 w-5 hud-text" />
+                </div>
+                <div className="flex-1">
+                  <p className="font-medium hud-text group-hover:hud-accent transition-colors">
+                    {action.title}
+                  </p>
+                </div>
+              </div>
+              <p className="text-xs text-gray-400 mb-2">{action.description}</p>
+              <div className="flex items-center justify-between">
+                <span className={`text-xs px-2 py-1 rounded ${
+                  action.priority === 'critical' ? 'bg-red-900/40 text-red-300' :
+                  action.priority === 'high' ? 'bg-orange-900/40 text-orange-300' :
+                  'bg-blue-900/40 text-blue-300'
+                }`}>
+                  {action.priority}
+                </span>
+                <div className="w-2 h-2 bg-green-500 rounded-full pulse-dot"></div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 };
