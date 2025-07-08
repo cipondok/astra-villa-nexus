@@ -220,33 +220,36 @@ const DiagnosticDashboard = () => {
   ];
 
   return (
-    <div className="space-y-6 bg-gray-50 dark:bg-gray-900 min-h-screen p-6 rounded-lg">
+    <div className="space-y-4 sm:space-y-6 bg-gray-50 dark:bg-gray-900 min-h-screen p-3 sm:p-6 rounded-lg">
       {/* Header */}
-      <div className="flex items-center justify-between p-6 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-700 rounded-xl border border-gray-200 dark:border-gray-600">
-        <div>
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white">System Diagnostics</h2>
-          <p className="text-gray-600 dark:text-gray-300 mt-2">Monitor system health and performance metrics</p>
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 sm:p-6 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-700 rounded-xl border border-gray-200 dark:border-gray-600">
+        <div className="flex-1">
+          <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white">System Diagnostics</h2>
+          <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 mt-1 sm:mt-2">Monitor system health and performance metrics</p>
           {lastRun && (
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+            <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1">
               Last diagnostic run: {new Date(lastRun).toLocaleString()}
             </p>
           )}
         </div>
-        <div className="flex gap-3">
+        <div className="flex gap-2 sm:gap-3 w-full sm:w-auto">
           <Button 
             onClick={refreshDiagnostics} 
             disabled={isRefreshing || isRunning}
-            className="bg-blue-600 hover:bg-blue-700 text-white"
+            className="bg-blue-600 hover:bg-blue-700 text-white flex-1 sm:flex-none touch-manipulation"
+            size="sm"
           >
             {(isRefreshing || isRunning) ? (
               <>
-                <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
-                {isRunning ? 'Running Tests...' : 'Refreshing...'}
+                <RefreshCw className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2 animate-spin" />
+                <span className="hidden sm:inline">{isRunning ? 'Running Tests...' : 'Refreshing...'}</span>
+                <span className="sm:hidden">{isRunning ? 'Running...' : 'Refresh'}</span>
               </>
             ) : (
               <>
-                <PlayCircle className="h-4 w-4 mr-2" />
-                Run Full Diagnostics
+                <PlayCircle className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                <span className="hidden sm:inline">Run Full Diagnostics</span>
+                <span className="sm:hidden">Run Tests</span>
               </>
             )}
           </Button>
@@ -254,23 +257,23 @@ const DiagnosticDashboard = () => {
       </div>
 
       {/* System Status Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {diagnosticItems.map((item, index) => (
-          <Card key={index} className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-gray-900 dark:text-gray-100">
+          <Card key={index} className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 touch-manipulation">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-3 sm:p-4">
+              <CardTitle className="text-xs sm:text-sm font-medium text-gray-900 dark:text-gray-100 truncate pr-2">
                 {item.title}
               </CardTitle>
               {item.loading ? (
-                <RefreshCw className="h-4 w-4 animate-spin text-gray-600 dark:text-gray-400" />
+                <RefreshCw className="h-3 w-3 sm:h-4 sm:w-4 animate-spin text-gray-600 dark:text-gray-400 flex-shrink-0" />
               ) : (
-                <item.icon className={`h-4 w-4 ${getStatusColor(item.status)}`} />
+                <item.icon className={`h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0 ${getStatusColor(item.status)}`} />
               )}
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-3 sm:p-4 pt-0">
               <div className="flex items-center space-x-2">
                 {getStatusIcon(item.status)}
-                <span className={`text-sm ${getStatusColor(item.status)}`}>
+                <span className={`text-xs sm:text-sm ${getStatusColor(item.status)} truncate`}>
                   {item.message}
                 </span>
               </div>
@@ -281,74 +284,73 @@ const DiagnosticDashboard = () => {
 
       {/* Dynamic Diagnostics Results */}
       {diagnostics.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="space-y-3 sm:space-y-4">
           {diagnostics.map((diagnostic) => {
             const IconComponent = getCategoryIcon(diagnostic.category);
             return (
-              <Card key={diagnostic.id} className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-                <CardHeader className="pb-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <IconComponent className={`h-5 w-5 ${getStatusColor(diagnostic.status)}`} />
-                      <CardTitle className="text-lg text-gray-900 dark:text-gray-100">
-                        {diagnostic.name}
-                      </CardTitle>
+              <Card key={diagnostic.id} className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 touch-manipulation">
+                <CardHeader className="p-3 sm:p-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div className="flex items-center space-x-2 min-w-0">
+                      <IconComponent className={`h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0 ${getStatusColor(diagnostic.status)}`} />
+                      <div className="min-w-0 flex-1">
+                        <h3 className="font-semibold text-sm sm:text-base text-gray-900 dark:text-gray-100 truncate">
+                          {diagnostic.name}
+                        </h3>
+                        <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 truncate">
+                          {diagnostic.category} • {diagnostic.description}
+                        </p>
+                      </div>
                     </div>
-                    <Badge 
-                      variant="outline" 
-                      className={`${
-                        diagnostic.status === 'completed' 
-                          ? 'bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 border-green-200 dark:border-green-600'
-                          : diagnostic.status === 'in_progress'
-                          ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-600'
-                          : diagnostic.status === 'error'
-                          ? 'bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-300 border-red-200 dark:border-red-600'
-                          : 'bg-yellow-50 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300 border-yellow-200 dark:border-yellow-600'
-                      }`}
-                    >
-                      {diagnostic.status.replace('_', ' ').toUpperCase()}
-                    </Badge>
+                    <div className="flex items-center gap-2 flex-shrink-0">
+                      <Badge 
+                        variant={
+                          diagnostic.status === 'completed' 
+                            ? 'default' 
+                            : diagnostic.status === 'in_progress'
+                            ? 'secondary'
+                            : diagnostic.status === 'error'
+                            ? 'destructive'
+                            : 'outline'
+                        }
+                        className="text-xs"
+                      >
+                        {diagnostic.status.replace('_', ' ').toUpperCase()}
+                      </Badge>
+                    </div>
                   </div>
-                  <CardDescription className="text-gray-600 dark:text-gray-400">
-                    {diagnostic.category} • {diagnostic.description}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Progress</span>
-                      <span className="text-sm text-gray-600 dark:text-gray-400">{diagnostic.progress}%</span>
+                  <div className="mt-2 sm:mt-3 space-y-2">
+                    <div className="flex items-center justify-between text-xs sm:text-sm">
+                      <span className="text-gray-600 dark:text-gray-400">Progress</span>
+                      <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">{diagnostic.progress}%</span>
                     </div>
                     <Progress 
                       value={diagnostic.progress} 
-                      className="w-full bg-gray-200 dark:bg-gray-700"
+                      className="h-2"
                     />
                   </div>
-                  
                   {diagnostic.nextStep && (
-                    <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-600/30">
-                      <p className="text-sm font-medium text-blue-800 dark:text-blue-300 mb-1">Next Step:</p>
-                      <p className="text-sm text-blue-700 dark:text-blue-400">{diagnostic.nextStep}</p>
+                    <div className="mt-2 p-2 sm:p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                      <h4 className="text-xs sm:text-sm font-medium text-blue-900 dark:text-blue-300 mb-1">Next Step</h4>
+                      <p className="text-xs sm:text-sm text-blue-700 dark:text-blue-400">{diagnostic.nextStep}</p>
                     </div>
                   )}
-                  
                   {diagnostic.dependencies && diagnostic.dependencies.length > 0 && (
-                    <div>
-                      <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Dependencies:</p>
+                    <div className="mt-2">
+                      <h4 className="text-xs sm:text-sm font-medium text-gray-900 dark:text-gray-100 mb-1">Dependencies</h4>
                       <div className="flex flex-wrap gap-1">
                         {diagnostic.dependencies.map((dep, idx) => (
                           <Badge key={idx} variant="outline" className="text-xs">
-                            {dep.replace('_', ' ')}
+                            {dep}
                           </Badge>
                         ))}
                       </div>
                     </div>
                   )}
-                  
-                  <div className="text-xs text-gray-500 dark:text-gray-400">
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
                     Last updated: {new Date(diagnostic.lastUpdated).toLocaleString()}
-                  </div>
-                </CardContent>
+                  </p>
+                </CardHeader>
               </Card>
             );
           })}

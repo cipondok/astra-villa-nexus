@@ -486,14 +486,14 @@ const ProjectDiagnosticSystem = () => {
   const pendingModules = projectModules?.filter(m => m.status === 'pending').length || 0;
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-3xl font-bold">Project Diagnostic System</h2>
-          <p className="text-muted-foreground">Comprehensive project health monitoring and progress tracking</p>
+    <div className="space-y-4 sm:space-y-6 p-3 sm:p-0">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="flex-1">
+          <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold">Project Diagnostic System</h2>
+          <p className="text-sm sm:text-base text-muted-foreground mt-1">Comprehensive project health monitoring and progress tracking</p>
         </div>
-        <div className="flex items-center gap-2">
-          <Badge variant="secondary" className="animate-pulse">
+        <div className="flex items-center gap-2 w-full sm:w-auto">
+          <Badge variant="secondary" className="animate-pulse text-xs">
             Live Monitoring
           </Badge>
           <Button 
@@ -501,23 +501,26 @@ const ProjectDiagnosticSystem = () => {
             size="sm" 
             onClick={handleManualRefresh}
             disabled={isRefreshing}
+            className="touch-manipulation flex-1 sm:flex-none"
           >
-            <RefreshCw className={`h-4 w-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
-            Refresh
+            <RefreshCw className={`h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
+            <span className="text-xs sm:text-sm">Refresh</span>
           </Button>
         </div>
       </div>
 
-      <Tabs defaultValue="overview" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-6">
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="progress">Module Progress</TabsTrigger>
-          <TabsTrigger value="uncompleted">Uncompleted</TabsTrigger>
-          <TabsTrigger value="errors">Error Reports</TabsTrigger>
-          <TabsTrigger value="updates">Updates Needed</TabsTrigger>
-          <TabsTrigger value="tips">UX Tips</TabsTrigger>
-        </TabsList>
-
+      <Tabs defaultValue="overview" className="space-y-4 sm:space-y-6">
+        <div className="overflow-x-auto">
+          <TabsList className="grid w-full grid-cols-3 sm:grid-cols-6 min-w-max sm:min-w-0">
+            <TabsTrigger value="overview" className="text-xs sm:text-sm px-2 sm:px-3">Overview</TabsTrigger>
+            <TabsTrigger value="progress" className="text-xs sm:text-sm px-2 sm:px-3">Progress</TabsTrigger>
+            <TabsTrigger value="uncompleted" className="text-xs sm:text-sm px-2 sm:px-3">Uncompleted</TabsTrigger>
+            <TabsTrigger value="errors" className="text-xs sm:text-sm px-2 sm:px-3">Errors</TabsTrigger>
+            <TabsTrigger value="updates" className="text-xs sm:text-sm px-2 sm:px-3">Updates</TabsTrigger>
+            <TabsTrigger value="tips" className="text-xs sm:text-sm px-2 sm:px-3">UX Tips</TabsTrigger>
+          </TabsList>
+        </div>
+        
         <TabsContent value="overview" className="space-y-6">
           {/* Overall Progress */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
