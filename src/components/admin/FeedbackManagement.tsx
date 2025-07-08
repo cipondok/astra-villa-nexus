@@ -12,6 +12,8 @@ import { MessageSquare, Star, Eye, CheckCircle, XCircle, Clock } from "lucide-re
 import { useAlert } from "@/contexts/AlertContext";
 import { useAuth } from "@/contexts/AuthContext";
 import MajorTopicsDashboard from "./MajorTopicsDashboard";
+import FeedbackAnalytics from "../feedback/FeedbackAnalytics";
+import FeedbackFlowDemo from "../feedback/FeedbackFlowDemo";
 
 const FeedbackManagement = () => {
   const { profile } = useAuth();
@@ -135,6 +137,10 @@ const FeedbackManagement = () => {
 
   return (
     <div className="space-y-6">
+      <FeedbackFlowDemo />
+      
+      <FeedbackAnalytics />
+      
       <MajorTopicsDashboard />
 
       <Card className="bg-white/10 backdrop-blur-md border-white/20">
