@@ -66,16 +66,10 @@ export const navigationSections = {
 
   "astra-token": [
     {
-      key: "astra-token",
-      label: "ASTRA Token Analytics",
+      key: "astra-token-hub",
+      label: "ASTRA Token Hub",
       icon: Coins,
-      description: "Monitor ASTRA token usage and transactions"
-    },
-    {
-      key: "astra-token-settings",
-      label: "ASTRA Token Settings",
-      icon: Settings,
-      description: "Configure ASTRA token API and settings"
+      description: "Comprehensive ASTRA token management including analytics, settings, user activity, transactions, and webhook configuration"
     }
   ],
 

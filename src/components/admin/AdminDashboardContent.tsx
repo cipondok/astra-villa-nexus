@@ -16,8 +16,7 @@ import DatabaseTableManagement from "./DatabaseTableManagement";
 import SecurityMonitoring from "./SecurityMonitoring";
 import SystemReports from "./SystemReports";
 import DailyCheckInManagement from "./DailyCheckInManagement";
-import ASTRATokenAnalytics from "./ASTRATokenAnalytics";
-import ASTRATokenSettings from "./ASTRATokenSettings";
+import ASTRATokenHub from "./ASTRATokenHub";
 import ToolsManagementDashboard from "./ToolsManagementDashboard";
 import SEOSettings from "./SEOSettings";
 import ProjectDiagnosticSystem from "./ProjectDiagnosticSystem";
@@ -80,10 +79,8 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
         return <SystemReports />;
       case "daily-checkin":
         return <DailyCheckInManagement />;
-      case "astra-token":
-        return <ASTRATokenAnalytics />;
-      case "astra-token-settings":
-        return <ASTRATokenSettings />;
+      case "astra-token-hub":
+        return <ASTRATokenHub />;
       case "tools-management":
         return <ToolsManagementDashboard />;
       case "customer-service-control":

@@ -25,7 +25,8 @@ import {
   AlertTriangle,
   Blocks,
   Mail,
-  ShoppingBag
+  ShoppingBag,
+  Coins
 } from "lucide-react";
 
 interface AdminTabNavigationProps {
@@ -97,16 +98,10 @@ const AdminTabNavigation = ({ isAdmin }: AdminTabNavigationProps) => {
       badge: "New"
     },
     { 
-      id: "astra-token", 
-      label: "ASTRA Token", 
-      icon: Crown, 
+      id: "astra-token-hub", 
+      label: "ASTRA Hub", 
+      icon: Coins, 
       category: "analytics" 
-    },
-    { 
-      id: "astra-token-settings", 
-      label: "ASTRA Settings", 
-      icon: Zap, 
-      category: "settings" 
     },
     { 
       id: "tools-management", 
