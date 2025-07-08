@@ -2587,6 +2587,63 @@ export type Database = {
           },
         ]
       }
+      property_survey_bookings: {
+        Row: {
+          admin_notes: string | null
+          agent_name: string | null
+          created_at: string
+          customer_email: string
+          customer_name: string
+          customer_phone: string
+          id: string
+          message: string | null
+          preferred_date: string
+          preferred_time: string
+          property_id: string | null
+          property_location: string | null
+          property_title: string
+          status: string
+          survey_type: string
+          updated_at: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          agent_name?: string | null
+          created_at?: string
+          customer_email: string
+          customer_name: string
+          customer_phone: string
+          id?: string
+          message?: string | null
+          preferred_date: string
+          preferred_time: string
+          property_id?: string | null
+          property_location?: string | null
+          property_title: string
+          status?: string
+          survey_type?: string
+          updated_at?: string
+        }
+        Update: {
+          admin_notes?: string | null
+          agent_name?: string | null
+          created_at?: string
+          customer_email?: string
+          customer_name?: string
+          customer_phone?: string
+          id?: string
+          message?: string | null
+          preferred_date?: string
+          preferred_time?: string
+          property_id?: string | null
+          property_location?: string | null
+          property_title?: string
+          status?: string
+          survey_type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       property_watermark_settings: {
         Row: {
           applies_to_all: boolean | null

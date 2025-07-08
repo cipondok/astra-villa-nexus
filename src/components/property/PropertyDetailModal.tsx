@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { X, MapPin, Bed, Bath, Square, Car, Home, Eye, Share2, Heart, Phone, MessageSquare, User } from "lucide-react";
+import { X, MapPin, Bed, Bath, Square, Car, Home, Eye, Share2, Heart, Phone, MessageSquare, User, Calendar } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { BaseProperty } from "@/types/property";
+import ScheduleSurveyModal from "@/components/ScheduleSurveyModal";
 
 interface PropertyDetailModalProps {
   property: BaseProperty;
@@ -21,6 +22,7 @@ const PropertyDetailModal = ({
   onView3D 
 }: PropertyDetailModalProps) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [showSurveyModal, setShowSurveyModal] = useState(false);
   const navigate = useNavigate();
 
   const text = {
@@ -309,6 +311,15 @@ const PropertyDetailModal = ({
                     <MessageSquare className="h-5 w-5 mr-2" />
                     Send Message
                   </Button>
+                  <Button 
+                    variant="outline" 
+                    className="w-full" 
+                    size="lg"
+                    onClick={() => setShowSurveyModal(true)}
+                  >
+                    <Calendar className="h-5 w-5 mr-2" />
+                    Schedule Survey
+                  </Button>
                   <div className="flex gap-2">
                     <Button variant="outline" size="lg" className="flex-1">
                       <Heart className="h-5 w-5" />
@@ -378,6 +389,14 @@ const PropertyDetailModal = ({
           </div>
         </div>
       </div>
+
+      {/* Survey Booking Modal */}
+      <ScheduleSurveyModal
+        isOpen={showSurveyModal}
+        onClose={() => setShowSurveyModal(false)}
+        propertyTitle={property.title}
+        agentName="Real Estate Agent"
+      />
     </div>
   );
 };
