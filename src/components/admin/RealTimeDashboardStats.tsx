@@ -154,11 +154,11 @@ const RealTimeDashboardStats = () => {
   ];
 
   return (
-    <div className="grid grid-cols-3 md:grid-cols-6 lg:grid-cols-6 gap-1 mb-2">
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 sm:gap-1 mb-3 sm:mb-2">
       {statCards.map((stat, index) => (
         <div 
           key={index} 
-          className="relative overflow-hidden rounded-full bg-slate-800/90 border border-slate-700/50 p-3 hover:border-slate-600/50 transition-all duration-200 w-20 h-20 flex flex-col items-center justify-center group cursor-pointer"
+          className="relative overflow-hidden rounded-full bg-slate-800/90 border border-slate-700/50 p-4 sm:p-3 hover:border-slate-600/50 transition-all duration-200 w-24 h-24 sm:w-20 sm:h-20 flex flex-col items-center justify-center group cursor-pointer touch-manipulation"
           title={`${stat.title}: ${stat.value} ${stat.subtitle ? `(${stat.subtitle})` : ''}`}
         >
           {/* Status Badge */}
@@ -192,15 +192,15 @@ const RealTimeDashboardStats = () => {
           
           {/* Content - Only Number */}
           <div className="text-center">
-            <p className="text-sm font-bold text-white leading-none">{stat.value}</p>
+            <p className="text-base sm:text-sm font-bold text-white leading-none">{stat.value}</p>
           </div>
 
-          {/* Hover Tooltip - Show All Text */}
-          <div className="absolute inset-0 bg-slate-900/95 rounded-full flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 p-2">
-            <p className="text-xs font-semibold text-white text-center leading-tight">{stat.title}</p>
-            <p className="text-lg font-bold text-white">{stat.value}</p>
+          {/* Hover/Touch Tooltip - Show All Text */}
+          <div className="absolute inset-0 bg-slate-900/95 rounded-full flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 group-active:opacity-100 transition-opacity duration-200 p-3 sm:p-2">
+            <p className="text-sm sm:text-xs font-semibold text-white text-center leading-tight">{stat.title}</p>
+            <p className="text-xl sm:text-lg font-bold text-white">{stat.value}</p>
             {stat.subtitle && (
-              <p className="text-xs text-slate-300 text-center leading-tight">{stat.subtitle}</p>
+              <p className="text-sm sm:text-xs text-slate-300 text-center leading-tight">{stat.subtitle}</p>
             )}
           </div>
         </div>

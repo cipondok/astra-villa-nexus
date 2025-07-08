@@ -134,19 +134,20 @@ const CompactAdminNavigation = ({ activeTab, onTabChange, isAdmin }: CompactAdmi
   const isTabActive = (tabId: string) => activeTab === tabId;
 
   return (
-    <div className="flex items-center gap-2 p-2 hud-border border-b border-border h-12 bg-gradient-to-r from-card/50 to-muted/30">
+    <div className="flex items-center gap-2 sm:gap-1 p-3 sm:p-2 hud-border border-b border-border min-h-14 sm:h-12 bg-gradient-to-r from-card/50 to-muted/30 overflow-x-auto">
       {/* Quick Access Tabs */}
-      <div className="flex items-center gap-1 mr-4">
+      <div className="flex items-center gap-2 sm:gap-1 mr-4 sm:mr-2 flex-shrink-0">
         {quickAccess.map((tab) => (
           <Button
             key={tab.id}
             variant={isTabActive(tab.id) ? "default" : "ghost"}
             size="sm"
             onClick={() => onTabChange(tab.id)}
-            className="relative h-7 px-2 text-xs font-medium gold-glow-hover"
+            className="relative h-8 sm:h-7 px-3 sm:px-2 text-sm sm:text-xs font-medium gold-glow-hover touch-manipulation flex-shrink-0"
           >
-            <tab.icon className="h-3 w-3 mr-1" />
+            <tab.icon className="h-4 w-4 sm:h-3 sm:w-3 mr-2 sm:mr-1" />
             <span className="hidden sm:inline">{tab.label}</span>
+            <span className="sm:hidden">{tab.label.split(' ')[0]}</span>
             {tab.badge && (
               <Badge 
                 variant="secondary"
@@ -160,22 +161,23 @@ const CompactAdminNavigation = ({ activeTab, onTabChange, isAdmin }: CompactAdmi
       </div>
 
       {/* Grouped Dropdowns */}
-      <div className="flex items-center gap-1 flex-1">
+      <div className="flex items-center gap-2 sm:gap-1 flex-1 overflow-x-auto">
         {tabGroups.map((group) => (
           <DropdownMenu key={group.id}>
             <DropdownMenuTrigger asChild>
               <Button
                 variant={group.items.some(item => isTabActive(item.id)) ? "default" : "ghost"}
                 size="sm"
-                className="h-7 px-2 text-xs font-medium hud-border bg-gradient-to-r from-primary/10 to-accent/10"
+                className="h-8 sm:h-7 px-3 sm:px-2 text-sm sm:text-xs font-medium hud-border bg-gradient-to-r from-primary/10 to-accent/10 touch-manipulation flex-shrink-0"
               >
-                <group.icon className="h-3 w-3 mr-1" />
+                <group.icon className="h-4 w-4 sm:h-3 sm:w-3 mr-2 sm:mr-1" />
                 <span className="hidden md:inline">{group.label}</span>
-                <ChevronDown className="h-3 w-3 ml-1" />
+                <span className="md:hidden text-xs">{group.label.slice(0, 3)}</span>
+                <ChevronDown className="h-4 w-4 sm:h-3 sm:w-3 ml-2 sm:ml-1" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="w-48 hud-border border shadow-lg z-50 bg-card/95 backdrop-blur-sm">
-              <DropdownMenuLabel className="text-xs font-semibold text-muted-foreground">
+            <DropdownMenuContent align="start" className="w-56 sm:w-48 hud-border border shadow-lg z-50 bg-card/95 backdrop-blur-sm">
+              <DropdownMenuLabel className="text-sm sm:text-xs font-semibold text-muted-foreground">
                 {group.label}
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
@@ -183,13 +185,13 @@ const CompactAdminNavigation = ({ activeTab, onTabChange, isAdmin }: CompactAdmi
                 <DropdownMenuItem
                   key={item.id}
                   onClick={() => onTabChange(item.id)}
-                  className={`flex items-center gap-2 px-3 py-2 text-xs cursor-pointer transition-colors ${
+                  className={`flex items-center gap-2 px-4 sm:px-3 py-3 sm:py-2 text-sm sm:text-xs cursor-pointer transition-colors touch-manipulation ${
                     isTabActive(item.id) 
                       ? 'bg-primary/10 text-primary font-medium' 
                       : 'text-foreground hover:bg-muted'
                   }`}
                 >
-                  <item.icon className="h-3 w-3" />
+                  <item.icon className="h-4 w-4 sm:h-3 sm:w-3" />
                   <span className="flex-1">{item.label}</span>
                   {item.badge && (
                     <Badge 
