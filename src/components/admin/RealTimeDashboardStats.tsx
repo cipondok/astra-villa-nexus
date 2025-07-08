@@ -84,11 +84,11 @@ const RealTimeDashboardStats = () => {
     return (
       <div className="grid grid-cols-3 md:grid-cols-6 lg:grid-cols-6 gap-1 mb-2">
         {[...Array(6)].map((_, i) => (
-          <div key={i} className="animate-pulse bg-slate-800/50 border border-slate-700/30 rounded-full p-2 aspect-square flex items-center justify-center w-16 h-16">
-            <div className="text-center space-y-0.5">
-              <div className="h-3 w-3 bg-slate-700/50 rounded-full mx-auto"></div>
+          <div key={i} className="animate-pulse bg-slate-800/50 border border-slate-700/30 rounded-full p-3 aspect-square flex items-center justify-center w-20 h-20">
+            <div className="text-center space-y-1">
+              <div className="h-4 w-4 bg-slate-700/50 rounded-full mx-auto"></div>
+              <div className="h-2 bg-slate-700/50 rounded w-8"></div>
               <div className="h-1.5 bg-slate-700/50 rounded w-6"></div>
-              <div className="h-1 bg-slate-700/50 rounded w-4"></div>
             </div>
           </div>
         ))}
@@ -156,10 +156,14 @@ const RealTimeDashboardStats = () => {
   return (
     <div className="grid grid-cols-3 md:grid-cols-6 lg:grid-cols-6 gap-1 mb-2">
       {statCards.map((stat, index) => (
-        <div key={index} className="relative overflow-hidden rounded-full bg-slate-800/90 border border-slate-700/50 p-2 hover:border-slate-600/50 transition-all duration-200 w-16 h-16 flex flex-col items-center justify-center">
+        <div 
+          key={index} 
+          className="relative overflow-hidden rounded-full bg-slate-800/90 border border-slate-700/50 p-3 hover:border-slate-600/50 transition-all duration-200 w-20 h-20 flex flex-col items-center justify-center group cursor-pointer"
+          title={`${stat.title}: ${stat.value} ${stat.subtitle ? `(${stat.subtitle})` : ''}`}
+        >
           {/* Status Badge */}
-          <div className="absolute top-0.5 right-0.5">
-            <div className={`w-1.5 h-1.5 rounded-full ${
+          <div className="absolute top-1 right-1">
+            <div className={`w-2 h-2 rounded-full ${
               stat.status === 'healthy' 
                 ? 'bg-green-400 animate-pulse' 
                 : stat.status === 'warning' 
@@ -171,10 +175,10 @@ const RealTimeDashboardStats = () => {
           </div>
           
           {/* Circular Progress Background */}
-          <div className="absolute inset-1 rounded-full border border-slate-600/30"></div>
+          <div className="absolute inset-1.5 rounded-full border border-slate-600/30"></div>
           
           {/* Circular Progress (animated) */}
-          <div className={`absolute inset-1 rounded-full border border-transparent ${
+          <div className={`absolute inset-1.5 rounded-full border border-transparent ${
             stat.status === 'healthy' ? 'border-t-green-400 border-r-green-400' :
             stat.status === 'online' ? 'border-t-blue-400 border-r-blue-400' :
             stat.status === 'warning' ? 'border-t-red-400 border-r-red-400' :
@@ -182,14 +186,23 @@ const RealTimeDashboardStats = () => {
           } animate-spin`} style={{ animationDuration: '3s' }}></div>
           
           {/* Icon */}
-          <div className={`w-4 h-4 rounded-full flex items-center justify-center mb-0.5 ${stat.bgColor}`}>
-            <stat.icon className={`h-2 w-2 ${stat.color}`} />
+          <div className={`w-5 h-5 rounded-full flex items-center justify-center mb-1 ${stat.bgColor}`}>
+            <stat.icon className={`h-2.5 w-2.5 ${stat.color}`} />
           </div>
           
           {/* Content */}
           <div className="text-center space-y-0">
-            <p className="text-xs font-bold text-white leading-none">{stat.value}</p>
-            <p className="text-xs font-medium text-slate-400 leading-tight truncate max-w-12">{stat.title}</p>
+            <p className="text-sm font-bold text-white leading-none">{stat.value}</p>
+            <p className="text-xs font-medium text-slate-400 leading-tight truncate max-w-16 group-hover:hidden">{stat.title}</p>
+          </div>
+
+          {/* Hover Tooltip */}
+          <div className="absolute inset-0 bg-slate-900/95 rounded-full flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 p-2">
+            <p className="text-xs font-semibold text-white text-center leading-tight">{stat.title}</p>
+            <p className="text-lg font-bold text-white">{stat.value}</p>
+            {stat.subtitle && (
+              <p className="text-xs text-slate-300 text-center leading-tight">{stat.subtitle}</p>
+            )}
           </div>
         </div>
       ))}
