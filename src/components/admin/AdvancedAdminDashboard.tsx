@@ -21,16 +21,36 @@ import RealTimeDashboardStats from './RealTimeDashboardStats';
 import { useAuth } from '@/contexts/AuthContext';
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { LogOut, User } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useNavigate } from "react-router-dom";
 
 const AdvancedAdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
-  const { user, profile } = useAuth();
+  const { user, profile, signOut } = useAuth();
+  const navigate = useNavigate();
 
   console.log('AdvancedAdminDashboard - Current active tab:', activeTab);
 
   const handleTabChange = (tab: string) => {
     console.log('AdvancedAdminDashboard - Tab changed to:', tab);
     setActiveTab(tab);
+  };
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      navigate('/', { replace: true });
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
   };
 
   // Check if user is admin or super admin
@@ -137,6 +157,34 @@ const AdvancedAdminDashboard = () => {
                 </div>
               </div>
               <SimpleThemeToggle />
+              
+              {/* User Menu with Logout */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm" className="hud-border hud-text hover:hud-accent">
+                    <User className="h-4 w-4 mr-2" />
+                    {profile?.full_name || user?.email || 'Admin'}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuLabel>
+                    <div className="flex flex-col space-y-1">
+                      <p className="text-sm font-medium">{profile?.full_name || 'Administrator'}</p>
+                      <p className="text-xs text-muted-foreground">{user?.email}</p>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => navigate('/')}>
+                    <Home className="h-4 w-4 mr-2" />
+                    Go to Home
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleSignOut} className="text-red-600 dark:text-red-400">
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Sign Out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </div>
