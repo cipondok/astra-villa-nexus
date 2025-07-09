@@ -9,10 +9,10 @@ interface AIChatTriggerProps {
 
 const AIChatTrigger = ({ onOpen }: AIChatTriggerProps) => {
   return (
-    <div className="fixed bottom-6 right-6 z-50">
+    <div className="fixed bottom-6 right-6 z-[9999] pointer-events-auto">
       <Button
         onClick={onOpen}
-        className="h-14 w-14 rounded-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 shadow-lg hover:scale-110 transition-all"
+        className="h-14 w-14 rounded-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 shadow-lg hover:scale-110 transition-all transform-gpu will-change-transform"
         size="icon"
       >
         <Bot className="h-6 w-6 text-white" />

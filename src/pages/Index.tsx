@@ -6,6 +6,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import ResponsiveAIChatWidget from "@/components/ai/ResponsiveAIChatWidget";
+import ScrollToTopButton from "@/components/ui/ScrollToTopButton";
 import { supabase } from "@/integrations/supabase/client";
 import PropertyViewModeToggle from "@/components/search/PropertyViewModeToggle";
 import PropertyListView from "@/components/search/PropertyListView";
@@ -400,6 +401,9 @@ const Index = () => {
 
         {/* AI Chat Widget */}
         <ResponsiveAIChatWidget />
+        
+        {/* Scroll to Top Button */}
+        <ScrollToTopButton />
 
         {/* Footer */}
         <ProfessionalFooter language={language} />

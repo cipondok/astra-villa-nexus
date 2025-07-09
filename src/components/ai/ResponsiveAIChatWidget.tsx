@@ -186,7 +186,7 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
 
       {isOpen && (
         <div 
-          className="fixed z-50 animate-fade-in"
+          className="fixed z-[9999] animate-fade-in pointer-events-auto transform-gpu will-change-transform"
           style={{
             bottom: isMobile ? '0.5rem' : '1rem',
             right: isMobile ? '0.5rem' : '1rem',
