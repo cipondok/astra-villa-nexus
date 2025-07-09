@@ -11,7 +11,7 @@ const ScrollToTopButton = () => {
     const toggleVisibility = () => {
       if (!ticking) {
         requestAnimationFrame(() => {
-          if (window.pageYOffset > 300) {
+          if (window.pageYOffset > 50) {
             setIsVisible(true);
           } else {
             setIsVisible(false);

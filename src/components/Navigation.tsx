@@ -281,9 +281,9 @@ const Navigation = () => {
             </div>
           </div>
 
-          {/* Mobile Navigation - Slide down */}
+          {/* Mobile Navigation - Slide down from right */}
           {isMenuOpen && (
-            <div className="lg:hidden absolute top-full left-0 right-0 bg-white/98 dark:bg-gray-900/98 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-800/50 shadow-lg z-[9999] transform-gpu will-change-transform">
+            <div className="lg:hidden absolute top-full right-0 w-80 bg-white dark:bg-gray-900 backdrop-blur-xl border-b border-l border-gray-200 dark:border-gray-800 shadow-lg z-[9999] transform-gpu will-change-transform rounded-bl-lg">
               <div className="px-4 py-3 space-y-2">
                 <Button variant="ghost" className="w-full justify-start text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800" onClick={() => { navigate('/'); toggleMenu(); }}>
                   <HomeIcon className="h-4 w-4 mr-2" />
