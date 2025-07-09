@@ -323,106 +323,140 @@ const Services = () => {
             </CardContent>
           </Card>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {services.map((service) => {
               const Icon = getCategoryIcon(service.service_category);
               const vendorName = service.vendor?.company_name || service.vendor?.full_name || 'Unknown Vendor';
               const isOwnService = isVendor && service.vendor_id === user?.id;
               
               return (
-                <Card key={service.id} className="hover:shadow-lg transition-shadow relative">
+                <Card key={service.id} className="group overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 bg-gradient-to-br from-white to-gray-50/80 dark:from-gray-900 dark:to-gray-800/50 relative backdrop-blur-sm">
+                  {/* Animated background gradient */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/3 via-transparent to-primary/3 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  
                   {service.featured && (
-                    <Badge className="absolute top-2 right-2 bg-yellow-500 text-white z-10">
-                      Featured
-                    </Badge>
+                    <div className="absolute top-4 right-4 z-20">
+                      <Badge className="bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 text-white shadow-lg animate-pulse border-0 px-3 py-1">
+                        ✨ Featured
+                      </Badge>
+                    </div>
                   )}
                   
-                  <CardHeader>
-                    <div className="flex items-start justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="p-2 bg-primary/10 rounded-lg">
-                          <Icon className="h-6 w-6 text-primary" />
+                  <CardHeader className="pb-4 relative z-10">
+                    <div className="flex items-start gap-4">
+                      <div className="relative">
+                        <div className="p-4 bg-gradient-to-br from-primary/15 via-primary/10 to-primary/5 rounded-2xl border-2 border-primary/20 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-lg">
+                          <Icon className="h-7 w-7 text-primary" />
                         </div>
-                        <div>
-                          <CardTitle className="text-lg">{service.service_name}</CardTitle>
-                          <p className="text-sm text-muted-foreground">{vendorName}</p>
-                        </div>
+                        <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full animate-bounce" />
                       </div>
+                      
+                      <div className="flex-1 min-w-0">
+                        <CardTitle className="text-xl font-bold text-gray-900 dark:text-white group-hover:text-primary transition-colors duration-300 leading-tight">
+                          {service.service_name}
+                        </CardTitle>
+                        <p className="text-sm text-muted-foreground font-semibold mt-1">{vendorName}</p>
+                        
+                        {service.service_category && (
+                          <Badge variant="secondary" className="mt-3 bg-gradient-to-r from-primary/15 to-primary/10 text-primary border-primary/30 hover:from-primary/20 hover:to-primary/15 transition-all">
+                            {service.service_category}
+                          </Badge>
+                        )}
+                      </div>
+                      
                       {isOwnService && (
-                        <Badge variant="secondary">Your Service</Badge>
+                        <Badge className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-md">
+                          Your Service
+                        </Badge>
                       )}
                     </div>
-                    {service.service_category && (
-                      <Badge variant="secondary" className="w-fit">
-                        {service.service_category}
-                      </Badge>
-                    )}
                   </CardHeader>
                   
-                  <CardContent>
-                    <div className="space-y-3">
-                      <p className="text-sm text-muted-foreground line-clamp-2">
-                        {service.service_description}
-                      </p>
-                      
+                  <CardContent className="space-y-5 relative z-10">
+                    <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2 group-hover:text-gray-700 dark:group-hover:text-gray-300 transition-colors">
+                      {service.service_description}
+                    </p>
+                    
+                    {/* Rating and Location */}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-1 px-3 py-2 bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/30 dark:to-orange-900/30 rounded-full border border-yellow-200 dark:border-yellow-700">
+                          <Star className="h-4 w-4 text-yellow-500 fill-current" />
+                          <span className="font-bold text-sm text-gray-900 dark:text-white">{service.rating || 'New'}</span>
+                        </div>
+                        <span className="text-xs text-muted-foreground font-medium">
+                          ({service.total_bookings || 0} bookings)
+                        </span>
+                      </div>
+                      {service.service_location_state && (
+                        <div className="flex items-center gap-1 bg-gradient-to-r from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700 px-3 py-2 rounded-full border">
+                          <MapPin className="h-3 w-3 text-primary" />
+                          <span className="text-xs font-semibold text-gray-700 dark:text-gray-300">{service.service_location_state}</span>
+                        </div>
+                      )}
+                    </div>
+                    
+                    {/* Duration and Price Card */}
+                    <div className="bg-gradient-to-r from-slate-50 via-gray-50 to-slate-50 dark:from-gray-800 dark:via-gray-800 dark:to-gray-700 p-4 rounded-xl border-2 border-gray-200/50 dark:border-gray-600/50 group-hover:border-primary/30 transition-all duration-300">
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-1">
-                          <Star className="h-4 w-4 text-yellow-500" />
-                          <span className="font-medium">{service.rating || 'New'}</span>
-                          <span className="text-muted-foreground">
-                            ({service.total_bookings || 0} bookings)
-                          </span>
-                        </div>
-                        {service.service_location_state && (
-                          <div className="flex items-center gap-1 text-muted-foreground">
-                            <MapPin className="h-4 w-4" />
-                            <span className="text-sm">{service.service_location_state}</span>
+                        <div className="flex items-center gap-2">
+                          <div className="p-2 bg-gradient-to-r from-blue-100 to-indigo-100 dark:from-blue-900/40 dark:to-indigo-900/40 rounded-lg">
+                            <Clock className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                           </div>
-                        )}
-                      </div>
-                      
-                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                        <div className="flex items-center gap-1">
-                          <Clock className="h-4 w-4" />
-                          <span>{service.duration_value} {service.duration_unit}</span>
+                          <div>
+                            <span className="text-sm font-bold text-gray-900 dark:text-white">{service.duration_value} {service.duration_unit}</span>
+                            <p className="text-xs text-muted-foreground">Duration</p>
+                          </div>
                         </div>
-                        <div className="flex items-center gap-1">
-                          <DollarSign className="h-4 w-4" />
-                          <span>{formatPrice(service)}</span>
+                        <div className="flex items-center gap-2">
+                          <div className="p-2 bg-gradient-to-r from-green-100 to-emerald-100 dark:from-green-900/40 dark:to-emerald-900/40 rounded-lg">
+                            <DollarSign className="h-4 w-4 text-green-600 dark:text-green-400" />
+                          </div>
+                          <div className="text-right">
+                            <span className="text-sm font-bold text-green-600 dark:text-green-400">
+                              {formatPrice(service)}
+                            </span>
+                            <p className="text-xs text-muted-foreground">Price</p>
+                          </div>
                         </div>
-                      </div>
-                      
-                      <div className="pt-2 flex gap-2">
-                        {isOwnService ? (
-                          <>
-                            <Button 
-                              variant="outline" 
-                              onClick={() => navigate('/vendor-dashboard')}
-                              className="flex-1"
-                            >
-                              <Edit className="h-4 w-4 mr-2" />
-                              Edit
-                            </Button>
-                            <Button variant="outline" size="sm">
-                              <Eye className="h-4 w-4" />
-                            </Button>
-                          </>
-                        ) : (
-                          <>
-                            <Button 
-                              className="flex-1"
-                              onClick={() => handleBookService(service)}
-                            >
-                              Book Now
-                            </Button>
-                            <Button variant="outline" size="sm">
-                              <Users className="h-4 w-4" />
-                            </Button>
-                          </>
-                        )}
                       </div>
                     </div>
+                    
+                    {/* Action Buttons */}
+                    <div className="flex gap-3 pt-2">
+                      {isOwnService ? (
+                        <>
+                          <Button 
+                            variant="outline" 
+                            onClick={() => navigate('/vendor-dashboard')}
+                            className="flex-1 group-hover:border-primary group-hover:text-primary group-hover:bg-primary/5 transition-all duration-300 font-semibold"
+                          >
+                            <Edit className="h-4 w-4 mr-2" />
+                            Edit Service
+                          </Button>
+                          <Button variant="outline" size="sm" className="px-4 hover:bg-gray-100 dark:hover:bg-gray-800">
+                            <Eye className="h-4 w-4" />
+                          </Button>
+                        </>
+                      ) : (
+                        <>
+                          <Button 
+                            className="flex-1 bg-gradient-to-r from-primary via-primary to-primary/80 hover:from-primary/90 hover:via-primary/90 hover:to-primary shadow-lg hover:shadow-xl transition-all duration-300 font-bold text-white border-0"
+                            onClick={() => handleBookService(service)}
+                          >
+                            Book Now
+                          </Button>
+                          <Button variant="outline" size="sm" className="px-4 hover:bg-primary/5 hover:border-primary transition-all">
+                            <Users className="h-4 w-4" />
+                          </Button>
+                        </>
+                      )}
+                    </div>
                   </CardContent>
+
+                  {/* Decorative elements */}
+                  <div className="absolute top-0 left-0 w-20 h-20 bg-gradient-to-br from-primary/10 to-transparent rounded-full -translate-x-10 -translate-y-10 group-hover:scale-150 transition-transform duration-700" />
+                  <div className="absolute bottom-0 right-0 w-16 h-16 bg-gradient-to-tl from-primary/5 to-transparent rounded-full translate-x-8 translate-y-8 group-hover:scale-150 transition-transform duration-700" />
                 </Card>
               );
             })}
