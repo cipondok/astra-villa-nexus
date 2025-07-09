@@ -23,14 +23,22 @@ const Navigation = () => {
     setIsMenuOpen(false);
   }, [location]);
 
-  // Handle scroll effect
+  // Handle scroll effect with throttling for better performance
   useEffect(() => {
+    let ticking = false;
+    
     const handleScroll = () => {
-      const isScrolled = window.scrollY > 0;
-      setScrolled(isScrolled);
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          const isScrolled = window.scrollY > 0;
+          setScrolled(isScrolled);
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -131,7 +139,7 @@ const Navigation = () => {
 
   return (
     <>
-      <nav className={`fixed top-0 left-0 right-0 z-[9999] transition-all duration-300 ${
+      <nav className={`fixed top-0 left-0 right-0 z-[10000] transition-all duration-300 transform-gpu will-change-transform ${
         scrolled 
           ? 'bg-white/98 dark:bg-gray-900/98 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-800/50 shadow-sm' 
           : 'bg-white/95 dark:bg-gray-900/95 backdrop-blur-md'
@@ -279,7 +287,7 @@ const Navigation = () => {
 
           {/* Mobile Navigation - Slide down */}
           {isMenuOpen && (
-            <div className="lg:hidden absolute top-full left-0 right-0 bg-white/98 dark:bg-gray-900/98 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-800/50 shadow-lg z-[9998]">
+            <div className="lg:hidden absolute top-full left-0 right-0 bg-white/98 dark:bg-gray-900/98 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-800/50 shadow-lg z-[9999] transform-gpu will-change-transform">
               <div className="px-4 py-3 space-y-2">
                 <Button variant="ghost" className="w-full justify-start text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800" onClick={() => { navigate('/'); toggleMenu(); }}>
                   <HomeIcon className="h-4 w-4 mr-2" />
