@@ -48,8 +48,9 @@ const Index = () => {
     if (!loading && user && profile && !window.location.search.includes('stay')) {
       // Only redirect on initial app load, not when user navigates to home
       const hasVisitedBefore = sessionStorage.getItem('hasVisitedHome');
+      const isDirectNavigation = window.location.search.includes('from=admin') || document.referrer.includes('/admin');
       
-      if (!hasVisitedBefore) {
+      if (!hasVisitedBefore && !isDirectNavigation) {
         // Redirect customer service users to dashboard
         if (profile.role === 'customer_service') {
           navigate('/dashboard');

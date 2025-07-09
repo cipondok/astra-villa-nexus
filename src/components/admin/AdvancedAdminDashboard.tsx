@@ -174,7 +174,7 @@ const AdvancedAdminDashboard = () => {
                     </div>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => navigate('/')}>
+                  <DropdownMenuItem onClick={() => navigate('/?from=admin')}>
                     <Home className="h-4 w-4 mr-2" />
                     Go to Home
                   </DropdownMenuItem>
