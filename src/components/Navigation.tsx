@@ -139,9 +139,9 @@ const Navigation = () => {
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-[10000] bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 shadow-sm transform-gpu will-change-transform">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
+      <nav className="fixed top-0 left-0 right-0 z-[10000] bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-b border-gray-200/30 dark:border-gray-800/30 shadow-sm transform-gpu will-change-transform">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="flex items-center justify-between h-12">
             {/* ASTRA Villa Logo */}
             <div 
               className="flex items-center space-x-2 cursor-pointer" 
@@ -244,20 +244,37 @@ const Navigation = () => {
                 <LanguageToggleSwitch />
               </div>
 
-              {/* User Section */}
+              {/* User Section - Modern AI Style */}
               {user ? (
-                <div className="flex items-center space-x-2">
-                  <div className="w-10 h-10 rounded-full bg-blue-600 dark:bg-blue-700 flex items-center justify-center border border-blue-300 dark:border-blue-500">
-                    <User className="h-5 w-5 text-white" />
+                <div className="flex items-center space-x-1">
+                  {/* Modern AI User Avatar */}
+                  <div className="relative group">
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-blue-600 dark:from-purple-400 dark:to-blue-500 flex items-center justify-center shadow-lg border-2 border-white dark:border-gray-800">
+                      <Sparkles className="h-4 w-4 text-white" />
+                    </div>
+                    {/* User tooltip */}
+                    <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-2 py-1 bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap pointer-events-none z-50">
+                      {profile?.full_name || user.email}
+                      <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 border-l-4 border-r-4 border-b-4 border-transparent border-b-gray-900 dark:border-b-gray-100"></div>
+                    </div>
                   </div>
-                  <Button 
-                    variant="ghost" 
-                    size="sm"
-                    onClick={handleSignOut}
-                    className="w-10 h-10 p-0 text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all"
-                  >
-                    <LogOut className="h-4 w-4" />
-                  </Button>
+                  
+                  {/* Modern AI Logout Button */}
+                  <div className="relative group">
+                    <Button 
+                      variant="ghost" 
+                      size="sm"
+                      onClick={handleSignOut}
+                      className="w-8 h-8 p-0 text-gray-500 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-full transition-all duration-300 hover:scale-110"
+                    >
+                      <LogOut className="h-4 w-4" />
+                    </Button>
+                    {/* Logout tooltip */}
+                    <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-2 py-1 bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap pointer-events-none z-50">
+                      {currentText.signOut}
+                      <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 border-l-4 border-r-4 border-b-4 border-transparent border-b-gray-900 dark:border-b-gray-100"></div>
+                    </div>
+                  </div>
                 </div>
               ) : (
                 <Button
@@ -346,7 +363,7 @@ const Navigation = () => {
       </nav>
 
       {/* Spacer to prevent content from hiding behind fixed header */}
-      <div className="h-16"></div>
+      <div className="h-12"></div>
 
       {/* Enhanced Auth Modal */}
       <EnhancedAuthModal
