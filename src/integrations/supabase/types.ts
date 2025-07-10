@@ -5610,6 +5610,10 @@ export type Database = {
           created_at: string | null
           currency: string | null
           delivery_options: Json | null
+          discount_description: string | null
+          discount_end_date: string | null
+          discount_percentage: number | null
+          discount_start_date: string | null
           duration_minutes: number | null
           duration_unit: string | null
           duration_value: number | null
@@ -5618,6 +5622,7 @@ export type Database = {
           holiday_schedule_id: string | null
           id: string
           is_active: boolean | null
+          is_discount_active: boolean | null
           location_type: string | null
           main_category_id: string | null
           price_range: Json | null
@@ -5654,6 +5659,10 @@ export type Database = {
           created_at?: string | null
           currency?: string | null
           delivery_options?: Json | null
+          discount_description?: string | null
+          discount_end_date?: string | null
+          discount_percentage?: number | null
+          discount_start_date?: string | null
           duration_minutes?: number | null
           duration_unit?: string | null
           duration_value?: number | null
@@ -5662,6 +5671,7 @@ export type Database = {
           holiday_schedule_id?: string | null
           id?: string
           is_active?: boolean | null
+          is_discount_active?: boolean | null
           location_type?: string | null
           main_category_id?: string | null
           price_range?: Json | null
@@ -5698,6 +5708,10 @@ export type Database = {
           created_at?: string | null
           currency?: string | null
           delivery_options?: Json | null
+          discount_description?: string | null
+          discount_end_date?: string | null
+          discount_percentage?: number | null
+          discount_start_date?: string | null
           duration_minutes?: number | null
           duration_unit?: string | null
           duration_value?: number | null
@@ -5706,6 +5720,7 @@ export type Database = {
           holiday_schedule_id?: string | null
           id?: string
           is_active?: boolean | null
+          is_discount_active?: boolean | null
           location_type?: string | null
           main_category_id?: string | null
           price_range?: Json | null

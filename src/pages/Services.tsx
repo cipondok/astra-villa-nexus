@@ -29,7 +29,8 @@ import {
   Eye,
   Grid3X3,
   Brush,
-  Hammer
+  Hammer,
+  Percent
 } from 'lucide-react';
 
 // Service booking component
@@ -201,10 +202,24 @@ const Services = () => {
       if (prices.length > 0) {
         const min = Math.min(...prices);
         const max = Math.max(...prices);
-        return min === max ? `Rp ${min.toLocaleString()}` : `Rp ${min.toLocaleString()} - Rp ${max.toLocaleString()}`;
+        
+        // Apply discount if active
+        if (service.is_discount_active && service.discount_percentage > 0) {
+          const discountFactor = 1 - (service.discount_percentage / 100);
+          const discountedMin = min * discountFactor;
+          const discountedMax = max * discountFactor;
+          
+          const originalPrice = min === max ? `Rp ${min.toLocaleString()}` : `Rp ${min.toLocaleString()} - Rp ${max.toLocaleString()}`;
+          const discountedPrice = discountedMin === discountedMax ? `Rp ${discountedMin.toLocaleString()}` : `Rp ${discountedMin.toLocaleString()} - Rp ${discountedMax.toLocaleString()}`;
+          
+          return { original: originalPrice, discounted: discountedPrice, hasDiscount: true, discount: service.discount_percentage };
+        }
+        
+        const price = min === max ? `Rp ${min.toLocaleString()}` : `Rp ${min.toLocaleString()} - Rp ${max.toLocaleString()}`;
+        return { original: price, discounted: null, hasDiscount: false };
       }
     }
-    return 'Contact for pricing';
+    return { original: 'Contact for pricing', discounted: null, hasDiscount: false };
   };
 
   const getCategoryIcon = (category: string) => {
@@ -498,12 +513,33 @@ const Services = () => {
                           <div className="p-2 bg-gradient-to-r from-green-100 to-emerald-100 dark:from-green-900/40 dark:to-emerald-900/40 rounded-lg">
                             <DollarSign className="h-4 w-4 text-green-600 dark:text-green-400" />
                           </div>
-                          <div className="text-right">
-                            <span className="text-sm font-bold text-green-600 dark:text-green-400">
-                              {formatPrice(service)}
-                            </span>
-                            <p className="text-xs text-muted-foreground">Price</p>
-                          </div>
+                            <div className="text-right">
+                              {(() => {
+                                const priceInfo = formatPrice(service);
+                                if (priceInfo.hasDiscount) {
+                                  return (
+                                    <div className="space-y-1">
+                                      <div className="text-xs text-muted-foreground line-through">
+                                        {priceInfo.original}
+                                      </div>
+                                      <div className="text-sm font-bold text-green-600 dark:text-green-400">
+                                        {priceInfo.discounted}
+                                      </div>
+                                      <Badge variant="destructive" className="text-xs bg-red-500 hover:bg-red-600">
+                                        <Percent className="h-3 w-3 mr-1" />
+                                        {priceInfo.discount}% OFF
+                                      </Badge>
+                                    </div>
+                                  );
+                                }
+                                return (
+                                  <span className="text-sm font-bold text-green-600 dark:text-green-400">
+                                    {priceInfo.original}
+                                  </span>
+                                );
+                              })()}
+                              <p className="text-xs text-muted-foreground">Price</p>
+                            </div>
                         </div>
                       </div>
                     </div>

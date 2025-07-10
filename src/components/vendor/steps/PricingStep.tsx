@@ -7,7 +7,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
-import { Plus, X, DollarSign, Clock, Package } from 'lucide-react';
+import { Plus, X, DollarSign, Clock, Package, Tag, Calendar } from 'lucide-react';
 
 interface PricingStepProps {
   formData: any;
@@ -48,48 +48,58 @@ const PricingStep: React.FC<PricingStepProps> = ({ formData, updateFormData }) =
   return (
     <div className="space-y-6">
       {/* Pricing Type */}
-      <div>
-        <Label className="text-base font-medium mb-4 block">Pricing Structure</Label>
-        <RadioGroup 
-          value={formData.priceType} 
-          onValueChange={(value) => updateFormData({ priceType: value })}
-        >
-          <div className="space-y-3">
-            <Card className={`p-4 cursor-pointer transition-colors ${formData.priceType === 'fixed' ? 'ring-2 ring-primary bg-primary/5' : ''}`}>
-              <div className="flex items-center space-x-3">
-                <RadioGroupItem value="fixed" id="fixed" />
-                <div className="flex-1">
-                  <Label htmlFor="fixed" className="font-medium">Fixed Price</Label>
-                  <p className="text-sm text-muted-foreground">Set one price for the entire service</p>
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <DollarSign className="h-5 w-5" />
+            Pricing Structure
+          </CardTitle>
+          <CardDescription>
+            Choose how you want to price your service
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <RadioGroup 
+            value={formData.priceType} 
+            onValueChange={(value) => updateFormData({ priceType: value })}
+          >
+            <div className="space-y-3">
+              <Card className={`p-4 cursor-pointer transition-colors ${formData.priceType === 'fixed' ? 'ring-2 ring-primary bg-primary/5' : ''}`}>
+                <div className="flex items-center space-x-3">
+                  <RadioGroupItem value="fixed" id="fixed" />
+                  <div className="flex-1">
+                    <Label htmlFor="fixed" className="font-medium">Fixed Price</Label>
+                    <p className="text-sm text-muted-foreground">Set one price for the entire service</p>
+                  </div>
+                  <DollarSign className="h-5 w-5 text-green-500" />
                 </div>
-                <DollarSign className="h-5 w-5 text-green-500" />
-              </div>
-            </Card>
+              </Card>
 
-            <Card className={`p-4 cursor-pointer transition-colors ${formData.priceType === 'hourly' ? 'ring-2 ring-primary bg-primary/5' : ''}`}>
-              <div className="flex items-center space-x-3">
-                <RadioGroupItem value="hourly" id="hourly" />
-                <div className="flex-1">
-                  <Label htmlFor="hourly" className="font-medium">Hourly Rate</Label>
-                  <p className="text-sm text-muted-foreground">Charge per hour of work</p>
+              <Card className={`p-4 cursor-pointer transition-colors ${formData.priceType === 'hourly' ? 'ring-2 ring-primary bg-primary/5' : ''}`}>
+                <div className="flex items-center space-x-3">
+                  <RadioGroupItem value="hourly" id="hourly" />
+                  <div className="flex-1">
+                    <Label htmlFor="hourly" className="font-medium">Hourly Rate</Label>
+                    <p className="text-sm text-muted-foreground">Charge per hour of work</p>
+                  </div>
+                  <Clock className="h-5 w-5 text-blue-500" />
                 </div>
-                <Clock className="h-5 w-5 text-blue-500" />
-              </div>
-            </Card>
+              </Card>
 
-            <Card className={`p-4 cursor-pointer transition-colors ${formData.priceType === 'package' ? 'ring-2 ring-primary bg-primary/5' : ''}`}>
-              <div className="flex items-center space-x-3">
-                <RadioGroupItem value="package" id="package" />
-                <div className="flex-1">
-                  <Label htmlFor="package" className="font-medium">Service Packages</Label>
-                  <p className="text-sm text-muted-foreground">Offer multiple pricing tiers</p>
+              <Card className={`p-4 cursor-pointer transition-colors ${formData.priceType === 'package' ? 'ring-2 ring-primary bg-primary/5' : ''}`}>
+                <div className="flex items-center space-x-3">
+                  <RadioGroupItem value="package" id="package" />
+                  <div className="flex-1">
+                    <Label htmlFor="package" className="font-medium">Service Packages</Label>
+                    <p className="text-sm text-muted-foreground">Offer multiple pricing tiers</p>
+                  </div>
+                  <Package className="h-5 w-5 text-purple-500" />
                 </div>
-                <Package className="h-5 w-5 text-purple-500" />
-              </div>
-            </Card>
-          </div>
-        </RadioGroup>
-      </div>
+              </Card>
+            </div>
+          </RadioGroup>
+        </CardContent>
+      </Card>
 
       {/* Base Pricing */}
       {(formData.priceType === 'fixed' || formData.priceType === 'hourly') && (
@@ -243,6 +253,83 @@ const PricingStep: React.FC<PricingStepProps> = ({ formData, updateFormData }) =
         </Card>
       )}
 
+      {/* Discount Settings */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Tag className="h-5 w-5" />
+            Discount & Promotions
+          </CardTitle>
+          <CardDescription>
+            Set up promotional pricing for your service
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="discount-percentage">Discount Percentage (%)</Label>
+              <Input
+                id="discount-percentage"
+                type="number"
+                min="0"
+                max="100"
+                value={formData.discountPercentage || 0}
+                onChange={(e) => updateFormData({ discountPercentage: parseFloat(e.target.value) || 0 })}
+                placeholder="e.g., 15"
+              />
+            </div>
+            <div>
+              <Label htmlFor="discount-description">Promotion Title</Label>
+              <Input
+                id="discount-description"
+                value={formData.discountDescription || ''}
+                onChange={(e) => updateFormData({ discountDescription: e.target.value })}
+                placeholder="e.g., New Year Sale"
+              />
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="discount-start">Start Date</Label>
+              <Input
+                id="discount-start"
+                type="datetime-local"
+                value={formData.discountStartDate || ''}
+                onChange={(e) => updateFormData({ discountStartDate: e.target.value })}
+              />
+            </div>
+            <div>
+              <Label htmlFor="discount-end">End Date</Label>
+              <Input
+                id="discount-end"
+                type="datetime-local"
+                value={formData.discountEndDate || ''}
+                onChange={(e) => updateFormData({ discountEndDate: e.target.value })}
+              />
+            </div>
+          </div>
+
+          {formData.discountPercentage > 0 && (
+            <div className="p-3 bg-muted rounded-lg">
+              <div className="flex items-center gap-2 mb-2">
+                <Tag className="h-4 w-4 text-primary" />
+                <span className="font-medium">Discount Preview</span>
+              </div>
+              <div className="text-sm space-y-1">
+                <p>Original Price: {formatIDR(formData.basePrice || 0)}</p>
+                <p className="text-green-600 font-medium">
+                  Discounted Price: {formatIDR((formData.basePrice || 0) * (1 - (formData.discountPercentage || 0) / 100))}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  You save: {formatIDR((formData.basePrice || 0) * ((formData.discountPercentage || 0) / 100))}
+                </p>
+              </div>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
       {/* Pricing Summary */}
       <Card className="bg-green-50 border-green-200">
         <CardContent className="p-4">
@@ -272,16 +359,28 @@ const PricingStep: React.FC<PricingStepProps> = ({ formData, updateFormData }) =
       </Card>
 
       {/* Pricing Tips */}
-      <div className="bg-blue-50 p-4 rounded-lg">
-        <h4 className="font-medium text-blue-900 mb-2">💡 Pricing Tips</h4>
-        <ul className="text-sm text-blue-800 space-y-1">
-          <li>• Research competitor prices in your area</li>
-          <li>• Consider your experience, materials, and travel costs</li>
-          <li>• Start competitive and adjust based on demand</li>
-          <li>• Package deals can attract more customers</li>
-          <li>• Include travel fees if you cover large areas</li>
-        </ul>
-      </div>
+      <Card>
+        <CardHeader>
+          <CardTitle>💡 Pricing Tips</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <p className="text-sm text-muted-foreground">
+            • Research your competition to stay competitive
+          </p>
+          <p className="text-sm text-muted-foreground">
+            • Consider offering different price tiers for different service levels
+          </p>
+          <p className="text-sm text-muted-foreground">
+            • Factor in your costs including materials, labor, and overhead
+          </p>
+          <p className="text-sm text-muted-foreground">
+            • Leave room for negotiation while maintaining profitability
+          </p>
+          <p className="text-sm text-muted-foreground">
+            • Use limited-time discounts to boost bookings during slow periods
+          </p>
+        </CardContent>
+      </Card>
     </div>
   );
 };
