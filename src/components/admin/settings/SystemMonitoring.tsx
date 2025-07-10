@@ -33,6 +33,49 @@ interface SystemMonitoringProps {
 }
 
 const SystemMonitoring: React.FC<SystemMonitoringProps> = ({ systemInfo }) => {
+  const [isTestingAlerts, setIsTestingAlerts] = React.useState(false);
+  const [isRunningDiagnostics, setIsRunningDiagnostics] = React.useState(false);
+  const [isSaving, setIsSaving] = React.useState(false);
+
+  const handleSaveSettings = async () => {
+    setIsSaving(true);
+    try {
+      // Simulate saving settings
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      console.log('Settings saved successfully');
+    } catch (error) {
+      console.error('Error saving settings:', error);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleTestAlerts = async () => {
+    setIsTestingAlerts(true);
+    try {
+      // Simulate testing alerts
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      console.log('Alert test completed');
+    } catch (error) {
+      console.error('Error testing alerts:', error);
+    } finally {
+      setIsTestingAlerts(false);
+    }
+  };
+
+  const handleRunDiagnostics = async () => {
+    setIsRunningDiagnostics(true);
+    try {
+      // Simulate running diagnostics
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      console.log('Diagnostics completed');
+    } catch (error) {
+      console.error('Error running diagnostics:', error);
+    } finally {
+      setIsRunningDiagnostics(false);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <Card>
@@ -292,17 +335,17 @@ const SystemMonitoring: React.FC<SystemMonitoringProps> = ({ systemInfo }) => {
 
           {/* Action Buttons */}
           <div className="flex gap-2 pt-4">
-            <Button>
+            <Button onClick={handleSaveSettings} disabled={isSaving}>
               <Settings className="h-4 w-4 mr-2" />
-              Save Settings
+              {isSaving ? 'Saving...' : 'Save Settings'}
             </Button>
-            <Button variant="outline">
+            <Button variant="outline" onClick={handleTestAlerts} disabled={isTestingAlerts}>
               <Clock className="h-4 w-4 mr-2" />
-              Test Alerts
+              {isTestingAlerts ? 'Testing...' : 'Test Alerts'}
             </Button>
-            <Button variant="outline">
+            <Button variant="outline" onClick={handleRunDiagnostics} disabled={isRunningDiagnostics}>
               <AlertTriangle className="h-4 w-4 mr-2" />
-              Run Diagnostics
+              {isRunningDiagnostics ? 'Running...' : 'Run Diagnostics'}
             </Button>
           </div>
         </CardContent>
