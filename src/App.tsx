@@ -7,6 +7,7 @@ import { ThemeProvider } from '@/components/ThemeProvider';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { AlertProvider } from '@/contexts/AlertContext';
 import { WebsiteSettingsProvider } from '@/contexts/WebsiteSettingsContext';
+import { PropertyComparisonProvider } from '@/contexts/PropertyComparisonContext';
 import Index from '@/pages/Index';
 import AdminDashboard from '@/pages/AdminDashboard';
 import NotFound from '@/pages/NotFound';
@@ -31,15 +32,17 @@ function App() {
           <LanguageProvider>
             <WebsiteSettingsProvider>
               <AuthProvider>
-                <Router>
-                  <div className="min-h-screen bg-background text-foreground">
-                    <Routes>
-                      <Route path="/" element={<Index />} />
-                      <Route path="/admin" element={<AdminDashboard />} />
-                      <Route path="*" element={<NotFound />} />
-                    </Routes>
-                  </div>
-                </Router>
+                <PropertyComparisonProvider>
+                  <Router>
+                    <div className="min-h-screen bg-background text-foreground">
+                      <Routes>
+                        <Route path="/" element={<Index />} />
+                        <Route path="/admin" element={<AdminDashboard />} />
+                        <Route path="*" element={<NotFound />} />
+                      </Routes>
+                    </div>
+                  </Router>
+                </PropertyComparisonProvider>
               </AuthProvider>
             </WebsiteSettingsProvider>
           </LanguageProvider>
