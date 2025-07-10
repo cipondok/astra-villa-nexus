@@ -15,6 +15,7 @@ import FileSettings from './settings/FileSettings';
 import SystemMonitoring from './settings/SystemMonitoring';
 import BackupSettings from './settings/BackupSettings';
 import DiscountSettings from './settings/DiscountSettings';
+import SEOSettings from './settings/SEOSettings';
 import LoadingPage from '../LoadingPage';
 
 const SystemSettings = () => {
@@ -72,8 +73,9 @@ const SystemSettings = () => {
 
       <Tabs defaultValue="general" className="space-y-4">
         <div className="overflow-x-auto">
-          <TabsList className="grid w-full grid-cols-7 min-w-fit">
+          <TabsList className="grid w-full grid-cols-8 min-w-fit">
             <TabsTrigger value="general" className="whitespace-nowrap">General</TabsTrigger>
+            <TabsTrigger value="seo" className="whitespace-nowrap">SEO</TabsTrigger>
             <TabsTrigger value="security" className="whitespace-nowrap">Security</TabsTrigger>
             <TabsTrigger value="notifications" className="whitespace-nowrap">Notifications</TabsTrigger>
             <TabsTrigger value="files" className="whitespace-nowrap">Files</TabsTrigger>
@@ -89,6 +91,13 @@ const SystemSettings = () => {
             loading={loading}
             onInputChange={handleInputChange}
             onSave={saveSettings}
+          />
+        </TabsContent>
+
+        <TabsContent value="seo" className="space-y-4">
+          <SEOSettings 
+            settings={settings}
+            onInputChange={handleInputChange}
           />
         </TabsContent>
 

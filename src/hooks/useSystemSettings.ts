@@ -22,7 +22,37 @@ export const useSystemSettings = () => {
     minDiscountDuration: '1',
     requireAdminApproval: false,
     allowSeasonalDiscounts: true,
-    discountNotifications: true
+    discountNotifications: true,
+    // SEO Settings
+    seoTitle: '',
+    seoTagline: '',
+    seoDescription: '',
+    seoKeywords: '',
+    enableOpenGraph: true,
+    ogTitle: '',
+    ogSiteName: '',
+    ogDescription: '',
+    ogImage: '',
+    twitterCard: 'summary_large_image',
+    twitterSite: '',
+    googleAnalyticsId: '',
+    googleTagManagerId: '',
+    facebookPixelId: '',
+    hotjarId: '',
+    enableAnalytics: true,
+    enableCookieConsent: true,
+    enableSitemap: true,
+    enableRobotsTxt: true,
+    enableSchemaMarkup: true,
+    enableCanonicalUrls: true,
+    organizationType: 'RealEstateAgent',
+    organizationName: '',
+    organizationLogo: '',
+    customMetaTags: '',
+    googleSiteVerification: '',
+    bingSiteVerification: '',
+    yandexVerification: '',
+    pinterestVerification: ''
   });
   const [loading, setLoading] = useState(false);
 
