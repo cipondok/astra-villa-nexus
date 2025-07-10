@@ -1,6 +1,7 @@
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { useMemo } from 'react';
 import { ThemeProvider } from '@/components/ThemeProvider';
 import { WebsiteSettingsProvider } from '@/contexts/WebsiteSettingsContext';
 import { ThemeSettingsProvider } from '@/contexts/ThemeSettingsContext';
@@ -35,18 +36,18 @@ import AddProperty from '@/pages/AddProperty';
 import MyProperties from '@/pages/MyProperties';
 import PropertyEdit from '@/pages/PropertyEdit';
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: 1,
-      refetchOnWindowFocus: false,
-      staleTime: 5 * 60 * 1000, // 5 minutes
-      gcTime: 10 * 60 * 1000, // 10 minutes
-    },
-  },
-});
-
 function App() {
+  const queryClient = useMemo(() => new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: 1,
+        refetchOnWindowFocus: false,
+        staleTime: 5 * 60 * 1000, // 5 minutes
+        gcTime: 10 * 60 * 1000, // 10 minutes
+      },
+    },
+  }), []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider defaultTheme="light" storageKey="astra-villa-theme">
