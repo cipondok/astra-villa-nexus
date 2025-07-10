@@ -1,7 +1,7 @@
 
+import React, { useMemo } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { useMemo } from 'react';
 import { ThemeProvider } from '@/components/ThemeProvider';
 import { WebsiteSettingsProvider } from '@/contexts/WebsiteSettingsContext';
 import { ThemeSettingsProvider } from '@/contexts/ThemeSettingsContext';
