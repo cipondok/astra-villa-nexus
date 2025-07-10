@@ -547,6 +547,307 @@ export type Database = {
           },
         ]
       }
+      astra_daily_checkins: {
+        Row: {
+          bonus_multiplier: number | null
+          checkin_date: string
+          created_at: string
+          id: string
+          streak_count: number
+          tokens_earned: number
+          user_id: string
+        }
+        Insert: {
+          bonus_multiplier?: number | null
+          checkin_date: string
+          created_at?: string
+          id?: string
+          streak_count?: number
+          tokens_earned?: number
+          user_id: string
+        }
+        Update: {
+          bonus_multiplier?: number | null
+          checkin_date?: string
+          created_at?: string
+          id?: string
+          streak_count?: number
+          tokens_earned?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "astra_daily_checkins_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      astra_exchange_rates: {
+        Row: {
+          created_at: string
+          exchange_rate: number
+          from_currency: string
+          id: string
+          is_active: boolean
+          to_currency: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          exchange_rate: number
+          from_currency: string
+          id?: string
+          is_active?: boolean
+          to_currency: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          exchange_rate?: number
+          from_currency?: string
+          id?: string
+          is_active?: boolean
+          to_currency?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      astra_referrals: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          id: string
+          referral_code: string | null
+          referred_id: string
+          referred_reward: number | null
+          referrer_id: string
+          referrer_reward: number | null
+          status: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          referral_code?: string | null
+          referred_id: string
+          referred_reward?: number | null
+          referrer_id: string
+          referrer_reward?: number | null
+          status?: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          referral_code?: string | null
+          referred_id?: string
+          referred_reward?: number | null
+          referrer_id?: string
+          referrer_reward?: number | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "astra_referrals_referred_id_fkey"
+            columns: ["referred_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "astra_referrals_referrer_id_fkey"
+            columns: ["referrer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      astra_reward_claims: {
+        Row: {
+          amount: number
+          claim_type: string
+          claimed_at: string
+          expires_at: string | null
+          id: string
+          metadata: Json | null
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          claim_type: string
+          claimed_at?: string
+          expires_at?: string | null
+          id?: string
+          metadata?: Json | null
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          claim_type?: string
+          claimed_at?: string
+          expires_at?: string | null
+          id?: string
+          metadata?: Json | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "astra_reward_claims_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      astra_reward_config: {
+        Row: {
+          conditions: Json | null
+          created_at: string
+          created_by: string | null
+          id: string
+          is_active: boolean
+          percentage_rate: number | null
+          reward_amount: number
+          reward_type: string
+          updated_at: string
+          user_role: string
+          valid_from: string | null
+          valid_until: string | null
+        }
+        Insert: {
+          conditions?: Json | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_active?: boolean
+          percentage_rate?: number | null
+          reward_amount?: number
+          reward_type: string
+          updated_at?: string
+          user_role: string
+          valid_from?: string | null
+          valid_until?: string | null
+        }
+        Update: {
+          conditions?: Json | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_active?: boolean
+          percentage_rate?: number | null
+          reward_amount?: number
+          reward_type?: string
+          updated_at?: string
+          user_role?: string
+          valid_from?: string | null
+          valid_until?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "astra_reward_config_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      astra_token_balances: {
+        Row: {
+          available_tokens: number
+          created_at: string
+          id: string
+          lifetime_earned: number
+          locked_tokens: number
+          total_tokens: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          available_tokens?: number
+          created_at?: string
+          id?: string
+          lifetime_earned?: number
+          locked_tokens?: number
+          total_tokens?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          available_tokens?: number
+          created_at?: string
+          id?: string
+          lifetime_earned?: number
+          locked_tokens?: number
+          total_tokens?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "astra_token_balances_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      astra_token_transactions: {
+        Row: {
+          amount: number
+          created_at: string
+          description: string | null
+          id: string
+          metadata: Json | null
+          processed_at: string | null
+          reference_id: string | null
+          reference_type: string | null
+          status: string
+          transaction_type: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          metadata?: Json | null
+          processed_at?: string | null
+          reference_id?: string | null
+          reference_type?: string | null
+          status?: string
+          transaction_type: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          metadata?: Json | null
+          processed_at?: string | null
+          reference_id?: string | null
+          reference_type?: string | null
+          status?: string
+          transaction_type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "astra_token_transactions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       billing_plans: {
         Row: {
           billing_cycle: string | null
