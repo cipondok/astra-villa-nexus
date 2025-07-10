@@ -1,114 +1,11 @@
 
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ThemeProvider } from '@/components/ThemeProvider';
-import { WebsiteSettingsProvider } from '@/contexts/WebsiteSettingsContext';
-import { ThemeSettingsProvider } from '@/contexts/ThemeSettingsContext';
-import { AuthProvider } from '@/contexts/AuthContext';
-import { AlertProvider } from '@/contexts/AlertContext';
-import { LanguageProvider } from '@/contexts/LanguageContext';
-import { PropertyComparisonProvider } from '@/contexts/PropertyComparisonContext';
-import { Toaster } from '@/components/ui/sonner';
-import AppInitializer from '@/components/AppInitializer';
-import PWAInstallPrompt from '@/components/PWAInstallPrompt';
-import Index from '@/pages/Index';
-import Properties from '@/pages/Properties';
-import PropertyDetail from '@/pages/PropertyDetail';
-import PropertyComparison from '@/pages/PropertyComparison';
-import About from '@/pages/About';
-import Profile from '@/pages/Profile';
-import AdminDashboard from '@/pages/AdminDashboard';
-import UserDashboard from '@/pages/UserDashboard';
-import VendorDashboard from '@/pages/VendorDashboard';
-import PropertyOwnerDashboard from '@/pages/PropertyOwnerDashboard';
-import AgentDashboard from '@/pages/AgentDashboard';
-import CustomerServiceDashboard from '@/pages/CustomerServiceDashboard';
-import Analytics from '@/pages/Analytics';
-import Services from '@/pages/Services';
-import Property3DShowcase from '@/pages/Property3DShowcase';
-import ServiceForm from '@/pages/ServiceForm';
-import NotFound from '@/pages/NotFound';
-import ProtectedRoute from '@/components/ProtectedRoute';
-import AdminOnlyRoute from '@/components/AdminOnlyRoute';
-import VendorOnlyRoute from '@/components/VendorOnlyRoute';
-import AddProperty from '@/pages/AddProperty';
-import MyProperties from '@/pages/MyProperties';
-import PropertyEdit from '@/pages/PropertyEdit';
-
-// Create QueryClient instance
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: 1,
-      refetchOnWindowFocus: false,
-      staleTime: 5 * 60 * 1000, // 5 minutes
-      gcTime: 10 * 60 * 1000, // 10 minutes
-    },
-  },
-});
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider defaultTheme="light" storageKey="astra-villa-theme">
-        <AlertProvider>
-          <LanguageProvider>
-            <WebsiteSettingsProvider>
-              <ThemeSettingsProvider>
-                <AuthProvider>
-                  <PropertyComparisonProvider>
-                    <AppInitializer>
-                      <Router>
-                        <div className="min-h-screen bg-background text-foreground theme-transition">
-                        <Routes>
-                          <Route path="/" element={<Index />} />
-                           <Route path="/properties" element={<Properties />} />
-                           <Route path="/properties/:id" element={<PropertyDetail />} />
-                           <Route path="/property-comparison" element={<PropertyComparison />} />
-                           <Route path="/3d-showcase" element={<Property3DShowcase />} />
-                          <Route path="/about" element={<About />} />
-                          <Route path="/services" element={<Services />} />
-                          <Route path="/services/new" element={<ServiceForm />} />
-
-                          <Route element={<ProtectedRoute />}>
-                            <Route path="/profile" element={<Profile />} />
-                            <Route path="/dashboard" element={<UserDashboard />} />
-                            <Route path="/analytics" element={<Analytics />} />
-                          </Route>
-
-                          <Route element={<AdminOnlyRoute />}>
-                            <Route path="/admin" element={<AdminDashboard />} />
-                          </Route>
-
-                          <Route element={<VendorOnlyRoute />}>
-                            <Route path="/vendor-dashboard" element={<VendorDashboard />} />
-                          </Route>
-
-                          <Route element={<ProtectedRoute />}>
-                            <Route path="/agent-dashboard" element={<AgentDashboard />} />
-                            <Route path="/customer-service" element={<CustomerServiceDashboard />} />
-                            <Route path="/property-owner-dashboard" element={<PropertyOwnerDashboard />} />
-                            <Route path="/add-property" element={<AddProperty />} />
-                            <Route path="/my-properties" element={<MyProperties />} />
-                            <Route path="/property/:id/edit" element={<PropertyEdit />} />
-                          </Route>
-                          
-                          <Route path="*" element={<NotFound />} />
-                         </Routes>
-                         <Toaster />
-                         <PWAInstallPrompt />
-                       </div>
-                     </Router>
-                    </AppInitializer>
-                  </PropertyComparisonProvider>
-                </AuthProvider>
-              </ThemeSettingsProvider>
-            </WebsiteSettingsProvider>
-          </LanguageProvider>
-        </AlertProvider>
-      </ThemeProvider>
-    </QueryClientProvider>
+    <div className="min-h-screen bg-white text-black">
+      <h1>App is working</h1>
+    </div>
   );
 }
 
