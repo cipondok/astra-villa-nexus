@@ -12,7 +12,6 @@ import { PropertyComparisonProvider } from '@/contexts/PropertyComparisonContext
 import { Toaster } from '@/components/ui/sonner';
 import AppInitializer from '@/components/AppInitializer';
 import PWAInstallPrompt from '@/components/PWAInstallPrompt';
-import CustomerServiceDashboard from '@/pages/CustomerServiceDashboard';
 import Index from '@/pages/Index';
 import Properties from '@/pages/Properties';
 import PropertyDetail from '@/pages/PropertyDetail';
@@ -24,6 +23,7 @@ import UserDashboard from '@/pages/UserDashboard';
 import VendorDashboard from '@/pages/VendorDashboard';
 import PropertyOwnerDashboard from '@/pages/PropertyOwnerDashboard';
 import AgentDashboard from '@/pages/AgentDashboard';
+import CustomerServiceDashboard from '@/pages/CustomerServiceDashboard';
 import Analytics from '@/pages/Analytics';
 import Services from '@/pages/Services';
 import Property3DShowcase from '@/pages/Property3DShowcase';
@@ -84,10 +84,15 @@ function App() {
                             <Route path="/vendor-dashboard" element={<VendorDashboard />} />
                           </Route>
 
-                          <Route path="/property-owner-dashboard" element={<PropertyOwnerDashboard />} />
-                          <Route path="/add-property" element={<AddProperty />} />
-                          <Route path="/my-properties" element={<MyProperties />} />
-                          <Route path="/property/:id/edit" element={<PropertyEdit />} />
+                          <Route element={<ProtectedRoute />}>
+                            <Route path="/agent-dashboard" element={<AgentDashboard />} />
+                            <Route path="/customer-service" element={<CustomerServiceDashboard />} />
+                            <Route path="/property-owner-dashboard" element={<PropertyOwnerDashboard />} />
+                            <Route path="/add-property" element={<AddProperty />} />
+                            <Route path="/my-properties" element={<MyProperties />} />
+                            <Route path="/property/:id/edit" element={<PropertyEdit />} />
+                          </Route>
+                          
                           <Route path="*" element={<NotFound />} />
                          </Routes>
                          <Toaster />
