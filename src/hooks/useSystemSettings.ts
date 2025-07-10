@@ -66,7 +66,7 @@ export const useSystemSettings = () => {
               description: `System setting for ${key}`
             },
             {
-              onConflict: 'key,category'
+              onConflict: 'key'
             }
           );
         
