@@ -36,7 +36,7 @@ import AddProperty from '@/pages/AddProperty';
 import MyProperties from '@/pages/MyProperties';
 import PropertyEdit from '@/pages/PropertyEdit';
 
-// Create QueryClient outside component to avoid hot reload issues
+// Create QueryClient instance
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -49,7 +49,6 @@ const queryClient = new QueryClient({
 });
 
 function App() {
-
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider defaultTheme="light" storageKey="astra-villa-theme">
