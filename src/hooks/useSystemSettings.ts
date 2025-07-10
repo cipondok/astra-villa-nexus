@@ -58,12 +58,17 @@ export const useSystemSettings = () => {
       for (const [key, value] of Object.entries(settings)) {
         const { error } = await supabase
           .from('system_settings')
-          .upsert({
-            key,
-            value,
-            category: 'general',
-            description: `System setting for ${key}`
-          });
+          .upsert(
+            {
+              key,
+              value,
+              category: 'general',
+              description: `System setting for ${key}`
+            },
+            {
+              onConflict: 'key,category'
+            }
+          );
         
         if (error) throw error;
       }
