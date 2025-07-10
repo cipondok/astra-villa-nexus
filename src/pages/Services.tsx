@@ -26,7 +26,10 @@ import {
   Shield,
   Plus,
   Edit,
-  Eye
+  Eye,
+  Grid3X3,
+  Brush,
+  Hammer
 } from 'lucide-react';
 
 // Service booking component
@@ -206,12 +209,17 @@ const Services = () => {
 
   const getCategoryIcon = (category: string) => {
     switch (category?.toLowerCase()) {
+      case 'all': 
+      case 'all services': return Grid3X3;
       case 'cleaning': return Home;
       case 'maintenance': return Wrench;
       case 'renovation': return Paintbrush;
       case 'electrical': return Zap;
       case 'hvac': return Car;
       case 'security': return Shield;
+      case 'painting': return Brush;
+      case 'plumbing': return Hammer;
+      case 'landscaping': return Home;
       default: return Wrench;
     }
   };
@@ -297,17 +305,95 @@ const Services = () => {
           </CardContent>
         </Card>
 
-        {/* Category Tabs */}
-        <div className="flex flex-wrap gap-2 mb-8">
-          {categories.map((category) => (
-            <Button
-              key={category}
-              variant={selectedCategory === category ? "default" : "outline"}
-              onClick={() => setSelectedCategory(category)}
-            >
-              {category}
-            </Button>
-          ))}
+        {/* Enhanced Category Tabs */}
+        <div className="mb-8">
+          <div className="bg-gradient-to-r from-white/90 to-gray-50/90 dark:from-gray-900/90 dark:to-gray-800/90 backdrop-blur-sm rounded-2xl border-2 border-gray-200/50 dark:border-gray-700/50 shadow-lg p-2">
+            <div className="flex flex-wrap gap-1">
+              {categories.map((category, index) => {
+                const isActive = selectedCategory === category;
+                const Icon = getCategoryIcon(category === 'All Services' ? 'all' : category);
+                
+                return (
+                  <button
+                    key={category}
+                    onClick={() => setSelectedCategory(category)}
+                    className={`
+                      relative px-4 py-3 rounded-xl font-semibold text-sm transition-all duration-300 flex items-center gap-2 min-w-0 flex-shrink-0
+                      ${isActive 
+                        ? 'bg-gradient-to-r from-primary via-primary to-primary-foreground text-white shadow-lg scale-105 transform' 
+                        : 'bg-white/60 dark:bg-gray-800/60 text-gray-700 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-700 hover:shadow-md hover:scale-102 transform'
+                      }
+                      border border-gray-200/50 dark:border-gray-600/50 hover:border-primary/30
+                    `}
+                  >
+                    {/* Background glow effect for active tab */}
+                    {isActive && (
+                      <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-primary-foreground/20 rounded-xl blur-md -z-10 animate-pulse" />
+                    )}
+                    
+                    {/* Icon */}
+                    <div className={`p-1.5 rounded-lg transition-all duration-300 ${
+                      isActive 
+                        ? 'bg-white/20 text-white' 
+                        : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
+                    }`}>
+                      <Icon className="h-4 w-4" />
+                    </div>
+                    
+                    {/* Category name */}
+                    <span className="truncate">
+                      {category}
+                    </span>
+                    
+                    {/* Service count badge */}
+                    {category !== 'All Services' && (
+                      <span className={`
+                        ml-1 px-2 py-0.5 rounded-full text-xs font-bold transition-all duration-300
+                        ${isActive 
+                          ? 'bg-white/20 text-white' 
+                          : 'bg-gray-200 dark:bg-gray-600 text-gray-600 dark:text-gray-300'
+                        }
+                      `}>
+                        {services.filter(s => s.service_category === category).length}
+                      </span>
+                    )}
+                    
+                    {/* Active indicator */}
+                    {isActive && (
+                      <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-6 h-1 bg-white rounded-full animate-bounce" />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+          
+          {/* Tab content indicator */}
+          <div className="mt-6 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                {selectedCategory === 'All Services' ? 'All Services' : `${selectedCategory} Services`}
+              </h2>
+              <Badge variant="secondary" className="bg-gradient-to-r from-primary/10 to-primary/5 text-primary border-primary/20 px-3 py-1.5 font-semibold">
+                {selectedCategory === 'All Services' 
+                  ? `${services.length} services` 
+                  : `${services.filter(s => s.service_category === selectedCategory).length} services`
+                }
+              </Badge>
+            </div>
+            
+            {/* Sort options */}
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-muted-foreground">Sort by:</span>
+              <select className="px-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm font-medium">
+                <option>Popular</option>
+                <option>Price: Low to High</option>
+                <option>Price: High to Low</option>
+                <option>Rating</option>
+                <option>Newest</option>
+              </select>
+            </div>
+          </div>
         </div>
 
         {/* Services Grid */}
