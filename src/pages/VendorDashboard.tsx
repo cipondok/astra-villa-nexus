@@ -41,6 +41,7 @@ import VendorSupport from '@/components/vendor/VendorSupport';
 import VendorReviews from '@/components/vendor/VendorReviews';
 import VendorProfileProgress from '@/components/vendor/VendorProfileProgress';
 import VendorDashboardNavigation from '@/components/vendor/VendorDashboardNavigation';
+import CategoryDiscountSettings from '@/components/vendor/CategoryDiscountSettings';
 import ThemeSwitcher from '@/components/ui/theme-switcher';
 
 const VendorDashboard = () => {
@@ -122,7 +123,7 @@ const VendorDashboard = () => {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-8 gap-1">
+          <TabsList className="grid w-full grid-cols-9 gap-1">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="services">Services</TabsTrigger>
             <TabsTrigger value="properties">Properties</TabsTrigger>
@@ -130,6 +131,7 @@ const VendorDashboard = () => {
             <TabsTrigger value="profile">Profile</TabsTrigger>
             <TabsTrigger value="bookings">Bookings</TabsTrigger>
             <TabsTrigger value="analytics">Analytics</TabsTrigger>
+            <TabsTrigger value="categories">Categories</TabsTrigger>
             <TabsTrigger value="settings">Settings</TabsTrigger>
           </TabsList>
 
@@ -389,6 +391,10 @@ const VendorDashboard = () => {
 
           <TabsContent value="analytics">
             <VendorAnalytics />
+          </TabsContent>
+
+          <TabsContent value="categories">
+            <CategoryDiscountSettings />
           </TabsContent>
 
           <TabsContent value="settings">

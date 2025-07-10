@@ -5000,6 +5000,7 @@ export type Database = {
         Row: {
           created_at: string | null
           description: string | null
+          discount_eligible: boolean | null
           display_order: number | null
           icon: string | null
           id: string
@@ -5011,6 +5012,7 @@ export type Database = {
         Insert: {
           created_at?: string | null
           description?: string | null
+          discount_eligible?: boolean | null
           display_order?: number | null
           icon?: string | null
           id?: string
@@ -5022,6 +5024,7 @@ export type Database = {
         Update: {
           created_at?: string | null
           description?: string | null
+          discount_eligible?: boolean | null
           display_order?: number | null
           icon?: string | null
           id?: string
@@ -5455,6 +5458,7 @@ export type Database = {
           approved_service_name_id: string | null
           created_at: string | null
           description: string | null
+          discount_eligible: boolean | null
           display_order: number | null
           icon: string | null
           id: string
@@ -5467,6 +5471,7 @@ export type Database = {
           approved_service_name_id?: string | null
           created_at?: string | null
           description?: string | null
+          discount_eligible?: boolean | null
           display_order?: number | null
           icon?: string | null
           id?: string
@@ -5479,6 +5484,7 @@ export type Database = {
           approved_service_name_id?: string | null
           created_at?: string | null
           description?: string | null
+          discount_eligible?: boolean | null
           display_order?: number | null
           icon?: string | null
           id?: string
@@ -5908,6 +5914,7 @@ export type Database = {
         Row: {
           created_at: string | null
           description: string | null
+          discount_eligible: boolean | null
           display_order: number | null
           icon: string | null
           id: string
@@ -5919,6 +5926,7 @@ export type Database = {
         Insert: {
           created_at?: string | null
           description?: string | null
+          discount_eligible?: boolean | null
           display_order?: number | null
           icon?: string | null
           id?: string
@@ -5930,6 +5938,7 @@ export type Database = {
         Update: {
           created_at?: string | null
           description?: string | null
+          discount_eligible?: boolean | null
           display_order?: number | null
           icon?: string | null
           id?: string

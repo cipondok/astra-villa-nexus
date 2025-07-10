@@ -12,9 +12,10 @@ import { Plus, X, DollarSign, Clock, Package, Tag, Calendar } from 'lucide-react
 interface PricingStepProps {
   formData: any;
   updateFormData: (data: any) => void;
+  categoryDiscountEligible?: boolean;
 }
 
-const PricingStep: React.FC<PricingStepProps> = ({ formData, updateFormData }) => {
+const PricingStep: React.FC<PricingStepProps> = ({ formData, updateFormData, categoryDiscountEligible = true }) => {
   const [newPackage, setNewPackage] = useState({
     name: '',
     description: '',
@@ -253,82 +254,94 @@ const PricingStep: React.FC<PricingStepProps> = ({ formData, updateFormData }) =
         </Card>
       )}
 
-      {/* Discount Settings */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Tag className="h-5 w-5" />
-            Discount & Promotions
-          </CardTitle>
-          <CardDescription>
-            Set up promotional pricing for your service
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="discount-percentage">Discount Percentage (%)</Label>
-              <Input
-                id="discount-percentage"
-                type="number"
-                min="0"
-                max="100"
-                value={formData.discountPercentage || 0}
-                onChange={(e) => updateFormData({ discountPercentage: parseFloat(e.target.value) || 0 })}
-                placeholder="e.g., 15"
-              />
+      {/* Discount Settings - Only show if category allows discounts */}
+      {categoryDiscountEligible ? (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Tag className="h-5 w-5" />
+              Discount & Promotions
+            </CardTitle>
+            <CardDescription>
+              Set up promotional pricing for your service
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="discount-percentage">Discount Percentage (%)</Label>
+                <Input
+                  id="discount-percentage"
+                  type="number"
+                  min="0"
+                  max="100"
+                  value={formData.discountPercentage || 0}
+                  onChange={(e) => updateFormData({ discountPercentage: parseFloat(e.target.value) || 0 })}
+                  placeholder="e.g., 15"
+                />
+              </div>
+              <div>
+                <Label htmlFor="discount-description">Promotion Title</Label>
+                <Input
+                  id="discount-description"
+                  value={formData.discountDescription || ''}
+                  onChange={(e) => updateFormData({ discountDescription: e.target.value })}
+                  placeholder="e.g., New Year Sale"
+                />
+              </div>
             </div>
-            <div>
-              <Label htmlFor="discount-description">Promotion Title</Label>
-              <Input
-                id="discount-description"
-                value={formData.discountDescription || ''}
-                onChange={(e) => updateFormData({ discountDescription: e.target.value })}
-                placeholder="e.g., New Year Sale"
-              />
+            
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="discount-start">Start Date</Label>
+                <Input
+                  id="discount-start"
+                  type="datetime-local"
+                  value={formData.discountStartDate || ''}
+                  onChange={(e) => updateFormData({ discountStartDate: e.target.value })}
+                />
+              </div>
+              <div>
+                <Label htmlFor="discount-end">End Date</Label>
+                <Input
+                  id="discount-end"
+                  type="datetime-local"
+                  value={formData.discountEndDate || ''}
+                  onChange={(e) => updateFormData({ discountEndDate: e.target.value })}
+                />
+              </div>
             </div>
-          </div>
-          
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="discount-start">Start Date</Label>
-              <Input
-                id="discount-start"
-                type="datetime-local"
-                value={formData.discountStartDate || ''}
-                onChange={(e) => updateFormData({ discountStartDate: e.target.value })}
-              />
-            </div>
-            <div>
-              <Label htmlFor="discount-end">End Date</Label>
-              <Input
-                id="discount-end"
-                type="datetime-local"
-                value={formData.discountEndDate || ''}
-                onChange={(e) => updateFormData({ discountEndDate: e.target.value })}
-              />
-            </div>
-          </div>
 
-          {formData.discountPercentage > 0 && (
-            <div className="p-3 bg-muted rounded-lg">
-              <div className="flex items-center gap-2 mb-2">
-                <Tag className="h-4 w-4 text-primary" />
-                <span className="font-medium">Discount Preview</span>
+            {formData.discountPercentage > 0 && (
+              <div className="p-3 bg-muted rounded-lg">
+                <div className="flex items-center gap-2 mb-2">
+                  <Tag className="h-4 w-4 text-primary" />
+                  <span className="font-medium">Discount Preview</span>
+                </div>
+                <div className="text-sm space-y-1">
+                  <p>Original Price: {formatIDR(formData.basePrice || 0)}</p>
+                  <p className="text-green-600 font-medium">
+                    Discounted Price: {formatIDR((formData.basePrice || 0) * (1 - (formData.discountPercentage || 0) / 100))}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    You save: {formatIDR((formData.basePrice || 0) * ((formData.discountPercentage || 0) / 100))}
+                  </p>
+                </div>
               </div>
-              <div className="text-sm space-y-1">
-                <p>Original Price: {formatIDR(formData.basePrice || 0)}</p>
-                <p className="text-green-600 font-medium">
-                  Discounted Price: {formatIDR((formData.basePrice || 0) * (1 - (formData.discountPercentage || 0) / 100))}
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  You save: {formatIDR((formData.basePrice || 0) * ((formData.discountPercentage || 0) / 100))}
-                </p>
-              </div>
-            </div>
-          )}
-        </CardContent>
-      </Card>
+            )}
+          </CardContent>
+        </Card>
+      ) : (
+        <Card className="border-dashed border-muted-foreground/50">
+          <CardContent className="p-6 text-center">
+            <Tag className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
+            <h3 className="font-medium text-muted-foreground mb-1">Discounts Not Available</h3>
+            <p className="text-sm text-muted-foreground">
+              This category doesn't allow discounts. Contact support to enable discounts for this category.
+            </p>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Pricing Summary */}
       <Card className="bg-green-50 border-green-200">
