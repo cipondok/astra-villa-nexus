@@ -14,6 +14,7 @@ import NotificationSettings from './settings/NotificationSettings';
 import FileSettings from './settings/FileSettings';
 import SystemMonitoring from './settings/SystemMonitoring';
 import BackupSettings from './settings/BackupSettings';
+import DiscountSettings from './settings/DiscountSettings';
 import LoadingPage from '../LoadingPage';
 
 const SystemSettings = () => {
@@ -71,11 +72,12 @@ const SystemSettings = () => {
 
       <Tabs defaultValue="general" className="space-y-4">
         <div className="overflow-x-auto">
-          <TabsList className="grid w-full grid-cols-6 min-w-fit">
+          <TabsList className="grid w-full grid-cols-7 min-w-fit">
             <TabsTrigger value="general" className="whitespace-nowrap">General</TabsTrigger>
             <TabsTrigger value="security" className="whitespace-nowrap">Security</TabsTrigger>
             <TabsTrigger value="notifications" className="whitespace-nowrap">Notifications</TabsTrigger>
             <TabsTrigger value="files" className="whitespace-nowrap">Files</TabsTrigger>
+            <TabsTrigger value="discounts" className="whitespace-nowrap">Discounts</TabsTrigger>
             <TabsTrigger value="system" className="whitespace-nowrap">System Monitor</TabsTrigger>
             <TabsTrigger value="backup" className="whitespace-nowrap">Backup</TabsTrigger>
           </TabsList>
@@ -106,6 +108,13 @@ const SystemSettings = () => {
 
         <TabsContent value="files" className="space-y-4">
           <FileSettings 
+            settings={settings}
+            onInputChange={handleInputChange}
+          />
+        </TabsContent>
+
+        <TabsContent value="discounts" className="space-y-4">
+          <DiscountSettings 
             settings={settings}
             onInputChange={handleInputChange}
           />

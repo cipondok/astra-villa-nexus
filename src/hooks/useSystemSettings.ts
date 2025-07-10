@@ -15,7 +15,14 @@ export const useSystemSettings = () => {
     maxFileSize: '10',
     allowedFileTypes: 'jpg,jpeg,png,pdf',
     sessionTimeout: '30',
-    maxLoginAttempts: '5'
+    maxLoginAttempts: '5',
+    // Discounting System Settings
+    discountEnabled: true,
+    maxDiscountPercentage: '90',
+    minDiscountDuration: '1',
+    requireAdminApproval: false,
+    allowSeasonalDiscounts: true,
+    discountNotifications: true
   });
   const [loading, setLoading] = useState(false);
 
