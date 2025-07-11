@@ -11,6 +11,7 @@ import { PropertyComparisonProvider } from '@/contexts/PropertyComparisonContext
 import { Toaster } from '@/components/ui/toaster';
 import Index from '@/pages/Index';
 import Services from '@/pages/Services';
+import PropertyDetail from '@/pages/PropertyDetail';
 import AdminDashboard from '@/pages/AdminDashboard';
 import NotFound from '@/pages/NotFound';
 
@@ -40,6 +41,7 @@ function App() {
                       <Routes>
                         <Route path="/" element={<Index />} />
                         <Route path="/services" element={<Services />} />
+                        <Route path="/properties/:id" element={<PropertyDetail />} />
                         <Route path="/admin" element={<AdminDashboard />} />
                         <Route path="*" element={<NotFound />} />
                       </Routes>
