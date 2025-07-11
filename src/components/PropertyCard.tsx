@@ -37,26 +37,26 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
   const getTypeColor = (type: string) => {
     switch (type) {
       case 'sale':
-        return 'bg-binance-green text-white';
+        return 'bg-emerald-600 text-white font-semibold';
       case 'rent':
-        return 'bg-binance-orange text-black font-semibold';
+        return 'bg-blue-600 text-white font-semibold';
       case 'new-project':
-        return 'bg-gradient-to-r from-yellow-400 to-yellow-600 text-black font-semibold';
+        return 'bg-gradient-to-r from-amber-500 to-orange-500 text-white font-semibold';
       default:
-        return 'bg-binance-gray text-white';
+        return 'bg-slate-600 text-white font-semibold';
     }
   };
 
   const getTypeLabel = (type: string) => {
     switch (type) {
       case 'sale':
-        return 'For Sale';
+        return 'FOR SALE';
       case 'rent':
-        return 'For Rent';
+        return 'FOR RENT';
       case 'new-project':
-        return 'New Project';
+        return 'NEW PROJECT';
       default:
-        return type;
+        return type.toUpperCase();
     }
   };
 
@@ -101,7 +101,7 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
           
           {/* Status Badge */}
           <div className="absolute top-3 left-3 flex gap-2 flex-wrap">
-            <Badge className={`${getTypeColor(property.type)} shadow-lg`}>
+            <Badge className={`${getTypeColor(property.type)} shadow-lg px-3 py-1 text-xs tracking-wide`}>
               {getTypeLabel(property.type)}
             </Badge>
             {(property.three_d_model_url || property.virtual_tour_url) && (
@@ -147,7 +147,7 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
             <span className="text-sm line-clamp-1 font-medium">{property.location}</span>
           </div>
 
-          <div className="price text-2xl font-bold text-binance-orange mb-4 glow-gold">
+          <div className="price text-2xl font-bold text-emerald-600 mb-4 tracking-tight">
             {property.price}
           </div>
 

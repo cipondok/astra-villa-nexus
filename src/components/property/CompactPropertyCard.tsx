@@ -149,8 +149,13 @@ const CompactPropertyCard = ({
 
           {/* Top Badges */}
           <div className="absolute top-3 left-3 flex flex-wrap gap-2">
-            <Badge variant="secondary" className="bg-background/90">
-              {property.listing_type === 'sale' ? currentText.forSale : currentText.forRent}
+            <Badge 
+              className={`${property.listing_type === 'sale' 
+                ? 'bg-emerald-600 text-white' 
+                : 'bg-blue-600 text-white'
+              } font-semibold px-3 py-1 text-xs tracking-wide shadow-lg`}
+            >
+              {property.listing_type === 'sale' ? currentText.forSale.toUpperCase() : currentText.forRent.toUpperCase()}
             </Badge>
             {property.property_type && (
               <Badge variant="outline" className="bg-background/90 capitalize">
@@ -200,12 +205,12 @@ const CompactPropertyCard = ({
         <CardContent className="p-4 space-y-3">
           {/* Price */}
           <div className="flex items-center justify-between">
-            <h3 className="text-xl font-bold text-primary">
+            <h3 className="text-xl font-bold text-emerald-600 tracking-tight">
               {formatPrice(property.price)}
+              {property.listing_type === 'rent' && (
+                <span className="text-sm font-normal text-slate-500 ml-1">/month</span>
+              )}
             </h3>
-            {property.listing_type === 'rent' && (
-              <span className="text-sm text-muted-foreground">/month</span>
-            )}
           </div>
 
           {/* Title */}

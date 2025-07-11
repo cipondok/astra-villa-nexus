@@ -110,8 +110,13 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
           )}
           
           <div className="absolute top-2 left-2 flex gap-2 flex-wrap">
-            <Badge variant={listing_type === 'sale' ? 'default' : 'secondary'}>
-              {listing_type === 'sale' ? 'For Sale' : 'For Rent'}
+            <Badge 
+              className={`${listing_type === 'sale' 
+                ? 'bg-emerald-600 text-white' 
+                : 'bg-blue-600 text-white'
+              } font-semibold px-3 py-1 text-xs tracking-wide shadow-lg`}
+            >
+              {listing_type === 'sale' ? 'FOR SALE' : 'FOR RENT'}
             </Badge>
             {(three_d_model_url || virtual_tour_url) && (
               <Badge className="bg-blue-600 text-white flex items-center gap-1">
@@ -139,9 +144,9 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
         </CardHeader>
 
         <CardContent className="space-y-4">
-          <div className="text-2xl font-bold text-green-600">
+          <div className="text-2xl font-bold text-emerald-600 tracking-tight">
             {formatPrice(price)}
-            {listing_type === 'rent' && <span className="text-sm font-normal text-gray-500">/month</span>}
+            {listing_type === 'rent' && <span className="text-sm font-normal text-slate-500 ml-1">/month</span>}
           </div>
 
           {(bedrooms || bathrooms || area_sqm) && (
