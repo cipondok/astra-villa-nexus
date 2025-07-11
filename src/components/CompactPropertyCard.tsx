@@ -127,8 +127,11 @@ const CompactPropertyCard = ({ property }: CompactPropertyCardProps) => {
           <span className="text-sm line-clamp-1">{property.location}</span>
         </div>
 
-        <div className="text-xl font-bold text-blue-600 mb-3">
-          {property.price}
+        <div className="relative mb-3">
+          <div className="text-2xl font-black bg-gradient-to-r from-primary via-primary-foreground to-secondary bg-clip-text text-transparent mb-1 tracking-tight">
+            {property.price}
+          </div>
+          <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 to-secondary/20 blur-sm -z-10 rounded-lg opacity-75"></div>
         </div>
 
         <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400 mb-4">

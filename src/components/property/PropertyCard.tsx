@@ -144,9 +144,16 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
         </CardHeader>
 
         <CardContent className="space-y-4">
-          <div className="text-2xl font-bold text-emerald-600 tracking-tight">
-            {formatPrice(price)}
-            {listing_type === 'rent' && <span className="text-sm font-normal text-slate-500 ml-1">/month</span>}
+          <div className="relative price-display mb-2">
+            <div className="text-3xl font-black bg-gradient-to-br from-emerald-500 via-emerald-600 to-green-700 bg-clip-text text-transparent tracking-tight leading-none">
+              {formatPrice(price)}
+            </div>
+            <div className="absolute -inset-2 bg-gradient-to-r from-emerald-500/15 via-green-500/15 to-emerald-600/15 blur-lg -z-10 rounded-lg"></div>
+            {listing_type === 'rent' && (
+              <div className="text-xs font-semibold text-emerald-600/90 mt-1 tracking-wider uppercase">
+                Per Month
+              </div>
+            )}
           </div>
 
           {(bedrooms || bathrooms || area_sqm) && (

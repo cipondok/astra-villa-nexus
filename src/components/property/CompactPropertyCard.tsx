@@ -204,13 +204,16 @@ const CompactPropertyCard = ({
         {/* Content Section */}
         <CardContent className="p-4 space-y-3">
           {/* Price */}
-          <div className="flex items-center justify-between">
-            <h3 className="text-xl font-bold text-emerald-600 tracking-tight">
+          <div className="relative price-section mb-2">
+            <div className="text-2xl font-black bg-gradient-to-br from-emerald-500 via-emerald-600 to-green-700 bg-clip-text text-transparent tracking-tight leading-none">
               {formatPrice(property.price)}
-              {property.listing_type === 'rent' && (
-                <span className="text-sm font-normal text-slate-500 ml-1">/month</span>
-              )}
-            </h3>
+            </div>
+            <div className="absolute -inset-1.5 bg-gradient-to-r from-emerald-500/12 via-green-500/12 to-emerald-600/12 blur-md -z-10 rounded-lg"></div>
+            {property.listing_type === 'rent' && (
+              <div className="text-xs font-semibold text-emerald-600/80 mt-0.5 tracking-wider uppercase">
+                Per Month
+              </div>
+            )}
           </div>
 
           {/* Title */}

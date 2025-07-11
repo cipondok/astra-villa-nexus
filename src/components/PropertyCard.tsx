@@ -147,8 +147,14 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
             <span className="text-sm line-clamp-1 font-medium">{property.location}</span>
           </div>
 
-          <div className="price text-2xl font-bold text-emerald-600 mb-4 tracking-tight">
-            {property.price}
+          <div className="relative price-container mb-4">
+            <div className="text-3xl font-black bg-gradient-to-br from-emerald-500 via-emerald-600 to-green-700 bg-clip-text text-transparent tracking-tight leading-none">
+              {property.price}
+            </div>
+            <div className="absolute -inset-2 bg-gradient-to-r from-emerald-500/10 via-green-500/10 to-emerald-600/10 blur-xl -z-10 rounded-xl"></div>
+            <div className="text-xs font-medium text-emerald-600/80 mt-1 tracking-wider uppercase">
+              {property.type === 'rent' ? 'Per Month' : 'Total Price'}
+            </div>
           </div>
 
           <div className="flex items-center justify-between text-sm text-binance-white mb-4">
