@@ -27,7 +27,13 @@ export interface BaseProperty {
     user_level?: string;
     verification_status?: string;
     total_properties?: number;
+    joining_date?: string;
+    customer_feedback_rating?: number;
+    customer_feedback_count?: number;
   };
+  // Posting information
+  created_at?: string;
+  posted_at?: string;
 }
 
 // For components that need additional fields

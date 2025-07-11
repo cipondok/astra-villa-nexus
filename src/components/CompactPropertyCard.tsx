@@ -2,7 +2,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Heart, MapPin, Bed, Bath, Square, Star, Eye, Box } from "lucide-react";
+import { Heart, MapPin, Bed, Bath, Square, Star, Eye, Box, Clock, Calendar, TrendingUp } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -21,6 +21,8 @@ interface Property {
   isHotDeal?: boolean;
   three_d_model_url?: string;
   virtual_tour_url?: string;
+  created_at?: string;
+  posted_at?: string;
   posted_by?: {
     id: string;
     name: string;
@@ -29,6 +31,9 @@ interface Property {
     user_level?: string;
     verification_status?: string;
     total_properties?: number;
+    joining_date?: string;
+    customer_feedback_rating?: number;
+    customer_feedback_count?: number;
   };
 }
 
@@ -64,6 +69,27 @@ const CompactPropertyCard = ({ property }: CompactPropertyCardProps) => {
       default:
         return type;
     }
+  };
+
+  const formatTimeAgo = (dateString: string) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60));
+    const diffInDays = Math.floor(diffInHours / 24);
+    
+    if (diffInHours < 1) return 'Just now';
+    if (diffInHours < 24) return `${diffInHours}h ago`;
+    if (diffInDays < 30) return `${diffInDays}d ago`;
+    if (diffInDays < 365) return `${Math.floor(diffInDays / 30)}mo ago`;
+    return `${Math.floor(diffInDays / 365)}y ago`;
+  };
+
+  const formatJoiningDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { 
+      year: 'numeric', 
+      month: 'short' 
+    });
   };
 
   const handleViewDetails = () => {
@@ -133,40 +159,78 @@ const CompactPropertyCard = ({ property }: CompactPropertyCardProps) => {
           </h3>
         </div>
 
-        {/* User Rating and Level */}
+        {/* User Information Section */}
         {property.posted_by && (
-          <div className="flex items-center gap-2 mb-2 p-2 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-lg border border-blue-100 dark:border-blue-800">
-            <div className="flex items-center gap-1">
-              {property.posted_by.avatar_url ? (
-                <img 
-                  src={property.posted_by.avatar_url} 
-                  alt={property.posted_by.name}
-                  className="w-6 h-6 rounded-full object-cover"
-                />
-              ) : (
-                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-xs font-bold">
-                  {property.posted_by.name.charAt(0).toUpperCase()}
+          <div className="space-y-2 mb-2">
+            {/* Main User Info */}
+            <div className="flex items-center gap-2 p-2 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-lg border border-blue-100 dark:border-blue-800">
+              <div className="flex items-center gap-1">
+                {property.posted_by.avatar_url ? (
+                  <img 
+                    src={property.posted_by.avatar_url} 
+                    alt={property.posted_by.name}
+                    className="w-6 h-6 rounded-full object-cover"
+                  />
+                ) : (
+                  <div className="w-6 h-6 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-xs font-bold">
+                    {property.posted_by.name.charAt(0).toUpperCase()}
+                  </div>
+                )}
+                <div className="flex flex-col">
+                  <span className="text-xs font-medium text-blue-700 dark:text-blue-300">
+                    {property.posted_by.name}
+                  </span>
+                  {property.posted_by.user_level && (
+                    <span className="text-xs text-blue-600 dark:text-blue-400 font-semibold">
+                      {property.posted_by.user_level}
+                    </span>
+                  )}
+                </div>
+              </div>
+              {property.posted_by.rating && (
+                <div className="flex items-center gap-1 ml-auto">
+                  <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                  <span className="text-xs font-bold text-yellow-600 dark:text-yellow-400">
+                    {property.posted_by.rating.toFixed(1)}
+                  </span>
                 </div>
               )}
-              <div className="flex flex-col">
-                <span className="text-xs font-medium text-blue-700 dark:text-blue-300">
-                  {property.posted_by.name}
-                </span>
-                {property.posted_by.user_level && (
-                  <span className="text-xs text-blue-600 dark:text-blue-400 font-semibold">
-                    {property.posted_by.user_level}
+            </div>
+
+            {/* Additional User Information */}
+            <div className="grid grid-cols-1 gap-1.5 text-xs">
+              {/* Customer Feedback Status */}
+              {property.posted_by.customer_feedback_rating && (
+                <div className="flex items-center gap-1 px-2 py-1 bg-amber-50 dark:bg-amber-900/20 rounded border border-amber-200 dark:border-amber-800">
+                  <TrendingUp className="h-3 w-3 text-amber-600 flex-shrink-0" />
+                  <span className="text-amber-700 dark:text-amber-300 font-medium truncate">
+                    Rating: {property.posted_by.customer_feedback_rating.toFixed(1)}
+                    {property.posted_by.customer_feedback_count && ` (${property.posted_by.customer_feedback_count})`}
                   </span>
+                </div>
+              )}
+
+              {/* Joining Date and Posting Time */}
+              <div className="grid grid-cols-2 gap-1.5">
+                {property.posted_by.joining_date && (
+                  <div className="flex items-center gap-1 px-2 py-1 bg-blue-50 dark:bg-blue-900/20 rounded border border-blue-200 dark:border-blue-800">
+                    <Calendar className="h-3 w-3 text-blue-600 flex-shrink-0" />
+                    <span className="text-blue-700 dark:text-blue-300 font-medium text-xs truncate">
+                      {formatJoiningDate(property.posted_by.joining_date)}
+                    </span>
+                  </div>
+                )}
+
+                {(property.created_at || property.posted_at) && (
+                  <div className="flex items-center gap-1 px-2 py-1 bg-gray-50 dark:bg-gray-900/20 rounded border border-gray-200 dark:border-gray-700">
+                    <Clock className="h-3 w-3 text-gray-600 flex-shrink-0" />
+                    <span className="text-gray-700 dark:text-gray-300 font-medium text-xs truncate">
+                      {formatTimeAgo(property.posted_at || property.created_at || '')}
+                    </span>
+                  </div>
                 )}
               </div>
             </div>
-            {property.posted_by.rating && (
-              <div className="flex items-center gap-1 ml-auto">
-                <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                <span className="text-xs font-bold text-yellow-600 dark:text-yellow-400">
-                  {property.posted_by.rating.toFixed(1)}
-                </span>
-              </div>
-            )}
           </div>
         )}
         
