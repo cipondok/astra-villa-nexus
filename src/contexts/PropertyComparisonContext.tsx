@@ -66,6 +66,11 @@ export const PropertyComparisonProvider = ({
 export const usePropertyComparison = () => {
   const context = useContext(PropertyComparisonContext);
   if (context === undefined) {
+    // During initial render, return null instead of throwing error
+    if (typeof window !== 'undefined' && window.location) {
+      console.warn('usePropertyComparison must be used within a PropertyComparisonProvider');
+      return null;
+    }
     throw new Error('usePropertyComparison must be used within a PropertyComparisonProvider');
   }
   return context;

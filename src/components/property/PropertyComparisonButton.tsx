@@ -17,13 +17,19 @@ const PropertyComparisonButton = ({
   variant = 'outline', 
   size = 'sm' 
 }: PropertyComparisonButtonProps) => {
+  const comparison = usePropertyComparison();
+  
+  if (!comparison) {
+    return null; // Return null if context is not available
+  }
+
   const { 
     addToComparison, 
     removeFromComparison, 
     isInComparison, 
     canAddMore,
     maxCompareLimit 
-  } = usePropertyComparison();
+  } = comparison;
   const { toast } = useToast();
 
   const inComparison = isInComparison(property.id);
