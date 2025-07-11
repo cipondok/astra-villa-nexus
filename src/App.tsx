@@ -28,9 +28,9 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider defaultTheme="light" storageKey="astra-villa-theme">
-        <AlertProvider>
-          <LanguageProvider>
-            <WebsiteSettingsProvider>
+        <LanguageProvider>
+          <WebsiteSettingsProvider>
+            <AlertProvider>
               <AuthProvider>
                 <PropertyComparisonProvider>
                   <Router>
@@ -44,9 +44,9 @@ function App() {
                   </Router>
                 </PropertyComparisonProvider>
               </AuthProvider>
-            </WebsiteSettingsProvider>
-          </LanguageProvider>
-        </AlertProvider>
+            </AlertProvider>
+          </WebsiteSettingsProvider>
+        </LanguageProvider>
       </ThemeProvider>
     </QueryClientProvider>
   );
