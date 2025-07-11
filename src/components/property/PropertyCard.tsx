@@ -2,7 +2,7 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Heart, MapPin, Bed, Bath, Square, Eye, Box } from "lucide-react";
+import { Heart, MapPin, Bed, Bath, Square, Eye, Box, Star } from "lucide-react";
 import { useState } from "react";
 import PropertyDetailModal from "./PropertyDetailModal";
 import Property3DViewModal from "./Property3DViewModal";
@@ -22,6 +22,15 @@ interface PropertyCardProps {
   development_status?: string;
   three_d_model_url?: string;
   virtual_tour_url?: string;
+  posted_by?: {
+    id: string;
+    name: string;
+    avatar_url?: string;
+    rating?: number;
+    user_level?: string;
+    verification_status?: string;
+    total_properties?: number;
+  };
 }
 
 const PropertyCard: React.FC<PropertyCardProps> = ({
@@ -37,7 +46,8 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
   images,
   development_status = 'completed',
   three_d_model_url,
-  virtual_tour_url
+  virtual_tour_url,
+  posted_by
 }) => {
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [show3DModal, setShow3DModal] = useState(false);
@@ -88,6 +98,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
     description: description,
     three_d_model_url: three_d_model_url,
     virtual_tour_url: virtual_tour_url,
+    posted_by: posted_by,
   };
 
   console.log('PropertyCard - Rendering with showDetailModal:', showDetailModal);
@@ -137,6 +148,44 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 
         <CardHeader>
           <CardTitle className="text-lg">{title}</CardTitle>
+          
+          {/* User Rating and Level */}
+          {posted_by && (
+            <div className="flex items-center gap-3 p-3 bg-gradient-to-r from-emerald-50 to-blue-50 dark:from-emerald-900/20 dark:to-blue-900/20 rounded-lg border border-emerald-100 dark:border-emerald-800">
+              <div className="flex items-center gap-2">
+                {posted_by.avatar_url ? (
+                  <img 
+                    src={posted_by.avatar_url} 
+                    alt={posted_by.name}
+                    className="w-8 h-8 rounded-full object-cover border-2 border-emerald-400/50"
+                  />
+                ) : (
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-500 to-blue-600 flex items-center justify-center text-white text-sm font-bold">
+                    {posted_by.name.charAt(0).toUpperCase()}
+                  </div>
+                )}
+                <div className="flex flex-col">
+                  <span className="text-sm font-semibold text-emerald-700 dark:text-emerald-300">
+                    {posted_by.name}
+                  </span>
+                  {posted_by.user_level && (
+                    <span className="text-xs text-emerald-600 dark:text-emerald-400 font-bold">
+                      {posted_by.user_level}
+                    </span>
+                  )}
+                </div>
+              </div>
+              {posted_by.rating && (
+                <div className="flex items-center gap-1 ml-auto">
+                  <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                  <span className="text-sm font-bold text-yellow-600 dark:text-yellow-400">
+                    {posted_by.rating.toFixed(1)}
+                  </span>
+                </div>
+              )}
+            </div>
+          )}
+          
           <CardDescription className="flex items-center gap-1">
             <MapPin className="h-4 w-4" />
             {location}

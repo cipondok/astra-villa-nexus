@@ -2,7 +2,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Heart, MapPin, Bed, Bath, Square, Eye, Box } from "lucide-react";
+import { Heart, MapPin, Bed, Bath, Square, Eye, Box, Star } from "lucide-react";
 import { useState } from "react";
 import PropertyDetailModal from "./property/PropertyDetailModal";
 import Property3DViewModal from "./property/Property3DViewModal";
@@ -23,6 +23,15 @@ interface Property {
   description?: string;
   three_d_model_url?: string;
   virtual_tour_url?: string;
+  posted_by?: {
+    id: string;
+    name: string;
+    avatar_url?: string;
+    rating?: number;
+    user_level?: string;
+    verification_status?: string;
+    total_properties?: number;
+  };
 }
 
 interface PropertyCardProps {
@@ -138,9 +147,48 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
         </div>
 
         <CardContent className="p-6 bg-binance-dark-gray">
-          <h3 className="font-bold text-lg mb-3 line-clamp-2 text-binance-white">
-            {property.title}
-          </h3>
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="font-bold text-lg line-clamp-2 text-binance-white flex-1">
+              {property.title}
+            </h3>
+          </div>
+
+          {/* User Rating and Level */}
+          {property.posted_by && (
+            <div className="flex items-center gap-3 mb-4 p-3 bg-gradient-to-r from-binance-dark-gray/50 to-binance-gray/50 rounded-xl border border-binance-orange/20">
+              <div className="flex items-center gap-2">
+                {property.posted_by.avatar_url ? (
+                  <img 
+                    src={property.posted_by.avatar_url} 
+                    alt={property.posted_by.name}
+                    className="w-8 h-8 rounded-full object-cover border-2 border-binance-orange/50"
+                  />
+                ) : (
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-binance-orange to-binance-yellow flex items-center justify-center text-black text-sm font-bold">
+                    {property.posted_by.name.charAt(0).toUpperCase()}
+                  </div>
+                )}
+                <div className="flex flex-col">
+                  <span className="text-sm font-semibold text-binance-orange">
+                    {property.posted_by.name}
+                  </span>
+                  {property.posted_by.user_level && (
+                    <span className="text-xs text-binance-yellow font-bold">
+                      {property.posted_by.user_level}
+                    </span>
+                  )}
+                </div>
+              </div>
+              {property.posted_by.rating && (
+                <div className="flex items-center gap-1 ml-auto">
+                  <Star className="h-4 w-4 fill-binance-yellow text-binance-yellow" />
+                  <span className="text-sm font-bold text-binance-yellow">
+                    {property.posted_by.rating.toFixed(1)}
+                  </span>
+                </div>
+              )}
+            </div>
+          )}
           
           <div className="flex items-center text-binance-orange mb-4">
             <MapPin className="h-4 w-4 mr-2" />

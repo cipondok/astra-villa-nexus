@@ -1,5 +1,4 @@
 
-// Shared property types to avoid conflicts across components
 export interface BaseProperty {
   id: string;
   title: string;
@@ -19,6 +18,16 @@ export interface BaseProperty {
   city?: string;
   property_features?: Record<string, any>;
   image_urls?: string[];
+  // User/Poster information
+  posted_by?: {
+    id: string;
+    name: string;
+    avatar_url?: string;
+    rating?: number;
+    user_level?: string;
+    verification_status?: string;
+    total_properties?: number;
+  };
 }
 
 // For components that need additional fields

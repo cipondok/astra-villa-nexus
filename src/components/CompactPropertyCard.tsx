@@ -21,6 +21,15 @@ interface Property {
   isHotDeal?: boolean;
   three_d_model_url?: string;
   virtual_tour_url?: string;
+  posted_by?: {
+    id: string;
+    name: string;
+    avatar_url?: string;
+    rating?: number;
+    user_level?: string;
+    verification_status?: string;
+    total_properties?: number;
+  };
 }
 
 interface CompactPropertyCardProps {
@@ -118,9 +127,48 @@ const CompactPropertyCard = ({ property }: CompactPropertyCardProps) => {
       </div>
 
       <CardContent className="p-4">
-        <h3 className="text-base font-semibold mb-2 group-hover:text-blue-600 transition-colors duration-300 line-clamp-2 min-h-[3rem]">
-          {property.title}
-        </h3>
+        <div className="flex items-center justify-between mb-2">
+          <h3 className="text-base font-semibold group-hover:text-blue-600 transition-colors duration-300 line-clamp-2 min-h-[3rem] flex-1">
+            {property.title}
+          </h3>
+        </div>
+
+        {/* User Rating and Level */}
+        {property.posted_by && (
+          <div className="flex items-center gap-2 mb-2 p-2 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-lg border border-blue-100 dark:border-blue-800">
+            <div className="flex items-center gap-1">
+              {property.posted_by.avatar_url ? (
+                <img 
+                  src={property.posted_by.avatar_url} 
+                  alt={property.posted_by.name}
+                  className="w-6 h-6 rounded-full object-cover"
+                />
+              ) : (
+                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-xs font-bold">
+                  {property.posted_by.name.charAt(0).toUpperCase()}
+                </div>
+              )}
+              <div className="flex flex-col">
+                <span className="text-xs font-medium text-blue-700 dark:text-blue-300">
+                  {property.posted_by.name}
+                </span>
+                {property.posted_by.user_level && (
+                  <span className="text-xs text-blue-600 dark:text-blue-400 font-semibold">
+                    {property.posted_by.user_level}
+                  </span>
+                )}
+              </div>
+            </div>
+            {property.posted_by.rating && (
+              <div className="flex items-center gap-1 ml-auto">
+                <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                <span className="text-xs font-bold text-yellow-600 dark:text-yellow-400">
+                  {property.posted_by.rating.toFixed(1)}
+                </span>
+              </div>
+            )}
+          </div>
+        )}
         
         <div className="flex items-center text-gray-500 dark:text-gray-400 mb-3">
           <MapPin className="h-4 w-4 mr-2 flex-shrink-0" />
