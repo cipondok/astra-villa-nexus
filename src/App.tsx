@@ -8,6 +8,7 @@ import { AuthProvider } from '@/contexts/AuthContext';
 import { AlertProvider } from '@/contexts/AlertContext';
 import { WebsiteSettingsProvider } from '@/contexts/WebsiteSettingsContext';
 import { PropertyComparisonProvider } from '@/contexts/PropertyComparisonContext';
+import { Toaster } from '@/components/ui/toaster';
 import Index from '@/pages/Index';
 import AdminDashboard from '@/pages/AdminDashboard';
 import NotFound from '@/pages/NotFound';
@@ -48,6 +49,7 @@ function App() {
           </WebsiteSettingsProvider>
         </LanguageProvider>
       </ThemeProvider>
+      <Toaster />
     </QueryClientProvider>
   );
 }
