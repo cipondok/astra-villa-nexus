@@ -13,7 +13,7 @@ import Index from '@/pages/Index';
 import Services from '@/pages/Services';
 import PropertyDetail from '@/pages/PropertyDetail';
 import AdminDashboard from '@/pages/AdminDashboard';
-import AgentDashboardPage from '@/pages/AgentDashboardPage';
+import AgentDashboard from '@/pages/AgentDashboard';
 import NotFound from '@/pages/NotFound';
 
 // Create QueryClient instance
@@ -44,7 +44,7 @@ function App() {
                         <Route path="/services" element={<Services />} />
                         <Route path="/properties/:id" element={<PropertyDetail />} />
                         <Route path="/admin" element={<AdminDashboard />} />
-                        <Route path="/agent" element={<AgentDashboardPage />} />
+                        <Route path="/agent" element={<AgentDashboard />} />
                         <Route path="*" element={<NotFound />} />
                       </Routes>
                     </div>
