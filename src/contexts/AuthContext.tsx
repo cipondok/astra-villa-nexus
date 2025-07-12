@@ -446,26 +446,35 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       if (!user) return { error: new Error('No user found'), success: false };
 
+      console.log('Updating profile with data:', data);
+      setLoading(true);
+
       // Format Indonesian phone number if provided
       const processedData = { ...data };
       if (processedData.phone) {
-        // Format phone number using database function
-        const { data: formattedPhone, error: phoneError } = await supabase
-          .rpc('format_indonesian_phone', { input_phone: processedData.phone });
-        
-        if (!phoneError && formattedPhone) {
-          processedData.phone = formattedPhone;
-        }
+        try {
+          // Format phone number using database function
+          const { data: formattedPhone, error: phoneError } = await supabase
+            .rpc('format_indonesian_phone', { input_phone: processedData.phone });
+          
+          if (!phoneError && formattedPhone) {
+            processedData.phone = formattedPhone;
+          }
 
-        // Validate phone number
-        const { data: isValid, error: validationError } = await supabase
-          .rpc('is_valid_indonesian_phone', { phone_number: processedData.phone });
-        
-        if (!validationError && !isValid) {
-          return { 
-            error: { message: 'Please enter a valid Indonesian mobile number (08xxx or +628xxx)' }, 
-            success: false 
-          };
+          // Validate phone number
+          const { data: isValid, error: validationError } = await supabase
+            .rpc('is_valid_indonesian_phone', { phone_number: processedData.phone });
+          
+          if (!validationError && !isValid) {
+            setLoading(false);
+            return { 
+              error: { message: 'Please enter a valid Indonesian mobile number (08xxx or +628xxx)' }, 
+              success: false 
+            };
+          }
+        } catch (phoneError) {
+          console.error('Phone validation error:', phoneError);
+          // Continue with unformatted phone if validation fails
         }
       }
 
@@ -475,20 +484,29 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         ...processedData,
       };
 
-      const { error } = await supabase
+      console.log('Upserting profile data:', updateData);
+      const { data: updatedProfile, error } = await supabase
         .from('profiles')
-        .upsert(updateData);
+        .upsert(updateData, { onConflict: 'id' })
+        .select()
+        .single();
 
       if (error) {
         console.error('Profile update error:', error);
+        setLoading(false);
         return { error, success: false };
       }
 
-      // Refresh profile to get updated completion percentage
-      await fetchProfile(user.id);
+      console.log('Profile updated successfully:', updatedProfile);
+      
+      // Update local profile state immediately
+      setProfile(updatedProfile as Profile);
+      setLoading(false);
+      
       return { error: null, success: true };
     } catch (error: any) {
       console.error('Update error:', error);
+      setLoading(false);
       return { error, success: false };
     }
   };

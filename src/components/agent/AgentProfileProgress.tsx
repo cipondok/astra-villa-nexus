@@ -188,18 +188,18 @@ const AgentProfileProgress = ({ onEditProfile }: ProfileProgressProps) => {
 
   const getLevelColor = (level: string) => {
     switch (level) {
-      case 'Platinum': return 'bg-gradient-to-r from-purple-500 to-purple-700';
-      case 'Gold': return 'bg-gradient-to-r from-yellow-500 to-yellow-700';
-      case 'Silver': return 'bg-gradient-to-r from-gray-400 to-gray-600';
-      default: return 'bg-gradient-to-r from-amber-600 to-amber-800';
+      case 'Platinum': return 'bg-gradient-to-r from-accent to-primary';
+      case 'Gold': return 'bg-gradient-to-r from-primary to-accent';
+      case 'Silver': return 'bg-gradient-to-r from-muted-foreground to-secondary';
+      default: return 'bg-gradient-to-r from-destructive to-primary';
     }
   };
 
   const getProgressColor = (percentage: number) => {
-    if (percentage >= 90) return 'bg-purple-500';
-    if (percentage >= 70) return 'bg-yellow-500';
-    if (percentage >= 50) return 'bg-gray-400';
-    return 'bg-amber-600';
+    if (percentage >= 90) return 'bg-accent';
+    if (percentage >= 70) return 'bg-primary';
+    if (percentage >= 50) return 'bg-muted-foreground';
+    return 'bg-destructive';
   };
 
   const incompleteFields = completionData.fields.filter(field => !field.completed);
@@ -207,7 +207,7 @@ const AgentProfileProgress = ({ onEditProfile }: ProfileProgressProps) => {
   return (
     <div className="space-y-6">
       {/* Profile Completion Header */}
-      <Card className={`border-l-4 ${completionData.percentage < 70 ? 'border-l-red-500' : 'border-l-green-500'}`}>
+      <Card className={`border-l-4 ${completionData.percentage < 70 ? 'border-l-destructive' : 'border-l-accent'}`}>
         <CardHeader>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -229,7 +229,7 @@ const AgentProfileProgress = ({ onEditProfile }: ProfileProgressProps) => {
               </div>
             </div>
             {completionData.percentage < 100 && (
-              <Button onClick={onEditProfile} className="bg-orange-600 hover:bg-orange-700">
+              <Button onClick={onEditProfile} className="bg-primary hover:bg-primary/90">
                 Complete Profile
                 <ChevronRight className="h-4 w-4 ml-1" />
               </Button>
@@ -246,18 +246,15 @@ const AgentProfileProgress = ({ onEditProfile }: ProfileProgressProps) => {
               </div>
               <Progress 
                 value={completionData.percentage} 
-                className="h-3"
-                style={{
-                  background: `linear-gradient(to right, ${getProgressColor(completionData.percentage)} 0%, ${getProgressColor(completionData.percentage)} ${completionData.percentage}%, #e5e7eb ${completionData.percentage}%, #e5e7eb 100%)`
-                }}
+                className={`h-3 ${getProgressColor(completionData.percentage)}`}
               />
             </div>
 
             {/* Completion Alert */}
             {completionData.percentage < 70 && (
-              <Alert className="border-orange-200 bg-orange-50">
-                <TrendingUp className="h-4 w-4 text-orange-600" />
-                <AlertDescription className="text-orange-800">
+              <Alert className="status-warning">
+                <TrendingUp className="h-4 w-4" />
+                <AlertDescription>
                   <strong>Complete your profile to unlock premium benefits!</strong> 
                   Agents with complete profiles receive 3x more leads and higher client trust ratings.
                 </AlertDescription>
@@ -270,7 +267,7 @@ const AgentProfileProgress = ({ onEditProfile }: ProfileProgressProps) => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                 {completionData.benefits.map((benefit, index) => (
                   <div key={index} className="flex items-center gap-2 text-sm">
-                    <Star className="h-3 w-3 text-yellow-500" />
+                    <Star className="h-3 w-3 text-primary" />
                     <span>{benefit}</span>
                   </div>
                 ))}
@@ -291,15 +288,15 @@ const AgentProfileProgress = ({ onEditProfile }: ProfileProgressProps) => {
         <CardContent>
           <div className="space-y-4">
             {completionData.fields.map((field) => (
-              <div key={field.key} className={`p-4 rounded-lg border-2 ${
-                field.completed ? 'border-green-200 bg-green-50' : 'border-orange-200 bg-orange-50'
+              <div key={field.key} className={`p-4 rounded-lg border-2 transition-all duration-200 ${
+                field.completed ? 'status-success' : 'status-warning'
               }`}>
                 <div className="flex items-start gap-3">
                   <div className="flex-shrink-0 mt-0.5">
                     {field.completed ? (
-                      <CheckCircle className="h-5 w-5 text-green-600" />
+                      <CheckCircle className="h-5 w-5 text-accent" />
                     ) : (
-                      <Circle className="h-5 w-5 text-orange-600" />
+                      <Circle className="h-5 w-5 text-muted-foreground" />
                     )}
                   </div>
                   <div className="flex-1">
@@ -314,8 +311,8 @@ const AgentProfileProgress = ({ onEditProfile }: ProfileProgressProps) => {
                       {field.description}
                     </p>
                     <div className="flex items-center gap-1">
-                      <Star className="h-3 w-3 text-yellow-500" />
-                      <span className="text-xs font-medium text-green-700">
+                      <Star className="h-3 w-3 text-primary" />
+                      <span className="text-xs font-medium text-accent">
                         {field.benefit}
                       </span>
                     </div>
@@ -326,31 +323,31 @@ const AgentProfileProgress = ({ onEditProfile }: ProfileProgressProps) => {
           </div>
 
           {incompleteFields.length > 0 && (
-            <div className="mt-6 pt-4 border-t">
-              <h4 className="font-semibold mb-3 text-orange-700">
+            <div className="mt-6 pt-4 border-t border-border">
+              <h4 className="font-semibold mb-3 text-destructive">
                 Complete {incompleteFields.length} remaining field{incompleteFields.length > 1 ? 's' : ''} to unlock:
               </h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-4">
                 <div className="flex items-center gap-2 text-sm">
-                  <TrendingUp className="h-4 w-4 text-green-600" />
+                  <TrendingUp className="h-4 w-4 text-accent" />
                   <span>3x more qualified leads</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
-                  <Award className="h-4 w-4 text-blue-600" />
+                  <Award className="h-4 w-4 text-primary" />
                   <span>Premium agent verification</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
-                  <Star className="h-4 w-4 text-yellow-600" />
+                  <Star className="h-4 w-4 text-primary" />
                   <span>Higher search ranking</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
-                  <Building className="h-4 w-4 text-purple-600" />
+                  <Building className="h-4 w-4 text-accent" />
                   <span>Commission rate discounts</span>
                 </div>
               </div>
               <Button 
                 onClick={onEditProfile} 
-                className="w-full bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white"
+                className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90 transition-opacity"
               >
                 Complete Profile Now - Get 3x More Leads!
               </Button>
@@ -361,18 +358,18 @@ const AgentProfileProgress = ({ onEditProfile }: ProfileProgressProps) => {
 
       {/* Achievement Card for 100% completion */}
       {completionData.percentage === 100 && (
-        <Card className="border-2 border-green-500 bg-gradient-to-r from-green-50 to-emerald-50">
+        <Card className="border-2 border-accent bg-gradient-to-r from-accent/10 to-primary/10">
           <CardContent className="p-6 text-center">
-            <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="w-16 h-16 bg-gradient-to-r from-accent to-primary rounded-full flex items-center justify-center mx-auto mb-4">
               <Award className="h-8 w-8 text-white" />
             </div>
-            <h3 className="text-xl font-bold text-green-800 mb-2">
+            <h3 className="text-xl font-bold text-accent mb-2">
               🎉 Profile Complete! You're a Platinum Agent!
             </h3>
-            <p className="text-green-700 mb-4">
+            <p className="text-muted-foreground mb-4">
               Congratulations! You now receive priority leads, premium placement, and maximum commission discounts.
             </p>
-            <Badge className="bg-gradient-to-r from-purple-500 to-purple-700 text-white px-6 py-2">
+            <Badge className="bg-gradient-to-r from-accent to-primary text-white px-6 py-2">
               Elite Agent Status Unlocked
             </Badge>
           </CardContent>
