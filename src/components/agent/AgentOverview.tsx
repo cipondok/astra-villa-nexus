@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 import AgentTools from "./AgentTools";
 import AgentSettings from "./AgentSettings";
 import AgentNotifications from "./AgentNotifications";
+import AgentProfileProgress from "./AgentProfileProgress";
 import RoleBasedPropertyForm from "@/components/property/RoleBasedPropertyForm";
 import ClientManagement from "./tools/ClientManagement";
 import { 
@@ -268,13 +269,20 @@ const AgentOverview = () => {
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">
+          {/* Profile Progress Section - Prominent Display */}
+          <AgentProfileProgress onEditProfile={() => {
+            // Switch to settings tab when clicked
+            const settingsTab = document.querySelector('[value="settings"]') as HTMLElement;
+            settingsTab?.click();
+          }} />
+          
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Agent Profile Summary */}
+            {/* Agent Performance Summary */}
             <Card className="lg:col-span-2">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Users className="h-5 w-5" />
-                  Agent Profile Overview
+                  Performance Overview
                 </CardTitle>
               </CardHeader>
               <CardContent>
