@@ -246,6 +246,50 @@ const PropertyDetail: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Agent/Developer Header - Inspired by the reference */}
+      {property?.posted_by && (
+        <div className="bg-gradient-to-r from-blue-50 to-white border-b">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <img
+                  src={property.posted_by.avatar_url || "/placeholder.svg"}
+                  alt={property.posted_by.name}
+                  className="w-12 h-12 rounded-full object-cover"
+                />
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-semibold text-lg">{property.posted_by.name}</h3>
+                    <span className="text-sm text-blue-600 bg-blue-100 px-2 py-1 rounded">
+                      Official Developer
+                    </span>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    Diperbarui {formatTimeAgo(property.created_at)} yang lalu oleh {property.posted_by.name}
+                  </p>
+                </div>
+                <div className="bg-white p-2 rounded border flex items-center gap-2">
+                  <div className="w-6 h-6 bg-blue-600 rounded text-white text-xs flex items-center justify-center font-bold">
+                    U
+                  </div>
+                  <span className="text-sm font-medium">UNITED</span>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-3">
+                <Button variant="outline" size="sm" className="flex items-center gap-2">
+                  <Phone className="h-4 w-4" />
+                  +62812822...
+                </Button>
+                <Button className="bg-green-600 hover:bg-green-700 text-white flex items-center gap-2">
+                  WhatsApp
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Navigation Header */}
       <div className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -344,59 +388,34 @@ const PropertyDetail: React.FC = () => {
                   )}
                 </div>
 
-                {/* Posted by information */}
-                {property.posted_by && (
-                  <div className="mt-6 p-4 bg-gradient-to-r from-background via-muted/30 to-background rounded-lg border">
-                    <div className="flex items-center gap-4">
-                      <div className="relative">
-                        <img
-                          src={property.posted_by.avatar_url || "/placeholder.svg"}
-                          alt={property.posted_by.name}
-                          className="w-12 h-12 rounded-full object-cover ring-2 ring-primary/20"
-                        />
-                        {property.posted_by.verification_status === 'verified' && (
-                          <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 rounded-full flex items-center justify-center">
-                            <Award className="w-3 h-3 text-white" />
-                          </div>
-                        )}
-                      </div>
-                      
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          <h3 className="font-semibold text-foreground">{property.posted_by.name}</h3>
-                          <Badge variant="secondary" className="text-xs">
-                            {property.posted_by.user_level}
-                          </Badge>
-                        </div>
-                        
-                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                          <div className="flex items-center gap-1">
-                            <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                            <span className="font-medium">{property.posted_by.customer_feedback_rating}</span>
-                            <span>({property.posted_by.customer_feedback_count} reviews)</span>
-                          </div>
-                          
-                          <div className="flex items-center gap-1">
-                            <User className="w-4 h-4" />
-                            <span>Joined {property.posted_by.joining_date ? new Date(property.posted_by.joining_date).toLocaleDateString('id-ID', { month: 'short', year: 'numeric' }) : 'N/A'}</span>
-                          </div>
-                          
-                          <div className="flex items-center gap-1">
-                            <TrendingUp className="w-4 h-4" />
-                            <span>{property.posted_by.total_properties} properties</span>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <div className="text-right">
-                        <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                          <Clock className="w-4 h-4" />
-                          <span>Posted {formatTimeAgo(property.created_at)}</span>
-                        </div>
-                      </div>
-                    </div>
+                {/* Promotional Banners - Like in reference */}
+                <div className="bg-gradient-to-r from-pink-100 to-purple-100 rounded-lg p-4 mb-6">
+                  <div className="flex flex-wrap gap-2 justify-center">
+                    <span className="bg-pink-500 text-white px-3 py-1 rounded-full text-sm">
+                      💰 Hard Cash : Disc 12,5%
+                    </span>
+                    <span className="bg-purple-500 text-white px-3 py-1 rounded-full text-sm">
+                      💰 KPR Exp DP 10% : Disc 12%
+                    </span>
+                    <span className="bg-green-500 text-white px-3 py-1 rounded-full text-sm">
+                      💰 Cash Bertahap
+                    </span>
                   </div>
-                )}
+                </div>
+
+                {/* Price Range Display - Like in reference */}
+                <Card className="mb-6">
+                  <CardContent className="p-6">
+                    <div className="text-center">
+                      <h2 className="text-3xl font-bold text-blue-600 mb-2">
+                        {formatPrice(property.price)} - {formatPrice(property.price * 1.6)}
+                      </h2>
+                      <h3 className="text-xl font-semibold mb-1">{property.title}</h3>
+                      <p className="text-gray-600 mb-2">{property.location}</p>
+                      <span className="bg-gray-100 px-3 py-1 rounded text-sm">Rumah</span>
+                    </div>
+                  </CardContent>
+                </Card>
               </CardHeader>
             </Card>
 
@@ -603,40 +622,80 @@ const PropertyDetail: React.FC = () => {
           </div>
         </div>
 
-        {/* Related Properties Section */}
+        {/* Similar Units Section - Like "Tipe Unit Lainnya" in reference */}
         {relatedProperties.length > 0 && (
           <div className="mt-12">
-            <h2 className="text-2xl font-bold mb-6">Related Properties</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {relatedProperties.map((relatedProperty) => (
-                <Card key={relatedProperty.id} className="cursor-pointer hover:shadow-lg transition-shadow">
-                  <div className="aspect-[4/3] overflow-hidden rounded-t-lg">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold">Tipe Unit Lainnya</h2>
+              <span className="text-blue-600 hover:underline cursor-pointer">View All</span>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {relatedProperties.slice(0, 2).map((relatedProperty) => (
+                <Card key={relatedProperty.id} className="overflow-hidden hover:shadow-lg transition-shadow">
+                  <div className="aspect-[4/3] overflow-hidden">
                     <img
                       src={relatedProperty.images?.[0] || "/placeholder.svg"}
                       alt={relatedProperty.title}
-                      className="w-full h-full object-cover hover:scale-105 transition-transform"
+                      className="w-full h-full object-cover hover:scale-105 transition-transform cursor-pointer"
                       onClick={() => navigate(`/properties/${relatedProperty.id}`)}
                     />
                   </div>
                   <CardContent className="p-4">
-                    <h3 className="font-semibold line-clamp-2 mb-2">{relatedProperty.title}</h3>
-                    <div className="flex items-center text-sm text-muted-foreground mb-2">
-                      <MapPin className="h-4 w-4 mr-1" />
-                      {relatedProperty.location}
+                    <div className="text-center">
+                      <h3 className="text-xl font-bold text-blue-600 mb-1">
+                        {formatPrice(relatedProperty.price)}
+                      </h3>
+                      <h4 className="font-semibold mb-2">{relatedProperty.title}</h4>
+                      <div className="grid grid-cols-2 gap-4 text-sm text-muted-foreground mb-3">
+                        <div>
+                          <span className="font-medium">LT:</span> {relatedProperty.area_sqm || 120} m²
+                        </div>
+                        <div>
+                          <span className="font-medium">LB:</span> {(relatedProperty.area_sqm || 120) * 2} m²
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-center gap-4 text-sm">
+                        <div className="flex items-center gap-1">
+                          <Bed className="h-4 w-4" />
+                          <span>{relatedProperty.bedrooms || 5}</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Bath className="h-4 w-4" />
+                          <span>{relatedProperty.bathrooms || 5}</span>
+                        </div>
+                      </div>
                     </div>
-                    <div className="font-bold text-primary">
-                      {formatPrice(relatedProperty.price)}
-                    </div>
-                    <Button 
-                      className="w-full mt-3" 
-                      size="sm"
-                      onClick={() => navigate(`/properties/${relatedProperty.id}`)}
-                    >
-                      View Details
-                    </Button>
                   </CardContent>
                 </Card>
               ))}
+            </div>
+          </div>
+        )}
+
+        {/* Bottom Agent Contact - Like in reference */}
+        {property?.posted_by && (
+          <div className="mt-12 bg-gradient-to-r from-blue-50 to-white rounded-lg p-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold">
+                  PT
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">
+                    Diperbarui 6 bulan yang lalu oleh
+                  </p>
+                  <h3 className="font-semibold">PT Bumi Serpong Damai...</h3>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-3">
+                <Button variant="outline" className="flex items-center gap-2">
+                  📄 Official Brosur
+                </Button>
+                <Button className="bg-green-600 hover:bg-green-700 text-white">
+                  WhatsApp
+                </Button>
+              </div>
             </div>
           </div>
         )}
