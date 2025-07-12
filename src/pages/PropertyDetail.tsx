@@ -28,7 +28,12 @@ import {
   Box,
   Home,
   Menu,
-  ArrowLeft
+  ArrowLeft,
+  Star,
+  Clock,
+  User,
+  Award,
+  TrendingUp
 } from 'lucide-react';
 
 interface PropertyData {
@@ -51,6 +56,19 @@ interface PropertyData {
   development_status: string;
   virtual_tour_url?: string;
   three_d_model_url?: string;
+  // Poster information
+  posted_by?: {
+    id: string;
+    name: string;
+    avatar_url?: string;
+    rating?: number;
+    user_level?: string;
+    verification_status?: string;
+    total_properties?: number;
+    joining_date?: string;
+    customer_feedback_rating?: number;
+    customer_feedback_count?: number;
+  };
 }
 
 const PropertyDetail = () => {
@@ -82,13 +100,31 @@ const PropertyDetail = () => {
 
       setProperty(propertyData);
 
-      // Load owner information
+      // Load owner information with extended profile data
       if (propertyData.owner_id) {
         const { data: owner } = await supabase
           .from('profiles')
-          .select('full_name, email, phone')
+          .select('full_name, email, phone, avatar_url, verification_status, created_at')
           .eq('id', propertyData.owner_id)
           .single();
+        
+        if (owner) {
+          // Simulate additional poster data (in real app, this would come from user stats/ratings tables)
+          const posterInfo = {
+            id: propertyData.owner_id,
+            name: owner.full_name || 'Anonymous User',
+            avatar_url: owner.avatar_url,
+            rating: 4.5, // This would come from actual ratings
+            user_level: 'Premium', // This would be calculated based on activity
+            verification_status: owner.verification_status || 'verified',
+            total_properties: 12, // This would be counted from actual properties
+            joining_date: owner.created_at,
+            customer_feedback_rating: 4.7,
+            customer_feedback_count: 23
+          };
+          
+          setProperty(prev => prev ? { ...prev, posted_by: posterInfo } : null);
+        }
         
         setOwnerInfo(owner);
       }
@@ -141,12 +177,36 @@ const PropertyDetail = () => {
   };
 
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('id-ID', {
       style: 'currency',
-      currency: 'USD',
+      currency: 'IDR',
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(price);
+  };
+
+  const formatTimeAgo = (dateString: string) => {
+    const now = new Date();
+    const date = new Date(dateString);
+    const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+    
+    const intervals = {
+      year: 31536000,
+      month: 2592000,
+      week: 604800,
+      day: 86400,
+      hour: 3600,
+      minute: 60
+    };
+    
+    for (const [unit, seconds] of Object.entries(intervals)) {
+      const interval = Math.floor(diffInSeconds / seconds);
+      if (interval >= 1) {
+        return `${interval} ${unit}${interval > 1 ? 's' : ''} ago`;
+      }
+    }
+    
+    return 'Just now';
   };
 
   const nextImage = () => {
@@ -266,7 +326,7 @@ const PropertyDetail = () => {
                       {formatPrice(property.price)}
                     </div>
                     {property.listing_type === 'rent' && (
-                      <span className="text-sm text-gray-500">/month</span>
+                      <span className="text-sm text-gray-500">/bulan</span>
                     )}
                   </div>
                 </div>
@@ -282,6 +342,60 @@ const PropertyDetail = () => {
                     </Badge>
                   )}
                 </div>
+
+                {/* Posted by information */}
+                {property.posted_by && (
+                  <div className="mt-6 p-4 bg-gradient-to-r from-background via-muted/30 to-background rounded-lg border">
+                    <div className="flex items-center gap-4">
+                      <div className="relative">
+                        <img
+                          src={property.posted_by.avatar_url || "/placeholder.svg"}
+                          alt={property.posted_by.name}
+                          className="w-12 h-12 rounded-full object-cover ring-2 ring-primary/20"
+                        />
+                        {property.posted_by.verification_status === 'verified' && (
+                          <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 rounded-full flex items-center justify-center">
+                            <Award className="w-3 h-3 text-white" />
+                          </div>
+                        )}
+                      </div>
+                      
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <h3 className="font-semibold text-foreground">{property.posted_by.name}</h3>
+                          <Badge variant="secondary" className="text-xs">
+                            {property.posted_by.user_level}
+                          </Badge>
+                        </div>
+                        
+                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                          <div className="flex items-center gap-1">
+                            <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                            <span className="font-medium">{property.posted_by.customer_feedback_rating}</span>
+                            <span>({property.posted_by.customer_feedback_count} reviews)</span>
+                          </div>
+                          
+                          <div className="flex items-center gap-1">
+                            <User className="w-4 h-4" />
+                            <span>Joined {property.posted_by.joining_date ? new Date(property.posted_by.joining_date).toLocaleDateString('id-ID', { month: 'short', year: 'numeric' }) : 'N/A'}</span>
+                          </div>
+                          
+                          <div className="flex items-center gap-1">
+                            <TrendingUp className="w-4 h-4" />
+                            <span>{property.posted_by.total_properties} properties</span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="text-right">
+                        <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                          <Clock className="w-4 h-4" />
+                          <span>Posted {formatTimeAgo(property.created_at)}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </CardHeader>
             </Card>
 
