@@ -68,6 +68,17 @@ interface PropertyData {
     joining_date?: string;
     customer_feedback_rating?: number;
     customer_feedback_count?: number;
+    // Agent specific information
+    whatsapp_number?: string;
+    phone_number?: string;
+    company_name?: string;
+    company_logo?: string;
+    company_pt_name?: string;
+    developer_name?: string;
+    position?: string;
+    office_address?: string;
+    license_number?: string;
+    experience_years?: number;
   };
 }
 
@@ -110,18 +121,29 @@ const PropertyDetail: React.FC = () => {
           .single();
         
         if (owner) {
-          // Simulate additional poster data (in real app, this would come from user stats/ratings tables)
+          // Enhanced agent/poster data with comprehensive information
           const posterInfo = {
             id: propertyData.owner_id,
             name: owner.full_name || 'Anonymous User',
             avatar_url: owner.avatar_url,
-            rating: 4.5, // This would come from actual ratings
-            user_level: 'Premium', // This would be calculated based on activity
+            rating: 4.8, // This would come from actual ratings
+            user_level: 'Premium Agent', // This would be calculated based on activity
             verification_status: owner.verification_status || 'verified',
-            total_properties: 12, // This would be counted from actual properties
+            total_properties: 25, // This would be counted from actual properties
             joining_date: owner.created_at,
-            customer_feedback_rating: 4.7,
-            customer_feedback_count: 23
+            customer_feedback_rating: 4.9,
+            customer_feedback_count: 47,
+            // Enhanced agent information
+            whatsapp_number: '+6281234567890',
+            phone_number: '+6281234567890',
+            company_name: 'UNITED PROPERTY',
+            company_logo: '/placeholder.svg',
+            company_pt_name: 'PT Bumi Serpong Damai Tbk',
+            developer_name: 'BSD City',
+            position: 'Senior Property Consultant',
+            office_address: 'Jl. Raya Serpong, BSD City, Tangerang Selatan',
+            license_number: 'REI-12345678',
+            experience_years: 8
           };
           
           setProperty(prev => prev ? { ...prev, posted_by: posterInfo } : null);
@@ -246,43 +268,64 @@ const PropertyDetail: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Agent/Developer Header - Inspired by the reference */}
+      {/* Agent/Developer Header - Enhanced with comprehensive info */}
       {property?.posted_by && (
-        <div className="bg-gradient-to-r from-blue-50 to-white border-b">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div className="bg-gradient-to-r from-blue-50 to-white border-b shadow-sm">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
-                <img
-                  src={property.posted_by.avatar_url || "/placeholder.svg"}
-                  alt={property.posted_by.name}
-                  className="w-12 h-12 rounded-full object-cover"
-                />
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h3 className="font-semibold text-lg">{property.posted_by.name}</h3>
-                    <span className="text-sm text-blue-600 bg-blue-100 px-2 py-1 rounded">
-                      Official Developer
+                <div className="relative">
+                  <img
+                    src={property.posted_by.avatar_url || "/placeholder.svg"}
+                    alt={property.posted_by.name}
+                    className="w-16 h-16 rounded-full object-cover border-4 border-white shadow-lg"
+                  />
+                  {property.posted_by.verification_status === 'verified' && (
+                    <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center border-2 border-white">
+                      <Award className="w-3 h-3 text-white" />
+                    </div>
+                  )}
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-3 mb-2">
+                    <h3 className="font-bold text-xl text-gray-800">{property.posted_by.name}</h3>
+                    <span className="text-sm text-blue-600 bg-blue-100 px-3 py-1 rounded-full font-medium">
+                      {property.posted_by.position || 'Official Developer'}
                     </span>
                   </div>
-                  <p className="text-sm text-muted-foreground">
-                    Diperbarui {formatTimeAgo(property.created_at)} yang lalu oleh {property.posted_by.name}
+                  <p className="text-sm text-gray-600 mb-1">
+                    {property.posted_by.experience_years} tahun pengalaman • {property.posted_by.total_properties}+ properti terjual
+                  </p>
+                  <p className="text-xs text-gray-500">
+                    Diperbarui {formatTimeAgo(property.created_at)} yang lalu
                   </p>
                 </div>
-                <div className="bg-white p-2 rounded border flex items-center gap-2">
-                  <div className="w-6 h-6 bg-blue-600 rounded text-white text-xs flex items-center justify-center font-bold">
+                <div className="bg-white p-3 rounded-lg border shadow-sm flex items-center gap-3">
+                  <div className="w-8 h-8 bg-blue-600 rounded text-white text-sm flex items-center justify-center font-bold">
                     U
                   </div>
-                  <span className="text-sm font-medium">UNITED</span>
+                  <div>
+                    <span className="text-sm font-bold text-gray-800">{property.posted_by.company_name}</span>
+                    <p className="text-xs text-gray-500">{property.posted_by.developer_name}</p>
+                  </div>
                 </div>
               </div>
               
               <div className="flex items-center gap-3">
-                <Button variant="outline" size="sm" className="flex items-center gap-2">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="flex items-center gap-2"
+                  onClick={() => window.open(`tel:${property.posted_by?.phone_number}`, '_self')}
+                >
                   <Phone className="h-4 w-4" />
-                  +62812822...
+                  {property.posted_by.phone_number?.replace('+62', '+62')}
                 </Button>
-                <Button className="bg-green-600 hover:bg-green-700 text-white flex items-center gap-2">
-                  WhatsApp
+                <Button 
+                  className="bg-green-600 hover:bg-green-700 text-white flex items-center gap-2"
+                  onClick={() => window.open(`https://wa.me/${property.posted_by?.whatsapp_number?.replace('+', '')}`, '_blank')}
+                >
+                  📱 WhatsApp
                 </Button>
               </div>
             </div>
@@ -527,65 +570,89 @@ const PropertyDetail: React.FC = () => {
           {/* Sidebar */}
           <div className="space-y-6">
             
-            {/* Contact Information */}
+            {/* Enhanced Contact Information with Agent Details */}
             <Card>
               <CardHeader>
-                <CardTitle>Contact Information</CardTitle>
+                <CardTitle className="flex items-center gap-2">
+                  <User className="h-5 w-5" />
+                  Agent Information
+                </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                {agentInfo ? (
+              <CardContent className="space-y-6">
+                {property.posted_by ? (
                   <div>
-                    <h4 className="font-semibold mb-2">Real Estate Agent</h4>
-                    <div className="space-y-2">
-                      <p className="font-medium">{agentInfo.full_name}</p>
-                      {agentInfo.company_name && (
-                        <p className="text-sm text-gray-600">{agentInfo.company_name}</p>
-                      )}
-                      {agentInfo.phone && (
-                        <div className="flex items-center gap-2">
-                          <Phone className="h-4 w-4 text-gray-500" />
-                          <span className="text-sm">{agentInfo.phone}</span>
+                    <div className="flex items-start gap-4 mb-4">
+                      <img
+                        src={property.posted_by.avatar_url || "/placeholder.svg"}
+                        alt={property.posted_by.name}
+                        className="w-16 h-16 rounded-full object-cover border-2 border-gray-200"
+                      />
+                      <div className="flex-1">
+                        <h4 className="font-bold text-lg mb-1">{property.posted_by.name}</h4>
+                        <p className="text-sm text-blue-600 font-medium mb-1">{property.posted_by.position}</p>
+                        <div className="flex items-center gap-1 mb-2">
+                          <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                          <span className="font-medium text-sm">{property.posted_by.customer_feedback_rating}</span>
+                          <span className="text-sm text-gray-500">({property.posted_by.customer_feedback_count} reviews)</span>
                         </div>
-                      )}
-                      {agentInfo.email && (
-                        <div className="flex items-center gap-2">
-                          <Mail className="h-4 w-4 text-gray-500" />
-                          <span className="text-sm">{agentInfo.email}</span>
+                        <p className="text-xs text-gray-500">
+                          REI License: {property.posted_by.license_number} • {property.posted_by.experience_years} years experience
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Company Information */}
+                    <div className="bg-gray-50 rounded-lg p-4 mb-4">
+                      <h5 className="font-semibold mb-2 flex items-center gap-2">
+                        <div className="w-6 h-6 bg-blue-600 rounded text-white text-xs flex items-center justify-center font-bold">
+                          {property.posted_by.company_name?.charAt(0)}
                         </div>
-                      )}
+                        {property.posted_by.company_name}
+                      </h5>
+                      <p className="text-sm text-gray-600 mb-1">{property.posted_by.company_pt_name}</p>
+                      <p className="text-sm text-gray-600 mb-2">{property.posted_by.developer_name}</p>
+                      <p className="text-xs text-gray-500">{property.posted_by.office_address}</p>
+                    </div>
+
+                    {/* Contact Options */}
+                    <div className="space-y-3">
+                      <Button 
+                        className="w-full bg-green-600 hover:bg-green-700 text-white"
+                        onClick={() => window.open(`https://wa.me/${property.posted_by?.whatsapp_number?.replace('+', '')}?text=Halo, saya tertarik dengan properti ${property.title}`, '_blank')}
+                      >
+                        <div className="flex items-center gap-2">
+                          📱 WhatsApp: {property.posted_by.whatsapp_number}
+                        </div>
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        className="w-full"
+                        onClick={() => window.open(`tel:${property.posted_by?.phone_number}`, '_self')}
+                      >
+                        <Phone className="h-4 w-4 mr-2" />
+                        Call: {property.posted_by.phone_number}
+                      </Button>
+                      <Button variant="outline" className="w-full">
+                        <Mail className="h-4 w-4 mr-2" />
+                        Send Email
+                      </Button>
+                    </div>
+
+                    {/* Agent Stats */}
+                    <div className="grid grid-cols-2 gap-4 pt-4 border-t">
+                      <div className="text-center">
+                        <div className="font-bold text-lg text-blue-600">{property.posted_by.total_properties}+</div>
+                        <div className="text-xs text-gray-500">Properties Sold</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="font-bold text-lg text-green-600">{property.posted_by.experience_years}</div>
+                        <div className="text-xs text-gray-500">Years Experience</div>
+                      </div>
                     </div>
                   </div>
-                ) : ownerInfo && (
-                  <div>
-                    <h4 className="font-semibold mb-2">Property Owner</h4>
-                    <div className="space-y-2">
-                      <p className="font-medium">{ownerInfo.full_name}</p>
-                      {ownerInfo.phone && (
-                        <div className="flex items-center gap-2">
-                          <Phone className="h-4 w-4 text-gray-500" />
-                          <span className="text-sm">{ownerInfo.phone}</span>
-                        </div>
-                      )}
-                      {ownerInfo.email && (
-                        <div className="flex items-center gap-2">
-                          <Mail className="h-4 w-4 text-gray-500" />
-                          <span className="text-sm">{ownerInfo.email}</span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
+                ) : (
+                  <p className="text-gray-500">Agent information not available</p>
                 )}
-                
-                <div className="pt-4 space-y-2">
-                  <Button className="w-full">
-                    <Phone className="h-4 w-4 mr-2" />
-                    Call Now
-                  </Button>
-                  <Button variant="outline" className="w-full">
-                    <Mail className="h-4 w-4 mr-2" />
-                    Send Message
-                  </Button>
-                </div>
               </CardContent>
             </Card>
 
@@ -672,28 +739,43 @@ const PropertyDetail: React.FC = () => {
           </div>
         )}
 
-        {/* Bottom Agent Contact - Like in reference */}
+        {/* Enhanced Bottom Agent Contact Section */}
         {property?.posted_by && (
-          <div className="mt-12 bg-gradient-to-r from-blue-50 to-white rounded-lg p-6">
+          <div className="mt-12 bg-gradient-to-r from-blue-50 to-white rounded-xl p-6 border shadow-sm">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold">
-                  PT
+                <div className="w-14 h-14 bg-gradient-to-br from-blue-600 to-blue-700 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg">
+                  {property.posted_by.company_pt_name?.split(' ')[0]?.substring(0, 2) || 'PT'}
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">
-                    Diperbarui 6 bulan yang lalu oleh
+                  <p className="text-sm text-gray-600 mb-1">
+                    Diperbarui {formatTimeAgo(property.created_at)} yang lalu oleh
                   </p>
-                  <h3 className="font-semibold">PT Bumi Serpong Damai...</h3>
+                  <h3 className="font-bold text-lg text-gray-800">{property.posted_by.company_pt_name}</h3>
+                  <div className="flex items-center gap-4 mt-1">
+                    <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">
+                      ✓ Verified Developer
+                    </span>
+                    <span className="text-xs text-gray-500">
+                      {property.posted_by.total_properties}+ projects completed
+                    </span>
+                  </div>
                 </div>
               </div>
               
               <div className="flex items-center gap-3">
-                <Button variant="outline" className="flex items-center gap-2">
+                <Button 
+                  variant="outline" 
+                  className="flex items-center gap-2"
+                  onClick={() => window.open('/official-brochure.pdf', '_blank')}
+                >
                   📄 Official Brosur
                 </Button>
-                <Button className="bg-green-600 hover:bg-green-700 text-white">
-                  WhatsApp
+                <Button 
+                  className="bg-green-600 hover:bg-green-700 text-white flex items-center gap-2"
+                  onClick={() => window.open(`https://wa.me/${property.posted_by?.whatsapp_number?.replace('+', '')}?text=Halo, saya tertarik dengan properti ${property.title} di ${property.location}`, '_blank')}
+                >
+                  📱 WhatsApp
                 </Button>
               </div>
             </div>
