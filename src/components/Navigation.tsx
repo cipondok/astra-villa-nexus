@@ -230,7 +230,7 @@ const Navigation = () => {
                   variant="ghost" 
                   size="sm"
                   className="h-10 px-3 text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-all"
-                  onClick={() => navigate('/dashboard/admin')}
+                  onClick={() => navigate('/admin-dashboard')}
                 >
                   <Crown className="h-4 w-4 mr-1" />
                   Admin
@@ -358,7 +358,7 @@ const Navigation = () => {
                 
                 {/* Admin Panel - only show for admin users */}
                 {isAdmin && (
-                  <Button variant="ghost" className="w-full justify-start text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20" onClick={() => { navigate('/dashboard/admin'); toggleMenu(); }}>
+                  <Button variant="ghost" className="w-full justify-start text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20" onClick={() => { navigate('/admin-dashboard'); toggleMenu(); }}>
                     {currentText.adminPanel}
                   </Button>
                 )}
