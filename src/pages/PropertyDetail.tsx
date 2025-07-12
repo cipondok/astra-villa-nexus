@@ -71,7 +71,7 @@ interface PropertyData {
   };
 }
 
-const PropertyDetail = () => {
+const PropertyDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [property, setProperty] = useState<PropertyData | null>(null);
@@ -83,6 +83,7 @@ const PropertyDetail = () => {
   const [userMoreProperties, setUserMoreProperties] = useState<PropertyData[]>([]);
 
   useEffect(() => {
+    console.log('PropertyDetail mounted with id:', id);
     if (id) {
       loadProperty();
     }
