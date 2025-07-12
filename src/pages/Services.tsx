@@ -5,8 +5,32 @@ import { Button } from '@/components/ui/button';
 import { ArrowRight, CheckCircle, Users, Star, Clock, Shield } from 'lucide-react';
 import Navigation from '@/components/Navigation';
 import ProfessionalFooter from '@/components/ProfessionalFooter';
+import { useAuth } from '@/contexts/AuthContext';
+import AgentTools from '@/components/agent/AgentTools';
 
 const Services = () => {
+  const { profile } = useAuth();
+
+  // If user is an agent, show agent tools instead of general services
+  if (profile?.role === 'agent') {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navigation />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="text-center mb-8">
+            <h1 className="text-4xl font-bold text-foreground mb-4">
+              Agent Tools & Services
+            </h1>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              Access your professional real estate tools and manage your property listings, clients, and business operations.
+            </p>
+          </div>
+          <AgentTools />
+        </div>
+        <ProfessionalFooter language="en" />
+      </div>
+    );
+  }
   const serviceCategories = [
     {
       title: "Property Management",

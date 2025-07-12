@@ -134,8 +134,9 @@ const Navigation = () => {
     }
   ];
 
-  // Check if user is admin
+  // Check if user is admin or agent
   const isAdmin = profile?.role === 'admin' || user?.email === 'mycode103@gmail.com';
+  const isAgent = profile?.role === 'agent';
 
   return (
     <>
@@ -197,8 +198,8 @@ const Navigation = () => {
                 {currentText.services}
               </Button>
 
-              {/* Dashboard link - show for authenticated users */}
-              {user && !isAdmin && (
+              {/* Dashboard link - show role-appropriate dashboard */}
+              {user && !isAdmin && !isAgent && (
                 <Button 
                   variant="ghost" 
                   size="sm"
@@ -207,6 +208,19 @@ const Navigation = () => {
                 >
                   <BarChart3 className="h-4 w-4 mr-1" />
                   {currentText.dashboard}
+                </Button>
+              )}
+
+              {/* Agent Dashboard - only show for agent users */}
+              {isAgent && (
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  className="h-10 px-3 text-sm font-medium text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg transition-all"
+                  onClick={() => navigate('/agent')}
+                >
+                  <User className="h-4 w-4 mr-1" />
+                  Agent Dashboard
                 </Button>
               )}
 

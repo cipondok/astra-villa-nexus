@@ -11,6 +11,8 @@ const AgentDashboard = () => {
   const { isAuthenticated, loading, profile } = useAuth();
   const navigate = useNavigate();
 
+  console.log('AgentDashboard - Auth state:', { isAuthenticated, loading, profile });
+
   useEffect(() => {
     if (!loading && !isAuthenticated) {
       navigate('/?auth=true');
