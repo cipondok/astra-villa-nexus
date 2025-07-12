@@ -51,6 +51,7 @@ import {
 const AgentOverview = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState("overview");
 
   // Fetch real properties from database
   const { data: properties, isLoading, refetch } = useQuery({
@@ -254,7 +255,7 @@ const AgentOverview = () => {
       </Card>
 
       {/* Main Dashboard Tabs */}
-      <Tabs defaultValue="overview" className="space-y-6">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
         <TabsList className="grid w-full grid-cols-10 h-14 p-1 bg-muted/50 overflow-x-auto">
           <TabsTrigger value="overview" className="text-xs font-medium">Overview</TabsTrigger>
           <TabsTrigger value="add-property" className="text-xs font-medium">Add Property</TabsTrigger>
@@ -272,8 +273,7 @@ const AgentOverview = () => {
           {/* Profile Progress Section - Prominent Display */}
           <AgentProfileProgress onEditProfile={() => {
             // Switch to settings tab when clicked
-            const settingsTab = document.querySelector('[value="settings"]') as HTMLElement;
-            settingsTab?.click();
+            setActiveTab("settings");
           }} />
           
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

@@ -204,7 +204,7 @@ const Navigation = () => {
                   variant="ghost" 
                   size="sm"
                   className="h-10 px-3 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-all"
-                  onClick={() => navigate('/dashboard')}
+                  onClick={() => navigate('/dashboard/user')}
                 >
                   <BarChart3 className="h-4 w-4 mr-1" />
                   {currentText.dashboard}
@@ -217,7 +217,7 @@ const Navigation = () => {
                   variant="ghost" 
                   size="sm"
                   className="h-10 px-3 text-sm font-medium text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg transition-all"
-                  onClick={() => navigate('/agent')}
+                  onClick={() => navigate('/dashboard/agent')}
                 >
                   <User className="h-4 w-4 mr-1" />
                   Agent Dashboard
@@ -230,7 +230,7 @@ const Navigation = () => {
                   variant="ghost" 
                   size="sm"
                   className="h-10 px-3 text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-all"
-                  onClick={() => navigate('/admin')}
+                  onClick={() => navigate('/dashboard/admin')}
                 >
                   <Crown className="h-4 w-4 mr-1" />
                   Admin
@@ -341,16 +341,24 @@ const Navigation = () => {
                 </Button>
                 
                 {/* Dashboard link - show for authenticated users */}
-                {user && !isAdmin && (
-                  <Button variant="ghost" className="w-full justify-start text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800" onClick={() => { navigate('/dashboard'); toggleMenu(); }}>
+                {user && !isAdmin && !isAgent && (
+                  <Button variant="ghost" className="w-full justify-start text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800" onClick={() => { navigate('/dashboard/user'); toggleMenu(); }}>
                     <BarChart3 className="h-4 w-4 mr-2" />
                     {currentText.dashboard}
+                  </Button>
+                )}
+
+                {/* Agent Dashboard for mobile */}
+                {isAgent && (
+                  <Button variant="ghost" className="w-full justify-start text-sm font-medium text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 hover:bg-green-50 dark:hover:bg-green-900/20" onClick={() => { navigate('/dashboard/agent'); toggleMenu(); }}>
+                    <User className="h-4 w-4 mr-2" />
+                    Agent Dashboard
                   </Button>
                 )}
                 
                 {/* Admin Panel - only show for admin users */}
                 {isAdmin && (
-                  <Button variant="ghost" className="w-full justify-start text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20" onClick={() => { navigate('/admin'); toggleMenu(); }}>
+                  <Button variant="ghost" className="w-full justify-start text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20" onClick={() => { navigate('/dashboard/admin'); toggleMenu(); }}>
                     {currentText.adminPanel}
                   </Button>
                 )}
