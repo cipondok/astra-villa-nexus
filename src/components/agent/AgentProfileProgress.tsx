@@ -43,7 +43,7 @@ const AgentProfileProgress = ({ onEditProfile }: ProfileProgressProps) => {
     level: string;
     benefits: string[];
   }>({
-    percentage: 0,
+    percentage: profile?.profile_completion_percentage || 0,
     fields: [],
     level: 'Bronze',
     benefits: []
@@ -103,19 +103,19 @@ const AgentProfileProgress = ({ onEditProfile }: ProfileProgressProps) => {
         benefit: '30% higher client response rate'
       },
       {
-        key: 'address',
+        key: 'business_address',
         label: 'Business Address',
         icon: MapPin,
-        completed: false, // This would need to be added to profile
+        completed: !!(profile?.business_address && profile.business_address.length > 5),
         weight: 10,
         description: 'Your office or business location',
         benefit: 'Local market expertise credibility'
       },
       {
-        key: 'experience',
+        key: 'years_experience',
         label: 'Experience Details',
         icon: Clock,
-        completed: false, // This would need to be added to profile
+        completed: !!(profile?.years_experience),
         weight: 5,
         description: 'Years of experience and specializations',
         benefit: 'Expert agent ranking boost'

@@ -2485,6 +2485,8 @@ export type Database = {
         Row: {
           availability_status: string | null
           avatar_url: string | null
+          bio: string | null
+          business_address: string | null
           company_name: string | null
           created_at: string | null
           email: string
@@ -2494,17 +2496,22 @@ export type Database = {
           last_seen_at: string | null
           license_number: string | null
           phone: string | null
+          profile_completion_percentage: number | null
           role: Database["public"]["Enums"]["user_role"]
+          specializations: string | null
           suspended_at: string | null
           suspended_by: string | null
           suspension_reason: string | null
           updated_at: string | null
           user_level_id: string | null
           verification_status: string | null
+          years_experience: string | null
         }
         Insert: {
           availability_status?: string | null
           avatar_url?: string | null
+          bio?: string | null
+          business_address?: string | null
           company_name?: string | null
           created_at?: string | null
           email: string
@@ -2514,17 +2521,22 @@ export type Database = {
           last_seen_at?: string | null
           license_number?: string | null
           phone?: string | null
+          profile_completion_percentage?: number | null
           role?: Database["public"]["Enums"]["user_role"]
+          specializations?: string | null
           suspended_at?: string | null
           suspended_by?: string | null
           suspension_reason?: string | null
           updated_at?: string | null
           user_level_id?: string | null
           verification_status?: string | null
+          years_experience?: string | null
         }
         Update: {
           availability_status?: string | null
           avatar_url?: string | null
+          bio?: string | null
+          business_address?: string | null
           company_name?: string | null
           created_at?: string | null
           email?: string
@@ -2534,13 +2546,16 @@ export type Database = {
           last_seen_at?: string | null
           license_number?: string | null
           phone?: string | null
+          profile_completion_percentage?: number | null
           role?: Database["public"]["Enums"]["user_role"]
+          specializations?: string | null
           suspended_at?: string | null
           suspended_by?: string | null
           suspension_reason?: string | null
           updated_at?: string | null
           user_level_id?: string | null
           verification_status?: string | null
+          years_experience?: string | null
         }
         Relationships: [
           {
@@ -6481,6 +6496,10 @@ export type Database = {
         }
         Returns: string
       }
+      format_indonesian_phone: {
+        Args: { input_phone: string }
+        Returns: string
+      }
       generate_error_signature: {
         Args: { error_message: string; table_name?: string }
         Returns: string
@@ -6507,6 +6526,10 @@ export type Database = {
       }
       is_super_admin_safe: {
         Args: { user_email?: string }
+        Returns: boolean
+      }
+      is_valid_indonesian_phone: {
+        Args: { phone_number: string }
         Returns: boolean
       }
       log_database_error: {

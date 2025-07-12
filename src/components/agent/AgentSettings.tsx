@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAlert } from "@/contexts/AlertContext";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -38,14 +38,30 @@ const AgentSettings = () => {
     phone: profile?.phone || "",
     company_name: profile?.company_name || "",
     license_number: profile?.license_number || "",
-    business_address: "",
-    years_experience: "",
-    specializations: "",
-    bio: ""
+    business_address: profile?.business_address || "",
+    years_experience: profile?.years_experience || "",
+    specializations: profile?.specializations || "",
+    bio: profile?.bio || ""
   });
   
   const [phoneError, setPhoneError] = useState("");
   const [showProfileProgress, setShowProfileProgress] = useState(true);
+
+  // Update form data when profile changes
+  useEffect(() => {
+    if (profile) {
+      setFormData({
+        full_name: profile.full_name || "",
+        phone: profile.phone || "",
+        company_name: profile.company_name || "",
+        license_number: profile.license_number || "",
+        business_address: profile.business_address || "",
+        years_experience: profile.years_experience || "",
+        specializations: profile.specializations || "",
+        bio: profile.bio || ""
+      });
+    }
+  }, [profile]);
 
   const [notificationSettings, setNotificationSettings] = useState({
     emailNotifications: true,
@@ -110,10 +126,10 @@ const AgentSettings = () => {
       phone: profile?.phone || "",
       company_name: profile?.company_name || "",
       license_number: profile?.license_number || "",
-      business_address: "",
-      years_experience: "",
-      specializations: "",
-      bio: ""
+      business_address: profile?.business_address || "",
+      years_experience: profile?.years_experience || "",
+      specializations: profile?.specializations || "",
+      bio: profile?.bio || ""
     });
     setEditMode(false);
     setPhoneError("");

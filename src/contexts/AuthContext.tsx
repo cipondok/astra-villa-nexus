@@ -23,6 +23,11 @@ interface Profile {
   wallet_verified?: boolean;
   wallet_address?: string;
   wallet_provider?: string;
+  business_address?: string;
+  years_experience?: string;
+  specializations?: string;
+  bio?: string;
+  profile_completion_percentage?: number;
 }
 
 interface AuthContextType {
@@ -441,10 +446,33 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       if (!user) return { error: new Error('No user found'), success: false };
 
+      // Format Indonesian phone number if provided
+      const processedData = { ...data };
+      if (processedData.phone) {
+        // Format phone number using database function
+        const { data: formattedPhone, error: phoneError } = await supabase
+          .rpc('format_indonesian_phone', { input_phone: processedData.phone });
+        
+        if (!phoneError && formattedPhone) {
+          processedData.phone = formattedPhone;
+        }
+
+        // Validate phone number
+        const { data: isValid, error: validationError } = await supabase
+          .rpc('is_valid_indonesian_phone', { phone_number: processedData.phone });
+        
+        if (!validationError && !isValid) {
+          return { 
+            error: { message: 'Please enter a valid Indonesian mobile number (08xxx or +628xxx)' }, 
+            success: false 
+          };
+        }
+      }
+
       const updateData = {
         id: user.id,
         email: user.email!,
-        ...data,
+        ...processedData,
       };
 
       const { error } = await supabase
@@ -456,6 +484,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return { error, success: false };
       }
 
+      // Refresh profile to get updated completion percentage
       await fetchProfile(user.id);
       return { error: null, success: true };
     } catch (error: any) {
