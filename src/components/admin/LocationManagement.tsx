@@ -133,11 +133,11 @@ const LocationManagement = () => {
         query = query.or(`province_name.ilike.%${searchTerm}%,city_name.ilike.%${searchTerm}%,district_name.ilike.%${searchTerm}%,subdistrict_name.ilike.%${searchTerm}%,area_name.ilike.%${searchTerm}%`);
       }
 
-      if (selectedProvince) {
+      if (selectedProvince && selectedProvince !== 'ALL_PROVINCES') {
         query = query.eq('province_name', selectedProvince);
       }
 
-      if (selectedCity) {
+      if (selectedCity && selectedCity !== 'ALL_CITIES') {
         query = query.eq('city_name', selectedCity);
       }
 
@@ -149,7 +149,7 @@ const LocationManagement = () => {
 
   // Get unique provinces and cities for filters
   const provinces = [...new Set(locations.map(loc => loc.province_name))].sort();
-  const cities = selectedProvince 
+  const cities = selectedProvince && selectedProvince !== 'ALL_PROVINCES'
     ? [...new Set(locations.filter(loc => loc.province_name === selectedProvince).map(loc => loc.city_name))].sort()
     : [];
 
@@ -385,20 +385,20 @@ const LocationManagement = () => {
                   <SelectValue placeholder="Filter by Province" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Provinces</SelectItem>
+                  <SelectItem value="ALL_PROVINCES">All Provinces</SelectItem>
                   {provinces.map(province => (
                     <SelectItem key={province} value={province}>{province}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
 
-              {selectedProvince && (
+              {selectedProvince && selectedProvince !== 'ALL_PROVINCES' && (
                 <Select value={selectedCity} onValueChange={setSelectedCity}>
                   <SelectTrigger className="w-full md:w-48">
                     <SelectValue placeholder="Filter by City" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All Cities</SelectItem>
+                    <SelectItem value="ALL_CITIES">All Cities</SelectItem>
                     {cities.map(city => (
                       <SelectItem key={city} value={city}>{city}</SelectItem>
                     ))}
