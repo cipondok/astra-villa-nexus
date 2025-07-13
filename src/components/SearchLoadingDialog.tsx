@@ -35,7 +35,7 @@ export const SearchLoadingDialog: React.FC<SearchLoadingDialogProps> = ({
 
       const interval = setInterval(() => {
         setProgress(prev => {
-          const newProgress = Math.min(prev + Math.random() * 15 + 5, 95);
+          const newProgress = Math.min(prev + (100 / 30), 95); // 30 intervals over 3 seconds
           
           // Update step based on progress
           const stepIndex = Math.floor((newProgress / 100) * searchSteps.length);
@@ -45,7 +45,7 @@ export const SearchLoadingDialog: React.FC<SearchLoadingDialogProps> = ({
           
           return newProgress;
         });
-      }, 300);
+      }, 100); // Update every 100ms
 
       // Simulate search count updates
       const countInterval = setInterval(() => {
@@ -53,16 +53,16 @@ export const SearchLoadingDialog: React.FC<SearchLoadingDialogProps> = ({
           if (prev === null) return Math.floor(Math.random() * 50) + 20;
           return Math.max(1, prev - Math.floor(Math.random() * 5));
         });
-      }, 400);
+      }, 300);
 
-      // Complete after 2-3 seconds
+      // Complete after exactly 3 seconds
       const timeout = setTimeout(() => {
         setProgress(100);
         setCurrentStep("Search completed!");
         setTimeout(() => {
           onOpenChange(false);
-        }, 800);
-      }, 2500);
+        }, 500);
+      }, 3000); // Exactly 3 seconds
 
       return () => {
         clearInterval(interval);
