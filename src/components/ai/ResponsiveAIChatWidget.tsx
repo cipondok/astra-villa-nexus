@@ -181,48 +181,53 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
   };
 
   return (
-    <div 
-      className="fixed top-1/2 right-5 -translate-y-1/2 z-[9999] pointer-events-auto"
-      style={{
-        width: chatDimensions.width,
-        height: chatDimensions.height,
-        maxHeight: chatDimensions.maxHeight
-      }}
-    >
-      <Card className="h-full w-full flex flex-col shadow-2xl border-primary/20 bg-background/95 backdrop-blur-xl overflow-hidden rounded-2xl">
-        <AIChatHeader onClose={() => setIsOpen(false)} />
-        <CardContent className="p-0 flex-1 flex flex-col min-h-0">
-          <ScrollArea className="flex-1">
-            <div className={`${isMobile ? 'p-2' : 'p-4'} space-y-4`}>
-              <AIChatMessages
-                messages={messages}
-                isLoading={isLoading}
-                messagesEndRef={messagesEndRef}
-              />
-            </div>
-          </ScrollArea>
+    <div className="fixed top-1/2 right-5 -translate-y-1/2 z-[9999] pointer-events-auto">
+      {!isOpen ? (
+        <AIChatTrigger onOpen={() => setIsOpen(true)} />
+      ) : (
+        <div 
+          style={{
+            width: chatDimensions.width,
+            height: chatDimensions.height,
+            maxHeight: chatDimensions.maxHeight
+          }}
+        >
+          <Card className="h-full w-full flex flex-col shadow-2xl border-primary/20 bg-background/95 backdrop-blur-xl overflow-hidden rounded-2xl">
+            <AIChatHeader onClose={() => setIsOpen(false)} />
+            <CardContent className="p-0 flex-1 flex flex-col min-h-0">
+              <ScrollArea className="flex-1">
+                <div className={`${isMobile ? 'p-2' : 'p-4'} space-y-4`}>
+                  <AIChatMessages
+                    messages={messages}
+                    isLoading={isLoading}
+                    messagesEndRef={messagesEndRef}
+                  />
+                </div>
+              </ScrollArea>
 
-          {messages.length <= 1 && (
-            <div className={`${isMobile ? 'px-2 pb-1' : 'px-4 pb-2'}`}>
-              <AIChatQuickActions
-                quickActions={quickActions}
-                onActionClick={setMessage}
-              />
-            </div>
-          )}
+              {messages.length <= 1 && (
+                <div className={`${isMobile ? 'px-2 pb-1' : 'px-4 pb-2'}`}>
+                  <AIChatQuickActions
+                    quickActions={quickActions}
+                    onActionClick={setMessage}
+                  />
+                </div>
+              )}
 
-          <div className={`${isMobile ? 'p-2' : 'p-4'} border-t border-primary/10`}>
-            <AIChatInput
-              message={message}
-              setMessage={setMessage}
-              onSendMessage={handleSendMessage}
-              onVoiceInput={handleVoiceInput}
-              isLoading={isLoading}
-              isListening={isListening}
-            />
-          </div>
-        </CardContent>
-      </Card>
+              <div className={`${isMobile ? 'p-2' : 'p-4'} border-t border-primary/10`}>
+                <AIChatInput
+                  message={message}
+                  setMessage={setMessage}
+                  onSendMessage={handleSendMessage}
+                  onVoiceInput={handleVoiceInput}
+                  isLoading={isLoading}
+                  isListening={isListening}
+                />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
     </div>
   );
 };
