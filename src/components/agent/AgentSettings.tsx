@@ -13,6 +13,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import AgentProfileProgress from "./AgentProfileProgress";
+import LocationSelector from "../LocationSelector";
 import { 
   User, 
   Settings, 
@@ -316,18 +317,30 @@ const AgentSettings = () => {
                       )}
                     </div>
                     <div>
-                      <Label htmlFor="businessAddress">Business Address</Label>
-                      <div className="relative">
-                        <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                        <Input
-                          id="businessAddress"
-                          placeholder="Your office or business location"
-                          value={formData.business_address}
-                          onChange={(e) => setFormData(prev => ({ ...prev, business_address: e.target.value }))}
-                          disabled={!editMode}
-                          className="pl-10"
-                        />
-                      </div>
+                      <LocationSelector
+                        label="Business Address"
+                        value={
+                          formData.business_address 
+                            ? (() => {
+                                try {
+                                  return typeof formData.business_address === 'string' 
+                                    ? JSON.parse(formData.business_address)
+                                    : formData.business_address;
+                                } catch {
+                                  return { full_address: formData.business_address };
+                                }
+                              })()
+                            : {}
+                        }
+                        onChange={(location) => {
+                          setFormData(prev => ({ 
+                            ...prev, 
+                            business_address: JSON.stringify(location)
+                          }));
+                        }}
+                        disabled={!editMode}
+                        required
+                      />
                     </div>
                     <div>
                       <Label htmlFor="experience">Years of Experience</Label>
