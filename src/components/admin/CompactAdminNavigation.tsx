@@ -62,6 +62,7 @@ interface TabItem {
 const CompactAdminNavigation = ({ activeTab, onTabChange, isAdmin }: CompactAdminNavigationProps) => {
   const quickAccess: TabItem[] = [
     { id: "overview", label: "Overview", icon: Activity },
+    { id: "ai-assistant", label: "AI Assistant", icon: Activity, badge: "New" },
     { id: "diagnostic", label: "Diagnostic", icon: Wrench, badge: "New" },
     { id: "astra-token-hub", label: "ASTRA Hub", icon: Coins },
   ];

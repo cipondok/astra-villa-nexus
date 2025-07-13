@@ -32,6 +32,7 @@ import PropertySurveyManagement from "./PropertySurveyManagement";
 import SMTPSettings from "./SMTPSettings";
 import LocationManagement from "./LocationManagement";
 import APISettingsManagement from "./APISettingsManagement";
+import AIPropertyAssistant from "./AIPropertyAssistant";
 
 interface AdminDashboardContentProps {
   activeSection: string;
@@ -105,6 +106,8 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
         return <LocationManagement />;
       case "api-settings":
         return <APISettingsManagement />;
+      case "ai-assistant":
+        return <AIPropertyAssistant />;
       default:
         return <AdminOverview />;
     }
