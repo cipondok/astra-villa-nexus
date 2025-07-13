@@ -79,11 +79,11 @@ const PropertyGridView = ({
       {properties.map((property) => (
         <Card 
           key={property.id} 
-          className="group overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer"
+          className="group overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer h-[520px] flex flex-col"
           onClick={() => onPropertyClick(property)}
         >
           {/* Image Section */}
-          <div className="relative aspect-[4/3] overflow-hidden">
+          <div className="relative aspect-[4/3] overflow-hidden flex-shrink-0">
             <img
               src={getImageUrl(property)}
               alt={property.title}
@@ -157,46 +157,48 @@ const PropertyGridView = ({
           </div>
 
           {/* Content Section */}
-          <CardContent className="p-4 space-y-3">
-            {/* Title */}
-            <h3 className="font-semibold text-foreground line-clamp-2 min-h-[3rem] group-hover:text-primary transition-colors">
-              {property.title}
-            </h3>
+          <CardContent className="p-4 space-y-3 flex-1 flex flex-col justify-between">
+            <div className="space-y-3 flex-1">
+              {/* Title */}
+              <h3 className="font-semibold text-foreground line-clamp-2 min-h-[3rem] group-hover:text-primary transition-colors">
+                {property.title}
+              </h3>
 
-            {/* Location */}
-            <div className="flex items-center gap-1 text-muted-foreground">
-              <MapPin className="h-4 w-4 flex-shrink-0" />
-              <span className="text-sm truncate">{property.location}</span>
-            </div>
+              {/* Location */}
+              <div className="flex items-center gap-1 text-muted-foreground">
+                <MapPin className="h-4 w-4 flex-shrink-0" />
+                <span className="text-sm truncate">{property.location}</span>
+              </div>
 
-            {/* Property Details */}
-            {(property.bedrooms || property.bathrooms || property.area_sqm) && (
-              <div className="flex items-center justify-between text-sm text-muted-foreground">
-                <div className="flex items-center gap-3">
-                  {property.bedrooms && (
+              {/* Property Details */}
+              {(property.bedrooms || property.bathrooms || property.area_sqm) && (
+                <div className="flex items-center justify-between text-sm text-muted-foreground">
+                  <div className="flex items-center gap-3">
+                    {property.bedrooms && (
+                      <div className="flex items-center gap-1">
+                        <Bed className="h-4 w-4" />
+                        <span>{property.bedrooms}</span>
+                      </div>
+                    )}
+                    {property.bathrooms && (
+                      <div className="flex items-center gap-1">
+                        <Bath className="h-4 w-4" />
+                        <span>{property.bathrooms}</span>
+                      </div>
+                    )}
+                  </div>
+                  {property.area_sqm && (
                     <div className="flex items-center gap-1">
-                      <Bed className="h-4 w-4" />
-                      <span>{property.bedrooms}</span>
-                    </div>
-                  )}
-                  {property.bathrooms && (
-                    <div className="flex items-center gap-1">
-                      <Bath className="h-4 w-4" />
-                      <span>{property.bathrooms}</span>
+                      <Square className="h-4 w-4" />
+                      <span>{property.area_sqm}m²</span>
                     </div>
                   )}
                 </div>
-                {property.area_sqm && (
-                  <div className="flex items-center gap-1">
-                    <Square className="h-4 w-4" />
-                    <span>{property.area_sqm}m²</span>
-                  </div>
-                )}
-              </div>
-            )}
+              )}
+            </div>
 
             {/* Action Buttons */}
-            <div className="flex gap-2 pt-2">
+            <div className="flex gap-2 pt-2 mt-auto">
               <Button 
                 variant="default"
                 size="sm"
