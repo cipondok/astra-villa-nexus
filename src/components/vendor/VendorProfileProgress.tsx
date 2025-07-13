@@ -405,7 +405,16 @@ const VendorProfileProgress = () => {
             <Button 
               variant="outline" 
               className="justify-start"
-              onClick={handleEditProfile}
+              onClick={() => {
+                handleEditProfile();
+                // Scroll to edit profile area
+                setTimeout(() => {
+                  const editSection = document.querySelector('[data-edit-profile]');
+                  if (editSection) {
+                    editSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  }
+                }, 500); // Give more time for navigation
+              }}
             >
               <Edit className="h-4 w-4 mr-2" />
               Edit Profile

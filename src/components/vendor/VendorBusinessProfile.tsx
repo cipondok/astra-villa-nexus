@@ -215,7 +215,7 @@ const VendorBusinessProfile = () => {
         isFinalized={!!profile.business_finalized_at}
       />
 
-      <Card>
+      <Card data-edit-profile>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Building2 className="h-5 w-5" />

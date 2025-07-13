@@ -229,7 +229,19 @@ const AgentProfileProgress = ({ onEditProfile }: ProfileProgressProps) => {
               </div>
             </div>
             {completionData.percentage < 100 && (
-              <Button onClick={onEditProfile} className="bg-primary hover:bg-primary/90">
+              <Button 
+                onClick={() => {
+                  onEditProfile();
+                  // Scroll to edit profile area
+                  setTimeout(() => {
+                    const editSection = document.querySelector('[data-edit-profile]');
+                    if (editSection) {
+                      editSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                  }, 100);
+                }} 
+                className="bg-primary hover:bg-primary/90"
+              >
                 Complete Profile
                 <ChevronRight className="h-4 w-4 ml-1" />
               </Button>
@@ -346,7 +358,16 @@ const AgentProfileProgress = ({ onEditProfile }: ProfileProgressProps) => {
                 </div>
               </div>
               <Button 
-                onClick={onEditProfile} 
+                onClick={() => {
+                  onEditProfile();
+                  // Scroll to edit profile area
+                  setTimeout(() => {
+                    const editSection = document.querySelector('[data-edit-profile]');
+                    if (editSection) {
+                      editSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                  }, 100);
+                }} 
                 className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90 transition-opacity"
               >
                 Complete Profile Now - Get 3x More Leads!
