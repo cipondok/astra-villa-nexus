@@ -347,11 +347,11 @@ const PropertyAdvancedFilters = ({
   }, [filters]);
 
   return (
-    <Card className="w-full">
-      <CardHeader className="pb-4">
+    <Card className="w-full min-h-[60vh] xl:min-h-[70vh]">
+      <CardHeader className="pb-6 xl:pb-8">
         <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2">
-            <Search className="h-5 w-5" />
+          <CardTitle className="flex items-center gap-2 text-lg xl:text-xl">
+            <Search className="h-5 w-5 xl:h-6 xl:w-6" />
             Property Search
           </CardTitle>
           <div className="flex items-center gap-2">
@@ -364,6 +364,7 @@ const PropertyAdvancedFilters = ({
               variant="outline"
               size="sm"
               onClick={() => setIsExpanded(!isExpanded)}
+              className="xl:h-10 xl:px-4"
             >
               <Filter className="h-4 w-4 mr-2" />
               {currentText.advancedFilters}
@@ -372,29 +373,29 @@ const PropertyAdvancedFilters = ({
         </div>
       </CardHeader>
       
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-6 xl:space-y-8 pb-8 xl:pb-12">
         {/* Main Search */}
-        <div className="flex gap-2">
+        <div className="flex gap-3 xl:gap-4">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4 xl:h-5 xl:w-5" />
             <Input
               placeholder={currentText.search}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10"
+              className="pl-10 xl:pl-12 h-10 xl:h-12 text-base xl:text-lg"
             />
           </div>
-          <Button onClick={handleSearch} className="px-6">
-            <Search className="h-4 w-4 mr-2" />
+          <Button onClick={handleSearch} className="px-6 xl:px-8 h-10 xl:h-12 text-base xl:text-lg">
+            <Search className="h-4 w-4 mr-2 xl:h-5 xl:w-5" />
             {currentText.searchBtn}
           </Button>
         </div>
 
         {/* Quick Filters */}
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-3 xl:gap-4">
           <Select value={filters.propertyType} onValueChange={(value) => handleFilterChange('propertyType', value)}>
-            <SelectTrigger className="w-40">
-              <Home className="h-4 w-4 mr-2" />
+            <SelectTrigger className="w-40 xl:w-48 h-10 xl:h-12">
+              <Home className="h-4 w-4 mr-2 xl:h-5 xl:w-5" />
               <SelectValue placeholder={currentText.propertyType} />
             </SelectTrigger>
             <SelectContent>
@@ -408,8 +409,8 @@ const PropertyAdvancedFilters = ({
           </Select>
 
           <Select value={filters.listingType} onValueChange={(value) => handleFilterChange('listingType', value)}>
-            <SelectTrigger className="w-40">
-              <DollarSign className="h-4 w-4 mr-2" />
+            <SelectTrigger className="w-40 xl:w-48 h-10 xl:h-12">
+              <DollarSign className="h-4 w-4 mr-2 xl:h-5 xl:w-5" />
               <SelectValue placeholder={currentText.listingType} />
             </SelectTrigger>
             <SelectContent>
@@ -423,8 +424,8 @@ const PropertyAdvancedFilters = ({
           </Select>
 
           <Select value={filters.bedrooms} onValueChange={(value) => handleFilterChange('bedrooms', value)}>
-            <SelectTrigger className="w-32">
-              <Bed className="h-4 w-4 mr-2" />
+            <SelectTrigger className="w-32 xl:w-40 h-10 xl:h-12">
+              <Bed className="h-4 w-4 mr-2 xl:h-5 xl:w-5" />
               <SelectValue placeholder={currentText.bedrooms} />
             </SelectTrigger>
             <SelectContent>
@@ -438,8 +439,8 @@ const PropertyAdvancedFilters = ({
           </Select>
 
           <Select value={filters.bathrooms} onValueChange={(value) => handleFilterChange('bathrooms', value)}>
-            <SelectTrigger className="w-32">
-              <Bath className="h-4 w-4 mr-2" />
+            <SelectTrigger className="w-32 xl:w-40 h-10 xl:h-12">
+              <Bath className="h-4 w-4 mr-2 xl:h-5 xl:w-5" />
               <SelectValue placeholder={currentText.bathrooms} />
             </SelectTrigger>
             <SelectContent>
@@ -454,7 +455,7 @@ const PropertyAdvancedFilters = ({
 
         {/* Advanced Filters */}
         <Collapsible open={isExpanded} onOpenChange={setIsExpanded}>
-          <CollapsibleContent className="space-y-6 pt-4 border-t">
+          <CollapsibleContent className="space-y-8 xl:space-y-10 pt-6 xl:pt-8 border-t">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {/* Location Filters */}
               <div className="space-y-2">
