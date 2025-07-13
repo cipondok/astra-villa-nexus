@@ -120,7 +120,7 @@ const Index = () => {
   const handleQuickSearch = async (searchData?: any) => {
     const searchTerm = searchData?.searchQuery || quickSearch;
     
-    // Check if we have either a search term or active filters
+    // Check if we have active filters
     const hasFilters = searchData && (
       (searchData.location && searchData.location !== 'all') ||
       (searchData.propertyType && searchData.propertyType !== 'all') ||
@@ -130,8 +130,7 @@ const Index = () => {
       (searchData.bathrooms && searchData.bathrooms !== 'all')
     );
     
-    // Return early only if there's no search term AND no active filters
-    if (!searchTerm?.trim() && !hasFilters) return;
+    // Empty search term means show all results (no early return)
     
     console.log('Quick search initiated:', searchTerm, 'with filters:', searchData);
     
