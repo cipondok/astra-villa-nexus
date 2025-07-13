@@ -35,7 +35,8 @@ import {
   ShoppingBag,
   Coins,
   ChevronDown,
-  MapPin
+  MapPin,
+  Key
 } from "lucide-react";
 
 interface CompactAdminNavigationProps {
@@ -105,6 +106,7 @@ const CompactAdminNavigation = ({ activeTab, onTabChange, isAdmin }: CompactAdmi
       icon: Settings,
       items: [
         { id: "system-settings", label: "System", icon: Settings },
+        { id: "api-settings", label: "API Keys", icon: Key },
         { id: "smtp-settings", label: "SMTP", icon: Mail },
         { id: "seo-settings", label: "SEO", icon: Globe },
         { id: "property-3d-settings", label: "3D View", icon: Blocks, badge: "New" },

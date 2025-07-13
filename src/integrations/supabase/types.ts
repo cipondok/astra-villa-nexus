@@ -486,6 +486,50 @@ export type Database = {
         }
         Relationships: []
       }
+      api_settings: {
+        Row: {
+          api_endpoint: string | null
+          api_key: string | null
+          api_name: string
+          created_at: string
+          created_by: string | null
+          description: string | null
+          id: string
+          is_active: boolean
+          updated_at: string
+        }
+        Insert: {
+          api_endpoint?: string | null
+          api_key?: string | null
+          api_name: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          updated_at?: string
+        }
+        Update: {
+          api_endpoint?: string | null
+          api_key?: string | null
+          api_name?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "api_settings_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       approved_service_names: {
         Row: {
           category_id: string | null
