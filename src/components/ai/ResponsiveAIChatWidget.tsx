@@ -173,11 +173,11 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
       : [{ icon: MapPin, text: "Find properties", action: "Show me available properties" }]),
   ];
 
-  // Dynamic sizing based on screen size - ensure it fits in viewport
+  // Dynamic sizing based on screen size - ensure perfect display
   const chatDimensions = {
-    width: isMobile ? 'min(360px, 90vw)' : 'min(400px, 90vw)',
-    height: isMobile ? 'min(500px, 80vh)' : 'min(600px, 80vh)',
-    maxHeight: '80vh'
+    width: isMobile ? 'min(350px, 95vw)' : 'min(400px, 50vw)',
+    height: isMobile ? 'min(550px, 85vh)' : 'min(600px, 85vh)',
+    maxHeight: '85vh'
   };
 
   return (
@@ -190,11 +190,8 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
 
       {isOpen && (
         <div 
-          className="fixed z-[9999] pointer-events-auto transform-gpu will-change-transform animate-fade-in"
+          className="fixed z-[9999] pointer-events-auto transform-gpu will-change-transform animate-fade-in inset-x-0 top-4 mx-auto"
           style={{
-            top: '1rem',
-            left: '50vw',
-            transform: 'translateX(-50%)',
             width: chatDimensions.width,
             height: chatDimensions.height,
             maxHeight: chatDimensions.maxHeight
