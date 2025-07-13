@@ -34,7 +34,8 @@ import {
   Mail,
   ShoppingBag,
   Coins,
-  ChevronDown
+  ChevronDown,
+  MapPin
 } from "lucide-react";
 
 interface CompactAdminNavigationProps {
@@ -73,6 +74,7 @@ const CompactAdminNavigation = ({ activeTab, onTabChange, isAdmin }: CompactAdmi
         { id: "user-management", label: "Users", icon: Users },
         { id: "property-management-hub", label: "Properties", icon: Building },
         { id: "vendors-hub", label: "Vendors", icon: ShoppingBag },
+        { id: "location-management", label: "Locations", icon: MapPin },
         { id: "tools-management", label: "Tools", icon: Settings },
       ]
     },
