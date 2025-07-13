@@ -15,6 +15,7 @@ import AdvancedPropertyFilters, { PropertyFilters } from "@/components/search/Ad
 import { BaseProperty } from "@/types/property";
 import PropertySlideSection from "@/components/property/PropertySlideSection";
 import SlimEnhancedSearchPanel from "@/components/SlimEnhancedSearchPanel";
+import { SearchLoadingDialog } from "@/components/SearchLoadingDialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
@@ -448,6 +449,13 @@ const Index = () => {
 
         {/* Footer */}
         <ProfessionalFooter language={language} />
+        
+        {/* AI Search Loading Dialog */}
+        <SearchLoadingDialog 
+          open={isSearching} 
+          onOpenChange={setIsSearching}
+          searchQuery={quickSearch}
+        />
       </div>
     </div>
   );
