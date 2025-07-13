@@ -14,7 +14,7 @@ import PropertyGridView from "@/components/search/PropertyGridView";
 import AdvancedPropertyFilters, { PropertyFilters } from "@/components/search/AdvancedPropertyFilters";
 import { BaseProperty } from "@/types/property";
 import PropertySlideSection from "@/components/property/PropertySlideSection";
-import EnhancedModernSearchPanel from "@/components/EnhancedModernSearchPanel";
+import SlimEnhancedSearchPanel from "@/components/SlimEnhancedSearchPanel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
@@ -229,8 +229,8 @@ const Index = () => {
             </div>
             
             {/* Enhanced Search Panel */}
-            <div className="animate-scale-in max-w-4xl mx-auto">
-              <EnhancedModernSearchPanel
+            <div className="animate-scale-in max-w-6xl mx-auto">
+              <SlimEnhancedSearchPanel
                 language={language}
                 onSearch={(searchData) => {
                   setQuickSearch(searchData.searchQuery || "");
