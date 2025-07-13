@@ -14,9 +14,9 @@ interface SlimEnhancedSearchPanelProps {
 const SlimEnhancedSearchPanel = ({ language, onSearch, onLiveSearch }: SlimEnhancedSearchPanelProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filters, setFilters] = useState({
-    location: '',
-    propertyType: '',
-    listingType: '',
+    location: 'all',
+    propertyType: 'all',
+    listingType: 'all',
   });
 
   const text = {
@@ -103,7 +103,7 @@ const SlimEnhancedSearchPanel = ({ language, onSearch, onLiveSearch }: SlimEnhan
                 <SelectValue placeholder={currentText.location} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">{currentText.anyLocation}</SelectItem>
+                <SelectItem value="all">{currentText.anyLocation}</SelectItem>
                 <SelectItem value="jakarta">Jakarta</SelectItem>
                 <SelectItem value="bandung">Bandung</SelectItem>
                 <SelectItem value="surabaya">Surabaya</SelectItem>
@@ -118,7 +118,7 @@ const SlimEnhancedSearchPanel = ({ language, onSearch, onLiveSearch }: SlimEnhan
                 <SelectValue placeholder={currentText.type} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">{currentText.anyType}</SelectItem>
+                <SelectItem value="all">{currentText.anyType}</SelectItem>
                 <SelectItem value="apartment">{currentText.apartment}</SelectItem>
                 <SelectItem value="house">{currentText.house}</SelectItem>
                 <SelectItem value="villa">{currentText.villa}</SelectItem>
@@ -133,7 +133,7 @@ const SlimEnhancedSearchPanel = ({ language, onSearch, onLiveSearch }: SlimEnhan
                 <SelectValue placeholder="Type" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">{currentText.anyListing}</SelectItem>
+                <SelectItem value="all">{currentText.anyListing}</SelectItem>
                 <SelectItem value="sale">{currentText.forSale}</SelectItem>
                 <SelectItem value="rent">{currentText.forRent}</SelectItem>
               </SelectContent>
