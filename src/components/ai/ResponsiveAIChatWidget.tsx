@@ -175,18 +175,18 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
 
   // Dynamic sizing for device screen (viewport) positioning
   const chatDimensions = {
-    width: isMobile ? 'min(340px, 92vw)' : 'min(380px, 25vw)',
-    height: isMobile ? 'min(520px, 75vh)' : 'min(580px, 75vh)',
-    maxHeight: '75vh'
+    width: isMobile ? 'min(300px, 85vw)' : 'min(320px, 22vw)',
+    height: isMobile ? 'min(450px, 65vh)' : 'min(480px, 65vh)',
+    maxHeight: '65vh'
   };
 
   return (
-    <div className="fixed top-6 right-5 z-[9999] pointer-events-auto">
+    <div className="fixed top-20 right-5 z-[9999] pointer-events-auto">
       {!isOpen ? (
         <AIChatTrigger onOpen={() => setIsOpen(true)} />
       ) : (
         <div 
-          className="absolute top-16 right-0 max-w-[95vw]"
+          className="absolute top-12 right-0 max-w-[95vw] animate-fade-in"
           style={{
             width: chatDimensions.width,
             height: chatDimensions.height,
