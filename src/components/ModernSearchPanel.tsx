@@ -95,7 +95,8 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
   // Add state for new filters
   const [selectedState, setSelectedState] = useState("");
   const [selectedCity, setSelectedCity] = useState("");
-  const [selectedArea, setSelectedArea] = useState("");
+  const [selectedDistrict, setSelectedDistrict] = useState("");
+  const [selectedSubdistrict, setSelectedSubdistrict] = useState("");
   const [bedPills, setBedPills] = useState("");
   const [bathPills, setBathPills] = useState("");
   const [smartFacilities, setSmartFacilities] = useState<string[]>([]);
@@ -315,7 +316,8 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
     setHas3D(false);
     setSelectedState("");
     setSelectedCity("");
-    setSelectedArea("");
+    setSelectedDistrict("");
+    setSelectedSubdistrict("");
     setBedPills("");
     setBathPills("");
     setSmartFacilities([]);
@@ -357,7 +359,7 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
     setSearchQuery(value);
   }, []);
 
-  const hasActiveFilters = searchQuery || propertyType || bedrooms || bathrooms || location || has3D || selectedState || selectedCity || selectedArea || bedPills || bathPills || smartFacilities.length;
+  const hasActiveFilters = searchQuery || propertyType || bedrooms || bathrooms || location || has3D || selectedState || selectedCity || selectedDistrict || selectedSubdistrict || bedPills || bathPills || smartFacilities.length;
 
   // Pill group change handlers for toggle-off by clicking again
   const handleBedPillsChange = (val: string | string[]) => {
@@ -481,7 +483,7 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
                 : (language === "id" ? "Filter Lanjutan" : "Advanced Filters")}
             </Button>
             {/* Improved clear all, always visible when anything set */}
-            {(searchQuery || propertyType || bedrooms || bathrooms || location || has3D || selectedState || selectedCity || selectedArea || bedPills || bathPills || smartFacilities.length) && (
+            {(searchQuery || propertyType || bedrooms || bathrooms || location || has3D || selectedState || selectedCity || selectedDistrict || selectedSubdistrict || bedPills || bathPills || smartFacilities.length) && (
               <Button
                 variant="outline"
                 size="sm"
@@ -509,10 +511,12 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
                   <LocationSelector
                     selectedState={selectedState}
                     selectedCity={selectedCity}
-                    selectedArea={selectedArea}
+                    selectedDistrict={selectedDistrict}
+                    selectedSubdistrict={selectedSubdistrict}
                     onStateChange={setSelectedState}
                     onCityChange={setSelectedCity}
-                    onAreaChange={setSelectedArea}
+                    onDistrictChange={setSelectedDistrict}
+                    onSubdistrictChange={setSelectedSubdistrict}
                     onLocationChange={setLocation}
                   />
                 </div>
