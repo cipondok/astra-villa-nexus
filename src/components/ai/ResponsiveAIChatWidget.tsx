@@ -181,7 +181,7 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
   };
 
   return (
-    <div className="fixed top-1/2 right-5 -translate-y-1/2 z-[9999] pointer-events-auto">
+    <div className="fixed top-6 right-5 z-[9999] pointer-events-auto">
       {!isOpen ? (
         <AIChatTrigger onOpen={() => setIsOpen(true)} />
       ) : (
