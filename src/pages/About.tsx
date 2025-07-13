@@ -1,6 +1,8 @@
 
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { useTheme } from "@/components/ThemeProvider";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Building, Users, Award, Globe, Heart, Shield } from "lucide-react";
@@ -8,15 +10,15 @@ import AuthenticatedNavigation from "@/components/navigation/AuthenticatedNaviga
 
 const About = () => {
   const { isAuthenticated } = useAuth();
-  const [language, setLanguage] = useState<"en" | "id">("en");
-  const [theme, setTheme] = useState("light");
+  const { language, setLanguage } = useLanguage();
+  const { theme, setTheme } = useTheme();
 
   const toggleLanguage = () => {
-    setLanguage(prev => prev === "en" ? "id" : "en");
+    setLanguage(language === "en" ? "id" : "en");
   };
 
   const toggleTheme = () => {
-    setTheme(prev => prev === "light" ? "dark" : "light");
+    setTheme(theme === "light" ? "dark" : "light");
   };
 
   const text = {

@@ -1,6 +1,8 @@
 
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { useTheme } from "@/components/ThemeProvider";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import AuthenticatedNavigation from "@/components/navigation/AuthenticatedNavigation";
@@ -12,8 +14,9 @@ import { CheckCircle, Clock, XCircle } from "lucide-react";
 
 const VendorRegistration = () => {
   const { isAuthenticated, loading, user, profile } = useAuth();
+  const { language, setLanguage } = useLanguage();
+  const { theme, setTheme } = useTheme();
   const navigate = useNavigate();
-  const [language, setLanguage] = useState<"en" | "id">("en");
   const [vendorRequest, setVendorRequest] = useState<any>(null);
   const [requestLoading, setRequestLoading] = useState(false);
 
@@ -53,7 +56,7 @@ const VendorRegistration = () => {
   };
 
   const toggleLanguage = () => {
-    setLanguage(prev => prev === "en" ? "id" : "en");
+    setLanguage(language === "en" ? "id" : "en");
   };
 
   const handleRegistrationSuccess = () => {
@@ -106,8 +109,8 @@ const VendorRegistration = () => {
       <AuthenticatedNavigation
         language={language}
         onLanguageToggle={toggleLanguage}
-        theme="light"
-        onThemeToggle={() => {}}
+        theme={theme}
+        onThemeToggle={() => setTheme(theme === "light" ? "dark" : "light")}
       />
       
       <div className="pt-16 px-4 sm:px-6 lg:px-8">

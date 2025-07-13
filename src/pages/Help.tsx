@@ -1,5 +1,6 @@
 
 import { useState } from "react";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
@@ -10,11 +11,11 @@ import { useTheme } from "@/components/ThemeProvider";
 
 const Help = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [language, setLanguage] = useState<"en" | "id">("en");
+  const { language, setLanguage } = useLanguage();
   const { theme } = useTheme();
 
   const toggleLanguage = () => {
-    setLanguage(prev => prev === "en" ? "id" : "en");
+    setLanguage(language === "en" ? "id" : "en");
   };
 
   const text = {

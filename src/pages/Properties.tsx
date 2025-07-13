@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { useTheme } from "@/components/ThemeProvider";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
@@ -17,9 +19,9 @@ type ViewMode = 'list' | 'grid' | 'map';
 
 const Properties = () => {
   const { isAuthenticated } = useAuth();
+  const { language, setLanguage } = useLanguage();
+  const { theme, setTheme } = useTheme();
   const navigate = useNavigate();
-  const [language, setLanguage] = useState<"en" | "id">("en");
-  const [theme, setTheme] = useState("light");
   const [properties, setProperties] = useState<BaseProperty[]>([]);
   const [filteredProperties, setFilteredProperties] = useState<BaseProperty[]>([]);
   const [loading, setLoading] = useState(true);
@@ -160,11 +162,11 @@ const Properties = () => {
   }, [properties, filters]);
 
   const toggleLanguage = () => {
-    setLanguage(prev => prev === "en" ? "id" : "en");
+    setLanguage(language === "en" ? "id" : "en");
   };
 
   const toggleTheme = () => {
-    setTheme(prev => prev === "light" ? "dark" : "light");
+    setTheme(theme === "light" ? "dark" : "light");
   };
 
   const handlePropertyClick = (property: BaseProperty) => {

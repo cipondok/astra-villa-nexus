@@ -1,4 +1,6 @@
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { useTheme } from "@/components/ThemeProvider";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -15,10 +17,10 @@ import { toast } from "sonner";
 
 const PropertyEdit = () => {
   const { isAuthenticated, profile, user } = useAuth();
+  const { language, setLanguage } = useLanguage();
+  const { theme, setTheme } = useTheme();
   const navigate = useNavigate();
   const { id } = useParams();
-  const [language, setLanguage] = useState<"en" | "id">("en");
-  const [theme, setTheme] = useState("light");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Form state
@@ -167,9 +169,9 @@ const PropertyEdit = () => {
       <div className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-gray-200/50 shadow-sm">
         <AuthenticatedNavigation
           language={language}
-          onLanguageToggle={() => setLanguage(prev => prev === "en" ? "id" : "en")}
+          onLanguageToggle={() => setLanguage(language === "en" ? "id" : "en")}
           theme={theme}
-          onThemeToggle={() => setTheme(prev => prev === "light" ? "dark" : "light")}
+          onThemeToggle={() => setTheme(theme === "light" ? "dark" : "light")}
         />
       </div>
 

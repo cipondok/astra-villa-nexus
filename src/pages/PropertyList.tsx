@@ -1,6 +1,8 @@
 
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { useTheme } from "@/components/ThemeProvider";
 import { useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -28,6 +30,8 @@ import { formatIDR } from "@/utils/currency";
 
 const PropertyList = () => {
   const { user, profile, isAuthenticated } = useAuth();
+  const { language, setLanguage } = useLanguage();
+  const { theme, setTheme } = useTheme();
   const navigate = useNavigate();
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
@@ -35,8 +39,6 @@ const PropertyList = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [typeFilter, setTypeFilter] = useState("all");
-  const [language, setLanguage] = useState<"en" | "id">("en");
-  const [theme, setTheme] = useState("light");
 
   // Check user permissions
   const canCreateProperty = profile?.role && ['property_owner', 'agent', 'admin'].includes(profile.role);
@@ -169,9 +171,9 @@ const PropertyList = () => {
       <div className="fixed top-0 left-0 right-0 z-50 bg-white dark:bg-gray-800 border-b shadow-sm">
         <AuthenticatedNavigation
           language={language}
-          onLanguageToggle={() => setLanguage(prev => prev === "en" ? "id" : "en")}
+          onLanguageToggle={() => setLanguage(language === "en" ? "id" : "en")}
           theme={theme}
-          onThemeToggle={() => setTheme(prev => prev === "light" ? "dark" : "light")}
+          onThemeToggle={() => setTheme(theme === "light" ? "dark" : "light")}
         />
       </div>
 

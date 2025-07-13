@@ -1,5 +1,6 @@
 
 import { useState } from 'react';
+import { useLanguage } from "@/contexts/LanguageContext";
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -14,7 +15,7 @@ import { Search, Filter, Grid, List, Map } from 'lucide-react';
 const PropertySearch = () => {
   const navigate = useNavigate();
   const { showSuccess, showError } = useAlert();
-  const [language, setLanguage] = useState<"en" | "id">("en");
+  const { language, setLanguage } = useLanguage();
   const [viewMode, setViewMode] = useState<'grid' | 'list' | 'map'>('grid');
   const [savedProperties, setSavedProperties] = useState<string[]>([]);
 
