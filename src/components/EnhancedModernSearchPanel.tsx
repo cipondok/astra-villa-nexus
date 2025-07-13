@@ -162,26 +162,26 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
   ) || searchQuery !== '';
 
   return (
-    <Card className="w-full max-w-4xl mx-auto shadow-2xl border-0 bg-white/98 dark:bg-gray-900/98 backdrop-blur-xl">
-      <CardContent className="p-4 lg:p-6">
-        <div className="space-y-3">
+    <Card className="w-full max-w-7xl mx-auto shadow-2xl border-0 bg-white/98 dark:bg-gray-900/98 backdrop-blur-xl xl:min-h-[600px] 2xl:min-h-[700px]">
+      <CardContent className="p-6 lg:p-8 xl:p-10 2xl:p-12">
+        <div className="space-y-4 lg:space-y-6 xl:space-y-8">
           {/* Main Search Bar */}
           <div className="relative">
-            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-blue-600 dark:text-blue-400" />
+            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-6 w-6 xl:h-7 xl:w-7 text-blue-600 dark:text-blue-400" />
             <Input
               placeholder={currentText.searchPlaceholder}
               value={searchQuery}
               onChange={(e) => handleSearchChange(e.target.value)}
-              className="pl-12 h-12 lg:h-14 text-base lg:text-lg border-2 border-gray-200 dark:border-gray-700 focus:border-blue-500 dark:focus:border-blue-400 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder:text-gray-500 dark:placeholder:text-gray-400 rounded-xl shadow-sm"
+              className="pl-14 xl:pl-16 h-14 lg:h-16 xl:h-20 2xl:h-24 text-base lg:text-lg xl:text-xl 2xl:text-2xl border-2 border-gray-200 dark:border-gray-700 focus:border-blue-500 dark:focus:border-blue-400 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder:text-gray-500 dark:placeholder:text-gray-400 rounded-xl shadow-sm"
             />
           </div>
 
-          {/* Quick Filters - Mobile Optimized */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 lg:gap-3">
+          {/* Quick Filters - Widescreen Optimized */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4 xl:gap-6">
             <Select value={filters.propertyType || "all"} onValueChange={(value) => handleFilterChange('propertyType', value)}>
-              <SelectTrigger className="h-10 lg:h-11 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg">
-                <div className="flex items-center gap-2">
-                  <Home className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+              <SelectTrigger className="h-12 lg:h-14 xl:h-16 2xl:h-20 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg text-base xl:text-lg 2xl:text-xl">
+                <div className="flex items-center gap-2 xl:gap-3">
+                  <Home className="h-5 w-5 xl:h-6 xl:w-6 2xl:h-7 2xl:w-7 text-blue-600 dark:text-blue-400" />
                   <SelectValue placeholder={currentText.propertyType} />
                 </div>
               </SelectTrigger>
@@ -196,9 +196,9 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
             </Select>
 
             <Select value={filters.listingType || "all"} onValueChange={(value) => handleFilterChange('listingType', value)}>
-              <SelectTrigger className="h-10 lg:h-11 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg">
-                <div className="flex items-center gap-2">
-                  <DollarSign className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+              <SelectTrigger className="h-12 lg:h-14 xl:h-16 2xl:h-20 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg text-base xl:text-lg 2xl:text-xl">
+                <div className="flex items-center gap-2 xl:gap-3">
+                  <DollarSign className="h-5 w-5 xl:h-6 xl:w-6 2xl:h-7 2xl:w-7 text-blue-600 dark:text-blue-400" />
                   <SelectValue placeholder={currentText.listingType} />
                 </div>
               </SelectTrigger>
@@ -213,9 +213,9 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
             </Select>
 
             <Select value={filters.location || "all"} onValueChange={(value) => handleFilterChange('location', value)}>
-              <SelectTrigger className="h-10 lg:h-11 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg">
-                <div className="flex items-center gap-2">
-                  <MapPin className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+              <SelectTrigger className="h-12 lg:h-14 xl:h-16 2xl:h-20 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg text-base xl:text-lg 2xl:text-xl">
+                <div className="flex items-center gap-2 xl:gap-3">
+                  <MapPin className="h-5 w-5 xl:h-6 xl:w-6 2xl:h-7 2xl:w-7 text-blue-600 dark:text-blue-400" />
                   <SelectValue placeholder={currentText.location} />
                 </div>
               </SelectTrigger>
@@ -231,45 +231,45 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
             <Button
               onClick={() => setShowAdvanced(!showAdvanced)}
               variant="outline"
-              className="h-10 lg:h-11 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg"
+              className="h-12 lg:h-14 xl:h-16 2xl:h-20 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg text-base xl:text-lg 2xl:text-xl px-4 xl:px-6"
             >
-              <Filter className="h-4 w-4 mr-2" />
+              <Filter className="h-5 w-5 xl:h-6 xl:w-6 2xl:h-7 2xl:w-7 mr-2 xl:mr-3" />
               {currentText.advancedFilters}
             </Button>
           </div>
 
           {/* Advanced Filters */}
           {showAdvanced && (
-            <div className="space-y-3 pt-3 border-t border-gray-200 dark:border-gray-700">
+            <div className="space-y-4 lg:space-y-6 xl:space-y-8 pt-4 lg:pt-6 xl:pt-8 border-t border-gray-200 dark:border-gray-700">
               {/* Price Range */}
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-4 lg:gap-6">
                 <Input
                   placeholder={currentText.from}
                   value={filters.priceMin}
                   onChange={(e) => handleFilterChange('priceMin', e.target.value)}
-                  className="h-10 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg"
+                  className="h-12 lg:h-14 xl:h-16 2xl:h-20 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg text-base xl:text-lg 2xl:text-xl px-4 xl:px-6"
                 />
                 <Input
                   placeholder={currentText.to}
                   value={filters.priceMax}
                   onChange={(e) => handleFilterChange('priceMax', e.target.value)}
-                  className="h-10 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg"
+                  className="h-12 lg:h-14 xl:h-16 2xl:h-20 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg text-base xl:text-lg 2xl:text-xl px-4 xl:px-6"
                 />
               </div>
 
               {/* Bedrooms & Bathrooms */}
-              <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-2">
-                  <label className="text-xs font-medium text-gray-700 dark:text-gray-300 flex items-center gap-1">
-                    <Bed className="h-3 w-3" />
+              <div className="grid grid-cols-2 gap-4 lg:gap-6">
+                <div className="space-y-3 lg:space-y-4">
+                  <label className="text-sm lg:text-base xl:text-lg font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                    <Bed className="h-4 w-4 xl:h-5 xl:w-5" />
                     {currentText.bedrooms}
                   </label>
-                  <div className="flex gap-1 flex-wrap">
+                  <div className="flex gap-2 lg:gap-3 flex-wrap">
                     <Button
                       variant={filters.bedrooms === '' ? "default" : "outline"}
                       size="sm"
                       onClick={() => handleFilterChange('bedrooms', '')}
-                      className="text-xs h-8"
+                      className="text-sm lg:text-base xl:text-lg h-10 lg:h-12 xl:h-14 px-3 xl:px-4"
                     >
                       {currentText.any}
                     </Button>
@@ -279,7 +279,7 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
                         variant={filters.bedrooms === option ? "default" : "outline"}
                         size="sm"
                         onClick={() => handleFilterChange('bedrooms', option)}
-                        className="text-xs h-8"
+                        className="text-sm lg:text-base xl:text-lg h-10 lg:h-12 xl:h-14 px-3 xl:px-4"
                       >
                         {option}
                       </Button>
@@ -287,17 +287,17 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <label className="text-xs font-medium text-gray-700 dark:text-gray-300 flex items-center gap-1">
-                    <Bath className="h-3 w-3" />
+                <div className="space-y-3 lg:space-y-4">
+                  <label className="text-sm lg:text-base xl:text-lg font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                    <Bath className="h-4 w-4 xl:h-5 xl:w-5" />
                     {currentText.bathrooms}
                   </label>
-                  <div className="flex gap-1 flex-wrap">
+                  <div className="flex gap-2 lg:gap-3 flex-wrap">
                     <Button
                       variant={filters.bathrooms === '' ? "default" : "outline"}
                       size="sm"
                       onClick={() => handleFilterChange('bathrooms', '')}
-                      className="text-xs h-8"
+                      className="text-sm lg:text-base xl:text-lg h-10 lg:h-12 xl:h-14 px-3 xl:px-4"
                     >
                       {currentText.any}
                     </Button>
@@ -307,7 +307,7 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
                         variant={filters.bathrooms === option ? "default" : "outline"}
                         size="sm"
                         onClick={() => handleFilterChange('bathrooms', option)}
-                        className="text-xs h-8"
+                        className="text-sm lg:text-base xl:text-lg h-10 lg:h-12 xl:h-14 px-3 xl:px-4"
                       >
                         {option}
                       </Button>
@@ -317,19 +317,19 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
               </div>
 
               {/* Amenities */}
-              <div className="space-y-2">
-                <label className="text-xs font-medium text-gray-700 dark:text-gray-300">{currentText.amenities}</label>
-                <div className="flex gap-1.5 flex-wrap">
+              <div className="space-y-3 lg:space-y-4">
+                <label className="text-sm lg:text-base xl:text-lg font-medium text-gray-700 dark:text-gray-300">{currentText.amenities}</label>
+                <div className="flex gap-2 lg:gap-3 flex-wrap">
                   {amenitiesList.map((amenity) => (
                     <Badge
                       key={amenity.value}
                       variant={filters.amenities.includes(amenity.value) ? "default" : "outline"}
-                      className="cursor-pointer hover:scale-105 transition-transform text-xs px-2 py-1"
+                      className="cursor-pointer hover:scale-105 transition-transform text-sm lg:text-base xl:text-lg px-3 lg:px-4 py-2 lg:py-3 h-10 lg:h-12 xl:h-14 rounded-lg"
                       onClick={() => handleAmenityToggle(amenity.value)}
                     >
                       {amenity.icon} {amenity.label}
                       {filters.amenities.includes(amenity.value) && (
-                        <X className="h-3 w-3 ml-1" />
+                        <X className="h-4 w-4 xl:h-5 xl:w-5 ml-2" />
                       )}
                     </Badge>
                   ))}
@@ -339,21 +339,21 @@ const EnhancedModernSearchPanel = ({ language, onSearch, onLiveSearch }: Enhance
           )}
 
           {/* Action Buttons */}
-          <div className="flex gap-2 pt-2">
+          <div className="flex gap-3 lg:gap-4 pt-4 lg:pt-6">
             <Button
               onClick={handleSearch}
-              className="flex-1 h-11 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-200"
+              className="flex-1 h-14 lg:h-16 xl:h-20 2xl:h-24 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 text-base lg:text-lg xl:text-xl 2xl:text-2xl"
             >
-              <Search className="h-4 w-4 mr-2" />
+              <Search className="h-5 w-5 xl:h-6 xl:w-6 2xl:h-7 2xl:w-7 mr-2 xl:mr-3" />
               {currentText.search}
             </Button>
             {hasActiveFilters && (
               <Button
                 onClick={clearAllFilters}
                 variant="outline"
-                className="h-11 px-4 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg"
+                className="h-14 lg:h-16 xl:h-20 2xl:h-24 px-6 xl:px-8 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg text-base lg:text-lg xl:text-xl 2xl:text-2xl"
               >
-                <X className="h-4 w-4 mr-1" />
+                <X className="h-5 w-5 xl:h-6 xl:w-6 2xl:h-7 2xl:w-7 mr-2 xl:mr-3" />
                 {currentText.clearAll}
               </Button>
             )}
