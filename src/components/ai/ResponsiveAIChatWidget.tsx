@@ -173,11 +173,11 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
       : [{ icon: MapPin, text: "Find properties", action: "Show me available properties" }]),
   ];
 
-  // Dynamic sizing based on screen size - ensure perfect display
+  // Dynamic sizing for device screen (viewport) positioning
   const chatDimensions = {
-    width: isMobile ? 'min(350px, 95vw)' : 'min(400px, 50vw)',
-    height: isMobile ? 'min(550px, 85vh)' : 'min(600px, 85vh)',
-    maxHeight: '85vh'
+    width: isMobile ? 'min(340px, 92vw)' : 'min(380px, 25vw)',
+    height: isMobile ? 'min(520px, 75vh)' : 'min(580px, 75vh)',
+    maxHeight: '75vh'
   };
 
   return (
