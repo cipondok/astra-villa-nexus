@@ -14,6 +14,7 @@ import PropertyGridView from "@/components/search/PropertyGridView";
 import AdvancedPropertyFilters, { PropertyFilters } from "@/components/search/AdvancedPropertyFilters";
 import { BaseProperty } from "@/types/property";
 import PropertySlideSection from "@/components/property/PropertySlideSection";
+import EnhancedModernSearchPanel from "@/components/EnhancedModernSearchPanel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
@@ -227,45 +228,16 @@ const Index = () => {
               </p>
             </div>
             
-            {/* Enhanced Quick Search */}
-            <div className="animate-scale-in max-w-2xl mx-auto">
-              <div className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm rounded-xl p-6 shadow-lg border border-white/20 dark:border-slate-700/20">
-                <div className="flex gap-2 mb-4">
-                  <div className="relative flex-1">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5" />
-                    <Input
-                      placeholder="Search properties by location, type, or title..."
-                      value={quickSearch}
-                      onChange={(e) => setQuickSearch(e.target.value)}
-                      onKeyPress={(e) => e.key === 'Enter' && handleQuickSearch()}
-                      className="pl-10"
-                    />
-                  </div>
-                  <Button 
-                    onClick={handleQuickSearch}
-                    disabled={!quickSearch.trim() || isSearching}
-                  >
-                    {isSearching ? "Searching..." : "Search"}
-                  </Button>
-                </div>
-                
-                <div className="flex items-center justify-between">
-                  <Button
-                    variant="outline"
-                    onClick={() => setFiltersOpen(!filtersOpen)}
-                    size="sm"
-                  >
-                    Advanced Filters
-                  </Button>
-                  <Button
-                    variant="outline"
-                    onClick={() => navigate('/properties')}
-                    size="sm"
-                  >
-                    View All Properties
-                  </Button>
-                </div>
-              </div>
+            {/* Enhanced Search Panel */}
+            <div className="animate-scale-in max-w-4xl mx-auto">
+              <EnhancedModernSearchPanel
+                language={language}
+                onSearch={(searchData) => {
+                  setQuickSearch(searchData.searchQuery || "");
+                  handleQuickSearch();
+                }}
+                onLiveSearch={(searchTerm) => setQuickSearch(searchTerm)}
+              />
             </div>
           </div>
         </section>
