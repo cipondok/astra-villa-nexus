@@ -192,9 +192,9 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
         <div 
           className="fixed z-[9999] pointer-events-auto transform-gpu will-change-transform animate-fade-in"
           style={{
-            top: '50vh',
+            top: '1rem',
             left: '50vw',
-            transform: 'translate(-50%, -50%)',
+            transform: 'translateX(-50%)',
             width: chatDimensions.width,
             height: chatDimensions.height,
             maxHeight: chatDimensions.maxHeight
