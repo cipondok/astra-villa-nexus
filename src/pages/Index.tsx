@@ -133,6 +133,11 @@ const Index = () => {
     // Empty search term means show all results (no early return)
     
     console.log('Quick search initiated:', searchTerm, 'with filters:', searchData);
+    console.log('Active filters:', {
+      location: searchData?.location !== 'all' ? searchData?.location : null,
+      propertyType: searchData?.propertyType !== 'all' ? searchData?.propertyType : null,
+      listingType: searchData?.listingType !== 'all' ? searchData?.listingType : null
+    });
     
     setIsSearching(true);
     setHasSearched(true);
@@ -145,25 +150,27 @@ const Index = () => {
         .eq('status', 'active')
         .not('title', 'is', null);
 
-      // Apply text search only if there's a search term
+      // Apply text search if present
       if (searchTerm?.trim()) {
         query = query.or(`title.ilike.%${searchTerm.trim()}%,location.ilike.%${searchTerm.trim()}%,city.ilike.%${searchTerm.trim()}%,state.ilike.%${searchTerm.trim()}%`);
       }
 
-      // Apply filters if provided
+      // Apply location filter if present
       if (searchData?.location && searchData.location !== 'all') {
-        query = query.or(`location.ilike.%${searchData.location}%,city.ilike.%${searchData.location}%`);
+        query = query.or(`location.ilike.%${searchData.location}%,city.ilike.%${searchData.location}%,state.ilike.%${searchData.location}%`);
       }
 
+      // Apply property type filter
       if (searchData?.propertyType && searchData.propertyType !== 'all') {
         query = query.eq('property_type', searchData.propertyType);
       }
 
+      // Apply listing type filter
       if (searchData?.listingType && searchData.listingType !== 'all') {
         query = query.eq('listing_type', searchData.listingType);
       }
 
-      // Apply advanced filters
+      // Apply price range filter
       if (searchData?.priceRange && searchData.priceRange !== 'all') {
         const [min, max] = searchData.priceRange.split('-');
         if (searchData.priceRange.includes('+')) {
@@ -173,6 +180,7 @@ const Index = () => {
         }
       }
 
+      // Apply bedroom filter
       if (searchData?.bedrooms && searchData.bedrooms !== 'all') {
         if (searchData.bedrooms.includes('+')) {
           query = query.gte('bedrooms', parseInt(searchData.bedrooms));
@@ -181,6 +189,7 @@ const Index = () => {
         }
       }
 
+      // Apply bathroom filter
       if (searchData?.bathrooms && searchData.bathrooms !== 'all') {
         if (searchData.bathrooms.includes('+')) {
           query = query.gte('bathrooms', parseInt(searchData.bathrooms));
