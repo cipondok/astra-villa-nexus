@@ -44,6 +44,7 @@ function App() {
                         <Route path="/services" element={<Services />} />
                         <Route path="/properties/:id" element={<PropertyDetail />} />
                         <Route path="/admin" element={<AdminDashboard />} />
+                        <Route path="/admin-dashboard" element={<AdminDashboard />} />
                         <Route path="/agent" element={<AgentDashboard />} />
                         <Route path="*" element={<NotFound />} />
                       </Routes>
