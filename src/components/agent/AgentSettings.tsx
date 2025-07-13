@@ -323,9 +323,16 @@ const AgentSettings = () => {
                           formData.business_address 
                             ? (() => {
                                 try {
-                                  return typeof formData.business_address === 'string' 
+                                  const parsed = typeof formData.business_address === 'string' 
                                     ? JSON.parse(formData.business_address)
                                     : formData.business_address;
+                                  
+                                  // Handle legacy string format
+                                  if (typeof parsed === 'string') {
+                                    return { full_address: parsed };
+                                  }
+                                  
+                                  return parsed;
                                 } catch {
                                   return { full_address: formData.business_address };
                                 }

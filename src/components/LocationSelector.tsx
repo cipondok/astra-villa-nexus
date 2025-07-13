@@ -2,37 +2,30 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { MapPin, ChevronDown } from 'lucide-react';
-
-interface LocationData {
-  id: string;
-  province_code: string;
-  province_name: string;
-  city_code: string;
-  city_name: string;
-  city_type: string;
-  district_code?: string;
-  district_name?: string;
-  subdistrict_code?: string;
-  subdistrict_name?: string;
-  postal_code?: string;
-  area_name: string;
-}
+import { MapPin } from 'lucide-react';
 
 interface LocationSelectorProps {
   value?: {
-    province?: string;
-    city?: string;
-    district?: string;
-    subdistrict?: string;
+    province_code?: string;
+    province_name?: string;
+    city_code?: string;
+    city_name?: string;
+    district_code?: string;
+    district_name?: string;
+    subdistrict_code?: string;
+    subdistrict_name?: string;
     postal_code?: string;
     full_address?: string;
   };
   onChange: (location: {
-    province?: string;
-    city?: string;
-    district?: string;
-    subdistrict?: string;
+    province_code?: string;
+    province_name?: string;
+    city_code?: string;
+    city_name?: string;
+    district_code?: string;
+    district_name?: string;
+    subdistrict_code?: string;
+    subdistrict_name?: string;
     postal_code?: string;
     full_address?: string;
   }) => void;
@@ -59,35 +52,35 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
     loadProvinces();
   }, []);
 
-  // Load cities when province changes
+  // Load cities when province_code changes
   useEffect(() => {
-    if (value.province) {
-      loadCities(value.province);
+    if (value.province_code) {
+      loadCities(value.province_code);
     } else {
       setCities([]);
       setDistricts([]);
       setSubdistricts([]);
     }
-  }, [value.province]);
+  }, [value.province_code]);
 
-  // Load districts when city changes
+  // Load districts when city_code changes
   useEffect(() => {
-    if (value.province && value.city) {
-      loadDistricts(value.province, value.city);
+    if (value.province_code && value.city_code) {
+      loadDistricts(value.province_code, value.city_code);
     } else {
       setDistricts([]);
       setSubdistricts([]);
     }
-  }, [value.province, value.city]);
+  }, [value.province_code, value.city_code]);
 
-  // Load subdistricts when district changes
+  // Load subdistricts when district_code changes
   useEffect(() => {
-    if (value.province && value.city && value.district) {
-      loadSubdistricts(value.province, value.city, value.district);
+    if (value.province_code && value.city_code && value.district_code) {
+      loadSubdistricts(value.province_code, value.city_code, value.district_code);
     } else {
       setSubdistricts([]);
     }
-  }, [value.province, value.city, value.district]);
+  }, [value.province_code, value.city_code, value.district_code]);
 
   const loadProvinces = async () => {
     try {
@@ -229,64 +222,81 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
 
   const handleProvinceChange = (provinceCode: string) => {
     const province = provinces.find(p => p.code === provinceCode);
-    onChange({
-      province: province?.name || '',
-      city: '',
-      district: '',
-      subdistrict: '',
+    const newLocation = {
+      province_code: provinceCode,
+      province_name: province?.name || '',
+      city_code: '',
+      city_name: '',
+      district_code: '',
+      district_name: '',
+      subdistrict_code: '',
+      subdistrict_name: '',
       postal_code: '',
-      full_address: updateFullAddress({ province: province?.name || '' })
-    });
+      full_address: province?.name || ''
+    };
+    onChange(newLocation);
   };
 
   const handleCityChange = (cityCode: string) => {
     const city = cities.find(c => c.code === cityCode);
     const newLocation = {
       ...value,
-      city: city ? `${city.type} ${city.name}` : '',
-      district: '',
-      subdistrict: '',
-      postal_code: ''
+      city_code: cityCode,
+      city_name: city ? `${city.type} ${city.name}` : '',
+      district_code: '',
+      district_name: '',
+      subdistrict_code: '',
+      subdistrict_name: '',
+      postal_code: '',
+      full_address: updateFullAddress({
+        province_name: value.province_name,
+        city_name: city ? `${city.type} ${city.name}` : ''
+      })
     };
-    onChange({
-      ...newLocation,
-      full_address: updateFullAddress(newLocation)
-    });
+    onChange(newLocation);
   };
 
   const handleDistrictChange = (districtCode: string) => {
     const district = districts.find(d => d.code === districtCode);
     const newLocation = {
       ...value,
-      district: district?.name || '',
-      subdistrict: '',
-      postal_code: ''
+      district_code: districtCode,
+      district_name: district?.name || '',
+      subdistrict_code: '',
+      subdistrict_name: '',
+      postal_code: '',
+      full_address: updateFullAddress({
+        province_name: value.province_name,
+        city_name: value.city_name,
+        district_name: district?.name || ''
+      })
     };
-    onChange({
-      ...newLocation,
-      full_address: updateFullAddress(newLocation)
-    });
+    onChange(newLocation);
   };
 
   const handleSubdistrictChange = (subdistrictCode: string) => {
     const subdistrict = subdistricts.find(s => s.code === subdistrictCode);
     const newLocation = {
       ...value,
-      subdistrict: subdistrict?.name || '',
-      postal_code: subdistrict?.postal_code || ''
+      subdistrict_code: subdistrictCode,
+      subdistrict_name: subdistrict?.name || '',
+      postal_code: subdistrict?.postal_code || '',
+      full_address: updateFullAddress({
+        province_name: value.province_name,
+        city_name: value.city_name,
+        district_name: value.district_name,
+        subdistrict_name: subdistrict?.name || ''
+      })
     };
-    onChange({
-      ...newLocation,
-      full_address: updateFullAddress(newLocation)
-    });
+    onChange(newLocation);
   };
 
   const updateFullAddress = (location: any) => {
     const parts = [
-      location.subdistrict,
-      location.district,
-      location.city,
-      location.province
+      location.subdistrict_name,
+      location.district_name,
+      location.city_name,
+      location.province_name
     ].filter(Boolean);
     
     return parts.join(', ');
@@ -305,7 +315,7 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
         <div>
           <Label htmlFor="province" className="text-sm">Province</Label>
           <Select
-            value={provinces.find(p => p.name === value.province)?.code || ''}
+            value={value.province_code || ''}
             onValueChange={handleProvinceChange}
             disabled={disabled || loading}
           >
@@ -326,9 +336,9 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
         <div>
           <Label htmlFor="city" className="text-sm">City/Regency</Label>
           <Select
-            value={cities.find(c => `${c.type} ${c.name}` === value.city)?.code || ''}
+            value={value.city_code || ''}
             onValueChange={handleCityChange}
-            disabled={disabled || loading || !value.province}
+            disabled={disabled || loading || !value.province_code}
           >
             <SelectTrigger id="city">
               <SelectValue placeholder="Select City" />
@@ -347,9 +357,9 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
         <div>
           <Label htmlFor="district" className="text-sm">District</Label>
           <Select
-            value={districts.find(d => d.name === value.district)?.code || ''}
+            value={value.district_code || ''}
             onValueChange={handleDistrictChange}
-            disabled={disabled || loading || !value.city}
+            disabled={disabled || loading || !value.city_code}
           >
             <SelectTrigger id="district">
               <SelectValue placeholder="Select District" />
@@ -368,9 +378,9 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
         <div>
           <Label htmlFor="subdistrict" className="text-sm">Subdistrict</Label>
           <Select
-            value={subdistricts.find(s => s.name === value.subdistrict)?.code || ''}
+            value={value.subdistrict_code || ''}
             onValueChange={handleSubdistrictChange}
-            disabled={disabled || loading || !value.district}
+            disabled={disabled || loading || !value.district_code}
           >
             <SelectTrigger id="subdistrict">
               <SelectValue placeholder="Select Subdistrict" />
