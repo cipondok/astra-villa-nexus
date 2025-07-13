@@ -283,6 +283,7 @@ const Index = () => {
                   handleQuickSearch(searchData);
                 }}
                 onLiveSearch={(searchTerm) => setQuickSearch(searchTerm)}
+                resultsCount={hasSearched ? searchResults.length : undefined}
               />
             </div>
           </div>
