@@ -186,7 +186,7 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
         <AIChatTrigger onOpen={() => setIsOpen(true)} />
       ) : (
         <div 
-          className="absolute top-12 right-0 max-w-[95vw] animate-fade-in"
+          className="absolute top-12 right-0 max-w-[95vw]"
           style={{
             width: chatDimensions.width,
             height: chatDimensions.height,
