@@ -190,7 +190,7 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
 
       {isOpen && (
         <div 
-          className="fixed z-[9999] pointer-events-auto transform-gpu will-change-transform animate-fade-in inset-x-0 top-4 mx-auto"
+          className="fixed top-4 left-1/2 -translate-x-1/2 z-[9999] pointer-events-auto transform-gpu will-change-transform animate-fade-in"
           style={{
             width: chatDimensions.width,
             height: chatDimensions.height,
