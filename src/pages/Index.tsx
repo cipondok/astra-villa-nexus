@@ -117,22 +117,42 @@ const Index = () => {
     staleTime: 60000,
   });
 
-  const handleQuickSearch = async () => {
-    if (!quickSearch.trim()) return;
+  const handleQuickSearch = async (searchData?: any) => {
+    const searchTerm = searchData?.searchQuery || quickSearch;
+    if (!searchTerm?.trim()) return;
     
-    console.log('Quick search initiated:', quickSearch);
+    console.log('Quick search initiated:', searchTerm, 'with filters:', searchData);
     
     setIsSearching(true);
     setHasSearched(true);
     setSearchError(null);
     
     try {
-      const { data, error } = await supabase
+      let query = supabase
         .from('properties')
         .select('id, title, property_type, listing_type, price, location, bedrooms, bathrooms, area_sqm, images, thumbnail_url, state, city, description, three_d_model_url, virtual_tour_url')
         .eq('status', 'active')
-        .not('title', 'is', null)
-        .or(`title.ilike.%${quickSearch.trim()}%,location.ilike.%${quickSearch.trim()}%,city.ilike.%${quickSearch.trim()}%,state.ilike.%${quickSearch.trim()}%`)
+        .not('title', 'is', null);
+
+      // Apply text search
+      if (searchTerm.trim()) {
+        query = query.or(`title.ilike.%${searchTerm.trim()}%,location.ilike.%${searchTerm.trim()}%,city.ilike.%${searchTerm.trim()}%,state.ilike.%${searchTerm.trim()}%`);
+      }
+
+      // Apply filters if provided
+      if (searchData?.location && searchData.location !== 'all') {
+        query = query.or(`location.ilike.%${searchData.location}%,city.ilike.%${searchData.location}%`);
+      }
+
+      if (searchData?.propertyType && searchData.propertyType !== 'all') {
+        query = query.eq('property_type', searchData.propertyType);
+      }
+
+      if (searchData?.listingType && searchData.listingType !== 'all') {
+        query = query.eq('listing_type', searchData.listingType);
+      }
+
+      const { data, error } = await query
         .order('created_at', { ascending: false })
         .limit(20);
 
@@ -234,7 +254,7 @@ const Index = () => {
                 language={language}
                 onSearch={(searchData) => {
                   setQuickSearch(searchData.searchQuery || "");
-                  handleQuickSearch();
+                  handleQuickSearch(searchData);
                 }}
                 onLiveSearch={(searchTerm) => setQuickSearch(searchTerm)}
               />
