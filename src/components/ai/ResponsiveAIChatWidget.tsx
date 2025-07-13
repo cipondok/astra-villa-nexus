@@ -182,13 +182,18 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
 
   return (
     <>
-      {!isOpen && <AIChatTrigger onOpen={() => setIsOpen(true)} />}
+      {!isOpen && (
+        <div className="fixed right-6 top-1/2 -translate-y-1/2 z-[10001]">
+          <AIChatTrigger onOpen={() => setIsOpen(true)} />
+        </div>
+      )}
 
       {isOpen && (
         <div 
           className="fixed z-[9999] animate-fade-in pointer-events-auto transform-gpu will-change-transform"
           style={{
-            bottom: isMobile ? '0.5rem' : '1rem',
+            top: '50%',
+            transform: 'translateY(-50%)',
             right: isMobile ? '0.5rem' : '1rem',
             width: chatDimensions.width,
             height: chatDimensions.height,

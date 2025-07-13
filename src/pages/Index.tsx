@@ -441,9 +441,6 @@ const Index = () => {
           </div>
         </div>
 
-        {/* AI Chat Widget */}
-        <ResponsiveAIChatWidget />
-        
         {/* Scroll to Top Button */}
         <ScrollToTopButton />
 
@@ -456,6 +453,9 @@ const Index = () => {
           onOpenChange={setIsSearching}
           searchQuery={quickSearch}
         />
+        
+        {/* Customer AI Chat Widget - Positioned Right Center */}
+        <ResponsiveAIChatWidget />
       </div>
     </div>
   );
