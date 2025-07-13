@@ -162,11 +162,13 @@ const Index = () => {
 
       // Apply property type filter
       if (searchData?.propertyType && searchData.propertyType !== 'all') {
+        console.log('Applying property type filter:', searchData.propertyType);
         query = query.eq('property_type', searchData.propertyType);
       }
 
       // Apply listing type filter
       if (searchData?.listingType && searchData.listingType !== 'all') {
+        console.log('Applying listing type filter:', searchData.listingType);
         query = query.eq('listing_type', searchData.listingType);
       }
 

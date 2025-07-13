@@ -233,6 +233,7 @@ const SlimEnhancedSearchPanel = ({ language, onSearch, onLiveSearch, resultsCoun
                 <SelectItem value="apartment">{currentText.apartment}</SelectItem>
                 <SelectItem value="house">{currentText.house}</SelectItem>
                 <SelectItem value="villa">{currentText.villa}</SelectItem>
+                <SelectItem value="townhouse">Townhouse</SelectItem>
                 <SelectItem value="commercial">{currentText.commercial}</SelectItem>
                 <SelectItem value="land">{currentText.land}</SelectItem>
               </SelectContent>
@@ -254,6 +255,7 @@ const SlimEnhancedSearchPanel = ({ language, onSearch, onLiveSearch, resultsCoun
                 <SelectItem value="all">{currentText.anyListing}</SelectItem>
                 <SelectItem value="sale">{currentText.forSale}</SelectItem>
                 <SelectItem value="rent">{currentText.forRent}</SelectItem>
+                <SelectItem value="lease">Lease</SelectItem>
               </SelectContent>
             </Select>
           </div>
