@@ -74,8 +74,8 @@ export const SearchLoadingDialog: React.FC<SearchLoadingDialogProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md bg-background border border-primary/20 p-0 shadow-2xl animate-scale-in">
-        <div className="flex flex-col items-center justify-center px-8 py-10 space-y-6">
+      <DialogContent className="max-w-lg bg-background/100 border border-primary/20 p-0 shadow-2xl animate-scale-in backdrop-blur-none">
+        <div className="flex flex-col items-center justify-center px-12 py-12 space-y-8">
           {/* ASTRA AI Logo with Animation */}
           <div className="relative">
             <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center animate-pulse">
