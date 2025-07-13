@@ -152,6 +152,32 @@ const Index = () => {
         query = query.eq('listing_type', searchData.listingType);
       }
 
+      // Apply advanced filters
+      if (searchData?.priceRange && searchData.priceRange !== 'all') {
+        const [min, max] = searchData.priceRange.split('-');
+        if (searchData.priceRange.includes('+')) {
+          query = query.gte('price', parseInt(min));
+        } else {
+          query = query.gte('price', parseInt(min)).lte('price', parseInt(max));
+        }
+      }
+
+      if (searchData?.bedrooms && searchData.bedrooms !== 'all') {
+        if (searchData.bedrooms.includes('+')) {
+          query = query.gte('bedrooms', parseInt(searchData.bedrooms));
+        } else {
+          query = query.eq('bedrooms', parseInt(searchData.bedrooms));
+        }
+      }
+
+      if (searchData?.bathrooms && searchData.bathrooms !== 'all') {
+        if (searchData.bathrooms.includes('+')) {
+          query = query.gte('bathrooms', parseInt(searchData.bathrooms));
+        } else {
+          query = query.eq('bathrooms', parseInt(searchData.bathrooms));
+        }
+      }
+
       const { data, error } = await query
         .order('created_at', { ascending: false })
         .limit(20);

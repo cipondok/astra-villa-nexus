@@ -3,7 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
-import { Search, MapPin, Home, Filter } from "lucide-react";
+import { Search, MapPin, Home, Filter, ChevronDown } from "lucide-react";
+import SearchSuggestions from "@/components/search/SearchSuggestions";
 
 interface SlimEnhancedSearchPanelProps {
   language: "en" | "id";
@@ -13,10 +14,15 @@ interface SlimEnhancedSearchPanelProps {
 
 const SlimEnhancedSearchPanel = ({ language, onSearch, onLiveSearch }: SlimEnhancedSearchPanelProps) => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   const [filters, setFilters] = useState({
     location: 'all',
     propertyType: 'all',
     listingType: 'all',
+    priceRange: 'all',
+    bedrooms: 'all',
+    bathrooms: 'all',
   });
 
   const text = {
@@ -36,7 +42,13 @@ const SlimEnhancedSearchPanel = ({ language, onSearch, onLiveSearch }: SlimEnhan
       house: "House",
       villa: "Villa",
       commercial: "Commercial",
-      land: "Land"
+      land: "Land",
+      priceRange: "Price Range",
+      bedrooms: "Bedrooms",
+      bathrooms: "Bathrooms",
+      anyPrice: "Any Price",
+      anyBedrooms: "Any",
+      anyBathrooms: "Any"
     },
     id: {
       searchPlaceholder: "Cari properti berdasarkan lokasi, tipe, atau judul...",
@@ -54,7 +66,13 @@ const SlimEnhancedSearchPanel = ({ language, onSearch, onLiveSearch }: SlimEnhan
       house: "Rumah",
       villa: "Villa",
       commercial: "Komersial",
-      land: "Tanah"
+      land: "Tanah",
+      priceRange: "Rentang Harga",
+      bedrooms: "Kamar Tidur",
+      bathrooms: "Kamar Mandi",
+      anyPrice: "Semua Harga",
+      anyBedrooms: "Semua",
+      anyBathrooms: "Semua"
     }
   };
 
@@ -62,7 +80,18 @@ const SlimEnhancedSearchPanel = ({ language, onSearch, onLiveSearch }: SlimEnhan
 
   const handleSearchChange = (value: string) => {
     setSearchQuery(value);
+    setShowSuggestions(value.length >= 2);
     onLiveSearch?.(value);
+  };
+
+  const handleSuggestionSelect = (suggestion: any) => {
+    setSearchQuery(suggestion.value);
+    setShowSuggestions(false);
+    const searchData = {
+      searchQuery: suggestion.value,
+      ...filters
+    };
+    onSearch(searchData);
   };
 
   const handleSubmit = () => {
@@ -90,8 +119,18 @@ const SlimEnhancedSearchPanel = ({ language, onSearch, onLiveSearch }: SlimEnhan
               value={searchQuery}
               onChange={(e) => handleSearchChange(e.target.value)}
               onKeyPress={handleKeyPress}
+              onFocus={() => searchQuery.length >= 2 && setShowSuggestions(true)}
+              onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
               className="w-full pl-10 pr-4 h-10 bg-white dark:bg-slate-700 border-gray-200 dark:border-slate-600 focus:border-blue-500 dark:focus:border-blue-400"
               placeholder={currentText.searchPlaceholder}
+            />
+            
+            {/* Search Suggestions */}
+            <SearchSuggestions
+              query={searchQuery}
+              onSelect={handleSuggestionSelect}
+              isVisible={showSuggestions}
+              language={language}
             />
           </div>
 
@@ -153,12 +192,79 @@ const SlimEnhancedSearchPanel = ({ language, onSearch, onLiveSearch }: SlimEnhan
             <Button 
               variant="outline"
               className="border-gray-300 dark:border-slate-600 h-10 px-3"
-              onClick={() => {/* Handle advanced filters */}}
+              onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
             >
               <Filter className="h-4 w-4" />
+              <ChevronDown className={`h-3 w-3 ml-1 transition-transform ${showAdvancedFilters ? 'rotate-180' : ''}`} />
             </Button>
           </div>
         </div>
+
+        {/* Advanced Filters Section */}
+        {showAdvancedFilters && (
+          <div className="mt-4 pt-4 border-t border-gray-200 dark:border-slate-600">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {/* Price Range Filter */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  {currentText.priceRange}
+                </label>
+                <Select value={filters.priceRange} onValueChange={(value) => setFilters({...filters, priceRange: value})}>
+                  <SelectTrigger className="w-full h-10 bg-white dark:bg-slate-700">
+                    <SelectValue placeholder={currentText.anyPrice} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">{currentText.anyPrice}</SelectItem>
+                    <SelectItem value="0-500000000">Under 500M IDR</SelectItem>
+                    <SelectItem value="500000000-1000000000">500M - 1B IDR</SelectItem>
+                    <SelectItem value="1000000000-2000000000">1B - 2B IDR</SelectItem>
+                    <SelectItem value="2000000000-5000000000">2B - 5B IDR</SelectItem>
+                    <SelectItem value="5000000000+">5B+ IDR</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Bedrooms Filter */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  {currentText.bedrooms}
+                </label>
+                <Select value={filters.bedrooms} onValueChange={(value) => setFilters({...filters, bedrooms: value})}>
+                  <SelectTrigger className="w-full h-10 bg-white dark:bg-slate-700">
+                    <SelectValue placeholder={currentText.anyBedrooms} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">{currentText.anyBedrooms}</SelectItem>
+                    <SelectItem value="1">1</SelectItem>
+                    <SelectItem value="2">2</SelectItem>
+                    <SelectItem value="3">3</SelectItem>
+                    <SelectItem value="4">4</SelectItem>
+                    <SelectItem value="5+">5+</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Bathrooms Filter */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  {currentText.bathrooms}
+                </label>
+                <Select value={filters.bathrooms} onValueChange={(value) => setFilters({...filters, bathrooms: value})}>
+                  <SelectTrigger className="w-full h-10 bg-white dark:bg-slate-700">
+                    <SelectValue placeholder={currentText.anyBathrooms} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">{currentText.anyBathrooms}</SelectItem>
+                    <SelectItem value="1">1</SelectItem>
+                    <SelectItem value="2">2</SelectItem>
+                    <SelectItem value="3">3</SelectItem>
+                    <SelectItem value="4">4+</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
