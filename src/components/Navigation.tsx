@@ -217,7 +217,7 @@ const Navigation = () => {
                   variant="ghost" 
                   size="sm"
                   className="h-10 px-3 text-sm font-medium text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg transition-all"
-                  onClick={() => navigate('/dashboard/agent')}
+                  onClick={() => navigate('/agent')}
                 >
                   <User className="h-4 w-4 mr-1" />
                   Agent Dashboard
@@ -350,7 +350,7 @@ const Navigation = () => {
 
                 {/* Agent Dashboard for mobile */}
                 {isAgent && (
-                  <Button variant="ghost" className="w-full justify-start text-sm font-medium text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 hover:bg-green-50 dark:hover:bg-green-900/20" onClick={() => { navigate('/dashboard/agent'); toggleMenu(); }}>
+                  <Button variant="ghost" className="w-full justify-start text-sm font-medium text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 hover:bg-green-50 dark:hover:bg-green-900/20" onClick={() => { navigate('/agent'); toggleMenu(); }}>
                     <User className="h-4 w-4 mr-2" />
                     Agent Dashboard
                   </Button>
