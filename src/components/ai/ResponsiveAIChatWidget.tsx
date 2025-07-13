@@ -182,7 +182,7 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
 
   return (
     <div 
-      className="fixed top-1/2 right-4 -translate-y-1/2 z-[9999] pointer-events-auto transform-gpu will-change-transform"
+      className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[9999] pointer-events-auto transform-gpu will-change-transform"
       style={{
         width: chatDimensions.width,
         height: chatDimensions.height,
