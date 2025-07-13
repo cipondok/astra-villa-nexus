@@ -119,7 +119,19 @@ const Index = () => {
 
   const handleQuickSearch = async (searchData?: any) => {
     const searchTerm = searchData?.searchQuery || quickSearch;
-    if (!searchTerm?.trim()) return;
+    
+    // Check if we have either a search term or active filters
+    const hasFilters = searchData && (
+      (searchData.location && searchData.location !== 'all') ||
+      (searchData.propertyType && searchData.propertyType !== 'all') ||
+      (searchData.listingType && searchData.listingType !== 'all') ||
+      (searchData.priceRange && searchData.priceRange !== 'all') ||
+      (searchData.bedrooms && searchData.bedrooms !== 'all') ||
+      (searchData.bathrooms && searchData.bathrooms !== 'all')
+    );
+    
+    // Return early only if there's no search term AND no active filters
+    if (!searchTerm?.trim() && !hasFilters) return;
     
     console.log('Quick search initiated:', searchTerm, 'with filters:', searchData);
     
@@ -134,8 +146,8 @@ const Index = () => {
         .eq('status', 'active')
         .not('title', 'is', null);
 
-      // Apply text search
-      if (searchTerm.trim()) {
+      // Apply text search only if there's a search term
+      if (searchTerm?.trim()) {
         query = query.or(`title.ilike.%${searchTerm.trim()}%,location.ilike.%${searchTerm.trim()}%,city.ilike.%${searchTerm.trim()}%,state.ilike.%${searchTerm.trim()}%`);
       }
 

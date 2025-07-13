@@ -107,6 +107,7 @@ const SlimEnhancedSearchPanel = ({ language, onSearch, onLiveSearch, resultsCoun
       searchQuery,
       ...filters
     };
+    console.log('Search submitted with data:', searchData);
     onSearch(searchData);
   };
 
@@ -194,7 +195,14 @@ const SlimEnhancedSearchPanel = ({ language, onSearch, onLiveSearch, resultsCoun
           {/* Quick Filters */}
           <div className="flex flex-wrap lg:flex-nowrap gap-2 lg:flex-1">
             {/* Location Filter */}
-            <Select value={filters.location} onValueChange={(value) => setFilters({...filters, location: value})}>
+            <Select value={filters.location} onValueChange={(value) => {
+              const newFilters = {...filters, location: value};
+              setFilters(newFilters);
+              // Auto-search when filter changes
+              const searchData = { searchQuery, ...newFilters };
+              console.log('Location filter changed:', searchData);
+              onSearch(searchData);
+            }}>
               <SelectTrigger className="w-24 h-10 text-sm bg-background/60 backdrop-blur-sm border-primary/20 hover:border-primary/40 transition-colors">
                 <SelectValue placeholder={currentText.location} />
               </SelectTrigger>
@@ -209,7 +217,14 @@ const SlimEnhancedSearchPanel = ({ language, onSearch, onLiveSearch, resultsCoun
             </Select>
 
             {/* Property Type Filter */}
-            <Select value={filters.propertyType} onValueChange={(value) => setFilters({...filters, propertyType: value})}>
+            <Select value={filters.propertyType} onValueChange={(value) => {
+              const newFilters = {...filters, propertyType: value};
+              setFilters(newFilters);
+              // Auto-search when filter changes
+              const searchData = { searchQuery, ...newFilters };
+              console.log('Property type filter changed:', searchData);
+              onSearch(searchData);
+            }}>
               <SelectTrigger className="w-20 h-10 text-sm bg-background/60 backdrop-blur-sm border-primary/20 hover:border-primary/40 transition-colors">
                 <SelectValue placeholder={currentText.type} />
               </SelectTrigger>
@@ -224,7 +239,14 @@ const SlimEnhancedSearchPanel = ({ language, onSearch, onLiveSearch, resultsCoun
             </Select>
 
             {/* Listing Type Filter */}
-            <Select value={filters.listingType} onValueChange={(value) => setFilters({...filters, listingType: value})}>
+            <Select value={filters.listingType} onValueChange={(value) => {
+              const newFilters = {...filters, listingType: value};
+              setFilters(newFilters);
+              // Auto-search when filter changes
+              const searchData = { searchQuery, ...newFilters };
+              console.log('Listing type filter changed:', searchData);
+              onSearch(searchData);
+            }}>
               <SelectTrigger className="w-20 h-10 text-sm bg-background/60 backdrop-blur-sm border-primary/20 hover:border-primary/40 transition-colors">
                 <SelectValue placeholder="Type" />
               </SelectTrigger>
