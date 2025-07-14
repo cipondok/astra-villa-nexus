@@ -1,28 +1,24 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import Navigation from "@/components/Navigation";
 import ProfessionalFooter from "@/components/ProfessionalFooter";
+import { AdvancedSearchPanel } from "@/components/property/AdvancedSearchPanel";
 import { 
-  Search, 
   MapPin, 
   Home, 
   Building, 
   Bed, 
   Bath, 
   Square, 
-  Filter,
   Heart,
   Share2,
   Eye,
-  TrendingUp,
-  DollarSign
+  TrendingUp
 } from "lucide-react";
 
 interface Property {
@@ -44,20 +40,55 @@ interface Property {
   created_at: string;
 }
 
+interface SearchFilters {
+  searchTerm: string;
+  propertyType: string;
+  city: string;
+  area: string;
+  minPrice: number;
+  maxPrice: number;
+  bedrooms: string;
+  bathrooms: string;
+  minArea: number;
+  maxArea: number;
+  yearBuilt: string;
+  condition: string;
+  features: string[];
+  sortBy: string;
+}
+
 const Dijual = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [properties, setProperties] = useState<Property[]>([]);
+  const [filteredProperties, setFilteredProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedType, setSelectedType] = useState("");
-  const [selectedCity, setSelectedCity] = useState("");
-  const [priceRange, setPriceRange] = useState("");
   const [savedProperties, setSavedProperties] = useState<Set<string>>(new Set());
+
+  const [filters, setFilters] = useState<SearchFilters>({
+    searchTerm: '',
+    propertyType: '',
+    city: '',
+    area: '',
+    minPrice: 0,
+    maxPrice: 10000000000,
+    bedrooms: '',
+    bathrooms: '',
+    minArea: 0,
+    maxArea: 1000,
+    yearBuilt: '',
+    condition: '',
+    features: [],
+    sortBy: 'newest'
+  });
 
   useEffect(() => {
     fetchProperties();
   }, []);
+
+  useEffect(() => {
+    applyFilters();
+  }, [properties, filters]);
 
   const fetchProperties = async () => {
     try {
@@ -83,36 +114,65 @@ const Dijual = () => {
     }
   };
 
-  const filteredProperties = properties.filter(property => {
-    const matchesSearch = !searchTerm || 
-      property.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      property.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      property.city?.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesType = !selectedType || selectedType === "all" || property.property_type === selectedType;
-    const matchesCity = !selectedCity || selectedCity === "all" || property.city === selectedCity;
-    
-    let matchesPriceRange = true;
-    if (priceRange && priceRange !== "all") {
+  const applyFilters = () => {
+    let filtered = properties.filter(property => {
+      // Search term filter
+      const matchesSearch = !filters.searchTerm || 
+        property.title.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
+        property.location.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
+        property.city?.toLowerCase().includes(filters.searchTerm.toLowerCase());
+      
+      // Property type filter
+      const matchesType = !filters.propertyType || filters.propertyType === "all" || 
+        property.property_type === filters.propertyType;
+      
+      // City filter
+      const matchesCity = !filters.city || filters.city === "all" || 
+        property.city === filters.city;
+      
+      // Area filter
+      const matchesArea = !filters.area || filters.area === "all" || 
+        property.area === filters.area;
+      
+      // Price range filter
       const price = property.price || 0;
-      switch (priceRange) {
-        case 'under-500m':
-          matchesPriceRange = price < 500000000;
-          break;
-        case '500m-1b':
-          matchesPriceRange = price >= 500000000 && price < 1000000000;
-          break;
-        case '1b-2b':
-          matchesPriceRange = price >= 1000000000 && price < 2000000000;
-          break;
-        case 'over-2b':
-          matchesPriceRange = price >= 2000000000;
-          break;
-      }
+      const matchesPrice = price >= filters.minPrice && price <= filters.maxPrice;
+      
+      // Area size filter
+      const area = property.area_sqm || 0;
+      const matchesAreaSize = area >= filters.minArea && area <= filters.maxArea;
+      
+      // Bedrooms filter
+      const matchesBedrooms = !filters.bedrooms || filters.bedrooms === "all" || 
+        (filters.bedrooms === "5+" ? property.bedrooms >= 5 : property.bedrooms === parseInt(filters.bedrooms));
+      
+      // Bathrooms filter
+      const matchesBathrooms = !filters.bathrooms || filters.bathrooms === "all" || 
+        (filters.bathrooms === "4+" ? property.bathrooms >= 4 : property.bathrooms === parseInt(filters.bathrooms));
+      
+      return matchesSearch && matchesType && matchesCity && matchesArea && 
+             matchesPrice && matchesAreaSize && matchesBedrooms && matchesBathrooms;
+    });
+
+    // Apply sorting
+    switch (filters.sortBy) {
+      case 'price_low':
+        filtered.sort((a, b) => (a.price || 0) - (b.price || 0));
+        break;
+      case 'price_high':
+        filtered.sort((a, b) => (b.price || 0) - (a.price || 0));
+        break;
+      case 'area_large':
+        filtered.sort((a, b) => (b.area_sqm || 0) - (a.area_sqm || 0));
+        break;
+      case 'newest':
+      default:
+        filtered.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+        break;
     }
-    
-    return matchesSearch && matchesType && matchesCity && matchesPriceRange;
-  });
+
+    setFilteredProperties(filtered);
+  };
 
   const formatPrice = (price: number) => {
     if (price >= 1000000000) {
@@ -144,139 +204,126 @@ const Dijual = () => {
 
   const propertyTypes = [...new Set(properties.map(p => p.property_type))];
   const cities = [...new Set(properties.map(p => p.city).filter(Boolean))];
+  const areas = [...new Set(properties.map(p => p.area).filter(Boolean))];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
       <Navigation />
       
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">
+          <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mb-4">
             Properti Dijual
           </h1>
-          <p className="text-lg text-gray-600">
-            Temukan properti impian Anda dengan harga terbaik
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            Temukan properti impian Anda dengan sistem pencarian canggih dan filter yang komprehensif
           </p>
         </div>
 
-        {/* Search and Filter */}
-        <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-            <div className="relative">
-              <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-              <Input
-                placeholder="Cari lokasi atau nama properti..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
-              />
+        {/* Advanced Search Panel */}
+        <div className="mb-8">
+          <AdvancedSearchPanel
+            filters={filters}
+            onFiltersChange={setFilters}
+            onSearch={applyFilters}
+            propertyTypes={propertyTypes}
+            cities={cities}
+            areas={areas}
+          />
+        </div>
+
+        {/* Results Summary */}
+        <div className="mb-6 bg-white rounded-lg shadow-sm p-4 border-l-4 border-blue-500">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-lg font-semibold text-gray-800">
+                Menampilkan {filteredProperties.length} properti
+              </p>
+              <p className="text-sm text-gray-600">
+                dari total {properties.length} properti dijual
+              </p>
             </div>
-            
-            <Select value={selectedType} onValueChange={setSelectedType}>
-              <SelectTrigger>
-                <SelectValue placeholder="Tipe Properti" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Semua Tipe</SelectItem>
-                {propertyTypes.map(type => (
-                  <SelectItem key={type} value={type}>{type}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            <Select value={selectedCity} onValueChange={setSelectedCity}>
-              <SelectTrigger>
-                <SelectValue placeholder="Kota" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Semua Kota</SelectItem>
-                {cities.map(city => (
-                  <SelectItem key={city} value={city}>{city}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            <Select value={priceRange} onValueChange={setPriceRange}>
-              <SelectTrigger>
-                <SelectValue placeholder="Kisaran Harga" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Semua Harga</SelectItem>
-                <SelectItem value="under-500m">Di bawah Rp 500 Jt</SelectItem>
-                <SelectItem value="500m-1b">Rp 500 Jt - 1 M</SelectItem>
-                <SelectItem value="1b-2b">Rp 1 M - 2 M</SelectItem>
-                <SelectItem value="over-2b">Di atas Rp 2 M</SelectItem>
-              </SelectContent>
-            </Select>
-
-            <Button 
-              onClick={fetchProperties}
-              className="bg-blue-600 hover:bg-blue-700"
-            >
-              <Filter className="h-4 w-4 mr-2" />
-              Filter
-            </Button>
+            {filteredProperties.length > 0 && (
+              <Badge variant="secondary" className="bg-blue-100 text-blue-700">
+                {Math.round((filteredProperties.length / properties.length) * 100)}% hasil
+              </Badge>
+            )}
           </div>
-        </div>
-
-        {/* Results Count */}
-        <div className="mb-6">
-          <p className="text-gray-600">
-            Menampilkan {filteredProperties.length} dari {properties.length} properti
-          </p>
         </div>
 
         {/* Properties Grid */}
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...Array(6)].map((_, i) => (
-              <Card key={i} className="animate-pulse">
+              <Card key={i} className="animate-pulse shadow-lg">
                 <div className="aspect-video bg-gray-300 rounded-t-lg"></div>
-                <CardContent className="p-4">
+                <CardContent className="p-6">
+                  <div className="h-6 bg-gray-300 rounded mb-3"></div>
                   <div className="h-4 bg-gray-300 rounded mb-2"></div>
-                  <div className="h-3 bg-gray-300 rounded mb-4"></div>
-                  <div className="h-6 bg-gray-300 rounded"></div>
+                  <div className="h-4 bg-gray-300 rounded mb-4"></div>
+                  <div className="h-8 bg-gray-300 rounded"></div>
                 </CardContent>
               </Card>
             ))}
           </div>
         ) : filteredProperties.length === 0 ? (
-          <div className="text-center py-12">
-            <Home className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-600 mb-2">
+          <div className="text-center py-16 bg-white rounded-lg shadow-sm">
+            <Home className="h-20 w-20 text-gray-300 mx-auto mb-6" />
+            <h3 className="text-2xl font-semibold text-gray-600 mb-3">
               Tidak ada properti ditemukan
             </h3>
-            <p className="text-gray-500">
-              Coba ubah filter pencarian Anda untuk melihat hasil lainnya.
+            <p className="text-gray-500 mb-6 max-w-md mx-auto">
+              Coba sesuaikan filter pencarian Anda atau hapus beberapa filter untuk melihat lebih banyak hasil.
             </p>
+            <Button 
+              onClick={() => setFilters({
+                searchTerm: '',
+                propertyType: '',
+                city: '',
+                area: '',
+                minPrice: 0,
+                maxPrice: 10000000000,
+                bedrooms: '',
+                bathrooms: '',
+                minArea: 0,
+                maxArea: 1000,
+                yearBuilt: '',
+                condition: '',
+                features: [],
+                sortBy: 'newest'
+              })}
+              className="bg-blue-600 hover:bg-blue-700"
+            >
+              Reset Filter
+            </Button>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredProperties.map((property) => (
-              <Card key={property.id} className="hover:shadow-lg transition-shadow cursor-pointer">
-                <div className="relative">
-                  <div className="aspect-video bg-gray-200 rounded-t-lg overflow-hidden">
+              <Card key={property.id} className="hover:shadow-xl transition-all duration-300 cursor-pointer border-0 shadow-md hover:-translate-y-1">
+                <div className="relative group">
+                  <div className="aspect-video bg-gradient-to-r from-gray-200 to-gray-300 rounded-t-lg overflow-hidden">
                     {property.image_urls?.[0] || property.images?.[0] ? (
                       <img 
                         src={property.image_urls?.[0] || property.images?.[0]} 
                         alt={property.title}
-                        className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                         onClick={() => navigate(`/properties/${property.id}`)}
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-gray-200">
-                        <Building className="h-12 w-12 text-gray-400" />
+                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-200 to-gray-300">
+                        <Building className="h-16 w-16 text-gray-400" />
                       </div>
                     )}
                   </div>
                   
                   {/* Action Buttons */}
-                  <div className="absolute top-3 right-3 flex space-x-2">
+                  <div className="absolute top-4 right-4 flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <Button
                       size="sm"
                       variant="secondary"
-                      className="w-8 h-8 p-0 bg-white/80 hover:bg-white"
+                      className="w-10 h-10 p-0 bg-white/90 hover:bg-white backdrop-blur-sm"
                       onClick={(e) => {
                         e.stopPropagation();
                         handleSaveProperty(property.id);
@@ -289,76 +336,78 @@ const Dijual = () => {
                     <Button
                       size="sm"
                       variant="secondary"
-                      className="w-8 h-8 p-0 bg-white/80 hover:bg-white"
+                      className="w-10 h-10 p-0 bg-white/90 hover:bg-white backdrop-blur-sm"
                     >
                       <Share2 className="h-4 w-4 text-gray-600" />
                     </Button>
                   </div>
 
                   {/* Status Badge */}
-                  <div className="absolute top-3 left-3">
-                    <Badge variant="secondary" className="bg-green-100 text-green-800">
+                  <div className="absolute top-4 left-4">
+                    <Badge className="bg-green-500 hover:bg-green-600 text-white font-medium">
                       Dijual
+                    </Badge>
+                  </div>
+
+                  {/* Price Badge */}
+                  <div className="absolute bottom-4 left-4">
+                    <Badge variant="secondary" className="bg-white/90 text-gray-800 font-bold text-lg px-3 py-1">
+                      {formatPrice(property.price || 0)}
                     </Badge>
                   </div>
                 </div>
 
-                <CardHeader className="pb-2">
-                  <div className="flex justify-between items-start">
-                    <CardTitle 
-                      className="text-lg hover:text-blue-600 cursor-pointer line-clamp-2"
-                      onClick={() => navigate(`/properties/${property.id}`)}
-                    >
-                      {property.title}
-                    </CardTitle>
-                  </div>
+                <CardHeader className="pb-3">
+                  <CardTitle 
+                    className="text-xl hover:text-blue-600 cursor-pointer line-clamp-2 transition-colors"
+                    onClick={() => navigate(`/properties/${property.id}`)}
+                  >
+                    {property.title}
+                  </CardTitle>
                   <div className="flex items-center text-gray-500 text-sm">
-                    <MapPin className="h-4 w-4 mr-1" />
+                    <MapPin className="h-4 w-4 mr-1 text-blue-500" />
                     {property.location}
                     {property.city && `, ${property.city}`}
                   </div>
                 </CardHeader>
 
                 <CardContent className="pt-0">
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="text-2xl font-bold text-blue-600">
-                      {formatPrice(property.price || 0)}
-                    </div>
+                  <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center space-x-1 text-sm text-gray-500">
                       <Eye className="h-4 w-4" />
-                      <span>245</span>
+                      <span>245 views</span>
                     </div>
                   </div>
 
-                  <div className="flex items-center space-x-4 text-sm text-gray-600 mb-4">
+                  <div className="flex items-center space-x-6 text-sm text-gray-600 mb-6">
                     {property.bedrooms && (
                       <div className="flex items-center">
-                        <Bed className="h-4 w-4 mr-1" />
-                        {property.bedrooms} KT
+                        <Bed className="h-4 w-4 mr-1 text-blue-500" />
+                        <span className="font-medium">{property.bedrooms} KT</span>
                       </div>
                     )}
                     {property.bathrooms && (
                       <div className="flex items-center">
-                        <Bath className="h-4 w-4 mr-1" />
-                        {property.bathrooms} KM
+                        <Bath className="h-4 w-4 mr-1 text-blue-500" />
+                        <span className="font-medium">{property.bathrooms} KM</span>
                       </div>
                     )}
                     {property.area_sqm && (
                       <div className="flex items-center">
-                        <Square className="h-4 w-4 mr-1" />
-                        {property.area_sqm} m²
+                        <Square className="h-4 w-4 mr-1 text-blue-500" />
+                        <span className="font-medium">{property.area_sqm} m²</span>
                       </div>
                     )}
                   </div>
 
-                  <div className="flex space-x-2">
+                  <div className="flex space-x-3">
                     <Button 
-                      className="flex-1 bg-blue-600 hover:bg-blue-700"
+                      className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium"
                       onClick={() => navigate(`/properties/${property.id}`)}
                     >
                       Lihat Detail
                     </Button>
-                    <Button variant="outline" className="flex-1">
+                    <Button variant="outline" className="flex-1 border-blue-200 text-blue-600 hover:bg-blue-50">
                       Hubungi Agen
                     </Button>
                   </div>
@@ -369,25 +418,56 @@ const Dijual = () => {
         )}
 
         {/* Market Insights */}
-        <div className="mt-12 bg-white rounded-lg shadow-md p-6">
-          <div className="flex items-center mb-4">
-            <TrendingUp className="h-6 w-6 text-blue-600 mr-2" />
-            <h2 className="text-xl font-semibold">Insight Pasar Properti</h2>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="text-center p-4 bg-blue-50 rounded-lg">
-              <div className="text-2xl font-bold text-blue-600">{properties.length}</div>
-              <div className="text-sm text-gray-600">Properti Tersedia</div>
-            </div>
-            <div className="text-center p-4 bg-green-50 rounded-lg">
-              <div className="text-2xl font-bold text-green-600">Rp 1.2M</div>
-              <div className="text-sm text-gray-600">Harga Rata-rata</div>
-            </div>
-            <div className="text-center p-4 bg-purple-50 rounded-lg">
-              <div className="text-2xl font-bold text-purple-600">+12%</div>
-              <div className="text-sm text-gray-600">Pertumbuhan YoY</div>
-            </div>
-          </div>
+        <div className="mt-16 grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <Card className="shadow-lg border-0">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-xl">
+                <TrendingUp className="h-6 w-6 text-blue-600" />
+                Statistik Pasar
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-3 gap-4">
+                <div className="text-center p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg">
+                  <div className="text-2xl font-bold text-blue-600">{properties.length}</div>
+                  <div className="text-sm text-gray-600">Total Properti</div>
+                </div>
+                <div className="text-center p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-lg">
+                  <div className="text-2xl font-bold text-green-600">
+                    {properties.length > 0 
+                      ? formatPrice(properties.reduce((sum, p) => sum + (p.price || 0), 0) / properties.length)
+                      : 'Rp 0'
+                    }
+                  </div>
+                  <div className="text-sm text-gray-600">Harga Rata-rata</div>
+                </div>
+                <div className="text-center p-4 bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg">
+                  <div className="text-2xl font-bold text-purple-600">+12%</div>
+                  <div className="text-sm text-gray-600">Pertumbuhan</div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="shadow-lg border-0">
+            <CardHeader>
+              <CardTitle className="text-xl">Tips Pencarian</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div className="flex items-start gap-3">
+                <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+                <p className="text-sm text-gray-600">Gunakan filter harga untuk menyesuaikan dengan budget Anda</p>
+              </div>
+              <div className="flex items-start gap-3">
+                <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+                <p className="text-sm text-gray-600">Pilih lokasi berdasarkan akses transportasi dan fasilitas</p>
+              </div>
+              <div className="flex items-start gap-3">
+                <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+                <p className="text-sm text-gray-600">Pertimbangkan fasilitas yang sesuai dengan kebutuhan keluarga</p>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
 
