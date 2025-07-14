@@ -17,6 +17,7 @@ import AgentDashboard from '@/pages/AgentDashboard';
 import Dijual from '@/pages/Dijual';
 import Disewa from '@/pages/Disewa';
 import BookingPage from '@/pages/BookingPage';
+import ThreeDShowcase from '@/pages/ThreeDShowcase';
 import NotFound from '@/pages/NotFound';
 
 // Create QueryClient instance
@@ -49,6 +50,7 @@ function App() {
                         <Route path="/buy" element={<Dijual />} />
                         <Route path="/disewa" element={<Disewa />} />
                         <Route path="/rent" element={<Disewa />} />
+                        <Route path="/3d-showcase" element={<ThreeDShowcase />} />
                         <Route path="/properties/:id" element={<PropertyDetail />} />
                         <Route path="/admin" element={<AdminDashboard />} />
                         <Route path="/admin-dashboard" element={<AdminDashboard />} />
