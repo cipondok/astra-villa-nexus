@@ -126,6 +126,16 @@ const Enhanced3DPropertyViewer: React.FC<Enhanced3DPropertyViewerProps> = ({
   const [showMeasurements, setShowMeasurements] = useState(false);
   const [showWireframe, setShowWireframe] = useState(false);
 
+  // Ensure camera position is always valid
+  const validCameraPosition: [number, number, number] = cameraPosition && cameraPosition.length === 3 
+    ? cameraPosition 
+    : [8, 6, 8];
+  
+  // Ensure model scale is always valid
+  const validModelScale = modelScale && modelScale.length > 0 && typeof modelScale[0] === 'number' 
+    ? modelScale[0] 
+    : 1;
+
   const resetCamera = () => {
     setCameraPosition([8, 6, 8]);
     setModelScale([1]);
@@ -179,9 +189,8 @@ const Enhanced3DPropertyViewer: React.FC<Enhanced3DPropertyViewerProps> = ({
           
           <TabsContent value="3d-model" className="m-0">
             <div className={`${isFullscreen ? 'h-screen' : 'h-96'} relative bg-gradient-to-b from-sky-200 to-green-100`}>
-              <Canvas>
+              <Canvas camera={{ position: validCameraPosition, fov: 50 }}>
                 <Suspense fallback={null}>
-                  <PerspectiveCamera makeDefault position={cameraPosition} />
                   <OrbitControls enablePan enableZoom enableRotate />
                   
                   {/* Lighting */}
@@ -189,18 +198,15 @@ const Enhanced3DPropertyViewer: React.FC<Enhanced3DPropertyViewerProps> = ({
                   <directionalLight position={[10, 10, 5]} intensity={1} />
                   
                   {/* Environment */}
-                  <Environment preset="sunset" />
+                  <Environment preset="city" />
                   
                   {/* 3D Model */}
-                  <HouseModel scale={modelScale[0]} />
+                  <HouseModel scale={validModelScale} />
                   
                   {/* Ground */}
                   <Box args={[20, 0.1, 20]} position={[0, -0.05, 0]}>
                     <meshStandardMaterial color="#90EE90" />
                   </Box>
-                  
-                  {/* Contact Shadows */}
-                  <ContactShadows opacity={0.5} scale={10} blur={1} far={10} resolution={256} color="#000000" />
                   
                   {/* Measurement Tool */}
                   {showMeasurements && <MeasurementTool />}
@@ -236,7 +242,7 @@ const Enhanced3DPropertyViewer: React.FC<Enhanced3DPropertyViewerProps> = ({
                   <div className="text-xs font-medium">Scale</div>
                   <Slider
                     value={modelScale}
-                    onValueChange={setModelScale}
+                    onValueChange={(value) => setModelScale(value)}
                     max={2}
                     min={0.5}
                     step={0.1}
@@ -324,13 +330,13 @@ const Enhanced3DPropertyViewer: React.FC<Enhanced3DPropertyViewerProps> = ({
                     <label className="text-sm font-medium mb-2 block">Model Scale</label>
                     <Slider
                       value={modelScale}
-                      onValueChange={setModelScale}
+                      onValueChange={(value) => setModelScale(value)}
                       max={3}
                       min={0.1}
                       step={0.1}
                       className="w-full"
                     />
-                    <div className="text-xs text-gray-500 mt-1">Current: {modelScale[0]}x</div>
+                    <div className="text-xs text-gray-500 mt-1">Current: {validModelScale}x</div>
                   </div>
                   
                   <Button variant="outline" className="w-full" onClick={resetCamera}>
