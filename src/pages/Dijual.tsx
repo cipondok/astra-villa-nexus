@@ -18,7 +18,8 @@ import {
   Heart,
   Share2,
   Eye,
-  TrendingUp
+  TrendingUp,
+  Search
 } from "lucide-react";
 
 interface Property {
