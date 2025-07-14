@@ -34,14 +34,17 @@ interface Enhanced3DPropertyViewerProps {
 function HouseModel({ scale = 1 }: { scale?: number }) {
   const meshRef = useRef<any>();
   
+  // Ensure scale is valid
+  const validScale = typeof scale === 'number' && !isNaN(scale) && scale > 0 ? scale : 1;
+  
   useFrame((state, delta) => {
-    if (meshRef.current) {
+    if (meshRef.current && delta) {
       meshRef.current.rotation.y += delta * 0.1;
     }
   });
 
   return (
-    <group ref={meshRef} scale={scale}>
+    <group ref={meshRef} scale={[validScale, validScale, validScale]}>
       {/* House Base */}
       <Box args={[4, 2, 3]} position={[0, 1, 0]}>
         <meshStandardMaterial color="#e8e8e8" />
@@ -69,7 +72,7 @@ function HouseModel({ scale = 1 }: { scale?: number }) {
       <Text
         position={[0, 3.5, 0]}
         fontSize={0.3}
-        color="#333"
+        color="#333333"
         anchorX="center"
         anchorY="middle"
       >
@@ -79,36 +82,51 @@ function HouseModel({ scale = 1 }: { scale?: number }) {
   );
 }
 
-// Measurement Tool Component
+// Measurement Tool Component  
 function MeasurementTool() {
   const [startPoint, setStartPoint] = useState<[number, number, number] | null>(null);
   const [endPoint, setEndPoint] = useState<[number, number, number] | null>(null);
 
+  // Only render if both points are valid
+  const shouldRender = startPoint && endPoint && 
+    Array.isArray(startPoint) && Array.isArray(endPoint) &&
+    startPoint.length === 3 && endPoint.length === 3 &&
+    startPoint.every(n => typeof n === 'number' && !isNaN(n)) &&
+    endPoint.every(n => typeof n === 'number' && !isNaN(n));
+
+  if (!shouldRender) {
+    return null;
+  }
+
+  const distance = Math.sqrt(
+    Math.pow(endPoint[0] - startPoint[0], 2) +
+    Math.pow(endPoint[1] - startPoint[1], 2) +
+    Math.pow(endPoint[2] - startPoint[2], 2)
+  );
+
+  const midPoint: [number, number, number] = [
+    (startPoint[0] + endPoint[0]) / 2,
+    (startPoint[1] + endPoint[1]) / 2 + 0.3,
+    (startPoint[2] + endPoint[2]) / 2
+  ];
+
   return (
     <group>
-      {startPoint && endPoint && (
-        <>
-          <Sphere args={[0.05]} position={startPoint}>
-            <meshStandardMaterial color="red" />
-          </Sphere>
-          <Sphere args={[0.05]} position={endPoint}>
-            <meshStandardMaterial color="red" />
-          </Sphere>
-          <Text
-            position={[(startPoint[0] + endPoint[0]) / 2, (startPoint[1] + endPoint[1]) / 2 + 0.3, (startPoint[2] + endPoint[2]) / 2]}
-            fontSize={0.2}
-            color="red"
-            anchorX="center"
-            anchorY="middle"
-          >
-            {Math.sqrt(
-              Math.pow(endPoint[0] - startPoint[0], 2) +
-              Math.pow(endPoint[1] - startPoint[1], 2) +
-              Math.pow(endPoint[2] - startPoint[2], 2)
-            ).toFixed(2)}m
-          </Text>
-        </>
-      )}
+      <Sphere args={[0.05]} position={startPoint}>
+        <meshStandardMaterial color="#ff0000" />
+      </Sphere>
+      <Sphere args={[0.05]} position={endPoint}>
+        <meshStandardMaterial color="#ff0000" />
+      </Sphere>
+      <Text
+        position={midPoint}
+        fontSize={0.2}
+        color="#ff0000"
+        anchorX="center"
+        anchorY="middle"
+      >
+        {distance.toFixed(2)}m
+      </Text>
     </group>
   );
 }
@@ -189,16 +207,27 @@ const Enhanced3DPropertyViewer: React.FC<Enhanced3DPropertyViewerProps> = ({
           
           <TabsContent value="3d-model" className="m-0">
             <div className={`${isFullscreen ? 'h-screen' : 'h-96'} relative bg-gradient-to-b from-sky-200 to-green-100`}>
-              <Canvas camera={{ position: validCameraPosition, fov: 50 }}>
+              <Canvas 
+                camera={{ position: validCameraPosition, fov: 50 }}
+                gl={{ antialias: true, alpha: false }}
+                dpr={[1, 2]}
+              >
                 <Suspense fallback={null}>
-                  <OrbitControls enablePan enableZoom enableRotate />
+                  <OrbitControls 
+                    enablePan={true} 
+                    enableZoom={true} 
+                    enableRotate={true}
+                    minDistance={2}
+                    maxDistance={20}
+                  />
                   
                   {/* Lighting */}
                   <ambientLight intensity={0.6} />
-                  <directionalLight position={[10, 10, 5]} intensity={1} />
-                  
-                  {/* Environment */}
-                  <Environment preset="city" />
+                  <directionalLight 
+                    position={[10, 10, 5]} 
+                    intensity={1}
+                    castShadow={false}
+                  />
                   
                   {/* 3D Model */}
                   <HouseModel scale={validModelScale} />
