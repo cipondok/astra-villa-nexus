@@ -37,6 +37,8 @@ interface RentalFilters {
   checkOutDate: Date | undefined;
   onlineBookingOnly: boolean;
   minimumDays: number;
+  nearMe: boolean;
+  userLocation: { lat: number; lng: number } | null;
 }
 
 interface AdvancedRentalSearchProps {
@@ -57,6 +59,59 @@ const AdvancedRentalSearch: React.FC<AdvancedRentalSearchProps> = ({
   loading
 }) => {
   const [showAdvanced, setShowAdvanced] = useState(false);
+  const [gettingLocation, setGettingLocation] = useState(false);
+
+  const handleSearchNearMe = async () => {
+    if (!navigator.geolocation) {
+      alert('Geolocation tidak didukung oleh browser Anda');
+      return;
+    }
+
+    setGettingLocation(true);
+    
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const userLocation = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        };
+        
+        onFiltersChange({
+          ...filters,
+          nearMe: true,
+          userLocation,
+          searchTerm: "Lokasi Saya"
+        });
+        
+        setGettingLocation(false);
+        // Trigger search automatically
+        setTimeout(() => onSearch(), 100);
+      },
+      (error) => {
+        setGettingLocation(false);
+        let errorMessage = "Tidak dapat mengakses lokasi Anda";
+        
+        switch(error.code) {
+          case error.PERMISSION_DENIED:
+            errorMessage = "Izin akses lokasi ditolak. Mohon aktifkan izin lokasi untuk browser.";
+            break;
+          case error.POSITION_UNAVAILABLE:
+            errorMessage = "Informasi lokasi tidak tersedia.";
+            break;
+          case error.TIMEOUT:
+            errorMessage = "Permintaan lokasi timeout.";
+            break;
+        }
+        
+        alert(errorMessage);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 300000 // 5 minutes
+      }
+    );
+  };
 
   const handleRentalPeriodChange = (period: string, checked: boolean) => {
     const updatedPeriods = checked 
@@ -145,14 +200,26 @@ const AdvancedRentalSearch: React.FC<AdvancedRentalSearchProps> = ({
 
         {/* Basic Search */}
         <div className="space-y-4">
-          <div className="relative">
-            <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-            <Input
-              placeholder="Cari lokasi atau nama properti..."
-              value={filters.searchTerm}
-              onChange={(e) => onFiltersChange({...filters, searchTerm: e.target.value})}
-              className="pl-10"
-            />
+          <div className="flex gap-2">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+              <Input
+                placeholder="Cari lokasi atau nama properti..."
+                value={filters.searchTerm}
+                onChange={(e) => onFiltersChange({...filters, searchTerm: e.target.value})}
+                className="pl-10"
+              />
+            </div>
+            <Button
+              variant="outline"
+              size="default"
+              onClick={handleSearchNearMe}
+              disabled={loading || gettingLocation}
+              className="px-4 whitespace-nowrap"
+            >
+              <MapPin className="h-4 w-4 mr-2" />
+              {gettingLocation ? 'Mencari...' : filters.nearMe ? 'Sekitar Saya ✓' : 'Cari Sekitar'}
+            </Button>
           </div>
 
           {/* Location Selection */}
@@ -309,7 +376,7 @@ const AdvancedRentalSearch: React.FC<AdvancedRentalSearchProps> = ({
             </div>
 
             {/* Current Active Filters */}
-            {(filters.rentalPeriod.length > 0 || filters.onlineBookingOnly || filters.checkInDate) && (
+            {(filters.rentalPeriod.length > 0 || filters.onlineBookingOnly || filters.checkInDate || filters.nearMe) && (
               <div>
                 <Label className="text-sm font-semibold mb-2 block">Filter Aktif:</Label>
                 <div className="flex flex-wrap gap-2">
@@ -321,11 +388,16 @@ const AdvancedRentalSearch: React.FC<AdvancedRentalSearchProps> = ({
                       </Badge>
                     );
                   })}
-                  {filters.onlineBookingOnly && (
-                    <Badge variant="secondary" className="bg-blue-100 text-blue-800">
-                      🏠 Online Booking
-                    </Badge>
-                  )}
+                   {filters.nearMe && (
+                     <Badge variant="secondary" className="bg-green-100 text-green-800">
+                       📍 Sekitar Saya
+                     </Badge>
+                   )}
+                   {filters.onlineBookingOnly && (
+                     <Badge variant="secondary" className="bg-blue-100 text-blue-800">
+                       🏠 Online Booking
+                     </Badge>
+                   )}
                   {filters.checkInDate && (
                     <Badge variant="secondary" className="bg-green-100 text-green-800">
                       📅 {format(filters.checkInDate, "dd MMM", { locale: id })}

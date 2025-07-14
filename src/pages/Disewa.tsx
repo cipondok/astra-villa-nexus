@@ -63,6 +63,8 @@ interface RentalFilters {
   checkOutDate: Date | undefined;  
   onlineBookingOnly: boolean;
   minimumDays: number;
+  nearMe: boolean;
+  userLocation: { lat: number; lng: number } | null;
 }
 
 const Disewa = () => {
@@ -82,7 +84,9 @@ const Disewa = () => {
     checkInDate: undefined,
     checkOutDate: undefined,
     onlineBookingOnly: false,
-    minimumDays: 0
+    minimumDays: 0,
+    nearMe: false,
+    userLocation: null
   });
 
   useEffect(() => {
