@@ -382,6 +382,44 @@ const RoleBasedPropertyForm = () => {
           {formData.listing_type === 'rent' && (
             <div className="space-y-4">
               <h3 className="text-lg font-semibold">Rental Information</h3>
+              
+              {/* Rental Period Options */}
+              <div>
+                <Label>Accepted Rental Periods</Label>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-2">
+                  {[
+                    { value: 'daily', label: 'Daily (1+ days)', min: 1 },
+                    { value: 'weekly', label: 'Weekly (7+ days)', min: 7 },
+                    { value: 'monthly', label: 'Monthly (30+ days)', min: 30 },
+                    { value: 'yearly', label: 'Yearly (365+ days)', min: 365 }
+                  ].map((period) => (
+                    <div key={period.value} className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        id={period.value}
+                        checked={formData.rental_periods.includes(period.value)}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setFormData(prev => ({ 
+                              ...prev, 
+                              rental_periods: [...prev.rental_periods, period.value],
+                              minimum_rental_days: prev.minimum_rental_days || period.min.toString()
+                            }));
+                          } else {
+                            setFormData(prev => ({ 
+                              ...prev, 
+                              rental_periods: prev.rental_periods.filter(p => p !== period.value)
+                            }));
+                          }
+                        }}
+                        className="rounded border-gray-300"
+                      />
+                      <Label htmlFor={period.value} className="text-sm">{period.label}</Label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="minimum_rental_days">Minimum Rental Days</Label>
@@ -393,6 +431,9 @@ const RoleBasedPropertyForm = () => {
                     placeholder="e.g., 30"
                     min="1"
                   />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Customers can see minimum booking duration
+                  </p>
                 </div>
                 <div>
                   <Label htmlFor="booking_type">Booking Type</Label>
@@ -404,9 +445,9 @@ const RoleBasedPropertyForm = () => {
                       <SelectValue placeholder="Select booking type" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="astra_villa">Astra Villa</SelectItem>
-                      <SelectItem value="owner_only">Owner Only</SelectItem>
-                      <SelectItem value="both">Both</SelectItem>
+                      <SelectItem value="online">Online Booking</SelectItem>
+                      <SelectItem value="owner_contact">Contact Owner</SelectItem>
+                      <SelectItem value="agent_assisted">Agent Assisted</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
