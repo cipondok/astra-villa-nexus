@@ -1,6 +1,6 @@
 
 import { Link } from "react-router-dom";
-import { Rocket, Phone, Mail, MapPin, Facebook, Twitter, Instagram, Youtube } from "lucide-react";
+import { Rocket, Phone, Mail, MapPin, Facebook, Twitter, Instagram, Youtube, Users, Handshake, Building2, TrendingUp } from "lucide-react";
 
 interface ProfessionalFooterProps {
   language: "en" | "id";
@@ -38,7 +38,13 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
       help: "Help Center",
       faq: "FAQ",
       contactUs: "Contact Us",
-      feedback: "Feedback"
+      feedback: "Feedback",
+      // Business Partners
+      businessPartners: "Business Partners",
+      partnerNetwork: "Partner Network",
+      becomePartner: "Become a Partner",
+      partnerBenefits: "Partner Benefits",
+      jointVentures: "Joint Ventures"
     },
     id: {
       company: "Astra Villa",
@@ -70,7 +76,13 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
       help: "Pusat Bantuan",
       faq: "FAQ",
       contactUs: "Hubungi Kami",
-      feedback: "Masukan"
+      feedback: "Masukan",
+      // Business Partners
+      businessPartners: "Mitra Bisnis",
+      partnerNetwork: "Jaringan Mitra",
+      becomePartner: "Jadi Mitra",
+      partnerBenefits: "Manfaat Mitra",
+      jointVentures: "Usaha Patungan"
     }
   };
 
@@ -146,6 +158,46 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
               <button className="w-full bg-gradient-to-r from-blue-600 to-orange-500 text-white py-1 px-2 rounded hover:from-blue-700 hover:to-orange-600 transition-all duration-300 text-xs font-medium">
                 {currentText.subscribe}
               </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Business Partners Section */}
+        <div className="border-t border-gray-800 pt-4 pb-4">
+          <div className="text-center mb-4">
+            <h2 className="text-lg font-bold text-white mb-2 flex items-center justify-center space-x-2">
+              <Handshake className="w-5 h-5 text-blue-400" />
+              <span>{currentText.businessPartners}</span>
+            </h2>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* Partner Network */}
+            <div className="bg-gray-800 rounded-lg p-4 text-center hover:bg-gray-700 transition-colors cursor-pointer">
+              <Users className="w-8 h-8 text-blue-400 mx-auto mb-2" />
+              <h3 className="text-sm font-semibold text-white mb-1">{currentText.partnerNetwork}</h3>
+              <p className="text-xs text-gray-300">Connect with our trusted network of real estate professionals</p>
+            </div>
+
+            {/* Become Partner */}
+            <div className="bg-gray-800 rounded-lg p-4 text-center hover:bg-gray-700 transition-colors cursor-pointer">
+              <Building2 className="w-8 h-8 text-green-400 mx-auto mb-2" />
+              <h3 className="text-sm font-semibold text-white mb-1">{currentText.becomePartner}</h3>
+              <p className="text-xs text-gray-300">Join our partner program and grow your business with us</p>
+            </div>
+
+            {/* Partner Benefits */}
+            <div className="bg-gray-800 rounded-lg p-4 text-center hover:bg-gray-700 transition-colors cursor-pointer">
+              <TrendingUp className="w-8 h-8 text-purple-400 mx-auto mb-2" />
+              <h3 className="text-sm font-semibold text-white mb-1">{currentText.partnerBenefits}</h3>
+              <p className="text-xs text-gray-300">Exclusive benefits and rewards for our valued partners</p>
+            </div>
+
+            {/* Joint Ventures */}
+            <div className="bg-gray-800 rounded-lg p-4 text-center hover:bg-gray-700 transition-colors cursor-pointer">
+              <Handshake className="w-8 h-8 text-orange-400 mx-auto mb-2" />
+              <h3 className="text-sm font-semibold text-white mb-1">{currentText.jointVentures}</h3>
+              <p className="text-xs text-gray-300">Explore joint venture opportunities in real estate</p>
             </div>
           </div>
         </div>
