@@ -332,7 +332,7 @@ const RoleBasedPropertyForm = () => {
                     <SelectItem value="condo">Condo</SelectItem>
                     <SelectItem value="land">Land</SelectItem>
                     <SelectItem value="commercial">Commercial</SelectItem>
-                    <SelectItem value="office">Office</SelectItem>
+                    <SelectItem value="office">Office Space</SelectItem>
                     <SelectItem value="virtual_office">Virtual Office</SelectItem>
                     <SelectItem value="warehouse">Warehouse</SelectItem>
                     <SelectItem value="retail">Retail Space</SelectItem>
