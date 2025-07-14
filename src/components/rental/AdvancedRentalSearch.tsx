@@ -8,6 +8,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import LocationSelector from "@/components/location/LocationSelector";
 import { 
   Search, 
   Calendar as CalendarIcon,
@@ -27,6 +28,7 @@ import { id } from "date-fns/locale";
 interface RentalFilters {
   searchTerm: string;
   propertyType: string;
+  province: string;
   city: string;
   priceRange: string;
   rentalPeriod: string[];
@@ -125,7 +127,7 @@ const AdvancedRentalSearch: React.FC<AdvancedRentalSearchProps> = ({
         </div>
 
         {/* Basic Search */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="space-y-4">
           <div className="relative">
             <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
             <Input
@@ -136,24 +138,17 @@ const AdvancedRentalSearch: React.FC<AdvancedRentalSearchProps> = ({
             />
           </div>
 
-          <Select 
-            value={filters.city} 
-            onValueChange={(value) => onFiltersChange({...filters, city: value})}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Kota" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Semua Kota</SelectItem>
-              {cities.map(city => (
-                <SelectItem key={city} value={city}>{city}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          {/* Location Selection */}
+          <LocationSelector
+            selectedProvince={filters.province}
+            selectedCity={filters.city}
+            onProvinceChange={(province) => onFiltersChange({...filters, province})}
+            onCityChange={(city) => onFiltersChange({...filters, city})}
+          />
 
           <Button 
             onClick={onSearch}
-            className="bg-purple-600 hover:bg-purple-700"
+            className="w-full bg-purple-600 hover:bg-purple-700"
             disabled={loading}
           >
             <Filter className="h-4 w-4 mr-2" />

@@ -55,6 +55,7 @@ interface Property {
 interface RentalFilters {
   searchTerm: string;
   propertyType: string;
+  province: string;
   city: string;
   priceRange: string;
   rentalPeriod: string[];
@@ -74,6 +75,7 @@ const Disewa = () => {
   const [filters, setFilters] = useState<RentalFilters>({
     searchTerm: "",
     propertyType: "all",
+    province: "all",
     city: "all",
     priceRange: "all",
     rentalPeriod: [],
@@ -121,6 +123,9 @@ const Disewa = () => {
     // Property type filter
     const matchesType = filters.propertyType === "all" || property.property_type === filters.propertyType;
     
+    // Province filter (simplified - would need property to have province data)
+    const matchesProvince = filters.province === "all" || true; // TODO: Add province data to properties
+    
     // City filter
     const matchesCity = filters.city === "all" || property.city === filters.city;
     
@@ -162,7 +167,7 @@ const Disewa = () => {
     // Date availability filter (simplified - in real app would check booking calendar)
     const matchesDateAvailability = !filters.checkInDate || !filters.checkOutDate || true;
     
-    return matchesSearch && matchesType && matchesCity && matchesPriceRange && 
+    return matchesSearch && matchesType && matchesProvince && matchesCity && matchesPriceRange && 
            matchesRentalPeriod && matchesOnlineBooking && matchesMinimumDays && matchesDateAvailability;
   });
 
