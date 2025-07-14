@@ -1,122 +1,311 @@
-
-import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import React, { useState, useRef } from 'react';
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Card, CardContent } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { useAlert } from "@/contexts/AlertContext";
-import { Upload, X, Image } from "lucide-react";
+import { 
+  Upload, 
+  X, 
+  Image as ImageIcon, 
+  FileImage, 
+  Trash2,
+  Eye,
+  Building,
+  Home,
+  Store
+} from "lucide-react";
 
 interface PropertyImageUploadProps {
-  images: string[];
-  onImagesChange: (images: string[]) => void;
+  propertyType: string;
+  propertyId?: string;
+  onImagesUploaded?: (imageUrls: string[]) => void;
+  maxImages?: number;
+  existingImages?: string[];
 }
 
-const PropertyImageUpload = ({ images, onImagesChange }: PropertyImageUploadProps) => {
+const PropertyImageUpload: React.FC<PropertyImageUploadProps> = ({
+  propertyType,
+  propertyId,
+  onImagesUploaded,
+  maxImages = 10,
+  existingImages = []
+}) => {
   const [uploading, setUploading] = useState(false);
-  const { showSuccess, showError } = useAlert();
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploadedImages, setUploadedImages] = useState<string[]>(existingImages);
+  const [dragOver, setDragOver] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const { toast } = useToast();
 
-  const uploadImage = async (file: File) => {
-    try {
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${Math.random()}.${fileExt}`;
-      const filePath = `property-images/${fileName}`;
-
-      const { error: uploadError } = await supabase.storage
-        .from('property-images')
-        .upload(filePath, file);
-
-      if (uploadError) throw uploadError;
-
-      const { data } = supabase.storage
-        .from('property-images')
-        .getPublicUrl(filePath);
-
-      return data.publicUrl;
-    } catch (error) {
-      console.error('Error uploading image:', error);
-      throw error;
+  const getPropertyTypeIcon = (type: string) => {
+    switch(type) {
+      case 'virtual_office':
+      case 'office':
+        return <Building className="h-5 w-5" />;
+      case 'apartment':
+      case 'house':
+      case 'villa':
+        return <Home className="h-5 w-5" />;
+      case 'retail':
+      case 'warehouse':
+        return <Store className="h-5 w-5" />;
+      default:
+        return <Building className="h-5 w-5" />;
     }
   };
 
-  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files;
-    if (!files || files.length === 0) return;
+  const getPropertyTypeLabel = (type: string) => {
+    switch(type) {
+      case 'virtual_office': return 'Virtual Office';
+      case 'office': return 'Office Space';
+      case 'apartment': return 'Apartment';
+      case 'house': return 'House';
+      case 'villa': return 'Villa';
+      case 'retail': return 'Retail Space';
+      case 'warehouse': return 'Warehouse';
+      default: return 'Property';
+    }
+  };
 
+  const handleFileSelect = (files: FileList | null) => {
+    if (!files) return;
+
+    const fileArray = Array.from(files);
+    const remainingSlots = maxImages - uploadedImages.length;
+    
+    if (fileArray.length > remainingSlots) {
+      toast({
+        title: "Too Many Images",
+        description: `You can only upload ${remainingSlots} more image(s). Maximum ${maxImages} images allowed.`,
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Validate file types and sizes
+    const validFiles = [];
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+
+    for (const file of fileArray) {
+      if (!allowedTypes.includes(file.type)) {
+        toast({
+          title: "Invalid File Type",
+          description: `${file.name} is not a valid image type. Only JPEG, PNG, WebP, and GIF are allowed.`,
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (file.size > maxSize) {
+        toast({
+          title: "File Too Large",
+          description: `${file.name} exceeds the 5MB size limit.`,
+          variant: "destructive",
+        });
+        return;
+      }
+
+      validFiles.push(file);
+    }
+
+    if (validFiles.length > 0) {
+      uploadImages(validFiles);
+    }
+  };
+
+  const uploadImages = async (files: File[]) => {
     setUploading(true);
+    setUploadProgress(0);
+
     try {
-      const uploadPromises = Array.from(files).map(uploadImage);
-      const uploadedUrls = await Promise.all(uploadPromises);
+      const { data: { session } } = await supabase.auth.getSession();
       
-      onImagesChange([...images, ...uploadedUrls]);
-      showSuccess("Success", `${uploadedUrls.length} image(s) uploaded successfully`);
+      if (!session) {
+        throw new Error('User not authenticated');
+      }
+
+      const formData = new FormData();
+      files.forEach(file => formData.append('files', file));
+      formData.append('property_type', propertyType);
+      if (propertyId) {
+        formData.append('property_id', propertyId);
+      }
+
+      const response = await fetch('/functions/v1/upload-property-images', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`,
+        },
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Upload failed');
+      }
+
+      const result = await response.json();
+      const newImageUrls = result.files.map((file: any) => file.publicUrl);
+      const updatedImages = [...uploadedImages, ...newImageUrls];
+      
+      setUploadedImages(updatedImages);
+      setUploadProgress(100);
+      
+      if (onImagesUploaded) {
+        onImagesUploaded(updatedImages);
+      }
+
+      toast({
+        title: "Upload Successful",
+        description: `Successfully uploaded ${result.files.length} image(s) for ${getPropertyTypeLabel(propertyType)}`,
+      });
+
     } catch (error) {
-      showError("Error", "Failed to upload images");
+      console.error('Upload error:', error);
+      toast({
+        title: "Upload Failed",
+        description: error instanceof Error ? error.message : 'Failed to upload images',
+        variant: "destructive",
+      });
     } finally {
       setUploading(false);
+      setUploadProgress(0);
     }
   };
 
   const removeImage = (index: number) => {
-    const newImages = images.filter((_, i) => i !== index);
-    onImagesChange(newImages);
+    const updatedImages = uploadedImages.filter((_, i) => i !== index);
+    setUploadedImages(updatedImages);
+    
+    if (onImagesUploaded) {
+      onImagesUploaded(updatedImages);
+    }
+  };
+
+  const openFileDialog = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setDragOver(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    setDragOver(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setDragOver(false);
+    handleFileSelect(e.dataTransfer.files);
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Image className="h-5 w-5" />
-          Property Images
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div>
-          <Label htmlFor="images">Upload Images</Label>
-          <Input
-            id="images"
-            type="file"
-            accept="image/*"
-            multiple
-            onChange={handleFileUpload}
-            disabled={uploading}
-          />
-          <p className="text-sm text-gray-500 mt-1">
-            Select multiple images (JPG, PNG, etc.)
-          </p>
-        </div>
+    <div className="space-y-4">
+      {/* Property Type Header */}
+      <div className="flex items-center space-x-2 text-sm font-medium text-gray-700">
+        {getPropertyTypeIcon(propertyType)}
+        <span>{getPropertyTypeLabel(propertyType)} Images</span>
+        <span className="text-xs text-gray-500">
+          ({uploadedImages.length}/{maxImages})
+        </span>
+      </div>
 
-        {uploading && (
-          <div className="flex items-center gap-2 text-blue-600">
-            <Upload className="h-4 w-4 animate-pulse" />
-            Uploading images...
+      {/* Upload Area */}
+      <Card className={`border-2 border-dashed transition-colors ${
+        dragOver ? 'border-primary bg-primary/5' : 'border-gray-300 hover:border-gray-400'
+      }`}>
+        <CardContent className="p-6">
+          <div
+            className="text-center cursor-pointer"
+            onClick={openFileDialog}
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+          >
+            <div className="flex flex-col items-center space-y-2">
+              <Upload className="h-8 w-8 text-gray-400" />
+              <div className="text-sm text-gray-600">
+                <span className="font-medium text-primary">Click to upload</span> or drag and drop
+              </div>
+              <div className="text-xs text-gray-500">
+                PNG, JPG, WebP, GIF up to 5MB each
+              </div>
+            </div>
           </div>
-        )}
 
-        {images.length > 0 && (
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            {images.map((url, index) => (
-              <div key={index} className="relative group">
+          <input
+            ref={fileInputRef}
+            type="file"
+            multiple
+            accept="image/*"
+            onChange={(e) => handleFileSelect(e.target.files)}
+            className="hidden"
+          />
+        </CardContent>
+      </Card>
+
+      {/* Upload Progress */}
+      {uploading && (
+        <div className="space-y-2">
+          <div className="flex items-center justify-between text-sm">
+            <span>Uploading images...</span>
+            <span>{uploadProgress}%</span>
+          </div>
+          <Progress value={uploadProgress} className="h-2" />
+        </div>
+      )}
+
+      {/* Uploaded Images Grid */}
+      {uploadedImages.length > 0 && (
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {uploadedImages.map((imageUrl, index) => (
+            <div key={index} className="relative group">
+              <div className="aspect-square rounded-lg overflow-hidden border bg-gray-100">
                 <img
-                  src={url}
-                  alt={`Property ${index + 1}`}
-                  className="w-full h-24 object-cover rounded-lg"
+                  src={imageUrl}
+                  alt={`Property image ${index + 1}`}
+                  className="w-full h-full object-cover"
                 />
+              </div>
+              
+              {/* Image Actions */}
+              <div className="absolute top-2 right-2 flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
                 <Button
-                  variant="destructive"
                   size="sm"
-                  className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                  variant="secondary"
+                  className="h-8 w-8 p-0"
+                  onClick={() => window.open(imageUrl, '_blank')}
+                >
+                  <Eye className="h-4 w-4" />
+                </Button>
+                <Button
+                  size="sm"
+                  variant="destructive"
+                  className="h-8 w-8 p-0"
                   onClick={() => removeImage(index)}
                 >
-                  <X className="h-3 w-3" />
+                  <Trash2 className="h-4 w-4" />
                 </Button>
               </div>
-            ))}
-          </div>
-        )}
-      </CardContent>
-    </Card>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Empty State */}
+      {uploadedImages.length === 0 && (
+        <div className="text-center py-8 text-gray-500">
+          <FileImage className="h-12 w-12 mx-auto mb-2 text-gray-400" />
+          <p className="text-sm">No images uploaded yet</p>
+          <p className="text-xs">Upload images to showcase your {getPropertyTypeLabel(propertyType).toLowerCase()}</p>
+        </div>
+      )}
+    </div>
   );
 };
 

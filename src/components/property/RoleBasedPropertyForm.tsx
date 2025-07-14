@@ -13,6 +13,7 @@ import { useAlert } from "@/contexts/AlertContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { Building2, Save, AlertCircle } from "lucide-react";
+import PropertyImageUpload from "./PropertyImageUpload";
 
 interface PropertyFormData {
   title: string;
@@ -47,6 +48,8 @@ interface PropertyFormData {
   business_license_required?: string;
   domicile_services?: boolean;
   mail_handling?: boolean;
+  // Image upload
+  images?: string[];
 }
 
 const RoleBasedPropertyForm = () => {
@@ -143,8 +146,8 @@ const RoleBasedPropertyForm = () => {
         approval_status: isAdmin ? 'approved' : 'pending',
         owner_id: user.id,
         agent_id: isAgent ? user.id : null,
-        images: [],
-        image_urls: [],
+        images: data.images || [],
+        image_urls: data.images || [],
         seo_title: data.seo_title || data.title,
         seo_description: data.seo_description || data.description,
         property_features: { ...advancedFeatures },
@@ -382,6 +385,21 @@ const RoleBasedPropertyForm = () => {
                 rows={4}
               />
             </div>
+          </div>
+
+          {/* Property Images */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold">Property Images</h3>
+            <PropertyImageUpload
+              propertyType={formData.property_type}
+              onImagesUploaded={(imageUrls) => {
+                setFormData(prev => ({ 
+                  ...prev, 
+                  images: imageUrls 
+                }));
+              }}
+              maxImages={10}
+            />
           </div>
 
           {/* Rental-Specific Fields */}
