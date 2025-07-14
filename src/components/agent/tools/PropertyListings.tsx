@@ -4,9 +4,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Building2, Eye, Edit, Plus, MapPin, DollarSign } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Building2, Eye, Edit, Plus, MapPin, DollarSign, Calendar } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+import PropertyManager from "../PropertyManager";
+import RentalBookingManager from "../../rental/RentalBookingManager";
 
 const PropertyListings = () => {
   const { user } = useAuth();
@@ -64,21 +67,29 @@ const PropertyListings = () => {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Building2 className="h-5 w-5" />
-          My Property Listings
+          Property & Booking Management
         </CardTitle>
-        <CardDescription>Manage your property listings and track their performance</CardDescription>
+        <CardDescription>Comprehensive property and rental booking management system</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="space-y-4">
-          <div className="flex justify-between items-center">
-            <p className="text-sm text-muted-foreground">
-              Total listings: {properties?.length || 0}
-            </p>
-            <Button onClick={handleCreateProperty}>
-              <Plus className="h-4 w-4 mr-2" />
-              Create New Listing
-            </Button>
-          </div>
+        <Tabs defaultValue="properties" className="w-full">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="properties">My Properties</TabsTrigger>
+            <TabsTrigger value="manage">Property Manager</TabsTrigger>
+            <TabsTrigger value="bookings">Rental Bookings</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="properties" className="mt-6">
+            <div className="space-y-4">
+              <div className="flex justify-between items-center">
+                <p className="text-sm text-muted-foreground">
+                  Total listings: {properties?.length || 0}
+                </p>
+                <Button onClick={handleCreateProperty}>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Create New Listing
+                </Button>
+              </div>
 
           {properties?.length === 0 ? (
             <div className="text-center py-8">
@@ -161,7 +172,17 @@ const PropertyListings = () => {
               ))}
             </div>
           )}
-        </div>
+            </div>
+          </TabsContent>
+          
+          <TabsContent value="manage" className="mt-6">
+            <PropertyManager />
+          </TabsContent>
+          
+          <TabsContent value="bookings" className="mt-6">
+            <RentalBookingManager />
+          </TabsContent>
+        </Tabs>
       </CardContent>
     </Card>
   );
