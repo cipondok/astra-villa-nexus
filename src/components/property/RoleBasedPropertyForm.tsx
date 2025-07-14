@@ -42,6 +42,11 @@ interface PropertyFormData {
   rental_terms: string;
   available_from: string;
   available_until: string;
+  // Virtual office/office space fields
+  pt_name_required?: string;
+  business_license_required?: string;
+  domicile_services?: boolean;
+  mail_handling?: boolean;
 }
 
 const RoleBasedPropertyForm = () => {
@@ -328,6 +333,7 @@ const RoleBasedPropertyForm = () => {
                     <SelectItem value="land">Land</SelectItem>
                     <SelectItem value="commercial">Commercial</SelectItem>
                     <SelectItem value="office">Office</SelectItem>
+                    <SelectItem value="virtual_office">Virtual Office</SelectItem>
                     <SelectItem value="warehouse">Warehouse</SelectItem>
                     <SelectItem value="retail">Retail Space</SelectItem>
                     <SelectItem value="hotel">Hotel</SelectItem>
@@ -419,6 +425,67 @@ const RoleBasedPropertyForm = () => {
                   ))}
                 </div>
               </div>
+
+              {/* Virtual Office/Office Space Company Information */}
+              {(formData.property_type === 'virtual_office' || formData.property_type === 'office') && (
+                <div className="space-y-4 p-4 border rounded-lg bg-muted/50">
+                  <h4 className="font-semibold text-base">Company Information Required</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="pt_name_required">PT Name Requirements</Label>
+                      <textarea
+                        id="pt_name_required"
+                        value={formData.pt_name_required || ''}
+                        onChange={(e) => setFormData(prev => ({ ...prev, pt_name_required: e.target.value }))}
+                        className="w-full p-2 border rounded-md"
+                        rows={3}
+                        placeholder="e.g., Valid PT registration required, SIUP certificate needed"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="business_license_required">Business License Requirements</Label>
+                      <textarea
+                        id="business_license_required"
+                        value={formData.business_license_required || ''}
+                        onChange={(e) => setFormData(prev => ({ ...prev, business_license_required: e.target.value }))}
+                        className="w-full p-2 border rounded-md"
+                        rows={3}
+                        placeholder="e.g., NIB, SIUP, TDP, or other required business licenses"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="domicile_services">Domicile Services Available</Label>
+                      <div className="flex items-center space-x-2 mt-2">
+                        <input
+                          type="checkbox"
+                          id="domicile_services"
+                          checked={formData.domicile_services || false}
+                          onChange={(e) => setFormData(prev => ({ ...prev, domicile_services: e.target.checked }))}
+                          className="rounded border-gray-300"
+                        />
+                        <Label htmlFor="domicile_services" className="text-sm">
+                          Business domicile address services provided
+                        </Label>
+                      </div>
+                    </div>
+                    <div>
+                      <Label htmlFor="mail_handling">Mail Handling Services</Label>
+                      <div className="flex items-center space-x-2 mt-2">
+                        <input
+                          type="checkbox"
+                          id="mail_handling"
+                          checked={formData.mail_handling || false}
+                          onChange={(e) => setFormData(prev => ({ ...prev, mail_handling: e.target.checked }))}
+                          className="rounded border-gray-300"
+                        />
+                        <Label htmlFor="mail_handling" className="text-sm">
+                          Mail and package handling included
+                        </Label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
