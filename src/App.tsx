@@ -16,6 +16,7 @@ import AdminDashboard from '@/pages/AdminDashboard';
 import AgentDashboard from '@/pages/AgentDashboard';
 import Dijual from '@/pages/Dijual';
 import Disewa from '@/pages/Disewa';
+import BookingPage from '@/pages/BookingPage';
 import NotFound from '@/pages/NotFound';
 
 // Create QueryClient instance
@@ -52,6 +53,7 @@ function App() {
                         <Route path="/admin" element={<AdminDashboard />} />
                         <Route path="/admin-dashboard" element={<AdminDashboard />} />
                         <Route path="/agent" element={<AgentDashboard />} />
+                        <Route path="/booking/:propertyId" element={<BookingPage />} />
                         <Route path="*" element={<NotFound />} />
                       </Routes>
                     </div>
