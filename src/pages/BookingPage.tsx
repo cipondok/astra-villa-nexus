@@ -13,9 +13,13 @@ import {
   Calendar as CalendarIcon,
   Clock,
   Users,
+  User,
+  Baby,
   CheckCircle,
   ArrowLeft,
-  CreditCard
+  CreditCard,
+  Plus,
+  Minus
 } from "lucide-react";
 import { format, differenceInDays } from "date-fns";
 import { id } from "date-fns/locale";
@@ -45,7 +49,8 @@ const BookingPage = () => {
   const [checkInDate, setCheckInDate] = useState<Date>();
   const [checkOutDate, setCheckOutDate] = useState<Date>();
   const [rentalPeriod, setRentalPeriod] = useState("");
-  const [guests, setGuests] = useState(1);
+  const [adults, setAdults] = useState(1);
+  const [children, setChildren] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
   const [bookingLoading, setBookingLoading] = useState(false);
 
@@ -330,22 +335,84 @@ const BookingPage = () => {
                   </div>
                 </div>
 
-                {/* Guests */}
-                <div>
-                  <label className="text-sm font-semibold mb-2 block">Jumlah Tamu</label>
-                  <Select value={guests.toString()} onValueChange={(value) => setGuests(parseInt(value))}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {[1,2,3,4,5,6,7,8].map(num => (
-                        <SelectItem key={num} value={num.toString()}>
-                          <Users className="h-4 w-4 mr-2 inline" />
-                          {num} Tamu
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                {/* Guest Selection - Adults and Children */}
+                <div className="space-y-4">
+                  <label className="text-sm font-semibold block">Jumlah Tamu</label>
+                  
+                  {/* Adults */}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center">
+                      <User className="h-4 w-4 mr-2 text-gray-600" />
+                      <div>
+                        <span className="text-sm font-medium">Dewasa</span>
+                        <p className="text-xs text-gray-500">Usia 13+</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center space-x-3">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="h-8 w-8 p-0"
+                        onClick={() => setAdults(Math.max(1, adults - 1))}
+                        disabled={adults <= 1}
+                      >
+                        <Minus className="h-3 w-3" />
+                      </Button>
+                      <span className="w-8 text-center text-sm font-medium">{adults}</span>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="h-8 w-8 p-0"
+                        onClick={() => setAdults(Math.min(10, adults + 1))}
+                        disabled={adults >= 10}
+                      >
+                        <Plus className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Children */}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center">
+                      <Baby className="h-4 w-4 mr-2 text-gray-600" />
+                      <div>
+                        <span className="text-sm font-medium">Anak-anak</span>
+                        <p className="text-xs text-gray-500">Usia 2-12</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center space-x-3">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="h-8 w-8 p-0"
+                        onClick={() => setChildren(Math.max(0, children - 1))}
+                        disabled={children <= 0}
+                      >
+                        <Minus className="h-3 w-3" />
+                      </Button>
+                      <span className="w-8 text-center text-sm font-medium">{children}</span>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="h-8 w-8 p-0"
+                        onClick={() => setChildren(Math.min(8, children + 1))}
+                        disabled={children >= 8}
+                      >
+                        <Plus className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Total Guest Summary */}
+                  <div className="bg-gray-50 p-3 rounded-lg">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="font-medium">Total Tamu:</span>
+                      <span className="font-semibold">{adults + children} orang</span>
+                    </div>
+                    <div className="text-xs text-gray-600 mt-1">
+                      {adults} dewasa{children > 0 && `, ${children} anak-anak`}
+                    </div>
+                  </div>
                 </div>
 
                 {/* Price Summary */}

@@ -15,7 +15,11 @@ import {
   MapPin,
   Home,
   Clock,
-  Settings
+  Settings,
+  Building,
+  Store,
+  Briefcase,
+  Monitor
 } from "lucide-react";
 import { format } from "date-fns";
 import { id } from "date-fns/locale";
@@ -89,8 +93,39 @@ const AdvancedRentalSearch: React.FC<AdvancedRentalSearchProps> = ({
       </CardHeader>
       
       <CardContent className="space-y-6">
+        {/* Property Type Categories */}
+        <div>
+          <Label className="text-sm font-semibold mb-3 block">Kategori Properti</Label>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+            {[
+              { value: 'apartment', label: 'Apartemen', icon: Building, color: 'bg-blue-100 text-blue-800' },
+              { value: 'house', label: 'Rumah', icon: Home, color: 'bg-green-100 text-green-800' },
+              { value: 'shop', label: 'Toko', icon: Store, color: 'bg-orange-100 text-orange-800' },
+              { value: 'office', label: 'Kantor', icon: Briefcase, color: 'bg-purple-100 text-purple-800' },
+              { value: 'virtual_office', label: 'Virtual Office', icon: Monitor, color: 'bg-indigo-100 text-indigo-800' },
+              { value: 'office_space', label: 'Office Space', icon: Building, color: 'bg-gray-100 text-gray-800' }
+            ].map(type => (
+              <div
+                key={type.value}
+                className={`p-3 rounded-lg border-2 cursor-pointer transition-all hover:shadow-md ${
+                  filters.propertyType === type.value 
+                    ? `border-purple-500 ${type.color}` 
+                    : 'border-gray-200 hover:border-gray-300'
+                }`}
+                onClick={() => onFiltersChange({
+                  ...filters, 
+                  propertyType: filters.propertyType === type.value ? 'all' : type.value
+                })}
+              >
+                <type.icon className="h-6 w-6 mx-auto mb-2 text-gray-600" />
+                <p className="text-xs text-center font-medium">{type.label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* Basic Search */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="relative">
             <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
             <Input
@@ -100,21 +135,6 @@ const AdvancedRentalSearch: React.FC<AdvancedRentalSearchProps> = ({
               className="pl-10"
             />
           </div>
-          
-          <Select 
-            value={filters.propertyType} 
-            onValueChange={(value) => onFiltersChange({...filters, propertyType: value})}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Tipe Properti" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Semua Tipe</SelectItem>
-              {propertyTypes.map(type => (
-                <SelectItem key={type} value={type}>{type}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
 
           <Select 
             value={filters.city} 
