@@ -99,32 +99,45 @@ const AdvancedRentalSearch: React.FC<AdvancedRentalSearchProps> = ({
         {/* Property Type Categories */}
         <div>
           <Label className="text-sm font-semibold mb-3 block">Kategori Properti</Label>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3">
+          <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-9 gap-2">
             {[
-              { value: 'apartment', label: 'Apartemen', icon: Building, color: 'bg-blue-100 text-blue-800' },
-              { value: 'house', label: 'Rumah', icon: Home, color: 'bg-green-100 text-green-800' },
-              { value: 'shop', label: 'Toko', icon: Store, color: 'bg-orange-100 text-orange-800' },
-              { value: 'kios', label: 'Kios', icon: Store, color: 'bg-yellow-100 text-yellow-800' },
-              { value: 'office', label: 'Kantor', icon: Briefcase, color: 'bg-purple-100 text-purple-800' },
-              { value: 'virtual_office', label: 'Virtual Office', icon: Monitor, color: 'bg-indigo-100 text-indigo-800' },
-              { value: 'office_space', label: 'Office Space', icon: Building, color: 'bg-gray-100 text-gray-800' },
-              { value: 'empty_land', label: 'Lahan Kosong', icon: Square, color: 'bg-emerald-100 text-emerald-800' },
-              { value: 'business_place', label: 'Tempat Usaha', icon: Briefcase, color: 'bg-rose-100 text-rose-800' }
+              { value: 'apartment', label: 'Apartemen', icon: Building, color: 'hover:bg-blue-50 border-blue-200', description: 'Unit apartemen untuk sewa harian, mingguan, atau bulanan' },
+              { value: 'house', label: 'Rumah', icon: Home, color: 'hover:bg-green-50 border-green-200', description: 'Rumah tinggal lengkap dengan fasilitas keluarga' },
+              { value: 'shop', label: 'Toko', icon: Store, color: 'hover:bg-orange-50 border-orange-200', description: 'Ruang toko untuk keperluan retail dan penjualan' },
+              { value: 'kios', label: 'Kios', icon: Store, color: 'hover:bg-yellow-50 border-yellow-200', description: 'Kios kecil untuk usaha dagang dan jual beli' },
+              { value: 'office', label: 'Kantor', icon: Briefcase, color: 'hover:bg-purple-50 border-purple-200', description: 'Ruang kantor untuk kegiatan bisnis dan administrasi' },
+              { value: 'virtual_office', label: 'Virtual Office', icon: Monitor, color: 'hover:bg-indigo-50 border-indigo-200', description: 'Alamat bisnis virtual dengan layanan administrasi' },
+              { value: 'office_space', label: 'Office Space', icon: Building, color: 'hover:bg-slate-50 border-slate-200', description: 'Ruang kerja fleksibel dan co-working space' },
+              { value: 'empty_land', label: 'Lahan Kosong', icon: Square, color: 'hover:bg-emerald-50 border-emerald-200', description: 'Tanah kosong untuk berbagai keperluan pengembangan' },
+              { value: 'business_place', label: 'Tempat Usaha', icon: Briefcase, color: 'hover:bg-rose-50 border-rose-200', description: 'Lokasi strategis untuk berbagai jenis usaha' }
             ].map(type => (
               <div
                 key={type.value}
-                className={`p-3 rounded-lg border-2 cursor-pointer transition-all hover:shadow-md ${
+                className={`group relative p-2 rounded-lg border-2 cursor-pointer transition-all duration-200 hover:shadow-md hover:scale-105 ${
                   filters.propertyType === type.value 
-                    ? `border-purple-500 ${type.color}` 
-                    : 'border-gray-200 hover:border-gray-300'
+                    ? 'border-primary bg-primary/10 shadow-sm' 
+                    : `border-gray-200 ${type.color}`
                 }`}
                 onClick={() => onFiltersChange({
                   ...filters, 
                   propertyType: filters.propertyType === type.value ? 'all' : type.value
                 })}
+                title={type.description}
               >
-                <type.icon className="h-6 w-6 mx-auto mb-2 text-gray-600" />
-                <p className="text-xs text-center font-medium">{type.label}</p>
+                <type.icon className={`h-4 w-4 mx-auto mb-1 transition-colors ${
+                  filters.propertyType === type.value ? 'text-primary' : 'text-muted-foreground'
+                }`} />
+                <p className={`text-xs text-center font-medium leading-tight ${
+                  filters.propertyType === type.value ? 'text-primary' : 'text-muted-foreground'
+                }`}>
+                  {type.label}
+                </p>
+                
+                {/* Tooltip */}
+                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-10 pointer-events-none">
+                  {type.description}
+                  <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
+                </div>
               </div>
             ))}
           </div>
