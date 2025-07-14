@@ -2835,6 +2835,47 @@ export type Database = {
           },
         ]
       }
+      property_facilities: {
+        Row: {
+          additional_cost: number | null
+          category: string
+          created_at: string | null
+          description: string | null
+          id: string
+          is_available: boolean | null
+          name: string
+          property_id: string | null
+        }
+        Insert: {
+          additional_cost?: number | null
+          category: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_available?: boolean | null
+          name: string
+          property_id?: string | null
+        }
+        Update: {
+          additional_cost?: number | null
+          category?: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_available?: boolean | null
+          name?: string
+          property_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "property_facilities_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       property_images: {
         Row: {
           alt_text: string | null
@@ -2866,6 +2907,91 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "property_images_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      property_rental_items: {
+        Row: {
+          condition_status: string | null
+          created_at: string | null
+          id: string
+          is_included: boolean | null
+          item_description: string | null
+          item_name: string
+          property_id: string | null
+          quantity: number | null
+          replacement_cost: number | null
+        }
+        Insert: {
+          condition_status?: string | null
+          created_at?: string | null
+          id?: string
+          is_included?: boolean | null
+          item_description?: string | null
+          item_name: string
+          property_id?: string | null
+          quantity?: number | null
+          replacement_cost?: number | null
+        }
+        Update: {
+          condition_status?: string | null
+          created_at?: string | null
+          id?: string
+          is_included?: boolean | null
+          item_description?: string | null
+          item_name?: string
+          property_id?: string | null
+          quantity?: number | null
+          replacement_cost?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "property_rental_items_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      property_rental_terms: {
+        Row: {
+          created_at: string | null
+          description: string
+          id: string
+          is_mandatory: boolean | null
+          order_index: number | null
+          property_id: string | null
+          term_type: string
+          title: string
+        }
+        Insert: {
+          created_at?: string | null
+          description: string
+          id?: string
+          is_mandatory?: boolean | null
+          order_index?: number | null
+          property_id?: string | null
+          term_type: string
+          title: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string
+          id?: string
+          is_mandatory?: boolean | null
+          order_index?: number | null
+          property_id?: string | null
+          term_type?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "property_rental_terms_property_id_fkey"
             columns: ["property_id"]
             isOneToOne: false
             referencedRelation: "properties"
@@ -3134,6 +3260,100 @@ export type Database = {
           resolution_steps?: Json
         }
         Relationships: []
+      }
+      rental_bookings: {
+        Row: {
+          additional_fees: Json | null
+          agent_id: string | null
+          base_price: number
+          booking_status: string | null
+          booking_type: string | null
+          check_in_date: string
+          check_out_date: string
+          contact_details: Json | null
+          contact_method: string | null
+          created_at: string | null
+          customer_id: string | null
+          deposit_amount: number | null
+          deposit_status: string | null
+          id: string
+          payment_status: string | null
+          property_id: string | null
+          special_requests: string | null
+          terms_accepted: boolean | null
+          total_amount: number
+          total_days: number
+          updated_at: string | null
+        }
+        Insert: {
+          additional_fees?: Json | null
+          agent_id?: string | null
+          base_price: number
+          booking_status?: string | null
+          booking_type?: string | null
+          check_in_date: string
+          check_out_date: string
+          contact_details?: Json | null
+          contact_method?: string | null
+          created_at?: string | null
+          customer_id?: string | null
+          deposit_amount?: number | null
+          deposit_status?: string | null
+          id?: string
+          payment_status?: string | null
+          property_id?: string | null
+          special_requests?: string | null
+          terms_accepted?: boolean | null
+          total_amount: number
+          total_days: number
+          updated_at?: string | null
+        }
+        Update: {
+          additional_fees?: Json | null
+          agent_id?: string | null
+          base_price?: number
+          booking_status?: string | null
+          booking_type?: string | null
+          check_in_date?: string
+          check_out_date?: string
+          contact_details?: Json | null
+          contact_method?: string | null
+          created_at?: string | null
+          customer_id?: string | null
+          deposit_amount?: number | null
+          deposit_status?: string | null
+          id?: string
+          payment_status?: string | null
+          property_id?: string | null
+          special_requests?: string | null
+          terms_accepted?: boolean | null
+          total_amount?: number
+          total_days?: number
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rental_bookings_agent_id_fkey"
+            columns: ["agent_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rental_bookings_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rental_bookings_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       resubmission_history: {
         Row: {

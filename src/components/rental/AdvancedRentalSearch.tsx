@@ -124,6 +124,43 @@ const AdvancedRentalSearch: React.FC<AdvancedRentalSearchProps> = ({
     });
   };
 
+  // Count active filters
+  const getActiveFiltersCount = () => {
+    let count = 0;
+    if (filters.searchTerm) count++;
+    if (filters.propertyType !== 'all') count++;
+    if (filters.province !== 'all') count++;
+    if (filters.city !== 'all') count++;
+    if (filters.priceRange !== 'all') count++;
+    if (filters.rentalPeriod.length > 0) count++;
+    if (filters.checkInDate) count++;
+    if (filters.checkOutDate) count++;
+    if (filters.onlineBookingOnly) count++;
+    if (filters.minimumDays > 0) count++;
+    if (filters.nearMe) count++;
+    return count;
+  };
+
+  // Clear all filters
+  const clearAllFilters = () => {
+    onFiltersChange({
+      searchTerm: "",
+      propertyType: "all",
+      province: "all",
+      city: "all",
+      priceRange: "all",
+      rentalPeriod: [],
+      checkInDate: undefined,
+      checkOutDate: undefined,
+      onlineBookingOnly: false,
+      minimumDays: 0,
+      nearMe: false,
+      userLocation: null
+    });
+  };
+
+  const activeFiltersCount = getActiveFiltersCount();
+
   const rentalPeriods = [
     { value: 'daily', label: 'Sewa Harian', icon: '📅' },
     { value: 'weekly', label: 'Sewa Mingguan', icon: '📆' },
@@ -138,15 +175,32 @@ const AdvancedRentalSearch: React.FC<AdvancedRentalSearchProps> = ({
           <span className="flex items-center">
             <Search className="h-5 w-5 mr-2" />
             Pencarian Properti Sewa
+            {activeFiltersCount > 0 && (
+              <Badge variant="secondary" className="ml-2 bg-purple-100 text-purple-800">
+                {activeFiltersCount} Filter
+              </Badge>
+            )}
           </span>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setShowAdvanced(!showAdvanced)}
-          >
-            <Settings className="h-4 w-4 mr-2" />
-            {showAdvanced ? 'Sembunyikan' : 'Lanjutan'}
-          </Button>
+          <div className="flex items-center space-x-2">
+            {activeFiltersCount > 0 && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={clearAllFilters}
+                className="text-red-600 hover:text-red-700 hover:bg-red-50"
+              >
+                Hapus Semua
+              </Button>
+            )}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowAdvanced(!showAdvanced)}
+            >
+              <Settings className="h-4 w-4 mr-2" />
+              {showAdvanced ? 'Sembunyikan' : 'Lanjutan'}
+            </Button>
+          </div>
         </CardTitle>
       </CardHeader>
       
