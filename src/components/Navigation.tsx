@@ -88,8 +88,8 @@ const Navigation = () => {
       properties: "Properti",
       saved: "Disimpan",
       messages: "Pesan",
-      buyProperties: "Beli Properti",
-      rentProperties: "Sewa Properti",
+      buyProperties: "Dijual",
+      rentProperties: "Disewa",
       preLaunch: "Pra Peluncuran",
       newProjects: "Proyek Baru",
       profile: "Profil",
@@ -105,13 +105,13 @@ const Navigation = () => {
     { 
       icon: Building, 
       label: currentText.buyProperties, 
-      path: '/buy',
+      path: '/dijual',
       color: 'text-green-600 dark:text-green-400'
     },
     { 
       icon: Key, 
       label: currentText.rentProperties, 
-      path: '/rent',
+      path: '/disewa',
       color: 'text-blue-600 dark:text-blue-400'
     },
     { 
