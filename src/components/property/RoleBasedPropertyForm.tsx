@@ -33,6 +33,15 @@ interface PropertyFormData {
   seo_title: string;
   seo_description: string;
   property_features: any;
+  // Rental-specific fields
+  rental_periods: string[];
+  minimum_rental_days: string;
+  online_booking_enabled: boolean;
+  booking_type: string;
+  advance_booking_days: string;
+  rental_terms: string;
+  available_from: string;
+  available_until: string;
 }
 
 const RoleBasedPropertyForm = () => {
@@ -64,7 +73,16 @@ const RoleBasedPropertyForm = () => {
     status: isAdmin ? "active" : "pending_approval",
     seo_title: "",
     seo_description: "",
-    property_features: {}
+    property_features: {},
+    // Rental-specific fields
+    rental_periods: ["monthly"],
+    minimum_rental_days: "30",
+    online_booking_enabled: true,
+    booking_type: "astra_villa",
+    advance_booking_days: "7",
+    rental_terms: "",
+    available_from: "",
+    available_until: ""
   });
 
   const [advancedFeatures, setAdvancedFeatures] = useState({
@@ -124,7 +142,18 @@ const RoleBasedPropertyForm = () => {
         image_urls: [],
         seo_title: data.seo_title || data.title,
         seo_description: data.seo_description || data.description,
-        property_features: { ...advancedFeatures }
+        property_features: { ...advancedFeatures },
+        // Rental-specific fields (only for rental properties)
+        ...(data.listing_type === 'rent' && {
+          rental_periods: data.rental_periods,
+          minimum_rental_days: data.minimum_rental_days ? parseInt(data.minimum_rental_days) : 30,
+          online_booking_enabled: data.online_booking_enabled,
+          booking_type: data.booking_type,
+          advance_booking_days: data.advance_booking_days ? parseInt(data.advance_booking_days) : 7,
+          rental_terms: data.rental_terms ? JSON.parse(data.rental_terms || '{}') : {},
+          available_from: data.available_from || null,
+          available_until: data.available_until || null
+        })
       };
 
       const { data: result, error } = await supabase
@@ -166,7 +195,15 @@ const RoleBasedPropertyForm = () => {
         status: isAdmin ? "active" : "pending_approval",
         seo_title: "",
         seo_description: "",
-        property_features: {}
+        property_features: {},
+        rental_periods: ["monthly"],
+        minimum_rental_days: "30",
+        online_booking_enabled: true,
+        booking_type: "astra_villa",
+        advance_booking_days: "7",
+        rental_terms: "",
+        available_from: "",
+        available_until: ""
       });
       
       setAdvancedFeatures({
@@ -290,6 +327,14 @@ const RoleBasedPropertyForm = () => {
                     <SelectItem value="condo">Condo</SelectItem>
                     <SelectItem value="land">Land</SelectItem>
                     <SelectItem value="commercial">Commercial</SelectItem>
+                    <SelectItem value="office">Office</SelectItem>
+                    <SelectItem value="warehouse">Warehouse</SelectItem>
+                    <SelectItem value="retail">Retail Space</SelectItem>
+                    <SelectItem value="hotel">Hotel</SelectItem>
+                    <SelectItem value="resort">Resort</SelectItem>
+                    <SelectItem value="studio">Studio</SelectItem>
+                    <SelectItem value="penthouse">Penthouse</SelectItem>
+                    <SelectItem value="duplex">Duplex</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -332,6 +377,91 @@ const RoleBasedPropertyForm = () => {
               />
             </div>
           </div>
+
+          {/* Rental-Specific Fields */}
+          {formData.listing_type === 'rent' && (
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold">Rental Information</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="minimum_rental_days">Minimum Rental Days</Label>
+                  <Input
+                    id="minimum_rental_days"
+                    type="number"
+                    value={formData.minimum_rental_days}
+                    onChange={(e) => handleInputChange('minimum_rental_days', e.target.value)}
+                    placeholder="e.g., 30"
+                    min="1"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="booking_type">Booking Type</Label>
+                  <Select 
+                    value={formData.booking_type} 
+                    onValueChange={(value) => handleInputChange('booking_type', value)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select booking type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="astra_villa">Astra Villa</SelectItem>
+                      <SelectItem value="owner_only">Owner Only</SelectItem>
+                      <SelectItem value="both">Both</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label htmlFor="advance_booking_days">Advance Booking Days</Label>
+                  <Input
+                    id="advance_booking_days"
+                    type="number"
+                    value={formData.advance_booking_days}
+                    onChange={(e) => handleInputChange('advance_booking_days', e.target.value)}
+                    placeholder="e.g., 7"
+                    min="0"
+                  />
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    id="online_booking_enabled"
+                    checked={formData.online_booking_enabled}
+                    onCheckedChange={(checked) => setFormData(prev => ({ ...prev, online_booking_enabled: checked }))}
+                  />
+                  <Label htmlFor="online_booking_enabled">Enable Online Booking</Label>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="available_from">Available From</Label>
+                  <Input
+                    id="available_from"
+                    type="date"
+                    value={formData.available_from}
+                    onChange={(e) => handleInputChange('available_from', e.target.value)}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="available_until">Available Until</Label>
+                  <Input
+                    id="available_until"
+                    type="date"
+                    value={formData.available_until}
+                    onChange={(e) => handleInputChange('available_until', e.target.value)}
+                  />
+                </div>
+              </div>
+              <div>
+                <Label htmlFor="rental_terms">Rental Terms & Conditions</Label>
+                <Textarea
+                  id="rental_terms"
+                  value={formData.rental_terms}
+                  onChange={(e) => handleInputChange('rental_terms', e.target.value)}
+                  placeholder="Enter rental terms, house rules, and conditions..."
+                  rows={3}
+                />
+              </div>
+            </div>
+          )}
 
           {/* Property Details */}
           <div className="space-y-4">
