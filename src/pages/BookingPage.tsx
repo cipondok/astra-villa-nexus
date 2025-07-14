@@ -22,7 +22,11 @@ import {
   ArrowLeft,
   CreditCard,
   Plus,
-  Minus
+  Minus,
+  Navigation as NavigationIcon,
+  Building,
+  Home,
+  Store
 } from "lucide-react";
 import { format, differenceInDays } from "date-fns";
 import { id } from "date-fns/locale";
@@ -57,6 +61,11 @@ const BookingPage = () => {
   const [children, setChildren] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
   const [bookingLoading, setBookingLoading] = useState(false);
+  
+  // Location selection
+  const [selectedLocation, setSelectedLocation] = useState("");
+  const [currentLocation, setCurrentLocation] = useState<{lat: number, lng: number} | null>(null);
+  const [locationLoading, setLocationLoading] = useState(false);
   
   // Company information for virtual office/office space
   const [companyInfo, setCompanyInfo] = useState({
@@ -161,6 +170,16 @@ const BookingPage = () => {
       return;
     }
 
+    // Validate location selection
+    if (!selectedLocation) {
+      toast({
+        title: "Lokasi Belum Dipilih",
+        description: "Mohon pilih lokasi atau gunakan lokasi Anda saat ini.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     // Validate company information for virtual office/office space
     if (property.property_type === 'virtual_office' || property.property_type === 'office') {
       const requiredFields = ['companyName', 'ptNumber', 'businessLicense', 'contactPerson', 'contactEmail', 'contactPhone', 'businessType'];
@@ -220,6 +239,68 @@ const BookingPage = () => {
       case 'monthly': return 'Per Bulan';
       case 'yearly': return 'Per Tahun';
       default: return 'Per Bulan';
+    }
+  };
+
+  const getPropertyTypeIcon = (type: string) => {
+    switch(type) {
+      case 'virtual_office': return <Building className="h-4 w-4" />;
+      case 'office': return <Building className="h-4 w-4" />;
+      case 'apartment': return <Home className="h-4 w-4" />;
+      case 'house': return <Home className="h-4 w-4" />;
+      case 'villa': return <Home className="h-4 w-4" />;
+      case 'retail': return <Store className="h-4 w-4" />;
+      case 'warehouse': return <Building className="h-4 w-4" />;
+      default: return <Building className="h-4 w-4" />;
+    }
+  };
+
+  const getPropertyTypeLabel = (type: string) => {
+    switch(type) {
+      case 'virtual_office': return 'Virtual Office';
+      case 'office': return 'Office Space';
+      case 'apartment': return 'Apartment';
+      case 'house': return 'House';
+      case 'villa': return 'Villa';
+      case 'retail': return 'Retail Space';
+      case 'warehouse': return 'Warehouse';
+      default: return 'Property';
+    }
+  };
+
+  const getCurrentLocation = () => {
+    setLocationLoading(true);
+    
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setCurrentLocation({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          });
+          setSelectedLocation("my_location");
+          setLocationLoading(false);
+          toast({
+            title: "Lokasi Terdeteksi",
+            description: "Lokasi Anda telah terdeteksi",
+          });
+        },
+        (error) => {
+          setLocationLoading(false);
+          toast({
+            title: "Tidak Dapat Mengakses Lokasi",
+            description: "Mohon izinkan akses lokasi atau pilih lokasi secara manual",
+            variant: "destructive"
+          });
+        }
+      );
+    } else {
+      setLocationLoading(false);
+      toast({
+        title: "Geolocation Tidak Tersedia",
+        description: "Browser Anda tidak mendukung geolocation",
+        variant: "destructive"
+      });
     }
   };
 
@@ -337,6 +418,73 @@ const BookingPage = () => {
                       ))}
                     </SelectContent>
                   </Select>
+                </div>
+
+                {/* Property Type Display */}
+                <div className="bg-gradient-to-r from-purple-50 to-blue-50 p-4 rounded-lg border animate-fade-in">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-semibold text-gray-700">Tipe Properti</span>
+                    <Badge variant="secondary" className="bg-purple-100 text-purple-800">
+                      {getPropertyTypeIcon(property.property_type || '')}
+                      <span className="ml-1">{getPropertyTypeLabel(property.property_type || '')}</span>
+                    </Badge>
+                  </div>
+                  <div className="text-lg font-bold text-purple-700">
+                    {formatPrice(property.price || 0)} <span className="text-sm font-normal text-gray-600">/ {getRentalPeriodLabel(rentalPeriod)}</span>
+                  </div>
+                </div>
+
+                {/* Location Selection */}
+                <div className="space-y-4">
+                  <label className="text-sm font-semibold block">Pilih Lokasi</label>
+                  
+                  <div className="grid grid-cols-1 gap-3">
+                    <Select value={selectedLocation} onValueChange={setSelectedLocation}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Pilih lokasi atau gunakan lokasi saya" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="jakarta">Jakarta</SelectItem>
+                        <SelectItem value="surabaya">Surabaya</SelectItem>
+                        <SelectItem value="bandung">Bandung</SelectItem>
+                        <SelectItem value="medan">Medan</SelectItem>
+                        <SelectItem value="makassar">Makassar</SelectItem>
+                        <SelectItem value="denpasar">Denpasar</SelectItem>
+                        <SelectItem value="yogyakarta">Yogyakarta</SelectItem>
+                        <SelectItem value="semarang">Semarang</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    
+                    <Button 
+                      variant="outline" 
+                      className="w-full hover-scale"
+                      onClick={getCurrentLocation}
+                      disabled={locationLoading}
+                    >
+                      {locationLoading ? (
+                        <>
+                          <Clock className="h-4 w-4 mr-2 animate-spin" />
+                          Mendeteksi lokasi...
+                        </>
+                      ) : (
+                        <>
+                          <NavigationIcon className="h-4 w-4 mr-2" />
+                          Gunakan Lokasi Saya
+                        </>
+                      )}
+                    </Button>
+                    
+                    {selectedLocation === "my_location" && currentLocation && (
+                      <div className="bg-green-50 p-3 rounded-lg animate-fade-in">
+                        <div className="flex items-center text-green-700">
+                          <MapPin className="h-4 w-4 mr-2" />
+                          <span className="text-sm">
+                            Lokasi terdeteksi: {currentLocation.lat.toFixed(4)}, {currentLocation.lng.toFixed(4)}
+                          </span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 {/* Date Selection */}
