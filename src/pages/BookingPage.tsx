@@ -5,6 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Calendar } from "@/components/ui/calendar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import Navigation from "@/components/Navigation";
@@ -33,6 +36,7 @@ interface Property {
   city: string;
   images: string[];
   image_urls: string[];
+  property_type?: string;
   rental_periods?: string[];
   minimum_rental_days?: number;
   online_booking_enabled?: boolean;
@@ -53,6 +57,19 @@ const BookingPage = () => {
   const [children, setChildren] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
   const [bookingLoading, setBookingLoading] = useState(false);
+  
+  // Company information for virtual office/office space
+  const [companyInfo, setCompanyInfo] = useState({
+    companyName: '',
+    ptNumber: '',
+    businessLicense: '',
+    contactPerson: '',
+    contactEmail: '',
+    contactPhone: '',
+    businessType: '',
+    needDomicile: false,
+    needMailHandling: false
+  });
 
   useEffect(() => {
     if (propertyId) {
@@ -142,6 +159,21 @@ const BookingPage = () => {
         variant: "destructive",
       });
       return;
+    }
+
+    // Validate company information for virtual office/office space
+    if (property.property_type === 'virtual_office' || property.property_type === 'office') {
+      const requiredFields = ['companyName', 'ptNumber', 'businessLicense', 'contactPerson', 'contactEmail', 'contactPhone', 'businessType'];
+      const missingFields = requiredFields.filter(field => !companyInfo[field as keyof typeof companyInfo]);
+      
+      if (missingFields.length > 0) {
+        toast({
+          title: "Informasi Perusahaan Tidak Lengkap",
+          description: "Mohon lengkapi semua informasi perusahaan yang diperlukan.",
+          variant: "destructive",
+        });
+        return;
+      }
     }
 
     setBookingLoading(true);
@@ -414,6 +446,129 @@ const BookingPage = () => {
                     </div>
                   </div>
                 </div>
+
+                {/* Company Information for Virtual Office/Office Space */}
+                {(property.property_type === 'virtual_office' || property.property_type === 'office') && (
+                  <div className="border-t pt-4">
+                    <div className="space-y-4">
+                      <label className="text-sm font-semibold block">Informasi Perusahaan</label>
+                      
+                      <div className="grid grid-cols-1 gap-4">
+                        <div>
+                          <label className="text-xs font-medium mb-1 block">Nama Perusahaan *</label>
+                          <Input
+                            value={companyInfo.companyName}
+                            onChange={(e) => setCompanyInfo(prev => ({ ...prev, companyName: e.target.value }))}
+                            placeholder="Masukkan nama perusahaan"
+                            className="w-full"
+                          />
+                        </div>
+                        
+                        <div>
+                          <label className="text-xs font-medium mb-1 block">Nomor PT/SIUP *</label>
+                          <Input
+                            value={companyInfo.ptNumber}
+                            onChange={(e) => setCompanyInfo(prev => ({ ...prev, ptNumber: e.target.value }))}
+                            placeholder="Masukkan nomor PT/SIUP"
+                            className="w-full"
+                          />
+                        </div>
+                        
+                        <div>
+                          <label className="text-xs font-medium mb-1 block">Izin Usaha *</label>
+                          <Input
+                            value={companyInfo.businessLicense}
+                            onChange={(e) => setCompanyInfo(prev => ({ ...prev, businessLicense: e.target.value }))}
+                            placeholder="NIB/SIUP/TDP"
+                            className="w-full"
+                          />
+                        </div>
+                        
+                        <div>
+                          <label className="text-xs font-medium mb-1 block">Nama Penanggung Jawab *</label>
+                          <Input
+                            value={companyInfo.contactPerson}
+                            onChange={(e) => setCompanyInfo(prev => ({ ...prev, contactPerson: e.target.value }))}
+                            placeholder="Nama lengkap penanggung jawab"
+                            className="w-full"
+                          />
+                        </div>
+                        
+                        <div>
+                          <label className="text-xs font-medium mb-1 block">Email Perusahaan *</label>
+                          <Input
+                            type="email"
+                            value={companyInfo.contactEmail}
+                            onChange={(e) => setCompanyInfo(prev => ({ ...prev, contactEmail: e.target.value }))}
+                            placeholder="email@perusahaan.com"
+                            className="w-full"
+                          />
+                        </div>
+                        
+                        <div>
+                          <label className="text-xs font-medium mb-1 block">Telepon Perusahaan *</label>
+                          <Input
+                            value={companyInfo.contactPhone}
+                            onChange={(e) => setCompanyInfo(prev => ({ ...prev, contactPhone: e.target.value }))}
+                            placeholder="021-xxxx-xxxx"
+                            className="w-full"
+                          />
+                        </div>
+                        
+                        <div>
+                          <label className="text-xs font-medium mb-1 block">Jenis Bisnis *</label>
+                          <Select value={companyInfo.businessType} onValueChange={(value) => setCompanyInfo(prev => ({ ...prev, businessType: value }))}>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Pilih jenis bisnis" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="teknologi">Teknologi</SelectItem>
+                              <SelectItem value="perdagangan">Perdagangan</SelectItem>
+                              <SelectItem value="konsultan">Konsultan</SelectItem>
+                              <SelectItem value="jasa">Jasa</SelectItem>
+                              <SelectItem value="manufaktur">Manufaktur</SelectItem>
+                              <SelectItem value="lainnya">Lainnya</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        
+                        {/* Additional Services */}
+                        <div className="space-y-2">
+                          <label className="text-xs font-medium block">Layanan Tambahan</label>
+                          
+                          <div className="flex items-center space-x-2">
+                            <Checkbox
+                              id="domicile"
+                              checked={companyInfo.needDomicile}
+                              onCheckedChange={(checked) => setCompanyInfo(prev => ({ ...prev, needDomicile: checked as boolean }))}
+                            />
+                            <label htmlFor="domicile" className="text-xs">
+                              Layanan Domisili Usaha
+                            </label>
+                          </div>
+                          
+                          <div className="flex items-center space-x-2">
+                            <Checkbox
+                              id="mail"
+                              checked={companyInfo.needMailHandling}
+                              onCheckedChange={(checked) => setCompanyInfo(prev => ({ ...prev, needMailHandling: checked as boolean }))}
+                            />
+                            <label htmlFor="mail" className="text-xs">
+                              Layanan Penanganan Surat
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="bg-amber-50 p-3 rounded-lg">
+                        <p className="text-xs text-amber-700">
+                          <strong>Catatan:</strong> Untuk Virtual Office dan Office Space, diperlukan dokumen legalitas perusahaan yang valid. 
+                          Dokumen akan diverifikasi setelah booking dikonfirmasi.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
 
                 {/* Price Summary */}
                 {checkInDate && checkOutDate && (
