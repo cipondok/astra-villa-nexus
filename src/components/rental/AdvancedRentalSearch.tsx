@@ -20,7 +20,8 @@ import {
   Building,
   Store,
   Briefcase,
-  Monitor
+  Monitor,
+  Square
 } from "lucide-react";
 import { format } from "date-fns";
 import { id } from "date-fns/locale";
@@ -98,14 +99,17 @@ const AdvancedRentalSearch: React.FC<AdvancedRentalSearchProps> = ({
         {/* Property Type Categories */}
         <div>
           <Label className="text-sm font-semibold mb-3 block">Kategori Properti</Label>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3">
             {[
               { value: 'apartment', label: 'Apartemen', icon: Building, color: 'bg-blue-100 text-blue-800' },
               { value: 'house', label: 'Rumah', icon: Home, color: 'bg-green-100 text-green-800' },
               { value: 'shop', label: 'Toko', icon: Store, color: 'bg-orange-100 text-orange-800' },
+              { value: 'kios', label: 'Kios', icon: Store, color: 'bg-yellow-100 text-yellow-800' },
               { value: 'office', label: 'Kantor', icon: Briefcase, color: 'bg-purple-100 text-purple-800' },
               { value: 'virtual_office', label: 'Virtual Office', icon: Monitor, color: 'bg-indigo-100 text-indigo-800' },
-              { value: 'office_space', label: 'Office Space', icon: Building, color: 'bg-gray-100 text-gray-800' }
+              { value: 'office_space', label: 'Office Space', icon: Building, color: 'bg-gray-100 text-gray-800' },
+              { value: 'empty_land', label: 'Lahan Kosong', icon: Square, color: 'bg-emerald-100 text-emerald-800' },
+              { value: 'business_place', label: 'Tempat Usaha', icon: Briefcase, color: 'bg-rose-100 text-rose-800' }
             ].map(type => (
               <div
                 key={type.value}
