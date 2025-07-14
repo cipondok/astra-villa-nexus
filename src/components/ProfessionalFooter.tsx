@@ -1,12 +1,22 @@
 
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Rocket, Phone, Mail, MapPin, Facebook, Twitter, Instagram, Youtube, Users, Handshake, Building2, TrendingUp } from "lucide-react";
+import PartnerNetworkModal from "./partners/PartnerNetworkModal";
+import BecomePartnerModal from "./partners/BecomePartnerModal";
+import PartnerBenefitsModal from "./partners/PartnerBenefitsModal";
+import JointVenturesModal from "./partners/JointVenturesModal";
 
 interface ProfessionalFooterProps {
   language: "en" | "id";
 }
 
 const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
+  const [isPartnerNetworkOpen, setIsPartnerNetworkOpen] = useState(false);
+  const [isBecomePartnerOpen, setIsBecomePartnerOpen] = useState(false);
+  const [isPartnerBenefitsOpen, setIsPartnerBenefitsOpen] = useState(false);
+  const [isJointVenturesOpen, setIsJointVenturesOpen] = useState(false);
+
   const text = {
     en: {
       company: "Astra Villa",
@@ -173,28 +183,40 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* Partner Network */}
-            <div className="bg-gray-800 rounded-lg p-4 text-center hover:bg-gray-700 transition-colors cursor-pointer">
+            <div 
+              className="bg-gray-800 rounded-lg p-4 text-center hover:bg-gray-700 transition-colors cursor-pointer"
+              onClick={() => setIsPartnerNetworkOpen(true)}
+            >
               <Users className="w-8 h-8 text-blue-400 mx-auto mb-2" />
               <h3 className="text-sm font-semibold text-white mb-1">{currentText.partnerNetwork}</h3>
               <p className="text-xs text-gray-300">Connect with our trusted network of real estate professionals</p>
             </div>
 
             {/* Become Partner */}
-            <div className="bg-gray-800 rounded-lg p-4 text-center hover:bg-gray-700 transition-colors cursor-pointer">
+            <div 
+              className="bg-gray-800 rounded-lg p-4 text-center hover:bg-gray-700 transition-colors cursor-pointer"
+              onClick={() => setIsBecomePartnerOpen(true)}
+            >
               <Building2 className="w-8 h-8 text-green-400 mx-auto mb-2" />
               <h3 className="text-sm font-semibold text-white mb-1">{currentText.becomePartner}</h3>
               <p className="text-xs text-gray-300">Join our partner program and grow your business with us</p>
             </div>
 
             {/* Partner Benefits */}
-            <div className="bg-gray-800 rounded-lg p-4 text-center hover:bg-gray-700 transition-colors cursor-pointer">
+            <div 
+              className="bg-gray-800 rounded-lg p-4 text-center hover:bg-gray-700 transition-colors cursor-pointer"
+              onClick={() => setIsPartnerBenefitsOpen(true)}
+            >
               <TrendingUp className="w-8 h-8 text-purple-400 mx-auto mb-2" />
               <h3 className="text-sm font-semibold text-white mb-1">{currentText.partnerBenefits}</h3>
               <p className="text-xs text-gray-300">Exclusive benefits and rewards for our valued partners</p>
             </div>
 
             {/* Joint Ventures */}
-            <div className="bg-gray-800 rounded-lg p-4 text-center hover:bg-gray-700 transition-colors cursor-pointer">
+            <div 
+              className="bg-gray-800 rounded-lg p-4 text-center hover:bg-gray-700 transition-colors cursor-pointer"
+              onClick={() => setIsJointVenturesOpen(true)}
+            >
               <Handshake className="w-8 h-8 text-orange-400 mx-auto mb-2" />
               <h3 className="text-sm font-semibold text-white mb-1">{currentText.jointVentures}</h3>
               <p className="text-xs text-gray-300">Explore joint venture opportunities in real estate</p>
@@ -235,6 +257,24 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
           </div>
         </div>
       </div>
+
+      {/* Modals */}
+      <PartnerNetworkModal 
+        isOpen={isPartnerNetworkOpen} 
+        onClose={() => setIsPartnerNetworkOpen(false)} 
+      />
+      <BecomePartnerModal 
+        isOpen={isBecomePartnerOpen} 
+        onClose={() => setIsBecomePartnerOpen(false)} 
+      />
+      <PartnerBenefitsModal 
+        isOpen={isPartnerBenefitsOpen} 
+        onClose={() => setIsPartnerBenefitsOpen(false)} 
+      />
+      <JointVenturesModal 
+        isOpen={isJointVenturesOpen} 
+        onClose={() => setIsJointVenturesOpen(false)} 
+      />
     </footer>
   );
 };
