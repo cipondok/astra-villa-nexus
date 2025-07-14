@@ -66,7 +66,7 @@ const Dijual = () => {
         .from('properties')
         .select('*')
         .eq('listing_type', 'sale')
-        .eq('status', 'available')
+        .eq('status', 'active')
         .order('created_at', { ascending: false });
 
       if (error) throw error;

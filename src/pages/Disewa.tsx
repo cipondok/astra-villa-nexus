@@ -66,7 +66,7 @@ const Disewa = () => {
         .from('properties')
         .select('*')
         .eq('listing_type', 'rent')
-        .eq('status', 'available')
+        .eq('status', 'active')
         .order('created_at', { ascending: false });
 
       if (error) throw error;
