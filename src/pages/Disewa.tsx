@@ -89,11 +89,11 @@ const Disewa = () => {
       property.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
       property.city?.toLowerCase().includes(searchTerm.toLowerCase());
     
-    const matchesType = !selectedType || property.property_type === selectedType;
-    const matchesCity = !selectedCity || property.city === selectedCity;
+    const matchesType = !selectedType || selectedType === "all" || property.property_type === selectedType;
+    const matchesCity = !selectedCity || selectedCity === "all" || property.city === selectedCity;
     
     let matchesPriceRange = true;
-    if (priceRange) {
+    if (priceRange && priceRange !== "all") {
       const price = property.price || 0;
       switch (priceRange) {
         case 'under-5m':
@@ -176,7 +176,7 @@ const Disewa = () => {
                 <SelectValue placeholder="Tipe Properti" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Semua Tipe</SelectItem>
+                <SelectItem value="all">Semua Tipe</SelectItem>
                 {propertyTypes.map(type => (
                   <SelectItem key={type} value={type}>{type}</SelectItem>
                 ))}
@@ -188,7 +188,7 @@ const Disewa = () => {
                 <SelectValue placeholder="Kota" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Semua Kota</SelectItem>
+                <SelectItem value="all">Semua Kota</SelectItem>
                 {cities.map(city => (
                   <SelectItem key={city} value={city}>{city}</SelectItem>
                 ))}
@@ -200,7 +200,7 @@ const Disewa = () => {
                 <SelectValue placeholder="Kisaran Harga" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Semua Harga</SelectItem>
+                <SelectItem value="all">Semua Harga</SelectItem>
                 <SelectItem value="under-5m">Di bawah Rp 5 Jt/bulan</SelectItem>
                 <SelectItem value="5m-10m">Rp 5-10 Jt/bulan</SelectItem>
                 <SelectItem value="10m-20m">Rp 10-20 Jt/bulan</SelectItem>

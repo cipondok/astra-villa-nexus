@@ -89,11 +89,11 @@ const Dijual = () => {
       property.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
       property.city?.toLowerCase().includes(searchTerm.toLowerCase());
     
-    const matchesType = !selectedType || property.property_type === selectedType;
-    const matchesCity = !selectedCity || property.city === selectedCity;
+    const matchesType = !selectedType || selectedType === "all" || property.property_type === selectedType;
+    const matchesCity = !selectedCity || selectedCity === "all" || property.city === selectedCity;
     
     let matchesPriceRange = true;
-    if (priceRange) {
+    if (priceRange && priceRange !== "all") {
       const price = property.price || 0;
       switch (priceRange) {
         case 'under-500m':
@@ -178,7 +178,7 @@ const Dijual = () => {
                 <SelectValue placeholder="Tipe Properti" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Semua Tipe</SelectItem>
+                <SelectItem value="all">Semua Tipe</SelectItem>
                 {propertyTypes.map(type => (
                   <SelectItem key={type} value={type}>{type}</SelectItem>
                 ))}
@@ -190,7 +190,7 @@ const Dijual = () => {
                 <SelectValue placeholder="Kota" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Semua Kota</SelectItem>
+                <SelectItem value="all">Semua Kota</SelectItem>
                 {cities.map(city => (
                   <SelectItem key={city} value={city}>{city}</SelectItem>
                 ))}
@@ -202,7 +202,7 @@ const Dijual = () => {
                 <SelectValue placeholder="Kisaran Harga" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Semua Harga</SelectItem>
+                <SelectItem value="all">Semua Harga</SelectItem>
                 <SelectItem value="under-500m">Di bawah Rp 500 Jt</SelectItem>
                 <SelectItem value="500m-1b">Rp 500 Jt - 1 M</SelectItem>
                 <SelectItem value="1b-2b">Rp 1 M - 2 M</SelectItem>
