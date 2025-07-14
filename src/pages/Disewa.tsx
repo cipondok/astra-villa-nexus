@@ -1,28 +1,28 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import Navigation from "@/components/Navigation";
 import ProfessionalFooter from "@/components/ProfessionalFooter";
+import AdvancedRentalSearch from "@/components/rental/AdvancedRentalSearch";
 import { 
-  Search, 
   MapPin, 
   Home, 
   Building, 
   Bed, 
   Bath, 
-  Square, 
-  Filter,
+  Square,
   Heart,
   Share2,
   Eye,
   Calendar,
-  Clock
+  Clock,
+  Zap,
+  User,
+  CheckCircle
 } from "lucide-react";
 
 interface Property {
@@ -42,6 +42,26 @@ interface Property {
   image_urls: string[];
   status: string;
   created_at: string;
+  rental_periods?: string[];
+  minimum_rental_days?: number;
+  online_booking_enabled?: boolean;
+  booking_type?: string;
+  advance_booking_days?: number;
+  available_from?: string;
+  available_until?: string;
+  rental_terms?: any;
+}
+
+interface RentalFilters {
+  searchTerm: string;
+  propertyType: string;
+  city: string;
+  priceRange: string;
+  rentalPeriod: string[];
+  checkInDate: Date | undefined;
+  checkOutDate: Date | undefined;  
+  onlineBookingOnly: boolean;
+  minimumDays: number;
 }
 
 const Disewa = () => {
@@ -49,11 +69,19 @@ const Disewa = () => {
   const navigate = useNavigate();
   const [properties, setProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedType, setSelectedType] = useState("");
-  const [selectedCity, setSelectedCity] = useState("");
-  const [priceRange, setPriceRange] = useState("");
   const [savedProperties, setSavedProperties] = useState<Set<string>>(new Set());
+  
+  const [filters, setFilters] = useState<RentalFilters>({
+    searchTerm: "",
+    propertyType: "all",
+    city: "all",
+    priceRange: "all",
+    rentalPeriod: [],
+    checkInDate: undefined,
+    checkOutDate: undefined,
+    onlineBookingOnly: false,
+    minimumDays: 0
+  });
 
   useEffect(() => {
     fetchProperties();
@@ -84,20 +112,28 @@ const Disewa = () => {
   };
 
   const filteredProperties = properties.filter(property => {
-    const matchesSearch = !searchTerm || 
-      property.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      property.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      property.city?.toLowerCase().includes(searchTerm.toLowerCase());
+    // Basic search
+    const matchesSearch = !filters.searchTerm || 
+      property.title.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
+      property.location.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
+      property.city?.toLowerCase().includes(filters.searchTerm.toLowerCase());
     
-    const matchesType = !selectedType || selectedType === "all" || property.property_type === selectedType;
-    const matchesCity = !selectedCity || selectedCity === "all" || property.city === selectedCity;
+    // Property type filter
+    const matchesType = filters.propertyType === "all" || property.property_type === filters.propertyType;
     
+    // City filter
+    const matchesCity = filters.city === "all" || property.city === filters.city;
+    
+    // Price range filter
     let matchesPriceRange = true;
-    if (priceRange && priceRange !== "all") {
+    if (filters.priceRange && filters.priceRange !== "all") {
       const price = property.price || 0;
-      switch (priceRange) {
-        case 'under-5m':
-          matchesPriceRange = price < 5000000;
+      switch (filters.priceRange) {
+        case 'under-1m':
+          matchesPriceRange = price < 1000000;
+          break;
+        case '1m-5m':
+          matchesPriceRange = price >= 1000000 && price < 5000000;
           break;
         case '5m-10m':
           matchesPriceRange = price >= 5000000 && price < 10000000;
@@ -111,7 +147,23 @@ const Disewa = () => {
       }
     }
     
-    return matchesSearch && matchesType && matchesCity && matchesPriceRange;
+    // Rental period filter
+    const matchesRentalPeriod = filters.rentalPeriod.length === 0 || 
+      (property.rental_periods && property.rental_periods.some(period => filters.rentalPeriod.includes(period)));
+    
+    // Online booking filter
+    const matchesOnlineBooking = !filters.onlineBookingOnly || 
+      (property.online_booking_enabled && property.booking_type !== 'owner_only');
+    
+    // Minimum days filter
+    const matchesMinimumDays = filters.minimumDays === 0 || 
+      (property.minimum_rental_days && property.minimum_rental_days >= filters.minimumDays);
+    
+    // Date availability filter (simplified - in real app would check booking calendar)
+    const matchesDateAvailability = !filters.checkInDate || !filters.checkOutDate || true;
+    
+    return matchesSearch && matchesType && matchesCity && matchesPriceRange && 
+           matchesRentalPeriod && matchesOnlineBooking && matchesMinimumDays && matchesDateAvailability;
   });
 
   const formatPrice = (price: number) => {
@@ -140,6 +192,35 @@ const Disewa = () => {
     setSavedProperties(newSaved);
   };
 
+  const handleBookingClick = (property: Property) => {
+    if (property.online_booking_enabled && property.booking_type !== 'owner_only') {
+      toast({
+        title: "ASTRA Villa Booking",
+        description: "Mengarahkan ke sistem booking online...",
+      });
+      // Navigate to booking system
+      navigate(`/booking/${property.id}`);
+    } else {
+      toast({
+        title: "Hubungi Pemilik",
+        description: "Properti ini hanya bisa dibooking melalui pemilik langsung.",
+      });
+    }
+  };
+
+  const getRentalPeriodLabel = (periods: string[]) => {
+    if (!periods || periods.length === 0) return "Bulanan";
+    return periods.map(period => {
+      switch(period) {
+        case 'daily': return 'Harian';
+        case 'weekly': return 'Mingguan';
+        case 'monthly': return 'Bulanan';
+        case 'yearly': return 'Tahunan';
+        default: return period;
+      }
+    }).join(', ');
+  };
+
   const propertyTypes = [...new Set(properties.map(p => p.property_type))];
   const cities = [...new Set(properties.map(p => p.city).filter(Boolean))];
 
@@ -151,72 +232,22 @@ const Disewa = () => {
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-2">
-            Properti Disewa
+            Properti Disewa - ASTRA Villa
           </h1>
           <p className="text-lg text-gray-600">
-            Temukan properti sewa dengan lokasi strategis dan harga terjangkau
+            Temukan properti sewa dengan sistem booking online dan offline
           </p>
         </div>
 
-        {/* Search and Filter */}
-        <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-            <div className="relative">
-              <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-              <Input
-                placeholder="Cari lokasi atau nama properti..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
-              />
-            </div>
-            
-            <Select value={selectedType} onValueChange={setSelectedType}>
-              <SelectTrigger>
-                <SelectValue placeholder="Tipe Properti" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Semua Tipe</SelectItem>
-                {propertyTypes.map(type => (
-                  <SelectItem key={type} value={type}>{type}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            <Select value={selectedCity} onValueChange={setSelectedCity}>
-              <SelectTrigger>
-                <SelectValue placeholder="Kota" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Semua Kota</SelectItem>
-                {cities.map(city => (
-                  <SelectItem key={city} value={city}>{city}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            <Select value={priceRange} onValueChange={setPriceRange}>
-              <SelectTrigger>
-                <SelectValue placeholder="Kisaran Harga" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Semua Harga</SelectItem>
-                <SelectItem value="under-5m">Di bawah Rp 5 Jt/bulan</SelectItem>
-                <SelectItem value="5m-10m">Rp 5-10 Jt/bulan</SelectItem>
-                <SelectItem value="10m-20m">Rp 10-20 Jt/bulan</SelectItem>
-                <SelectItem value="over-20m">Di atas Rp 20 Jt/bulan</SelectItem>
-              </SelectContent>
-            </Select>
-
-            <Button 
-              onClick={fetchProperties}
-              className="bg-purple-600 hover:bg-purple-700"
-            >
-              <Filter className="h-4 w-4 mr-2" />
-              Filter
-            </Button>
-          </div>
-        </div>
+        {/* Advanced Search */}
+        <AdvancedRentalSearch
+          filters={filters}
+          onFiltersChange={setFilters}
+          onSearch={fetchProperties}
+          propertyTypes={propertyTypes}
+          cities={cities}
+          loading={loading}
+        />
 
         {/* Results Count */}
         <div className="mb-6">
@@ -293,11 +324,22 @@ const Disewa = () => {
                     </Button>
                   </div>
 
-                  {/* Status Badge */}
-                  <div className="absolute top-3 left-3">
+                  {/* Status and Booking Badges */}
+                  <div className="absolute top-3 left-3 flex flex-col space-y-1">
                     <Badge variant="secondary" className="bg-purple-100 text-purple-800">
                       Disewa
                     </Badge>
+                    {property.online_booking_enabled && property.booking_type !== 'owner_only' ? (
+                      <Badge className="bg-green-100 text-green-800">
+                        <Zap className="h-3 w-3 mr-1" />
+                        Online Booking
+                      </Badge>
+                    ) : (
+                      <Badge variant="outline" className="bg-orange-100 text-orange-800">
+                        <User className="h-3 w-3 mr-1" />
+                        Owner Only
+                      </Badge>
+                    )}
                   </div>
                 </div>
 
@@ -321,7 +363,9 @@ const Disewa = () => {
                   <div className="flex items-center justify-between mb-3">
                     <div className="text-2xl font-bold text-purple-600">
                       {formatPrice(property.price || 0)}
-                      <span className="text-sm font-normal text-gray-500">/bulan</span>
+                      <span className="text-sm font-normal text-gray-500">
+                        /{getRentalPeriodLabel(property.rental_periods || ['monthly']).toLowerCase()}
+                      </span>
                     </div>
                     <div className="flex items-center space-x-1 text-sm text-gray-500">
                       <Eye className="h-4 w-4" />
@@ -354,11 +398,11 @@ const Disewa = () => {
                   <div className="flex items-center space-x-4 text-sm text-gray-500 mb-4">
                     <div className="flex items-center">
                       <Calendar className="h-4 w-4 mr-1" />
-                      Min. 12 bulan
+                      Min. {property.minimum_rental_days || 30} hari
                     </div>
                     <div className="flex items-center">
                       <Clock className="h-4 w-4 mr-1" />
-                      Siap huni
+                      {getRentalPeriodLabel(property.rental_periods || ['monthly'])}
                     </div>
                   </div>
 
@@ -369,9 +413,24 @@ const Disewa = () => {
                     >
                       Lihat Detail
                     </Button>
-                    <Button variant="outline" className="flex-1">
-                      Hubungi Pemilik
-                    </Button>
+                    {property.online_booking_enabled && property.booking_type !== 'owner_only' ? (
+                      <Button 
+                        className="flex-1 bg-green-600 hover:bg-green-700"
+                        onClick={() => handleBookingClick(property)}
+                      >
+                        <CheckCircle className="h-4 w-4 mr-1" />
+                        Book Online
+                      </Button>
+                    ) : (
+                      <Button 
+                        variant="outline" 
+                        className="flex-1"
+                        onClick={() => handleBookingClick(property)}
+                      >
+                        <User className="h-4 w-4 mr-1" />
+                        Hubungi Pemilik
+                      </Button>
+                    )}
                   </div>
                 </CardContent>
               </Card>
@@ -381,19 +440,19 @@ const Disewa = () => {
 
         {/* Rental Tips */}
         <div className="mt-12 bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-xl font-semibold mb-4">Tips Menyewa Properti</h2>
+          <h2 className="text-xl font-semibold mb-4">Tips Menyewa Properti via ASTRA Villa</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="p-4 bg-blue-50 rounded-lg">
-              <h3 className="font-semibold text-blue-800 mb-2">Periksa Dokumen</h3>
-              <p className="text-sm text-gray-600">Pastikan sertifikat dan IMB properti lengkap sebelum menandatangani kontrak.</p>
+              <h3 className="font-semibold text-blue-800 mb-2">Online Booking</h3>
+              <p className="text-sm text-gray-600">Properti dengan badge "Online Booking" dapat langsung dibooking melalui sistem ASTRA Villa.</p>
             </div>
             <div className="p-4 bg-green-50 rounded-lg">
-              <h3 className="font-semibold text-green-800 mb-2">Survey Lokasi</h3>
-              <p className="text-sm text-gray-600">Kunjungi properti pada waktu yang berbeda untuk mengetahui kondisi lingkungan.</p>
+              <h3 className="font-semibold text-green-800 mb-2">Periode Sewa Fleksibel</h3>
+              <p className="text-sm text-gray-600">Pilih periode sewa sesuai kebutuhan: harian, mingguan, bulanan, atau tahunan.</p>
             </div>
             <div className="p-4 bg-yellow-50 rounded-lg">
-              <h3 className="font-semibold text-yellow-800 mb-2">Negosiasi Harga</h3>
-              <p className="text-sm text-gray-600">Jangan ragu untuk bernegosiasi, terutama untuk kontrak jangka panjang.</p>
+              <h3 className="font-semibold text-yellow-800 mb-2">Owner Only</h3>
+              <p className="text-sm text-gray-600">Properti "Owner Only" hanya bisa dibooking langsung dengan pemilik untuk fleksibilitas maksimal.</p>
             </div>
           </div>
         </div>

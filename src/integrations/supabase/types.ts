@@ -2613,12 +2613,16 @@ export type Database = {
       }
       properties: {
         Row: {
+          advance_booking_days: number | null
           agent_id: string | null
           approval_status: string | null
           area: string | null
           area_sqm: number | null
+          available_from: string | null
+          available_until: string | null
           bathrooms: number | null
           bedrooms: number | null
+          booking_type: string | null
           city: string | null
           created_at: string | null
           description: string | null
@@ -2628,11 +2632,15 @@ export type Database = {
           images: string[] | null
           listing_type: string
           location: string
+          minimum_rental_days: number | null
+          online_booking_enabled: boolean | null
           owner_id: string
           owner_type: string | null
           price: number | null
           property_features: Json | null
           property_type: string
+          rental_periods: string[] | null
+          rental_terms: Json | null
           seo_description: string | null
           seo_title: string | null
           state: string | null
@@ -2644,12 +2652,16 @@ export type Database = {
           virtual_tour_url: string | null
         }
         Insert: {
+          advance_booking_days?: number | null
           agent_id?: string | null
           approval_status?: string | null
           area?: string | null
           area_sqm?: number | null
+          available_from?: string | null
+          available_until?: string | null
           bathrooms?: number | null
           bedrooms?: number | null
+          booking_type?: string | null
           city?: string | null
           created_at?: string | null
           description?: string | null
@@ -2659,11 +2671,15 @@ export type Database = {
           images?: string[] | null
           listing_type: string
           location: string
+          minimum_rental_days?: number | null
+          online_booking_enabled?: boolean | null
           owner_id: string
           owner_type?: string | null
           price?: number | null
           property_features?: Json | null
           property_type: string
+          rental_periods?: string[] | null
+          rental_terms?: Json | null
           seo_description?: string | null
           seo_title?: string | null
           state?: string | null
@@ -2675,12 +2691,16 @@ export type Database = {
           virtual_tour_url?: string | null
         }
         Update: {
+          advance_booking_days?: number | null
           agent_id?: string | null
           approval_status?: string | null
           area?: string | null
           area_sqm?: number | null
+          available_from?: string | null
+          available_until?: string | null
           bathrooms?: number | null
           bedrooms?: number | null
+          booking_type?: string | null
           city?: string | null
           created_at?: string | null
           description?: string | null
@@ -2690,11 +2710,15 @@ export type Database = {
           images?: string[] | null
           listing_type?: string
           location?: string
+          minimum_rental_days?: number | null
+          online_booking_enabled?: boolean | null
           owner_id?: string
           owner_type?: string | null
           price?: number | null
           property_features?: Json | null
           property_type?: string
+          rental_periods?: string[] | null
+          rental_terms?: Json | null
           seo_description?: string | null
           seo_title?: string | null
           state?: string | null
