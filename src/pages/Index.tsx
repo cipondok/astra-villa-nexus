@@ -273,30 +273,44 @@ const Index = () => {
         {/* Hero Section */}
         <section className="relative py-4 lg:py-6 px-4">
           <div className="max-w-[1800px] mx-auto text-center">
-            <div className="mb-4 lg:mb-6 animate-fade-in">
-              <h1 className="text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold mb-2 leading-tight">
-                <span className="inline-block bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 dark:from-blue-300 dark:via-purple-400 dark:to-cyan-300 bg-clip-text text-transparent animate-gradient bg-[length:300%_300%] font-extrabold tracking-tight">
-                  Find Your Perfect
-                </span>
-                <br />
-                <span className="inline-block bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 dark:from-purple-300 dark:via-pink-400 dark:to-orange-300 bg-clip-text text-transparent animate-gradient bg-[length:300%_300%] font-extrabold tracking-tight">
-                  Property
-                </span>
-              </h1>
+            <div className="mb-6 lg:mb-8 animate-fade-in">
+              {/* Main Hero Title */}
+              <div className="relative mb-6">
+                <h1 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold mb-4 leading-tight text-center">
+                  <span className="inline-block bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 dark:from-blue-300 dark:via-purple-400 dark:to-cyan-300 bg-clip-text text-transparent animate-gradient bg-[length:300%_300%] font-extrabold tracking-tight drop-shadow-sm">
+                    Find Your Perfect
+                  </span>
+                  <br />
+                  <span className="inline-block bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 dark:from-purple-300 dark:via-pink-400 dark:to-orange-300 bg-clip-text text-transparent animate-gradient bg-[length:300%_300%] font-extrabold tracking-tight drop-shadow-sm">
+                    Property
+                  </span>
+                </h1>
+                
+                {/* Decorative elements */}
+                <div className="absolute -top-2 -left-2 w-8 h-8 bg-blue-500/20 rounded-full blur-sm animate-pulse"></div>
+                <div className="absolute -bottom-2 -right-2 w-6 h-6 bg-purple-500/20 rounded-full blur-sm animate-pulse delay-1000"></div>
+              </div>
               
-              <div className="relative mb-2">
-                <h2 className="text-sm md:text-base font-semibold text-white dark:text-white drop-shadow-lg">
-                  <span className="inline-block px-3 py-1 lg:px-4 lg:py-2 bg-gradient-to-r from-blue-500/90 to-purple-600/90 dark:from-blue-400/90 dark:to-purple-500/90 rounded-lg backdrop-blur-sm border border-white/20 shadow-lg">
-                    AI-Powered Real Estate Platform
+              {/* Subtitle with enhanced styling */}
+              <div className="relative mb-4">
+                <h2 className="text-base md:text-lg lg:text-xl font-semibold text-center">
+                  <span className="inline-block px-4 py-2 lg:px-6 lg:py-3 bg-gradient-to-r from-blue-500/90 to-purple-600/90 dark:from-blue-400/90 dark:to-purple-500/90 rounded-xl backdrop-blur-sm border border-white/30 shadow-lg text-white font-bold tracking-wide">
+                    ✨ AI-Powered Real Estate Platform ✨
                   </span>
                 </h2>
               </div>
               
-              <p className="text-sm md:text-sm lg:text-base max-w-2xl mx-auto leading-relaxed">
-                <span className="inline-block px-2 py-1 lg:px-3 lg:py-1 bg-gray-100/95 dark:bg-slate-800/95 text-slate-800 dark:text-slate-100 rounded-md backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 shadow-md font-medium">
-                  Discover premium properties with enhanced search and filtering
-                </span>
-              </p>
+              {/* Description with perfect styling */}
+              <div className="relative">
+                <p className="text-sm md:text-base lg:text-lg max-w-3xl mx-auto leading-relaxed text-center">
+                  <span className="inline-block px-4 py-2 lg:px-6 lg:py-3 bg-white/95 dark:bg-slate-800/95 text-slate-800 dark:text-slate-100 rounded-xl backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 shadow-xl font-medium macos-smooth-hover">
+                    🔍 Discover premium properties with enhanced search and filtering
+                  </span>
+                </p>
+                
+                {/* Subtle glow effect */}
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-pink-500/10 rounded-xl blur-xl -z-10"></div>
+              </div>
             </div>
             
             {/* iPhone-style Search Panel */}

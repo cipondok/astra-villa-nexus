@@ -81,6 +81,7 @@ const config: Config = {
       fontFamily: {
         'sf': ['SF Pro Display', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'sans-serif'],
         'inter': ['Inter', 'system-ui', 'sans-serif'],
+        'playfair': ['Playfair Display', 'serif'],
       },
       keyframes: {
         "accordion-down": {

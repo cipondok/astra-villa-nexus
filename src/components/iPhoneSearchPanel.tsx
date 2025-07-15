@@ -271,7 +271,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                   <SelectValue placeholder={currentText.location} />
                 </div>
               </SelectTrigger>
-              <SelectContent className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border-white/20 rounded-lg">
+              <SelectContent className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border-white/20 rounded-lg z-50" position="popper" sideOffset={5}>
                 <SelectItem value="all" className="text-gray-900 dark:text-gray-100 text-xs">{currentText.any}</SelectItem>
                 {locations.map((location) => (
                   <SelectItem key={location.value} value={location.value} className="text-gray-900 dark:text-gray-100 text-xs">
@@ -289,7 +289,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                   <SelectValue placeholder={currentText.propertyType} />
                 </div>
               </SelectTrigger>
-              <SelectContent className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border-white/20 rounded-lg">
+              <SelectContent className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border-white/20 rounded-lg z-50" position="popper" sideOffset={5}>
                 <SelectItem value="all" className="text-gray-900 dark:text-gray-100 text-xs">{currentText.any}</SelectItem>
                 {propertyTypes.map((type) => (
                   <SelectItem key={type.value} value={type.value} className="text-gray-900 dark:text-gray-100 text-xs">
@@ -307,7 +307,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                   <SelectValue placeholder={currentText.priceRange} />
                 </div>
               </SelectTrigger>
-              <SelectContent className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border-white/20 rounded-lg">
+              <SelectContent className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border-white/20 rounded-lg z-50" position="popper" sideOffset={5}>
                 <SelectItem value="all" className="text-gray-900 dark:text-gray-100 text-xs">{currentText.any}</SelectItem>
                 {priceRanges.map((range) => (
                   <SelectItem key={range.value} value={range.value} className="text-gray-900 dark:text-gray-100 text-xs">
@@ -343,7 +343,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                       <SelectValue placeholder={currentText.bedrooms} />
                     </div>
                   </SelectTrigger>
-                  <SelectContent className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border-white/20 rounded-lg">
+                  <SelectContent className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border-white/20 rounded-lg z-50" position="popper" sideOffset={5}>
                     <SelectItem value="all" className="text-gray-900 dark:text-gray-100 text-xs">{currentText.any}</SelectItem>
                     {bedroomOptions.map((option) => (
                       <SelectItem key={option} value={option} className="text-gray-900 dark:text-gray-100 text-xs">
@@ -361,7 +361,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                       <SelectValue placeholder={currentText.bathrooms} />
                     </div>
                   </SelectTrigger>
-                  <SelectContent className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border-white/20 rounded-lg">
+                  <SelectContent className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border-white/20 rounded-lg z-50" position="popper" sideOffset={5}>
                     <SelectItem value="all" className="text-gray-900 dark:text-gray-100 text-xs">{currentText.any}</SelectItem>
                     {bathroomOptions.map((option) => (
                       <SelectItem key={option} value={option} className="text-gray-900 dark:text-gray-100 text-xs">
