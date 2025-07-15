@@ -33,6 +33,7 @@ import SMTPSettings from "./SMTPSettings";
 import LocationManagement from "./LocationManagement";
 import APISettingsManagement from "./APISettingsManagement";
 import AIPropertyAssistant from "./AIPropertyAssistant";
+import BookingPaymentSettings from "./BookingPaymentSettings";
 
 interface AdminDashboardContentProps {
   activeSection: string;
@@ -108,6 +109,8 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
         return <APISettingsManagement />;
       case "ai-assistant":
         return <AIPropertyAssistant />;
+      case "booking-payment-settings":
+        return <BookingPaymentSettings />;
       default:
         return <AdminOverview />;
     }
