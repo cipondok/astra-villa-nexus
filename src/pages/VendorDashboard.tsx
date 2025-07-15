@@ -48,8 +48,8 @@ const VendorDashboard = () => {
   const { user, profile } = useAuth();
   const navigate = useNavigate();
 
-  // Check if user is a vendor only (not admin)
-  const isVendor = profile?.role === 'vendor';
+  // Check if user is a vendor or admin
+  const isVendorOrAdmin = profile?.role === 'vendor' || profile?.role === 'admin';
 
   const handleHomeClick = () => {
     navigate('/', { replace: true });
@@ -72,7 +72,7 @@ const VendorDashboard = () => {
     );
   }
 
-  if (!isVendor) {
+  if (!isVendorOrAdmin) {
     return (
       <div className="container mx-auto px-4 py-8">
         <Alert>
