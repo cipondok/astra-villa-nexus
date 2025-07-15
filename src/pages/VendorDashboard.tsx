@@ -26,7 +26,8 @@ import {
   Moon,
   Plus,
   Building,
-  Building2
+  Building2,
+  LogOut
 } from 'lucide-react';
 
 // Import vendor components
@@ -45,7 +46,7 @@ import CategoryDiscountSettings from '@/components/vendor/CategoryDiscountSettin
 import ThemeSwitcher from '@/components/ui/theme-switcher';
 
 const VendorDashboard = () => {
-  const { user, profile } = useAuth();
+  const { user, profile, signOut } = useAuth();
   const navigate = useNavigate();
 
   // Check if user is a vendor only (not admin)
@@ -57,6 +58,11 @@ const VendorDashboard = () => {
 
   const handleBackClick = () => {
     window.history.back();
+  };
+
+  const handleLogout = async () => {
+    await signOut();
+    navigate('/', { replace: true });
   };
 
   if (!user) {
@@ -100,6 +106,14 @@ const VendorDashboard = () => {
             <div className="flex items-center gap-3">
               <Button
                 variant="outline"
+                onClick={handleLogout}
+                className="bg-white/20 border-white/30 text-white hover:bg-white/30"
+              >
+                <LogOut className="h-4 w-4 mr-2" />
+                Logout
+              </Button>
+              <Button
+                variant="outline"
                 onClick={handleBackClick}
                 className="bg-white/20 border-white/30 text-white hover:bg-white/30"
               >
@@ -141,7 +155,7 @@ const VendorDashboard = () => {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="text-2xl font-bold text-white">Vendor Dashboard</h3>
+                    <h3 className="text-2xl font-bold text-white">Welcome Back!</h3>
                     <p className="text-white/80">Manage your services and properties</p>
                   </div>
                   <div className="flex gap-3">
