@@ -110,6 +110,7 @@ const CompactAdminNavigation = ({ activeTab, onTabChange, isAdmin }: CompactAdmi
         { id: "api-settings", label: "API Keys", icon: Key },
         { id: "smtp-settings", label: "SMTP", icon: Mail },
         { id: "seo-settings", label: "SEO", icon: Globe },
+        { id: "booking-payment-settings", label: "Booking & Payments", icon: CreditCard, badge: "New" },
         { id: "property-3d-settings", label: "3D View", icon: Blocks, badge: "New" },
         { id: "website-design", label: "Design", icon: Paintbrush, badge: "New" },
       ]
