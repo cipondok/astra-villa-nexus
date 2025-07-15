@@ -76,6 +76,7 @@ const CompactAdminNavigation = ({ activeTab, onTabChange, isAdmin }: CompactAdmi
         { id: "user-management", label: "Users", icon: Users },
         { id: "property-management-hub", label: "Properties", icon: Building },
         { id: "vendors-hub", label: "Vendors", icon: ShoppingBag },
+        { id: "admin-kyc-review", label: "KYC Review", icon: Shield, badge: "New" },
         { id: "location-management", label: "Locations", icon: MapPin },
         { id: "tools-management", label: "Tools", icon: Settings },
       ]

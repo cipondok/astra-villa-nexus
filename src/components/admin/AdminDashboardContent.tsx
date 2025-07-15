@@ -35,6 +35,7 @@ import APISettingsManagement from "./APISettingsManagement";
 import AIPropertyAssistant from "./AIPropertyAssistant";
 import BookingPaymentSettings from "./BookingPaymentSettings";
 import BPJSAPISettings from "./BPJSAPISettings";
+import AdminKYCReview from "./AdminKYCReview";
 
 interface AdminDashboardContentProps {
   activeSection: string;
@@ -114,6 +115,8 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
         return <BookingPaymentSettings />;
       case "bpjs-api-settings":
         return <BPJSAPISettings />;
+      case "admin-kyc-review":
+        return <AdminKYCReview />;
       default:
         return <AdminOverview />;
     }

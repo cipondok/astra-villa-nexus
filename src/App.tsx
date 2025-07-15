@@ -18,6 +18,7 @@ import Dijual from '@/pages/Dijual';
 import Disewa from '@/pages/Disewa';
 import BookingPage from '@/pages/BookingPage';
 import BookingSuccessPage from '@/pages/BookingSuccessPage';
+import VendorKYCDashboard from '@/pages/VendorKYCDashboard';
 import ThreeDShowcase from '@/pages/ThreeDShowcase';
 import NotFound from '@/pages/NotFound';
 
@@ -55,9 +56,10 @@ function App() {
                         <Route path="/properties/:id" element={<PropertyDetail />} />
                         <Route path="/admin" element={<AdminDashboard />} />
                         <Route path="/admin-dashboard" element={<AdminDashboard />} />
-                        <Route path="/agent" element={<AgentDashboard />} />
-                        <Route path="/booking/:propertyId" element={<BookingPage />} />
-                        <Route path="/booking-success" element={<BookingSuccessPage />} />
+        <Route path="/agent" element={<AgentDashboard />} />
+        <Route path="/vendor/kyc" element={<VendorKYCDashboard />} />
+        <Route path="/booking/:propertyId" element={<BookingPage />} />
+        <Route path="/booking-success" element={<BookingSuccessPage />} />
                         <Route path="*" element={<NotFound />} />
                       </Routes>
                     </div>
