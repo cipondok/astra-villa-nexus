@@ -235,8 +235,8 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
             >
               <div className="flex items-center gap-2 relative z-10">
                 <div className="relative">
-                  <Search className="h-4 w-4 transition-all duration-300 group-hover:scale-110" />
-                  <Bot className="h-3 w-3 absolute -top-0.5 -right-0.5 text-yellow-300 animate-pulse opacity-80" />
+                  <Bot className="h-4 w-4 transition-all duration-300 group-hover:scale-110 animate-ai-search-pulse" />
+                  <Zap className="h-3 w-3 absolute -top-0.5 -right-0.5 text-yellow-300 animate-pulse opacity-80" />
                 </div>
                 <span className="relative">
                   {currentText.search}
