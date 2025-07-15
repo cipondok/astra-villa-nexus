@@ -48,29 +48,30 @@ const Index = () => {
   });
 
   // Redirect authenticated users to their dashboard (only on initial load, not on navigation)
-  useEffect(() => {
-    if (!loading && user && profile && !window.location.search.includes('stay')) {
-      // Only redirect on initial app load, not when user navigates to home
-      const hasVisitedBefore = sessionStorage.getItem('hasVisitedHome');
-      const isDirectNavigation = window.location.search.includes('from=admin') || document.referrer.includes('/admin');
+  // TEMPORARILY DISABLED - Redirect logic commented out to debug 404 issue
+  // useEffect(() => {
+  //   if (!loading && user && profile && !window.location.search.includes('stay')) {
+  //     // Only redirect on initial app load, not when user navigates to home
+  //     const hasVisitedBefore = sessionStorage.getItem('hasVisitedHome');
+  //     const isDirectNavigation = window.location.search.includes('from=admin') || document.referrer.includes('/admin');
       
-      if (!hasVisitedBefore && !isDirectNavigation) {
-        // Redirect customer service users to dashboard
-        if (profile.role === 'customer_service') {
-          navigate('/dashboard');
-          return;
-        }
-        // Redirect admin users to admin panel  
-        else if (profile.role === 'admin' || user.email === 'mycode103@gmail.com') {
-          navigate('/admin');
-          return;
-        }
-      }
+  //     if (!hasVisitedBefore && !isDirectNavigation) {
+  //       // Redirect customer service users to dashboard
+  //       if (profile.role === 'customer_service') {
+  //         navigate('/dashboard');
+  //         return;
+  //       }
+  //       // Redirect admin users to admin panel  
+  //       else if (profile.role === 'admin' || user.email === 'mycode103@gmail.com') {
+  //         navigate('/admin');
+  //         return;
+  //       }
+  //     }
       
-      // Mark that user has visited home page
-      sessionStorage.setItem('hasVisitedHome', 'true');
-    }
-  }, [user, profile, loading, navigate]);
+  //     // Mark that user has visited home page
+  //     sessionStorage.setItem('hasVisitedHome', 'true');
+  //   }
+  // }, [user, profile, loading, navigate]);
 
   // Background wallpaper - optimized for performance
   const backgroundStyle = {
