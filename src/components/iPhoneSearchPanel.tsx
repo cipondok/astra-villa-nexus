@@ -167,7 +167,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
   return (
     <div className="w-full max-w-4xl mx-auto">
       {/* iPhone-style Glass Container - 40% Transparent */}
-      <div className="bg-gradient-to-br from-blue-500/20 via-purple-500/20 to-pink-500/20 backdrop-blur-2xl border border-white/30 dark:border-gray-700/30 rounded-2xl shadow-2xl overflow-hidden">
+      <div className="bg-gradient-to-br from-blue-500/20 via-purple-500/20 to-pink-500/20 backdrop-blur-2xl border border-white/30 dark:border-gray-700/30 rounded-2xl shadow-2xl overflow-hidden macos-window-enter">
         <div className="p-6 space-y-4">
           
           {/* For Sale/For Rent/All Tabs - Smaller & Centered */}
@@ -175,7 +175,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
             <div className="flex bg-white/20 backdrop-blur-sm rounded-lg p-0.5 border border-white/30">
               <button
                 onClick={() => setActiveTab('all')}
-                className={`px-4 py-2 rounded-md font-medium transition-all duration-300 text-sm ${
+                className={`px-4 py-2 rounded-md font-medium macos-smooth-click text-sm ${
                   activeTab === 'all' 
                     ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg transform scale-105' 
                     : 'text-white/80 hover:text-white hover:bg-white/10'
@@ -185,7 +185,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
               </button>
               <button
                 onClick={() => setActiveTab('sale')}
-                className={`px-4 py-2 rounded-md font-medium transition-all duration-300 text-sm ${
+                className={`px-4 py-2 rounded-md font-medium macos-smooth-click text-sm ${
                   activeTab === 'sale' 
                     ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg transform scale-105' 
                     : 'text-white/80 hover:text-white hover:bg-white/10'
@@ -195,7 +195,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
               </button>
               <button
                 onClick={() => setActiveTab('rent')}
-                className={`px-4 py-2 rounded-md font-medium transition-all duration-300 text-sm ${
+                className={`px-4 py-2 rounded-md font-medium macos-smooth-click text-sm ${
                   activeTab === 'rent' 
                     ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg transform scale-105' 
                     : 'text-white/80 hover:text-white hover:bg-white/10'
@@ -231,7 +231,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
             </Button>
             <Button
               onClick={handleSearch}
-              className="h-10 px-6 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-medium rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 text-sm"
+              className="h-10 px-6 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-medium rounded-lg shadow-lg hover:shadow-xl macos-smooth-click macos-ripple text-sm"
             >
               <Search className="h-4 w-4 mr-1" />
               {currentText.search}
@@ -320,7 +320,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
 
           {/* Advanced Filters Modal */}
           {showFilters && (
-            <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-xl p-4 space-y-4">
+            <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-xl p-4 space-y-4 macos-popup-enter">
               <div className="flex items-center justify-between">
                 <h3 className="text-white font-medium text-sm">{currentText.advancedFilters}</h3>
                 <Button

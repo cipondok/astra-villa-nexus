@@ -53,24 +53,24 @@ const config: Config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        // Professional macOS/iOS Colors - NO BRIGHT COLORS
+        // Professional macOS/iOS Colors - HSL Format
         'macos': {
-          'blue': '#007AFF',
-          'light-blue': '#5AC8FA',
-          'gray': '#8E8E93',
-          'light-gray': '#C7C7CC',
+          'blue': 'hsl(213, 100%, 50%)',
+          'light-blue': 'hsl(195, 100%, 69%)',
+          'gray': 'hsl(240, 3%, 57%)',
+          'light-gray': 'hsl(240, 6%, 79%)',
         },
         'neutral': {
-          50: '#FAFAFA',
-          100: '#F5F5F5',
-          200: '#E5E5E5',
-          300: '#D4D4D4',
-          400: '#A3A3A3',
-          500: '#737373',
-          600: '#525252',
-          700: '#404040',
-          800: '#262626',
-          900: '#171717',
+          50: 'hsl(0, 0%, 98%)',
+          100: 'hsl(0, 0%, 96%)',
+          200: 'hsl(0, 0%, 90%)',
+          300: 'hsl(0, 0%, 83%)',
+          400: 'hsl(0, 0%, 64%)',
+          500: 'hsl(0, 0%, 45%)',
+          600: 'hsl(0, 0%, 32%)',
+          700: 'hsl(0, 0%, 25%)',
+          800: 'hsl(0, 0%, 15%)',
+          900: 'hsl(0, 0%, 9%)',
         }
       },
       borderRadius: {
@@ -110,6 +110,35 @@ const config: Config = {
             transform: "scale(1)",
             opacity: "1"
           }
+        },
+        "macos-window-in": {
+          "0%": {
+            opacity: "0",
+            transform: "scale(0.8) translateY(20px)"
+          },
+          "100%": {
+            opacity: "1",
+            transform: "scale(1) translateY(0)"
+          }
+        },
+        "macos-popup-in": {
+          "0%": {
+            opacity: "0",
+            transform: "scale(0.7) translateY(30px)"
+          },
+          "50%": {
+            opacity: "0.8",
+            transform: "scale(1.05) translateY(-5px)"
+          },
+          "100%": {
+            opacity: "1",
+            transform: "scale(1) translateY(0)"
+          }
+        },
+        "macos-bounce": {
+          "0%": { transform: "scale(1)" },
+          "50%": { transform: "scale(1.05)" },
+          "100%": { transform: "scale(1)" }
         }
       },
       animation: {
@@ -117,14 +146,18 @@ const config: Config = {
         "accordion-up": "accordion-up 0.2s ease-out",
         "fade-in": "fade-in 0.3s ease-out",
         "scale-in": "scale-in 0.2s ease-out",
+        "macos-window-in": "macos-window-in 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+        "macos-popup-in": "macos-popup-in 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
+        "macos-bounce": "macos-bounce 0.3s ease-out",
       },
       backgroundImage: {
-        'macos-gradient': 'linear-gradient(135deg, #007AFF 0%, #5AC8FA 100%)',
-        'macos-card': 'linear-gradient(135deg, #F5F5F5 0%, rgba(0, 122, 255, 0.03) 100%)',
+        'macos-gradient': 'linear-gradient(135deg, hsl(213, 100%, 50%) 0%, hsl(195, 100%, 69%) 100%)',
+        'macos-card': 'linear-gradient(135deg, hsl(0, 0%, 96%) 0%, hsla(213, 100%, 50%, 0.03) 100%)',
       },
       boxShadow: {
         'macos': '0 4px 20px rgba(0, 0, 0, 0.08)',
         'macos-hover': '0 8px 30px rgba(0, 122, 255, 0.15)',
+        'macos-active': '0 2px 8px rgba(0, 0, 0, 0.12)',
       }
     },
   },

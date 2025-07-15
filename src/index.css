@@ -12,26 +12,26 @@
 
 @layer base {
   :root {
-    /* Light Mode Colors - Enhanced Admin Overview */
+    /* Light Mode Colors - Perfect Mac OS Style */
     --background: 220 20% 98%;
     --foreground: 222 84% 4.9%;
     --card: 0 0% 100%;
     --card-foreground: 222 84% 4.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 222 84% 4.9%;
-    --primary: 220 100% 60%;
+    --primary: 213 100% 50%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 220 20% 95%;
-    --secondary-foreground: 220 15% 30%;
-    --muted: 220 15% 96%;  
-    --muted-foreground: 220 10% 45%;
-    --accent: 160 85% 45%;
+    --secondary: 220 14% 96%;
+    --secondary-foreground: 220 15% 25%;
+    --muted: 220 14% 96%;  
+    --muted-foreground: 220 10% 40%;
+    --accent: 213 100% 50%;
     --accent-foreground: 0 0% 100%;
-    --destructive: 0 85% 60%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-    --border: 220 15% 88%;
+    --border: 220 13% 91%;
     --input: 0 0% 100%;
-    --ring: 220 100% 60%;
+    --ring: 213 100% 50%;
     --radius: 12px;
   }
 
@@ -428,6 +428,148 @@
   @keyframes pulse-glow {
     0%, 100% { opacity: 0.4; }
     50% { opacity: 1; }
+  }
+
+  /* Mac OS-style Smooth Animations */
+  .macos-smooth-click {
+    @apply transition-all duration-200 ease-out;
+    @apply active:scale-95 active:brightness-95;
+  }
+
+  .macos-smooth-click:active {
+    transform: scale(0.95);
+    filter: brightness(0.95);
+  }
+
+  .macos-window-enter {
+    animation: macos-window-in 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .macos-window-exit {
+    animation: macos-window-out 0.3s cubic-bezier(0.55, 0.085, 0.68, 0.53);
+  }
+
+  .macos-popup-enter {
+    animation: macos-popup-in 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  .macos-popup-exit {
+    animation: macos-popup-out 0.2s cubic-bezier(0.6, 0.04, 0.98, 0.335);
+  }
+
+  .macos-smooth-hover {
+    @apply transition-all duration-300 ease-out;
+    @apply hover:scale-105 hover:shadow-lg;
+  }
+
+  .macos-smooth-hover:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  }
+
+  .macos-glass-effect {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    @apply transition-all duration-300 ease-out;
+  }
+
+  .dark .macos-glass-effect {
+    background: rgba(0, 0, 0, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .macos-button {
+    @apply bg-white/90 hover:bg-white text-gray-900 border border-gray-200/50;
+    @apply transition-all duration-200 ease-out;
+    @apply hover:shadow-md hover:border-gray-300/50;
+    @apply active:scale-95 active:shadow-sm;
+    @apply rounded-lg px-4 py-2 font-medium;
+  }
+
+  .dark .macos-button {
+    @apply bg-gray-800/90 hover:bg-gray-700 text-white border-gray-700/50;
+    @apply hover:border-gray-600/50;
+  }
+
+  .macos-primary-button {
+    @apply bg-blue-500 hover:bg-blue-600 text-white border-0;
+    @apply transition-all duration-200 ease-out;
+    @apply hover:shadow-lg hover:shadow-blue-500/25;
+    @apply active:scale-95 active:shadow-md;
+    @apply rounded-lg px-4 py-2 font-medium;
+  }
+
+  @keyframes macos-window-in {
+    0% {
+      opacity: 0;
+      transform: scale(0.8) translateY(20px);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+
+  @keyframes macos-window-out {
+    0% {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+    100% {
+      opacity: 0;
+      transform: scale(0.9) translateY(-10px);
+    }
+  }
+
+  @keyframes macos-popup-in {
+    0% {
+      opacity: 0;
+      transform: scale(0.7) translateY(30px);
+    }
+    50% {
+      opacity: 0.8;
+      transform: scale(1.05) translateY(-5px);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+
+  @keyframes macos-popup-out {
+    0% {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+    100% {
+      opacity: 0;
+      transform: scale(0.8) translateY(20px);
+    }
+  }
+
+  .macos-ripple {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .macos-ripple::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.3s, height 0.3s;
+  }
+
+  .macos-ripple:active::after {
+    width: 300px;
+    height: 300px;
   }
 }
 
