@@ -389,3 +389,5 @@ export const BulkKYCOperations = () => {
     </div>
   );
 };
+
+export default BulkKYCOperations;

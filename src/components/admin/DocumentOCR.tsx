@@ -359,3 +359,5 @@ export const DocumentOCR: React.FC<DocumentOCRProps> = ({
     </Card>
   );
 };
+
+export default DocumentOCR;

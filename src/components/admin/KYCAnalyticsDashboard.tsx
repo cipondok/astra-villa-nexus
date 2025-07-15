@@ -399,3 +399,5 @@ export const KYCAnalyticsDashboard = () => {
     </div>
   );
 };
+
+export default KYCAnalyticsDashboard;
