@@ -37,6 +37,8 @@ interface PayoutSettings {
   preferred_payout_method: string;
   minimum_payout_amount: number;
   payout_schedule: string;
+  npwp_number: string;
+  tax_withholding_enabled: boolean;
 }
 
 interface PayoutRequest {
@@ -75,7 +77,9 @@ const PayoutManagement = () => {
     digital_wallet_account: '',
     preferred_payout_method: 'bank_transfer',
     minimum_payout_amount: 100000,
-    payout_schedule: 'weekly'
+    payout_schedule: 'weekly',
+    npwp_number: '',
+    tax_withholding_enabled: true
   });
   const [payoutRequests, setPayoutRequests] = useState<PayoutRequest[]>([]);
   const [payoutTransactions, setPayoutTransactions] = useState<PayoutTransaction[]>([]);
@@ -131,7 +135,11 @@ const PayoutManagement = () => {
     if (error && error.code !== 'PGRST116') throw error;
     
     if (data) {
-      setPayoutSettings(data);
+      setPayoutSettings({
+        ...data,
+        npwp_number: (data as any).npwp_number || '',
+        tax_withholding_enabled: (data as any).tax_withholding_enabled ?? true
+      });
     }
   };
 
@@ -707,6 +715,30 @@ const PayoutManagement = () => {
                       <SelectItem value="on_demand">On Demand</SelectItem>
                     </SelectContent>
                   </Select>
+                </div>
+
+                <div>
+                  <Label htmlFor="npwp_number">NPWP (Tax ID Number) *</Label>
+                  <Input
+                    id="npwp_number"
+                    value={payoutSettings.npwp_number}
+                    onChange={(e) => {
+                      // Format NPWP: XX.XXX.XXX.X-XXX.XXX
+                      const value = e.target.value.replace(/\D/g, '');
+                      let formatted = value;
+                      if (value.length > 2) formatted = value.slice(0,2) + '.' + value.slice(2);
+                      if (value.length > 5) formatted = formatted.slice(0,6) + '.' + formatted.slice(6);
+                      if (value.length > 8) formatted = formatted.slice(0,10) + '.' + formatted.slice(10);
+                      if (value.length > 9) formatted = formatted.slice(0,12) + '-' + formatted.slice(12);
+                      if (value.length > 12) formatted = formatted.slice(0,16) + '.' + formatted.slice(16);
+                      setPayoutSettings(prev => ({ ...prev, npwp_number: formatted }));
+                    }}
+                    placeholder="15-digit Indonesian Tax ID (NPWP)"
+                    maxLength={20}
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Required for Indonesian tax compliance and automated payouts
+                  </p>
                 </div>
               </div>
 

@@ -43,7 +43,7 @@ const AgentSettings = () => {
     years_experience: profile?.years_experience || "",
     specializations: profile?.specializations || "",
     bio: profile?.bio || "",
-    npwp_number: profile?.npwp_number || ""
+    npwp_number: (profile as any)?.npwp_number || ""
   });
   
   const [phoneError, setPhoneError] = useState("");
@@ -61,7 +61,7 @@ const AgentSettings = () => {
         years_experience: profile.years_experience || "",
         specializations: profile.specializations || "",
         bio: profile.bio || "",
-        npwp_number: profile.npwp_number || ""
+        npwp_number: (profile as any).npwp_number || ""
       });
     }
   }, [profile]);
@@ -132,7 +132,8 @@ const AgentSettings = () => {
       business_address: profile?.business_address || "",
       years_experience: profile?.years_experience || "",
       specializations: profile?.specializations || "",
-      bio: profile?.bio || ""
+      bio: profile?.bio || "",
+      npwp_number: (profile as any)?.npwp_number || ""
     });
     setEditMode(false);
     setPhoneError("");
@@ -316,6 +317,40 @@ const AgentSettings = () => {
                       </div>
                       {!formData.license_number && editMode && (
                         <p className="text-xs text-orange-600 mt-1">Required for verified agent badge (+20% leads)</p>
+                      )}
+                    </div>
+                    <div>
+                      <Label htmlFor="npwp">NPWP (Tax ID Number) *</Label>
+                      <div className="relative">
+                        <FileText className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Input
+                          id="npwp"
+                          placeholder="15-digit Indonesian Tax ID (NPWP)"
+                          value={formData.npwp_number}
+                          onChange={(e) => {
+                            // Format NPWP: XX.XXX.XXX.X-XXX.XXX
+                            const value = e.target.value.replace(/\D/g, '');
+                            let formatted = value;
+                            if (value.length > 2) formatted = value.slice(0,2) + '.' + value.slice(2);
+                            if (value.length > 5) formatted = formatted.slice(0,6) + '.' + formatted.slice(6);
+                            if (value.length > 8) formatted = formatted.slice(0,10) + '.' + formatted.slice(10);
+                            if (value.length > 9) formatted = formatted.slice(0,12) + '-' + formatted.slice(12);
+                            if (value.length > 12) formatted = formatted.slice(0,16) + '.' + formatted.slice(16);
+                            setFormData(prev => ({ ...prev, npwp_number: formatted }));
+                          }}
+                          disabled={!editMode}
+                          className={`pl-10 ${!formData.npwp_number && editMode ? "border-orange-300" : ""}`}
+                          maxLength={20}
+                        />
+                      </div>
+                      {!formData.npwp_number && editMode && (
+                        <p className="text-xs text-orange-600 mt-1">Required for tax compliance and payouts</p>
+                      )}
+                      {formData.npwp_number && formData.npwp_number.replace(/\D/g, '').length === 15 && (
+                        <p className="text-xs text-green-600 mt-1 flex items-center gap-1">
+                          <CheckCircle className="h-3 w-3" />
+                          Valid NPWP format
+                        </p>
                       )}
                     </div>
                     <div>

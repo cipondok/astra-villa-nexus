@@ -94,6 +94,15 @@ const AgentProfileProgress = ({ onEditProfile }: ProfileProgressProps) => {
         benefit: 'Verified agent badge + 20% more leads'
       },
       {
+        key: 'npwp_number',
+        label: 'NPWP (Tax ID)',
+        icon: FileText,
+        completed: !!((profile as any)?.npwp_number && (profile as any).npwp_number.replace(/\D/g, '').length === 15),
+        weight: 15,
+        description: 'Indonesian Tax ID Number for commission payouts',
+        benefit: 'Enable automated tax-compliant payouts'
+      },
+      {
         key: 'avatar_url',
         label: 'Professional Photo',
         icon: Camera,

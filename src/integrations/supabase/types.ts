@@ -2824,6 +2824,7 @@ export type Database = {
           is_suspended: boolean | null
           last_seen_at: string | null
           license_number: string | null
+          npwp_number: string | null
           phone: string | null
           profile_completion_percentage: number | null
           role: Database["public"]["Enums"]["user_role"]
@@ -2849,6 +2850,7 @@ export type Database = {
           is_suspended?: boolean | null
           last_seen_at?: string | null
           license_number?: string | null
+          npwp_number?: string | null
           phone?: string | null
           profile_completion_percentage?: number | null
           role?: Database["public"]["Enums"]["user_role"]
@@ -2874,6 +2876,7 @@ export type Database = {
           is_suspended?: boolean | null
           last_seen_at?: string | null
           license_number?: string | null
+          npwp_number?: string | null
           phone?: string | null
           profile_completion_percentage?: number | null
           role?: Database["public"]["Enums"]["user_role"]
