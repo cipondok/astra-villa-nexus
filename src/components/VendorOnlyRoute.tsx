@@ -10,7 +10,7 @@ const VendorOnlyRoute: React.FC = () => {
     return <div>Loading...</div>;
   }
 
-  if (!user || !profile || profile.role !== 'vendor') {
+  if (!user || !profile || (profile.role !== 'vendor' && profile.role !== 'admin')) {
     return <Navigate to="/" replace />;
   }
 
