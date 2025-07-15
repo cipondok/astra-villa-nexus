@@ -42,7 +42,8 @@ const AgentSettings = () => {
     business_address: profile?.business_address || "",
     years_experience: profile?.years_experience || "",
     specializations: profile?.specializations || "",
-    bio: profile?.bio || ""
+    bio: profile?.bio || "",
+    npwp_number: profile?.npwp_number || ""
   });
   
   const [phoneError, setPhoneError] = useState("");
@@ -59,7 +60,8 @@ const AgentSettings = () => {
         business_address: profile.business_address || "",
         years_experience: profile.years_experience || "",
         specializations: profile.specializations || "",
-        bio: profile.bio || ""
+        bio: profile.bio || "",
+        npwp_number: profile.npwp_number || ""
       });
     }
   }, [profile]);
