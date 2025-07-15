@@ -122,6 +122,7 @@ const RoleBasedNavigation = ({
         baseItems.push({ label: currentText.myListings, route: '/dashboard/agent/listings' });
         break;
       case 'vendor':
+        // Vendors only get service-related features, no property access
         baseItems.push({ label: currentText.myServices, route: '/vendor' });
         break;
       case 'admin':
@@ -131,8 +132,10 @@ const RoleBasedNavigation = ({
         break;
     }
 
-    // Add Villa Realty integration for all authenticated users
-    baseItems.push({ label: 'Villa Realty', route: '/wallet' });
+    // Add Villa Realty integration for non-vendor users only
+    if (profile.role !== 'vendor') {
+      baseItems.push({ label: 'Villa Realty', route: '/wallet' });
+    }
 
     return baseItems;
   };
@@ -227,10 +230,12 @@ const RoleBasedNavigation = ({
                       <DropdownMenuItem onClick={() => navigate(getDashboardRoute())} className="text-foreground hover:bg-ios-blue/10">
                         {currentText.dashboard}
                       </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => navigate('/wallet')} className="text-foreground hover:bg-ios-blue/10">
-                        <Wallet className="h-4 w-4 mr-2" />
-                        {currentText.wallet}
-                      </DropdownMenuItem>
+                      {profile.role !== 'vendor' && (
+                        <DropdownMenuItem onClick={() => navigate('/wallet')} className="text-foreground hover:bg-ios-blue/10">
+                          <Wallet className="h-4 w-4 mr-2" />
+                          {currentText.wallet}
+                        </DropdownMenuItem>
+                      )}
                       {getRoleSpecificMenuItems().map((item, index) => (
                         <DropdownMenuItem key={index} onClick={() => navigate(item.route)} className="text-foreground hover:bg-ios-blue/10">
                           {item.label}
@@ -328,17 +333,19 @@ const RoleBasedNavigation = ({
                     {currentText.dashboard}
                   </Button>
                   
-                  <Button
-                    variant="ghost"
-                    onClick={() => {
-                      navigate('/wallet');
-                      setIsMenuOpen(false);
-                    }}
-                    className="w-full justify-start"
-                  >
-                    <Wallet className="h-4 w-4 mr-2" />
-                    {currentText.wallet}
-                  </Button>
+                  {profile.role !== 'vendor' && (
+                    <Button
+                      variant="ghost"
+                      onClick={() => {
+                        navigate('/wallet');
+                        setIsMenuOpen(false);
+                      }}
+                      className="w-full justify-start"
+                    >
+                      <Wallet className="h-4 w-4 mr-2" />
+                      {currentText.wallet}
+                    </Button>
+                  )}
                   
                   {getRoleSpecificMenuItems().map((item, index) => (
                     <Button
