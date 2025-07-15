@@ -8,9 +8,10 @@ import { FolderTree, List } from "lucide-react";
 import VendorMainCategoryManagement from "./VendorMainCategoryManagement";
 import VendorSubcategoryManagement from "./VendorSubcategoryManagement";
 import ApprovedServiceNamesManagement from "./ApprovedServiceNamesManagement";
+import VendorCategoryTree from "./VendorCategoryTree";
 
 const VendorCategoryManagement = () => {
-  const [activeTab, setActiveTab] = useState("main-categories");
+  const [activeTab, setActiveTab] = useState("tree-view");
 
   // Fetch category stats
   const { data: stats } = useQuery({
@@ -82,22 +83,27 @@ const VendorCategoryManagement = () => {
 
       {/* Main Content */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="service-categories">Service Categories</TabsTrigger>
-          <TabsTrigger value="service-names">Service Names</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-4">
+          <TabsTrigger value="tree-view">Tree View</TabsTrigger>
+          <TabsTrigger value="service-categories">Main Categories</TabsTrigger>
           <TabsTrigger value="subcategories">Subcategories</TabsTrigger>
+          <TabsTrigger value="service-names">Service Names</TabsTrigger>
         </TabsList>
+        
+        <TabsContent value="tree-view">
+          <VendorCategoryTree />
+        </TabsContent>
         
         <TabsContent value="service-categories">
           <VendorMainCategoryManagement />
         </TabsContent>
         
-        <TabsContent value="service-names">
-          <ApprovedServiceNamesManagement />
-        </TabsContent>
-        
         <TabsContent value="subcategories">
           <VendorSubcategoryManagement />
+        </TabsContent>
+        
+        <TabsContent value="service-names">
+          <ApprovedServiceNamesManagement />
         </TabsContent>
       </Tabs>
     </div>
