@@ -1,11 +1,21 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
-import Stripe from "https://esm.sh/stripe@14.21.0";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
+
+interface PaymentRequest {
+  bookingId: string;
+  amount: number;
+  paymentMethod: string;
+  customerInfo: {
+    fullName: string;
+    email: string;
+    phone: string;
+  };
+}
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -13,219 +23,211 @@ serve(async (req) => {
   }
 
   try {
+    const { bookingId, amount, paymentMethod, customerInfo }: PaymentRequest = await req.json();
+
+    if (!bookingId || !amount || !paymentMethod) {
+      throw new Error("Missing required parameters");
+    }
+
+    // Initialize Supabase client
     const supabaseClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+      { auth: { persistSession: false } }
     );
 
-    const authHeader = req.headers.get("Authorization")!;
-    const token = authHeader.replace("Bearer ", "");
-    const { data: userData } = await supabaseClient.auth.getUser(token);
-    const user = userData.user;
-    
-    if (!user) throw new Error("User not authenticated");
+    let paymentInstructions = {};
+    let paymentStatus = "pending";
 
-    const { 
-      bookingId, 
-      paymentMethod, 
-      amount, 
-      currency = 'IDR',
-      bankCode,
-      ewalletType,
-      useAstraToken 
-    } = await req.json();
-
-    // Get booking details
-    const { data: booking } = await supabaseClient
-      .from('vendor_bookings')
-      .select('*, vendor_services(*)')
-      .eq('id', bookingId)
-      .single();
-
-    if (!booking) throw new Error("Booking not found");
-
-    let paymentResponse;
-
+    // Generate payment instructions based on payment method
     switch (paymentMethod) {
-      case 'stripe':
-        // Existing Stripe payment
-        const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "");
-        const paymentIntent = await stripe.paymentIntents.create({
-          amount: Math.round(amount * 100), // Convert to cents
-          currency: currency.toLowerCase(),
-          metadata: { bookingId }
-        });
-        
-        paymentResponse = {
-          paymentId: paymentIntent.id,
-          clientSecret: paymentIntent.client_secret,
-          status: 'requires_payment_method'
+      case 'ovo':
+        paymentInstructions = {
+          type: 'e_wallet',
+          provider: 'OVO',
+          qrCode: `ovo://payment?amount=${amount}&merchant=PropertyRental&ref=${bookingId}`,
+          deeplink: `ovo://payment?amount=${amount}&merchant=PropertyRental&ref=${bookingId}`,
+          instructions: [
+            'Buka aplikasi OVO di smartphone Anda',
+            'Scan QR code atau klik link pembayaran',
+            'Masukkan PIN OVO untuk konfirmasi',
+            'Pembayaran akan diproses secara otomatis'
+          ],
+          expiryTime: new Date(Date.now() + 15 * 60 * 1000).toISOString() // 15 minutes
         };
         break;
 
-      case 'bank_transfer':
-        // Indonesian Bank Transfer
-        paymentResponse = await processIndonesianBankTransfer({
-          amount,
-          currency,
-          bankCode,
-          bookingId,
-          customerName: user.user_metadata?.full_name || user.email
-        });
+      case 'gopay':
+        paymentInstructions = {
+          type: 'e_wallet',
+          provider: 'GoPay',
+          qrCode: `gojek://gopay/pay?amount=${amount}&merchant=PropertyRental&ref=${bookingId}`,
+          deeplink: `gojek://gopay/pay?amount=${amount}&merchant=PropertyRental&ref=${bookingId}`,
+          instructions: [
+            'Buka aplikasi Gojek di smartphone Anda',
+            'Pilih GoPay dan scan QR code',
+            'Masukkan PIN GoPay untuk konfirmasi',
+            'Pembayaran akan diproses secara otomatis'
+          ],
+          expiryTime: new Date(Date.now() + 15 * 60 * 1000).toISOString()
+        };
         break;
 
-      case 'ewallet':
-        // Indonesian E-Wallet (GoPay, OVO, Dana, etc.)
-        paymentResponse = await processIndonesianEwallet({
-          amount,
-          currency,
-          ewalletType,
-          bookingId,
-          customerPhone: booking.contact_phone
-        });
+      case 'dana':
+        paymentInstructions = {
+          type: 'e_wallet',
+          provider: 'DANA',
+          qrCode: `dana://pay?amount=${amount}&merchant=PropertyRental&ref=${bookingId}`,
+          deeplink: `dana://pay?amount=${amount}&merchant=PropertyRental&ref=${bookingId}`,
+          instructions: [
+            'Buka aplikasi DANA di smartphone Anda',
+            'Scan QR code atau klik link pembayaran',
+            'Masukkan PIN DANA untuk konfirmasi',
+            'Pembayaran akan diproses secara otomatis'
+          ],
+          expiryTime: new Date(Date.now() + 15 * 60 * 1000).toISOString()
+        };
         break;
 
-      case 'astra_token':
-        // ASTRA Token payment
-        paymentResponse = await processAstraTokenPayment({
-          amount,
-          userId: user.id,
-          bookingId,
-          supabaseClient
-        });
+      case 'shopeepay':
+        paymentInstructions = {
+          type: 'e_wallet',
+          provider: 'ShopeePay',
+          qrCode: `shopeeid://payment?amount=${amount}&merchant=PropertyRental&ref=${bookingId}`,
+          deeplink: `shopeeid://payment?amount=${amount}&merchant=PropertyRental&ref=${bookingId}`,
+          instructions: [
+            'Buka aplikasi Shopee di smartphone Anda',
+            'Pilih ShopeePay dan scan QR code',
+            'Masukkan PIN ShopeePay untuk konfirmasi',
+            'Pembayaran akan diproses secara otomatis'
+          ],
+          expiryTime: new Date(Date.now() + 15 * 60 * 1000).toISOString()
+        };
+        break;
+
+      case 'bca':
+        paymentInstructions = {
+          type: 'bank_transfer',
+          provider: 'Bank BCA',
+          virtualAccount: `7017${bookingId.slice(-6)}`,
+          instructions: [
+            'Login ke BCA Mobile atau KlikBCA',
+            'Pilih menu Transfer > BCA Virtual Account',
+            'Masukkan nomor Virtual Account yang tertera',
+            'Masukkan nominal pembayaran yang sesuai',
+            'Ikuti instruksi untuk menyelesaikan transfer'
+          ],
+          expiryTime: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString() // 24 hours
+        };
+        break;
+
+      case 'mandiri':
+        paymentInstructions = {
+          type: 'bank_transfer',
+          provider: 'Bank Mandiri',
+          virtualAccount: `89608${bookingId.slice(-6)}`,
+          instructions: [
+            'Login ke Mandiri Online atau Livin by Mandiri',
+            'Pilih menu Transfer > Virtual Account',
+            'Masukkan nomor Virtual Account yang tertera',
+            'Masukkan nominal pembayaran yang sesuai',
+            'Ikuti instruksi untuk menyelesaikan transfer'
+          ],
+          expiryTime: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
+        };
+        break;
+
+      case 'bni':
+        paymentInstructions = {
+          type: 'bank_transfer',
+          provider: 'Bank BNI',
+          virtualAccount: `8808${bookingId.slice(-6)}`,
+          instructions: [
+            'Login ke BNI Mobile Banking atau BNI Internet Banking',
+            'Pilih menu Transfer > Virtual Account Billing',
+            'Masukkan nomor Virtual Account yang tertera',
+            'Masukkan nominal pembayaran yang sesuai',
+            'Ikuti instruksi untuk menyelesaikan transfer'
+          ],
+          expiryTime: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
+        };
+        break;
+
+      case 'bri':
+        paymentInstructions = {
+          type: 'bank_transfer',
+          provider: 'Bank BRI',
+          virtualAccount: `26215${bookingId.slice(-6)}`,
+          instructions: [
+            'Login ke BRImo atau BRI Internet Banking',
+            'Pilih menu Transfer > BRIVA',
+            'Masukkan nomor Virtual Account yang tertera',
+            'Masukkan nominal pembayaran yang sesuai',
+            'Ikuti instruksi untuk menyelesaikan transfer'
+          ],
+          expiryTime: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
+        };
+        break;
+
+      case 'credit_card':
+        paymentInstructions = {
+          type: 'credit_card',
+          provider: 'Credit/Debit Card',
+          instructions: [
+            'Silakan hubungi customer service untuk proses pembayaran kartu kredit',
+            'Atau transfer ke rekening bank yang tersedia',
+            'Konfirmasi pembayaran akan dikirim via email'
+          ]
+        };
         break;
 
       default:
-        throw new Error("Unsupported payment method");
+        throw new Error(`Unsupported payment method: ${paymentMethod}`);
     }
 
-    // Create payment record
-    await supabaseClient.from('booking_payments').insert({
-      booking_id: bookingId,
-      stripe_payment_intent_id: paymentResponse.paymentId,
-      amount,
-      currency,
-      status: paymentResponse.status,
-      payment_method: paymentMethod
-    });
+    // Log payment attempt
+    const { error: logError } = await supabaseClient
+      .from("payment_logs")
+      .insert({
+        booking_id: bookingId,
+        payment_method: paymentMethod,
+        amount: amount,
+        currency: 'IDR',
+        status: paymentStatus,
+        response_data: paymentInstructions,
+        created_at: new Date().toISOString()
+      });
 
-    // Update booking payment status
-    await supabaseClient
-      .from('vendor_bookings')
-      .update({ 
-        payment_status: paymentResponse.status === 'succeeded' ? 'paid' : 'pending',
-        stripe_payment_intent_id: paymentResponse.paymentId
-      })
-      .eq('id', bookingId);
+    if (logError) {
+      console.error("Error logging payment attempt:", logError);
+    }
 
-    return new Response(JSON.stringify(paymentResponse), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 200,
-    });
+    return new Response(
+      JSON.stringify({
+        success: true,
+        paymentMethod: paymentMethod,
+        paymentInstructions: paymentInstructions,
+        status: paymentStatus,
+        expiryTime: paymentInstructions.expiryTime,
+        message: "Payment instructions generated successfully"
+      }),
+      {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 200,
+      }
+    );
 
   } catch (error) {
-    console.error('Payment creation error:', error);
-    return new Response(JSON.stringify({ error: error.message }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 500,
-    });
+    console.error("Error creating payment:", error);
+    return new Response(
+      JSON.stringify({
+        success: false,
+        error: error.message || "Failed to create payment"
+      }),
+      {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 500,
+      }
+    );
   }
 });
-
-async function processIndonesianBankTransfer({ amount, currency, bankCode, bookingId, customerName }) {
-  // Simulate Indonesian bank transfer processing
-  // In production, integrate with Indonesian payment gateway like Midtrans, Xendit, or Doku
-  
-  const virtualAccountNumber = generateVirtualAccount(bankCode);
-  
-  return {
-    paymentId: `bank_${Date.now()}`,
-    status: 'pending',
-    paymentInstructions: {
-      method: 'bank_transfer',
-      bankCode,
-      virtualAccountNumber,
-      amount,
-      currency,
-      expiryTime: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
-      instructions: `Transfer ${amount} ${currency} to Virtual Account: ${virtualAccountNumber} (${getBankName(bankCode)})`
-    }
-  };
-}
-
-async function processIndonesianEwallet({ amount, currency, ewalletType, bookingId, customerPhone }) {
-  // Simulate Indonesian e-wallet processing
-  // In production, integrate with e-wallet APIs
-  
-  return {
-    paymentId: `ewallet_${Date.now()}`,
-    status: 'pending',
-    paymentInstructions: {
-      method: 'ewallet',
-      ewalletType,
-      amount,
-      currency,
-      deeplink: `${ewalletType}://pay?amount=${amount}&merchant=YourApp&ref=${bookingId}`,
-      qrCode: `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==`,
-      instructions: `Open ${ewalletType} app and scan QR code or use the payment link`
-    }
-  };
-}
-
-async function processAstraTokenPayment({ amount, userId, bookingId, supabaseClient }) {
-  // Check user's ASTRA token balance
-  const { data: balance } = await supabaseClient
-    .from('vendor_astra_balances')
-    .select('balance')
-    .eq('vendor_id', userId)
-    .single();
-
-  if (!balance || balance.balance < amount) {
-    throw new Error("Insufficient ASTRA token balance");
-  }
-
-  // Deduct ASTRA tokens
-  await supabaseClient
-    .from('vendor_astra_balances')
-    .update({ 
-      balance: balance.balance - amount,
-      updated_at: new Date().toISOString()
-    })
-    .eq('vendor_id', userId);
-
-  // Create transaction record
-  await supabaseClient
-    .from('astra_token_transactions')
-    .insert({
-      vendor_id: userId,
-      transaction_type: 'service_payment',
-      amount: -amount,
-      description: `Payment for booking ${bookingId}`,
-      reference_id: bookingId
-    });
-
-  return {
-    paymentId: `astra_${Date.now()}`,
-    status: 'succeeded',
-    astraTokensUsed: amount,
-    remainingBalance: balance.balance - amount
-  };
-}
-
-function generateVirtualAccount(bankCode) {
-  const timestamp = Date.now().toString().slice(-8);
-  const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
-  return `${bankCode}${timestamp}${random}`;
-}
-
-function getBankName(bankCode) {
-  const banks = {
-    '014': 'BCA',
-    '008': 'Mandiri',
-    '009': 'BNI',
-    '002': 'BRI',
-    '013': 'Permata',
-    '011': 'Danamon'
-  };
-  return banks[bankCode] || 'Bank';
-}

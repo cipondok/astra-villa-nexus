@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { format, differenceInDays, addDays } from "date-fns";
+import PaymentInstructions from "./PaymentInstructions";
 import { 
   Calendar as CalendarIcon,
   MapPin,
@@ -78,6 +79,7 @@ const BookingSystem = ({ property, onBookingComplete }: BookingSystemProps) => {
   const [specialRequests, setSpecialRequests] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('');
   const [agreementAccepted, setAgreementAccepted] = useState(false);
+  const [paymentData, setPaymentData] = useState<any>(null);
 
   useEffect(() => {
     if (checkInDate && checkOutDate) {
@@ -224,15 +226,56 @@ const BookingSystem = ({ property, onBookingComplete }: BookingSystemProps) => {
 
       if (invoiceError) throw invoiceError;
 
-      // For bank transfer, booking is created with pending status
-      // No additional payment processing needed here
+      // Process payment based on method
+      if (['ovo', 'gopay', 'dana', 'shopeepay'].includes(paymentMethod)) {
+        // Process e-wallet payment
+        const { data: paymentData, error: paymentError } = await supabase.functions.invoke('create-booking-payment', {
+          body: {
+            bookingId: booking.id,
+            amount: totalAmount,
+            paymentMethod: paymentMethod,
+            customerInfo: customerInfo
+          }
+        });
+
+        if (paymentError) throw paymentError;
+        console.log('E-wallet payment initiated:', paymentData);
+      } else if (['bca', 'mandiri', 'bni', 'bri'].includes(paymentMethod)) {
+        // Process bank transfer payment
+        const { data: paymentData, error: paymentError } = await supabase.functions.invoke('create-booking-payment', {
+          body: {
+            bookingId: booking.id,
+            amount: totalAmount,
+            paymentMethod: paymentMethod,
+            customerInfo: customerInfo
+          }
+        });
+
+        if (paymentError) throw paymentError;
+        console.log('Bank transfer payment initiated:', paymentData);
+      } else if (paymentMethod === 'credit_card') {
+        // Process credit card payment
+        const { data: paymentData, error: paymentError } = await supabase.functions.invoke('create-booking-payment', {
+          body: {
+            bookingId: booking.id,
+            amount: totalAmount,
+            paymentMethod: paymentMethod,
+            customerInfo: customerInfo
+          }
+        });
+
+        if (paymentError) throw paymentError;
+        console.log('Payment initiated:', paymentData);
+        setPaymentData(paymentData);
+      }
+      // For other payment methods, booking is created with pending status
 
       setStep(4);
       onBookingComplete?.(booking.id);
 
       toast({
         title: "Booking Berhasil Dibuat!",
-        description: "Booking Anda telah dibuat. Silakan lanjutkan pembayaran.",
+        description: "Silakan lanjutkan pembayaran sesuai instruksi.",
       });
 
     } catch (error: any) {
@@ -436,18 +479,163 @@ const BookingSystem = ({ property, onBookingComplete }: BookingSystemProps) => {
       {/* Payment Method */}
       <div>
         <label className="text-sm font-medium mb-3 block">Metode Pembayaran</label>
-        <div className="grid grid-cols-1 gap-3">
-          <div
-            className={`p-4 border-2 rounded-lg cursor-pointer transition-colors ${
-              paymentMethod === 'bank_transfer' ? 'border-blue-500 bg-blue-50' : 'border-gray-200'
-            }`}
-            onClick={() => setPaymentMethod('bank_transfer')}
-          >
-            <div className="flex items-center">
-              <Building className="h-5 w-5 mr-3" />
-              <div>
-                <p className="font-medium">Transfer Bank</p>
-                <p className="text-sm text-muted-foreground">BCA, Mandiri, BNI, BRI</p>
+        
+        {/* Digital Wallets */}
+        <div className="mb-4">
+          <p className="text-sm font-medium mb-2 text-muted-foreground">E-Wallet</p>
+          <div className="grid grid-cols-2 gap-3">
+            <div
+              className={`p-3 border-2 rounded-lg cursor-pointer transition-colors ${
+                paymentMethod === 'ovo' ? 'border-blue-500 bg-blue-50' : 'border-gray-200'
+              }`}
+              onClick={() => setPaymentMethod('ovo')}
+            >
+              <div className="flex items-center">
+                <div className="w-8 h-8 bg-purple-500 rounded-md flex items-center justify-center mr-3">
+                  <span className="text-white text-xs font-bold">OVO</span>
+                </div>
+                <div>
+                  <p className="font-medium">OVO</p>
+                </div>
+              </div>
+            </div>
+            
+            <div
+              className={`p-3 border-2 rounded-lg cursor-pointer transition-colors ${
+                paymentMethod === 'gopay' ? 'border-blue-500 bg-blue-50' : 'border-gray-200'
+              }`}
+              onClick={() => setPaymentMethod('gopay')}
+            >
+              <div className="flex items-center">
+                <div className="w-8 h-8 bg-green-500 rounded-md flex items-center justify-center mr-3">
+                  <span className="text-white text-xs font-bold">GP</span>
+                </div>
+                <div>
+                  <p className="font-medium">GoPay</p>
+                </div>
+              </div>
+            </div>
+            
+            <div
+              className={`p-3 border-2 rounded-lg cursor-pointer transition-colors ${
+                paymentMethod === 'dana' ? 'border-blue-500 bg-blue-50' : 'border-gray-200'
+              }`}
+              onClick={() => setPaymentMethod('dana')}
+            >
+              <div className="flex items-center">
+                <div className="w-8 h-8 bg-blue-600 rounded-md flex items-center justify-center mr-3">
+                  <span className="text-white text-xs font-bold">DANA</span>
+                </div>
+                <div>
+                  <p className="font-medium">DANA</p>
+                </div>
+              </div>
+            </div>
+            
+            <div
+              className={`p-3 border-2 rounded-lg cursor-pointer transition-colors ${
+                paymentMethod === 'shopeepay' ? 'border-blue-500 bg-blue-50' : 'border-gray-200'
+              }`}
+              onClick={() => setPaymentMethod('shopeepay')}
+            >
+              <div className="flex items-center">
+                <div className="w-8 h-8 bg-orange-500 rounded-md flex items-center justify-center mr-3">
+                  <span className="text-white text-xs font-bold">SP</span>
+                </div>
+                <div>
+                  <p className="font-medium">ShopeePay</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Bank Transfer */}
+        <div className="mb-4">
+          <p className="text-sm font-medium mb-2 text-muted-foreground">Transfer Bank</p>
+          <div className="grid grid-cols-2 gap-3">
+            <div
+              className={`p-3 border-2 rounded-lg cursor-pointer transition-colors ${
+                paymentMethod === 'bca' ? 'border-blue-500 bg-blue-50' : 'border-gray-200'
+              }`}
+              onClick={() => setPaymentMethod('bca')}
+            >
+              <div className="flex items-center">
+                <div className="w-8 h-8 bg-blue-700 rounded-md flex items-center justify-center mr-3">
+                  <span className="text-white text-xs font-bold">BCA</span>
+                </div>
+                <div>
+                  <p className="font-medium">Bank BCA</p>
+                </div>
+              </div>
+            </div>
+            
+            <div
+              className={`p-3 border-2 rounded-lg cursor-pointer transition-colors ${
+                paymentMethod === 'mandiri' ? 'border-blue-500 bg-blue-50' : 'border-gray-200'
+              }`}
+              onClick={() => setPaymentMethod('mandiri')}
+            >
+              <div className="flex items-center">
+                <div className="w-8 h-8 bg-yellow-500 rounded-md flex items-center justify-center mr-3">
+                  <span className="text-white text-xs font-bold">M</span>
+                </div>
+                <div>
+                  <p className="font-medium">Bank Mandiri</p>
+                </div>
+              </div>
+            </div>
+            
+            <div
+              className={`p-3 border-2 rounded-lg cursor-pointer transition-colors ${
+                paymentMethod === 'bni' ? 'border-blue-500 bg-blue-50' : 'border-gray-200'
+              }`}
+              onClick={() => setPaymentMethod('bni')}
+            >
+              <div className="flex items-center">
+                <div className="w-8 h-8 bg-orange-600 rounded-md flex items-center justify-center mr-3">
+                  <span className="text-white text-xs font-bold">BNI</span>
+                </div>
+                <div>
+                  <p className="font-medium">Bank BNI</p>
+                </div>
+              </div>
+            </div>
+            
+            <div
+              className={`p-3 border-2 rounded-lg cursor-pointer transition-colors ${
+                paymentMethod === 'bri' ? 'border-blue-500 bg-blue-50' : 'border-gray-200'
+              }`}
+              onClick={() => setPaymentMethod('bri')}
+            >
+              <div className="flex items-center">
+                <div className="w-8 h-8 bg-blue-800 rounded-md flex items-center justify-center mr-3">
+                  <span className="text-white text-xs font-bold">BRI</span>
+                </div>
+                <div>
+                  <p className="font-medium">Bank BRI</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Credit/Debit Cards */}
+        <div>
+          <p className="text-sm font-medium mb-2 text-muted-foreground">Kartu Kredit/Debit</p>
+          <div className="grid grid-cols-1 gap-3">
+            <div
+              className={`p-3 border-2 rounded-lg cursor-pointer transition-colors ${
+                paymentMethod === 'credit_card' ? 'border-blue-500 bg-blue-50' : 'border-gray-200'
+              }`}
+              onClick={() => setPaymentMethod('credit_card')}
+            >
+              <div className="flex items-center">
+                <CreditCard className="h-5 w-5 mr-3" />
+                <div>
+                  <p className="font-medium">Kartu Kredit/Debit</p>
+                  <p className="text-sm text-muted-foreground">Visa, Mastercard, JCB</p>
+                </div>
               </div>
             </div>
           </div>
@@ -474,38 +662,66 @@ const BookingSystem = ({ property, onBookingComplete }: BookingSystemProps) => {
     </div>
   );
 
-  const renderStep4 = () => (
-    <div className="text-center space-y-6">
-      <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
-        <CheckCircle className="h-8 w-8 text-green-600" />
-      </div>
-      
-      <div>
-        <h3 className="text-xl font-semibold mb-2">Booking Berhasil Dibuat!</h3>
-        <p className="text-muted-foreground">
-          Booking Anda telah berhasil dibuat. Invoice akan dikirim ke email Anda.
-        </p>
-      </div>
-
-      <Card>
-        <CardContent className="p-4">
-          <div className="space-y-2">
-            <div className="flex justify-between">
-              <span>Booking ID:</span>
-              <span className="font-mono text-sm">#{Date.now()}</span>
+  const renderStep4 = () => {
+    if (paymentData && paymentData.paymentInstructions) {
+      return (
+        <div className="space-y-6">
+          <div className="text-center">
+            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <CheckCircle className="h-8 w-8 text-green-600" />
             </div>
-            <div className="flex justify-between">
-              <span>Status:</span>
-              <Badge variant="outline" className="text-yellow-600 border-yellow-600">
-                <Clock className="h-3 w-3 mr-1" />
-                Menunggu Pembayaran
-              </Badge>
-            </div>
+            <h3 className="text-xl font-semibold mb-2">Booking Berhasil Dibuat!</h3>
+            <p className="text-muted-foreground mb-6">
+              Silakan selesaikan pembayaran sesuai instruksi di bawah ini.
+            </p>
           </div>
-        </CardContent>
-      </Card>
-    </div>
-  );
+          
+          <PaymentInstructions 
+            paymentData={paymentData}
+            onPaymentConfirmed={() => {
+              toast({
+                title: "Pembayaran Dikonfirmasi",
+                description: "Terima kasih! Pembayaran Anda sedang diverifikasi.",
+              });
+            }}
+          />
+        </div>
+      );
+    }
+
+    return (
+      <div className="text-center space-y-6">
+        <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
+          <CheckCircle className="h-8 w-8 text-green-600" />
+        </div>
+        
+        <div>
+          <h3 className="text-xl font-semibold mb-2">Booking Berhasil Dibuat!</h3>
+          <p className="text-muted-foreground">
+            Booking Anda telah berhasil dibuat. Invoice akan dikirim ke email Anda.
+          </p>
+        </div>
+
+        <Card>
+          <CardContent className="p-4">
+            <div className="space-y-2">
+              <div className="flex justify-between">
+                <span>Booking ID:</span>
+                <span className="font-mono text-sm">#{Date.now()}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Status:</span>
+                <Badge variant="outline" className="text-yellow-600 border-yellow-600">
+                  <Clock className="h-3 w-3 mr-1" />
+                  Menunggu Pembayaran
+                </Badge>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  };
 
   return (
     <Card className="w-full max-w-4xl mx-auto">

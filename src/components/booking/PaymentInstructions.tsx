@@ -1,45 +1,50 @@
-
 import { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Copy, ExternalLink, Clock, CheckCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { 
+  Copy, 
+  ExternalLink, 
+  Clock, 
+  CheckCircle, 
+  CreditCard,
+  Building,
+  Smartphone,
+  QrCode,
+  Phone
+} from "lucide-react";
 
 interface PaymentInstructionsProps {
   paymentData: {
-    paymentId: string;
+    paymentMethod: string;
+    paymentInstructions: any;
     status: string;
-    paymentInstructions?: {
-      method: string;
-      bankCode?: string;
-      virtualAccountNumber?: string;
-      ewalletType?: string;
-      deeplink?: string;
-      qrCode?: string;
-      amount: number;
-      currency: string;
-      expiryTime?: Date;
-      instructions: string;
-    };
-    astraTokensUsed?: number;
-    remainingBalance?: number;
+    expiryTime?: string;
   };
   onPaymentConfirmed?: () => void;
 }
 
 const PaymentInstructions = ({ paymentData, onPaymentConfirmed }: PaymentInstructionsProps) => {
   const { toast } = useToast();
-  const [copied, setCopied] = useState(false);
+  const [copied, setCopied] = useState<string | null>(null);
 
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text);
-    setCopied(true);
-    toast({
-      title: "Copied",
-      description: "Payment details copied to clipboard",
-    });
-    setTimeout(() => setCopied(false), 2000);
+  const copyToClipboard = async (text: string, type: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(type);
+      setTimeout(() => setCopied(null), 2000);
+      toast({
+        title: "Berhasil Disalin",
+        description: `${type} telah disalin ke clipboard`,
+      });
+    } catch (err) {
+      toast({
+        title: "Gagal Menyalin",
+        description: "Tidak dapat menyalin ke clipboard",
+        variant: "destructive"
+      });
+    }
   };
 
   const openDeeplink = (url: string) => {
@@ -56,152 +61,195 @@ const PaymentInstructions = ({ paymentData, onPaymentConfirmed }: PaymentInstruc
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'succeeded':
-        return <Badge className="bg-green-500"><CheckCircle className="h-3 w-3 mr-1" />Paid</Badge>;
+        return <Badge className="bg-green-100 text-green-800">Berhasil</Badge>;
       case 'pending':
-        return <Badge className="bg-yellow-500"><Clock className="h-3 w-3 mr-1" />Pending</Badge>;
+        return <Badge className="bg-yellow-100 text-yellow-800">Menunggu Pembayaran</Badge>;
+      case 'failed':
+        return <Badge className="bg-red-100 text-red-800">Gagal</Badge>;
       default:
-        return <Badge variant="secondary">{status}</Badge>;
+        return <Badge className="bg-gray-100 text-gray-800">{status}</Badge>;
     }
   };
 
+  // Show success message if payment is completed
   if (paymentData.status === 'succeeded') {
     return (
-      <Card className="border-green-200 bg-green-50">
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle className="text-green-800">Payment Successful!</CardTitle>
-            {getStatusBadge(paymentData.status)}
+      <Card className="w-full max-w-2xl mx-auto">
+        <CardContent className="p-6 text-center">
+          <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <CheckCircle className="h-8 w-8 text-green-600" />
           </div>
-          <CardDescription className="text-green-600">
-            Your booking has been confirmed and payment processed successfully.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          {paymentData.astraTokensUsed && (
-            <div className="space-y-2">
-              <p className="text-sm"><strong>ASTRA Tokens Used:</strong> {paymentData.astraTokensUsed}</p>
-              <p className="text-sm"><strong>Remaining Balance:</strong> {paymentData.remainingBalance}</p>
-            </div>
+          <h3 className="text-xl font-semibold mb-2">Pembayaran Berhasil!</h3>
+          <p className="text-muted-foreground mb-4">
+            Terima kasih, pembayaran Anda telah berhasil diproses.
+          </p>
+          {onPaymentConfirmed && (
+            <Button onClick={onPaymentConfirmed} className="mt-4">
+              Lanjutkan
+            </Button>
           )}
-          <Button onClick={onPaymentConfirmed} className="w-full mt-4">
-            Continue
-          </Button>
         </CardContent>
       </Card>
     );
   }
 
   const instructions = paymentData.paymentInstructions;
-  if (!instructions) return null;
 
   return (
-    <Card>
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <CardTitle>Complete Your Payment</CardTitle>
-          {getStatusBadge(paymentData.status)}
-        </div>
-        <CardDescription>
-          Follow the instructions below to complete your payment
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        {/* Payment Amount */}
-        <div className="bg-blue-50 p-4 rounded-lg">
-          <div className="text-center">
-            <p className="text-sm text-gray-600">Amount to Pay</p>
-            <p className="text-2xl font-bold text-blue-600">
-              {formatCurrency(instructions.amount, instructions.currency)}
-            </p>
+    <div className="w-full max-w-2xl mx-auto space-y-4">
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center justify-between">
+            <span>Instruksi Pembayaran</span>
+            {getStatusBadge(paymentData.status)}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {/* Payment Amount */}
+          <div className="bg-blue-50 p-4 rounded-lg">
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-muted-foreground">Total Pembayaran:</span>
+              <span className="text-xl font-bold text-blue-600">
+                {/* Amount would come from booking data */}
+                {formatCurrency(0)}
+              </span>
+            </div>
           </div>
-        </div>
 
-        {/* Expiry Time */}
-        {instructions.expiryTime && (
-          <div className="flex items-center gap-2 text-sm text-orange-600 bg-orange-50 p-3 rounded-lg">
-            <Clock className="h-4 w-4" />
-            <span>Payment expires: {new Date(instructions.expiryTime).toLocaleString()}</span>
-          </div>
-        )}
+          {/* Expiry Time */}
+          {instructions.expiryTime && (
+            <div className="flex items-center text-sm text-orange-600 bg-orange-50 p-3 rounded-lg">
+              <Clock className="h-4 w-4 mr-2" />
+              <span>
+                Batas waktu pembayaran: {new Date(instructions.expiryTime).toLocaleString('id-ID')}
+              </span>
+            </div>
+          )}
 
-        {/* Bank Transfer Instructions */}
-        {instructions.method === 'bank_transfer' && (
-          <div className="space-y-4">
-            <div className="border rounded-lg p-4">
-              <h4 className="font-medium mb-2">Virtual Account Number</h4>
-              <div className="flex items-center gap-2 bg-gray-50 p-3 rounded">
-                <code className="flex-1 font-mono text-lg">
-                  {instructions.virtualAccountNumber}
-                </code>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => copyToClipboard(instructions.virtualAccountNumber!)}
-                >
-                  <Copy className="h-4 w-4" />
-                </Button>
+          {/* E-Wallet Instructions */}
+          {instructions.type === 'e_wallet' && (
+            <div>
+              <h4 className="font-medium mb-3 flex items-center">
+                <Smartphone className="h-4 w-4 mr-2" />
+                Pembayaran {instructions.provider}
+              </h4>
+              
+              {/* QR Code Section */}
+              <div className="bg-gray-50 p-4 rounded-lg mb-4">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm font-medium">QR Code Payment</span>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => openDeeplink(instructions.deeplink)}
+                  >
+                    <ExternalLink className="h-4 w-4 mr-1" />
+                    Buka App
+                  </Button>
+                </div>
+                <div className="bg-white p-4 rounded border-2 border-dashed border-gray-300 text-center">
+                  <QrCode className="h-16 w-16 mx-auto text-gray-400 mb-2" />
+                  <p className="text-sm text-muted-foreground">QR Code akan muncul di sini</p>
+                </div>
+              </div>
+
+              {/* Instructions */}
+              <div>
+                <p className="text-sm font-medium mb-2">Langkah pembayaran:</p>
+                <ol className="text-sm space-y-1">
+                  {instructions.instructions.map((step: string, index: number) => (
+                    <li key={index} className="flex">
+                      <span className="mr-2 text-blue-600 font-medium">{index + 1}.</span>
+                      <span>{step}</span>
+                    </li>
+                  ))}
+                </ol>
               </div>
             </div>
-            
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <h4 className="font-medium mb-2">Instructions:</h4>
-              <p className="text-sm">{instructions.instructions}</p>
-            </div>
-          </div>
-        )}
+          )}
 
-        {/* E-Wallet Instructions */}
-        {instructions.method === 'ewallet' && (
-          <div className="space-y-4">
-            <div className="text-center">
-              {instructions.qrCode && (
-                <div className="mb-4">
-                  <img 
-                    src={instructions.qrCode} 
-                    alt="Payment QR Code" 
-                    className="mx-auto w-48 h-48 border rounded-lg"
-                  />
-                </div>
-              )}
+          {/* Bank Transfer Instructions */}
+          {instructions.type === 'bank_transfer' && (
+            <div>
+              <h4 className="font-medium mb-3 flex items-center">
+                <Building className="h-4 w-4 mr-2" />
+                Transfer {instructions.provider}
+              </h4>
               
-              {instructions.deeplink && (
-                <Button
-                  onClick={() => openDeeplink(instructions.deeplink!)}
-                  className="w-full mb-4"
-                >
-                  <ExternalLink className="h-4 w-4 mr-2" />
-                  Open {instructions.ewalletType?.toUpperCase()} App
-                </Button>
-              )}
+              {/* Virtual Account */}
+              <div className="bg-gray-50 p-4 rounded-lg mb-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium">Nomor Virtual Account</p>
+                    <p className="text-lg font-mono font-bold">{instructions.virtualAccount}</p>
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => copyToClipboard(instructions.virtualAccount, 'Virtual Account')}
+                  >
+                    <Copy className="h-4 w-4" />
+                    {copied === 'Virtual Account' ? 'Tersalin!' : 'Salin'}
+                  </Button>
+                </div>
+              </div>
+
+              {/* Instructions */}
+              <div>
+                <p className="text-sm font-medium mb-2">Langkah transfer:</p>
+                <ol className="text-sm space-y-1">
+                  {instructions.instructions.map((step: string, index: number) => (
+                    <li key={index} className="flex">
+                      <span className="mr-2 text-blue-600 font-medium">{index + 1}.</span>
+                      <span>{step}</span>
+                    </li>
+                  ))}
+                </ol>
+              </div>
             </div>
-            
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <p className="text-sm">{instructions.instructions}</p>
+          )}
+
+          {/* Credit Card Instructions */}
+          {instructions.type === 'credit_card' && (
+            <div>
+              <h4 className="font-medium mb-3 flex items-center">
+                <CreditCard className="h-4 w-4 mr-2" />
+                Pembayaran Kartu Kredit/Debit
+              </h4>
+              
+              <div className="space-y-2">
+                {instructions.instructions.map((step: string, index: number) => (
+                  <p key={index} className="text-sm">{step}</p>
+                ))}
+              </div>
             </div>
+          )}
+
+          {/* General Instructions */}
+          <div className="border-t pt-4">
+            <p className="text-sm text-muted-foreground mb-2">Catatan Penting:</p>
+            <ul className="text-sm text-muted-foreground space-y-1">
+              <li>• Pastikan nominal pembayaran sesuai dengan yang tertera</li>
+              <li>• Simpan bukti pembayaran untuk referensi</li>
+              <li>• Hubungi customer service jika mengalami kendala</li>
+            </ul>
           </div>
-        )}
 
-        {/* General Instructions */}
-        <div className="bg-blue-50 p-4 rounded-lg">
-          <h4 className="font-medium mb-2">Important Notes:</h4>
-          <ul className="text-sm space-y-1 list-disc list-inside text-gray-600">
-            <li>Complete payment within the specified time limit</li>
-            <li>Keep your payment receipt for reference</li>
-            <li>Payment confirmation may take 5-15 minutes</li>
-            <li>Contact support if you encounter any issues</li>
-          </ul>
-        </div>
-
-        <div className="flex space-x-2">
-          <Button variant="outline" className="flex-1">
-            Contact Support
-          </Button>
-          <Button onClick={onPaymentConfirmed} className="flex-1">
-            I've Made Payment
-          </Button>
-        </div>
-      </CardContent>
-    </Card>
+          {/* Action Buttons */}
+          <div className="flex gap-3 pt-4">
+            <Button variant="outline" className="flex-1">
+              <Phone className="h-4 w-4 mr-2" />
+              Hubungi CS
+            </Button>
+            {onPaymentConfirmed && (
+              <Button onClick={onPaymentConfirmed} className="flex-1">
+                Konfirmasi Pembayaran
+              </Button>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 
