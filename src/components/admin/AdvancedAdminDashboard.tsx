@@ -87,78 +87,36 @@ const AdvancedAdminDashboard = () => {
 
   return (
     <div className="min-h-screen admin-bg text-foreground transition-colors duration-300 flex flex-col">
-      {/* HUD Header */}
+      {/* Single Clean HUD Header */}
       <header className="hud-border border-b-2 border-cyan-400/30 bg-gradient-to-r from-cyan-900/20 to-blue-900/20 relative overflow-hidden">
         <div className="data-stream"></div>
-        <div className="container mx-auto px-4 py-3">
+        <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 bg-green-500 rounded-full pulse-dot"></div>
-                <span className="hud-text font-bold text-xl">ASTRA</span>
-                <span className="hud-accent text-sm">ADMIN</span>
+            <div className="flex items-center gap-6">
+              <div className="flex items-center gap-3">
+                <div className="w-4 h-4 bg-green-500 rounded-full pulse-dot"></div>
+                <span className="hud-text font-bold text-2xl">ASTRA ADMIN</span>
               </div>
-              <nav className="hidden md:flex items-center gap-6">
-                <button 
-                  className="hud-text hover:hud-accent transition-colors text-sm flex items-center gap-2"
-                  onClick={() => handleTabChange('overview')}
-                >
-                  DASHBOARD
-                  <Badge className="bg-green-500/20 text-green-400 text-xs">
-                    LIVE
-                  </Badge>
-                </button>
-                <button 
-                  className="hud-text hover:hud-accent transition-colors text-sm flex items-center gap-2"
-                  onClick={() => handleTabChange('analytics')}
-                >
-                  ANALYTICS
-                  <Badge className="bg-blue-500/20 text-blue-400 text-xs">
-                    {headerCounts.properties}
-                  </Badge>
-                </button>
-                <button 
-                  className="hud-text hover:hud-accent transition-colors text-sm flex items-center gap-2"
-                  onClick={() => handleTabChange('user-management')}
-                >
-                  USERS
-                  <Badge className="bg-purple-500/20 text-purple-400 text-xs">
-                    {headerCounts.users}
-                  </Badge>
-                </button>
-                <button 
-                  className="hud-text hover:hud-accent transition-colors text-sm flex items-center gap-2"
-                  onClick={() => handleTabChange('admin-alerts')}
-                >
-                  ALERTS
-                  {headerCounts.alerts > 0 && (
-                    <Badge className="bg-red-500/20 text-red-400 text-xs animate-pulse">
-                      {headerCounts.alerts}
-                    </Badge>
-                  )}
-                  <Bell className="h-3 w-3" />
-                </button>
-              </nav>
-            </div>
-            <div className="flex items-center gap-4">
-              <div className="text-right">
-                <div className="hud-accent text-xs">ACTIVE USERS</div>
-                <div className="hud-text text-sm font-mono">{headerCounts.users}</div>
-              </div>
-              <div className="text-right">
-                <div className="hud-accent text-xs">PROPERTIES</div>
-                <div className="hud-text text-sm font-mono">{headerCounts.properties}</div>
-              </div>
-              <div className="text-right">
-                <div className="hud-accent text-xs">STATUS</div>
-                <div className="hud-text text-sm font-mono flex items-center gap-1">
-                  <div className="w-2 h-2 bg-green-500 rounded-full pulse-dot"></div>
-                  SECURE
+              <div className="hidden md:flex items-center gap-4">
+                <div className="text-center">
+                  <div className="hud-accent text-xs">USERS</div>
+                  <div className="hud-text text-sm font-mono">{headerCounts.users}</div>
+                </div>
+                <div className="text-center">
+                  <div className="hud-accent text-xs">PROPERTIES</div>
+                  <div className="hud-text text-sm font-mono">{headerCounts.properties}</div>
+                </div>
+                <div className="text-center">
+                  <div className="hud-accent text-xs">STATUS</div>
+                  <div className="hud-text text-sm font-mono flex items-center gap-1">
+                    <div className="w-2 h-2 bg-green-500 rounded-full pulse-dot"></div>
+                    ONLINE
+                  </div>
                 </div>
               </div>
+            </div>
+            <div className="flex items-center gap-4">
               <SimpleThemeToggle />
-              
-              {/* User Menu with Logout */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="sm" className="hud-border hud-text hover:hud-accent">
@@ -194,17 +152,26 @@ const AdvancedAdminDashboard = () => {
         {/* Real-time Dashboard Stats */}
         <RealTimeDashboardStats />
         
-        <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-6">
+        <div className="space-y-6">
           <CompactAdminNavigation 
             activeTab={activeTab} 
             onTabChange={handleTabChange} 
             isAdmin={isAdmin} 
           />
           
-          <div className="hud-border hud-glow p-6 shadow-lg">
-            <AdminDashboardContent activeSection={activeTab} onSectionChange={handleTabChange} />
+          {/* Smooth Tab Content with Animations */}
+          <div className="hud-border hud-glow p-6 shadow-lg relative overflow-hidden">
+            <div 
+              className="transition-all duration-500 ease-in-out transform"
+              style={{
+                opacity: 1,
+                transform: 'translateX(0)'
+              }}
+            >
+              <AdminDashboardContent activeSection={activeTab} onSectionChange={handleTabChange} />
+            </div>
           </div>
-        </Tabs>
+        </div>
       </div>
 
       {/* HUD Footer */}

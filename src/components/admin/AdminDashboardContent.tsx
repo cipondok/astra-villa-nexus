@@ -49,6 +49,8 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
   const renderContent = () => {
     switch (activeSection) {
       case "overview":
+      case "analytics":
+        // Combined Overview & Analytics page
         return <AdminOverview onSectionChange={onSectionChange} />;
       case "diagnostic":
         return <ProjectDiagnosticSystem />;
@@ -62,8 +64,6 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
         return <SMTPSettings />;
       case "indonesian-payment-config":
         return <IndonesianPaymentMerchantConfig />;
-      case "analytics":
-        return <WebTrafficAnalytics />;
       case "ai-bot-management":
         return <AIBotManagement />;
       case "feedback-management":
@@ -132,8 +132,13 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
   };
 
   return (
-    <div className="flex-1 p-6">
-      {renderContent()}
+    <div className="flex-1 relative">
+      <div 
+        className="tab-content-slide animate-fade-in"
+        key={activeSection}
+      >
+        {renderContent()}
+      </div>
     </div>
   );
 };
