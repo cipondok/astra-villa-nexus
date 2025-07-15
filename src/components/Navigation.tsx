@@ -149,11 +149,11 @@ const Navigation = () => {
               onClick={() => navigate('/')}
             >
               <div className="w-8 h-8 rounded-lg bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center">
-                <Brain className="h-5 w-5 text-white" />
+                <Brain className="h-5 w-5 text-white dark:text-white light:text-gray-900" />
               </div>
               <div className="flex items-center space-x-1">
-                <span className="text-xl font-bold text-white drop-shadow-lg">ASTRA</span>
-                <span className="text-xl font-bold text-white/90 drop-shadow-lg">Villa</span>
+                <span className="text-xl font-bold text-gray-900 dark:text-white drop-shadow-lg">ASTRA</span>
+                <span className="text-xl font-bold text-gray-800 dark:text-white/90 drop-shadow-lg">Villa</span>
               </div>
             </div>
 
@@ -162,7 +162,7 @@ const Navigation = () => {
               <Button 
                 variant="ghost" 
                 size="sm"
-                className="h-10 px-3 text-sm font-medium text-white/90 hover:text-white hover:bg-white/10 rounded-lg transition-all"
+                className="h-10 px-3 text-sm font-medium text-gray-900 dark:text-white/90 hover:text-gray-900 dark:hover:text-white hover:bg-white/10 rounded-lg transition-all"
                 onClick={() => navigate('/')}
               >
                 <HomeIcon className="h-4 w-4 mr-2" />
@@ -175,7 +175,7 @@ const Navigation = () => {
                   <Button 
                     variant="ghost" 
                     size="sm"
-                    className={`h-10 px-3 text-sm font-medium hover:bg-white/10 rounded-lg transition-all text-white/90 hover:text-white`}
+                    className={`h-10 px-3 text-sm font-medium hover:bg-white/10 rounded-lg transition-all text-gray-900 dark:text-white/90 hover:text-gray-900 dark:hover:text-white`}
                     onClick={() => navigate(item.path)}
                   >
                     <item.icon className="h-4 w-4" />
@@ -191,7 +191,7 @@ const Navigation = () => {
               <Button 
                 variant="ghost" 
                 size="sm"
-                className="h-10 px-3 text-sm font-medium text-white/90 hover:text-white hover:bg-white/10 rounded-lg transition-all"
+                className="h-10 px-3 text-sm font-medium text-gray-900 dark:text-white/90 hover:text-gray-900 dark:hover:text-white hover:bg-white/10 rounded-lg transition-all"
                 onClick={() => navigate('/services')}
               >
                 <Settings2 className="h-4 w-4 mr-2" />
@@ -258,7 +258,7 @@ const Navigation = () => {
                 variant="ghost"
                 size="sm"
                 onClick={toggleTheme}
-                className="w-10 h-10 p-0 rounded-lg bg-white/20 hover:bg-white/30 transition-all border border-white/30 text-white"
+                className="w-10 h-10 p-0 rounded-lg bg-white/20 hover:bg-white/30 transition-all border border-white/30 text-gray-900 dark:text-white"
               >
                 {theme === "light" ? (
                   <Moon className="h-4 w-4" />
@@ -310,7 +310,7 @@ const Navigation = () => {
                     onClick={() => setShowAuthModal(true)}
                     variant="ghost"
                     size="sm"
-                    className="w-10 h-10 p-0 rounded-lg bg-white/20 hover:bg-white/30 transition-all border border-white/30 text-white"
+                    className="w-10 h-10 p-0 rounded-lg bg-white/20 hover:bg-white/30 transition-all border border-white/30 text-gray-900 dark:text-white"
                   >
                     <User className="h-4 w-4" />
                   </Button>
@@ -326,7 +326,7 @@ const Navigation = () => {
               <Button
                 variant="ghost"
                 size="sm"
-                className="lg:hidden w-10 h-10 p-0 rounded-lg bg-white/20 hover:bg-white/30 transition-all border border-white/30 text-white"
+                className="lg:hidden w-10 h-10 p-0 rounded-lg bg-white/20 hover:bg-white/30 transition-all border border-white/30 text-gray-900 dark:text-white"
                 onClick={toggleMenu}
               >
                 {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}

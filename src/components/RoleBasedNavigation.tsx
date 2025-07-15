@@ -171,7 +171,7 @@ const RoleBasedNavigation = ({
             className="flex-shrink-0 cursor-pointer hover:opacity-80 transition-opacity" 
             onClick={handleHomeClick}
           >
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-white to-white/90 bg-clip-text text-transparent drop-shadow-lg">
+            <h1 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-800 dark:from-white dark:to-white/90 bg-clip-text text-transparent drop-shadow-lg">
               Astra Villa
             </h1>
           </div>
