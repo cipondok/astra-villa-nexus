@@ -140,6 +140,34 @@ const config: Config = {
           "0%": { transform: "scale(1)" },
           "50%": { transform: "scale(1.05)" },
           "100%": { transform: "scale(1)" }
+        },
+        "ai-search-pulse": {
+          "0%, 100%": { 
+            transform: "scale(1)",
+            opacity: "1"
+          },
+          "50%": { 
+            transform: "scale(1.1)",
+            opacity: "0.8"
+          }
+        },
+        "ai-particle-float": {
+          "0%, 100%": { 
+            transform: "translateY(0px) rotate(0deg)",
+            opacity: "0.6"
+          },
+          "33%": { 
+            transform: "translateY(-8px) rotate(120deg)",
+            opacity: "1"
+          },
+          "66%": { 
+            transform: "translateY(-4px) rotate(240deg)",
+            opacity: "0.8"
+          }
+        },
+        "ai-shimmer": {
+          "0%": { transform: "translateX(-100%)" },
+          "100%": { transform: "translateX(100%)" }
         }
       },
       animation: {
@@ -150,6 +178,9 @@ const config: Config = {
         "macos-window-in": "macos-window-in 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
         "macos-popup-in": "macos-popup-in 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
         "macos-bounce": "macos-bounce 0.3s ease-out",
+        "ai-search-pulse": "ai-search-pulse 2s ease-in-out infinite",
+        "ai-particle-float": "ai-particle-float 3s ease-in-out infinite",
+        "ai-shimmer": "ai-shimmer 2s ease-in-out infinite",
       },
       backgroundImage: {
         'macos-gradient': 'linear-gradient(135deg, hsl(213, 100%, 50%) 0%, hsl(195, 100%, 69%) 100%)',

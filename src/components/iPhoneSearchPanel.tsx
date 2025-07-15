@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, MapPin, Home, Building, DollarSign, Filter, Bed, Bath, X } from "lucide-react";
+import { Search, MapPin, Home, Building, DollarSign, Filter, Bed, Bath, X, Bot, Sparkles, Zap } from "lucide-react";
 
 interface IPhoneSearchPanelProps {
   language: "en" | "id";
@@ -231,10 +231,28 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
             </Button>
             <Button
               onClick={handleSearch}
-              className="h-10 px-6 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-medium rounded-lg shadow-lg hover:shadow-xl macos-smooth-click macos-ripple text-sm"
+              className="h-10 px-6 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-medium rounded-lg shadow-lg hover:shadow-xl macos-smooth-click macos-ripple text-sm relative overflow-hidden group"
             >
-              <Search className="h-4 w-4 mr-1" />
-              {currentText.search}
+              <div className="flex items-center gap-2 relative z-10">
+                <div className="relative">
+                  <Search className="h-4 w-4 transition-all duration-300 group-hover:scale-110" />
+                  <Bot className="h-3 w-3 absolute -top-0.5 -right-0.5 text-yellow-300 animate-pulse opacity-80" />
+                </div>
+                <span className="relative">
+                  {currentText.search}
+                  <Sparkles className="h-2.5 w-2.5 absolute -top-1 -right-1 text-yellow-300 animate-bounce" />
+                </span>
+              </div>
+              
+              {/* Animated AI glow effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-cyan-400/20 via-blue-500/20 to-purple-500/20 animate-pulse opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              
+              {/* Floating AI particles */}
+              <div className="absolute top-1 left-2 w-1 h-1 bg-cyan-300 rounded-full animate-ping opacity-60"></div>
+              <div className="absolute bottom-1 right-2 w-1 h-1 bg-purple-300 rounded-full animate-ping opacity-60 animation-delay-500"></div>
+              
+              {/* Search wave effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out"></div>
             </Button>
           </div>
 

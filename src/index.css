@@ -502,6 +502,37 @@
     @apply rounded-lg px-4 py-2 font-medium;
   }
 
+  @keyframes ai-search-pulse {
+    0%, 100% { 
+      transform: scale(1);
+      opacity: 1;
+    }
+    50% { 
+      transform: scale(1.1);
+      opacity: 0.8;
+    }
+  }
+
+  @keyframes ai-particle-float {
+    0%, 100% { 
+      transform: translateY(0px) rotate(0deg);
+      opacity: 0.6;
+    }
+    33% { 
+      transform: translateY(-8px) rotate(120deg);
+      opacity: 1;
+    }
+    66% { 
+      transform: translateY(-4px) rotate(240deg);
+      opacity: 0.8;
+    }
+  }
+
+  @keyframes ai-shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+
   @keyframes macos-window-in {
     0% {
       opacity: 0;
@@ -571,6 +602,26 @@
   .macos-ripple:active::after {
     width: 300px;
     height: 300px;
+  }
+
+  /* AI Search Button Effects */
+  .ai-search-button {
+    @apply relative overflow-hidden group;
+  }
+
+  .ai-search-button::before {
+    content: '';
+    @apply absolute inset-0 bg-gradient-to-r from-cyan-400/20 via-blue-500/20 to-purple-500/20;
+    animation: ai-search-pulse 2s ease-in-out infinite;
+    @apply opacity-0 group-hover:opacity-100 transition-opacity duration-300;
+  }
+
+  .animation-delay-500 {
+    animation-delay: 500ms;
+  }
+
+  .animation-delay-1000 {
+    animation-delay: 1000ms;
   }
 }
 
