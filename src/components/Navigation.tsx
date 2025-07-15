@@ -224,6 +224,19 @@ const Navigation = () => {
                 </Button>
               )}
 
+              {/* Vendor Dashboard - only show for vendor users */}
+              {profile?.role === 'vendor' && (
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  className="h-10 px-3 text-sm font-medium text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 hover:bg-purple-50 dark:hover:bg-purple-900/20 rounded-lg transition-all"
+                  onClick={() => navigate('/vendor')}
+                >
+                  <Settings className="h-4 w-4 mr-1" />
+                  Vendor Dashboard
+                </Button>
+              )}
+
               {/* Admin Panel - only show for admin users */}
               {isAdmin && (
                 <Button 
@@ -353,6 +366,14 @@ const Navigation = () => {
                   <Button variant="ghost" className="w-full justify-start text-sm font-medium text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 hover:bg-green-50 dark:hover:bg-green-900/20" onClick={() => { navigate('/agent'); toggleMenu(); }}>
                     <User className="h-4 w-4 mr-2" />
                     Agent Dashboard
+                  </Button>
+                )}
+
+                {/* Vendor Dashboard for mobile */}
+                {profile?.role === 'vendor' && (
+                  <Button variant="ghost" className="w-full justify-start text-sm font-medium text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 hover:bg-purple-50 dark:hover:bg-purple-900/20" onClick={() => { navigate('/vendor'); toggleMenu(); }}>
+                    <Settings className="h-4 w-4 mr-2" />
+                    Vendor Dashboard
                   </Button>
                 )}
                 
