@@ -15,7 +15,7 @@ import PropertyGridView from "@/components/search/PropertyGridView";
 import AdvancedPropertyFilters, { PropertyFilters } from "@/components/search/AdvancedPropertyFilters";
 import { BaseProperty } from "@/types/property";
 import PropertySlideSection from "@/components/property/PropertySlideSection";
-import SlimEnhancedSearchPanel from "@/components/SlimEnhancedSearchPanel";
+import IPhoneSearchPanel from "@/components/iPhoneSearchPanel";
 import { SearchLoadingDialog } from "@/components/SearchLoadingDialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -299,9 +299,9 @@ const Index = () => {
               </p>
             </div>
             
-            {/* Enhanced Search Panel */}
-            <div className="animate-scale-in max-w-6xl mx-auto">
-              <SlimEnhancedSearchPanel
+            {/* iPhone-style Search Panel */}
+            <div className="animate-scale-in max-w-4xl mx-auto">
+              <IPhoneSearchPanel
                 language={language}
                 onSearch={(searchData) => {
                   setQuickSearch(searchData.searchQuery || "");
