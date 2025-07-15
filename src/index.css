@@ -271,22 +271,54 @@
 
   /* iPhone-style Header - 50% Transparent */
   .header-ios {
-    @apply shadow-xl shadow-blue-500/20 border-b border-white/10;
+    @apply shadow-xl border-b;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+
+  /* Light Mode Header - 50% Transparent */
+  .light .header-ios {
+    background: linear-gradient(135deg, 
+      hsla(220, 100%, 85%, 0.5) 0%, 
+      hsla(240, 100%, 90%, 0.5) 50%, 
+      hsla(260, 100%, 95%, 0.5) 100%);
+    @apply shadow-blue-500/10 border-blue-200/30;
+  }
+
+  /* Dark Mode Header - 50% Transparent */
+  .dark .header-ios {
     background: linear-gradient(135deg, 
       hsla(220, 100%, 60%, 0.5) 0%, 
       hsla(240, 100%, 65%, 0.5) 50%, 
       hsla(260, 100%, 70%, 0.5) 100%);
+    @apply shadow-blue-500/20 border-white/10;
   }
 
   .header-button-ios {
-    @apply bg-white/15 backdrop-blur-sm border border-white/20 text-white;
-    @apply hover:bg-white/25 hover:border-white/30 hover:shadow-lg;
-    @apply active:scale-95 active:bg-white/20;
-    @apply transition-all duration-200 ease-out;
-    @apply rounded-xl px-4 py-2 font-medium;
+    @apply backdrop-blur-sm border transition-all duration-200 ease-out;
+    @apply active:scale-95 rounded-xl px-4 py-2 font-medium;
   }
 
-  .header-button-ios:hover {
+  /* Light Mode Header Button */
+  .light .header-button-ios {
+    @apply bg-white/20 border-gray-300/30 text-gray-700;
+    @apply hover:bg-white/30 hover:border-gray-400/40 hover:shadow-lg;
+    @apply active:bg-white/25;
+  }
+
+  .light .header-button-ios:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.15);
+  }
+
+  /* Dark Mode Header Button */
+  .dark .header-button-ios {
+    @apply bg-white/15 border-white/20 text-white;
+    @apply hover:bg-white/25 hover:border-white/30 hover:shadow-lg;
+    @apply active:bg-white/20;
+  }
+
+  .dark .header-button-ios:hover {
     transform: translateY(-1px);
     box-shadow: 0 8px 25px rgba(255,255,255,0.15);
   }
