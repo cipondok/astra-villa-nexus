@@ -180,17 +180,17 @@ export const BulkKYCOperations = () => {
   }
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="p-3 md:p-6 space-y-4 md:space-y-6">
+      <div className="flex flex-col space-y-4 md:flex-row md:items-center md:justify-between md:space-y-0">
         <div>
-          <h1 className="text-3xl font-bold">Bulk KYC Operations</h1>
-          <p className="text-muted-foreground">Manage multiple KYC submissions efficiently</p>
+          <h1 className="text-2xl md:text-3xl font-bold">Bulk KYC Operations</h1>
+          <p className="text-sm md:text-base text-muted-foreground">Manage multiple KYC submissions efficiently</p>
         </div>
         {selectedIds.length > 0 && (
-          <div className="flex gap-2">
+          <div className="flex flex-col space-y-2 md:flex-row md:space-y-0 md:gap-2">
             <Button 
               onClick={() => handleBulkAction('approve')}
-              className="bg-green-600 hover:bg-green-700"
+              className="bg-green-600 hover:bg-green-700 w-full md:w-auto text-sm md:text-base"
             >
               <CheckCircle className="w-4 h-4 mr-2" />
               Approve ({selectedIds.length})
@@ -198,6 +198,7 @@ export const BulkKYCOperations = () => {
             <Button 
               onClick={() => handleBulkAction('reject')}
               variant="destructive"
+              className="w-full md:w-auto text-sm md:text-base"
             >
               <XCircle className="w-4 h-4 mr-2" />
               Reject ({selectedIds.length})
@@ -212,7 +213,7 @@ export const BulkKYCOperations = () => {
           <CardTitle>Filters & Search</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="flex gap-4 items-end">
+          <div className="flex flex-col space-y-4 md:flex-row md:gap-4 md:items-end md:space-y-0">
             <div className="flex-1">
               <Label htmlFor="search">Search Vendors</Label>
               <div className="relative">
@@ -229,7 +230,7 @@ export const BulkKYCOperations = () => {
             <div>
               <Label htmlFor="status-filter">Status Filter</Label>
               <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="w-48">
+                <SelectTrigger className="w-full md:w-48">
                   <SelectValue placeholder="Filter by status" />
                 </SelectTrigger>
                 <SelectContent>

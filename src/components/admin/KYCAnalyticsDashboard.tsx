@@ -228,15 +228,15 @@ export const KYCAnalyticsDashboard = () => {
   }
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="p-3 md:p-6 space-y-4 md:space-y-6">
+      <div className="flex flex-col space-y-4 md:flex-row md:items-center md:justify-between md:space-y-0">
         <div>
-          <h1 className="text-3xl font-bold">KYC Analytics Dashboard</h1>
-          <p className="text-muted-foreground">Monitor KYC submission trends and performance metrics</p>
+          <h1 className="text-2xl md:text-3xl font-bold">KYC Analytics Dashboard</h1>
+          <p className="text-sm md:text-base text-muted-foreground">Monitor KYC submission trends and performance metrics</p>
         </div>
-        <div className="flex gap-4">
+        <div className="flex flex-col space-y-2 md:flex-row md:space-y-0 md:gap-4">
           <Select value={timeRange} onValueChange={setTimeRange}>
-            <SelectTrigger className="w-32">
+            <SelectTrigger className="w-full md:w-32">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -246,7 +246,7 @@ export const KYCAnalyticsDashboard = () => {
               <SelectItem value="365">Last year</SelectItem>
             </SelectContent>
           </Select>
-          <Button onClick={handleExportData} variant="outline">
+          <Button onClick={handleExportData} variant="outline" size="sm" className="w-full md:w-auto">
             <Download className="w-4 h-4 mr-2" />
             Export Data
           </Button>
@@ -254,7 +254,7 @@ export const KYCAnalyticsDashboard = () => {
       </div>
 
       {/* Key Metrics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Submissions</CardTitle>
@@ -307,7 +307,7 @@ export const KYCAnalyticsDashboard = () => {
       </div>
 
       {/* Charts Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 md:gap-6">
         {/* Submissions Timeline */}
         <Card>
           <CardHeader>
@@ -315,7 +315,7 @@ export const KYCAnalyticsDashboard = () => {
             <CardDescription>Daily KYC submissions and review outcomes</CardDescription>
           </CardHeader>
           <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
+            <ResponsiveContainer width="100%" height={250}>
               <LineChart data={timeSeriesData}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="date" />
@@ -336,7 +336,7 @@ export const KYCAnalyticsDashboard = () => {
             <CardDescription>Current verification status breakdown</CardDescription>
           </CardHeader>
           <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
+            <ResponsiveContainer width="100%" height={250}>
               <PieChart>
                 <Pie
                   data={statusDistribution}
@@ -366,7 +366,7 @@ export const KYCAnalyticsDashboard = () => {
           <CardDescription>Government verification API performance</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
             <div className="space-y-4">
               <h4 className="font-semibold">BPJS Kesehatan</h4>
               <div className="flex items-center gap-4">
