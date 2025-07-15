@@ -2619,6 +2619,197 @@ export type Database = {
           },
         ]
       }
+      payout_requests: {
+        Row: {
+          admin_notes: string | null
+          amount: number
+          created_at: string | null
+          currency: string | null
+          id: string
+          payout_details: Json | null
+          payout_method: string
+          processed_at: string | null
+          processed_by: string | null
+          reference_number: string | null
+          status: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          amount: number
+          created_at?: string | null
+          currency?: string | null
+          id?: string
+          payout_details?: Json | null
+          payout_method: string
+          processed_at?: string | null
+          processed_by?: string | null
+          reference_number?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          admin_notes?: string | null
+          amount?: number
+          created_at?: string | null
+          currency?: string | null
+          id?: string
+          payout_details?: Json | null
+          payout_method?: string
+          processed_at?: string | null
+          processed_by?: string | null
+          reference_number?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payout_requests_processed_by_fkey"
+            columns: ["processed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payout_requests_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      payout_settings: {
+        Row: {
+          bank_account_name: string | null
+          bank_account_number: string | null
+          bank_code: string | null
+          bank_name: string | null
+          created_at: string | null
+          digital_wallet_account: string | null
+          digital_wallet_type: string | null
+          id: string
+          is_active: boolean | null
+          minimum_payout_amount: number | null
+          payout_schedule: string | null
+          preferred_payout_method: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          bank_account_name?: string | null
+          bank_account_number?: string | null
+          bank_code?: string | null
+          bank_name?: string | null
+          created_at?: string | null
+          digital_wallet_account?: string | null
+          digital_wallet_type?: string | null
+          id?: string
+          is_active?: boolean | null
+          minimum_payout_amount?: number | null
+          payout_schedule?: string | null
+          preferred_payout_method?: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          bank_account_name?: string | null
+          bank_account_number?: string | null
+          bank_code?: string | null
+          bank_name?: string | null
+          created_at?: string | null
+          digital_wallet_account?: string | null
+          digital_wallet_type?: string | null
+          id?: string
+          is_active?: boolean | null
+          minimum_payout_amount?: number | null
+          payout_schedule?: string | null
+          preferred_payout_method?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payout_settings_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      payout_transactions: {
+        Row: {
+          amount: number
+          base_amount: number | null
+          booking_id: string | null
+          booking_type: string
+          commission_rate: number | null
+          created_at: string | null
+          currency: string | null
+          description: string | null
+          id: string
+          metadata: Json | null
+          payout_request_id: string | null
+          status: string | null
+          transaction_type: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          base_amount?: number | null
+          booking_id?: string | null
+          booking_type: string
+          commission_rate?: number | null
+          created_at?: string | null
+          currency?: string | null
+          description?: string | null
+          id?: string
+          metadata?: Json | null
+          payout_request_id?: string | null
+          status?: string | null
+          transaction_type: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          base_amount?: number | null
+          booking_id?: string | null
+          booking_type?: string
+          commission_rate?: number | null
+          created_at?: string | null
+          currency?: string | null
+          description?: string | null
+          id?: string
+          metadata?: Json | null
+          payout_request_id?: string | null
+          status?: string | null
+          transaction_type?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payout_transactions_payout_request_id_fkey"
+            columns: ["payout_request_id"]
+            isOneToOne: false
+            referencedRelation: "payout_requests"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payout_transactions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           availability_status: string | null
@@ -6885,6 +7076,10 @@ export type Database = {
       generate_error_signature: {
         Args: { error_message: string; table_name?: string }
         Returns: string
+      }
+      get_available_payout_balance: {
+        Args: { p_user_id: string }
+        Returns: number
       }
       is_admin_user: {
         Args: Record<PropertyKey, never>

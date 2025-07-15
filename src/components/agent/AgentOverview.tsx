@@ -16,6 +16,7 @@ import AgentProfileProgress from "./AgentProfileProgress";
 import RoleBasedPropertyForm from "@/components/property/RoleBasedPropertyForm";
 import ClientManagement from "./tools/ClientManagement";
 import BookingPaymentManager from "./BookingPaymentManager";
+import PayoutManagement from "./PayoutManagement";
 import { 
   Building, 
   PlusCircle, 
@@ -257,13 +258,14 @@ const AgentOverview = () => {
 
       {/* Main Dashboard Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-10 h-14 p-1 bg-muted/50 overflow-x-auto">
+        <TabsList className="grid w-full grid-cols-11 h-14 p-1 bg-muted/50 overflow-x-auto">
           <TabsTrigger value="overview" className="text-xs font-medium">Overview</TabsTrigger>
           <TabsTrigger value="add-property" className="text-xs font-medium">Add Property</TabsTrigger>
           <TabsTrigger value="my-properties" className="text-xs font-medium">My Properties</TabsTrigger>
           <TabsTrigger value="clients" className="text-xs font-medium">Clients</TabsTrigger>
           <TabsTrigger value="analytics" className="text-xs font-medium">Analytics</TabsTrigger>
           <TabsTrigger value="bookings" className="text-xs font-medium">Bookings</TabsTrigger>
+          <TabsTrigger value="payouts" className="text-xs font-medium">Payouts</TabsTrigger>
           <TabsTrigger value="feedback" className="text-xs font-medium">Feedback</TabsTrigger>
           <TabsTrigger value="support" className="text-xs font-medium">Support</TabsTrigger>
           <TabsTrigger value="tools" className="text-xs font-medium">Tools</TabsTrigger>
@@ -562,6 +564,10 @@ const AgentOverview = () => {
 
         <TabsContent value="bookings">
           <BookingPaymentManager />
+        </TabsContent>
+
+        <TabsContent value="payouts">
+          <PayoutManagement />
         </TabsContent>
 
         <TabsContent value="feedback" className="space-y-6">
