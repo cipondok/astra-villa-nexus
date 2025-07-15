@@ -142,7 +142,7 @@ const BPJSAPISettings = () => {
     try {
       const { data, error } = await supabase.functions.invoke('verify-bpjs', {
         body: {
-          vendorId: 'test-vendor-id',
+          vendorId: '00000000-0000-0000-0000-000000000000', // Test UUID
           bpjsType: apiType === 'BPJS_KESEHATAN_API' ? 'kesehatan' : 'ketenagakerjaan',
           bpjsNumber: '0001234567890' // Test number
         }
