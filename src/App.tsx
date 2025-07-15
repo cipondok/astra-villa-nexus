@@ -17,6 +17,7 @@ import AgentDashboard from '@/pages/AgentDashboard';
 import Dijual from '@/pages/Dijual';
 import Disewa from '@/pages/Disewa';
 import BookingPage from '@/pages/BookingPage';
+import BookingSuccessPage from '@/pages/BookingSuccessPage';
 import ThreeDShowcase from '@/pages/ThreeDShowcase';
 import NotFound from '@/pages/NotFound';
 
@@ -56,6 +57,7 @@ function App() {
                         <Route path="/admin-dashboard" element={<AdminDashboard />} />
                         <Route path="/agent" element={<AgentDashboard />} />
                         <Route path="/booking/:propertyId" element={<BookingPage />} />
+                        <Route path="/booking-success" element={<BookingSuccessPage />} />
                         <Route path="*" element={<NotFound />} />
                       </Routes>
                     </div>

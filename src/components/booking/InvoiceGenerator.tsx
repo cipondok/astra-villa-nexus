@@ -101,8 +101,9 @@ const InvoiceGenerator = ({ invoiceData, onPaymentInitiate }: InvoiceGeneratorPr
     setIsGenerating(true);
     
     try {
-      // Import html2pdf dynamically
-      const html2pdf = (await import('html2pdf.js')).default;
+      // Import html2pdf dynamically with proper typing
+      const html2pdfModule = await import('html2pdf.js');
+      const html2pdf = html2pdfModule.default || html2pdfModule;
       
       const element = invoiceRef.current;
       if (!element) return;
@@ -115,7 +116,7 @@ const InvoiceGenerator = ({ invoiceData, onPaymentInitiate }: InvoiceGeneratorPr
         jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
       };
 
-      await html2pdf().set(opt).from(element).save();
+      await (html2pdf as any)().set(opt).from(element).save();
       
       toast({
         title: "Invoice Downloaded",

@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/components/AuthProvider";
+import { useAuth } from "@/contexts/AuthContext";
 import { format, differenceInDays, addDays } from "date-fns";
 import { 
   Calendar as CalendarIcon,
@@ -26,13 +26,17 @@ import {
 interface Property {
   id: string;
   title: string;
+  description: string;
   price: number;
   location: string;
   city: string;
-  property_type: string;
-  minimum_rental_days: number;
   images: string[];
   image_urls: string[];
+  property_type?: string;
+  rental_periods?: string[];
+  minimum_rental_days?: number;
+  online_booking_enabled?: boolean;
+  booking_type?: string;
 }
 
 interface BookingSystemProps {
