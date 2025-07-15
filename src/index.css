@@ -268,14 +268,13 @@
     opacity: 1;
   }
 
-  /* iPhone-style Header */
+  /* iPhone-style Header - 50% Transparent */
   .header-ios {
-    @apply bg-gradient-to-r from-blue-500 via-blue-600 to-purple-600;
     @apply shadow-xl shadow-blue-500/20 border-b border-white/10;
     background: linear-gradient(135deg, 
-      hsl(220, 100%, 60%) 0%, 
-      hsl(240, 100%, 65%) 50%, 
-      hsl(260, 100%, 70%) 100%);
+      hsla(220, 100%, 60%, 0.5) 0%, 
+      hsla(240, 100%, 65%, 0.5) 50%, 
+      hsla(260, 100%, 70%, 0.5) 100%);
   }
 
   .header-button-ios {
