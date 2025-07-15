@@ -372,6 +372,16 @@ export const useDynamicDiagnostics = () => {
       .select('payment_status')
       .limit(1);
 
+    const { data: payments, error: paymentsError } = await supabase
+      .from('booking_payments')
+      .select('count')
+      .limit(1);
+
+    const { data: balances, error: balancesError } = await supabase
+      .from('vendor_astra_balances')
+      .select('count')
+      .limit(1);
+
     const { data: settings, error: settingsError } = await supabase
       .from('system_settings')
       .select('*')
@@ -381,16 +391,13 @@ export const useDynamicDiagnostics = () => {
     let progress = 0;
     let nextStep = '';
     
-    if (!bookingError && bookings) progress += 50;
-    if (!settingsError && settings && settings.length > 0) progress += 30;
-    
-    // Check if we have actual payment processing capability
-    if (progress >= 50) {
-      progress += 20; // Bonus for having payment status tracking
-    }
+    if (!bookingError && bookings) progress += 25;
+    if (!paymentsError) progress += 30;
+    if (!balancesError) progress += 30;
+    if (!settingsError && settings && settings.length > 0) progress += 15;
     
     if (progress < 30) {
-      nextStep = 'Set up payment status tracking in bookings';
+      nextStep = 'Set up payment infrastructure tables';
     } else if (progress < 60) {
       nextStep = 'Configure payment gateway settings';
     } else if (progress < 90) {
@@ -402,10 +409,12 @@ export const useDynamicDiagnostics = () => {
     return {
       working: progress >= 80,
       hasPaymentStatus: !bookingError && bookings,
+      hasPaymentTables: !paymentsError,
+      hasBalanceTables: !balancesError,
       hasPaymentSettings: !settingsError && settings && settings.length > 0,
       progress,
       nextStep,
-      error: bookingError?.message
+      error: bookingError?.message || paymentsError?.message
     };
   };
 

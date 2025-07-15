@@ -208,24 +208,31 @@ const ProjectDiagnosticSystem = () => {
       const checkDatabaseFunctions = async () => {
         try {
           // Check KYC table completeness
-          const { data: kycStatus } = await supabase
+          const { data: kycStatus, error: kycError } = await supabase
             .from('vendor_kyc_status')
             .select('count')
             .limit(1);
           
           // Check payment system tables
-          const { data: paymentStatus } = await supabase
-            .from('vendor_services')
-            .select('admin_approval_status')
+          const { data: bookingPayments, error: paymentsError } = await supabase
+            .from('booking_payments')
+            .select('count')
+            .limit(1);
+
+          // Check vendor balances
+          const { data: vendorBalances, error: balancesError } = await supabase
+            .from('vendor_astra_balances')
+            .select('count')
             .limit(1);
           
           return {
-            kycEmpty: !kycStatus || kycStatus.length === 0,
-            paymentIncomplete: true // Will be false when payment tables exist
+            kycEmpty: kycError || !kycStatus,
+            paymentIncomplete: paymentsError || balancesError,
+            hasPaymentTables: !paymentsError && !balancesError
           };
         } catch (error) {
           console.error('Database check failed:', error);
-          return { kycEmpty: true, paymentIncomplete: true };
+          return { kycEmpty: true, paymentIncomplete: true, hasPaymentTables: false };
         }
       };
 

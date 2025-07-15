@@ -928,6 +928,51 @@ export type Database = {
         }
         Relationships: []
       }
+      booking_payments: {
+        Row: {
+          amount: number
+          booking_id: string
+          created_at: string
+          currency: string
+          gateway_response: Json | null
+          gateway_transaction_id: string | null
+          id: string
+          payment_gateway: string | null
+          payment_method: string
+          payment_status: string
+          processed_at: string | null
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          booking_id: string
+          created_at?: string
+          currency?: string
+          gateway_response?: Json | null
+          gateway_transaction_id?: string | null
+          id?: string
+          payment_gateway?: string | null
+          payment_method: string
+          payment_status?: string
+          processed_at?: string | null
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          booking_id?: string
+          created_at?: string
+          currency?: string
+          gateway_response?: Json | null
+          gateway_transaction_id?: string | null
+          id?: string
+          payment_gateway?: string | null
+          payment_method?: string
+          payment_status?: string
+          processed_at?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       bpjs_verification_logs: {
         Row: {
           api_response: Json | null
@@ -4974,6 +5019,50 @@ export type Database = {
           vendor_type?: string
         }
         Relationships: []
+      }
+      vendor_astra_balances: {
+        Row: {
+          available_balance: number
+          created_at: string
+          id: string
+          last_transaction_at: string | null
+          pending_balance: number
+          total_earned: number
+          total_withdrawn: number
+          updated_at: string
+          vendor_id: string
+        }
+        Insert: {
+          available_balance?: number
+          created_at?: string
+          id?: string
+          last_transaction_at?: string | null
+          pending_balance?: number
+          total_earned?: number
+          total_withdrawn?: number
+          updated_at?: string
+          vendor_id: string
+        }
+        Update: {
+          available_balance?: number
+          created_at?: string
+          id?: string
+          last_transaction_at?: string | null
+          pending_balance?: number
+          total_earned?: number
+          total_withdrawn?: number
+          updated_at?: string
+          vendor_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendor_astra_balances_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       vendor_bookings: {
         Row: {
