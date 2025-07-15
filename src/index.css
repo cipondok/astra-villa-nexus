@@ -213,14 +213,105 @@
     @apply bg-card/95 backdrop-blur-lg border border-border/30 rounded-2xl shadow-lg;
   }
 
-  /* Gold Pulse Glow Effect - Localized */
-  @keyframes gold-pulse-local {
-    0%, 100% {
-      box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.4);
-    }
-    50% {
-      box-shadow: 0 0 15px 4px rgba(255, 215, 0, 0.2);
-    }
+  /* iOS-Style Tab Animations */
+  .tab-content-enter {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+  
+  .tab-content-enter-active {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    transition: opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+                transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  
+  .tab-content-exit {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  
+  .tab-content-exit-active {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.98);
+    transition: opacity 0.3s cubic-bezier(0.55, 0.085, 0.68, 0.53), 
+                transform 0.3s cubic-bezier(0.55, 0.085, 0.68, 0.53);
+  }
+
+  /* Enhanced iOS Tab Styling */
+  .tab-trigger-ios {
+    @apply relative px-4 py-2.5 text-sm font-medium rounded-xl transition-all duration-300 ease-out;
+    @apply text-muted-foreground bg-transparent border-0;
+    @apply hover:text-foreground hover:bg-primary/5;
+    @apply active:scale-95 active:bg-primary/10;
+    @apply focus:outline-none focus:ring-2 focus:ring-primary/20 focus:ring-offset-2;
+  }
+
+  .tab-trigger-ios[data-state="active"] {
+    @apply text-white bg-gradient-to-r from-blue-500 to-purple-600;
+    @apply shadow-lg shadow-blue-500/25;
+    @apply scale-105 font-semibold;
+    transform: scale(1.05) translateZ(0);
+  }
+
+  .tab-trigger-ios::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.05));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .tab-trigger-ios[data-state="active"]::before {
+    opacity: 1;
+  }
+
+  /* iPhone-style Header */
+  .header-ios {
+    @apply bg-gradient-to-r from-blue-500 via-blue-600 to-purple-600;
+    @apply shadow-xl shadow-blue-500/20 border-b border-white/10;
+    background: linear-gradient(135deg, 
+      hsl(220, 100%, 60%) 0%, 
+      hsl(240, 100%, 65%) 50%, 
+      hsl(260, 100%, 70%) 100%);
+  }
+
+  .header-button-ios {
+    @apply bg-white/15 backdrop-blur-sm border border-white/20 text-white;
+    @apply hover:bg-white/25 hover:border-white/30 hover:shadow-lg;
+    @apply active:scale-95 active:bg-white/20;
+    @apply transition-all duration-200 ease-out;
+    @apply rounded-xl px-4 py-2 font-medium;
+  }
+
+  .header-button-ios:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 25px rgba(255,255,255,0.15);
+  }
+
+  /* Smooth Tab List */
+  .tab-list-ios {
+    @apply bg-white/90 backdrop-blur-xl border border-white/20 shadow-lg rounded-2xl p-1.5;
+    @apply dark:bg-gray-900/90 dark:border-gray-700/30;
+  }
+
+  /* Content Animation */
+  .tab-content-wrapper {
+    @apply transition-all duration-500 ease-out;
+    @apply animate-in fade-in slide-in-from-bottom-2;
+  }
+
+  /* Enhanced card animations */
+  .card-smooth {
+    @apply transition-all duration-300 ease-out;
+    @apply hover:shadow-xl hover:-translate-y-1 hover:scale-[1.02];
+  }
+
+  .card-smooth:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
   }
 
   .gold-glow-hover {

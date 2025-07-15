@@ -93,42 +93,44 @@ const VendorDashboard = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-primary to-primary-foreground shadow-sm border-b">
+      {/* iPhone-Style Header */}
+      <div className="header-ios">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-white">Vendor Dashboard</h1>
-              <p className="text-white/80 mt-1">
-                Manage your business, services, and customer relationships
+            <div className="animate-in fade-in slide-in-from-left duration-500">
+              <h1 className="text-3xl font-bold text-white tracking-tight">Vendor Dashboard</h1>
+              <p className="text-white/80 mt-1 font-medium">
+                Manage your business and grow your services
               </p>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 animate-in fade-in slide-in-from-right duration-500">
               <Button
-                variant="outline"
+                variant="ghost"
                 onClick={handleLogout}
-                className="bg-white/20 border-white/30 text-white hover:bg-white/30"
+                className="header-button-ios"
               >
                 <LogOut className="h-4 w-4 mr-2" />
                 Logout
               </Button>
               <Button
-                variant="outline"
+                variant="ghost"
                 onClick={handleBackClick}
-                className="bg-white/20 border-white/30 text-white hover:bg-white/30"
+                className="header-button-ios"
               >
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Back
               </Button>
               <Button
-                variant="outline"
+                variant="ghost"
                 onClick={handleHomeClick}
-                className="bg-white/20 border-white/30 text-white hover:bg-white/30"
+                className="header-button-ios"
               >
                 <Home className="h-4 w-4 mr-2" />
                 Home
               </Button>
-              <ThemeSwitcher />
+              <div className="ml-2">
+                <ThemeSwitcher />
+              </div>
             </div>
           </div>
         </div>
@@ -136,30 +138,44 @@ const VendorDashboard = () => {
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-7 gap-1 bg-white/80 backdrop-blur-sm border shadow-sm rounded-lg p-1">
-            <TabsTrigger value="overview" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-purple-600 data-[state=active]:text-white transition-all duration-300 ease-in-out transform data-[state=active]:scale-105">Overview</TabsTrigger>
-            <TabsTrigger value="services" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-purple-600 data-[state=active]:text-white transition-all duration-300 ease-in-out transform data-[state=active]:scale-105">Services</TabsTrigger>
-            <TabsTrigger value="profile" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-purple-600 data-[state=active]:text-white transition-all duration-300 ease-in-out transform data-[state=active]:scale-105">Profile</TabsTrigger>
-            <TabsTrigger value="bookings" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-purple-600 data-[state=active]:text-white transition-all duration-300 ease-in-out transform data-[state=active]:scale-105">Bookings</TabsTrigger>
-            <TabsTrigger value="analytics" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-purple-600 data-[state=active]:text-white transition-all duration-300 ease-in-out transform data-[state=active]:scale-105">Analytics</TabsTrigger>
-            <TabsTrigger value="categories" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-purple-600 data-[state=active]:text-white transition-all duration-300 ease-in-out transform data-[state=active]:scale-105">Categories</TabsTrigger>
-            <TabsTrigger value="settings" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-purple-600 data-[state=active]:text-white transition-all duration-300 ease-in-out transform data-[state=active]:scale-105">Settings</TabsTrigger>
+        <Tabs defaultValue="overview" className="space-y-8">
+          <TabsList className="tab-list-ios grid w-full grid-cols-7 gap-1.5">
+            <TabsTrigger value="overview" className="tab-trigger-ios">
+              Overview
+            </TabsTrigger>
+            <TabsTrigger value="services" className="tab-trigger-ios">
+              Services
+            </TabsTrigger>
+            <TabsTrigger value="profile" className="tab-trigger-ios">
+              Profile
+            </TabsTrigger>
+            <TabsTrigger value="bookings" className="tab-trigger-ios">
+              Bookings
+            </TabsTrigger>
+            <TabsTrigger value="analytics" className="tab-trigger-ios">
+              Analytics
+            </TabsTrigger>
+            <TabsTrigger value="categories" className="tab-trigger-ios">
+              Categories
+            </TabsTrigger>
+            <TabsTrigger value="settings" className="tab-trigger-ios">
+              Settings
+            </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="overview">
+          <TabsContent value="overview" className="tab-content-wrapper">
             {/* Enhanced Overview with Samsung Gradient */}
-            <Card className="samsung-gradient border-0 shadow-lg mb-6">
-              <CardContent className="p-6">
+            <Card className="samsung-gradient border-0 shadow-xl mb-8 card-smooth">
+              <CardContent className="p-8">
                 <div className="flex items-center justify-between">
-                  <div>
+                  <div className="animate-in fade-in slide-in-from-left duration-700">
                     <h3 className="text-2xl font-bold text-white">Welcome Back!</h3>
-                    <p className="text-white/80">Manage your services and grow your business</p>
+                    <p className="text-white/80 mt-1 text-lg">Manage your services and grow your business</p>
                   </div>
-                  <div className="flex gap-3">
+                  <div className="flex gap-3 animate-in fade-in slide-in-from-right duration-700">
                     <Button 
                       variant="outline" 
-                      className="bg-white/20 border-white/30 text-white hover:bg-white/30"
+                      className="bg-white/15 border-white/30 text-white hover:bg-white/25 hover:scale-105 transition-all duration-300"
                       onClick={() => navigate('/vendor-registration')}
                     >
                       <Plus className="h-4 w-4 mr-2" />
@@ -171,7 +187,7 @@ const VendorDashboard = () => {
             </Card>
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-              <Card className="hover:shadow-lg transition-all duration-300">
+              <Card className="card-smooth hover:shadow-2xl transition-all duration-500">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">Total Services</CardTitle>
                   <Store className="h-4 w-4 text-muted-foreground" />
@@ -182,7 +198,7 @@ const VendorDashboard = () => {
                 </CardContent>
               </Card>
               
-              <Card className="hover:shadow-lg transition-all duration-300">
+              <Card className="card-smooth hover:shadow-2xl transition-all duration-500">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">Active Bookings</CardTitle>
                   <Calendar className="h-4 w-4 text-muted-foreground" />
@@ -193,7 +209,7 @@ const VendorDashboard = () => {
                 </CardContent>
               </Card>
               
-              <Card>
+              <Card className="card-smooth hover:shadow-2xl transition-all duration-500">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">Total Customers</CardTitle>
                   <Users className="h-4 w-4 text-muted-foreground" />
@@ -204,7 +220,7 @@ const VendorDashboard = () => {
                 </CardContent>
               </Card>
               
-              <Card>
+              <Card className="card-smooth hover:shadow-2xl transition-all duration-500">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">Monthly Revenue</CardTitle>
                   <DollarSign className="h-4 w-4 text-muted-foreground" />
@@ -259,28 +275,27 @@ const VendorDashboard = () => {
             </div>
           </TabsContent>
 
-          <TabsContent value="services">
+          <TabsContent value="services" className="tab-content-wrapper">
             <VendorServiceManagement />
           </TabsContent>
 
-
-          <TabsContent value="profile">
+          <TabsContent value="profile" className="tab-content-wrapper">
             <VendorBusinessProfile />
           </TabsContent>
 
-          <TabsContent value="bookings">
+          <TabsContent value="bookings" className="tab-content-wrapper">
             <VendorBookings />
           </TabsContent>
 
-          <TabsContent value="analytics">
+          <TabsContent value="analytics" className="tab-content-wrapper">
             <VendorAnalytics />
           </TabsContent>
 
-          <TabsContent value="categories">
+          <TabsContent value="categories" className="tab-content-wrapper">
             <CategoryDiscountSettings />
           </TabsContent>
 
-          <TabsContent value="settings">
+          <TabsContent value="settings" className="tab-content-wrapper">
             <VendorSettings />
           </TabsContent>
         </Tabs>
