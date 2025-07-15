@@ -8,11 +8,12 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { supabase } from "@/integrations/supabase/client";
 import { useAlert } from "@/contexts/AlertContext";
-import { FolderTree, Plus, Edit, Trash2 } from "lucide-react";
+import { FolderTree, Plus, Edit, Trash2, Package, Wrench } from "lucide-react";
 
 interface MainCategory {
   id: string;
@@ -20,6 +21,7 @@ interface MainCategory {
   slug?: string;
   description?: string;
   icon?: string;
+  type: 'service' | 'product';
   display_order: number;
   is_active: boolean;
   created_at: string;
@@ -34,6 +36,7 @@ const VendorMainCategoryManagement = () => {
     slug: "",
     description: "",
     icon: "",
+    type: "service" as "service" | "product",
     display_order: 0,
     is_active: true
   });
@@ -121,6 +124,7 @@ const VendorMainCategoryManagement = () => {
       slug: "",
       description: "",
       icon: "",
+      type: "service",
       display_order: 0,
       is_active: true
     });
@@ -146,6 +150,7 @@ const VendorMainCategoryManagement = () => {
       slug: category.slug || "",
       description: category.description || "",
       icon: category.icon || "",
+      type: category.type || "service",
       display_order: category.display_order || 0,
       is_active: category.is_active
     });
@@ -237,6 +242,33 @@ const VendorMainCategoryManagement = () => {
                 />
               </div>
               <div>
+                <Label htmlFor="type">Category Type</Label>
+                <Select
+                  value={formData.type}
+                  onValueChange={(value: "service" | "product") => 
+                    setFormData(prev => ({ ...prev, type: value }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select category type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="service">
+                      <div className="flex items-center gap-2">
+                        <Wrench className="h-4 w-4" />
+                        Service
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="product">
+                      <div className="flex items-center gap-2">
+                        <Package className="h-4 w-4" />
+                        Product
+                      </div>
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
                 <Label htmlFor="display_order">Display Order</Label>
                 <Input
                   id="display_order"
@@ -274,29 +306,45 @@ const VendorMainCategoryManagement = () => {
         <CardContent>
           {mainCategories && mainCategories.length > 0 ? (
             <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Order</TableHead>
-                  <TableHead>Icon</TableHead>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Slug</TableHead>
-                  <TableHead>Description</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Actions</TableHead>
-                </TableRow>
-              </TableHeader>
+               <TableHeader>
+                 <TableRow>
+                   <TableHead>Order</TableHead>
+                   <TableHead>Icon</TableHead>
+                   <TableHead>Name</TableHead>
+                   <TableHead>Type</TableHead>
+                   <TableHead>Slug</TableHead>
+                   <TableHead>Description</TableHead>
+                   <TableHead>Status</TableHead>
+                   <TableHead>Actions</TableHead>
+                 </TableRow>
+               </TableHeader>
               <TableBody>
                 {mainCategories.map((category) => (
                   <TableRow key={category.id}>
-                    <TableCell>{category.display_order}</TableCell>
-                    <TableCell>
-                      <span className="text-lg">{category.icon}</span>
-                    </TableCell>
-                    <TableCell className="font-medium">{category.name}</TableCell>
-                    <TableCell className="text-sm text-muted-foreground">{category.slug || 'No slug'}</TableCell>
-                    <TableCell className="max-w-xs truncate">
-                      {category.description || 'No description'}
-                    </TableCell>
+                     <TableCell>{category.display_order}</TableCell>
+                     <TableCell>
+                       <span className="text-lg">{category.icon}</span>
+                     </TableCell>
+                     <TableCell className="font-medium">{category.name}</TableCell>
+                     <TableCell>
+                       <Badge variant={category.type === 'product' ? 'default' : 'outline'} className="flex items-center gap-1 w-fit">
+                         {category.type === 'product' ? (
+                           <>
+                             <Package className="h-3 w-3" />
+                             Product
+                           </>
+                         ) : (
+                           <>
+                             <Wrench className="h-3 w-3" />
+                             Service
+                           </>
+                         )}
+                       </Badge>
+                     </TableCell>
+                     <TableCell className="text-sm text-muted-foreground">{category.slug || 'No slug'}</TableCell>
+                     <TableCell className="max-w-xs truncate">
+                       {category.description || 'No description'}
+                     </TableCell>
                     <TableCell>
                       <Badge variant={category.is_active ? "default" : "secondary"}>
                         {category.is_active ? "Active" : "Inactive"}
