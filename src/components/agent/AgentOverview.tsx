@@ -15,6 +15,7 @@ import AgentNotifications from "./AgentNotifications";
 import AgentProfileProgress from "./AgentProfileProgress";
 import RoleBasedPropertyForm from "@/components/property/RoleBasedPropertyForm";
 import ClientManagement from "./tools/ClientManagement";
+import BookingPaymentManager from "./BookingPaymentManager";
 import { 
   Building, 
   PlusCircle, 
@@ -559,48 +560,8 @@ const AgentOverview = () => {
           </Card>
         </TabsContent>
 
-        <TabsContent value="bookings" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Calendar className="h-5 w-5" />
-                Survey & Viewing Bookings
-              </CardTitle>
-              <CardDescription>Manage property surveys and client viewing appointments</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Button className="h-20 flex-col gap-2">
-                    <Calendar className="h-6 w-6" />
-                    Schedule Property Survey
-                  </Button>
-                  <Button variant="outline" className="h-20 flex-col gap-2">
-                    <Clock className="h-6 w-6" />
-                    Schedule Client Viewing
-                  </Button>
-                </div>
-                
-                <div className="border rounded-lg p-4">
-                  <h4 className="font-semibold mb-3">Upcoming Appointments</h4>
-                  <div className="space-y-3">
-                    {[1, 2, 3].map((item) => (
-                      <div key={item} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
-                        <div>
-                          <p className="font-medium">Property Survey - Villa in Seminyak</p>
-                          <p className="text-sm text-muted-foreground">Tomorrow, 10:00 AM</p>
-                        </div>
-                        <Button size="sm" variant="outline">
-                          <Edit className="h-4 w-4 mr-1" />
-                          Edit
-                        </Button>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+        <TabsContent value="bookings">
+          <BookingPaymentManager />
         </TabsContent>
 
         <TabsContent value="feedback" className="space-y-6">
