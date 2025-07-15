@@ -100,7 +100,7 @@ const RoleBasedNavigation = ({
       case 'agent':
         return '/dashboard/agent';
       case 'vendor':
-        return '/dashboard/vendor';
+        return '/vendor';
       case 'admin':
         return '/dashboard/admin';
       case 'general_user':
@@ -122,7 +122,7 @@ const RoleBasedNavigation = ({
         baseItems.push({ label: currentText.myListings, route: '/dashboard/agent/listings' });
         break;
       case 'vendor':
-        baseItems.push({ label: currentText.myServices, route: '/dashboard/vendor' });
+        baseItems.push({ label: currentText.myServices, route: '/vendor' });
         break;
       case 'admin':
         baseItems.push({ label: currentText.adminPanel, route: '/dashboard/admin' });
@@ -141,7 +141,7 @@ const RoleBasedNavigation = ({
     if (!user) return [];
     
     if (profile?.role === 'vendor') {
-      return [{ label: currentText.vendorDashboard, route: '/dashboard/vendor' }];
+      return [{ label: currentText.vendorDashboard, route: '/vendor' }];
     } else {
       return [{ label: currentText.becomeVendor, route: '/vendor/register' }];
     }
