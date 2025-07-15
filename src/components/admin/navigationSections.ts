@@ -143,6 +143,24 @@ export const navigationSections = {
       label: "Vendors Hub",
       icon: ShoppingBag,
       description: "Comprehensive vendor management platform with all vendor-related functionality including services, categories, KYC, analytics, and control panel"
+    },
+    {
+      key: "kyc-analytics",
+      label: "KYC Analytics Dashboard",
+      icon: BarChart3,
+      description: "View KYC submission metrics, approval rates, and performance analytics"
+    },
+    {
+      key: "bulk-kyc-operations",
+      label: "Bulk KYC Operations",
+      icon: ListChecks,
+      description: "Batch approve/reject KYC applications and manage bulk operations"
+    },
+    {
+      key: "document-ocr",
+      label: "Document OCR Scanner",
+      icon: FileText,
+      description: "Automatically extract data from uploaded KYC documents using OCR"
     }
   ],
 

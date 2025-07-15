@@ -36,6 +36,9 @@ import AIPropertyAssistant from "./AIPropertyAssistant";
 import BookingPaymentSettings from "./BookingPaymentSettings";
 import BPJSAPISettings from "./BPJSAPISettings";
 import AdminKYCReview from "./AdminKYCReview";
+import { KYCAnalyticsDashboard } from "./KYCAnalyticsDashboard";
+import { BulkKYCOperations } from "./BulkKYCOperations";
+import { DocumentOCR } from "./DocumentOCR";
 
 interface AdminDashboardContentProps {
   activeSection: string;
@@ -117,6 +120,12 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
         return <BPJSAPISettings />;
       case "admin-kyc-review":
         return <AdminKYCReview />;
+      case "kyc-analytics":
+        return <KYCAnalyticsDashboard />;
+      case "bulk-kyc-operations":
+        return <BulkKYCOperations />;
+      case "document-ocr":
+        return <DocumentOCR />;
       default:
         return <AdminOverview />;
     }
