@@ -5189,6 +5189,7 @@ export type Database = {
           bpjs_kesehatan_verified: boolean | null
           bpjs_ketenagakerjaan_status: string | null
           bpjs_ketenagakerjaan_verified: boolean | null
+          bpjs_verification_complete: boolean | null
           bpjs_verification_date: string | null
           bpjs_verification_method: string | null
           business_address: string | null
@@ -5210,14 +5211,20 @@ export type Database = {
           insurance_info: Json | null
           is_active: boolean | null
           is_verified: boolean | null
+          ktp_verified: boolean | null
           last_nature_change_at: string | null
           license_number: string | null
           logo_url: string | null
+          niu_verified: boolean | null
+          npwp_verified: boolean | null
           profile_completion_percentage: number | null
           rating: number | null
           service_areas: Json | null
           siuk_number: string | null
+          siuk_verified: boolean | null
+          siup_verified: boolean | null
           skk_number: string | null
+          skk_verified: boolean | null
           social_media: Json | null
           tarif_harian_max: number | null
           tarif_harian_min: number | null
@@ -5225,6 +5232,7 @@ export type Database = {
           total_reviews: number | null
           updated_at: string | null
           vendor_id: string | null
+          verification_completed_at: string | null
         }
         Insert: {
           banner_url?: string | null
@@ -5232,6 +5240,7 @@ export type Database = {
           bpjs_kesehatan_verified?: boolean | null
           bpjs_ketenagakerjaan_status?: string | null
           bpjs_ketenagakerjaan_verified?: boolean | null
+          bpjs_verification_complete?: boolean | null
           bpjs_verification_date?: string | null
           bpjs_verification_method?: string | null
           business_address?: string | null
@@ -5253,14 +5262,20 @@ export type Database = {
           insurance_info?: Json | null
           is_active?: boolean | null
           is_verified?: boolean | null
+          ktp_verified?: boolean | null
           last_nature_change_at?: string | null
           license_number?: string | null
           logo_url?: string | null
+          niu_verified?: boolean | null
+          npwp_verified?: boolean | null
           profile_completion_percentage?: number | null
           rating?: number | null
           service_areas?: Json | null
           siuk_number?: string | null
+          siuk_verified?: boolean | null
+          siup_verified?: boolean | null
           skk_number?: string | null
+          skk_verified?: boolean | null
           social_media?: Json | null
           tarif_harian_max?: number | null
           tarif_harian_min?: number | null
@@ -5268,6 +5283,7 @@ export type Database = {
           total_reviews?: number | null
           updated_at?: string | null
           vendor_id?: string | null
+          verification_completed_at?: string | null
         }
         Update: {
           banner_url?: string | null
@@ -5275,6 +5291,7 @@ export type Database = {
           bpjs_kesehatan_verified?: boolean | null
           bpjs_ketenagakerjaan_status?: string | null
           bpjs_ketenagakerjaan_verified?: boolean | null
+          bpjs_verification_complete?: boolean | null
           bpjs_verification_date?: string | null
           bpjs_verification_method?: string | null
           business_address?: string | null
@@ -5296,14 +5313,20 @@ export type Database = {
           insurance_info?: Json | null
           is_active?: boolean | null
           is_verified?: boolean | null
+          ktp_verified?: boolean | null
           last_nature_change_at?: string | null
           license_number?: string | null
           logo_url?: string | null
+          niu_verified?: boolean | null
+          npwp_verified?: boolean | null
           profile_completion_percentage?: number | null
           rating?: number | null
           service_areas?: Json | null
           siuk_number?: string | null
+          siuk_verified?: boolean | null
+          siup_verified?: boolean | null
           skk_number?: string | null
+          skk_verified?: boolean | null
           social_media?: Json | null
           tarif_harian_max?: number | null
           tarif_harian_min?: number | null
@@ -5311,6 +5334,7 @@ export type Database = {
           total_reviews?: number | null
           updated_at?: string | null
           vendor_id?: string | null
+          verification_completed_at?: string | null
         }
         Relationships: [
           {
@@ -5564,6 +5588,63 @@ export type Database = {
           {
             foreignKeyName: "vendor_customers_vendor_id_fkey"
             columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vendor_document_verifications: {
+        Row: {
+          created_at: string
+          document_number: string
+          document_type: string
+          expires_at: string | null
+          id: string
+          updated_at: string
+          vendor_id: string
+          verification_details: Json | null
+          verification_status: string
+          verified_at: string | null
+          verified_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          document_number: string
+          document_type: string
+          expires_at?: string | null
+          id?: string
+          updated_at?: string
+          vendor_id: string
+          verification_details?: Json | null
+          verification_status?: string
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          document_number?: string
+          document_type?: string
+          expires_at?: string | null
+          id?: string
+          updated_at?: string
+          vendor_id?: string
+          verification_details?: Json | null
+          verification_status?: string
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendor_document_verifications_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vendor_document_verifications_verified_by_fkey"
+            columns: ["verified_by"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
