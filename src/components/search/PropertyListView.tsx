@@ -55,11 +55,11 @@ const PropertyListView = ({
   return (
     <div className="space-y-4">
       {properties.map((property) => (
-        <Card key={property.id} className="overflow-hidden hover:shadow-lg transition-shadow duration-300">
+        <Card key={property.id} className="overflow-hidden hover:shadow-lg transition-shadow duration-300 border-0 bg-card">
           <CardContent className="p-0">
             <div className="flex flex-col md:flex-row">
               {/* Image Section */}
-              <div className="relative md:w-80 h-64 md:h-48 overflow-hidden">
+              <div className="relative md:w-64 h-48 md:h-36 overflow-hidden">
                 <img
                   src={getImageUrl(property)}
                   alt={property.title}
@@ -67,10 +67,9 @@ const PropertyListView = ({
                 />
                 
                 {/* Property Type Badge */}
-                <div className="absolute top-3 left-3">
+                <div className="absolute top-2 left-2">
                   <Badge 
-                    variant={property.listing_type === 'sale' ? 'default' : 'secondary'}
-                    className="bg-background/90 backdrop-blur-sm"
+                    className="bg-primary text-primary-foreground backdrop-blur-sm text-xs px-2 py-0.5"
                   >
                     {property.listing_type === 'sale' ? 'For Sale' : 'For Rent'}
                   </Badge>
@@ -78,8 +77,8 @@ const PropertyListView = ({
 
                 {/* 3D Badge */}
                 {(property.three_d_model_url || property.virtual_tour_url) && (
-                  <div className="absolute top-3 right-3">
-                    <Badge className="bg-blue-600/90 text-white backdrop-blur-sm">
+                  <div className="absolute top-2 right-2">
+                    <Badge className="bg-secondary text-secondary-foreground backdrop-blur-sm text-xs px-2 py-0.5">
                       3D View
                     </Badge>
                   </div>
@@ -113,49 +112,49 @@ const PropertyListView = ({
               </div>
 
               {/* Content Section */}
-              <div className="flex-1 p-6">
-                <div className="flex justify-between items-start mb-3">
+              <div className="flex-1 p-4">
+                <div className="flex justify-between items-start mb-2">
                   <div>
-                    <h3 className="text-xl font-semibold text-foreground mb-1 line-clamp-2">
+                    <h3 className="text-base font-semibold text-foreground mb-1 line-clamp-2">
                       {property.title}
                     </h3>
                     <div className="flex items-center text-muted-foreground mb-2">
-                      <MapPin className="h-4 w-4 mr-1" />
+                      <MapPin className="h-3 w-3 mr-1" />
                       <span className="text-sm">{property.location}</span>
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="text-2xl font-bold text-primary">
+                    <div className="text-lg font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
                       {formatPrice(property.price)}
                     </div>
                     {property.listing_type === 'rent' && (
-                      <div className="text-sm text-muted-foreground">/month</div>
+                      <div className="text-xs text-muted-foreground">/month</div>
                     )}
                   </div>
                 </div>
 
                 {/* Property Details */}
-                <div className="flex items-center gap-6 mb-4 text-sm text-muted-foreground">
+                <div className="flex items-center gap-4 mb-3 text-xs text-muted-foreground">
                   {property.bedrooms && (
                     <div className="flex items-center gap-1">
-                      <Bed className="h-4 w-4" />
+                      <Bed className="h-3 w-3" />
                       <span>{property.bedrooms} bed</span>
                     </div>
                   )}
                   {property.bathrooms && (
                     <div className="flex items-center gap-1">
-                      <Bath className="h-4 w-4" />
+                      <Bath className="h-3 w-3" />
                       <span>{property.bathrooms} bath</span>
                     </div>
                   )}
                   {property.area_sqm && (
                     <div className="flex items-center gap-1">
-                      <Square className="h-4 w-4" />
+                      <Square className="h-3 w-3" />
                       <span>{property.area_sqm} sqm</span>
                     </div>
                   )}
                   {property.property_type && (
-                    <Badge variant="outline" className="capitalize">
+                    <Badge variant="outline" className="capitalize text-xs px-2 py-0.5">
                       {property.property_type}
                     </Badge>
                   )}
@@ -173,16 +172,16 @@ const PropertyListView = ({
                   <Button 
                     variant="default"
                     onClick={() => onPropertyClick(property)}
-                    className="flex-1 min-w-fit"
+                    className="flex-1 min-w-fit h-8 text-xs"
                   >
-                    <Eye className="h-4 w-4 mr-2" />
+                    <Eye className="h-3 w-3 mr-1" />
                     View Details
                   </Button>
                   {(property.three_d_model_url || property.virtual_tour_url) && (
                     <Button 
                       variant="outline"
                       onClick={() => onView3D?.(property)}
-                      className="flex-1 min-w-fit"
+                      className="flex-1 min-w-fit h-8 text-xs"
                     >
                       3D View
                     </Button>
@@ -190,9 +189,9 @@ const PropertyListView = ({
                   <Button 
                     variant="secondary"
                     onClick={() => onContact?.(property)}
-                    className="flex-1 min-w-fit"
+                    className="flex-1 min-w-fit h-8 text-xs"
                   >
-                    <Phone className="h-4 w-4 mr-2" />
+                    <Phone className="h-3 w-3 mr-1" />
                     Contact
                   </Button>
                 </div>

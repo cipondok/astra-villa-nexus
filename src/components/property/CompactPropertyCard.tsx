@@ -175,7 +175,7 @@ const CompactPropertyCard = ({
     <>
       <Card className="group hover:shadow-xl transition-all duration-300 overflow-hidden">
         {/* Image Section */}
-        <div className="relative aspect-[4/3] overflow-hidden">
+        <div className="relative aspect-[3/2] overflow-hidden">
           <img
             src={getImageUrl()}
             alt={property.title}
@@ -183,23 +183,20 @@ const CompactPropertyCard = ({
           />
 
           {/* Top Badges */}
-          <div className="absolute top-3 left-3 flex flex-wrap gap-2">
+          <div className="absolute top-2 left-2 flex flex-wrap gap-1">
             <Badge 
-              className={`${property.listing_type === 'sale' 
-                ? 'bg-emerald-600 text-white' 
-                : 'bg-blue-600 text-white'
-              } font-semibold px-3 py-1 text-xs tracking-wide shadow-lg`}
+              className="bg-primary text-primary-foreground font-medium px-2 py-0.5 text-xs shadow-md"
             >
-              {property.listing_type === 'sale' ? currentText.forSale.toUpperCase() : currentText.forRent.toUpperCase()}
+              {property.listing_type === 'sale' ? currentText.forSale : currentText.forRent}
             </Badge>
             {property.property_type && (
-              <Badge variant="outline" className="bg-background/90 capitalize">
+              <Badge variant="outline" className="bg-background/90 capitalize text-xs px-2 py-0.5">
                 {property.property_type}
               </Badge>
             )}
             {(property.three_d_model_url || property.virtual_tour_url) && (
-              <Badge variant="secondary" className="bg-black/70 text-white backdrop-blur-sm border-none flex items-center gap-1">
-                <ViewIcon className="h-4 w-4" />
+              <Badge variant="secondary" className="bg-secondary/90 text-secondary-foreground backdrop-blur-sm border-none flex items-center gap-1 px-2 py-0.5 text-xs">
+                <ViewIcon className="h-2.5 w-2.5" />
                 <span>3D</span>
               </Badge>
             )}
@@ -237,22 +234,21 @@ const CompactPropertyCard = ({
         </div>
 
         {/* Content Section */}
-        <CardContent className="p-4 space-y-3">
+        <CardContent className="p-3 space-y-2">
           {/* Price */}
           <div className="relative price-section mb-2">
-            <div className="text-2xl font-black bg-gradient-to-br from-emerald-500 via-emerald-600 to-green-700 bg-clip-text text-transparent tracking-tight leading-none">
+            <div className="text-lg font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent tracking-tight leading-none">
               {formatPrice(property.price)}
             </div>
-            <div className="absolute -inset-1.5 bg-gradient-to-r from-emerald-500/12 via-green-500/12 to-emerald-600/12 blur-md -z-10 rounded-lg"></div>
             {property.listing_type === 'rent' && (
-              <div className="text-xs font-semibold text-emerald-600/80 mt-0.5 tracking-wider uppercase">
+              <div className="text-xs font-medium text-muted-foreground mt-0.5">
                 Per Month
               </div>
             )}
           </div>
 
           {/* Title */}
-          <h4 className="font-semibold text-foreground line-clamp-2 min-h-[3rem]">
+          <h4 className="font-semibold text-sm text-foreground line-clamp-2 min-h-[2.5rem]">
             {property.title}
           </h4>
 
@@ -362,22 +358,22 @@ const CompactPropertyCard = ({
           )}
 
           {/* Action Buttons */}
-          <div className="flex gap-2 mt-3">
+          <div className="flex gap-2 mt-2">
             <Button 
-              className="flex-1"
+              className="flex-1 h-7 text-xs"
               variant="default"
               onClick={handleViewDetails}
             >
-              <Eye className="h-4 w-4 mr-2" />
+              <Eye className="h-3 w-3 mr-1" />
               {currentText.viewDetails}
             </Button>
             {(property.three_d_model_url || property.virtual_tour_url) && (
               <Button 
                 variant="outline"
-                className="flex-1"
+                className="flex-1 h-7 text-xs"
                 onClick={handleView3D}
               >
-                <ViewIcon className="h-4 w-4 mr-2" />
+                <ViewIcon className="h-3 w-3 mr-1" />
                 {currentText.view3D}
               </Button>
             )}
