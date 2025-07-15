@@ -305,20 +305,28 @@ const Navigation = () => {
                   </div>
                 </div>
               ) : (
-                <Button
-                  onClick={() => setShowAuthModal(true)}
-                  size="sm"
-                  className="h-10 px-4 text-sm font-medium bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 text-white rounded-lg transition-all border border-blue-700 dark:border-blue-500"
-                >
-                  {currentText.signIn}
-                </Button>
+                <div className="relative group">
+                  <Button
+                    onClick={() => setShowAuthModal(true)}
+                    variant="ghost"
+                    size="sm"
+                    className="w-10 h-10 p-0 rounded-lg bg-white/20 hover:bg-white/30 transition-all border border-white/30 text-white"
+                  >
+                    <User className="h-4 w-4" />
+                  </Button>
+                  {/* User login tooltip */}
+                  <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-2 py-1 bg-black/90 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap pointer-events-none z-50">
+                    {currentText.signIn}
+                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 border-l-4 border-r-4 border-b-4 border-transparent border-b-black/90"></div>
+                  </div>
+                </div>
               )}
 
               {/* Mobile menu button */}
               <Button
                 variant="ghost"
                 size="sm"
-                className="lg:hidden w-10 h-10 p-0 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800"
+                className="lg:hidden w-10 h-10 p-0 rounded-lg bg-white/20 hover:bg-white/30 transition-all border border-white/30 text-white"
                 onClick={toggleMenu}
               >
                 {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}

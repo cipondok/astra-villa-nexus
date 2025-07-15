@@ -225,23 +225,23 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
 
   return (
     <div className="fixed inset-0 z-[10000] flex items-start justify-end p-3 pt-16">
-      {/* 70% Transparent Backdrop */}
+      {/* 50% Transparent iPhone-style Backdrop */}
       <div 
-        className="absolute inset-0 bg-black/30 backdrop-blur-[2px]"
+        className="absolute inset-0 bg-gradient-to-br from-blue-500/30 via-purple-500/30 to-pink-500/30 backdrop-blur-md"
         onClick={handleClose}
       />
       
-      {/* Compact Modal with Animations */}
-      <div className="relative w-full max-w-sm animate-in slide-in-from-right-5 fade-in-0 duration-300 ease-out">
-        {/* Ultra Glassy Compact Card */}
-        <div className="bg-white/5 dark:bg-gray-900/5 backdrop-blur-2xl border border-white/10 dark:border-gray-700/10 rounded-xl shadow-2xl shadow-black/5 dark:shadow-black/20 overflow-hidden transform transition-all duration-300 hover:scale-[1.02]">
-          {/* Compact Header */}
-          <div className="flex items-center justify-between p-4 border-b border-white/5 dark:border-gray-700/10">
+      {/* Compact Modal with iPhone Animations */}
+      <div className="relative w-full max-w-sm animate-in slide-in-from-right-5 fade-in-0 duration-500 ease-out">
+        {/* iPhone-style Glass Card */}
+        <div className="bg-white/10 dark:bg-gray-900/10 backdrop-blur-2xl border border-white/20 dark:border-gray-700/20 rounded-2xl shadow-2xl shadow-black/10 dark:shadow-black/30 overflow-hidden transform transition-all duration-300 hover:scale-[1.02] hover:shadow-3xl">
+          {/* iPhone-style Header */}
+          <div className="flex items-center justify-between p-4 border-b border-white/10 dark:border-gray-700/20 bg-gradient-to-r from-blue-500/10 to-purple-500/10">
             <div>
-              <h2 className="text-lg font-bold bg-gradient-to-r from-blue-600 to-orange-500 bg-clip-text text-transparent">
+              <h2 className="text-lg font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
                 Astra Villa
               </h2>
-              <p className="text-xs text-gray-600 dark:text-gray-400">
+              <p className="text-xs text-white/80 dark:text-gray-300">
                 {isLogin ? 'Welcome back!' : 'Join us today'}
               </p>
             </div>
@@ -250,9 +250,9 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
               size="sm" 
               onClick={handleClose} 
               disabled={isLoading}
-              className="h-6 w-6 p-0 hover:bg-gray-100/20 dark:hover:bg-gray-800/20 rounded-full transition-all duration-200"
+              className="h-8 w-8 p-0 hover:bg-white/20 dark:hover:bg-gray-800/20 rounded-full transition-all duration-200 text-white/80"
             >
-              <X className="h-3 w-3" />
+              <X className="h-4 w-4" />
             </Button>
           </div>
 
@@ -276,16 +276,16 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
               </Alert>
             )}
 
-            {/* Compact Toggle Buttons */}
-            <div className="flex bg-gray-100/20 dark:bg-gray-800/20 rounded-lg p-0.5">
+            {/* iPhone-style Toggle Buttons */}
+            <div className="flex bg-white/10 dark:bg-gray-800/10 rounded-xl p-1 backdrop-blur-sm">
               <button
                 type="button"
                 onClick={() => { setIsLogin(true); setErrors({}); }}
                 disabled={isLoading}
-                className={`flex-1 py-1.5 px-3 text-xs font-medium rounded-md transition-all duration-200 ${
+                className={`flex-1 py-2 px-4 text-sm font-medium rounded-lg transition-all duration-300 ${
                   isLogin 
-                    ? 'bg-white/50 dark:bg-gray-700/50 text-gray-900 dark:text-white shadow-sm' 
-                    : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                    ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg transform scale-105' 
+                    : 'text-white/70 hover:text-white hover:bg-white/10'
                 }`}
               >
                 {currentText.login}
@@ -294,10 +294,10 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
                 type="button"
                 onClick={() => { setIsLogin(false); setErrors({}); }}
                 disabled={isLoading}
-                className={`flex-1 py-1.5 px-3 text-xs font-medium rounded-md transition-all duration-200 ${
+                className={`flex-1 py-2 px-4 text-sm font-medium rounded-lg transition-all duration-300 ${
                   !isLogin 
-                    ? 'bg-white/50 dark:bg-gray-700/50 text-gray-900 dark:text-white shadow-sm' 
-                    : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                    ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg transform scale-105' 
+                    : 'text-white/70 hover:text-white hover:bg-white/10'
                 }`}
               >
                 {currentText.register}
@@ -307,8 +307,8 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
             {/* Login Form */}
             {isLogin && (
               <form onSubmit={handleLogin} className="space-y-3 animate-in fade-in-0 duration-200">
-                <div className="space-y-1">
-                  <Label htmlFor="login-email" className="text-xs font-medium">
+                <div className="space-y-2">
+                  <Label htmlFor="login-email" className="text-sm font-medium text-white/90">
                     {currentText.email}
                   </Label>
                   <Input
@@ -318,17 +318,17 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
                     value={loginData.email}
                     onChange={(e) => setLoginData(prev => ({ ...prev, email: e.target.value }))}
                     disabled={isLoading}
-                    className={`h-8 text-xs bg-white/20 dark:bg-gray-800/20 border-gray-200/30 dark:border-gray-700/30 ${
-                      errors.email ? "border-red-500/50" : ""
+                    className={`h-10 text-sm bg-white/20 dark:bg-gray-800/20 border-white/30 dark:border-gray-700/30 text-white placeholder:text-white/50 ${
+                      errors.email ? "border-red-400/50" : ""
                     }`}
                   />
                   {errors.email && (
-                    <p className="text-xs text-red-600 dark:text-red-400">{errors.email}</p>
+                    <p className="text-sm text-red-400">{errors.email}</p>
                   )}
                 </div>
 
-                <div className="space-y-1">
-                  <Label htmlFor="login-password" className="text-xs font-medium">
+                <div className="space-y-2">
+                  <Label htmlFor="login-password" className="text-sm font-medium text-white/90">
                     {currentText.password}
                   </Label>
                   <div className="relative">
@@ -339,29 +339,29 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
                       value={loginData.password}
                       onChange={(e) => setLoginData(prev => ({ ...prev, password: e.target.value }))}
                       disabled={isLoading}
-                      className={`h-8 text-xs bg-white/20 dark:bg-gray-800/20 border-gray-200/30 dark:border-gray-700/30 pr-8 ${
-                        errors.password ? "border-red-500/50" : ""
+                      className={`h-10 text-sm bg-white/20 dark:bg-gray-800/20 border-white/30 dark:border-gray-700/30 pr-10 text-white placeholder:text-white/50 ${
+                        errors.password ? "border-red-400/50" : ""
                       }`}
                     />
                     <Button
                       type="button"
                       variant="ghost"
                       size="sm"
-                      className="absolute right-0 top-0 h-8 w-8 p-0 hover:bg-transparent"
+                      className="absolute right-0 top-0 h-10 w-10 p-0 hover:bg-transparent text-white/70 hover:text-white"
                       onClick={() => setShowPassword(!showPassword)}
                       disabled={isLoading}
                     >
-                      {showPassword ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
+                      {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </Button>
                   </div>
                   {errors.password && (
-                    <p className="text-xs text-red-600 dark:text-red-400">{errors.password}</p>
+                    <p className="text-sm text-red-400">{errors.password}</p>
                   )}
                 </div>
 
                 <Button 
                   type="submit" 
-                  className="w-full h-8 bg-gradient-to-r from-blue-600 to-orange-500 hover:from-blue-700 hover:to-orange-600 text-white font-medium text-xs rounded-md transition-all duration-200 transform hover:scale-105"
+                  className="w-full h-12 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-medium text-sm rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg"
                   disabled={isLoading || isSuccess}
                 >
                   {isLoading ? (
