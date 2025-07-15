@@ -108,6 +108,7 @@ const CompactAdminNavigation = ({ activeTab, onTabChange, isAdmin }: CompactAdmi
       items: [
         { id: "system-settings", label: "System", icon: Settings },
         { id: "api-settings", label: "API Keys", icon: Key },
+        { id: "bpjs-api-settings", label: "BPJS API", icon: Shield, badge: "New" },
         { id: "smtp-settings", label: "SMTP", icon: Mail },
         { id: "seo-settings", label: "SEO", icon: Globe },
         { id: "booking-payment-settings", label: "Booking & Payments", icon: CreditCard, badge: "New" },

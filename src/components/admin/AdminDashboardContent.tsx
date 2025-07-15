@@ -34,6 +34,7 @@ import LocationManagement from "./LocationManagement";
 import APISettingsManagement from "./APISettingsManagement";
 import AIPropertyAssistant from "./AIPropertyAssistant";
 import BookingPaymentSettings from "./BookingPaymentSettings";
+import BPJSAPISettings from "./BPJSAPISettings";
 
 interface AdminDashboardContentProps {
   activeSection: string;
@@ -111,6 +112,8 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
         return <AIPropertyAssistant />;
       case "booking-payment-settings":
         return <BookingPaymentSettings />;
+      case "bpjs-api-settings":
+        return <BPJSAPISettings />;
       default:
         return <AdminOverview />;
     }
