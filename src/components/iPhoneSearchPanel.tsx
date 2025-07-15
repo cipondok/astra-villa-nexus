@@ -166,13 +166,13 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
 
   return (
     <div className="w-full max-w-4xl mx-auto">
-      {/* iPhone-style Glass Container - 40% Transparent */}
-      <div className="bg-gradient-to-br from-gray-100/40 via-white/40 to-gray-50/40 dark:from-blue-500/20 dark:via-purple-500/20 dark:to-pink-500/20 backdrop-blur-2xl border border-gray-400/50 dark:border-gray-700/30 rounded-2xl shadow-2xl overflow-hidden macos-window-enter">
+      {/* macOS Light Mode Glass Container */}
+      <div className="bg-white/70 dark:bg-gradient-to-br dark:from-blue-500/20 dark:via-purple-500/20 dark:to-pink-500/20 backdrop-blur-2xl border border-gray-300/60 dark:border-gray-700/30 rounded-2xl shadow-lg dark:shadow-2xl overflow-hidden macos-window-enter">
         <div className="p-6 space-y-4">
           
           {/* For Sale/For Rent/All Tabs - Smaller & Centered */}
           <div className="flex justify-center">
-            <div className="flex bg-white/40 dark:bg-white/20 backdrop-blur-sm rounded-lg p-0.5 border border-gray-400/50 dark:border-white/30">
+            <div className="flex bg-white/80 dark:bg-white/20 backdrop-blur-sm rounded-lg p-0.5 border border-gray-300/70 dark:border-white/30">
               <button
                 onClick={() => setActiveTab('all')}
                 className={`px-4 py-2 rounded-md font-medium macos-smooth-click text-sm ${
@@ -214,13 +214,13 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                 placeholder={currentText.searchPlaceholder}
                 value={searchQuery}
                 onChange={(e) => handleSearchChange(e.target.value)}
-                className="pl-10 h-10 text-gray-900 dark:text-white placeholder:text-gray-600 dark:placeholder:text-white/60 bg-white/30 dark:bg-white/10 border-gray-400/50 dark:border-white/20 focus:border-blue-400 focus:bg-white/40 dark:focus:bg-white/20 rounded-lg backdrop-blur-sm transition-all duration-300 text-sm"
+                className="pl-10 h-10 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-white/60 bg-white/80 dark:bg-white/10 border-gray-300/60 dark:border-white/20 focus:border-blue-500 focus:bg-white dark:focus:bg-white/20 rounded-lg backdrop-blur-sm transition-all duration-300 text-sm"
               />
             </div>
             <Button
               onClick={() => setShowFilters(!showFilters)}
               variant="outline"
-              className="h-10 w-10 p-0 bg-white/30 dark:bg-white/10 border-gray-400/50 dark:border-white/20 hover:bg-white/40 dark:hover:bg-white/20 rounded-lg relative"
+              className="h-10 w-10 p-0 bg-white/80 dark:bg-white/10 border-gray-300/60 dark:border-white/20 hover:bg-white dark:hover:bg-white/20 rounded-lg relative"
             >
               <Filter className="h-4 w-4 text-gray-700 dark:text-white" />
               {getActiveFiltersCount() > 0 && (
@@ -259,7 +259,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
           {/* Results Count */}
           {resultsCount !== undefined && (
             <div className="text-center">
-              <p className="text-xs text-gray-700 dark:text-white/80 bg-white/30 dark:bg-white/10 px-3 py-1 rounded-md backdrop-blur-sm inline-block">
+              <p className="text-xs text-gray-600 dark:text-white/80 bg-white/80 dark:bg-white/10 px-3 py-1 rounded-md backdrop-blur-sm inline-block border border-gray-300/40 dark:border-white/10">
                 {resultsCount} {currentText.resultsFound}
               </p>
             </div>
@@ -283,7 +283,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
           <div className="grid grid-cols-3 gap-2">
             {/* Location Selection - Smaller */}
             <Select value={filters.location || "all"} onValueChange={(value) => handleFilterChange('location', value)}>
-              <SelectTrigger className="h-8 bg-white/30 dark:bg-white/5 border-gray-400/50 dark:border-white/10 text-gray-700 dark:text-white/90 rounded-md hover:bg-white/40 dark:hover:bg-white/10 transition-all duration-300 text-xs">
+              <SelectTrigger className="h-8 bg-white/80 dark:bg-white/5 border-gray-300/60 dark:border-white/10 text-gray-800 dark:text-white/90 rounded-md hover:bg-white dark:hover:bg-white/10 transition-all duration-300 text-xs">
                 <div className="flex items-center gap-1">
                   <MapPin className="h-3 w-3 text-blue-400" />
                   <SelectValue placeholder={currentText.location} />
@@ -301,7 +301,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
 
             {/* Property Type Selection - Smaller */}
             <Select value={filters.propertyType || "all"} onValueChange={(value) => handleFilterChange('propertyType', value)}>
-              <SelectTrigger className="h-8 bg-white/30 dark:bg-white/5 border-gray-400/50 dark:border-white/10 text-gray-700 dark:text-white/90 rounded-md hover:bg-white/40 dark:hover:bg-white/10 transition-all duration-300 text-xs">
+              <SelectTrigger className="h-8 bg-white/80 dark:bg-white/5 border-gray-300/60 dark:border-white/10 text-gray-800 dark:text-white/90 rounded-md hover:bg-white dark:hover:bg-white/10 transition-all duration-300 text-xs">
                 <div className="flex items-center gap-1">
                   <Home className="h-3 w-3 text-purple-400" />
                   <SelectValue placeholder={currentText.propertyType} />
@@ -319,7 +319,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
 
             {/* Price Range - Smaller with Icon */}
             <Select value={filters.priceRange || "all"} onValueChange={(value) => handleFilterChange('priceRange', value)}>
-              <SelectTrigger className="h-8 bg-white/30 dark:bg-white/5 border-gray-400/50 dark:border-white/10 text-gray-700 dark:text-white/90 rounded-md hover:bg-white/40 dark:hover:bg-white/10 transition-all duration-300 text-xs">
+              <SelectTrigger className="h-8 bg-white/80 dark:bg-white/5 border-gray-300/60 dark:border-white/10 text-gray-800 dark:text-white/90 rounded-md hover:bg-white dark:hover:bg-white/10 transition-all duration-300 text-xs">
                 <div className="flex items-center gap-1">
                   <DollarSign className="h-3 w-3 text-green-400" />
                   <SelectValue placeholder={currentText.priceRange} />
@@ -338,7 +338,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
 
           {/* Advanced Filters Modal */}
           {showFilters && (
-            <div className="bg-white/40 dark:bg-white/10 backdrop-blur-xl border border-gray-400/50 dark:border-white/20 rounded-xl p-4 space-y-4 macos-popup-enter">
+            <div className="bg-white/90 dark:bg-white/10 backdrop-blur-xl border border-gray-300/60 dark:border-white/20 rounded-xl p-4 space-y-4 macos-popup-enter shadow-lg">
               <div className="flex items-center justify-between">
                 <h3 className="text-gray-900 dark:text-white font-medium text-sm">{currentText.advancedFilters}</h3>
                 <Button

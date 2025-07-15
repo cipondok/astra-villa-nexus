@@ -13,26 +13,26 @@
 
 @layer base {
   :root {
-    /* Light Mode Colors - Perfect Mac OS Style */
-    --background: 220 20% 98%;
-    --foreground: 222 84% 4.9%;
+    /* macOS Light Mode Colors - Apple Design System */
+    --background: 0 0% 100%;
+    --foreground: 0 0% 9%;
     --card: 0 0% 100%;
-    --card-foreground: 222 84% 4.9%;
+    --card-foreground: 0 0% 9%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222 84% 4.9%;
-    --primary: 213 100% 50%;
+    --popover-foreground: 0 0% 9%;
+    --primary: 211 100% 50%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 220 14% 96%;
-    --secondary-foreground: 220 15% 25%;
-    --muted: 220 14% 96%;  
-    --muted-foreground: 220 10% 40%;
-    --accent: 213 100% 50%;
+    --secondary: 210 40% 98%;
+    --secondary-foreground: 0 0% 9%;
+    --muted: 210 40% 98%;  
+    --muted-foreground: 215 13% 65%;
+    --accent: 211 100% 50%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
     --border: 220 13% 91%;
     --input: 0 0% 100%;
-    --ring: 213 100% 50%;
+    --ring: 211 100% 50%;
     --radius: 12px;
   }
 
@@ -276,13 +276,13 @@
     -webkit-backdrop-filter: blur(20px);
   }
 
-  /* Light Mode Header - 50% Transparent with Better Contrast */
+  /* macOS Light Mode Header - Clean & Minimal */
   .light .header-ios {
     background: linear-gradient(135deg, 
-      hsla(220, 15%, 95%, 0.5) 0%, 
-      hsla(240, 20%, 97%, 0.5) 50%, 
-      hsla(260, 25%, 98%, 0.5) 100%);
-    @apply shadow-gray-900/10 border-gray-400/40;
+      hsla(0, 0%, 99%, 0.85) 0%, 
+      hsla(210, 40%, 98%, 0.85) 50%, 
+      hsla(0, 0%, 97%, 0.85) 100%);
+    @apply shadow-gray-900/5 border-gray-300/50;
   }
 
   /* Dark Mode Header - 50% Transparent */
@@ -299,16 +299,16 @@
     @apply active:scale-95 rounded-xl px-4 py-2 font-medium;
   }
 
-  /* Light Mode Header Button */
+  /* macOS Light Mode Header Button */
   .light .header-button-ios {
-    @apply bg-white/30 border-gray-400/50 text-gray-900 font-semibold;
-    @apply hover:bg-white/40 hover:border-gray-500/60 hover:shadow-lg;
-    @apply active:bg-white/35;
+    @apply bg-white/60 border-gray-300/60 text-gray-900 font-medium;
+    @apply hover:bg-white/80 hover:border-gray-400/70 hover:shadow-sm;
+    @apply active:bg-white/70;
   }
 
   .light .header-button-ios:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.15);
+    transform: translateY(-0.5px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   }
 
   /* Dark Mode Header Button */
