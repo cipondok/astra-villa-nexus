@@ -14,6 +14,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { Building2, Save, AlertCircle } from "lucide-react";
 import PropertyImageUpload from "./PropertyImageUpload";
+import LocationSelector from "./LocationSelector";
 
 interface PropertyFormData {
   title: string;
@@ -91,6 +92,14 @@ const RoleBasedPropertyForm = () => {
     rental_terms: "",
     available_from: "",
     available_until: ""
+  });
+
+  // Location selector state
+  const [locationState, setLocationState] = useState({
+    selectedState: "",
+    selectedCity: "",
+    selectedDistrict: "",
+    selectedSubdistrict: ""
   });
 
   const [advancedFeatures, setAdvancedFeatures] = useState({
@@ -212,6 +221,14 @@ const RoleBasedPropertyForm = () => {
         rental_terms: "",
         available_from: "",
         available_until: ""
+      });
+
+      // Reset location selector
+      setLocationState({
+        selectedState: "",
+        selectedCity: "",
+        selectedDistrict: "",
+        selectedSubdistrict: ""
       });
       
       setAdvancedFeatures({
@@ -651,34 +668,46 @@ const RoleBasedPropertyForm = () => {
           {/* Location Information */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold">Location Information</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="md:col-span-2">
-                <Label htmlFor="location">Full Address *</Label>
+            
+            {/* Database-driven Location Selector */}
+            <LocationSelector
+              selectedState={locationState.selectedState}
+              selectedCity={locationState.selectedCity}
+              selectedDistrict={locationState.selectedDistrict}
+              selectedSubdistrict={locationState.selectedSubdistrict}
+              onStateChange={(state) => {
+                setLocationState(prev => ({ ...prev, selectedState: state }));
+                setFormData(prev => ({ ...prev, state }));
+              }}
+              onCityChange={(city) => {
+                setLocationState(prev => ({ ...prev, selectedCity: city }));
+                setFormData(prev => ({ ...prev, city }));
+              }}
+              onDistrictChange={(district) => {
+                setLocationState(prev => ({ ...prev, selectedDistrict: district }));
+                setFormData(prev => ({ ...prev, area: district }));
+              }}
+              onSubdistrictChange={(subdistrict) => {
+                setLocationState(prev => ({ ...prev, selectedSubdistrict: subdistrict }));
+              }}
+              onLocationChange={(location) => {
+                setFormData(prev => ({ ...prev, location }));
+              }}
+            />
+
+            {/* Additional Address Details */}
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="full_address">Street Address & Details</Label>
                 <Input
-                  id="location"
+                  id="full_address"
                   value={formData.location}
                   onChange={(e) => handleInputChange('location', e.target.value)}
-                  placeholder="Enter complete address"
-                  required
+                  placeholder="Enter street address, building number, etc."
                 />
-              </div>
-              <div>
-                <Label htmlFor="city">City</Label>
-                <Input
-                  id="city"
-                  value={formData.city}
-                  onChange={(e) => handleInputChange('city', e.target.value)}
-                  placeholder="Enter city"
-                />
-              </div>
-              <div>
-                <Label htmlFor="state">State/Province</Label>
-                <Input
-                  id="state"
-                  value={formData.state}
-                  onChange={(e) => handleInputChange('state', e.target.value)}
-                  placeholder="Enter state or province"
-                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Complete street address including house/building number
+                </p>
               </div>
             </div>
           </div>
