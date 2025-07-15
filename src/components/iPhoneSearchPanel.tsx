@@ -100,11 +100,11 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
   ];
 
   const priceRanges = [
-    { value: '0-500000', label: currentText.under500k },
-    { value: '500000-1000000', label: currentText["500k-1m"] },
-    { value: '1000000-2000000', label: currentText["1m-2m"] },
-    { value: '2000000-5000000', label: currentText["2m-5m"] },
-    { value: '5000000+', label: currentText["5m+"] },
+    { value: '100000000-200000000', label: '100jt - 200jt' },
+    { value: '200000000-500000000', label: '200jt - 500jt' },
+    { value: '500000000-800000000', label: '500jt - 800jt' },
+    { value: '800000000-1000000000', label: '800jt - 1m' },
+    { value: '1000000000+', label: '1m+' },
   ];
 
   const bedroomOptions = ['1', '2', '3', '4', '5+'];
@@ -299,7 +299,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
               </SelectContent>
             </Select>
 
-            {/* Price Range - Smaller */}
+            {/* Price Range - Smaller with Icon */}
             <Select value={filters.priceRange || "all"} onValueChange={(value) => handleFilterChange('priceRange', value)}>
               <SelectTrigger className="h-8 bg-white/5 border-white/10 text-white/90 rounded-md hover:bg-white/10 transition-all duration-300 text-xs">
                 <div className="flex items-center gap-1">

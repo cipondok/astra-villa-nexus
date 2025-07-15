@@ -259,7 +259,7 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen text-foreground relative">
+    <div className="min-h-screen text-foreground relative" style={{ zoom: '90%' }}>
       {/* Background Wallpaper Layer */}
       <div 
         className="fixed inset-0 z-0 opacity-30 dark:opacity-20"
