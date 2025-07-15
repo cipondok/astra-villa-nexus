@@ -140,7 +140,7 @@ const Navigation = () => {
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-[10000] header-ios border-b border-white/10 backdrop-blur-xl shadow-lg transform-gpu will-change-transform">
+      <nav className="sticky top-0 left-0 right-0 z-[10000] header-ios border-b border-white/10 backdrop-blur-xl shadow-lg transform-gpu will-change-transform">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="flex items-center justify-between h-12">
             {/* ASTRA Villa Logo */}
@@ -415,8 +415,6 @@ const Navigation = () => {
         </div>
       </nav>
 
-      {/* Spacer to prevent content from hiding behind fixed header */}
-      <div className="h-12"></div>
 
       {/* Enhanced Auth Modal */}
       <EnhancedAuthModal
