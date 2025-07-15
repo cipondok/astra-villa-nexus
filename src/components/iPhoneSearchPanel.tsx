@@ -13,10 +13,10 @@ interface IPhoneSearchPanelProps {
 
 const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: IPhoneSearchPanelProps) => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [activeTab, setActiveTab] = useState<'sale' | 'rent'>('sale');
   const [filters, setFilters] = useState({
     location: '',
     propertyType: '',
-    listingType: '',
     priceRange: '',
     bedrooms: '',
     bathrooms: '',
@@ -123,15 +123,42 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
   const handleSearch = () => {
     onSearch({
       searchQuery,
+      listingType: activeTab,
       ...filters
     });
   };
 
   return (
     <div className="w-full max-w-4xl mx-auto">
-      {/* iPhone-style Glass Container */}
-      <div className="bg-gradient-to-br from-blue-500/10 via-purple-500/10 to-pink-500/10 backdrop-blur-2xl border border-white/20 dark:border-gray-700/20 rounded-2xl shadow-2xl overflow-hidden">
-        <div className="p-6 space-y-6">
+      {/* iPhone-style Glass Container - 40% Transparent */}
+      <div className="bg-gradient-to-br from-blue-500/20 via-purple-500/20 to-pink-500/20 backdrop-blur-2xl border border-white/30 dark:border-gray-700/30 rounded-2xl shadow-2xl overflow-hidden">
+        <div className="p-6 space-y-4">
+          
+          {/* For Sale/For Rent Tabs - Centered */}
+          <div className="flex justify-center">
+            <div className="flex bg-white/20 backdrop-blur-sm rounded-xl p-1 border border-white/30">
+              <button
+                onClick={() => setActiveTab('sale')}
+                className={`px-8 py-3 rounded-lg font-medium transition-all duration-300 ${
+                  activeTab === 'sale' 
+                    ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg transform scale-105' 
+                    : 'text-white/80 hover:text-white hover:bg-white/10'
+                }`}
+              >
+                {currentText.forSale}
+              </button>
+              <button
+                onClick={() => setActiveTab('rent')}
+                className={`px-8 py-3 rounded-lg font-medium transition-all duration-300 ${
+                  activeTab === 'rent' 
+                    ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg transform scale-105' 
+                    : 'text-white/80 hover:text-white hover:bg-white/10'
+                }`}
+              >
+                {currentText.forRent}
+              </button>
+            </div>
+          </div>
           
           {/* Search Row - Input and Button */}
           <div className="flex gap-3">
@@ -162,113 +189,95 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
             </div>
           )}
 
-          {/* Filters Row */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {/* Location Selection */}
+          {/* Micro-style Filters Row */}
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+            {/* Location Selection - Micro */}
             <Select value={filters.location || "all"} onValueChange={(value) => handleFilterChange('location', value)}>
-              <SelectTrigger className="h-12 bg-white/10 border-white/20 text-white rounded-xl hover:bg-white/20 transition-all duration-300">
-                <div className="flex items-center gap-2">
-                  <MapPin className="h-4 w-4 text-blue-400" />
+              <SelectTrigger className="h-10 bg-white/5 border-white/10 text-white/90 rounded-lg hover:bg-white/10 transition-all duration-300 text-sm">
+                <div className="flex items-center gap-1">
+                  <MapPin className="h-3 w-3 text-blue-400" />
                   <SelectValue placeholder={currentText.location} />
                 </div>
               </SelectTrigger>
-              <SelectContent className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border-white/20 rounded-xl">
-                <SelectItem value="all" className="text-gray-900 dark:text-gray-100">{currentText.any}</SelectItem>
+              <SelectContent className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border-white/20 rounded-lg">
+                <SelectItem value="all" className="text-gray-900 dark:text-gray-100 text-sm">{currentText.any}</SelectItem>
                 {locations.map((location) => (
-                  <SelectItem key={location.value} value={location.value} className="text-gray-900 dark:text-gray-100">
+                  <SelectItem key={location.value} value={location.value} className="text-gray-900 dark:text-gray-100 text-sm">
                     {location.label}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
 
-            {/* Property Type Selection */}
+            {/* Property Type Selection - Micro */}
             <Select value={filters.propertyType || "all"} onValueChange={(value) => handleFilterChange('propertyType', value)}>
-              <SelectTrigger className="h-12 bg-white/10 border-white/20 text-white rounded-xl hover:bg-white/20 transition-all duration-300">
-                <div className="flex items-center gap-2">
-                  <Home className="h-4 w-4 text-purple-400" />
+              <SelectTrigger className="h-10 bg-white/5 border-white/10 text-white/90 rounded-lg hover:bg-white/10 transition-all duration-300 text-sm">
+                <div className="flex items-center gap-1">
+                  <Home className="h-3 w-3 text-purple-400" />
                   <SelectValue placeholder={currentText.propertyType} />
                 </div>
               </SelectTrigger>
-              <SelectContent className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border-white/20 rounded-xl">
-                <SelectItem value="all" className="text-gray-900 dark:text-gray-100">{currentText.any}</SelectItem>
+              <SelectContent className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border-white/20 rounded-lg">
+                <SelectItem value="all" className="text-gray-900 dark:text-gray-100 text-sm">{currentText.any}</SelectItem>
                 {propertyTypes.map((type) => (
-                  <SelectItem key={type.value} value={type.value} className="text-gray-900 dark:text-gray-100">
+                  <SelectItem key={type.value} value={type.value} className="text-gray-900 dark:text-gray-100 text-sm">
                     {type.label}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
 
-            {/* Listing Type Selection */}
-            <Select value={filters.listingType || "all"} onValueChange={(value) => handleFilterChange('listingType', value)}>
-              <SelectTrigger className="h-12 bg-white/10 border-white/20 text-white rounded-xl hover:bg-white/20 transition-all duration-300">
-                <div className="flex items-center gap-2">
-                  <DollarSign className="h-4 w-4 text-green-400" />
-                  <SelectValue placeholder={currentText.listingType} />
+            {/* Price Range - Micro */}
+            <Select value={filters.priceRange || "all"} onValueChange={(value) => handleFilterChange('priceRange', value)}>
+              <SelectTrigger className="h-10 bg-white/5 border-white/10 text-white/90 rounded-lg hover:bg-white/10 transition-all duration-300 text-sm">
+                <div className="flex items-center gap-1">
+                  <DollarSign className="h-3 w-3 text-green-400" />
+                  <SelectValue placeholder={currentText.priceRange} />
                 </div>
               </SelectTrigger>
-              <SelectContent className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border-white/20 rounded-xl">
-                <SelectItem value="all" className="text-gray-900 dark:text-gray-100">{currentText.any}</SelectItem>
-                {listingTypes.map((type) => (
-                  <SelectItem key={type.value} value={type.value} className="text-gray-900 dark:text-gray-100">
-                    {type.label}
+              <SelectContent className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border-white/20 rounded-lg">
+                <SelectItem value="all" className="text-gray-900 dark:text-gray-100 text-sm">{currentText.any}</SelectItem>
+                {priceRanges.map((range) => (
+                  <SelectItem key={range.value} value={range.value} className="text-gray-900 dark:text-gray-100 text-sm">
+                    {range.label}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
 
-          {/* Additional Filters Row */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {/* Price Range */}
-            <Select value={filters.priceRange || "all"} onValueChange={(value) => handleFilterChange('priceRange', value)}>
-              <SelectTrigger className="h-12 bg-white/10 border-white/20 text-white rounded-xl hover:bg-white/20 transition-all duration-300">
-                <div className="flex items-center gap-2">
-                  <DollarSign className="h-4 w-4 text-yellow-400" />
-                  <SelectValue placeholder={currentText.priceRange} />
-                </div>
-              </SelectTrigger>
-              <SelectContent className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border-white/20 rounded-xl">
-                <SelectItem value="all" className="text-gray-900 dark:text-gray-100">{currentText.any}</SelectItem>
-                {priceRanges.map((range) => (
-                  <SelectItem key={range.value} value={range.value} className="text-gray-900 dark:text-gray-100">
-                    {range.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            {/* Bedrooms */}
+          {/* Additional Micro Filters Row */}
+          <div className="grid grid-cols-2 gap-2">
+            {/* Bedrooms - Micro */}
             <Select value={filters.bedrooms || "all"} onValueChange={(value) => handleFilterChange('bedrooms', value)}>
-              <SelectTrigger className="h-12 bg-white/10 border-white/20 text-white rounded-xl hover:bg-white/20 transition-all duration-300">
-                <div className="flex items-center gap-2">
-                  <Bed className="h-4 w-4 text-indigo-400" />
+              <SelectTrigger className="h-10 bg-white/5 border-white/10 text-white/90 rounded-lg hover:bg-white/10 transition-all duration-300 text-sm">
+                <div className="flex items-center gap-1">
+                  <Bed className="h-3 w-3 text-indigo-400" />
                   <SelectValue placeholder={currentText.bedrooms} />
                 </div>
               </SelectTrigger>
-              <SelectContent className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border-white/20 rounded-xl">
-                <SelectItem value="all" className="text-gray-900 dark:text-gray-100">{currentText.any}</SelectItem>
+              <SelectContent className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border-white/20 rounded-lg">
+                <SelectItem value="all" className="text-gray-900 dark:text-gray-100 text-sm">{currentText.any}</SelectItem>
                 {bedroomOptions.map((option) => (
-                  <SelectItem key={option} value={option} className="text-gray-900 dark:text-gray-100">
+                  <SelectItem key={option} value={option} className="text-gray-900 dark:text-gray-100 text-sm">
                     {option}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
 
-            {/* Bathrooms */}
+            {/* Bathrooms - Micro */}
             <Select value={filters.bathrooms || "all"} onValueChange={(value) => handleFilterChange('bathrooms', value)}>
-              <SelectTrigger className="h-12 bg-white/10 border-white/20 text-white rounded-xl hover:bg-white/20 transition-all duration-300">
-                <div className="flex items-center gap-2">
-                  <Bath className="h-4 w-4 text-cyan-400" />
+              <SelectTrigger className="h-10 bg-white/5 border-white/10 text-white/90 rounded-lg hover:bg-white/10 transition-all duration-300 text-sm">
+                <div className="flex items-center gap-1">
+                  <Bath className="h-3 w-3 text-cyan-400" />
                   <SelectValue placeholder={currentText.bathrooms} />
                 </div>
               </SelectTrigger>
-              <SelectContent className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border-white/20 rounded-xl">
-                <SelectItem value="all" className="text-gray-900 dark:text-gray-100">{currentText.any}</SelectItem>
+              <SelectContent className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border-white/20 rounded-lg">
+                <SelectItem value="all" className="text-gray-900 dark:text-gray-100 text-sm">{currentText.any}</SelectItem>
                 {bathroomOptions.map((option) => (
-                  <SelectItem key={option} value={option} className="text-gray-900 dark:text-gray-100">
+                  <SelectItem key={option} value={option} className="text-gray-900 dark:text-gray-100 text-sm">
                     {option}
                   </SelectItem>
                 ))}
