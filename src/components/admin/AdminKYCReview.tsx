@@ -97,7 +97,6 @@ const AdminKYCReview = () => {
         .from('bpjs_verifications')
         .select('*')
         .order('created_at', { ascending: false });
-        .order('created_at', { ascending: false });
 
       if (statusFilter !== 'all') {
         query = query.eq('verification_status', statusFilter);
