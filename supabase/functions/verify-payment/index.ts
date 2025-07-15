@@ -1,5 +1,4 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import Stripe from "https://esm.sh/stripe@14.21.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
 const corsHeaders = {
@@ -13,16 +12,11 @@ serve(async (req) => {
   }
 
   try {
-    const { sessionId, bookingId } = await req.json();
+    const { bookingId, paymentMethod = 'bank_transfer' } = await req.json();
 
-    if (!sessionId || !bookingId) {
-      throw new Error("Missing required parameters: sessionId, bookingId");
+    if (!bookingId) {
+      throw new Error("Missing required parameter: bookingId");
     }
-
-    // Initialize Stripe
-    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
-      apiVersion: "2023-10-16",
-    });
 
     // Initialize Supabase client
     const supabaseClient = createClient(
@@ -31,107 +25,49 @@ serve(async (req) => {
       { auth: { persistSession: false } }
     );
 
-    // Retrieve the checkout session from Stripe
-    const session = await stripe.checkout.sessions.retrieve(sessionId);
+    // Update booking status to confirmed for bank transfer
+    const { error: updateError } = await supabaseClient
+      .from("rental_bookings")
+      .update({
+        payment_status: "pending_verification",
+        booking_status: "confirmed",
+        updated_at: new Date().toISOString()
+      })
+      .eq("id", bookingId);
 
-    if (!session) {
-      throw new Error("Session not found");
+    if (updateError) {
+      console.error("Error updating booking:", updateError);
+      throw updateError;
     }
 
-    console.log('Session status:', session.payment_status);
+    // Update payment log
+    const { error: logError } = await supabaseClient
+      .from("payment_logs")
+      .update({
+        status: "pending_verification",
+        response_data: {
+          booking_id: bookingId,
+          payment_method: paymentMethod
+        },
+        updated_at: new Date().toISOString()
+      })
+      .eq("booking_id", bookingId);
 
-    // Check if payment was successful
-    if (session.payment_status === 'paid') {
-      // Update booking status
-      const { error: updateError } = await supabaseClient
-        .from("rental_bookings")
-        .update({
-          payment_status: "paid",
-          booking_status: "confirmed",
-          stripe_payment_intent_id: session.payment_intent,
-          updated_at: new Date().toISOString()
-        })
-        .eq("id", bookingId);
-
-      if (updateError) {
-        console.error("Error updating booking:", updateError);
-        throw updateError;
-      }
-
-      // Update payment log
-      const { error: logError } = await supabaseClient
-        .from("payment_logs")
-        .update({
-          status: "completed",
-          response_data: {
-            session_id: sessionId,
-            payment_intent_id: session.payment_intent,
-            amount_received: session.amount_total
-          },
-          updated_at: new Date().toISOString()
-        })
-        .eq("stripe_session_id", sessionId);
-
-      if (logError) {
-        console.error("Error updating payment log:", logError);
-      }
-
-      return new Response(
-        JSON.stringify({
-          success: true,
-          paymentStatus: "paid",
-          message: "Payment verified and booking confirmed"
-        }),
-        {
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-          status: 200,
-        }
-      );
-
-    } else {
-      // Payment failed or incomplete
-      const { error: updateError } = await supabaseClient
-        .from("rental_bookings")
-        .update({
-          payment_status: "failed",
-          booking_status: "cancelled",
-          updated_at: new Date().toISOString()
-        })
-        .eq("id", bookingId);
-
-      if (updateError) {
-        console.error("Error updating booking:", updateError);
-      }
-
-      // Update payment log
-      const { error: logError } = await supabaseClient
-        .from("payment_logs")
-        .update({
-          status: "failed",
-          response_data: {
-            session_id: sessionId,
-            payment_status: session.payment_status
-          },
-          updated_at: new Date().toISOString()
-        })
-        .eq("stripe_session_id", sessionId);
-
-      if (logError) {
-        console.error("Error updating payment log:", logError);
-      }
-
-      return new Response(
-        JSON.stringify({
-          success: false,
-          paymentStatus: session.payment_status,
-          message: "Payment verification failed"
-        }),
-        {
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-          status: 200,
-        }
-      );
+    if (logError) {
+      console.error("Error updating payment log:", logError);
     }
+
+    return new Response(
+      JSON.stringify({
+        success: true,
+        paymentStatus: "pending_verification",
+        message: "Booking confirmed. Please complete bank transfer payment."
+      }),
+      {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 200,
+      }
+    );
 
   } catch (error) {
     console.error("Error verifying payment:", error);

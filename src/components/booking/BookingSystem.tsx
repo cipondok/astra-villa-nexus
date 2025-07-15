@@ -224,24 +224,8 @@ const BookingSystem = ({ property, onBookingComplete }: BookingSystemProps) => {
 
       if (invoiceError) throw invoiceError;
 
-      // Process payment
-      if (paymentMethod === 'stripe') {
-        const { data: paymentSession, error: paymentError } = await supabase.functions.invoke('create-payment-session', {
-          body: {
-            bookingId: booking.id,
-            amount: totalAmount,
-            currency: 'idr',
-            customerEmail: customerInfo.email
-          }
-        });
-
-        if (paymentError) throw paymentError;
-
-        // Redirect to Stripe checkout
-        if (paymentSession.url) {
-          window.open(paymentSession.url, '_blank');
-        }
-      }
+      // For bank transfer, booking is created with pending status
+      // No additional payment processing needed here
 
       setStep(4);
       onBookingComplete?.(booking.id);
@@ -452,22 +436,7 @@ const BookingSystem = ({ property, onBookingComplete }: BookingSystemProps) => {
       {/* Payment Method */}
       <div>
         <label className="text-sm font-medium mb-3 block">Metode Pembayaran</label>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          <div
-            className={`p-4 border-2 rounded-lg cursor-pointer transition-colors ${
-              paymentMethod === 'stripe' ? 'border-blue-500 bg-blue-50' : 'border-gray-200'
-            }`}
-            onClick={() => setPaymentMethod('stripe')}
-          >
-            <div className="flex items-center">
-              <CreditCard className="h-5 w-5 mr-3" />
-              <div>
-                <p className="font-medium">Kartu Kredit/Debit</p>
-                <p className="text-sm text-muted-foreground">Visa, Mastercard, dll</p>
-              </div>
-            </div>
-          </div>
-          
+        <div className="grid grid-cols-1 gap-3">
           <div
             className={`p-4 border-2 rounded-lg cursor-pointer transition-colors ${
               paymentMethod === 'bank_transfer' ? 'border-blue-500 bg-blue-50' : 'border-gray-200'
