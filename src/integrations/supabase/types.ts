@@ -2694,8 +2694,10 @@ export type Database = {
           id: string
           is_active: boolean | null
           minimum_payout_amount: number | null
+          npwp_number: string | null
           payout_schedule: string | null
           preferred_payout_method: string
+          tax_withholding_enabled: boolean | null
           updated_at: string | null
           user_id: string
         }
@@ -2710,8 +2712,10 @@ export type Database = {
           id?: string
           is_active?: boolean | null
           minimum_payout_amount?: number | null
+          npwp_number?: string | null
           payout_schedule?: string | null
           preferred_payout_method?: string
+          tax_withholding_enabled?: boolean | null
           updated_at?: string | null
           user_id: string
         }
@@ -2726,8 +2730,10 @@ export type Database = {
           id?: string
           is_active?: boolean | null
           minimum_payout_amount?: number | null
+          npwp_number?: string | null
           payout_schedule?: string | null
           preferred_payout_method?: string
+          tax_withholding_enabled?: boolean | null
           updated_at?: string | null
           user_id?: string
         }
