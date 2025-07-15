@@ -61,7 +61,7 @@ interface TabItem {
 
 const CompactAdminNavigation = ({ activeTab, onTabChange, isAdmin }: CompactAdminNavigationProps) => {
   const quickAccess: TabItem[] = [
-    { id: "overview", label: "Overview & Analytics", icon: Activity },
+    { id: "overview", label: "Overview", icon: Activity },
     { id: "ai-assistant", label: "AI Assistant", icon: Activity, badge: "New" },
     { id: "diagnostic", label: "Diagnostic", icon: Wrench, badge: "New" },
     { id: "astra-token-hub", label: "ASTRA Hub", icon: Coins },
@@ -86,6 +86,7 @@ const CompactAdminNavigation = ({ activeTab, onTabChange, isAdmin }: CompactAdmi
       label: "Analytics",
       icon: BarChart3,
       items: [
+        { id: "analytics", label: "Analytics", icon: BarChart3 },
         { id: "system-reports", label: "Reports", icon: FileText },
         { id: "daily-checkin", label: "Check-in", icon: Calendar },
       ]
@@ -142,7 +143,7 @@ const CompactAdminNavigation = ({ activeTab, onTabChange, isAdmin }: CompactAdmi
 
   return (
     <div className="flex items-center gap-2 sm:gap-1 p-3 sm:p-2 hud-border border-b border-border min-h-14 sm:h-12 bg-gradient-to-r from-card/50 to-muted/30 overflow-x-auto">
-      {/* Quick Access Tabs with smooth transitions */}
+      {/* Quick Access Tabs */}
       <div className="flex items-center gap-2 sm:gap-1 mr-4 sm:mr-2 flex-shrink-0">
         {quickAccess.map((tab) => (
           <Button
@@ -150,11 +151,7 @@ const CompactAdminNavigation = ({ activeTab, onTabChange, isAdmin }: CompactAdmi
             variant={isTabActive(tab.id) ? "default" : "ghost"}
             size="sm"
             onClick={() => onTabChange(tab.id)}
-            className={`relative h-8 sm:h-7 px-3 sm:px-2 text-sm sm:text-xs font-medium touch-manipulation flex-shrink-0 transition-all duration-300 ease-in-out transform hover:scale-105 ${
-              isTabActive(tab.id) 
-                ? 'bg-primary/20 text-primary shadow-lg border-primary/30' 
-                : 'hover:bg-muted/80 hover:text-foreground'
-            }`}
+            className="relative h-8 sm:h-7 px-3 sm:px-2 text-sm sm:text-xs font-medium gold-glow-hover touch-manipulation flex-shrink-0"
           >
             <tab.icon className="h-4 w-4 sm:h-3 sm:w-3 mr-2 sm:mr-1" />
             <span className="hidden sm:inline">{tab.label}</span>
@@ -179,11 +176,7 @@ const CompactAdminNavigation = ({ activeTab, onTabChange, isAdmin }: CompactAdmi
               <Button
                 variant={group.items.some(item => isTabActive(item.id)) ? "default" : "ghost"}
                 size="sm"
-                className={`h-8 sm:h-7 px-3 sm:px-2 text-sm sm:text-xs font-medium touch-manipulation flex-shrink-0 transition-all duration-300 ease-in-out transform hover:scale-105 ${
-                  group.items.some(item => isTabActive(item.id))
-                    ? 'bg-primary/20 text-primary shadow-lg border-primary/30'
-                    : 'hud-border bg-gradient-to-r from-primary/10 to-accent/10 hover:bg-muted/80'
-                }`}
+                className="h-8 sm:h-7 px-3 sm:px-2 text-sm sm:text-xs font-medium hud-border bg-gradient-to-r from-primary/10 to-accent/10 touch-manipulation flex-shrink-0"
               >
                 <group.icon className="h-4 w-4 sm:h-3 sm:w-3 mr-2 sm:mr-1" />
                 <span className="hidden md:inline">{group.label}</span>

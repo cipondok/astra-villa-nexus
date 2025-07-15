@@ -69,8 +69,8 @@ const BookingManagement = () => {
           contact_phone,
           contact_email,
           service:vendor_services(service_name),
-          customer:profiles!customer_id(full_name, email),
-          vendor:profiles!vendor_id(full_name, email)
+          customer:profiles!vendor_bookings_customer_id_fkey(full_name, email),
+          vendor:profiles!vendor_bookings_vendor_id_fkey(full_name, email)
         `);
 
       if (isVendor) {

@@ -66,7 +66,7 @@ const VendorBookings = () => {
         .select(`
           *,
           service:vendor_services(service_name),
-          customer:profiles!customer_id(full_name, email)
+          customer:profiles(full_name, email)
         `)
         .eq('vendor_id', user.id);
 
