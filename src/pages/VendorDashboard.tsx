@@ -6,6 +6,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { 
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useNavigate } from 'react-router-dom';
 import { formatIDR } from '@/utils/currency';
 import { 
@@ -26,7 +34,10 @@ import {
   Moon,
   Plus,
   Building,
-  Building2
+  Building2,
+  LogOut,
+  User,
+  ChevronDown
 } from 'lucide-react';
 
 // Import vendor components
@@ -45,7 +56,7 @@ import CategoryDiscountSettings from '@/components/vendor/CategoryDiscountSettin
 import ThemeSwitcher from '@/components/ui/theme-switcher';
 
 const VendorDashboard = () => {
-  const { user, profile } = useAuth();
+  const { user, profile, signOut } = useAuth();
   const navigate = useNavigate();
 
   // Check if user is a vendor or admin
@@ -59,6 +70,15 @@ const VendorDashboard = () => {
 
   const handleBackClick = () => {
     window.history.back();
+  };
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      navigate('/', { replace: true });
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
   };
 
   if (!user) {
@@ -117,6 +137,48 @@ const VendorDashboard = () => {
                 Home
               </Button>
               <ThemeSwitcher />
+              
+              {/* User Menu with Logout */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button 
+                    variant="outline" 
+                    className="bg-white/20 border-white/30 text-white hover:bg-white/30"
+                  >
+                    <User className="h-4 w-4 mr-2" />
+                    {profile?.full_name || user?.email || 'Vendor'}
+                    <ChevronDown className="h-4 w-4 ml-2" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuLabel>
+                    <div className="flex flex-col space-y-1">
+                      <p className="text-sm font-medium">{profile?.full_name || 'Vendor'}</p>
+                      <p className="text-xs text-muted-foreground">{user?.email}</p>
+                      <p className="text-xs text-muted-foreground capitalize">
+                        Role: {profile?.role || 'vendor'}
+                      </p>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => navigate('/?from=vendor')}>
+                    <Home className="h-4 w-4 mr-2" />
+                    Go to Home
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate('/profile')}>
+                    <User className="h-4 w-4 mr-2" />
+                    Profile Settings
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem 
+                    onClick={handleSignOut} 
+                    className="text-red-600 dark:text-red-400 focus:text-red-600 dark:focus:text-red-400"
+                  >
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Sign Out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </div>
