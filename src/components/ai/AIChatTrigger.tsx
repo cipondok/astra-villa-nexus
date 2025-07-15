@@ -12,14 +12,14 @@ const AIChatTrigger = ({ onOpen }: AIChatTriggerProps) => {
     <div className="pointer-events-auto">
       <Button
         onClick={onOpen}
-        className="h-16 w-16 rounded-full bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-600 hover:from-purple-700 hover:via-blue-700 hover:to-indigo-700 shadow-2xl hover:shadow-purple-500/30 hover:scale-110 transition-all duration-300 transform-gpu will-change-transform border-2 border-white/20 backdrop-blur-sm"
+        className="h-12 w-12 rounded-full bg-gradient-to-r from-blue-500 via-purple-600 to-blue-800 hover:from-blue-600 hover:via-purple-700 hover:to-blue-900 shadow-2xl hover:shadow-blue-500/30 hover:scale-110 transition-all duration-300 transform-gpu will-change-transform border-2 border-white/20 backdrop-blur-sm macos-smooth-click"
         size="icon"
       >
-        <Bot className="h-7 w-7 text-white drop-shadow-lg" />
+        <Bot className="h-5 w-5 text-white drop-shadow-lg" />
       </Button>
-      <div className="absolute -top-3 -right-3">
-        <Badge className="bg-gradient-to-r from-green-400 to-emerald-500 text-white shadow-lg border border-white/30">
-          <Sparkles className="h-3 w-3 mr-1" />
+      <div className="absolute -top-2 -right-2">
+        <Badge className="bg-gradient-to-r from-blue-400 to-purple-500 text-white shadow-lg border border-white/30 text-xs">
+          <Sparkles className="h-2.5 w-2.5 mr-1" />
           AI
         </Badge>
       </div>

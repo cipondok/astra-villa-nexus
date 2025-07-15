@@ -276,7 +276,7 @@ const Index = () => {
             <div className="mb-6 lg:mb-8 animate-fade-in">
               {/* Main Hero Title */}
               <div className="relative mb-6">
-                <h1 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold mb-4 leading-tight text-center">
+                <h1 className="text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold mb-4 leading-tight text-center">
                   <span className="inline-block bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 dark:from-blue-300 dark:via-purple-400 dark:to-cyan-300 bg-clip-text text-transparent animate-gradient bg-[length:300%_300%] font-extrabold tracking-tight drop-shadow-sm">
                     Find Your Perfect
                   </span>
@@ -287,14 +287,14 @@ const Index = () => {
                 </h1>
                 
                 {/* Decorative elements */}
-                <div className="absolute -top-2 -left-2 w-8 h-8 bg-blue-500/20 rounded-full blur-sm animate-pulse"></div>
-                <div className="absolute -bottom-2 -right-2 w-6 h-6 bg-purple-500/20 rounded-full blur-sm animate-pulse delay-1000"></div>
+                <div className="absolute -top-2 -left-2 w-6 h-6 bg-blue-500/20 rounded-full blur-sm animate-pulse"></div>
+                <div className="absolute -bottom-2 -right-2 w-4 h-4 bg-purple-500/20 rounded-full blur-sm animate-pulse delay-1000"></div>
               </div>
               
               {/* Subtitle with enhanced styling */}
               <div className="relative mb-4">
-                <h2 className="text-base md:text-lg lg:text-xl font-semibold text-center">
-                  <span className="inline-block px-4 py-2 lg:px-6 lg:py-3 bg-gradient-to-r from-blue-500/90 to-purple-600/90 dark:from-blue-400/90 dark:to-purple-500/90 rounded-xl backdrop-blur-sm border border-white/30 shadow-lg text-white font-bold tracking-wide">
+                <h2 className="text-sm md:text-base lg:text-lg font-semibold text-center">
+                  <span className="inline-block px-3 py-1.5 lg:px-4 lg:py-2 bg-gradient-to-r from-blue-500/90 to-purple-600/90 dark:from-blue-400/90 dark:to-purple-500/90 rounded-lg backdrop-blur-sm border border-white/30 shadow-lg text-white font-bold tracking-wide">
                     ✨ AI-Powered Real Estate Platform ✨
                   </span>
                 </h2>
@@ -302,14 +302,14 @@ const Index = () => {
               
               {/* Description with perfect styling */}
               <div className="relative">
-                <p className="text-sm md:text-base lg:text-lg max-w-3xl mx-auto leading-relaxed text-center">
-                  <span className="inline-block px-4 py-2 lg:px-6 lg:py-3 bg-white/95 dark:bg-slate-800/95 text-slate-800 dark:text-slate-100 rounded-xl backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 shadow-xl font-medium macos-smooth-hover">
+                <p className="text-xs md:text-sm lg:text-base max-w-2xl mx-auto leading-relaxed text-center">
+                  <span className="inline-block px-3 py-1.5 lg:px-4 lg:py-2 bg-white/95 dark:bg-slate-800/95 text-slate-800 dark:text-slate-100 rounded-lg backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 shadow-xl font-medium macos-smooth-hover">
                     🔍 Discover premium properties with enhanced search and filtering
                   </span>
                 </p>
                 
                 {/* Subtle glow effect */}
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-pink-500/10 rounded-xl blur-xl -z-10"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-pink-500/10 rounded-lg blur-xl -z-10"></div>
               </div>
             </div>
             
