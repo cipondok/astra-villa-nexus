@@ -163,7 +163,7 @@ const RoleBasedNavigation = ({
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 glass-ios border-b border-border/30">
+    <nav className="fixed top-0 left-0 right-0 z-50 header-ios border-b border-white/10 backdrop-blur-xl">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo - Clickable to go home */}
@@ -171,7 +171,7 @@ const RoleBasedNavigation = ({
             className="flex-shrink-0 cursor-pointer hover:opacity-80 transition-opacity" 
             onClick={handleHomeClick}
           >
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-ios-blue to-ios-blue/80 bg-clip-text text-transparent">
+            <h1 className="text-2xl font-bold bg-gradient-to-r from-white to-white/90 bg-clip-text text-transparent drop-shadow-lg">
               Astra Villa
             </h1>
           </div>
@@ -183,7 +183,7 @@ const RoleBasedNavigation = ({
               variant="ghost"
               size="sm"
               onClick={onLanguageToggle}
-              className="glass-ios border border-border/30 text-foreground hover:bg-ios-blue/10 hover:text-ios-blue hover:border-ios-blue/30"
+              className="header-button-ios"
             >
               <Globe className="h-4 w-4 mr-1" />
               <span className="text-sm font-medium">{language.toUpperCase()}</span>
@@ -194,7 +194,7 @@ const RoleBasedNavigation = ({
               variant="ghost"
               size="sm"
               onClick={onThemeToggle}
-              className="glass-ios border border-border/30 text-foreground hover:bg-ios-blue/10 hover:text-ios-blue hover:border-ios-blue/30"
+              className="header-button-ios"
             >
               {theme === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
             </Button>
@@ -206,48 +206,48 @@ const RoleBasedNavigation = ({
                 <div className="flex items-center space-x-2">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" className="flex items-center space-x-2 p-2 glass-ios border border-border/30 hover:bg-ios-blue/10 hover:border-ios-blue/30">
+                      <Button variant="ghost" className="header-button-ios flex items-center space-x-2 p-2">
                         <Avatar className="h-8 w-8">
                           <AvatarImage src={profile.avatar_url || undefined} alt={profile.full_name || 'User'} />
-                          <AvatarFallback className="text-sm bg-ios-blue/10 text-ios-blue border border-ios-blue/20">
+                          <AvatarFallback className="text-sm bg-white/20 text-white border border-white/20">
                             {getUserInitials()}
                           </AvatarFallback>
                         </Avatar>
-                        <span className="hidden md:block text-sm font-medium text-foreground">
+                        <span className="hidden md:block text-sm font-medium text-white">
                           {profile.full_name || profile.email}
                         </span>
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-56 glass-ios border border-border/30">
+                    <DropdownMenuContent align="end" className="w-56 bg-white/95 backdrop-blur-xl border border-white/20 shadow-xl rounded-2xl">
                       <DropdownMenuLabel>
                         <div className="flex flex-col space-y-1">
-                          <p className="text-sm font-medium text-foreground">{profile.full_name || 'User'}</p>
-                          <p className="text-xs text-muted-foreground">{profile.email}</p>
-                          <p className="text-xs text-muted-foreground capitalize">{profile.role.replace('_', ' ')}</p>
+                          <p className="text-sm font-medium text-gray-900">{profile.full_name || 'User'}</p>
+                          <p className="text-xs text-gray-600">{profile.email}</p>
+                          <p className="text-xs text-gray-600 capitalize">{profile.role.replace('_', ' ')}</p>
                         </div>
                       </DropdownMenuLabel>
-                      <DropdownMenuSeparator className="border-border/30" />
-                      <DropdownMenuItem onClick={() => navigate(getDashboardRoute())} className="text-foreground hover:bg-ios-blue/10">
+                      <DropdownMenuSeparator className="border-gray-200" />
+                      <DropdownMenuItem onClick={() => navigate(getDashboardRoute())} className="text-gray-900 hover:bg-blue-50/80">
                         {currentText.dashboard}
                       </DropdownMenuItem>
                       {profile.role !== 'vendor' && (
-                        <DropdownMenuItem onClick={() => navigate('/wallet')} className="text-foreground hover:bg-ios-blue/10">
+                        <DropdownMenuItem onClick={() => navigate('/wallet')} className="text-gray-900 hover:bg-blue-50/80">
                           <Wallet className="h-4 w-4 mr-2" />
                           {currentText.wallet}
                         </DropdownMenuItem>
                       )}
                       {getRoleSpecificMenuItems().map((item, index) => (
-                        <DropdownMenuItem key={index} onClick={() => navigate(item.route)} className="text-foreground hover:bg-ios-blue/10">
+                        <DropdownMenuItem key={index} onClick={() => navigate(item.route)} className="text-gray-900 hover:bg-blue-50/80">
                           {item.label}
                         </DropdownMenuItem>
                       ))}
                       {getVendorMenuItems().map((item, index) => (
-                        <DropdownMenuItem key={`vendor-${index}`} onClick={() => navigate(item.route)} className="text-foreground hover:bg-ios-blue/10">
+                        <DropdownMenuItem key={`vendor-${index}`} onClick={() => navigate(item.route)} className="text-gray-900 hover:bg-blue-50/80">
                           {item.label}
                         </DropdownMenuItem>
                       ))}
-                      <DropdownMenuSeparator className="border-border/30" />
-                      <DropdownMenuItem onClick={handleSignOut} className="text-red-600 hover:bg-red-50">
+                      <DropdownMenuSeparator className="border-gray-200" />
+                      <DropdownMenuItem onClick={handleSignOut} className="text-red-600 hover:bg-red-50/80">
                         <LogOut className="h-4 w-4 mr-2" />
                         {currentText.logout}
                       </DropdownMenuItem>
@@ -258,7 +258,7 @@ const RoleBasedNavigation = ({
             ) : (
               <Button 
                 onClick={onLoginClick} 
-                className="glass-ios border border-border/30 text-foreground hover:bg-ios-blue/10 hover:text-ios-blue hover:border-ios-blue/30"
+                className="header-button-ios"
               >
                 <User className="h-4 w-4 mr-2" />
                 {currentText.loginRegister}
@@ -272,24 +272,24 @@ const RoleBasedNavigation = ({
               variant="ghost"
               size="sm"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="glass-ios border border-border/30"
+              className="header-button-ios"
             >
               <Menu className="h-5 w-5" />
             </Button>
           </div>
         </div>
 
-        {/* Mobile Navigation Menu */}
+        {/* Enhanced Mobile Navigation Menu */}
         {isMenuOpen && (
-          <div className="md:hidden absolute top-16 left-0 right-0 glass-ios border-t border-border/30 shadow-lg">
-            <div className="px-2 pt-2 pb-3 space-y-1">
+          <div className="md:hidden absolute top-16 left-0 right-0 bg-white/95 backdrop-blur-xl border-t border-white/20 shadow-2xl rounded-b-2xl">
+            <div className="px-4 pt-4 pb-6 space-y-3">
               {/* Theme and Language toggles for mobile */}
-              <div className="flex justify-between items-center p-2 border-b border-border/30">
+              <div className="flex justify-between items-center p-3 border-b border-gray-200/50 bg-gray-50/50 rounded-xl">
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={onLanguageToggle}
-                  className="flex-1 mr-2"
+                  className="flex-1 mr-2 bg-white/70 hover:bg-white/90 text-gray-900 border border-gray-200/50 rounded-lg"
                 >
                   <Globe className="h-4 w-4 mr-1" />
                   {language.toUpperCase()}
@@ -298,7 +298,7 @@ const RoleBasedNavigation = ({
                   variant="ghost"
                   size="sm"
                   onClick={onThemeToggle}
-                  className="flex-1"
+                  className="flex-1 bg-white/70 hover:bg-white/90 text-gray-900 border border-gray-200/50 rounded-lg"
                 >
                   {theme === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
                 </Button>

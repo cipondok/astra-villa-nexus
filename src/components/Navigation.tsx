@@ -140,7 +140,7 @@ const Navigation = () => {
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-[10000] bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-b border-gray-200/30 dark:border-gray-800/30 shadow-sm transform-gpu will-change-transform">
+      <nav className="fixed top-0 left-0 right-0 z-[10000] header-ios border-b border-white/10 backdrop-blur-xl shadow-lg transform-gpu will-change-transform">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="flex items-center justify-between h-12">
             {/* ASTRA Villa Logo */}
@@ -148,12 +148,12 @@ const Navigation = () => {
               className="flex items-center space-x-2 cursor-pointer" 
               onClick={() => navigate('/')}
             >
-              <div className="w-8 h-8 rounded-lg bg-blue-600 dark:bg-blue-700 flex items-center justify-center">
+              <div className="w-8 h-8 rounded-lg bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center">
                 <Brain className="h-5 w-5 text-white" />
               </div>
               <div className="flex items-center space-x-1">
-                <span className="text-xl font-bold text-blue-600 dark:text-blue-400">ASTRA</span>
-                <span className="text-xl font-bold text-gray-900 dark:text-white">Villa</span>
+                <span className="text-xl font-bold text-white drop-shadow-lg">ASTRA</span>
+                <span className="text-xl font-bold text-white/90 drop-shadow-lg">Villa</span>
               </div>
             </div>
 
@@ -162,7 +162,7 @@ const Navigation = () => {
               <Button 
                 variant="ghost" 
                 size="sm"
-                className="h-10 px-3 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-all"
+                className="h-10 px-3 text-sm font-medium text-white/90 hover:text-white hover:bg-white/10 rounded-lg transition-all"
                 onClick={() => navigate('/')}
               >
                 <HomeIcon className="h-4 w-4 mr-2" />
@@ -175,15 +175,15 @@ const Navigation = () => {
                   <Button 
                     variant="ghost" 
                     size="sm"
-                    className={`h-10 px-3 text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-all ${item.color}`}
+                    className={`h-10 px-3 text-sm font-medium hover:bg-white/10 rounded-lg transition-all text-white/90 hover:text-white`}
                     onClick={() => navigate(item.path)}
                   >
                     <item.icon className="h-4 w-4" />
                   </Button>
                   {/* Tooltip - Positioned Below */}
-                  <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-2 py-1 bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap pointer-events-none z-50">
-                    {item.label}
-                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 border-l-4 border-r-4 border-b-4 border-transparent border-b-gray-900 dark:border-b-gray-100"></div>
+                   <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-2 py-1 bg-black/90 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap pointer-events-none z-50">
+                     {item.label}
+                     <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 border-l-4 border-r-4 border-b-4 border-transparent border-b-black/90"></div>
                   </div>
                 </div>
               ))}
@@ -191,7 +191,7 @@ const Navigation = () => {
               <Button 
                 variant="ghost" 
                 size="sm"
-                className="h-10 px-3 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-all"
+                className="h-10 px-3 text-sm font-medium text-white/90 hover:text-white hover:bg-white/10 rounded-lg transition-all"
                 onClick={() => navigate('/services')}
               >
                 <Settings2 className="h-4 w-4 mr-2" />
@@ -258,12 +258,12 @@ const Navigation = () => {
                 variant="ghost"
                 size="sm"
                 onClick={toggleTheme}
-                className="w-10 h-10 p-0 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all border border-gray-200 dark:border-gray-700"
+                className="w-10 h-10 p-0 rounded-lg bg-white/20 hover:bg-white/30 transition-all border border-white/30 text-white"
               >
                 {theme === "light" ? (
-                  <Moon className="h-4 w-4 text-gray-700 dark:text-gray-300" />
+                  <Moon className="h-4 w-4" />
                 ) : (
-                  <Sun className="h-4 w-4 text-gray-700 dark:text-gray-300" />
+                  <Sun className="h-4 w-4" />
                 )}
               </Button>
 
