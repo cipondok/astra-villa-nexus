@@ -2,6 +2,9 @@ import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Navigation from "@/components/Navigation";
 import ProfessionalFooter from "@/components/ProfessionalFooter";
+import MobileAppLayout from "@/components/MobileAppLayout";
+import MobileFooter from "@/components/MobileFooter";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -27,6 +30,7 @@ const Index = () => {
   const { language } = useLanguage();
   const { user, profile, loading } = useAuth();
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
   const [searchResults, setSearchResults] = useState<BaseProperty[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
@@ -258,8 +262,9 @@ const Index = () => {
     setHasSearched(false);
   };
 
-  return (
-    <div className="min-h-screen text-foreground relative" style={{ zoom: '90%' }}>
+  // Mobile layout wrapper
+  const content = (
+    <div className="min-h-screen text-foreground relative" style={{ zoom: isMobile ? '100%' : '90%' }}>
       {/* Background Wallpaper Layer */}
       <div 
         className="fixed inset-0 z-0 opacity-30 dark:opacity-20"
@@ -268,7 +273,7 @@ const Index = () => {
       
       {/* Content Layer with backdrop */}
       <div className="relative z-10 bg-white/90 dark:bg-black/90 backdrop-blur-sm min-h-screen">
-        <Navigation />
+        {!isMobile && <Navigation />}
         
         {/* Hero Section */}
         <section className="relative py-4 lg:py-6 px-4">
@@ -461,7 +466,7 @@ const Index = () => {
         <ScrollToTopButton />
 
         {/* Footer */}
-        <ProfessionalFooter language={language} />
+        {isMobile ? <MobileFooter /> : <ProfessionalFooter language={language} />}
         
         {/* AI Search Loading Dialog */}
         <SearchLoadingDialog 
@@ -475,6 +480,13 @@ const Index = () => {
       </div>
     </div>
   );
+
+  // Return mobile layout for mobile devices
+  if (isMobile) {
+    return <MobileAppLayout>{content}</MobileAppLayout>;
+  }
+
+  return content;
 };
 
 export default Index;
