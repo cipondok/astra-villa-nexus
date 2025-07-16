@@ -10,6 +10,7 @@ import { WebsiteSettingsProvider } from '@/contexts/WebsiteSettingsContext';
 import { PropertyComparisonProvider } from '@/contexts/PropertyComparisonContext';
 import { Toaster } from '@/components/ui/toaster';
 import Index from '@/pages/Index';
+import Search from '@/pages/Search';
 import Services from '@/pages/Services';
 import PropertyDetail from '@/pages/PropertyDetail';
 import AdminDashboard from '@/pages/AdminDashboard';
@@ -48,6 +49,7 @@ function App() {
                     <div className="min-h-screen bg-background text-foreground">
                       <Routes>
                         <Route path="/" element={<Index />} />
+                        <Route path="/search" element={<Search />} />
                         <Route path="/services" element={<Services />} />
                         <Route path="/dijual" element={<Dijual />} />
                         <Route path="/buy" element={<Dijual />} />
