@@ -9,6 +9,7 @@ import { AlertProvider } from '@/contexts/AlertContext';
 import { WebsiteSettingsProvider } from '@/contexts/WebsiteSettingsContext';
 import { PropertyComparisonProvider } from '@/contexts/PropertyComparisonContext';
 import { Toaster } from '@/components/ui/toaster';
+import MobileAppLayout from '@/components/MobileAppLayout';
 import Index from '@/pages/Index';
 import Search from '@/pages/Search';
 import Services from '@/pages/Services';
@@ -46,28 +47,30 @@ function App() {
               <AuthProvider>
                 <PropertyComparisonProvider>
                   <Router>
-                    <div className="min-h-screen bg-background text-foreground">
-                      <Routes>
-                        <Route path="/" element={<Index />} />
-                        <Route path="/search" element={<Search />} />
-                        <Route path="/services" element={<Services />} />
-                        <Route path="/dijual" element={<Dijual />} />
-                        <Route path="/buy" element={<Dijual />} />
-                        <Route path="/disewa" element={<Disewa />} />
-                        <Route path="/rent" element={<Disewa />} />
-                        <Route path="/3d-showcase" element={<ThreeDShowcase />} />
-                        <Route path="/properties/:id" element={<PropertyDetail />} />
-                        <Route path="/admin" element={<AdminDashboard />} />
-                        <Route path="/admin-dashboard" element={<AdminDashboard />} />
-        <Route path="/agent" element={<AgentDashboard />} />
-        <Route path="/vendor/kyc" element={<VendorKYCDashboard />} />
-        <Route path="/dashboard/vendor" element={<VendorDashboard />} />
-        <Route path="/vendor" element={<VendorDashboard />} />
-        <Route path="/booking/:propertyId" element={<BookingPage />} />
-        <Route path="/booking-success" element={<BookingSuccessPage />} />
-                        <Route path="*" element={<NotFound />} />
-                      </Routes>
-                    </div>
+                    <MobileAppLayout>
+                      <div className="min-h-screen bg-background text-foreground">
+                        <Routes>
+                          <Route path="/" element={<Index />} />
+                          <Route path="/search" element={<Search />} />
+                          <Route path="/services" element={<Services />} />
+                          <Route path="/dijual" element={<Dijual />} />
+                          <Route path="/buy" element={<Dijual />} />
+                          <Route path="/disewa" element={<Disewa />} />
+                          <Route path="/rent" element={<Disewa />} />
+                          <Route path="/3d-showcase" element={<ThreeDShowcase />} />
+                          <Route path="/properties/:id" element={<PropertyDetail />} />
+                          <Route path="/admin" element={<AdminDashboard />} />
+                          <Route path="/admin-dashboard" element={<AdminDashboard />} />
+                          <Route path="/agent" element={<AgentDashboard />} />
+                          <Route path="/vendor/kyc" element={<VendorKYCDashboard />} />
+                          <Route path="/dashboard/vendor" element={<VendorDashboard />} />
+                          <Route path="/vendor" element={<VendorDashboard />} />
+                          <Route path="/booking/:propertyId" element={<BookingPage />} />
+                          <Route path="/booking-success" element={<BookingSuccessPage />} />
+                          <Route path="*" element={<NotFound />} />
+                        </Routes>
+                      </div>
+                    </MobileAppLayout>
                   </Router>
                 </PropertyComparisonProvider>
               </AuthProvider>
