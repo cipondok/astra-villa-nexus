@@ -60,6 +60,44 @@
     overflow-x: hidden;
   }
   
+  /* Search page specific mobile adjustments */
+  .mobile-app-layout .container {
+    max-width: 100%;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  /* Auto-adjust inputs and selects for mobile */
+  .mobile-app-layout input,
+  .mobile-app-layout select,
+  .mobile-app-layout button {
+    font-size: 16px !important; /* Prevents zoom on iOS */
+    -webkit-appearance: none;
+    -webkit-border-radius: 0;
+  }
+  
+  /* Mobile device specific adjustments */
+  body.mobile-device {
+    width: 100vw;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+  }
+  
+  body.mobile-device * {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+  }
+  
+  /* Ensure proper touch targets */
+  .mobile-app-layout button,
+  .mobile-app-layout input,
+  .mobile-app-layout select {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
   /* Ensure full width on mobile */
   body, html {
     width: 100%;

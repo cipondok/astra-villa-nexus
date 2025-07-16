@@ -96,7 +96,7 @@ const Search = () => {
   const content = (
     <div className="min-h-screen bg-background">
       {/* Search Header */}
-      <div className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 sticky top-0 z-40">
+      <div className={`bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 ${isMobile ? 'relative' : 'sticky top-0 z-40'}`}>
         <div className="container mx-auto px-4 py-4">
           <div className="space-y-4">
             {/* Search Input */}

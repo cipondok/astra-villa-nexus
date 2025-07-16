@@ -44,6 +44,16 @@ export function useIsMobile() {
             'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover'
           )
         }
+        
+        // Add mobile-specific class to body
+        document.body.classList.add('mobile-device')
+        
+        // Force resize event to trigger layout recalculation
+        setTimeout(() => {
+          window.dispatchEvent(new Event('resize'))
+        }, 100)
+      } else {
+        document.body.classList.remove('mobile-device')
       }
     }
     
