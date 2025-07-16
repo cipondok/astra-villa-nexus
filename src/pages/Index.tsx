@@ -2,8 +2,6 @@ import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Navigation from "@/components/Navigation";
 import ProfessionalFooter from "@/components/ProfessionalFooter";
-import MobileAppLayout from "@/components/MobileAppLayout";
-import MobileFooter from "@/components/MobileFooter";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -275,6 +273,7 @@ const Index = () => {
       {/* Content Layer with backdrop */}
       <div className="relative z-10 bg-white/90 dark:bg-black/90 backdrop-blur-sm min-h-screen">
         {/* Desktop Navigation Only */}
+        {!isMobile && <Navigation />}
         
         {/* Hero Section - Mobile Optimized */}
         <section className={cn(
@@ -534,7 +533,7 @@ const Index = () => {
         <ScrollToTopButton />
 
         {/* Footer */}
-        {isMobile ? <MobileFooter /> : <ProfessionalFooter language={language} />}
+        {!isMobile && <ProfessionalFooter language={language} />}
         
         {/* AI Search Loading Dialog */}
         <SearchLoadingDialog 
@@ -548,11 +547,6 @@ const Index = () => {
       </div>
     </div>
   );
-
-  // Return mobile layout for mobile devices
-  if (isMobile) {
-    return <MobileAppLayout>{content}</MobileAppLayout>;
-  }
 
   return content;
 };
