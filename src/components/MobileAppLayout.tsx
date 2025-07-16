@@ -251,10 +251,10 @@ const MobileAppLayout = ({ children }: MobileAppLayoutProps) => {
       {/* AI Chat Bot - Bottom Right */}
       {!location.pathname.includes('/search') && (
         <Button
-          className="fixed bottom-3 right-3 z-40 w-12 h-12 rounded-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 shadow-lg border-0"
+          className="fixed bottom-16 right-3 z-40 w-11 h-11 rounded-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 shadow-lg border-0"
           onClick={() => {/* Add chat bot functionality */}}
         >
-          <MessageCircle className="h-5 w-5 text-white" />
+          <MessageCircle className="h-4 w-4 text-white" />
         </Button>
       )}
     </div>

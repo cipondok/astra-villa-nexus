@@ -12,6 +12,8 @@ import { Toaster } from '@/components/ui/toaster';
 import MobileAppLayout from '@/components/MobileAppLayout';
 import Index from '@/pages/Index';
 import Search from '@/pages/Search';
+import Saved from '@/pages/Saved';
+import Profile from '@/pages/Profile';
 import Services from '@/pages/Services';
 import PropertyDetail from '@/pages/PropertyDetail';
 import AdminDashboard from '@/pages/AdminDashboard';
@@ -52,6 +54,9 @@ function App() {
                         <Routes>
                           <Route path="/" element={<Index />} />
                           <Route path="/search" element={<Search />} />
+                          <Route path="/saved" element={<Saved />} />
+                          <Route path="/profile" element={<Profile />} />
+                          <Route path="/auth" element={<Profile />} />
                           <Route path="/services" element={<Services />} />
                           <Route path="/dijual" element={<Dijual />} />
                           <Route path="/buy" element={<Dijual />} />

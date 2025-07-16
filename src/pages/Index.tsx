@@ -274,7 +274,7 @@ const Index = () => {
       
       {/* Content Layer with backdrop */}
       <div className="relative z-10 bg-white/90 dark:bg-black/90 backdrop-blur-sm min-h-screen">
-        {!isMobile && <Navigation />}
+        {/* Desktop Navigation Only */}
         
         {/* Hero Section - Mobile Optimized */}
         <section className={cn(
