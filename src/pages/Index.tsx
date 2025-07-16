@@ -23,6 +23,7 @@ import { SearchLoadingDialog } from "@/components/SearchLoadingDialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 type ViewMode = 'list' | 'grid' | 'map';
 
@@ -275,13 +276,30 @@ const Index = () => {
       <div className="relative z-10 bg-white/90 dark:bg-black/90 backdrop-blur-sm min-h-screen">
         {!isMobile && <Navigation />}
         
-        {/* Hero Section */}
-        <section className="relative py-4 lg:py-6 px-4">
-          <div className="max-w-[1800px] mx-auto text-center">
-            <div className="mb-6 lg:mb-8 animate-fade-in">
-              {/* Main Hero Title */}
-              <div className="relative mb-6">
-                <h1 className="text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold mb-4 leading-tight text-center">
+        {/* Hero Section - Mobile Optimized */}
+        <section className={cn(
+          "relative px-3 py-3", 
+          isMobile ? "py-2" : "py-4 lg:py-6 px-4"
+        )}>
+          <div className={cn(
+            "mx-auto text-center",
+            isMobile ? "max-w-sm" : "max-w-[1800px]"
+          )}>
+            <div className={cn(
+              "animate-fade-in",
+              isMobile ? "mb-3" : "mb-6 lg:mb-8"
+            )}>
+              {/* Main Hero Title - Mobile Optimized */}
+              <div className={cn(
+                "relative",
+                isMobile ? "mb-3" : "mb-6"
+              )}>
+                <h1 className={cn(
+                  "font-bold leading-tight text-center",
+                  isMobile 
+                    ? "text-lg mb-2" 
+                    : "text-xl md:text-2xl lg:text-3xl xl:text-4xl mb-4"
+                )}>
                   <span className="inline-block bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 dark:from-blue-300 dark:via-purple-400 dark:to-cyan-300 bg-clip-text text-transparent animate-gradient bg-[length:300%_300%] font-extrabold tracking-tight drop-shadow-sm">
                     Find Your Perfect
                   </span>
@@ -291,35 +309,61 @@ const Index = () => {
                   </span>
                 </h1>
                 
-                {/* Decorative elements */}
-                <div className="absolute -top-2 -left-2 w-6 h-6 bg-blue-500/20 rounded-full blur-sm animate-pulse"></div>
-                <div className="absolute -bottom-2 -right-2 w-4 h-4 bg-purple-500/20 rounded-full blur-sm animate-pulse delay-1000"></div>
+                {/* Decorative elements - Mobile Scaled */}
+                {!isMobile && (
+                  <>
+                    <div className="absolute -top-2 -left-2 w-6 h-6 bg-blue-500/20 rounded-full blur-sm animate-pulse"></div>
+                    <div className="absolute -bottom-2 -right-2 w-4 h-4 bg-purple-500/20 rounded-full blur-sm animate-pulse delay-1000"></div>
+                  </>
+                )}
               </div>
               
-              {/* Subtitle with enhanced styling */}
-              <div className="relative mb-4">
-                <h2 className="text-sm md:text-base lg:text-lg font-semibold text-center">
-                  <span className="inline-block px-3 py-1.5 lg:px-4 lg:py-2 bg-gradient-to-r from-blue-500/90 to-purple-600/90 dark:from-blue-400/90 dark:to-purple-500/90 rounded-lg backdrop-blur-sm border border-white/30 shadow-lg text-white font-bold tracking-wide">
+              {/* Subtitle - Mobile Optimized */}
+              <div className={cn(
+                "relative",
+                isMobile ? "mb-2" : "mb-4"
+              )}>
+                <h2 className={cn(
+                  "font-semibold text-center",
+                  isMobile ? "text-xs" : "text-sm md:text-base lg:text-lg"
+                )}>
+                  <span className={cn(
+                    "inline-block bg-gradient-to-r from-blue-500/90 to-purple-600/90 dark:from-blue-400/90 dark:to-purple-500/90 rounded-lg backdrop-blur-sm border border-white/30 shadow-lg text-white font-bold tracking-wide",
+                    isMobile ? "px-2 py-1 text-xs" : "px-3 py-1.5 lg:px-4 lg:py-2"
+                  )}>
                     ✨ AI-Powered Real Estate Platform ✨
                   </span>
                 </h2>
               </div>
               
-              {/* Description with perfect styling */}
+              {/* Description - Mobile Optimized */}
               <div className="relative">
-                <p className="text-xs md:text-sm lg:text-base max-w-2xl mx-auto leading-relaxed text-center">
-                  <span className="inline-block px-3 py-1.5 lg:px-4 lg:py-2 bg-white/95 dark:bg-slate-800/95 text-slate-800 dark:text-slate-100 rounded-lg backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 shadow-xl font-medium macos-smooth-hover">
+                <p className={cn(
+                  "mx-auto leading-relaxed text-center",
+                  isMobile 
+                    ? "text-xs max-w-xs" 
+                    : "text-xs md:text-sm lg:text-base max-w-2xl"
+                )}>
+                  <span className={cn(
+                    "inline-block bg-white/95 dark:bg-slate-800/95 text-slate-800 dark:text-slate-100 rounded-lg backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 shadow-xl font-medium macos-smooth-hover",
+                    isMobile ? "px-2 py-1 text-xs" : "px-3 py-1.5 lg:px-4 lg:py-2"
+                  )}>
                     🔍 Discover premium properties with enhanced search and filtering
                   </span>
                 </p>
                 
-                {/* Subtle glow effect */}
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-pink-500/10 rounded-lg blur-xl -z-10"></div>
+                {/* Subtle glow effect - Hidden on mobile */}
+                {!isMobile && (
+                  <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-pink-500/10 rounded-lg blur-xl -z-10"></div>
+                )}
               </div>
             </div>
             
-            {/* iPhone-style Search Panel */}
-            <div className="animate-scale-in max-w-4xl mx-auto">
+            {/* iPhone-style Search Panel - Mobile Optimized */}
+            <div className={cn(
+              "animate-scale-in",
+              isMobile ? "max-w-sm mx-auto" : "max-w-4xl mx-auto"
+            )}>
               <IPhoneSearchPanel
                 language={language}
                 onSearch={(searchData) => {
@@ -333,10 +377,16 @@ const Index = () => {
           </div>
         </section>
 
-        {/* Advanced Filters */}
+        {/* Advanced Filters - Mobile Optimized */}
         {filtersOpen && (
-          <section className="px-4 py-2">
-            <div className="max-w-[1800px] mx-auto">
+          <section className={cn(
+            "py-2",
+            isMobile ? "px-2" : "px-4"
+          )}>
+            <div className={cn(
+              "mx-auto",
+              isMobile ? "max-w-sm" : "max-w-[1800px]"
+            )}>
               <AdvancedPropertyFilters
                 filters={filters}
                 onFiltersChange={handleFiltersChange}
@@ -348,19 +398,31 @@ const Index = () => {
           </section>
         )}
 
-        {/* Error Message */}
+        {/* Error Message - Mobile Optimized */}
         {searchError && (
           <section className="py-2">
-            <div className="max-w-[1800px] mx-auto px-6 lg:px-8">
-              <div className="apple-glass border border-destructive/40 text-destructive text-center p-3 rounded-xl max-w-xl mx-auto shadow-md">
-                <p className="font-medium text-sm lg:text-base">⚠️ {searchError}</p>
+            <div className={cn(
+              isMobile ? "max-w-sm px-2" : "max-w-[1800px] px-6 lg:px-8",
+              "mx-auto"
+            )}>
+              <div className={cn(
+                "apple-glass border border-destructive/40 text-destructive text-center rounded-xl shadow-md",
+                isMobile ? "p-2 max-w-xs mx-auto" : "p-3 max-w-xl mx-auto"
+              )}>
+                <p className={cn(
+                  "font-medium",
+                  isMobile ? "text-xs" : "text-sm lg:text-base"
+                )}>⚠️ {searchError}</p>
                 <button 
                   onClick={() => {
                     setSearchError(null);
                     setSearchResults([]);
                     setHasSearched(false);
                   }}
-                  className="mt-2 px-4 py-1 text-sm bg-red-100 hover:bg-red-200 text-red-700 rounded-md transition-colors"
+                  className={cn(
+                    "bg-red-100 hover:bg-red-200 text-red-700 rounded-md transition-colors",
+                    isMobile ? "mt-1 px-2 py-0.5 text-xs" : "mt-2 px-4 py-1 text-sm"
+                  )}
                 >
                   Clear Error
                 </button>
@@ -369,9 +431,15 @@ const Index = () => {
           </section>
         )}
 
-        {/* Property Display Section */}
-        <div className="px-6 lg:px-8 space-y-8 py-8">
-          <div className="max-w-[1800px] mx-auto space-y-8">
+        {/* Property Display Section - Mobile Optimized */}
+        <div className={cn(
+          "space-y-8 py-8",
+          isMobile ? "px-2 py-4 space-y-4" : "px-6 lg:px-8"
+        )}>
+          <div className={cn(
+            "mx-auto space-y-8",
+            isMobile ? "max-w-sm space-y-4" : "max-w-[1800px]"
+          )}>
             {hasSearched ? (
               <section className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 dark:border-gray-700/20">
                 <div className="p-6">

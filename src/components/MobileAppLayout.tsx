@@ -62,60 +62,60 @@ const MobileAppLayout = ({ children }: MobileAppLayoutProps) => {
 
   return (
     <div className="mobile-app-layout min-h-screen bg-background relative">
-      {/* Mobile Top Header */}
+      {/* Mobile Top Header - Compact */}
       <header className="sticky top-0 z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-800/50 shadow-sm">
-        <div className="flex items-center justify-between px-4 h-14">
-          {/* Logo */}
+        <div className="flex items-center justify-between px-3 h-12">
+          {/* Logo - Smaller */}
           <div 
-            className="flex items-center space-x-2 cursor-pointer"
+            className="flex items-center space-x-1.5 cursor-pointer"
             onClick={() => navigate('/')}
           >
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg">
-              <Home className="h-4 w-4 text-white" />
+            <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-md">
+              <Home className="h-3 w-3 text-white" />
             </div>
-            <span className="text-lg font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            <span className="text-sm font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
               ASTRA Villa
             </span>
           </div>
 
-          {/* Right Actions */}
-          <div className="flex items-center space-x-2">
+          {/* Right Actions - Compact */}
+          <div className="flex items-center space-x-1">
             {user && (
               <Button
                 variant="ghost"
                 size="sm"
-                className="w-9 h-9 p-0 rounded-full"
+                className="w-8 h-8 p-0 rounded-full"
               >
-                <Bell className="h-4 w-4" />
+                <Bell className="h-3.5 w-3.5" />
               </Button>
             )}
             
             <Button
               variant="ghost"
               size="sm"
-              className="w-9 h-9 p-0 rounded-full"
+              className="w-8 h-8 p-0 rounded-full"
               onClick={() => setIsMenuOpen(true)}
             >
-              <Menu className="h-4 w-4" />
+              <Menu className="h-3.5 w-3.5" />
             </Button>
           </div>
         </div>
       </header>
 
-      {/* Main Content */}
-      <main className="pb-20 min-h-[calc(100vh-3.5rem)]">
+      {/* Main Content - Optimized padding */}
+      <main className="pb-16 min-h-[calc(100vh-3rem)]">
         {children}
       </main>
 
-      {/* Mobile Bottom Navigation */}
+      {/* Mobile Bottom Navigation - Compact */}
       <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border-t border-gray-200/50 dark:border-gray-800/50 shadow-lg">
-        <div className="grid grid-cols-4 h-16">
+        <div className="grid grid-cols-4 h-14">
           {bottomNavItems.map((item, index) => (
             <Button
               key={index}
               variant="ghost"
               className={cn(
-                "h-full flex flex-col items-center justify-center space-y-1 rounded-none border-0",
+                "h-full flex flex-col items-center justify-center space-y-0.5 rounded-none border-0 text-xs",
                 item.active 
                   ? "text-blue-600 dark:text-blue-400 bg-blue-50/50 dark:bg-blue-900/20" 
                   : "text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400"
@@ -123,12 +123,12 @@ const MobileAppLayout = ({ children }: MobileAppLayoutProps) => {
               onClick={() => navigate(item.path)}
             >
               <item.icon className={cn(
-                "h-5 w-5 transition-transform",
+                "h-4 w-4 transition-transform",
                 item.active && "scale-110"
               )} />
               <span className="text-xs font-medium">{item.label}</span>
               {item.active && (
-                <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-8 h-1 bg-blue-600 dark:bg-blue-400 rounded-b-full" />
+                <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-6 h-0.5 bg-blue-600 dark:bg-blue-400 rounded-b-full" />
               )}
             </Button>
           ))}
@@ -146,90 +146,90 @@ const MobileAppLayout = ({ children }: MobileAppLayoutProps) => {
           onClick={() => setIsMenuOpen(false)}
         />
         
-        {/* Menu Panel */}
-        <div className="absolute right-0 top-0 h-full w-80 max-w-[85vw] bg-white dark:bg-gray-900 shadow-2xl">
-          {/* Menu Header */}
-          <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-800">
-            <h2 className="text-lg font-semibold">Menu</h2>
+        {/* Menu Panel - Compact */}
+        <div className="absolute right-0 top-0 h-full w-72 max-w-[80vw] bg-white dark:bg-gray-900 shadow-2xl">
+          {/* Menu Header - Smaller */}
+          <div className="flex items-center justify-between p-3 border-b border-gray-200 dark:border-gray-800">
+            <h2 className="text-base font-semibold">Menu</h2>
             <Button
               variant="ghost"
               size="sm"
-              className="w-8 h-8 p-0 rounded-full"
+              className="w-7 h-7 p-0 rounded-full"
               onClick={() => setIsMenuOpen(false)}
             >
-              <X className="h-4 w-4" />
+              <X className="h-3.5 w-3.5" />
             </Button>
           </div>
 
-          {/* User Profile Section */}
+          {/* User Profile Section - Compact */}
           {user && profile && (
-            <div className="p-4 border-b border-gray-200 dark:border-gray-800">
-              <div className="flex items-center space-x-3">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
-                  <User className="h-6 w-6 text-white" />
+            <div className="p-3 border-b border-gray-200 dark:border-gray-800">
+              <div className="flex items-center space-x-2">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+                  <User className="h-5 w-5 text-white" />
                 </div>
                 <div>
                   <p className="font-medium text-sm">{profile.full_name || 'User'}</p>
-                  <p className="text-xs text-gray-500">{user.email}</p>
+                  <p className="text-xs text-gray-500 truncate">{user.email}</p>
                 </div>
               </div>
             </div>
           )}
 
-          {/* Quick Actions */}
-          <div className="p-4 border-b border-gray-200 dark:border-gray-800">
-            <h3 className="text-sm font-medium text-gray-500 mb-3">Quick Actions</h3>
-            <div className="grid grid-cols-3 gap-3">
+          {/* Quick Actions - Compact */}
+          <div className="p-3 border-b border-gray-200 dark:border-gray-800">
+            <h3 className="text-xs font-medium text-gray-500 mb-2">Quick Actions</h3>
+            <div className="grid grid-cols-3 gap-2">
               {quickActions.map((action, index) => (
                 <Button
                   key={index}
                   variant="outline"
                   size="sm"
-                  className="flex flex-col items-center space-y-1 h-auto p-3"
+                  className="flex flex-col items-center space-y-0.5 h-auto p-2"
                   onClick={action.action}
                 >
-                  <action.icon className="h-4 w-4" />
+                  <action.icon className="h-3.5 w-3.5" />
                   <span className="text-xs">{action.label}</span>
                 </Button>
               ))}
             </div>
           </div>
 
-          {/* Menu Items */}
-          <div className="p-4">
-            <h3 className="text-sm font-medium text-gray-500 mb-3">Browse</h3>
-            <div className="space-y-1">
+          {/* Menu Items - Compact */}
+          <div className="p-3">
+            <h3 className="text-xs font-medium text-gray-500 mb-2">Browse</h3>
+            <div className="space-y-0.5">
               {menuItems.map((item, index) => (
                 <Button
                   key={index}
                   variant="ghost"
-                  className="w-full justify-start h-12"
+                  className="w-full justify-start h-10 text-sm"
                   onClick={() => navigate(item.path)}
                 >
-                  <item.icon className="h-4 w-4 mr-3" />
+                  <item.icon className="h-3.5 w-3.5 mr-2" />
                   {item.label}
                 </Button>
               ))}
             </div>
           </div>
 
-          {/* Settings & Support */}
-          <div className="absolute bottom-4 left-4 right-4">
-            <div className="space-y-1">
+          {/* Settings & Support - Compact */}
+          <div className="absolute bottom-3 left-3 right-3">
+            <div className="space-y-0.5">
               <Button
                 variant="ghost"
-                className="w-full justify-start h-10"
+                className="w-full justify-start h-9 text-sm"
                 onClick={() => navigate('/settings')}
               >
-                <Settings className="h-4 w-4 mr-3" />
+                <Settings className="h-3.5 w-3.5 mr-2" />
                 Settings
               </Button>
               <Button
                 variant="ghost"
-                className="w-full justify-start h-10"
+                className="w-full justify-start h-9 text-sm"
                 onClick={() => navigate('/support')}
               >
-                <MessageCircle className="h-4 w-4 mr-3" />
+                <MessageCircle className="h-3.5 w-3.5 mr-2" />
                 Support
               </Button>
             </div>
@@ -237,13 +237,13 @@ const MobileAppLayout = ({ children }: MobileAppLayoutProps) => {
         </div>
       </div>
 
-      {/* Floating Action Button for Search (when not on search page) */}
+      {/* Floating Action Button - Compact */}
       {!location.pathname.includes('/search') && (
         <Button
-          className="fixed bottom-20 right-4 z-40 w-14 h-14 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 shadow-2xl border-0"
+          className="fixed bottom-[4.5rem] right-3 z-40 w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 shadow-xl border-0"
           onClick={() => navigate('/search')}
         >
-          <Search className="h-6 w-6 text-white" />
+          <Search className="h-5 w-5 text-white" />
         </Button>
       )}
     </div>
