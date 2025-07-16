@@ -263,7 +263,10 @@ const Index = () => {
 
   // Mobile layout wrapper
   const content = (
-    <div className="min-h-screen text-foreground relative" style={{ zoom: isMobile ? '100%' : '90%' }}>
+    <div className={cn(
+      "min-h-screen text-foreground relative",
+      isMobile ? "w-full overflow-x-hidden mobile-app-layout" : ""
+    )} style={{ zoom: isMobile ? '100%' : '90%' }}>
       {/* Background Wallpaper Layer */}
       <div 
         className="fixed inset-0 z-0 opacity-30 dark:opacity-20"
@@ -271,18 +274,21 @@ const Index = () => {
       />
       
       {/* Content Layer with backdrop */}
-      <div className="relative z-10 bg-white/90 dark:bg-black/90 backdrop-blur-sm min-h-screen">
+      <div className={cn(
+        "relative z-10 bg-white/90 dark:bg-black/90 backdrop-blur-sm",
+        isMobile ? "min-h-screen overflow-x-hidden mobile-safe-area" : "min-h-screen"
+      )}>
         {/* Desktop Navigation Only */}
         {!isMobile && <Navigation />}
         
         {/* Hero Section - Mobile Optimized */}
         <section className={cn(
-          "relative px-3 py-3", 
-          isMobile ? "py-2" : "py-4 lg:py-6 px-4"
+          "relative w-full",
+          isMobile ? "px-2 py-2 mobile-safe-top" : "px-4 py-4 lg:py-6"
         )}>
           <div className={cn(
-            "mx-auto text-center",
-            isMobile ? "max-w-sm" : "max-w-[1800px]"
+            "mx-auto text-center w-full",
+            isMobile ? "max-w-full px-1" : "max-w-[1800px]"
           )}>
             <div className={cn(
               "animate-fade-in",
