@@ -14,7 +14,7 @@ import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 const MobileFooter = () => {
-  const isMobile = useIsMobile();
+  const { isMobile } = useIsMobile();
   const { language } = useLanguage();
 
   const text = {

@@ -24,7 +24,7 @@ interface MobileAppLayoutProps {
 }
 
 const MobileAppLayout = ({ children }: MobileAppLayoutProps) => {
-  const isMobile = useIsMobile();
+  const { isMobile, deviceInfo } = useIsMobile();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { user, profile } = useAuth();
   const navigate = useNavigate();

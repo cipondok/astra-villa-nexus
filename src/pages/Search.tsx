@@ -31,7 +31,7 @@ interface Property {
 }
 
 const Search = () => {
-  const isMobile = useIsMobile();
+  const { isMobile } = useIsMobile();
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchTerm, setSearchTerm] = useState(searchParams.get('q') || '');
   const [selectedType, setSelectedType] = useState(searchParams.get('type') || 'all');

@@ -29,7 +29,7 @@ const Index = () => {
   const { language } = useLanguage();
   const { user, profile, loading } = useAuth();
   const navigate = useNavigate();
-  const isMobile = useIsMobile();
+  const { isMobile, deviceInfo } = useIsMobile();
   const [searchResults, setSearchResults] = useState<BaseProperty[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
