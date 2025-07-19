@@ -4,11 +4,22 @@
   html {
     -webkit-text-size-adjust: 100%;
     -webkit-tap-highlight-color: transparent;
+    font-size: 16px; /* Prevent zoom on iOS */
   }
   
   body {
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
+    font-size: 16px; /* Base mobile font size */
+  }
+  
+  /* Mobile device auto-detection and adjustment */
+  @media screen and (max-device-width: 768px) {
+    html, body {
+      font-size: 16px !important;
+      width: 100vw !important;
+      overflow-x: hidden !important;
+    }
   }
 }
 
@@ -33,12 +44,19 @@
     min-width: 44px;
   }
   
-  /* Mobile-optimized text sizes */
+  /* Mobile-optimized text sizes - Important content prioritized */
   .text-mobile-xs { font-size: 0.75rem; line-height: 1rem; }
   .text-mobile-sm { font-size: 0.875rem; line-height: 1.25rem; }
   .text-mobile-base { font-size: 1rem; line-height: 1.5rem; }
   .text-mobile-lg { font-size: 1.125rem; line-height: 1.75rem; }
   .text-mobile-xl { font-size: 1.25rem; line-height: 1.75rem; }
+  .text-mobile-2xl { font-size: 1.5rem; line-height: 2rem; }
+  
+  /* Important element sizes for mobile */
+  .mobile-title { font-size: 1.5rem !important; line-height: 2rem !important; font-weight: 700 !important; }
+  .mobile-subtitle { font-size: 1.125rem !important; line-height: 1.75rem !important; font-weight: 600 !important; }
+  .mobile-body { font-size: 1rem !important; line-height: 1.5rem !important; }
+  .mobile-caption { font-size: 0.875rem !important; line-height: 1.25rem !important; }
   
   /* Mobile spacing */
   .p-mobile-1 { padding: 0.25rem; }
@@ -89,13 +107,38 @@
     padding-right: 1rem;
   }
   
-  /* Auto-adjust inputs and selects for mobile */
+  /* Auto-adjust inputs and selects for mobile - Important form elements */
   .mobile-app-layout input,
   .mobile-app-layout select,
-  .mobile-app-layout button {
+  .mobile-app-layout button,
+  .mobile-app-layout textarea {
     font-size: 16px !important; /* Prevents zoom on iOS */
     -webkit-appearance: none;
     -webkit-border-radius: 0;
+    min-height: 44px !important; /* Apple's recommended touch target */
+    padding: 0.75rem 1rem !important;
+  }
+  
+  /* Login/Register form optimizations */
+  .mobile-app-layout .auth-form input {
+    font-size: 16px !important;
+    height: 48px !important;
+    padding: 0.875rem 1rem !important;
+    border-radius: 0.75rem !important;
+    margin-bottom: 1rem !important;
+  }
+  
+  /* Button optimizations for mobile */
+  .mobile-app-layout .btn-primary,
+  .mobile-app-layout .btn-secondary,
+  .mobile-app-layout button[type="submit"] {
+    min-height: 48px !important;
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+    padding: 0.875rem 1.5rem !important;
+    border-radius: 0.75rem !important;
+    width: 100% !important;
+    margin-bottom: 0.75rem !important;
   }
   
   /* Mobile device specific adjustments */
@@ -127,25 +170,60 @@
     -webkit-overflow-scrolling: touch;
   }
   
-  /* Compact mobile components */
+  /* Important content sizing for mobile */
   .mobile-app-layout .btn {
-    padding: 0.5rem 0.75rem;
-    font-size: 0.875rem;
+    padding: 0.75rem 1rem !important;
+    font-size: 1rem !important;
+    min-height: 44px !important;
+    font-weight: 600 !important;
   }
-  
+
+  /* Typography hierarchy for mobile - Important content first */
   .mobile-app-layout h1 {
-    font-size: 1.5rem;
-    line-height: 2rem;
+    font-size: 1.75rem !important;
+    line-height: 2.25rem !important;
+    font-weight: 800 !important;
+    margin-bottom: 1rem !important;
   }
-  
+
   .mobile-app-layout h2 {
-    font-size: 1.25rem;
-    line-height: 1.75rem;
+    font-size: 1.5rem !important;
+    line-height: 2rem !important;
+    font-weight: 700 !important;
+    margin-bottom: 0.75rem !important;
+  }
+
+  .mobile-app-layout h3 {
+    font-size: 1.25rem !important;
+    line-height: 1.75rem !important;
+    font-weight: 600 !important;
+    margin-bottom: 0.5rem !important;
   }
   
-  .mobile-app-layout h3 {
-    font-size: 1.125rem;
-    line-height: 1.5rem;
+  .mobile-app-layout h4 {
+    font-size: 1.125rem !important;
+    line-height: 1.5rem !important;
+    font-weight: 600 !important;
+  }
+  
+  .mobile-app-layout p {
+    font-size: 1rem !important;
+    line-height: 1.5rem !important;
+    margin-bottom: 0.75rem !important;
+  }
+  
+  /* List styles for mobile */
+  .mobile-app-layout ul,
+  .mobile-app-layout ol {
+    padding-left: 1.5rem !important;
+    margin-bottom: 1rem !important;
+  }
+  
+  .mobile-app-layout li {
+    font-size: 1rem !important;
+    line-height: 1.5rem !important;
+    margin-bottom: 0.5rem !important;
+    padding: 0.25rem 0 !important;
   }
   
   /* Hide desktop elements on mobile */
@@ -178,19 +256,55 @@
     width: 100%;
   }
   
-  /* Mobile responsive containers */
+  /* Mobile responsive containers - Important content priority */
   .mobile-container {
-    width: 100%;
-    max-width: 100vw;
-    padding-left: 0.5rem;
-    padding-right: 0.5rem;
-    margin-left: auto;
-    margin-right: auto;
+    width: 100% !important;
+    max-width: 100vw !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  /* Priority content sections */
+  .mobile-app-layout .hero-section {
+    padding: 2rem 1rem !important;
+    text-align: center !important;
   }
   
+  .mobile-app-layout .auth-section {
+    padding: 1.5rem 1rem !important;
+    max-width: 400px !important;
+    margin: 0 auto !important;
+  }
+  
+  .mobile-app-layout .property-card {
+    margin-bottom: 1rem !important;
+    padding: 1rem !important;
+    border-radius: 1rem !important;
+  }
+  
+  .mobile-app-layout .search-filters {
+    padding: 1rem !important;
+    margin-bottom: 1rem !important;
+  }
+
   /* Fix mobile text scaling */
   .mobile-text-scale {
-    font-size: 16px; /* Prevents zoom on iOS */
+    font-size: 16px !important; /* Prevents zoom on iOS */
+  }
+  
+  /* Important navigation elements */
+  .mobile-app-layout .nav-item {
+    padding: 0.75rem 1rem !important;
+    font-size: 1rem !important;
+    font-weight: 500 !important;
+  }
+  
+  .mobile-app-layout .mobile-nav-button {
+    min-height: 44px !important;
+    min-width: 44px !important;
+    padding: 0.75rem !important;
   }
 }
 
@@ -201,7 +315,7 @@
   }
 }
 
-/* iOS Safari specific fixes */
+/* Device-specific optimizations */
 @supports (-webkit-touch-callout: none) {
   .mobile-app-layout {
     -webkit-overflow-scrolling: touch;
@@ -211,5 +325,34 @@
   .mobile-viewport-fix {
     height: 100vh;
     height: -webkit-fill-available;
+  }
+}
+
+/* Auto device screen detection and adjustment */
+@media screen and (max-device-width: 480px) {
+  /* Small mobile devices (iPhone SE, etc.) */
+  .mobile-app-layout h1 { font-size: 1.5rem !important; }
+  .mobile-app-layout h2 { font-size: 1.25rem !important; }
+  .mobile-app-layout .container { padding: 0.75rem !important; }
+}
+
+@media screen and (max-device-width: 768px) and (orientation: landscape) {
+  /* Mobile landscape mode */
+  .mobile-app-layout .hero-section { padding: 1rem !important; }
+  .mobile-app-layout h1 { font-size: 1.5rem !important; }
+}
+
+@media screen and (min-device-width: 768px) and (max-device-width: 1024px) {
+  /* Tablet devices */
+  .mobile-app-layout .container { max-width: 90% !important; }
+  .mobile-app-layout h1 { font-size: 2rem !important; }
+}
+
+/* High DPI device adjustments */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 2dppx) {
+  .mobile-app-layout {
+    font-smoothing: antialiased;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
