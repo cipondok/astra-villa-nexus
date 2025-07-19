@@ -134,13 +134,8 @@ const PropertyGridView = ({
               )}
             </div>
 
-            {/* Top Right Icons */}
-            <div className="absolute top-3 right-3 flex flex-col gap-2">
-              {(property.three_d_model_url || property.virtual_tour_url) && (
-                <Badge className="status-success p-1.5">
-                  <Box className="h-4 w-4" />
-                </Badge>
-              )}
+            {/* Top Right Compare Icon */}
+            <div className="absolute top-3 right-3">
               <PropertyComparisonButton 
                 property={property} 
                 variant="secondary"
@@ -234,14 +229,6 @@ const PropertyGridView = ({
               )}
             </div>
 
-            {/* Action Buttons */}
-            <div className="flex justify-center pt-1 mt-auto">
-              <PropertyComparisonButton 
-                property={property} 
-                variant="secondary"
-                size="sm"
-              />
-            </div>
           </CardContent>
         </Card>
       ))}
