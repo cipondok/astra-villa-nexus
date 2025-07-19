@@ -84,7 +84,7 @@ const PropertyGridView = ({
           style={{ flexBasis: 'calc(25% - 1.5rem)' }}
         >
           {/* Image Section */}
-          <div className="relative aspect-[4/3] overflow-hidden flex-shrink-0">
+          <div className="relative aspect-[3/2] overflow-hidden flex-shrink-0">
             <img
               src={getImageUrl(property)}
               alt={property.title}
@@ -104,16 +104,47 @@ const PropertyGridView = ({
                   {property.property_type}
                 </Badge>
               )}
+            </div>
+
+            {/* Center Action Icons */}
+            <div className="absolute inset-0 flex items-center justify-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <Button
+                size="lg"
+                variant="secondary"
+                className="h-12 w-12 p-0 glass-ios rounded-full"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onPropertyClick(property);
+                }}
+              >
+                <Eye className="h-6 w-6 text-foreground" />
+              </Button>
               {(property.three_d_model_url || property.virtual_tour_url) && (
-                <Badge className="status-success flex items-center gap-1">
-                  <Box className="h-3 w-3" />
-                  3D View Available
-                </Badge>
+                <Button
+                  size="lg"
+                  variant="secondary"
+                  className="h-12 w-12 p-0 glass-ios rounded-full"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onView3D?.(property);
+                  }}
+                >
+                  <Box className="h-6 w-6 text-foreground" />
+                </Button>
               )}
             </div>
 
-            {/* Quick Actions */}
-            <div className="absolute top-3 right-3 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            {/* Top Right 3D Icon */}
+            {(property.three_d_model_url || property.virtual_tour_url) && (
+              <div className="absolute top-3 right-3">
+                <Badge className="status-success p-1.5">
+                  <Box className="h-4 w-4" />
+                </Badge>
+              </div>
+            )}
+
+            {/* Quick Actions - Heart and Share */}
+            <div className="absolute bottom-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
               <Button
                 size="sm"
                 variant="secondary"
@@ -145,13 +176,13 @@ const PropertyGridView = ({
             </div>
 
             {/* Price Overlay */}
-            <div className="absolute bottom-3 left-3 right-3">
-              <div className="glass-effect rounded-lg px-3 py-2">
-                <div className="font-bold text-lg gradient-text">
+            <div className="absolute bottom-3 left-3">
+              <div className="glass-effect rounded-lg px-2 py-1 inline-block">
+                <div className="font-bold text-lg gradient-text leading-tight">
                   {formatPrice(property.price)}
                 </div>
                 {property.listing_type === 'rent' && (
-                  <div className="text-xs text-muted-foreground">/month</div>
+                  <div className="text-xs text-muted-foreground leading-tight">/month</div>
                 )}
               </div>
             </div>
