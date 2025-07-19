@@ -75,13 +75,13 @@ const PropertyGridView = ({
   }
 
   return (
-    <div className="flex flex-wrap gap-6 justify-start">
+    <div className="flex flex-wrap gap-4 justify-start">
       {properties.map((property) => (
         <Card 
           key={property.id} 
-          className="group professional-card card-hover cursor-pointer h-[520px] flex flex-col min-w-[280px] max-w-[320px] flex-1"
+          className="group professional-card card-hover cursor-pointer h-[420px] flex flex-col min-w-[260px] max-w-[300px] flex-1"
           onClick={() => onPropertyClick(property)}
-          style={{ flexBasis: 'calc(25% - 1.5rem)' }}
+          style={{ flexBasis: 'calc(25% - 1rem)' }}
         >
           {/* Image Section */}
           <div className="relative aspect-[3/2] overflow-hidden flex-shrink-0">
@@ -189,39 +189,39 @@ const PropertyGridView = ({
           </div>
 
           {/* Content Section */}
-          <CardContent className="p-4 space-y-3 flex-1 flex flex-col justify-between">
-            <div className="space-y-3 flex-1">
+          <CardContent className="p-3 space-y-2 flex-1 flex flex-col justify-between">
+            <div className="space-y-2 flex-1">
               {/* Title */}
-              <h3 className="font-semibold text-foreground line-clamp-2 min-h-[3rem] group-hover:text-primary transition-colors">
+              <h3 className="font-semibold text-foreground line-clamp-2 text-sm leading-tight group-hover:text-primary transition-colors">
                 {property.title}
               </h3>
 
               {/* Location */}
               <div className="flex items-center gap-1 text-muted-foreground">
-                <MapPin className="h-4 w-4 flex-shrink-0" />
-                <span className="text-sm truncate">{property.location}</span>
+                <MapPin className="h-3 w-3 flex-shrink-0" />
+                <span className="text-xs truncate">{property.location}</span>
               </div>
 
               {/* Property Details */}
               {(property.bedrooms || property.bathrooms || property.area_sqm) && (
-                <div className="flex items-center justify-between text-sm text-muted-foreground">
-                  <div className="flex items-center gap-3">
+                <div className="flex items-center justify-between text-xs text-muted-foreground">
+                  <div className="flex items-center gap-2">
                     {property.bedrooms && (
                       <div className="flex items-center gap-1">
-                        <Bed className="h-4 w-4" />
+                        <Bed className="h-3 w-3" />
                         <span>{property.bedrooms}</span>
                       </div>
                     )}
                     {property.bathrooms && (
                       <div className="flex items-center gap-1">
-                        <Bath className="h-4 w-4" />
+                        <Bath className="h-3 w-3" />
                         <span>{property.bathrooms}</span>
                       </div>
                     )}
                   </div>
                   {property.area_sqm && (
                     <div className="flex items-center gap-1">
-                      <Square className="h-4 w-4" />
+                      <Square className="h-3 w-3" />
                       <span>{property.area_sqm}m²</span>
                     </div>
                   )}
@@ -230,7 +230,7 @@ const PropertyGridView = ({
             </div>
 
             {/* Action Buttons */}
-            <div className="flex justify-center pt-2 mt-auto">
+            <div className="flex justify-center pt-1 mt-auto">
               <PropertyComparisonButton 
                 property={property} 
                 variant="secondary"
