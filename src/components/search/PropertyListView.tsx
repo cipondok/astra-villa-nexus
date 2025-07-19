@@ -53,11 +53,11 @@ const PropertyListView = ({
   }
 
   return (
-    <div className="space-y-4">
+    <div className="flex flex-col gap-4">
       {properties.map((property) => (
         <Card key={property.id} className="overflow-hidden hover:shadow-lg transition-shadow duration-300 border-0 bg-card">
           <CardContent className="p-0">
-            <div className="flex flex-col md:flex-row">
+            <div className="flex flex-col md:flex-row items-stretch">
               {/* Image Section */}
               <div className="relative md:w-64 h-48 md:h-36 overflow-hidden">
                 <img
@@ -112,7 +112,7 @@ const PropertyListView = ({
               </div>
 
               {/* Content Section */}
-              <div className="flex-1 p-4">
+              <div className="flex-1 p-4 flex flex-col justify-between">
                 <div className="flex justify-between items-start mb-2">
                   <div>
                     <h3 className="text-base font-semibold text-foreground mb-1 line-clamp-2">
@@ -168,11 +168,11 @@ const PropertyListView = ({
                 )}
 
                 {/* Action Buttons */}
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-2 mt-auto">
                   <Button 
                     variant="default"
                     onClick={() => onPropertyClick(property)}
-                    className="flex-1 min-w-fit h-8 text-xs"
+                    className="flex-1 min-w-[80px] h-8 text-xs inline-flex items-center justify-center"
                   >
                     <Eye className="h-3 w-3 mr-1" />
                     View Details
@@ -181,7 +181,7 @@ const PropertyListView = ({
                     <Button 
                       variant="outline"
                       onClick={() => onView3D?.(property)}
-                      className="flex-1 min-w-fit h-8 text-xs"
+                      className="flex-1 min-w-[70px] h-8 text-xs inline-flex items-center justify-center"
                     >
                       3D View
                     </Button>
@@ -189,7 +189,7 @@ const PropertyListView = ({
                   <Button 
                     variant="secondary"
                     onClick={() => onContact?.(property)}
-                    className="flex-1 min-w-fit h-8 text-xs"
+                    className="flex-1 min-w-[70px] h-8 text-xs inline-flex items-center justify-center"
                   >
                     <Phone className="h-3 w-3 mr-1" />
                     Contact

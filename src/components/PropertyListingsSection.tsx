@@ -180,20 +180,21 @@ const PropertyListingsSection = ({
               customProperties={displayProperties}
             />
           ) : (
-            // Use regular grid for less than 4 properties with proper logging
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-3 lg:gap-4">
+            // Use responsive flex layout for less than 4 properties
+            <div className="flex flex-wrap gap-2 sm:gap-3 lg:gap-4 justify-start">
               {displayProperties.map((property, index) => {
                 console.log('Rendering CompactPropertyCard for property:', property.id);
                 return (
-                  <CompactPropertyCard
-                    key={`${property.id}-${index}`}
-                    property={property}
-                    language={language}
-                    isSaved={favoriteProperties.has(property.id)}
-                    onSave={() => toggleFavorite(property.id)}
-                    onView={() => handleViewDetails(property.id)}
-                    onView3D={handleView3D}
-                  />
+                  <div key={`${property.id}-${index}`} className="flex-1 min-w-[280px] max-w-[320px]">
+                    <CompactPropertyCard
+                      property={property}
+                      language={language}
+                      isSaved={favoriteProperties.has(property.id)}
+                      onSave={() => toggleFavorite(property.id)}
+                      onView={() => handleViewDetails(property.id)}
+                      onView3D={handleView3D}
+                    />
+                  </div>
                 );
               })}
             </div>

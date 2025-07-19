@@ -75,12 +75,13 @@ const PropertyGridView = ({
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6 gap-6">
+    <div className="flex flex-wrap gap-6 justify-start">
       {properties.map((property) => (
         <Card 
           key={property.id} 
-          className="group overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer h-[520px] flex flex-col"
+          className="group overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer h-[520px] flex flex-col min-w-[280px] max-w-[320px] flex-1"
           onClick={() => onPropertyClick(property)}
+          style={{ flexBasis: 'calc(25% - 1.5rem)' }}
         >
           {/* Image Section */}
           <div className="relative aspect-[4/3] overflow-hidden flex-shrink-0">
@@ -198,11 +199,11 @@ const PropertyGridView = ({
             </div>
 
             {/* Action Buttons */}
-            <div className="flex gap-2 pt-2 mt-auto">
+            <div className="flex flex-wrap gap-2 pt-2 mt-auto">
               <Button 
                 variant="default"
                 size="sm"
-                className="flex-1"
+                className="flex-1 min-w-[70px] inline-flex items-center justify-center"
                 onClick={(e) => {
                   e.stopPropagation();
                   onPropertyClick(property);
@@ -215,7 +216,7 @@ const PropertyGridView = ({
                 <Button 
                   variant="outline"
                   size="sm"
-                  className="flex-1"
+                  className="flex-1 min-w-[70px] inline-flex items-center justify-center"
                   onClick={(e) => {
                     e.stopPropagation();
                      onView3D?.(property);
