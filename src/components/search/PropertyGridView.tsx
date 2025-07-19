@@ -1,7 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Bed, Bath, Square, Heart, Share2, Eye, Phone, Box } from "lucide-react";
+import { MapPin, Bed, Bath, Square, Heart, Share2, Eye, Phone, Box, Scale } from "lucide-react";
 import PropertyComparisonButton from "@/components/property/PropertyComparisonButton";
 import { BaseProperty } from "@/types/property";
 import { useState } from "react";
@@ -134,14 +134,19 @@ const PropertyGridView = ({
               )}
             </div>
 
-            {/* Top Right 3D Icon */}
-            {(property.three_d_model_url || property.virtual_tour_url) && (
-              <div className="absolute top-3 right-3">
+            {/* Top Right Icons */}
+            <div className="absolute top-3 right-3 flex flex-col gap-2">
+              {(property.three_d_model_url || property.virtual_tour_url) && (
                 <Badge className="status-success p-1.5">
                   <Box className="h-4 w-4" />
                 </Badge>
-              </div>
-            )}
+              )}
+              <PropertyComparisonButton 
+                property={property} 
+                variant="secondary"
+                size="sm"
+              />
+            </div>
 
             {/* Quick Actions - Heart and Share */}
             <div className="absolute bottom-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
