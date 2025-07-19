@@ -16,6 +16,8 @@ import PropertyGridView from "@/components/search/PropertyGridView";
 import AdvancedPropertyFilters, { PropertyFilters } from "@/components/search/AdvancedPropertyFilters";
 import { BaseProperty } from "@/types/property";
 import PropertySlideSection from "@/components/property/PropertySlideSection";
+import PropertiesForSaleSection from "@/components/property/PropertiesForSaleSection";
+import PropertiesForRentSection from "@/components/property/PropertiesForRentSection";
 import IPhoneSearchPanel from "@/components/iPhoneSearchPanel";
 import { SearchLoadingDialog } from "@/components/SearchLoadingDialog";
 import { Button } from "@/components/ui/button";
@@ -514,22 +516,11 @@ const Index = () => {
                   />
                 </section>
 
-                {/* Additional Property Sections */}
-                <PropertySlideSection
-                  title="Properties for Sale"
-                  subtitle="Find your dream home to purchase"
-                  type="buy"
-                  language={language}
-                  limit={6}
-                />
+                {/* Properties for Sale Section */}
+                <PropertiesForSaleSection language={language} onPropertyClick={handlePropertyClick} />
 
-                <PropertySlideSection
-                  title="Properties for Rent"
-                  subtitle="Discover rental properties in prime locations"
-                  type="rent"
-                  language={language}
-                  limit={6}
-                />
+                {/* Properties for Rent Section */}
+                <PropertiesForRentSection language={language} onPropertyClick={handlePropertyClick} />
               </>
             )}
           </div>

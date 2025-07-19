@@ -79,7 +79,7 @@ const PropertyGridView = ({
       {properties.map((property) => (
         <Card 
           key={property.id} 
-          className="group overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer h-[520px] flex flex-col min-w-[280px] max-w-[320px] flex-1"
+          className="group professional-card card-hover cursor-pointer h-[520px] flex flex-col min-w-[280px] max-w-[320px] flex-1"
           onClick={() => onPropertyClick(property)}
           style={{ flexBasis: 'calc(25% - 1.5rem)' }}
         >
@@ -95,17 +95,17 @@ const PropertyGridView = ({
             <div className="absolute top-3 left-3 flex flex-col gap-2">
               <Badge 
                 variant={property.listing_type === 'sale' ? 'default' : 'secondary'}
-                className="bg-background/90 backdrop-blur-sm"
+                className="badge-primary"
               >
                 {property.listing_type === 'sale' ? 'For Sale' : 'For Rent'}
               </Badge>
               {property.property_type && (
-                <Badge variant="outline" className="bg-background/90 backdrop-blur-sm capitalize">
+                <Badge variant="outline" className="badge-secondary capitalize">
                   {property.property_type}
                 </Badge>
               )}
               {(property.three_d_model_url || property.virtual_tour_url) && (
-                <Badge className="bg-blue-600/90 text-white backdrop-blur-sm flex items-center gap-1">
+                <Badge className="status-success flex items-center gap-1">
                   <Box className="h-3 w-3" />
                   3D View Available
                 </Badge>
@@ -117,8 +117,8 @@ const PropertyGridView = ({
               <Button
                 size="sm"
                 variant="secondary"
-                className={`h-8 w-8 p-0 bg-white/90 hover:bg-white ${
-                  savedProperties.has(property.id) ? "ring-2 ring-red-400" : ""
+                className={`h-8 w-8 p-0 glass-ios ${
+                  savedProperties.has(property.id) ? "ring-2 ring-destructive" : ""
                 }`}
                 onClick={(e) => {
                   e.stopPropagation();
@@ -127,31 +127,31 @@ const PropertyGridView = ({
               >
                 <Heart 
                   className={`h-4 w-4 ${
-                    savedProperties.has(property.id) ? 'fill-red-500 text-red-500' : 'text-gray-600'
+                    savedProperties.has(property.id) ? 'fill-destructive text-destructive' : 'text-muted-foreground'
                   }`} 
                 />
               </Button>
               <Button
                 size="sm"
                 variant="secondary"
-                className="h-8 w-8 p-0 bg-white/90 hover:bg-white"
+                className="h-8 w-8 p-0 glass-ios"
                 onClick={(e) => {
                   e.stopPropagation();
                   onShare?.(property);
                 }}
               >
-                <Share2 className="h-4 w-4 text-gray-600" />
+                <Share2 className="h-4 w-4 text-muted-foreground" />
               </Button>
             </div>
 
             {/* Price Overlay */}
             <div className="absolute bottom-3 left-3 right-3">
-              <div className="bg-black/70 text-white px-3 py-2 rounded-lg backdrop-blur-sm">
-                <div className="font-bold text-lg">
+              <div className="glass-effect rounded-lg px-3 py-2">
+                <div className="font-bold text-lg gradient-text">
                   {formatPrice(property.price)}
                 </div>
                 {property.listing_type === 'rent' && (
-                  <div className="text-xs opacity-90">/month</div>
+                  <div className="text-xs text-muted-foreground">/month</div>
                 )}
               </div>
             </div>
@@ -201,9 +201,8 @@ const PropertyGridView = ({
             {/* Action Buttons */}
             <div className="flex flex-wrap gap-2 pt-2 mt-auto">
               <Button 
-                variant="default"
+                className="flex-1 min-w-[70px] btn-primary inline-flex items-center justify-center"
                 size="sm"
-                className="flex-1 min-w-[70px] inline-flex items-center justify-center"
                 onClick={(e) => {
                   e.stopPropagation();
                   onPropertyClick(property);
