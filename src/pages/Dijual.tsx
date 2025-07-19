@@ -208,16 +208,16 @@ const Dijual = () => {
   const areas = [...new Set(properties.map(p => p.area).filter(Boolean))];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
+    <div className="min-h-screen bg-background">
       <Navigation />
       
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mb-4">
+          <h1 className="text-5xl font-bold gradient-text mb-4">
             Properti Dijual
           </h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Temukan properti impian Anda dengan sistem pencarian canggih dan filter yang komprehensif
           </p>
         </div>
@@ -235,18 +235,18 @@ const Dijual = () => {
         </div>
 
         {/* Results Summary */}
-        <div className="mb-6 bg-white rounded-lg shadow-sm p-4 border-l-4 border-blue-500">
+        <div className="mb-6 professional-card border-l-4 border-primary">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-lg font-semibold text-gray-800">
+              <p className="text-lg font-semibold text-foreground">
                 Menampilkan {filteredProperties.length} properti
               </p>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-muted-foreground">
                 dari total {properties.length} properti dijual
               </p>
             </div>
             {filteredProperties.length > 0 && (
-              <Badge variant="secondary" className="bg-blue-100 text-blue-700">
+              <Badge variant="secondary" className="badge-primary">
                 {Math.round((filteredProperties.length / properties.length) * 100)}% hasil
               </Badge>
             )}
@@ -269,12 +269,12 @@ const Dijual = () => {
             ))}
           </div>
         ) : filteredProperties.length === 0 ? (
-          <div className="text-center py-16 bg-white rounded-lg shadow-sm">
-            <Home className="h-20 w-20 text-gray-300 mx-auto mb-6" />
-            <h3 className="text-2xl font-semibold text-gray-600 mb-3">
+          <div className="text-center py-16 professional-card">
+            <Home className="h-20 w-20 text-muted-foreground mx-auto mb-6" />
+            <h3 className="text-2xl font-semibold text-foreground mb-3">
               Tidak ada properti ditemukan
             </h3>
-            <p className="text-gray-500 mb-6 max-w-md mx-auto">
+            <p className="text-muted-foreground mb-6 max-w-md mx-auto">
               Coba sesuaikan filter pencarian Anda atau hapus beberapa filter untuk melihat lebih banyak hasil.
             </p>
             <Button 
@@ -294,7 +294,7 @@ const Dijual = () => {
                 features: [],
                 sortBy: 'newest'
               })}
-              className="bg-blue-600 hover:bg-blue-700"
+              className="btn-primary"
             >
               Reset Filter
             </Button>
@@ -345,14 +345,14 @@ const Dijual = () => {
 
                   {/* Status Badge */}
                   <div className="absolute top-4 left-4">
-                    <Badge className="bg-green-500 hover:bg-green-600 text-white font-medium">
+                    <Badge className="status-success font-medium">
                       Dijual
                     </Badge>
                   </div>
 
                   {/* Price Badge */}
                   <div className="absolute bottom-4 left-4">
-                    <Badge variant="secondary" className="bg-white/90 text-gray-800 font-bold text-lg px-3 py-1">
+                    <Badge variant="secondary" className="bg-card/90 text-foreground font-bold text-lg px-3 py-1">
                       {formatPrice(property.price || 0)}
                     </Badge>
                   </div>
@@ -360,13 +360,13 @@ const Dijual = () => {
 
                 <CardHeader className="pb-3">
                   <CardTitle 
-                    className="text-xl hover:text-blue-600 cursor-pointer line-clamp-2 transition-colors"
+                    className="text-xl hover:text-primary cursor-pointer line-clamp-2 transition-colors"
                     onClick={() => navigate(`/properties/${property.id}`)}
                   >
                     {property.title}
                   </CardTitle>
-                  <div className="flex items-center text-gray-500 text-sm">
-                    <MapPin className="h-4 w-4 mr-1 text-blue-500" />
+                  <div className="flex items-center text-muted-foreground text-sm">
+                    <MapPin className="h-4 w-4 mr-1 text-primary" />
                     {property.location}
                     {property.city && `, ${property.city}`}
                   </div>
@@ -374,28 +374,28 @@ const Dijual = () => {
 
                 <CardContent className="pt-0">
                   <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center space-x-1 text-sm text-gray-500">
+                    <div className="flex items-center space-x-1 text-sm text-muted-foreground">
                       <Eye className="h-4 w-4" />
                       <span>245 views</span>
                     </div>
                   </div>
 
-                  <div className="flex items-center space-x-6 text-sm text-gray-600 mb-6">
+                  <div className="flex items-center space-x-6 text-sm text-muted-foreground mb-6">
                     {property.bedrooms && (
                       <div className="flex items-center">
-                        <Bed className="h-4 w-4 mr-1 text-blue-500" />
+                        <Bed className="h-4 w-4 mr-1 text-primary" />
                         <span className="font-medium">{property.bedrooms} KT</span>
                       </div>
                     )}
                     {property.bathrooms && (
                       <div className="flex items-center">
-                        <Bath className="h-4 w-4 mr-1 text-blue-500" />
+                        <Bath className="h-4 w-4 mr-1 text-primary" />
                         <span className="font-medium">{property.bathrooms} KM</span>
                       </div>
                     )}
                     {property.area_sqm && (
                       <div className="flex items-center">
-                        <Square className="h-4 w-4 mr-1 text-blue-500" />
+                        <Square className="h-4 w-4 mr-1 text-primary" />
                         <span className="font-medium">{property.area_sqm} m²</span>
                       </div>
                     )}
@@ -403,12 +403,12 @@ const Dijual = () => {
 
                   <div className="flex space-x-3">
                     <Button 
-                      className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium"
+                      className="flex-1 btn-primary"
                       onClick={() => navigate(`/properties/${property.id}`)}
                     >
                       Lihat Detail
                     </Button>
-                    <Button variant="outline" className="flex-1 border-blue-200 text-blue-600 hover:bg-blue-50">
+                    <Button variant="outline" className="flex-1">
                       Hubungi Agen
                     </Button>
                   </div>
