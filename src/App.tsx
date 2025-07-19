@@ -25,6 +25,7 @@ import BookingSuccessPage from '@/pages/BookingSuccessPage';
 import VendorKYCDashboard from '@/pages/VendorKYCDashboard';
 import VendorDashboard from '@/pages/VendorDashboard';
 import ThreeDShowcase from '@/pages/ThreeDShowcase';
+import PreLaunching from '@/pages/PreLaunching';
 import NotFound from '@/pages/NotFound';
 
 // Create QueryClient instance
@@ -62,6 +63,7 @@ function App() {
                           <Route path="/buy" element={<Dijual />} />
                           <Route path="/disewa" element={<Disewa />} />
                           <Route path="/rent" element={<Disewa />} />
+                          <Route path="/pre-launching" element={<PreLaunching />} />
                           <Route path="/3d-showcase" element={<ThreeDShowcase />} />
                           <Route path="/properties/:id" element={<PropertyDetail />} />
                           <Route path="/admin" element={<AdminDashboard />} />
