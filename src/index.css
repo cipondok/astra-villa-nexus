@@ -463,61 +463,9 @@
     50% { opacity: 1; }
   }
 
-  /* Flex Utility Classes */
-  .flex { @apply flex; }
-  .flex-wrap { @apply flex-wrap; }
-  .flex-column { @apply flex-col; }
-  .flex-row { @apply flex-row; }
-  .inline-flex { @apply inline-flex; }
-  
-  /* Flex Direction */
-  .flex-col-reverse { @apply flex-col-reverse; }
-  .flex-row-reverse { @apply flex-row-reverse; }
-  
-  /* Justify Content */
-  .justify-start { @apply justify-start; }
-  .justify-center { @apply justify-center; }
-  .justify-end { @apply justify-end; }
-  .justify-between { @apply justify-between; }
-  .justify-around { @apply justify-around; }
-  .justify-evenly { @apply justify-evenly; }
-  
-  /* Align Items */
-  .align-start { @apply items-start; }
-  .align-center { @apply items-center; }
-  .align-end { @apply items-end; }
-  .align-stretch { @apply items-stretch; }
-  .align-baseline { @apply items-baseline; }
-  
-  /* Align Self */
-  .self-start { @apply self-start; }
-  .self-center { @apply self-center; }
-  .self-end { @apply self-end; }
-  .self-stretch { @apply self-stretch; }
-  
-  /* Gap Utilities */
-  .gap-5 { @apply gap-1; }
-  .gap-10 { @apply gap-2; }
+  /* Custom Gap Utilities (non-conflicting with Tailwind) */
   .gap-15 { @apply gap-3; }
-  .gap-20 { @apply gap-4; }
   .gap-25 { @apply gap-5; }
-  .gap-30 { @apply gap-6; }
-  .gap-40 { @apply gap-8; }
-  .gap-50 { @apply gap-10; }
-  
-  /* Row and Column Gaps */
-  .gap-x-10 { @apply gap-x-2; }
-  .gap-x-20 { @apply gap-x-4; }
-  .gap-x-30 { @apply gap-x-6; }
-  .gap-y-10 { @apply gap-y-2; }
-  .gap-y-20 { @apply gap-y-4; }
-  .gap-y-30 { @apply gap-y-6; }
-  
-  /* Flex Grow/Shrink */
-  .flex-1 { @apply flex-1; }
-  .flex-auto { @apply flex-auto; }
-  .flex-initial { @apply flex-initial; }
-  .flex-none { @apply flex-none; }
   
   /* Responsive Card Grid */
   .card-grid {
