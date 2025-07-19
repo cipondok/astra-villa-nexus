@@ -230,32 +230,7 @@ const PropertyGridView = ({
             </div>
 
             {/* Action Buttons */}
-            <div className="flex flex-wrap gap-2 pt-2 mt-auto">
-              <Button 
-                className="flex-1 min-w-[70px] btn-primary inline-flex items-center justify-center"
-                size="sm"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onPropertyClick(property);
-                }}
-              >
-                <Eye className="h-4 w-4 mr-1" />
-                View
-              </Button>
-              {(property.three_d_model_url || property.virtual_tour_url) && (
-                <Button 
-                  variant="outline"
-                  size="sm"
-                  className="flex-1 min-w-[70px] inline-flex items-center justify-center"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                     onView3D?.(property);
-                   }}
-                 >
-                   <Box className="h-4 w-4 mr-1" />
-                   3D View
-                 </Button>
-              )}
+            <div className="flex justify-center pt-2 mt-auto">
               <PropertyComparisonButton 
                 property={property} 
                 variant="secondary"
