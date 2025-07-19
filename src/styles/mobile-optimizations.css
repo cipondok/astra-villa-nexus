@@ -54,10 +54,32 @@
 
 /* Mobile-first breakpoints */
 @media (max-width: 767px) {
-  .mobile-app-layout {
-    font-size: 14px;
-    width: 100vw;
-    overflow-x: hidden;
+  .mobile-app-layout,
+  body.mobile-device,
+  html.mobile-device {
+    font-size: 16px !important; /* Prevent zoom on iOS */
+    width: 100vw !important;
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Force all containers to be full width on mobile */
+  .mobile-app-layout .container,
+  body.mobile-device .container {
+    width: 100% !important;
+    max-width: 100vw !important;
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+  
+  /* Make all elements responsive */
+  .mobile-app-layout *,
+  body.mobile-device * {
+    max-width: 100vw;
+    box-sizing: border-box;
   }
   
   /* Search page specific mobile adjustments */

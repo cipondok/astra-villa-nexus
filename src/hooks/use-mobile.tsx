@@ -20,12 +20,25 @@ export function useIsMobile() {
       const isTouch = 'ontouchstart' in window
       const devicePixelRatio = window.devicePixelRatio
       
-      // Enhanced mobile detection
-      const isMobileBySize = width < MOBILE_BREAKPOINT
+      console.log('Mobile detection:', { width, height, userAgent, isTouch, devicePixelRatio })
+      
+      // Enhanced mobile detection with multiple checks
+      const isMobileBySize = width <= MOBILE_BREAKPOINT
       const isMobileByUserAgent = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent)
       const isMobileByTouch = isTouch && width < 1024
+      const isMobileByOrientation = window.orientation !== undefined
+      const isMobileByMaxTouchPoints = navigator.maxTouchPoints > 0
       
-      const isMobileDevice = isMobileBySize || isMobileByUserAgent || isMobileByTouch
+      const isMobileDevice = isMobileBySize || isMobileByUserAgent || isMobileByTouch || isMobileByOrientation || isMobileByMaxTouchPoints
+      
+      console.log('Mobile checks:', { 
+        isMobileBySize, 
+        isMobileByUserAgent, 
+        isMobileByTouch, 
+        isMobileByOrientation,
+        isMobileByMaxTouchPoints,
+        final: isMobileDevice 
+      })
       
       setIsMobile(isMobileDevice)
       setDeviceInfo({
@@ -36,24 +49,43 @@ export function useIsMobile() {
         devicePixelRatio
       })
       
-      // Auto-adjust viewport for mobile
+      // Auto-adjust viewport and apply mobile optimizations
       if (isMobileDevice) {
-        const metaViewport = document.querySelector('meta[name="viewport"]')
-        if (metaViewport) {
-          metaViewport.setAttribute('content', 
-            'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover'
-          )
+        // Set proper viewport meta tag
+        let metaViewport = document.querySelector('meta[name="viewport"]')
+        if (!metaViewport) {
+          metaViewport = document.createElement('meta')
+          metaViewport.setAttribute('name', 'viewport')
+          document.head.appendChild(metaViewport)
         }
+        metaViewport.setAttribute('content', 
+          'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover'
+        )
         
-        // Add mobile-specific class to body
-        document.body.classList.add('mobile-device')
+        // Add mobile-specific classes
+        document.documentElement.classList.add('mobile-device')
+        document.body.classList.add('mobile-device', 'mobile-app-layout')
         
-        // Force resize event to trigger layout recalculation
+        // Apply mobile-specific styles immediately
+        document.body.style.width = '100vw'
+        document.body.style.overflowX = 'hidden'
+        ;(document.body.style as any).webkitOverflowScrolling = 'touch'
+        ;(document.body.style as any).webkitTextSizeAdjust = '100%'
+        
+        // Force layout recalculation
         setTimeout(() => {
           window.dispatchEvent(new Event('resize'))
+          window.dispatchEvent(new Event('orientationchange'))
         }, 100)
       } else {
-        document.body.classList.remove('mobile-device')
+        document.documentElement.classList.remove('mobile-device')
+        document.body.classList.remove('mobile-device', 'mobile-app-layout')
+        
+        // Reset desktop styles
+        document.body.style.width = ''
+        document.body.style.overflowX = ''
+        ;(document.body.style as any).webkitOverflowScrolling = ''
+        ;(document.body.style as any).webkitTextSizeAdjust = ''
       }
     }
     
