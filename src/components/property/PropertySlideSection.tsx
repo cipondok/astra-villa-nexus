@@ -105,7 +105,7 @@ const PropertySlideSection = ({ title, subtitle, type, language, limit = 8 }: Pr
     return price.toString();
   };
 
-  const itemsPerSlide = 4; // Better display with larger cards
+  const itemsPerSlide = 3; // Optimized for better responsive display
   const maxSlides = Math.ceil(properties.length / itemsPerSlide);
 
   const nextSlide = () => {
@@ -144,7 +144,7 @@ const PropertySlideSection = ({ title, subtitle, type, language, limit = 8 }: Pr
             {subtitle && <p className="text-gray-600 dark:text-gray-400">{subtitle}</p>}
           </div>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <div className="card-grid gap-4">{/* Responsive card grid using utility classes */}
           {[...Array(4)].map((_, i) => (
             <Card key={i} className="animate-pulse">
               <div className="h-48 bg-gray-200 dark:bg-gray-700 rounded-t-lg"></div>
@@ -177,23 +177,23 @@ const PropertySlideSection = ({ title, subtitle, type, language, limit = 8 }: Pr
   }
 
   return (
-    <div className="space-y-6 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20 dark:border-gray-700/20">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl lg:text-3xl font-bold mb-2 bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-300 dark:to-purple-300 bg-clip-text text-transparent">
+    <div className="space-y-6 professional-card">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex-1">
+          <h2 className="text-2xl lg:text-3xl font-bold mb-2 gradient-text">
             {title}
           </h2>
-          {subtitle && <p className="text-gray-600 dark:text-gray-300">{subtitle}</p>}
+          {subtitle && <p className="text-muted-foreground">{subtitle}</p>}
         </div>
         
         {properties.length > itemsPerSlide && (
-          <div className="flex gap-2">
+          <div className="flex gap-2 self-end sm:self-auto">
             <Button
               variant="outline"
               size="sm"
               onClick={prevSlide}
               disabled={currentSlide === 0}
-              className="h-10 w-10 p-0 hover:bg-blue-50 dark:hover:bg-blue-900/20"
+              className="h-10 w-10 p-0 hover:bg-primary/10"
             >
               <ChevronLeft className="h-5 w-5" />
             </Button>
@@ -202,7 +202,7 @@ const PropertySlideSection = ({ title, subtitle, type, language, limit = 8 }: Pr
               size="sm"
               onClick={nextSlide}
               disabled={currentSlide === maxSlides - 1}
-              className="h-10 w-10 p-0 hover:bg-blue-50 dark:hover:bg-blue-900/20"
+              className="h-10 w-10 p-0 hover:bg-primary/10"
             >
               <ChevronRight className="h-5 w-5" />
             </Button>
@@ -218,11 +218,11 @@ const PropertySlideSection = ({ title, subtitle, type, language, limit = 8 }: Pr
         >
           {Array.from({ length: maxSlides }).map((_, slideIndex) => (
             <div key={slideIndex} className="w-full flex-shrink-0">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              <div className="card-grid gap-4">
                 {properties
                   .slice(slideIndex * itemsPerSlide, (slideIndex + 1) * itemsPerSlide)
                   .map((property) => (
-                    <div key={property.id} className="w-full">
+                    <div key={property.id} className="w-full min-w-0">
                       <CompactPropertyCard
                         property={property}
                         language={language}
@@ -247,13 +247,14 @@ const PropertySlideSection = ({ title, subtitle, type, language, limit = 8 }: Pr
               onClick={() => setCurrentSlide(index)}
               className={`w-2 h-2 rounded-full transition-all duration-200 ${
                 index === currentSlide 
-                  ? 'bg-blue-600 w-6' 
-                  : 'bg-gray-300 dark:bg-gray-600 hover:bg-gray-400'
+                  ? 'bg-primary w-6' 
+                  : 'bg-muted-foreground/30 hover:bg-muted-foreground/50'
               }`}
             />
           ))}
         </div>
       )}
+      
       
       {/* Property Detail Modal */}
       {selectedProperty && showDetailModal && (
