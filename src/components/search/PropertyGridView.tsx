@@ -84,11 +84,11 @@ const PropertyGridView = ({
           style={{ flexBasis: 'calc(25% - 0.5rem)' }}
         >
           {/* Image Section */}
-          <div className="relative aspect-[4/3] overflow-hidden flex-shrink-0">
+          <div className="relative aspect-[16/9] overflow-hidden flex-shrink-0 rounded-lg">
             <img
               src={getImageUrl(property)}
               alt={property.title}
-              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
             />
             
             {/* Top Badges */}
