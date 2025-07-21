@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { ChevronDown, ChevronRight } from 'lucide-react';
+import React from 'react';
 import { Badge } from '@/components/ui/badge';
 
 interface TreeNode {
@@ -24,8 +23,6 @@ interface ModernTreeNavigationProps {
 }
 
 const ModernTreeNavigation = ({ activeTab, onTabChange, headerCounts }: ModernTreeNavigationProps) => {
-  const [expandedNodes, setExpandedNodes] = useState<Set<string>>(new Set(['core', 'management', 'tools', 'ai']));
-
   const treeData: TreeNode[] = [
     {
       id: 'core',
@@ -124,14 +121,17 @@ const ModernTreeNavigation = ({ activeTab, onTabChange, headerCounts }: ModernTr
     }
   ];
 
-  const toggleNode = (nodeId: string) => {
-    const newExpanded = new Set(expandedNodes);
-    if (expandedNodes.has(nodeId)) {
-      newExpanded.delete(nodeId);
-    } else {
-      newExpanded.add(nodeId);
-    }
-    setExpandedNodes(newExpanded);
+  // Flatten all links for inline display
+  const getAllLinks = (nodes: TreeNode[]): TreeNode[] => {
+    const links: TreeNode[] = [];
+    nodes.forEach(node => {
+      if (node.children) {
+        links.push(...node.children);
+      } else {
+        links.push(node);
+      }
+    });
+    return links;
   };
 
   const getBadgeColor = (color?: string) => {
@@ -154,95 +154,68 @@ const ModernTreeNavigation = ({ activeTab, onTabChange, headerCounts }: ModernTr
     }
   };
 
-  const renderTreeNode = (node: TreeNode, level: number = 0) => {
-    const isExpanded = expandedNodes.has(node.id);
-    const hasChildren = node.children && node.children.length > 0;
-    const isActive = activeTab === node.id;
-    const isParentActive = node.children?.some(child => child.id === activeTab);
-
-    return (
-      <div key={node.id} className="select-none">
-        <div
-          className={`flex items-center gap-2 py-2 px-3 rounded-lg cursor-pointer transition-all duration-300 hover:bg-white/5 group ${
-            isActive ? 'bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-white border border-blue-400/30' :
-            isParentActive ? 'bg-white/5 text-gray-200' : 'text-gray-300 hover:text-white'
-          }`}
-          style={{ marginLeft: `${level * 16}px` }}
-          onClick={() => {
-            if (hasChildren) {
-              toggleNode(node.id);
-            } else {
-              onTabChange(node.id);
-            }
-          }}
-        >
-          {/* Expand/Collapse Icon */}
-          {hasChildren && (
-            <div className="w-4 h-4 flex items-center justify-center">
-              {isExpanded ? 
-                <ChevronDown className="h-3 w-3 transition-transform duration-200" /> : 
-                <ChevronRight className="h-3 w-3 transition-transform duration-200" />
-              }
-            </div>
-          )}
-          {!hasChildren && <div className="w-4" />}
-
-          {/* Node Icon */}
-          <span className="text-lg">{node.icon}</span>
-
-          {/* Node Label */}
-          <span className={`text-sm font-medium flex-1 ${hasChildren ? 'font-semibold' : ''}`}>
-            {node.label}
-          </span>
-
-          {/* Count Badge */}
-          {node.count !== undefined && (
-            <Badge 
-              className={`text-xs px-2 py-0.5 ${
-                node.color === 'green' && node.count === 'LIVE' 
-                  ? 'bg-green-500/20 text-green-400 border-green-500/30 animate-pulse'
-                  : getBadgeColor(node.color)
-              }`}
-            >
-              {node.count}
-            </Badge>
-          )}
-
-          {/* New Badge */}
-          {node.isNew && (
-            <Badge className="text-xs px-1.5 py-0.5 bg-gradient-to-r from-pink-500/20 to-purple-500/20 text-pink-400 border-pink-500/30 animate-pulse">
-              NEW
-            </Badge>
-          )}
-
-          {/* Active Indicator */}
-          {isActive && (
-            <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse" />
-          )}
-        </div>
-
-        {/* Children */}
-        {hasChildren && isExpanded && (
-          <div className="mt-1 space-y-1 animate-fade-in">
-            {node.children!.map(child => renderTreeNode(child, level + 1))}
-          </div>
-        )}
-      </div>
-    );
-  };
+  const allLinks = getAllLinks(treeData);
 
   return (
-    <div className="bg-gradient-to-br from-gray-900/95 to-slate-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-lg p-4 max-h-96 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-transparent">
-      <div className="flex items-center gap-2 mb-4 pb-3 border-b border-white/10">
-        <span className="text-lg">🌳</span>
-        <h3 className="text-sm font-semibold text-white">Navigation Tree</h3>
-        <Badge className="text-xs bg-blue-500/20 text-blue-400 border-blue-500/30">
-          {treeData.reduce((acc, node) => acc + (node.children?.length || 0), 0)} Sections
-        </Badge>
-      </div>
-      
-      <div className="space-y-1">
-        {treeData.map(node => renderTreeNode(node))}
+    <div className="bg-gradient-to-br from-gray-900/95 to-slate-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-lg">
+      <div className="p-4">
+        <div className="flex items-center gap-2 mb-4 pb-3 border-b border-white/10">
+          <span className="text-lg">🔗</span>
+          <h3 className="text-sm font-semibold text-white">Admin Navigation</h3>
+          <Badge className="text-xs bg-blue-500/20 text-blue-400 border-blue-500/30">
+            {allLinks.length} Links
+          </Badge>
+        </div>
+        
+        {/* Inline Navigation Links */}
+        <div className="flex flex-wrap gap-2 max-h-64 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-transparent">
+          {allLinks.map((link) => {
+            const isActive = activeTab === link.id;
+            
+            return (
+              <button
+                key={link.id}
+                onClick={() => onTabChange(link.id)}
+                className={`inline-flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-300 hover:scale-105 whitespace-nowrap ${
+                  isActive 
+                    ? 'bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-white border border-blue-400/30 shadow-lg'
+                    : 'text-gray-300 hover:text-white hover:bg-white/5 border border-transparent hover:border-white/10'
+                }`}
+              >
+                {/* Link Icon */}
+                <span className="text-base">{link.icon}</span>
+
+                {/* Link Label */}
+                <span className="text-sm font-medium">{link.label}</span>
+
+                {/* Count Badge */}
+                {link.count !== undefined && (
+                  <Badge 
+                    className={`text-xs px-1.5 py-0.5 ml-1 ${
+                      link.color === 'green' && link.count === 'LIVE' 
+                        ? 'bg-green-500/20 text-green-400 border-green-500/30 animate-pulse'
+                        : getBadgeColor(link.color)
+                    }`}
+                  >
+                    {link.count}
+                  </Badge>
+                )}
+
+                {/* New Badge */}
+                {link.isNew && (
+                  <Badge className="text-xs px-1 py-0.5 bg-gradient-to-r from-pink-500/20 to-purple-500/20 text-pink-400 border-pink-500/30 animate-pulse">
+                    NEW
+                  </Badge>
+                )}
+
+                {/* Active Indicator */}
+                {isActive && (
+                  <div className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-pulse ml-1" />
+                )}
+              </button>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
