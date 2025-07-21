@@ -20,7 +20,17 @@ import {
   Building2,
   MapPin,
   Globe,
-  Crown
+  Crown,
+  Home,
+  FileText,
+  MessageSquare,
+  BarChart3,
+  ShoppingBag,
+  Wrench,
+  Headphones,
+  CreditCard,
+  Clock,
+  TrendingUp
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import ThemeSwitcher from "@/components/ui/theme-switcher";
@@ -170,30 +180,67 @@ const AdminTopMenu = ({
     }
   };
 
+  // Enhanced Quick Actions with Web Links and Counts
   const quickActions = [
     {
       icon: Globe,
       label: "Provinces",
       count: locationStats?.provinces?.toString() || "0",
-      color: "bg-blue-100 text-blue-600 dark:bg-blue-900/50 dark:text-blue-400"
+      color: "bg-blue-100 text-blue-600 dark:bg-blue-900/50 dark:text-blue-400",
+      href: "/admin-dashboard?section=locations"
     },
     {
       icon: Building2,
       label: "Cities",
       count: locationStats?.cities?.toString() || "0",
-      color: "bg-green-100 text-green-600 dark:bg-green-900/50 dark:text-green-400"
+      color: "bg-green-100 text-green-600 dark:bg-green-900/50 dark:text-green-400",
+      href: "/admin-dashboard?section=property-management"
     },
     {
-      icon: MapPin,
-      label: "Areas",
-      count: locationStats?.areas?.toString() || "0",
-      color: "bg-purple-100 text-purple-600 dark:bg-purple-900/50 dark:text-purple-400"
+      icon: Users,
+      label: "Users",
+      count: "2.4k",
+      color: "bg-purple-100 text-purple-600 dark:bg-purple-900/50 dark:text-purple-400",
+      href: "/admin-dashboard?section=user-management"
     },
     {
-      icon: Activity,
-      label: "Active",
-      count: locationStats?.active?.toString() || "0",
-      color: "bg-orange-100 text-orange-600 dark:bg-orange-900/50 dark:text-orange-400"
+      icon: ShoppingBag,
+      label: "Vendors",
+      count: "147",
+      color: "bg-orange-100 text-orange-600 dark:bg-orange-900/50 dark:text-orange-400",
+      href: "/admin-dashboard?section=vendors-hub"
+    }
+  ];
+
+  // Additional Web Navigation Links with Counts
+  const webNavLinks = [
+    {
+      icon: BarChart3,
+      label: "Analytics",
+      count: "Real-time",
+      color: "bg-indigo-100 text-indigo-600 dark:bg-indigo-900/50 dark:text-indigo-400",
+      href: "/admin-dashboard?section=analytics"
+    },
+    {
+      icon: MessageSquare,
+      label: "Support",
+      count: "12",
+      color: "bg-pink-100 text-pink-600 dark:bg-pink-900/50 dark:text-pink-400",
+      href: "/admin-dashboard?section=customer-service"
+    },
+    {
+      icon: Wrench,
+      label: "Tools",
+      count: "8",
+      color: "bg-cyan-100 text-cyan-600 dark:bg-cyan-900/50 dark:text-cyan-400",
+      href: "/admin-dashboard?section=tools-management"
+    },
+    {
+      icon: FileText,
+      label: "Reports",
+      count: "5",
+      color: "bg-yellow-100 text-yellow-600 dark:bg-yellow-900/50 dark:text-yellow-400",
+      href: "/admin-dashboard?section=system-reports"
     }
   ];
 
@@ -379,42 +426,65 @@ const AdminTopMenu = ({
       </div>
 
       
-      {/* Quick Actions Section - Below Header */}
+      {/* Enhanced Quick Actions Section - Below Header */}
       <div className="bg-white/60 dark:bg-gray-900/60 backdrop-blur-sm border-b border-white/20 dark:border-gray-800/50">
         <div className="max-w-screen-2xl mx-auto px-6 lg:px-12 xl:px-16 py-4">
-          <div className="flex items-center justify-between gap-6">
-            {/* Location Stats */}
-            <div className="flex items-center gap-4">
-              {quickActions.map((action, index) => (
-                <div
-                  key={index}
-                  className="flex items-center gap-2 bg-white/70 dark:bg-gray-800/70 rounded-xl px-3 py-2 min-w-[100px] backdrop-blur-sm border border-white/30 dark:border-gray-700/50 hover:scale-105 transition-all duration-200"
-                >
-                  <div className={`p-1.5 rounded-lg ${action.color}`}>
-                    <action.icon className="h-4 w-4" />
-                  </div>
-                  <div>
-                    <p className="text-xs text-gray-600 dark:text-gray-300">{action.label}</p>
-                    <p className="font-semibold text-gray-900 dark:text-white">{action.count}</p>
-                  </div>
-                </div>
-              ))}
+          <div className="flex flex-col gap-4">
+            {/* Main Quick Actions Row */}
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                {quickActions.map((action, index) => (
+                  <a
+                    key={index}
+                    href={action.href}
+                    className="flex items-center gap-2 bg-white/70 dark:bg-gray-800/70 rounded-xl px-3 py-2 min-w-[100px] backdrop-blur-sm border border-white/30 dark:border-gray-700/50 hover:scale-105 transition-all duration-200 group cursor-pointer"
+                  >
+                    <div className={`p-1.5 rounded-lg ${action.color} group-hover:scale-110 transition-transform duration-200`}>
+                      <action.icon className="h-4 w-4" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-600 dark:text-gray-300">{action.label}</p>
+                      <p className="font-semibold text-gray-900 dark:text-white">{action.count}</p>
+                    </div>
+                  </a>
+                ))}
+              </div>
+
+              {/* Status Indicators */}
+              <div className="flex items-center gap-3">
+                <Badge variant="secondary" className="bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-300 border border-green-200 dark:border-green-800">
+                  <Activity className="h-3 w-3 mr-1" />
+                  Online
+                </Badge>
+                <Badge variant="secondary" className="bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
+                  <Database className="h-3 w-3 mr-1" />
+                  Connected
+                </Badge>
+                <Badge variant="secondary" className="bg-purple-100 text-purple-700 dark:bg-purple-900/50 dark:text-purple-300 border border-purple-200 dark:border-purple-800">
+                  <Shield className="h-3 w-3 mr-1" />
+                  Secure
+                </Badge>
+              </div>
             </div>
 
-            {/* Status Indicators */}
-            <div className="flex items-center gap-3">
-              <Badge variant="secondary" className="bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-300 border border-green-200 dark:border-green-800">
-                <Activity className="h-3 w-3 mr-1" />
-                Online
-              </Badge>
-              <Badge variant="secondary" className="bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
-                <Database className="h-3 w-3 mr-1" />
-                Connected
-              </Badge>
-              <Badge variant="secondary" className="bg-purple-100 text-purple-700 dark:bg-purple-900/50 dark:text-purple-300 border border-purple-200 dark:border-purple-800">
-                <Shield className="h-3 w-3 mr-1" />
-                Secure
-              </Badge>
+            {/* Additional Web Navigation Links */}
+            <div className="flex items-center gap-3 pt-2 border-t border-white/20 dark:border-gray-700/50">
+              <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">Quick Links:</span>
+              {webNavLinks.map((link, index) => (
+                <a
+                  key={index}
+                  href={link.href}
+                  className="flex items-center gap-2 bg-white/50 dark:bg-gray-800/50 rounded-lg px-2.5 py-1.5 backdrop-blur-sm border border-white/20 dark:border-gray-700/30 hover:scale-105 transition-all duration-200 group cursor-pointer"
+                >
+                  <div className={`p-1 rounded-md ${link.color} group-hover:scale-110 transition-transform duration-200`}>
+                    <link.icon className="h-3 w-3" />
+                  </div>
+                  <span className="text-xs text-gray-700 dark:text-gray-300 font-medium">{link.label}</span>
+                  <Badge variant="outline" className="text-xs h-4 px-1.5 bg-white/70 dark:bg-gray-800/70">
+                    {link.count}
+                  </Badge>
+                </a>
+              ))}
             </div>
           </div>
         </div>
