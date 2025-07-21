@@ -2,10 +2,13 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Heart, MapPin, Bed, Bath, Square, Eye, Box, Star, Clock, Calendar, TrendingUp } from "lucide-react";
+import { Heart, MapPin, Bed, Bath, Square, Eye, Box, Star, Clock, Calendar, TrendingUp, MessageSquare } from "lucide-react";
 import { useState } from "react";
 import PropertyDetailModal from "./PropertyDetailModal";
 import Property3DViewModal from "./Property3DViewModal";
+import PropertyRatingDisplay from './PropertyRatingDisplay';
+import PropertyRatingModal from './PropertyRatingModal';
+import { usePropertyRatings } from '@/hooks/usePropertyRatings';
 import { BaseProperty } from "@/types/property";
 
 interface PropertyCardProps {
@@ -58,6 +61,9 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 }) => {
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [show3DModal, setShow3DModal] = useState(false);
+  const [showRatingModal, setShowRatingModal] = useState(false);
+
+  const { aggregate } = usePropertyRatings(id);
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -297,6 +303,30 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
             <p className="text-sm text-gray-600 line-clamp-2">{description}</p>
           )}
 
+          {/* Property Rating */}
+          {aggregate && aggregate.total_ratings > 0 && (
+            <div className="flex items-center justify-between p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200 dark:border-yellow-800">
+              <PropertyRatingDisplay
+                averageRating={aggregate.average_rating}
+                totalRatings={aggregate.total_ratings}
+                size="sm"
+              />
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-8 px-3 text-sm text-yellow-700 dark:text-yellow-300 hover:text-yellow-800 dark:hover:text-yellow-200"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setShowRatingModal(true);
+                }}
+              >
+                <MessageSquare className="h-4 w-4 mr-1" />
+                Read Reviews
+              </Button>
+            </div>
+          )}
+
           <div className="flex gap-2">
             <Button variant="outline" className="flex-1" onClick={handleViewDetails}>
               <Eye className="h-4 w-4 mr-2" />
@@ -340,6 +370,15 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
             setShow3DModal(false);
           }}
           language="en"
+        />
+      )}
+
+      {/* Rating Modal */}
+      {showRatingModal && (
+        <PropertyRatingModal
+          propertyId={id}
+          isOpen={showRatingModal}
+          onClose={() => setShowRatingModal(false)}
         />
       )}
     </>

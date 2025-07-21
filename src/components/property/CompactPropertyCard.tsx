@@ -3,9 +3,12 @@ import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { MapPin, Bed, Bath, Square, Eye, Heart, Share2, View as ViewIcon, Star, Clock, Calendar, TrendingUp } from 'lucide-react';
+import { MapPin, Bed, Bath, Square, Eye, Heart, Share2, View as ViewIcon, Star, Clock, Calendar, TrendingUp, MessageSquare } from 'lucide-react';
 import PropertyDetailModal from './PropertyDetailModal';
 import Property3DViewModal from './Property3DViewModal';
+import PropertyRatingDisplay from './PropertyRatingDisplay';
+import PropertyRatingModal from './PropertyRatingModal';
+import { usePropertyRatings } from '@/hooks/usePropertyRatings';
 import { BaseProperty } from '@/types/property';
 
 interface CompactProperty {
@@ -62,7 +65,10 @@ const CompactPropertyCard = ({
 }: CompactPropertyCardProps) => {
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [show3DModal, setShow3DModal] = useState(false);
+  const [showRatingModal, setShowRatingModal] = useState(false);
   const [isLiked, setIsLiked] = useState(isSaved);
+
+  const { aggregate } = usePropertyRatings(property.id);
 
   const text = {
     en: {
@@ -323,6 +329,30 @@ const CompactPropertyCard = ({
             </div>
           )}
 
+          {/* Property Rating */}
+          {aggregate && aggregate.total_ratings > 0 && (
+            <div className="flex items-center justify-between">
+              <PropertyRatingDisplay
+                averageRating={aggregate.average_rating}
+                totalRatings={aggregate.total_ratings}
+                size="sm"
+              />
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-6 px-2 text-xs text-muted-foreground hover:text-foreground"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setShowRatingModal(true);
+                }}
+              >
+                <MessageSquare className="h-3 w-3 mr-1" />
+                Reviews
+              </Button>
+            </div>
+          )}
+
           {/* Action Buttons */}
           <div className="flex gap-2 mt-auto pt-2">
             <Button 
@@ -374,6 +404,15 @@ const CompactPropertyCard = ({
             setShow3DModal(false);
           }}
           language={language}
+        />
+      )}
+
+      {/* Rating Modal */}
+      {showRatingModal && (
+        <PropertyRatingModal
+          propertyId={property.id}
+          isOpen={showRatingModal}
+          onClose={() => setShowRatingModal(false)}
         />
       )}
     </>

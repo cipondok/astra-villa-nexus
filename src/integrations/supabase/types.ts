@@ -3282,6 +3282,69 @@ export type Database = {
           },
         ]
       }
+      property_rating_aggregates: {
+        Row: {
+          average_rating: number | null
+          last_updated: string
+          property_id: string
+          rating_distribution: Json | null
+          total_ratings: number | null
+        }
+        Insert: {
+          average_rating?: number | null
+          last_updated?: string
+          property_id: string
+          rating_distribution?: Json | null
+          total_ratings?: number | null
+        }
+        Update: {
+          average_rating?: number | null
+          last_updated?: string
+          property_id?: string
+          rating_distribution?: Json | null
+          total_ratings?: number | null
+        }
+        Relationships: []
+      }
+      property_ratings: {
+        Row: {
+          created_at: string
+          helpful_votes: number | null
+          id: string
+          is_anonymous: boolean | null
+          is_verified_buyer: boolean | null
+          property_id: string
+          rating: number
+          review_text: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          helpful_votes?: number | null
+          id?: string
+          is_anonymous?: boolean | null
+          is_verified_buyer?: boolean | null
+          property_id: string
+          rating: number
+          review_text?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          helpful_votes?: number | null
+          id?: string
+          is_anonymous?: boolean | null
+          is_verified_buyer?: boolean | null
+          property_id?: string
+          rating?: number
+          review_text?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       property_rental_items: {
         Row: {
           condition_status: string | null
