@@ -57,6 +57,7 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
       case "property-management-hub":
         return <PropertyManagementAdvanced />;
       case "system-settings":
+      case "settings":
         return <SystemSettings />;
       case "smtp-settings":
         return <SMTPSettings />;
