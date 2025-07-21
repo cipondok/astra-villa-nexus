@@ -53,12 +53,14 @@ const LiveChatManager = ({ isOpen, onClose }: LiveChatManagerProps) => {
 
   return (
     <>
-      {/* Live Notification Bar - Shows even when dialog is closed */}
+      {/* Live Notification Bar - Disabled in favor of draggable status */}
+      {/* 
       <LiveNotificationBar
         sessions={sessions}
         isVisible={showNotificationBar && !isOpen}
         onToggleVisibility={() => setShowNotificationBar(!showNotificationBar)}
       />
+      */}
 
       <Dialog open={isOpen} onOpenChange={onClose}>
         <DialogContent className="max-w-6xl max-h-[80vh]">
