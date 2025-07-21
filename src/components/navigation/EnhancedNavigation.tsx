@@ -134,7 +134,7 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
                 
                 {profile?.role === 'customer_service' && (
                   <Button
-                    onClick={() => navigate('/dashboard')}
+                    onClick={() => navigate('/dashboard/customer-service')}
                     variant="default"
                     size="sm"
                     className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 shadow-sm"
@@ -211,7 +211,7 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
                 {profile?.role === 'customer_service' && (
                   <Button
                     onClick={() => {
-                      navigate('/dashboard');
+                      navigate('/dashboard/customer-service');
                       setIsOpen(false);
                     }}
                     variant="default"

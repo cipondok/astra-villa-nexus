@@ -25,6 +25,8 @@ import BookingPage from '@/pages/BookingPage';
 import BookingSuccessPage from '@/pages/BookingSuccessPage';
 import VendorKYCDashboard from '@/pages/VendorKYCDashboard';
 import VendorDashboard from '@/pages/VendorDashboard';
+import CustomerServiceDashboardPage from '@/pages/CustomerServiceDashboard';
+import UserDashboardPage from '@/pages/UserDashboardPage';
 import ThreeDShowcase from '@/pages/ThreeDShowcase';
 import PreLaunching from '@/pages/PreLaunching';
 import NotFound from '@/pages/NotFound';
@@ -75,6 +77,9 @@ function App() {
                           <Route path="/vendor/kyc" element={<VendorKYCDashboard />} />
                           <Route path="/dashboard/vendor" element={<VendorDashboard />} />
                           <Route path="/vendor" element={<VendorDashboard />} />
+                          <Route path="/dashboard/customer-service" element={<CustomerServiceDashboardPage />} />
+                          <Route path="/dashboard/user" element={<UserDashboardPage />} />
+                          <Route path="/dashboard" element={<UserDashboardPage />} />
                           <Route path="/booking/:propertyId" element={<BookingPage />} />
                           <Route path="/booking-success" element={<BookingSuccessPage />} />
                           <Route path="*" element={<NotFound />} />
