@@ -37,6 +37,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   signIn: (email: string, password: string) => Promise<{ error: any; success?: boolean }>;
   signUp: (email: string, password: string, fullName: string) => Promise<{ error: any; success?: boolean }>;
+  signInWithGoogle: () => Promise<{ error: any; success?: boolean }>;
   signOut: () => Promise<void>;
   updateProfile: (data: Partial<Profile>) => Promise<{ error: any; success?: boolean }>;
   refreshProfile: () => Promise<void>;
@@ -360,6 +361,41 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const signInWithGoogle = async () => {
+    try {
+      console.log('Attempting Google sign in...');
+      setLoading(true);
+      
+      // Clear any existing auth state first
+      await supabase.auth.signOut();
+      
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/`,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent',
+          },
+        }
+      });
+
+      if (error) {
+        console.error('Google sign in error:', error);
+        setLoading(false);
+        return { error, success: false };
+      }
+
+      // OAuth redirects automatically, so we don't set loading to false here
+      console.log('Google sign in initiated successfully');
+      return { error: null, success: true };
+    } catch (error: any) {
+      console.error('Google sign in error:', error);
+      setLoading(false);
+      return { error: { message: 'Google sign in failed. Please try again.' }, success: false };
+    }
+  };
+
   const signOut = async () => {
     try {
       console.log('Instant logout initiated...');
@@ -520,6 +556,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     isAuthenticated: !!user && !!session,
     signIn,
     signUp,
+    signInWithGoogle,
     signOut,
     updateProfile,
     refreshProfile,
