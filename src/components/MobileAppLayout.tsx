@@ -8,7 +8,6 @@ import {
   User, 
   Menu,
   X,
-  Bell,
   Settings,
   MapPin,
   Phone,
@@ -18,6 +17,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate, useLocation } from 'react-router-dom';
+import NotificationDropdown from './NotificationDropdown';
 
 interface MobileAppLayoutProps {
   children: React.ReactNode;
@@ -81,15 +81,7 @@ const MobileAppLayout = ({ children }: MobileAppLayoutProps) => {
 
           {/* Right Actions - Compact */}
           <div className="flex items-center space-x-1">
-            {user && (
-              <Button
-                variant="ghost"
-                size="sm"
-                className="w-8 h-8 p-0 rounded-full"
-              >
-                <Bell className="h-3.5 w-3.5" />
-              </Button>
-            )}
+            {user && <NotificationDropdown />}
             
             <Button
               variant="ghost"
