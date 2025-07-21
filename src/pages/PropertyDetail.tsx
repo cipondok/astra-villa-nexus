@@ -37,8 +37,13 @@ import {
   Clock,
   User,
   Award,
-  TrendingUp
+  TrendingUp,
+  Plus,
+  Shield,
+  Crown,
+  Medal
 } from 'lucide-react';
+import ProtectedContactInfo from '@/components/ProtectedContactInfo';
 
 interface PropertyData {
   id: string;
@@ -310,85 +315,124 @@ const PropertyDetail: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Agent/Developer Header - Enhanced with modern design */}
+    <div className="min-h-screen bg-gradient-to-br from-background to-background/95">
+      {/* Agent/Developer Header - Ultra Modern Design */}
       {property?.posted_by && (
-        <div className="bg-gradient-to-r from-primary/5 to-accent/5 border-b border-border/50">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className="relative">
+        <div className="relative bg-gradient-to-r from-primary/10 via-accent/5 to-secondary/10 backdrop-blur-sm border-b border-border/20 shadow-lg">
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-emerald-500/5"></div>
+          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
+              {/* Agent Profile Section */}
+              <div className="flex items-center gap-6">
+                <div className="relative group">
+                  <div className="absolute -inset-1 bg-gradient-to-r from-primary to-accent rounded-full blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
                   <img
                     src={property.posted_by.avatar_url || "/placeholder.svg"}
                     alt={property.posted_by.name}
-                    className="w-16 h-16 rounded-full object-cover border-4 border-white shadow-lg"
+                    className="relative w-20 h-20 rounded-full object-cover border-4 border-background shadow-2xl"
                   />
-                   {property.posted_by.verification_status === 'verified' && (
-                     <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-accent rounded-full flex items-center justify-center border-2 border-background">
-                       <Award className="w-3 h-3 text-accent-foreground" />
+                  {property.posted_by.verification_status === 'verified' && (
+                    <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-accent rounded-full flex items-center justify-center border-3 border-background shadow-lg">
+                      <Shield className="w-4 h-4 text-accent-foreground" />
+                    </div>
+                  )}
+                  {property.posted_by.rating && property.posted_by.rating >= 4.8 && (
+                    <div className="absolute -top-2 -right-2 w-8 h-8 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full flex items-center justify-center border-3 border-background shadow-lg">
+                      <Crown className="w-4 h-4 text-white" />
                     </div>
                   )}
                 </div>
-                 <div className="flex-1">
-                   <div className="flex items-center gap-3 mb-2">
-                     <h3 className="font-bold text-xl text-foreground">{property.posted_by.name}</h3>
-                     <span className="text-sm text-primary bg-primary/10 px-3 py-1 rounded-full font-medium">
-                      {property.posted_by.position || 'Official Developer'}
-                    </span>
-                   </div>
-                   <p className="text-sm text-muted-foreground mb-1">
-                     {property.posted_by.experience_years} tahun pengalaman • {property.posted_by.total_properties}+ properti terjual
-                   </p>
-                   <p className="text-xs text-muted-foreground">
-                     Diperbarui {formatTimeAgo(property.created_at)} yang lalu
+                
+                <div className="flex-1 space-y-3">
+                  <div className="flex items-center gap-3 flex-wrap">
+                    <h3 className="font-bold text-2xl bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                      {property.posted_by.name}
+                    </h3>
+                    <div className="flex items-center gap-2">
+                      <span className="bg-gradient-to-r from-primary to-accent text-primary-foreground px-4 py-1.5 rounded-full text-sm font-semibold shadow-lg">
+                        {property.posted_by.position || 'Official Developer'}
+                      </span>
+                      <div className="flex items-center gap-1 bg-yellow-50 dark:bg-yellow-900/20 px-3 py-1.5 rounded-full border border-yellow-200 dark:border-yellow-800">
+                        <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                        <span className="font-bold text-yellow-600 dark:text-yellow-400 text-sm">
+                          {property.posted_by.customer_feedback_rating}
+                        </span>
+                        <span className="text-xs text-yellow-600 dark:text-yellow-500">
+                          ({property.posted_by.customer_feedback_count})
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-4 text-sm">
+                    <div className="flex items-center gap-2 bg-emerald-50 dark:bg-emerald-900/20 px-3 py-1.5 rounded-full border border-emerald-200 dark:border-emerald-800">
+                      <Medal className="h-4 w-4 text-emerald-600" />
+                      <span className="font-medium text-emerald-700 dark:text-emerald-300">
+                        {property.posted_by.experience_years} Years Experience
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2 bg-blue-50 dark:bg-blue-900/20 px-3 py-1.5 rounded-full border border-blue-200 dark:border-blue-800">
+                      <TrendingUp className="h-4 w-4 text-blue-600" />
+                      <span className="font-medium text-blue-700 dark:text-blue-300">
+                        {property.posted_by.total_properties}+ Properties Sold
+                      </span>
+                    </div>
+                  </div>
+                  
+                  <p className="text-xs text-muted-foreground flex items-center gap-1">
+                    <Clock className="h-3 w-3" />
+                    Updated {formatTimeAgo(property.created_at)} ago
                   </p>
-                 </div>
-                 <div className="bg-card p-3 rounded-lg border border-border shadow-sm flex items-center gap-3">
-                   <div className="w-8 h-8 bg-primary rounded text-primary-foreground text-sm flex items-center justify-center font-bold">
-                     U
-                   </div>
-                   <div>
-                     <span className="text-sm font-bold text-foreground">{property.posted_by.company_name}</span>
-                     <p className="text-xs text-muted-foreground">{property.posted_by.developer_name}</p>
+                </div>
+                
+                {/* Company Badge */}
+                <div className="bg-card/80 backdrop-blur-sm p-4 rounded-xl border border-border shadow-lg hover:shadow-xl transition-all">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-gradient-to-br from-primary to-accent rounded-lg text-primary-foreground text-sm flex items-center justify-center font-bold shadow-md">
+                      {property.posted_by.company_name?.charAt(0) || 'U'}
+                    </div>
+                    <div>
+                      <span className="text-sm font-bold text-foreground block">{property.posted_by.company_name}</span>
+                      <p className="text-xs text-muted-foreground">{property.posted_by.developer_name}</p>
+                    </div>
                   </div>
                 </div>
               </div>
                
-               <div className="flex items-center gap-3">
-                 <Button 
-                   variant="outline" 
-                   size="sm" 
-                   className="flex items-center gap-2"
-                   onClick={() => {
-                     if (user) {
-                       window.open(`tel:${property.posted_by?.phone_number}`, '_self');
-                     } else {
-                       toast({
-                         title: "Sign in required",
-                         description: "Please sign in to contact the agent.",
-                         variant: "destructive",
-                       });
-                     }
-                   }}
-                 >
-                   <Phone className="h-4 w-4" />
-                   {user ? property.posted_by.phone_number?.replace('+62', '+62') : 'Contact'}
-                 </Button>
-                 <Button 
-                   className="bg-accent hover:bg-accent/90 text-accent-foreground flex items-center gap-2"
-                   onClick={() => {
-                     if (user) {
-                       window.open(`https://wa.me/${property.posted_by?.whatsapp_number?.replace('+', '')}`, '_blank');
-                     } else {
-                       toast({
-                         title: "Sign in required", 
-                         description: "Please sign in to contact via WhatsApp.",
-                         variant: "destructive",
-                       });
-                     }
-                   }}
-                 >
-                   📱 {user ? 'WhatsApp' : 'Sign in for WhatsApp'}
+              {/* Contact Actions */}
+              <div className="flex items-center gap-3">
+                <ProtectedContactInfo
+                  phone={property.posted_by.phone_number}
+                  email={ownerInfo?.email}
+                  whatsappNumber={property.posted_by.whatsapp_number}
+                  className="flex gap-3"
+                />
+                <Button 
+                  variant="outline" 
+                  size="lg"
+                  className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white border-0 shadow-lg hover:shadow-xl transition-all"
+                  onClick={() => {
+                    if (user && property.posted_by?.whatsapp_number) {
+                      window.open(`https://wa.me/${property.posted_by.whatsapp_number.replace('+', '')}?text=Hi, I'm interested in ${property.title}`, '_blank');
+                    } else if (!user) {
+                      toast({
+                        title: "Sign in required", 
+                        description: "Please sign in to contact via WhatsApp.",
+                        variant: "destructive",
+                      });
+                    }
+                  }}
+                >
+                  📱 WhatsApp Agent
+                </Button>
+                <Button 
+                  variant="outline"
+                  size="lg"
+                  className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg hover:shadow-xl transition-all"
+                  onClick={() => navigate('/add-property')}
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Property
                 </Button>
               </div>
             </div>
@@ -687,28 +731,71 @@ const PropertyDetail: React.FC = () => {
                       <p className="text-xs text-gray-500">{property.posted_by.office_address}</p>
                     </div>
 
-                    {/* Contact Options */}
-                    <div className="space-y-3">
-                      <Button 
-                        className="w-full bg-green-600 hover:bg-green-700 text-white"
-                        onClick={() => window.open(`https://wa.me/${property.posted_by?.whatsapp_number?.replace('+', '')}?text=Halo, saya tertarik dengan properti ${property.title}`, '_blank')}
-                      >
-                        <div className="flex items-center gap-2">
-                          📱 WhatsApp: {property.posted_by.whatsapp_number}
-                        </div>
-                      </Button>
-                      <Button 
-                        variant="outline" 
-                        className="w-full"
-                        onClick={() => window.open(`tel:${property.posted_by?.phone_number}`, '_self')}
-                      >
-                        <Phone className="h-4 w-4 mr-2" />
-                        Call: {property.posted_by.phone_number}
-                      </Button>
-                      <Button variant="outline" className="w-full">
-                        <Mail className="h-4 w-4 mr-2" />
-                        Send Email
-                      </Button>
+                    {/* Enhanced Contact Options with Privacy Protection */}
+                    <div className="space-y-4">
+                      <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
+                        <ProtectedContactInfo
+                          phone={property.posted_by.phone_number}
+                          email={ownerInfo?.email}
+                          whatsappNumber={property.posted_by.whatsapp_number}
+                          className="space-y-2"
+                        />
+                      </div>
+                      
+                      <div className="grid grid-cols-1 gap-3">
+                        <Button 
+                          className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white shadow-lg hover:shadow-xl transition-all"
+                          onClick={() => {
+                            if (user && property.posted_by?.whatsapp_number) {
+                              window.open(`https://wa.me/${property.posted_by.whatsapp_number.replace('+', '')}?text=Hello, I'm interested in ${property.title}`, '_blank');
+                            } else {
+                              toast({
+                                title: "Sign in required",
+                                description: "Please sign in to contact the agent.",
+                                variant: "destructive",
+                              });
+                            }
+                          }}
+                        >
+                          📱 Contact via WhatsApp
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          className="w-full hover:bg-primary/5"
+                          onClick={() => {
+                            if (user && property.posted_by?.phone_number) {
+                              window.open(`tel:${property.posted_by.phone_number}`, '_self');
+                            } else {
+                              toast({
+                                title: "Sign in required",
+                                description: "Please sign in to make a call.",
+                                variant: "destructive",
+                              });
+                            }
+                          }}
+                        >
+                          <Phone className="h-4 w-4 mr-2" />
+                          Call Agent
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          className="w-full hover:bg-primary/5"
+                          onClick={() => {
+                            if (user && ownerInfo?.email) {
+                              window.open(`mailto:${ownerInfo.email}?subject=Inquiry about ${property.title}`, '_self');
+                            } else {
+                              toast({
+                                title: "Sign in required",
+                                description: "Please sign in to send an email.",
+                                variant: "destructive",
+                              });
+                            }
+                          }}
+                        >
+                          <Mail className="h-4 w-4 mr-2" />
+                          Send Email
+                        </Button>
+                      </div>
                     </div>
 
                     {/* Agent Stats */}
