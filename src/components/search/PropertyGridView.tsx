@@ -75,16 +75,16 @@ const PropertyGridView = ({
   }
 
   return (
-    <div className="flex flex-wrap gap-4 justify-start">
+    <div className="flex flex-wrap gap-2 justify-start">
       {properties.map((property) => (
         <Card 
           key={property.id} 
-          className="group professional-card card-hover cursor-pointer h-[420px] flex flex-col min-w-[260px] max-w-[300px] flex-1 bg-transparent border-transparent shadow-none"
+          className="group professional-card card-hover cursor-pointer h-[380px] flex flex-col min-w-[240px] max-w-[280px] flex-1 bg-transparent border-transparent shadow-none"
           onClick={() => onPropertyClick(property)}
-          style={{ flexBasis: 'calc(25% - 1rem)' }}
+          style={{ flexBasis: 'calc(25% - 0.5rem)' }}
         >
           {/* Image Section */}
-          <div className="relative aspect-[3/2] overflow-hidden flex-shrink-0">
+          <div className="relative aspect-[4/3] overflow-hidden flex-shrink-0">
             <img
               src={getImageUrl(property)}
               alt={property.title}
@@ -189,7 +189,7 @@ const PropertyGridView = ({
           </div>
 
           {/* Content Section */}
-          <CardContent className="p-3 space-y-2 flex-1 flex flex-col justify-between">
+          <CardContent className="p-2 space-y-1 flex-1 flex flex-col justify-between bg-transparent">
             <div className="space-y-2 flex-1">
               {/* Title */}
               <h3 className="font-semibold text-foreground line-clamp-2 text-sm leading-tight group-hover:text-primary transition-colors">
