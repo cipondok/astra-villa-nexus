@@ -2,12 +2,14 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
+import { useNotifications } from '@/contexts/NotificationContext';
 
-export const useFavorites = () => {
+export const useFavorites = (propertyData?: { title?: string; images?: string[] }) => {
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(false);
   const { user } = useAuth();
   const { toast } = useToast();
+  const { addNotification } = useNotifications();
 
   // Load user's favorites
   useEffect(() => {
@@ -68,6 +70,16 @@ export const useFavorites = () => {
           title: "Removed from favorites",
           description: "Property removed from your saved list.",
         });
+
+        // Add notification for removal
+        addNotification({
+          type: 'info',
+          title: 'Property Removed',
+          message: `${propertyData?.title || 'Property'} removed from favorites`,
+          propertyId: propertyId,
+          propertyTitle: propertyData?.title,
+          propertyImage: propertyData?.images?.[0],
+        });
       } else {
         // Add to favorites
         const { error } = await supabase
@@ -84,6 +96,16 @@ export const useFavorites = () => {
         toast({
           title: "Added to favorites",
           description: "Property saved to your favorites!",
+        });
+
+        // Add notification for addition
+        addNotification({
+          type: 'favorite',
+          title: 'Property Saved',
+          message: `${propertyData?.title || 'Property'} added to favorites`,
+          propertyId: propertyId,
+          propertyTitle: propertyData?.title,
+          propertyImage: propertyData?.images?.[0],
         });
       }
 

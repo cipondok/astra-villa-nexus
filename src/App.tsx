@@ -6,6 +6,7 @@ import { LanguageProvider } from '@/contexts/LanguageContext';
 import { ThemeProvider } from '@/components/ThemeProvider';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { AlertProvider } from '@/contexts/AlertContext';
+import { NotificationProvider } from '@/contexts/NotificationContext';
 import { WebsiteSettingsProvider } from '@/contexts/WebsiteSettingsContext';
 import { PropertyComparisonProvider } from '@/contexts/PropertyComparisonContext';
 import { Toaster } from '@/components/ui/toaster';
@@ -48,7 +49,8 @@ function App() {
           <WebsiteSettingsProvider>
             <AlertProvider>
               <AuthProvider>
-                <PropertyComparisonProvider>
+                <NotificationProvider>
+                  <PropertyComparisonProvider>
                   <Router>
                     <MobileAppLayout>
                       <div className="min-h-screen bg-background text-foreground">
@@ -78,8 +80,9 @@ function App() {
                         </Routes>
                       </div>
                     </MobileAppLayout>
-                  </Router>
-                </PropertyComparisonProvider>
+                    </Router>
+                  </PropertyComparisonProvider>
+                </NotificationProvider>
               </AuthProvider>
             </AlertProvider>
           </WebsiteSettingsProvider>

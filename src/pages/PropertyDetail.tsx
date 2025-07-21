@@ -13,6 +13,7 @@ import PropertyCard from '@/components/property/PropertyCard';
 import { useFavorites } from '@/hooks/useFavorites';
 import { shareProperty } from '@/utils/shareUtils';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
 import { 
   MapPin, 
   Bed, 
@@ -89,7 +90,7 @@ const PropertyDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { toggleFavorite, isFavorite, loading: favLoading } = useFavorites();
+  const { user } = useAuth();
   const [property, setProperty] = useState<PropertyData | null>(null);
   const [loading, setLoading] = useState(true);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -97,6 +98,12 @@ const PropertyDetail: React.FC = () => {
   const [agentInfo, setAgentInfo] = useState<any>(null);
   const [relatedProperties, setRelatedProperties] = useState<PropertyData[]>([]);
   const [userMoreProperties, setUserMoreProperties] = useState<PropertyData[]>([]);
+  
+  // Initialize favorites hook with property data once available
+  const { toggleFavorite, isFavorite, loading: favLoading } = useFavorites({
+    title: property?.title,
+    images: property?.images
+  });
 
   useEffect(() => {
     console.log('PropertyDetail mounted with id:', id);
@@ -352,16 +359,36 @@ const PropertyDetail: React.FC = () => {
                    variant="outline" 
                    size="sm" 
                    className="flex items-center gap-2"
-                   onClick={() => window.open(`tel:${property.posted_by?.phone_number}`, '_self')}
+                   onClick={() => {
+                     if (user) {
+                       window.open(`tel:${property.posted_by?.phone_number}`, '_self');
+                     } else {
+                       toast({
+                         title: "Sign in required",
+                         description: "Please sign in to contact the agent.",
+                         variant: "destructive",
+                       });
+                     }
+                   }}
                  >
                    <Phone className="h-4 w-4" />
-                   {property.posted_by.phone_number?.replace('+62', '+62')}
+                   {user ? property.posted_by.phone_number?.replace('+62', '+62') : 'Contact'}
                  </Button>
                  <Button 
                    className="bg-accent hover:bg-accent/90 text-accent-foreground flex items-center gap-2"
-                  onClick={() => window.open(`https://wa.me/${property.posted_by?.whatsapp_number?.replace('+', '')}`, '_blank')}
-                >
-                  📱 WhatsApp
+                   onClick={() => {
+                     if (user) {
+                       window.open(`https://wa.me/${property.posted_by?.whatsapp_number?.replace('+', '')}`, '_blank');
+                     } else {
+                       toast({
+                         title: "Sign in required", 
+                         description: "Please sign in to contact via WhatsApp.",
+                         variant: "destructive",
+                       });
+                     }
+                   }}
+                 >
+                   📱 {user ? 'WhatsApp' : 'Sign in for WhatsApp'}
                 </Button>
               </div>
             </div>
