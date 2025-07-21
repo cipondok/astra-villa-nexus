@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { 
   Search, 
   Bell, 
+  BellRing,
   Settings, 
   User, 
   LogOut, 
@@ -22,6 +23,25 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import ThemeSwitcher from "@/components/ui/theme-switcher";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { ScrollArea } from "@/components/ui/scroll-area";
+
+interface AdminAlert {
+  id: string;
+  title: string;
+  message: string;
+  type: string;
+  priority: string;
+  is_read: boolean;
+  action_required: boolean;
+  reference_id?: string;
+  reference_type?: string;
+  created_at: string;
+}
 
 interface AdminTopMenuProps {
   title: string;
@@ -37,7 +57,30 @@ const AdminTopMenu = ({
   onSearch 
 }: AdminTopMenuProps) => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [showAlerts, setShowAlerts] = useState(false);
   const { user, profile } = useAuth();
+
+  // Fetch admin alerts
+  const { data: alerts = [] } = useQuery({
+    queryKey: ['admin-alerts'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('admin_alerts')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(10);
+      
+      if (error) {
+        console.error('Error fetching alerts:', error);
+        return [];
+      }
+      return data as AdminAlert[] || [];
+    },
+    refetchInterval: 30000, // Refetch every 30 seconds
+  });
+
+  // Calculate unread count
+  const unreadCount = alerts.filter(alert => !alert.is_read).length;
 
   // Fetch location statistics
   const { data: locationStats } = useQuery({
@@ -67,6 +110,54 @@ const AdminTopMenu = ({
     setSearchQuery(value);
     if (onSearch) {
       onSearch(value);
+    }
+  };
+
+  const getAlertIcon = (type: string) => {
+    switch (type.toLowerCase()) {
+      case 'property':
+        return '🏠';
+      case 'user':
+        return '👤';
+      case 'vendor':
+        return '🔧';
+      case 'security':
+      case 'warning':
+        return '⚠️';
+      case 'error':
+        return '❌';
+      case 'info':
+      default:
+        return 'ℹ️';
+    }
+  };
+
+  const getPriorityColor = (priority: string) => {
+    switch (priority) {
+      case 'high':
+        return 'text-red-600 dark:text-red-400';
+      case 'medium':
+        return 'text-orange-600 dark:text-orange-400';
+      case 'low':
+        return 'text-blue-600 dark:text-blue-400';
+      default:
+        return 'text-gray-600 dark:text-gray-400';
+    }
+  };
+
+  const formatTimeAgo = (dateString: string) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60));
+    
+    if (diffInHours < 1) {
+      const diffInMinutes = Math.floor((now.getTime() - date.getTime()) / (1000 * 60));
+      return `${diffInMinutes}m ago`;
+    } else if (diffInHours < 24) {
+      return `${diffInHours}h ago`;
+    } else {
+      const diffInDays = Math.floor(diffInHours / 24);
+      return `${diffInDays}d ago`;
     }
   };
 
@@ -116,13 +207,115 @@ const AdminTopMenu = ({
             {/* Theme Switcher */}
             <ThemeSwitcher variant="compact" className="bg-white/70 dark:bg-slate-700/70" />
 
-            {/* Notifications */}
-            <Button variant="ghost" size="sm" className="relative bg-white/70 dark:bg-slate-700/70 hover:bg-white dark:hover:bg-slate-600">
-              <Bell className="h-5 w-5" />
-              <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 bg-red-500">
-                3
-              </Badge>
-            </Button>
+            {/* Enhanced Notifications with Alert Dropdown */}
+            <Popover open={showAlerts} onOpenChange={setShowAlerts}>
+              <PopoverTrigger asChild>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="relative bg-white/70 dark:bg-slate-700/70 hover:bg-white dark:hover:bg-slate-600"
+                >
+                  {unreadCount > 0 ? (
+                    <BellRing className="h-5 w-5" />
+                  ) : (
+                    <Bell className="h-5 w-5" />
+                  )}
+                  {unreadCount > 0 && (
+                    <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 bg-red-500 text-white text-xs">
+                      {unreadCount > 99 ? '99+' : unreadCount}
+                    </Badge>
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-96 p-0" align="end">
+                <div className="p-4 border-b">
+                  <div className="flex items-center justify-between">
+                    <h3 className="font-semibold text-gray-900 dark:text-gray-100">Admin Alerts</h3>
+                    {unreadCount > 0 && (
+                      <Badge variant="destructive" className="text-xs">
+                        {unreadCount} unread
+                      </Badge>
+                    )}
+                  </div>
+                </div>
+                <ScrollArea className="h-80">
+                  <div className="p-2">
+                    {alerts.length === 0 ? (
+                      <div className="text-center py-8 text-muted-foreground">
+                        <Bell className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                        <p>No alerts at this time</p>
+                        <p className="text-sm">System is running smoothly</p>
+                      </div>
+                    ) : (
+                      <div className="space-y-2">
+                        {alerts.map((alert) => (
+                          <div
+                            key={alert.id}
+                            className={`p-3 border rounded-lg transition-colors hover:bg-muted/50 cursor-pointer ${
+                              !alert.is_read 
+                                ? 'bg-blue-50 border-blue-200 dark:bg-blue-950/20 dark:border-blue-800' 
+                                : 'hover:bg-muted/50'
+                            }`}
+                          >
+                            <div className="flex items-start gap-3">
+                              <span className="text-base mt-0.5">
+                                {getAlertIcon(alert.type)}
+                              </span>
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-2 mb-1">
+                                  <h4 className={`text-sm font-medium line-clamp-1 ${!alert.is_read ? 'font-semibold' : ''}`}>
+                                    {alert.title}
+                                  </h4>
+                                  <Badge 
+                                    variant="outline" 
+                                    className={`text-xs ${getPriorityColor(alert.priority)}`}
+                                  >
+                                    {alert.priority}
+                                  </Badge>
+                                </div>
+                                <p className="text-sm text-muted-foreground line-clamp-2 mb-2">
+                                  {alert.message}
+                                </p>
+                                <div className="flex items-center gap-2">
+                                  <span className="text-xs text-muted-foreground">
+                                    {formatTimeAgo(alert.created_at)}
+                                  </span>
+                                  {!alert.is_read && (
+                                    <Badge variant="default" className="text-xs bg-blue-500">
+                                      New
+                                    </Badge>
+                                  )}
+                                  {alert.action_required && (
+                                    <Badge variant="destructive" className="text-xs">
+                                      Action Required
+                                    </Badge>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </ScrollArea>
+                {alerts.length > 0 && (
+                  <div className="p-3 border-t">
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="w-full"
+                      onClick={() => {
+                        setShowAlerts(false);
+                        // You can add navigation to full alerts page here
+                      }}
+                    >
+                      View All Alerts
+                    </Button>
+                  </div>
+                )}
+              </PopoverContent>
+            </Popover>
 
             {/* User Profile */}
             <div className="flex items-center gap-3 bg-white/70 dark:bg-slate-700/70 rounded-lg px-3 py-2">
