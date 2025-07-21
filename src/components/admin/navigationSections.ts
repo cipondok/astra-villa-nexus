@@ -247,6 +247,12 @@ export const navigationSections = {
       description: "Monitor and fix database errors automatically"
     },
     {
+      key: "error-logs",
+      label: "Error Logs",
+      icon: AlertTriangle,
+      description: "Monitor 404 errors and other page errors with IP tracking"
+    },
+    {
       key: "security-monitoring",
       label: "Security Monitoring",
       icon: Shield,

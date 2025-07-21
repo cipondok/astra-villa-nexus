@@ -1640,6 +1640,42 @@ export type Database = {
         }
         Relationships: []
       }
+      error_logs: {
+        Row: {
+          created_at: string | null
+          error_page: string
+          error_type: string
+          id: string
+          metadata: Json | null
+          referrer_url: string | null
+          user_agent: string | null
+          user_id: string | null
+          user_ip: unknown | null
+        }
+        Insert: {
+          created_at?: string | null
+          error_page: string
+          error_type?: string
+          id?: string
+          metadata?: Json | null
+          referrer_url?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+          user_ip?: unknown | null
+        }
+        Update: {
+          created_at?: string | null
+          error_page?: string
+          error_type?: string
+          id?: string
+          metadata?: Json | null
+          referrer_url?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+          user_ip?: unknown | null
+        }
+        Relationships: []
+      }
       favorites: {
         Row: {
           created_at: string
@@ -7387,6 +7423,17 @@ export type Database = {
           p_error_severity?: string
           p_table_name?: string
           p_suggested_fix?: string
+          p_metadata?: Json
+        }
+        Returns: string
+      }
+      log_page_error: {
+        Args: {
+          p_error_type?: string
+          p_error_page?: string
+          p_user_ip?: unknown
+          p_user_agent?: string
+          p_referrer_url?: string
           p_metadata?: Json
         }
         Returns: string

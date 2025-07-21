@@ -10,6 +10,7 @@ import { NotificationProvider } from '@/contexts/NotificationContext';
 import { WebsiteSettingsProvider } from '@/contexts/WebsiteSettingsContext';
 import { PropertyComparisonProvider } from '@/contexts/PropertyComparisonContext';
 import { Toaster } from '@/components/ui/toaster';
+import ErrorBoundary from '@/components/ErrorBoundary';
 import MobileAppLayout from '@/components/MobileAppLayout';
 import Index from '@/pages/Index';
 import Search from '@/pages/Search';
@@ -29,7 +30,7 @@ import CustomerServiceDashboardPage from '@/pages/CustomerServiceDashboard';
 import UserDashboardPage from '@/pages/UserDashboardPage';
 import ThreeDShowcase from '@/pages/ThreeDShowcase';
 import PreLaunching from '@/pages/PreLaunching';
-import NotFound from '@/pages/NotFound';
+import ErrorPage from '@/pages/ErrorPage';
 
 // Create QueryClient instance
 const queryClient = new QueryClient({
@@ -53,40 +54,42 @@ function App() {
               <AuthProvider>
                 <NotificationProvider>
                   <PropertyComparisonProvider>
-                  <Router>
-                    <MobileAppLayout>
-                      <div className="min-h-screen bg-background text-foreground">
-                        <Routes>
-                          <Route path="/" element={<Index />} />
-                          <Route path="/search" element={<Search />} />
-                          <Route path="/saved" element={<Saved />} />
-                          <Route path="/profile" element={<Profile />} />
-                          <Route path="/auth" element={<Profile />} />
-                          <Route path="/services" element={<Services />} />
-                          <Route path="/dijual" element={<Dijual />} />
-                          <Route path="/buy" element={<Dijual />} />
-                          <Route path="/disewa" element={<Disewa />} />
-                          <Route path="/rent" element={<Disewa />} />
-                          <Route path="/pre-launching" element={<PreLaunching />} />
-                          <Route path="/3d-showcase" element={<ThreeDShowcase />} />
-                          <Route path="/properties/:id" element={<PropertyDetail />} />
-                          <Route path="/admin" element={<AdminDashboard />} />
-                          <Route path="/admin-dashboard" element={<AdminDashboard />} />
-                          <Route path="/settings" element={<AdminDashboard />} />
-                          <Route path="/agent" element={<AgentDashboard />} />
-                          <Route path="/vendor/kyc" element={<VendorKYCDashboard />} />
-                          <Route path="/dashboard/vendor" element={<VendorDashboard />} />
-                          <Route path="/vendor" element={<VendorDashboard />} />
-                          <Route path="/dashboard/customer-service" element={<CustomerServiceDashboardPage />} />
-                          <Route path="/dashboard/user" element={<UserDashboardPage />} />
-                          <Route path="/dashboard" element={<UserDashboardPage />} />
-                          <Route path="/booking/:propertyId" element={<BookingPage />} />
-                          <Route path="/booking-success" element={<BookingSuccessPage />} />
-                          <Route path="*" element={<NotFound />} />
-                        </Routes>
-                      </div>
-                    </MobileAppLayout>
-                    </Router>
+                    <ErrorBoundary>
+                      <Router>
+                        <MobileAppLayout>
+                          <div className="min-h-screen bg-background text-foreground">
+                            <Routes>
+                              <Route path="/" element={<Index />} />
+                              <Route path="/search" element={<Search />} />
+                              <Route path="/saved" element={<Saved />} />
+                              <Route path="/profile" element={<Profile />} />
+                              <Route path="/auth" element={<Profile />} />
+                              <Route path="/services" element={<Services />} />
+                              <Route path="/dijual" element={<Dijual />} />
+                              <Route path="/buy" element={<Dijual />} />
+                              <Route path="/disewa" element={<Disewa />} />
+                              <Route path="/rent" element={<Disewa />} />
+                              <Route path="/pre-launching" element={<PreLaunching />} />
+                              <Route path="/3d-showcase" element={<ThreeDShowcase />} />
+                              <Route path="/properties/:id" element={<PropertyDetail />} />
+                              <Route path="/admin" element={<AdminDashboard />} />
+                              <Route path="/admin-dashboard" element={<AdminDashboard />} />
+                              <Route path="/settings" element={<AdminDashboard />} />
+                              <Route path="/agent" element={<AgentDashboard />} />
+                              <Route path="/vendor/kyc" element={<VendorKYCDashboard />} />
+                              <Route path="/dashboard/vendor" element={<VendorDashboard />} />
+                              <Route path="/vendor" element={<VendorDashboard />} />
+                              <Route path="/dashboard/customer-service" element={<CustomerServiceDashboardPage />} />
+                              <Route path="/dashboard/user" element={<UserDashboardPage />} />
+                              <Route path="/dashboard" element={<UserDashboardPage />} />
+                              <Route path="/booking/:propertyId" element={<BookingPage />} />
+                              <Route path="/booking-success" element={<BookingSuccessPage />} />
+                              <Route path="*" element={<ErrorPage />} />
+                            </Routes>
+                          </div>
+                        </MobileAppLayout>
+                      </Router>
+                    </ErrorBoundary>
                   </PropertyComparisonProvider>
                 </NotificationProvider>
               </AuthProvider>
