@@ -36,7 +36,7 @@ const DraggableLiveChatStatus = ({
     queryFn: async () => {
       const { data, error } = await supabase
         .from('live_chat_sessions')
-        .select('*')
+        .select('id, customer_name, subject, created_at, status')
         .eq('status', 'waiting')
         .order('created_at', { ascending: true });
       
@@ -56,8 +56,8 @@ const DraggableLiveChatStatus = ({
       if (!user?.id) return [];
       const { data, error } = await supabase
         .from('live_chat_sessions')
-        .select('*')
-        .eq('agent_id', user.id)
+        .select('id, customer_name, subject, created_at, status')
+        .eq('agent_user_id', user.id)
         .eq('status', 'active')
         .order('created_at', { ascending: true });
       
