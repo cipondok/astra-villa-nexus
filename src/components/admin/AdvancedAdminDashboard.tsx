@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { BarChart3, Activity, Globe, Users, FileText, TrendingUp, Home, Settings, Building, Store, Shield, Loader2, Crown, Zap, Database, MessageSquare, AlertTriangle, Monitor, Blocks, Bell } from "lucide-react";
+import { BarChart3, Activity, Globe, Users, FileText, TrendingUp, Home, Settings, Building, Store, Shield, Loader2, Crown, Zap, Database, MessageSquare, AlertTriangle, Monitor, Blocks, Bell, Wrench } from "lucide-react";
 import AdminOverview from './AdminOverview';
 import UserManagement from './UserManagement';
 import PropertyManagement from './PropertyManagement';
@@ -194,17 +194,114 @@ const AdvancedAdminDashboard = () => {
         {/* Real-time Dashboard Stats */}
         <RealTimeDashboardStats />
         
-        <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-6">
-          <CompactAdminNavigation 
-            activeTab={activeTab} 
-            onTabChange={handleTabChange} 
-            isAdmin={isAdmin} 
-          />
-          
-          <div className="hud-border hud-glow p-6 shadow-lg">
-            <AdminDashboardContent activeSection={activeTab} onSectionChange={handleTabChange} />
+        <div className="flex flex-col space-y-6">
+          {/* Modern Second Header - Enhanced Tab Navigation */}
+          <div className="sticky top-0 z-40 bg-gradient-to-r from-gray-900/95 to-slate-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-lg">
+            <div className="px-6 py-4">
+              <div className="flex items-center justify-between">
+                {/* Primary Navigation Tabs */}
+                <div className="flex items-center gap-2">
+                  {[
+                    { id: 'overview', label: 'Dashboard', icon: '🏠', count: 'LIVE', color: 'green' },
+                    { id: 'analytics', label: 'Analytics', icon: '📊', count: headerCounts.properties, color: 'blue' },
+                    { id: 'user-management', label: 'Users', icon: '👥', count: headerCounts.users, color: 'purple' },
+                    { id: 'property-management', label: 'Properties', icon: '🏢', count: '2.4k', color: 'cyan' },
+                    { id: 'vendors-hub', label: 'Vendors', icon: '🛠️', count: '147', color: 'orange' },
+                    { id: 'customer-service', label: 'Support', icon: '🎧', count: '12', color: 'pink' }
+                  ].map((tab) => (
+                    <button
+                      key={tab.id}
+                      onClick={() => handleTabChange(tab.id)}
+                      className={`relative group flex items-center gap-2 px-4 py-2 rounded-xl transition-all duration-300 hover:scale-105 ${
+                        activeTab === tab.id
+                          ? 'bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-white border border-blue-400/30 shadow-lg'
+                          : 'text-gray-300 hover:text-white hover:bg-white/5'
+                      }`}
+                    >
+                      <span className="text-lg">{tab.icon}</span>
+                      <span className="text-sm font-medium hidden md:block">{tab.label}</span>
+                      <Badge 
+                        className={`text-xs px-2 py-0.5 ${
+                          tab.color === 'green' ? 'bg-green-500/20 text-green-400 border-green-500/30 animate-pulse' :
+                          tab.color === 'blue' ? 'bg-blue-500/20 text-blue-400 border-blue-500/30' :
+                          tab.color === 'purple' ? 'bg-purple-500/20 text-purple-400 border-purple-500/30' :
+                          tab.color === 'cyan' ? 'bg-cyan-500/20 text-cyan-400 border-cyan-500/30' :
+                          tab.color === 'orange' ? 'bg-orange-500/20 text-orange-400 border-orange-500/30' :
+                          'bg-pink-500/20 text-pink-400 border-pink-500/30'
+                        }`}
+                      >
+                        {tab.count}
+                      </Badge>
+                      {activeTab === tab.id && (
+                        <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1/2 h-0.5 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full"></div>
+                      )}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Secondary Actions */}
+                <div className="flex items-center gap-2">
+                  {/* Alert Center */}
+                  <button 
+                    onClick={() => handleTabChange('admin-alerts')}
+                    className={`relative flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-300 hover:scale-105 ${
+                      activeTab === 'admin-alerts'
+                        ? 'bg-red-500/20 text-red-400 border border-red-500/30'
+                        : 'text-gray-400 hover:text-red-400 hover:bg-red-500/10'
+                    }`}
+                  >
+                    <Bell className="h-4 w-4" />
+                    {headerCounts.alerts > 0 && (
+                      <Badge className="bg-red-500 text-white text-xs animate-pulse min-w-[20px] h-5 flex items-center justify-center">
+                        {headerCounts.alerts}
+                      </Badge>
+                    )}
+                  </button>
+
+                  {/* Quick Settings */}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <button className="flex items-center gap-2 px-3 py-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-all duration-300">
+                        <Settings className="h-4 w-4" />
+                        <span className="hidden md:block text-sm">Quick Actions</span>
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-56 bg-gray-900/95 backdrop-blur-sm border border-gray-700/50">
+                      <DropdownMenuLabel className="text-gray-300">Quick Actions</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onClick={() => handleTabChange('system-settings')} className="text-gray-300 hover:text-white hover:bg-gray-800/50">
+                        <Settings className="mr-2 h-4 w-4" />
+                        System Settings
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => handleTabChange('database-management')} className="text-gray-300 hover:text-white hover:bg-gray-800/50">
+                        <Database className="mr-2 h-4 w-4" />
+                        Database
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => handleTabChange('tools-management')} className="text-gray-300 hover:text-white hover:bg-gray-800/50">
+                        <Wrench className="mr-2 h-4 w-4" />
+                        Tools
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              </div>
+            </div>
           </div>
-        </Tabs>
+
+          <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-6">
+            <div className="hidden">
+              <CompactAdminNavigation 
+                activeTab={activeTab} 
+                onTabChange={handleTabChange} 
+                isAdmin={isAdmin} 
+              />
+            </div>
+            
+            <div className="hud-border hud-glow p-6 shadow-lg">
+              <AdminDashboardContent activeSection={activeTab} onSectionChange={handleTabChange} />
+            </div>
+          </Tabs>
+        </div>
       </div>
 
       {/* HUD Footer */}
