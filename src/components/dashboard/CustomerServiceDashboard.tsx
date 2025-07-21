@@ -795,7 +795,11 @@ const CustomerServiceDashboard = () => {
         </main>
         
         {/* Draggable Live Chat Status */}
-        <DraggableLiveChatStatus isOnline={true} />
+        <DraggableLiveChatStatus 
+          isOnline={true} 
+          onOpenChat={() => setShowLiveChat(true)}
+          activeChatCount={0} // You can connect this to actual chat count later
+        />
       </div>
     </SidebarProvider>
   );
