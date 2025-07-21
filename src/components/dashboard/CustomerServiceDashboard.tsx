@@ -41,6 +41,7 @@ import CSQuickStats from "./cs/CSQuickStats";
 import CSTicketsTable from "./cs/CSTicketsTable";
 import CSInquiriesTable from "./cs/CSInquiriesTable";
 import CSSettings from "./cs/CSSettings";
+import DraggableLiveChatStatus from "./cs/DraggableLiveChatStatus";
 
 const CustomerServiceDashboard = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -444,10 +445,7 @@ const CustomerServiceDashboard = () => {
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <Badge className="bg-green-500 text-white">
-                  <Users className="h-3 w-3 mr-1" />
-                  Online
-                </Badge>
+                {/* Static status removed - now using draggable version */}
               </div>
             </div>
           </div>
@@ -795,6 +793,9 @@ const CustomerServiceDashboard = () => {
       </Dialog>
           </div>
         </main>
+        
+        {/* Draggable Live Chat Status */}
+        <DraggableLiveChatStatus isOnline={true} />
       </div>
     </SidebarProvider>
   );
