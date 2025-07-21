@@ -2,6 +2,8 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import PropertyGridView from "@/components/search/PropertyGridView";
 import { BaseProperty } from "@/types/property";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { cn } from "@/lib/utils";
 
 interface PropertiesForSaleSectionProps {
   language: "en" | "id";
@@ -9,6 +11,7 @@ interface PropertiesForSaleSectionProps {
 }
 
 const PropertiesForSaleSection = ({ language, onPropertyClick }: PropertiesForSaleSectionProps) => {
+  const { isMobile } = useIsMobile();
   const { data: saleProperties = [], isLoading } = useQuery({
     queryKey: ['properties-for-sale'],
     queryFn: async () => {
@@ -53,20 +56,32 @@ const PropertiesForSaleSection = ({ language, onPropertyClick }: PropertiesForSa
 
   if (isLoading) {
     return (
-      <section className="professional-card">
-        <div className="text-center mb-6">
-          <h2 className="text-2xl lg:text-3xl font-bold mb-2 gradient-text">
+      <section className={cn(
+        "bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 dark:border-gray-700/20",
+        isMobile ? "p-3" : "p-4 lg:p-6"
+      )}>
+        <div className={cn(
+          "text-center no-space-waste",
+          isMobile ? "mb-3" : "mb-4"
+        )}>
+          <h2 className={cn(
+            "font-bold gradient-text",
+            isMobile ? "text-lg mb-1" : "text-xl lg:text-2xl mb-2"
+          )}>
             Properties for Sale
           </h2>
-          <p className="text-muted-foreground">
+          <p className={cn(
+            "text-muted-foreground",
+            isMobile ? "text-xs" : "text-sm lg:text-base"
+          )}>
             Find your dream home to purchase
           </p>
         </div>
-        <div className="card-grid gap-4">
+        <div className="responsive-grid-properties">
           {[...Array(6)].map((_, i) => (
             <div key={i} className="animate-pulse">
               <div className="h-48 bg-muted rounded-t-lg"></div>
-              <div className="p-4 space-y-3">
+              <div className={cn(isMobile ? "p-2 space-y-2" : "p-4 space-y-3")}>
                 <div className="h-4 bg-muted rounded"></div>
                 <div className="h-3 bg-muted rounded"></div>
                 <div className="h-3 bg-muted rounded w-3/4"></div>
@@ -80,16 +95,31 @@ const PropertiesForSaleSection = ({ language, onPropertyClick }: PropertiesForSa
 
   if (saleProperties.length === 0) {
     return (
-      <section className="professional-card">
-        <div className="text-center mb-6">
-          <h2 className="text-2xl lg:text-3xl font-bold mb-2 gradient-text">
+      <section className={cn(
+        "bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 dark:border-gray-700/20",
+        isMobile ? "p-3" : "p-4 lg:p-6"
+      )}>
+        <div className={cn(
+          "text-center no-space-waste",
+          isMobile ? "mb-3" : "mb-4"
+        )}>
+          <h2 className={cn(
+            "font-bold gradient-text",
+            isMobile ? "text-lg mb-1" : "text-xl lg:text-2xl mb-2"
+          )}>
             Properties for Sale
           </h2>
-          <p className="text-muted-foreground">
+          <p className={cn(
+            "text-muted-foreground",
+            isMobile ? "text-xs" : "text-sm lg:text-base"
+          )}>
             Find your dream home to purchase
           </p>
         </div>
-        <div className="text-center py-8 text-muted-foreground">
+        <div className={cn(
+          "text-center text-muted-foreground",
+          isMobile ? "py-4 text-xs" : "py-8 text-sm"
+        )}>
           No properties for sale available at the moment.
         </div>
       </section>
@@ -97,24 +127,38 @@ const PropertiesForSaleSection = ({ language, onPropertyClick }: PropertiesForSa
   }
 
   return (
-    <section className="professional-card">
-      <div className="text-center mb-6">
-        <h2 className="text-2xl lg:text-3xl font-bold mb-2 gradient-text">
+    <section className={cn(
+      "bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 dark:border-gray-700/20",
+      isMobile ? "p-3" : "p-4 lg:p-6"
+    )}>
+      <div className={cn(
+        "text-center no-space-waste",
+        isMobile ? "mb-3" : "mb-4"
+      )}>
+        <h2 className={cn(
+          "font-bold gradient-text",
+          isMobile ? "text-lg mb-1" : "text-xl lg:text-2xl mb-2"
+        )}>
           Properties for Sale
         </h2>
-        <p className="text-muted-foreground">
+        <p className={cn(
+          "text-muted-foreground",
+          isMobile ? "text-xs" : "text-sm lg:text-base"
+        )}>
           Find your dream home to purchase
         </p>
       </div>
       
-      <PropertyGridView
-        properties={saleProperties}
-        onPropertyClick={onPropertyClick}
-        onView3D={onPropertyClick}
-        onSave={(property) => console.log('Save property:', property.id)}
-        onShare={(property) => console.log('Share property:', property.id)}
-        onContact={(property) => console.log('Contact for property:', property.id)}
-      />
+      <div className="container-compact">
+        <PropertyGridView
+          properties={saleProperties}
+          onPropertyClick={onPropertyClick}
+          onView3D={onPropertyClick}
+          onSave={(property) => console.log('Save property:', property.id)}
+          onShare={(property) => console.log('Share property:', property.id)}
+          onContact={(property) => console.log('Contact for property:', property.id)}
+        />
+      </div>
     </section>
   );
 };

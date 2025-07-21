@@ -450,32 +450,50 @@ const Index = () => {
               </section>
             ) : (
               <>
-                {/* Featured Properties with Enhanced Display */}
-                <section className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20 dark:border-gray-700/20">
-                  <div className="text-center mb-6">
-                    <h2 className="text-2xl lg:text-3xl font-bold mb-2 bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-300 dark:to-purple-300 bg-clip-text text-transparent">
+                {/* Featured Properties - Zero-waste Compact Layout */}
+                <section className={cn(
+                  "bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 dark:border-gray-700/20",
+                  isMobile ? "p-3" : "p-4 lg:p-6"
+                )}>
+                  <div className={cn(
+                    "text-center no-space-waste",
+                    isMobile ? "mb-3" : "mb-4"
+                  )}>
+                    <h2 className={cn(
+                      "font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-300 dark:to-purple-300 bg-clip-text text-transparent",
+                      isMobile ? "text-lg mb-1" : "text-xl lg:text-2xl mb-2"
+                    )}>
                       Featured Properties
                     </h2>
-                    <p className="text-gray-600 dark:text-gray-300">
-                      Premium properties with enhanced display and 3D tours
+                    <p className={cn(
+                      "text-gray-600 dark:text-gray-300",
+                      isMobile ? "text-xs" : "text-sm lg:text-base"
+                    )}>
+                      Premium properties with enhanced display
                     </p>
                   </div>
                   
-                  <PropertyGridView
-                    properties={featuredProperties}
-                    onPropertyClick={handlePropertyClick}
-                    onView3D={handlePropertyClick}
-                    onSave={(property) => console.log('Save property:', property.id)}
-                    onShare={(property) => console.log('Share property:', property.id)}
-                    onContact={(property) => console.log('Contact for property:', property.id)}
-                  />
+                  <div className="container-compact">
+                    <PropertyGridView
+                      properties={featuredProperties}
+                      onPropertyClick={handlePropertyClick}
+                      onView3D={handlePropertyClick}
+                      onSave={(property) => console.log('Save property:', property.id)}
+                      onShare={(property) => console.log('Share property:', property.id)}
+                      onContact={(property) => console.log('Contact for property:', property.id)}
+                    />
+                  </div>
                 </section>
 
-                {/* Properties for Sale Section */}
-                <PropertiesForSaleSection language={language} onPropertyClick={handlePropertyClick} />
+                {/* Properties for Sale Section - Compact */}
+                <div className="section-compact">
+                  <PropertiesForSaleSection language={language} onPropertyClick={handlePropertyClick} />
+                </div>
 
-                {/* Properties for Rent Section */}
-                <PropertiesForRentSection language={language} onPropertyClick={handlePropertyClick} />
+                {/* Properties for Rent Section - Compact */}
+                <div className="section-compact">
+                  <PropertiesForRentSection language={language} onPropertyClick={handlePropertyClick} />
+                </div>
               </>
             )}
           </div>
