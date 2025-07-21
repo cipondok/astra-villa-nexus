@@ -10,6 +10,9 @@ import EnhancedImageGallery from '@/components/property/EnhancedImageGallery';
 import PropertyComparisonButton from '@/components/property/PropertyComparisonButton';
 import SimpleProperty3DViewer from '@/components/property/SimpleProperty3DViewer';
 import PropertyCard from '@/components/property/PropertyCard';
+import { useFavorites } from '@/hooks/useFavorites';
+import { shareProperty } from '@/utils/shareUtils';
+import { useToast } from '@/hooks/use-toast';
 import { 
   MapPin, 
   Bed, 
@@ -85,6 +88,8 @@ interface PropertyData {
 const PropertyDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { toast } = useToast();
+  const { toggleFavorite, isFavorite, loading: favLoading } = useFavorites();
   const [property, setProperty] = useState<PropertyData | null>(null);
   const [loading, setLoading] = useState(true);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -232,6 +237,37 @@ const PropertyDetail: React.FC = () => {
     return 'Just now';
   };
 
+  const handleSaveFavorite = async () => {
+    if (property) {
+      await toggleFavorite(property.id);
+    }
+  };
+
+  const handleShareProperty = async () => {
+    if (property) {
+      const success = await shareProperty({
+        id: property.id,
+        title: property.title,
+        price: property.price,
+        location: property.location,
+        images: property.images
+      });
+      
+      if (success) {
+        toast({
+          title: "Property shared",
+          description: "Property link copied to clipboard or shared successfully!",
+        });
+      } else {
+        toast({
+          title: "Share failed",
+          description: "Unable to share property. Please try again.",
+          variant: "destructive",
+        });
+      }
+    }
+  };
+
   const nextImage = () => {
     if (property?.images && currentImageIndex < property.images.length - 1) {
       setCurrentImageIndex(currentImageIndex + 1);
@@ -246,10 +282,10 @@ const PropertyDetail: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-500 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading property details...</p>
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-4 text-muted-foreground">Loading property details...</p>
         </div>
       </div>
     );
@@ -257,10 +293,10 @@ const PropertyDetail: React.FC = () => {
 
   if (!property) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Property Not Found</h1>
-          <p className="text-gray-600">The property you're looking for doesn't exist or has been removed.</p>
+          <h1 className="text-2xl font-bold text-foreground mb-4">Property Not Found</h1>
+          <p className="text-muted-foreground">The property you're looking for doesn't exist or has been removed.</p>
         </div>
       </div>
     );
@@ -268,9 +304,9 @@ const PropertyDetail: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Agent/Developer Header - Enhanced with comprehensive info */}
+      {/* Agent/Developer Header - Enhanced with modern design */}
       {property?.posted_by && (
-        <div className="bg-gradient-to-r from-blue-50 to-white border-b shadow-sm">
+        <div className="bg-gradient-to-r from-primary/5 to-accent/5 border-b border-border/50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
@@ -280,49 +316,49 @@ const PropertyDetail: React.FC = () => {
                     alt={property.posted_by.name}
                     className="w-16 h-16 rounded-full object-cover border-4 border-white shadow-lg"
                   />
-                  {property.posted_by.verification_status === 'verified' && (
-                    <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center border-2 border-white">
-                      <Award className="w-3 h-3 text-white" />
+                   {property.posted_by.verification_status === 'verified' && (
+                     <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-accent rounded-full flex items-center justify-center border-2 border-background">
+                       <Award className="w-3 h-3 text-accent-foreground" />
                     </div>
                   )}
                 </div>
-                <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-2">
-                    <h3 className="font-bold text-xl text-gray-800">{property.posted_by.name}</h3>
-                    <span className="text-sm text-blue-600 bg-blue-100 px-3 py-1 rounded-full font-medium">
+                 <div className="flex-1">
+                   <div className="flex items-center gap-3 mb-2">
+                     <h3 className="font-bold text-xl text-foreground">{property.posted_by.name}</h3>
+                     <span className="text-sm text-primary bg-primary/10 px-3 py-1 rounded-full font-medium">
                       {property.posted_by.position || 'Official Developer'}
                     </span>
-                  </div>
-                  <p className="text-sm text-gray-600 mb-1">
-                    {property.posted_by.experience_years} tahun pengalaman • {property.posted_by.total_properties}+ properti terjual
+                   </div>
+                   <p className="text-sm text-muted-foreground mb-1">
+                     {property.posted_by.experience_years} tahun pengalaman • {property.posted_by.total_properties}+ properti terjual
+                   </p>
+                   <p className="text-xs text-muted-foreground">
+                     Diperbarui {formatTimeAgo(property.created_at)} yang lalu
                   </p>
-                  <p className="text-xs text-gray-500">
-                    Diperbarui {formatTimeAgo(property.created_at)} yang lalu
-                  </p>
-                </div>
-                <div className="bg-white p-3 rounded-lg border shadow-sm flex items-center gap-3">
-                  <div className="w-8 h-8 bg-blue-600 rounded text-white text-sm flex items-center justify-center font-bold">
-                    U
-                  </div>
-                  <div>
-                    <span className="text-sm font-bold text-gray-800">{property.posted_by.company_name}</span>
-                    <p className="text-xs text-gray-500">{property.posted_by.developer_name}</p>
+                 </div>
+                 <div className="bg-card p-3 rounded-lg border border-border shadow-sm flex items-center gap-3">
+                   <div className="w-8 h-8 bg-primary rounded text-primary-foreground text-sm flex items-center justify-center font-bold">
+                     U
+                   </div>
+                   <div>
+                     <span className="text-sm font-bold text-foreground">{property.posted_by.company_name}</span>
+                     <p className="text-xs text-muted-foreground">{property.posted_by.developer_name}</p>
                   </div>
                 </div>
               </div>
-              
-              <div className="flex items-center gap-3">
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  className="flex items-center gap-2"
-                  onClick={() => window.open(`tel:${property.posted_by?.phone_number}`, '_self')}
-                >
-                  <Phone className="h-4 w-4" />
-                  {property.posted_by.phone_number?.replace('+62', '+62')}
-                </Button>
-                <Button 
-                  className="bg-green-600 hover:bg-green-700 text-white flex items-center gap-2"
+               
+               <div className="flex items-center gap-3">
+                 <Button 
+                   variant="outline" 
+                   size="sm" 
+                   className="flex items-center gap-2"
+                   onClick={() => window.open(`tel:${property.posted_by?.phone_number}`, '_self')}
+                 >
+                   <Phone className="h-4 w-4" />
+                   {property.posted_by.phone_number?.replace('+62', '+62')}
+                 </Button>
+                 <Button 
+                   className="bg-accent hover:bg-accent/90 text-accent-foreground flex items-center gap-2"
                   onClick={() => window.open(`https://wa.me/${property.posted_by?.whatsapp_number?.replace('+', '')}`, '_blank')}
                 >
                   📱 WhatsApp
@@ -334,7 +370,7 @@ const PropertyDetail: React.FC = () => {
       )}
 
       {/* Navigation Header */}
-      <div className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
+      <div className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-4">
@@ -364,15 +400,25 @@ const PropertyDetail: React.FC = () => {
                   ...property,
                   image_urls: property.images || [],
                   listing_type: property.listing_type as "sale" | "rent" | "lease"
-                }} 
-              />
-              <Button variant="outline" size="sm">
-                <Heart className="h-4 w-4 mr-2" />
-                Save
-              </Button>
-              <Button variant="outline" size="sm">
-                <Share2 className="h-4 w-4 mr-2" />
-                Share
+                 }} 
+               />
+               <Button 
+                 variant="outline" 
+                 size="sm" 
+                 onClick={handleSaveFavorite}
+                 disabled={favLoading}
+                 className={isFavorite(property.id) ? "bg-destructive/10 text-destructive hover:bg-destructive/20" : ""}
+               >
+                 <Heart className={`h-4 w-4 mr-2 ${isFavorite(property.id) ? 'fill-current' : ''}`} />
+                 {isFavorite(property.id) ? 'Saved' : 'Save'}
+               </Button>
+               <Button 
+                 variant="outline" 
+                 size="sm"
+                 onClick={handleShareProperty}
+               >
+                 <Share2 className="h-4 w-4 mr-2" />
+                 Share
               </Button>
               <Button variant="ghost" size="sm">
                 <Menu className="h-4 w-4" />
@@ -409,12 +455,12 @@ const PropertyDetail: React.FC = () => {
                       {property.location}
                     </CardDescription>
                   </div>
-                  <div className="text-right">
-                    <div className="text-3xl font-bold text-green-600">
-                      {formatPrice(property.price)}
-                    </div>
-                    {property.listing_type === 'rent' && (
-                      <span className="text-sm text-gray-500">/bulan</span>
+                   <div className="text-right">
+                     <div className="text-3xl font-bold text-accent">
+                       {formatPrice(property.price)}
+                     </div>
+                     {property.listing_type === 'rent' && (
+                       <span className="text-sm text-muted-foreground">/bulan</span>
                     )}
                   </div>
                 </div>
@@ -424,38 +470,38 @@ const PropertyDetail: React.FC = () => {
                     {property.listing_type === 'sale' ? 'For Sale' : 'For Rent'}
                   </Badge>
                   <Badge variant="outline">{property.property_type}</Badge>
-                  {property.development_status !== 'completed' && (
-                    <Badge variant="outline" className="bg-blue-100 text-blue-800">
-                      {property.development_status === 'new_project' ? 'New Project' : 'Pre-Launch'}
+                   {property.development_status !== 'completed' && (
+                     <Badge variant="outline" className="bg-primary/10 text-primary">
+                       {property.development_status === 'new_project' ? 'New Project' : 'Pre-Launch'}
                     </Badge>
                   )}
-                </div>
+                 </div>
 
-                {/* Promotional Banners - Like in reference */}
-                <div className="bg-gradient-to-r from-pink-100 to-purple-100 rounded-lg p-4 mb-6">
-                  <div className="flex flex-wrap gap-2 justify-center">
-                    <span className="bg-pink-500 text-white px-3 py-1 rounded-full text-sm">
-                      💰 Hard Cash : Disc 12,5%
-                    </span>
-                    <span className="bg-purple-500 text-white px-3 py-1 rounded-full text-sm">
-                      💰 KPR Exp DP 10% : Disc 12%
-                    </span>
-                    <span className="bg-green-500 text-white px-3 py-1 rounded-full text-sm">
-                      💰 Cash Bertahap
-                    </span>
-                  </div>
-                </div>
+                 {/* Promotional Banners - Modern design */}
+                 <div className="bg-gradient-to-r from-primary/10 to-accent/10 rounded-lg p-4 mb-6">
+                   <div className="flex flex-wrap gap-2 justify-center">
+                     <span className="bg-primary text-primary-foreground px-3 py-1 rounded-full text-sm">
+                       💰 Hard Cash : Disc 12,5%
+                     </span>
+                     <span className="bg-accent text-accent-foreground px-3 py-1 rounded-full text-sm">
+                       💰 KPR Exp DP 10% : Disc 12%
+                     </span>
+                     <span className="bg-secondary text-secondary-foreground px-3 py-1 rounded-full text-sm">
+                       💰 Cash Bertahap
+                     </span>
+                   </div>
+                 </div>
 
-                {/* Price Range Display - Like in reference */}
-                <Card className="mb-6">
-                  <CardContent className="p-6">
-                    <div className="text-center">
-                      <h2 className="text-3xl font-bold text-blue-600 mb-2">
-                        {formatPrice(property.price)} - {formatPrice(property.price * 1.6)}
-                      </h2>
-                      <h3 className="text-xl font-semibold mb-1">{property.title}</h3>
-                      <p className="text-gray-600 mb-2">{property.location}</p>
-                      <span className="bg-gray-100 px-3 py-1 rounded text-sm">Rumah</span>
+                 {/* Price Range Display - Modernized */}
+                 <Card className="mb-6">
+                   <CardContent className="p-6">
+                     <div className="text-center">
+                       <h2 className="text-3xl font-bold text-primary mb-2">
+                         {formatPrice(property.price)} - {formatPrice(property.price * 1.6)}
+                       </h2>
+                       <h3 className="text-xl font-semibold mb-1">{property.title}</h3>
+                       <p className="text-muted-foreground mb-2">{property.location}</p>
+                       <span className="bg-secondary px-3 py-1 rounded text-sm">Rumah</span>
                     </div>
                   </CardContent>
                 </Card>
