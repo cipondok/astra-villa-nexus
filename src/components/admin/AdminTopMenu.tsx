@@ -99,7 +99,7 @@ const AdminTopMenu = ({
 
   return (
     <Card className="mb-6 border-0 shadow-lg bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-slate-800 dark:to-slate-700 backdrop-blur-sm">
-      <CardContent className="p-6">
+      <CardContent className="p-6 max-w-screen-2xl mx-auto">
         {/* Top Row - Title and User Info */}
         <div className="flex items-center justify-between mb-4">
           <div>

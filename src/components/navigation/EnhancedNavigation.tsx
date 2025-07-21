@@ -81,7 +81,7 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 nav-ios">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+      <div className="max-w-screen-2xl mx-auto px-6 lg:px-12 xl:px-16">
         <div className="flex justify-between items-center h-20">
           {/* Animated Logo */}
           <Link to="/">
