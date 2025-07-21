@@ -399,13 +399,13 @@ const PropertyDetail: React.FC = () => {
                 </div>
               </div>
                
-              {/* Contact Actions */}
               <div className="flex items-center gap-3">
                 <ProtectedContactInfo
                   phone={property.posted_by.phone_number}
                   email={ownerInfo?.email}
                   whatsappNumber={property.posted_by.whatsapp_number}
-                  className="flex gap-3"
+                  className="hidden lg:flex lg:gap-3"
+                  showButtons={true}
                 />
                 <Button 
                   variant="outline" 
@@ -733,12 +733,16 @@ const PropertyDetail: React.FC = () => {
 
                     {/* Enhanced Contact Options with Privacy Protection */}
                     <div className="space-y-4">
-                      <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
+                      <div className="bg-gradient-to-r from-primary/5 to-accent/5 p-4 rounded-lg border border-border/20">
+                        <h4 className="font-semibold text-sm mb-3 flex items-center gap-2">
+                          <Shield className="h-4 w-4 text-primary" />
+                          Protected Contact Information
+                        </h4>
                         <ProtectedContactInfo
                           phone={property.posted_by.phone_number}
                           email={ownerInfo?.email}
                           whatsappNumber={property.posted_by.whatsapp_number}
-                          className="space-y-2"
+                          showButtons={true}
                         />
                       </div>
                       
