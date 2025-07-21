@@ -159,11 +159,11 @@ const ModernTreeNavigation = ({ activeTab, onTabChange, headerCounts }: ModernTr
 
   const allLinks = getAllLinks(treeData);
   
-  // Define priority links for half-open state (most commonly used)
+  // Define priority links for half-open state (top 10 most used)
   const priorityLinkIds = [
-    'overview', 'user-management', 'property-management-hub', 'vendors-hub', 
-    'analytics', 'customer-service', 'content-management', 'billing-management',
-    'ai-bot-management', 'security-monitoring', 'system-settings', 'admin-alerts'
+    'overview', 'user-management', 'property-management-hub', 'analytics', 
+    'admin-alerts', 'customer-service', 'billing-management', 'vendors-hub',
+    'system-settings', 'security-monitoring'
   ];
   
   const priorityLinks = allLinks.filter(link => priorityLinkIds.includes(link.id));
