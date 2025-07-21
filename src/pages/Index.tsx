@@ -263,7 +263,7 @@ const Index = () => {
     setHasSearched(false);
   };
 
-  // Mobile layout wrapper
+  // Mobile layout wrapper - Optimized for space efficiency
   const content = (
     <div className={cn(
       "min-h-screen text-foreground relative",
@@ -275,7 +275,7 @@ const Index = () => {
         style={backgroundStyle}
       />
       
-      {/* Content Layer with backdrop */}
+      {/* Content Layer with backdrop - Zero padding waste */}
       <div className={cn(
         "relative z-10 bg-white/90 dark:bg-black/90 backdrop-blur-sm",
         isMobile ? "min-h-screen overflow-x-hidden mobile-safe-area" : "min-h-screen"
@@ -283,52 +283,47 @@ const Index = () => {
         {/* Desktop Navigation Only */}
         {!isMobile && <Navigation />}
         
-        {/* Hero Section - Mobile Optimized */}
+        {/* Hero Section - Ultra Compact */}
         <section className={cn(
           "relative w-full",
-          isMobile ? "px-2 py-2 mobile-safe-top" : "px-4 py-4 lg:py-6"
+          isMobile ? "px-2 py-1 mobile-safe-top" : "px-4 py-2"
         )}>
           <div className={cn(
             "mx-auto text-center w-full",
             isMobile ? "max-w-full px-1" : "max-w-[1800px]"
           )}>
+            {/* Ultra Compact Hero Section */}
             <div className={cn(
-              "animate-fade-in",
-              isMobile ? "mb-3" : "mb-6 lg:mb-8"
+              "animate-fade-in flex flex-col items-center gap-1",
+              isMobile ? "mb-2" : "mb-3"
             )}>
-              {/* Compact Hero Section */}
-              <div className={cn(
-                "relative flex flex-col items-center gap-2",
-                isMobile ? "mb-2" : "mb-4"
-              )}>
-                {/* Compact Title + Subtitle in One Line */}
-                <div className="flex flex-wrap items-center justify-center gap-2">
-                  <h1 className={cn(
-                    "bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 dark:from-blue-300 dark:via-purple-400 dark:to-cyan-300 bg-clip-text text-transparent font-bold tracking-tight",
-                    isMobile ? "text-sm" : "text-lg md:text-xl lg:text-2xl"
-                  )}>
-                    Find Your Perfect Property
-                  </h1>
-                  
-                  <span className={cn(
-                    "bg-gradient-to-r from-blue-500/90 to-purple-600/90 dark:from-blue-400/90 dark:to-purple-500/90 rounded-full px-3 py-1 text-white text-xs font-medium border border-white/20 shadow-sm",
-                    isMobile ? "text-xs px-2" : "text-sm"
-                  )}>
-                    ✨ AI-Powered
-                  </span>
-                </div>
-                
-                {/* Compact Description */}
-                <p className={cn(
-                  "bg-white/90 dark:bg-slate-800/90 text-slate-600 dark:text-slate-300 rounded-full px-4 py-1 text-xs font-medium border border-slate-200/50 dark:border-slate-700/50 shadow-sm backdrop-blur-sm",
-                  isMobile ? "text-xs px-3" : "text-sm"
+              {/* Compact Title + Badge in One Line */}
+              <div className="flex flex-wrap items-center justify-center gap-2">
+                <h1 className={cn(
+                  "bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 dark:from-blue-300 dark:via-purple-400 dark:to-cyan-300 bg-clip-text text-transparent font-bold tracking-tight",
+                  isMobile ? "text-sm" : "text-lg md:text-xl"
                 )}>
-                  🔍 Enhanced search & filtering
-                </p>
+                  Find Your Perfect Property
+                </h1>
+                
+                <span className={cn(
+                  "bg-gradient-to-r from-blue-500/90 to-purple-600/90 dark:from-blue-400/90 dark:to-purple-500/90 rounded-full px-2 py-0.5 text-white text-xs font-medium border border-white/20 shadow-sm",
+                  isMobile ? "text-xs px-2" : "text-sm px-3"
+                )}>
+                  ✨ AI-Powered
+                </span>
               </div>
+              
+              {/* Compact Description */}
+              <p className={cn(
+                "bg-white/90 dark:bg-slate-800/90 text-slate-600 dark:text-slate-300 rounded-full px-3 py-0.5 text-xs font-medium border border-slate-200/50 dark:border-slate-700/50 shadow-sm backdrop-blur-sm",
+                isMobile ? "text-xs px-2" : "text-sm px-4"
+              )}>
+                🔍 Enhanced search & filtering
+              </p>
             </div>
             
-            {/* iPhone-style Search Panel - Mobile Optimized */}
+            {/* iPhone-style Search Panel - Compact */}
             <div className={cn(
               "animate-scale-in",
               isMobile ? "max-w-sm mx-auto" : "max-w-4xl mx-auto"
@@ -346,11 +341,10 @@ const Index = () => {
           </div>
         </section>
 
-        {/* Advanced Filters - Mobile Optimized */}
+        {/* Advanced Filters - Minimal Space */}
         {filtersOpen && (
           <section className={cn(
-            "py-2",
-            isMobile ? "px-2" : "px-4"
+            isMobile ? "px-2 py-1" : "px-4 py-1"
           )}>
             <div className={cn(
               "mx-auto",
@@ -367,11 +361,11 @@ const Index = () => {
           </section>
         )}
 
-        {/* Error Message - Mobile Optimized */}
+        {/* Error Message - Compact */}
         {searchError && (
-          <section className="py-2">
+          <section className={cn(isMobile ? "py-1" : "py-2")}>
             <div className={cn(
-              isMobile ? "max-w-sm px-2" : "max-w-[1800px] px-6 lg:px-8",
+              isMobile ? "max-w-sm px-2" : "max-w-[1800px] px-4",
               "mx-auto"
             )}>
               <div className={cn(
@@ -380,7 +374,7 @@ const Index = () => {
               )}>
                 <p className={cn(
                   "font-medium",
-                  isMobile ? "text-xs" : "text-sm lg:text-base"
+                  isMobile ? "text-xs" : "text-sm"
                 )}>⚠️ {searchError}</p>
                 <button 
                   onClick={() => {
@@ -400,14 +394,13 @@ const Index = () => {
           </section>
         )}
 
-        {/* Property Display Section - Mobile Optimized */}
+        {/* Property Display Section - Space Optimized */}
         <div className={cn(
-          "space-y-8 py-8",
-          isMobile ? "px-2 py-4 space-y-4" : "px-6 lg:px-8"
+          isMobile ? "px-2 py-2 space-y-2" : "px-4 py-4 space-y-4"
         )}>
           <div className={cn(
-            "mx-auto space-y-8",
-            isMobile ? "max-w-sm space-y-4" : "max-w-[1800px]"
+            "mx-auto",
+            isMobile ? "max-w-sm space-y-2" : "max-w-[1800px] space-y-4"
           )}>
             {hasSearched ? (
               <section className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 dark:border-gray-700/20">

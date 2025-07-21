@@ -1,0 +1,226 @@
+/* Responsive Optimizations for Mobile, Tablet, and Desktop */
+
+@layer utilities {
+  /* Ultra-compact spacing utilities */
+  .space-compact > * + * {
+    @apply mt-1;
+  }
+  
+  .space-compact-x > * + * {
+    @apply ml-1;
+  }
+
+  /* Device-specific optimizations */
+  .mobile-optimized {
+    @apply block sm:hidden;
+  }
+  
+  .tablet-optimized {
+    @apply hidden sm:block lg:hidden;
+  }
+  
+  .desktop-optimized {
+    @apply hidden lg:block;
+  }
+
+  /* Sticky Chat Bot Positioning */
+  .chatbot-sticky-mobile {
+    @apply fixed bottom-20 right-4 z-[9999];
+    transform: translateZ(0);
+    will-change: transform;
+  }
+  
+  .chatbot-sticky-tablet {
+    @apply fixed bottom-8 right-6 z-[9999];
+    transform: translateZ(0);
+    will-change: transform;
+  }
+  
+  .chatbot-sticky-desktop {
+    @apply fixed top-1/2 right-6 z-[9999];
+    transform: translateY(-50%) translateZ(0);
+    will-change: transform;
+  }
+
+  /* Enhanced responsive grid */
+  .responsive-grid-auto {
+    @apply grid gap-2 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5;
+  }
+  
+  .responsive-grid-properties {
+    @apply grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4;
+  }
+
+  /* Compact containers */
+  .container-compact {
+    @apply w-full max-w-7xl mx-auto px-2 sm:px-4 lg:px-6;
+  }
+  
+  .section-compact {
+    @apply py-2 sm:py-4 lg:py-6;
+  }
+
+  /* Zero-waste spacing */
+  .no-space-waste {
+    @apply space-y-1 sm:space-y-2 lg:space-y-3;
+  }
+  
+  .no-space-waste-x {
+    @apply space-x-1 sm:space-x-2 lg:space-x-3;
+  }
+
+  /* Enhanced mobile card layouts */
+  .mobile-card-stack {
+    @apply flex flex-col gap-2 sm:gap-3 lg:gap-4;
+  }
+  
+  .mobile-card-grid {
+    @apply grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-3 lg:grid-cols-3 lg:gap-4;
+  }
+
+  /* Responsive text sizing */
+  .text-responsive-xs {
+    @apply text-xs sm:text-sm lg:text-base;
+  }
+  
+  .text-responsive-sm {
+    @apply text-sm sm:text-base lg:text-lg;
+  }
+  
+  .text-responsive-base {
+    @apply text-base sm:text-lg lg:text-xl;
+  }
+  
+  .text-responsive-lg {
+    @apply text-lg sm:text-xl lg:text-2xl;
+  }
+
+  /* Enhanced button sizing */
+  .btn-responsive {
+    @apply px-3 py-2 text-sm sm:px-4 sm:py-2.5 sm:text-base lg:px-6 lg:py-3 lg:text-lg;
+  }
+  
+  .btn-responsive-sm {
+    @apply px-2 py-1 text-xs sm:px-3 sm:py-1.5 sm:text-sm lg:px-4 lg:py-2 lg:text-base;
+  }
+
+  /* Optimized padding and margins */
+  .p-responsive {
+    @apply p-2 sm:p-4 lg:p-6;
+  }
+  
+  .px-responsive {
+    @apply px-2 sm:px-4 lg:px-6;
+  }
+  
+  .py-responsive {
+    @apply py-2 sm:py-4 lg:py-6;
+  }
+  
+  .m-responsive {
+    @apply m-2 sm:m-4 lg:m-6;
+  }
+  
+  .mx-responsive {
+    @apply mx-2 sm:mx-4 lg:mx-6;
+  }
+  
+  .my-responsive {
+    @apply my-2 sm:my-4 lg:my-6;
+  }
+
+  /* Chat widget enhancements */
+  .chat-glass-effect {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  .dark .chat-glass-effect {
+    background: rgba(0, 0, 0, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  /* Enhanced animations for smooth experience */
+  .smooth-entrance {
+    animation: smoothEntrance 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  
+  .smooth-exit {
+    animation: smoothExit 0.3s cubic-bezier(0.55, 0.085, 0.68, 0.53);
+  }
+
+  /* Always visible elements */
+  .always-visible {
+    position: fixed;
+    z-index: 9999;
+    pointer-events: auto;
+  }
+  
+  .sticky-right {
+    position: sticky;
+    top: 50%;
+    right: 1rem;
+    transform: translateY(-50%);
+  }
+}
+
+/* Keyframes for enhanced animations */
+@keyframes smoothEntrance {
+  0% {
+    opacity: 0;
+    transform: scale(0.9) translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes smoothExit {
+  0% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.95) translateY(-10px);
+  }
+}
+
+/* Device-specific media queries */
+@media (max-width: 640px) {
+  .ultra-compact-mobile {
+    @apply text-xs leading-tight space-y-1;
+  }
+  
+  .mobile-full-width {
+    @apply w-full max-w-none;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+  .tablet-balanced {
+    @apply text-sm space-y-2;
+  }
+}
+
+@media (min-width: 1025px) {
+  .desktop-spacious {
+    @apply text-base space-y-4;
+  }
+}
+
+/* Viewport-based responsive utilities */
+@media (max-height: 600px) {
+  .short-screen-compact {
+    @apply py-1 space-y-1;
+  }
+}
+
+@media (min-height: 900px) {
+  .tall-screen-spacious {
+    @apply py-6 space-y-6;
+  }
+}

@@ -12,6 +12,7 @@ import AIChatInput from "./AIChatInput";
 import { Message, QuickAction } from "./types";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { cn } from "@/lib/utils";
 
 interface ResponsiveAIChatWidgetProps {
   propertyId?: string;
@@ -173,31 +174,56 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
       : [{ icon: MapPin, text: "Find properties", action: "Show me available properties" }]),
   ];
 
-  // Dynamic sizing for device screen (viewport) positioning
+  // Responsive positioning and sizing for all devices
   const chatDimensions = {
-    width: isMobile ? 'min(300px, 85vw)' : 'min(320px, 22vw)',
-    height: isMobile ? 'min(450px, 65vh)' : 'min(480px, 65vh)',
-    maxHeight: '65vh'
+    width: isMobile ? 'min(320px, 90vw)' : 'min(380px, 25vw)',
+    height: isMobile ? 'min(500px, 70vh)' : 'min(550px, 70vh)',
+    maxHeight: '70vh'
+  };
+
+  // Dynamic positioning based on device and screen size
+  const positionStyles = {
+    mobile: "fixed bottom-20 right-4 z-[9999]",
+    tablet: "fixed bottom-8 right-6 z-[9999]", 
+    desktop: "fixed top-1/2 right-6 -translate-y-1/2 z-[9999]"
+  };
+
+  const getPositionClass = () => {
+    if (isMobile) return positionStyles.mobile;
+    if (window.innerWidth <= 1024) return positionStyles.tablet;
+    return positionStyles.desktop;
   };
 
   return (
-    <div className="fixed top-20 right-5 z-[9999] pointer-events-auto">
+    <div className={`${getPositionClass()} pointer-events-auto transition-all duration-300`}>
       {!isOpen ? (
-        <AIChatTrigger onOpen={() => setIsOpen(true)} />
+        <div className="relative">
+          <AIChatTrigger onOpen={() => setIsOpen(true)} />
+          {/* Always visible indicator */}
+          <div className="absolute -inset-1 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-full animate-pulse opacity-75"></div>
+        </div>
       ) : (
         <div 
-          className="absolute top-12 right-0 max-w-[95vw]"
-          style={{
+          className={cn(
+            "shadow-2xl",
+            isMobile ? "fixed inset-x-4 bottom-20 top-20" : "relative"
+          )}
+          style={!isMobile ? {
             width: chatDimensions.width,
             height: chatDimensions.height,
             maxHeight: chatDimensions.maxHeight
-          }}
+          } : {}}
         >
-          <Card className="h-full w-full flex flex-col shadow-2xl border-primary/20 bg-background/95 backdrop-blur-xl overflow-hidden rounded-2xl">
+          <Card className={cn(
+            "h-full w-full flex flex-col border-primary/20 overflow-hidden",
+            "bg-background/95 backdrop-blur-xl shadow-2xl",
+            isMobile ? "rounded-t-3xl border-t border-l border-r" : "rounded-2xl border shadow-xl",
+            "transition-all duration-300 hover:shadow-3xl"
+          )}>
             <AIChatHeader onClose={() => setIsOpen(false)} />
             <CardContent className="p-0 flex-1 flex flex-col min-h-0">
               <ScrollArea className="flex-1">
-                <div className={`${isMobile ? 'p-2' : 'p-4'} space-y-4`}>
+                <div className={`${isMobile ? 'p-3' : 'p-4'} space-y-3`}>
                   <AIChatMessages
                     messages={messages}
                     isLoading={isLoading}
@@ -207,7 +233,7 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
               </ScrollArea>
 
               {messages.length <= 1 && (
-                <div className={`${isMobile ? 'px-2 pb-1' : 'px-4 pb-2'}`}>
+                <div className={`${isMobile ? 'px-3 pb-2' : 'px-4 pb-2'}`}>
                   <AIChatQuickActions
                     quickActions={quickActions}
                     onActionClick={setMessage}
@@ -215,7 +241,10 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
                 </div>
               )}
 
-              <div className={`${isMobile ? 'p-2' : 'p-4'} border-t border-primary/10`}>
+              <div className={cn(
+                "border-t border-primary/10 bg-background/50",
+                isMobile ? 'p-3' : 'p-4'
+              )}>
                 <AIChatInput
                   message={message}
                   setMessage={setMessage}
