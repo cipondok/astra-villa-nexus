@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
+import { ChevronDown, ChevronRight, Menu } from 'lucide-react';
 
 interface TreeNode {
   id: string;
@@ -23,6 +24,8 @@ interface ModernTreeNavigationProps {
 }
 
 const ModernTreeNavigation = ({ activeTab, onTabChange, headerCounts }: ModernTreeNavigationProps) => {
+  // Expansion states: 'collapsed', 'half-open', 'fully-open'
+  const [expansionState, setExpansionState] = useState<'collapsed' | 'half-open' | 'fully-open'>('collapsed');
   const treeData: TreeNode[] = [
     {
       id: 'core',
@@ -155,33 +158,103 @@ const ModernTreeNavigation = ({ activeTab, onTabChange, headerCounts }: ModernTr
   };
 
   const allLinks = getAllLinks(treeData);
+  
+  // Define priority links for half-open state (most commonly used)
+  const priorityLinkIds = [
+    'overview', 'user-management', 'property-management-hub', 'vendors-hub', 
+    'analytics', 'customer-service', 'content-management', 'billing-management',
+    'ai-bot-management', 'security-monitoring', 'system-settings', 'admin-alerts'
+  ];
+  
+  const priorityLinks = allLinks.filter(link => priorityLinkIds.includes(link.id));
+  const displayLinks = expansionState === 'collapsed' ? [] : 
+                     expansionState === 'half-open' ? priorityLinks : allLinks;
+
+  const handleToggleExpansion = () => {
+    if (expansionState === 'collapsed') {
+      setExpansionState('half-open');
+    } else if (expansionState === 'half-open') {
+      setExpansionState('fully-open');
+    } else {
+      setExpansionState('collapsed');
+    }
+  };
+
+  const getHeaderText = () => {
+    switch (expansionState) {
+      case 'collapsed': return 'Click to Open Navigation';
+      case 'half-open': return `Showing ${priorityLinks.length} Main Links`;
+      case 'fully-open': return `Showing All ${allLinks.length} Links`;
+    }
+  };
+
+  const getHeaderIcon = () => {
+    switch (expansionState) {
+      case 'collapsed': return <Menu className="h-4 w-4" />;
+      case 'half-open': return <ChevronRight className="h-4 w-4" />;
+      case 'fully-open': return <ChevronDown className="h-4 w-4" />;
+    }
+  };
 
   return (
     <div className="bg-gradient-to-br from-gray-900/95 to-slate-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-lg">
       <div className="p-4">
-        <div className="flex items-center gap-2 mb-4 pb-3 border-b border-white/10">
-          <span className="text-lg">🔗</span>
-          <h3 className="text-sm font-semibold text-white">Admin Navigation</h3>
-          <Badge className="text-xs bg-blue-500/20 text-blue-400 border-blue-500/30">
-            {allLinks.length} Links
-          </Badge>
-        </div>
+        {/* Clickable Header */}
+        <button
+          onClick={handleToggleExpansion}
+          className="w-full flex items-center justify-between gap-2 mb-4 pb-3 border-b border-white/10 hover:bg-white/5 transition-all duration-300 rounded-lg px-2 py-1"
+        >
+          <div className="flex items-center gap-2">
+            <span className="text-lg">🔗</span>
+            <h3 className="text-sm font-semibold text-white">{getHeaderText()}</h3>
+            {expansionState !== 'collapsed' && (
+              <Badge className="text-xs bg-blue-500/20 text-blue-400 border-blue-500/30">
+                {displayLinks.length}
+              </Badge>
+            )}
+          </div>
+          <div className="text-gray-400 hover:text-white transition-colors">
+            {getHeaderIcon()}
+          </div>
+        </button>
         
-        {/* Inline Navigation Links */}
-        <div className="flex flex-wrap gap-2 max-h-64 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-transparent">
-          {allLinks.map((link) => {
-            const isActive = activeTab === link.id;
+        {/* Progressive Navigation Links Display */}
+        {expansionState !== 'collapsed' && (
+          <div className={`transition-all duration-500 ease-in-out ${
+            expansionState === 'half-open' ? 'animate-fade-in' : 'animate-scale-in'
+          }`}>
+            {/* State Indicator */}
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <div className={`w-2 h-2 rounded-full ${
+                  expansionState === 'half-open' ? 'bg-yellow-400 animate-pulse' : 'bg-green-400'
+                }`} />
+                <span className="text-xs text-gray-400">
+                  {expansionState === 'half-open' ? 'Essential Links' : 'Complete Navigation'}
+                </span>
+              </div>
+              {expansionState === 'half-open' && (
+                <span className="text-xs text-yellow-400 animate-pulse">
+                  Click again for all links
+                </span>
+              )}
+            </div>
             
-            return (
-              <button
-                key={link.id}
-                onClick={() => onTabChange(link.id)}
-                className={`inline-flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-300 hover:scale-105 whitespace-nowrap ${
-                  isActive 
-                    ? 'bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-white border border-blue-400/30 shadow-lg'
-                    : 'text-gray-300 hover:text-white hover:bg-white/5 border border-transparent hover:border-white/10'
-                }`}
-              >
+            {/* Navigation Links */}
+            <div className="flex flex-wrap gap-2 max-h-64 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-transparent">
+              {displayLinks.map((link) => {
+                  const isActive = activeTab === link.id;
+                  
+                  return (
+                    <button
+                      key={link.id}
+                      onClick={() => onTabChange(link.id)}
+                      className={`inline-flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-300 hover:scale-105 whitespace-nowrap ${
+                        isActive 
+                          ? 'bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-white border border-blue-400/30 shadow-lg'
+                          : 'text-gray-300 hover:text-white hover:bg-white/5 border border-transparent hover:border-white/10'
+                      }`}
+                    >
                 {/* Link Icon */}
                 <span className="text-base">{link.icon}</span>
 
@@ -216,6 +289,17 @@ const ModernTreeNavigation = ({ activeTab, onTabChange, headerCounts }: ModernTr
             );
           })}
         </div>
+        
+        {/* Expansion Hint */}
+        {expansionState === 'half-open' && (
+          <div className="mt-3 pt-3 border-t border-white/10 text-center">
+            <span className="text-xs text-gray-400">
+              {allLinks.length - priorityLinks.length} more links available
+            </span>
+          </div>
+        )}
+        </div>
+        )}
       </div>
     </div>
   );
