@@ -79,7 +79,7 @@ const PropertyGridView = ({
       {properties.map((property) => (
         <Card 
           key={property.id} 
-          className="group professional-card card-hover cursor-pointer h-[380px] flex flex-col min-w-[240px] max-w-[280px] flex-1 bg-transparent border-transparent shadow-none"
+          className="group professional-card card-hover cursor-pointer h-[340px] flex flex-col min-w-[240px] max-w-[280px] flex-1 bg-transparent border-transparent shadow-none"
           onClick={() => onPropertyClick(property)}
           style={{ flexBasis: 'calc(25% - 0.5rem)' }}
         >
@@ -91,51 +91,23 @@ const PropertyGridView = ({
               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
             />
             
-            {/* Top Badges */}
-            <div className="absolute top-3 left-3 flex flex-col gap-2">
+            {/* Top Left Badges */}
+            <div className="absolute top-2 left-2 flex flex-col gap-1 z-10">
               <Badge 
                 variant={property.listing_type === 'sale' ? 'default' : 'secondary'}
-                className="badge-primary"
+                className="badge-primary text-xs"
               >
                 {property.listing_type === 'sale' ? 'For Sale' : 'For Rent'}
               </Badge>
               {property.property_type && (
-                <Badge variant="outline" className="badge-secondary capitalize">
+                <Badge variant="outline" className="badge-secondary capitalize text-xs">
                   {property.property_type}
                 </Badge>
               )}
             </div>
 
-            {/* Center Action Icons */}
-            <div className="absolute inset-0 flex items-center justify-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              <Button
-                size="lg"
-                variant="secondary"
-                className="h-12 w-12 p-0 glass-ios rounded-full"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onPropertyClick(property);
-                }}
-              >
-                <Eye className="h-6 w-6 text-foreground" />
-              </Button>
-              {(property.three_d_model_url || property.virtual_tour_url) && (
-                <Button
-                  size="lg"
-                  variant="secondary"
-                  className="h-12 w-12 p-0 glass-ios rounded-full"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onView3D?.(property);
-                  }}
-                >
-                  <Box className="h-6 w-6 text-foreground" />
-                </Button>
-              )}
-            </div>
-
             {/* Top Right Compare Icon */}
-            <div className="absolute top-3 right-3">
+            <div className="absolute top-2 right-2 z-10">
               <PropertyComparisonButton 
                 property={property} 
                 variant="secondary"
@@ -143,13 +115,53 @@ const PropertyGridView = ({
               />
             </div>
 
-            {/* Quick Actions - Heart and Share */}
-            <div className="absolute bottom-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            {/* Center Action Icons - Only on Hover */}
+            <div className="absolute inset-0 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
               <Button
                 size="sm"
                 variant="secondary"
-                className={`h-8 w-8 p-0 glass-ios ${
-                  savedProperties.has(property.id) ? "ring-2 ring-destructive" : ""
+                className="h-10 w-10 p-0 glass-ios rounded-full"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onPropertyClick(property);
+                }}
+              >
+                <Eye className="h-5 w-5 text-foreground" />
+              </Button>
+              {(property.three_d_model_url || property.virtual_tour_url) && (
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  className="h-10 w-10 p-0 glass-ios rounded-full"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onView3D?.(property);
+                  }}
+                >
+                  <Box className="h-5 w-5 text-foreground" />
+                </Button>
+              )}
+            </div>
+
+            {/* Bottom Left Price Overlay */}
+            <div className="absolute bottom-2 left-2 z-10">
+              <div className="glass-effect rounded-md px-2 py-1">
+                <div className="font-bold text-sm gradient-text leading-tight">
+                  {formatPrice(property.price)}
+                </div>
+                {property.listing_type === 'rent' && (
+                  <div className="text-xs text-muted-foreground leading-tight">/month</div>
+                )}
+              </div>
+            </div>
+
+            {/* Bottom Right Quick Actions - Only on Hover */}
+            <div className="absolute bottom-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+              <Button
+                size="sm"
+                variant="secondary"
+                className={`h-7 w-7 p-0 glass-ios rounded-full ${
+                  savedProperties.has(property.id) ? "ring-1 ring-destructive" : ""
                 }`}
                 onClick={(e) => {
                   e.stopPropagation();
@@ -157,7 +169,7 @@ const PropertyGridView = ({
                 }}
               >
                 <Heart 
-                  className={`h-4 w-4 ${
+                  className={`h-3 w-3 ${
                     savedProperties.has(property.id) ? 'fill-destructive text-destructive' : 'text-muted-foreground'
                   }`} 
                 />
@@ -165,26 +177,14 @@ const PropertyGridView = ({
               <Button
                 size="sm"
                 variant="secondary"
-                className="h-8 w-8 p-0 glass-ios"
+                className="h-7 w-7 p-0 glass-ios rounded-full"
                 onClick={(e) => {
                   e.stopPropagation();
                   onShare?.(property);
                 }}
               >
-                <Share2 className="h-4 w-4 text-muted-foreground" />
+                <Share2 className="h-3 w-3 text-muted-foreground" />
               </Button>
-            </div>
-
-            {/* Price Overlay */}
-            <div className="absolute bottom-3 left-3">
-              <div className="glass-effect rounded-lg px-2 py-1 inline-block">
-                <div className="font-bold text-lg gradient-text leading-tight">
-                  {formatPrice(property.price)}
-                </div>
-                {property.listing_type === 'rent' && (
-                  <div className="text-xs text-muted-foreground leading-tight">/month</div>
-                )}
-              </div>
             </div>
           </div>
 
