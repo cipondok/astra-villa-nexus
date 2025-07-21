@@ -79,7 +79,7 @@ const PropertyGridView = ({
       {properties.map((property) => (
         <Card 
           key={property.id} 
-          className="group professional-card card-hover cursor-pointer h-[340px] flex flex-col min-w-[240px] max-w-[280px] flex-1 bg-transparent border-transparent shadow-none"
+          className="group professional-card card-hover cursor-pointer h-[300px] flex flex-col min-w-[240px] max-w-[280px] flex-1 bg-transparent border-transparent shadow-none"
           onClick={() => onPropertyClick(property)}
           style={{ flexBasis: 'calc(25% - 0.5rem)' }}
         >

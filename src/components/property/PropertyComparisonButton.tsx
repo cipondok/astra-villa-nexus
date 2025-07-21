@@ -66,18 +66,12 @@ const PropertyComparisonButton = ({
       variant={inComparison ? 'default' : variant}
       size={size}
       onClick={handleClick}
-      className={`relative ${inComparison ? 'bg-primary text-primary-foreground' : ''}`}
+      className={`relative h-7 w-7 p-0 glass-ios rounded-full ${inComparison ? 'bg-primary text-primary-foreground' : ''}`}
     >
       {inComparison ? (
-        <>
-          <Check className="h-4 w-4 mr-1" />
-          Compare
-        </>
+        <Check className="h-3 w-3" />
       ) : (
-        <>
-          <Plus className="h-4 w-4 mr-1" />
-          Compare
-        </>
+        <Plus className="h-3 w-3" />
       )}
     </Button>
   );
