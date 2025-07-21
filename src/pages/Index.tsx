@@ -296,73 +296,35 @@ const Index = () => {
               "animate-fade-in",
               isMobile ? "mb-3" : "mb-6 lg:mb-8"
             )}>
-              {/* Main Hero Title - Mobile Optimized */}
+              {/* Compact Hero Section */}
               <div className={cn(
-                "relative",
-                isMobile ? "mb-3" : "mb-6"
-              )}>
-                <h1 className={cn(
-                  "font-bold leading-tight text-center",
-                  isMobile 
-                    ? "text-lg mb-2" 
-                    : "text-xl md:text-2xl lg:text-3xl xl:text-4xl mb-4"
-                )}>
-                  <span className="inline-block bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 dark:from-blue-300 dark:via-purple-400 dark:to-cyan-300 bg-clip-text text-transparent animate-gradient bg-[length:300%_300%] font-extrabold tracking-tight drop-shadow-sm">
-                    Find Your Perfect
-                  </span>
-                  <br />
-                  <span className="inline-block bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 dark:from-purple-300 dark:via-pink-400 dark:to-orange-300 bg-clip-text text-transparent animate-gradient bg-[length:300%_300%] font-extrabold tracking-tight drop-shadow-sm">
-                    Property
-                  </span>
-                </h1>
-                
-                {/* Decorative elements - Mobile Scaled */}
-                {!isMobile && (
-                  <>
-                    <div className="absolute -top-2 -left-2 w-6 h-6 bg-blue-500/20 rounded-full blur-sm animate-pulse"></div>
-                    <div className="absolute -bottom-2 -right-2 w-4 h-4 bg-purple-500/20 rounded-full blur-sm animate-pulse delay-1000"></div>
-                  </>
-                )}
-              </div>
-              
-              {/* Subtitle - Mobile Optimized */}
-              <div className={cn(
-                "relative",
+                "relative flex flex-col items-center gap-2",
                 isMobile ? "mb-2" : "mb-4"
               )}>
-                <h2 className={cn(
-                  "font-semibold text-center",
-                  isMobile ? "text-xs" : "text-sm md:text-base lg:text-lg"
-                )}>
-                  <span className={cn(
-                    "inline-block bg-gradient-to-r from-blue-500/90 to-purple-600/90 dark:from-blue-400/90 dark:to-purple-500/90 rounded-lg backdrop-blur-sm border border-white/30 shadow-lg text-white font-bold tracking-wide",
-                    isMobile ? "px-2 py-1 text-xs" : "px-3 py-1.5 lg:px-4 lg:py-2"
+                {/* Compact Title + Subtitle in One Line */}
+                <div className="flex flex-wrap items-center justify-center gap-2">
+                  <h1 className={cn(
+                    "bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 dark:from-blue-300 dark:via-purple-400 dark:to-cyan-300 bg-clip-text text-transparent font-bold tracking-tight",
+                    isMobile ? "text-sm" : "text-lg md:text-xl lg:text-2xl"
                   )}>
-                    ✨ AI-Powered Real Estate Platform ✨
-                  </span>
-                </h2>
-              </div>
-              
-              {/* Description - Mobile Optimized */}
-              <div className="relative">
-                <p className={cn(
-                  "mx-auto leading-relaxed text-center",
-                  isMobile 
-                    ? "text-xs max-w-xs" 
-                    : "text-xs md:text-sm lg:text-base max-w-2xl"
-                )}>
+                    Find Your Perfect Property
+                  </h1>
+                  
                   <span className={cn(
-                    "inline-block bg-white/95 dark:bg-slate-800/95 text-slate-800 dark:text-slate-100 rounded-lg backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 shadow-xl font-medium macos-smooth-hover",
-                    isMobile ? "px-2 py-1 text-xs" : "px-3 py-1.5 lg:px-4 lg:py-2"
+                    "bg-gradient-to-r from-blue-500/90 to-purple-600/90 dark:from-blue-400/90 dark:to-purple-500/90 rounded-full px-3 py-1 text-white text-xs font-medium border border-white/20 shadow-sm",
+                    isMobile ? "text-xs px-2" : "text-sm"
                   )}>
-                    🔍 Discover premium properties with enhanced search and filtering
+                    ✨ AI-Powered
                   </span>
-                </p>
+                </div>
                 
-                {/* Subtle glow effect - Hidden on mobile */}
-                {!isMobile && (
-                  <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-pink-500/10 rounded-lg blur-xl -z-10"></div>
-                )}
+                {/* Compact Description */}
+                <p className={cn(
+                  "bg-white/90 dark:bg-slate-800/90 text-slate-600 dark:text-slate-300 rounded-full px-4 py-1 text-xs font-medium border border-slate-200/50 dark:border-slate-700/50 shadow-sm backdrop-blur-sm",
+                  isMobile ? "text-xs px-3" : "text-sm"
+                )}>
+                  🔍 Enhanced search & filtering
+                </p>
               </div>
             </div>
             
