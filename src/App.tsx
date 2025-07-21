@@ -70,6 +70,7 @@ function App() {
                           <Route path="/properties/:id" element={<PropertyDetail />} />
                           <Route path="/admin" element={<AdminDashboard />} />
                           <Route path="/admin-dashboard" element={<AdminDashboard />} />
+                          <Route path="/settings" element={<AdminDashboard />} />
                           <Route path="/agent" element={<AgentDashboard />} />
                           <Route path="/vendor/kyc" element={<VendorKYCDashboard />} />
                           <Route path="/dashboard/vendor" element={<VendorDashboard />} />
