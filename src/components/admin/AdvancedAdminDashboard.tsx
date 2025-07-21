@@ -200,14 +200,20 @@ const AdvancedAdminDashboard = () => {
             <div className="px-6 py-4">
               <div className="flex items-center justify-between">
                 {/* Primary Navigation Tabs */}
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1 overflow-x-auto scrollbar-hide">
                   {[
                     { id: 'overview', label: 'Dashboard', icon: '🏠', count: 'LIVE', color: 'green' },
                     { id: 'analytics', label: 'Analytics', icon: '📊', count: headerCounts.properties, color: 'blue' },
                     { id: 'user-management', label: 'Users', icon: '👥', count: headerCounts.users, color: 'purple' },
-                    { id: 'property-management', label: 'Properties', icon: '🏢', count: '2.4k', color: 'cyan' },
+                    { id: 'property-management-hub', label: 'Properties', icon: '🏢', count: '2.4k', color: 'cyan' },
                     { id: 'vendors-hub', label: 'Vendors', icon: '🛠️', count: '147', color: 'orange' },
-                    { id: 'customer-service', label: 'Support', icon: '🎧', count: '12', color: 'pink' }
+                    { id: 'customer-service', label: 'Support', icon: '🎧', count: '12', color: 'pink' },
+                    { id: 'content-management', label: 'Content', icon: '📝', count: '89', color: 'amber' },
+                    { id: 'billing-management', label: 'Billing', icon: '💳', count: '156', color: 'emerald' },
+                    { id: 'ai-bot-management', label: 'AI Bots', icon: '🤖', count: '5', color: 'violet' },
+                    { id: 'security-monitoring', label: 'Security', icon: '🛡️', count: '0', color: 'red' },
+                    { id: 'location-management', label: 'Locations', icon: '📍', count: '34', color: 'indigo' },
+                    { id: 'api-settings', label: 'APIs', icon: '⚡', count: '8', color: 'yellow' }
                   ].map((tab) => (
                     <button
                       key={tab.id}
@@ -227,7 +233,14 @@ const AdvancedAdminDashboard = () => {
                           tab.color === 'purple' ? 'bg-purple-500/20 text-purple-400 border-purple-500/30' :
                           tab.color === 'cyan' ? 'bg-cyan-500/20 text-cyan-400 border-cyan-500/30' :
                           tab.color === 'orange' ? 'bg-orange-500/20 text-orange-400 border-orange-500/30' :
-                          'bg-pink-500/20 text-pink-400 border-pink-500/30'
+                          tab.color === 'pink' ? 'bg-pink-500/20 text-pink-400 border-pink-500/30' :
+                          tab.color === 'amber' ? 'bg-amber-500/20 text-amber-400 border-amber-500/30' :
+                          tab.color === 'emerald' ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' :
+                          tab.color === 'violet' ? 'bg-violet-500/20 text-violet-400 border-violet-500/30' :
+                          tab.color === 'red' ? 'bg-red-500/20 text-red-400 border-red-500/30' :
+                          tab.color === 'indigo' ? 'bg-indigo-500/20 text-indigo-400 border-indigo-500/30' :
+                          tab.color === 'yellow' ? 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30' :
+                          'bg-gray-500/20 text-gray-400 border-gray-500/30'
                         }`}
                       >
                         {tab.count}
@@ -280,6 +293,23 @@ const AdvancedAdminDashboard = () => {
                       <DropdownMenuItem onClick={() => handleTabChange('tools-management')} className="text-gray-300 hover:text-white hover:bg-gray-800/50">
                         <Wrench className="mr-2 h-4 w-4" />
                         Tools
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onClick={() => handleTabChange('search-filters')} className="text-gray-300 hover:text-white hover:bg-gray-800/50">
+                        <Database className="mr-2 h-4 w-4" />
+                        Search Filters
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => handleTabChange('feedback-management')} className="text-gray-300 hover:text-white hover:bg-gray-800/50">
+                        <MessageSquare className="mr-2 h-4 w-4" />
+                        Feedback
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => handleTabChange('diagnostic')} className="text-gray-300 hover:text-white hover:bg-gray-800/50">
+                        <Monitor className="mr-2 h-4 w-4" />
+                        Diagnostics
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => handleTabChange('system-reports')} className="text-gray-300 hover:text-white hover:bg-gray-800/50">
+                        <FileText className="mr-2 h-4 w-4" />
+                        Reports
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
