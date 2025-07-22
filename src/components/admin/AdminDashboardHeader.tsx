@@ -251,14 +251,14 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
               <DropdownMenuTrigger asChild>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="relative w-10 h-10 p-0 rounded-lg bg-white/10 hover:bg-white/20 border border-white/20 backdrop-blur-sm transition-all"
-                    >
-                      <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 dark:from-blue-400 dark:to-purple-500 rounded-full flex items-center justify-center shadow-lg">
-                        <UserCog className="h-4 w-4 text-white" />
-                      </div>
+                     <Button
+                       variant="ghost"
+                       size="sm"
+                       className="relative w-12 h-12 p-0 rounded-xl bg-white/15 hover:bg-white/25 border border-white/30 backdrop-blur-sm transition-all duration-300 shadow-lg hover:shadow-xl"
+                     >
+                       <div className="w-10 h-10 bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 dark:from-blue-400 dark:via-purple-400 dark:to-pink-400 rounded-full flex items-center justify-center shadow-lg ring-2 ring-white/20">
+                         <UserCog className="h-5 w-5 text-white drop-shadow-sm" />
+                       </div>
                       
                       {/* Badge Count */}
                       {badgeCount > 0 && (
