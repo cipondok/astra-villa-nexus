@@ -18,30 +18,15 @@ const ThemeSwitcher = ({ className = "", variant = "default" }: ThemeSwitcherPro
   ] as const;
 
   if (variant === "compact") {
-    // Simple toggle between light and dark
+    // Simple toggle between dark and light only
     const toggleTheme = () => {
       console.log('Toggling theme from:', theme);
-      if (theme === "dark") {
-        setTheme("light");
-      } else if (theme === "light") {
-        setTheme("dark");
-      } else {
-        // If system, check current system preference and toggle opposite
-        const systemIsDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-        setTheme(systemIsDark ? "light" : "dark");
-      }
+      setTheme(theme === "dark" ? "light" : "dark");
     };
 
-    const getCurrentTheme = () => {
-      if (theme === "system") {
-        return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-      }
-      return theme;
-    };
-
-    const currentTheme = getCurrentTheme();
-    const Icon = currentTheme === "dark" ? Sun : Moon;
-    const label = currentTheme === "dark" ? "Light Mode" : "Dark Mode";
+    const isDark = theme === "dark";
+    const Icon = isDark ? Sun : Moon;
+    const label = isDark ? "Switch to Light Mode" : "Switch to Dark Mode";
 
     return (
       <Button
@@ -51,7 +36,11 @@ const ThemeSwitcher = ({ className = "", variant = "default" }: ThemeSwitcherPro
         className={`relative w-10 h-10 p-0 rounded-xl bg-white/15 hover:bg-white/25 border border-white/30 backdrop-blur-sm transition-all duration-300 shadow-md hover:shadow-lg group ${className}`}
         title={label}
       >
-        <div className="w-8 h-8 bg-gradient-to-br from-orange-400 to-yellow-500 dark:from-purple-500 dark:to-blue-500 rounded-full flex items-center justify-center shadow-md ring-2 ring-white/20 transition-all duration-300">
+        <div className={`w-8 h-8 rounded-full flex items-center justify-center shadow-md ring-2 ring-white/20 transition-all duration-300 ${
+          isDark 
+            ? 'bg-gradient-to-br from-purple-500 to-blue-500' 
+            : 'bg-gradient-to-br from-orange-400 to-yellow-500'
+        }`}>
           <Icon className="h-4 w-4 text-white drop-shadow-sm transition-transform group-hover:scale-110" />
         </div>
       </Button>
