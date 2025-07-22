@@ -213,105 +213,152 @@ const AdminDashboardHeader = ({ isAdmin, user, profile, activeTab, onTabChange }
                   <ChevronDown className="h-3 w-3 ml-1" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="center" className="w-96 max-h-96 overflow-y-auto bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 z-50">
-                <div className="grid grid-cols-2 gap-1 p-2">
-                  {/* Core Functions */}
-                  <DropdownMenuItem onClick={() => onTabChange?.('overview')} className="flex items-center gap-2 p-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md">
-                    <BarChart3 className="h-4 w-4 text-blue-500" />
-                    <div>
-                      <div className="font-medium text-sm">Overview</div>
-                      <div className="text-xs text-muted-foreground">Dashboard</div>
-                    </div>
-                  </DropdownMenuItem>
-                  
-                  <DropdownMenuItem onClick={() => onTabChange?.('diagnostic')} className="flex items-center gap-2 p-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md">
-                    <Monitor className="h-4 w-4 text-orange-500" />
-                    <div>
-                      <div className="font-medium text-sm">Diagnostic</div>
-                      <div className="text-xs text-muted-foreground">System Health</div>
-                    </div>
-                  </DropdownMenuItem>
-                  
-                  <DropdownMenuItem onClick={() => onTabChange?.('astra-tokens')} className="flex items-center gap-2 p-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md">
-                    <Shield className="h-4 w-4 text-purple-500" />
-                    <div>
-                      <div className="font-medium text-sm">ASTRA Tokens</div>
-                      <div className="text-xs text-muted-foreground">Token Management</div>
-                    </div>
-                  </DropdownMenuItem>
-                  
-                  <DropdownMenuItem onClick={() => onTabChange?.('tools-management')} className="flex items-center gap-2 p-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md">
-                    <Settings className="h-4 w-4 text-gray-500" />
-                    <div>
-                      <div className="font-medium text-sm">Tools</div>
-                      <div className="text-xs text-muted-foreground">Tool Management</div>
-                    </div>
-                  </DropdownMenuItem>
-                  
-                  <DropdownMenuItem onClick={() => onTabChange?.('user-management')} className="flex items-center gap-2 p-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md">
-                    <Users className="h-4 w-4 text-green-500" />
-                    <div>
-                      <div className="font-medium text-sm">Users</div>
-                      <div className="text-xs text-muted-foreground">User Management</div>
-                    </div>
-                  </DropdownMenuItem>
-                  
-                  <DropdownMenuItem onClick={() => onTabChange?.('property-management')} className="flex items-center gap-2 p-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md">
-                    <Building2 className="h-4 w-4 text-blue-500" />
-                    <div>
-                      <div className="font-medium text-sm">Properties</div>
-                      <div className="text-xs text-muted-foreground">Property Management</div>
-                    </div>
-                  </DropdownMenuItem>
-                  
-                  <DropdownMenuItem onClick={() => onTabChange?.('vendor-management')} className="flex items-center gap-2 p-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md">
-                    <UserCog className="h-4 w-4 text-indigo-500" />
-                    <div>
-                      <div className="font-medium text-sm">Vendors</div>
-                      <div className="text-xs text-muted-foreground">Vendor Hub</div>
-                    </div>
-                  </DropdownMenuItem>
-                  
-                  <DropdownMenuItem onClick={() => onTabChange?.('customer-service')} className="flex items-center gap-2 p-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md">
-                    <Bell className="h-4 w-4 text-yellow-500" />
-                    <div>
-                      <div className="font-medium text-sm">Support</div>
-                      <div className="text-xs text-muted-foreground">Customer Service</div>
-                    </div>
-                  </DropdownMenuItem>
-                  
-                  <DropdownMenuItem onClick={() => onTabChange?.('analytics')} className="flex items-center gap-2 p-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md">
-                    <Activity className="h-4 w-4 text-red-500" />
-                    <div>
-                      <div className="font-medium text-sm">Analytics</div>
-                      <div className="text-xs text-muted-foreground">Data & Reports</div>
-                    </div>
-                  </DropdownMenuItem>
-                  
-                  <DropdownMenuItem onClick={() => onTabChange?.('api-configuration')} className="flex items-center gap-2 p-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md">
-                    <Database className="h-4 w-4 text-cyan-500" />
-                    <div>
-                      <div className="font-medium text-sm">API Config</div>
-                      <div className="text-xs text-muted-foreground">API Settings</div>
-                    </div>
-                  </DropdownMenuItem>
-                  
-                  <DropdownMenuItem onClick={() => onTabChange?.('error-reporting')} className="flex items-center gap-2 p-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md">
-                    <AlertTriangle className="h-4 w-4 text-red-600" />
-                    <div>
-                      <div className="font-medium text-sm">Error Reports</div>
-                      <div className="text-xs text-muted-foreground">System Errors</div>
-                    </div>
-                  </DropdownMenuItem>
-                  
-                  <DropdownMenuItem onClick={() => onTabChange?.('settings')} className="flex items-center gap-2 p-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md">
-                    <Settings className="h-4 w-4 text-gray-600" />
-                    <div>
-                      <div className="font-medium text-sm">System Settings</div>
-                      <div className="text-xs text-muted-foreground">Configuration</div>
-                    </div>
-                  </DropdownMenuItem>
-                </div>
+               <DropdownMenuContent align="center" className="w-96 max-h-96 overflow-y-auto bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 z-50">
+                <ScrollArea className="max-h-80">
+                  <div className="p-2 space-y-1">
+                    {/* Analytics & Reports */}
+                    <div className="px-2 py-1 text-xs font-medium text-muted-foreground uppercase tracking-wide">Analytics & Reports</div>
+                    <DropdownMenuItem onClick={() => onTabChange?.('analytics')} className="flex items-center gap-2 text-sm">
+                      📈 Analytics
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => onTabChange?.('diagnostic')} className="flex items-center gap-2 text-sm">
+                      🔍 Diagnostics
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => onTabChange?.('reports')} className="flex items-center gap-2 text-sm">
+                      📋 Reports
+                    </DropdownMenuItem>
+                    
+                    <DropdownMenuSeparator />
+                    
+                    {/* User Management */}
+                    <div className="px-2 py-1 text-xs font-medium text-muted-foreground uppercase tracking-wide">User Management</div>
+                    <DropdownMenuItem onClick={() => onTabChange?.('user-management')} className="flex items-center gap-2 text-sm">
+                      👤 Users
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => onTabChange?.('kyc-review')} className="flex items-center gap-2 text-sm">
+                      📋 KYC Review
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => onTabChange?.('kyc-analytics')} className="flex items-center gap-2 text-sm">
+                      📊 KYC Analytics
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => onTabChange?.('bulk-kyc')} className="flex items-center gap-2 text-sm">
+                      📦 Bulk KYC
+                    </DropdownMenuItem>
+                    
+                    <DropdownMenuSeparator />
+                    
+                    {/* Business Management */}
+                    <div className="px-2 py-1 text-xs font-medium text-muted-foreground uppercase tracking-wide">Business Management</div>
+                    <DropdownMenuItem onClick={() => onTabChange?.('property-management')} className="flex items-center gap-2 text-sm">
+                      🏢 Properties
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => onTabChange?.('vendor-management')} className="flex items-center gap-2 text-sm">
+                      🛠️ Vendors
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => onTabChange?.('locations')} className="flex items-center gap-2 text-sm">
+                      📍 Locations
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => onTabChange?.('content')} className="flex items-center gap-2 text-sm">
+                      📝 Content
+                    </DropdownMenuItem>
+                    
+                    <DropdownMenuSeparator />
+                    
+                    {/* Support & Communication */}
+                    <div className="px-2 py-1 text-xs font-medium text-muted-foreground uppercase tracking-wide">Support & Communication</div>
+                    <DropdownMenuItem onClick={() => onTabChange?.('customer-service')} className="flex items-center gap-2 text-sm">
+                      💬 Support Center
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => onTabChange?.('cs-control')} className="flex items-center gap-2 text-sm">
+                      🎛️ CS Control
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => onTabChange?.('contacts')} className="flex items-center gap-2 text-sm">
+                      📞 Contacts
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => onTabChange?.('feedback')} className="flex items-center gap-2 text-sm">
+                      ⭐ Feedback
+                    </DropdownMenuItem>
+                    
+                    <DropdownMenuSeparator />
+                    
+                    {/* Financial */}
+                    <div className="px-2 py-1 text-xs font-medium text-muted-foreground uppercase tracking-wide">Financial</div>
+                    <DropdownMenuItem onClick={() => onTabChange?.('billing')} className="flex items-center gap-2 text-sm">
+                      💰 Billing
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => onTabChange?.('payment-config')} className="flex items-center gap-2 text-sm">
+                      🏦 Payment Config
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => onTabChange?.('booking-payments')} className="flex items-center gap-2 text-sm">
+                      💳 Booking Payments
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => onTabChange?.('bpjs-api')} className="flex items-center gap-2 text-sm">
+                      🏥 BPJS API
+                    </DropdownMenuItem>
+                    
+                    <DropdownMenuSeparator />
+                    
+                    {/* AI & Automation */}
+                    <div className="px-2 py-1 text-xs font-medium text-muted-foreground uppercase tracking-wide">AI & Automation</div>
+                    <DropdownMenuItem onClick={() => onTabChange?.('ai-bots')} className="flex items-center gap-2 text-sm">
+                      🤖 AI Bots
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => onTabChange?.('ai-assistant')} className="flex items-center gap-2 text-sm">
+                      🧠 AI Assistant
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => onTabChange?.('document-ocr')} className="flex items-center gap-2 text-sm">
+                      🔍 Document OCR
+                    </DropdownMenuItem>
+                    
+                    <DropdownMenuSeparator />
+                    
+                    {/* System Configuration */}
+                    <div className="px-2 py-1 text-xs font-medium text-muted-foreground uppercase tracking-wide">System Configuration</div>
+                    <DropdownMenuItem onClick={() => onTabChange?.('settings')} className="flex items-center gap-2 text-sm">
+                      ⚙️ System Settings
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => onTabChange?.('tools-management')} className="flex items-center gap-2 text-sm">
+                      🔧 Tools Management
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => onTabChange?.('api-configuration')} className="flex items-center gap-2 text-sm">
+                      ⚡ API Settings
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => onTabChange?.('database')} className="flex items-center gap-2 text-sm">
+                      💾 Database
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => onTabChange?.('smtp-settings')} className="flex items-center gap-2 text-sm">
+                      📧 SMTP Settings
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => onTabChange?.('seo-settings')} className="flex items-center gap-2 text-sm">
+                      🔍 SEO Settings
+                    </DropdownMenuItem>
+                    
+                    <DropdownMenuSeparator />
+                    
+                    {/* Security & Monitoring */}
+                    <div className="px-2 py-1 text-xs font-medium text-muted-foreground uppercase tracking-wide">Security & Monitoring</div>
+                    <DropdownMenuItem onClick={() => onTabChange?.('security-monitor')} className="flex items-center gap-2 text-sm">
+                      🛡️ Security Monitor
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => onTabChange?.('auth-monitor')} className="flex items-center gap-2 text-sm">
+                      🔐 Auth Monitor
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => onTabChange?.('alert-system')} className="flex items-center gap-2 text-sm">
+                      🚨 Alert System
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => onTabChange?.('error-reporting')} className="flex items-center gap-2 text-sm">
+                      ⚠️ Error Reports
+                    </DropdownMenuItem>
+                    
+                    <DropdownMenuSeparator />
+                    
+                    {/* Search & Filters */}
+                    <div className="px-2 py-1 text-xs font-medium text-muted-foreground uppercase tracking-wide">Search & Filters</div>
+                    <DropdownMenuItem onClick={() => onTabChange?.('search-filters')} className="flex items-center gap-2 text-sm">
+                      🔍 Search Filters
+                    </DropdownMenuItem>
+                  </div>
+                </ScrollArea>
               </DropdownMenuContent>
             </DropdownMenu>
             

@@ -253,7 +253,324 @@ const AdvancedAdminDashboard = () => {
             </div>
           )}
 
+          {/* Analytics & Reports */}
           {activeTab === 'analytics' && <AnalyticsDashboard />}
+          {activeTab === 'reports' && (
+            <Card>
+              <CardHeader>
+                <CardTitle>📋 System Reports</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center py-8">
+                  <FileText className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                  <p>System reports coming soon...</p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+          
+          {/* KYC Management */}
+          {activeTab === 'kyc-review' && (
+            <Card>
+              <CardHeader>
+                <CardTitle>📋 KYC Review</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center py-8">
+                  <Shield className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                  <p>KYC review system coming soon...</p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+          {activeTab === 'kyc-analytics' && (
+            <Card>
+              <CardHeader>
+                <CardTitle>📊 KYC Analytics</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center py-8">
+                  <BarChart3 className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                  <p>KYC analytics coming soon...</p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+          {activeTab === 'bulk-kyc' && (
+            <Card>
+              <CardHeader>
+                <CardTitle>📦 Bulk KYC</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center py-8">
+                  <Users className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                  <p>Bulk KYC processing coming soon...</p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+          
+          {/* Business Management */}
+          {activeTab === 'locations' && (
+            <Card>
+              <CardHeader>
+                <CardTitle>📍 Location Management</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center py-8">
+                  <Globe className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                  <p>Location management coming soon...</p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+          {activeTab === 'content' && (
+            <Card>
+              <CardHeader>
+                <CardTitle>📝 Content Management</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center py-8">
+                  <FileText className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                  <p>Content management system coming soon...</p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+          
+          {/* Additional Support Functions */}
+          {activeTab === 'cs-control' && (
+            <Card>
+              <CardHeader>
+                <CardTitle>🎛️ CS Control Panel</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center py-8">
+                  <Settings className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                  <p>Customer service control panel coming soon...</p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+          {activeTab === 'contacts' && (
+            <Card>
+              <CardHeader>
+                <CardTitle>📞 Contact Management</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center py-8">
+                  <Users className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                  <p>Contact management coming soon...</p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+          {activeTab === 'feedback' && (
+            <Card>
+              <CardHeader>
+                <CardTitle>⭐ Feedback System</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center py-8">
+                  <MessageSquare className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                  <p>Feedback system coming soon...</p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+          
+          {/* Financial */}
+          {activeTab === 'billing' && (
+            <Card>
+              <CardHeader>
+                <CardTitle>💰 Billing Management</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center py-8">
+                  <TrendingUp className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                  <p>Billing management coming soon...</p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+          {activeTab === 'payment-config' && (
+            <Card>
+              <CardHeader>
+                <CardTitle>🏦 Payment Configuration</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center py-8">
+                  <Database className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                  <p>Payment configuration coming soon...</p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+          {activeTab === 'booking-payments' && (
+            <Card>
+              <CardHeader>
+                <CardTitle>💳 Booking Payments</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center py-8">
+                  <TrendingUp className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                  <p>Booking payment management coming soon...</p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+          {activeTab === 'bpjs-api' && (
+            <Card>
+              <CardHeader>
+                <CardTitle>🏥 BPJS API Integration</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center py-8">
+                  <Activity className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                  <p>BPJS API integration coming soon...</p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+          
+          {/* AI & Automation */}
+          {activeTab === 'ai-bots' && (
+            <Card>
+              <CardHeader>
+                <CardTitle>🤖 AI Bots</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center py-8">
+                  <Blocks className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                  <p>AI bot management coming soon...</p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+          {activeTab === 'ai-assistant' && (
+            <Card>
+              <CardHeader>
+                <CardTitle>🧠 AI Assistant</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center py-8">
+                  <Zap className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                  <p>AI assistant features coming soon...</p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+          {activeTab === 'document-ocr' && (
+            <Card>
+              <CardHeader>
+                <CardTitle>🔍 Document OCR</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center py-8">
+                  <FileText className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                  <p>Document OCR system coming soon...</p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+          
+          {/* System Configuration */}
+          {activeTab === 'database' && (
+            <Card>
+              <CardHeader>
+                <CardTitle>💾 Database Management</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center py-8">
+                  <Database className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                  <p>Database management tools coming soon...</p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+          {activeTab === 'smtp-settings' && (
+            <Card>
+              <CardHeader>
+                <CardTitle>📧 SMTP Configuration</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center py-8">
+                  <Bell className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                  <p>SMTP email configuration coming soon...</p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+          {activeTab === 'seo-settings' && (
+            <Card>
+              <CardHeader>
+                <CardTitle>🔍 SEO Configuration</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center py-8">
+                  <TrendingUp className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                  <p>SEO settings coming soon...</p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+          
+          {/* Security & Monitoring */}
+          {activeTab === 'security-monitor' && (
+            <Card>
+              <CardHeader>
+                <CardTitle>🛡️ Security Monitor</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center py-8">
+                  <Shield className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                  <p>Security monitoring dashboard coming soon...</p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+          {activeTab === 'auth-monitor' && (
+            <Card>
+              <CardHeader>
+                <CardTitle>🔐 Authentication Monitor</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center py-8">
+                  <Monitor className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                  <p>Authentication monitoring coming soon...</p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+          {activeTab === 'alert-system' && (
+            <Card>
+              <CardHeader>
+                <CardTitle>🚨 Alert System</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center py-8">
+                  <AlertTriangle className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                  <p>Alert management system coming soon...</p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+          
+          {/* Search & Filters */}
+          {activeTab === 'search-filters' && (
+            <Card>
+              <CardHeader>
+                <CardTitle>🔍 Search Filters</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center py-8">
+                  <Building className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                  <p>Advanced search filters coming soon...</p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
           {activeTab === 'api-configuration' && <APIConfiguration />}
           {activeTab === 'error-reporting' && (
             <div className="space-y-6">
