@@ -189,65 +189,59 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
 
   return (
     <TooltipProvider>
-      <div className="fixed top-0 left-0 right-0 z-50 bg-blue-600/70 dark:bg-gray-900/70 backdrop-blur-md text-white transition-all duration-300 border-b border-blue-500/30 dark:border-gray-700/50">
-        {/* Ultra Compact Header with 70% Transparency */}
-        <div className="relative w-full max-w-full px-4 py-2">
-          <div className="flex items-center justify-between min-h-[60px]">
-            <div className="flex items-center gap-2 flex-shrink-0">
-              <div className="p-1.5 bg-white/20 dark:bg-gray-800/60 backdrop-blur-sm rounded-lg border border-white/30 dark:border-gray-600/50">
-                <Shield className="h-5 w-5 text-white" />
+      <div className="sticky top-0 left-0 right-0 z-[10000] header-ios border-b border-white/10 backdrop-blur-xl shadow-lg transform-gpu will-change-transform animate-fade-in">
+        <div className="max-w-screen-2xl mx-auto px-6 lg:px-12 xl:px-16">
+          <div className="flex items-center justify-between h-14">
+            <div className="flex items-center space-x-3 cursor-pointer group" onClick={() => navigate('/')}>
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-blue-600 dark:from-purple-400 dark:to-blue-500 backdrop-blur-sm border border-white/30 flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-105">
+                <Shield className="h-6 w-6 text-white animate-pulse" />
               </div>
-              <div className="hidden sm:block">
-                <h1 className="text-lg font-bold text-white">
-                  ASTRA Control Center
-                </h1>
-                <p className="text-blue-100 dark:text-gray-300 text-xs">
-                  Welcome, {displayName}
-                </p>
-              </div>
-              <div className="block sm:hidden">
-                <h1 className="text-sm font-bold text-white">ASTRA</h1>
+              <div className="flex items-center space-x-1">
+                <span className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-blue-600 dark:from-white dark:to-blue-300 bg-clip-text text-transparent drop-shadow-lg group-hover:scale-105 transition-transform duration-300">ASTRA</span>
+                <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-300 dark:to-purple-300 bg-clip-text text-transparent drop-shadow-lg group-hover:scale-105 transition-transform duration-300">Admin</span>
               </div>
             </div>
             
-            <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
-            {/* Compact Status Badges */}
-            <Badge variant="outline" className="bg-green-500/20 text-green-100 border-green-400/50 px-2 py-0.5 text-xs backdrop-blur-sm">
-              <Activity className="h-2 w-2 mr-1" />
-              Online
-            </Badge>
-            
-            {sessionTime && (
-              <Badge 
-                variant="outline" 
-                className="bg-blue-500/20 text-blue-100 border-blue-400/50 px-2 py-0.5 text-xs cursor-pointer hover:bg-blue-500/30 backdrop-blur-sm"
-                onClick={handleExtendSession}
-                title="Click to extend session"
-              >
-                <Clock className="h-2 w-2 mr-1" />
-                {sessionTime}
+            <div className="flex items-center space-x-3">
+              {/* Status Badge */}
+              <Badge variant="outline" className="hidden sm:flex bg-green-500/20 text-green-600 dark:text-green-400 border-green-400/50 px-2 py-0.5 text-xs backdrop-blur-sm">
+                <Activity className="h-2 w-2 mr-1" />
+                Online
               </Badge>
-            )}
+              
+              {sessionTime && (
+                <Badge 
+                  variant="outline" 
+                  className="hidden md:flex bg-primary/20 text-primary border-primary/50 px-2 py-0.5 text-xs cursor-pointer hover:bg-primary/30 backdrop-blur-sm animate-scale-in"
+                  onClick={handleExtendSession}
+                  title="Click to extend session"
+                >
+                  <Clock className="h-2 w-2 mr-1" />
+                  {sessionTime}
+                </Badge>
+              )}
 
-            {/* Home Button */}
-            <Button
-              onClick={() => navigate('/')}
-              variant="ghost"
-              size="sm"
-              className="bg-white/10 hover:bg-white/20 text-white border border-white/20 px-2 py-1 h-8 backdrop-blur-sm"
-            >
-              <Home className="h-3 w-3" />
-            </Button>
+              {/* Enhanced Home Button */}
+              <Button
+                onClick={() => navigate('/')}
+                variant="ghost"
+                size="sm"
+                className="w-11 h-11 p-0 rounded-xl bg-white/20 hover:bg-white/30 hover:scale-105 transition-all duration-200 border border-white/30 text-gray-900 dark:text-white shadow-lg animate-scale-in"
+              >
+                <Home className="h-5 w-5" />
+              </Button>
 
-            {/* Theme Switcher */}
-            <ThemeSwitcher variant="compact" />
+              {/* Theme Switcher */}
+              <div className="animate-scale-in" style={{ animationDelay: '100ms' }}>
+                <ThemeSwitcher variant="compact" />
+              </div>
 
-            {/* Enhanced Real-time Alerts Button */}
-            <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg">
-              <EnhancedAlertBadge />
-            </div>
+              {/* Enhanced Alerts Button */}
+              <div className="animate-scale-in" style={{ animationDelay: '200ms' }}>
+                <EnhancedAlertBadge />
+              </div>
 
-            {/* Admin Control Menu */}
+              {/* Admin Control Menu */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Tooltip>
