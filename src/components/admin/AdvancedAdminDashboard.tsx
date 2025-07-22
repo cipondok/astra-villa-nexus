@@ -12,7 +12,7 @@ import VendorManagementHub from './VendorManagementHub';
 import SystemSettings from './SystemSettings';
 import AnalyticsDashboard from './AnalyticsDashboard';
 import LoadingPageCustomization from './LoadingPageCustomization';
-import SimpleThemeToggle from '@/components/SimpleThemeToggle';
+import AnimatedThemeToggle from '@/components/ui/animated-theme-toggle';
 import APIConfiguration from './APIConfiguration';
 import EnhancedNavigation from '@/components/navigation/EnhancedNavigation';
 import AdminDashboardContent from './AdminDashboardContent';
@@ -157,7 +157,7 @@ const AdvancedAdminDashboard = () => {
                   SECURE
                 </div>
               </div>
-              <SimpleThemeToggle />
+              <AnimatedThemeToggle />
               
               {/* User Menu with Logout */}
               <DropdownMenu>

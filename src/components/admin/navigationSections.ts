@@ -30,7 +30,11 @@ import {
   Shield,
   CreditCard,
   Calendar,
-  Mail
+  Mail,
+  Activity,
+  Download,
+  ArrowLeftRight,
+  Search
 } from "lucide-react";
 
 export interface NavigationSection {
@@ -51,7 +55,8 @@ export const categories = [
   "analytics-monitoring",
   "content-settings",
   "system-settings",
-  "technical"
+  "technical",
+  "features"
 ];
 
 export const navigationSections = {
@@ -269,6 +274,27 @@ export const navigationSections = {
       label: "System Reports",
       icon: FileText,
       description: "Generate system reports and logs"
+    },
+    {
+      key: "report-export",
+      label: "Report Export",
+      icon: Download,
+      description: "Export and download comprehensive reports"
+    }
+  ],
+
+  features: [
+    {
+      key: "property-comparison",
+      label: "Property Comparison",
+      icon: ArrowLeftRight,
+      description: "Compare properties side by side"
+    },
+    {
+      key: "enhanced-search",
+      label: "Enhanced Search Filters",
+      icon: Search,
+      description: "Advanced property search with multiple filter options"
     }
   ]
 };
@@ -285,5 +311,6 @@ export const sectionTitles = {
   "analytics-monitoring": "Analytics & Monitoring",
   "content-settings": "Content & Settings",
   "system-settings": "System Settings",
-  technical: "Technical"
+  technical: "Technical",
+  features: "Feature Enhancements"
 };

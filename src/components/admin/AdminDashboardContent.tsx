@@ -15,6 +15,9 @@ import BillingManagement from "./BillingManagement";
 import DatabaseTableManagement from "./DatabaseTableManagement";
 import SecurityMonitoringDashboard from "./SecurityMonitoringDashboard";
 import PerformanceMonitor from "../PerformanceMonitor";
+import ReportExportFunction from "./ReportExportFunction";
+import PropertyComparison from "../PropertyComparison";
+import EnhancedSearchFilters from "../EnhancedSearchFilters";
 import SystemReports from "./SystemReports";
 import DailyCheckInManagement from "./DailyCheckInManagement";
 import ASTRATokenHub from "./ASTRATokenHub";
@@ -89,6 +92,12 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
         return <SecurityMonitoringDashboard />;
       case "performance-monitor":
         return <PerformanceMonitor />;
+      case "report-export":
+        return <ReportExportFunction />;
+      case "property-comparison":
+        return <PropertyComparison />;
+      case "enhanced-search":
+        return <EnhancedSearchFilters />;
       case "system-reports":
         return <SystemReports />;
       case "daily-checkin":
