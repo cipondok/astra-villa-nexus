@@ -205,158 +205,175 @@ const AdminDashboardHeader = ({ isAdmin, user, profile, activeTab, onTabChange }
               </div>
             </div>
 
-            {/* Compact Navigation with Dropdown */}
+            {/* Main Admin Functions Menu - More Visible */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="hidden lg:flex h-10 px-4 text-sm font-medium hover:scale-105 rounded-lg transition-all duration-200 text-gray-900 dark:text-white/90 hover:text-gray-900 dark:hover:text-white hover:bg-white/10">
-                  Admin Functions
-                  <ChevronDown className="h-3 w-3 ml-1" />
+                <Button 
+                  variant="default" 
+                  size="lg" 
+                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold px-6 py-2 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200"
+                >
+                  🚀 All Admin Functions
+                  <ChevronDown className="h-4 w-4 ml-2" />
                 </Button>
               </DropdownMenuTrigger>
-               <DropdownMenuContent align="center" className="w-96 max-h-96 overflow-y-auto bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 z-50">
-                <ScrollArea className="max-h-80">
-                  <div className="p-2 space-y-1">
-                    {/* Analytics & Reports */}
-                    <div className="px-2 py-1 text-xs font-medium text-muted-foreground uppercase tracking-wide">Analytics & Reports</div>
-                    <DropdownMenuItem onClick={() => onTabChange?.('analytics')} className="flex items-center gap-2 text-sm">
-                      📈 Analytics
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => onTabChange?.('diagnostic')} className="flex items-center gap-2 text-sm">
-                      🔍 Diagnostics
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => onTabChange?.('reports')} className="flex items-center gap-2 text-sm">
-                      📋 Reports
-                    </DropdownMenuItem>
+              <DropdownMenuContent 
+                align="center" 
+                className="w-96 max-h-[500px] overflow-y-auto bg-white dark:bg-gray-900 border-2 border-gray-300 dark:border-gray-600 shadow-2xl rounded-xl z-[9999]"
+                sideOffset={5}
+              >
+                <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-3 rounded-t-xl">
+                  <h3 className="font-bold text-lg">Admin Control Center</h3>
+                  <p className="text-sm opacity-90">Access all administrative functions</p>
+                </div>
+                
+                <ScrollArea className="max-h-96">
+                  <div className="p-3 space-y-2">
                     
-                    <DropdownMenuSeparator />
+                    {/* Analytics & Reports */}
+                    <div className="bg-blue-50 dark:bg-blue-950/50 p-2 rounded-lg">
+                      <div className="px-2 py-1 text-xs font-bold text-blue-700 dark:text-blue-300 uppercase tracking-wide">📊 Analytics & Reports</div>
+                      <DropdownMenuItem onClick={() => onTabChange?.('analytics')} className="flex items-center gap-2 text-sm hover:bg-blue-100 dark:hover:bg-blue-900/50 rounded">
+                        📈 Analytics Dashboard
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => onTabChange?.('diagnostic')} className="flex items-center gap-2 text-sm hover:bg-blue-100 dark:hover:bg-blue-900/50 rounded">
+                        🔍 System Diagnostics
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => onTabChange?.('reports')} className="flex items-center gap-2 text-sm hover:bg-blue-100 dark:hover:bg-blue-900/50 rounded">
+                        📋 System Reports
+                      </DropdownMenuItem>
+                    </div>
                     
                     {/* User Management */}
-                    <div className="px-2 py-1 text-xs font-medium text-muted-foreground uppercase tracking-wide">User Management</div>
-                    <DropdownMenuItem onClick={() => onTabChange?.('user-management')} className="flex items-center gap-2 text-sm">
-                      👤 Users
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => onTabChange?.('kyc-review')} className="flex items-center gap-2 text-sm">
-                      📋 KYC Review
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => onTabChange?.('kyc-analytics')} className="flex items-center gap-2 text-sm">
-                      📊 KYC Analytics
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => onTabChange?.('bulk-kyc')} className="flex items-center gap-2 text-sm">
-                      📦 Bulk KYC
-                    </DropdownMenuItem>
-                    
-                    <DropdownMenuSeparator />
+                    <div className="bg-green-50 dark:bg-green-950/50 p-2 rounded-lg">
+                      <div className="px-2 py-1 text-xs font-bold text-green-700 dark:text-green-300 uppercase tracking-wide">👥 User Management</div>
+                      <DropdownMenuItem onClick={() => onTabChange?.('user-management')} className="flex items-center gap-2 text-sm hover:bg-green-100 dark:hover:bg-green-900/50 rounded">
+                        👤 User Management
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => onTabChange?.('kyc-review')} className="flex items-center gap-2 text-sm hover:bg-green-100 dark:hover:bg-green-900/50 rounded">
+                        📋 KYC Review
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => onTabChange?.('kyc-analytics')} className="flex items-center gap-2 text-sm hover:bg-green-100 dark:hover:bg-green-900/50 rounded">
+                        📊 KYC Analytics
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => onTabChange?.('bulk-kyc')} className="flex items-center gap-2 text-sm hover:bg-green-100 dark:hover:bg-green-900/50 rounded">
+                        📦 Bulk KYC Processing
+                      </DropdownMenuItem>
+                    </div>
                     
                     {/* Business Management */}
-                    <div className="px-2 py-1 text-xs font-medium text-muted-foreground uppercase tracking-wide">Business Management</div>
-                    <DropdownMenuItem onClick={() => onTabChange?.('property-management')} className="flex items-center gap-2 text-sm">
-                      🏢 Properties
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => onTabChange?.('vendor-management')} className="flex items-center gap-2 text-sm">
-                      🛠️ Vendors
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => onTabChange?.('locations')} className="flex items-center gap-2 text-sm">
-                      📍 Locations
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => onTabChange?.('content')} className="flex items-center gap-2 text-sm">
-                      📝 Content
-                    </DropdownMenuItem>
-                    
-                    <DropdownMenuSeparator />
+                    <div className="bg-purple-50 dark:bg-purple-950/50 p-2 rounded-lg">
+                      <div className="px-2 py-1 text-xs font-bold text-purple-700 dark:text-purple-300 uppercase tracking-wide">🏢 Business Management</div>
+                      <DropdownMenuItem onClick={() => onTabChange?.('property-management')} className="flex items-center gap-2 text-sm hover:bg-purple-100 dark:hover:bg-purple-900/50 rounded">
+                        🏢 Property Management
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => onTabChange?.('vendor-management')} className="flex items-center gap-2 text-sm hover:bg-purple-100 dark:hover:bg-purple-900/50 rounded">
+                        🛠️ Vendor Management
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => onTabChange?.('locations')} className="flex items-center gap-2 text-sm hover:bg-purple-100 dark:hover:bg-purple-900/50 rounded">
+                        📍 Location Management
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => onTabChange?.('content')} className="flex items-center gap-2 text-sm hover:bg-purple-100 dark:hover:bg-purple-900/50 rounded">
+                        📝 Content Management
+                      </DropdownMenuItem>
+                    </div>
                     
                     {/* Support & Communication */}
-                    <div className="px-2 py-1 text-xs font-medium text-muted-foreground uppercase tracking-wide">Support & Communication</div>
-                    <DropdownMenuItem onClick={() => onTabChange?.('customer-service')} className="flex items-center gap-2 text-sm">
-                      💬 Support Center
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => onTabChange?.('cs-control')} className="flex items-center gap-2 text-sm">
-                      🎛️ CS Control
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => onTabChange?.('contacts')} className="flex items-center gap-2 text-sm">
-                      📞 Contacts
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => onTabChange?.('feedback')} className="flex items-center gap-2 text-sm">
-                      ⭐ Feedback
-                    </DropdownMenuItem>
-                    
-                    <DropdownMenuSeparator />
+                    <div className="bg-yellow-50 dark:bg-yellow-950/50 p-2 rounded-lg">
+                      <div className="px-2 py-1 text-xs font-bold text-yellow-700 dark:text-yellow-300 uppercase tracking-wide">💬 Support & Communication</div>
+                      <DropdownMenuItem onClick={() => onTabChange?.('customer-service')} className="flex items-center gap-2 text-sm hover:bg-yellow-100 dark:hover:bg-yellow-900/50 rounded">
+                        💬 Support Center
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => onTabChange?.('cs-control')} className="flex items-center gap-2 text-sm hover:bg-yellow-100 dark:hover:bg-yellow-900/50 rounded">
+                        🎛️ CS Control Panel
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => onTabChange?.('contacts')} className="flex items-center gap-2 text-sm hover:bg-yellow-100 dark:hover:bg-yellow-900/50 rounded">
+                        📞 Contact Management
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => onTabChange?.('feedback')} className="flex items-center gap-2 text-sm hover:bg-yellow-100 dark:hover:bg-yellow-900/50 rounded">
+                        ⭐ Feedback System
+                      </DropdownMenuItem>
+                    </div>
                     
                     {/* Financial */}
-                    <div className="px-2 py-1 text-xs font-medium text-muted-foreground uppercase tracking-wide">Financial</div>
-                    <DropdownMenuItem onClick={() => onTabChange?.('billing')} className="flex items-center gap-2 text-sm">
-                      💰 Billing
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => onTabChange?.('payment-config')} className="flex items-center gap-2 text-sm">
-                      🏦 Payment Config
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => onTabChange?.('booking-payments')} className="flex items-center gap-2 text-sm">
-                      💳 Booking Payments
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => onTabChange?.('bpjs-api')} className="flex items-center gap-2 text-sm">
-                      🏥 BPJS API
-                    </DropdownMenuItem>
-                    
-                    <DropdownMenuSeparator />
+                    <div className="bg-emerald-50 dark:bg-emerald-950/50 p-2 rounded-lg">
+                      <div className="px-2 py-1 text-xs font-bold text-emerald-700 dark:text-emerald-300 uppercase tracking-wide">💰 Financial Management</div>
+                      <DropdownMenuItem onClick={() => onTabChange?.('billing')} className="flex items-center gap-2 text-sm hover:bg-emerald-100 dark:hover:bg-emerald-900/50 rounded">
+                        💰 Billing Management
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => onTabChange?.('payment-config')} className="flex items-center gap-2 text-sm hover:bg-emerald-100 dark:hover:bg-emerald-900/50 rounded">
+                        🏦 Payment Configuration
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => onTabChange?.('booking-payments')} className="flex items-center gap-2 text-sm hover:bg-emerald-100 dark:hover:bg-emerald-900/50 rounded">
+                        💳 Booking Payments
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => onTabChange?.('bpjs-api')} className="flex items-center gap-2 text-sm hover:bg-emerald-100 dark:hover:bg-emerald-900/50 rounded">
+                        🏥 BPJS API Integration
+                      </DropdownMenuItem>
+                    </div>
                     
                     {/* AI & Automation */}
-                    <div className="px-2 py-1 text-xs font-medium text-muted-foreground uppercase tracking-wide">AI & Automation</div>
-                    <DropdownMenuItem onClick={() => onTabChange?.('ai-bots')} className="flex items-center gap-2 text-sm">
-                      🤖 AI Bots
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => onTabChange?.('ai-assistant')} className="flex items-center gap-2 text-sm">
-                      🧠 AI Assistant
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => onTabChange?.('document-ocr')} className="flex items-center gap-2 text-sm">
-                      🔍 Document OCR
-                    </DropdownMenuItem>
-                    
-                    <DropdownMenuSeparator />
+                    <div className="bg-indigo-50 dark:bg-indigo-950/50 p-2 rounded-lg">
+                      <div className="px-2 py-1 text-xs font-bold text-indigo-700 dark:text-indigo-300 uppercase tracking-wide">🤖 AI & Automation</div>
+                      <DropdownMenuItem onClick={() => onTabChange?.('ai-bots')} className="flex items-center gap-2 text-sm hover:bg-indigo-100 dark:hover:bg-indigo-900/50 rounded">
+                        🤖 AI Bot Management
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => onTabChange?.('ai-assistant')} className="flex items-center gap-2 text-sm hover:bg-indigo-100 dark:hover:bg-indigo-900/50 rounded">
+                        🧠 AI Assistant
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => onTabChange?.('document-ocr')} className="flex items-center gap-2 text-sm hover:bg-indigo-100 dark:hover:bg-indigo-900/50 rounded">
+                        🔍 Document OCR
+                      </DropdownMenuItem>
+                    </div>
                     
                     {/* System Configuration */}
-                    <div className="px-2 py-1 text-xs font-medium text-muted-foreground uppercase tracking-wide">System Configuration</div>
-                    <DropdownMenuItem onClick={() => onTabChange?.('settings')} className="flex items-center gap-2 text-sm">
-                      ⚙️ System Settings
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => onTabChange?.('tools-management')} className="flex items-center gap-2 text-sm">
-                      🔧 Tools Management
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => onTabChange?.('api-configuration')} className="flex items-center gap-2 text-sm">
-                      ⚡ API Settings
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => onTabChange?.('database')} className="flex items-center gap-2 text-sm">
-                      💾 Database
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => onTabChange?.('smtp-settings')} className="flex items-center gap-2 text-sm">
-                      📧 SMTP Settings
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => onTabChange?.('seo-settings')} className="flex items-center gap-2 text-sm">
-                      🔍 SEO Settings
-                    </DropdownMenuItem>
-                    
-                    <DropdownMenuSeparator />
+                    <div className="bg-gray-50 dark:bg-gray-800 p-2 rounded-lg">
+                      <div className="px-2 py-1 text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wide">⚙️ System Configuration</div>
+                      <DropdownMenuItem onClick={() => onTabChange?.('settings')} className="flex items-center gap-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 rounded">
+                        ⚙️ System Settings
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => onTabChange?.('tools-management')} className="flex items-center gap-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 rounded">
+                        🔧 Tools Management
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => onTabChange?.('api-configuration')} className="flex items-center gap-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 rounded">
+                        ⚡ API Configuration
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => onTabChange?.('database')} className="flex items-center gap-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 rounded">
+                        💾 Database Management
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => onTabChange?.('smtp-settings')} className="flex items-center gap-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 rounded">
+                        📧 SMTP Settings
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => onTabChange?.('seo-settings')} className="flex items-center gap-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 rounded">
+                        🔍 SEO Configuration
+                      </DropdownMenuItem>
+                    </div>
                     
                     {/* Security & Monitoring */}
-                    <div className="px-2 py-1 text-xs font-medium text-muted-foreground uppercase tracking-wide">Security & Monitoring</div>
-                    <DropdownMenuItem onClick={() => onTabChange?.('security-monitor')} className="flex items-center gap-2 text-sm">
-                      🛡️ Security Monitor
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => onTabChange?.('auth-monitor')} className="flex items-center gap-2 text-sm">
-                      🔐 Auth Monitor
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => onTabChange?.('alert-system')} className="flex items-center gap-2 text-sm">
-                      🚨 Alert System
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => onTabChange?.('error-reporting')} className="flex items-center gap-2 text-sm">
-                      ⚠️ Error Reports
-                    </DropdownMenuItem>
-                    
-                    <DropdownMenuSeparator />
+                    <div className="bg-red-50 dark:bg-red-950/50 p-2 rounded-lg">
+                      <div className="px-2 py-1 text-xs font-bold text-red-700 dark:text-red-300 uppercase tracking-wide">🛡️ Security & Monitoring</div>
+                      <DropdownMenuItem onClick={() => onTabChange?.('security-monitor')} className="flex items-center gap-2 text-sm hover:bg-red-100 dark:hover:bg-red-900/50 rounded">
+                        🛡️ Security Monitor
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => onTabChange?.('auth-monitor')} className="flex items-center gap-2 text-sm hover:bg-red-100 dark:hover:bg-red-900/50 rounded">
+                        🔐 Auth Monitor
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => onTabChange?.('alert-system')} className="flex items-center gap-2 text-sm hover:bg-red-100 dark:hover:bg-red-900/50 rounded">
+                        🚨 Alert System
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => onTabChange?.('error-reporting')} className="flex items-center gap-2 text-sm hover:bg-red-100 dark:hover:bg-red-900/50 rounded">
+                        ⚠️ Error Reports
+                      </DropdownMenuItem>
+                    </div>
                     
                     {/* Search & Filters */}
-                    <div className="px-2 py-1 text-xs font-medium text-muted-foreground uppercase tracking-wide">Search & Filters</div>
-                    <DropdownMenuItem onClick={() => onTabChange?.('search-filters')} className="flex items-center gap-2 text-sm">
-                      🔍 Search Filters
-                    </DropdownMenuItem>
+                    <div className="bg-cyan-50 dark:bg-cyan-950/50 p-2 rounded-lg">
+                      <div className="px-2 py-1 text-xs font-bold text-cyan-700 dark:text-cyan-300 uppercase tracking-wide">🔍 Search & Tools</div>
+                      <DropdownMenuItem onClick={() => onTabChange?.('search-filters')} className="flex items-center gap-2 text-sm hover:bg-cyan-100 dark:hover:bg-cyan-900/50 rounded">
+                        🔍 Advanced Search Filters
+                      </DropdownMenuItem>
+                    </div>
+                    
                   </div>
                 </ScrollArea>
               </DropdownMenuContent>
