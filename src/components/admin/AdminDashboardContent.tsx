@@ -13,7 +13,7 @@ import ContentManagement from "./ContentManagement";
 import SearchFiltersManagement from "./SearchFiltersManagement";
 import BillingManagement from "./BillingManagement";
 import DatabaseTableManagement from "./DatabaseTableManagement";
-import SecurityMonitoring from "./SecurityMonitoring";
+import SecurityMonitoringDashboard from "./SecurityMonitoringDashboard";
 import SystemReports from "./SystemReports";
 import DailyCheckInManagement from "./DailyCheckInManagement";
 import ASTRATokenHub from "./ASTRATokenHub";
@@ -85,7 +85,7 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
       case "database-management":
         return <DatabaseTableManagement />;
       case "security-monitoring":
-        return <SecurityMonitoring />;
+        return <SecurityMonitoringDashboard />;
       case "system-reports":
         return <SystemReports />;
       case "daily-checkin":
