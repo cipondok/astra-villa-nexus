@@ -104,35 +104,26 @@ const AdvancedAdminDashboard = () => {
         isAdmin={isAdmin} 
         user={user} 
         profile={profile} 
+        activeTab={activeTab}
+        onTabChange={handleTabChange}
       />
       
       <div className="container mx-auto px-4 py-6 space-y-6">
-        {/* Real-time Dashboard Stats */}
-        <RealTimeDashboardStats />
-        
-        <div className="flex flex-col space-y-6">
-          {/* Enhanced Smart Navigation */}
-          <div className="sticky top-0 z-40">
-            <EnhancedTreeNavigation 
-              activeTab={activeTab}
-              onTabChange={handleTabChange}
-              headerCounts={headerCounts}
-            />
-          </div>
-
-          <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-6">
-            <div className="hidden">
-              <CompactAdminNavigation 
-                activeTab={activeTab} 
-                onTabChange={handleTabChange} 
-                isAdmin={isAdmin} 
-              />
+        {/* Main Content */}
+        <div className="space-y-6">
+          {activeTab === 'overview' && (
+            <div className="space-y-6">
+              <AdminOverview onSectionChange={handleTabChange} />
             </div>
-            
-            <div className="hud-border hud-glow p-6 shadow-lg">
-              <AdminDashboardContent activeSection={activeTab} onSectionChange={handleTabChange} />
-            </div>
-          </Tabs>
+          )}
+          
+          {activeTab === 'user-management' && <UserManagement />}
+          {activeTab === 'property-management' && <PropertyManagement />}
+          {activeTab === 'vendor-management' && <VendorManagementHub />}
+          {activeTab === 'settings' && <SystemSettings />}
+          {activeTab === 'analytics' && <AnalyticsDashboard />}
+          {activeTab === 'loading-customization' && <LoadingPageCustomization />}
+          {activeTab === 'api-configuration' && <APIConfiguration />}
         </div>
       </div>
 

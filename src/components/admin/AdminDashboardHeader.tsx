@@ -76,9 +76,11 @@ interface AdminDashboardHeaderProps {
   isAdmin: boolean;
   user: any;
   profile: any;
+  activeTab?: string;
+  onTabChange?: (tab: string) => void;
 }
 
-const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderProps) => {
+const AdminDashboardHeader = ({ isAdmin, user, profile, activeTab, onTabChange }: AdminDashboardHeaderProps) => {
   const { signOut, extendSession } = useAuth();
   const navigate = useNavigate();
   const [sessionTime, setSessionTime] = useState<string>('');
@@ -206,46 +208,66 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
             {/* Navigation Tabs */}
             <div className="hidden lg:flex items-center space-x-2">
               <Button 
-                variant="ghost" 
+                variant={activeTab === 'overview' ? 'default' : 'ghost'}
                 size="sm"
-                className="h-11 px-4 text-sm font-medium text-gray-900 dark:text-white/90 hover:text-gray-900 dark:hover:text-white hover:bg-white/10 hover:scale-105 rounded-xl transition-all duration-200"
-                onClick={() => window.dispatchEvent(new CustomEvent('admin-tab-change', { detail: 'overview' }))}
+                className={`h-11 px-4 text-sm font-medium hover:scale-105 rounded-xl transition-all duration-200 ${
+                  activeTab === 'overview' 
+                    ? 'bg-primary text-primary-foreground shadow-lg' 
+                    : 'text-gray-900 dark:text-white/90 hover:text-gray-900 dark:hover:text-white hover:bg-white/10'
+                }`}
+                onClick={() => onTabChange?.('overview')}
               >
                 <BarChart3 className="h-4 w-4 mr-2" />
                 Overview
               </Button>
               <Button 
-                variant="ghost" 
+                variant={activeTab === 'user-management' ? 'default' : 'ghost'}
                 size="sm"
-                className="h-11 px-4 text-sm font-medium text-gray-900 dark:text-white/90 hover:text-gray-900 dark:hover:text-white hover:bg-white/10 hover:scale-105 rounded-xl transition-all duration-200"
-                onClick={() => window.dispatchEvent(new CustomEvent('admin-tab-change', { detail: 'user-management' }))}
+                className={`h-11 px-4 text-sm font-medium hover:scale-105 rounded-xl transition-all duration-200 ${
+                  activeTab === 'user-management' 
+                    ? 'bg-primary text-primary-foreground shadow-lg' 
+                    : 'text-gray-900 dark:text-white/90 hover:text-gray-900 dark:hover:text-white hover:bg-white/10'
+                }`}
+                onClick={() => onTabChange?.('user-management')}
               >
                 <Users className="h-4 w-4 mr-2" />
                 Users
               </Button>
               <Button 
-                variant="ghost" 
+                variant={activeTab === 'property-management' ? 'default' : 'ghost'}
                 size="sm"
-                className="h-11 px-4 text-sm font-medium text-gray-900 dark:text-white/90 hover:text-gray-900 dark:hover:text-white hover:bg-white/10 hover:scale-105 rounded-xl transition-all duration-200"
-                onClick={() => window.dispatchEvent(new CustomEvent('admin-tab-change', { detail: 'property-management' }))}
+                className={`h-11 px-4 text-sm font-medium hover:scale-105 rounded-xl transition-all duration-200 ${
+                  activeTab === 'property-management' 
+                    ? 'bg-primary text-primary-foreground shadow-lg' 
+                    : 'text-gray-900 dark:text-white/90 hover:text-gray-900 dark:hover:text-white hover:bg-white/10'
+                }`}
+                onClick={() => onTabChange?.('property-management')}
               >
                 <Building2 className="h-4 w-4 mr-2" />
                 Properties
               </Button>
               <Button 
-                variant="ghost" 
+                variant={activeTab === 'analytics' ? 'default' : 'ghost'}
                 size="sm"
-                className="h-11 px-4 text-sm font-medium text-gray-900 dark:text-white/90 hover:text-gray-900 dark:hover:text-white hover:bg-white/10 hover:scale-105 rounded-xl transition-all duration-200"
-                onClick={() => window.dispatchEvent(new CustomEvent('admin-tab-change', { detail: 'analytics' }))}
+                className={`h-11 px-4 text-sm font-medium hover:scale-105 rounded-xl transition-all duration-200 ${
+                  activeTab === 'analytics' 
+                    ? 'bg-primary text-primary-foreground shadow-lg' 
+                    : 'text-gray-900 dark:text-white/90 hover:text-gray-900 dark:hover:text-white hover:bg-white/10'
+                }`}
+                onClick={() => onTabChange?.('analytics')}
               >
                 <Activity className="h-4 w-4 mr-2" />
                 Analytics
               </Button>
               <Button 
-                variant="ghost" 
+                variant={activeTab === 'settings' ? 'default' : 'ghost'}
                 size="sm"
-                className="h-11 px-4 text-sm font-medium text-gray-900 dark:text-white/90 hover:text-gray-900 dark:hover:text-white hover:bg-white/10 hover:scale-105 rounded-xl transition-all duration-200"
-                onClick={() => window.dispatchEvent(new CustomEvent('admin-tab-change', { detail: 'settings' }))}
+                className={`h-11 px-4 text-sm font-medium hover:scale-105 rounded-xl transition-all duration-200 ${
+                  activeTab === 'settings' 
+                    ? 'bg-primary text-primary-foreground shadow-lg' 
+                    : 'text-gray-900 dark:text-white/90 hover:text-gray-900 dark:hover:text-white hover:bg-white/10'
+                }`}
+                onClick={() => onTabChange?.('settings')}
               >
                 <Settings className="h-4 w-4 mr-2" />
                 Settings
