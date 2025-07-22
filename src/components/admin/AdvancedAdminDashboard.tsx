@@ -41,6 +41,16 @@ const AdvancedAdminDashboard = () => {
 
   console.log('AdvancedAdminDashboard - Current active tab:', activeTab);
 
+  // Listen for tab changes from header
+  React.useEffect(() => {
+    const handleTabChange = (event: CustomEvent) => {
+      setActiveTab(event.detail);
+    };
+    
+    window.addEventListener('admin-tab-change', handleTabChange as EventListener);
+    return () => window.removeEventListener('admin-tab-change', handleTabChange as EventListener);
+  }, []);
+
   const handleTabChange = (tab: string) => {
     console.log('AdvancedAdminDashboard - Tab changed to:', tab);
     setActiveTab(tab);

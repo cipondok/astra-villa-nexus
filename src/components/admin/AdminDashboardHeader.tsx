@@ -20,7 +20,8 @@ import {
   ChevronDown,
   Home,
   X,
-  Eye
+  Eye,
+  BarChart3
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -200,6 +201,55 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
                 <span className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-blue-600 dark:from-white dark:to-blue-300 bg-clip-text text-transparent drop-shadow-lg group-hover:scale-105 transition-transform duration-300">ASTRA</span>
                 <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-300 dark:to-purple-300 bg-clip-text text-transparent drop-shadow-lg group-hover:scale-105 transition-transform duration-300">Villa</span>
               </div>
+            </div>
+
+            {/* Navigation Tabs */}
+            <div className="hidden lg:flex items-center space-x-2">
+              <Button 
+                variant="ghost" 
+                size="sm"
+                className="h-11 px-4 text-sm font-medium text-gray-900 dark:text-white/90 hover:text-gray-900 dark:hover:text-white hover:bg-white/10 hover:scale-105 rounded-xl transition-all duration-200"
+                onClick={() => window.dispatchEvent(new CustomEvent('admin-tab-change', { detail: 'overview' }))}
+              >
+                <BarChart3 className="h-4 w-4 mr-2" />
+                Overview
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="sm"
+                className="h-11 px-4 text-sm font-medium text-gray-900 dark:text-white/90 hover:text-gray-900 dark:hover:text-white hover:bg-white/10 hover:scale-105 rounded-xl transition-all duration-200"
+                onClick={() => window.dispatchEvent(new CustomEvent('admin-tab-change', { detail: 'user-management' }))}
+              >
+                <Users className="h-4 w-4 mr-2" />
+                Users
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="sm"
+                className="h-11 px-4 text-sm font-medium text-gray-900 dark:text-white/90 hover:text-gray-900 dark:hover:text-white hover:bg-white/10 hover:scale-105 rounded-xl transition-all duration-200"
+                onClick={() => window.dispatchEvent(new CustomEvent('admin-tab-change', { detail: 'property-management' }))}
+              >
+                <Building2 className="h-4 w-4 mr-2" />
+                Properties
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="sm"
+                className="h-11 px-4 text-sm font-medium text-gray-900 dark:text-white/90 hover:text-gray-900 dark:hover:text-white hover:bg-white/10 hover:scale-105 rounded-xl transition-all duration-200"
+                onClick={() => window.dispatchEvent(new CustomEvent('admin-tab-change', { detail: 'analytics' }))}
+              >
+                <Activity className="h-4 w-4 mr-2" />
+                Analytics
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="sm"
+                className="h-11 px-4 text-sm font-medium text-gray-900 dark:text-white/90 hover:text-gray-900 dark:hover:text-white hover:bg-white/10 hover:scale-105 rounded-xl transition-all duration-200"
+                onClick={() => window.dispatchEvent(new CustomEvent('admin-tab-change', { detail: 'settings' }))}
+              >
+                <Settings className="h-4 w-4 mr-2" />
+                Settings
+              </Button>
             </div>
             
             <div className="flex items-center space-x-3">
