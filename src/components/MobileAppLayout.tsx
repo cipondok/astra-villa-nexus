@@ -24,7 +24,7 @@ interface MobileAppLayoutProps {
 }
 
 const MobileAppLayout = ({ children }: MobileAppLayoutProps) => {
-  const { isMobile, deviceInfo } = useIsMobile();
+  const { isMobile, isTablet, deviceInfo } = useIsMobile();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { user, profile } = useAuth();
   const navigate = useNavigate();
@@ -57,46 +57,74 @@ const MobileAppLayout = ({ children }: MobileAppLayoutProps) => {
     { label: 'Admin Dashboard', path: '/admin', icon: User },
   ];
 
-  if (!isMobile) {
+  // Show mobile layout for mobile devices, adaptive layout for tablets
+  const isSmallScreen = isMobile || isTablet;
+  
+  if (!isSmallScreen) {
     return <>{children}</>;
   }
 
   return (
-    <div className="mobile-app-layout min-h-screen bg-background relative">
-      {/* Mobile Top Header - Compact */}
+    <div className={cn(
+      "min-h-screen bg-background relative",
+      isMobile ? "mobile-app-layout" : "tablet-app-layout"
+    )}>
+      {/* Responsive Top Header */}
       <header className="sticky top-0 z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-800/50 shadow-sm">
-        <div className="flex items-center justify-between px-3 h-12">
-          {/* Logo - Smaller */}
+        <div className={cn(
+          "flex items-center justify-between",
+          isMobile ? "px-3 h-12" : "px-6 h-16"
+        )}>
+          {/* Responsive Logo */}
           <div 
-            className="flex items-center space-x-1.5 cursor-pointer"
+            className="flex items-center space-x-2 cursor-pointer"
             onClick={() => navigate('/')}
           >
-            <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-md">
-              <Home className="h-3 w-3 text-white" />
+            <div className={cn(
+              "rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-md",
+              isMobile ? "w-6 h-6" : "w-8 h-8"
+            )}>
+              <Home className={cn(
+                "text-white",
+                isMobile ? "h-3 w-3" : "h-4 w-4"
+              )} />
             </div>
-            <span className="text-sm font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            <span className={cn(
+              "font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent",
+              isMobile ? "text-sm" : "text-lg"
+            )}>
               ASTRA Villa
             </span>
           </div>
 
-          {/* Right Actions - Compact */}
-          <div className="flex items-center space-x-1">
+          {/* Right Actions - Responsive */}
+          <div className={cn(
+            "flex items-center",
+            isMobile ? "space-x-1" : "space-x-3"
+          )}>
             {user && <NotificationDropdown />}
             
             <Button
               variant="ghost"
-              size="sm"
-              className="w-8 h-8 p-0 rounded-full"
+              size={isMobile ? "sm" : "default"}
+              className={cn(
+                "p-0 rounded-full",
+                isMobile ? "w-8 h-8" : "w-10 h-10"
+              )}
               onClick={() => setIsMenuOpen(true)}
             >
-              <Menu className="h-3.5 w-3.5" />
+              <Menu className={cn(
+                isMobile ? "h-3.5 w-3.5" : "h-5 w-5"
+              )} />
             </Button>
           </div>
         </div>
       </header>
 
-      {/* Main Content - Optimized padding */}
-      <main className="pb-16 min-h-[calc(100vh-3rem)]">
+      {/* Main Content - Responsive padding */}
+      <main className={cn(
+        isMobile ? "pb-16 min-h-[calc(100vh-3rem)]" : "pb-20 min-h-[calc(100vh-4rem)]"
+      )}>
         {children}
       </main>
 

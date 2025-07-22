@@ -31,7 +31,7 @@ const Index = () => {
   const { language } = useLanguage();
   const { user, profile, loading } = useAuth();
   const navigate = useNavigate();
-  const { isMobile, deviceInfo } = useIsMobile();
+  const { isMobile, isTablet, deviceInfo } = useIsMobile();
   const [searchResults, setSearchResults] = useState<BaseProperty[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
@@ -263,30 +263,36 @@ const Index = () => {
     setHasSearched(false);
   };
 
-  // Mobile layout wrapper - Optimized for space efficiency
+  // Responsive layout wrapper - Optimized for all device sizes
+  const isSmallScreen = isMobile || isTablet;
   const content = (
     <div className={cn(
       "min-h-screen text-foreground relative",
-      isMobile ? "w-full overflow-x-hidden mobile-app-layout" : ""
-    )} style={{ zoom: isMobile ? '100%' : '90%' }}>
+      isMobile ? "w-full overflow-x-hidden mobile-app-layout" : 
+      isTablet ? "w-full overflow-x-hidden tablet-app-layout" : ""
+    )} style={{ 
+      zoom: isMobile ? '100%' : isTablet ? '95%' : '90%' 
+    }}>
       {/* Background Wallpaper Layer */}
       <div 
         className="fixed inset-0 z-0 opacity-30 dark:opacity-20"
         style={backgroundStyle}
       />
       
-      {/* Content Layer with backdrop - Zero padding waste */}
+      {/* Content Layer with backdrop - Responsive padding */}
       <div className={cn(
         "relative z-10 bg-white/90 dark:bg-black/90 backdrop-blur-sm",
-        isMobile ? "min-h-screen overflow-x-hidden mobile-safe-area" : "min-h-screen"
+        isMobile ? "min-h-screen overflow-x-hidden mobile-safe-area" : 
+        isTablet ? "min-h-screen overflow-x-hidden tablet-safe-area" : "min-h-screen"
       )}>
         {/* Desktop Navigation Only */}
-        {!isMobile && <Navigation />}
+        {!isSmallScreen && <Navigation />}
         
-        {/* Hero Section - Ultra Compact */}
+        {/* Hero Section - Responsive */}
         <section className={cn(
           "relative w-full",
-          isMobile ? "px-2 py-1 mobile-safe-top" : "px-4 py-2"
+          isMobile ? "px-2 py-1 mobile-safe-top" : 
+          isTablet ? "px-4 py-2 tablet-safe-top" : "px-6 py-4"
         )}>
           <div className={cn(
             "mx-auto text-center w-full",

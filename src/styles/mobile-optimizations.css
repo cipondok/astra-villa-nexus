@@ -38,10 +38,30 @@
     padding-bottom: env(safe-area-inset-bottom);
   }
   
+  /* Tablet-specific safe area classes */
+  .tablet-safe-area {
+    padding-left: max(env(safe-area-inset-left), 1rem);
+    padding-right: max(env(safe-area-inset-right), 1rem);
+  }
+  
+  .tablet-safe-top {
+    padding-top: max(env(safe-area-inset-top), 0.5rem);
+  }
+  
+  .tablet-safe-bottom {
+    padding-bottom: max(env(safe-area-inset-bottom), 0.5rem);
+  }
+  
   /* Touch-friendly sizes */
   .touch-target {
     min-height: 44px;
     min-width: 44px;
+  }
+  
+  /* Tablet touch targets - slightly larger */
+  .tablet-touch-target {
+    min-height: 48px;
+    min-width: 48px;
   }
   
   /* Mobile-optimized text sizes - Important content prioritized */
@@ -476,10 +496,138 @@
   .mobile-app-layout h1 { font-size: 1.5rem !important; }
 }
 
-@media screen and (min-device-width: 768px) and (max-device-width: 1024px) {
-  /* Tablet devices */
-  .mobile-app-layout .container { max-width: 90% !important; }
-  .mobile-app-layout h1 { font-size: 2rem !important; }
+/* Tablet-specific styles (768px - 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .tablet-app-layout,
+  body.tablet-device,
+  html.tablet-device {
+    font-size: 18px !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Tablet containers - larger than mobile, smaller than desktop */
+  .tablet-app-layout .container,
+  .tablet-app-layout .container-flex,
+  body.tablet-device .container {
+    width: 95% !important;
+    max-width: 95vw !important;
+    padding-left: 2rem !important;
+    padding-right: 2rem !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    gap: 1.5rem !important;
+  }
+  
+  /* Tablet navigation */
+  .tablet-app-layout .nav-flex {
+    gap: 1.5rem !important;
+    padding: 1.5rem !important;
+  }
+  
+  .tablet-app-layout .nav-links {
+    gap: 1rem !important;
+  }
+  
+  .tablet-app-layout .nav-link-flex {
+    padding: 1rem !important;
+    min-height: 48px !important;
+  }
+  
+  /* Tablet grid layouts - 2 columns instead of 1 */
+  .tablet-app-layout .card-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 1.5rem !important;
+  }
+  
+  .tablet-app-layout .image-gallery {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 1rem !important;
+  }
+  
+  /* Tablet forms - side by side layout where appropriate */
+  .tablet-app-layout .form-row-flex {
+    flex-direction: row !important;
+    gap: 1.5rem !important;
+  }
+  
+  .tablet-app-layout .form-input-flex {
+    font-size: 18px !important;
+    min-height: 48px !important;
+    padding: 1rem 1.25rem !important;
+  }
+  
+  .tablet-app-layout .form-button-flex {
+    min-height: 52px !important;
+    font-size: 1.125rem !important;
+    padding: 1rem 2rem !important;
+  }
+  
+  /* Tablet typography */
+  .tablet-app-layout h1 {
+    font-size: 2.25rem !important;
+    line-height: 2.75rem !important;
+    font-weight: 800 !important;
+    margin-bottom: 1.25rem !important;
+  }
+  
+  .tablet-app-layout h2 {
+    font-size: 1.875rem !important;
+    line-height: 2.25rem !important;
+    font-weight: 700 !important;
+    margin-bottom: 1rem !important;
+  }
+  
+  .tablet-app-layout h3 {
+    font-size: 1.5rem !important;
+    line-height: 2rem !important;
+    font-weight: 600 !important;
+    margin-bottom: 0.75rem !important;
+  }
+  
+  .tablet-app-layout p {
+    font-size: 1.125rem !important;
+    line-height: 1.75rem !important;
+    margin-bottom: 1rem !important;
+  }
+  
+  /* Tablet buttons and inputs */
+  .tablet-app-layout input,
+  .tablet-app-layout select,
+  .tablet-app-layout button,
+  .tablet-app-layout textarea {
+    font-size: 18px !important;
+    min-height: 48px !important;
+    padding: 1rem 1.25rem !important;
+  }
+  
+  .tablet-app-layout .btn-primary,
+  .tablet-app-layout .btn-secondary,
+  .tablet-app-layout button[type="submit"] {
+    min-height: 52px !important;
+    font-size: 1.125rem !important;
+    font-weight: 600 !important;
+    padding: 1rem 2rem !important;
+    border-radius: 1rem !important;
+  }
+  
+  /* Tablet content sections */
+  .tablet-app-layout .hero-section {
+    padding: 3rem 2rem !important;
+  }
+  
+  .tablet-app-layout .property-card {
+    margin-bottom: 1.5rem !important;
+    padding: 1.5rem !important;
+    border-radius: 1.25rem !important;
+  }
+  
+  .tablet-app-layout .search-filters {
+    padding: 1.5rem !important;
+    margin-bottom: 1.5rem !important;
+  }
 }
 
 /* High DPI device adjustments */
