@@ -119,7 +119,8 @@ const ModernTreeNavigation = ({ activeTab, onTabChange, headerCounts }: ModernTr
         { id: 'vendor-agent-control', label: 'Vendor Agents', icon: '👔', count: '24', color: 'orange' },
         { id: 'daily-checkin', label: 'Daily Check-in', icon: '✅', count: '156', color: 'emerald' },
         { id: 'astra-token-hub', label: 'ASTRA Tokens', icon: '🪙', count: '89', color: 'amber', isNew: true },
-        { id: 'database-errors', label: 'DB Error Manager', icon: '❌', count: '3', color: 'red' }
+        { id: 'database-errors', label: 'DB Error Manager', icon: '❌', count: '3', color: 'red' },
+        { id: 'error-logs', label: 'Error Logs', icon: '📋', count: '0', color: 'red', isNew: true }
       ]
     }
   ];
