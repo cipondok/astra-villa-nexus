@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Badge } from '@/components/ui/badge';
-import { ChevronDown, ChevronRight, Menu, Star, Pin, Trash2, Edit } from 'lucide-react';
+import { ChevronDown, ChevronRight, Menu, Star, Pin, Trash2, Edit, Plus, Check, X, Save } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import {
@@ -146,6 +146,8 @@ const EnhancedTreeNavigation = ({ activeTab, onTabChange, headerCounts }: Enhanc
   const [expansionState, setExpansionState] = useState<'collapsed' | 'half-open' | 'fully-open'>('collapsed');
   const [quickLinks, setQuickLinks] = useState<QuickLink[]>([]);
   const [usageStats, setUsageStats] = useState<Record<string, number>>({});
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -383,84 +385,213 @@ const EnhancedTreeNavigation = ({ activeTab, onTabChange, headerCounts }: Enhanc
     }
   };
 
+  const handleSaveSelection = () => {
+    const allLinks = getAllLinksFlat();
+    const newQuickLinks = Array.from(selectedItems).map(id => {
+      const link = allLinks.find(l => l.id === id);
+      return link ? {
+        ...link,
+        usage: usageStats[id] || 0,
+        isPinned: true
+      } : null;
+    }).filter(Boolean) as QuickLink[];
+    
+    setQuickLinks(newQuickLinks);
+    setIsEditMode(false);
+    setSelectedItems(new Set());
+    
+    toast({
+      title: "Quick nav updated",
+      description: `${newQuickLinks.length} items saved to quick navigation.`,
+    });
+  };
+
+  const handleRemoveItem = (id: string) => {
+    setQuickLinks(prev => prev.filter(link => link.id !== id));
+    toast({
+      title: "Item removed",
+      description: "Item removed from quick navigation.",
+    });
+  };
+
+  const handleToggleSelection = (id: string) => {
+    setSelectedItems(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else {
+        newSet.add(id);
+      }
+      return newSet;
+    });
+  };
+
+  const handleEditMode = () => {
+    setIsEditMode(true);
+    setSelectedItems(new Set(quickLinks.map(link => link.id)));
+    setExpansionState('fully-open');
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditMode(false);
+    setSelectedItems(new Set());
+  };
+
   return (
     <div className="bg-gradient-to-r from-gray-900/95 to-slate-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-lg p-4">
       {/* Inline Navigation Buttons */}
-      <div className="flex flex-wrap gap-2 items-center">
-        <div className="flex items-center gap-2 mr-4">
-          <span className="text-lg">⚡</span>
-          <span className="text-sm font-semibold text-white">Quick Nav</span>
-          <Badge className="text-xs bg-blue-500/20 text-blue-400 border-blue-500/30">
-            Smart
-          </Badge>
+      <div className="flex flex-wrap gap-2 items-center justify-between">
+        <div className="flex flex-wrap gap-2 items-center">
+          <div className="flex items-center gap-2 mr-4">
+            <span className="text-lg">⚡</span>
+            <span className="text-sm font-semibold text-white">Quick Nav</span>
+            <Badge className="text-xs bg-blue-500/20 text-blue-400 border-blue-500/30">
+              Smart
+            </Badge>
+          </div>
+          
+          {!isEditMode && mostUsedLinks.map((link) => (
+            <div key={link.id} className="relative group">
+              <button
+                onClick={() => handleTabChange(link.id)}
+                className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 ${
+                  activeTab === link.id
+                    ? 'bg-gradient-to-r from-blue-500/30 to-purple-500/30 border border-blue-400/50 shadow-lg'
+                    : 'bg-gray-800/50 hover:bg-gray-700/50 border border-gray-600/30'
+                }`}
+              >
+                <span className="text-sm">{link.icon}</span>
+                <span className="text-sm font-medium text-white">{link.label}</span>
+                
+                {link.count !== undefined && (
+                  <Badge className={`text-xs px-1.5 py-0.5 ${getBadgeColor(link.color)}`}>
+                    {link.count}
+                  </Badge>
+                )}
+                
+                {link.isNew && (
+                  <Badge className="text-xs px-1 py-0.5 bg-pink-500/20 text-pink-400 border-pink-500/30">
+                    NEW
+                  </Badge>
+                )}
+                
+                {usageStats[link.id] && (
+                  <div className="flex items-center gap-1 text-xs text-gray-400">
+                    <Star className="h-3 w-3" />
+                    <span>{usageStats[link.id]}</span>
+                  </div>
+                )}
+              </button>
+              
+              {/* Remove button in hover */}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleRemoveItem(link.id);
+                }}
+                className="absolute -top-1 -right-1 bg-red-500 hover:bg-red-600 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+              >
+                <X className="h-3 w-3" />
+              </button>
+            </div>
+          ))}
         </div>
         
-        {mostUsedLinks.map((link) => (
-          <button
-            key={link.id}
-            onClick={() => handleTabChange(link.id)}
-            className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 group ${
-              activeTab === link.id
-                ? 'bg-gradient-to-r from-blue-500/30 to-purple-500/30 border border-blue-400/50 shadow-lg'
-                : 'bg-gray-800/50 hover:bg-gray-700/50 border border-gray-600/30'
-            }`}
-          >
-            <span className="text-sm">{link.icon}</span>
-            <span className="text-sm font-medium text-white">{link.label}</span>
-            
-            {link.count !== undefined && (
-              <Badge className={`text-xs px-1.5 py-0.5 ${getBadgeColor(link.color)}`}>
-                {link.count}
-              </Badge>
-            )}
-            
-            {link.isNew && (
-              <Badge className="text-xs px-1 py-0.5 bg-pink-500/20 text-pink-400 border-pink-500/30">
-                NEW
-              </Badge>
-            )}
-            
-            {usageStats[link.id] && (
-              <div className="flex items-center gap-1 text-xs text-gray-400">
-                <Star className="h-3 w-3" />
-                <span>{usageStats[link.id]}</span>
-              </div>
-            )}
-          </button>
-        ))}
-        
-        {/* More Options Button */}
-        <button
-          onClick={handleToggleExpansion}
-          className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-700/50 hover:bg-gray-600/50 border border-gray-500/30 transition-all duration-200"
-        >
-          <Menu className="h-4 w-4 text-gray-400" />
-          <span className="text-sm text-gray-300">More</span>
-        </button>
+        {/* Control Buttons */}
+        <div className="flex items-center gap-2">
+          {isEditMode ? (
+            <>
+              <Button
+                size="sm"
+                onClick={handleSaveSelection}
+                className="bg-green-600 hover:bg-green-700 text-white"
+              >
+                <Save className="h-4 w-4 mr-1" />
+                Save ({selectedItems.size})
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={handleCancelEdit}
+              >
+                <X className="h-4 w-4 mr-1" />
+                Cancel
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={handleEditMode}
+                className="text-yellow-400 border-yellow-400/50 hover:bg-yellow-400/10"
+              >
+                <Edit className="h-4 w-4 mr-1" />
+                Edit
+              </Button>
+              <button
+                onClick={handleToggleExpansion}
+                className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-700/50 hover:bg-gray-600/50 border border-gray-500/30 transition-all duration-200"
+              >
+                <Menu className="h-4 w-4 text-gray-400" />
+                <span className="text-sm text-gray-300">More</span>
+              </button>
+            </>
+          )}
+        </div>
       </div>
 
-      {/* Expanded Menu - appears below when "More" is clicked */}
-      {expansionState !== 'collapsed' && (
+      {/* Expanded Menu - appears below when "More" is clicked or in Edit Mode */}
+      {(expansionState !== 'collapsed' || isEditMode) && (
         <div className="mt-4 pt-4 border-t border-white/10">
+          {isEditMode && (
+            <div className="mb-4 p-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
+              <div className="flex items-center gap-2 mb-2">
+                <Edit className="h-4 w-4 text-yellow-400" />
+                <span className="text-sm font-medium text-yellow-400">Edit Mode</span>
+                <Badge className="text-xs bg-yellow-500/20 text-yellow-400">
+                  {selectedItems.size} selected
+                </Badge>
+              </div>
+              <p className="text-xs text-gray-300">
+                Click items to add/remove from quick navigation. Click Save to apply changes.
+              </p>
+            </div>
+          )}
+          
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
             {allLinks.map((link) => (
               <button
                 key={link.id}
-                onClick={() => handleTabChange(link.id)}
-                className={`flex items-center gap-2 p-2 rounded-lg transition-all duration-200 ${
-                  activeTab === link.id
-                    ? 'bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-400/30'
-                    : 'hover:bg-white/5 border border-transparent'
+                onClick={() => isEditMode ? handleToggleSelection(link.id) : handleTabChange(link.id)}
+                className={`flex items-center gap-2 p-2 rounded-lg transition-all duration-200 relative ${
+                  isEditMode 
+                    ? selectedItems.has(link.id)
+                      ? 'bg-green-500/20 border border-green-400/50 text-green-400'
+                      : 'bg-gray-700/50 border border-gray-500/30 hover:bg-gray-600/50'
+                    : activeTab === link.id
+                      ? 'bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-400/30'
+                      : 'hover:bg-white/5 border border-transparent'
                 }`}
               >
+                {isEditMode && (
+                  <div className="absolute top-1 right-1">
+                    {selectedItems.has(link.id) ? (
+                      <Check className="h-3 w-3 text-green-400" />
+                    ) : (
+                      <Plus className="h-3 w-3 text-gray-400" />
+                    )}
+                  </div>
+                )}
+                
                 <span className="text-sm">{link.icon}</span>
                 <span className="text-sm text-white truncate">{link.label}</span>
-                {link.count !== undefined && (
+                {link.count !== undefined && !isEditMode && (
                   <Badge className={`text-xs px-1 py-0.5 ${getBadgeColor(link.color)}`}>
                     {link.count}
                   </Badge>
                 )}
-                {link.isNew && (
+                {link.isNew && !isEditMode && (
                   <Badge className="text-xs px-1 py-0.5 bg-pink-500/20 text-pink-400 border-pink-500/30">
                     NEW
                   </Badge>
