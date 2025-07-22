@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { BarChart3, Activity, Globe, Users, FileText, TrendingUp, Home, Settings, Building, Store, Shield, Loader2, Crown, Zap, Database, MessageSquare, AlertTriangle, Monitor, Blocks, Bell, Wrench } from "lucide-react";
+import SystemDiagnostics from './SystemDiagnostics';
 import AdminOverview from './AdminOverview';
 import UserManagement from './UserManagement';
 import PropertyManagement from './PropertyManagement';
@@ -117,40 +118,7 @@ const AdvancedAdminDashboard = () => {
             </div>
           )}
           
-          {activeTab === 'diagnostic' && (
-            <div className="space-y-6">
-              <h2 className="text-2xl font-bold flex items-center gap-2">
-                <Monitor className="h-6 w-6 text-orange-500" />
-                System Diagnostics
-              </h2>
-              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>System Health Check</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-muted-foreground">Monitor CPU, memory, and network status</p>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Database Performance</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-muted-foreground">Track database queries and performance metrics</p>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardHeader>
-                    <CardTitle>API Response Times</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-muted-foreground">Monitor API endpoint response times</p>
-                  </CardContent>
-                </Card>
-              </div>
-            </div>
-          )}
+          {activeTab === 'diagnostic' && <SystemDiagnostics />}
           
           {activeTab === 'tools-management' && (
             <div className="space-y-6">
