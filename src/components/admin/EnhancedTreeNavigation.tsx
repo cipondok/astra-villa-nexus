@@ -358,13 +358,7 @@ const EnhancedTreeNavigation = ({ activeTab, onTabChange, headerCounts }: Enhanc
 
   // Get all links for inline display
   const getAllLinksFlat = () => {
-    const links: TreeNode[] = [];
-    treeData.forEach(category => {
-      if (category.children) {
-        links.push(...category.children);
-      }
-    });
-    return links;
+    return getAllLinks(treeData);
   };
 
   const allLinks = getAllLinksFlat();
@@ -401,6 +395,9 @@ const EnhancedTreeNavigation = ({ activeTab, onTabChange, headerCounts }: Enhanc
     setQuickLinks(newQuickLinks);
     setIsEditMode(false);
     setSelectedItems(new Set());
+    
+    // Save immediately to localStorage
+    localStorage.setItem('admin-quick-links', JSON.stringify(newQuickLinks));
     
     toast({
       title: "Quick nav updated",
