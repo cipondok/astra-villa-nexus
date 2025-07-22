@@ -335,136 +335,121 @@ const EnhancedTreeNavigation = ({ activeTab, onTabChange, headerCounts }: Enhanc
     }
   };
 
+  // Get all links for inline display
+  const getAllLinksFlat = () => {
+    const links: TreeNode[] = [];
+    treeData.forEach(category => {
+      if (category.children) {
+        links.push(...category.children);
+      }
+    });
+    return links;
+  };
+
+  const allLinks = getAllLinksFlat();
+  const mostUsedLinks = allLinks
+    .sort((a, b) => (usageStats[b.id] || 0) - (usageStats[a.id] || 0))
+    .slice(0, 8);
+
+  const getBadgeColor = (color?: string) => {
+    switch (color) {
+      case 'green': return 'bg-green-500/20 text-green-400 border-green-500/30';
+      case 'blue': return 'bg-blue-500/20 text-blue-400 border-blue-500/30';
+      case 'purple': return 'bg-purple-500/20 text-purple-400 border-purple-500/30';
+      case 'cyan': return 'bg-cyan-500/20 text-cyan-400 border-cyan-500/30';
+      case 'orange': return 'bg-orange-500/20 text-orange-400 border-orange-500/30';
+      case 'red': return 'bg-red-500/20 text-red-400 border-red-500/30';
+      default: return 'bg-gray-500/20 text-gray-400 border-gray-500/30';
+    }
+  };
+
   return (
-    <div className="bg-gradient-to-br from-gray-900/95 to-slate-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-lg">
-      <div className="p-4">
-        {/* Header */}
-        <button
-          onClick={handleToggleExpansion}
-          className="w-full flex items-center justify-between gap-2 mb-4 pb-3 border-b border-white/10 hover:bg-white/5 transition-all duration-300 rounded-lg px-2 py-1"
-        >
-          <div className="flex items-center gap-2">
-            <span className="text-lg">⚡</span>
-            <h3 className="text-sm font-semibold text-white">{getHeaderText()}</h3>
-            {expansionState !== 'collapsed' && (
-              <Badge className="text-xs bg-blue-500/20 text-blue-400 border-blue-500/30">
-                Smart
+    <div className="bg-gradient-to-r from-gray-900/95 to-slate-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-lg p-4">
+      {/* Inline Navigation Buttons */}
+      <div className="flex flex-wrap gap-2 items-center">
+        <div className="flex items-center gap-2 mr-4">
+          <span className="text-lg">⚡</span>
+          <span className="text-sm font-semibold text-white">Quick Nav</span>
+          <Badge className="text-xs bg-blue-500/20 text-blue-400 border-blue-500/30">
+            Smart
+          </Badge>
+        </div>
+        
+        {mostUsedLinks.map((link) => (
+          <button
+            key={link.id}
+            onClick={() => handleTabChange(link.id)}
+            className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 group ${
+              activeTab === link.id
+                ? 'bg-gradient-to-r from-blue-500/30 to-purple-500/30 border border-blue-400/50 shadow-lg'
+                : 'bg-gray-800/50 hover:bg-gray-700/50 border border-gray-600/30'
+            }`}
+          >
+            <span className="text-sm">{link.icon}</span>
+            <span className="text-sm font-medium text-white">{link.label}</span>
+            
+            {link.count !== undefined && (
+              <Badge className={`text-xs px-1.5 py-0.5 ${getBadgeColor(link.color)}`}>
+                {link.count}
               </Badge>
             )}
-          </div>
-          <div className="text-gray-400 hover:text-white transition-colors">
-            {getHeaderIcon()}
-          </div>
+            
+            {link.isNew && (
+              <Badge className="text-xs px-1 py-0.5 bg-pink-500/20 text-pink-400 border-pink-500/30">
+                NEW
+              </Badge>
+            )}
+            
+            {usageStats[link.id] && (
+              <div className="flex items-center gap-1 text-xs text-gray-400">
+                <Star className="h-3 w-3" />
+                <span>{usageStats[link.id]}</span>
+              </div>
+            )}
+          </button>
+        ))}
+        
+        {/* More Options Button */}
+        <button
+          onClick={handleToggleExpansion}
+          className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-700/50 hover:bg-gray-600/50 border border-gray-500/30 transition-all duration-200"
+        >
+          <Menu className="h-4 w-4 text-gray-400" />
+          <span className="text-sm text-gray-300">More</span>
         </button>
+      </div>
 
-        {/* Quick Access Panel */}
-        {expansionState === 'half-open' && (
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-yellow-400 animate-pulse" />
-                <span className="text-xs text-gray-400">Most Used & Pinned</span>
-              </div>
-              <span className="text-xs text-yellow-400">Drag to reorder</span>
-            </div>
-
-            <DndContext
-              sensors={sensors}
-              collisionDetection={closestCenter}
-              onDragEnd={handleDragEnd}
-            >
-              <SortableContext
-                items={sortedQuickLinks.map(link => link.id)}
-                strategy={verticalListSortingStrategy}
+      {/* Expanded Menu - appears below when "More" is clicked */}
+      {expansionState !== 'collapsed' && (
+        <div className="mt-4 pt-4 border-t border-white/10">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+            {allLinks.map((link) => (
+              <button
+                key={link.id}
+                onClick={() => handleTabChange(link.id)}
+                className={`flex items-center gap-2 p-2 rounded-lg transition-all duration-200 ${
+                  activeTab === link.id
+                    ? 'bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-400/30'
+                    : 'hover:bg-white/5 border border-transparent'
+                }`}
               >
-                <div className="space-y-2 max-h-64 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600">
-                  {sortedQuickLinks.map((link) => (
-                    <SortableQuickLink
-                      key={link.id}
-                      link={link}
-                      isActive={activeTab === link.id}
-                      onTabChange={handleTabChange}
-                      onPin={handlePin}
-                      onUnpin={handleUnpin}
-                    />
-                  ))}
-                </div>
-              </SortableContext>
-            </DndContext>
-
-            <div className="pt-3 border-t border-white/10 text-center">
-              <span className="text-xs text-gray-400">
-                Click header again for all navigation options
-              </span>
-            </div>
-          </div>
-        )}
-
-        {/* Full Navigation */}
-        {expansionState === 'fully-open' && (
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-green-400" />
-                <span className="text-xs text-gray-400">Complete Navigation</span>
-              </div>
-              <span className="text-xs text-blue-400">Click to pin favorites</span>
-            </div>
-
-            {treeData.map((category) => (
-              <div key={category.id} className="space-y-2">
-                <h4 className="text-xs font-semibold text-gray-300 flex items-center gap-2">
-                  <span>{category.icon}</span>
-                  {category.label}
-                </h4>
-                <div className="grid grid-cols-1 gap-1 ml-4">
-                  {category.children?.map((link) => (
-                    <button
-                      key={link.id}
-                      onClick={() => handleTabChange(link.id)}
-                      className={`flex items-center justify-between gap-2 p-2 rounded-lg transition-all duration-200 group ${
-                        activeTab === link.id
-                          ? 'bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-400/30'
-                          : 'hover:bg-white/5 border border-transparent'
-                      }`}
-                    >
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm">{link.icon}</span>
-                        <span className="text-sm text-white">{link.label}</span>
-                        {link.isNew && (
-                          <Badge className="text-xs px-1 py-0.5 bg-pink-500/20 text-pink-400 border-pink-500/30">
-                            NEW
-                          </Badge>
-                        )}
-                      </div>
-                      
-                      <div className="flex items-center gap-2">
-                        {usageStats[link.id] && (
-                          <span className="text-xs text-gray-400 flex items-center gap-1">
-                            <Star className="h-3 w-3" />
-                            {usageStats[link.id]}
-                          </span>
-                        )}
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          className="opacity-0 group-hover:opacity-100 transition-opacity p-1 h-auto"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handlePin(link.id);
-                          }}
-                        >
-                          <Pin className="h-3 w-3 text-gray-400 hover:text-yellow-400" />
-                        </Button>
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              </div>
+                <span className="text-sm">{link.icon}</span>
+                <span className="text-sm text-white truncate">{link.label}</span>
+                {link.count !== undefined && (
+                  <Badge className={`text-xs px-1 py-0.5 ${getBadgeColor(link.color)}`}>
+                    {link.count}
+                  </Badge>
+                )}
+                {link.isNew && (
+                  <Badge className="text-xs px-1 py-0.5 bg-pink-500/20 text-pink-400 border-pink-500/30">
+                    NEW
+                  </Badge>
+                )}
+              </button>
             ))}
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };
