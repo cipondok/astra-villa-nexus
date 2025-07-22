@@ -120,10 +120,39 @@ const AdvancedAdminDashboard = () => {
           {activeTab === 'user-management' && <UserManagement />}
           {activeTab === 'property-management' && <PropertyManagement />}
           {activeTab === 'vendor-management' && <VendorManagementHub />}
-          {activeTab === 'settings' && <SystemSettings />}
           {activeTab === 'analytics' && <AnalyticsDashboard />}
-          {activeTab === 'loading-customization' && <LoadingPageCustomization />}
           {activeTab === 'api-configuration' && <APIConfiguration />}
+          {activeTab === 'error-reporting' && (
+            <div className="space-y-6">
+              <h2 className="text-2xl font-bold">Error Reporting & Diagnostics</h2>
+              <div className="grid gap-6 md:grid-cols-2">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <AlertTriangle className="h-5 w-5 text-red-500" />
+                      Recent Errors
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-muted-foreground">Database error tracking and resolution system</p>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Monitor className="h-5 w-5 text-blue-500" />
+                      System Diagnostics
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-muted-foreground">Real-time system health monitoring</p>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          )}
+          {activeTab === 'settings' && <SystemSettings />}
+          {activeTab === 'loading-customization' && <LoadingPageCustomization />}
         </div>
       </div>
 

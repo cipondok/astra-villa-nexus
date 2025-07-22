@@ -206,70 +206,109 @@ const AdminDashboardHeader = ({ isAdmin, user, profile, activeTab, onTabChange }
             </div>
 
             {/* Navigation Tabs */}
-            <div className="hidden lg:flex items-center space-x-2">
+            <div className="hidden lg:flex items-center space-x-1">
               <Button 
                 variant={activeTab === 'overview' ? 'default' : 'ghost'}
                 size="sm"
-                className={`h-11 px-4 text-sm font-medium hover:scale-105 rounded-xl transition-all duration-200 ${
+                className={`h-10 px-3 text-xs font-medium hover:scale-105 rounded-lg transition-all duration-200 ${
                   activeTab === 'overview' 
                     ? 'bg-primary text-primary-foreground shadow-lg' 
                     : 'text-gray-900 dark:text-white/90 hover:text-gray-900 dark:hover:text-white hover:bg-white/10'
                 }`}
                 onClick={() => onTabChange?.('overview')}
               >
-                <BarChart3 className="h-4 w-4 mr-2" />
+                <BarChart3 className="h-3 w-3 mr-1" />
                 Overview
               </Button>
               <Button 
                 variant={activeTab === 'user-management' ? 'default' : 'ghost'}
                 size="sm"
-                className={`h-11 px-4 text-sm font-medium hover:scale-105 rounded-xl transition-all duration-200 ${
+                className={`h-10 px-3 text-xs font-medium hover:scale-105 rounded-lg transition-all duration-200 ${
                   activeTab === 'user-management' 
                     ? 'bg-primary text-primary-foreground shadow-lg' 
                     : 'text-gray-900 dark:text-white/90 hover:text-gray-900 dark:hover:text-white hover:bg-white/10'
                 }`}
                 onClick={() => onTabChange?.('user-management')}
               >
-                <Users className="h-4 w-4 mr-2" />
+                <Users className="h-3 w-3 mr-1" />
                 Users
               </Button>
               <Button 
                 variant={activeTab === 'property-management' ? 'default' : 'ghost'}
                 size="sm"
-                className={`h-11 px-4 text-sm font-medium hover:scale-105 rounded-xl transition-all duration-200 ${
+                className={`h-10 px-3 text-xs font-medium hover:scale-105 rounded-lg transition-all duration-200 ${
                   activeTab === 'property-management' 
                     ? 'bg-primary text-primary-foreground shadow-lg' 
                     : 'text-gray-900 dark:text-white/90 hover:text-gray-900 dark:hover:text-white hover:bg-white/10'
                 }`}
                 onClick={() => onTabChange?.('property-management')}
               >
-                <Building2 className="h-4 w-4 mr-2" />
+                <Building2 className="h-3 w-3 mr-1" />
                 Properties
+              </Button>
+              <Button 
+                variant={activeTab === 'vendor-management' ? 'default' : 'ghost'}
+                size="sm"
+                className={`h-10 px-3 text-xs font-medium hover:scale-105 rounded-lg transition-all duration-200 ${
+                  activeTab === 'vendor-management' 
+                    ? 'bg-primary text-primary-foreground shadow-lg' 
+                    : 'text-gray-900 dark:text-white/90 hover:text-gray-900 dark:hover:text-white hover:bg-white/10'
+                }`}
+                onClick={() => onTabChange?.('vendor-management')}
+              >
+                <UserCog className="h-3 w-3 mr-1" />
+                Vendors
               </Button>
               <Button 
                 variant={activeTab === 'analytics' ? 'default' : 'ghost'}
                 size="sm"
-                className={`h-11 px-4 text-sm font-medium hover:scale-105 rounded-xl transition-all duration-200 ${
+                className={`h-10 px-3 text-xs font-medium hover:scale-105 rounded-lg transition-all duration-200 ${
                   activeTab === 'analytics' 
                     ? 'bg-primary text-primary-foreground shadow-lg' 
                     : 'text-gray-900 dark:text-white/90 hover:text-gray-900 dark:hover:text-white hover:bg-white/10'
                 }`}
                 onClick={() => onTabChange?.('analytics')}
               >
-                <Activity className="h-4 w-4 mr-2" />
+                <Activity className="h-3 w-3 mr-1" />
                 Analytics
+              </Button>
+              <Button 
+                variant={activeTab === 'api-configuration' ? 'default' : 'ghost'}
+                size="sm"
+                className={`h-10 px-3 text-xs font-medium hover:scale-105 rounded-lg transition-all duration-200 ${
+                  activeTab === 'api-configuration' 
+                    ? 'bg-primary text-primary-foreground shadow-lg' 
+                    : 'text-gray-900 dark:text-white/90 hover:text-gray-900 dark:hover:text-white hover:bg-white/10'
+                }`}
+                onClick={() => onTabChange?.('api-configuration')}
+              >
+                <Database className="h-3 w-3 mr-1" />
+                API Config
+              </Button>
+              <Button 
+                variant={activeTab === 'error-reporting' ? 'default' : 'ghost'}
+                size="sm"
+                className={`h-10 px-3 text-xs font-medium hover:scale-105 rounded-lg transition-all duration-200 ${
+                  activeTab === 'error-reporting' 
+                    ? 'bg-primary text-primary-foreground shadow-lg' 
+                    : 'text-gray-900 dark:text-white/90 hover:text-gray-900 dark:hover:text-white hover:bg-white/10'
+                }`}
+                onClick={() => onTabChange?.('error-reporting')}
+              >
+                <AlertTriangle className="h-3 w-3 mr-1" />
+                Errors
               </Button>
               <Button 
                 variant={activeTab === 'settings' ? 'default' : 'ghost'}
                 size="sm"
-                className={`h-11 px-4 text-sm font-medium hover:scale-105 rounded-xl transition-all duration-200 ${
+                className={`h-10 px-3 text-xs font-medium hover:scale-105 rounded-lg transition-all duration-200 ${
                   activeTab === 'settings' 
                     ? 'bg-primary text-primary-foreground shadow-lg' 
                     : 'text-gray-900 dark:text-white/90 hover:text-gray-900 dark:hover:text-white hover:bg-white/10'
                 }`}
                 onClick={() => onTabChange?.('settings')}
               >
-                <Settings className="h-4 w-4 mr-2" />
+                <Settings className="h-3 w-3 mr-1" />
                 Settings
               </Button>
             </div>
