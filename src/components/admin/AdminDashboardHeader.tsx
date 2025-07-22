@@ -205,113 +205,115 @@ const AdminDashboardHeader = ({ isAdmin, user, profile, activeTab, onTabChange }
               </div>
             </div>
 
-            {/* Navigation Tabs */}
-            <div className="hidden lg:flex items-center space-x-1">
-              <Button 
-                variant={activeTab === 'overview' ? 'default' : 'ghost'}
-                size="sm"
-                className={`h-10 px-3 text-xs font-medium hover:scale-105 rounded-lg transition-all duration-200 ${
-                  activeTab === 'overview' 
-                    ? 'bg-primary text-primary-foreground shadow-lg' 
-                    : 'text-gray-900 dark:text-white/90 hover:text-gray-900 dark:hover:text-white hover:bg-white/10'
-                }`}
-                onClick={() => onTabChange?.('overview')}
-              >
-                <BarChart3 className="h-3 w-3 mr-1" />
-                Overview
-              </Button>
-              <Button 
-                variant={activeTab === 'user-management' ? 'default' : 'ghost'}
-                size="sm"
-                className={`h-10 px-3 text-xs font-medium hover:scale-105 rounded-lg transition-all duration-200 ${
-                  activeTab === 'user-management' 
-                    ? 'bg-primary text-primary-foreground shadow-lg' 
-                    : 'text-gray-900 dark:text-white/90 hover:text-gray-900 dark:hover:text-white hover:bg-white/10'
-                }`}
-                onClick={() => onTabChange?.('user-management')}
-              >
-                <Users className="h-3 w-3 mr-1" />
-                Users
-              </Button>
-              <Button 
-                variant={activeTab === 'vendor-management' ? 'default' : 'ghost'}
-                size="sm"
-                className={`h-10 px-3 text-xs font-medium hover:scale-105 rounded-lg transition-all duration-200 ${
-                  activeTab === 'vendor-management' 
-                    ? 'bg-primary text-primary-foreground shadow-lg' 
-                    : 'text-gray-900 dark:text-white/90 hover:text-gray-900 dark:hover:text-white hover:bg-white/10'
-                }`}
-                onClick={() => onTabChange?.('vendor-management')}
-              >
-                <UserCog className="h-3 w-3 mr-1" />
-                Vendors
-              </Button>
-              <Button 
-                variant={activeTab === 'astra-tokens' ? 'default' : 'ghost'}
-                size="sm"
-                className={`h-10 px-3 text-xs font-medium hover:scale-105 rounded-lg transition-all duration-200 ${
-                  activeTab === 'astra-tokens' 
-                    ? 'bg-primary text-primary-foreground shadow-lg' 
-                    : 'text-gray-900 dark:text-white/90 hover:text-gray-900 dark:hover:text-white hover:bg-white/10'
-                }`}
-                onClick={() => onTabChange?.('astra-tokens')}
-              >
-                <Shield className="h-3 w-3 mr-1" />
-                ASTRA Tokens
-              </Button>
-              <Button 
-                variant={activeTab === 'customer-service' ? 'default' : 'ghost'}
-                size="sm"
-                className={`h-10 px-3 text-xs font-medium hover:scale-105 rounded-lg transition-all duration-200 ${
-                  activeTab === 'customer-service' 
-                    ? 'bg-primary text-primary-foreground shadow-lg' 
-                    : 'text-gray-900 dark:text-white/90 hover:text-gray-900 dark:hover:text-white hover:bg-white/10'
-                }`}
-                onClick={() => onTabChange?.('customer-service')}
-              >
-                <Bell className="h-3 w-3 mr-1" />
-                Customer Service
-              </Button>
-              <Button 
-                variant={activeTab === 'analytics' ? 'default' : 'ghost'}
-                size="sm"
-                className={`h-10 px-3 text-xs font-medium hover:scale-105 rounded-lg transition-all duration-200 ${
-                  activeTab === 'analytics' 
-                    ? 'bg-primary text-primary-foreground shadow-lg' 
-                    : 'text-gray-900 dark:text-white/90 hover:text-gray-900 dark:hover:text-white hover:bg-white/10'
-                }`}
-                onClick={() => onTabChange?.('analytics')}
-              >
-                <Activity className="h-3 w-3 mr-1" />
-                Analytics
-              </Button>
-              <Button 
-                variant={activeTab === 'api-configuration' ? 'default' : 'ghost'}
-                size="sm"
-                className={`h-10 px-3 text-xs font-medium hover:scale-105 rounded-lg transition-all duration-200 ${
-                  activeTab === 'api-configuration' 
-                    ? 'bg-primary text-primary-foreground shadow-lg' 
-                    : 'text-gray-900 dark:text-white/90 hover:text-gray-900 dark:hover:text-white hover:bg-white/10'
-                }`}
-                onClick={() => onTabChange?.('api-configuration')}
-              >
-                <Database className="h-3 w-3 mr-1" />
-                API Config
-              </Button>
-              <Button 
-                variant={activeTab === 'settings' ? 'default' : 'ghost'}
-                size="sm"
-                className={`h-10 px-3 text-xs font-medium hover:scale-105 rounded-lg transition-all duration-200 ${
-                  activeTab === 'settings' 
-                    ? 'bg-primary text-primary-foreground shadow-lg' 
-                    : 'text-gray-900 dark:text-white/90 hover:text-gray-900 dark:hover:text-white hover:bg-white/10'
-                }`}
-                onClick={() => onTabChange?.('settings')}
-              >
-                <Settings className="h-3 w-3 mr-1" />
-                Settings
-              </Button>
-            </div>
+            {/* Compact Navigation with Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm" className="hidden lg:flex h-10 px-4 text-sm font-medium hover:scale-105 rounded-lg transition-all duration-200 text-gray-900 dark:text-white/90 hover:text-gray-900 dark:hover:text-white hover:bg-white/10">
+                  Admin Functions
+                  <ChevronDown className="h-3 w-3 ml-1" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="center" className="w-96 max-h-96 overflow-y-auto bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 z-50">
+                <div className="grid grid-cols-2 gap-1 p-2">
+                  {/* Core Functions */}
+                  <DropdownMenuItem onClick={() => onTabChange?.('overview')} className="flex items-center gap-2 p-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md">
+                    <BarChart3 className="h-4 w-4 text-blue-500" />
+                    <div>
+                      <div className="font-medium text-sm">Overview</div>
+                      <div className="text-xs text-muted-foreground">Dashboard</div>
+                    </div>
+                  </DropdownMenuItem>
+                  
+                  <DropdownMenuItem onClick={() => onTabChange?.('diagnostic')} className="flex items-center gap-2 p-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md">
+                    <Monitor className="h-4 w-4 text-orange-500" />
+                    <div>
+                      <div className="font-medium text-sm">Diagnostic</div>
+                      <div className="text-xs text-muted-foreground">System Health</div>
+                    </div>
+                  </DropdownMenuItem>
+                  
+                  <DropdownMenuItem onClick={() => onTabChange?.('astra-tokens')} className="flex items-center gap-2 p-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md">
+                    <Shield className="h-4 w-4 text-purple-500" />
+                    <div>
+                      <div className="font-medium text-sm">ASTRA Tokens</div>
+                      <div className="text-xs text-muted-foreground">Token Management</div>
+                    </div>
+                  </DropdownMenuItem>
+                  
+                  <DropdownMenuItem onClick={() => onTabChange?.('tools-management')} className="flex items-center gap-2 p-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md">
+                    <Settings className="h-4 w-4 text-gray-500" />
+                    <div>
+                      <div className="font-medium text-sm">Tools</div>
+                      <div className="text-xs text-muted-foreground">Tool Management</div>
+                    </div>
+                  </DropdownMenuItem>
+                  
+                  <DropdownMenuItem onClick={() => onTabChange?.('user-management')} className="flex items-center gap-2 p-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md">
+                    <Users className="h-4 w-4 text-green-500" />
+                    <div>
+                      <div className="font-medium text-sm">Users</div>
+                      <div className="text-xs text-muted-foreground">User Management</div>
+                    </div>
+                  </DropdownMenuItem>
+                  
+                  <DropdownMenuItem onClick={() => onTabChange?.('property-management')} className="flex items-center gap-2 p-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md">
+                    <Building2 className="h-4 w-4 text-blue-500" />
+                    <div>
+                      <div className="font-medium text-sm">Properties</div>
+                      <div className="text-xs text-muted-foreground">Property Management</div>
+                    </div>
+                  </DropdownMenuItem>
+                  
+                  <DropdownMenuItem onClick={() => onTabChange?.('vendor-management')} className="flex items-center gap-2 p-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md">
+                    <UserCog className="h-4 w-4 text-indigo-500" />
+                    <div>
+                      <div className="font-medium text-sm">Vendors</div>
+                      <div className="text-xs text-muted-foreground">Vendor Hub</div>
+                    </div>
+                  </DropdownMenuItem>
+                  
+                  <DropdownMenuItem onClick={() => onTabChange?.('customer-service')} className="flex items-center gap-2 p-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md">
+                    <Bell className="h-4 w-4 text-yellow-500" />
+                    <div>
+                      <div className="font-medium text-sm">Support</div>
+                      <div className="text-xs text-muted-foreground">Customer Service</div>
+                    </div>
+                  </DropdownMenuItem>
+                  
+                  <DropdownMenuItem onClick={() => onTabChange?.('analytics')} className="flex items-center gap-2 p-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md">
+                    <Activity className="h-4 w-4 text-red-500" />
+                    <div>
+                      <div className="font-medium text-sm">Analytics</div>
+                      <div className="text-xs text-muted-foreground">Data & Reports</div>
+                    </div>
+                  </DropdownMenuItem>
+                  
+                  <DropdownMenuItem onClick={() => onTabChange?.('api-configuration')} className="flex items-center gap-2 p-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md">
+                    <Database className="h-4 w-4 text-cyan-500" />
+                    <div>
+                      <div className="font-medium text-sm">API Config</div>
+                      <div className="text-xs text-muted-foreground">API Settings</div>
+                    </div>
+                  </DropdownMenuItem>
+                  
+                  <DropdownMenuItem onClick={() => onTabChange?.('error-reporting')} className="flex items-center gap-2 p-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md">
+                    <AlertTriangle className="h-4 w-4 text-red-600" />
+                    <div>
+                      <div className="font-medium text-sm">Error Reports</div>
+                      <div className="text-xs text-muted-foreground">System Errors</div>
+                    </div>
+                  </DropdownMenuItem>
+                  
+                  <DropdownMenuItem onClick={() => onTabChange?.('settings')} className="flex items-center gap-2 p-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md">
+                    <Settings className="h-4 w-4 text-gray-600" />
+                    <div>
+                      <div className="font-medium text-sm">System Settings</div>
+                      <div className="text-xs text-muted-foreground">Configuration</div>
+                    </div>
+                  </DropdownMenuItem>
+                </div>
+              </DropdownMenuContent>
+            </DropdownMenu>
             
             <div className="flex items-center space-x-3">
               {/* Status Badge */}

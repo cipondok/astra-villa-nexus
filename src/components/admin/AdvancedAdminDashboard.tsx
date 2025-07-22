@@ -117,6 +117,76 @@ const AdvancedAdminDashboard = () => {
             </div>
           )}
           
+          {activeTab === 'diagnostic' && (
+            <div className="space-y-6">
+              <h2 className="text-2xl font-bold flex items-center gap-2">
+                <Monitor className="h-6 w-6 text-orange-500" />
+                System Diagnostics
+              </h2>
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>System Health Check</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-muted-foreground">Monitor CPU, memory, and network status</p>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Database Performance</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-muted-foreground">Track database queries and performance metrics</p>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader>
+                    <CardTitle>API Response Times</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-muted-foreground">Monitor API endpoint response times</p>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          )}
+          
+          {activeTab === 'tools-management' && (
+            <div className="space-y-6">
+              <h2 className="text-2xl font-bold flex items-center gap-2">
+                <Wrench className="h-6 w-6 text-gray-500" />
+                Tools Management
+              </h2>
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>System Tools</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-muted-foreground">Enable/disable system maintenance tools</p>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Developer Tools</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-muted-foreground">Access developer utilities and debugging tools</p>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Admin Utilities</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-muted-foreground">Administrative tools and shortcuts</p>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          )}
+          
           {activeTab === 'user-management' && <UserManagement />}
           {activeTab === 'property-management' && <PropertyManagement />}
           {activeTab === 'vendor-management' && <VendorManagementHub />}
@@ -124,7 +194,7 @@ const AdvancedAdminDashboard = () => {
           {activeTab === 'astra-tokens' && (
             <div className="space-y-6">
               <h2 className="text-2xl font-bold flex items-center gap-2">
-                <Shield className="h-6 w-6 text-blue-500" />
+                <Shield className="h-6 w-6 text-purple-500" />
                 ASTRA Token Management
               </h2>
               <div className="grid gap-6 md:grid-cols-3">
@@ -159,7 +229,7 @@ const AdvancedAdminDashboard = () => {
           {activeTab === 'customer-service' && (
             <div className="space-y-6">
               <h2 className="text-2xl font-bold flex items-center gap-2">
-                <Bell className="h-6 w-6 text-green-500" />
+                <Bell className="h-6 w-6 text-yellow-500" />
                 Customer Service Hub
               </h2>
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -219,7 +289,10 @@ const AdvancedAdminDashboard = () => {
           {activeTab === 'api-configuration' && <APIConfiguration />}
           {activeTab === 'error-reporting' && (
             <div className="space-y-6">
-              <h2 className="text-2xl font-bold">Error Reporting & Diagnostics</h2>
+              <h2 className="text-2xl font-bold flex items-center gap-2">
+                <AlertTriangle className="h-6 w-6 text-red-500" />
+                Error Reporting & Diagnostics
+              </h2>
               <div className="grid gap-6 md:grid-cols-2">
                 <Card>
                   <CardHeader>
