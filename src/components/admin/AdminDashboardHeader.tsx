@@ -198,7 +198,7 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
               </div>
               <div className="flex items-center space-x-1">
                 <span className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-blue-600 dark:from-white dark:to-blue-300 bg-clip-text text-transparent drop-shadow-lg group-hover:scale-105 transition-transform duration-300">ASTRA</span>
-                <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-300 dark:to-purple-300 bg-clip-text text-transparent drop-shadow-lg group-hover:scale-105 transition-transform duration-300">Admin</span>
+                <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-300 dark:to-purple-300 bg-clip-text text-transparent drop-shadow-lg group-hover:scale-105 transition-transform duration-300">Villa</span>
               </div>
             </div>
             
