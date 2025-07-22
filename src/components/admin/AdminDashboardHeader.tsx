@@ -189,25 +189,28 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
 
   return (
     <TooltipProvider>
-      <div className="relative bg-blue-600/70 dark:bg-gray-900/70 backdrop-blur-md text-white transition-all duration-300 border-b border-blue-500/30 dark:border-gray-700/50">
+      <div className="fixed top-0 left-0 right-0 z-50 bg-blue-600/70 dark:bg-gray-900/70 backdrop-blur-md text-white transition-all duration-300 border-b border-blue-500/30 dark:border-gray-700/50">
         {/* Ultra Compact Header with 70% Transparency */}
-        <div className="relative container mx-auto px-4 py-2">
-          <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="p-1.5 bg-white/20 dark:bg-gray-800/60 backdrop-blur-sm rounded-lg border border-white/30 dark:border-gray-600/50">
-              <Shield className="h-5 w-5 text-white" />
+        <div className="relative w-full max-w-full px-4 py-2">
+          <div className="flex items-center justify-between min-h-[60px]">
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <div className="p-1.5 bg-white/20 dark:bg-gray-800/60 backdrop-blur-sm rounded-lg border border-white/30 dark:border-gray-600/50">
+                <Shield className="h-5 w-5 text-white" />
+              </div>
+              <div className="hidden sm:block">
+                <h1 className="text-lg font-bold text-white">
+                  ASTRA Control Center
+                </h1>
+                <p className="text-blue-100 dark:text-gray-300 text-xs">
+                  Welcome, {displayName}
+                </p>
+              </div>
+              <div className="block sm:hidden">
+                <h1 className="text-sm font-bold text-white">ASTRA</h1>
+              </div>
             </div>
-            <div>
-              <h1 className="text-lg font-bold text-white">
-                ASTRA Control Center
-              </h1>
-              <p className="text-blue-100 dark:text-gray-300 text-xs">
-                Welcome, {displayName}
-              </p>
-            </div>
-          </div>
-          
-          <div className="flex items-center gap-2">
+            
+            <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
             {/* Compact Status Badges */}
             <Badge variant="outline" className="bg-green-500/20 text-green-100 border-green-400/50 px-2 py-0.5 text-xs backdrop-blur-sm">
               <Activity className="h-2 w-2 mr-1" />
