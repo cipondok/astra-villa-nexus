@@ -243,7 +243,13 @@ const EnhancedTreeNavigation = ({ activeTab, onTabChange, headerCounts }: Enhanc
   }, [usageStats]);
 
   useEffect(() => {
-    localStorage.setItem('admin-quick-links', JSON.stringify(quickLinks));
+    if (quickLinks.length > 0) {
+      console.log('Saving quick links to localStorage:', quickLinks);
+      localStorage.setItem('admin-quick-links', JSON.stringify(quickLinks));
+      console.log('Saved to localStorage. Verification:', localStorage.getItem('admin-quick-links'));
+    } else {
+      console.log('Quick links array is empty, not saving to localStorage');
+    }
   }, [quickLinks]);
 
   // Track usage when tab changes
