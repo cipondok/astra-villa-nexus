@@ -44,6 +44,7 @@ interface QuickLink {
   color?: string;
   usage: number;
   isPinned: boolean;
+  isNew?: boolean;
 }
 
 interface EnhancedTreeNavigationProps {
@@ -57,12 +58,13 @@ interface EnhancedTreeNavigationProps {
   };
 }
 
-const SortableQuickLink = ({ link, isActive, onTabChange, onPin, onUnpin }: {
+const SortableQuickNavItem = ({ link, isActive, onTabChange, onRemove, getBadgeColor, usageStats }: {
   link: QuickLink;
   isActive: boolean;
   onTabChange: (tab: string) => void;
-  onPin: (id: string) => void;
-  onUnpin: (id: string) => void;
+  onRemove: (id: string) => void;
+  getBadgeColor: (color?: string) => string;
+  usageStats: Record<string, number>;
 }) => {
   const {
     attributes,
@@ -77,25 +79,13 @@ const SortableQuickLink = ({ link, isActive, onTabChange, onPin, onUnpin }: {
     transition,
   };
 
-  const getBadgeColor = (color?: string) => {
-    switch (color) {
-      case 'green': return 'bg-green-500/20 text-green-400 border-green-500/30';
-      case 'blue': return 'bg-blue-500/20 text-blue-400 border-blue-500/30';
-      case 'purple': return 'bg-purple-500/20 text-purple-400 border-purple-500/30';
-      case 'cyan': return 'bg-cyan-500/20 text-cyan-400 border-cyan-500/30';
-      case 'orange': return 'bg-orange-500/20 text-orange-400 border-orange-500/30';
-      case 'red': return 'bg-red-500/20 text-red-400 border-red-500/30';
-      default: return 'bg-gray-500/20 text-gray-400 border-gray-500/30';
-    }
-  };
-
   return (
     <div
       ref={setNodeRef}
       style={style}
-      className={`group relative flex items-center gap-2 p-3 rounded-lg transition-all duration-300 ${
+      className={`group relative flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 ${
         isActive 
-          ? 'bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-400/30 shadow-lg'
+          ? 'bg-gradient-to-r from-blue-500/30 to-purple-500/30 border border-blue-400/50 shadow-lg'
           : 'bg-gray-800/50 hover:bg-gray-700/50 border border-gray-600/30'
       }`}
     >
@@ -103,7 +93,7 @@ const SortableQuickLink = ({ link, isActive, onTabChange, onPin, onUnpin }: {
       <div
         {...attributes}
         {...listeners}
-        className="cursor-grab active:cursor-grabbing text-gray-400 hover:text-white p-1"
+        className="cursor-grab active:cursor-grabbing text-gray-400 hover:text-white mr-1"
       >
         <Menu className="h-3 w-3" />
       </div>
@@ -111,9 +101,9 @@ const SortableQuickLink = ({ link, isActive, onTabChange, onPin, onUnpin }: {
       {/* Link Content */}
       <button
         onClick={() => onTabChange(link.id)}
-        className="flex-1 flex items-center gap-2 text-left"
+        className="flex items-center gap-2"
       >
-        <span className="text-base">{link.icon}</span>
+        <span className="text-sm">{link.icon}</span>
         <span className="text-sm font-medium text-white">{link.label}</span>
         
         {link.count !== undefined && (
@@ -122,21 +112,30 @@ const SortableQuickLink = ({ link, isActive, onTabChange, onPin, onUnpin }: {
           </Badge>
         )}
         
-        <div className="flex items-center gap-1 text-xs text-gray-400">
-          <Star className="h-3 w-3" />
-          <span>{link.usage}</span>
-        </div>
+        {link.isNew && (
+          <Badge className="text-xs px-1 py-0.5 bg-pink-500/20 text-pink-400 border-pink-500/30">
+            NEW
+          </Badge>
+        )}
+        
+        {usageStats[link.id] && (
+          <div className="flex items-center gap-1 text-xs text-gray-400">
+            <Star className="h-3 w-3" />
+            <span>{usageStats[link.id]}</span>
+          </div>
+        )}
       </button>
 
-      {/* Pin/Unpin Button */}
-      <Button
-        size="sm"
-        variant="ghost"
-        className="opacity-0 group-hover:opacity-100 transition-opacity p-1 h-auto"
-        onClick={() => link.isPinned ? onUnpin(link.id) : onPin(link.id)}
+      {/* Remove button */}
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          onRemove(link.id);
+        }}
+        className="absolute -top-1 -right-1 bg-red-500 hover:bg-red-600 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
       >
-        <Pin className={`h-3 w-3 ${link.isPinned ? 'text-yellow-400' : 'text-gray-400'}`} />
-      </Button>
+        <X className="h-3 w-3" />
+      </button>
     </div>
   );
 };
@@ -369,9 +368,12 @@ const EnhancedTreeNavigation = ({ activeTab, onTabChange, headerCounts }: Enhanc
   };
 
   const allLinks = getAllLinksFlat();
-  const mostUsedLinks = allLinks
-    .sort((a, b) => (usageStats[b.id] || 0) - (usageStats[a.id] || 0))
-    .slice(0, 8);
+  
+  // Display actual quick links with enhanced usage data
+  const displayQuickLinks = quickLinks.map(ql => ({
+    ...ql,
+    usage: usageStats[ql.id] || ql.usage || 0
+  })).slice(0, 8);
 
   const getBadgeColor = (color?: string) => {
     switch (color) {
@@ -450,51 +452,32 @@ const EnhancedTreeNavigation = ({ activeTab, onTabChange, headerCounts }: Enhanc
             </Badge>
           </div>
           
-          {!isEditMode && mostUsedLinks.map((link) => (
-            <div key={link.id} className="relative group">
-              <button
-                onClick={() => handleTabChange(link.id)}
-                className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 ${
-                  activeTab === link.id
-                    ? 'bg-gradient-to-r from-blue-500/30 to-purple-500/30 border border-blue-400/50 shadow-lg'
-                    : 'bg-gray-800/50 hover:bg-gray-700/50 border border-gray-600/30'
-                }`}
+          {!isEditMode && (
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd}
+            >
+              <SortableContext
+                items={displayQuickLinks.map(link => link.id)}
+                strategy={verticalListSortingStrategy}
               >
-                <span className="text-sm">{link.icon}</span>
-                <span className="text-sm font-medium text-white">{link.label}</span>
-                
-                {link.count !== undefined && (
-                  <Badge className={`text-xs px-1.5 py-0.5 ${getBadgeColor(link.color)}`}>
-                    {link.count}
-                  </Badge>
-                )}
-                
-                {link.isNew && (
-                  <Badge className="text-xs px-1 py-0.5 bg-pink-500/20 text-pink-400 border-pink-500/30">
-                    NEW
-                  </Badge>
-                )}
-                
-                {usageStats[link.id] && (
-                  <div className="flex items-center gap-1 text-xs text-gray-400">
-                    <Star className="h-3 w-3" />
-                    <span>{usageStats[link.id]}</span>
-                  </div>
-                )}
-              </button>
-              
-              {/* Remove button in hover */}
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleRemoveItem(link.id);
-                }}
-                className="absolute -top-1 -right-1 bg-red-500 hover:bg-red-600 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
-              >
-                <X className="h-3 w-3" />
-              </button>
-            </div>
-          ))}
+                <div className="flex flex-wrap gap-2">
+                  {displayQuickLinks.map((link) => (
+                    <SortableQuickNavItem
+                      key={link.id}
+                      link={link}
+                      isActive={activeTab === link.id}
+                      onTabChange={handleTabChange}
+                      onRemove={handleRemoveItem}
+                      getBadgeColor={getBadgeColor}
+                      usageStats={usageStats}
+                    />
+                  ))}
+                </div>
+              </SortableContext>
+            </DndContext>
+          )}
         </div>
         
         {/* Control Buttons */}
