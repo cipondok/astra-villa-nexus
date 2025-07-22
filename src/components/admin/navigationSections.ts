@@ -34,7 +34,8 @@ import {
   Activity,
   Download,
   ArrowLeftRight,
-  Search
+  Search,
+  HelpCircle
 } from "lucide-react";
 
 export interface NavigationSection {
@@ -295,6 +296,12 @@ export const navigationSections = {
       label: "Enhanced Search Filters",
       icon: Search,
       description: "Advanced property search with multiple filter options"
+    },
+    {
+      key: "user-experience-tips",
+      label: "User Experience Tips",
+      icon: HelpCircle,
+      description: "Performance tips and user engagement guidelines"
     }
   ]
 };
