@@ -221,18 +221,19 @@ const EnhancedTreeNavigation = ({ activeTab, onTabChange, headerCounts }: Enhanc
     }
 
     if (savedQuickLinks) {
-      setQuickLinks(JSON.parse(savedQuickLinks));
+      try {
+        const parsed = JSON.parse(savedQuickLinks);
+        setQuickLinks(parsed);
+        console.log('Loaded quick links from localStorage:', parsed);
+      } catch (error) {
+        console.error('Error parsing saved quick links:', error);
+        // Reset to empty if corrupted
+        localStorage.removeItem('admin-quick-links');
+        setQuickLinks([]);
+      }
     } else {
-      // Initialize with default quick links
-      const allLinks = getAllLinks(treeData);
-      const defaultQuickLinks = allLinks
-        .slice(0, 6)
-        .map(link => ({
-          ...link,
-          usage: 0,
-          isPinned: false
-        }));
-      setQuickLinks(defaultQuickLinks);
+      console.log('No saved quick links found, initializing with empty array');
+      setQuickLinks([]);
     }
   }, []);
 
@@ -392,12 +393,10 @@ const EnhancedTreeNavigation = ({ activeTab, onTabChange, headerCounts }: Enhanc
       } : null;
     }).filter(Boolean) as QuickLink[];
     
+    console.log('Saving quick links:', newQuickLinks);
     setQuickLinks(newQuickLinks);
     setIsEditMode(false);
     setSelectedItems(new Set());
-    
-    // Save immediately to localStorage
-    localStorage.setItem('admin-quick-links', JSON.stringify(newQuickLinks));
     
     toast({
       title: "Quick nav updated",
