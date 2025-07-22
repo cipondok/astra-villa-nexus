@@ -51,6 +51,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface AdminAlert {
   id: string;
@@ -77,6 +83,50 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
   const [sessionTime, setSessionTime] = useState<string>('');
   const [showProfile, setShowProfile] = useState(false);
   const queryClient = useQueryClient();
+
+  // Fetch admin counts for badge
+  const { data: adminCounts = { unreadAlerts: 0, pendingTasks: 0, systemIssues: 0 } } = useQuery({
+    queryKey: ['admin-counts', user?.id],
+    queryFn: async () => {
+      if (!user?.id || !isAdmin) return { unreadAlerts: 0, pendingTasks: 0, systemIssues: 0 };
+      
+      const counts = {
+        unreadAlerts: 0,
+        pendingTasks: 0,
+        systemIssues: 0,
+      };
+
+      try {
+        // Get unread admin alerts
+        const { count: alertsCount } = await supabase
+          .from('admin_alerts')
+          .select('*', { count: 'exact', head: true })
+          .eq('is_read', false);
+        counts.unreadAlerts = alertsCount || 0;
+
+        // Get pending tasks (you can adjust this query based on your needs)
+        const { count: tasksCount } = await supabase
+          .from('properties')
+          .select('*', { count: 'exact', head: true })
+          .eq('approval_status', 'pending');
+        counts.pendingTasks = tasksCount || 0;
+
+        // Get system issues count (example query)
+        const { count: issuesCount } = await supabase
+          .from('admin_alerts')
+          .select('*', { count: 'exact', head: true })
+          .eq('type', 'error')
+          .eq('action_required', true);
+        counts.systemIssues = issuesCount || 0;
+      } catch (error) {
+        console.error('Error fetching admin counts:', error);
+      }
+
+      return counts;
+    },
+    enabled: !!user?.id && isAdmin,
+    refetchInterval: 30000, // Refetch every 30 seconds
+  });
 
   useEffect(() => {
     const updateSessionTime = () => {
@@ -130,11 +180,19 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
   const displayEmail = user?.email || 'admin@astra.com';
   const userRole = profile?.role || 'admin';
 
+  // Calculate total badge count
+  const getTotalBadgeCount = () => {
+    return adminCounts.unreadAlerts + adminCounts.pendingTasks + adminCounts.systemIssues;
+  };
+
+  const badgeCount = getTotalBadgeCount();
+
   return (
-    <div className="relative bg-blue-600/70 dark:bg-gray-900/70 backdrop-blur-md text-white transition-all duration-300 border-b border-blue-500/30 dark:border-gray-700/50">
-      {/* Ultra Compact Header with 70% Transparency */}
-      <div className="relative container mx-auto px-4 py-2">
-        <div className="flex items-center justify-between">
+    <TooltipProvider>
+      <div className="relative bg-blue-600/70 dark:bg-gray-900/70 backdrop-blur-md text-white transition-all duration-300 border-b border-blue-500/30 dark:border-gray-700/50">
+        {/* Ultra Compact Header with 70% Transparency */}
+        <div className="relative container mx-auto px-4 py-2">
+          <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="p-1.5 bg-white/20 dark:bg-gray-800/60 backdrop-blur-sm rounded-lg border border-white/30 dark:border-gray-600/50">
               <Shield className="h-5 w-5 text-white" />
@@ -191,17 +249,35 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
             {/* Admin Control Menu */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="bg-white/10 hover:bg-white/20 text-white border border-white/20 px-2 py-1 h-8 flex items-center gap-1 backdrop-blur-sm"
-                >
-                  <div className="w-5 h-5 bg-blue-600 dark:bg-blue-700 rounded-full flex items-center justify-center">
-                    <User className="h-2 w-2 text-white" />
-                  </div>
-                  <span className="hidden md:block text-xs">{displayName}</span>
-                  <ChevronDown className="h-2 w-2" />
-                </Button>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="relative w-10 h-10 p-0 rounded-lg bg-white/10 hover:bg-white/20 border border-white/20 backdrop-blur-sm transition-all"
+                    >
+                      <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 dark:from-blue-400 dark:to-purple-500 rounded-full flex items-center justify-center shadow-lg">
+                        <UserCog className="h-4 w-4 text-white" />
+                      </div>
+                      
+                      {/* Badge Count */}
+                      {badgeCount > 0 && (
+                        <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 bg-red-500 text-white text-xs animate-pulse">
+                          {badgeCount > 99 ? '99+' : badgeCount}
+                        </Badge>
+                      )}
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom" className="bg-gray-900 text-white border-gray-700">
+                    <div className="text-center">
+                      <p className="font-medium">{displayName}</p>
+                      <p className="text-xs text-gray-300">{userRole} • {sessionTime || '0m'}</p>
+                      {badgeCount > 0 && (
+                        <p className="text-xs text-orange-300 mt-1">{badgeCount} pending items</p>
+                      )}
+                    </div>
+                  </TooltipContent>
+                </Tooltip>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-64 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 z-50">
                 <DropdownMenuLabel className="text-gray-900 dark:text-gray-100">
@@ -276,10 +352,10 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
+          </div>
         </div>
-      </div>
 
-      {/* Profile Dialog */}
+        {/* Profile Dialog */}
       <Dialog open={showProfile} onOpenChange={setShowProfile}>
         <DialogContent className="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700">
           <DialogHeader>
@@ -326,7 +402,8 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
           </div>
         </DialogContent>
       </Dialog>
-    </div>
+      </div>
+    </TooltipProvider>
   );
 };
 
