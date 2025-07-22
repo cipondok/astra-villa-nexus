@@ -234,19 +234,6 @@ const AdminDashboardHeader = ({ isAdmin, user, profile, activeTab, onTabChange }
                 Users
               </Button>
               <Button 
-                variant={activeTab === 'property-management' ? 'default' : 'ghost'}
-                size="sm"
-                className={`h-10 px-3 text-xs font-medium hover:scale-105 rounded-lg transition-all duration-200 ${
-                  activeTab === 'property-management' 
-                    ? 'bg-primary text-primary-foreground shadow-lg' 
-                    : 'text-gray-900 dark:text-white/90 hover:text-gray-900 dark:hover:text-white hover:bg-white/10'
-                }`}
-                onClick={() => onTabChange?.('property-management')}
-              >
-                <Building2 className="h-3 w-3 mr-1" />
-                Properties
-              </Button>
-              <Button 
                 variant={activeTab === 'vendor-management' ? 'default' : 'ghost'}
                 size="sm"
                 className={`h-10 px-3 text-xs font-medium hover:scale-105 rounded-lg transition-all duration-200 ${
@@ -258,6 +245,32 @@ const AdminDashboardHeader = ({ isAdmin, user, profile, activeTab, onTabChange }
               >
                 <UserCog className="h-3 w-3 mr-1" />
                 Vendors
+              </Button>
+              <Button 
+                variant={activeTab === 'astra-tokens' ? 'default' : 'ghost'}
+                size="sm"
+                className={`h-10 px-3 text-xs font-medium hover:scale-105 rounded-lg transition-all duration-200 ${
+                  activeTab === 'astra-tokens' 
+                    ? 'bg-primary text-primary-foreground shadow-lg' 
+                    : 'text-gray-900 dark:text-white/90 hover:text-gray-900 dark:hover:text-white hover:bg-white/10'
+                }`}
+                onClick={() => onTabChange?.('astra-tokens')}
+              >
+                <Shield className="h-3 w-3 mr-1" />
+                ASTRA Tokens
+              </Button>
+              <Button 
+                variant={activeTab === 'customer-service' ? 'default' : 'ghost'}
+                size="sm"
+                className={`h-10 px-3 text-xs font-medium hover:scale-105 rounded-lg transition-all duration-200 ${
+                  activeTab === 'customer-service' 
+                    ? 'bg-primary text-primary-foreground shadow-lg' 
+                    : 'text-gray-900 dark:text-white/90 hover:text-gray-900 dark:hover:text-white hover:bg-white/10'
+                }`}
+                onClick={() => onTabChange?.('customer-service')}
+              >
+                <Bell className="h-3 w-3 mr-1" />
+                Customer Service
               </Button>
               <Button 
                 variant={activeTab === 'analytics' ? 'default' : 'ghost'}
@@ -284,19 +297,6 @@ const AdminDashboardHeader = ({ isAdmin, user, profile, activeTab, onTabChange }
               >
                 <Database className="h-3 w-3 mr-1" />
                 API Config
-              </Button>
-              <Button 
-                variant={activeTab === 'error-reporting' ? 'default' : 'ghost'}
-                size="sm"
-                className={`h-10 px-3 text-xs font-medium hover:scale-105 rounded-lg transition-all duration-200 ${
-                  activeTab === 'error-reporting' 
-                    ? 'bg-primary text-primary-foreground shadow-lg' 
-                    : 'text-gray-900 dark:text-white/90 hover:text-gray-900 dark:hover:text-white hover:bg-white/10'
-                }`}
-                onClick={() => onTabChange?.('error-reporting')}
-              >
-                <AlertTriangle className="h-3 w-3 mr-1" />
-                Errors
               </Button>
               <Button 
                 variant={activeTab === 'settings' ? 'default' : 'ghost'}

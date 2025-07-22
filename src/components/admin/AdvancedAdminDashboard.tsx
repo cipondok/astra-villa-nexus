@@ -120,6 +120,101 @@ const AdvancedAdminDashboard = () => {
           {activeTab === 'user-management' && <UserManagement />}
           {activeTab === 'property-management' && <PropertyManagement />}
           {activeTab === 'vendor-management' && <VendorManagementHub />}
+          
+          {activeTab === 'astra-tokens' && (
+            <div className="space-y-6">
+              <h2 className="text-2xl font-bold flex items-center gap-2">
+                <Shield className="h-6 w-6 text-blue-500" />
+                ASTRA Token Management
+              </h2>
+              <div className="grid gap-6 md:grid-cols-3">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Daily Check-ins</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-muted-foreground">Manage daily check-in rewards and streaks</p>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Token Balances</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-muted-foreground">View and manage ASTRA token balances</p>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Token API Settings</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-muted-foreground">Configure ASTRA token API endpoints</p>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'customer-service' && (
+            <div className="space-y-6">
+              <h2 className="text-2xl font-bold flex items-center gap-2">
+                <Bell className="h-6 w-6 text-green-500" />
+                Customer Service Hub
+              </h2>
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Live Chat Sessions</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-muted-foreground">Manage customer chat sessions and support</p>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Customer Inquiries</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-muted-foreground">Handle customer inquiries and feedback</p>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader>
+                    <CardTitle>User Notifications</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-muted-foreground">Send and manage user notifications</p>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Feedback System</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-muted-foreground">Review customer feedback and ratings</p>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Security Alerts</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-muted-foreground">Monitor login alerts and security events</p>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Support Analytics</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-muted-foreground">Track support metrics and performance</p>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          )}
+
           {activeTab === 'analytics' && <AnalyticsDashboard />}
           {activeTab === 'api-configuration' && <APIConfiguration />}
           {activeTab === 'error-reporting' && (
@@ -130,11 +225,11 @@ const AdvancedAdminDashboard = () => {
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <AlertTriangle className="h-5 w-5 text-red-500" />
-                      Recent Errors
+                      Database Error Tracking
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-muted-foreground">Database error tracking and resolution system</p>
+                    <p className="text-muted-foreground">Monitor and resolve database errors</p>
                   </CardContent>
                 </Card>
                 <Card>
