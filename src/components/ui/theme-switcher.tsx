@@ -48,10 +48,12 @@ const ThemeSwitcher = ({ className = "", variant = "default" }: ThemeSwitcherPro
         variant="ghost"
         size="sm"
         onClick={toggleTheme}
-        className={`flex items-center gap-2 text-white hover:bg-white/20 dark:text-gray-300 dark:hover:bg-gray-600/50 transition-all duration-300 ${className}`}
+        className={`relative w-10 h-10 p-0 rounded-xl bg-white/15 hover:bg-white/25 border border-white/30 backdrop-blur-sm transition-all duration-300 shadow-md hover:shadow-lg group ${className}`}
+        title={label}
       >
-        <Icon className="h-4 w-4" />
-        <span className="hidden md:inline text-white dark:text-gray-300 font-medium text-sm">{label}</span>
+        <div className="w-8 h-8 bg-gradient-to-br from-orange-400 to-yellow-500 dark:from-purple-500 dark:to-blue-500 rounded-full flex items-center justify-center shadow-md ring-2 ring-white/20 transition-all duration-300">
+          <Icon className="h-4 w-4 text-white drop-shadow-sm transition-transform group-hover:scale-110" />
+        </div>
       </Button>
     );
   }

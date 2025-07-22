@@ -237,9 +237,7 @@ const AdminDashboardHeader = ({ isAdmin, user, profile }: AdminDashboardHeaderPr
             </Button>
 
             {/* Theme Switcher */}
-            <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg">
-              <ThemeSwitcher variant="compact" className="px-1" />
-            </div>
+            <ThemeSwitcher variant="compact" />
 
             {/* Enhanced Real-time Alerts Button */}
             <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg">
