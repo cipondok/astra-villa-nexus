@@ -32,6 +32,7 @@ import EnhancedAlertBadge from "./EnhancedAlertBadge";
 import ThemeSwitcher from "@/components/ui/theme-switcher";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -86,6 +87,7 @@ const AdminDashboardHeader = ({ isAdmin, user, profile, activeTab, onTabChange }
   const [sessionTime, setSessionTime] = useState<string>('');
   const [showProfile, setShowProfile] = useState(false);
   const queryClient = useQueryClient();
+  const { isMobile } = useIsMobile();
 
   // Fetch admin counts for badge
   const { data: adminCounts = { unreadAlerts: 0, pendingTasks: 0, systemIssues: 0 } } = useQuery({
@@ -192,54 +194,66 @@ const AdminDashboardHeader = ({ isAdmin, user, profile, activeTab, onTabChange }
 
   return (
     <TooltipProvider>
-      <div className="sticky top-0 left-0 right-0 z-[10000] header-ios border-b border-white/10 backdrop-blur-xl shadow-lg transform-gpu will-change-transform animate-fade-in">
-        <div className="max-w-screen-2xl mx-auto px-6 lg:px-12 xl:px-16">
-          <div className="flex items-center justify-between h-14">
-            <div className="flex items-center space-x-3 cursor-pointer group" onClick={() => navigate('/')}>
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-blue-600 dark:from-purple-400 dark:to-blue-500 backdrop-blur-sm border border-white/30 flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-105">
-                <Shield className="h-6 w-6 text-white animate-pulse" />
+      <div className="sticky top-0 left-0 right-0 z-[10000] header-ios border-b border-border backdrop-blur-xl shadow-lg transform-gpu will-change-transform animate-fade-in bg-background/95">
+        <div className="max-w-screen-2xl mx-auto px-2 sm:px-4 md:px-6 lg:px-12 xl:px-16">
+          <div className={`flex items-center justify-between ${isMobile ? 'h-12' : 'h-14'}`}>
+            <div className="flex items-center space-x-2 sm:space-x-3 cursor-pointer group" onClick={() => navigate('/')}>
+              <div className={`${isMobile ? 'w-8 h-8' : 'w-10 h-10'} rounded-xl bg-gradient-to-br from-primary to-blue-600 backdrop-blur-sm border border-white/30 flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-105`}>
+                <Shield className={`${isMobile ? 'h-4 w-4' : 'h-6 w-6'} text-white animate-pulse`} />
               </div>
-              <div className="flex items-center space-x-1">
-                <span className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-blue-600 dark:from-white dark:to-blue-300 bg-clip-text text-transparent drop-shadow-lg group-hover:scale-105 transition-transform duration-300">ASTRA</span>
-                <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-300 dark:to-purple-300 bg-clip-text text-transparent drop-shadow-lg group-hover:scale-105 transition-transform duration-300">Villa</span>
-              </div>
+              {!isMobile && (
+                <div className="flex items-center space-x-1">
+                  <span className="text-2xl font-bold bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent drop-shadow-lg group-hover:scale-105 transition-transform duration-300">ASTRA</span>
+                  <span className="text-2xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent drop-shadow-lg group-hover:scale-105 transition-transform duration-300">Villa</span>
+                </div>
+              )}
             </div>
 
-            {/* Main Admin Functions Menu - More Visible */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button 
-                  variant="default" 
-                  size="lg" 
-                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold px-6 py-2 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200"
+            {/* Main Admin Functions Menu - Mobile Responsive */}
+            <div className="flex items-center gap-2">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button 
+                    variant="default" 
+                    size={isMobile ? "sm" : "lg"} 
+                    className="bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-700 text-primary-foreground font-semibold shadow-lg hover:shadow-xl transition-all duration-200"
+                  >
+                    {isMobile ? (
+                      <>
+                        <Settings className="h-4 w-4" />
+                        <ChevronDown className="h-3 w-3 ml-1" />
+                      </>
+                    ) : (
+                      <>
+                        🚀 All Admin Functions
+                        <ChevronDown className="h-4 w-4 ml-2" />
+                      </>
+                    )}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent 
+                  align={isMobile ? "end" : "center"} 
+                  className={`${isMobile ? 'w-80' : 'w-96'} max-h-[70vh] overflow-y-auto bg-background border-2 border-border shadow-2xl rounded-xl z-[9999]`}
+                  sideOffset={5}
                 >
-                  🚀 All Admin Functions
-                  <ChevronDown className="h-4 w-4 ml-2" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent 
-                align="center" 
-                className="w-96 max-h-[500px] overflow-y-auto bg-white dark:bg-gray-900 border-2 border-gray-300 dark:border-gray-600 shadow-2xl rounded-xl z-[9999]"
-                sideOffset={5}
-              >
-                <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-3 rounded-t-xl">
-                  <h3 className="font-bold text-lg">Admin Control Center</h3>
-                  <p className="text-sm opacity-90">Access all administrative functions</p>
+                <div className="bg-gradient-to-r from-primary to-purple-600 text-primary-foreground p-3 rounded-t-xl">
+                  <h3 className={`font-bold ${isMobile ? 'text-base' : 'text-lg'}`}>Admin Control Center</h3>
+                  <p className={`${isMobile ? 'text-xs' : 'text-sm'} opacity-90`}>Access all administrative functions</p>
                 </div>
                 
-                <ScrollArea className="max-h-96">
-                  <div className="p-3 space-y-2">
+                <ScrollArea className={isMobile ? "max-h-80" : "max-h-96"}>
+                  <div className={`${isMobile ? 'p-2' : 'p-3'} space-y-2`}>
                     
                     {/* Analytics & Reports */}
                     <div className="bg-blue-50 dark:bg-blue-950/50 p-2 rounded-lg">
-                      <div className="px-2 py-1 text-xs font-bold text-blue-700 dark:text-blue-300 uppercase tracking-wide">📊 Analytics & Reports</div>
-                      <DropdownMenuItem onClick={() => onTabChange?.('analytics')} className="flex items-center gap-2 text-sm hover:bg-blue-100 dark:hover:bg-blue-900/50 rounded">
+                      <div className={`px-2 py-1 ${isMobile ? 'text-[10px]' : 'text-xs'} font-bold text-blue-700 dark:text-blue-300 uppercase tracking-wide`}>📊 Analytics & Reports</div>
+                      <DropdownMenuItem onClick={() => onTabChange?.('analytics')} className={`flex items-center gap-2 ${isMobile ? 'text-xs' : 'text-sm'} hover:bg-blue-100 dark:hover:bg-blue-900/50 rounded cursor-pointer`}>
                         📈 Analytics Dashboard
                       </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => onTabChange?.('diagnostic')} className="flex items-center gap-2 text-sm hover:bg-blue-100 dark:hover:bg-blue-900/50 rounded">
+                      <DropdownMenuItem onClick={() => onTabChange?.('diagnostic')} className={`flex items-center gap-2 ${isMobile ? 'text-xs' : 'text-sm'} hover:bg-blue-100 dark:hover:bg-blue-900/50 rounded cursor-pointer`}>
                         🔍 System Diagnostics
                       </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => onTabChange?.('reports')} className="flex items-center gap-2 text-sm hover:bg-blue-100 dark:hover:bg-blue-900/50 rounded">
+                      <DropdownMenuItem onClick={() => onTabChange?.('reports')} className={`flex items-center gap-2 ${isMobile ? 'text-xs' : 'text-sm'} hover:bg-blue-100 dark:hover:bg-blue-900/50 rounded cursor-pointer`}>
                         📋 System Reports
                       </DropdownMenuItem>
                     </div>
@@ -378,8 +392,9 @@ const AdminDashboardHeader = ({ isAdmin, user, profile, activeTab, onTabChange }
                 </ScrollArea>
               </DropdownMenuContent>
             </DropdownMenu>
+            </div>
             
-            <div className="flex items-center space-x-3">
+            <div className={`flex items-center ${isMobile ? 'space-x-1' : 'space-x-2'}`}>
               {/* Status Badge */}
               <Badge variant="outline" className="hidden sm:flex bg-green-500/20 text-green-600 dark:text-green-400 border-green-400/50 px-2 py-0.5 text-xs backdrop-blur-sm">
                 <Activity className="h-2 w-2 mr-1" />
