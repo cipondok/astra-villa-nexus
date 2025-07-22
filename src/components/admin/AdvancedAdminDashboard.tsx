@@ -19,6 +19,7 @@ import AdminDashboardContent from './AdminDashboardContent';
 import CompactAdminNavigation from './CompactAdminNavigation';
 import RealTimeDashboardStats from './RealTimeDashboardStats';
 import EnhancedTreeNavigation from './EnhancedTreeNavigation';
+import AdminDashboardHeader from './AdminDashboardHeader';
 import { useAuth } from '@/contexts/AuthContext';
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -87,111 +88,15 @@ const AdvancedAdminDashboard = () => {
   }, []);
 
   return (
-    <div className="min-h-screen admin-bg text-foreground transition-colors duration-300 flex flex-col">
-      {/* HUD Header */}
-      <header className="hud-border border-b-2 border-cyan-400/30 bg-gradient-to-r from-cyan-900/20 to-blue-900/20 relative overflow-hidden">
-        <div className="data-stream"></div>
-        <div className="container mx-auto px-4 py-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 bg-green-500 rounded-full pulse-dot"></div>
-                <span className="hud-text font-bold text-xl">ASTRA</span>
-                <span className="hud-accent text-sm">ADMIN</span>
-              </div>
-              <nav className="hidden md:flex items-center gap-6">
-                <button 
-                  className="hud-text hover:hud-accent transition-colors text-sm flex items-center gap-2"
-                  onClick={() => handleTabChange('overview')}
-                >
-                  DASHBOARD
-                  <Badge className="bg-green-500/20 text-green-400 text-xs">
-                    LIVE
-                  </Badge>
-                </button>
-                <button 
-                  className="hud-text hover:hud-accent transition-colors text-sm flex items-center gap-2"
-                  onClick={() => handleTabChange('analytics')}
-                >
-                  ANALYTICS
-                  <Badge className="bg-blue-500/20 text-blue-400 text-xs">
-                    {headerCounts.properties}
-                  </Badge>
-                </button>
-                <button 
-                  className="hud-text hover:hud-accent transition-colors text-sm flex items-center gap-2"
-                  onClick={() => handleTabChange('user-management')}
-                >
-                  USERS
-                  <Badge className="bg-purple-500/20 text-purple-400 text-xs">
-                    {headerCounts.users}
-                  </Badge>
-                </button>
-                <button 
-                  className="hud-text hover:hud-accent transition-colors text-sm flex items-center gap-2"
-                  onClick={() => handleTabChange('admin-alerts')}
-                >
-                  ALERTS
-                  {headerCounts.alerts > 0 && (
-                    <Badge className="bg-red-500/20 text-red-400 text-xs animate-pulse">
-                      {headerCounts.alerts}
-                    </Badge>
-                  )}
-                  <Bell className="h-3 w-3" />
-                </button>
-              </nav>
-            </div>
-            <div className="flex items-center gap-4">
-              <div className="text-right">
-                <div className="hud-accent text-xs">ACTIVE USERS</div>
-                <div className="hud-text text-sm font-mono">{headerCounts.users}</div>
-              </div>
-              <div className="text-right">
-                <div className="hud-accent text-xs">PROPERTIES</div>
-                <div className="hud-text text-sm font-mono">{headerCounts.properties}</div>
-              </div>
-              <div className="text-right">
-                <div className="hud-accent text-xs">STATUS</div>
-                <div className="hud-text text-sm font-mono flex items-center gap-1">
-                  <div className="w-2 h-2 bg-green-500 rounded-full pulse-dot"></div>
-                  SECURE
-                </div>
-              </div>
-              <AnimatedThemeToggle />
-              
-              {/* User Menu with Logout */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm" className="hud-border hud-text hover:hud-accent">
-                    <User className="h-4 w-4 mr-2" />
-                    {profile?.full_name || user?.email || 'Admin'}
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56">
-                  <DropdownMenuLabel>
-                    <div className="flex flex-col space-y-1">
-                      <p className="text-sm font-medium">{profile?.full_name || 'Administrator'}</p>
-                      <p className="text-xs text-muted-foreground">{user?.email}</p>
-                    </div>
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => navigate('/?from=admin')}>
-                    <Home className="h-4 w-4 mr-2" />
-                    Go to Home
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={handleSignOut} className="text-red-600 dark:text-red-400">
-                    <LogOut className="h-4 w-4 mr-2" />
-                    Sign Out
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          </div>
-        </div>
-      </header>
+    <div className="min-h-screen bg-background text-foreground transition-colors duration-300">
+      {/* Admin Header */}
+      <AdminDashboardHeader 
+        isAdmin={isAdmin} 
+        user={user} 
+        profile={profile} 
+      />
       
-      <div className="flex-1 container mx-auto px-4 py-6 space-y-6">
+      <div className="container mx-auto px-4 py-6 space-y-6">
         {/* Real-time Dashboard Stats */}
         <RealTimeDashboardStats />
         
