@@ -18,7 +18,7 @@ import EnhancedNavigation from '@/components/navigation/EnhancedNavigation';
 import AdminDashboardContent from './AdminDashboardContent';
 import CompactAdminNavigation from './CompactAdminNavigation';
 import RealTimeDashboardStats from './RealTimeDashboardStats';
-import ModernTreeNavigation from './ModernTreeNavigation';
+import EnhancedTreeNavigation from './EnhancedTreeNavigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -196,9 +196,9 @@ const AdvancedAdminDashboard = () => {
         <RealTimeDashboardStats />
         
         <div className="flex flex-col space-y-6">
-          {/* Modern Tree Navigation */}
+          {/* Enhanced Smart Navigation */}
           <div className="sticky top-0 z-40">
-            <ModernTreeNavigation 
+            <EnhancedTreeNavigation 
               activeTab={activeTab}
               onTabChange={handleTabChange}
               headerCounts={headerCounts}
