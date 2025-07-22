@@ -163,7 +163,10 @@ const EnhancedTreeNavigation = ({ activeTab, onTabChange, headerCounts }: Enhanc
         { id: 'overview', label: 'Dashboard', icon: '📊', count: 'LIVE', color: 'green', category: 'core' },
         { id: 'analytics', label: 'Analytics', icon: '📈', count: headerCounts.properties, color: 'blue', category: 'core' },
         { id: 'diagnostic', label: 'Diagnostics', icon: '🔍', count: '0', color: 'cyan', category: 'core' },
-        { id: 'system-reports', label: 'Reports', icon: '📋', count: '24', color: 'purple', category: 'core' }
+        { id: 'system-reports', label: 'Reports', icon: '📋', count: '24', color: 'purple', category: 'core' },
+        { id: 'system-settings', label: 'System Settings', icon: '⚙️', count: '12', color: 'orange', category: 'core' },
+        { id: 'api-configuration', label: 'API Config', icon: '🔧', count: '8', color: 'blue', category: 'core' },
+        { id: 'loading-customization', label: 'Loading Page', icon: '⏳', count: '3', color: 'purple', category: 'core' }
       ]
     },
     {
@@ -175,7 +178,9 @@ const EnhancedTreeNavigation = ({ activeTab, onTabChange, headerCounts }: Enhanc
         { id: 'property-management-hub', label: 'Properties', icon: '🏢', count: headerCounts.properties, color: 'cyan', category: 'management' },
         { id: 'vendors-hub', label: 'Vendors', icon: '🛠️', count: '147', color: 'orange', category: 'management' },
         { id: 'location-management', label: 'Locations', icon: '📍', count: '34', color: 'purple', category: 'management' },
-        { id: 'content-management', label: 'Content', icon: '📝', count: '89', color: 'orange', category: 'management' }
+        { id: 'content-management', label: 'Content', icon: '📝', count: '89', color: 'orange', category: 'management' },
+        { id: 'admin-messaging', label: 'Messaging', icon: '💬', count: '156', color: 'blue', category: 'management' },
+        { id: 'file-management', label: 'Files', icon: '📁', count: '245', color: 'cyan', category: 'management' }
       ]
     },
     {
@@ -185,7 +190,22 @@ const EnhancedTreeNavigation = ({ activeTab, onTabChange, headerCounts }: Enhanc
       children: [
         { id: 'security-monitoring', label: 'Security Monitor', icon: '🛡️', count: '0', color: 'red', category: 'security' },
         { id: 'admin-alerts', label: 'Alert System', icon: '🚨', count: headerCounts.alerts, color: 'red', category: 'security' },
-        { id: 'error-logs', label: 'Error Logs', icon: '📋', count: '0', color: 'red', isNew: true, category: 'security' }
+        { id: 'error-logs', label: 'Error Logs', icon: '📋', count: '0', color: 'red', isNew: true, category: 'security' },
+        { id: 'audit-logs', label: 'Audit Logs', icon: '📜', count: '1,245', color: 'orange', category: 'security' },
+        { id: 'backup-management', label: 'Backups', icon: '💾', count: '12', color: 'green', category: 'security' },
+        { id: 'permission-management', label: 'Permissions', icon: '🔐', count: '67', color: 'purple', category: 'security' }
+      ]
+    },
+    {
+      id: 'tools',
+      label: 'Tools & Utilities',
+      icon: '🔧',
+      children: [
+        { id: 'database-tools', label: 'Database Tools', icon: '🗄️', count: '8', color: 'cyan', category: 'tools' },
+        { id: 'import-export', label: 'Import/Export', icon: '↔️', count: '4', color: 'orange', category: 'tools' },
+        { id: 'maintenance', label: 'Maintenance', icon: '🔧', count: '3', color: 'yellow', category: 'tools' },
+        { id: 'performance-monitor', label: 'Performance', icon: '⚡', count: 'OK', color: 'green', category: 'tools' },
+        { id: 'cache-management', label: 'Cache', icon: '🏃', count: '89%', color: 'blue', category: 'tools' }
       ]
     }
   ];
