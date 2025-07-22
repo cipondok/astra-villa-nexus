@@ -259,6 +259,12 @@ export const navigationSections = {
       description: "Monitor system security and threats"
     },
     {
+      key: "performance-monitor",
+      label: "Performance Monitor",
+      icon: Activity,
+      description: "Monitor app performance, cache usage, and optimizations"
+    },
+    {
       key: "system-reports",
       label: "System Reports",
       icon: FileText,
