@@ -11,7 +11,8 @@ import { WebsiteSettingsProvider } from '@/contexts/WebsiteSettingsContext';
 import { PropertyComparisonProvider } from '@/contexts/PropertyComparisonContext';
 import { Toaster } from '@/components/ui/toaster';
 import ErrorBoundary from '@/components/ErrorBoundary';
-import MobileAppLayout from '@/components/MobileAppLayout';
+import Navigation from '@/components/Navigation';
+import ProfessionalFooter from '@/components/ProfessionalFooter';
 import Index from '@/pages/Index';
 import Search from '@/pages/Search';
 import Saved from '@/pages/Saved';
@@ -63,8 +64,9 @@ function App() {
                   <PropertyComparisonProvider>
                     <ErrorBoundary>
                       <Router>
-                        <MobileAppLayout>
-                          <div className="min-h-screen bg-background text-foreground">
+                        <div className="min-h-screen bg-background text-foreground">
+                          <Navigation />
+                          <main>
                             <Routes>
                               <Route path="/" element={<Index />} />
                               <Route path="/search" element={<Search />} />
@@ -93,8 +95,9 @@ function App() {
                               <Route path="/booking-success" element={<BookingSuccessPage />} />
                               <Route path="*" element={<ErrorPage />} />
                             </Routes>
-                          </div>
-                        </MobileAppLayout>
+                          </main>
+                          <ProfessionalFooter language="en" />
+                        </div>
                       </Router>
                     </ErrorBoundary>
                   </PropertyComparisonProvider>

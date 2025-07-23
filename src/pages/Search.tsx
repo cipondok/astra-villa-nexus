@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Search as SearchIcon, Filter, MapPin, Home, Building2 } from 'lucide-react';
-import { useIsMobile } from '@/hooks/use-mobile';
-import MobileAppLayout from '@/components/MobileAppLayout';
 import Navigation from '@/components/Navigation';
 import ProfessionalFooter from '@/components/ProfessionalFooter';
 import { Button } from '@/components/ui/button';
@@ -31,7 +29,6 @@ interface Property {
 }
 
 const Search = () => {
-  const { isMobile } = useIsMobile();
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchTerm, setSearchTerm] = useState(searchParams.get('q') || '');
   const [selectedType, setSelectedType] = useState(searchParams.get('type') || 'all');
@@ -93,10 +90,10 @@ const Search = () => {
     setSearchParams({});
   };
 
-  const content = (
+  return (
     <div className="min-h-screen bg-background">
       {/* Search Header */}
-      <div className={`bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 ${isMobile ? 'relative' : 'sticky top-0 z-40'}`}>
+      <div className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 sticky top-16 z-40">
         <div className="container mx-auto px-4 py-4">
           <div className="space-y-4">
             {/* Search Input */}
@@ -107,14 +104,14 @@ const Search = () => {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                className={`pl-10 ${isMobile ? 'h-10 text-sm' : 'h-12'}`}
+                className="pl-10 h-10 sm:h-12"
               />
             </div>
 
             {/* Filters */}
-            <div className={`flex ${isMobile ? 'flex-col space-y-2' : 'flex-row space-x-3'} items-start`}>
+            <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3 items-start">
               <Select value={selectedType} onValueChange={setSelectedType}>
-                <SelectTrigger className={isMobile ? 'h-9 text-sm' : 'w-40'}>
+                <SelectTrigger className="h-9 sm:h-10 text-sm sm:w-40">
                   <SelectValue placeholder="Property Type" />
                 </SelectTrigger>
                 <SelectContent>
@@ -127,7 +124,7 @@ const Search = () => {
               </Select>
 
               <Select value={selectedLocation} onValueChange={setSelectedLocation}>
-                <SelectTrigger className={isMobile ? 'h-9 text-sm' : 'w-40'}>
+                <SelectTrigger className="h-9 sm:h-10 text-sm sm:w-40">
                   <SelectValue placeholder="Location" />
                 </SelectTrigger>
                 <SelectContent>
@@ -139,10 +136,10 @@ const Search = () => {
                 </SelectContent>
               </Select>
 
-              <div className={`flex ${isMobile ? 'w-full' : ''} space-x-2`}>
+              <div className="flex w-full sm:w-auto space-x-2">
                 <Button 
                   onClick={handleSearch} 
-                  className={isMobile ? 'flex-1 h-9 text-sm' : ''}
+                  className="flex-1 sm:flex-none h-9 sm:h-10 text-sm"
                 >
                   <SearchIcon className="h-4 w-4 mr-2" />
                   Search
@@ -152,7 +149,7 @@ const Search = () => {
                   <Button 
                     variant="outline" 
                     onClick={clearFilters}
-                    className={isMobile ? 'h-9 text-sm' : ''}
+                    className="h-9 sm:h-10 text-sm"
                   >
                     Clear
                   </Button>
@@ -170,25 +167,25 @@ const Search = () => {
           <div className="mb-6">
             <div className="flex flex-wrap gap-2 mb-2">
               {searchTerm && (
-                <Badge variant="secondary" className={isMobile ? 'text-xs' : ''}>
+                <Badge variant="secondary" className="text-xs sm:text-sm">
                   <SearchIcon className="h-3 w-3 mr-1" />
                   "{searchTerm}"
                 </Badge>
               )}
               {selectedType !== 'all' && (
-                <Badge variant="secondary" className={isMobile ? 'text-xs' : ''}>
+                <Badge variant="secondary" className="text-xs sm:text-sm">
                   <Building2 className="h-3 w-3 mr-1" />
                   {selectedType}
                 </Badge>
               )}
               {selectedLocation !== 'all' && (
-                <Badge variant="secondary" className={isMobile ? 'text-xs' : ''}>
+                <Badge variant="secondary" className="text-xs sm:text-sm">
                   <MapPin className="h-3 w-3 mr-1" />
                   {selectedLocation}
                 </Badge>
               )}
             </div>
-            <p className={`text-gray-600 ${isMobile ? 'text-sm' : ''}`}>
+            <p className="text-gray-600 text-sm sm:text-base">
               {properties.length} properties found
             </p>
           </div>
@@ -207,7 +204,7 @@ const Search = () => {
 
         {/* Results Grid */}
         {!isLoading && (
-          <div className={`grid ${isMobile ? 'grid-cols-1 gap-3' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'}`}>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
             {properties.map((property) => (
               <PropertyCard 
                 key={property.id} 
@@ -224,10 +221,10 @@ const Search = () => {
         {!isLoading && properties.length === 0 && (searchTerm || selectedType !== 'all' || selectedLocation !== 'all') && (
           <div className="text-center py-12">
             <SearchIcon className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-            <h3 className={`${isMobile ? 'text-lg' : 'text-xl'} font-semibold text-gray-900 dark:text-white mb-2`}>
+            <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white mb-2">
               No properties found
             </h3>
-            <p className={`text-gray-600 dark:text-gray-400 ${isMobile ? 'text-sm' : ''} mb-4`}>
+            <p className="text-gray-600 dark:text-gray-400 text-sm sm:text-base mb-4">
               Try adjusting your search criteria or browse all properties
             </p>
             <Button onClick={clearFilters} variant="outline">
@@ -240,28 +237,16 @@ const Search = () => {
         {!isLoading && properties.length === 0 && !searchTerm && selectedType === 'all' && selectedLocation === 'all' && (
           <div className="text-center py-12">
             <Home className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-            <h3 className={`${isMobile ? 'text-lg' : 'text-xl'} font-semibold text-gray-900 dark:text-white mb-2`}>
+            <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white mb-2">
               Start your property search
             </h3>
-            <p className={`text-gray-600 dark:text-gray-400 ${isMobile ? 'text-sm' : ''}`}>
+            <p className="text-gray-600 dark:text-gray-400 text-sm sm:text-base">
               Enter a location, property type, or keyword to find your perfect property
             </p>
           </div>
         )}
       </div>
     </div>
-  );
-
-  if (isMobile) {
-    return <MobileAppLayout>{content}</MobileAppLayout>;
-  }
-
-  return (
-    <>
-      <Navigation />
-      {content}
-      <ProfessionalFooter language="en" />
-    </>
   );
 };
 

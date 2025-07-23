@@ -34,14 +34,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useNavigate } from "react-router-dom";
-import MobileOptimizedLayout from '../MobileOptimizedLayout';
-import { useIsMobile } from '@/hooks/use-mobile';
 
 const AdvancedAdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const { user, profile, signOut } = useAuth();
   const navigate = useNavigate();
-  const { isMobile } = useIsMobile();
 
   console.log('AdvancedAdminDashboard - Current active tab:', activeTab);
 
@@ -112,12 +109,12 @@ const AdvancedAdminDashboard = () => {
         onTabChange={handleTabChange}
       />
       
-      <MobileOptimizedLayout className={`${isMobile ? 'px-2 py-4' : 'px-4 py-6'}`}>
+      <div className="container mx-auto px-2 py-4 sm:px-4 sm:py-6 lg:px-6">
         <div className="space-y-4 sm:space-y-6">
           {/* Main Content */}
-          <div className={`space-y-4 ${isMobile ? 'sm:space-y-6' : 'space-y-6'}`}>
+          <div className="space-y-4 sm:space-y-6">
             {activeTab === 'overview' && (
-              <div className={`space-y-4 ${isMobile ? 'sm:space-y-6' : 'space-y-6'}`}>
+              <div className="space-y-4 sm:space-y-6">
                 <AdminOverview onSectionChange={handleTabChange} />
               </div>
             )}
@@ -125,12 +122,12 @@ const AdvancedAdminDashboard = () => {
           {activeTab === 'diagnostic' && <SystemDiagnostics />}
           
             {activeTab === 'tools-management' && (
-              <div className={`space-y-4 ${isMobile ? 'sm:space-y-6' : 'space-y-6'}`}>
-                <h2 className={`${isMobile ? 'text-xl' : 'text-2xl'} font-bold flex items-center gap-2`}>
-                  <Wrench className={`${isMobile ? 'h-5 w-5' : 'h-6 w-6'} text-muted-foreground`} />
+              <div className="space-y-4 sm:space-y-6">
+                <h2 className="text-xl sm:text-2xl font-bold flex items-center gap-2">
+                  <Wrench className="h-5 w-5 sm:h-6 sm:w-6 text-muted-foreground" />
                   Tools Management
                 </h2>
-                <div className={`grid gap-4 ${isMobile ? 'grid-cols-1' : 'md:grid-cols-2 lg:grid-cols-3'} sm:gap-6`}>
+                <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 sm:gap-6">
                 <Card>
                   <CardHeader>
                     <CardTitle>System Tools</CardTitle>
@@ -703,9 +700,9 @@ const AdvancedAdminDashboard = () => {
           </div>
         </div>
        </footer>
-       </MobileOptimizedLayout>
-     </div>
-   );
+        </div>
+      </div>
+    );
  };
 
  export default AdvancedAdminDashboard;
