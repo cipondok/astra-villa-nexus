@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { AlertTriangle, Activity, UserPlus } from 'lucide-react';
 import AdminOverview from "./AdminOverview";
@@ -62,6 +62,17 @@ const DynamicAdminContent = ({ activeSection, onSectionChange }: DynamicAdminCon
         return <SecurityMonitoringDashboard />;
       case "monitoring":
         return <SecurityMonitoringDashboard />;
+      case "ai-diagnostics":
+        const DeepSeekDiagnostics = lazy(() => import('./DeepSeekDiagnostics'));
+        const EnhancedProjectDiagnostics = lazy(() => import('./EnhancedProjectDiagnostics'));
+        return (
+          <div className="space-y-6">
+            <Suspense fallback={<div className="flex items-center justify-center p-8"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500"></div></div>}>
+              <EnhancedProjectDiagnostics />
+              <DeepSeekDiagnostics />
+            </Suspense>
+          </div>
+        );
       case "system-alerts":
         return (
           <div className="p-6">

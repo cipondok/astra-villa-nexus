@@ -8,7 +8,7 @@ import {
   VolumeX, Minimize2, Maximize2, X, Folder, FolderOpen,
   ChevronRight, Menu, Home, Cog, Monitor, Database, Sun, Moon,
   LogOut, ChevronDown, Bell, AlertTriangle, UserPlus, Activity,
-  Database as DatabaseIcon
+  Database as DatabaseIcon, Brain
 } from 'lucide-react';
 import AnimatedLogo from '@/components/AnimatedLogo';
 import DynamicAdminContent from './DynamicAdminContent';
@@ -1002,6 +1002,20 @@ export const MacOSAdminDesktop = () => {
                   <span className="text-sm">System Monitoring</span>
                 </div>
                 <span className="text-blue-600 text-sm">View</span>
+              </button>
+              
+              <button 
+                onClick={() => {
+                  openSection('ai-diagnostics', 'AI Diagnostics');
+                  setShowConfigurations(false);
+                }}
+                className="w-full flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50"
+              >
+                <div className="flex items-center space-x-3">
+                  <Brain className="w-5 h-5 text-purple-500" />
+                  <span className="text-sm">AI Diagnostics</span>
+                </div>
+                <span className="text-purple-600 text-sm">Analyze</span>
               </button>
             </div>
           </div>
