@@ -12,15 +12,15 @@ const AppInitializer: React.FC<AppInitializerProps> = ({ children }) => {
   const { isLoading: settingsLoading } = useWebsiteSettings();
 
   useEffect(() => {
-    // Show loading for just a moment for smooth experience
+    // Reduce loading time for better performance
     const minLoadingTime = setTimeout(() => {
-      console.log('AppInitializer: Minimum loading time complete');
       setInitializationComplete(true);
-    }, 1000);
+    }, 300);
 
-    // If settings are already loaded, still show brief loading
+    // Skip loading if settings are already loaded
     if (!settingsLoading) {
-      console.log('AppInitializer: Settings already loaded');
+      clearTimeout(minLoadingTime);
+      setInitializationComplete(true);
     }
 
     return () => clearTimeout(minLoadingTime);

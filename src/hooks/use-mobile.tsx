@@ -3,6 +3,22 @@ import * as React from "react"
 const MOBILE_BREAKPOINT = 768
 const TABLET_BREAKPOINT = 1024
 
+// Debounce function for performance
+const debounce = (func: Function, wait: number) => {
+  let timeout: NodeJS.Timeout;
+  return function executedFunction(...args: any[]) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+};
+
+// Cache user agent check results
+const userAgentCache = new Map<string, { isMobile: boolean; isTablet: boolean }>();
+
 export function useIsMobile() {
   const [isMobile, setIsMobile] = React.useState<boolean>(false)
   const [isTablet, setIsTablet] = React.useState<boolean>(false)
@@ -23,109 +39,111 @@ export function useIsMobile() {
       const isTouch = 'ontouchstart' in window
       const devicePixelRatio = window.devicePixelRatio
       
-      console.log('Mobile detection:', { width, height, userAgent, isTouch, devicePixelRatio })
+      // Check cache first
+      let userAgentResult = userAgentCache.get(userAgent);
+      if (!userAgentResult) {
+        const isMobileByUserAgent = /Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent)
+        const isTabletByUserAgent = /iPad|Android.*Tablet|PlayBook|Silk/i.test(userAgent)
+        userAgentResult = { isMobile: isMobileByUserAgent, isTablet: isTabletByUserAgent };
+        userAgentCache.set(userAgent, userAgentResult);
+      }
       
-      // Enhanced mobile and tablet detection with multiple checks
+      // Simplified and optimized detection
       const isMobileBySize = width <= MOBILE_BREAKPOINT
       const isTabletBySize = width > MOBILE_BREAKPOINT && width <= TABLET_BREAKPOINT
-      const isMobileByUserAgent = /Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent)
-      const isTabletByUserAgent = /iPad|Android.*Tablet|PlayBook|Silk/i.test(userAgent)
-      const isMobileByTouch = isTouch && width <= MOBILE_BREAKPOINT
-      const isTabletByTouch = isTouch && width > MOBILE_BREAKPOINT && width <= TABLET_BREAKPOINT
-      const isMobileByOrientation = window.orientation !== undefined && width <= MOBILE_BREAKPOINT
-      const isTabletByOrientation = window.orientation !== undefined && width > MOBILE_BREAKPOINT && width <= TABLET_BREAKPOINT
-      const isMobileByMaxTouchPoints = navigator.maxTouchPoints > 0 && width <= MOBILE_BREAKPOINT
-      const isTabletByMaxTouchPoints = navigator.maxTouchPoints > 0 && width > MOBILE_BREAKPOINT && width <= TABLET_BREAKPOINT
+      const hasTouch = isTouch || navigator.maxTouchPoints > 0
       
-      const isMobileDevice = isMobileBySize || isMobileByUserAgent || isMobileByTouch || isMobileByOrientation || isMobileByMaxTouchPoints
-      const isTabletDevice = isTabletBySize || isTabletByUserAgent || isTabletByTouch || isTabletByOrientation || isTabletByMaxTouchPoints
+      const isMobileDevice = isMobileBySize || (userAgentResult.isMobile && hasTouch)
+      const isTabletDevice = isTabletBySize || (userAgentResult.isTablet && hasTouch)
       
-      console.log('Device checks:', { 
-        isMobileBySize, 
-        isTabletBySize,
-        isMobileByUserAgent, 
-        isTabletByUserAgent,
-        isMobileByTouch, 
-        isTabletByTouch,
-        isMobileByOrientation,
-        isTabletByOrientation,
-        isMobileByMaxTouchPoints,
-        isTabletByMaxTouchPoints,
-        finalMobile: isMobileDevice,
-        finalTablet: isTabletDevice
-      })
+      // Only update if values changed
+      const newIsMobile = isMobileDevice && !isTabletDevice
+      const newIsTablet = isTabletDevice && !isMobileDevice
       
-      setIsMobile(isMobileDevice)
-      setIsTablet(isTabletDevice)
-      setDeviceInfo({
-        width,
-        height,
-        userAgent,
-        isTouch,
-        devicePixelRatio,
-        screenOrientation: 'screen' in window && 'orientation' in screen ? screen.orientation?.type : 'unknown'
-      })
-      
-      // Auto-adjust viewport and apply device-specific optimizations
-      if (isMobileDevice || isTabletDevice) {
-        // Set proper viewport meta tag for mobile and tablet
-        let metaViewport = document.querySelector('meta[name="viewport"]')
-        if (!metaViewport) {
-          metaViewport = document.createElement('meta')
-          metaViewport.setAttribute('name', 'viewport')
-          document.head.appendChild(metaViewport)
+      if (newIsMobile !== isMobile || newIsTablet !== isTablet) {
+        setIsMobile(newIsMobile)
+        setIsTablet(newIsTablet)
+        setDeviceInfo({
+          width,
+          height,
+          userAgent,
+          isTouch,
+          devicePixelRatio,
+          screenOrientation: 'screen' in window && 'orientation' in screen ? screen.orientation?.type : 'unknown'
+        })
+        
+        // Optimize DOM manipulation - only when needed
+        if (newIsMobile || newIsTablet) {
+          // Set proper viewport meta tag once
+          let metaViewport = document.querySelector('meta[name="viewport"]')
+          if (!metaViewport) {
+            metaViewport = document.createElement('meta')
+            metaViewport.setAttribute('name', 'viewport')
+            document.head.appendChild(metaViewport)
+          }
+          
+          const viewportContent = newIsMobile 
+            ? 'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover'
+            : 'width=device-width, initial-scale=1.0, maximum-scale=3.0, user-scalable=yes, viewport-fit=cover'
+          
+          if (metaViewport.getAttribute('content') !== viewportContent) {
+            metaViewport.setAttribute('content', viewportContent)
+          }
+          
+          // Apply classes efficiently
+          const htmlEl = document.documentElement
+          const bodyEl = document.body
+          
+          if (newIsMobile) {
+            htmlEl.classList.add('mobile-device')
+            htmlEl.classList.remove('tablet-device')
+            bodyEl.classList.add('mobile-device', 'mobile-app-layout')
+            bodyEl.classList.remove('tablet-device', 'tablet-app-layout')
+          } else {
+            htmlEl.classList.add('tablet-device')
+            htmlEl.classList.remove('mobile-device')  
+            bodyEl.classList.add('tablet-device', 'tablet-app-layout')
+            bodyEl.classList.remove('mobile-device', 'mobile-app-layout')
+          }
+          
+          // Apply styles only once
+          if (!bodyEl.style.width) {
+            bodyEl.style.width = '100vw'
+            bodyEl.style.overflowX = 'hidden'
+            bodyEl.style.minHeight = '100vh'
+            ;(bodyEl.style as any).webkitOverflowScrolling = 'touch'
+            ;(bodyEl.style as any).webkitTextSizeAdjust = '100%'
+            ;(bodyEl.style as any).webkitTapHighlightColor = 'transparent'
+          }
+        } else {
+          // Desktop cleanup - only when transitioning from mobile/tablet
+          document.documentElement.classList.remove('mobile-device', 'tablet-device')
+          document.body.classList.remove('mobile-device', 'mobile-app-layout', 'tablet-device', 'tablet-app-layout')
+          
+          const bodyEl = document.body
+          bodyEl.style.width = ''
+          bodyEl.style.overflowX = ''
+          bodyEl.style.minHeight = ''
+          ;(bodyEl.style as any).webkitOverflowScrolling = ''
+          ;(bodyEl.style as any).webkitTextSizeAdjust = ''
+          ;(bodyEl.style as any).webkitTapHighlightColor = ''
         }
-        
-        // Different viewport settings for mobile vs tablet
-        if (isMobileDevice) {
-          metaViewport.setAttribute('content', 
-            'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover'
-          )
-          document.documentElement.classList.add('mobile-device')
-          document.body.classList.add('mobile-device', 'mobile-app-layout')
-        } else if (isTabletDevice) {
-          metaViewport.setAttribute('content', 
-            'width=device-width, initial-scale=1.0, maximum-scale=3.0, user-scalable=yes, viewport-fit=cover'
-          )
-          document.documentElement.classList.add('tablet-device')
-          document.body.classList.add('tablet-device', 'tablet-app-layout')
-        }
-        
-        // Apply responsive styles immediately
-        document.body.style.width = '100vw'
-        document.body.style.overflowX = 'hidden'
-        document.body.style.minHeight = '100vh'
-        ;(document.body.style as any).webkitOverflowScrolling = 'touch'
-        ;(document.body.style as any).webkitTextSizeAdjust = '100%'
-        ;(document.body.style as any).webkitTapHighlightColor = 'transparent'
-        
-        // Force layout recalculation for orientation changes
-        setTimeout(() => {
-          window.dispatchEvent(new Event('resize'))
-          window.dispatchEvent(new Event('orientationchange'))
-        }, 100)
-      } else {
-        // Desktop cleanup
-        document.documentElement.classList.remove('mobile-device', 'tablet-device')
-        document.body.classList.remove('mobile-device', 'mobile-app-layout', 'tablet-device', 'tablet-app-layout')
-        
-        // Reset desktop styles
-        document.body.style.width = ''
-        document.body.style.overflowX = ''
-        document.body.style.minHeight = ''
-        ;(document.body.style as any).webkitOverflowScrolling = ''
-        ;(document.body.style as any).webkitTextSizeAdjust = ''
-        ;(document.body.style as any).webkitTapHighlightColor = ''
       }
     }
     
     // Check immediately
     checkMobile()
     
-    // Listen for resize events
-    window.addEventListener('resize', checkMobile)
+    // Debounced resize listener for performance
+    const debouncedCheckMobile = debounce(checkMobile, 150)
     
-    return () => window.removeEventListener('resize', checkMobile)
+    window.addEventListener('resize', debouncedCheckMobile)
+    window.addEventListener('orientationchange', debouncedCheckMobile)
+    
+    return () => {
+      window.removeEventListener('resize', debouncedCheckMobile)
+      window.removeEventListener('orientationchange', debouncedCheckMobile)
+    }
   }, [])
 
   return { isMobile, isTablet, deviceInfo }
