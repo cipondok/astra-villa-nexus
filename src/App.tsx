@@ -11,7 +11,7 @@ import { WebsiteSettingsProvider } from '@/contexts/WebsiteSettingsContext';
 import { PropertyComparisonProvider } from '@/contexts/PropertyComparisonContext';
 import { Toaster } from '@/components/ui/toaster';
 import ErrorBoundary from '@/components/ErrorBoundary';
-import ResponsiveWebLayout from '@/components/ResponsiveWebLayout';
+import MobileAppLayout from '@/components/MobileAppLayout';
 import Index from '@/pages/Index';
 import Search from '@/pages/Search';
 import Saved from '@/pages/Saved';
@@ -61,9 +61,9 @@ function App() {
               <AuthProvider>
                 <NotificationProvider>
                   <PropertyComparisonProvider>
-                    <Router>
-                      <ErrorBoundary>
-                        <ResponsiveWebLayout>
+                    <ErrorBoundary>
+                      <Router>
+                        <MobileAppLayout>
                           <div className="min-h-screen bg-background text-foreground">
                             <Routes>
                               <Route path="/" element={<Index />} />
@@ -94,9 +94,9 @@ function App() {
                               <Route path="*" element={<ErrorPage />} />
                             </Routes>
                           </div>
-                        </ResponsiveWebLayout>
-                      </ErrorBoundary>
-                    </Router>
+                        </MobileAppLayout>
+                      </Router>
+                    </ErrorBoundary>
                   </PropertyComparisonProvider>
                 </NotificationProvider>
               </AuthProvider>

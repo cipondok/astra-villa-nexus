@@ -52,6 +52,41 @@ const Index = () => {
     sortBy: "newest"
   });
 
+  // Redirect authenticated users to their dashboard (only on initial load, not on navigation)
+  // TEMPORARILY DISABLED - Redirect logic commented out to debug 404 issue
+  // useEffect(() => {
+  //   if (!loading && user && profile && !window.location.search.includes('stay')) {
+  //     // Only redirect on initial app load, not when user navigates to home
+  //     const hasVisitedBefore = sessionStorage.getItem('hasVisitedHome');
+  //     const isDirectNavigation = window.location.search.includes('from=admin') || document.referrer.includes('/admin');
+      
+  //     if (!hasVisitedBefore && !isDirectNavigation) {
+  //       // Redirect customer service users to dashboard
+  //       if (profile.role === 'customer_service') {
+  //         navigate('/dashboard');
+  //         return;
+  //       }
+  //       // Redirect admin users to admin panel  
+  //       else if (profile.role === 'admin' || user.email === 'mycode103@gmail.com') {
+  //         navigate('/admin');
+  //         return;
+  //       }
+  //     }
+      
+  //     // Mark that user has visited home page
+  //     sessionStorage.setItem('hasVisitedHome', 'true');
+  //   }
+  // }, [user, profile, loading, navigate]);
+
+  // Background wallpaper - optimized for performance
+  const backgroundStyle = {
+    backgroundImage: `url('https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1920&q=80')`,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
+    backgroundAttachment: 'fixed',
+  };
+
   // Simplified featured properties query
   const { data: featuredProperties = [], isLoading: isFeaturedLoading } = useQuery({
     queryKey: ['featured-properties-simple'],
@@ -102,6 +137,8 @@ const Index = () => {
       (searchData.bedrooms && searchData.bedrooms !== 'all') ||
       (searchData.bathrooms && searchData.bathrooms !== 'all')
     );
+    
+    // Empty search term means show all results (no early return)
     
     console.log('Quick search initiated:', searchTerm, 'with filters:', searchData);
     console.log('Active filters:', {
@@ -226,37 +263,76 @@ const Index = () => {
     setHasSearched(false);
   };
 
-  // Full-screen layout for all devices
+  // Responsive layout wrapper - Optimized for all device sizes
+  const isSmallScreen = isMobile || isTablet;
   const content = (
-    <div className="min-h-screen w-full m-0 p-0">
-      <div className="w-full m-0 p-0">
-        {/* Navigation for all screens */}
-        <Navigation />
+    <div className={cn(
+      "min-h-screen text-foreground relative",
+      isMobile ? "w-full overflow-x-hidden mobile-app-layout" : 
+      isTablet ? "w-full overflow-x-hidden tablet-app-layout" : "",
+      "px-responsive py-responsive"
+    )}>
+      {/* Background Wallpaper Layer */}
+      <div 
+        className="fixed inset-0 z-0 opacity-30 dark:opacity-20"
+        style={backgroundStyle}
+      />
+      
+      {/* Content Layer with backdrop - Responsive padding */}
+      <div className={cn(
+        "relative z-10 bg-white/90 dark:bg-black/90 backdrop-blur-sm",
+        isMobile ? "min-h-screen overflow-x-hidden mobile-safe-area" : 
+        isTablet ? "min-h-screen overflow-x-hidden tablet-safe-area" : "min-h-screen"
+      )}>
+        {/* Desktop Navigation Only */}
+        {!isSmallScreen && <Navigation />}
         
-        {/* Hero Section - Full width */}
-        <section className="w-full m-0 p-0">
-          <div className="w-full text-center m-0 p-0">
+        {/* Hero Section - Responsive */}
+        <section className={cn(
+          "relative w-full",
+          isMobile ? "px-2 py-1 mobile-safe-top" : 
+          isTablet ? "px-4 py-2 tablet-safe-top" : "px-6 py-4"
+        )}>
+          <div className={cn(
+            "mx-auto text-center w-full",
+            isMobile ? "max-w-full px-1" : "max-w-[1800px]"
+          )}>
             {/* Ultra Compact Hero Section */}
-            <div className="animate-fade-in flex flex-col items-center gap-1 mb-2">
+            <div className={cn(
+              "animate-fade-in flex flex-col items-center gap-1",
+              isMobile ? "mb-2" : "mb-3"
+            )}>
               {/* Compact Title + Badge in One Line */}
               <div className="flex flex-wrap items-center justify-center gap-2">
-                <h1 className="bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 dark:from-blue-300 dark:via-purple-400 dark:to-cyan-300 bg-clip-text text-transparent font-bold tracking-tight text-lg md:text-xl">
+                <h1 className={cn(
+                  "bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 dark:from-blue-300 dark:via-purple-400 dark:to-cyan-300 bg-clip-text text-transparent font-bold tracking-tight",
+                  isMobile ? "text-sm" : "text-lg md:text-xl"
+                )}>
                   Find Your Perfect Property
                 </h1>
                 
-                <span className="bg-gradient-to-r from-blue-500/90 to-purple-600/90 dark:from-blue-400/90 dark:to-purple-500/90 rounded-full px-3 py-0.5 text-white text-sm font-medium border border-white/20 shadow-sm">
+                <span className={cn(
+                  "bg-gradient-to-r from-blue-500/90 to-purple-600/90 dark:from-blue-400/90 dark:to-purple-500/90 rounded-full px-2 py-0.5 text-white text-xs font-medium border border-white/20 shadow-sm",
+                  isMobile ? "text-xs px-2" : "text-sm px-3"
+                )}>
                   ✨ AI-Powered
                 </span>
               </div>
               
               {/* Compact Description */}
-              <p className="bg-white/90 dark:bg-slate-800/90 text-slate-600 dark:text-slate-300 rounded-full px-4 py-0.5 text-sm font-medium border border-slate-200/50 dark:border-slate-700/50 shadow-sm backdrop-blur-sm">
+              <p className={cn(
+                "bg-white/90 dark:bg-slate-800/90 text-slate-600 dark:text-slate-300 rounded-full px-3 py-0.5 text-xs font-medium border border-slate-200/50 dark:border-slate-700/50 shadow-sm backdrop-blur-sm",
+                isMobile ? "text-xs px-2" : "text-sm px-4"
+              )}>
                 🔍 Enhanced search & filtering
               </p>
             </div>
             
             {/* iPhone-style Search Panel - Compact */}
-            <div className="animate-scale-in max-w-4xl mx-auto">
+            <div className={cn(
+              "animate-scale-in",
+              isMobile ? "max-w-sm mx-auto" : "max-w-4xl mx-auto"
+            )}>
               <IPhoneSearchPanel
                 language={language}
                 onSearch={(searchData) => {
@@ -270,10 +346,15 @@ const Index = () => {
           </div>
         </section>
 
-        {/* Advanced Filters */}
+        {/* Advanced Filters - Minimal Space */}
         {filtersOpen && (
-          <section className="p-4">
-            <div className="max-w-screen-2xl mx-auto">
+          <section className={cn(
+            isMobile ? "px-2 py-1" : "px-4 py-1"
+          )}>
+            <div className={cn(
+              "mx-auto",
+              isMobile ? "max-w-sm" : "max-w-[1800px]"
+            )}>
               <AdvancedPropertyFilters
                 filters={filters}
                 onFiltersChange={handleFiltersChange}
@@ -285,19 +366,31 @@ const Index = () => {
           </section>
         )}
 
-        {/* Error Message */}
+        {/* Error Message - Compact */}
         {searchError && (
-          <section className="py-2">
-            <div className="max-w-screen-2xl mx-auto px-4">
-              <div className="apple-glass border border-destructive/40 text-destructive text-center rounded-xl shadow-md p-3 max-w-xl mx-auto">
-                <p className="font-medium text-sm">⚠️ {searchError}</p>
+          <section className={cn(isMobile ? "py-1" : "py-2")}>
+            <div className={cn(
+              isMobile ? "max-w-sm px-2" : "max-w-[1800px] px-4",
+              "mx-auto"
+            )}>
+              <div className={cn(
+                "apple-glass border border-destructive/40 text-destructive text-center rounded-xl shadow-md",
+                isMobile ? "p-2 max-w-xs mx-auto" : "p-3 max-w-xl mx-auto"
+              )}>
+                <p className={cn(
+                  "font-medium",
+                  isMobile ? "text-xs" : "text-sm"
+                )}>⚠️ {searchError}</p>
                 <button 
                   onClick={() => {
                     setSearchError(null);
                     setSearchResults([]);
                     setHasSearched(false);
                   }}
-                  className="bg-red-100 hover:bg-red-200 text-red-700 rounded-md transition-colors mt-2 px-4 py-1 text-sm"
+                  className={cn(
+                    "bg-red-100 hover:bg-red-200 text-red-700 rounded-md transition-colors",
+                    isMobile ? "mt-1 px-2 py-0.5 text-xs" : "mt-2 px-4 py-1 text-sm"
+                  )}
                 >
                   Clear Error
                 </button>
@@ -306,9 +399,14 @@ const Index = () => {
           </section>
         )}
 
-        {/* Property Display Section - Full width */}
-        <div className="w-full p-4">
-          <div className="max-w-screen-2xl mx-auto">
+        {/* Property Display Section - Space Optimized */}
+        <div className={cn(
+          isMobile ? "px-2 py-2 space-y-2" : "px-4 py-4 space-y-4"
+        )}>
+          <div className={cn(
+            "mx-auto",
+            isMobile ? "max-w-sm space-y-2" : "max-w-[1800px] space-y-4"
+          )}>
             {hasSearched ? (
               <section className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 dark:border-gray-700/20">
                 <div className="p-6">
@@ -338,59 +436,90 @@ const Index = () => {
                       onPropertyClick={handlePropertyClick}
                       onView3D={handlePropertyClick}
                       onSave={(property) => console.log('Save property:', property.id)}
+                      onShare={(property) => console.log('Share property:', property.id)}
+                      onContact={(property) => console.log('Contact for property:', property.id)}
                     />
                   )}
-                  
+
                   {viewMode === 'list' && (
                     <PropertyListView
                       properties={searchResults}
                       onPropertyClick={handlePropertyClick}
                       onView3D={handlePropertyClick}
                       onSave={(property) => console.log('Save property:', property.id)}
+                      onShare={(property) => console.log('Share property:', property.id)}
+                      onContact={(property) => console.log('Contact for property:', property.id)}
                     />
                   )}
                 </div>
               </section>
             ) : (
               <>
-                {/* Property Slide Section - Full width */}
-                <PropertySlideSection 
-                  title="Featured Properties"
-                  type="featured"
-                  language={language}
-                />
-                
-                {/* Properties for Sale Section - Full width */}
-                <PropertiesForSaleSection 
-                  language={language}
-                  onPropertyClick={handlePropertyClick}
-                />
-                
-                {/* Properties for Rent Section - Full width */}
-                <PropertiesForRentSection 
-                  language={language}
-                  onPropertyClick={handlePropertyClick}
-                />
+                {/* Featured Properties - Zero-waste Compact Layout */}
+                <section className={cn(
+                  "bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 dark:border-gray-700/20",
+                  isMobile ? "p-3" : "p-4 lg:p-6"
+                )}>
+                  <div className={cn(
+                    "text-center no-space-waste",
+                    isMobile ? "mb-3" : "mb-4"
+                  )}>
+                    <h2 className={cn(
+                      "font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-300 dark:to-purple-300 bg-clip-text text-transparent",
+                      isMobile ? "text-lg mb-1" : "text-xl lg:text-2xl mb-2"
+                    )}>
+                      Featured Properties
+                    </h2>
+                    <p className={cn(
+                      "text-gray-600 dark:text-gray-300",
+                      isMobile ? "text-xs" : "text-sm lg:text-base"
+                    )}>
+                      Premium properties with enhanced display
+                    </p>
+                  </div>
+                  
+                  <div className="container-compact">
+                    <PropertyGridView
+                      properties={featuredProperties}
+                      onPropertyClick={handlePropertyClick}
+                      onView3D={handlePropertyClick}
+                      onSave={(property) => console.log('Save property:', property.id)}
+                      onShare={(property) => console.log('Share property:', property.id)}
+                      onContact={(property) => console.log('Contact for property:', property.id)}
+                    />
+                  </div>
+                </section>
+
+                {/* Properties for Sale Section - Compact */}
+                <div className="section-compact">
+                  <PropertiesForSaleSection language={language} onPropertyClick={handlePropertyClick} />
+                </div>
+
+                {/* Properties for Rent Section - Compact */}
+                <div className="section-compact">
+                  <PropertiesForRentSection language={language} onPropertyClick={handlePropertyClick} />
+                </div>
               </>
             )}
           </div>
         </div>
 
-        {/* Professional Footer - Full width */}
-        <ProfessionalFooter language={language} />
-      </div>
+        {/* Scroll to Top Button */}
+        <ScrollToTopButton />
 
-      {/* AI Chat Widget */}
-      <ResponsiveAIChatWidget />
-      
-      {/* Scroll to Top Button */}
-      <ScrollToTopButton />
-      
-      {/* Search Loading Dialog */}
-      <SearchLoadingDialog 
-        open={isSearching}
-        onOpenChange={() => setIsSearching(false)}
-      />
+        {/* Footer */}
+        {!isMobile && <ProfessionalFooter language={language} />}
+        
+        {/* AI Search Loading Dialog */}
+        <SearchLoadingDialog 
+          open={isSearching} 
+          onOpenChange={setIsSearching}
+          searchQuery={quickSearch}
+        />
+        
+        {/* Customer AI Chat Widget - Positioned Right Center */}
+        <ResponsiveAIChatWidget />
+      </div>
     </div>
   );
 
