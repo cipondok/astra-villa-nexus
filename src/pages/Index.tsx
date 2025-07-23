@@ -263,13 +263,20 @@ const Index = () => {
     setHasSearched(false);
   };
 
-  // Responsive web layout for all devices
+  // Responsive layout wrapper - Optimized for all device sizes
   const isSmallScreen = isMobile || isTablet;
   const content = (
     <div className={cn(
-      "min-h-screen text-foreground relative w-full",
-      "container-responsive section-responsive"
+      "min-h-screen text-foreground relative",
+      isMobile ? "w-full overflow-x-hidden mobile-app-layout" : 
+      isTablet ? "w-full overflow-x-hidden tablet-app-layout" : "",
+      "px-responsive py-responsive"
     )}>
+      {/* Background Wallpaper Layer */}
+      <div 
+        className="fixed inset-0 z-0 opacity-30 dark:opacity-20"
+        style={backgroundStyle}
+      />
       
       {/* Content Layer with backdrop - Responsive padding */}
       <div className={cn(
