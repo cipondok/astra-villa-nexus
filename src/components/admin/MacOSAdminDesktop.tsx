@@ -1,11 +1,12 @@
 import { useState, useRef, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useTheme } from '@/components/ThemeProvider';
 import { 
   User, Settings, BarChart3, Shield, Users, Building2, 
   MessageSquare, Wrench, FileText, Mail, CreditCard, Search,
   Globe, CheckCircle, Clock, Wifi, Battery,
   VolumeX, Minimize2, Maximize2, X, Folder, FolderOpen,
-  ChevronRight, Menu, Home, Cog, Monitor, Database
+  ChevronRight, Menu, Home, Cog, Monitor, Database, Sun, Moon
 } from 'lucide-react';
 import AnimatedLogo from '@/components/AnimatedLogo';
 import DynamicAdminContent from './DynamicAdminContent';
@@ -169,6 +170,7 @@ interface Window {
 
 export const MacOSAdminDesktop = () => {
   const { user, profile } = useAuth();
+  const { theme, setTheme } = useTheme();
   const [openWindows, setOpenWindows] = useState<Window[]>([]);
   const [activeWindow, setActiveWindow] = useState<string | null>(null);
   const [activeSection, setActiveSection] = useState('dashboard');
@@ -323,37 +325,68 @@ export const MacOSAdminDesktop = () => {
     };
   }, []);
 
+  const toggleTheme = () => {
+    setTheme(theme === 'dark' ? 'light' : 'dark');
+  };
+
   return (
-    <div className="h-screen w-screen bg-gradient-to-br from-blue-900 via-blue-700 to-blue-950 relative overflow-hidden">
+    <div className={`h-screen w-screen bg-gradient-to-br relative overflow-hidden ${
+      theme === 'dark' 
+        ? 'from-blue-950 via-blue-900 to-blue-950' 
+        : 'from-blue-100 via-blue-200 to-blue-300'
+    }`}>
       {/* Menu Bar */}
-      <div className="h-8 bg-blue-950/30 backdrop-blur-md border-b border-blue-400/20 flex items-center justify-between px-4 text-white text-sm relative z-50">
+      <div className={`h-8 backdrop-blur-md border-b flex items-center justify-between px-4 text-sm relative z-50 ${
+        theme === 'dark'
+          ? 'bg-blue-950/30 border-blue-400/20 text-white'
+          : 'bg-blue-50/30 border-blue-400/30 text-blue-900'
+      }`}>
         <div className="flex items-center space-x-4">
             <button 
             onClick={() => setShowStartMenu(!showStartMenu)}
-            className="hover:bg-blue-600/20 px-2 py-1 rounded text-xs flex items-center space-x-1"
+            className={`px-2 py-1 rounded text-xs flex items-center space-x-1 ${
+              theme === 'dark' ? 'hover:bg-blue-600/20' : 'hover:bg-blue-200/40'
+            }`}
           >
-            <div className="w-4 h-4 text-white flex items-center justify-center">
+            <div className="w-4 h-4 flex items-center justify-center">
               <AnimatedLogo className="scale-75" />
             </div>
           </button>
           <span className="font-medium">ASTRA Admin</span>
           <button 
             onClick={() => setShowSpotlight(true)}
-            className="hover:bg-blue-600/20 px-2 py-1 rounded text-xs"
+            className={`px-2 py-1 rounded text-xs ${
+              theme === 'dark' ? 'hover:bg-blue-600/20' : 'hover:bg-blue-200/40'
+            }`}
           >
             File
           </button>
-          <button className="hover:bg-blue-600/20 px-2 py-1 rounded text-xs">Edit</button>
-          <button className="hover:bg-blue-600/20 px-2 py-1 rounded text-xs">View</button>
+          <button className={`px-2 py-1 rounded text-xs ${
+            theme === 'dark' ? 'hover:bg-blue-600/20' : 'hover:bg-blue-200/40'
+          }`}>Edit</button>
+          <button className={`px-2 py-1 rounded text-xs ${
+            theme === 'dark' ? 'hover:bg-blue-600/20' : 'hover:bg-blue-200/40'
+          }`}>View</button>
           <button 
             onClick={() => setShowConfigurations(true)}
-            className="hover:bg-blue-600/20 px-2 py-1 rounded text-xs"
+            className={`px-2 py-1 rounded text-xs ${
+              theme === 'dark' ? 'hover:bg-blue-600/20' : 'hover:bg-blue-200/40'
+            }`}
           >
             Window
           </button>
         </div>
         
         <div className="flex items-center space-x-3 text-xs">
+          <button
+            onClick={toggleTheme}
+            className={`flex items-center space-x-1 px-2 py-1 rounded ${
+              theme === 'dark' ? 'hover:bg-blue-600/20' : 'hover:bg-blue-200/40'
+            }`}
+            title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+          >
+            {theme === 'dark' ? <Sun className="w-3 h-3" /> : <Moon className="w-3 h-3" />}
+          </button>
           <Wifi className="w-4 h-4" />
           <Battery className="w-4 h-4" />
           <VolumeX className="w-4 h-4" />
@@ -370,8 +403,12 @@ export const MacOSAdminDesktop = () => {
           .map(window => (
           <div
             key={window.id}
-            className={`absolute bg-white rounded-lg shadow-2xl border border-gray-200 overflow-hidden ${
+            className={`absolute rounded-lg shadow-2xl border overflow-hidden ${
               activeWindow === window.id ? 'z-50' : 'z-40'
+            } ${
+              theme === 'dark' 
+                ? 'bg-blue-950 border-blue-800' 
+                : 'bg-white border-blue-200'
             }`}
             style={{
               left: window.position.x,
@@ -383,7 +420,11 @@ export const MacOSAdminDesktop = () => {
           >
             {/* Window Title Bar */}
             <div 
-              className="h-8 bg-blue-100 dark:bg-blue-900 border-b border-blue-200 dark:border-blue-700 flex items-center justify-between px-3 cursor-move"
+              className={`h-8 border-b flex items-center justify-between px-3 cursor-move ${
+                theme === 'dark'
+                  ? 'bg-blue-900 border-blue-700'
+                  : 'bg-blue-100 border-blue-200'
+              }`}
               onMouseDown={(e) => handleMouseDown(e, window.id)}
             >
               <div className="flex items-center space-x-2">
@@ -419,12 +460,16 @@ export const MacOSAdminDesktop = () => {
                     <Maximize2 className="w-2 h-2 text-white" />
                   </button>
                 </div>
-                <span className="text-sm font-medium text-blue-800 dark:text-blue-200">{window.title}</span>
+                <span className={`text-sm font-medium ${
+                  theme === 'dark' ? 'text-blue-200' : 'text-blue-800'
+                }`}>{window.title}</span>
               </div>
             </div>
             
             {/* Window Content */}
-            <div className="h-[calc(100%-2rem)] bg-blue-50 dark:bg-blue-950 overflow-auto">
+            <div className={`h-[calc(100%-2rem)] overflow-auto ${
+              theme === 'dark' ? 'bg-blue-950' : 'bg-blue-50'
+            }`}>
               {window.section === 'settings' ? (
                 <SystemSettings />
               ) : (
@@ -439,7 +484,11 @@ export const MacOSAdminDesktop = () => {
       </div>
 
       {/* Dock */}
-      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-blue-900/40 backdrop-blur-md rounded-2xl px-4 py-3 border border-blue-600/30">
+      <div className={`absolute bottom-4 left-1/2 transform -translate-x-1/2 backdrop-blur-md rounded-2xl px-4 py-3 border ${
+        theme === 'dark'
+          ? 'bg-blue-900/40 border-blue-600/30'
+          : 'bg-blue-100/40 border-blue-300/40'
+      }`}>
         <div className="flex items-center space-x-3">
           {desktopApps.map((app) => {
             const Icon = app.icon;
@@ -498,15 +547,25 @@ export const MacOSAdminDesktop = () => {
           onClick={() => setShowStartMenu(false)}
         >
           <div 
-            className="absolute top-8 left-4 bg-white/95 backdrop-blur-md rounded-lg shadow-2xl border border-gray-200 w-80 max-h-96 overflow-y-auto z-50"
+            className={`absolute top-8 left-4 backdrop-blur-md rounded-lg shadow-2xl border w-80 max-h-96 overflow-y-auto z-50 ${
+              theme === 'dark'
+                ? 'bg-blue-950/95 border-blue-700'
+                : 'bg-white/95 border-blue-200'
+            }`}
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="p-4 border-b border-gray-200">
+            <div className={`p-4 border-b ${
+              theme === 'dark' ? 'border-blue-700' : 'border-blue-200'
+            }`}>
               <div className="flex items-center space-x-2 mb-2">
                 <AnimatedLogo className="scale-75" />
               </div>
-              <h3 className="font-semibold text-gray-800">ASTRA Admin</h3>
-              <p className="text-sm text-gray-600">Project Management & Configuration</p>
+              <h3 className={`font-semibold ${
+                theme === 'dark' ? 'text-blue-200' : 'text-gray-800'
+              }`}>ASTRA Admin</h3>
+              <p className={`text-sm ${
+                theme === 'dark' ? 'text-blue-300' : 'text-gray-600'
+              }`}>Project Management & Configuration</p>
             </div>
             
             <div className="p-2">
@@ -514,13 +573,17 @@ export const MacOSAdminDesktop = () => {
                 <div key={category.id} className="mb-2">
                   <button
                     onClick={() => toggleCategory(category.id)}
-                    className="w-full flex items-center justify-between p-3 hover:bg-gray-100 rounded-lg text-left"
+                    className={`w-full flex items-center justify-between p-3 rounded-lg text-left ${
+                      theme === 'dark' ? 'hover:bg-blue-800/50' : 'hover:bg-gray-100'
+                    }`}
                   >
                     <div className="flex items-center space-x-3">
                       <div className={`w-6 h-6 rounded-lg flex items-center justify-center ${category.color}`}>
                         <category.icon className="w-3 h-3 text-white" />
                       </div>
-                      <span className="text-sm font-medium text-gray-800">{category.name}</span>
+                      <span className={`text-sm font-medium ${
+                        theme === 'dark' ? 'text-blue-200' : 'text-gray-800'
+                      }`}>{category.name}</span>
                     </div>
                     <ChevronRight 
                       className={`w-4 h-4 text-gray-400 transition-transform ${
