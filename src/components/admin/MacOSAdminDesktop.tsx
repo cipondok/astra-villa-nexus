@@ -7,7 +7,8 @@ import {
   Globe, CheckCircle, Clock, Wifi, Battery,
   VolumeX, Minimize2, Maximize2, X, Folder, FolderOpen,
   ChevronRight, Menu, Home, Cog, Monitor, Database, Sun, Moon,
-  LogOut, ChevronDown
+  LogOut, ChevronDown, Bell, AlertTriangle, UserPlus, Activity,
+  Database as DatabaseIcon
 } from 'lucide-react';
 import AnimatedLogo from '@/components/AnimatedLogo';
 import DynamicAdminContent from './DynamicAdminContent';
@@ -181,12 +182,115 @@ export const MacOSAdminDesktop = () => {
   const [expandedCategories, setExpandedCategories] = useState<string[]>([]);
   const [showConfigurations, setShowConfigurations] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [showAlerts, setShowAlerts] = useState(false);
+  const [alerts, setAlerts] = useState<any[]>([]);
+  const [unreadCount, setUnreadCount] = useState(0);
   const dragRef = useRef<{ startX: number; startY: number; windowId: string } | null>(null);
 
   useEffect(() => {
     const timer = setInterval(() => setTime(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
+
+  // Fetch system alerts
+  useEffect(() => {
+    const fetchAlerts = async () => {
+      try {
+        const mockAlerts = [
+          {
+            id: 1,
+            type: 'error',
+            title: 'Database Connection Issue',
+            message: 'Periodic connection check detected intermittent delays',
+            timestamp: new Date(Date.now() - 1000 * 60 * 15), // 15 minutes ago
+            read: false,
+            severity: 'high'
+          },
+          {
+            id: 2,
+            type: 'user_activity',
+            title: 'New User Registration',
+            message: 'New user registered: john.doe@example.com',
+            timestamp: new Date(Date.now() - 1000 * 60 * 30), // 30 minutes ago
+            read: false,
+            severity: 'medium'
+          },
+          {
+            id: 3,
+            type: 'security',
+            title: 'Multiple Login Attempts',
+            message: 'Detected 3 failed login attempts from IP 192.168.1.100',
+            timestamp: new Date(Date.now() - 1000 * 60 * 45), // 45 minutes ago
+            read: true,
+            severity: 'high'
+          },
+          {
+            id: 4,
+            type: 'system',
+            title: 'System Update',
+            message: 'Property listings cache refreshed successfully',
+            timestamp: new Date(Date.now() - 1000 * 60 * 60), // 1 hour ago
+            read: false,
+            severity: 'low'
+          },
+          {
+            id: 5,
+            type: 'admin',
+            title: 'Admin Access',
+            message: 'Administrator logged in from new device',
+            timestamp: new Date(Date.now() - 1000 * 60 * 90), // 1.5 hours ago
+            read: true,
+            severity: 'medium'
+          }
+        ];
+        
+        setAlerts(mockAlerts);
+        setUnreadCount(mockAlerts.filter(alert => !alert.read).length);
+      } catch (error) {
+        console.error('Failed to fetch alerts:', error);
+      }
+    };
+
+    fetchAlerts();
+    // Refresh alerts every 30 seconds
+    const alertTimer = setInterval(fetchAlerts, 30000);
+    
+    return () => clearInterval(alertTimer);
+  }, []);
+
+  const markAlertAsRead = (alertId: number) => {
+    setAlerts(prev => prev.map(alert => 
+      alert.id === alertId ? { ...alert, read: true } : alert
+    ));
+    setUnreadCount(prev => Math.max(0, prev - 1));
+  };
+
+  const getAlertIcon = (type: string) => {
+    switch (type) {
+      case 'error': return AlertTriangle;
+      case 'user_activity': return UserPlus;
+      case 'security': return Shield;
+      case 'system': return Activity;
+      case 'admin': return DatabaseIcon;
+      default: return Bell;
+    }
+  };
+
+  const getAlertColor = (severity: string, type: string) => {
+    if (severity === 'high') return 'text-red-500';
+    if (severity === 'medium') return 'text-yellow-500';
+    if (type === 'security') return 'text-orange-500';
+    return 'text-blue-500';
+  };
+
+  const getSeverityBadge = (severity: string) => {
+    const colors = {
+      high: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
+      medium: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
+      low: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+    };
+    return colors[severity as keyof typeof colors] || colors.low;
+  };
 
   const openApp = (app: typeof desktopApps[0]) => {
     const existingWindow = openWindows.find(w => w.appId === app.id);
@@ -408,6 +512,129 @@ export const MacOSAdminDesktop = () => {
           >
             {theme === 'dark' ? <Sun className="w-3 h-3" /> : <Moon className="w-3 h-3" />}
           </button>
+          
+          <div className="relative">
+            <button
+              onClick={() => setShowAlerts(!showAlerts)}
+              className={`flex items-center space-x-1 px-2 py-1 rounded relative ${
+                theme === 'dark' ? 'hover:bg-blue-600/20' : 'hover:bg-blue-200/40'
+              }`}
+              title="System Alerts"
+            >
+              <Bell className="w-3 h-3" />
+              {unreadCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                  {unreadCount > 9 ? '9+' : unreadCount}
+                </span>
+              )}
+            </button>
+            
+            {showAlerts && (
+              <div 
+                className="fixed inset-0 bg-transparent z-40"
+                onClick={() => setShowAlerts(false)}
+              >
+                <div 
+                  className={`absolute top-8 right-16 backdrop-blur-md rounded-lg shadow-2xl border w-96 max-h-96 overflow-y-auto z-50 ${
+                    theme === 'dark'
+                      ? 'bg-blue-950/95 border-blue-700'
+                      : 'bg-white/95 border-blue-200'
+                  }`}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <div className={`p-4 border-b ${
+                    theme === 'dark' ? 'border-blue-700' : 'border-blue-200'
+                  }`}>
+                    <div className="flex items-center justify-between">
+                      <h3 className={`font-semibold ${
+                        theme === 'dark' ? 'text-blue-200' : 'text-gray-800'
+                      }`}>System Alerts</h3>
+                      <span className={`text-xs px-2 py-1 rounded-full ${
+                        theme === 'dark' ? 'bg-blue-800 text-blue-200' : 'bg-blue-100 text-blue-800'
+                      }`}>
+                        {unreadCount} unread
+                      </span>
+                    </div>
+                  </div>
+                  
+                  <div className="max-h-80 overflow-y-auto">
+                    {alerts.length === 0 ? (
+                      <div className="p-4 text-center">
+                        <Bell className={`w-8 h-8 mx-auto mb-2 ${
+                          theme === 'dark' ? 'text-blue-400' : 'text-gray-400'
+                        }`} />
+                        <p className={`text-sm ${
+                          theme === 'dark' ? 'text-blue-300' : 'text-gray-600'
+                        }`}>No alerts at this time</p>
+                      </div>
+                    ) : (
+                      alerts.map(alert => {
+                        const AlertIcon = getAlertIcon(alert.type);
+                        return (
+                          <div
+                            key={alert.id}
+                            className={`p-3 border-b cursor-pointer transition-colors ${
+                              theme === 'dark' 
+                                ? 'border-blue-800 hover:bg-blue-900/50' 
+                                : 'border-gray-100 hover:bg-gray-50'
+                            } ${!alert.read ? (theme === 'dark' ? 'bg-blue-900/30' : 'bg-blue-50/50') : ''}`}
+                            onClick={() => markAlertAsRead(alert.id)}
+                          >
+                            <div className="flex items-start space-x-3">
+                              <AlertIcon className={`w-4 h-4 mt-0.5 ${getAlertColor(alert.severity, alert.type)}`} />
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center justify-between">
+                                  <h4 className={`text-sm font-medium truncate ${
+                                    theme === 'dark' ? 'text-blue-200' : 'text-gray-900'
+                                  }`}>
+                                    {alert.title}
+                                  </h4>
+                                  <span className={`text-xs px-2 py-0.5 rounded-full ml-2 ${getSeverityBadge(alert.severity)}`}>
+                                    {alert.severity}
+                                  </span>
+                                </div>
+                                <p className={`text-xs mt-1 ${
+                                  theme === 'dark' ? 'text-blue-300' : 'text-gray-600'
+                                }`}>
+                                  {alert.message}
+                                </p>
+                                <p className={`text-xs mt-1 ${
+                                  theme === 'dark' ? 'text-blue-400' : 'text-gray-500'
+                                }`}>
+                                  {alert.timestamp.toLocaleString()}
+                                </p>
+                              </div>
+                              {!alert.read && (
+                                <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })
+                    )}
+                  </div>
+                  
+                  <div className={`p-3 border-t ${
+                    theme === 'dark' ? 'border-blue-700' : 'border-blue-200'
+                  }`}>
+                    <button
+                      onClick={() => {
+                        openSection('system-alerts', 'System Alerts');
+                        setShowAlerts(false);
+                      }}
+                      className={`w-full text-xs text-center py-2 rounded ${
+                        theme === 'dark' 
+                          ? 'text-blue-300 hover:bg-blue-800/50' 
+                          : 'text-blue-600 hover:bg-blue-50'
+                      }`}
+                    >
+                      View All Alerts
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
           
           <div className="relative">
             <button

@@ -1,5 +1,6 @@
 import React from 'react';
 import { useAuth } from '@/contexts/AuthContext';
+import { AlertTriangle, Activity, UserPlus } from 'lucide-react';
 import AdminOverview from "./AdminOverview";
 import EnhancedUserManagement from "./EnhancedUserManagement";
 import PropertyManagementAdvanced from "./PropertyManagementAdvanced";
@@ -61,6 +62,88 @@ const DynamicAdminContent = ({ activeSection, onSectionChange }: DynamicAdminCon
         return <SecurityMonitoringDashboard />;
       case "monitoring":
         return <SecurityMonitoringDashboard />;
+      case "system-alerts":
+        return (
+          <div className="p-6">
+            <div className="max-w-6xl mx-auto">
+              <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-6">System Alerts & Monitoring</h2>
+              
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Active Alerts</p>
+                      <p className="text-2xl font-bold text-red-600">3</p>
+                    </div>
+                    <div className="w-12 h-12 bg-red-100 dark:bg-red-900 rounded-lg flex items-center justify-center">
+                      <AlertTriangle className="w-6 h-6 text-red-600" />
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-gray-600 dark:text-gray-400">System Uptime</p>
+                      <p className="text-2xl font-bold text-green-600">99.8%</p>
+                    </div>
+                    <div className="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center">
+                      <Activity className="w-6 h-6 text-green-600" />
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-gray-600 dark:text-gray-400">New Users Today</p>
+                      <p className="text-2xl font-bold text-blue-600">12</p>
+                    </div>
+                    <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center">
+                      <UserPlus className="w-6 h-6 text-blue-600" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
+                <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Recent System Events</h3>
+                </div>
+                <div className="p-6">
+                  <div className="space-y-4">
+                    {[
+                      { type: 'error', message: 'Database connection timeout detected', time: '2 minutes ago', severity: 'high' },
+                      { type: 'security', message: 'Failed login attempt from IP 192.168.1.100', time: '5 minutes ago', severity: 'medium' },
+                      { type: 'system', message: 'Cache refresh completed successfully', time: '10 minutes ago', severity: 'low' },
+                      { type: 'user', message: 'New user registration: jane.doe@example.com', time: '15 minutes ago', severity: 'low' },
+                    ].map((event, index) => (
+                      <div key={index} className="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+                        <div className="flex items-center space-x-3">
+                          <div className={`w-3 h-3 rounded-full ${
+                            event.severity === 'high' ? 'bg-red-500' :
+                            event.severity === 'medium' ? 'bg-yellow-500' : 'bg-green-500'
+                          }`}></div>
+                          <div>
+                            <p className="text-sm text-gray-900 dark:text-gray-100">{event.message}</p>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">{event.time}</p>
+                          </div>
+                        </div>
+                        <span className={`text-xs px-2 py-1 rounded-full ${
+                          event.severity === 'high' ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200' :
+                          event.severity === 'medium' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200' :
+                          'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+                        }`}>
+                          {event.severity}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
       case "admin-profile":
       case "profile-settings":
         return (
