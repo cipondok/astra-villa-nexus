@@ -1006,6 +1006,20 @@ export const MacOSAdminDesktop = () => {
               
               <button 
                 onClick={() => {
+                  openSection('image-optimization', 'Image Optimization');
+                  setShowConfigurations(false);
+                }}
+                className="w-full flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50"
+              >
+                <div className="flex items-center space-x-3">
+                  <Database className="w-5 h-5 text-purple-500" />
+                  <span className="text-sm">Image Optimization</span>
+                </div>
+                <span className="text-purple-600 text-sm">Optimize</span>
+              </button>
+              
+              <button 
+                onClick={() => {
                   openSection('monitoring', 'System Monitoring');
                   setShowConfigurations(false);
                 }}

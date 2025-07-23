@@ -14,6 +14,7 @@ import AdminKYCReview from "./AdminKYCReview";
 import DatabaseTableManagement from "./DatabaseTableManagement";
 import SecurityMonitoringDashboard from "./SecurityMonitoringDashboard";
 import PaymentSystemStatus from "./PaymentSystemStatus";
+import ImageOptimizationPanel from "./ImageOptimizationPanel";
 
 interface DynamicAdminContentProps {
   activeSection: string;
@@ -76,6 +77,8 @@ const DynamicAdminContent = ({ activeSection, onSectionChange }: DynamicAdminCon
         );
       case "payment-system":
         return <PaymentSystemStatus />;
+      case "image-optimization":
+        return <ImageOptimizationPanel />;
       case "system-alerts":
         return (
           <div className="p-6">

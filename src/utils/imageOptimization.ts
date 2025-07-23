@@ -5,32 +5,98 @@ import { pipeline, env } from '@huggingface/transformers';
 env.allowLocalModels = false;
 env.useBrowserCache = false;
 
-const MAX_IMAGE_DIMENSION = 1024;
+const MAX_IMAGE_DIMENSION = 1920; // Increased for better quality
 const THUMBNAIL_SIZE = 300;
-const COMPRESSION_QUALITY = 0.8;
+const COMPRESSION_QUALITY = 0.85; // Improved quality
+const WEBP_QUALITY = 0.85;
 
 export interface ImageOptimizationOptions {
   maxSizeMB?: number;
   maxWidthOrHeight?: number;
   useWebpIfSupported?: boolean;
+  forceWebP?: boolean;
   removeBackground?: boolean;
   generateThumbnail?: boolean;
   quality?: number;
+  webpQuality?: number;
+  enableProgressiveJPEG?: boolean;
 }
 
 export interface OptimizedImageResult {
   originalFile: File;
   optimizedFile: File;
+  webpFile?: File;
+  jpegFile?: File;
   thumbnailFile?: File;
   backgroundRemovedFile?: File;
   previewUrl: string;
+  webpUrl?: string;
+  jpegUrl?: string;
   thumbnailUrl?: string;
   backgroundRemovedUrl?: string;
   compressionRatio: number;
+  webpCompressionRatio?: number;
   dimensions: { width: number; height: number };
+  formats: string[];
 }
 
-// Image compression function
+// Create WebP image with better quality settings
+export const createWebPImage = async (
+  file: File,
+  quality: number = WEBP_QUALITY
+): Promise<File> => {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      
+      if (!ctx) {
+        reject(new Error('Could not get canvas context'));
+        return;
+      }
+      
+      // Calculate optimized dimensions
+      let { width, height } = img;
+      const maxDimension = MAX_IMAGE_DIMENSION;
+      
+      if (width > maxDimension || height > maxDimension) {
+        const ratio = Math.min(maxDimension / width, maxDimension / height);
+        width = Math.round(width * ratio);
+        height = Math.round(height * ratio);
+      }
+      
+      canvas.width = width;
+      canvas.height = height;
+      
+      // Enable high-quality image rendering
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
+      
+      ctx.drawImage(img, 0, 0, width, height);
+      
+      canvas.toBlob(
+        (blob) => {
+          if (blob) {
+            const webpFile = new File([blob], file.name.replace(/\.[^/.]+$/, '.webp'), {
+              type: 'image/webp'
+            });
+            resolve(webpFile);
+          } else {
+            reject(new Error('Failed to create WebP blob'));
+          }
+        },
+        'image/webp',
+        quality
+      );
+    };
+    
+    img.onerror = () => reject(new Error('Failed to load image'));
+    img.src = URL.createObjectURL(file);
+  });
+};
+
+// Enhanced image compression function
 export const compressImage = async (
   file: File, 
   options: ImageOptimizationOptions = {}
@@ -38,7 +104,7 @@ export const compressImage = async (
   const defaultOptions = {
     maxSizeMB: 1,
     maxWidthOrHeight: MAX_IMAGE_DIMENSION,
-    useWebpIfSupported: true,
+    useWebpIfSupported: !options.forceWebP, // Disable if forcing WebP separately
     quality: options.quality || COMPRESSION_QUALITY,
     initialQuality: options.quality || COMPRESSION_QUALITY
   };
@@ -247,13 +313,34 @@ export const optimizeImage = async (
     // Generate preview URL
     const previewUrl = URL.createObjectURL(optimizedFile);
     
+    // Create WebP version if requested
+    let webpFile: File | undefined;
+    let webpUrl: string | undefined;
+    let webpCompressionRatio: number | undefined;
+    
+    if (options.useWebpIfSupported !== false) {
+      try {
+        webpFile = await createWebPImage(file, options.webpQuality || WEBP_QUALITY);
+        webpUrl = URL.createObjectURL(webpFile);
+        webpCompressionRatio = Math.round(((file.size - webpFile.size) / file.size) * 100);
+      } catch (error) {
+        console.warn('WebP conversion failed:', error);
+      }
+    }
+
     // Initialize result
     const result: OptimizedImageResult = {
       originalFile: file,
       optimizedFile,
+      webpFile,
+      jpegFile: optimizedFile,
       previewUrl,
+      webpUrl,
+      jpegUrl: URL.createObjectURL(optimizedFile),
       compressionRatio: Math.round(((file.size - optimizedFile.size) / file.size) * 100),
-      dimensions
+      webpCompressionRatio,
+      dimensions,
+      formats: ['jpeg', ...(webpFile ? ['webp'] : [])]
     };
     
     // Generate thumbnail if requested
