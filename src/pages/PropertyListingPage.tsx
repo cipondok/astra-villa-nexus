@@ -1,6 +1,4 @@
 import { useState, useEffect } from 'react';
-import Navigation from '@/components/Navigation';
-import ProfessionalFooter from '@/components/ProfessionalFooter';
 import PropertyListingsSection from '@/components/PropertyListingsSection';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -181,8 +179,7 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <Navigation />
-      <main className="container mx-auto px-4 py-6 pt-20">
+      <main className="container mx-auto px-4 py-6">
         <h1 className="text-4xl font-bold mb-2">{title}</h1>
         <p className="text-muted-foreground mb-6">{subtitle}</p>
         
@@ -206,7 +203,6 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
           />
         </div>
       </main>
-      <ProfessionalFooter language="en" />
     </div>
   );
 };
