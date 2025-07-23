@@ -324,30 +324,30 @@ export const MacOSAdminDesktop = () => {
   }, []);
 
   return (
-    <div className="h-screen w-screen bg-gradient-to-br from-blue-400 via-purple-500 to-pink-500 relative overflow-hidden">
+    <div className="h-screen w-screen bg-gradient-to-br from-blue-900 via-blue-700 to-blue-950 relative overflow-hidden">
       {/* Menu Bar */}
-      <div className="h-8 bg-black/20 backdrop-blur-md border-b border-white/10 flex items-center justify-between px-4 text-white text-sm relative z-50">
+      <div className="h-8 bg-blue-950/30 backdrop-blur-md border-b border-blue-400/20 flex items-center justify-between px-4 text-white text-sm relative z-50">
         <div className="flex items-center space-x-4">
-          <button 
+            <button 
             onClick={() => setShowStartMenu(!showStartMenu)}
-            className="hover:bg-white/10 px-2 py-1 rounded text-xs flex items-center space-x-1"
+            className="hover:bg-blue-600/20 px-2 py-1 rounded text-xs flex items-center space-x-1"
           >
             <div className="w-4 h-4 text-white flex items-center justify-center">
               <AnimatedLogo className="scale-75" />
             </div>
           </button>
-          <span className="font-medium">Astra Villa Admin</span>
+          <span className="font-medium">ASTRA Admin</span>
           <button 
             onClick={() => setShowSpotlight(true)}
-            className="hover:bg-white/10 px-2 py-1 rounded text-xs"
+            className="hover:bg-blue-600/20 px-2 py-1 rounded text-xs"
           >
             File
           </button>
-          <button className="hover:bg-white/10 px-2 py-1 rounded text-xs">Edit</button>
-          <button className="hover:bg-white/10 px-2 py-1 rounded text-xs">View</button>
+          <button className="hover:bg-blue-600/20 px-2 py-1 rounded text-xs">Edit</button>
+          <button className="hover:bg-blue-600/20 px-2 py-1 rounded text-xs">View</button>
           <button 
             onClick={() => setShowConfigurations(true)}
-            className="hover:bg-white/10 px-2 py-1 rounded text-xs"
+            className="hover:bg-blue-600/20 px-2 py-1 rounded text-xs"
           >
             Window
           </button>
@@ -383,7 +383,7 @@ export const MacOSAdminDesktop = () => {
           >
             {/* Window Title Bar */}
             <div 
-              className="h-8 bg-gray-100 border-b border-gray-200 flex items-center justify-between px-3 cursor-move"
+              className="h-8 bg-blue-100 dark:bg-blue-900 border-b border-blue-200 dark:border-blue-700 flex items-center justify-between px-3 cursor-move"
               onMouseDown={(e) => handleMouseDown(e, window.id)}
             >
               <div className="flex items-center space-x-2">
@@ -419,12 +419,12 @@ export const MacOSAdminDesktop = () => {
                     <Maximize2 className="w-2 h-2 text-white" />
                   </button>
                 </div>
-                <span className="text-sm font-medium text-gray-700">{window.title}</span>
+                <span className="text-sm font-medium text-blue-800 dark:text-blue-200">{window.title}</span>
               </div>
             </div>
             
             {/* Window Content */}
-            <div className="h-[calc(100%-2rem)] bg-white overflow-auto">
+            <div className="h-[calc(100%-2rem)] bg-blue-50 dark:bg-blue-950 overflow-auto">
               {window.section === 'settings' ? (
                 <SystemSettings />
               ) : (
@@ -439,7 +439,7 @@ export const MacOSAdminDesktop = () => {
       </div>
 
       {/* Dock */}
-      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-white/20 backdrop-blur-md rounded-2xl px-4 py-3 border border-white/30">
+      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-blue-900/40 backdrop-blur-md rounded-2xl px-4 py-3 border border-blue-600/30">
         <div className="flex items-center space-x-3">
           {desktopApps.map((app) => {
             const Icon = app.icon;
@@ -468,7 +468,7 @@ export const MacOSAdminDesktop = () => {
           {/* File Explorer */}
           <button
             onClick={() => openSection('file-explorer', 'File Explorer')}
-            className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center text-white hover:scale-110 transition-all duration-200"
+            className="w-12 h-12 bg-blue-700 rounded-xl flex items-center justify-center text-white hover:scale-110 transition-all duration-200"
             title="File Explorer"
           >
             <Folder className="w-6 h-6" />
@@ -505,7 +505,7 @@ export const MacOSAdminDesktop = () => {
               <div className="flex items-center space-x-2 mb-2">
                 <AnimatedLogo className="scale-75" />
               </div>
-              <h3 className="font-semibold text-gray-800">Astra Villa Admin</h3>
+              <h3 className="font-semibold text-gray-800">ASTRA Admin</h3>
               <p className="text-sm text-gray-600">Project Management & Configuration</p>
             </div>
             
