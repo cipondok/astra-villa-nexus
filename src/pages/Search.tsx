@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Search as SearchIcon, Filter, MapPin, Home, Building2 } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
-import MobileAppLayout from '@/components/MobileAppLayout';
+import ResponsiveWebLayout from '@/components/ResponsiveWebLayout';
 import Navigation from '@/components/Navigation';
 import ProfessionalFooter from '@/components/ProfessionalFooter';
 import { Button } from '@/components/ui/button';
@@ -252,16 +252,13 @@ const Search = () => {
     </div>
   );
 
-  if (isMobile) {
-    return <MobileAppLayout>{content}</MobileAppLayout>;
-  }
-
+  // Responsive web layout for all devices
   return (
-    <>
+    <ResponsiveWebLayout>
       <Navigation />
       {content}
       <ProfessionalFooter language="en" />
-    </>
+    </ResponsiveWebLayout>
   );
 };
 

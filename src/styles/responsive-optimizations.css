@@ -1,90 +1,94 @@
-/* Responsive Optimizations for Mobile, Tablet, and Desktop */
+/* Responsive Web Design Optimizations */
 
 @layer utilities {
-  /* Ultra-compact spacing utilities */
-  .space-compact > * + * {
-    @apply mt-1;
+  /* Base responsive spacing utilities */
+  .space-responsive > * + * {
+    @apply ml-2 sm:ml-4 md:ml-6 lg:ml-8;
   }
   
-  .space-compact-x > * + * {
-    @apply ml-1;
+  .space-responsive-x > * + * {
+    @apply ml-2 sm:ml-4 md:ml-6;
   }
 
-  /* Device-specific optimizations */
-  .mobile-optimized {
+  .space-responsive-y > * + * {
+    @apply mt-2 sm:mt-4 md:mt-6;
+  }
+
+  /* Responsive visibility utilities */
+  .responsive-show-mobile {
     @apply block sm:hidden;
   }
   
-  .tablet-optimized {
+  .responsive-show-tablet {
     @apply hidden sm:block lg:hidden;
   }
   
-  .desktop-optimized {
+  .responsive-show-desktop {
     @apply hidden lg:block;
   }
 
-  /* Sticky Chat Bot Positioning */
-  .chatbot-sticky-mobile {
-    @apply fixed bottom-20 right-4 z-[9999];
-    transform: translateZ(0);
-    will-change: transform;
+  .responsive-hide-mobile {
+    @apply hidden sm:block;
   }
   
-  .chatbot-sticky-tablet {
-    @apply fixed bottom-8 right-6 z-[9999];
-    transform: translateZ(0);
-    will-change: transform;
+  .responsive-hide-tablet {
+    @apply block sm:hidden lg:block;
   }
   
-  .chatbot-sticky-desktop {
-    @apply fixed top-1/2 right-6 z-[9999];
-    transform: translateY(-50%) translateZ(0);
-    will-change: transform;
+  .responsive-hide-desktop {
+    @apply block lg:hidden;
   }
 
   /* Enhanced responsive grid */
   .responsive-grid-auto {
-    @apply grid gap-2 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5;
+    @apply grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5;
   }
   
   .responsive-grid-properties {
-    @apply grid gap-3 grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4;
+    @apply grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4;
   }
 
-  /* Tablet-optimized grid layouts */
-  .tablet-optimized-grid {
-    @apply grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3;
+  .responsive-grid-2 {
+    @apply grid gap-4 grid-cols-1 sm:grid-cols-2 md:gap-6;
   }
 
-  .mobile-optimized-grid {
-    @apply grid gap-3 grid-cols-1 sm:grid-cols-1;
+  .responsive-grid-3 {
+    @apply grid gap-4 grid-cols-1 sm:grid-cols-2 md:gap-6 lg:grid-cols-3;
   }
 
-  /* Compact containers */
-  .container-compact {
-    @apply w-full max-w-7xl mx-auto px-2 sm:px-4 lg:px-6;
+  .responsive-grid-4 {
+    @apply grid gap-4 grid-cols-1 sm:grid-cols-2 md:gap-6 lg:grid-cols-3 xl:grid-cols-4;
+  }
+
+  /* Container responsive utilities */
+  .container-responsive {
+    @apply w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
   }
   
-  .section-compact {
-    @apply py-2 sm:py-4 lg:py-6;
+  .section-responsive {
+    @apply py-4 sm:py-6 md:py-8 lg:py-12;
   }
 
-  /* Zero-waste spacing */
-  .no-space-waste {
-    @apply space-y-1 sm:space-y-2 lg:space-y-3;
+  /* Web-optimized spacing */
+  .space-web > * + * {
+    @apply mt-4 sm:mt-6 md:mt-8;
   }
   
-  .no-space-waste-x {
-    @apply space-x-1 sm:space-x-2 lg:space-x-3;
+  .space-web-x > * + * {
+    @apply ml-4 sm:ml-6 md:ml-8;
   }
 
-  /* Enhanced mobile card layouts */
-  .mobile-card-stack {
-    @apply flex flex-col gap-2 sm:gap-3 lg:gap-4;
+  /* Responsive card layouts */
+  .card-responsive {
+    @apply p-4 sm:p-6 md:p-8 rounded-lg shadow-sm hover:shadow-md transition-shadow;
   }
   
-  .mobile-card-grid {
-    @apply grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-3 lg:grid-cols-3 lg:gap-4;
+  .card-responsive-sm {
+    @apply p-3 sm:p-4 md:p-5 rounded-md shadow-sm;
+  }
+  
+  .card-responsive-lg {
+    @apply p-6 sm:p-8 md:p-10 lg:p-12 rounded-xl shadow-lg;
   }
 
   /* Responsive text sizing - Better tablet support */

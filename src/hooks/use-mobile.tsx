@@ -72,62 +72,46 @@ export function useIsMobile() {
           screenOrientation: 'screen' in window && 'orientation' in screen ? screen.orientation?.type : 'unknown'
         })
         
-        // Optimize DOM manipulation - only when needed
-        if (newIsMobile || newIsTablet) {
-          // Set proper viewport meta tag once
-          let metaViewport = document.querySelector('meta[name="viewport"]')
-          if (!metaViewport) {
-            metaViewport = document.createElement('meta')
-            metaViewport.setAttribute('name', 'viewport')
-            document.head.appendChild(metaViewport)
-          }
-          
-          const viewportContent = newIsMobile 
-            ? 'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover'
-            : 'width=device-width, initial-scale=1.0, maximum-scale=3.0, user-scalable=yes, viewport-fit=cover'
-          
-          if (metaViewport.getAttribute('content') !== viewportContent) {
-            metaViewport.setAttribute('content', viewportContent)
-          }
-          
-          // Apply classes efficiently
-          const htmlEl = document.documentElement
-          const bodyEl = document.body
-          
-          if (newIsMobile) {
-            htmlEl.classList.add('mobile-device')
-            htmlEl.classList.remove('tablet-device')
-            bodyEl.classList.add('mobile-device', 'mobile-app-layout')
-            bodyEl.classList.remove('tablet-device', 'tablet-app-layout')
-          } else {
-            htmlEl.classList.add('tablet-device')
-            htmlEl.classList.remove('mobile-device')  
-            bodyEl.classList.add('tablet-device', 'tablet-app-layout')
-            bodyEl.classList.remove('mobile-device', 'mobile-app-layout')
-          }
-          
-          // Apply styles only once
-          if (!bodyEl.style.width) {
-            bodyEl.style.width = '100vw'
-            bodyEl.style.overflowX = 'hidden'
-            bodyEl.style.minHeight = '100vh'
-            ;(bodyEl.style as any).webkitOverflowScrolling = 'touch'
-            ;(bodyEl.style as any).webkitTextSizeAdjust = '100%'
-            ;(bodyEl.style as any).webkitTapHighlightColor = 'transparent'
-          }
-        } else {
-          // Desktop cleanup - only when transitioning from mobile/tablet
-          document.documentElement.classList.remove('mobile-device', 'tablet-device')
-          document.body.classList.remove('mobile-device', 'mobile-app-layout', 'tablet-device', 'tablet-app-layout')
-          
-          const bodyEl = document.body
-          bodyEl.style.width = ''
-          bodyEl.style.overflowX = ''
-          bodyEl.style.minHeight = ''
-          ;(bodyEl.style as any).webkitOverflowScrolling = ''
-          ;(bodyEl.style as any).webkitTextSizeAdjust = ''
-          ;(bodyEl.style as any).webkitTapHighlightColor = ''
+        // Set proper viewport meta tag
+        let metaViewport = document.querySelector('meta[name="viewport"]')
+        if (!metaViewport) {
+          metaViewport = document.createElement('meta')
+          metaViewport.setAttribute('name', 'viewport')
+          document.head.appendChild(metaViewport)
         }
+        
+        const viewportContent = 'width=device-width, initial-scale=1.0, viewport-fit=cover'
+        
+        if (metaViewport.getAttribute('content') !== viewportContent) {
+          metaViewport.setAttribute('content', viewportContent)
+        }
+        
+        // Remove old mobile app classes and add responsive web classes
+        const htmlEl = document.documentElement;
+        const bodyEl = document.body;
+        
+        // Clear all device-specific classes
+        htmlEl.classList.remove('mobile-device', 'tablet-device');
+        bodyEl.classList.remove('mobile-device', 'tablet-device', 'mobile-app-layout', 'tablet-app-layout');
+        
+        // Add responsive web classes
+        bodyEl.classList.add('responsive-web-layout');
+        
+        if (newIsMobile) {
+          bodyEl.classList.add('screen-mobile');
+        } else if (newIsTablet) {
+          bodyEl.classList.add('screen-tablet');
+        } else {
+          bodyEl.classList.add('screen-desktop');
+        }
+        
+        // Apply responsive web styles
+        bodyEl.style.width = '';
+        bodyEl.style.overflowX = '';
+        bodyEl.style.minHeight = '';
+        (bodyEl.style as any).webkitOverflowScrolling = 'touch';
+        (bodyEl.style as any).webkitTextSizeAdjust = '100%';
+        (bodyEl.style as any).webkitTapHighlightColor = 'transparent';
       }
     }
     
@@ -144,7 +128,7 @@ export function useIsMobile() {
       window.removeEventListener('resize', debouncedCheckMobile)
       window.removeEventListener('orientationchange', debouncedCheckMobile)
     }
-  }, [])
+  }, [isMobile, isTablet])
 
   return { isMobile, isTablet, deviceInfo }
 }
