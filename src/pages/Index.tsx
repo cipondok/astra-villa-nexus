@@ -264,21 +264,12 @@ const Index = () => {
   };
 
   // Responsive web layout for all devices
-  const isSmallScreen = isMobile || isTablet;
+  const isSmallScreen = isMobile; // Only mobile is small screen, tablets show desktop nav
   const content = (
-    <div className={cn(
-      "min-h-screen text-foreground relative w-full",
-      "container-responsive section-responsive"
-    )}>
-      
-      {/* Content Layer with backdrop - Responsive padding */}
-      <div className={cn(
-        "relative z-10 bg-white/90 dark:bg-black/90 backdrop-blur-sm",
-        isMobile ? "min-h-screen overflow-x-hidden mobile-safe-area" : 
-        isTablet ? "min-h-screen overflow-x-hidden tablet-safe-area" : "min-h-screen"
-      )}>
-        {/* Desktop Navigation Only */}
-        {!isSmallScreen && <Navigation />}
+    <div className="min-h-screen w-full m-0 p-0">
+      <div className="w-full">
+        {/* Desktop Navigation for tablets and PC */}
+        {!isMobile && <Navigation />}
         
         {/* Hero Section - Responsive */}
         <section className={cn(
