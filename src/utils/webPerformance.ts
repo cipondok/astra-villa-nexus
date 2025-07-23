@@ -1,24 +1,28 @@
-// Mobile Performance Optimization Utilities
+// Web Performance Optimization Utilities
 
 export const detectDeviceCapabilities = () => {
-  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-  const isTablet = /iPad|Android/i.test(navigator.userAgent) && window.innerWidth >= 768;
+  const userAgent = navigator.userAgent;
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
+  const isTablet = /iPad|Android/i.test(userAgent) && window.innerWidth >= 768;
+  const isDesktop = !isMobile && !isTablet;
   const isLowEndDevice = navigator.hardwareConcurrency <= 2;
   const connection = (navigator as any).connection;
   const hasSlowConnection = connection?.effectiveType === 'slow-2g' || 
-                           connection?.effectiveType === '2g';
+                           connection?.effectiveType === '2g' ||
+                           connection?.effectiveType === '3g';
   
   return {
     isMobile,
     isTablet,
+    isDesktop,
     isLowEndDevice,
     hasSlowConnection,
-    shouldOptimize: isMobile || isTablet || isLowEndDevice || hasSlowConnection
+    shouldOptimize: isLowEndDevice || hasSlowConnection
   };
 };
 
 export const optimizeImageLoading = () => {
-  // Convert all images to use lazy loading and WebP format when possible
+  // Optimize all images for web performance
   const images = document.querySelectorAll('img:not([data-optimized])');
   
   images.forEach(img => {
@@ -27,6 +31,9 @@ export const optimizeImageLoading = () => {
     // Add lazy loading
     imageElement.loading = 'lazy';
     
+    // Add async decoding
+    imageElement.decoding = 'async';
+    
     // Add intersection observer for better control
     if ('IntersectionObserver' in window) {
       const observer = new IntersectionObserver((entries) => {
@@ -34,10 +41,14 @@ export const optimizeImageLoading = () => {
           if (entry.isIntersecting) {
             const target = entry.target as HTMLImageElement;
             
-            // Try to load WebP version if supported
-            if (supportsWebP()) {
-              const webpSrc = target.src.replace(/\.(jpg|jpeg|png)$/i, '.webp');
-              target.src = webpSrc;
+            // Optimize image quality based on device
+            const { shouldOptimize } = detectDeviceCapabilities();
+            if (shouldOptimize && target.src) {
+              // Add optimization parameters if possible
+              const url = new URL(target.src, window.location.origin);
+              url.searchParams.set('auto', 'format,compress');
+              url.searchParams.set('q', '85');
+              target.src = url.toString();
             }
             
             target.setAttribute('data-optimized', 'true');
@@ -45,86 +56,62 @@ export const optimizeImageLoading = () => {
           }
         });
       }, {
-        rootMargin: '50px' // Start loading 50px before the image is visible
+        rootMargin: '50px' // Start loading 50px before visible
       });
       
       observer.observe(imageElement);
     }
+    
+    imageElement.setAttribute('data-optimized', 'true');
   });
 };
 
-export const supportsWebP = (): boolean => {
-  const canvas = document.createElement('canvas');
-  canvas.width = 1;
-  canvas.height = 1;
-  return canvas.toDataURL('image/webp').indexOf('data:image/webp') === 0;
-};
-
-export const enableHardwareAcceleration = () => {
+export const enableWebOptimizations = () => {
+  // Enable hardware acceleration
   const style = document.createElement('style');
   style.innerHTML = `
     * {
       -webkit-transform: translateZ(0);
-      -moz-transform: translateZ(0);
-      -ms-transform: translateZ(0);
-      -o-transform: translateZ(0);
       transform: translateZ(0);
-      
       -webkit-backface-visibility: hidden;
-      -moz-backface-visibility: hidden;
-      -ms-backface-visibility: hidden;
       backface-visibility: hidden;
-      
-      -webkit-perspective: 1000;
-      -moz-perspective: 1000;
-      -ms-perspective: 1000;
-      perspective: 1000;
     }
     
     body {
       -webkit-overflow-scrolling: touch;
-      overflow-scrolling: touch;
+      overscroll-behavior: contain;
+    }
+    
+    html {
+      scroll-behavior: smooth;
     }
   `;
   document.head.appendChild(style);
 };
 
 export const optimizeScrolling = () => {
-  // Add smooth scrolling behavior optimized for mobile
+  // Add smooth scrolling behavior
   document.documentElement.style.scrollBehavior = 'smooth';
   
-  // Enable momentum scrolling on iOS
+  // Enable momentum scrolling
   (document.body.style as any).webkitOverflowScrolling = 'touch';
   
-  // Prevent rubber band effect
+  // Prevent overscroll
   document.body.style.overscrollBehavior = 'contain';
 };
 
-export const reduceAnimations = () => {
-  const { shouldOptimize } = detectDeviceCapabilities();
+export const optimizeForReducedMotion = () => {
+  // Respect user preferences for reduced motion
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   
-  if (shouldOptimize) {
+  if (prefersReducedMotion) {
     const style = document.createElement('style');
     style.innerHTML = `
       *, *::before, *::after {
-        animation-duration: 0.1s !important;
-        animation-delay: 0s !important;
-        transition-duration: 0.1s !important;
-        transition-delay: 0s !important;
-      }
-      
-      .fade-in, .slide-in, .scale-in {
-        animation: none !important;
-        opacity: 1 !important;
-        transform: none !important;
-      }
-      
-      @media (prefers-reduced-motion: reduce) {
-        *, *::before, *::after {
-          animation-duration: 0.01ms !important;
-          animation-iteration-count: 1 !important;
-          transition-duration: 0.01ms !important;
-        }
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
       }
     `;
     document.head.appendChild(style);
@@ -134,6 +121,7 @@ export const reduceAnimations = () => {
 export const prefetchCriticalResources = () => {
   const criticalResources = [
     '/src/index.css',
+    '/src/styles/responsive-web.css',
     '/src/styles/responsive-optimizations.css'
   ];
   
@@ -147,21 +135,19 @@ export const prefetchCriticalResources = () => {
 };
 
 export const optimizeTouch = () => {
-  // Optimize touch events for better responsiveness
-  document.body.style.touchAction = 'manipulation';
-  
-  // Add touch-friendly styles
+  // Optimize touch events for better web experience
   const style = document.createElement('style');
   style.innerHTML = `
-    button, a, [role="button"] {
+    button, a, [role="button"], input, textarea, select {
       touch-action: manipulation;
       -webkit-tap-highlight-color: transparent;
     }
     
     input, textarea, select {
-      font-size: 16px; /* Prevent zoom on iOS */
+      font-size: 16px; /* Prevent zoom on focus */
     }
     
+    /* Remove hover effects on touch devices */
     @media (hover: none) and (pointer: coarse) {
       *:hover {
         transform: none !important;
@@ -171,19 +157,57 @@ export const optimizeTouch = () => {
   document.head.appendChild(style);
 };
 
-export const initMobilePerformanceOptimizations = () => {
+export const optimizeFonts = () => {
+  // Optimize font rendering
+  (document.body.style as any).webkitFontSmoothing = 'antialiased';
+  (document.body.style as any).mozOsxFontSmoothing = 'grayscale';
+  
+  // Enable font-display: swap for web fonts
+  const style = document.createElement('style');
+  style.innerHTML = `
+    @font-face {
+      font-display: swap;
+    }
+  `;
+  document.head.appendChild(style);
+};
+
+export const initWebPerformanceOptimizations = () => {
   const { shouldOptimize } = detectDeviceCapabilities();
   
+  optimizeImageLoading();
+  enableWebOptimizations();
+  optimizeScrolling();
+  optimizeForReducedMotion();
+  prefetchCriticalResources();
+  optimizeTouch();
+  optimizeFonts();
+  
+  // Additional optimizations for low-end devices
   if (shouldOptimize) {
-    optimizeImageLoading();
-    enableHardwareAcceleration();
-    optimizeScrolling();
-    reduceAnimations();
-    prefetchCriticalResources();
-    optimizeTouch();
+    // Reduce animation complexity
+    document.documentElement.style.setProperty('--animation-duration', '0.2s');
     
-    console.log('Mobile performance optimizations applied');
+    // Disable expensive effects
+    const lowEndStyle = document.createElement('style');
+    lowEndStyle.innerHTML = `
+      .glass-effect {
+        backdrop-filter: none !important;
+        background: rgba(255, 255, 255, 0.95) !important;
+      }
+      
+      .shadow-lg, .shadow-xl {
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+      }
+      
+      * {
+        will-change: auto !important;
+      }
+    `;
+    document.head.appendChild(lowEndStyle);
   }
+  
+  console.log('Web performance optimizations applied');
 };
 
 // Debounce utility for scroll events
@@ -219,12 +243,13 @@ export const cleanupUnusedResources = () => {
 export default {
   detectDeviceCapabilities,
   optimizeImageLoading,
-  enableHardwareAcceleration,
+  enableWebOptimizations,
   optimizeScrolling,
-  reduceAnimations,
+  optimizeForReducedMotion,
   prefetchCriticalResources,
   optimizeTouch,
-  initMobilePerformanceOptimizations,
+  optimizeFonts,
+  initWebPerformanceOptimizations,
   debounce,
   cleanupUnusedResources
 };
