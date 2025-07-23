@@ -3,10 +3,101 @@ import { useAuth } from '@/contexts/AuthContext';
 import { 
   User, Settings, BarChart3, Shield, Users, Building2, 
   MessageSquare, Wrench, FileText, Mail, CreditCard, Search,
-  Globe, CheckCircle, Clock, Apple, Wifi, Battery,
+  Globe, CheckCircle, Clock, Wifi, Battery,
   VolumeX, Minimize2, Maximize2, X, Folder, FolderOpen,
   ChevronRight, Menu, Home, Cog, Monitor, Database
 } from 'lucide-react';
+import AnimatedLogo from '@/components/AnimatedLogo';
+import AdminDashboardContent from './AdminDashboardContent';
+import SystemSettings from './SystemSettings';
+
+// Desktop Apps Configuration with real components
+const desktopApps = [
+  { 
+    id: 'dashboard', 
+    name: 'Dashboard', 
+    icon: BarChart3, 
+    section: 'dashboard',
+    color: 'bg-blue-500'
+  },
+  { 
+    id: 'users', 
+    name: 'Users', 
+    icon: Users, 
+    section: 'users',
+    color: 'bg-purple-500'
+  },
+  { 
+    id: 'properties', 
+    name: 'Properties', 
+    icon: Building2, 
+    section: 'properties',
+    color: 'bg-green-500'
+  },
+  { 
+    id: 'security', 
+    name: 'Security', 
+    icon: Shield, 
+    section: 'security',
+    color: 'bg-red-500'
+  },
+  { 
+    id: 'analytics', 
+    name: 'Analytics', 
+    icon: BarChart3, 
+    section: 'analytics',
+    color: 'bg-yellow-500'
+  },
+  { 
+    id: 'messages', 
+    name: 'Messages', 
+    icon: MessageSquare, 
+    section: 'customer-service',
+    color: 'bg-pink-500'
+  },
+  { 
+    id: 'tools', 
+    name: 'Tools', 
+    icon: Wrench, 
+    section: 'tools',
+    color: 'bg-indigo-500'
+  },
+  { 
+    id: 'reports', 
+    name: 'Reports', 
+    icon: FileText, 
+    section: 'reports',
+    color: 'bg-orange-500'
+  },
+  { 
+    id: 'settings', 
+    name: 'Settings', 
+    icon: Settings, 
+    section: 'settings',
+    color: 'bg-gray-500'
+  },
+  { 
+    id: 'billing', 
+    name: 'Billing', 
+    icon: CreditCard, 
+    section: 'billing',
+    color: 'bg-emerald-500'
+  },
+  { 
+    id: 'seo', 
+    name: 'SEO', 
+    icon: Globe, 
+    section: 'seo',
+    color: 'bg-cyan-500'
+  },
+  { 
+    id: 'kyc', 
+    name: 'KYC Review', 
+    icon: CheckCircle, 
+    section: 'kyc',
+    color: 'bg-teal-500'
+  }
+];
 
 // File Categories Configuration
 const fileCategories = [
@@ -15,11 +106,12 @@ const fileCategories = [
     name: 'Administration',
     icon: Shield,
     color: 'bg-red-500',
+    section: 'users',
     files: [
-      { name: 'User Management', type: 'component', path: '/admin/users' },
-      { name: 'Role Permissions', type: 'config', path: '/admin/roles' },
-      { name: 'System Logs', type: 'log', path: '/admin/logs' },
-      { name: 'Audit Trail', type: 'report', path: '/admin/audit' }
+      { name: 'User Management', section: 'users' },
+      { name: 'Role Permissions', section: 'security' },
+      { name: 'System Logs', section: 'system-logs' },
+      { name: 'Audit Trail', section: 'security' }
     ]
   },
   {
@@ -27,11 +119,12 @@ const fileCategories = [
     name: 'Properties',
     icon: Building2,
     color: 'bg-green-500',
+    section: 'properties',
     files: [
-      { name: 'Property Listings', type: 'data', path: '/properties/list' },
-      { name: 'Property Types', type: 'config', path: '/properties/types' },
-      { name: 'Location Management', type: 'component', path: '/properties/locations' },
-      { name: 'Media Gallery', type: 'media', path: '/properties/media' }
+      { name: 'Property Listings', section: 'properties' },
+      { name: 'Property Types', section: 'properties' },
+      { name: 'Location Management', section: 'locations' },
+      { name: 'Media Gallery', section: 'media' }
     ]
   },
   {
@@ -39,11 +132,12 @@ const fileCategories = [
     name: 'Analytics & Reports',
     icon: BarChart3,
     color: 'bg-blue-500',
+    section: 'analytics',
     files: [
-      { name: 'Dashboard Stats', type: 'report', path: '/analytics/dashboard' },
-      { name: 'Revenue Reports', type: 'report', path: '/analytics/revenue' },
-      { name: 'User Activity', type: 'log', path: '/analytics/activity' },
-      { name: 'Performance Metrics', type: 'data', path: '/analytics/performance' }
+      { name: 'Dashboard Stats', section: 'analytics' },
+      { name: 'Revenue Reports', section: 'reports' },
+      { name: 'User Activity', section: 'analytics' },
+      { name: 'Performance Metrics', section: 'analytics' }
     ]
   },
   {
@@ -51,112 +145,13 @@ const fileCategories = [
     name: 'System Configuration',
     icon: Cog,
     color: 'bg-gray-500',
+    section: 'settings',
     files: [
-      { name: 'SMTP Settings', type: 'config', path: '/system/smtp' },
-      { name: 'SEO Configuration', type: 'config', path: '/system/seo' },
-      { name: 'API Settings', type: 'config', path: '/system/api' },
-      { name: 'Database Config', type: 'config', path: '/system/database' }
+      { name: 'SMTP Settings', section: 'smtp' },
+      { name: 'SEO Configuration', section: 'seo' },
+      { name: 'API Settings', section: 'settings' },
+      { name: 'Database Config', section: 'settings' }
     ]
-  },
-  {
-    id: 'financial',
-    name: 'Financial Management',
-    icon: CreditCard,
-    color: 'bg-emerald-500',
-    files: [
-      { name: 'Billing System', type: 'component', path: '/financial/billing' },
-      { name: 'Payment Methods', type: 'config', path: '/financial/payments' },
-      { name: 'Transaction Logs', type: 'log', path: '/financial/transactions' },
-      { name: 'Revenue Analytics', type: 'report', path: '/financial/revenue' }
-    ]
-  }
-];
-
-// Desktop Apps Configuration
-const desktopApps = [
-  { 
-    id: 'dashboard', 
-    name: 'Dashboard', 
-    icon: BarChart3, 
-    component: 'AdminDashboardStats',
-    color: 'bg-blue-500'
-  },
-  { 
-    id: 'users', 
-    name: 'Users', 
-    icon: Users, 
-    component: 'UserManagement',
-    color: 'bg-purple-500'
-  },
-  { 
-    id: 'properties', 
-    name: 'Properties', 
-    icon: Building2, 
-    component: 'PropertyManagement',
-    color: 'bg-green-500'
-  },
-  { 
-    id: 'security', 
-    name: 'Security', 
-    icon: Shield, 
-    component: 'SecurityComplianceDashboard',
-    color: 'bg-red-500'
-  },
-  { 
-    id: 'analytics', 
-    name: 'Analytics', 
-    icon: BarChart3, 
-    component: 'RealTimeDashboardStats',
-    color: 'bg-yellow-500'
-  },
-  { 
-    id: 'messages', 
-    name: 'Messages', 
-    icon: MessageSquare, 
-    component: 'CustomerServiceHub',
-    color: 'bg-pink-500'
-  },
-  { 
-    id: 'tools', 
-    name: 'Tools', 
-    icon: Wrench, 
-    component: 'ToolsManagement',
-    color: 'bg-indigo-500'
-  },
-  { 
-    id: 'reports', 
-    name: 'Reports', 
-    icon: FileText, 
-    component: 'SystemReports',
-    color: 'bg-orange-500'
-  },
-  { 
-    id: 'settings', 
-    name: 'Settings', 
-    icon: Settings, 
-    component: 'SMTPSettings',
-    color: 'bg-gray-500'
-  },
-  { 
-    id: 'billing', 
-    name: 'Billing', 
-    icon: CreditCard, 
-    component: 'BillingManagement',
-    color: 'bg-emerald-500'
-  },
-  { 
-    id: 'seo', 
-    name: 'SEO', 
-    icon: Globe, 
-    component: 'SEOSettings',
-    color: 'bg-cyan-500'
-  },
-  { 
-    id: 'kyc', 
-    name: 'KYC Review', 
-    icon: CheckCircle, 
-    component: 'KYCReviewSystem',
-    color: 'bg-teal-500'
   }
 ];
 
@@ -164,7 +159,7 @@ interface Window {
   id: string;
   appId: string;
   title: string;
-  component: string;
+  section: string;
   position: { x: number; y: number };
   size: { width: number; height: number };
   isMinimized: boolean;
@@ -176,6 +171,7 @@ export const MacOSAdminDesktop = () => {
   const { user, profile } = useAuth();
   const [openWindows, setOpenWindows] = useState<Window[]>([]);
   const [activeWindow, setActiveWindow] = useState<string | null>(null);
+  const [activeSection, setActiveSection] = useState('dashboard');
   const [time, setTime] = useState(new Date());
   const [showSpotlight, setShowSpotlight] = useState(false);
   const [showStartMenu, setShowStartMenu] = useState(false);
@@ -192,6 +188,7 @@ export const MacOSAdminDesktop = () => {
     const existingWindow = openWindows.find(w => w.appId === app.id);
     if (existingWindow) {
       setActiveWindow(existingWindow.id);
+      restoreWindow(existingWindow.id);
       return;
     }
 
@@ -199,12 +196,12 @@ export const MacOSAdminDesktop = () => {
       id: `${app.id}-${Date.now()}`,
       appId: app.id,
       title: app.name,
-      component: app.component,
+      section: app.section,
       position: { 
         x: 100 + openWindows.length * 30, 
         y: 100 + openWindows.length * 30 
       },
-      size: { width: 800, height: 600 },
+      size: { width: 1000, height: 700 },
       isMinimized: false,
       isMaximized: false,
       zIndex: openWindows.length + 1
@@ -212,6 +209,36 @@ export const MacOSAdminDesktop = () => {
 
     setOpenWindows([...openWindows, newWindow]);
     setActiveWindow(newWindow.id);
+    setActiveSection(app.section);
+  };
+
+  const openSection = (section: string, title: string) => {
+    const existingWindow = openWindows.find(w => w.section === section);
+    if (existingWindow) {
+      setActiveWindow(existingWindow.id);
+      restoreWindow(existingWindow.id);
+      return;
+    }
+
+    const newWindow: Window = {
+      id: `${section}-${Date.now()}`,
+      appId: section,
+      title: title,
+      section: section,
+      position: { 
+        x: 150 + openWindows.length * 30, 
+        y: 150 + openWindows.length * 30 
+      },
+      size: { width: 1000, height: 700 },
+      isMinimized: false,
+      isMaximized: false,
+      zIndex: openWindows.length + 1
+    };
+
+    setOpenWindows([...openWindows, newWindow]);
+    setActiveWindow(newWindow.id);
+    setActiveSection(section);
+    setShowStartMenu(false);
   };
 
   const closeWindow = (windowId: string) => {
@@ -287,27 +314,6 @@ export const MacOSAdminDesktop = () => {
     );
   };
 
-  const openFileExplorer = (category: any, file?: any) => {
-    const newWindow: Window = {
-      id: `explorer-${Date.now()}`,
-      appId: 'file-explorer',
-      title: file ? `${file.name}` : `File Explorer - ${category.name}`,
-      component: 'FileExplorer',
-      position: { 
-        x: 150 + openWindows.length * 30, 
-        y: 150 + openWindows.length * 30 
-      },
-      size: { width: 900, height: 700 },
-      isMinimized: false,
-      isMaximized: false,
-      zIndex: openWindows.length + 1
-    };
-
-    setOpenWindows([...openWindows, newWindow]);
-    setActiveWindow(newWindow.id);
-    setShowStartMenu(false);
-  };
-
   useEffect(() => {
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', handleMouseUp);
@@ -326,9 +332,11 @@ export const MacOSAdminDesktop = () => {
             onClick={() => setShowStartMenu(!showStartMenu)}
             className="hover:bg-white/10 px-2 py-1 rounded text-xs flex items-center space-x-1"
           >
-            <Apple className="w-4 h-4" />
+            <div className="w-4 h-4 text-white flex items-center justify-center">
+              <AnimatedLogo className="scale-75" />
+            </div>
           </button>
-          <span className="font-medium">Admin Desktop</span>
+          <span className="font-medium">Astra Villa Admin</span>
           <button 
             onClick={() => setShowSpotlight(true)}
             className="hover:bg-white/10 px-2 py-1 rounded text-xs"
@@ -417,44 +425,13 @@ export const MacOSAdminDesktop = () => {
             
             {/* Window Content */}
             <div className="h-[calc(100%-2rem)] bg-white overflow-auto">
-              {window.appId === 'file-explorer' ? (
-                <div className="p-6">
-                  <div className="flex items-center space-x-2 mb-6">
-                    <Folder className="w-5 h-5 text-blue-500" />
-                    <span className="text-lg font-semibold">File Explorer</span>
-                  </div>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {fileCategories.map(category => (
-                      <div key={category.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
-                        <div className="flex items-center space-x-3 mb-3">
-                          <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${category.color}`}>
-                            <category.icon className="w-4 h-4 text-white" />
-                          </div>
-                          <h3 className="font-medium text-gray-800">{category.name}</h3>
-                        </div>
-                        <div className="space-y-2">
-                          {category.files.map((file, idx) => (
-                            <div key={idx} className="flex items-center space-x-2 text-sm text-gray-600 hover:text-gray-800 cursor-pointer">
-                              <FileText className="w-3 h-3" />
-                              <span>{file.name}</span>
-                              <span className="text-xs bg-gray-100 px-2 py-1 rounded">{file.type}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+              {window.section === 'settings' ? (
+                <SystemSettings />
               ) : (
-                <div className="p-6">
-                  <div className="text-center py-20">
-                    <div className="text-6xl mb-4">🚀</div>
-                    <h2 className="text-2xl font-bold text-gray-800 mb-2">{window.title}</h2>
-                    <p className="text-gray-600">Admin module: {window.component}</p>
-                    <p className="text-sm text-gray-500 mt-4">This window would load the actual {window.component} component</p>
-                  </div>
-                </div>
+                <AdminDashboardContent 
+                  activeSection={window.section} 
+                  onSectionChange={setActiveSection}
+                />
               )}
             </div>
           </div>
@@ -490,7 +467,7 @@ export const MacOSAdminDesktop = () => {
           
           {/* File Explorer */}
           <button
-            onClick={() => openFileExplorer({ name: 'All Files' })}
+            onClick={() => openSection('file-explorer', 'File Explorer')}
             className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center text-white hover:scale-110 transition-all duration-200"
             title="File Explorer"
           >
@@ -525,8 +502,11 @@ export const MacOSAdminDesktop = () => {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="p-4 border-b border-gray-200">
-              <h3 className="font-semibold text-gray-800">Admin Control Center</h3>
-              <p className="text-sm text-gray-600">Project Files & Configuration</p>
+              <div className="flex items-center space-x-2 mb-2">
+                <AnimatedLogo className="scale-75" />
+              </div>
+              <h3 className="font-semibold text-gray-800">Astra Villa Admin</h3>
+              <p className="text-sm text-gray-600">Project Management & Configuration</p>
             </div>
             
             <div className="p-2">
@@ -554,12 +534,11 @@ export const MacOSAdminDesktop = () => {
                       {category.files.map((file, idx) => (
                         <button
                           key={idx}
-                          onClick={() => openFileExplorer(category, file)}
+                          onClick={() => openSection(file.section, file.name)}
                           className="w-full flex items-center space-x-2 p-2 hover:bg-gray-50 rounded text-left"
                         >
                           <FileText className="w-3 h-3 text-gray-400" />
                           <span className="text-xs text-gray-600">{file.name}</span>
-                          <span className="text-xs bg-gray-100 px-1 py-0.5 rounded">{file.type}</span>
                         </button>
                       ))}
                     </div>
@@ -571,7 +550,7 @@ export const MacOSAdminDesktop = () => {
         </div>
       )}
 
-      {/* Configurations Panel */}
+      {/* System Configurations Panel */}
       {showConfigurations && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg shadow-2xl w-96 max-h-96 overflow-y-auto">
@@ -586,29 +565,47 @@ export const MacOSAdminDesktop = () => {
             </div>
             
             <div className="p-4 space-y-3">
-              <div className="flex items-center justify-between p-3 border rounded-lg">
-                <div className="flex items-center space-x-3">
-                  <Monitor className="w-5 h-5 text-blue-500" />
-                  <span className="text-sm">Display Settings</span>
-                </div>
-                <button className="text-blue-600 text-sm hover:underline">Configure</button>
-              </div>
-              
-              <div className="flex items-center justify-between p-3 border rounded-lg">
-                <div className="flex items-center space-x-3">
-                  <Database className="w-5 h-5 text-green-500" />
-                  <span className="text-sm">Database Connection</span>
-                </div>
-                <button className="text-green-600 text-sm hover:underline">Manage</button>
-              </div>
-              
-              <div className="flex items-center justify-between p-3 border rounded-lg">
+              <button 
+                onClick={() => {
+                  openSection('settings', 'System Settings');
+                  setShowConfigurations(false);
+                }}
+                className="w-full flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50"
+              >
                 <div className="flex items-center space-x-3">
                   <Settings className="w-5 h-5 text-gray-500" />
-                  <span className="text-sm">System Preferences</span>
+                  <span className="text-sm">System Settings</span>
                 </div>
-                <button className="text-gray-600 text-sm hover:underline">Edit</button>
-              </div>
+                <span className="text-blue-600 text-sm">Configure</span>
+              </button>
+              
+              <button 
+                onClick={() => {
+                  openSection('database', 'Database Management');
+                  setShowConfigurations(false);
+                }}
+                className="w-full flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50"
+              >
+                <div className="flex items-center space-x-3">
+                  <Database className="w-5 h-5 text-green-500" />
+                  <span className="text-sm">Database Management</span>
+                </div>
+                <span className="text-green-600 text-sm">Manage</span>
+              </button>
+              
+              <button 
+                onClick={() => {
+                  openSection('monitoring', 'System Monitoring');
+                  setShowConfigurations(false);
+                }}
+                className="w-full flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50"
+              >
+                <div className="flex items-center space-x-3">
+                  <Monitor className="w-5 h-5 text-blue-500" />
+                  <span className="text-sm">System Monitoring</span>
+                </div>
+                <span className="text-blue-600 text-sm">View</span>
+              </button>
             </div>
           </div>
         </div>
