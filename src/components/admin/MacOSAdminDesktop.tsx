@@ -6,7 +6,8 @@ import {
   MessageSquare, Wrench, FileText, Mail, CreditCard, Search,
   Globe, CheckCircle, Clock, Wifi, Battery,
   VolumeX, Minimize2, Maximize2, X, Folder, FolderOpen,
-  ChevronRight, Menu, Home, Cog, Monitor, Database, Sun, Moon
+  ChevronRight, Menu, Home, Cog, Monitor, Database, Sun, Moon,
+  LogOut, ChevronDown
 } from 'lucide-react';
 import AnimatedLogo from '@/components/AnimatedLogo';
 import DynamicAdminContent from './DynamicAdminContent';
@@ -169,7 +170,7 @@ interface Window {
 }
 
 export const MacOSAdminDesktop = () => {
-  const { user, profile } = useAuth();
+  const { user, profile, signOut } = useAuth();
   const { theme, setTheme } = useTheme();
   const [openWindows, setOpenWindows] = useState<Window[]>([]);
   const [activeWindow, setActiveWindow] = useState<string | null>(null);
@@ -179,6 +180,7 @@ export const MacOSAdminDesktop = () => {
   const [showStartMenu, setShowStartMenu] = useState(false);
   const [expandedCategories, setExpandedCategories] = useState<string[]>([]);
   const [showConfigurations, setShowConfigurations] = useState(false);
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
   const dragRef = useRef<{ startX: number; startY: number; windowId: string } | null>(null);
 
   useEffect(() => {
@@ -329,6 +331,14 @@ export const MacOSAdminDesktop = () => {
     setTheme(theme === 'dark' ? 'light' : 'dark');
   };
 
+  const handleLogout = async () => {
+    await signOut();
+  };
+
+  const goHome = () => {
+    window.location.href = '/';
+  };
+
   return (
     <div className={`h-screen w-screen bg-gradient-to-br relative overflow-hidden ${
       theme === 'dark' 
@@ -379,6 +389,17 @@ export const MacOSAdminDesktop = () => {
         
         <div className="flex items-center space-x-3 text-xs">
           <button
+            onClick={goHome}
+            className={`flex items-center space-x-1 px-2 py-1 rounded ${
+              theme === 'dark' ? 'hover:bg-blue-600/20' : 'hover:bg-blue-200/40'
+            }`}
+            title="Go to Home"
+          >
+            <Home className="w-3 h-3" />
+            <span className="hidden md:inline">Home</span>
+          </button>
+          
+          <button
             onClick={toggleTheme}
             className={`flex items-center space-x-1 px-2 py-1 rounded ${
               theme === 'dark' ? 'hover:bg-blue-600/20' : 'hover:bg-blue-200/40'
@@ -387,6 +408,92 @@ export const MacOSAdminDesktop = () => {
           >
             {theme === 'dark' ? <Sun className="w-3 h-3" /> : <Moon className="w-3 h-3" />}
           </button>
+          
+          <div className="relative">
+            <button
+              onClick={() => setShowProfileMenu(!showProfileMenu)}
+              className={`flex items-center space-x-1 px-2 py-1 rounded ${
+                theme === 'dark' ? 'hover:bg-blue-600/20' : 'hover:bg-blue-200/40'
+              }`}
+            >
+              <User className="w-3 h-3" />
+              <span className="hidden md:inline">{user?.email?.split('@')[0] || 'Admin'}</span>
+              <ChevronDown className="w-3 h-3" />
+            </button>
+            
+            {showProfileMenu && (
+              <div 
+                className="fixed inset-0 bg-transparent z-40"
+                onClick={() => setShowProfileMenu(false)}
+              >
+                <div 
+                  className={`absolute top-8 right-4 backdrop-blur-md rounded-lg shadow-2xl border w-48 z-50 ${
+                    theme === 'dark'
+                      ? 'bg-blue-950/95 border-blue-700'
+                      : 'bg-white/95 border-blue-200'
+                  }`}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <div className={`p-3 border-b ${
+                    theme === 'dark' ? 'border-blue-700' : 'border-blue-200'
+                  }`}>
+                    <div className="flex items-center space-x-2">
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                        theme === 'dark' ? 'bg-blue-700' : 'bg-blue-100'
+                      }`}>
+                        <User className={`w-4 h-4 ${
+                          theme === 'dark' ? 'text-blue-200' : 'text-blue-600'
+                        }`} />
+                      </div>
+                      <div>
+                        <p className={`text-sm font-medium ${
+                          theme === 'dark' ? 'text-blue-200' : 'text-gray-800'
+                        }`}>
+                          {user?.email?.split('@')[0] || 'Admin'}
+                        </p>
+                        <p className={`text-xs ${
+                          theme === 'dark' ? 'text-blue-300' : 'text-gray-600'
+                        }`}>
+                          {user?.email}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="p-2">
+                    <button
+                      onClick={() => {
+                        openSection('admin-profile', 'Profile Settings');
+                        setShowProfileMenu(false);
+                      }}
+                      className={`w-full flex items-center space-x-2 p-2 rounded text-left ${
+                        theme === 'dark' ? 'hover:bg-blue-800/50' : 'hover:bg-gray-100'
+                      }`}
+                    >
+                      <Settings className="w-4 h-4" />
+                      <span className={`text-sm ${
+                        theme === 'dark' ? 'text-blue-200' : 'text-gray-700'
+                      }`}>Profile Settings</span>
+                    </button>
+                    
+                    <button
+                      onClick={() => {
+                        handleLogout();
+                        setShowProfileMenu(false);
+                      }}
+                      className={`w-full flex items-center space-x-2 p-2 rounded text-left ${
+                        theme === 'dark' ? 'hover:bg-red-900/50' : 'hover:bg-red-50'
+                      }`}
+                    >
+                      <LogOut className="w-4 h-4 text-red-500" />
+                      <span className={`text-sm text-red-500`}>Logout</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+          
           <Wifi className="w-4 h-4" />
           <Battery className="w-4 h-4" />
           <VolumeX className="w-4 h-4" />
