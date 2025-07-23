@@ -536,14 +536,19 @@
     min-height: 48px !important;
   }
   
-  /* Tablet grid layouts - 2 columns instead of 1 */
+  /* Tablet grid layouts - Optimized 2-3 column layout */
   .tablet-app-layout .card-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 1.5rem !important;
+  }
+
+  .tablet-app-layout .responsive-grid-properties {
     grid-template-columns: repeat(2, 1fr) !important;
     gap: 1.5rem !important;
   }
   
   .tablet-app-layout .image-gallery {
-    grid-template-columns: repeat(3, 1fr) !important;
+    grid-template-columns: repeat(2, 1fr) !important;
     gap: 1rem !important;
   }
   
@@ -565,52 +570,52 @@
     padding: 1rem 2rem !important;
   }
   
-  /* Tablet typography */
+  /* Tablet typography - Better balanced sizing */
   .tablet-app-layout h1 {
-    font-size: 2.25rem !important;
-    line-height: 2.75rem !important;
-    font-weight: 800 !important;
-    margin-bottom: 1.25rem !important;
-  }
-  
-  .tablet-app-layout h2 {
     font-size: 1.875rem !important;
     line-height: 2.25rem !important;
     font-weight: 700 !important;
     margin-bottom: 1rem !important;
   }
   
-  .tablet-app-layout h3 {
+  .tablet-app-layout h2 {
     font-size: 1.5rem !important;
     line-height: 2rem !important;
+    font-weight: 600 !important;
+    margin-bottom: 0.875rem !important;
+  }
+  
+  .tablet-app-layout h3 {
+    font-size: 1.25rem !important;
+    line-height: 1.75rem !important;
     font-weight: 600 !important;
     margin-bottom: 0.75rem !important;
   }
   
   .tablet-app-layout p {
-    font-size: 1.125rem !important;
-    line-height: 1.75rem !important;
-    margin-bottom: 1rem !important;
+    font-size: 1rem !important;
+    line-height: 1.625rem !important;
+    margin-bottom: 0.875rem !important;
   }
   
-  /* Tablet buttons and inputs */
+  /* Tablet buttons and inputs - Better sizing */
   .tablet-app-layout input,
   .tablet-app-layout select,
   .tablet-app-layout button,
   .tablet-app-layout textarea {
-    font-size: 18px !important;
-    min-height: 48px !important;
-    padding: 1rem 1.25rem !important;
+    font-size: 16px !important;
+    min-height: 44px !important;
+    padding: 0.75rem 1rem !important;
   }
   
   .tablet-app-layout .btn-primary,
   .tablet-app-layout .btn-secondary,
   .tablet-app-layout button[type="submit"] {
-    min-height: 52px !important;
-    font-size: 1.125rem !important;
+    min-height: 48px !important;
+    font-size: 1rem !important;
     font-weight: 600 !important;
-    padding: 1rem 2rem !important;
-    border-radius: 1rem !important;
+    padding: 0.875rem 1.5rem !important;
+    border-radius: 0.75rem !important;
   }
   
   /* Tablet content sections */

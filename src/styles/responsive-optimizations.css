@@ -48,7 +48,16 @@
   }
   
   .responsive-grid-properties {
-    @apply grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4;
+    @apply grid gap-3 grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4;
+  }
+
+  /* Tablet-optimized grid layouts */
+  .tablet-optimized-grid {
+    @apply grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3;
+  }
+
+  .mobile-optimized-grid {
+    @apply grid gap-3 grid-cols-1 sm:grid-cols-1;
   }
 
   /* Compact containers */
@@ -78,30 +87,44 @@
     @apply grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-3 lg:grid-cols-3 lg:gap-4;
   }
 
-  /* Responsive text sizing */
+  /* Responsive text sizing - Better tablet support */
   .text-responsive-xs {
-    @apply text-xs sm:text-sm lg:text-base;
+    @apply text-xs sm:text-sm md:text-sm lg:text-base;
   }
   
   .text-responsive-sm {
-    @apply text-sm sm:text-base lg:text-lg;
+    @apply text-sm sm:text-base md:text-base lg:text-lg;
   }
   
   .text-responsive-base {
-    @apply text-base sm:text-lg lg:text-xl;
+    @apply text-sm sm:text-base md:text-lg lg:text-xl;
   }
   
   .text-responsive-lg {
-    @apply text-lg sm:text-xl lg:text-2xl;
+    @apply text-base sm:text-lg md:text-xl lg:text-2xl;
   }
 
-  /* Enhanced button sizing */
+  /* Tablet-specific text classes */
+  .tablet-text-sm {
+    @apply text-sm md:text-base;
+  }
+
+  .tablet-text-base {
+    @apply text-base md:text-lg;
+  }
+
+  /* Enhanced button sizing - Better tablet support */
   .btn-responsive {
-    @apply px-3 py-2 text-sm sm:px-4 sm:py-2.5 sm:text-base lg:px-6 lg:py-3 lg:text-lg;
+    @apply px-3 py-2 text-sm sm:px-4 sm:py-2.5 sm:text-base md:px-5 md:py-2.5 md:text-base lg:px-6 lg:py-3 lg:text-lg;
   }
   
   .btn-responsive-sm {
-    @apply px-2 py-1 text-xs sm:px-3 sm:py-1.5 sm:text-sm lg:px-4 lg:py-2 lg:text-base;
+    @apply px-2 py-1 text-xs sm:px-3 sm:py-1.5 sm:text-sm md:px-4 md:py-2 md:text-sm lg:px-4 lg:py-2 lg:text-base;
+  }
+
+  /* Tablet-optimized buttons */
+  .btn-tablet {
+    @apply px-4 py-2.5 text-base md:px-5 md:py-3 md:text-base;
   }
 
   /* Optimized padding and margins */
@@ -198,17 +221,37 @@
   .mobile-full-width {
     @apply w-full max-w-none;
   }
+
+  /* Force proper mobile grid layouts */
+  .responsive-grid-properties {
+    @apply grid-cols-1 gap-3 !important;
+  }
 }
 
 @media (min-width: 641px) and (max-width: 1024px) {
   .tablet-balanced {
-    @apply text-sm space-y-2;
+    @apply text-base space-y-3;
+  }
+
+  /* Ensure tablet gets 2-column layouts */
+  .responsive-grid-properties {
+    @apply grid-cols-2 gap-4 !important;
+  }
+
+  /* Better tablet button sizing */
+  .btn-responsive {
+    @apply px-5 py-2.5 text-base !important;
   }
 }
 
 @media (min-width: 1025px) {
   .desktop-spacious {
     @apply text-base space-y-4;
+  }
+
+  /* Desktop 3-4 column layouts */
+  .responsive-grid-properties {
+    @apply grid-cols-3 xl:grid-cols-4 gap-6 !important;
   }
 }
 

@@ -269,10 +269,9 @@ const Index = () => {
     <div className={cn(
       "min-h-screen text-foreground relative",
       isMobile ? "w-full overflow-x-hidden mobile-app-layout" : 
-      isTablet ? "w-full overflow-x-hidden tablet-app-layout" : ""
-    )} style={{ 
-      zoom: isMobile ? '100%' : isTablet ? '95%' : '90%' 
-    }}>
+      isTablet ? "w-full overflow-x-hidden tablet-app-layout" : "",
+      "px-responsive py-responsive"
+    )}>
       {/* Background Wallpaper Layer */}
       <div 
         className="fixed inset-0 z-0 opacity-30 dark:opacity-20"
