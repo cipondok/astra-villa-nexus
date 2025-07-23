@@ -179,6 +179,15 @@
     @apply bg-secondary text-secondary-foreground border border-border rounded-full px-2 py-1 text-xs font-medium;
   }
 
+  /* 3D Animation Utilities */
+  .perspective-1000 {
+    perspective: 1000px;
+  }
+
+  .transform-3d {
+    transform-style: preserve-3d;
+  }
+
   /* iOS-Style Components */
   .card-ios {
     @apply bg-card text-card-foreground border border-border/30 rounded-2xl shadow-sm transition-all duration-300 hover:shadow-md hover:border-border/50;

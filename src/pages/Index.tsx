@@ -6,6 +6,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 
+import Property3DAnimation from "@/components/animations/Property3DAnimation";
 import ResponsiveAIChatWidget from "@/components/ai/ResponsiveAIChatWidget";
 import ScrollToTopButton from "@/components/ui/ScrollToTopButton";
 import { supabase } from "@/integrations/supabase/client";
@@ -299,8 +300,8 @@ const Index = () => {
               "animate-fade-in flex flex-col items-center gap-1",
               isMobile ? "mb-2" : "mb-3"
             )}>
-              {/* Compact Title + Badge in One Line */}
-              <div className="flex flex-wrap items-center justify-center gap-2">
+              {/* Title with 3D Animation */}
+              <div className="flex flex-wrap items-center justify-center gap-3">
                 <h1 className={cn(
                   "bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 dark:from-blue-300 dark:via-purple-400 dark:to-cyan-300 bg-clip-text text-transparent font-bold tracking-tight",
                   isMobile ? "text-sm" : "text-lg md:text-xl"
@@ -308,12 +309,11 @@ const Index = () => {
                   Find Your Perfect Property
                 </h1>
                 
-                <span className={cn(
-                  "bg-gradient-to-r from-blue-500/90 to-purple-600/90 dark:from-blue-400/90 dark:to-purple-500/90 rounded-full px-2 py-0.5 text-white text-xs font-medium border border-white/20 shadow-sm",
-                  isMobile ? "text-xs px-2" : "text-sm px-3"
-                )}>
-                  ✨ AI-Powered
-                </span>
+                {/* 3D Property Animation */}
+                <Property3DAnimation 
+                  isMobile={isMobile}
+                  className="animate-fade-in"
+                />
               </div>
               
               {/* Compact Description */}
