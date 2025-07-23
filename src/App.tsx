@@ -61,8 +61,8 @@ function App() {
               <AuthProvider>
                 <NotificationProvider>
                   <PropertyComparisonProvider>
-                    <ErrorBoundary>
-                      <Router>
+                    <Router>
+                      <ErrorBoundary>
                         <ResponsiveWebLayout>
                           <div className="min-h-screen bg-background text-foreground">
                             <Routes>
@@ -95,8 +95,8 @@ function App() {
                             </Routes>
                           </div>
                         </ResponsiveWebLayout>
-                      </Router>
-                    </ErrorBoundary>
+                      </ErrorBoundary>
+                    </Router>
                   </PropertyComparisonProvider>
                 </NotificationProvider>
               </AuthProvider>
