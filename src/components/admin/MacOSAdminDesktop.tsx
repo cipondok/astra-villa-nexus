@@ -4,8 +4,73 @@ import {
   User, Settings, BarChart3, Shield, Users, Building2, 
   MessageSquare, Wrench, FileText, Mail, CreditCard, Search,
   Globe, CheckCircle, Clock, Apple, Wifi, Battery,
-  VolumeX, Minimize2, Maximize2, X
+  VolumeX, Minimize2, Maximize2, X, Folder, FolderOpen,
+  ChevronRight, Menu, Home, Cog, Monitor, Database
 } from 'lucide-react';
+
+// File Categories Configuration
+const fileCategories = [
+  {
+    id: 'admin',
+    name: 'Administration',
+    icon: Shield,
+    color: 'bg-red-500',
+    files: [
+      { name: 'User Management', type: 'component', path: '/admin/users' },
+      { name: 'Role Permissions', type: 'config', path: '/admin/roles' },
+      { name: 'System Logs', type: 'log', path: '/admin/logs' },
+      { name: 'Audit Trail', type: 'report', path: '/admin/audit' }
+    ]
+  },
+  {
+    id: 'properties',
+    name: 'Properties',
+    icon: Building2,
+    color: 'bg-green-500',
+    files: [
+      { name: 'Property Listings', type: 'data', path: '/properties/list' },
+      { name: 'Property Types', type: 'config', path: '/properties/types' },
+      { name: 'Location Management', type: 'component', path: '/properties/locations' },
+      { name: 'Media Gallery', type: 'media', path: '/properties/media' }
+    ]
+  },
+  {
+    id: 'analytics',
+    name: 'Analytics & Reports',
+    icon: BarChart3,
+    color: 'bg-blue-500',
+    files: [
+      { name: 'Dashboard Stats', type: 'report', path: '/analytics/dashboard' },
+      { name: 'Revenue Reports', type: 'report', path: '/analytics/revenue' },
+      { name: 'User Activity', type: 'log', path: '/analytics/activity' },
+      { name: 'Performance Metrics', type: 'data', path: '/analytics/performance' }
+    ]
+  },
+  {
+    id: 'system',
+    name: 'System Configuration',
+    icon: Cog,
+    color: 'bg-gray-500',
+    files: [
+      { name: 'SMTP Settings', type: 'config', path: '/system/smtp' },
+      { name: 'SEO Configuration', type: 'config', path: '/system/seo' },
+      { name: 'API Settings', type: 'config', path: '/system/api' },
+      { name: 'Database Config', type: 'config', path: '/system/database' }
+    ]
+  },
+  {
+    id: 'financial',
+    name: 'Financial Management',
+    icon: CreditCard,
+    color: 'bg-emerald-500',
+    files: [
+      { name: 'Billing System', type: 'component', path: '/financial/billing' },
+      { name: 'Payment Methods', type: 'config', path: '/financial/payments' },
+      { name: 'Transaction Logs', type: 'log', path: '/financial/transactions' },
+      { name: 'Revenue Analytics', type: 'report', path: '/financial/revenue' }
+    ]
+  }
+];
 
 // Desktop Apps Configuration
 const desktopApps = [
@@ -113,6 +178,9 @@ export const MacOSAdminDesktop = () => {
   const [activeWindow, setActiveWindow] = useState<string | null>(null);
   const [time, setTime] = useState(new Date());
   const [showSpotlight, setShowSpotlight] = useState(false);
+  const [showStartMenu, setShowStartMenu] = useState(false);
+  const [expandedCategories, setExpandedCategories] = useState<string[]>([]);
+  const [showConfigurations, setShowConfigurations] = useState(false);
   const dragRef = useRef<{ startX: number; startY: number; windowId: string } | null>(null);
 
   useEffect(() => {
@@ -211,6 +279,35 @@ export const MacOSAdminDesktop = () => {
     dragRef.current = null;
   };
 
+  const toggleCategory = (categoryId: string) => {
+    setExpandedCategories(prev => 
+      prev.includes(categoryId) 
+        ? prev.filter(id => id !== categoryId)
+        : [...prev, categoryId]
+    );
+  };
+
+  const openFileExplorer = (category: any, file?: any) => {
+    const newWindow: Window = {
+      id: `explorer-${Date.now()}`,
+      appId: 'file-explorer',
+      title: file ? `${file.name}` : `File Explorer - ${category.name}`,
+      component: 'FileExplorer',
+      position: { 
+        x: 150 + openWindows.length * 30, 
+        y: 150 + openWindows.length * 30 
+      },
+      size: { width: 900, height: 700 },
+      isMinimized: false,
+      isMaximized: false,
+      zIndex: openWindows.length + 1
+    };
+
+    setOpenWindows([...openWindows, newWindow]);
+    setActiveWindow(newWindow.id);
+    setShowStartMenu(false);
+  };
+
   useEffect(() => {
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', handleMouseUp);
@@ -225,7 +322,12 @@ export const MacOSAdminDesktop = () => {
       {/* Menu Bar */}
       <div className="h-8 bg-black/20 backdrop-blur-md border-b border-white/10 flex items-center justify-between px-4 text-white text-sm relative z-50">
         <div className="flex items-center space-x-4">
-          <Apple className="w-4 h-4" />
+          <button 
+            onClick={() => setShowStartMenu(!showStartMenu)}
+            className="hover:bg-white/10 px-2 py-1 rounded text-xs flex items-center space-x-1"
+          >
+            <Apple className="w-4 h-4" />
+          </button>
           <span className="font-medium">Admin Desktop</span>
           <button 
             onClick={() => setShowSpotlight(true)}
@@ -235,7 +337,12 @@ export const MacOSAdminDesktop = () => {
           </button>
           <button className="hover:bg-white/10 px-2 py-1 rounded text-xs">Edit</button>
           <button className="hover:bg-white/10 px-2 py-1 rounded text-xs">View</button>
-          <button className="hover:bg-white/10 px-2 py-1 rounded text-xs">Window</button>
+          <button 
+            onClick={() => setShowConfigurations(true)}
+            className="hover:bg-white/10 px-2 py-1 rounded text-xs"
+          >
+            Window
+          </button>
         </div>
         
         <div className="flex items-center space-x-3 text-xs">
@@ -274,17 +381,35 @@ export const MacOSAdminDesktop = () => {
               <div className="flex items-center space-x-2">
                 <div className="flex space-x-1">
                   <button 
-                    onClick={() => closeWindow(window.id)}
-                    className="w-3 h-3 bg-red-500 rounded-full hover:bg-red-600"
-                  />
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      closeWindow(window.id);
+                    }}
+                    className="w-3 h-3 bg-red-500 rounded-full hover:bg-red-600 flex items-center justify-center"
+                    title="Close"
+                  >
+                    <X className="w-2 h-2 text-white" />
+                  </button>
                   <button 
-                    onClick={() => minimizeWindow(window.id)}
-                    className="w-3 h-3 bg-yellow-500 rounded-full hover:bg-yellow-600"
-                  />
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      minimizeWindow(window.id);
+                    }}
+                    className="w-3 h-3 bg-yellow-500 rounded-full hover:bg-yellow-600 flex items-center justify-center"
+                    title="Minimize"
+                  >
+                    <Minimize2 className="w-2 h-2 text-white" />
+                  </button>
                   <button 
-                    onClick={() => maximizeWindow(window.id)}
-                    className="w-3 h-3 bg-green-500 rounded-full hover:bg-green-600"
-                  />
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      maximizeWindow(window.id);
+                    }}
+                    className="w-3 h-3 bg-green-500 rounded-full hover:bg-green-600 flex items-center justify-center"
+                    title="Maximize"
+                  >
+                    <Maximize2 className="w-2 h-2 text-white" />
+                  </button>
                 </div>
                 <span className="text-sm font-medium text-gray-700">{window.title}</span>
               </div>
@@ -292,14 +417,45 @@ export const MacOSAdminDesktop = () => {
             
             {/* Window Content */}
             <div className="h-[calc(100%-2rem)] bg-white overflow-auto">
-              <div className="p-6">
-                <div className="text-center py-20">
-                  <div className="text-6xl mb-4">🚀</div>
-                  <h2 className="text-2xl font-bold text-gray-800 mb-2">{window.title}</h2>
-                  <p className="text-gray-600">Admin module: {window.component}</p>
-                  <p className="text-sm text-gray-500 mt-4">This window would load the actual {window.component} component</p>
+              {window.appId === 'file-explorer' ? (
+                <div className="p-6">
+                  <div className="flex items-center space-x-2 mb-6">
+                    <Folder className="w-5 h-5 text-blue-500" />
+                    <span className="text-lg font-semibold">File Explorer</span>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {fileCategories.map(category => (
+                      <div key={category.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+                        <div className="flex items-center space-x-3 mb-3">
+                          <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${category.color}`}>
+                            <category.icon className="w-4 h-4 text-white" />
+                          </div>
+                          <h3 className="font-medium text-gray-800">{category.name}</h3>
+                        </div>
+                        <div className="space-y-2">
+                          {category.files.map((file, idx) => (
+                            <div key={idx} className="flex items-center space-x-2 text-sm text-gray-600 hover:text-gray-800 cursor-pointer">
+                              <FileText className="w-3 h-3" />
+                              <span>{file.name}</span>
+                              <span className="text-xs bg-gray-100 px-2 py-1 rounded">{file.type}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <div className="p-6">
+                  <div className="text-center py-20">
+                    <div className="text-6xl mb-4">🚀</div>
+                    <h2 className="text-2xl font-bold text-gray-800 mb-2">{window.title}</h2>
+                    <p className="text-gray-600">Admin module: {window.component}</p>
+                    <p className="text-sm text-gray-500 mt-4">This window would load the actual {window.component} component</p>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         ))}
@@ -332,6 +488,15 @@ export const MacOSAdminDesktop = () => {
             );
           })}
           
+          {/* File Explorer */}
+          <button
+            onClick={() => openFileExplorer({ name: 'All Files' })}
+            className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center text-white hover:scale-110 transition-all duration-200"
+            title="File Explorer"
+          >
+            <Folder className="w-6 h-6" />
+          </button>
+          
           {/* Divider */}
           <div className="w-px h-8 bg-white/30" />
           
@@ -348,6 +513,106 @@ export const MacOSAdminDesktop = () => {
           ))}
         </div>
       </div>
+
+      {/* Start Menu */}
+      {showStartMenu && (
+        <div 
+          className="fixed inset-0 bg-transparent z-40"
+          onClick={() => setShowStartMenu(false)}
+        >
+          <div 
+            className="absolute top-8 left-4 bg-white/95 backdrop-blur-md rounded-lg shadow-2xl border border-gray-200 w-80 max-h-96 overflow-y-auto z-50"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="p-4 border-b border-gray-200">
+              <h3 className="font-semibold text-gray-800">Admin Control Center</h3>
+              <p className="text-sm text-gray-600">Project Files & Configuration</p>
+            </div>
+            
+            <div className="p-2">
+              {fileCategories.map(category => (
+                <div key={category.id} className="mb-2">
+                  <button
+                    onClick={() => toggleCategory(category.id)}
+                    className="w-full flex items-center justify-between p-3 hover:bg-gray-100 rounded-lg text-left"
+                  >
+                    <div className="flex items-center space-x-3">
+                      <div className={`w-6 h-6 rounded-lg flex items-center justify-center ${category.color}`}>
+                        <category.icon className="w-3 h-3 text-white" />
+                      </div>
+                      <span className="text-sm font-medium text-gray-800">{category.name}</span>
+                    </div>
+                    <ChevronRight 
+                      className={`w-4 h-4 text-gray-400 transition-transform ${
+                        expandedCategories.includes(category.id) ? 'rotate-90' : ''
+                      }`} 
+                    />
+                  </button>
+                  
+                  {expandedCategories.includes(category.id) && (
+                    <div className="ml-6 space-y-1">
+                      {category.files.map((file, idx) => (
+                        <button
+                          key={idx}
+                          onClick={() => openFileExplorer(category, file)}
+                          className="w-full flex items-center space-x-2 p-2 hover:bg-gray-50 rounded text-left"
+                        >
+                          <FileText className="w-3 h-3 text-gray-400" />
+                          <span className="text-xs text-gray-600">{file.name}</span>
+                          <span className="text-xs bg-gray-100 px-1 py-0.5 rounded">{file.type}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Configurations Panel */}
+      {showConfigurations && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-2xl w-96 max-h-96 overflow-y-auto">
+            <div className="p-4 border-b border-gray-200 flex items-center justify-between">
+              <h3 className="font-semibold text-gray-800">System Configurations</h3>
+              <button 
+                onClick={() => setShowConfigurations(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="p-4 space-y-3">
+              <div className="flex items-center justify-between p-3 border rounded-lg">
+                <div className="flex items-center space-x-3">
+                  <Monitor className="w-5 h-5 text-blue-500" />
+                  <span className="text-sm">Display Settings</span>
+                </div>
+                <button className="text-blue-600 text-sm hover:underline">Configure</button>
+              </div>
+              
+              <div className="flex items-center justify-between p-3 border rounded-lg">
+                <div className="flex items-center space-x-3">
+                  <Database className="w-5 h-5 text-green-500" />
+                  <span className="text-sm">Database Connection</span>
+                </div>
+                <button className="text-green-600 text-sm hover:underline">Manage</button>
+              </div>
+              
+              <div className="flex items-center justify-between p-3 border rounded-lg">
+                <div className="flex items-center space-x-3">
+                  <Settings className="w-5 h-5 text-gray-500" />
+                  <span className="text-sm">System Preferences</span>
+                </div>
+                <button className="text-gray-600 text-sm hover:underline">Edit</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Spotlight Search */}
       {showSpotlight && (
