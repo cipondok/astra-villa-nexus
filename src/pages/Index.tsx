@@ -270,16 +270,6 @@ const Index = () => {
       "min-h-screen text-foreground relative w-full",
       "container-responsive section-responsive"
     )}>
-      {/* Background Wallpaper Layer */}
-      <div 
-        className="fixed inset-0 z-0 opacity-60 dark:opacity-40"
-        style={{
-          ...backgroundStyle,
-          backgroundAttachment: 'scroll', // Better performance on mobile/wide screens
-          minHeight: '100vh',
-          width: '100vw'
-        }}
-      />
       
       {/* Content Layer with backdrop - Responsive padding */}
       <div className={cn(
