@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAlert } from "@/contexts/AlertContext";
-import { Bell, BellOff, Check, Trash2 } from "lucide-react";
+import { Bell, BellOff, Check, Trash2, X, Eye } from "lucide-react";
 
 interface Notification {
   id: string;
@@ -24,6 +24,11 @@ interface Notification {
 
 const NotificationCenter = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [selectedNotification, setSelectedNotification] = useState<Notification | null>(null);
+  const [detailPosition, setDetailPosition] = useState({ x: 100, y: 100 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const detailRef = useRef<HTMLDivElement>(null);
   const { user } = useAuth();
   const { showSuccess } = useAlert();
   const queryClient = useQueryClient();
@@ -93,10 +98,57 @@ const NotificationCenter = () => {
 
   const unreadCount = notifications?.filter(n => !n.is_read).length || 0;
 
+  // Drag functionality
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (detailRef.current) {
+      setIsDragging(true);
+      const rect = detailRef.current.getBoundingClientRect();
+      setDragOffset({
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top
+      });
+    }
+  };
+
+  const handleMouseMove = (e: MouseEvent) => {
+    if (isDragging && detailRef.current) {
+      setDetailPosition({
+        x: e.clientX - dragOffset.x,
+        y: e.clientY - dragOffset.y
+      });
+    }
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  useEffect(() => {
+    if (isDragging) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+    }
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isDragging, dragOffset]);
+
   const handleNotificationClick = (notification: Notification) => {
     if (!notification.is_read) {
       markAsReadMutation.mutate(notification.id);
     }
+  };
+
+  const openDetailPopup = (notification: Notification) => {
+    setSelectedNotification(notification);
+    if (!notification.is_read) {
+      markAsReadMutation.mutate(notification.id);
+    }
+  };
+
+  const closeDetailPopup = () => {
+    setSelectedNotification(null);
   };
 
   const getNotificationIcon = (type: string) => {
@@ -172,31 +224,43 @@ const NotificationCenter = () => {
                   >
                     <CardContent className="p-4">
                       <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-1">
-                            <span className="text-lg">{getNotificationIcon(notification.type)}</span>
-                            <h4 className="font-medium">{notification.title}</h4>
-                            {!notification.is_read && (
-                              <Badge className="bg-blue-500 text-white text-xs">New</Badge>
-                            )}
-                          </div>
-                          <p className="text-sm text-muted-foreground mb-2">
-                            {notification.message}
-                          </p>
-                          <p className="text-xs text-muted-foreground">
-                            {new Date(notification.created_at).toLocaleString()}
-                          </p>
-                        </div>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            deleteNotificationMutation.mutate(notification.id);
-                          }}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
+                         <div className="flex-1">
+                           <div className="flex items-center gap-2 mb-1">
+                             <span className="text-lg">{getNotificationIcon(notification.type)}</span>
+                             <h4 className="font-medium">{notification.title}</h4>
+                             {!notification.is_read && (
+                               <Badge className="bg-blue-500 text-white text-xs">New</Badge>
+                             )}
+                           </div>
+                           <p className="text-sm text-muted-foreground mb-2">
+                             {notification.message}
+                           </p>
+                           <p className="text-xs text-muted-foreground">
+                             {new Date(notification.created_at).toLocaleString()}
+                           </p>
+                         </div>
+                         <div className="flex gap-1">
+                           <Button
+                             variant="ghost"
+                             size="sm"
+                             onClick={(e) => {
+                               e.stopPropagation();
+                               openDetailPopup(notification);
+                             }}
+                           >
+                             <Eye className="h-4 w-4" />
+                           </Button>
+                           <Button
+                             variant="ghost"
+                             size="sm"
+                             onClick={(e) => {
+                               e.stopPropagation();
+                               deleteNotificationMutation.mutate(notification.id);
+                             }}
+                           >
+                             <Trash2 className="h-4 w-4" />
+                           </Button>
+                         </div>
                       </div>
                     </CardContent>
                   </Card>
@@ -206,6 +270,93 @@ const NotificationCenter = () => {
           </ScrollArea>
         </div>
       </DialogContent>
+      
+      {/* Draggable Detail Popup */}
+      {selectedNotification && (
+        <div 
+          ref={detailRef}
+          className="fixed bg-background border rounded-lg shadow-lg p-6 min-w-96 max-w-2xl z-[60]"
+          style={{
+            left: detailPosition.x,
+            top: detailPosition.y,
+            cursor: isDragging ? 'grabbing' : 'grab'
+          }}
+        >
+          <div 
+            className="flex justify-between items-start mb-4 cursor-grab active:cursor-grabbing"
+            onMouseDown={handleMouseDown}
+          >
+            <div className="flex items-center gap-2">
+              <span className="text-2xl">{getNotificationIcon(selectedNotification.type)}</span>
+              <h3 className="text-lg font-semibold">{selectedNotification.title}</h3>
+              {!selectedNotification.is_read && (
+                <Badge className="bg-blue-500 text-white text-xs">New</Badge>
+              )}
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={closeDetailPopup}
+              className="h-6 w-6 p-0"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
+          
+          <div className="space-y-4">
+            <div>
+              <h4 className="font-medium text-sm text-muted-foreground mb-2">Message</h4>
+              <p className="text-foreground">{selectedNotification.message}</p>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-4 text-sm">
+              <div>
+                <span className="font-medium text-muted-foreground">Type:</span>
+                <p className="capitalize">{selectedNotification.type}</p>
+              </div>
+              <div>
+                <span className="font-medium text-muted-foreground">Status:</span>
+                <p>{selectedNotification.is_read ? 'Read' : 'Unread'}</p>
+              </div>
+              <div>
+                <span className="font-medium text-muted-foreground">Created:</span>
+                <p>{new Date(selectedNotification.created_at).toLocaleString()}</p>
+              </div>
+              <div>
+                <span className="font-medium text-muted-foreground">Updated:</span>
+                <p>{new Date(selectedNotification.updated_at).toLocaleString()}</p>
+              </div>
+            </div>
+            
+            <div className="flex justify-end gap-2 pt-4 border-t">
+              {!selectedNotification.is_read && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    markAsReadMutation.mutate(selectedNotification.id);
+                    setSelectedNotification({...selectedNotification, is_read: true});
+                  }}
+                >
+                  <Check className="h-4 w-4 mr-2" />
+                  Mark as Read
+                </Button>
+              )}
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={() => {
+                  deleteNotificationMutation.mutate(selectedNotification.id);
+                  closeDetailPopup();
+                }}
+              >
+                <Trash2 className="h-4 w-4 mr-2" />
+                Delete
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </Dialog>
   );
 };
