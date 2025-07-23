@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Search as SearchIcon, Filter, MapPin, Home, Building2 } from 'lucide-react';
-import Navigation from '@/components/Navigation';
 import ProfessionalFooter from '@/components/ProfessionalFooter';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';

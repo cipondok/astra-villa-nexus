@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import Navigation from "@/components/Navigation";
 import ProfessionalFooter from "@/components/ProfessionalFooter";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -284,8 +283,6 @@ const Index = () => {
         isMobile ? "min-h-screen overflow-x-hidden mobile-safe-area" : 
         isTablet ? "min-h-screen overflow-x-hidden tablet-safe-area" : "min-h-screen"
       )}>
-        {/* Desktop Navigation Only */}
-        {!isSmallScreen && <Navigation />}
         
         {/* Hero Section - Responsive */}
         <section className={cn(

@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import Navigation from "@/components/Navigation";
 import ProfessionalFooter from "@/components/ProfessionalFooter";
 import { AdvancedSearchPanel } from "@/components/property/AdvancedSearchPanel";
 import { 
@@ -209,7 +208,6 @@ const Dijual = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navigation />
       
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
