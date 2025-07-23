@@ -8,7 +8,7 @@ import {
   ChevronRight, Menu, Home, Cog, Monitor, Database
 } from 'lucide-react';
 import AnimatedLogo from '@/components/AnimatedLogo';
-import AdminDashboardContent from './AdminDashboardContent';
+import DynamicAdminContent from './DynamicAdminContent';
 import SystemSettings from './SystemSettings';
 
 // Desktop Apps Configuration with real components
@@ -428,7 +428,7 @@ export const MacOSAdminDesktop = () => {
               {window.section === 'settings' ? (
                 <SystemSettings />
               ) : (
-                <AdminDashboardContent 
+                <DynamicAdminContent 
                   activeSection={window.section} 
                   onSectionChange={setActiveSection}
                 />
