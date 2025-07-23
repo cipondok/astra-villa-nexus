@@ -13,6 +13,7 @@ import SEOSettings from "./SEOSettings";
 import AdminKYCReview from "./AdminKYCReview";
 import DatabaseTableManagement from "./DatabaseTableManagement";
 import SecurityMonitoringDashboard from "./SecurityMonitoringDashboard";
+import PaymentSystemStatus from "./PaymentSystemStatus";
 
 interface DynamicAdminContentProps {
   activeSection: string;
@@ -73,6 +74,8 @@ const DynamicAdminContent = ({ activeSection, onSectionChange }: DynamicAdminCon
             </Suspense>
           </div>
         );
+      case "payment-system":
+        return <PaymentSystemStatus />;
       case "system-alerts":
         return (
           <div className="p-6">

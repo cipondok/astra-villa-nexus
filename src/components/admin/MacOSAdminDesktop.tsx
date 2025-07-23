@@ -992,6 +992,20 @@ export const MacOSAdminDesktop = () => {
               
               <button 
                 onClick={() => {
+                  openSection('payment-system', 'Payment System');
+                  setShowConfigurations(false);
+                }}
+                className="w-full flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50"
+              >
+                <div className="flex items-center space-x-3">
+                  <CreditCard className="w-5 h-5 text-orange-500" />
+                  <span className="text-sm">Payment System</span>
+                </div>
+                <span className="text-orange-600 text-sm">Status</span>
+              </button>
+              
+              <button 
+                onClick={() => {
                   openSection('monitoring', 'System Monitoring');
                   setShowConfigurations(false);
                 }}
