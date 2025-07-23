@@ -272,8 +272,13 @@ const Index = () => {
     )}>
       {/* Background Wallpaper Layer */}
       <div 
-        className="fixed inset-0 z-0 opacity-30 dark:opacity-20"
-        style={backgroundStyle}
+        className="fixed inset-0 z-0 opacity-60 dark:opacity-40"
+        style={{
+          ...backgroundStyle,
+          backgroundAttachment: 'scroll', // Better performance on mobile/wide screens
+          minHeight: '100vh',
+          width: '100vw'
+        }}
       />
       
       {/* Content Layer with backdrop - Responsive padding */}
