@@ -1,6 +1,7 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
+import MobilePerformanceOptimizer from './MobilePerformanceOptimizer';
 
 interface MobileOptimizedLayoutProps {
   children: React.ReactNode;
@@ -39,22 +40,24 @@ const MobileOptimizedLayout = ({ children, className }: MobileOptimizedLayoutPro
   const responsive = getResponsiveClasses();
 
   return (
-    <div className={cn(
-      // Device-specific responsive container
-      responsive.container,
-      // Device-appropriate padding and spacing
-      responsive.padding,
-      // Touch and scroll optimizations
-      responsive.touch,
-      // Optimize for device scrolling
-      "overflow-y-auto",
-      className
-    )}>
-      {/* Device-optimized content wrapper */}
-      <div className={responsive.wrapper}>
-        {children}
+    <MobilePerformanceOptimizer>
+      <div className={cn(
+        // Device-specific responsive container
+        responsive.container,
+        // Device-appropriate padding and spacing
+        responsive.padding,
+        // Touch and scroll optimizations
+        responsive.touch,
+        // Optimize for device scrolling
+        "overflow-y-auto",
+        className
+      )}>
+        {/* Device-optimized content wrapper */}
+        <div className={responsive.wrapper}>
+          {children}
+        </div>
       </div>
-    </div>
+    </MobilePerformanceOptimizer>
   );
 };
 
