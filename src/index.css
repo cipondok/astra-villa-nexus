@@ -711,6 +711,15 @@
     }
   }
 
+  @keyframes float {
+    0%, 100% { 
+      transform: rotateX(-10deg) rotateY(15deg) translateY(0px); 
+    }
+    50% { 
+      transform: rotateX(-10deg) rotateY(15deg) translateY(-10px); 
+    }
+  }
+
   .macos-ripple {
     position: relative;
     overflow: hidden;
