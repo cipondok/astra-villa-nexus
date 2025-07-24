@@ -6,7 +6,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 
-import Property3DAnimation from "@/components/animations/Property3DAnimation";
+import AdvancedProperty3D from "@/components/animations/AdvancedProperty3D";
 import ResponsiveAIChatWidget from "@/components/ai/ResponsiveAIChatWidget";
 import ScrollToTopButton from "@/components/ui/ScrollToTopButton";
 import { supabase } from "@/integrations/supabase/client";
@@ -285,51 +285,37 @@ const Index = () => {
         isTablet ? "min-h-screen overflow-x-hidden tablet-safe-area" : "min-h-screen"
       )}>
         
-        {/* Hero Section - Responsive */}
+        {/* Advanced 3D Hero Section - Full Screen */}
+        <section className="relative w-full -mx-6">
+          <AdvancedProperty3D 
+            height={isMobile ? "70vh" : "100vh"}
+            className="w-full"
+          />
+        </section>
+
+        {/* Search Panel Section - Positioned below 3D */}
         <section className={cn(
-          "relative w-full",
-          isMobile ? "px-2 py-1 mobile-safe-top" : 
-          isTablet ? "px-4 py-2 tablet-safe-top" : "px-6 py-4"
+          "relative w-full bg-white/95 dark:bg-black/95 backdrop-blur-sm border-t border-white/20",
+          isMobile ? "px-2 py-4" : "px-6 py-8"
         )}>
           <div className={cn(
             "mx-auto text-center w-full",
             isMobile ? "max-w-full px-1" : "max-w-[1800px]"
           )}>
-            {/* Ultra Compact Hero Section */}
-            <div className={cn(
-              "animate-fade-in flex flex-col items-center gap-1",
-              isMobile ? "mb-2" : "mb-3"
-            )}>
-              {/* Title with 3D Animation */}
-              <div className="flex flex-wrap items-center justify-center gap-3">
-                <h1 className={cn(
-                  "bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 dark:from-blue-300 dark:via-purple-400 dark:to-cyan-300 bg-clip-text text-transparent font-bold tracking-tight",
-                  isMobile ? "text-sm" : "text-lg md:text-xl"
-                )}>
-                  Find Your Perfect Property
-                </h1>
-                
-                {/* 3D Property Animation */}
-                <Property3DAnimation 
-                  isMobile={isMobile}
-                  className="animate-fade-in"
-                />
-              </div>
-              
-              {/* Compact Description */}
-              <p className={cn(
-                "bg-white/90 dark:bg-slate-800/90 text-slate-600 dark:text-slate-300 rounded-full px-3 py-0.5 text-xs font-medium border border-slate-200/50 dark:border-slate-700/50 shadow-sm backdrop-blur-sm",
-                isMobile ? "text-xs px-2" : "text-sm px-4"
-              )}>
-                🔍 Enhanced search & filtering
-              </p>
-            </div>
-            
-            {/* iPhone-style Search Panel - Compact */}
+            {/* Search Panel */}
             <div className={cn(
               "animate-scale-in",
               isMobile ? "max-w-sm mx-auto" : "max-w-4xl mx-auto"
             )}>
+              <div className="mb-6">
+                <h2 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-200 mb-2">
+                  Find Your Dream Property
+                </h2>
+                <p className="text-gray-600 dark:text-gray-400">
+                  🔍 Enhanced search & filtering powered by AI
+                </p>
+              </div>
+              
               <IPhoneSearchPanel
                 language={language}
                 onSearch={(searchData) => {
