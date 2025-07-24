@@ -38,9 +38,9 @@ import ErrorPage from '@/pages/ErrorPage';
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider defaultTheme="light" storageKey="astra-villa-theme">
-        <LanguageProvider>
-          <WebsiteSettingsProvider>
+      <WebsiteSettingsProvider>
+        <ThemeProvider defaultTheme="light" storageKey="astra-villa-theme">
+          <LanguageProvider>
             <AlertProvider>
               <AuthProvider>
                 <NotificationProvider>
@@ -87,9 +87,9 @@ function App() {
                 </NotificationProvider>
               </AuthProvider>
             </AlertProvider>
-          </WebsiteSettingsProvider>
-        </LanguageProvider>
-      </ThemeProvider>
+          </LanguageProvider>
+        </ThemeProvider>
+      </WebsiteSettingsProvider>
       <Toaster />
     </QueryClientProvider>
   );
