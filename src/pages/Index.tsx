@@ -6,7 +6,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 
-import AdvancedProperty3D from "@/components/animations/AdvancedProperty3D";
+
 import ResponsiveAIChatWidget from "@/components/ai/ResponsiveAIChatWidget";
 import ScrollToTopButton from "@/components/ui/ScrollToTopButton";
 import { supabase } from "@/integrations/supabase/client";
@@ -285,12 +285,38 @@ const Index = () => {
         isTablet ? "min-h-screen overflow-x-hidden tablet-safe-area" : "min-h-screen"
       )}>
         
-        {/* Advanced 3D Hero Section - Full Screen */}
-        <section className="relative w-full -mx-6">
-          <AdvancedProperty3D 
-            height={isMobile ? "70vh" : "100vh"}
-            className="w-full"
-          />
+        {/* Simple Hero Section - No Complex Components */}
+        <section className={cn(
+          "relative w-full bg-gradient-to-br from-blue-50 via-purple-50 to-indigo-100 dark:from-gray-900 dark:via-blue-900 dark:to-purple-900",
+          isMobile ? "px-2 py-8 min-h-[60vh]" : "px-6 py-16 min-h-[80vh]"
+        )}>
+          <div className="absolute inset-0 overflow-hidden">
+            {/* Simple animated background shapes */}
+            <div className="absolute top-10 left-10 w-20 h-20 bg-blue-400/20 rounded-full animate-bounce"></div>
+            <div className="absolute top-32 right-16 w-16 h-16 bg-purple-400/20 rounded-lg animate-pulse rotate-45"></div>
+            <div className="absolute bottom-20 left-20 w-24 h-24 bg-indigo-400/20 rounded-full animate-ping"></div>
+            <div className="absolute bottom-32 right-10 w-12 h-12 bg-cyan-400/20 rounded-lg animate-bounce rotate-12"></div>
+          </div>
+
+          <div className="relative z-10 flex flex-col items-center justify-center h-full text-center">
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent mb-6 drop-shadow-lg">
+              Discover Properties
+            </h1>
+            <p className="text-lg md:text-xl text-gray-700 dark:text-gray-200 font-medium bg-white/80 dark:bg-black/80 backdrop-blur-sm rounded-full px-6 py-3 mb-8">
+              🏠 Immersive Property Experience
+            </p>
+            
+            {/* Simple 2D house illustration */}
+            <div className="relative mb-8">
+              <div className="w-32 h-24 bg-gradient-to-br from-blue-500 to-blue-700 rounded-lg shadow-2xl mx-auto animate-pulse">
+                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 w-40 h-8 bg-gradient-to-br from-red-500 to-red-700"
+                     style={{ clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)' }}></div>
+                <div className="absolute top-3 left-3 w-4 h-4 bg-yellow-300 rounded-sm animate-pulse"></div>
+                <div className="absolute top-3 right-3 w-4 h-4 bg-yellow-300 rounded-sm animate-pulse"></div>
+                <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-6 h-12 bg-amber-800 rounded-t-lg"></div>
+              </div>
+            </div>
+          </div>
         </section>
 
         {/* Search Panel Section - Positioned below 3D */}
