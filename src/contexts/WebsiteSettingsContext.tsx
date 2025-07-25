@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -157,7 +156,7 @@ export const useWebsiteSettings = () => {
   return context;
 };
 
-export const WebsiteSettingsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const WebsiteSettingsProvider = React.memo<{ children: React.ReactNode }>(({ children }) => {
   const [settings, setSettings] = useState<WebsiteSettings>(defaultSettings);
 
   const { data: settingsData, isLoading } = useQuery({
@@ -210,7 +209,7 @@ export const WebsiteSettingsProvider: React.FC<{ children: React.ReactNode }> = 
   };
 
   // Apply CSS variables to document root
-  const applyCSSVariables = () => {
+  const applyCSSVariables = React.useCallback(() => {
     const root = document.documentElement;
     
     // Apply light mode colors
@@ -247,27 +246,29 @@ export const WebsiteSettingsProvider: React.FC<{ children: React.ReactNode }> = 
         favicon.href = settings.faviconUrl;
       }
     }
-  };
+  }, [settings]);
 
   // Apply CSS variables whenever settings change
   useEffect(() => {
     applyCSSVariables();
-  }, [settings]);
+  }, [applyCSSVariables]);
 
-  const updateSetting = (key: string, value: any) => {
+  const updateSetting = React.useCallback((key: string, value: any) => {
     setSettings(prev => ({ ...prev, [key]: value }));
-  };
+  }, []);
+
+  const contextValue = React.useMemo(() => ({
+    settings,
+    isLoading,
+    updateSetting,
+    applyCSSVariables
+  }), [settings, isLoading, updateSetting, applyCSSVariables]);
 
   return (
-    <WebsiteSettingsContext.Provider 
-      value={{ 
-        settings, 
-        isLoading, 
-        updateSetting, 
-        applyCSSVariables 
-      }}
-    >
+    <WebsiteSettingsContext.Provider value={contextValue}>
       {children}
     </WebsiteSettingsContext.Provider>
   );
-};
+});
+
+WebsiteSettingsProvider.displayName = 'WebsiteSettingsProvider';
