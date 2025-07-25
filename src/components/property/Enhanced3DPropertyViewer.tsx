@@ -45,38 +45,139 @@ function HouseModel({ scale = 1 }: { scale?: number }) {
 
   return (
     <group ref={meshRef} scale={[validScale, validScale, validScale]}>
-      {/* House Base */}
-      <Box args={[4, 2, 3]} position={[0, 1, 0]}>
-        <meshStandardMaterial color="#e8e8e8" />
+      {/* Foundation */}
+      <Box args={[5, 0.3, 4]} position={[0, 0.15, 0]}>
+        <meshStandardMaterial color="#666666" />
       </Box>
       
-      {/* Roof */}
-      <Box args={[4.5, 0.5, 3.5]} position={[0, 2.5, 0]}>
+      {/* Floor */}
+      <Box args={[4.5, 0.1, 3.5]} position={[0, 0.35, 0]}>
+        <meshStandardMaterial color="#d4b896" />
+      </Box>
+      
+      {/* Front Wall with thickness */}
+      <Box args={[4.5, 2.5, 0.25]} position={[0, 1.65, 1.625]}>
+        <meshStandardMaterial color="#f5f5f5" />
+      </Box>
+      
+      {/* Back Wall */}
+      <Box args={[4.5, 2.5, 0.25]} position={[0, 1.65, -1.625]}>
+        <meshStandardMaterial color="#f5f5f5" />
+      </Box>
+      
+      {/* Left Wall */}
+      <Box args={[0.25, 2.5, 3.5]} position={[-2.25, 1.65, 0]}>
+        <meshStandardMaterial color="#f5f5f5" />
+      </Box>
+      
+      {/* Right Wall */}
+      <Box args={[0.25, 2.5, 3.5]} position={[2.25, 1.65, 0]}>
+        <meshStandardMaterial color="#f5f5f5" />
+      </Box>
+      
+      {/* Hip Roof - Main sections */}
+      {/* Front slope */}
+      <Box args={[5.2, 0.15, 2]} position={[0, 3.2, 0.8]} rotation={[0.5, 0, 0]}>
+        <meshStandardMaterial color="#8b4513" />
+      </Box>
+      
+      {/* Back slope */}
+      <Box args={[5.2, 0.15, 2]} position={[0, 3.2, -0.8]} rotation={[-0.5, 0, 0]}>
+        <meshStandardMaterial color="#8b4513" />
+      </Box>
+      
+      {/* Left slope */}
+      <Box args={[1.5, 0.15, 2]} position={[-1.85, 3.2, 0]} rotation={[0, 0, 0.5]}>
+        <meshStandardMaterial color="#8b4513" />
+      </Box>
+      
+      {/* Right slope */}
+      <Box args={[1.5, 0.15, 2]} position={[1.85, 3.2, 0]} rotation={[0, 0, -0.5]}>
+        <meshStandardMaterial color="#8b4513" />
+      </Box>
+      
+      {/* Roof Ridge */}
+      <Box args={[3.5, 0.2, 0.2]} position={[0, 3.8, 0]}>
+        <meshStandardMaterial color="#654321" />
+      </Box>
+      
+      {/* Door Frame */}
+      <Box args={[0.9, 1.8, 0.15]} position={[1.2, 1.3, 1.7]}>
         <meshStandardMaterial color="#8b4513" />
       </Box>
       
       {/* Door */}
-      <Box args={[0.8, 1.5, 0.1]} position={[1.5, 0.75, 1.51]}>
+      <Box args={[0.8, 1.7, 0.08]} position={[1.2, 1.25, 1.73]}>
         <meshStandardMaterial color="#654321" />
       </Box>
       
-      {/* Windows */}
-      <Box args={[0.8, 0.8, 0.1]} position={[-1, 1.2, 1.51]}>
-        <meshStandardMaterial color="#87ceeb" />
+      {/* Door Handle */}
+      <Sphere args={[0.04]} position={[1.5, 1.2, 1.74]}>
+        <meshStandardMaterial color="#ffd700" />
+      </Sphere>
+      
+      {/* Window Frames */}
+      {/* Left Window Frame */}
+      <Box args={[0.9, 0.9, 0.15]} position={[-1, 1.4, 1.7]}>
+        <meshStandardMaterial color="#ffffff" />
       </Box>
-      <Box args={[0.8, 0.8, 0.1]} position={[0, 1.2, 1.51]}>
-        <meshStandardMaterial color="#87ceeb" />
+      
+      {/* Left Window Glass */}
+      <Box args={[0.8, 0.8, 0.05]} position={[-1, 1.4, 1.72]}>
+        <meshStandardMaterial color="#87ceeb" transparent opacity={0.7} />
+      </Box>
+      
+      {/* Right Window Frame */}
+      <Box args={[0.9, 0.9, 0.15]} position={[0.2, 1.4, 1.7]}>
+        <meshStandardMaterial color="#ffffff" />
+      </Box>
+      
+      {/* Right Window Glass */}
+      <Box args={[0.8, 0.8, 0.05]} position={[0.2, 1.4, 1.72]}>
+        <meshStandardMaterial color="#87ceeb" transparent opacity={0.7} />
+      </Box>
+      
+      {/* Side Window */}
+      <Box args={[0.15, 0.9, 0.9]} position={[2.37, 1.4, -0.5]}>
+        <meshStandardMaterial color="#ffffff" />
+      </Box>
+      
+      <Box args={[0.05, 0.8, 0.8]} position={[2.39, 1.4, -0.5]}>
+        <meshStandardMaterial color="#87ceeb" transparent opacity={0.7} />
+      </Box>
+      
+      {/* Window Sills */}
+      <Box args={[1, 0.1, 0.2]} position={[-1, 0.9, 1.8]}>
+        <meshStandardMaterial color="#d4d4d4" />
+      </Box>
+      
+      <Box args={[1, 0.1, 0.2]} position={[0.2, 0.9, 1.8]}>
+        <meshStandardMaterial color="#d4d4d4" />
+      </Box>
+      
+      {/* Chimney */}
+      <Box args={[0.4, 1.2, 0.4]} position={[-1.5, 4.5, -0.5]}>
+        <meshStandardMaterial color="#8b4513" />
+      </Box>
+      
+      {/* Gutters */}
+      <Box args={[5.4, 0.1, 0.1]} position={[0, 2.8, 1.8]}>
+        <meshStandardMaterial color="#666666" />
+      </Box>
+      
+      <Box args={[5.4, 0.1, 0.1]} position={[0, 2.8, -1.8]}>
+        <meshStandardMaterial color="#666666" />
       </Box>
       
       {/* Property Labels */}
       <Text
-        position={[0, 3.5, 0]}
+        position={[0, 4.5, 0]}
         fontSize={0.3}
         color="#333333"
         anchorX="center"
         anchorY="middle"
       >
-        3D Property Model
+        Realistic 3D House Model
       </Text>
     </group>
   );
