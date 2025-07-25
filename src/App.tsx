@@ -37,15 +37,15 @@ import ErrorPage from '@/pages/ErrorPage';
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <WebsiteSettingsProvider>
-        <ThemeProvider defaultTheme="light" storageKey="astra-villa-theme">
-          <LanguageProvider>
-            <AlertProvider>
-              <AuthProvider>
-                <NotificationProvider>
-                  <PropertyComparisonProvider>
-                    <ErrorBoundary>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <WebsiteSettingsProvider>
+          <ThemeProvider defaultTheme="light" storageKey="astra-villa-theme">
+            <LanguageProvider>
+              <AlertProvider>
+                <AuthProvider>
+                  <NotificationProvider>
+                    <PropertyComparisonProvider>
                       <Router>
                         <div className="min-h-screen bg-background text-foreground">
                           <Navigation />
@@ -82,16 +82,16 @@ function App() {
                           <ProfessionalFooter language="en" />
                         </div>
                       </Router>
-                    </ErrorBoundary>
-                  </PropertyComparisonProvider>
-                </NotificationProvider>
-              </AuthProvider>
-            </AlertProvider>
-          </LanguageProvider>
-        </ThemeProvider>
-      </WebsiteSettingsProvider>
-      <Toaster />
-    </QueryClientProvider>
+                    </PropertyComparisonProvider>
+                  </NotificationProvider>
+                </AuthProvider>
+              </AlertProvider>
+            </LanguageProvider>
+          </ThemeProvider>
+        </WebsiteSettingsProvider>
+        <Toaster />
+      </QueryClientProvider>
+    </ErrorBoundary>
   );
 }
 
