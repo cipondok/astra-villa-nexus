@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MapPin, Home, User, UserCheck, Calendar, DollarSign, Edit2, Image as ImageIcon, Wand2 } from "lucide-react";
+import { MapPin, Home, User, UserCheck, Calendar, DollarSign, Edit2, Image as ImageIcon, Wand2, Eye } from "lucide-react";
 import { formatIDR } from "@/utils/currency";
 import { useAlert } from "@/contexts/AlertContext";
 
@@ -111,198 +111,243 @@ const PropertyViewModal = ({ property, isOpen, onClose, onEdit }: PropertyViewMo
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto bg-white">
-        <DialogHeader>
-          <DialogTitle className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Home className="h-5 w-5 text-blue-600" />
-              {property.title}
+      <DialogContent className="max-w-7xl max-h-[95vh] overflow-hidden bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-blue-950">
+        <DialogHeader className="border-b border-slate-200 dark:border-slate-700 pb-6 bg-gradient-to-r from-blue-600 to-purple-600 -mx-6 -mt-6 px-6 pt-6 text-white">
+          <DialogTitle className="flex items-center justify-between text-2xl font-bold">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-white/20 backdrop-blur-sm rounded-lg">
+                <Home className="h-6 w-6" />
+              </div>
+              <div>
+                <h1 className="text-xl font-bold">{property.title}</h1>
+                <p className="text-blue-100 text-sm font-normal mt-1">Property Details & Information</p>
+              </div>
             </div>
             {onEdit && (
-              <Button onClick={handleEdit} size="sm" className="bg-blue-600 hover:bg-blue-700">
+              <Button onClick={handleEdit} size="sm" className="bg-white/20 hover:bg-white/30 backdrop-blur-sm border border-white/30 text-white">
                 <Edit2 className="h-4 w-4 mr-2" />
                 Edit Property
               </Button>
             )}
           </DialogTitle>
-          <DialogDescription className="text-gray-600">
-            Property details and information
-          </DialogDescription>
         </DialogHeader>
         
-        <div className="space-y-6">
-          {/* Property Images */}
-          <div className="space-y-4">
-            <h3 className="font-semibold text-gray-900 flex items-center gap-2">
-              <ImageIcon className="h-4 w-4 text-blue-600" />
-              Property Images ({propertyImages.length})
-            </h3>
-            
-            {propertyImages.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {propertyImages.map((image: string, index: number) => (
-                  <div key={index} className="relative group">
-                    <img
-                      src={image}
-                      alt={`Property image ${index + 1}`}
-                      className="w-full h-48 object-cover rounded-lg border shadow-sm"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.src = 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&h=300&fit=crop';
-                      }}
-                    />
-                    <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
-                      <Button
-                        size="sm"
-                        variant="secondary"
-                        onClick={() => window.open(image, '_blank')}
-                      >
-                        View Full Size
-                      </Button>
+        <div className="overflow-y-auto max-h-[calc(95vh-120px)] px-1">
+          <div className="space-y-8 py-6">
+            {/* Property Images */}
+            <div className="space-y-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="p-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg">
+                  <ImageIcon className="h-5 w-5 text-white" />
+                </div>
+                <h3 className="text-xl font-bold text-slate-800 dark:text-slate-200">
+                  Property Gallery
+                  <span className="ml-2 px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded-full text-sm font-medium">
+                    {propertyImages.length} Images
+                  </span>
+                </h3>
+              </div>
+              
+              {propertyImages.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {propertyImages.map((image: string, index: number) => (
+                    <div key={index} className="group relative overflow-hidden rounded-xl bg-white dark:bg-slate-800 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
+                      <div className="aspect-video overflow-hidden">
+                        <img
+                          src={image}
+                          alt={`Property image ${index + 1}`}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            target.src = 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&h=300&fit=crop';
+                          }}
+                        />
+                      </div>
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center p-4">
+                        <Button
+                          size="sm"
+                          className="bg-white/90 hover:bg-white text-slate-800 backdrop-blur-sm"
+                          onClick={() => window.open(image, '_blank')}
+                        >
+                          <Eye className="h-4 w-4 mr-2" />
+                          View Full Size
+                        </Button>
+                      </div>
+                      <div className="absolute top-3 left-3">
+                        <div className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-3 py-1 rounded-full text-xs font-medium shadow-lg">
+                          #{index + 1}
+                        </div>
+                      </div>
                     </div>
-                    <div className="absolute bottom-2 left-2">
-                      <Badge variant="secondary" className="text-xs">
-                        {index + 1}
-                      </Badge>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-16 bg-gradient-to-br from-slate-100 to-blue-100 dark:from-slate-800 dark:to-blue-900 rounded-2xl border-2 border-dashed border-slate-300 dark:border-slate-600">
+                  <div className="p-4 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full w-fit mx-auto mb-4">
+                    <ImageIcon className="h-12 w-12 text-white" />
+                  </div>
+                  <h4 className="text-xl font-semibold text-slate-700 dark:text-slate-300 mb-2">No Images Available</h4>
+                  <p className="text-slate-500 dark:text-slate-400 mb-6">Generate a professional property image using AI</p>
+                  <Button
+                    onClick={generateAIImage}
+                    disabled={generatingImage}
+                    className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white shadow-lg"
+                  >
+                    {generatingImage ? (
+                      <>
+                        <Wand2 className="h-5 w-5 mr-2 animate-spin" />
+                        Generating Magic...
+                      </>
+                    ) : (
+                      <>
+                        <Wand2 className="h-5 w-5 mr-2" />
+                        Generate AI Image
+                      </>
+                    )}
+                  </Button>
+                </div>
+              )}
+            </div>
+
+            {/* Property Information Cards */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Basic Information */}
+              <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
+                <div className="bg-gradient-to-r from-emerald-500 to-teal-500 p-4">
+                  <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                    <MapPin className="h-5 w-5" />
+                    Basic Information
+                  </h3>
+                </div>
+                <div className="p-6 space-y-4">
+                  <div className="flex items-start gap-3 p-4 bg-slate-50 dark:bg-slate-700 rounded-xl">
+                    <MapPin className="h-5 w-5 text-emerald-500 mt-0.5" />
+                    <div>
+                      <p className="text-sm font-medium text-slate-600 dark:text-slate-400">Location</p>
+                      <p className="text-lg font-semibold text-slate-800 dark:text-slate-200">{property.location}</p>
                     </div>
                   </div>
-                ))}
+                  <div className="flex items-start gap-3 p-4 bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 rounded-xl">
+                    <DollarSign className="h-5 w-5 text-emerald-600 mt-0.5" />
+                    <div>
+                      <p className="text-sm font-medium text-slate-600 dark:text-slate-400">Price</p>
+                      <p className="text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+                        {property.price ? formatIDR(property.price) : 'Price not set'}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    <Badge className="bg-gradient-to-r from-blue-500 to-purple-500 text-white border-0 px-4 py-2">
+                      {property.property_type}
+                    </Badge>
+                    <Badge className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white border-0 px-4 py-2">
+                      {property.listing_type}
+                    </Badge>
+                  </div>
+                </div>
               </div>
-            ) : (
-              <div className="text-center py-8 bg-gray-50 rounded-lg">
-                <ImageIcon className="h-12 w-12 text-gray-300 mx-auto mb-2" />
-                <p className="text-gray-500 mb-4">No images available for this property</p>
-                <Button
-                  onClick={generateAIImage}
-                  disabled={generatingImage}
-                  className="bg-purple-600 hover:bg-purple-700 text-white"
-                >
-                  {generatingImage ? (
-                    <>
-                      <Wand2 className="h-4 w-4 mr-2 animate-pulse" />
-                      Generating...
-                    </>
-                  ) : (
-                    <>
-                      <Wand2 className="h-4 w-4 mr-2" />
-                      Generate AI Image
-                    </>
-                  )}
-                </Button>
+              
+              {/* Property Details */}
+              <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
+                <div className="bg-gradient-to-r from-blue-500 to-purple-500 p-4">
+                  <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                    <Home className="h-5 w-5" />
+                    Property Specifications
+                  </h3>
+                </div>
+                <div className="p-6">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="text-center p-4 bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-xl">
+                      <p className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                        {property.bedrooms || 'N/A'}
+                      </p>
+                      <p className="text-sm font-medium text-slate-600 dark:text-slate-400">Bedrooms</p>
+                    </div>
+                    <div className="text-center p-4 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-xl">
+                      <p className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                        {property.bathrooms || 'N/A'}
+                      </p>
+                      <p className="text-sm font-medium text-slate-600 dark:text-slate-400">Bathrooms</p>
+                    </div>
+                    <div className="col-span-2 text-center p-4 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-xl">
+                      <p className="text-3xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
+                        {property.area_sqm || 'N/A'} <span className="text-lg">sqm</span>
+                      </p>
+                      <p className="text-sm font-medium text-slate-600 dark:text-slate-400">Total Area</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Status & Timeline */}
+            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
+              <div className="bg-gradient-to-r from-indigo-500 to-purple-500 p-4">
+                <h3 className="text-lg font-bold text-white">Status & Timeline</h3>
+              </div>
+              <div className="p-6">
+                <div className="flex flex-wrap gap-3">
+                  <Badge className={`px-4 py-2 text-sm font-medium ${
+                    property.status === 'active' 
+                      ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white' 
+                      : 'bg-gradient-to-r from-slate-400 to-slate-500 text-white'
+                  }`}>
+                    Status: {property.status || 'pending_approval'}
+                  </Badge>
+                  <Badge className="bg-gradient-to-r from-blue-500 to-indigo-500 text-white px-4 py-2">
+                    Created: {new Date(property.created_at).toLocaleDateString()}
+                  </Badge>
+                </div>
+              </div>
+            </div>
+
+            {/* Description */}
+            {property.description && (
+              <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
+                <div className="bg-gradient-to-r from-slate-600 to-slate-700 p-4">
+                  <h3 className="text-lg font-bold text-white">Property Description</h3>
+                </div>
+                <div className="p-6">
+                  <div className="prose prose-slate dark:prose-invert max-w-none">
+                    <p className="text-slate-700 dark:text-slate-300 leading-relaxed text-base">
+                      {property.description}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Location Details */}
+            {(property.city || property.state || property.area) && (
+              <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
+                <div className="bg-gradient-to-r from-teal-500 to-cyan-500 p-4">
+                  <h3 className="text-lg font-bold text-white">Location Details</h3>
+                </div>
+                <div className="p-6">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {property.city && (
+                      <div className="text-center p-4 bg-gradient-to-br from-teal-50 to-cyan-50 dark:from-teal-900/20 dark:to-cyan-900/20 rounded-xl">
+                        <p className="text-lg font-bold text-slate-800 dark:text-slate-200">{property.city}</p>
+                        <p className="text-sm font-medium text-slate-600 dark:text-slate-400">City</p>
+                      </div>
+                    )}
+                    {property.state && (
+                      <div className="text-center p-4 bg-gradient-to-br from-cyan-50 to-blue-50 dark:from-cyan-900/20 dark:to-blue-900/20 rounded-xl">
+                        <p className="text-lg font-bold text-slate-800 dark:text-slate-200">{property.state}</p>
+                        <p className="text-sm font-medium text-slate-600 dark:text-slate-400">State</p>
+                      </div>
+                    )}
+                    {property.area && (
+                      <div className="text-center p-4 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl">
+                        <p className="text-lg font-bold text-slate-800 dark:text-slate-200">{property.area}</p>
+                        <p className="text-sm font-medium text-slate-600 dark:text-slate-400">Area</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
             )}
           </div>
-
-          {/* Basic Info */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div>
-              <h3 className="font-semibold mb-3 text-gray-900 flex items-center gap-2">
-                <MapPin className="h-4 w-4 text-blue-600" />
-                Basic Information
-              </h3>
-              <div className="space-y-3 bg-gray-50 p-4 rounded-lg">
-                <div className="flex items-center gap-2 text-gray-700">
-                  <MapPin className="h-4 w-4 text-gray-500" />
-                  <span>{property.location}</span>
-                </div>
-                <div className="flex items-center gap-2 text-gray-700">
-                  <DollarSign className="h-4 w-4 text-green-600" />
-                  <span className="text-lg font-semibold text-green-600">
-                    {property.price ? formatIDR(property.price) : 'Price not set'}
-                  </span>
-                </div>
-                <div className="flex gap-2 flex-wrap">
-                  <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
-                    {property.property_type}
-                  </Badge>
-                  <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
-                    {property.listing_type}
-                  </Badge>
-                </div>
-              </div>
-            </div>
-            
-            <div>
-              <h3 className="font-semibold mb-3 text-gray-900 flex items-center gap-2">
-                <Home className="h-4 w-4 text-blue-600" />
-                Property Details
-              </h3>
-              <div className="space-y-3 bg-gray-50 p-4 rounded-lg">
-                <div className="grid grid-cols-2 gap-4 text-gray-700">
-                  <div>
-                    <span className="font-medium text-gray-900">Bedrooms:</span>
-                    <p className="text-lg">{property.bedrooms || 'N/A'}</p>
-                  </div>
-                  <div>
-                    <span className="font-medium text-gray-900">Bathrooms:</span>
-                    <p className="text-lg">{property.bathrooms || 'N/A'}</p>
-                  </div>
-                  <div className="col-span-2">
-                    <span className="font-medium text-gray-900">Area:</span>
-                    <p className="text-lg">{property.area_sqm || 'N/A'} sqm</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Status Information */}
-          <div>
-            <h3 className="font-semibold mb-3 text-gray-900">Status Information</h3>
-            <div className="flex gap-2 flex-wrap">
-              <Badge 
-                variant={property.status === 'active' ? 'default' : 'secondary'} 
-                className="bg-blue-100 text-blue-800 border-blue-200"
-              >
-                Status: {property.status || 'pending_approval'}
-              </Badge>
-              <Badge 
-                variant="outline" 
-                className="bg-green-100 text-green-800 border-green-200"
-              >
-                Created: {new Date(property.created_at).toLocaleDateString()}
-              </Badge>
-            </div>
-          </div>
-
-          {/* Description */}
-          {property.description && (
-            <div>
-              <h3 className="font-semibold mb-3 text-gray-900">Description</h3>
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <p className="text-gray-700 leading-relaxed">{property.description}</p>
-              </div>
-            </div>
-          )}
-
-          {/* Location Details */}
-          {(property.city || property.state || property.area) && (
-            <div>
-              <h3 className="font-semibold mb-3 text-gray-900">Location Details</h3>
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-gray-700">
-                  {property.city && (
-                    <div>
-                      <span className="font-medium text-gray-900">City:</span>
-                      <p>{property.city}</p>
-                    </div>
-                  )}
-                  {property.state && (
-                    <div>
-                      <span className="font-medium text-gray-900">State:</span>
-                      <p>{property.state}</p>
-                    </div>
-                  )}
-                  {property.area && (
-                    <div>
-                      <span className="font-medium text-gray-900">Area:</span>
-                      <p>{property.area}</p>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          )}
         </div>
       </DialogContent>
     </Dialog>

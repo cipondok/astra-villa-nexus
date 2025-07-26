@@ -373,345 +373,358 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto bg-white">
-        <DialogHeader className="border-b pb-4">
-          <DialogTitle className="text-xl font-bold text-gray-900 flex items-center gap-2">
-            <Edit className="h-5 w-5 text-blue-600" />
-            Edit Property
+      <DialogContent className="max-w-7xl max-h-[95vh] overflow-hidden bg-gradient-to-br from-slate-50 to-indigo-50 dark:from-slate-900 dark:to-indigo-950">
+        <DialogHeader className="border-b border-slate-200 dark:border-slate-700 pb-6 bg-gradient-to-r from-indigo-600 to-purple-600 -mx-6 -mt-6 px-6 pt-6 text-white">
+          <DialogTitle className="text-2xl font-bold text-white flex items-center gap-3">
+            <div className="p-2 bg-white/20 backdrop-blur-sm rounded-lg">
+              <Edit className="h-6 w-6" />
+            </div>
+            <div>
+              <h1 className="text-xl font-bold">Edit Property</h1>
+              <p className="text-indigo-100 text-sm font-normal mt-1">Update property information and settings</p>
+            </div>
           </DialogTitle>
-          <DialogDescription className="text-gray-600">
-            Update property information and settings
-            {!isAuthorizedForRestrictedTypes() && (
-              <div className="mt-2 flex items-center gap-2 p-2 bg-amber-50 border border-amber-200 rounded-lg">
-                <AlertTriangle className="h-4 w-4 text-amber-600" />
-                <span className="text-xs text-amber-700">
-                  Note: You cannot set development status to "New Project" or "Pre-Launching" - restricted to authorized users only.
-                </span>
-              </div>
-            )}
-          </DialogDescription>
+          {!isAuthorizedForRestrictedTypes() && (
+            <div className="mt-4 flex items-center gap-2 p-3 bg-amber-500/20 border border-amber-400/30 rounded-lg backdrop-blur-sm">
+              <AlertTriangle className="h-4 w-4 text-amber-200" />
+              <span className="text-xs text-amber-100">
+                Note: You cannot set development status to "New Project" or "Pre-Launching" - restricted to authorized users only.
+              </span>
+            </div>
+          )}
         </DialogHeader>
         
-        <div className="space-y-6 py-6">
-          {/* Image Management Section */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-gray-900 border-b pb-2 flex items-center gap-2">
-              <ImageIcon className="h-5 w-5 text-blue-600" />
-              Property Images ({images.length})
-            </h3>
-            
-            {/* Upload Section */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="image-upload" className="text-gray-700 font-medium">Upload New Images</Label>
-                <Input
-                  id="image-upload"
-                  type="file"
-                  accept="image/*"
-                  multiple
-                  onChange={handleFileUpload}
-                  disabled={uploading}
-                  className="border-gray-300 focus:border-blue-500 focus:ring-blue-500"
-                />
-                <p className="text-sm text-gray-500">
-                  Select multiple images (JPG, PNG, etc.) - Max 5MB per file
-                </p>
-                {uploading && (
-                  <div className="flex items-center gap-2 text-blue-600">
-                    <Upload className="h-4 w-4 animate-pulse" />
-                    Uploading images...
-                  </div>
-                )}
+        <div className="overflow-y-auto max-h-[calc(95vh-140px)] px-1">
+          <div className="space-y-8 py-6">
+            {/* Image Management Section */}
+            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
+              <div className="bg-gradient-to-r from-purple-500 to-pink-500 p-4">
+                <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                  <ImageIcon className="h-5 w-5" />
+                  Property Gallery ({images.length} Images)
+                </h3>
               </div>
-
-              <div className="space-y-2">
-                <Label className="text-gray-700 font-medium">Generate AI Image</Label>
-                <Button
-                  type="button"
-                  onClick={generateAIImage}
-                  disabled={generatingImage}
-                  className="w-full bg-purple-600 hover:bg-purple-700 text-white"
-                >
-                  {generatingImage ? (
-                    <>
-                      <Upload className="h-4 w-4 mr-2 animate-pulse" />
-                      Generating...
-                    </>
-                  ) : (
-                    <>
-                      <Wand2 className="h-4 w-4 mr-2" />
-                      Generate AI Image
-                    </>
-                  )}
-                </Button>
-                <p className="text-sm text-gray-500">
-                  Generate a professional property image using AI
-                </p>
-              </div>
-            </div>
-
-            {/* Current Images */}
-            {images.length > 0 ? (
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {images.map((url, index) => (
-                  <div key={index} className="relative group">
-                    <img
-                      src={url}
-                      alt={`Property ${index + 1}`}
-                      className="w-full h-32 object-cover rounded-lg border"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.src = 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=200&h=150&fit=crop';
-                      }}
+              <div className="p-6 space-y-6">
+                {/* Upload Section */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-3">
+                    <Label htmlFor="image-upload" className="text-slate-700 dark:text-slate-300 font-medium">Upload New Images</Label>
+                    <Input
+                      id="image-upload"
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      onChange={handleFileUpload}
+                      disabled={uploading}
+                      className="border-slate-300 dark:border-slate-600 focus:border-purple-500 focus:ring-purple-500"
                     />
+                    <p className="text-sm text-slate-500 dark:text-slate-400">
+                      Select multiple images (JPG, PNG, etc.) - Max 5MB per file
+                    </p>
+                    {uploading && (
+                      <div className="flex items-center gap-2 text-purple-600">
+                        <Upload className="h-4 w-4 animate-pulse" />
+                        Uploading images...
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="space-y-3">
+                    <Label className="text-slate-700 dark:text-slate-300 font-medium">Generate AI Image</Label>
                     <Button
                       type="button"
-                      variant="destructive"
-                      size="sm"
-                      className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity h-6 w-6 p-0"
-                      onClick={() => removeImage(index)}
+                      onClick={generateAIImage}
+                      disabled={generatingImage}
+                      className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
                     >
-                      <Trash2 className="h-3 w-3" />
+                      {generatingImage ? (
+                        <>
+                          <Wand2 className="h-4 w-4 mr-2 animate-spin" />
+                          Generating Magic...
+                        </>
+                      ) : (
+                        <>
+                          <Wand2 className="h-4 w-4 mr-2" />
+                          Generate AI Image
+                        </>
+                      )}
                     </Button>
-                    <div className="absolute bottom-1 left-1">
-                      <Badge variant="secondary" className="text-xs">
-                        {index + 1}
-                      </Badge>
-                    </div>
+                    <p className="text-sm text-slate-500 dark:text-slate-400">
+                      Generate a professional property image using AI
+                    </p>
                   </div>
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-6 bg-gray-50 rounded-lg">
-                <ImageIcon className="h-8 w-8 text-gray-300 mx-auto mb-2" />
-                <p className="text-gray-500 mb-3">No images uploaded yet</p>
-                <Button
-                  type="button"
-                  onClick={generateAIImage}
-                  disabled={generatingImage}
-                  className="bg-purple-600 hover:bg-purple-700 text-white"
-                >
-                  <Wand2 className="h-4 w-4 mr-2" />
-                  Generate Default Image
-                </Button>
-              </div>
-            )}
-          </div>
+                </div>
 
-          {/* Property Information */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Basic Information */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">Basic Information</h3>
-              
-              <div className="space-y-2">
-                <Label htmlFor="edit-title" className="text-gray-700 font-medium">Property Title</Label>
-                <Input
-                  id="edit-title"
-                  value={editData.title}
-                  onChange={(e) => handleInputChange('title', e.target.value)}
-                  placeholder="Enter property title"
-                  className="border-gray-300 focus:border-blue-500 focus:ring-blue-500"
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="edit-property-type" className="text-gray-700 font-medium">Property Type</Label>
-                <Select value={editData.property_type} onValueChange={(value) => handleInputChange('property_type', value)}>
-                  <SelectTrigger className="border-gray-300 focus:border-blue-500">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="house">House</SelectItem>
-                    <SelectItem value="apartment">Apartment</SelectItem>
-                    <SelectItem value="villa">Villa</SelectItem>
-                    <SelectItem value="townhouse">Townhouse</SelectItem>
-                    <SelectItem value="land">Land</SelectItem>
-                    <SelectItem value="commercial">Commercial</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="edit-listing-type" className="text-gray-700 font-medium">Listing Type</Label>
-                <Select value={editData.listing_type} onValueChange={(value) => handleInputChange('listing_type', value)}>
-                  <SelectTrigger className="border-gray-300 focus:border-blue-500">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="sale">For Sale</SelectItem>
-                    <SelectItem value="rent">For Rent</SelectItem>
-                    <SelectItem value="lease">For Lease</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="edit-development-status" className="text-gray-700 font-medium">Development Status</Label>
-                <Select 
-                  value={editData.development_status} 
-                  onValueChange={(value) => handleInputChange('development_status', value)}
-                >
-                  <SelectTrigger className="border-gray-300 focus:border-blue-500">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {getAvailableDevelopmentStatuses().map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        {option.label}
-                        {['new_project', 'pre_launching'].includes(option.value) && !isAuthorizedForRestrictedTypes() && (
-                          <span className="text-xs text-amber-600 ml-2">(Restricted)</span>
-                        )}
-                      </SelectItem>
+                {/* Current Images */}
+                {images.length > 0 ? (
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    {images.map((url, index) => (
+                      <div key={index} className="group relative overflow-hidden rounded-xl bg-white dark:bg-slate-700 shadow-lg">
+                        <div className="aspect-square overflow-hidden">
+                          <img
+                            src={url}
+                            alt={`Property ${index + 1}`}
+                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                            onError={(e) => {
+                              const target = e.target as HTMLImageElement;
+                              target.src = 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=200&h=150&fit=crop';
+                            }}
+                          />
+                        </div>
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          size="sm"
+                          className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8 p-0 bg-red-500 hover:bg-red-600"
+                          onClick={() => removeImage(index)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                        <div className="absolute bottom-2 left-2">
+                          <div className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-2 py-1 rounded-full text-xs font-medium">
+                            #{index + 1}
+                          </div>
+                        </div>
+                      </div>
                     ))}
-                  </SelectContent>
-                </Select>
-                {['new_project', 'pre_launching'].includes(editData.development_status) && !isAuthorizedForRestrictedTypes() && (
-                  <p className="text-xs text-amber-600 mt-1">
-                    This option is restricted to authorized users only.
-                  </p>
+                  </div>
+                ) : (
+                  <div className="text-center py-12 bg-gradient-to-br from-slate-100 to-purple-100 dark:from-slate-800 dark:to-purple-900 rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-600">
+                    <div className="p-4 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full w-fit mx-auto mb-4">
+                      <ImageIcon className="h-8 w-8 text-white" />
+                    </div>
+                    <h4 className="text-lg font-semibold text-slate-700 dark:text-slate-300 mb-2">No Images Yet</h4>
+                    <p className="text-slate-500 dark:text-slate-400 mb-4">Upload images or generate one with AI</p>
+                    <Button
+                      type="button"
+                      onClick={generateAIImage}
+                      disabled={generatingImage}
+                      className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
+                    >
+                      <Wand2 className="h-4 w-4 mr-2" />
+                      Generate Default Image
+                    </Button>
+                  </div>
                 )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="edit-price" className="text-gray-700 font-medium">
-                  Price (IDR)
-                  {editData.price && (
-                    <Badge variant="outline" className="ml-2 text-green-600">
-                      {formatPriceDisplay(editData.price)}
-                    </Badge>
-                  )}
-                </Label>
-                <Input
-                  id="edit-price"
-                  type="number"
-                  value={editData.price}
-                  onChange={(e) => handleInputChange('price', e.target.value)}
-                  placeholder="Enter price in IDR"
-                  className="border-gray-300 focus:border-blue-500 focus:ring-blue-500"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="edit-status" className="text-gray-700 font-medium">Status</Label>
-                <Select value={editData.status} onValueChange={(value) => handleInputChange('status', value)}>
-                  <SelectTrigger className="border-gray-300 focus:border-blue-500">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="active">Active</SelectItem>
-                    <SelectItem value="pending_approval">Pending Approval</SelectItem>
-                    <SelectItem value="sold">Sold</SelectItem>
-                    <SelectItem value="rented">Rented</SelectItem>
-                    <SelectItem value="inactive">Inactive</SelectItem>
-                  </SelectContent>
-                </Select>
               </div>
             </div>
 
-            {/* Property Details */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">Property Details</h3>
-              
-              <div className="grid grid-cols-3 gap-3">
-                <div className="space-y-2">
-                  <Label htmlFor="edit-bedrooms" className="text-gray-700 font-medium">Bedrooms</Label>
-                  <Input
-                    id="edit-bedrooms"
-                    type="number"
-                    value={editData.bedrooms}
-                    onChange={(e) => handleInputChange('bedrooms', e.target.value)}
-                    placeholder="BR"
-                    className="border-gray-300 focus:border-blue-500 focus:ring-blue-500"
-                  />
+            {/* Property Information */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Basic Information */}
+              <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
+                <div className="bg-gradient-to-r from-blue-500 to-indigo-500 p-4">
+                  <h3 className="text-lg font-bold text-white">Basic Information</h3>
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="edit-bathrooms" className="text-gray-700 font-medium">Bathrooms</Label>
-                  <Input
-                    id="edit-bathrooms"
-                    type="number"
-                    value={editData.bathrooms}
-                    onChange={(e) => handleInputChange('bathrooms', e.target.value)}
-                    placeholder="BA"
-                    className="border-gray-300 focus:border-blue-500 focus:ring-blue-500"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="edit-area-sqm" className="text-gray-700 font-medium">Area (m²)</Label>
-                  <Input
-                    id="edit-area-sqm"
-                    type="number"
-                    value={editData.area_sqm}
-                    onChange={(e) => handleInputChange('area_sqm', e.target.value)}
-                    placeholder="sqm"
-                    className="border-gray-300 focus:border-blue-500 focus:ring-blue-500"
-                  />
+                <div className="p-6 space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-title" className="text-slate-700 dark:text-slate-300 font-medium">Property Title</Label>
+                    <Input
+                      id="edit-title"
+                      value={editData.title}
+                      onChange={(e) => handleInputChange('title', e.target.value)}
+                      placeholder="Enter property title"
+                      className="border-slate-300 dark:border-slate-600 focus:border-blue-500 focus:ring-blue-500"
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-property-type" className="text-slate-700 dark:text-slate-300 font-medium">Property Type</Label>
+                    <Select value={editData.property_type} onValueChange={(value) => handleInputChange('property_type', value)}>
+                      <SelectTrigger className="border-slate-300 dark:border-slate-600 focus:border-blue-500">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="house">House</SelectItem>
+                        <SelectItem value="apartment">Apartment</SelectItem>
+                        <SelectItem value="villa">Villa</SelectItem>
+                        <SelectItem value="townhouse">Townhouse</SelectItem>
+                        <SelectItem value="land">Land</SelectItem>
+                        <SelectItem value="commercial">Commercial</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-listing-type" className="text-slate-700 dark:text-slate-300 font-medium">Listing Type</Label>
+                    <Select value={editData.listing_type} onValueChange={(value) => handleInputChange('listing_type', value)}>
+                      <SelectTrigger className="border-slate-300 dark:border-slate-600 focus:border-blue-500">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="sale">For Sale</SelectItem>
+                        <SelectItem value="rent">For Rent</SelectItem>
+                        <SelectItem value="lease">For Lease</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-development-status" className="text-slate-700 dark:text-slate-300 font-medium">Development Status</Label>
+                    <Select 
+                      value={editData.development_status} 
+                      onValueChange={(value) => handleInputChange('development_status', value)}
+                    >
+                      <SelectTrigger className="border-slate-300 dark:border-slate-600 focus:border-blue-500">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {getAvailableDevelopmentStatuses().map((option) => (
+                          <SelectItem key={option.value} value={option.value}>
+                            {option.label}
+                            {['new_project', 'pre_launching'].includes(option.value) && !isAuthorizedForRestrictedTypes() && (
+                              <span className="text-xs text-amber-600 ml-2">(Restricted)</span>
+                            )}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-price" className="text-slate-700 dark:text-slate-300 font-medium">
+                      Price (IDR)
+                      {editData.price && (
+                        <Badge className="ml-2 bg-gradient-to-r from-emerald-500 to-teal-500 text-white">
+                          {formatPriceDisplay(editData.price)}
+                        </Badge>
+                      )}
+                    </Label>
+                    <Input
+                      id="edit-price"
+                      type="number"
+                      value={editData.price}
+                      onChange={(e) => handleInputChange('price', e.target.value)}
+                      placeholder="Enter price in IDR"
+                      className="border-slate-300 dark:border-slate-600 focus:border-blue-500 focus:ring-blue-500"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-status" className="text-slate-700 dark:text-slate-300 font-medium">Status</Label>
+                    <Select value={editData.status} onValueChange={(value) => handleInputChange('status', value)}>
+                      <SelectTrigger className="border-slate-300 dark:border-slate-600 focus:border-blue-500">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="active">Active</SelectItem>
+                        <SelectItem value="pending_approval">Pending Approval</SelectItem>
+                        <SelectItem value="sold">Sold</SelectItem>
+                        <SelectItem value="rented">Rented</SelectItem>
+                        <SelectItem value="inactive">Inactive</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="edit-location" className="text-gray-700 font-medium">Full Address</Label>
-                <Input
-                  id="edit-location"
-                  value={editData.location}
-                  onChange={(e) => handleInputChange('location', e.target.value)}
-                  placeholder="Enter full address"
-                  className="border-gray-300 focus:border-blue-500 focus:ring-blue-500"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-2">
-                  <Label htmlFor="edit-city" className="text-gray-700 font-medium">City</Label>
-                  <Input
-                    id="edit-city"
-                    value={editData.city}
-                    onChange={(e) => handleInputChange('city', e.target.value)}
-                    placeholder="City"
-                    className="border-gray-300 focus:border-blue-500 focus:ring-blue-500"
-                  />
+              {/* Property Details */}
+              <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
+                <div className="bg-gradient-to-r from-emerald-500 to-teal-500 p-4">
+                  <h3 className="text-lg font-bold text-white">Property Specifications</h3>
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="edit-state" className="text-gray-700 font-medium">State/Province</Label>
-                  <Input
-                    id="edit-state"
-                    value={editData.state}
-                    onChange={(e) => handleInputChange('state', e.target.value)}
-                    placeholder="State"
-                    className="border-gray-300 focus:border-blue-500 focus:ring-blue-500"
-                  />
+                <div className="p-6 space-y-4">
+                  <div className="grid grid-cols-3 gap-3">
+                    <div className="space-y-2">
+                      <Label htmlFor="edit-bedrooms" className="text-slate-700 dark:text-slate-300 font-medium text-sm">Bedrooms</Label>
+                      <Input
+                        id="edit-bedrooms"
+                        type="number"
+                        value={editData.bedrooms}
+                        onChange={(e) => handleInputChange('bedrooms', e.target.value)}
+                        placeholder="BR"
+                        className="border-slate-300 dark:border-slate-600 focus:border-emerald-500 focus:ring-emerald-500"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="edit-bathrooms" className="text-slate-700 dark:text-slate-300 font-medium text-sm">Bathrooms</Label>
+                      <Input
+                        id="edit-bathrooms"
+                        type="number"
+                        value={editData.bathrooms}
+                        onChange={(e) => handleInputChange('bathrooms', e.target.value)}
+                        placeholder="BA"
+                        className="border-slate-300 dark:border-slate-600 focus:border-emerald-500 focus:ring-emerald-500"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="edit-area-sqm" className="text-slate-700 dark:text-slate-300 font-medium text-sm">Area (m²)</Label>
+                      <Input
+                        id="edit-area-sqm"
+                        type="number"
+                        value={editData.area_sqm}
+                        onChange={(e) => handleInputChange('area_sqm', e.target.value)}
+                        placeholder="sqm"
+                        className="border-slate-300 dark:border-slate-600 focus:border-emerald-500 focus:ring-emerald-500"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-location" className="text-slate-700 dark:text-slate-300 font-medium">Full Address</Label>
+                    <Input
+                      id="edit-location"
+                      value={editData.location}
+                      onChange={(e) => handleInputChange('location', e.target.value)}
+                      placeholder="Enter full address"
+                      className="border-slate-300 dark:border-slate-600 focus:border-emerald-500 focus:ring-emerald-500"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-2">
+                      <Label htmlFor="edit-city" className="text-slate-700 dark:text-slate-300 font-medium">City</Label>
+                      <Input
+                        id="edit-city"
+                        value={editData.city}
+                        onChange={(e) => handleInputChange('city', e.target.value)}
+                        placeholder="City"
+                        className="border-slate-300 dark:border-slate-600 focus:border-emerald-500 focus:ring-emerald-500"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="edit-state" className="text-slate-700 dark:text-slate-300 font-medium">State/Province</Label>
+                      <Input
+                        id="edit-state"
+                        value={editData.state}
+                        onChange={(e) => handleInputChange('state', e.target.value)}
+                        placeholder="State"
+                        className="border-slate-300 dark:border-slate-600 focus:border-emerald-500 focus:ring-emerald-500"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-area" className="text-slate-700 dark:text-slate-300 font-medium">Area/District</Label>
+                    <Input
+                      id="edit-area"
+                      value={editData.area}
+                      onChange={(e) => handleInputChange('area', e.target.value)}
+                      placeholder="Area or District"
+                      className="border-slate-300 dark:border-slate-600 focus:border-emerald-500 focus:ring-emerald-500"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-description" className="text-slate-700 dark:text-slate-300 font-medium">Description</Label>
+                    <Textarea
+                      id="edit-description"
+                      value={editData.description}
+                      onChange={(e) => handleInputChange('description', e.target.value)}
+                      placeholder="Property description"
+                      rows={4}
+                      className="border-slate-300 dark:border-slate-600 focus:border-emerald-500 focus:ring-emerald-500"
+                    />
+                  </div>
                 </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="edit-area" className="text-gray-700 font-medium">Area/District</Label>
-                <Input
-                  id="edit-area"
-                  value={editData.area}
-                  onChange={(e) => handleInputChange('area', e.target.value)}
-                  placeholder="Area or District"
-                  className="border-gray-300 focus:border-blue-500 focus:ring-blue-500"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="edit-description" className="text-gray-700 font-medium">Description</Label>
-                <Textarea
-                  id="edit-description"
-                  value={editData.description}
-                  onChange={(e) => handleInputChange('description', e.target.value)}
-                  placeholder="Property description"
-                  rows={4}
-                  className="border-gray-300 focus:border-blue-500 focus:ring-blue-500"
-                />
               </div>
             </div>
           </div>
         </div>
 
-        <DialogFooter className="border-t pt-4 flex justify-between">
+        <DialogFooter className="border-t border-slate-200 dark:border-slate-700 pt-6 bg-white dark:bg-slate-800 flex justify-between items-center">
           <div className="flex items-center gap-2">
-            <Badge variant="secondary" className="flex items-center gap-1">
+            <Badge variant="secondary" className="flex items-center gap-1 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300">
               ID: {property.id?.slice(0, 8)}...
             </Badge>
           </div>
@@ -719,7 +732,7 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
             <Button 
               variant="outline" 
               onClick={onClose}
-              className="hover:bg-gray-50"
+              className="hover:bg-slate-50 dark:hover:bg-slate-700 border-slate-300 dark:border-slate-600"
             >
               <X className="h-4 w-4 mr-2" />
               Cancel
@@ -727,7 +740,7 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
             <Button 
               onClick={handleUpdate} 
               disabled={updatePropertyMutation.isPending || uploading || generatingImage}
-              className="bg-blue-600 hover:bg-blue-700 text-white"
+              className="bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white shadow-lg"
             >
               <Save className="h-4 w-4 mr-2" />
               {updatePropertyMutation.isPending ? "Updating..." : "Save Changes"}
