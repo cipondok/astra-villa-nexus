@@ -7,6 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useAlert } from "@/contexts/AlertContext";
 import PropertyEditModal from "./PropertyEditModal";
 import PropertyViewModal from "./PropertyViewModal";
@@ -23,7 +25,16 @@ import {
   Clock,
   Loader2,
   AlertTriangle,
-  RefreshCw
+  RefreshCw,
+  Download,
+  Archive,
+  MoreHorizontal,
+  CheckSquare,
+  Square,
+  Copy,
+  Settings,
+  SortAsc,
+  SortDesc
 } from "lucide-react";
 import { formatIDR } from "@/utils/currency";
 import { useAuth } from "@/contexts/AuthContext";
@@ -58,10 +69,16 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [typeFilter, setTypeFilter] = useState("all");
+  const [sortField, setSortField] = useState<'created_at' | 'price' | 'title'>('created_at');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [editingProperty, setEditingProperty] = useState<Property | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [viewingProperty, setViewingProperty] = useState<Property | null>(null);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  
+  // Multi-selection state
+  const [selectedProperties, setSelectedProperties] = useState<Set<string>>(new Set());
+  const [showBulkActions, setShowBulkActions] = useState(false);
 
   // Debug authentication
   useEffect(() => {
@@ -238,6 +255,131 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
     console.log('Force refresh triggered');
     queryClient.invalidateQueries({ queryKey: ['admin-properties'] });
     refetch();
+  };
+
+  // Multi-selection handlers
+  const handleSelectProperty = (propertyId: string, isSelected: boolean) => {
+    const newSelection = new Set(selectedProperties);
+    if (isSelected) {
+      newSelection.add(propertyId);
+    } else {
+      newSelection.delete(propertyId);
+    }
+    setSelectedProperties(newSelection);
+    setShowBulkActions(newSelection.size > 0);
+  };
+
+  const handleSelectAll = (isSelected: boolean) => {
+    if (isSelected) {
+      const allIds = new Set(properties.map(p => p.id));
+      setSelectedProperties(allIds);
+      setShowBulkActions(true);
+    } else {
+      setSelectedProperties(new Set());
+      setShowBulkActions(false);
+    }
+  };
+
+  // Bulk operations
+  const bulkDeleteMutation = useMutation({
+    mutationFn: async (propertyIds: string[]) => {
+      console.log('Bulk deleting properties:', propertyIds);
+      
+      const { error } = await supabase
+        .from('properties')
+        .delete()
+        .in('id', propertyIds);
+      
+      if (error) {
+        console.error('Bulk delete error:', error);
+        throw new Error(`Failed to delete properties: ${error.message}`);
+      }
+    },
+    onSuccess: () => {
+      showSuccess("Properties Deleted", `${selectedProperties.size} properties have been deleted successfully.`);
+      setSelectedProperties(new Set());
+      setShowBulkActions(false);
+      refetch();
+      queryClient.invalidateQueries({ queryKey: ['admin-properties'] });
+    },
+    onError: (error: any) => {
+      console.error('Bulk delete mutation error:', error);
+      showError("Bulk Delete Failed", error.message || 'Failed to delete selected properties');
+    },
+  });
+
+  const bulkStatusUpdateMutation = useMutation({
+    mutationFn: async ({ propertyIds, status }: { propertyIds: string[], status: string }) => {
+      console.log('Bulk updating status:', propertyIds, status);
+      
+      const { error } = await supabase
+        .from('properties')
+        .update({ status })
+        .in('id', propertyIds);
+      
+      if (error) {
+        console.error('Bulk status update error:', error);
+        throw new Error(`Failed to update properties: ${error.message}`);
+      }
+    },
+    onSuccess: (_, { status }) => {
+      showSuccess("Properties Updated", `${selectedProperties.size} properties status changed to ${status}.`);
+      setSelectedProperties(new Set());
+      setShowBulkActions(false);
+      refetch();
+      queryClient.invalidateQueries({ queryKey: ['admin-properties'] });
+    },
+    onError: (error: any) => {
+      console.error('Bulk status update mutation error:', error);
+      showError("Bulk Update Failed", error.message || 'Failed to update selected properties');
+    },
+  });
+
+  const handleBulkDelete = () => {
+    const selectedCount = selectedProperties.size;
+    if (window.confirm(`⚠️ Are you sure you want to delete ${selectedCount} selected properties?\n\nThis action cannot be undone and will permanently remove all property data including images and ratings.`)) {
+      bulkDeleteMutation.mutate(Array.from(selectedProperties));
+    }
+  };
+
+  const handleBulkStatusUpdate = (status: string) => {
+    const selectedCount = selectedProperties.size;
+    if (window.confirm(`Are you sure you want to change the status of ${selectedCount} selected properties to "${status}"?`)) {
+      bulkStatusUpdateMutation.mutate({ 
+        propertyIds: Array.from(selectedProperties), 
+        status 
+      });
+    }
+  };
+
+  const handleExportSelected = () => {
+    const selectedProps = properties.filter(p => selectedProperties.has(p.id));
+    const csvContent = [
+      ['Title', 'Type', 'Location', 'Price', 'Status', 'Bedrooms', 'Bathrooms', 'Area (sqm)', 'Created'],
+      ...selectedProps.map(p => [
+        p.title,
+        p.property_type,
+        `${p.location}, ${p.city}`,
+        p.price?.toString() || '0',
+        p.status,
+        p.bedrooms?.toString() || '0',
+        p.bathrooms?.toString() || '0',
+        p.area_sqm?.toString() || '0',
+        new Date(p.created_at).toLocaleDateString()
+      ])
+    ].map(row => row.join(',')).join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `properties-export-${new Date().toISOString().split('T')[0]}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+    
+    showSuccess("Export Complete", `${selectedProps.length} properties exported to CSV.`);
   };
 
   const getStatusBadge = (status: string) => {
@@ -419,6 +561,79 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
         </CardContent>
       </Card>
 
+      {/* Bulk Actions Bar */}
+      {showBulkActions && (
+        <Card className="border-blue-200 bg-blue-50">
+          <CardContent className="pt-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="text-sm font-medium text-blue-800">
+                  {selectedProperties.size} properties selected
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setSelectedProperties(new Set());
+                    setShowBulkActions(false);
+                  }}
+                  className="text-blue-600 border-blue-300 hover:bg-blue-100"
+                >
+                  Clear Selection
+                </Button>
+              </div>
+              
+              <div className="flex items-center gap-2">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handleExportSelected}
+                        className="text-green-600 border-green-300 hover:bg-green-100"
+                      >
+                        <Download className="h-4 w-4 mr-1" />
+                        Export
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Export selected properties to CSV</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+
+                <Select onValueChange={handleBulkStatusUpdate}>
+                  <SelectTrigger className="w-32">
+                    <SelectValue placeholder="Set Status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="active">Set Active</SelectItem>
+                    <SelectItem value="inactive">Set Inactive</SelectItem>
+                    <SelectItem value="pending_approval">Set Pending</SelectItem>
+                    <SelectItem value="sold">Set Sold</SelectItem>
+                    <SelectItem value="rented">Set Rented</SelectItem>
+                  </SelectContent>
+                </Select>
+
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={handleBulkDelete}
+                  disabled={bulkDeleteMutation.isPending}
+                  className="bg-red-600 hover:bg-red-700"
+                >
+                  {bulkDeleteMutation.isPending ? (
+                    <Loader2 className="h-4 w-4 mr-1 animate-spin" />
+                  ) : (
+                    <Trash2 className="h-4 w-4 mr-1" />
+                  )}
+                  Delete Selected
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Properties Table */}
       <Card>
         <CardHeader>
@@ -462,18 +677,32 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
               <Table>
                 <TableHeader>
                   <TableRow>
+                    <TableHead className="w-12">
+                      <Checkbox
+                        checked={selectedProperties.size === properties.length && properties.length > 0}
+                        onCheckedChange={handleSelectAll}
+                        aria-label="Select all properties"
+                      />
+                    </TableHead>
                     <TableHead>Property</TableHead>
                     <TableHead>Type</TableHead>
                     <TableHead>Location</TableHead>
                     <TableHead>Price</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead>Created</TableHead>
-                    <TableHead>Actions</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {properties.map((property) => (
                     <TableRow key={property.id} className="hover:bg-gray-50">
+                      <TableCell className="w-12">
+                        <Checkbox
+                          checked={selectedProperties.has(property.id)}
+                          onCheckedChange={(checked) => handleSelectProperty(property.id, checked as boolean)}
+                          aria-label={`Select ${property.title}`}
+                        />
+                      </TableCell>
                       <TableCell>
                         <div>
                           <div className="font-medium text-gray-900">{property.title}</div>
