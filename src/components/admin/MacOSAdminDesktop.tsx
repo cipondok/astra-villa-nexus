@@ -13,7 +13,6 @@ import {
 import AnimatedLogo from '@/components/AnimatedLogo';
 import DynamicAdminContent from './DynamicAdminContent';
 import SystemSettings from './SystemSettings';
-import ProfessionalFooter from '@/components/ProfessionalFooter';
 
 // Desktop Apps Configuration with real components
 const desktopApps = [
@@ -445,7 +444,7 @@ export const MacOSAdminDesktop = () => {
   };
 
   return (
-    <div className={`h-screen w-screen bg-gradient-to-br relative overflow-hidden flex flex-col ${
+    <div className={`h-screen w-screen bg-gradient-to-br relative overflow-hidden ${
       theme === 'dark' 
         ? 'from-blue-950 via-blue-900 to-blue-950' 
         : 'from-blue-100 via-blue-200 to-blue-300'
@@ -730,7 +729,7 @@ export const MacOSAdminDesktop = () => {
       </div>
 
       {/* Desktop Content */}
-      <div className="relative flex-1 min-h-0">
+      <div className="relative h-[calc(100vh-8rem)]">
         {/* Windows */}
         {openWindows
           .filter(w => !w.isMinimized)
@@ -1085,11 +1084,6 @@ export const MacOSAdminDesktop = () => {
           </div>
         </div>
       )}
-      
-      {/* Footer */}
-      <div className="mt-auto">
-        <ProfessionalFooter language="en" />
-      </div>
     </div>
   );
 };
