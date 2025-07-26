@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-import Navigation from '@/components/Navigation';
-import ProfessionalFooter from '@/components/ProfessionalFooter';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -59,7 +57,6 @@ const ThreeDShowcase = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navigation />
       
       <div className="container mx-auto px-4 py-8">
         {/* Hero Section */}
@@ -196,8 +193,6 @@ const ThreeDShowcase = () => {
           virtualTourUrl={selectedProperty.virtual_tour_url}
         />
       )}
-
-      <ProfessionalFooter language="en" />
     </div>
   );
 };
