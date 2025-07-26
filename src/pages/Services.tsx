@@ -3,7 +3,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, CheckCircle, Users, Star, Clock, Shield } from 'lucide-react';
-import ProfessionalFooter from '@/components/ProfessionalFooter';
 import { useAuth } from '@/contexts/AuthContext';
 import AgentTools from '@/components/agent/AgentTools';
 
@@ -25,8 +24,7 @@ const Services = () => {
           </div>
           <AgentTools />
         </div>
-        <ProfessionalFooter language="en" />
-      </div>
+        </div>
     );
   }
   const serviceCategories = [
@@ -174,8 +172,7 @@ const Services = () => {
         </Card>
       </div>
 
-      <ProfessionalFooter language="en" />
-    </div>
+      </div>
   );
 };
 

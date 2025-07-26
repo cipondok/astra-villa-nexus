@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import ProfessionalFooter from "@/components/ProfessionalFooter";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -498,8 +497,6 @@ const Index = () => {
         {/* Scroll to Top Button */}
         <ScrollToTopButton />
 
-        {/* Footer */}
-        {!isMobile && <ProfessionalFooter language={language} />}
         
         {/* AI Search Loading Dialog */}
         <SearchLoadingDialog 

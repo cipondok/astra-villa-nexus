@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import ProfessionalFooter from "@/components/ProfessionalFooter";
 import AdvancedRentalSearch from "@/components/rental/AdvancedRentalSearch";
 import { 
   MapPin, 
@@ -465,8 +464,7 @@ const Disewa = () => {
         </div>
       </div>
 
-      <ProfessionalFooter language="id" />
-    </div>
+      </div>
   );
 };
 
