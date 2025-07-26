@@ -4,6 +4,7 @@ import { AlertTriangle, Activity, UserPlus } from 'lucide-react';
 import AdminOverview from "./AdminOverview";
 import EnhancedUserManagement from "./EnhancedUserManagement";
 import PropertyManagementAdvanced from "./PropertyManagementAdvanced";
+import EnhancedPropertyManagement from "./EnhancedPropertyManagement";
 import WebTrafficAnalytics from "./WebTrafficAnalytics";
 import CustomerServiceCenter from "./CustomerServiceCenter";
 import ToolsManagementDashboard from "./ToolsManagementDashboard";
@@ -35,6 +36,8 @@ const DynamicAdminContent = ({ activeSection, onSectionChange }: DynamicAdminCon
         return <EnhancedUserManagement />;
       case "properties":
       case "property-management-hub":
+        return <EnhancedPropertyManagement />;
+      case "property-management-advanced":
         return <PropertyManagementAdvanced />;
       case "analytics":
         return <WebTrafficAnalytics />;
