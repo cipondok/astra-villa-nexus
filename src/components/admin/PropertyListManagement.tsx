@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -26,6 +26,7 @@ import {
   RefreshCw
 } from "lucide-react";
 import { formatIDR } from "@/utils/currency";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface PropertyListManagementProps {
   onAddProperty?: () => void;
@@ -52,6 +53,7 @@ interface Property {
 const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) => {
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
+  const { user, profile } = useAuth();
   
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
@@ -61,10 +63,48 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
   const [viewingProperty, setViewingProperty] = useState<Property | null>(null);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
 
-  // Debug log component mount
-  console.log('🔧 PropertyListManagement component mounted/updated');
-  console.log('Edit modal state:', { isEditModalOpen, editingProperty: editingProperty?.id });
-  console.log('View modal state:', { isViewModalOpen, viewingProperty: viewingProperty?.id });
+  // Debug authentication
+  useEffect(() => {
+    console.log('🔐 Authentication Debug:', {
+      user: user ? { id: user.id, email: user.email } : null,
+      profile: profile ? { id: profile.id, role: profile.role } : null,
+      timestamp: new Date().toISOString()
+    });
+  }, [user, profile]);
+
+  // Check if user is admin
+  const isAdmin = profile?.role === 'admin' || user?.email === 'mycode103@gmail.com';
+  console.log('👤 Admin Status:', { isAdmin, userRole: profile?.role, userEmail: user?.email });
+
+  // Don't render if not authenticated or not admin
+  if (!user) {
+    return (
+      <Card className="max-w-md mx-auto mt-8">
+        <CardContent className="pt-6">
+          <div className="text-center">
+            <AlertTriangle className="h-12 w-12 text-red-400 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-red-800 mb-2">Authentication Required</h3>
+            <p className="text-red-600">Please log in to access property management.</p>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (!isAdmin) {
+    return (
+      <Card className="max-w-md mx-auto mt-8">
+        <CardContent className="pt-6">
+          <div className="text-center">
+            <AlertTriangle className="h-12 w-12 text-red-400 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-red-800 mb-2">Access Denied</h3>
+            <p className="text-red-600">You need admin privileges to access property management.</p>
+            <p className="text-sm text-gray-500 mt-2">Current role: {profile?.role || 'No role assigned'}</p>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   // Optimized property fetch with fast timeout
   const { data: properties = [], isLoading, error, refetch, isError } = useQuery({

@@ -14,6 +14,7 @@ import PropertyDisplaySettings from "./PropertyDisplaySettings";
 import Property3DViewSettings from "./Property3DViewSettings";
 import PropertySmartPreview from "./PropertySmartPreview";
 import PropertyTestPanel from "./PropertyTestPanel";
+import AdminAccessChecker from "./AdminAccessChecker";
 
 const AdminPropertyManagement = () => {
   const [activeTab, setActiveTab] = useState("properties");
@@ -110,6 +111,7 @@ const AdminPropertyManagement = () => {
 
         <TabsContent value="diagnostic">
           <div className="space-y-6">
+            <AdminAccessChecker />
             <PropertyTestPanel />
             <DiagnosticDashboard />
           </div>

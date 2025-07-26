@@ -5,9 +5,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle, XCircle, AlertTriangle } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 const PropertyTestPanel = () => {
   const { user, profile } = useAuth();
+  const { toast } = useToast();
   const [testResults, setTestResults] = useState<any[]>([]);
   const [isTestingAuth, setIsTestingAuth] = useState(false);
   const [isTestingDB, setIsTestingDB] = useState(false);
