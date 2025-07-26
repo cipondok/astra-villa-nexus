@@ -41,6 +41,9 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
   const [uploading, setUploading] = useState(false);
   const [generatingImage, setGeneratingImage] = useState(false);
   const [activeTab, setActiveTab] = useState<"basic" | "advanced" | "3d" | "filters">("basic");
+  const [selectedProvince, setSelectedProvince] = useState("");
+  const [selectedCity, setSelectedCity] = useState("");
+  const [selectedDistrict, setSelectedDistrict] = useState("");
 
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
@@ -75,6 +78,84 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
 
     return baseOptions;
   };
+
+  // Fetch locations from database
+  const { data: provinces = [] } = useQuery({
+    queryKey: ['provinces'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('locations')
+        .select('province_code, province_name')
+        .eq('is_active', true)
+        .order('province_name');
+      
+      if (error) throw error;
+      
+      // Remove duplicates
+      const uniqueProvinces = data.reduce((acc: any[], curr) => {
+        if (!acc.find(p => p.province_code === curr.province_code)) {
+          acc.push(curr);
+        }
+        return acc;
+      }, []);
+      
+      return uniqueProvinces;
+    },
+  });
+
+  const { data: cities = [] } = useQuery({
+    queryKey: ['cities', selectedProvince],
+    queryFn: async () => {
+      if (!selectedProvince) return [];
+      
+      const { data, error } = await supabase
+        .from('locations')
+        .select('city_code, city_name, city_type')
+        .eq('province_code', selectedProvince)
+        .eq('is_active', true)
+        .order('city_name');
+      
+      if (error) throw error;
+      
+      // Remove duplicates
+      const uniqueCities = data.reduce((acc: any[], curr) => {
+        if (!acc.find(c => c.city_code === curr.city_code)) {
+          acc.push(curr);
+        }
+        return acc;
+      }, []);
+      
+      return uniqueCities;
+    },
+    enabled: !!selectedProvince,
+  });
+
+  const { data: districts = [] } = useQuery({
+    queryKey: ['districts', selectedCity],
+    queryFn: async () => {
+      if (!selectedCity) return [];
+      
+      const { data, error } = await supabase
+        .from('locations')
+        .select('district_code, district_name')
+        .eq('city_code', selectedCity)
+        .eq('is_active', true)
+        .order('district_name');
+      
+      if (error) throw error;
+      
+      // Remove duplicates
+      const uniqueDistricts = data.reduce((acc: any[], curr) => {
+        if (!acc.find(d => d.district_code === curr.district_code)) {
+          acc.push(curr);
+        }
+        return acc;
+      }, []);
+      
+      return uniqueDistricts;
+    },
+    enabled: !!selectedCity,
+  });
 
   // Initialize form data when property changes
   useEffect(() => {
@@ -831,41 +912,145 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
                 )}
 
                 {activeTab === "filters" && (
-                  <div className="space-y-4">
-                    <h4 className="text-lg font-semibold text-slate-800 dark:text-slate-200">Display Filters & Visibility</h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div className="space-y-3">
-                        <Label className="text-slate-700 dark:text-slate-300 font-medium">Property Visibility</Label>
+                  <div className="space-y-6">
+                    <h4 className="text-lg font-semibold text-slate-800 dark:text-slate-200">Location & Search Filters</h4>
+                    
+                    {/* Location Selection from Database */}
+                    <div className="bg-gradient-to-r from-teal-50 to-cyan-50 dark:from-teal-900/20 dark:to-cyan-900/20 p-6 rounded-xl border border-teal-200 dark:border-teal-700">
+                      <h5 className="font-semibold text-slate-800 dark:text-slate-200 mb-4 flex items-center gap-2">
+                        <MapPin className="h-5 w-5 text-teal-600" />
+                        Database Location Selection
+                      </h5>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div className="space-y-2">
-                          <label className="flex items-center gap-2">
-                            <input type="checkbox" className="rounded" defaultChecked />
-                            <span className="text-sm">Show on main listings</span>
+                          <Label className="text-slate-700 dark:text-slate-300 font-medium">Province</Label>
+                          <Select value={selectedProvince} onValueChange={setSelectedProvince}>
+                            <SelectTrigger className="bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 focus:border-teal-500 z-50">
+                              <SelectValue placeholder="Select Province" />
+                            </SelectTrigger>
+                            <SelectContent className="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 shadow-lg z-50">
+                              {provinces.map((province: any) => (
+                                <SelectItem key={province.province_code} value={province.province_code} className="hover:bg-teal-50 dark:hover:bg-teal-900/20">
+                                  {province.province_name}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label className="text-slate-700 dark:text-slate-300 font-medium">City</Label>
+                          <Select value={selectedCity} onValueChange={setSelectedCity} disabled={!selectedProvince}>
+                            <SelectTrigger className="bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 focus:border-teal-500 z-50">
+                              <SelectValue placeholder="Select City" />
+                            </SelectTrigger>
+                            <SelectContent className="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 shadow-lg z-50">
+                              {cities.map((city: any) => (
+                                <SelectItem key={city.city_code} value={city.city_code} className="hover:bg-teal-50 dark:hover:bg-teal-900/20">
+                                  {city.city_type} {city.city_name}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label className="text-slate-700 dark:text-slate-300 font-medium">District</Label>
+                          <Select value={selectedDistrict} onValueChange={setSelectedDistrict} disabled={!selectedCity}>
+                            <SelectTrigger className="bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 focus:border-teal-500 z-50">
+                              <SelectValue placeholder="Select District" />
+                            </SelectTrigger>
+                            <SelectContent className="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 shadow-lg z-50">
+                              {districts.map((district: any) => (
+                                <SelectItem key={district.district_code} value={district.district_code} className="hover:bg-teal-50 dark:hover:bg-teal-900/20">
+                                  {district.district_name}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Property Filter Settings */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 p-6 rounded-xl border border-blue-200 dark:border-blue-700">
+                        <h5 className="font-semibold text-slate-800 dark:text-slate-200 mb-4">Property Visibility</h5>
+                        <div className="space-y-3">
+                          <label className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/50 dark:hover:bg-slate-800/50">
+                            <input type="checkbox" className="rounded border-slate-300 dark:border-slate-600 text-blue-600 focus:ring-blue-500" defaultChecked />
+                            <span className="text-sm font-medium">Show on main listings</span>
                           </label>
-                          <label className="flex items-center gap-2">
-                            <input type="checkbox" className="rounded" defaultChecked />
-                            <span className="text-sm">Featured property</span>
+                          <label className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/50 dark:hover:bg-slate-800/50">
+                            <input type="checkbox" className="rounded border-slate-300 dark:border-slate-600 text-blue-600 focus:ring-blue-500" defaultChecked />
+                            <span className="text-sm font-medium">Featured property</span>
                           </label>
-                          <label className="flex items-center gap-2">
-                            <input type="checkbox" className="rounded" />
-                            <span className="text-sm">Premium highlight</span>
+                          <label className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/50 dark:hover:bg-slate-800/50">
+                            <input type="checkbox" className="rounded border-slate-300 dark:border-slate-600 text-blue-600 focus:ring-blue-500" />
+                            <span className="text-sm font-medium">Premium highlight</span>
+                          </label>
+                          <label className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/50 dark:hover:bg-slate-800/50">
+                            <input type="checkbox" className="rounded border-slate-300 dark:border-slate-600 text-blue-600 focus:ring-blue-500" />
+                            <span className="text-sm font-medium">Urgent sale</span>
                           </label>
                         </div>
                       </div>
-                      <div className="space-y-3">
-                        <Label className="text-slate-700 dark:text-slate-300 font-medium">Search Filters</Label>
+                      
+                      <div className="bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 p-6 rounded-xl border border-emerald-200 dark:border-emerald-700">
+                        <h5 className="font-semibold text-slate-800 dark:text-slate-200 mb-4">Search Filters</h5>
+                        <div className="space-y-3">
+                          <label className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/50 dark:hover:bg-slate-800/50">
+                            <input type="checkbox" className="rounded border-slate-300 dark:border-slate-600 text-emerald-600 focus:ring-emerald-500" defaultChecked />
+                            <span className="text-sm font-medium">Include in price filters</span>
+                          </label>
+                          <label className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/50 dark:hover:bg-slate-800/50">
+                            <input type="checkbox" className="rounded border-slate-300 dark:border-slate-600 text-emerald-600 focus:ring-emerald-500" defaultChecked />
+                            <span className="text-sm font-medium">Show in location search</span>
+                          </label>
+                          <label className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/50 dark:hover:bg-slate-800/50">
+                            <input type="checkbox" className="rounded border-slate-300 dark:border-slate-600 text-emerald-600 focus:ring-emerald-500" />
+                            <span className="text-sm font-medium">Exclude from bulk searches</span>
+                          </label>
+                          <label className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/50 dark:hover:bg-slate-800/50">
+                            <input type="checkbox" className="rounded border-slate-300 dark:border-slate-600 text-emerald-600 focus:ring-emerald-500" defaultChecked />
+                            <span className="text-sm font-medium">Available for comparison</span>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Price & Criteria Filters */}
+                    <div className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 p-6 rounded-xl border border-amber-200 dark:border-amber-700">
+                      <h5 className="font-semibold text-slate-800 dark:text-slate-200 mb-4">Price & Criteria Filters</h5>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <label className="flex items-center gap-2">
-                            <input type="checkbox" className="rounded" defaultChecked />
-                            <span className="text-sm">Include in price filters</span>
-                          </label>
-                          <label className="flex items-center gap-2">
-                            <input type="checkbox" className="rounded" defaultChecked />
-                            <span className="text-sm">Show in location search</span>
-                          </label>
-                          <label className="flex items-center gap-2">
-                            <input type="checkbox" className="rounded" />
-                            <span className="text-sm">Exclude from bulk searches</span>
-                          </label>
+                          <Label className="text-slate-700 dark:text-slate-300 font-medium">Price Range Category</Label>
+                          <Select defaultValue="mid-range">
+                            <SelectTrigger className="bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 focus:border-amber-500 z-50">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent className="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 shadow-lg z-50">
+                              <SelectItem value="budget">Budget (under 500M IDR)</SelectItem>
+                              <SelectItem value="mid-range">Mid-Range (500M - 2B IDR)</SelectItem>
+                              <SelectItem value="luxury">Luxury (2B - 10B IDR)</SelectItem>
+                              <SelectItem value="ultra-luxury">Ultra Luxury (over 10B IDR)</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="space-y-2">
+                          <Label className="text-slate-700 dark:text-slate-300 font-medium">Target Audience</Label>
+                          <Select defaultValue="general">
+                            <SelectTrigger className="bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 focus:border-amber-500 z-50">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent className="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 shadow-lg z-50">
+                              <SelectItem value="general">General Public</SelectItem>
+                              <SelectItem value="first-time">First-time Buyers</SelectItem>
+                              <SelectItem value="investors">Investors</SelectItem>
+                              <SelectItem value="families">Families</SelectItem>
+                              <SelectItem value="professionals">Young Professionals</SelectItem>
+                            </SelectContent>
+                          </Select>
                         </div>
                       </div>
                     </div>
