@@ -61,6 +61,11 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
   const [viewingProperty, setViewingProperty] = useState<Property | null>(null);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
 
+  // Debug log component mount
+  console.log('🔧 PropertyListManagement component mounted/updated');
+  console.log('Edit modal state:', { isEditModalOpen, editingProperty: editingProperty?.id });
+  console.log('View modal state:', { isViewModalOpen, viewingProperty: viewingProperty?.id });
+
   // Optimized property fetch with fast timeout
   const { data: properties = [], isLoading, error, refetch, isError } = useQuery({
     queryKey: ['admin-properties', searchTerm, statusFilter, typeFilter],
@@ -152,13 +157,15 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
   };
 
   const handleEdit = (property: Property) => {
-    console.log('Opening edit modal for property:', property.id);
+    console.log('🔧 Opening edit modal for property:', property.id, property.title);
+    console.log('Property data:', property);
     setEditingProperty(property);
     setIsEditModalOpen(true);
   };
 
   const handleView = (property: Property) => {
-    console.log('Opening view modal for property:', property.id);
+    console.log('👁️ Opening view modal for property:', property.id, property.title);
+    console.log('Property data:', property);
     setViewingProperty(property);
     setIsViewModalOpen(true);
   };
@@ -314,7 +321,7 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
         </div>
         <Button 
           onClick={() => {
-            console.log('Add Property button clicked');
+            console.log('🆕 Add Property button clicked in PropertyListManagement');
             onAddProperty?.();
           }}
           className="bg-blue-600 hover:bg-blue-700 text-white"
@@ -500,23 +507,19 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
       </Card>
 
       {/* Property Edit Modal */}
-      {editingProperty && (
-        <PropertyEditModal
-          property={editingProperty}
-          isOpen={isEditModalOpen}
-          onClose={handleCloseEditModal}
-        />
-      )}
+      <PropertyEditModal
+        property={editingProperty}
+        isOpen={isEditModalOpen && !!editingProperty}
+        onClose={handleCloseEditModal}
+      />
 
       {/* Property View Modal */}
-      {viewingProperty && (
-        <PropertyViewModal
-          property={viewingProperty}
-          isOpen={isViewModalOpen}
-          onClose={handleCloseViewModal}
-          onEdit={handleEditFromView}
-        />
-      )}
+      <PropertyViewModal
+        property={viewingProperty}
+        isOpen={isViewModalOpen && !!viewingProperty}
+        onClose={handleCloseViewModal}
+        onEdit={handleEditFromView}
+      />
     </div>
   );
 };

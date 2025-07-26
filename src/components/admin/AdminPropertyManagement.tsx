@@ -13,12 +13,14 @@ import PropertySlideSettings from "./PropertySlideSettings";
 import PropertyDisplaySettings from "./PropertyDisplaySettings";
 import Property3DViewSettings from "./Property3DViewSettings";
 import PropertySmartPreview from "./PropertySmartPreview";
+import PropertyTestPanel from "./PropertyTestPanel";
 
 const AdminPropertyManagement = () => {
-  const [activeTab, setActiveTab] = useState("diagnostic");
+  const [activeTab, setActiveTab] = useState("properties");
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleAddProperty = () => {
+    console.log('🆕 Add Property button clicked - switching to add-property tab');
     setActiveTab("add-property");
   };
 
@@ -107,7 +109,10 @@ const AdminPropertyManagement = () => {
         </div>
 
         <TabsContent value="diagnostic">
-          <DiagnosticDashboard />
+          <div className="space-y-6">
+            <PropertyTestPanel />
+            <DiagnosticDashboard />
+          </div>
         </TabsContent>
 
         <TabsContent value="properties">
