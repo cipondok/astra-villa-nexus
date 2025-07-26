@@ -719,6 +719,52 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
                 </div>
               </div>
             </div>
+
+            {/* Advanced Features */}
+            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
+              <div className="bg-gradient-to-r from-violet-500 to-purple-500 p-4">
+                <h3 className="text-lg font-bold text-white">Advanced Features & Links</h3>
+              </div>
+              <div className="p-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="h-16 flex flex-col items-center justify-center gap-2 hover:bg-gradient-to-r hover:from-violet-50 hover:to-purple-50 dark:hover:from-violet-900/20 dark:hover:to-purple-900/20"
+                    onClick={() => window.open(`/property-3d-view/${property.id}`, '_blank')}
+                  >
+                    <div className="p-2 bg-gradient-to-r from-violet-500 to-purple-500 rounded-lg">
+                      <ImageIcon className="h-4 w-4 text-white" />
+                    </div>
+                    <span className="text-sm font-medium">3D View</span>
+                  </Button>
+                  
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="h-16 flex flex-col items-center justify-center gap-2 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 dark:hover:from-blue-900/20 dark:hover:to-indigo-900/20"
+                    onClick={() => window.open(`/property-analytics/${property.id}`, '_blank')}
+                  >
+                    <div className="p-2 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-lg">
+                      <Edit className="h-4 w-4 text-white" />
+                    </div>
+                    <span className="text-sm font-medium">Analytics</span>
+                  </Button>
+
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="h-16 flex flex-col items-center justify-center gap-2 hover:bg-gradient-to-r hover:from-emerald-50 hover:to-teal-50 dark:hover:from-emerald-900/20 dark:hover:to-teal-900/20"
+                    onClick={() => window.open(`/property-filters/${property.id}`, '_blank')}
+                  >
+                    <div className="p-2 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-lg">
+                      <Wand2 className="h-4 w-4 text-white" />
+                    </div>
+                    <span className="text-sm font-medium">Filters</span>
+                  </Button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
