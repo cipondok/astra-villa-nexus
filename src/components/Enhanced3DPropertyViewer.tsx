@@ -16,9 +16,9 @@ interface Enhanced3DPropertyViewerProps {
   };
 }
 
-// House model component
-const House3D = ({ isNightMode, showDimensions }: { isNightMode: boolean; showDimensions: boolean }) => {
-  const houseRef = useRef<THREE.Group>(null);
+// Modern Villa model component
+const ModernVilla3D = ({ isNightMode, showDimensions }: { isNightMode: boolean; showDimensions: boolean }) => {
+  const villaRef = useRef<THREE.Group>(null);
   const { scene } = useThree();
 
   // Lighting setup
@@ -30,144 +30,183 @@ const House3D = ({ isNightMode, showDimensions }: { isNightMode: boolean; showDi
 
     if (isNightMode) {
       // Night lighting
-      const ambientLight = new THREE.AmbientLight(0x404080, 0.2);
+      const ambientLight = new THREE.AmbientLight(0x1a1a2e, 0.3);
       scene.add(ambientLight);
       
       // Moonlight
-      const moonLight = new THREE.DirectionalLight(0x8080ff, 0.5);
-      moonLight.position.set(-10, 10, 5);
+      const moonLight = new THREE.DirectionalLight(0x6a7aa0, 0.4);
+      moonLight.position.set(-15, 12, 8);
       moonLight.castShadow = true;
       scene.add(moonLight);
       
-      // Street light
-      const streetLight = new THREE.PointLight(0xffaa55, 1, 20);
-      streetLight.position.set(-8, 6, 0);
-      scene.add(streetLight);
+      // Warm interior lighting
+      const interiorLight1 = new THREE.PointLight(0xffa500, 0.8, 15);
+      interiorLight1.position.set(-2, 2, -1);
+      scene.add(interiorLight1);
+      
+      const interiorLight2 = new THREE.PointLight(0xffa500, 0.6, 12);
+      interiorLight2.position.set(3, 4, 1);
+      scene.add(interiorLight2);
     } else {
       // Day lighting
-      const ambientLight = new THREE.AmbientLight(0x404040, 0.6);
+      const ambientLight = new THREE.AmbientLight(0x404040, 0.8);
       scene.add(ambientLight);
       
       // Sunlight
-      const sunLight = new THREE.DirectionalLight(0xffffff, 1);
-      sunLight.position.set(10, 10, 5);
+      const sunLight = new THREE.DirectionalLight(0xffffff, 1.2);
+      sunLight.position.set(15, 15, 8);
       sunLight.castShadow = true;
+      sunLight.shadow.mapSize.width = 2048;
+      sunLight.shadow.mapSize.height = 2048;
       scene.add(sunLight);
     }
   }, [isNightMode, scene]);
 
   return (
-    <group ref={houseRef}>
-      {/* Foundation */}
-      <mesh position={[0, -0.1, 0]} receiveShadow>
-        <boxGeometry args={[10, 0.2, 8]} />
-        <meshStandardMaterial color={isNightMode ? "#4a4a4a" : "#8b7355"} />
+    <group ref={villaRef}>
+      {/* Foundation/Base */}
+      <mesh position={[0, -0.15, 0]} receiveShadow>
+        <boxGeometry args={[16, 0.3, 12]} />
+        <meshStandardMaterial color={isNightMode ? "#2a2a2a" : "#d3d3d3"} />
       </mesh>
       
-      {/* Main walls with proper thickness */}
-      <group>
-        {/* Front wall */}
-        <mesh position={[0, 1.5, 3.875]} castShadow>
-          <boxGeometry args={[10, 3, 0.25]} />
-          <meshStandardMaterial color={isNightMode ? "#c0c0c0" : "#f5f5f5"} />
-        </mesh>
-        
-        {/* Back wall */}
-        <mesh position={[0, 1.5, -3.875]} castShadow>
-          <boxGeometry args={[10, 3, 0.25]} />
-          <meshStandardMaterial color={isNightMode ? "#c0c0c0" : "#f5f5f5"} />
-        </mesh>
-        
-        {/* Left wall */}
-        <mesh position={[-4.875, 1.5, 0]} castShadow>
-          <boxGeometry args={[0.25, 3, 7.75]} />
-          <meshStandardMaterial color={isNightMode ? "#c0c0c0" : "#f5f5f5"} />
-        </mesh>
-        
-        {/* Right wall */}
-        <mesh position={[4.875, 1.5, 0]} castShadow>
-          <boxGeometry args={[0.25, 3, 7.75]} />
-          <meshStandardMaterial color={isNightMode ? "#c0c0c0" : "#f5f5f5"} />
-        </mesh>
+      {/* Ground floor - Stone section (right side) */}
+      <mesh position={[5, 1.5, 0]} castShadow>
+        <boxGeometry args={[6, 3, 8]} />
+        <meshStandardMaterial 
+          color={isNightMode ? "#3a3a3a" : "#8b8680"} 
+          roughness={0.9}
+          metalness={0.1}
+        />
+      </mesh>
+      
+      {/* Ground floor - White modern section (left side) */}
+      <mesh position={[-3, 1.5, 0]} castShadow>
+        <boxGeometry args={[8, 3, 8]} />
+        <meshStandardMaterial 
+          color={isNightMode ? "#e8e8e8" : "#ffffff"} 
+          roughness={0.2}
+          metalness={0.0}
+        />
+      </mesh>
+      
+      {/* Second floor - White section */}
+      <mesh position={[-1, 4.5, -1]} castShadow>
+        <boxGeometry args={[8, 3, 6]} />
+        <meshStandardMaterial 
+          color={isNightMode ? "#e8e8e8" : "#ffffff"} 
+          roughness={0.2}
+          metalness={0.0}
+        />
+      </mesh>
+      
+      {/* Wood cladding section */}
+      <group position={[1, 1.5, 3.9]}>
+        {Array.from({ length: 12 }, (_, i) => (
+          <mesh key={i} position={[i * 0.4 - 2.2, 0, 0]} castShadow>
+            <boxGeometry args={[0.3, 3, 0.2]} />
+            <meshStandardMaterial 
+              color={isNightMode ? "#4a3728" : "#8b7355"} 
+              roughness={0.8}
+              metalness={0.0}
+            />
+          </mesh>
+        ))}
       </group>
       
-      {/* Hip roof */}
-      <group position={[0, 3.2, 0]}>
-        {/* Main roof slopes */}
-        <mesh position={[0, 0.6, 2.2]} rotation={[Math.PI / 6, 0, 0]} castShadow>
-          <boxGeometry args={[11, 0.1, 3.2]} />
-          <meshStandardMaterial color={isNightMode ? "#5a3a1a" : "#8b4513"} />
-        </mesh>
-        <mesh position={[0, 0.6, -2.2]} rotation={[-Math.PI / 6, 0, 0]} castShadow>
-          <boxGeometry args={[11, 0.1, 3.2]} />
-          <meshStandardMaterial color={isNightMode ? "#5a3a1a" : "#8b4513"} />
-        </mesh>
-        
-        {/* Side roof slopes */}
-        <mesh position={[3.5, 0.4, 0]} rotation={[0, 0, Math.PI / 8]} castShadow>
-          <boxGeometry args={[2.8, 0.1, 8.5]} />
-          <meshStandardMaterial color={isNightMode ? "#5a3a1a" : "#8b4513"} />
-        </mesh>
-        <mesh position={[-3.5, 0.4, 0]} rotation={[0, 0, -Math.PI / 8]} castShadow>
-          <boxGeometry args={[2.8, 0.1, 8.5]} />
-          <meshStandardMaterial color={isNightMode ? "#5a3a1a" : "#8b4513"} />
-        </mesh>
-        
-        {/* Roof ridge */}
-        <mesh position={[0, 1.2, 0]} castShadow>
-          <boxGeometry args={[11.2, 0.2, 0.3]} />
-          <meshStandardMaterial color={isNightMode ? "#4a2a0a" : "#654321"} />
-        </mesh>
-      </group>
+      {/* Modern flat roof */}
+      <mesh position={[0, 6.2, 0]} castShadow>
+        <boxGeometry args={[16.5, 0.3, 12.5]} />
+        <meshStandardMaterial 
+          color={isNightMode ? "#2a2a2a" : "#666666"} 
+          roughness={0.3}
+          metalness={0.2}
+        />
+      </mesh>
       
-      {/* Windows with frames and night glow */}
+      {/* Carport roof */}
+      <mesh position={[-5, 3.5, 3]} castShadow>
+        <boxGeometry args={[6, 0.2, 4]} />
+        <meshStandardMaterial 
+          color={isNightMode ? "#2a2a2a" : "#666666"} 
+          roughness={0.3}
+          metalness={0.2}
+        />
+      </mesh>
+      
+      {/* Carport support columns */}
+      <mesh position={[-7, 1.75, 4.5]} castShadow>
+        <cylinderGeometry args={[0.15, 0.15, 3.5]} />
+        <meshStandardMaterial color={isNightMode ? "#e8e8e8" : "#ffffff"} />
+      </mesh>
+      <mesh position={[-3, 1.75, 4.5]} castShadow>
+        <cylinderGeometry args={[0.15, 0.15, 3.5]} />
+        <meshStandardMaterial color={isNightMode ? "#e8e8e8" : "#ffffff"} />
+      </mesh>
+      
+      {/* Large floor-to-ceiling windows */}
       <group>
-        {/* Front windows */}
-        <mesh position={[-2.5, 1.8, 4]}>
-          <boxGeometry args={[1.5, 1.5, 0.15]} />
-          <meshStandardMaterial color={isNightMode ? "#1a1a1a" : "#8b6914"} />
-        </mesh>
-        <mesh position={[-2.5, 1.8, 4.05]}>
-          <boxGeometry args={[1.3, 1.3, 0.05]} />
+        {/* Main living area window */}
+        <mesh position={[-3, 2, 4.05]}>
+          <boxGeometry args={[6, 2.8, 0.1]} />
           <meshStandardMaterial 
-            color={isNightMode ? "#ffaa55" : "#87ceeb"} 
+            color={isNightMode ? "#ffa500" : "#87ceeb"} 
             transparent 
-            opacity={0.7}
-            emissive={isNightMode ? "#aa6600" : "#000000"}
+            opacity={isNightMode ? 0.8 : 0.3}
+            emissive={isNightMode ? "#ff8c00" : "#000000"}
+            emissiveIntensity={isNightMode ? 0.4 : 0}
+          />
+        </mesh>
+        
+        {/* Second floor windows */}
+        <mesh position={[-1, 5, 1.05]}>
+          <boxGeometry args={[4, 2, 0.1]} />
+          <meshStandardMaterial 
+            color={isNightMode ? "#ffa500" : "#87ceeb"} 
+            transparent 
+            opacity={isNightMode ? 0.8 : 0.3}
+            emissive={isNightMode ? "#ff8c00" : "#000000"}
             emissiveIntensity={isNightMode ? 0.3 : 0}
           />
         </mesh>
         
-        <mesh position={[2.5, 1.8, 4]}>
-          <boxGeometry args={[1.5, 1.5, 0.15]} />
-          <meshStandardMaterial color={isNightMode ? "#1a1a1a" : "#8b6914"} />
-        </mesh>
-        <mesh position={[2.5, 1.8, 4.05]}>
-          <boxGeometry args={[1.3, 1.3, 0.05]} />
+        {/* Side stone section windows */}
+        <mesh position={[7.5, 2, 1]}>
+          <boxGeometry args={[1, 1.5, 0.1]} />
           <meshStandardMaterial 
-            color={isNightMode ? "#ffaa55" : "#87ceeb"} 
+            color={isNightMode ? "#ffa500" : "#87ceeb"} 
             transparent 
-            opacity={0.7}
-            emissive={isNightMode ? "#aa6600" : "#000000"}
+            opacity={isNightMode ? 0.7 : 0.3}
+            emissive={isNightMode ? "#ff8c00" : "#000000"}
+            emissiveIntensity={isNightMode ? 0.3 : 0}
+          />
+        </mesh>
+        <mesh position={[7.5, 2, -1]}>
+          <boxGeometry args={[1, 1.5, 0.1]} />
+          <meshStandardMaterial 
+            color={isNightMode ? "#ffa500" : "#87ceeb"} 
+            transparent 
+            opacity={isNightMode ? 0.7 : 0.3}
+            emissive={isNightMode ? "#ff8c00" : "#000000"}
             emissiveIntensity={isNightMode ? 0.3 : 0}
           />
         </mesh>
       </group>
       
-      {/* Door with frame */}
-      <mesh position={[0, 1.25, 4]}>
-        <boxGeometry args={[1.2, 2.5, 0.15]} />
-        <meshStandardMaterial color={isNightMode ? "#2a1a0a" : "#8b4513"} />
-      </mesh>
-      <mesh position={[0, 1.25, 4.05]}>
-        <boxGeometry args={[1, 2.3, 0.05]} />
-        <meshStandardMaterial color={isNightMode ? "#4a2a1a" : "#a0522d"} />
+      {/* Modern entrance door */}
+      <mesh position={[1, 1.4, 4.05]}>
+        <boxGeometry args={[1.5, 2.8, 0.1]} />
+        <meshStandardMaterial 
+          color={isNightMode ? "#1a1a1a" : "#2c2c2c"} 
+          roughness={0.1}
+          metalness={0.8}
+        />
       </mesh>
       
       {/* Door handle */}
-      <mesh position={[0.3, 1.25, 4.1]}>
+      <mesh position={[1.5, 1.4, 4.15]}>
         <cylinderGeometry args={[0.03, 0.03, 0.1]} />
-        <meshStandardMaterial color="#ffd700" />
+        <meshStandardMaterial color="#c0c0c0" metalness={0.9} roughness={0.1} />
       </mesh>
       
       {/* ASTRA Villa Sign */}
@@ -386,7 +425,7 @@ const Enhanced3DPropertyViewer = ({
           target={[0, 1, 0]}
         />
         
-        <House3D isNightMode={isNightMode} showDimensions={showDimensions} />
+        <ModernVilla3D isNightMode={isNightMode} showDimensions={showDimensions} />
       </Canvas>
     </div>
   );
