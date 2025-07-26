@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAlert } from "@/contexts/AlertContext";
 import { formatIDR } from "@/utils/currency";
-import { Edit, Save, X, Image as ImageIcon, Upload, Trash2, Wand2, AlertTriangle } from "lucide-react";
+import { Edit, Save, X, Image as ImageIcon, Upload, Trash2, Wand2, AlertTriangle, Box, Filter, BarChart3, MapPin, Calendar } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -40,6 +40,7 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
   const [images, setImages] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
   const [generatingImage, setGeneratingImage] = useState(false);
+  const [activeTab, setActiveTab] = useState<"basic" | "advanced" | "3d" | "filters">("basic");
 
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
@@ -720,49 +721,180 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
               </div>
             </div>
 
-            {/* Advanced Features */}
+            {/* Advanced Features Tabs */}
             <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
               <div className="bg-gradient-to-r from-violet-500 to-purple-500 p-4">
-                <h3 className="text-lg font-bold text-white">Advanced Features & Links</h3>
+                <h3 className="text-lg font-bold text-white">Advanced Features</h3>
               </div>
               <div className="p-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  <Button
+                {/* Tab Navigation */}
+                <div className="flex flex-wrap gap-2 mb-6 p-1 bg-slate-100 dark:bg-slate-700 rounded-lg">
+                  <button
                     type="button"
-                    variant="outline"
-                    className="h-16 flex flex-col items-center justify-center gap-2 hover:bg-gradient-to-r hover:from-violet-50 hover:to-purple-50 dark:hover:from-violet-900/20 dark:hover:to-purple-900/20"
-                    onClick={() => window.open(`/property-3d-view/${property.id}`, '_blank')}
+                    onClick={() => setActiveTab("basic")}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
+                      activeTab === "basic" 
+                        ? "bg-white dark:bg-slate-600 text-violet-600 dark:text-violet-400 shadow-sm"
+                        : "text-slate-600 dark:text-slate-300 hover:bg-white/50 dark:hover:bg-slate-600/50"
+                    }`}
                   >
-                    <div className="p-2 bg-gradient-to-r from-violet-500 to-purple-500 rounded-lg">
-                      <ImageIcon className="h-4 w-4 text-white" />
-                    </div>
-                    <span className="text-sm font-medium">3D View</span>
-                  </Button>
-                  
-                  <Button
+                    <Edit className="h-4 w-4" />
+                    Basic Info
+                  </button>
+                  <button
                     type="button"
-                    variant="outline"
-                    className="h-16 flex flex-col items-center justify-center gap-2 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 dark:hover:from-blue-900/20 dark:hover:to-indigo-900/20"
-                    onClick={() => window.open(`/property-analytics/${property.id}`, '_blank')}
+                    onClick={() => setActiveTab("3d")}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
+                      activeTab === "3d" 
+                        ? "bg-white dark:bg-slate-600 text-violet-600 dark:text-violet-400 shadow-sm"
+                        : "text-slate-600 dark:text-slate-300 hover:bg-white/50 dark:hover:bg-slate-600/50"
+                    }`}
                   >
-                    <div className="p-2 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-lg">
-                      <Edit className="h-4 w-4 text-white" />
-                    </div>
-                    <span className="text-sm font-medium">Analytics</span>
-                  </Button>
-
-                  <Button
+                    <Box className="h-4 w-4" />
+                    3D Settings
+                  </button>
+                  <button
                     type="button"
-                    variant="outline"
-                    className="h-16 flex flex-col items-center justify-center gap-2 hover:bg-gradient-to-r hover:from-emerald-50 hover:to-teal-50 dark:hover:from-emerald-900/20 dark:hover:to-teal-900/20"
-                    onClick={() => window.open(`/property-filters/${property.id}`, '_blank')}
+                    onClick={() => setActiveTab("filters")}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
+                      activeTab === "filters" 
+                        ? "bg-white dark:bg-slate-600 text-violet-600 dark:text-violet-400 shadow-sm"
+                        : "text-slate-600 dark:text-slate-300 hover:bg-white/50 dark:hover:bg-slate-600/50"
+                    }`}
                   >
-                    <div className="p-2 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-lg">
-                      <Wand2 className="h-4 w-4 text-white" />
-                    </div>
-                    <span className="text-sm font-medium">Filters</span>
-                  </Button>
+                    <Filter className="h-4 w-4" />
+                    Display Filters
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab("advanced")}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
+                      activeTab === "advanced" 
+                        ? "bg-white dark:bg-slate-600 text-violet-600 dark:text-violet-400 shadow-sm"
+                        : "text-slate-600 dark:text-slate-300 hover:bg-white/50 dark:hover:bg-slate-600/50"
+                    }`}
+                  >
+                    <BarChart3 className="h-4 w-4" />
+                    Analytics
+                  </button>
                 </div>
+
+                {/* Tab Content */}
+                {activeTab === "3d" && (
+                  <div className="space-y-4">
+                    <h4 className="text-lg font-semibold text-slate-800 dark:text-slate-200">3D View Settings</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label className="text-slate-700 dark:text-slate-300 font-medium">3D Model Quality</Label>
+                        <Select defaultValue="high">
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="low">Low Quality</SelectItem>
+                            <SelectItem value="medium">Medium Quality</SelectItem>
+                            <SelectItem value="high">High Quality</SelectItem>
+                            <SelectItem value="ultra">Ultra Quality</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="text-slate-700 dark:text-slate-300 font-medium">Viewing Mode</Label>
+                        <Select defaultValue="interior">
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="interior">Interior View</SelectItem>
+                            <SelectItem value="exterior">Exterior View</SelectItem>
+                            <SelectItem value="both">Both Views</SelectItem>
+                            <SelectItem value="panoramic">Panoramic</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="text-slate-700 dark:text-slate-300 font-medium">Virtual Tour URL</Label>
+                        <Input
+                          placeholder="Enter virtual tour link..."
+                          className="border-slate-300 dark:border-slate-600 focus:border-violet-500"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="text-slate-700 dark:text-slate-300 font-medium">Floor Plan URL</Label>
+                        <Input
+                          placeholder="Enter floor plan link..."
+                          className="border-slate-300 dark:border-slate-600 focus:border-violet-500"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === "filters" && (
+                  <div className="space-y-4">
+                    <h4 className="text-lg font-semibold text-slate-800 dark:text-slate-200">Display Filters & Visibility</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-3">
+                        <Label className="text-slate-700 dark:text-slate-300 font-medium">Property Visibility</Label>
+                        <div className="space-y-2">
+                          <label className="flex items-center gap-2">
+                            <input type="checkbox" className="rounded" defaultChecked />
+                            <span className="text-sm">Show on main listings</span>
+                          </label>
+                          <label className="flex items-center gap-2">
+                            <input type="checkbox" className="rounded" defaultChecked />
+                            <span className="text-sm">Featured property</span>
+                          </label>
+                          <label className="flex items-center gap-2">
+                            <input type="checkbox" className="rounded" />
+                            <span className="text-sm">Premium highlight</span>
+                          </label>
+                        </div>
+                      </div>
+                      <div className="space-y-3">
+                        <Label className="text-slate-700 dark:text-slate-300 font-medium">Search Filters</Label>
+                        <div className="space-y-2">
+                          <label className="flex items-center gap-2">
+                            <input type="checkbox" className="rounded" defaultChecked />
+                            <span className="text-sm">Include in price filters</span>
+                          </label>
+                          <label className="flex items-center gap-2">
+                            <input type="checkbox" className="rounded" defaultChecked />
+                            <span className="text-sm">Show in location search</span>
+                          </label>
+                          <label className="flex items-center gap-2">
+                            <input type="checkbox" className="rounded" />
+                            <span className="text-sm">Exclude from bulk searches</span>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === "advanced" && (
+                  <div className="space-y-4">
+                    <h4 className="text-lg font-semibold text-slate-800 dark:text-slate-200">Analytics & Advanced Options</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg">
+                        <h5 className="font-medium text-slate-800 dark:text-slate-200 mb-2">Property Performance</h5>
+                        <div className="space-y-1 text-sm text-slate-600 dark:text-slate-400">
+                          <p>Views: 1,234</p>
+                          <p>Inquiries: 45</p>
+                          <p>Favorites: 89</p>
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="text-slate-700 dark:text-slate-300 font-medium">SEO Keywords</Label>
+                        <Textarea
+                          placeholder="luxury apartment, modern design, city center..."
+                          rows={3}
+                          className="border-slate-300 dark:border-slate-600 focus:border-blue-500"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
