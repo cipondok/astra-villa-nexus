@@ -38,6 +38,7 @@ import {
   MapPin,
   Key
 } from "lucide-react";
+import { navigationSections } from "./navigationSections";
 
 interface CompactAdminNavigationProps {
   activeTab: string;
@@ -57,15 +58,25 @@ interface TabItem {
   label: string;
   icon: React.ComponentType<any>;
   badge?: string;
+  description?: string;
 }
 
 const CompactAdminNavigation = ({ activeTab, onTabChange, isAdmin }: CompactAdminNavigationProps) => {
   const quickAccess: TabItem[] = [
-    { id: "overview", label: "Overview", icon: Activity },
-    { id: "ai-assistant", label: "AI Assistant", icon: Activity, badge: "New" },
-    { id: "diagnostic", label: "Diagnostic", icon: Wrench, badge: "New" },
-    { id: "astra-token-hub", label: "ASTRA Hub", icon: Coins },
+    { id: "overview", label: "Overview", icon: Activity, description: "Main dashboard overview and quick stats" },
+    { id: "ai-assistant", label: "AI Assistant", icon: Activity, badge: "New", description: "AI-powered admin assistant" },
+    { id: "diagnostic", label: "Diagnostic", icon: Wrench, badge: "New", description: "System diagnostics and testing" },
+    { id: "astra-token-hub", label: "ASTRA Hub", icon: Coins, description: "ASTRA token management and analytics" },
   ];
+
+  // Get description from navigationSections
+  const getItemDescription = (itemId: string) => {
+    for (const category of Object.values(navigationSections)) {
+      const found = category.find((section: any) => section.key === itemId);
+      if (found) return found.description;
+    }
+    return `Manage ${itemId.replace(/[-_]/g, ' ')}`;
+  };
 
   const tabGroups: TabGroup[] = [
     {
@@ -142,7 +153,7 @@ const CompactAdminNavigation = ({ activeTab, onTabChange, isAdmin }: CompactAdmi
   const isTabActive = (tabId: string) => activeTab === tabId;
 
   return (
-    <div className="flex items-center gap-2 sm:gap-1 p-3 sm:p-2 hud-border border-b border-border min-h-14 sm:h-12 bg-gradient-to-r from-card/50 to-muted/30 overflow-x-auto">
+    <div className="flex items-center gap-2 sm:gap-1 p-3 sm:p-2 border-b border-border min-h-14 sm:h-12 bg-card/50 overflow-x-auto">
       {/* Quick Access Tabs */}
       <div className="flex items-center gap-2 sm:gap-1 mr-4 sm:mr-2 flex-shrink-0">
         {quickAccess.map((tab) => (
@@ -151,7 +162,8 @@ const CompactAdminNavigation = ({ activeTab, onTabChange, isAdmin }: CompactAdmi
             variant={isTabActive(tab.id) ? "default" : "ghost"}
             size="sm"
             onClick={() => onTabChange(tab.id)}
-            className="relative h-8 sm:h-7 px-3 sm:px-2 text-sm sm:text-xs font-medium gold-glow-hover touch-manipulation flex-shrink-0"
+            title={tab.description} // Simple tooltip using title attribute
+            className="relative h-8 sm:h-7 px-3 sm:px-2 text-sm sm:text-xs font-medium touch-manipulation flex-shrink-0 hover:scale-105 transition-transform"
           >
             <tab.icon className="h-4 w-4 sm:h-3 sm:w-3 mr-2 sm:mr-1" />
             <span className="hidden sm:inline">{tab.label}</span>
@@ -176,7 +188,8 @@ const CompactAdminNavigation = ({ activeTab, onTabChange, isAdmin }: CompactAdmi
               <Button
                 variant={group.items.some(item => isTabActive(item.id)) ? "default" : "ghost"}
                 size="sm"
-                className="h-8 sm:h-7 px-3 sm:px-2 text-sm sm:text-xs font-medium hud-border bg-gradient-to-r from-primary/10 to-accent/10 touch-manipulation flex-shrink-0"
+                title={`${group.label} - Click to see all options`} // Simple tooltip
+                className="h-8 sm:h-7 px-3 sm:px-2 text-sm sm:text-xs font-medium touch-manipulation flex-shrink-0 hover:scale-105 transition-transform"
               >
                 <group.icon className="h-4 w-4 sm:h-3 sm:w-3 mr-2 sm:mr-1" />
                 <span className="hidden md:inline">{group.label}</span>
@@ -184,7 +197,7 @@ const CompactAdminNavigation = ({ activeTab, onTabChange, isAdmin }: CompactAdmi
                 <ChevronDown className="h-4 w-4 sm:h-3 sm:w-3 ml-2 sm:ml-1" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="w-56 sm:w-48 hud-border border shadow-lg z-50 bg-card/95 backdrop-blur-sm">
+            <DropdownMenuContent align="start" className="w-56 sm:w-48 border shadow-lg z-50 bg-card/95 backdrop-blur-sm">
               <DropdownMenuLabel className="text-sm sm:text-xs font-semibold text-muted-foreground">
                 {group.label}
               </DropdownMenuLabel>
@@ -193,7 +206,8 @@ const CompactAdminNavigation = ({ activeTab, onTabChange, isAdmin }: CompactAdmi
                 <DropdownMenuItem
                   key={item.id}
                   onClick={() => onTabChange(item.id)}
-                  className={`flex items-center gap-2 px-4 sm:px-3 py-3 sm:py-2 text-sm sm:text-xs cursor-pointer transition-colors touch-manipulation ${
+                  title={getItemDescription(item.id)} // Simple tooltip
+                  className={`flex items-center gap-2 px-4 sm:px-3 py-3 sm:py-2 text-sm sm:text-xs cursor-pointer transition-colors touch-manipulation hover:scale-[1.02] ${
                     isTabActive(item.id) 
                       ? 'bg-primary/10 text-primary font-medium' 
                       : 'text-foreground hover:bg-muted'
