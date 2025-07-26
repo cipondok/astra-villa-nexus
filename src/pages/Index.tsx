@@ -288,11 +288,13 @@ const Index = () => {
         <section className="relative w-full">
           <div className="w-full h-[50vh] bg-black overflow-hidden">
             <iframe
-              src="https://discover.matterport.com/space/MC9zDt6bgEM"
+              src="https://my.matterport.com/show/?m=MC9zDt6bgEM"
               className="w-full h-full border-0 block"
               title="3D Virtual Tour - ASTRA Villa"
               allowFullScreen
               loading="eager"
+              onLoad={() => console.log('Matterport iframe loaded successfully')}
+              onError={() => console.log('Matterport iframe failed to load')}
               style={{ 
                 width: '100%', 
                 height: '50vh',
