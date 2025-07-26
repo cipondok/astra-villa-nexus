@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Building2, Plus, List, Settings, MapPin, Activity, Sliders, Monitor, Eye, Blocks } from "lucide-react";
-import PropertyListManagement from "./PropertyListManagement";
+import SimplePropertyManagement from "./SimplePropertyManagement";
 import EnhancedPropertyInsertForm from "./EnhancedPropertyInsertForm";
 import PropertyCategoriesManagement from "./PropertyCategoriesManagement";
 import LocationDatabaseManager from "./LocationDatabaseManager";
@@ -118,7 +118,7 @@ const AdminPropertyManagement = () => {
         </TabsContent>
 
         <TabsContent value="properties">
-          <PropertyListManagement onAddProperty={handleAddProperty} />
+          <SimplePropertyManagement onAddProperty={handleAddProperty} />
         </TabsContent>
 
         <TabsContent value="add-property">
