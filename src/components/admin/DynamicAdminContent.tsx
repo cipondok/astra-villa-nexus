@@ -16,6 +16,7 @@ import DatabaseTableManagement from "./DatabaseTableManagement";
 import SecurityMonitoringDashboard from "./SecurityMonitoringDashboard";
 import PaymentSystemStatus from "./PaymentSystemStatus";
 import ImageOptimizationPanel from "./ImageOptimizationPanel";
+import AdminPropertyManagement from "./AdminPropertyManagement";
 
 interface DynamicAdminContentProps {
   activeSection: string;
@@ -36,7 +37,7 @@ const DynamicAdminContent = ({ activeSection, onSectionChange }: DynamicAdminCon
         return <EnhancedUserManagement />;
       case "properties":
       case "property-management-hub":
-        return <EnhancedPropertyManagement />;
+        return <AdminPropertyManagement />;
       case "property-management-advanced":
         return <PropertyManagementAdvanced />;
       case "analytics":
