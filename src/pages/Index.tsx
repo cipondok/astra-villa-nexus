@@ -284,28 +284,16 @@ const Index = () => {
         isTablet ? "min-h-screen overflow-x-hidden tablet-safe-area" : "min-h-screen"
       )}>
         
-        {/* Properties from /dijual Section */}
-        <section className="relative w-full">
-          <div className={cn(
-            "mx-auto",
-            isMobile ? "px-2 py-4" : "px-6 py-8"
-          )}>
-            <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold text-foreground mb-4">Featured Properties for Sale</h2>
-              <p className="text-muted-foreground max-w-2xl mx-auto">
-                Discover our handpicked selection of premium properties available for purchase
-              </p>
-            </div>
-            <PropertiesForSaleSection language={language} onPropertyClick={handlePropertyClick} />
-            <div className="text-center mt-8">
-              <Button 
-                onClick={() => navigate('/dijual')}
-                size="lg"
-                className="bg-primary hover:bg-primary/90"
-              >
-                View All Properties for Sale
-              </Button>
-            </div>
+        {/* Matterport 3D View Section */}
+        <section className="relative w-full -mx-6">
+          <div className="w-full h-[100vh] bg-black">
+            <iframe
+              src="https://discover.matterport.com/space/MC9zDt6bgEM"
+              className="w-full h-full border-0"
+              title="3D Virtual Tour"
+              allowFullScreen
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            />
           </div>
         </section>
 
