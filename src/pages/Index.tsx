@@ -288,7 +288,7 @@ const Index = () => {
         <section className="relative w-full">
           <div className="w-full h-screen bg-black overflow-hidden" style={{ height: '100vh' }}>
             <iframe
-              src="https://discover.matterport.com/space/MC9zDt6bgEM"
+              src="https://my.matterport.com/show/?m=SxQL3iGyoDo"
               className="w-full h-full border-0 block"
               title="3D Virtual Tour - ASTRA Villa"
               allowFullScreen
