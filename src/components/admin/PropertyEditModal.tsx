@@ -373,7 +373,7 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-7xl max-h-[95vh] overflow-hidden bg-gradient-to-br from-slate-50 to-indigo-50 dark:from-slate-900 dark:to-indigo-950">
+      <DialogContent className="max-w-5xl max-h-[90vh] overflow-hidden bg-gradient-to-br from-slate-50 to-indigo-50 dark:from-slate-900 dark:to-indigo-950">
         <DialogHeader className="border-b border-slate-200 dark:border-slate-700 pb-6 bg-gradient-to-r from-indigo-600 to-purple-600 -mx-6 -mt-6 px-6 pt-6 text-white">
           <DialogTitle className="text-2xl font-bold text-white flex items-center gap-3">
             <div className="p-2 bg-white/20 backdrop-blur-sm rounded-lg">
@@ -394,8 +394,8 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
           )}
         </DialogHeader>
         
-        <div className="overflow-y-auto max-h-[calc(95vh-140px)] px-1">
-          <div className="space-y-8 py-6">
+        <div className="overflow-y-auto max-h-[calc(90vh-180px)] px-1">
+          <div className="space-y-6 py-4">
             {/* Image Management Section */}
             <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
               <div className="bg-gradient-to-r from-purple-500 to-pink-500 p-4">
