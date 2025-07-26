@@ -9,6 +9,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { useAlert } from "@/contexts/AlertContext";
 import { useAuth } from "@/contexts/AuthContext";
+import PropertyEditModal from "./PropertyEditModal";
+import PropertyViewModal from "./PropertyViewModal";
 import { 
   Search, 
   Plus, 
@@ -50,6 +52,8 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
   
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedProperties, setSelectedProperties] = useState<Set<string>>(new Set());
+  const [editingProperty, setEditingProperty] = useState<Property | null>(null);
+  const [viewingProperty, setViewingProperty] = useState<Property | null>(null);
 
   // Check if user is admin
   const isAdmin = profile?.role === 'admin' || user?.email === 'mycode103@gmail.com';
@@ -160,6 +164,14 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
     } else {
       setSelectedProperties(new Set());
     }
+  };
+
+  const handleViewProperty = (property: Property) => {
+    setViewingProperty(property);
+  };
+
+  const handleEditProperty = (property: Property) => {
+    setEditingProperty(property);
   };
 
   if (!user) {
@@ -349,7 +361,7 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
                         <Button 
                           variant="outline" 
                           size="sm"
-                          onClick={() => window.open(`/properties/${property.id}`, '_blank')}
+                          onClick={() => handleViewProperty(property)}
                           title="View Property"
                         >
                           <Eye className="h-4 w-4" />
@@ -357,10 +369,7 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
                         <Button 
                           variant="outline" 
                           size="sm"
-                          onClick={() => {
-                            console.log('Edit property:', property.id);
-                            showSuccess("Edit", `Edit functionality for "${property.title}" coming soon!`);
-                          }}
+                          onClick={() => handleEditProperty(property)}
                           title="Edit Property"
                         >
                           <Edit className="h-4 w-4" />
@@ -387,6 +396,24 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
           )}
         </CardContent>
       </Card>
+
+      {/* Edit Modal */}
+      {editingProperty && (
+        <PropertyEditModal
+          property={editingProperty}
+          isOpen={!!editingProperty}
+          onClose={() => setEditingProperty(null)}
+        />
+      )}
+
+      {/* View Modal */}
+      {viewingProperty && (
+        <PropertyViewModal
+          property={viewingProperty}
+          isOpen={!!viewingProperty}
+          onClose={() => setViewingProperty(null)}
+        />
+      )}
     </div>
   );
 };
