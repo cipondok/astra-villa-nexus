@@ -286,7 +286,7 @@ const Index = () => {
         
         {/* Matterport 3D View Section */}
         <section className="relative w-full">
-          <div className="w-full h-[70vh] bg-black overflow-hidden">
+          <div className="w-full h-[50vh] bg-black overflow-hidden">
             <iframe
               src="https://my.matterport.com/show/?m=SxQL3iGyoDo"
               className="w-full h-full border-0 block"
@@ -295,7 +295,7 @@ const Index = () => {
               loading="eager"
               style={{ 
                 width: '100%', 
-                height: '70vh',
+                height: '50vh',
                 border: 'none',
                 display: 'block'
               }}
