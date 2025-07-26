@@ -5,7 +5,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 
-import Property3DViewer from "@/components/animations/Property3DViewer";
+
 import ResponsiveAIChatWidget from "@/components/ai/ResponsiveAIChatWidget";
 import ScrollToTopButton from "@/components/ui/ScrollToTopButton";
 import { supabase } from "@/integrations/supabase/client";
@@ -284,20 +284,29 @@ const Index = () => {
         isTablet ? "min-h-screen overflow-x-hidden tablet-safe-area" : "min-h-screen"
       )}>
         
-        {/* 3D Property Viewer Section */}
-        <section className="relative w-full -mx-6">
-          <Property3DViewer 
-            height={isMobile ? "70vh" : "100vh"}
-            className="w-full"
-            propertyData={{
-              width: 12,
-              length: 15,
-              height: 8,
-              floors: 2,
-              rooms: 4,
-              bathrooms: 3
-            }}
-          />
+        {/* Properties from /dijual Section */}
+        <section className="relative w-full">
+          <div className={cn(
+            "mx-auto",
+            isMobile ? "px-2 py-4" : "px-6 py-8"
+          )}>
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold text-foreground mb-4">Featured Properties for Sale</h2>
+              <p className="text-muted-foreground max-w-2xl mx-auto">
+                Discover our handpicked selection of premium properties available for purchase
+              </p>
+            </div>
+            <PropertiesForSaleSection language={language} onPropertyClick={handlePropertyClick} />
+            <div className="text-center mt-8">
+              <Button 
+                onClick={() => navigate('/dijual')}
+                size="lg"
+                className="bg-primary hover:bg-primary/90"
+              >
+                View All Properties for Sale
+              </Button>
+            </div>
+          </div>
         </section>
 
         {/* Search Panel Section - Positioned below 3D */}
