@@ -346,10 +346,23 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
                     </TableCell>
                     <TableCell>
                       <div className="flex gap-1">
-                        <Button variant="outline" size="sm">
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => window.open(`/properties/${property.id}`, '_blank')}
+                          title="View Property"
+                        >
                           <Eye className="h-4 w-4" />
                         </Button>
-                        <Button variant="outline" size="sm">
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => {
+                            console.log('Edit property:', property.id);
+                            showSuccess("Edit", `Edit functionality for "${property.title}" coming soon!`);
+                          }}
+                          title="Edit Property"
+                        >
                           <Edit className="h-4 w-4" />
                         </Button>
                         <Button 
@@ -357,6 +370,7 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
                           size="sm"
                           onClick={() => handleDelete(property.id, property.title)}
                           disabled={deleteMutation.isPending}
+                          title="Delete Property"
                         >
                           {deleteMutation.isPending ? (
                             <Loader2 className="h-4 w-4 animate-spin" />
