@@ -145,7 +145,8 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
   });
 
   const handleDelete = (propertyId: string, propertyTitle: string) => {
-    if (window.confirm(`Are you sure you want to delete "${propertyTitle}"?`)) {
+    if (window.confirm(`⚠️ Are you sure you want to delete "${propertyTitle}"?\n\nThis action cannot be undone and will permanently remove all property data including images and ratings.`)) {
+      console.log('Admin confirmed deletion of property:', propertyId);
       deletePropertyMutation.mutate(propertyId);
     }
   };
@@ -286,7 +287,7 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
 
   return (
     <div className="space-y-6">
-      {/* Page Header */}
+      {/* Page Header with Action Summary */}
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold flex items-center gap-2">
@@ -296,8 +297,28 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
           <p className="text-gray-600">
             Manage all property listings ({properties.length} properties loaded)
           </p>
+          <div className="flex items-center gap-4 mt-2 text-sm text-gray-500">
+            <span className="flex items-center gap-1">
+              <Eye className="h-3 w-3" />
+              View Details
+            </span>
+            <span className="flex items-center gap-1">
+              <Edit className="h-3 w-3" />
+              Edit Properties
+            </span>
+            <span className="flex items-center gap-1">
+              <Trash2 className="h-3 w-3" />
+              Delete Properties
+            </span>
+          </div>
         </div>
-        <Button onClick={onAddProperty}>
+        <Button 
+          onClick={() => {
+            console.log('Add Property button clicked');
+            onAddProperty?.();
+          }}
+          className="bg-blue-600 hover:bg-blue-700 text-white"
+        >
           <Plus className="h-4 w-4 mr-2" />
           Add New Property
         </Button>
@@ -434,33 +455,40 @@ const PropertyListManagement = ({ onAddProperty }: PropertyListManagementProps) 
                         {new Date(property.created_at).toLocaleDateString()}
                       </TableCell>
                       <TableCell>
-                        <div className="flex items-center gap-1">
-                          <Button 
-                            variant="outline" 
-                            size="sm"
-                            onClick={() => handleView(property)}
-                            className="hover:bg-blue-50"
-                          >
-                            <Eye className="h-3 w-3" />
-                          </Button>
-                          <Button 
-                            variant="outline" 
-                            size="sm"
-                            onClick={() => handleEdit(property)}
-                            className="hover:bg-green-50 text-green-600 hover:text-green-700"
-                          >
-                            <Edit className="h-3 w-3" />
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleDelete(property.id, property.title)}
-                            className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                            disabled={deletePropertyMutation.isPending}
-                          >
-                            <Trash2 className="h-3 w-3" />
-                          </Button>
-                        </div>
+                         <div className="flex items-center gap-1">
+                           <Button 
+                             variant="outline" 
+                             size="sm"
+                             onClick={() => handleView(property)}
+                             className="hover:bg-blue-50 border-blue-200 text-blue-600 hover:text-blue-700"
+                             title="View Property Details"
+                           >
+                             <Eye className="h-3 w-3" />
+                           </Button>
+                           <Button 
+                             variant="outline" 
+                             size="sm"
+                             onClick={() => handleEdit(property)}
+                             className="hover:bg-green-50 border-green-200 text-green-600 hover:text-green-700"
+                             title="Edit Property"
+                           >
+                             <Edit className="h-3 w-3" />
+                           </Button>
+                           <Button
+                             variant="outline"
+                             size="sm"
+                             onClick={() => handleDelete(property.id, property.title)}
+                             className="hover:bg-red-50 border-red-200 text-red-600 hover:text-red-700"
+                             disabled={deletePropertyMutation.isPending}
+                             title="Delete Property"
+                           >
+                             {deletePropertyMutation.isPending ? (
+                               <Loader2 className="h-3 w-3 animate-spin" />
+                             ) : (
+                               <Trash2 className="h-3 w-3" />
+                             )}
+                           </Button>
+                         </div>
                       </TableCell>
                     </TableRow>
                   ))}
