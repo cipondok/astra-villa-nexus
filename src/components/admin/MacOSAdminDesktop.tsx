@@ -13,12 +13,14 @@ import {
 import AnimatedLogo from '@/components/AnimatedLogo';
 import DynamicAdminContent from './DynamicAdminContent';
 import SystemSettings from './SystemSettings';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 // Desktop Apps Configuration with real components
 const desktopApps = [
   { 
     id: 'dashboard', 
     name: 'Dashboard', 
+    description: 'View system overview, analytics, and key performance metrics',
     icon: BarChart3, 
     section: 'dashboard',
     color: 'bg-blue-500'
@@ -26,6 +28,7 @@ const desktopApps = [
   { 
     id: 'users', 
     name: 'Users', 
+    description: 'Manage user accounts, roles, and permissions',
     icon: Users, 
     section: 'users',
     color: 'bg-purple-500'
@@ -33,6 +36,7 @@ const desktopApps = [
   { 
     id: 'properties', 
     name: 'Properties', 
+    description: 'Manage property listings, details, and availability',
     icon: Building2, 
     section: 'properties',
     color: 'bg-green-500'
@@ -40,6 +44,7 @@ const desktopApps = [
   { 
     id: 'security', 
     name: 'Security', 
+    description: 'Security settings, audit logs, and access control',
     icon: Shield, 
     section: 'security',
     color: 'bg-red-500'
@@ -47,6 +52,7 @@ const desktopApps = [
   { 
     id: 'analytics', 
     name: 'Analytics', 
+    description: 'Advanced analytics, reports, and data insights',
     icon: BarChart3, 
     section: 'analytics',
     color: 'bg-yellow-500'
@@ -54,6 +60,7 @@ const desktopApps = [
   { 
     id: 'messages', 
     name: 'Messages', 
+    description: 'Customer service, support tickets, and communication',
     icon: MessageSquare, 
     section: 'customer-service',
     color: 'bg-pink-500'
@@ -61,6 +68,7 @@ const desktopApps = [
   { 
     id: 'tools', 
     name: 'Tools', 
+    description: 'Administrative tools, utilities, and system functions',
     icon: Wrench, 
     section: 'tools',
     color: 'bg-indigo-500'
@@ -68,6 +76,7 @@ const desktopApps = [
   { 
     id: 'reports', 
     name: 'Reports', 
+    description: 'Generate and manage system reports and documents',
     icon: FileText, 
     section: 'reports',
     color: 'bg-orange-500'
@@ -75,6 +84,7 @@ const desktopApps = [
   { 
     id: 'settings', 
     name: 'Settings', 
+    description: 'System configuration, preferences, and setup',
     icon: Settings, 
     section: 'settings',
     color: 'bg-gray-500'
@@ -82,6 +92,7 @@ const desktopApps = [
   { 
     id: 'billing', 
     name: 'Billing', 
+    description: 'Payment management, billing, and financial settings',
     icon: CreditCard, 
     section: 'billing',
     color: 'bg-emerald-500'
@@ -89,6 +100,7 @@ const desktopApps = [
   { 
     id: 'seo', 
     name: 'SEO', 
+    description: 'Search engine optimization and website configuration',
     icon: Globe, 
     section: 'seo',
     color: 'bg-cyan-500'
@@ -96,6 +108,7 @@ const desktopApps = [
   { 
     id: 'kyc', 
     name: 'KYC Review', 
+    description: 'Know Your Customer verification and compliance',
     icon: CheckCircle, 
     section: 'kyc',
     color: 'bg-teal-500'
@@ -444,6 +457,7 @@ export const MacOSAdminDesktop = () => {
   };
 
   return (
+    <TooltipProvider>
     <div className={`h-screen w-screen bg-gradient-to-br relative overflow-hidden ${
       theme === 'dark' 
         ? 'from-blue-950 via-blue-900 to-blue-950' 
@@ -829,22 +843,30 @@ export const MacOSAdminDesktop = () => {
             const isOpen = openWindows.some(w => w.appId === app.id);
             
             return (
-              <button
-                key={app.id}
-                onClick={() => openApp(app)}
-                className={`
-                  w-12 h-12 rounded-xl flex items-center justify-center text-white
-                  hover:scale-110 transition-all duration-200 relative
-                  ${app.color}
-                  ${isOpen ? 'ring-2 ring-white/50' : ''}
-                `}
-                title={app.name}
-              >
-                <Icon className="w-6 h-6" />
-                {isOpen && (
-                  <div className="absolute -bottom-1 w-1 h-1 bg-white rounded-full" />
-                )}
-              </button>
+              <Tooltip key={app.id}>
+                <TooltipTrigger asChild>
+                  <button
+                    onClick={() => openApp(app)}
+                    className={`
+                      w-12 h-12 rounded-xl flex items-center justify-center text-white
+                      hover:scale-110 transition-all duration-200 relative
+                      ${app.color}
+                      ${isOpen ? 'ring-2 ring-white/50' : ''}
+                    `}
+                  >
+                    <Icon className="w-6 h-6" />
+                    {isOpen && (
+                      <div className="absolute -bottom-1 w-1 h-1 bg-white rounded-full" />
+                    )}
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <div className="text-center">
+                    <p className="font-medium">{app.name}</p>
+                    <p className="text-xs text-gray-400 mt-1">{app.description}</p>
+                  </div>
+                </TooltipContent>
+              </Tooltip>
             );
           })}
           
@@ -1085,6 +1107,7 @@ export const MacOSAdminDesktop = () => {
         </div>
       )}
     </div>
+    </TooltipProvider>
   );
 };
 
