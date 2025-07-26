@@ -285,14 +285,21 @@ const Index = () => {
       )}>
         
         {/* Matterport 3D View Section */}
-        <section className="relative w-full -mx-6">
-          <div className="w-full h-[100vh] bg-black">
+        <section className="relative w-full">
+          <div className="w-full h-screen bg-black overflow-hidden" style={{ height: '100vh' }}>
             <iframe
               src="https://discover.matterport.com/space/MC9zDt6bgEM"
-              className="w-full h-full border-0"
-              title="3D Virtual Tour"
+              className="w-full h-full border-0 block"
+              title="3D Virtual Tour - ASTRA Villa"
               allowFullScreen
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              loading="eager"
+              style={{ 
+                width: '100%', 
+                height: '100vh',
+                border: 'none',
+                display: 'block'
+              }}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
             />
           </div>
         </section>
