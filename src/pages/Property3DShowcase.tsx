@@ -66,7 +66,7 @@ const Property3DShowcase = () => {
       // Add demo 3D URLs to properties for showcase
       const propertiesWithDemo = (propertiesData || []).map((property, index) => ({
         ...property,
-        virtual_tour_url: index % 2 === 0 ? 'https://my.matterport.com/show/?m=SxQL3iGyoDo' : null,
+        virtual_tour_url: index === 0 ? 'https://discover.matterport.com/space/MC9zDt6bgEM' : index % 2 === 0 ? 'https://my.matterport.com/show/?m=SxQL3iGyoDo' : null,
         three_d_model_url: index % 3 === 0 ? 'https://sketchfab.com/models/76f0ff8d1c8a4e5a9b9c8c7c3c6c4c1c/embed' : null,
       }));
 
