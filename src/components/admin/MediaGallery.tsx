@@ -103,34 +103,44 @@ const MediaGallery = () => {
   const { data: files = [], isLoading, error } = useQuery({
     queryKey: ['storage-files', selectedBucket, searchTerm],
     queryFn: async () => {
+      console.log('🔍 Starting media file fetch...');
       const allFiles: MediaFile[] = [];
       
       const bucketsToQuery = selectedBucket === 'all' 
         ? buckets.map(b => b.id) 
         : [selectedBucket];
 
+      console.log('📦 Buckets to query:', bucketsToQuery);
+
       for (const bucketId of bucketsToQuery) {
         try {
+          console.log(`🔍 Processing bucket: ${bucketId}`);
           // Function to recursively list files from a folder
           const listFilesRecursively = async (path: string = ''): Promise<void> => {
+            console.log(`📁 Listing files in ${bucketId}${path ? '/' + path : ''}`);
             const { data: bucketFiles, error } = await supabase.storage
               .from(bucketId)
               .list(path, { limit: 1000, sortBy: { column: 'created_at', order: 'desc' } });
             
             if (error) {
-              console.error(`Error fetching files from bucket ${bucketId} path ${path}:`, error);
+              console.error(`❌ Error fetching files from bucket ${bucketId} path ${path}:`, error);
               return;
             }
+
+            console.log(`📄 Found ${bucketFiles?.length || 0} items in ${bucketId}${path ? '/' + path : ''}`);
 
             if (bucketFiles) {
               for (const file of bucketFiles) {
                 const fullPath = path ? `${path}/${file.name}` : file.name;
+                console.log(`📎 Processing item: ${file.name}, id: ${file.id}, metadata: ${JSON.stringify(file.metadata)}`);
                 
                 // If it's a folder, recurse into it
                 if (!file.id && file.metadata === null) {
+                  console.log(`📁 Entering folder: ${fullPath}`);
                   await listFilesRecursively(fullPath);
                 } else if (file.name && !file.name.endsWith('.emptyFolderPlaceholder')) {
                   // It's a file, add it to our list
+                  console.log(`✅ Adding file: ${fullPath}`);
                   allFiles.push({
                     id: file.id || `${bucketId}/${fullPath}`,
                     name: fullPath, // Use full path as name
@@ -149,10 +159,12 @@ const MediaGallery = () => {
 
           await listFilesRecursively();
         } catch (err) {
-          console.error(`Error processing bucket ${bucketId}:`, err);
+          console.error(`❌ Error processing bucket ${bucketId}:`, err);
         }
       }
       
+      console.log(`🎉 Total files found: ${allFiles.length}`);
+      console.log('📋 Files:', allFiles);
       return allFiles;
     },
     enabled: buckets.length > 0
