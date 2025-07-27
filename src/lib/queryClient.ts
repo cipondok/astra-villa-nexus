@@ -1,37 +1,7 @@
 import { QueryClient } from '@tanstack/react-query';
 
-// Create a fresh query client instance to avoid conflicts
-export const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      // Default stale time - data considered fresh for 5 minutes
-      staleTime: 5 * 60 * 1000,
-      // Default cache time - data stays in cache for 10 minutes
-      gcTime: 10 * 60 * 1000,
-      // Don't refetch on window focus by default
-      refetchOnWindowFocus: false,
-      // Don't retry failed requests automatically
-      retry: (failureCount, error) => {
-        // Don't retry on 4xx errors
-        if (error && typeof error === 'object' && 'status' in error) {
-          const status = (error as any).status;
-          if (status >= 400 && status < 500) return false;
-        }
-        return failureCount < 2;
-      },
-      // Exponential backoff for retries
-      retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
-    },
-    mutations: {
-      // Retry mutations once on failure
-      retry: 1,
-      retryDelay: 1000,
-    },
-  },
-});
-
-// Cache management utilities
-export const cacheUtils = {
+// Cache management utilities that work with any QueryClient instance
+export const createCacheUtils = (queryClient: QueryClient) => ({
   // Clear all cached data
   clearAll: () => queryClient.clear(),
   
@@ -89,4 +59,4 @@ export const cacheUtils = {
       errorCaches: queries.filter(q => q.state.status === 'error').length,
     };
   },
-};
+});
