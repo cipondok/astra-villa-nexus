@@ -20,6 +20,10 @@ import AdminPropertyManagement from "./AdminPropertyManagement";
 import LocationManagement from "./LocationManagement";
 import MediaGallery from "./MediaGallery";
 
+// Move lazy loading outside the component to prevent re-creation on every render
+const DeepSeekDiagnostics = lazy(() => import('./DeepSeekDiagnostics'));
+const EnhancedProjectDiagnostics = lazy(() => import('./EnhancedProjectDiagnostics'));
+
 interface DynamicAdminContentProps {
   activeSection: string;
   onSectionChange?: (section: string) => void;
@@ -77,8 +81,6 @@ const DynamicAdminContent = ({ activeSection, onSectionChange }: DynamicAdminCon
       case "media-gallery":
         return <MediaGallery />;
       case "ai-diagnostics":
-        const DeepSeekDiagnostics = lazy(() => import('./DeepSeekDiagnostics'));
-        const EnhancedProjectDiagnostics = lazy(() => import('./EnhancedProjectDiagnostics'));
         return (
           <div className="space-y-6">
             <Suspense fallback={<div className="flex items-center justify-center p-8"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500"></div></div>}>
