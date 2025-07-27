@@ -18,6 +18,7 @@ import PaymentSystemStatus from "./PaymentSystemStatus";
 import ImageOptimizationPanel from "./ImageOptimizationPanel";
 import AdminPropertyManagement from "./AdminPropertyManagement";
 import LocationManagement from "./LocationManagement";
+import MediaGallery from "./MediaGallery";
 
 interface DynamicAdminContentProps {
   activeSection: string;
@@ -72,6 +73,9 @@ const DynamicAdminContent = ({ activeSection, onSectionChange }: DynamicAdminCon
       case "locations":
       case "location-management":
         return <LocationManagement />;
+      case "media":
+      case "media-gallery":
+        return <MediaGallery />;
       case "ai-diagnostics":
         const DeepSeekDiagnostics = lazy(() => import('./DeepSeekDiagnostics'));
         const EnhancedProjectDiagnostics = lazy(() => import('./EnhancedProjectDiagnostics'));
