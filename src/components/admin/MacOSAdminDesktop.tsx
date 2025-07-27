@@ -1123,15 +1123,24 @@ export const MacOSAdminDesktop = () => {
       {showSpotlight && (
         <div className="fixed inset-0 bg-black/50 flex items-start justify-center pt-20 z-50">
           <div className="bg-white/90 backdrop-blur-md rounded-lg w-96 max-w-md">
-            <div className="flex items-center p-4 border-b border-gray-200">
-              <Search className="w-5 h-5 text-gray-400 mr-3" />
-              <input
-                type="text"
-                placeholder="Search admin functions..."
-                className="flex-1 bg-transparent border-none outline-none text-gray-800"
-                autoFocus
-                onKeyDown={(e) => e.key === 'Escape' && setShowSpotlight(false)}
-              />
+            <div className="flex items-center justify-between p-4 border-b border-gray-200">
+              <div className="flex items-center flex-1">
+                <Search className="w-5 h-5 text-gray-400 mr-3" />
+                <input
+                  type="text"
+                  placeholder="Search admin functions..."
+                  className="flex-1 bg-transparent border-none outline-none text-gray-800"
+                  autoFocus
+                  onKeyDown={(e) => e.key === 'Escape' && setShowSpotlight(false)}
+                />
+              </div>
+              <button
+                onClick={() => setShowSpotlight(false)}
+                className="w-6 h-6 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center transition-colors ml-3"
+                title="Close search"
+              >
+                <X className="w-4 h-4 text-gray-600" />
+              </button>
             </div>
             <div className="p-2 max-h-64 overflow-y-auto">
               {desktopApps.map(app => (
