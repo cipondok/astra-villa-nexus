@@ -782,30 +782,30 @@ export const MacOSAdminDesktop = () => {
                       e.stopPropagation();
                       closeWindow(window.id);
                     }}
-                    className="w-3 h-3 bg-red-500 rounded-full hover:bg-red-600 flex items-center justify-center"
+                    className="w-4 h-4 bg-red-500 rounded-full hover:bg-red-600 flex items-center justify-center transition-colors duration-200 hover:scale-110"
                     title="Close"
                   >
-                    <X className="w-2 h-2 text-white" />
+                    <X className="w-3 h-3 text-white font-bold" />
                   </button>
                   <button 
                     onClick={(e) => {
                       e.stopPropagation();
                       minimizeWindow(window.id);
                     }}
-                    className="w-3 h-3 bg-yellow-500 rounded-full hover:bg-yellow-600 flex items-center justify-center"
+                    className="w-4 h-4 bg-yellow-500 rounded-full hover:bg-yellow-600 flex items-center justify-center transition-colors duration-200 hover:scale-110"
                     title="Minimize"
                   >
-                    <Minimize2 className="w-2 h-2 text-white" />
+                    <Minimize2 className="w-3 h-3 text-white" />
                   </button>
                   <button 
                     onClick={(e) => {
                       e.stopPropagation();
                       maximizeWindow(window.id);
                     }}
-                    className="w-3 h-3 bg-green-500 rounded-full hover:bg-green-600 flex items-center justify-center"
+                    className="w-4 h-4 bg-green-500 rounded-full hover:bg-green-600 flex items-center justify-center transition-colors duration-200 hover:scale-110"
                     title="Maximize"
                   >
-                    <Maximize2 className="w-2 h-2 text-white" />
+                    <Maximize2 className="w-3 h-3 text-white" />
                   </button>
                 </div>
                 <span className={`text-sm font-medium ${
