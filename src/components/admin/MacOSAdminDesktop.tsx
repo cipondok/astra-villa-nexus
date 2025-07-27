@@ -831,7 +831,54 @@ export const MacOSAdminDesktop = () => {
         ))}
       </div>
 
-      {/* Dock */}
+      {/* Window Tabs Bar */}
+      {openWindows.length > 0 && (
+        <div className={`absolute bottom-20 left-1/2 transform -translate-x-1/2 backdrop-blur-md rounded-2xl px-4 py-2 border ${
+          theme === 'dark'
+            ? 'bg-blue-900/40 border-blue-600/30'
+            : 'bg-blue-100/40 border-blue-300/40'
+        }`}>
+          <div className="flex items-center space-x-2">
+            {openWindows.map((window) => (
+              <div
+                key={window.id}
+                className={`flex items-center space-x-2 px-3 py-2 rounded-xl transition-all duration-200 ${
+                  activeWindow === window.id
+                    ? (theme === 'dark' ? 'bg-blue-600/50 text-white' : 'bg-blue-200/60 text-blue-900')
+                    : (theme === 'dark' ? 'bg-blue-800/30 text-blue-200 hover:bg-blue-700/40' : 'bg-white/40 text-blue-800 hover:bg-white/60')
+                } ${window.isMinimized ? 'opacity-60' : ''}`}
+              >
+                <button
+                  onClick={() => {
+                    if (window.isMinimized) {
+                      restoreWindow(window.id);
+                    } else {
+                      setActiveWindow(window.id);
+                    }
+                  }}
+                  className="flex items-center space-x-2 max-w-32"
+                >
+                  <span className="text-sm font-medium truncate">{window.title}</span>
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    closeWindow(window.id);
+                  }}
+                  className={`w-4 h-4 rounded-full flex items-center justify-center transition-colors ${
+                    theme === 'dark' 
+                      ? 'hover:bg-red-500/80 text-red-300 hover:text-white' 
+                      : 'hover:bg-red-500 text-red-600 hover:text-white'
+                  }`}
+                  title={`Close ${window.title}`}
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
       <div className={`absolute bottom-4 left-1/2 transform -translate-x-1/2 backdrop-blur-md rounded-2xl px-4 py-3 border ${
         theme === 'dark'
           ? 'bg-blue-900/40 border-blue-600/30'
