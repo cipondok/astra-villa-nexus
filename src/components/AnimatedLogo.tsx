@@ -12,7 +12,7 @@ const AnimatedLogo = ({ className = "" }: AnimatedLogoProps) => {
       <div>
         <h1 className="text-xl font-bold">
           <span className="text-foreground">
-            Start Menu
+            Start
           </span>
         </h1>
       </div>
