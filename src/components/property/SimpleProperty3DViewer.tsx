@@ -95,6 +95,8 @@ const SimpleProperty3DViewer: React.FC<SimpleProperty3DViewerProps> = ({
             className="w-full h-full border-0 rounded-lg"
             allow="fullscreen; vr"
             allowFullScreen
+            sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+            referrerPolicy="no-referrer-when-downgrade"
           />
           {/* Tour Controls Overlay */}
           <div className="absolute top-4 right-4 flex gap-2">
@@ -121,6 +123,8 @@ const SimpleProperty3DViewer: React.FC<SimpleProperty3DViewerProps> = ({
         className="w-full h-full border-0 rounded-lg"
         allow="fullscreen"
         allowFullScreen
+        sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+        referrerPolicy="no-referrer-when-downgrade"
       />
     );
   };
@@ -153,6 +157,8 @@ const SimpleProperty3DViewer: React.FC<SimpleProperty3DViewerProps> = ({
             className="w-full h-full border-0 rounded-lg"
             allow="autoplay; fullscreen; vr"
             allowFullScreen
+            sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+            referrerPolicy="no-referrer-when-downgrade"
           />
           {/* Model Controls Overlay */}
           <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm rounded-lg p-2">
@@ -174,6 +180,8 @@ const SimpleProperty3DViewer: React.FC<SimpleProperty3DViewerProps> = ({
         className="w-full h-full border-0 rounded-lg"
         allow="fullscreen"
         allowFullScreen
+        sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+        referrerPolicy="no-referrer-when-downgrade"
       />
     );
   };

@@ -87,6 +87,8 @@ const Property3DViewModal = ({
               className="w-full h-full border-0"
               title={`3D view of ${property.title}`}
               allowFullScreen
+              sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+              referrerPolicy="no-referrer-when-downgrade"
             />
           ) : (
             <div className="flex items-center justify-center h-full">
