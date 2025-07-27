@@ -1,5 +1,6 @@
 import { QueryClient } from '@tanstack/react-query';
 
+// Create a fresh query client instance to avoid conflicts
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
