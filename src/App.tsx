@@ -11,6 +11,7 @@ import { WebsiteSettingsProvider } from '@/contexts/WebsiteSettingsContext';
 import { PropertyComparisonProvider } from '@/contexts/PropertyComparisonContext';
 import { Toaster } from '@/components/ui/toaster';
 import ErrorBoundary from '@/components/ErrorBoundary';
+import AppInitializer from '@/components/AppInitializer';
 import Navigation from '@/components/Navigation';
 import ProfessionalFooter from '@/components/ProfessionalFooter';
 import Index from '@/pages/Index';
@@ -100,7 +101,9 @@ function App() {
                   <NotificationProvider>
                     <PropertyComparisonProvider>
                       <Router>
-                        <AppContent />
+                        <AppInitializer>
+                          <AppContent />
+                        </AppInitializer>
                       </Router>
                     </PropertyComparisonProvider>
                   </NotificationProvider>
