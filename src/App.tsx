@@ -78,7 +78,7 @@ const AppContent = () => {
 
 function App() {
   // Create QueryClient instance directly to avoid hook context issues
-  const queryClient = React.useMemo(() => new QueryClient({
+  const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
         staleTime: 5 * 60 * 1000,
@@ -87,7 +87,7 @@ function App() {
         retry: false,
       },
     },
-  }), []);
+  });
 
   return (
     <ErrorBoundary>

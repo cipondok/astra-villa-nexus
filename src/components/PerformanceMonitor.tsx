@@ -4,7 +4,8 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { useServiceWorker } from '@/hooks/useServiceWorker';
-import { cacheUtils } from '@/lib/queryClient';
+import { useQueryClient } from '@tanstack/react-query';
+import { createCacheUtils } from '@/lib/queryClient';
 import { 
   Zap, 
   HardDrive, 
@@ -18,6 +19,9 @@ import {
 } from 'lucide-react';
 
 const PerformanceMonitor = () => {
+  const queryClient = useQueryClient();
+  const cacheUtils = createCacheUtils(queryClient);
+  
   const {
     isSupported,
     isRegistered,
