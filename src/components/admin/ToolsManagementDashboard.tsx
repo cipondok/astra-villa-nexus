@@ -22,9 +22,13 @@ import {
   CreditCard,
   MessageSquare,
   FileText,
-  Globe
+  Globe,
+  Server,
+  Database
 } from 'lucide-react';
 import { useToolsManagement, Tool } from '@/hooks/useToolsManagement';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 const ToolsManagementDashboard = () => {
   const { 
@@ -39,8 +43,51 @@ const ToolsManagementDashboard = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedStatus, setSelectedStatus] = useState<string>('all');
+  const [isRunningHealthCheck, setIsRunningHealthCheck] = useState(false);
+  const [healthCheckResults, setHealthCheckResults] = useState<any>(null);
 
   const stats = getToolsStats();
+
+  // System Health Check Function
+  const runSystemHealthCheck = async () => {
+    setIsRunningHealthCheck(true);
+    toast.info('🔍 Running system health check...');
+    
+    try {
+      console.log('🚀 Starting system health check...');
+      
+      const { data, error } = await supabase.functions.invoke('system-health-check', {
+        body: { timestamp: new Date().toISOString() }
+      });
+
+      if (error) {
+        console.error('❌ Health check failed:', error);
+        toast.error(`Health check failed: ${error.message}`);
+        return;
+      }
+
+      console.log('✅ Health check completed:', data);
+      setHealthCheckResults(data);
+      
+      const overallStatus = data.overall;
+      const healthySystems = data.summary.healthy;
+      const totalSystems = data.summary.total;
+      
+      if (overallStatus === 'healthy') {
+        toast.success(`✅ All systems healthy! (${healthySystems}/${totalSystems})`);
+      } else if (overallStatus === 'degraded') {
+        toast.warning(`⚠️ Some systems degraded (${healthySystems}/${totalSystems} healthy)`);
+      } else {
+        toast.error(`🚨 System issues detected (${healthySystems}/${totalSystems} healthy)`);
+      }
+      
+    } catch (error) {
+      console.error('❌ Health check error:', error);
+      toast.error('Failed to run health check');
+    } finally {
+      setIsRunningHealthCheck(false);
+    }
+  };
 
   const categoryIcons: Record<string, React.ElementType> = {
     payment: CreditCard,
@@ -198,10 +245,77 @@ const ToolsManagementDashboard = () => {
         <div className="flex gap-2">
           <Button onClick={runAllHealthChecks} disabled={isLoading}>
             <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
-            Run Health Checks
+            Run Tool Health Checks
+          </Button>
+          <Button 
+            onClick={runSystemHealthCheck} 
+            disabled={isRunningHealthCheck}
+            variant="outline"
+          >
+            <Server className={`h-4 w-4 mr-2 ${isRunningHealthCheck ? 'animate-spin' : ''}`} />
+            Run System Health Check
           </Button>
         </div>
       </div>
+
+      {/* System Health Results */}
+      {healthCheckResults && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Database className="h-5 w-5" />
+              System Health Report
+              <Badge 
+                variant={
+                  healthCheckResults.overall === 'healthy' ? 'default' : 
+                  healthCheckResults.overall === 'degraded' ? 'secondary' : 
+                  'destructive'
+                }
+              >
+                {healthCheckResults.overall}
+              </Badge>
+            </CardTitle>
+            <CardDescription>
+              Generated at {new Date(healthCheckResults.generatedAt).toLocaleString()}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {healthCheckResults.checks.map((check: any, index: number) => (
+                <Card key={index} className="border">
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <h4 className="font-medium capitalize">{check.service.replace('-', ' ')}</h4>
+                      <div className={`w-3 h-3 rounded-full ${
+                        check.status === 'healthy' ? 'bg-green-500' :
+                        check.status === 'degraded' ? 'bg-yellow-500' :
+                        'bg-red-500'
+                      }`} />
+                    </div>
+                    <div className="text-sm text-muted-foreground mb-1">
+                      Response time: {check.responseTime}ms
+                    </div>
+                    {check.details && (
+                      <div className="text-xs text-muted-foreground">
+                        {check.details}
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+            <div className="mt-4 p-3 bg-muted rounded-lg">
+              <div className="text-sm font-medium mb-1">Summary</div>
+              <div className="text-xs text-muted-foreground">
+                Total: {healthCheckResults.summary.total} | 
+                Healthy: {healthCheckResults.summary.healthy} | 
+                Degraded: {healthCheckResults.summary.degraded} | 
+                Unhealthy: {healthCheckResults.summary.unhealthy}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Stats Overview */}
       <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
