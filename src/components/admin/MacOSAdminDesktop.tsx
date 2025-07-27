@@ -489,12 +489,6 @@ export const MacOSAdminDesktop = () => {
           >
             File
           </button>
-          <button className={`px-2 py-1 rounded text-xs ${
-            theme === 'dark' ? 'hover:bg-blue-600/20' : 'hover:bg-blue-200/40'
-          }`}>Edit</button>
-          <button className={`px-2 py-1 rounded text-xs ${
-            theme === 'dark' ? 'hover:bg-blue-600/20' : 'hover:bg-blue-200/40'
-          }`}>View</button>
           <button 
             onClick={() => setShowConfigurations(true)}
             className={`px-2 py-1 rounded text-xs ${
