@@ -457,15 +457,25 @@ const PropertyEditModal = ({ property, isOpen, onClose }: PropertyEditModalProps
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-5xl max-h-[90vh] overflow-hidden bg-gradient-to-br from-slate-50 to-indigo-50 dark:from-slate-900 dark:to-indigo-950">
         <DialogHeader className="border-b border-slate-200 dark:border-slate-700 pb-6 bg-gradient-to-r from-indigo-600 to-purple-600 -mx-6 -mt-6 px-6 pt-6 text-white">
-          <DialogTitle className="text-2xl font-bold text-white flex items-center gap-3">
-            <div className="p-2 bg-white/20 backdrop-blur-sm rounded-lg">
-              <Edit className="h-6 w-6" />
-            </div>
-            <div>
-              <h1 className="text-xl font-bold">Edit Property</h1>
-              <p className="text-indigo-100 text-sm font-normal mt-1">Update property information and settings</p>
-            </div>
-          </DialogTitle>
+          <div className="flex items-center justify-between">
+            <DialogTitle className="text-2xl font-bold text-white flex items-center gap-3">
+              <div className="p-2 bg-white/20 backdrop-blur-sm rounded-lg">
+                <Edit className="h-6 w-6" />
+              </div>
+              <div>
+                <h1 className="text-xl font-bold">Edit Property</h1>
+                <p className="text-indigo-100 text-sm font-normal mt-1">Update property information and settings</p>
+              </div>
+            </DialogTitle>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onClose}
+              className="text-white hover:bg-white/10 h-8 w-8 p-0"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
           {!isAuthorizedForRestrictedTypes() && (
             <div className="mt-4 flex items-center gap-2 p-3 bg-amber-500/20 border border-amber-400/30 rounded-lg backdrop-blur-sm">
               <AlertTriangle className="h-4 w-4 text-amber-200" />
