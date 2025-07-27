@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -20,6 +19,8 @@ const CustomerServiceCenter = () => {
     { id: '2', subject: 'Payment problem', customer: 'Jane Smith', status: 'in_progress', priority: 'medium', created: '2024-01-14' },
   ]);
   const [isNewTicketOpen, setIsNewTicketOpen] = useState(false);
+  const [selectedTicket, setSelectedTicket] = useState<any>(null);
+  const [isViewTicketOpen, setIsViewTicketOpen] = useState(false);
   const [newTicket, setNewTicket] = useState({
     subject: '',
     description: '',
@@ -63,6 +64,34 @@ const CustomerServiceCenter = () => {
     } catch (error) {
       console.error('Error creating ticket:', error);
       toast.error('Failed to create ticket');
+    }
+  };
+
+  const handleViewTicket = (ticket: any) => {
+    setSelectedTicket(ticket);
+    setIsViewTicketOpen(true);
+  };
+
+  const handleUpdateTicketStatus = async (ticketId: string, newStatus: string) => {
+    try {
+      const { error } = await supabase.functions.invoke('customer-service', {
+        body: {
+          action: 'update',
+          ticket_id: ticketId,
+          status: newStatus
+        }
+      });
+
+      if (error) throw error;
+
+      toast.success('Ticket status updated');
+      setTickets(prev => prev.map(ticket => 
+        ticket.id === ticketId ? { ...ticket, status: newStatus } : ticket
+      ));
+      setSelectedTicket(prev => prev ? { ...prev, status: newStatus } : null);
+    } catch (error) {
+      console.error('Error updating ticket:', error);
+      toast.error('Failed to update ticket status');
     }
   };
 
@@ -140,6 +169,76 @@ const CustomerServiceCenter = () => {
                 </Button>
               </div>
             </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* View Ticket Dialog */}
+        <Dialog open={isViewTicketOpen} onOpenChange={setIsViewTicketOpen}>
+          <DialogContent className="sm:max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>Ticket Details - #{selectedTicket?.id}</DialogTitle>
+              <DialogDescription>
+                View and manage ticket information
+              </DialogDescription>
+            </DialogHeader>
+            {selectedTicket && (
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label>Customer</Label>
+                    <p className="text-sm font-medium">{selectedTicket.customer}</p>
+                  </div>
+                  <div>
+                    <Label>Created</Label>
+                    <p className="text-sm">{selectedTicket.created}</p>
+                  </div>
+                </div>
+                
+                <div>
+                  <Label>Subject</Label>
+                  <p className="text-sm font-medium">{selectedTicket.subject}</p>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label>Status</Label>
+                    <Select value={selectedTicket.status} onValueChange={(value) => handleUpdateTicketStatus(selectedTicket.id, value)}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="open">Open</SelectItem>
+                        <SelectItem value="in_progress">In Progress</SelectItem>
+                        <SelectItem value="resolved">Resolved</SelectItem>
+                        <SelectItem value="closed">Closed</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label>Priority</Label>
+                    <Badge variant={selectedTicket.priority === 'high' ? 'destructive' : 'outline'}>
+                      {selectedTicket.priority}
+                    </Badge>
+                  </div>
+                </div>
+
+                <div>
+                  <Label>Description</Label>
+                  <div className="bg-muted p-3 rounded-md">
+                    <p className="text-sm">{selectedTicket.description || 'No description provided'}</p>
+                  </div>
+                </div>
+
+                <div className="flex gap-2 pt-4">
+                  <Button variant="outline" onClick={() => setIsViewTicketOpen(false)}>
+                    Close
+                  </Button>
+                  <Button onClick={() => handleUpdateTicketStatus(selectedTicket.id, 'resolved')}>
+                    Mark as Resolved
+                  </Button>
+                </div>
+              </div>
+            )}
           </DialogContent>
         </Dialog>
       </div>
@@ -238,7 +337,9 @@ const CustomerServiceCenter = () => {
                       </TableCell>
                       <TableCell>{ticket.created}</TableCell>
                       <TableCell>
-                        <Button size="sm" variant="outline">View</Button>
+                        <Button size="sm" variant="outline" onClick={() => handleViewTicket(ticket)}>
+                          View
+                        </Button>
                       </TableCell>
                     </TableRow>
                   ))}
