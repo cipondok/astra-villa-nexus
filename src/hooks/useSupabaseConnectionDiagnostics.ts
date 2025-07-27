@@ -93,19 +93,29 @@ export const useSupabaseConnectionDiagnostics = () => {
     tests.push(await runDiagnostic('Real-time Service', async () => {
       return new Promise((resolve, reject) => {
         const timeout = setTimeout(() => {
+          cleanup();
           reject(new Error('Real-time connection timeout'));
         }, 5000);
 
-        const channel = supabase.channel('diagnostic-test');
+        const channel = supabase.channel(`diagnostic-test-${Date.now()}`);
+        
+        const cleanup = () => {
+          clearTimeout(timeout);
+          try {
+            supabase.removeChannel(channel);
+          } catch (error) {
+            console.warn('Error removing channel:', error);
+          }
+        };
         
         channel.subscribe((status) => {
-          clearTimeout(timeout);
           if (status === 'SUBSCRIBED') {
+            cleanup();
             resolve('Real-time subscriptions working');
-          } else {
+          } else if (status === 'CHANNEL_ERROR') {
+            cleanup();
             reject(new Error(`Real-time subscription failed: ${status}`));
           }
-          supabase.removeChannel(channel);
         });
       });
     }));
