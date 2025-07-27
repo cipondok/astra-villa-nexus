@@ -111,29 +111,43 @@ const MediaGallery = () => {
 
       for (const bucketId of bucketsToQuery) {
         try {
-          const { data: bucketFiles, error } = await supabase.storage
-            .from(bucketId)
-            .list('', { limit: 100, sortBy: { column: 'created_at', order: 'desc' } });
-          
-          if (error) {
-            console.error(`Error fetching files from bucket ${bucketId}:`, error);
-            continue;
-          }
+          // Function to recursively list files from a folder
+          const listFilesRecursively = async (path: string = ''): Promise<void> => {
+            const { data: bucketFiles, error } = await supabase.storage
+              .from(bucketId)
+              .list(path, { limit: 1000, sortBy: { column: 'created_at', order: 'desc' } });
+            
+            if (error) {
+              console.error(`Error fetching files from bucket ${bucketId} path ${path}:`, error);
+              return;
+            }
 
-          if (bucketFiles) {
-            const filesWithUrls = bucketFiles.map(file => ({
-              id: file.id || `${bucketId}/${file.name}`,
-              name: file.name,
-              size: file.metadata?.size || 0,
-              type: file.metadata?.mimetype || getFileType(file.name),
-              url: supabase.storage.from(bucketId).getPublicUrl(file.name).data.publicUrl,
-              bucket_id: bucketId,
-              created_at: file.created_at || new Date().toISOString(),
-              updated_at: file.updated_at || new Date().toISOString(),
-              metadata: file.metadata
-            }));
-            allFiles.push(...filesWithUrls);
-          }
+            if (bucketFiles) {
+              for (const file of bucketFiles) {
+                const fullPath = path ? `${path}/${file.name}` : file.name;
+                
+                // If it's a folder, recurse into it
+                if (!file.id && file.metadata === null) {
+                  await listFilesRecursively(fullPath);
+                } else if (file.name && !file.name.endsWith('.emptyFolderPlaceholder')) {
+                  // It's a file, add it to our list
+                  allFiles.push({
+                    id: file.id || `${bucketId}/${fullPath}`,
+                    name: fullPath, // Use full path as name
+                    size: file.metadata?.size || 0,
+                    type: file.metadata?.mimetype || getFileType(file.name),
+                    url: supabase.storage.from(bucketId).getPublicUrl(fullPath).data.publicUrl,
+                    bucket_id: bucketId,
+                    created_at: file.created_at || new Date().toISOString(),
+                    updated_at: file.updated_at || new Date().toISOString(),
+                    metadata: file.metadata
+                  });
+                }
+              }
+            }
+          };
+
+          await listFilesRecursively();
         } catch (err) {
           console.error(`Error processing bucket ${bucketId}:`, err);
         }
