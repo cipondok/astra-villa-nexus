@@ -495,7 +495,7 @@ export const MacOSAdminDesktop = () => {
               theme === 'dark' ? 'hover:bg-blue-600/20' : 'hover:bg-blue-200/40'
             }`}
           >
-            Window
+            Setting
           </button>
         </div>
         
