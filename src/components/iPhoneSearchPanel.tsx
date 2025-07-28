@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -57,6 +57,10 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
   const [checkInDate, setCheckInDate] = useState<Date>();
   const [checkOutDate, setCheckOutDate] = useState<Date>();
   const [rentalDuration, setRentalDuration] = useState<string>('');
+  
+  // Popover refs for controlling open/close state
+  const [checkInOpen, setCheckInOpen] = useState(false);
+  const [checkOutOpen, setCheckOutOpen] = useState(false);
 
   // Dynamic data from database
   const [dynamicLocations, setDynamicLocations] = useState<{value: string, label: string}[]>([]);
@@ -722,7 +726,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                       <Label className="text-sm font-medium text-orange-700 dark:text-orange-300 mb-2 block">
                         {currentText.checkIn}
                       </Label>
-                       <Popover>
+                       <Popover open={checkInOpen} onOpenChange={setCheckInOpen}>
                          <PopoverTrigger asChild>
                            <Button
                              variant="outline"
@@ -736,18 +740,13 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                              {checkInDate ? format(checkInDate, "dd/MM/yyyy") : currentText.selectDate}
                            </Button>
                          </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0 bg-white dark:bg-gray-950 border-2 border-orange-200 dark:border-orange-800 z-50" align="start" side="bottom" sideOffset={4}>
+                         <PopoverContent className="w-auto p-0 bg-white dark:bg-gray-950 border-2 border-orange-200 dark:border-orange-800 z-50" align="start" side="bottom" sideOffset={4}>
                            <Calendar
                              mode="single"
                              selected={checkInDate}
                              onSelect={(date) => {
                                setCheckInDate(date);
-                               // Close popover by triggering escape key
-                               if (date) {
-                                 setTimeout(() => {
-                                   document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
-                                 }, 100);
-                               }
+                               setCheckInOpen(false);
                              }}
                              disabled={(date) => date < new Date()}
                              initialFocus
@@ -762,7 +761,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                       <Label className="text-sm font-medium text-orange-700 dark:text-orange-300 mb-2 block">
                         {currentText.checkOut}
                       </Label>
-                       <Popover>
+                       <Popover open={checkOutOpen} onOpenChange={setCheckOutOpen}>
                          <PopoverTrigger asChild>
                            <Button
                              variant="outline"
@@ -782,12 +781,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                              selected={checkOutDate}
                              onSelect={(date) => {
                                setCheckOutDate(date);
-                               // Close popover by triggering escape key
-                               if (date) {
-                                 setTimeout(() => {
-                                   document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
-                                 }, 100);
-                               }
+                               setCheckOutOpen(false);
                              }}
                              disabled={(date) => 
                                date < new Date() || (checkInDate && date <= checkInDate)
