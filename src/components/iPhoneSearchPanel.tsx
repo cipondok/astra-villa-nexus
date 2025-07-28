@@ -199,6 +199,91 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
     { id: 'furnished', label: currentText.furnished, icon: '🛋️' },
   ];
 
+  // Use dynamic data if available, fallback to static
+  const locationOptions = dynamicLocations.length > 0 ? dynamicLocations : [
+    { value: 'jakarta', label: 'Jakarta' },
+    { value: 'bali', label: 'Bali' },
+    { value: 'surabaya', label: 'Surabaya' },
+    { value: 'bandung', label: 'Bandung' },
+    { value: 'medan', label: 'Medan' },
+    { value: 'semarang', label: 'Semarang' },
+  ];
+
+  const propertyTypeOptions = dynamicPropertyTypes.length > 0 ? 
+    dynamicPropertyTypes.map(type => ({
+      ...type,
+      icon: staticPropertyTypes.find(st => st.value === type.value)?.icon || Building
+    })) : staticPropertyTypes;
+
+  // Different filters based on active tab
+  const getSaleFilters = () => ({
+    priceRanges: [
+      { value: '500000000-1000000000', label: '500jt - 1M' },
+      { value: '1000000000-2000000000', label: '1M - 2M' },
+      { value: '2000000000-5000000000', label: '2M - 5M' },
+      { value: '5000000000-10000000000', label: '5M - 10M' },
+      { value: '10000000000+', label: '10M+' },
+    ],
+    propertyTypes: propertyTypeOptions.filter(type => 
+      ['villa', 'house', 'townhouse', 'apartment', 'condo', 'land'].includes(type.value)
+    ),
+    features: [
+      { id: 'parking', label: currentText.parking, icon: '🚗' },
+      { id: 'swimming_pool', label: currentText.pool, icon: '🏊' },
+      { id: 'gym', label: currentText.gym, icon: '💪' },
+      { id: 'garden', label: currentText.garden, icon: '🌿' },
+      { id: 'security', label: currentText.security, icon: '🔒' },
+    ],
+    maxPrice: 20000,
+    priceStep: 500
+  });
+
+  const getRentFilters = () => ({
+    priceRanges: [
+      { value: '1000000-3000000', label: '1jt - 3jt/month' },
+      { value: '3000000-5000000', label: '3jt - 5jt/month' },
+      { value: '5000000-10000000', label: '5jt - 10jt/month' },
+      { value: '10000000-20000000', label: '10jt - 20jt/month' },
+      { value: '20000000+', label: '20jt+/month' },
+    ],
+    propertyTypes: propertyTypeOptions.filter(type => 
+      ['apartment', 'condo', 'villa', 'house', 'townhouse', 'office'].includes(type.value)
+    ),
+    features: [
+      { id: 'furnished', label: currentText.furnished, icon: '🛋️' },
+      { id: 'parking', label: currentText.parking, icon: '🚗' },
+      { id: 'swimming_pool', label: currentText.pool, icon: '🏊' },
+      { id: 'gym', label: currentText.gym, icon: '💪' },
+      { id: 'security', label: currentText.security, icon: '🔒' },
+    ],
+    maxPrice: 100,
+    priceStep: 5
+  });
+
+  const getAllFilters = () => ({
+    priceRanges: [
+      { value: '100000000-500000000', label: '100jt - 500jt' },
+      { value: '500000000-1000000000', label: '500jt - 1M' },
+      { value: '1000000000-5000000000', label: '1M - 5M' },
+      { value: '5000000000+', label: '5M+' },
+    ],
+    propertyTypes: propertyTypeOptions,
+    features: propertyFeatures,
+    maxPrice: 15000,
+    priceStep: 100
+  });
+
+  // Get current filters based on active tab
+  const getCurrentFilters = () => {
+    switch (activeTab) {
+      case 'sale': return getSaleFilters();
+      case 'rent': return getRentFilters();
+      default: return getAllFilters();
+    }
+  };
+
+  const currentFilters = getCurrentFilters();
+
   const sortOptions = [
     { value: 'newest', label: currentText.newest },
     { value: 'price_low', label: currentText.priceLow },
@@ -224,32 +309,8 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
     { value: 'needs_renovation', label: 'Needs Renovation' },
   ];
 
-  const priceRanges = [
-    { value: '100000000-200000000', label: '100jt - 200jt' },
-    { value: '200000000-500000000', label: '200jt - 500jt' },
-    { value: '500000000-800000000', label: '500jt - 800jt' },
-    { value: '800000000-1000000000', label: '800jt - 1m' },
-    { value: '1000000000+', label: '1m+' },
-  ];
-
   const bedroomOptions = ['1', '2', '3', '4', '5+'];
   const bathroomOptions = ['1', '2', '3', '4+'];
-
-  // Use dynamic data if available, fallback to static
-  const locationOptions = dynamicLocations.length > 0 ? dynamicLocations : [
-    { value: 'jakarta', label: 'Jakarta' },
-    { value: 'bali', label: 'Bali' },
-    { value: 'surabaya', label: 'Surabaya' },
-    { value: 'bandung', label: 'Bandung' },
-    { value: 'medan', label: 'Medan' },
-    { value: 'semarang', label: 'Semarang' },
-  ];
-
-  const propertyTypeOptions = dynamicPropertyTypes.length > 0 ? 
-    dynamicPropertyTypes.map(type => ({
-      ...type,
-      icon: staticPropertyTypes.find(st => st.value === type.value)?.icon || Building
-    })) : staticPropertyTypes;
 
   const handleSearchChange = (value: string) => {
     setSearchQuery(value);
@@ -463,7 +524,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all" className="text-xs">{currentText.any}</SelectItem>
-                {propertyTypeOptions.map((type) => (
+                {currentFilters.propertyTypes.map((type) => (
                   <SelectItem key={type.value} value={type.value} className="text-xs">
                     {type.label}
                   </SelectItem>
@@ -481,7 +542,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all" className="text-xs">{currentText.any}</SelectItem>
-                {priceRanges.map((range) => (
+                {currentFilters.priceRanges.map((range) => (
                   <SelectItem key={range.value} value={range.value} className="text-xs">
                     {range.label}
                   </SelectItem>
@@ -554,17 +615,17 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                     value={priceRange}
                     onValueChange={(value) => {
                       setPriceRange(value);
-                      handleFilterChange('minPrice', value[0] * 1000000);
-                      handleFilterChange('maxPrice', value[1] * 1000000);
+                      handleFilterChange('minPrice', value[0] * (currentFilters.priceStep * 1000000));
+                      handleFilterChange('maxPrice', value[1] * (currentFilters.priceStep * 1000000));
                     }}
-                    max={10000}
+                    max={currentFilters.maxPrice}
                     min={0}
-                    step={100}
+                    step={currentFilters.priceStep}
                     className="w-full"
                   />
                   <div className="flex justify-between text-xs text-muted-foreground mt-1">
                     <span>Rp 0</span>
-                    <span>Rp 10+ M</span>
+                    <span>Rp {currentFilters.maxPrice >= 1000 ? `${currentFilters.maxPrice/1000}M+` : `${currentFilters.maxPrice}jt+`}</span>
                   </div>
                 </div>
               </div>
@@ -602,7 +663,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                   {currentText.features}
                 </Label>
                 <div className="grid grid-cols-2 gap-3">
-                  {propertyFeatures.map((feature) => (
+                  {currentFilters.features.map((feature) => (
                     <div key={feature.id} className="flex items-center space-x-2">
                       <Checkbox
                         id={feature.id}
