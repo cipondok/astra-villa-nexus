@@ -627,7 +627,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
           )}
 
           {/* Basic Filters Row */}
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-2 gap-2">
             {/* Location Selection */}
             <Select value={filters.location || "all"} onValueChange={(value) => handleFilterChange('location', value)}>
               <SelectTrigger className="h-8 text-xs">
@@ -659,24 +659,6 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                 {currentFilters.propertyTypes.map((type) => (
                   <SelectItem key={type.value} value={type.value} className="text-xs">
                     {type.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            {/* Price Range */}
-            <Select value={filters.priceRange || "all"} onValueChange={(value) => handleFilterChange('priceRange', value)}>
-              <SelectTrigger className="h-8 text-xs">
-                <div className="flex items-center gap-1">
-                  <DollarSign className="h-3 w-3 text-primary" />
-                  <SelectValue placeholder={currentText.priceRange} />
-                </div>
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all" className="text-xs">{currentText.any}</SelectItem>
-                {currentFilters.priceRanges.map((range) => (
-                  <SelectItem key={range.value} value={range.value} className="text-xs">
-                    {range.label}
                   </SelectItem>
                 ))}
               </SelectContent>
