@@ -68,11 +68,14 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
   useEffect(() => {
     const fetchDynamicData = async () => {
       try {
-        // Fetch unique cities and locations
+        // Fetch locations from the dedicated locations table
         const { data: locationData } = await supabase
-          .from('properties')
-          .select('city, location')
-          .not('city', 'is', null);
+          .from('locations')
+          .select('province_name, city_name, district_name, subdistrict_name, area_name')
+          .eq('is_active', true)
+          .order('province_name')
+          .order('city_name')
+          .order('district_name');
 
         // Fetch unique property types
         const { data: typeData } = await supabase
@@ -81,14 +84,57 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
           .not('property_type', 'is', null);
 
         if (locationData) {
-          const uniqueLocations = [...new Set([
-            ...locationData.map(item => item.city),
-            ...locationData.map(item => item.location)
-          ])].filter(Boolean).map(loc => ({
-            value: loc.toLowerCase(),
-            label: loc
-          }));
-          setDynamicLocations(uniqueLocations);
+          // Create comprehensive location options with hierarchical structure
+          const locationOptions = [];
+          const seenLocations = new Set();
+
+          locationData.forEach(item => {
+            // Add province level
+            const province = item.province_name;
+            if (province && !seenLocations.has(province)) {
+              locationOptions.push({
+                value: province.toLowerCase().replace(/\s+/g, '-'),
+                label: province,
+                type: 'province'
+              });
+              seenLocations.add(province);
+            }
+
+            // Add city level
+            const city = item.city_name;
+            if (city && !seenLocations.has(city)) {
+              locationOptions.push({
+                value: city.toLowerCase().replace(/\s+/g, '-'),
+                label: city,
+                type: 'city'
+              });
+              seenLocations.add(city);
+            }
+
+            // Add district level
+            const district = item.district_name;
+            if (district && !seenLocations.has(district)) {
+              locationOptions.push({
+                value: district.toLowerCase().replace(/\s+/g, '-'),
+                label: district,
+                type: 'district'
+              });
+              seenLocations.add(district);
+            }
+
+            // Add area level
+            const area = item.area_name;
+            if (area && !seenLocations.has(area)) {
+              locationOptions.push({
+                value: area.toLowerCase().replace(/\s+/g, '-'),
+                label: area,
+                type: 'area'
+              });
+              seenLocations.add(area);
+            }
+          });
+
+          setDynamicLocations(locationOptions);
         }
 
         if (typeData) {
@@ -268,12 +314,12 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
 
   // Use dynamic data if available, fallback to static
   const locationOptions = dynamicLocations.length > 0 ? dynamicLocations : [
-    { value: 'jakarta', label: 'Jakarta' },
-    { value: 'bali', label: 'Bali' },
-    { value: 'surabaya', label: 'Surabaya' },
-    { value: 'bandung', label: 'Bandung' },
-    { value: 'medan', label: 'Medan' },
-    { value: 'semarang', label: 'Semarang' },
+    { value: 'jakarta', label: 'Jakarta', type: 'city' },
+    { value: 'bali', label: 'Bali', type: 'province' },
+    { value: 'surabaya', label: 'Surabaya', type: 'city' },
+    { value: 'bandung', label: 'Bandung', type: 'city' },
+    { value: 'medan', label: 'Medan', type: 'city' },
+    { value: 'semarang', label: 'Semarang', type: 'city' },
   ];
 
   // Use different property types based on active tab
@@ -636,11 +682,16 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                   <SelectValue placeholder={currentText.location} />
                 </div>
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-white dark:bg-gray-950 border-gray-200 dark:border-gray-700 max-h-60 overflow-y-auto">
                 <SelectItem value="all" className="text-xs">{currentText.any}</SelectItem>
                 {locationOptions.map((location) => (
                   <SelectItem key={location.value} value={location.value} className="text-xs">
-                    {location.label}
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-gray-500 dark:text-gray-400 capitalize">
+                        {location.type || 'city'}:
+                      </span>
+                      {location.label}
+                    </div>
                   </SelectItem>
                 ))}
               </SelectContent>
