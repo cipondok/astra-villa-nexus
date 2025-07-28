@@ -133,16 +133,16 @@ export const AdvancedSearchPanel = ({
   (filters.minArea > 0 || filters.maxArea < 1000 ? 1 : 0);
 
   return (
-    <Card className="shadow-lg border-0 bg-gradient-to-r from-blue-50 to-indigo-50">
+    <Card className="professional-card border-0 bg-gradient-to-r from-background/80 via-muted/30 to-background/80 backdrop-blur-sm">
       <CardHeader className="pb-4">
         <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2 text-xl text-gray-800">
-            <Search className="h-5 w-5 text-blue-600" />
+          <CardTitle className="flex items-center gap-2 text-xl text-foreground">
+            <Search className="h-5 w-5 text-primary" />
             Pencarian Properti Dijual
           </CardTitle>
           <div className="flex items-center gap-2">
             {activeFiltersCount > 0 && (
-              <Badge variant="secondary" className="bg-blue-100 text-blue-700">
+              <Badge variant="secondary" className="bg-primary/10 text-primary">
                 {activeFiltersCount} filter aktif
               </Badge>
             )}
@@ -150,7 +150,7 @@ export const AdvancedSearchPanel = ({
               variant="ghost"
               size="sm"
               onClick={() => setIsExpanded(!isExpanded)}
-              className="text-blue-600 hover:text-blue-700"
+              className="text-primary hover:text-primary/80"
             >
               <SlidersHorizontal className="h-4 w-4 mr-1" />
               {isExpanded ? 'Tutup' : 'Lanjutan'}
@@ -163,25 +163,25 @@ export const AdvancedSearchPanel = ({
         {/* Basic Search */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div className="md:col-span-2">
-            <Label htmlFor="search" className="text-sm font-medium text-gray-700">
+            <Label htmlFor="search" className="text-sm font-medium text-foreground">
               Cari Properti
             </Label>
             <div className="relative mt-1">
-              <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+              <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
               <Input
                 id="search"
                 placeholder="Masukkan lokasi, nama properti, atau developer..."
                 value={filters.searchTerm}
                 onChange={(e) => updateFilter('searchTerm', e.target.value)}
-                className="pl-10 h-11 border-gray-200 focus:border-blue-500"
+                className="pl-10 h-11"
               />
             </div>
           </div>
 
           <div>
-            <Label className="text-sm font-medium text-gray-700">Tipe Properti</Label>
+            <Label className="text-sm font-medium text-foreground">Tipe Properti</Label>
             <Select value={filters.propertyType} onValueChange={(value) => updateFilter('propertyType', value)}>
-              <SelectTrigger className="h-11 mt-1 border-gray-200">
+              <SelectTrigger className="h-11 mt-1">
                 <SelectValue placeholder="Pilih Tipe" />
               </SelectTrigger>
               <SelectContent>
@@ -194,9 +194,9 @@ export const AdvancedSearchPanel = ({
           </div>
 
           <div>
-            <Label className="text-sm font-medium text-gray-700">Kota</Label>
+            <Label className="text-sm font-medium text-foreground">Kota</Label>
             <Select value={filters.city} onValueChange={(value) => updateFilter('city', value)}>
-              <SelectTrigger className="h-11 mt-1 border-gray-200">
+              <SelectTrigger className="h-11 mt-1">
                 <SelectValue placeholder="Pilih Kota" />
               </SelectTrigger>
               <SelectContent>
@@ -211,10 +211,10 @@ export const AdvancedSearchPanel = ({
 
         {/* Advanced Filters */}
         {isExpanded && (
-          <div className="space-y-6 pt-4 border-t border-gray-200">
+          <div className="space-y-6 pt-4 border-t border-border">
             {/* Price Range */}
             <div>
-              <Label className="text-sm font-medium text-gray-700 flex items-center gap-2">
+              <Label className="text-sm font-medium text-foreground flex items-center gap-2">
                 <TrendingUp className="h-4 w-4" />
                 Kisaran Harga: Rp {formatPrice(priceRange[0])} - Rp {formatPrice(priceRange[1])}
               </Label>
@@ -231,7 +231,7 @@ export const AdvancedSearchPanel = ({
                   step={100}
                   className="w-full"
                 />
-                <div className="flex justify-between text-xs text-gray-500 mt-1">
+                <div className="flex justify-between text-xs text-muted-foreground mt-1">
                   <span>Rp 0</span>
                   <span>Rp 10+ M</span>
                 </div>
@@ -241,7 +241,7 @@ export const AdvancedSearchPanel = ({
             {/* Area & Bedrooms/Bathrooms */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div>
-                <Label className="text-sm font-medium text-gray-700">Area</Label>
+                <Label className="text-sm font-medium text-foreground">Area</Label>
                 <Select value={filters.area} onValueChange={(value) => updateFilter('area', value)}>
                   <SelectTrigger className="h-11 mt-1">
                     <SelectValue placeholder="Pilih Area" />
@@ -256,7 +256,7 @@ export const AdvancedSearchPanel = ({
               </div>
 
               <div>
-                <Label className="text-sm font-medium text-gray-700 flex items-center gap-1">
+                <Label className="text-sm font-medium text-foreground flex items-center gap-1">
                   <Bed className="h-4 w-4" />
                   Kamar Tidur
                 </Label>
@@ -276,7 +276,7 @@ export const AdvancedSearchPanel = ({
               </div>
 
               <div>
-                <Label className="text-sm font-medium text-gray-700 flex items-center gap-1">
+                <Label className="text-sm font-medium text-foreground flex items-center gap-1">
                   <Bath className="h-4 w-4" />
                   Kamar Mandi
                 </Label>
@@ -295,7 +295,7 @@ export const AdvancedSearchPanel = ({
               </div>
 
               <div>
-                <Label className="text-sm font-medium text-gray-700">Urutkan</Label>
+                <Label className="text-sm font-medium text-foreground">Urutkan</Label>
                 <Select value={filters.sortBy} onValueChange={(value) => updateFilter('sortBy', value)}>
                   <SelectTrigger className="h-11 mt-1">
                     <SelectValue placeholder="Urutkan" />
@@ -313,7 +313,7 @@ export const AdvancedSearchPanel = ({
 
             {/* Area Size Range */}
             <div>
-              <Label className="text-sm font-medium text-gray-700 flex items-center gap-2">
+              <Label className="text-sm font-medium text-foreground flex items-center gap-2">
                 <Square className="h-4 w-4" />
                 Luas Bangunan: {areaRange[0]} - {areaRange[1]} m²
               </Label>
@@ -330,7 +330,7 @@ export const AdvancedSearchPanel = ({
                   step={10}
                   className="w-full"
                 />
-                <div className="flex justify-between text-xs text-gray-500 mt-1">
+                <div className="flex justify-between text-xs text-muted-foreground mt-1">
                   <span>0 m²</span>
                   <span>1000+ m²</span>
                 </div>
@@ -339,7 +339,7 @@ export const AdvancedSearchPanel = ({
 
             {/* Property Features */}
             <div>
-              <Label className="text-sm font-medium text-gray-700 flex items-center gap-2 mb-3">
+              <Label className="text-sm font-medium text-foreground flex items-center gap-2 mb-3">
                 <Star className="h-4 w-4" />
                 Fasilitas Properti
               </Label>
@@ -366,7 +366,7 @@ export const AdvancedSearchPanel = ({
             {/* Additional Filters */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label className="text-sm font-medium text-gray-700 flex items-center gap-1">
+                <Label className="text-sm font-medium text-foreground flex items-center gap-1">
                   <Calendar className="h-4 w-4" />
                   Tahun Dibangun
                 </Label>
@@ -389,7 +389,7 @@ export const AdvancedSearchPanel = ({
               </div>
 
               <div>
-                <Label className="text-sm font-medium text-gray-700 flex items-center gap-1">
+                <Label className="text-sm font-medium text-foreground flex items-center gap-1">
                   <Zap className="h-4 w-4" />
                   Kondisi Properti
                 </Label>
@@ -420,7 +420,6 @@ export const AdvancedSearchPanel = ({
                 variant="outline"
                 size="sm"
                 onClick={clearAllFilters}
-                className="text-gray-600 hover:text-gray-700"
               >
                 <X className="h-4 w-4 mr-1" />
                 Hapus Semua Filter
@@ -431,7 +430,7 @@ export const AdvancedSearchPanel = ({
           <div className="flex items-center gap-3">
             <Button
               onClick={onSearch}
-              className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-8 py-2.5 font-medium"
+              className="btn-primary px-8 py-2.5 font-medium"
             >
               <Search className="h-4 w-4 mr-2" />
               Cari Properti
