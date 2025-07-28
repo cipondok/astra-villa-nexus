@@ -36,7 +36,11 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
     features: [] as string[],
     yearBuilt: '',
     condition: '',
-    sortBy: 'newest'
+    sortBy: 'newest',
+    floorLevel: '',
+    landSize: '',
+    stories: '',
+    furnishing: ''
   });
 
   // Rental-specific date filters
@@ -431,7 +435,11 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
       features: [],
       yearBuilt: '',
       condition: '',
-      sortBy: 'newest'
+      sortBy: 'newest',
+      floorLevel: '',
+      landSize: '',
+      stories: '',
+      furnishing: ''
     });
     setPriceRange([0, 10000]);
     setAreaRange([0, 1000]);
@@ -809,89 +817,174 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                   <h4 className="font-medium text-sm text-blue-700 dark:text-blue-300">Property Specifications</h4>
                 </div>
                 
-                {/* Bedrooms & Bathrooms */}
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <Label className="text-sm font-medium text-blue-700 dark:text-blue-300 mb-2 block">{currentText.bedrooms}</Label>
-                    <Select value={filters.bedrooms || "all"} onValueChange={(value) => handleFilterChange('bedrooms', value)}>
-                      <SelectTrigger className="h-9 text-xs border-blue-200 dark:border-blue-800 bg-white/80 dark:bg-blue-950/30">
-                        <div className="flex items-center gap-1">
-                          <Bed className="h-3 w-3 text-blue-500" />
-                          <SelectValue placeholder={currentText.bedrooms} />
-                        </div>
-                      </SelectTrigger>
-                      <SelectContent className="bg-white dark:bg-gray-950 border-blue-200 dark:border-blue-800">
-                        <SelectItem value="all" className="text-xs">{currentText.any}</SelectItem>
-                        {bedroomOptions.map((option) => (
-                          <SelectItem key={option} value={option} className="text-xs">
-                            {option}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
+                {/* Room Configuration */}
+                <div>
+                  <Label className="text-sm font-medium text-blue-700 dark:text-blue-300 mb-3 block">Room Configuration</Label>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <Label className="text-xs text-blue-600 dark:text-blue-400 mb-1 block">{currentText.bedrooms}</Label>
+                      <Select value={filters.bedrooms || "all"} onValueChange={(value) => handleFilterChange('bedrooms', value)}>
+                        <SelectTrigger className="h-9 text-xs border-blue-200 dark:border-blue-800 bg-white/80 dark:bg-blue-950/30">
+                          <div className="flex items-center gap-1">
+                            <Bed className="h-3 w-3 text-blue-500" />
+                            <SelectValue placeholder={currentText.bedrooms} />
+                          </div>
+                        </SelectTrigger>
+                        <SelectContent className="bg-white dark:bg-gray-950 border-blue-200 dark:border-blue-800">
+                          <SelectItem value="all" className="text-xs">{currentText.any}</SelectItem>
+                          {bedroomOptions.map((option) => (
+                            <SelectItem key={option} value={option} className="text-xs">
+                              {option}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
 
-                  <div>
-                    <Label className="text-sm font-medium text-blue-700 dark:text-blue-300 mb-2 block">{currentText.bathrooms}</Label>
-                    <Select value={filters.bathrooms || "all"} onValueChange={(value) => handleFilterChange('bathrooms', value)}>
-                      <SelectTrigger className="h-9 text-xs border-blue-200 dark:border-blue-800 bg-white/80 dark:bg-blue-950/30">
-                        <div className="flex items-center gap-1">
-                          <Bath className="h-3 w-3 text-blue-500" />
-                          <SelectValue placeholder={currentText.bathrooms} />
-                        </div>
-                      </SelectTrigger>
-                      <SelectContent className="bg-white dark:bg-gray-950 border-blue-200 dark:border-blue-800">
-                        <SelectItem value="all" className="text-xs">{currentText.any}</SelectItem>
-                        {bathroomOptions.map((option) => (
-                          <SelectItem key={option} value={option} className="text-xs">
-                            {option}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <div>
+                      <Label className="text-xs text-blue-600 dark:text-blue-400 mb-1 block">{currentText.bathrooms}</Label>
+                      <Select value={filters.bathrooms || "all"} onValueChange={(value) => handleFilterChange('bathrooms', value)}>
+                        <SelectTrigger className="h-9 text-xs border-blue-200 dark:border-blue-800 bg-white/80 dark:bg-blue-950/30">
+                          <div className="flex items-center gap-1">
+                            <Bath className="h-3 w-3 text-blue-500" />
+                            <SelectValue placeholder={currentText.bathrooms} />
+                          </div>
+                        </SelectTrigger>
+                        <SelectContent className="bg-white dark:bg-gray-950 border-blue-200 dark:border-blue-800">
+                          <SelectItem value="all" className="text-xs">{currentText.any}</SelectItem>
+                          {bathroomOptions.map((option) => (
+                            <SelectItem key={option} value={option} className="text-xs">
+                              {option}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
                 </div>
 
-                {/* Year Built & Condition */}
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <Label className="text-sm font-medium text-blue-700 dark:text-blue-300 mb-2 block">{currentText.yearBuilt}</Label>
-                    <Select value={filters.yearBuilt || "all"} onValueChange={(value) => handleFilterChange('yearBuilt', value)}>
-                      <SelectTrigger className="h-9 text-xs border-blue-200 dark:border-blue-800 bg-white/80 dark:bg-blue-950/30">
-                        <div className="flex items-center gap-1">
-                          <Calendar className="h-3 w-3 text-blue-500" />
-                          <SelectValue placeholder={currentText.yearBuilt} />
-                        </div>
-                      </SelectTrigger>
-                      <SelectContent className="bg-white dark:bg-gray-950 border-blue-200 dark:border-blue-800">
-                        <SelectItem value="all" className="text-xs">{currentText.any}</SelectItem>
-                        {yearOptions.map((option) => (
-                          <SelectItem key={option.value} value={option.value} className="text-xs">
-                            {option.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
+                {/* Property Age & Condition */}
+                <div>
+                  <Label className="text-sm font-medium text-blue-700 dark:text-blue-300 mb-3 block">Property Age & Condition</Label>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <Label className="text-xs text-blue-600 dark:text-blue-400 mb-1 block">{currentText.yearBuilt}</Label>
+                      <Select value={filters.yearBuilt || "all"} onValueChange={(value) => handleFilterChange('yearBuilt', value)}>
+                        <SelectTrigger className="h-9 text-xs border-blue-200 dark:border-blue-800 bg-white/80 dark:bg-blue-950/30">
+                          <div className="flex items-center gap-1">
+                            <Calendar className="h-3 w-3 text-blue-500" />
+                            <SelectValue placeholder={currentText.yearBuilt} />
+                          </div>
+                        </SelectTrigger>
+                        <SelectContent className="bg-white dark:bg-gray-950 border-blue-200 dark:border-blue-800">
+                          <SelectItem value="all" className="text-xs">{currentText.any}</SelectItem>
+                          {yearOptions.map((option) => (
+                            <SelectItem key={option.value} value={option.value} className="text-xs">
+                              {option.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
 
-                  <div>
-                    <Label className="text-sm font-medium text-blue-700 dark:text-blue-300 mb-2 block">{currentText.condition}</Label>
-                    <Select value={filters.condition || "all"} onValueChange={(value) => handleFilterChange('condition', value)}>
-                      <SelectTrigger className="h-9 text-xs border-blue-200 dark:border-blue-800 bg-white/80 dark:bg-blue-950/30">
-                        <div className="flex items-center gap-1">
-                          <Settings className="h-3 w-3 text-blue-500" />
-                          <SelectValue placeholder={currentText.condition} />
-                        </div>
-                      </SelectTrigger>
-                      <SelectContent className="bg-white dark:bg-gray-950 border-blue-200 dark:border-blue-800">
-                        <SelectItem value="all" className="text-xs">{currentText.any}</SelectItem>
-                        {conditionOptions.map((option) => (
-                          <SelectItem key={option.value} value={option.value} className="text-xs">
-                            {option.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <div>
+                      <Label className="text-xs text-blue-600 dark:text-blue-400 mb-1 block">{currentText.condition}</Label>
+                      <Select value={filters.condition || "all"} onValueChange={(value) => handleFilterChange('condition', value)}>
+                        <SelectTrigger className="h-9 text-xs border-blue-200 dark:border-blue-800 bg-white/80 dark:bg-blue-950/30">
+                          <div className="flex items-center gap-1">
+                            <Settings className="h-3 w-3 text-blue-500" />
+                            <SelectValue placeholder={currentText.condition} />
+                          </div>
+                        </SelectTrigger>
+                        <SelectContent className="bg-white dark:bg-gray-950 border-blue-200 dark:border-blue-800">
+                          <SelectItem value="all" className="text-xs">{currentText.any}</SelectItem>
+                          {conditionOptions.map((option) => (
+                            <SelectItem key={option.value} value={option.value} className="text-xs">
+                              {option.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Property Type Specific Features */}
+                <div>
+                  <Label className="text-sm font-medium text-blue-700 dark:text-blue-300 mb-3 block">Type-Specific Features</Label>
+                  <div className="grid grid-cols-2 gap-3">
+                    {/* Floor Level (for apartments/condos) */}
+                    {(['apartment', 'condo'].includes(filters.propertyType)) && (
+                      <div>
+                        <Label className="text-xs text-blue-600 dark:text-blue-400 mb-1 block">Floor Level</Label>
+                        <Select value={filters.floorLevel || "all"} onValueChange={(value) => handleFilterChange('floorLevel', value)}>
+                          <SelectTrigger className="h-9 text-xs border-blue-200 dark:border-blue-800 bg-white/80 dark:bg-blue-950/30">
+                            <SelectValue placeholder="Floor Level" />
+                          </SelectTrigger>
+                          <SelectContent className="bg-white dark:bg-gray-950 border-blue-200 dark:border-blue-800">
+                            <SelectItem value="all" className="text-xs">{currentText.any}</SelectItem>
+                            <SelectItem value="low" className="text-xs">Low Floor (1-5)</SelectItem>
+                            <SelectItem value="mid" className="text-xs">Mid Floor (6-15)</SelectItem>
+                            <SelectItem value="high" className="text-xs">High Floor (16+)</SelectItem>
+                            <SelectItem value="penthouse" className="text-xs">Penthouse</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    )}
+
+                    {/* Land Size (for houses/villas) */}
+                    {(['house', 'villa', 'townhouse'].includes(filters.propertyType)) && (
+                      <div>
+                        <Label className="text-xs text-blue-600 dark:text-blue-400 mb-1 block">Land Size</Label>
+                        <Select value={filters.landSize || "all"} onValueChange={(value) => handleFilterChange('landSize', value)}>
+                          <SelectTrigger className="h-9 text-xs border-blue-200 dark:border-blue-800 bg-white/80 dark:bg-blue-950/30">
+                            <SelectValue placeholder="Land Size" />
+                          </SelectTrigger>
+                          <SelectContent className="bg-white dark:bg-gray-950 border-blue-200 dark:border-blue-800">
+                            <SelectItem value="all" className="text-xs">{currentText.any}</SelectItem>
+                            <SelectItem value="small" className="text-xs">Small (&lt;100m²)</SelectItem>
+                            <SelectItem value="medium" className="text-xs">Medium (100-300m²)</SelectItem>
+                            <SelectItem value="large" className="text-xs">Large (300-500m²)</SelectItem>
+                            <SelectItem value="xlarge" className="text-xs">Extra Large (500m²+)</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    )}
+
+                    {/* Stories (for houses) */}
+                    {(['house', 'villa', 'townhouse'].includes(filters.propertyType)) && (
+                      <div>
+                        <Label className="text-xs text-blue-600 dark:text-blue-400 mb-1 block">Stories</Label>
+                        <Select value={filters.stories || "all"} onValueChange={(value) => handleFilterChange('stories', value)}>
+                          <SelectTrigger className="h-9 text-xs border-blue-200 dark:border-blue-800 bg-white/80 dark:bg-blue-950/30">
+                            <SelectValue placeholder="Stories" />
+                          </SelectTrigger>
+                          <SelectContent className="bg-white dark:bg-gray-950 border-blue-200 dark:border-blue-800">
+                            <SelectItem value="all" className="text-xs">{currentText.any}</SelectItem>
+                            <SelectItem value="1" className="text-xs">1 Story</SelectItem>
+                            <SelectItem value="2" className="text-xs">2 Stories</SelectItem>
+                            <SelectItem value="3" className="text-xs">3 Stories</SelectItem>
+                            <SelectItem value="3+" className="text-xs">3+ Stories</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    )}
+
+                    {/* Furnishing Level */}
+                    <div>
+                      <Label className="text-xs text-blue-600 dark:text-blue-400 mb-1 block">Furnishing</Label>
+                      <Select value={filters.furnishing || "all"} onValueChange={(value) => handleFilterChange('furnishing', value)}>
+                        <SelectTrigger className="h-9 text-xs border-blue-200 dark:border-blue-800 bg-white/80 dark:bg-blue-950/30">
+                          <SelectValue placeholder="Furnishing" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-white dark:bg-gray-950 border-blue-200 dark:border-blue-800">
+                          <SelectItem value="all" className="text-xs">{currentText.any}</SelectItem>
+                          <SelectItem value="unfurnished" className="text-xs">Unfurnished</SelectItem>
+                          <SelectItem value="semi_furnished" className="text-xs">Semi-Furnished</SelectItem>
+                          <SelectItem value="fully_furnished" className="text-xs">Fully Furnished</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
                 </div>
               </div>
