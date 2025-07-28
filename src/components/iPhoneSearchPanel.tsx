@@ -5,12 +5,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { Search, MapPin, Home, Building, DollarSign, Filter, Bed, Bath, X, Bot, Sparkles, Zap, Square, Star, Calendar as CalendarIcon, Settings, ChevronDown, ChevronUp } from "lucide-react";
+import { Search, MapPin, Home, Building, DollarSign, Filter, Bed, Bath, X, Bot, Sparkles, Zap, Square, Star, Settings, ChevronDown, ChevronUp } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 
 interface IPhoneSearchPanelProps {
@@ -53,14 +51,6 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
     furnishing: ''
   });
 
-  // Rental-specific date filters
-  const [checkInDate, setCheckInDate] = useState<Date>();
-  const [checkOutDate, setCheckOutDate] = useState<Date>();
-  const [rentalDuration, setRentalDuration] = useState<string>('');
-  
-  // Popover refs for controlling open/close state
-  const [checkInOpen, setCheckInOpen] = useState(false);
-  const [checkOutOpen, setCheckOutOpen] = useState(false);
 
   // Dynamic data from database
   const [dynamicLocations, setDynamicLocations] = useState<{value: string, label: string}[]>([]);
@@ -155,20 +145,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
       gym: "Gym",
       garden: "Garden",
       security: "24h Security",
-      furnished: "Furnished",
-      // Rental-specific
-      checkIn: "Check-in Date",
-      checkOut: "Check-out Date",
-      duration: "Rental Duration",
-      selectDate: "Select Date",
-      "1day": "1 Day",
-      "1week": "1 Week",
-      "2weeks": "2 Weeks", 
-      "1month": "1 Month",
-      "2months": "2 Months",
-      "3months": "3 Months",
-      "6months": "6 Months",
-      "12months": "12 Months (1 Year)"
+      furnished: "Furnished"
     },
     id: {
       searchPlaceholder: "Cari properti, lokasi, atau kata kunci...",
@@ -214,20 +191,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
       gym: "Gym",
       garden: "Taman",
       security: "Keamanan 24j",
-      furnished: "Furnished",
-      // Rental-specific
-      checkIn: "Tanggal Masuk",
-      checkOut: "Tanggal Keluar",
-      duration: "Durasi Sewa",
-      selectDate: "Pilih Tanggal",
-      "1day": "1 Hari",
-      "1week": "1 Minggu",
-      "2weeks": "2 Minggu",
-      "1month": "1 Bulan",
-      "2months": "2 Bulan",
-      "3months": "3 Bulan",
-      "6months": "6 Bulan",
-      "12months": "12 Bulan (1 Tahun)"
+      furnished: "Furnished"
     }
   };
 
@@ -365,42 +329,6 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
   const bedroomOptions = ['1', '2', '3', '4', '5+'];
   const bathroomOptions = ['1', '2', '3', '4+'];
 
-  // Rental duration options
-  const durationOptions = [
-    { value: '1day', label: currentText['1day'] },
-    { value: '1week', label: currentText['1week'] },
-    { value: '2weeks', label: currentText['2weeks'] },
-    { value: '1month', label: currentText['1month'] },
-    { value: '2months', label: currentText['2months'] },
-    { value: '3months', label: currentText['3months'] },
-    { value: '6months', label: currentText['6months'] },
-    { value: '12months', label: currentText['12months'] },
-  ];
-
-  // Calculate rental period in days
-  const calculateRentalDays = () => {
-    if (checkInDate && checkOutDate) {
-      const timeDiff = checkOutDate.getTime() - checkInDate.getTime();
-      const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
-      return daysDiff > 0 ? daysDiff : 0;
-    }
-    return 0;
-  };
-
-  const rentalDays = calculateRentalDays();
-
-  // Auto-suggest duration based on calculated days
-  const getSuggestedDuration = (days: number) => {
-    if (days <= 1) return '1day';
-    if (days <= 7) return '1week';
-    if (days <= 14) return '2weeks';
-    if (days <= 31) return '1month';
-    if (days <= 62) return '2months';
-    if (days <= 93) return '3months';
-    if (days <= 186) return '6months';
-    if (days <= 365) return '12months';
-    return '12months';
-  };
 
   const handleSearchChange = (value: string) => {
     setSearchQuery(value);
@@ -436,11 +364,6 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
       return value !== '' && value !== 'newest';
     }).length;
     
-    // Add rental-specific filters count
-    if (checkInDate) count++;
-    if (checkOutDate) count++;
-    if (rentalDuration) count++;
-    
     return count;
   };
 
@@ -464,10 +387,6 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
     });
     setPriceRange([0, 10000]);
     setAreaRange([0, 1000]);
-    // Clear rental-specific filters
-    setCheckInDate(undefined);
-    setCheckOutDate(undefined);
-    setRentalDuration('');
   };
 
   const formatPrice = (price: number) => {
@@ -501,13 +420,6 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
       minArea: areaRange[0],
       maxArea: areaRange[1]
     };
-
-    // Add rental-specific data for rent searches
-    if (activeTab === 'rent') {
-      searchData.checkInDate = checkInDate;
-      searchData.checkOutDate = checkOutDate;
-      searchData.rentalDuration = rentalDuration;
-    }
 
     onSearch(searchData);
   };
@@ -772,11 +684,11 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                     <div>
                       <Label className="text-xs text-blue-600 dark:text-blue-400 mb-1 block">{currentText.yearBuilt}</Label>
                       <Select value={filters.yearBuilt || "all"} onValueChange={(value) => handleFilterChange('yearBuilt', value)}>
-                        <SelectTrigger className="h-9 text-xs border-blue-200 dark:border-blue-800 bg-white/80 dark:bg-blue-950/30">
-                          <div className="flex items-center gap-1">
-                            <Calendar className="h-3 w-3 text-blue-500" />
-                            <SelectValue placeholder={currentText.yearBuilt} />
-                          </div>
+                         <SelectTrigger className="h-9 text-xs border-blue-200 dark:border-blue-800 bg-white/80 dark:bg-blue-950/30">
+                           <div className="flex items-center gap-1">
+                             <Settings className="h-3 w-3 text-blue-500" />
+                             <SelectValue placeholder={currentText.yearBuilt} />
+                           </div>
                         </SelectTrigger>
                         <SelectContent className="bg-white dark:bg-gray-950 border-blue-200 dark:border-blue-800">
                           <SelectItem value="all" className="text-xs">{currentText.any}</SelectItem>
