@@ -53,9 +53,9 @@ const PropertyListView = ({
   }
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-6">
       {properties.map((property) => (
-        <Card key={property.id} className="overflow-hidden hover:shadow-lg transition-shadow duration-300 border-0 bg-card">
+        <Card key={property.id} className="overflow-hidden hover:shadow-xl hover:shadow-primary/10 transition-all duration-300 border-0 bg-card/50 backdrop-blur-sm hover:bg-card/80 animate-fade-in hover-scale">
           <CardContent className="p-0">
             <div className="flex flex-col md:flex-row items-stretch">
               {/* Image Section */}
@@ -124,7 +124,7 @@ const PropertyListView = ({
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="text-lg font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                    <div className="text-lg font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
                       {formatPrice(property.price)}
                     </div>
                     {property.listing_type === 'rent' && (

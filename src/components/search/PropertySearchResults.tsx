@@ -122,7 +122,7 @@ const PropertySearchResults = ({
       {properties.map((property) => (
         <Card 
           key={property.id} 
-          className="group hover:shadow-lg transition-shadow duration-200 cursor-pointer"
+          className="group hover:shadow-xl hover:shadow-primary/10 transition-all duration-300 cursor-pointer border-0 bg-card/50 backdrop-blur-sm hover:bg-card/80 animate-fade-in hover-scale"
           onClick={() => onPropertyClick?.(property)}
         >
           <div className="relative">
@@ -187,24 +187,24 @@ const PropertySearchResults = ({
 
           <CardContent className="p-4">
             {/* Price */}
-            <div className="text-xl font-bold text-blue-600 mb-2">
+            <div className="text-xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent mb-2">
               {property.price ? formatIDR(property.price) : currentText.priceOnRequest}
             </div>
 
             {/* Title */}
-            <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2">
+            <h3 className="font-semibold text-foreground mb-2 line-clamp-2 group-hover:text-primary transition-colors">
               {property.title}
             </h3>
 
             {/* Location */}
-            <div className="flex items-center text-gray-600 mb-3">
-              <MapPin className="h-4 w-4 mr-1" />
+            <div className="flex items-center text-muted-foreground mb-3">
+              <MapPin className="h-4 w-4 mr-1 text-primary" />
               <span className="text-sm line-clamp-1">{property.location}</span>
             </div>
 
             {/* Property Details */}
             {(property.bedrooms || property.bathrooms || property.area_sqm) && (
-              <div className="flex items-center space-x-4 text-sm text-gray-600 mb-3">
+              <div className="flex items-center space-x-4 text-sm text-muted-foreground mb-3">
                 {property.bedrooms && (
                   <div className="flex items-center">
                     <Bed className="h-4 w-4 mr-1" />
@@ -228,13 +228,13 @@ const PropertySearchResults = ({
 
             {/* Description */}
             {property.description && (
-              <p className="text-sm text-gray-600 line-clamp-2 mb-3">
+              <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
                 {property.description}
               </p>
             )}
 
             {/* Action Buttons */}
-            <div className="flex items-center justify-between pt-3 border-t">
+            <div className="flex items-center justify-between pt-3 border-t border-border">
               <div className="flex space-x-2">
                 <Button
                   size="sm"
@@ -243,10 +243,10 @@ const PropertySearchResults = ({
                     e.stopPropagation();
                     onSaveProperty?.(property.id);
                   }}
-                  className={savedPropertyIds.includes(property.id) ? 'bg-red-50 text-red-600 border-red-200' : ''}
+                  className={`transition-all duration-200 ${savedPropertyIds.includes(property.id) ? 'bg-destructive/10 text-destructive border-destructive/20 hover:bg-destructive/20' : 'hover:bg-muted'}`}
                 >
                   <Heart 
-                    className={`h-4 w-4 mr-1 ${savedPropertyIds.includes(property.id) ? 'fill-current' : ''}`} 
+                    className={`h-4 w-4 mr-1 transition-all ${savedPropertyIds.includes(property.id) ? 'fill-current' : ''}`} 
                   />
                   {currentText.save}
                 </Button>
@@ -258,6 +258,7 @@ const PropertySearchResults = ({
                     e.stopPropagation();
                     onShareProperty?.(property);
                   }}
+                  className="hover:bg-muted transition-colors"
                 >
                   <Share2 className="h-4 w-4 mr-1" />
                   {currentText.share}
@@ -270,6 +271,7 @@ const PropertySearchResults = ({
                   e.stopPropagation();
                   onPropertyClick?.(property);
                 }}
+                className="bg-primary hover:bg-primary/90 text-primary-foreground transition-all duration-200"
               >
                 {currentText.viewDetails}
               </Button>
