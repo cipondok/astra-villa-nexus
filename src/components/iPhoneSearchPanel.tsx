@@ -620,68 +620,40 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
             </Select>
           </div>
 
-          {/* Advanced Filters Modal */}
+           {/* Advanced Filters Modal */}
           {showFilters && (
-            <div className="bg-card/40 backdrop-blur-xl border border-border rounded-xl p-4 space-y-4">
+            <div className="bg-gradient-to-br from-background/60 via-muted/40 to-background/60 backdrop-blur-xl border border-border/50 rounded-xl p-4 space-y-5 shadow-2xl">
               <div className="flex items-center justify-between">
-                <h3 className="text-foreground font-medium text-sm">{currentText.advancedFilters}</h3>
+                <h3 className="text-foreground font-semibold text-sm flex items-center gap-2">
+                  <Filter className="h-4 w-4 text-primary" />
+                  {currentText.advancedFilters}
+                </h3>
                 <Button
                   onClick={clearAllFilters}
                   variant="outline"
                   size="sm"
-                  className="h-8 px-3 text-xs"
+                  className="h-8 px-3 text-xs hover:bg-destructive/10 hover:text-destructive hover:border-destructive/50"
                 >
                   <X className="h-3 w-3 mr-1" />
                   {currentText.clearFilters}
                 </Button>
               </div>
-              
-              {/* Bedrooms & Bathrooms */}
-              <div className="grid grid-cols-2 gap-3">
-                <Select value={filters.bedrooms || "all"} onValueChange={(value) => handleFilterChange('bedrooms', value)}>
-                  <SelectTrigger className="h-8 text-xs">
-                    <div className="flex items-center gap-1">
-                      <Bed className="h-3 w-3 text-primary" />
-                      <SelectValue placeholder={currentText.bedrooms} />
-                    </div>
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all" className="text-xs">{currentText.any}</SelectItem>
-                    {bedroomOptions.map((option) => (
-                      <SelectItem key={option} value={option} className="text-xs">
-                        {option}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
 
-                <Select value={filters.bathrooms || "all"} onValueChange={(value) => handleFilterChange('bathrooms', value)}>
-                  <SelectTrigger className="h-8 text-xs">
-                    <div className="flex items-center gap-1">
-                      <Bath className="h-3 w-3 text-primary" />
-                      <SelectValue placeholder={currentText.bathrooms} />
-                    </div>
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all" className="text-xs">{currentText.any}</SelectItem>
-                    {bathroomOptions.map((option) => (
-                      <SelectItem key={option} value={option} className="text-xs">
-                        {option}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Rental-specific Date & Duration Filters - Only show for Rent tab */}
+              {/* Rental Dates Category - Only for rent tab */}
               {activeTab === 'rent' && (
-                <>
+                <div className="bg-gradient-to-r from-orange-50/50 to-amber-50/50 dark:from-orange-950/20 dark:to-amber-950/20 border border-orange-200/50 dark:border-orange-800/50 rounded-lg p-4 space-y-4">
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="w-6 h-6 rounded-full bg-gradient-to-r from-orange-400 to-amber-400 flex items-center justify-center">
+                      <CalendarIcon className="h-3 w-3 text-white" />
+                    </div>
+                    <h4 className="font-medium text-sm text-orange-700 dark:text-orange-300">Rental Period</h4>
+                  </div>
+                  
                   {/* Check-in & Check-out Dates */}
                   <div className="grid grid-cols-2 gap-3">
                     {/* Check-in Date */}
                     <div>
-                      <Label className="text-sm font-medium text-foreground mb-2 block">
-                        <CalendarIcon className="h-3 w-3 inline mr-1" />
+                      <Label className="text-sm font-medium text-orange-700 dark:text-orange-300 mb-2 block">
                         {currentText.checkIn}
                       </Label>
                       <Popover>
@@ -689,15 +661,16 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                           <Button
                             variant="outline"
                             className={cn(
-                              "h-8 w-full justify-start text-left font-normal text-xs",
+                              "h-9 w-full justify-start text-left font-normal text-xs",
+                              "border-orange-200 dark:border-orange-800 bg-white/80 dark:bg-orange-950/30",
                               !checkInDate && "text-muted-foreground"
                             )}
                           >
-                            <CalendarIcon className="mr-2 h-3 w-3" />
+                            <CalendarIcon className="mr-2 h-3 w-3 text-orange-500" />
                             {checkInDate ? format(checkInDate, "dd/MM/yyyy") : currentText.selectDate}
                           </Button>
                         </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
+                        <PopoverContent className="w-auto p-0 bg-white dark:bg-gray-950 border-2 border-orange-200 dark:border-orange-800" align="start">
                           <Calendar
                             mode="single"
                             selected={checkInDate}
@@ -712,8 +685,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
 
                     {/* Check-out Date */}
                     <div>
-                      <Label className="text-sm font-medium text-foreground mb-2 block">
-                        <CalendarIcon className="h-3 w-3 inline mr-1" />
+                      <Label className="text-sm font-medium text-orange-700 dark:text-orange-300 mb-2 block">
                         {currentText.checkOut}
                       </Label>
                       <Popover>
@@ -721,15 +693,16 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                           <Button
                             variant="outline"
                             className={cn(
-                              "h-8 w-full justify-start text-left font-normal text-xs",
+                              "h-9 w-full justify-start text-left font-normal text-xs",
+                              "border-orange-200 dark:border-orange-800 bg-white/80 dark:bg-orange-950/30",
                               !checkOutDate && "text-muted-foreground"
                             )}
                           >
-                            <CalendarIcon className="mr-2 h-3 w-3" />
+                            <CalendarIcon className="mr-2 h-3 w-3 text-orange-500" />
                             {checkOutDate ? format(checkOutDate, "dd/MM/yyyy") : currentText.selectDate}
                           </Button>
                         </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
+                        <PopoverContent className="w-auto p-0 bg-white dark:bg-gray-950 border-2 border-orange-200 dark:border-orange-800" align="start">
                           <Calendar
                             mode="single"
                             selected={checkOutDate}
@@ -747,15 +720,14 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
 
                   {/* Rental Duration */}
                   <div>
-                    <Label className="text-sm font-medium text-foreground mb-2 block">
-                      <CalendarIcon className="h-3 w-3 inline mr-1" />
+                    <Label className="text-sm font-medium text-orange-700 dark:text-orange-300 mb-2 block">
                       {currentText.duration}
                     </Label>
                     <Select value={rentalDuration || "all"} onValueChange={setRentalDuration}>
-                      <SelectTrigger className="h-8 text-xs">
+                      <SelectTrigger className="h-9 text-xs border-orange-200 dark:border-orange-800 bg-white/80 dark:bg-orange-950/30">
                         <SelectValue placeholder={currentText.duration} />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="bg-white dark:bg-gray-950 border-orange-200 dark:border-orange-800">
                         <SelectItem value="all" className="text-xs">{currentText.any}</SelectItem>
                         {durationOptions.map((option) => (
                           <SelectItem key={option.value} value={option.value} className="text-xs">
@@ -765,78 +737,188 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                       </SelectContent>
                     </Select>
                   </div>
-                </>
+                </div>
               )}
 
-              {/* Price Range Slider */}
-              <div>
-                <Label className="text-sm font-medium text-foreground flex items-center gap-2">
-                  <DollarSign className="h-4 w-4" />
-                  {currentText.priceRange}: Rp {formatPrice(priceRange[0])} - Rp {formatPrice(priceRange[1])}
-                </Label>
-                <div className="mt-3">
-                  <Slider
-                    value={priceRange}
-                    onValueChange={(value) => {
-                      setPriceRange(value);
-                      handleFilterChange('minPrice', value[0] * (currentFilters.priceStep * 1000000));
-                      handleFilterChange('maxPrice', value[1] * (currentFilters.priceStep * 1000000));
-                    }}
-                    max={currentFilters.maxPrice}
-                    min={0}
-                    step={currentFilters.priceStep}
-                    className="w-full"
-                  />
-                  <div className="flex justify-between text-xs text-muted-foreground mt-1">
-                    <span>Rp 0</span>
-                    <span>Rp {currentFilters.maxPrice >= 1000 ? `${currentFilters.maxPrice/1000}M+` : `${currentFilters.maxPrice}jt+`}</span>
+              {/* Property Specifications Category */}
+              <div className="bg-gradient-to-r from-blue-50/50 to-indigo-50/50 dark:from-blue-950/20 dark:to-indigo-950/20 border border-blue-200/50 dark:border-blue-800/50 rounded-lg p-4 space-y-4">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-6 h-6 rounded-full bg-gradient-to-r from-blue-400 to-indigo-400 flex items-center justify-center">
+                    <Home className="h-3 w-3 text-white" />
+                  </div>
+                  <h4 className="font-medium text-sm text-blue-700 dark:text-blue-300">Property Specifications</h4>
+                </div>
+                
+                {/* Bedrooms & Bathrooms */}
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <Label className="text-sm font-medium text-blue-700 dark:text-blue-300 mb-2 block">{currentText.bedrooms}</Label>
+                    <Select value={filters.bedrooms || "all"} onValueChange={(value) => handleFilterChange('bedrooms', value)}>
+                      <SelectTrigger className="h-9 text-xs border-blue-200 dark:border-blue-800 bg-white/80 dark:bg-blue-950/30">
+                        <div className="flex items-center gap-1">
+                          <Bed className="h-3 w-3 text-blue-500" />
+                          <SelectValue placeholder={currentText.bedrooms} />
+                        </div>
+                      </SelectTrigger>
+                      <SelectContent className="bg-white dark:bg-gray-950 border-blue-200 dark:border-blue-800">
+                        <SelectItem value="all" className="text-xs">{currentText.any}</SelectItem>
+                        {bedroomOptions.map((option) => (
+                          <SelectItem key={option} value={option} className="text-xs">
+                            {option}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div>
+                    <Label className="text-sm font-medium text-blue-700 dark:text-blue-300 mb-2 block">{currentText.bathrooms}</Label>
+                    <Select value={filters.bathrooms || "all"} onValueChange={(value) => handleFilterChange('bathrooms', value)}>
+                      <SelectTrigger className="h-9 text-xs border-blue-200 dark:border-blue-800 bg-white/80 dark:bg-blue-950/30">
+                        <div className="flex items-center gap-1">
+                          <Bath className="h-3 w-3 text-blue-500" />
+                          <SelectValue placeholder={currentText.bathrooms} />
+                        </div>
+                      </SelectTrigger>
+                      <SelectContent className="bg-white dark:bg-gray-950 border-blue-200 dark:border-blue-800">
+                        <SelectItem value="all" className="text-xs">{currentText.any}</SelectItem>
+                        {bathroomOptions.map((option) => (
+                          <SelectItem key={option} value={option} className="text-xs">
+                            {option}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                {/* Year Built & Condition */}
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <Label className="text-sm font-medium text-blue-700 dark:text-blue-300 mb-2 block">{currentText.yearBuilt}</Label>
+                    <Select value={filters.yearBuilt || "all"} onValueChange={(value) => handleFilterChange('yearBuilt', value)}>
+                      <SelectTrigger className="h-9 text-xs border-blue-200 dark:border-blue-800 bg-white/80 dark:bg-blue-950/30">
+                        <div className="flex items-center gap-1">
+                          <Calendar className="h-3 w-3 text-blue-500" />
+                          <SelectValue placeholder={currentText.yearBuilt} />
+                        </div>
+                      </SelectTrigger>
+                      <SelectContent className="bg-white dark:bg-gray-950 border-blue-200 dark:border-blue-800">
+                        <SelectItem value="all" className="text-xs">{currentText.any}</SelectItem>
+                        {yearOptions.map((option) => (
+                          <SelectItem key={option.value} value={option.value} className="text-xs">
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div>
+                    <Label className="text-sm font-medium text-blue-700 dark:text-blue-300 mb-2 block">{currentText.condition}</Label>
+                    <Select value={filters.condition || "all"} onValueChange={(value) => handleFilterChange('condition', value)}>
+                      <SelectTrigger className="h-9 text-xs border-blue-200 dark:border-blue-800 bg-white/80 dark:bg-blue-950/30">
+                        <div className="flex items-center gap-1">
+                          <Settings className="h-3 w-3 text-blue-500" />
+                          <SelectValue placeholder={currentText.condition} />
+                        </div>
+                      </SelectTrigger>
+                      <SelectContent className="bg-white dark:bg-gray-950 border-blue-200 dark:border-blue-800">
+                        <SelectItem value="all" className="text-xs">{currentText.any}</SelectItem>
+                        {conditionOptions.map((option) => (
+                          <SelectItem key={option.value} value={option.value} className="text-xs">
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
               </div>
 
-              {/* Area Range Slider */}
-              <div>
-                <Label className="text-sm font-medium text-foreground flex items-center gap-2">
-                  <Square className="h-4 w-4" />
-                  {currentText.area}: {areaRange[0]} - {areaRange[1]} m²
-                </Label>
-                <div className="mt-3">
-                  <Slider
-                    value={areaRange}
-                    onValueChange={(value) => {
-                      setAreaRange(value);
-                      handleFilterChange('minArea', value[0]);
-                      handleFilterChange('maxArea', value[1]);
-                    }}
-                    max={1000}
-                    min={0}
-                    step={10}
-                    className="w-full"
-                  />
-                  <div className="flex justify-between text-xs text-muted-foreground mt-1">
-                    <span>0 m²</span>
-                    <span>1000+ m²</span>
+              {/* Price & Area Category */}
+              <div className="bg-gradient-to-r from-green-50/50 to-emerald-50/50 dark:from-green-950/20 dark:to-emerald-950/20 border border-green-200/50 dark:border-green-800/50 rounded-lg p-4 space-y-4">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-6 h-6 rounded-full bg-gradient-to-r from-green-400 to-emerald-400 flex items-center justify-center">
+                    <DollarSign className="h-3 w-3 text-white" />
+                  </div>
+                  <h4 className="font-medium text-sm text-green-700 dark:text-green-300">Price & Area Range</h4>
+                </div>
+
+                {/* Price Range Slider */}
+                <div>
+                  <Label className="text-sm font-medium text-green-700 dark:text-green-300 flex items-center gap-2">
+                    <DollarSign className="h-4 w-4" />
+                    {currentText.priceRange}: Rp {formatPrice(priceRange[0])} - Rp {formatPrice(priceRange[1])}
+                  </Label>
+                  <div className="mt-3 p-3 bg-white/50 dark:bg-green-950/20 rounded-lg">
+                    <Slider
+                      value={priceRange}
+                      onValueChange={(value) => {
+                        setPriceRange(value);
+                        handleFilterChange('minPrice', value[0] * (currentFilters.priceStep * 1000000));
+                        handleFilterChange('maxPrice', value[1] * (currentFilters.priceStep * 1000000));
+                      }}
+                      max={currentFilters.maxPrice}
+                      min={0}
+                      step={currentFilters.priceStep}
+                      className="w-full"
+                    />
+                    <div className="flex justify-between text-xs text-green-600 dark:text-green-400 mt-2">
+                      <span>Rp 0</span>
+                      <span>Rp {currentFilters.maxPrice >= 1000 ? `${currentFilters.maxPrice/1000}M+` : `${currentFilters.maxPrice}jt+`}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Area Range Slider */}
+                <div>
+                  <Label className="text-sm font-medium text-green-700 dark:text-green-300 flex items-center gap-2">
+                    <Square className="h-4 w-4" />
+                    {currentText.area}: {areaRange[0]} - {areaRange[1]} m²
+                  </Label>
+                  <div className="mt-3 p-3 bg-white/50 dark:bg-green-950/20 rounded-lg">
+                    <Slider
+                      value={areaRange}
+                      onValueChange={(value) => {
+                        setAreaRange(value);
+                        handleFilterChange('minArea', value[0]);
+                        handleFilterChange('maxArea', value[1]);
+                      }}
+                      max={1000}
+                      min={0}
+                      step={10}
+                      className="w-full"
+                    />
+                    <div className="flex justify-between text-xs text-green-600 dark:text-green-400 mt-2">
+                      <span>0 m²</span>
+                      <span>1000+ m²</span>
+                    </div>
                   </div>
                 </div>
               </div>
 
-              {/* Property Features */}
-              <div>
-                <Label className="text-sm font-medium text-foreground flex items-center gap-2 mb-3">
-                  <Star className="h-4 w-4" />
-                  {currentText.features}
-                </Label>
+              {/* Property Features Category */}
+              <div className="bg-gradient-to-r from-purple-50/50 to-pink-50/50 dark:from-purple-950/20 dark:to-pink-950/20 border border-purple-200/50 dark:border-purple-800/50 rounded-lg p-4 space-y-4">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-6 h-6 rounded-full bg-gradient-to-r from-purple-400 to-pink-400 flex items-center justify-center">
+                    <Star className="h-3 w-3 text-white" />
+                  </div>
+                  <h4 className="font-medium text-sm text-purple-700 dark:text-purple-300">{currentText.features}</h4>
+                </div>
+                
                 <div className="grid grid-cols-2 gap-3">
                   {currentFilters.features.map((feature) => (
-                    <div key={feature.id} className="flex items-center space-x-2">
+                    <div key={feature.id} className="flex items-center space-x-2 p-2 bg-white/50 dark:bg-purple-950/20 rounded-lg">
                       <Checkbox
                         id={feature.id}
                         checked={filters.features.includes(feature.id)}
                         onCheckedChange={() => handleFeatureToggle(feature.id)}
+                        className="border-purple-300 dark:border-purple-700 data-[state=checked]:bg-purple-500 data-[state=checked]:border-purple-500"
                       />
                       <Label
                         htmlFor={feature.id}
-                        className="text-sm font-normal cursor-pointer flex items-center gap-1"
+                        className="text-sm font-normal cursor-pointer flex items-center gap-1 text-purple-700 dark:text-purple-300"
                       >
                         <span>{feature.icon}</span>
                         {feature.label}
@@ -846,51 +928,20 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                 </div>
               </div>
 
-              {/* Year Built & Condition */}
-              <div className="grid grid-cols-2 gap-3">
-                <Select value={filters.yearBuilt || "all"} onValueChange={(value) => handleFilterChange('yearBuilt', value)}>
-                  <SelectTrigger className="h-8 text-xs">
-                    <div className="flex items-center gap-1">
-                      <Calendar className="h-3 w-3 text-primary" />
-                      <SelectValue placeholder={currentText.yearBuilt} />
-                    </div>
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all" className="text-xs">{currentText.any}</SelectItem>
-                    {yearOptions.map((option) => (
-                      <SelectItem key={option.value} value={option.value} className="text-xs">
-                        {option.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-
-                <Select value={filters.condition || "all"} onValueChange={(value) => handleFilterChange('condition', value)}>
-                  <SelectTrigger className="h-8 text-xs">
-                    <div className="flex items-center gap-1">
-                      <Settings className="h-3 w-3 text-primary" />
-                      <SelectValue placeholder={currentText.condition} />
-                    </div>
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all" className="text-xs">{currentText.any}</SelectItem>
-                    {conditionOptions.map((option) => (
-                      <SelectItem key={option.value} value={option.value} className="text-xs">
-                        {option.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Sort By */}
-              <div>
-                <Label className="text-sm font-medium text-foreground mb-2 block">{currentText.sortBy}</Label>
+              {/* Sort By Category */}
+              <div className="bg-gradient-to-r from-gray-50/50 to-slate-50/50 dark:from-gray-950/20 dark:to-slate-950/20 border border-gray-200/50 dark:border-gray-800/50 rounded-lg p-4">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-6 h-6 rounded-full bg-gradient-to-r from-gray-400 to-slate-400 flex items-center justify-center">
+                    <Settings className="h-3 w-3 text-white" />
+                  </div>
+                  <h4 className="font-medium text-sm text-gray-700 dark:text-gray-300">{currentText.sortBy}</h4>
+                </div>
+                
                 <Select value={filters.sortBy} onValueChange={(value) => handleFilterChange('sortBy', value)}>
-                  <SelectTrigger className="h-8 text-xs">
+                  <SelectTrigger className="h-9 text-xs border-gray-200 dark:border-gray-800 bg-white/80 dark:bg-gray-950/30">
                     <SelectValue placeholder={currentText.sortBy} />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-white dark:bg-gray-950 border-gray-200 dark:border-gray-800">
                     {sortOptions.map((option) => (
                       <SelectItem key={option.value} value={option.value} className="text-xs">
                         {option.label}
