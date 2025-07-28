@@ -425,7 +425,9 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
   const getActiveFiltersCount = () => {
     let count = Object.entries(filters).filter(([key, value]) => {
       if (key === 'features') return Array.isArray(value) && value.length > 0;
-      return value !== '' && value !== 'newest';
+      if (key === 'sortBy') return false; // Don't count sortBy as it has a default value
+      if (key === 'checkInDate' || key === 'checkOutDate') return value !== null;
+      return value !== '' && value !== null && value !== undefined;
     }).length;
     
     return count;
