@@ -736,7 +736,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                              {checkInDate ? format(checkInDate, "dd/MM/yyyy") : currentText.selectDate}
                            </Button>
                          </PopoverTrigger>
-                         <PopoverContent className="w-auto p-0 bg-white dark:bg-gray-950 border-2 border-orange-200 dark:border-orange-800" align="start">
+                          <PopoverContent className="w-auto p-0 bg-white dark:bg-gray-950 border-2 border-orange-200 dark:border-orange-800 z-50" align="start" side="bottom" sideOffset={4}>
                            <Calendar
                              mode="single"
                              selected={checkInDate}
@@ -776,7 +776,7 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                              {checkOutDate ? format(checkOutDate, "dd/MM/yyyy") : currentText.selectDate}
                            </Button>
                          </PopoverTrigger>
-                         <PopoverContent className="w-auto p-0 bg-white dark:bg-gray-950 border-2 border-orange-200 dark:border-orange-800" align="start">
+                         <PopoverContent className="w-auto p-0 bg-white dark:bg-gray-950 border-2 border-orange-200 dark:border-orange-800 z-50" align="start" side="bottom" sideOffset={4}>
                            <Calendar
                              mode="single"
                              selected={checkOutDate}
