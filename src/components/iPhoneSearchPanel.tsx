@@ -169,7 +169,12 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
       other: "Other",
       month: "month",
       months: "months",
-      rentalDetails: "Rental Details"
+      rentalDetails: "Rental Details",
+      wifi: "WiFi",
+      ac: "Air Conditioning",
+      laundry: "Laundry",
+      kitchen: "Kitchen",
+      petsAllowed: "Pets Allowed"
     },
     id: {
       searchPlaceholder: "Cari properti, lokasi, atau kata kunci...",
@@ -231,7 +236,12 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
       other: "Lainnya",
       month: "bulan",
       months: "bulan",
-      rentalDetails: "Detail Sewa"
+      rentalDetails: "Detail Sewa",
+      wifi: "WiFi",
+      ac: "AC",
+      laundry: "Laundry",
+      kitchen: "Dapur",
+      petsAllowed: "Hewan Diizinkan"
     }
   };
 
@@ -266,11 +276,23 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
     { value: 'semarang', label: 'Semarang' },
   ];
 
-  const propertyTypeOptions = dynamicPropertyTypes.length > 0 ? 
-    dynamicPropertyTypes.map(type => ({
-      ...type,
-      icon: staticPropertyTypes.find(st => st.value === type.value)?.icon || Building
-    })) : staticPropertyTypes;
+  // Use different property types based on active tab
+  const getFilteredPropertyTypes = () => {
+    const baseTypes = dynamicPropertyTypes.length > 0 ? 
+      dynamicPropertyTypes.map(type => ({
+        ...type,
+        icon: staticPropertyTypes.find(st => st.value === type.value)?.icon || Building
+      })) : staticPropertyTypes;
+    
+    // For rent, exclude land
+    if (activeTab === 'rent') {
+      return baseTypes.filter(type => type.value !== 'land');
+    }
+    
+    return baseTypes;
+  };
+
+  const propertyTypeOptions = getFilteredPropertyTypes();
 
   // Different filters based on active tab
   const getSaleFilters = () => ({
@@ -308,7 +330,12 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
     ),
     features: [
       { id: 'furnished', label: currentText.furnished, icon: '🛋️' },
-      { id: 'parking', label: currentText.parking, icon: '🚗' },
+      { id: 'wifi', label: 'WiFi', icon: '📶' },
+      { id: 'ac', label: 'Air Conditioning', icon: '❄️' },
+      { id: 'parking', label: currentText.parking, icon: '🅿️' },
+      { id: 'laundry', label: 'Laundry', icon: '👕' },
+      { id: 'kitchen', label: 'Kitchen', icon: '🍳' },
+      { id: 'pets_allowed', label: 'Pets Allowed', icon: '🐕' },
       { id: 'swimming_pool', label: currentText.pool, icon: '🏊' },
       { id: 'gym', label: currentText.gym, icon: '💪' },
       { id: 'security', label: currentText.security, icon: '🔒' },
