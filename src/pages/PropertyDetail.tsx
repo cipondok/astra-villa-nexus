@@ -150,9 +150,9 @@ const PropertyDetail: React.FC = () => {
             joining_date: owner.created_at,
             customer_feedback_rating: 4.9,
             customer_feedback_count: 47,
-            // Enhanced agent information
-            whatsapp_number: '+6281234567890',
-            phone_number: '+6281234567890',
+            // Enhanced agent information - Use actual owner data
+            whatsapp_number: owner.phone || undefined, // Use actual phone from profile
+            phone_number: owner.phone || undefined, // Use actual phone from profile
             company_name: 'UNITED PROPERTY',
             company_logo: '/placeholder.svg',
             company_pt_name: 'PT Bumi Serpong Damai Tbk',
