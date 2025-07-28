@@ -13,9 +13,10 @@ interface SmartSearchPanelProps {
   language: "en" | "id";
   onSearch: (searchData: any) => void;
   onLiveSearch?: (searchTerm: string) => void;
+  activeTab?: "buy" | "rent";
 }
 
-const SmartSearchPanel = ({ language, onSearch, onLiveSearch }: SmartSearchPanelProps) => {
+const SmartSearchPanel = ({ language, onSearch, onLiveSearch, activeTab = "buy" }: SmartSearchPanelProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [filters, setFilters] = useState({
@@ -165,13 +166,18 @@ const SmartSearchPanel = ({ language, onSearch, onLiveSearch }: SmartSearchPanel
     }
   };
 
-  const propertyTypes = [
+  // Property types based on active tab
+  const getAllPropertyTypes = () => [
     { value: 'villa', label: currentText.villa, icon: '🏖️' },
     { value: 'apartment', label: currentText.apartment, icon: '🏢' },
     { value: 'house', label: currentText.house, icon: '🏠' },
     { value: 'townhouse', label: currentText.townhouse, icon: '🏘️' },
     { value: 'land', label: currentText.land, icon: '🌿' },
   ];
+
+  const propertyTypes = activeTab === "rent" 
+    ? getAllPropertyTypes().filter(type => type.value !== 'land') // No land for rent
+    : getAllPropertyTypes();
 
   const listingTypes = [
     { value: 'sale', label: currentText.forSale, icon: '💰' },
@@ -185,7 +191,8 @@ const SmartSearchPanel = ({ language, onSearch, onLiveSearch }: SmartSearchPanel
     { value: 'new_project', label: currentText.newProject, icon: '🏗️' },
   ];
 
-  const amenitiesList = [
+  // Amenities based on active tab
+  const getAllAmenities = () => [
     { value: 'pool', label: currentText.pool, icon: '🏊' },
     { value: 'garage', label: currentText.garage, icon: '🚗' },
     { value: 'garden', label: currentText.garden, icon: '🌳' },
@@ -193,6 +200,18 @@ const SmartSearchPanel = ({ language, onSearch, onLiveSearch }: SmartSearchPanel
     { value: 'gym', label: currentText.gym, icon: '💪' },
     { value: 'furnished', label: currentText.furnished, icon: '🛋️' },
   ];
+
+  const rentAmenities = [
+    { value: 'furnished', label: currentText.furnished, icon: '🛋️' },
+    { value: 'wifi', label: language === 'en' ? 'WiFi' : 'WiFi', icon: '📶' },
+    { value: 'ac', label: language === 'en' ? 'Air Conditioning' : 'AC', icon: '❄️' },
+    { value: 'parking', label: language === 'en' ? 'Parking' : 'Parkir', icon: '🅿️' },
+    { value: 'laundry', label: language === 'en' ? 'Laundry' : 'Laundry', icon: '👕' },
+    { value: 'kitchen', label: language === 'en' ? 'Kitchen' : 'Dapur', icon: '🍳' },
+    { value: 'pets_allowed', label: language === 'en' ? 'Pets Allowed' : 'Hewan Peliharaan Diizinkan', icon: '🐕' },
+  ];
+
+  const amenitiesList = activeTab === "rent" ? rentAmenities : getAllAmenities();
 
   const bedroomOptions = [1, 2, 3, 4, 5, 6];
   const bathroomOptions = [1, 2, 3, 4, 5];
