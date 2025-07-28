@@ -5,7 +5,10 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Search, MapPin, Home, DollarSign, Bed, Bath, Filter, X } from 'lucide-react';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Search, MapPin, Home, DollarSign, Bed, Bath, Filter, X, Calendar as CalendarIcon, Clock, Users } from 'lucide-react';
+import { format, differenceInDays } from 'date-fns';
 
 interface MainPageSearchFiltersProps {
   language: "en" | "id";
@@ -26,6 +29,11 @@ const MainPageSearchFilters = ({ language, onSearch, onLiveSearch, activeTab = "
     bedrooms: '',
     bathrooms: '',
     amenities: [] as string[],
+    // Rental-specific filters
+    checkInDate: null as Date | null,
+    checkOutDate: null as Date | null,
+    rentalDuration: '',
+    tripPurpose: '',
   });
 
   const text = {
@@ -62,7 +70,22 @@ const MainPageSearchFilters = ({ language, onSearch, onLiveSearch, activeTab = "
       parking: "Parking",
       laundry: "Laundry",
       kitchen: "Kitchen",
-      petsAllowed: "Pets Allowed"
+      petsAllowed: "Pets Allowed",
+      // Rental-specific text
+      checkIn: "Check-in Date",
+      checkOut: "Check-out Date",
+      rentalDuration: "Rental Duration",
+      tripPurpose: "Trip Purpose",
+      selectDate: "Select Date",
+      days: "days",
+      solo: "Solo Trip",
+      business: "Business",
+      family: "Family",
+      group: "Group Trip",
+      couple: "Couple",
+      other: "Other",
+      month: "month",
+      months: "months"
     },
     id: {
       searchPlaceholder: "Cari berdasarkan lokasi, jenis properti, atau kata kunci...",
@@ -97,7 +120,22 @@ const MainPageSearchFilters = ({ language, onSearch, onLiveSearch, activeTab = "
       parking: "Parkir",
       laundry: "Laundry",
       kitchen: "Dapur",
-      petsAllowed: "Hewan Peliharaan Diizinkan"
+      petsAllowed: "Hewan Peliharaan Diizinkan",
+      // Rental-specific text
+      checkIn: "Tanggal Masuk",
+      checkOut: "Tanggal Keluar",
+      rentalDuration: "Durasi Sewa",
+      tripPurpose: "Tujuan Perjalanan",
+      selectDate: "Pilih Tanggal",
+      days: "hari",
+      solo: "Perjalanan Solo",
+      business: "Bisnis",
+      family: "Keluarga",
+      group: "Perjalanan Grup",
+      couple: "Pasangan",
+      other: "Lainnya",
+      month: "bulan",
+      months: "bulan"
     }
   };
 
@@ -146,6 +184,30 @@ const MainPageSearchFilters = ({ language, onSearch, onLiveSearch, activeTab = "
   const bedroomOptions = ['1', '2', '3', '4', '5+'];
   const bathroomOptions = ['1', '2', '3', '4+'];
 
+  // Rental duration options (1-12 months)
+  const rentalDurationOptions = Array.from({ length: 12 }, (_, i) => ({
+    value: String(i + 1),
+    label: `${i + 1} ${i === 0 ? currentText.month : currentText.months}`
+  }));
+
+  // Trip purpose options
+  const tripPurposeOptions = [
+    { value: 'solo', label: currentText.solo, icon: '🧳' },
+    { value: 'business', label: currentText.business, icon: '💼' },
+    { value: 'family', label: currentText.family, icon: '👨‍👩‍👧‍👦' },
+    { value: 'group', label: currentText.group, icon: '👥' },
+    { value: 'couple', label: currentText.couple, icon: '💑' },
+    { value: 'other', label: currentText.other, icon: '🎯' },
+  ];
+
+  // Calculate days between dates
+  const calculateDays = () => {
+    if (filters.checkInDate && filters.checkOutDate) {
+      return differenceInDays(filters.checkOutDate, filters.checkInDate);
+    }
+    return 0;
+  };
+
   const handleSearchChange = (value: string) => {
     setSearchQuery(value);
     if (onLiveSearch) {
@@ -185,6 +247,10 @@ const MainPageSearchFilters = ({ language, onSearch, onLiveSearch, activeTab = "
       bedrooms: '',
       bathrooms: '',
       amenities: [],
+      checkInDate: null,
+      checkOutDate: null,
+      rentalDuration: '',
+      tripPurpose: '',
     });
   };
 
@@ -355,6 +421,129 @@ const MainPageSearchFilters = ({ language, onSearch, onLiveSearch, activeTab = "
                   </div>
                 </div>
               </div>
+
+              {/* Rental-specific filters for rent tab */}
+              {activeTab === "rent" && (
+                <>
+                  {/* Date Selection */}
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                        <CalendarIcon className="h-4 w-4" />
+                        {currentText.checkIn}
+                      </label>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant="outline"
+                            className="w-full h-11 justify-start text-left font-normal border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+                          >
+                            <CalendarIcon className="mr-2 h-4 w-4" />
+                            {filters.checkInDate ? format(filters.checkInDate, "PPP") : currentText.selectDate}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <Calendar
+                            mode="single"
+                            selected={filters.checkInDate}
+                            onSelect={(date) => handleFilterChange('checkInDate', date)}
+                            disabled={(date) => date < new Date()}
+                            initialFocus
+                            className="pointer-events-auto"
+                          />
+                        </PopoverContent>
+                      </Popover>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                        <CalendarIcon className="h-4 w-4" />
+                        {currentText.checkOut}
+                      </label>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant="outline"
+                            className="w-full h-11 justify-start text-left font-normal border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+                          >
+                            <CalendarIcon className="mr-2 h-4 w-4" />
+                            {filters.checkOutDate ? format(filters.checkOutDate, "PPP") : currentText.selectDate}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <Calendar
+                            mode="single"
+                            selected={filters.checkOutDate}
+                            onSelect={(date) => handleFilterChange('checkOutDate', date)}
+                            disabled={(date) => date < new Date() || (filters.checkInDate && date <= filters.checkInDate)}
+                            initialFocus
+                            className="pointer-events-auto"
+                          />
+                        </PopoverContent>
+                      </Popover>
+                    </div>
+                  </div>
+
+                  {/* Days Counter */}
+                  {filters.checkInDate && filters.checkOutDate && (
+                    <div className="text-center p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                      <div className="text-lg font-semibold text-blue-700 dark:text-blue-300">
+                        {calculateDays()} {currentText.days}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Rental Duration */}
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                      <Clock className="h-4 w-4" />
+                      {currentText.rentalDuration}
+                    </label>
+                    <Select value={filters.rentalDuration} onValueChange={(value) => handleFilterChange('rentalDuration', value)}>
+                      <SelectTrigger className="h-11 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
+                        <SelectValue placeholder={`${currentText.any} ${currentText.rentalDuration.toLowerCase()}`} />
+                      </SelectTrigger>
+                      <SelectContent className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+                        <SelectItem value="all" className="text-gray-900 dark:text-gray-100">{currentText.any}</SelectItem>
+                        {rentalDurationOptions.map((option) => (
+                          <SelectItem key={option.value} value={option.value} className="text-gray-900 dark:text-gray-100">
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Trip Purpose */}
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                      <Users className="h-4 w-4" />
+                      {currentText.tripPurpose}
+                    </label>
+                    <div className="flex gap-2 flex-wrap">
+                      <Button
+                        variant={filters.tripPurpose === '' ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => handleFilterChange('tripPurpose', '')}
+                        className="text-xs"
+                      >
+                        {currentText.any}
+                      </Button>
+                      {tripPurposeOptions.map((purpose) => (
+                        <Button
+                          key={purpose.value}
+                          variant={filters.tripPurpose === purpose.value ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => handleFilterChange('tripPurpose', purpose.value)}
+                          className="text-xs"
+                        >
+                          {purpose.icon} {purpose.label}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+                </>
+              )}
 
               {/* Amenities */}
               <div className="space-y-2">
