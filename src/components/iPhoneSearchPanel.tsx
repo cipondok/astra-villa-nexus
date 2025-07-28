@@ -722,31 +722,39 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                       <Label className="text-sm font-medium text-orange-700 dark:text-orange-300 mb-2 block">
                         {currentText.checkIn}
                       </Label>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Button
-                            variant="outline"
-                            className={cn(
-                              "h-9 w-full justify-start text-left font-normal text-xs",
-                              "border-orange-200 dark:border-orange-800 bg-white/80 dark:bg-orange-950/30",
-                              !checkInDate && "text-muted-foreground"
-                            )}
-                          >
-                            <CalendarIcon className="mr-2 h-3 w-3 text-orange-500" />
-                            {checkInDate ? format(checkInDate, "dd/MM/yyyy") : currentText.selectDate}
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0 bg-white dark:bg-gray-950 border-2 border-orange-200 dark:border-orange-800" align="start">
-                          <Calendar
-                            mode="single"
-                            selected={checkInDate}
-                            onSelect={setCheckInDate}
-                            disabled={(date) => date < new Date()}
-                            initialFocus
-                            className={cn("p-3 pointer-events-auto")}
-                          />
-                        </PopoverContent>
-                      </Popover>
+                       <Popover>
+                         <PopoverTrigger asChild>
+                           <Button
+                             variant="outline"
+                             className={cn(
+                               "h-9 w-full justify-start text-left font-normal text-xs",
+                               "border-orange-200 dark:border-orange-800 bg-white/80 dark:bg-orange-950/30",
+                               !checkInDate && "text-muted-foreground"
+                             )}
+                           >
+                             <CalendarIcon className="mr-2 h-3 w-3 text-orange-500" />
+                             {checkInDate ? format(checkInDate, "dd/MM/yyyy") : currentText.selectDate}
+                           </Button>
+                         </PopoverTrigger>
+                         <PopoverContent className="w-auto p-0 bg-white dark:bg-gray-950 border-2 border-orange-200 dark:border-orange-800" align="start">
+                           <Calendar
+                             mode="single"
+                             selected={checkInDate}
+                             onSelect={(date) => {
+                               setCheckInDate(date);
+                               // Close popover by triggering escape key
+                               if (date) {
+                                 setTimeout(() => {
+                                   document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+                                 }, 100);
+                               }
+                             }}
+                             disabled={(date) => date < new Date()}
+                             initialFocus
+                             className={cn("p-3 pointer-events-auto")}
+                           />
+                         </PopoverContent>
+                       </Popover>
                     </div>
 
                     {/* Check-out Date */}
@@ -754,33 +762,41 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                       <Label className="text-sm font-medium text-orange-700 dark:text-orange-300 mb-2 block">
                         {currentText.checkOut}
                       </Label>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Button
-                            variant="outline"
-                            className={cn(
-                              "h-9 w-full justify-start text-left font-normal text-xs",
-                              "border-orange-200 dark:border-orange-800 bg-white/80 dark:bg-orange-950/30",
-                              !checkOutDate && "text-muted-foreground"
-                            )}
-                          >
-                            <CalendarIcon className="mr-2 h-3 w-3 text-orange-500" />
-                            {checkOutDate ? format(checkOutDate, "dd/MM/yyyy") : currentText.selectDate}
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0 bg-white dark:bg-gray-950 border-2 border-orange-200 dark:border-orange-800" align="start">
-                          <Calendar
-                            mode="single"
-                            selected={checkOutDate}
-                            onSelect={setCheckOutDate}
-                            disabled={(date) => 
-                              date < new Date() || (checkInDate && date <= checkInDate)
-                            }
-                            initialFocus
-                            className={cn("p-3 pointer-events-auto")}
-                          />
-                        </PopoverContent>
-                      </Popover>
+                       <Popover>
+                         <PopoverTrigger asChild>
+                           <Button
+                             variant="outline"
+                             className={cn(
+                               "h-9 w-full justify-start text-left font-normal text-xs",
+                               "border-orange-200 dark:border-orange-800 bg-white/80 dark:bg-orange-950/30",
+                               !checkOutDate && "text-muted-foreground"
+                             )}
+                           >
+                             <CalendarIcon className="mr-2 h-3 w-3 text-orange-500" />
+                             {checkOutDate ? format(checkOutDate, "dd/MM/yyyy") : currentText.selectDate}
+                           </Button>
+                         </PopoverTrigger>
+                         <PopoverContent className="w-auto p-0 bg-white dark:bg-gray-950 border-2 border-orange-200 dark:border-orange-800" align="start">
+                           <Calendar
+                             mode="single"
+                             selected={checkOutDate}
+                             onSelect={(date) => {
+                               setCheckOutDate(date);
+                               // Close popover by triggering escape key
+                               if (date) {
+                                 setTimeout(() => {
+                                   document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+                                 }, 100);
+                               }
+                             }}
+                             disabled={(date) => 
+                               date < new Date() || (checkInDate && date <= checkInDate)
+                             }
+                             initialFocus
+                             className={cn("p-3 pointer-events-auto")}
+                           />
+                         </PopoverContent>
+                       </Popover>
                     </div>
                   </div>
 
