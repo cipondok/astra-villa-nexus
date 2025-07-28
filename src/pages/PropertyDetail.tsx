@@ -315,11 +315,11 @@ const PropertyDetail: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-background/95">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background/98 to-muted/30">
       {/* Agent/Developer Header - Ultra Modern Design */}
       {property?.posted_by && (
-        <div className="relative bg-gradient-to-r from-primary/10 via-accent/5 to-secondary/10 backdrop-blur-sm border-b border-border/20 shadow-lg">
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-emerald-500/5"></div>
+        <div className="relative bg-gradient-to-r from-primary/10 via-accent/5 to-secondary/10 backdrop-blur-sm border-b border-border/20 shadow-xl shadow-primary/5">
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/3 to-accent/3"></div>
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
               {/* Agent Profile Section */}
@@ -516,18 +516,18 @@ const PropertyDetail: React.FC = () => {
           <div className="lg:col-span-2 space-y-6">
             
             {/* Property Header */}
-            <Card>
+            <Card className="border-0 bg-card/80 backdrop-blur-sm shadow-xl shadow-primary/5 hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300 animate-fade-in">
               <CardHeader>
                 <div className="flex items-start justify-between">
                   <div>
-                    <CardTitle className="text-2xl lg:text-3xl">{property.title}</CardTitle>
+                    <CardTitle className="text-2xl lg:text-3xl bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">{property.title}</CardTitle>
                     <CardDescription className="flex items-center gap-1 text-lg mt-2">
-                      <MapPin className="h-5 w-5" />
+                      <MapPin className="h-5 w-5 text-primary" />
                       {property.location}
                     </CardDescription>
                   </div>
                    <div className="text-right">
-                     <div className="text-3xl font-bold text-accent">
+                     <div className="text-3xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                        {formatPrice(property.price)}
                      </div>
                      {property.listing_type === 'rent' && (
@@ -580,44 +580,44 @@ const PropertyDetail: React.FC = () => {
             </Card>
 
             {/* Property Details */}
-            <Card>
+            <Card className="border-0 bg-card/80 backdrop-blur-sm shadow-xl shadow-primary/5 hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300 animate-fade-in">
               <CardContent className="p-6">
                 <Tabs defaultValue="details" className="w-full">
-                  <TabsList className="grid w-full grid-cols-3">
-                    <TabsTrigger value="details">Details</TabsTrigger>
-                    <TabsTrigger value="description">Description</TabsTrigger>
-                    <TabsTrigger value="features">Features</TabsTrigger>
+                  <TabsList className="grid w-full grid-cols-3 bg-muted/50">
+                    <TabsTrigger value="details" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Details</TabsTrigger>
+                    <TabsTrigger value="description" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Description</TabsTrigger>
+                    <TabsTrigger value="features" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Features</TabsTrigger>
                   </TabsList>
                   
                   <TabsContent value="details" className="mt-6">
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                       {property.bedrooms && (
-                        <div className="text-center p-4 bg-gray-50 rounded-lg">
-                          <Bed className="h-8 w-8 text-gray-600 mx-auto mb-2" />
-                          <div className="font-semibold">{property.bedrooms}</div>
-                          <div className="text-sm text-gray-600">Bedrooms</div>
+                        <div className="text-center p-4 bg-gradient-to-br from-muted/50 to-background rounded-xl border border-border/50 hover:shadow-lg hover:shadow-primary/10 transition-all duration-300 hover-scale">
+                          <Bed className="h-8 w-8 text-primary mx-auto mb-2" />
+                          <div className="font-semibold text-foreground">{property.bedrooms}</div>
+                          <div className="text-sm text-muted-foreground">Bedrooms</div>
                         </div>
                       )}
                       {property.bathrooms && (
-                        <div className="text-center p-4 bg-gray-50 rounded-lg">
-                          <Bath className="h-8 w-8 text-gray-600 mx-auto mb-2" />
-                          <div className="font-semibold">{property.bathrooms}</div>
-                          <div className="text-sm text-gray-600">Bathrooms</div>
+                        <div className="text-center p-4 bg-gradient-to-br from-muted/50 to-background rounded-xl border border-border/50 hover:shadow-lg hover:shadow-primary/10 transition-all duration-300 hover-scale">
+                          <Bath className="h-8 w-8 text-primary mx-auto mb-2" />
+                          <div className="font-semibold text-foreground">{property.bathrooms}</div>
+                          <div className="text-sm text-muted-foreground">Bathrooms</div>
                         </div>
                       )}
                       {property.area_sqm && (
-                        <div className="text-center p-4 bg-gray-50 rounded-lg">
-                          <Square className="h-8 w-8 text-gray-600 mx-auto mb-2" />
-                          <div className="font-semibold">{property.area_sqm}</div>
-                          <div className="text-sm text-gray-600">Sqm</div>
+                        <div className="text-center p-4 bg-gradient-to-br from-muted/50 to-background rounded-xl border border-border/50 hover:shadow-lg hover:shadow-primary/10 transition-all duration-300 hover-scale">
+                          <Square className="h-8 w-8 text-primary mx-auto mb-2" />
+                          <div className="font-semibold text-foreground">{property.area_sqm}</div>
+                          <div className="text-sm text-muted-foreground">Sqm</div>
                         </div>
                       )}
-                      <div className="text-center p-4 bg-gray-50 rounded-lg">
-                        <Calendar className="h-8 w-8 text-gray-600 mx-auto mb-2" />
-                        <div className="font-semibold">
+                      <div className="text-center p-4 bg-gradient-to-br from-muted/50 to-background rounded-xl border border-border/50 hover:shadow-lg hover:shadow-primary/10 transition-all duration-300 hover-scale">
+                        <Calendar className="h-8 w-8 text-primary mx-auto mb-2" />
+                        <div className="font-semibold text-foreground">
                           {new Date(property.created_at).getFullYear()}
                         </div>
-                        <div className="text-sm text-gray-600">Listed</div>
+                        <div className="text-sm text-muted-foreground">Listed</div>
                       </div>
                     </div>
                   </TabsContent>
@@ -688,10 +688,10 @@ const PropertyDetail: React.FC = () => {
           <div className="space-y-6">
             
             {/* Enhanced Contact Information with Agent Details */}
-            <Card>
+            <Card className="border-0 bg-card/80 backdrop-blur-sm shadow-xl shadow-primary/5 hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300 animate-fade-in">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <User className="h-5 w-5" />
+                <CardTitle className="flex items-center gap-2 bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
+                  <User className="h-5 w-5 text-primary" />
                   Agent Information
                 </CardTitle>
               </CardHeader>
@@ -821,28 +821,28 @@ const PropertyDetail: React.FC = () => {
             </Card>
 
             {/* Property Status */}
-            <Card>
+            <Card className="border-0 bg-card/80 backdrop-blur-sm shadow-xl shadow-primary/5 hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300 animate-fade-in">
               <CardHeader>
-                <CardTitle>Property Status</CardTitle>
+                <CardTitle className="bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">Property Status</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
                   <div className="flex justify-between">
-                    <span>Listing Status</span>
+                    <span className="text-muted-foreground">Listing Status</span>
                     <Badge variant={property.status === 'active' ? 'default' : 'secondary'}>
                       {property.status}
                     </Badge>
                   </div>
                   <div className="flex justify-between">
-                    <span>Listed Date</span>
-                    <span className="text-sm text-gray-600">
+                    <span className="text-muted-foreground">Listed Date</span>
+                    <span className="text-sm text-foreground">
                       {new Date(property.created_at).toLocaleDateString()}
                     </span>
                   </div>
                   {property.development_status !== 'completed' && (
                     <div className="flex justify-between">
-                      <span>Development</span>
-                      <Badge variant="outline">
+                      <span className="text-muted-foreground">Development</span>
+                      <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">
                         {property.development_status === 'new_project' ? 'New Project' : 'Pre-Launch'}
                       </Badge>
                     </div>
