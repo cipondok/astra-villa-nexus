@@ -11,9 +11,10 @@ interface MainPageSearchFiltersProps {
   language: "en" | "id";
   onSearch: (filters: any) => void;
   onLiveSearch?: (searchTerm: string) => void;
+  activeTab?: "buy" | "rent";
 }
 
-const MainPageSearchFilters = ({ language, onSearch, onLiveSearch }: MainPageSearchFiltersProps) => {
+const MainPageSearchFilters = ({ language, onSearch, onLiveSearch, activeTab = "buy" }: MainPageSearchFiltersProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [filters, setFilters] = useState({
@@ -55,7 +56,13 @@ const MainPageSearchFilters = ({ language, onSearch, onLiveSearch }: MainPageSea
       garden: "Garden",
       security: "Security",
       gym: "Gym",
-      furnished: "Furnished"
+      furnished: "Furnished",
+      wifi: "WiFi",
+      ac: "Air Conditioning",
+      parking: "Parking",
+      laundry: "Laundry",
+      kitchen: "Kitchen",
+      petsAllowed: "Pets Allowed"
     },
     id: {
       searchPlaceholder: "Cari berdasarkan lokasi, jenis properti, atau kata kunci...",
@@ -84,13 +91,20 @@ const MainPageSearchFilters = ({ language, onSearch, onLiveSearch }: MainPageSea
       garden: "Taman",
       security: "Keamanan",
       gym: "Gym",
-      furnished: "Furnished"
+      furnished: "Furnished",
+      wifi: "WiFi",
+      ac: "AC",
+      parking: "Parkir",
+      laundry: "Laundry",
+      kitchen: "Dapur",
+      petsAllowed: "Hewan Peliharaan Diizinkan"
     }
   };
 
   const currentText = text[language];
 
-  const propertyTypes = [
+  // Property types based on active tab - exclude land for rent
+  const getAllPropertyTypes = () => [
     { value: 'villa', label: currentText.villa, icon: '🏖️' },
     { value: 'apartment', label: currentText.apartment, icon: '🏢' },
     { value: 'house', label: currentText.house, icon: '🏠' },
@@ -98,12 +112,17 @@ const MainPageSearchFilters = ({ language, onSearch, onLiveSearch }: MainPageSea
     { value: 'land', label: currentText.land, icon: '🌿' },
   ];
 
+  const propertyTypes = activeTab === "rent" 
+    ? getAllPropertyTypes().filter(type => type.value !== 'land') // No land for rent
+    : getAllPropertyTypes();
+
   const listingTypes = [
     { value: 'sale', label: currentText.forSale, icon: '💰' },
     { value: 'rent', label: currentText.forRent, icon: '🔑' },
   ];
 
-  const amenitiesList = [
+  // Amenities based on active tab - different for rent vs sale
+  const saleAmenities = [
     { value: 'pool', label: currentText.pool, icon: '🏊' },
     { value: 'garage', label: currentText.garage, icon: '🚗' },
     { value: 'garden', label: currentText.garden, icon: '🌳' },
@@ -111,6 +130,18 @@ const MainPageSearchFilters = ({ language, onSearch, onLiveSearch }: MainPageSea
     { value: 'gym', label: currentText.gym, icon: '💪' },
     { value: 'furnished', label: currentText.furnished, icon: '🛋️' },
   ];
+
+  const rentAmenities = [
+    { value: 'furnished', label: currentText.furnished, icon: '🛋️' },
+    { value: 'wifi', label: currentText.wifi, icon: '📶' },
+    { value: 'ac', label: currentText.ac, icon: '❄️' },
+    { value: 'parking', label: currentText.parking, icon: '🅿️' },
+    { value: 'laundry', label: currentText.laundry, icon: '👕' },
+    { value: 'kitchen', label: currentText.kitchen, icon: '🍳' },
+    { value: 'petsAllowed', label: currentText.petsAllowed, icon: '🐕' },
+  ];
+
+  const amenitiesList = activeTab === "rent" ? rentAmenities : saleAmenities;
 
   const bedroomOptions = ['1', '2', '3', '4', '5+'];
   const bathroomOptions = ['1', '2', '3', '4+'];
