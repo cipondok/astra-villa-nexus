@@ -8,8 +8,8 @@ export const shareProperty = async (property: {
   const url = `${window.location.origin}/properties/${property.id}`;
   const shareText = `Check out this property: ${property.title} in ${property.location}`;
 
-  // Check if Web Share API is supported
-  if (navigator.share) {
+  // Check if Web Share API is supported and not in iframe
+  if (navigator.share && window.parent === window) {
     try {
       await navigator.share({
         title: property.title,
@@ -19,14 +19,27 @@ export const shareProperty = async (property: {
       return true;
     } catch (error) {
       console.error('Error sharing:', error);
+      // Fall through to clipboard fallback
     }
-  } else {
-    // Fallback: Copy to clipboard
+  }
+  
+  // Fallback: Copy to clipboard
+  try {
+    await navigator.clipboard.writeText(`${shareText} - ${url}`);
+    return true;
+  } catch (error) {
+    console.error('Error copying to clipboard:', error);
+    // Final fallback: Create a temporary input element
     try {
-      await navigator.clipboard.writeText(`${shareText} - ${url}`);
+      const tempInput = document.createElement('input');
+      tempInput.value = `${shareText} - ${url}`;
+      document.body.appendChild(tempInput);
+      tempInput.select();
+      document.execCommand('copy');
+      document.body.removeChild(tempInput);
       return true;
-    } catch (error) {
-      console.error('Error copying to clipboard:', error);
+    } catch (fallbackError) {
+      console.error('All sharing methods failed:', fallbackError);
     }
   }
   
