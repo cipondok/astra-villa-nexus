@@ -359,6 +359,31 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
     { value: '12months', label: currentText['12months'] },
   ];
 
+  // Calculate rental period in days
+  const calculateRentalDays = () => {
+    if (checkInDate && checkOutDate) {
+      const timeDiff = checkOutDate.getTime() - checkInDate.getTime();
+      const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+      return daysDiff > 0 ? daysDiff : 0;
+    }
+    return 0;
+  };
+
+  const rentalDays = calculateRentalDays();
+
+  // Auto-suggest duration based on calculated days
+  const getSuggestedDuration = (days: number) => {
+    if (days <= 1) return '1day';
+    if (days <= 7) return '1week';
+    if (days <= 14) return '2weeks';
+    if (days <= 31) return '1month';
+    if (days <= 62) return '2months';
+    if (days <= 93) return '3months';
+    if (days <= 186) return '6months';
+    if (days <= 365) return '12months';
+    return '12months';
+  };
+
   const handleSearchChange = (value: string) => {
     setSearchQuery(value);
     if (onLiveSearch) {
@@ -718,10 +743,45 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                     </div>
                   </div>
 
+                  {/* Calculated Rental Period Display */}
+                  {rentalDays > 0 && (
+                    <div className="bg-orange-100/80 dark:bg-orange-900/40 border border-orange-300/50 dark:border-orange-700/50 rounded-lg p-3">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className="w-5 h-5 rounded-full bg-orange-500 flex items-center justify-center">
+                            <CalendarIcon className="h-3 w-3 text-white" />
+                          </div>
+                          <span className="text-sm font-medium text-orange-800 dark:text-orange-200">
+                            {language === 'en' ? 'Period' : 'Periode'}: {rentalDays} {language === 'en' ? 'days' : 'hari'}
+                          </span>
+                        </div>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="h-6 px-2 text-xs border-orange-300 text-orange-700 hover:bg-orange-200 dark:border-orange-700 dark:text-orange-300 dark:hover:bg-orange-800"
+                          onClick={() => setRentalDuration(getSuggestedDuration(rentalDays))}
+                        >
+                          {language === 'en' ? 'Auto-set' : 'Set Otomatis'}
+                        </Button>
+                      </div>
+                      <div className="text-xs text-orange-600 dark:text-orange-400 mt-1">
+                        {language === 'en' 
+                          ? `Suggested: ${durationOptions.find(d => d.value === getSuggestedDuration(rentalDays))?.label || 'Custom'}`
+                          : `Disarankan: ${durationOptions.find(d => d.value === getSuggestedDuration(rentalDays))?.label || 'Custom'}`
+                        }
+                      </div>
+                    </div>
+                  )}
+
                   {/* Rental Duration */}
                   <div>
                     <Label className="text-sm font-medium text-orange-700 dark:text-orange-300 mb-2 block">
                       {currentText.duration}
+                      {rentalDuration && (
+                        <span className="ml-2 text-xs text-orange-500 bg-orange-100 dark:bg-orange-900/30 px-2 py-0.5 rounded-md">
+                          {durationOptions.find(d => d.value === rentalDuration)?.label}
+                        </span>
+                      )}
                     </Label>
                     <Select value={rentalDuration || "all"} onValueChange={setRentalDuration}>
                       <SelectTrigger className="h-9 text-xs border-orange-200 dark:border-orange-800 bg-white/80 dark:bg-orange-950/30">
