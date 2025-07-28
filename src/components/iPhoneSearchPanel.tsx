@@ -7,9 +7,11 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { Search, MapPin, Home, Building, DollarSign, Filter, Bed, Bath, X, Bot, Sparkles, Zap, Square, Star, Settings, ChevronDown, ChevronUp } from "lucide-react";
+import { Calendar } from "@/components/ui/calendar";
+import { Search, MapPin, Home, Building, DollarSign, Filter, Bed, Bath, X, Bot, Sparkles, Zap, Square, Star, Settings, ChevronDown, ChevronUp, Calendar as CalendarIcon, Clock, Users } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
+import { format, differenceInDays } from 'date-fns';
 
 interface IPhoneSearchPanelProps {
   language: "en" | "id";
@@ -31,7 +33,8 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
     priceRange: false,
     propertySpecs: false,
     amenities: false,
-    dates: false
+    dates: false,
+    rentalDetails: false
   });
   const [filters, setFilters] = useState({
     location: '',
@@ -48,7 +51,12 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
     floorLevel: '',
     landSize: '',
     stories: '',
-    furnishing: ''
+    furnishing: '',
+    // Rental-specific fields
+    checkInDate: null as Date | null,
+    checkOutDate: null as Date | null,
+    rentalDuration: '',
+    tripPurpose: ''
   });
 
 
@@ -145,7 +153,23 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
       gym: "Gym",
       garden: "Garden",
       security: "24h Security",
-      furnished: "Furnished"
+      furnished: "Furnished",
+      // Rental-specific text
+      checkIn: "Check-in Date",
+      checkOut: "Check-out Date",
+      rentalDuration: "Rental Duration", 
+      tripPurpose: "Trip Purpose",
+      selectDate: "Select Date",
+      days: "days",
+      solo: "Solo Trip",
+      business: "Business",
+      family: "Family",
+      group: "Group Trip",
+      couple: "Couple",
+      other: "Other",
+      month: "month",
+      months: "months",
+      rentalDetails: "Rental Details"
     },
     id: {
       searchPlaceholder: "Cari properti, lokasi, atau kata kunci...",
@@ -191,7 +215,23 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
       gym: "Gym",
       garden: "Taman",
       security: "Keamanan 24j",
-      furnished: "Furnished"
+      furnished: "Furnished",
+      // Rental-specific text
+      checkIn: "Tanggal Masuk",
+      checkOut: "Tanggal Keluar",
+      rentalDuration: "Durasi Sewa",
+      tripPurpose: "Tujuan Perjalanan",
+      selectDate: "Pilih Tanggal",
+      days: "hari",
+      solo: "Perjalanan Solo",
+      business: "Bisnis",
+      family: "Keluarga",
+      group: "Perjalanan Grup",
+      couple: "Pasangan",
+      other: "Lainnya",
+      month: "bulan",
+      months: "bulan",
+      rentalDetails: "Detail Sewa"
     }
   };
 
@@ -329,6 +369,30 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
   const bedroomOptions = ['1', '2', '3', '4', '5+'];
   const bathroomOptions = ['1', '2', '3', '4+'];
 
+  // Rental duration options (1-12 months)
+  const rentalDurationOptions = Array.from({ length: 12 }, (_, i) => ({
+    value: String(i + 1),
+    label: `${i + 1} ${i === 0 ? currentText.month : currentText.months}`
+  }));
+
+  // Trip purpose options
+  const tripPurposeOptions = [
+    { value: 'solo', label: currentText.solo, icon: '🧳' },
+    { value: 'business', label: currentText.business, icon: '💼' },
+    { value: 'family', label: currentText.family, icon: '👨‍👩‍👧‍👦' },
+    { value: 'group', label: currentText.group, icon: '👥' },
+    { value: 'couple', label: currentText.couple, icon: '💑' },
+    { value: 'other', label: currentText.other, icon: '🎯' },
+  ];
+
+  // Calculate days between dates
+  const calculateDays = () => {
+    if (filters.checkInDate && filters.checkOutDate) {
+      return differenceInDays(filters.checkOutDate, filters.checkInDate);
+    }
+    return 0;
+  };
+
 
   const handleSearchChange = (value: string) => {
     setSearchQuery(value);
@@ -383,7 +447,11 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
       floorLevel: '',
       landSize: '',
       stories: '',
-      furnishing: ''
+      furnishing: '',
+      checkInDate: null,
+      checkOutDate: null,
+      rentalDuration: '',
+      tripPurpose: ''
     });
     setPriceRange([0, 10000]);
     setAreaRange([0, 1000]);
@@ -929,6 +997,144 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                  </div>
               </CollapsibleContent>
               </Collapsible>
+
+              {/* Rental Details Category - Only show for rent tab */}
+              {activeTab === 'rent' && (
+                <Collapsible open={openSections.rentalDetails} onOpenChange={() => toggleSection('rentalDetails')}>
+                  <CollapsibleTrigger asChild>
+                    <Button
+                      variant="ghost" 
+                      className="w-full justify-between p-0 h-auto hover:bg-transparent"
+                    >
+                      <div className="bg-gradient-to-r from-orange-50/50 to-amber-50/50 dark:from-orange-950/20 dark:to-amber-950/20 border border-orange-200/50 dark:border-orange-800/50 rounded-lg p-4 w-full">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <div className="w-6 h-6 rounded-full bg-gradient-to-r from-orange-400 to-amber-400 flex items-center justify-center">
+                              <CalendarIcon className="h-3 w-3 text-white" />
+                            </div>
+                            <h4 className="font-medium text-sm text-orange-700 dark:text-orange-300">{currentText.rentalDetails}</h4>
+                          </div>
+                          {openSections.rentalDetails ? 
+                            <ChevronUp className="h-4 w-4 text-orange-600" /> : 
+                            <ChevronDown className="h-4 w-4 text-orange-600" />
+                          }
+                        </div>
+                      </div>
+                    </Button>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent className="space-y-4 mt-2 bg-gradient-to-r from-orange-50/50 to-amber-50/50 dark:from-orange-950/20 dark:to-amber-950/20 border border-orange-200/50 dark:border-orange-800/50 rounded-lg p-4">
+                    
+                    {/* Date Selection */}
+                    <div>
+                      <Label className="text-sm font-medium text-orange-700 dark:text-orange-300 mb-3 block">Rental Dates</Label>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <Label className="text-xs text-orange-600 dark:text-orange-400 mb-1 block">{currentText.checkIn}</Label>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <Button
+                                variant="outline"
+                                className="w-full h-9 justify-start text-left font-normal border-orange-200 dark:border-orange-800 bg-white/80 dark:bg-orange-950/30 text-xs"
+                              >
+                                <CalendarIcon className="mr-2 h-3 w-3 text-orange-500" />
+                                {filters.checkInDate ? format(filters.checkInDate, "PPP") : currentText.selectDate}
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0 bg-white dark:bg-gray-950 border-orange-200 dark:border-orange-800" align="start">
+                              <Calendar
+                                mode="single"
+                                selected={filters.checkInDate}
+                                onSelect={(date) => handleFilterChange('checkInDate', date)}
+                                disabled={(date) => date < new Date()}
+                                initialFocus
+                                className="pointer-events-auto"
+                              />
+                            </PopoverContent>
+                          </Popover>
+                        </div>
+
+                        <div>
+                          <Label className="text-xs text-orange-600 dark:text-orange-400 mb-1 block">{currentText.checkOut}</Label>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <Button
+                                variant="outline"
+                                className="w-full h-9 justify-start text-left font-normal border-orange-200 dark:border-orange-800 bg-white/80 dark:bg-orange-950/30 text-xs"
+                              >
+                                <CalendarIcon className="mr-2 h-3 w-3 text-orange-500" />
+                                {filters.checkOutDate ? format(filters.checkOutDate, "PPP") : currentText.selectDate}
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0 bg-white dark:bg-gray-950 border-orange-200 dark:border-orange-800" align="start">
+                              <Calendar
+                                mode="single"
+                                selected={filters.checkOutDate}
+                                onSelect={(date) => handleFilterChange('checkOutDate', date)}
+                                disabled={(date) => date < new Date() || (filters.checkInDate && date <= filters.checkInDate)}
+                                initialFocus
+                                className="pointer-events-auto"
+                              />
+                            </PopoverContent>
+                          </Popover>
+                        </div>
+                      </div>
+
+                      {/* Days Counter */}
+                      {filters.checkInDate && filters.checkOutDate && (
+                        <div className="mt-3 text-center p-3 bg-orange-100 dark:bg-orange-900/20 rounded-lg border border-orange-200 dark:border-orange-800">
+                          <div className="text-sm font-semibold text-orange-700 dark:text-orange-300">
+                            {calculateDays()} {currentText.days}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Rental Duration */}
+                    <div>
+                      <Label className="text-sm font-medium text-orange-700 dark:text-orange-300 mb-3 block">Rental Duration</Label>
+                      <div className="flex items-center gap-2">
+                        <Clock className="h-4 w-4 text-orange-500" />
+                        <Select value={filters.rentalDuration} onValueChange={(value) => handleFilterChange('rentalDuration', value)}>
+                          <SelectTrigger className="h-9 text-xs border-orange-200 dark:border-orange-800 bg-white/80 dark:bg-orange-950/30">
+                            <SelectValue placeholder={`${currentText.any} ${currentText.rentalDuration.toLowerCase()}`} />
+                          </SelectTrigger>
+                          <SelectContent className="bg-white dark:bg-gray-950 border-orange-200 dark:border-orange-800">
+                            <SelectItem value="all" className="text-xs">{currentText.any}</SelectItem>
+                            {rentalDurationOptions.map((option) => (
+                              <SelectItem key={option.value} value={option.value} className="text-xs">
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+
+                    {/* Trip Purpose */}
+                    <div>
+                      <Label className="text-sm font-medium text-orange-700 dark:text-orange-300 mb-3 block">Trip Purpose</Label>
+                      <div className="flex items-center gap-2 mb-2">
+                        <Users className="h-4 w-4 text-orange-500" />
+                        <span className="text-xs text-orange-600 dark:text-orange-400">{currentText.tripPurpose}</span>
+                      </div>
+                      <div className="grid grid-cols-2 gap-2">
+                        {tripPurposeOptions.map((purpose) => (
+                          <Button
+                            key={purpose.value}
+                            variant={filters.tripPurpose === purpose.value ? "default" : "outline"}
+                            size="sm"
+                            onClick={() => handleFilterChange('tripPurpose', purpose.value)}
+                            className="h-8 text-xs justify-start gap-1 border-orange-200 dark:border-orange-800"
+                          >
+                            <span>{purpose.icon}</span>
+                            {purpose.label}
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
+                  </CollapsibleContent>
+                </Collapsible>
+              )}
 
               {/* Sort By Category */}
               <div className="bg-gradient-to-r from-gray-50/50 to-slate-50/50 dark:from-gray-950/20 dark:to-slate-950/20 border border-gray-200/50 dark:border-gray-800/50 rounded-lg p-4">
