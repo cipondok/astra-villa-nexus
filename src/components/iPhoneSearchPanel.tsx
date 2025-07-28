@@ -5,8 +5,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { Search, MapPin, Home, Building, DollarSign, Filter, Bed, Bath, X, Bot, Sparkles, Zap, Square, Star, Calendar, Settings } from "lucide-react";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Search, MapPin, Home, Building, DollarSign, Filter, Bed, Bath, X, Bot, Sparkles, Zap, Square, Star, Calendar as CalendarIcon, Settings } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { format } from "date-fns";
+import { cn } from "@/lib/utils";
 
 interface IPhoneSearchPanelProps {
   language: "en" | "id";
@@ -34,6 +38,11 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
     condition: '',
     sortBy: 'newest'
   });
+
+  // Rental-specific date filters
+  const [checkInDate, setCheckInDate] = useState<Date>();
+  const [checkOutDate, setCheckOutDate] = useState<Date>();
+  const [rentalDuration, setRentalDuration] = useState<string>('');
 
   // Dynamic data from database
   const [dynamicLocations, setDynamicLocations] = useState<{value: string, label: string}[]>([]);
@@ -128,7 +137,20 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
       gym: "Gym",
       garden: "Garden",
       security: "24h Security",
-      furnished: "Furnished"
+      furnished: "Furnished",
+      // Rental-specific
+      checkIn: "Check-in Date",
+      checkOut: "Check-out Date",
+      duration: "Rental Duration",
+      selectDate: "Select Date",
+      "1day": "1 Day",
+      "1week": "1 Week",
+      "2weeks": "2 Weeks", 
+      "1month": "1 Month",
+      "2months": "2 Months",
+      "3months": "3 Months",
+      "6months": "6 Months",
+      "12months": "12 Months (1 Year)"
     },
     id: {
       searchPlaceholder: "Cari properti, lokasi, atau kata kunci...",
@@ -174,7 +196,20 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
       gym: "Gym",
       garden: "Taman",
       security: "Keamanan 24j",
-      furnished: "Furnished"
+      furnished: "Furnished",
+      // Rental-specific
+      checkIn: "Tanggal Masuk",
+      checkOut: "Tanggal Keluar",
+      duration: "Durasi Sewa",
+      selectDate: "Pilih Tanggal",
+      "1day": "1 Hari",
+      "1week": "1 Minggu",
+      "2weeks": "2 Minggu",
+      "1month": "1 Bulan",
+      "2months": "2 Bulan",
+      "3months": "3 Bulan",
+      "6months": "6 Bulan",
+      "12months": "12 Bulan (1 Tahun)"
     }
   };
 
@@ -312,6 +347,18 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
   const bedroomOptions = ['1', '2', '3', '4', '5+'];
   const bathroomOptions = ['1', '2', '3', '4+'];
 
+  // Rental duration options
+  const durationOptions = [
+    { value: '1day', label: currentText['1day'] },
+    { value: '1week', label: currentText['1week'] },
+    { value: '2weeks', label: currentText['2weeks'] },
+    { value: '1month', label: currentText['1month'] },
+    { value: '2months', label: currentText['2months'] },
+    { value: '3months', label: currentText['3months'] },
+    { value: '6months', label: currentText['6months'] },
+    { value: '12months', label: currentText['12months'] },
+  ];
+
   const handleSearchChange = (value: string) => {
     setSearchQuery(value);
     if (onLiveSearch) {
@@ -334,10 +381,17 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
   };
 
   const getActiveFiltersCount = () => {
-    return Object.entries(filters).filter(([key, value]) => {
+    let count = Object.entries(filters).filter(([key, value]) => {
       if (key === 'features') return Array.isArray(value) && value.length > 0;
       return value !== '' && value !== 'newest';
     }).length;
+    
+    // Add rental-specific filters count
+    if (checkInDate) count++;
+    if (checkOutDate) count++;
+    if (rentalDuration) count++;
+    
+    return count;
   };
 
   const clearAllFilters = () => {
@@ -356,6 +410,10 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
     });
     setPriceRange([0, 10000]);
     setAreaRange([0, 1000]);
+    // Clear rental-specific filters
+    setCheckInDate(undefined);
+    setCheckOutDate(undefined);
+    setRentalDuration('');
   };
 
   const formatPrice = (price: number) => {
@@ -378,7 +436,9 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
 
   const handleSearch = () => {
     const listingType = activeTab === 'all' ? '' : activeTab;
-    onSearch({
+    
+    // Base search data
+    const searchData: any = {
       searchQuery,
       listingType,
       ...filters,
@@ -386,7 +446,16 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
       maxPrice: priceRange[1] * 1000000,
       minArea: areaRange[0],
       maxArea: areaRange[1]
-    });
+    };
+
+    // Add rental-specific data for rent searches
+    if (activeTab === 'rent') {
+      searchData.checkInDate = checkInDate;
+      searchData.checkOutDate = checkOutDate;
+      searchData.rentalDuration = rentalDuration;
+    }
+
+    onSearch(searchData);
   };
 
   return (
@@ -603,6 +672,101 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
                   </SelectContent>
                 </Select>
               </div>
+
+              {/* Rental-specific Date & Duration Filters - Only show for Rent tab */}
+              {activeTab === 'rent' && (
+                <>
+                  {/* Check-in & Check-out Dates */}
+                  <div className="grid grid-cols-2 gap-3">
+                    {/* Check-in Date */}
+                    <div>
+                      <Label className="text-sm font-medium text-foreground mb-2 block">
+                        <CalendarIcon className="h-3 w-3 inline mr-1" />
+                        {currentText.checkIn}
+                      </Label>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant="outline"
+                            className={cn(
+                              "h-8 w-full justify-start text-left font-normal text-xs",
+                              !checkInDate && "text-muted-foreground"
+                            )}
+                          >
+                            <CalendarIcon className="mr-2 h-3 w-3" />
+                            {checkInDate ? format(checkInDate, "dd/MM/yyyy") : currentText.selectDate}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <Calendar
+                            mode="single"
+                            selected={checkInDate}
+                            onSelect={setCheckInDate}
+                            disabled={(date) => date < new Date()}
+                            initialFocus
+                            className={cn("p-3 pointer-events-auto")}
+                          />
+                        </PopoverContent>
+                      </Popover>
+                    </div>
+
+                    {/* Check-out Date */}
+                    <div>
+                      <Label className="text-sm font-medium text-foreground mb-2 block">
+                        <CalendarIcon className="h-3 w-3 inline mr-1" />
+                        {currentText.checkOut}
+                      </Label>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant="outline"
+                            className={cn(
+                              "h-8 w-full justify-start text-left font-normal text-xs",
+                              !checkOutDate && "text-muted-foreground"
+                            )}
+                          >
+                            <CalendarIcon className="mr-2 h-3 w-3" />
+                            {checkOutDate ? format(checkOutDate, "dd/MM/yyyy") : currentText.selectDate}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <Calendar
+                            mode="single"
+                            selected={checkOutDate}
+                            onSelect={setCheckOutDate}
+                            disabled={(date) => 
+                              date < new Date() || (checkInDate && date <= checkInDate)
+                            }
+                            initialFocus
+                            className={cn("p-3 pointer-events-auto")}
+                          />
+                        </PopoverContent>
+                      </Popover>
+                    </div>
+                  </div>
+
+                  {/* Rental Duration */}
+                  <div>
+                    <Label className="text-sm font-medium text-foreground mb-2 block">
+                      <CalendarIcon className="h-3 w-3 inline mr-1" />
+                      {currentText.duration}
+                    </Label>
+                    <Select value={rentalDuration || "all"} onValueChange={setRentalDuration}>
+                      <SelectTrigger className="h-8 text-xs">
+                        <SelectValue placeholder={currentText.duration} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all" className="text-xs">{currentText.any}</SelectItem>
+                        {durationOptions.map((option) => (
+                          <SelectItem key={option.value} value={option.value} className="text-xs">
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </>
+              )}
 
               {/* Price Range Slider */}
               <div>
