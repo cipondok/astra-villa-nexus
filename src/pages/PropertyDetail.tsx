@@ -315,66 +315,50 @@ const PropertyDetail: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background/98 to-muted/30">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background/98 to-muted/20">
       {/* Agent/Developer Header - Ultra Modern Design */}
       {property?.posted_by && (
-        <div className="relative bg-gradient-to-r from-primary/10 via-accent/5 to-secondary/10 backdrop-blur-sm border-b border-border/20 shadow-xl shadow-primary/5">
-          <div className="absolute inset-0 bg-gradient-to-r from-primary/3 to-accent/3"></div>
-          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
+        <div className="relative bg-gradient-to-r from-primary/5 via-accent/3 to-secondary/5 backdrop-blur-sm border-b border-border/10 shadow-xl shadow-primary/5">
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/2 to-accent/2"></div>
+          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div className="flex flex-col lg:flex-row items-start justify-between gap-6">
               {/* Agent Profile Section */}
-              <div className="flex items-center gap-6">
+              <div className="flex items-start gap-6 flex-1">
                 <div className="relative group">
-                  <div className="absolute -inset-1 bg-gradient-to-r from-primary to-accent rounded-full blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
+                  <div className="absolute -inset-1 bg-gradient-to-r from-primary to-accent rounded-full blur opacity-30 group-hover:opacity-50 transition duration-300"></div>
                   <img
                     src={property.posted_by.avatar_url || "/placeholder.svg"}
                     alt={property.posted_by.name}
-                    className="relative w-20 h-20 rounded-full object-cover border-4 border-background shadow-2xl"
+                    className="relative w-16 h-16 rounded-full object-cover border-3 border-background shadow-lg"
                   />
                   {property.posted_by.verification_status === 'verified' && (
-                    <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-accent rounded-full flex items-center justify-center border-3 border-background shadow-lg">
-                      <Shield className="w-4 h-4 text-accent-foreground" />
-                    </div>
-                  )}
-                  {property.posted_by.rating && property.posted_by.rating >= 4.8 && (
-                    <div className="absolute -top-2 -right-2 w-8 h-8 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full flex items-center justify-center border-3 border-background shadow-lg">
-                      <Crown className="w-4 h-4 text-white" />
+                    <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-accent rounded-full flex items-center justify-center border-2 border-background shadow-md">
+                      <Shield className="w-3 h-3 text-accent-foreground" />
                     </div>
                   )}
                 </div>
                 
-                <div className="flex-1 space-y-3">
+                <div className="flex-1 space-y-2">
                   <div className="flex items-center gap-3 flex-wrap">
-                    <h3 className="font-bold text-2xl bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                    <h3 className="font-bold text-lg bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
                       {property.posted_by.name}
                     </h3>
-                    <div className="flex items-center gap-2">
-                      <span className="bg-gradient-to-r from-primary to-accent text-primary-foreground px-4 py-1.5 rounded-full text-sm font-semibold shadow-lg">
-                        {property.posted_by.position || 'Official Developer'}
-                      </span>
-                      <div className="flex items-center gap-1 bg-yellow-50 dark:bg-yellow-900/20 px-3 py-1.5 rounded-full border border-yellow-200 dark:border-yellow-800">
-                        <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                        <span className="font-bold text-yellow-600 dark:text-yellow-400 text-sm">
-                          {property.posted_by.customer_feedback_rating}
-                        </span>
-                        <span className="text-xs text-yellow-600 dark:text-yellow-500">
-                          ({property.posted_by.customer_feedback_count})
-                        </span>
-                      </div>
-                    </div>
+                    <span className="bg-gradient-to-r from-primary to-accent text-primary-foreground px-3 py-1 rounded-full text-xs font-medium">
+                      {property.posted_by.position || 'Official Developer'}
+                    </span>
                   </div>
                   
-                  <div className="flex items-center gap-4 text-sm">
-                    <div className="flex items-center gap-2 bg-emerald-50 dark:bg-emerald-900/20 px-3 py-1.5 rounded-full border border-emerald-200 dark:border-emerald-800">
-                      <Medal className="h-4 w-4 text-emerald-600" />
-                      <span className="font-medium text-emerald-700 dark:text-emerald-300">
-                        {property.posted_by.experience_years} Years Experience
+                  <div className="flex items-center gap-3 text-sm flex-wrap">
+                    <div className="flex items-center gap-1 bg-yellow-50 dark:bg-yellow-900/20 px-2 py-1 rounded-full">
+                      <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                      <span className="font-medium text-yellow-700 dark:text-yellow-300">
+                        {property.posted_by.customer_feedback_rating}
                       </span>
                     </div>
-                    <div className="flex items-center gap-2 bg-blue-50 dark:bg-blue-900/20 px-3 py-1.5 rounded-full border border-blue-200 dark:border-blue-800">
-                      <TrendingUp className="h-4 w-4 text-blue-600" />
-                      <span className="font-medium text-blue-700 dark:text-blue-300">
-                        {property.posted_by.total_properties}+ Properties Sold
+                    <div className="flex items-center gap-1 bg-emerald-50 dark:bg-emerald-900/20 px-2 py-1 rounded-full">
+                      <Medal className="h-3 w-3 text-emerald-600" />
+                      <span className="text-emerald-700 dark:text-emerald-300 text-xs">
+                        {property.posted_by.experience_years}y Experience
                       </span>
                     </div>
                   </div>
@@ -384,37 +368,17 @@ const PropertyDetail: React.FC = () => {
                     Updated {formatTimeAgo(property.created_at)} ago
                   </p>
                 </div>
-                
-                {/* Company Badge */}
-                <div className="bg-card/80 backdrop-blur-sm p-4 rounded-xl border border-border shadow-lg hover:shadow-xl transition-all">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-gradient-to-br from-primary to-accent rounded-lg text-primary-foreground text-sm flex items-center justify-center font-bold shadow-md">
-                      {property.posted_by.company_name?.charAt(0) || 'U'}
-                    </div>
-                    <div>
-                      <span className="text-sm font-bold text-foreground block">{property.posted_by.company_name}</span>
-                      <p className="text-xs text-muted-foreground">{property.posted_by.developer_name}</p>
-                    </div>
-                  </div>
-                </div>
               </div>
-               
+                
               <div className="flex items-center gap-3">
-                <ProtectedContactInfo
-                  phone={property.posted_by.phone_number}
-                  email={ownerInfo?.email}
-                  whatsappNumber={property.posted_by.whatsapp_number}
-                  className="hidden lg:flex lg:gap-3"
-                  showButtons={true}
-                />
                 <Button 
                   variant="outline" 
-                  size="lg"
-                  className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white border-0 shadow-lg hover:shadow-xl transition-all"
+                  size="sm"
+                  className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white border-0 shadow-md"
                   onClick={() => {
                     if (user && property.posted_by?.whatsapp_number) {
                       window.open(`https://wa.me/${property.posted_by.whatsapp_number.replace('+', '')}?text=Hi, I'm interested in ${property.title}`, '_blank');
-                    } else if (!user) {
+                    } else {
                       toast({
                         title: "Sign in required", 
                         description: "Please sign in to contact via WhatsApp.",
@@ -423,16 +387,7 @@ const PropertyDetail: React.FC = () => {
                     }
                   }}
                 >
-                  📱 WhatsApp Agent
-                </Button>
-                <Button 
-                  variant="outline"
-                  size="lg"
-                  className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg hover:shadow-xl transition-all"
-                  onClick={() => navigate('/add-property')}
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  Add Property
+                  📱 WhatsApp
                 </Button>
               </div>
             </div>
@@ -441,27 +396,18 @@ const PropertyDetail: React.FC = () => {
       )}
 
       {/* Navigation Header */}
-      <div className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
+      <div className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center gap-4">
+          <div className="flex items-center justify-between h-14">
+            <div className="flex items-center gap-3">
               <Button 
                 variant="ghost" 
                 size="sm"
                 onClick={() => navigate(-1)}
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 hover:bg-muted/50"
               >
                 <ArrowLeft className="h-4 w-4" />
                 Back
-              </Button>
-              <Button 
-                variant="ghost" 
-                size="sm"
-                onClick={() => navigate('/')}
-                className="flex items-center gap-2"
-              >
-                <Home className="h-4 w-4" />
-                Home
               </Button>
             </div>
             
@@ -478,7 +424,7 @@ const PropertyDetail: React.FC = () => {
                  size="sm" 
                  onClick={handleSaveFavorite}
                  disabled={favLoading}
-                 className={isFavorite(property.id) ? "bg-destructive/10 text-destructive hover:bg-destructive/20" : ""}
+                 className={isFavorite(property.id) ? "bg-destructive/10 text-destructive hover:bg-destructive/20" : "hover:bg-muted/50"}
                >
                  <Heart className={`h-4 w-4 mr-2 ${isFavorite(property.id) ? 'fill-current' : ''}`} />
                  {isFavorite(property.id) ? 'Saved' : 'Save'}
@@ -487,19 +433,17 @@ const PropertyDetail: React.FC = () => {
                  variant="outline" 
                  size="sm"
                  onClick={handleShareProperty}
+                 className="hover:bg-muted/50"
                >
                  <Share2 className="h-4 w-4 mr-2" />
                  Share
-              </Button>
-              <Button variant="ghost" size="sm">
-                <Menu className="h-4 w-4" />
               </Button>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         
         {/* Enhanced Image Gallery */}
         <div className="mb-8">
@@ -511,120 +455,91 @@ const PropertyDetail: React.FC = () => {
           />
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
             
             {/* Property Header */}
-            <Card className="border-0 bg-card/80 backdrop-blur-sm shadow-xl shadow-primary/5 hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300 animate-fade-in">
-              <CardHeader>
-                <div className="flex items-start justify-between">
-                  <div>
-                    <CardTitle className="text-2xl lg:text-3xl bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">{property.title}</CardTitle>
-                    <CardDescription className="flex items-center gap-1 text-lg mt-2">
+            <Card className="border-0 bg-card/90 backdrop-blur-sm shadow-xl shadow-primary/5 hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300 animate-fade-in">
+              <CardContent className="p-6">
+                <div className="flex items-start justify-between mb-6">
+                  <div className="flex-1">
+                    <h1 className="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent mb-3">
+                      {property.title}
+                    </h1>
+                    <div className="flex items-center gap-2 text-muted-foreground mb-4">
                       <MapPin className="h-5 w-5 text-primary" />
-                      {property.location}
-                    </CardDescription>
+                      <span className="text-lg">{property.location}</span>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      <Badge variant={property.listing_type === 'sale' ? 'default' : 'secondary'} className="px-3 py-1">
+                        {property.listing_type === 'sale' ? 'For Sale' : 'For Rent'}
+                      </Badge>
+                      <Badge variant="outline" className="bg-muted/50 px-3 py-1">{property.property_type}</Badge>
+                      {property.development_status !== 'completed' && (
+                        <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20 px-3 py-1">
+                          {property.development_status === 'new_project' ? 'New Project' : 'Pre-Launch'}
+                        </Badge>
+                      )}
+                    </div>
                   </div>
-                   <div className="text-right">
-                     <div className="text-3xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                       {formatPrice(property.price)}
-                     </div>
-                     {property.listing_type === 'rent' && (
-                       <span className="text-sm text-muted-foreground">/bulan</span>
+                  <div className="text-right">
+                    <div className="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                      {formatPrice(property.price)}
+                    </div>
+                    {property.listing_type === 'rent' && (
+                      <span className="text-sm text-muted-foreground">/month</span>
                     )}
                   </div>
                 </div>
-                
-                <div className="flex flex-wrap gap-2 mt-4">
-                  <Badge variant={property.listing_type === 'sale' ? 'default' : 'secondary'}>
-                    {property.listing_type === 'sale' ? 'For Sale' : 'For Rent'}
-                  </Badge>
-                  <Badge variant="outline">{property.property_type}</Badge>
-                   {property.development_status !== 'completed' && (
-                     <Badge variant="outline" className="bg-primary/10 text-primary">
-                       {property.development_status === 'new_project' ? 'New Project' : 'Pre-Launch'}
-                    </Badge>
-                  )}
-                 </div>
 
-                 {/* Promotional Banners - Modern design */}
-                 <div className="bg-gradient-to-r from-primary/10 to-accent/10 rounded-lg p-4 mb-6">
-                   <div className="flex flex-wrap gap-2 justify-center">
-                     <span className="bg-primary text-primary-foreground px-3 py-1 rounded-full text-sm">
-                       💰 Hard Cash : Disc 12,5%
-                     </span>
-                     <span className="bg-accent text-accent-foreground px-3 py-1 rounded-full text-sm">
-                       💰 KPR Exp DP 10% : Disc 12%
-                     </span>
-                     <span className="bg-secondary text-secondary-foreground px-3 py-1 rounded-full text-sm">
-                       💰 Cash Bertahap
-                     </span>
-                   </div>
-                 </div>
-
-                 {/* Price Range Display - Modernized */}
-                 <Card className="mb-6">
-                   <CardContent className="p-6">
-                     <div className="text-center">
-                       <h2 className="text-3xl font-bold text-primary mb-2">
-                         {formatPrice(property.price)} - {formatPrice(property.price * 1.6)}
-                       </h2>
-                       <h3 className="text-xl font-semibold mb-1">{property.title}</h3>
-                       <p className="text-muted-foreground mb-2">{property.location}</p>
-                       <span className="bg-secondary px-3 py-1 rounded text-sm">Rumah</span>
+                {/* Property Stats */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {property.bedrooms && (
+                    <div className="text-center p-4 bg-gradient-to-br from-primary/5 to-primary/10 rounded-xl border border-primary/20 hover:shadow-lg hover:shadow-primary/10 transition-all duration-300">
+                      <Bed className="h-6 w-6 text-primary mx-auto mb-2" />
+                      <div className="font-bold text-lg text-foreground">{property.bedrooms}</div>
+                      <div className="text-sm text-muted-foreground">Bedrooms</div>
                     </div>
-                  </CardContent>
-                </Card>
-              </CardHeader>
+                  )}
+                  {property.bathrooms && (
+                    <div className="text-center p-4 bg-gradient-to-br from-accent/5 to-accent/10 rounded-xl border border-accent/20 hover:shadow-lg hover:shadow-accent/10 transition-all duration-300">
+                      <Bath className="h-6 w-6 text-accent mx-auto mb-2" />
+                      <div className="font-bold text-lg text-foreground">{property.bathrooms}</div>
+                      <div className="text-sm text-muted-foreground">Bathrooms</div>
+                    </div>
+                  )}
+                  {property.area_sqm && (
+                    <div className="text-center p-4 bg-gradient-to-br from-secondary/5 to-secondary/10 rounded-xl border border-secondary/20 hover:shadow-lg hover:shadow-secondary/10 transition-all duration-300">
+                      <Square className="h-6 w-6 text-secondary mx-auto mb-2" />
+                      <div className="font-bold text-lg text-foreground">{property.area_sqm}</div>
+                      <div className="text-sm text-muted-foreground">Sqm</div>
+                    </div>
+                  )}
+                  <div className="text-center p-4 bg-gradient-to-br from-muted/50 to-muted/70 rounded-xl border border-border hover:shadow-lg transition-all duration-300">
+                    <Calendar className="h-6 w-6 text-foreground mx-auto mb-2" />
+                    <div className="font-bold text-lg text-foreground">
+                      {new Date(property.created_at).getFullYear()}
+                    </div>
+                    <div className="text-sm text-muted-foreground">Listed</div>
+                  </div>
+                </div>
+              </CardContent>
             </Card>
 
-            {/* Property Details */}
-            <Card className="border-0 bg-card/80 backdrop-blur-sm shadow-xl shadow-primary/5 hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300 animate-fade-in">
+            {/* Property Details Tabs */}
+            <Card className="border-0 bg-card/90 backdrop-blur-sm shadow-xl shadow-primary/5 hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300 animate-fade-in">
               <CardContent className="p-6">
-                <Tabs defaultValue="details" className="w-full">
-                  <TabsList className="grid w-full grid-cols-3 bg-muted/50">
-                    <TabsTrigger value="details" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Details</TabsTrigger>
-                    <TabsTrigger value="description" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Description</TabsTrigger>
-                    <TabsTrigger value="features" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Features</TabsTrigger>
+                <Tabs defaultValue="description" className="w-full">
+                  <TabsList className="grid w-full grid-cols-3 bg-muted/30 rounded-lg">
+                    <TabsTrigger value="description" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md">Description</TabsTrigger>
+                    <TabsTrigger value="features" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md">Features</TabsTrigger>
+                    <TabsTrigger value="details" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md">Details</TabsTrigger>
                   </TabsList>
-                  
-                  <TabsContent value="details" className="mt-6">
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                      {property.bedrooms && (
-                        <div className="text-center p-4 bg-gradient-to-br from-muted/50 to-background rounded-xl border border-border/50 hover:shadow-lg hover:shadow-primary/10 transition-all duration-300 hover-scale">
-                          <Bed className="h-8 w-8 text-primary mx-auto mb-2" />
-                          <div className="font-semibold text-foreground">{property.bedrooms}</div>
-                          <div className="text-sm text-muted-foreground">Bedrooms</div>
-                        </div>
-                      )}
-                      {property.bathrooms && (
-                        <div className="text-center p-4 bg-gradient-to-br from-muted/50 to-background rounded-xl border border-border/50 hover:shadow-lg hover:shadow-primary/10 transition-all duration-300 hover-scale">
-                          <Bath className="h-8 w-8 text-primary mx-auto mb-2" />
-                          <div className="font-semibold text-foreground">{property.bathrooms}</div>
-                          <div className="text-sm text-muted-foreground">Bathrooms</div>
-                        </div>
-                      )}
-                      {property.area_sqm && (
-                        <div className="text-center p-4 bg-gradient-to-br from-muted/50 to-background rounded-xl border border-border/50 hover:shadow-lg hover:shadow-primary/10 transition-all duration-300 hover-scale">
-                          <Square className="h-8 w-8 text-primary mx-auto mb-2" />
-                          <div className="font-semibold text-foreground">{property.area_sqm}</div>
-                          <div className="text-sm text-muted-foreground">Sqm</div>
-                        </div>
-                      )}
-                      <div className="text-center p-4 bg-gradient-to-br from-muted/50 to-background rounded-xl border border-border/50 hover:shadow-lg hover:shadow-primary/10 transition-all duration-300 hover-scale">
-                        <Calendar className="h-8 w-8 text-primary mx-auto mb-2" />
-                        <div className="font-semibold text-foreground">
-                          {new Date(property.created_at).getFullYear()}
-                        </div>
-                        <div className="text-sm text-muted-foreground">Listed</div>
-                      </div>
-                    </div>
-                  </TabsContent>
                   
                   <TabsContent value="description" className="mt-6">
                     <div className="prose max-w-none">
-                      <p className="text-gray-700 leading-relaxed">
+                      <p className="text-foreground leading-relaxed text-base">
                         {property.description || 'No description available for this property.'}
                       </p>
                     </div>
@@ -634,14 +549,41 @@ const PropertyDetail: React.FC = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {property.property_features && Object.keys(property.property_features).length > 0 ? (
                         Object.entries(property.property_features).map(([key, value]) => (
-                          <div key={key} className="flex justify-between py-2 border-b">
-                            <span className="font-medium capitalize">{key.replace(/_/g, ' ')}</span>
-                            <span className="text-gray-600">{String(value)}</span>
+                          <div key={key} className="flex justify-between py-3 px-4 bg-muted/30 rounded-lg border border-border/30">
+                            <span className="font-medium text-foreground capitalize">{key.replace(/_/g, ' ')}</span>
+                            <span className="text-muted-foreground">{String(value)}</span>
                           </div>
                         ))
                       ) : (
-                        <p className="text-gray-500 col-span-2">No additional features listed.</p>
+                        <p className="text-muted-foreground col-span-2 text-center py-8">No additional features listed.</p>
                       )}
+                    </div>
+                  </TabsContent>
+
+                  <TabsContent value="details" className="mt-6">
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="flex justify-between py-3 px-4 bg-muted/30 rounded-lg border border-border/30">
+                          <span className="font-medium text-foreground">Property Type</span>
+                          <span className="text-muted-foreground capitalize">{property.property_type}</span>
+                        </div>
+                        <div className="flex justify-between py-3 px-4 bg-muted/30 rounded-lg border border-border/30">
+                          <span className="font-medium text-foreground">Listing Type</span>
+                          <span className="text-muted-foreground capitalize">{property.listing_type}</span>
+                        </div>
+                        <div className="flex justify-between py-3 px-4 bg-muted/30 rounded-lg border border-border/30">
+                          <span className="font-medium text-foreground">Status</span>
+                          <Badge variant={property.status === 'active' ? 'default' : 'secondary'}>
+                            {property.status}
+                          </Badge>
+                        </div>
+                        <div className="flex justify-between py-3 px-4 bg-muted/30 rounded-lg border border-border/30">
+                          <span className="font-medium text-foreground">Listed Date</span>
+                          <span className="text-muted-foreground">
+                            {new Date(property.created_at).toLocaleDateString()}
+                          </span>
+                        </div>
+                      </div>
                     </div>
                   </TabsContent>
                 </Tabs>
@@ -659,23 +601,25 @@ const PropertyDetail: React.FC = () => {
               virtualTourUrl={property.virtual_tour_url}
             />
 
-
             {/* Virtual Tour & 3D Model */}
             {(property.virtual_tour_url || property.three_d_model_url) && (
-              <Card>
+              <Card className="border-0 bg-card/90 backdrop-blur-sm shadow-xl shadow-primary/5 hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300 animate-fade-in">
                 <CardHeader>
-                  <CardTitle>Virtual Experience</CardTitle>
+                  <CardTitle className="flex items-center gap-2 bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
+                    <Camera className="h-5 w-5 text-primary" />
+                    Virtual Experience
+                  </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="space-y-3">
                   {property.virtual_tour_url && (
-                    <Button className="w-full" variant="outline">
+                    <Button className="w-full bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary/80" variant="default">
                       <Globe className="h-4 w-4 mr-2" />
                       Virtual Tour
                     </Button>
                   )}
                   {property.three_d_model_url && (
-                    <Button className="w-full" variant="outline">
-                      <Camera className="h-4 w-4 mr-2" />
+                    <Button className="w-full bg-gradient-to-r from-accent to-accent/90 hover:from-accent/90 hover:to-accent/80" variant="default">
+                      <Box className="h-4 w-4 mr-2" />
                       3D Model
                     </Button>
                   )}
@@ -687,8 +631,8 @@ const PropertyDetail: React.FC = () => {
           {/* Sidebar */}
           <div className="space-y-6">
             
-            {/* Enhanced Contact Information with Agent Details */}
-            <Card className="border-0 bg-card/80 backdrop-blur-sm shadow-xl shadow-primary/5 hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300 animate-fade-in">
+            {/* Enhanced Contact Information */}
+            <Card className="border-0 bg-card/90 backdrop-blur-sm shadow-xl shadow-primary/5 hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300 animate-fade-in">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
                   <User className="h-5 w-5 text-primary" />
@@ -698,43 +642,43 @@ const PropertyDetail: React.FC = () => {
               <CardContent className="space-y-6">
                 {property.posted_by ? (
                   <div>
-                    <div className="flex items-start gap-4 mb-4">
+                    <div className="flex items-start gap-4 mb-6">
                       <img
                         src={property.posted_by.avatar_url || "/placeholder.svg"}
                         alt={property.posted_by.name}
-                        className="w-16 h-16 rounded-full object-cover border-2 border-gray-200"
+                        className="w-14 h-14 rounded-xl object-cover border-2 border-border shadow-md"
                       />
                       <div className="flex-1">
-                        <h4 className="font-bold text-lg mb-1">{property.posted_by.name}</h4>
-                        <p className="text-sm text-blue-600 font-medium mb-1">{property.posted_by.position}</p>
+                        <h4 className="font-bold text-lg mb-1 text-foreground">{property.posted_by.name}</h4>
+                        <p className="text-sm text-primary font-medium mb-2">{property.posted_by.position}</p>
                         <div className="flex items-center gap-1 mb-2">
                           <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                          <span className="font-medium text-sm">{property.posted_by.customer_feedback_rating}</span>
-                          <span className="text-sm text-gray-500">({property.posted_by.customer_feedback_count} reviews)</span>
+                          <span className="font-medium text-sm text-foreground">{property.posted_by.customer_feedback_rating}</span>
+                          <span className="text-sm text-muted-foreground">({property.posted_by.customer_feedback_count} reviews)</span>
                         </div>
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-muted-foreground">
                           REI License: {property.posted_by.license_number} • {property.posted_by.experience_years} years experience
                         </p>
                       </div>
                     </div>
 
                     {/* Company Information */}
-                    <div className="bg-gray-50 rounded-lg p-4 mb-4">
-                      <h5 className="font-semibold mb-2 flex items-center gap-2">
-                        <div className="w-6 h-6 bg-blue-600 rounded text-white text-xs flex items-center justify-center font-bold">
+                    <div className="bg-gradient-to-br from-muted/30 to-muted/50 rounded-xl p-4 mb-6 border border-border/30">
+                      <h5 className="font-semibold mb-2 flex items-center gap-2 text-foreground">
+                        <div className="w-6 h-6 bg-gradient-to-br from-primary to-accent rounded text-primary-foreground text-xs flex items-center justify-center font-bold">
                           {property.posted_by.company_name?.charAt(0)}
                         </div>
                         {property.posted_by.company_name}
                       </h5>
-                      <p className="text-sm text-gray-600 mb-1">{property.posted_by.company_pt_name}</p>
-                      <p className="text-sm text-gray-600 mb-2">{property.posted_by.developer_name}</p>
-                      <p className="text-xs text-gray-500">{property.posted_by.office_address}</p>
+                      <p className="text-sm text-muted-foreground mb-1">{property.posted_by.company_pt_name}</p>
+                      <p className="text-sm text-muted-foreground mb-2">{property.posted_by.developer_name}</p>
+                      <p className="text-xs text-muted-foreground">{property.posted_by.office_address}</p>
                     </div>
 
-                    {/* Enhanced Contact Options with Privacy Protection */}
-                    <div className="space-y-4">
-                      <div className="bg-gradient-to-r from-primary/5 to-accent/5 p-4 rounded-lg border border-border/20">
-                        <h4 className="font-semibold text-sm mb-3 flex items-center gap-2">
+                    {/* Contact Options */}
+                    <div className="space-y-3">
+                      <div className="bg-gradient-to-r from-primary/5 to-accent/5 p-4 rounded-xl border border-border/20">
+                        <h4 className="font-semibold text-sm mb-3 flex items-center gap-2 text-foreground">
                           <Shield className="h-4 w-4 text-primary" />
                           Protected Contact Information
                         </h4>
@@ -765,7 +709,7 @@ const PropertyDetail: React.FC = () => {
                         </Button>
                         <Button 
                           variant="outline" 
-                          className="w-full hover:bg-primary/5"
+                          className="w-full hover:bg-primary/5 border-border/50"
                           onClick={() => {
                             if (user && property.posted_by?.phone_number) {
                               window.open(`tel:${property.posted_by.phone_number}`, '_self');
@@ -783,7 +727,7 @@ const PropertyDetail: React.FC = () => {
                         </Button>
                         <Button 
                           variant="outline" 
-                          className="w-full hover:bg-primary/5"
+                          className="w-full hover:bg-primary/5 border-border/50"
                           onClick={() => {
                             if (user && ownerInfo?.email) {
                               window.open(`mailto:${ownerInfo.email}?subject=Inquiry about ${property.title}`, '_self');
@@ -803,98 +747,69 @@ const PropertyDetail: React.FC = () => {
                     </div>
 
                     {/* Agent Stats */}
-                    <div className="grid grid-cols-2 gap-4 pt-4 border-t">
+                    <div className="grid grid-cols-2 gap-4 pt-4 border-t border-border/30">
                       <div className="text-center">
-                        <div className="font-bold text-lg text-blue-600">{property.posted_by.total_properties}+</div>
-                        <div className="text-xs text-gray-500">Properties Sold</div>
+                        <div className="font-bold text-lg bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">{property.posted_by.total_properties}+</div>
+                        <div className="text-xs text-muted-foreground">Properties Sold</div>
                       </div>
                       <div className="text-center">
-                        <div className="font-bold text-lg text-green-600">{property.posted_by.experience_years}</div>
-                        <div className="text-xs text-gray-500">Years Experience</div>
+                        <div className="font-bold text-lg bg-gradient-to-r from-accent to-secondary bg-clip-text text-transparent">{property.posted_by.experience_years}</div>
+                        <div className="text-xs text-muted-foreground">Years Experience</div>
                       </div>
                     </div>
                   </div>
                 ) : (
-                  <p className="text-gray-500">Agent information not available</p>
+                  <p className="text-muted-foreground">Agent information not available</p>
                 )}
-              </CardContent>
-            </Card>
-
-            {/* Property Status */}
-            <Card className="border-0 bg-card/80 backdrop-blur-sm shadow-xl shadow-primary/5 hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300 animate-fade-in">
-              <CardHeader>
-                <CardTitle className="bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">Property Status</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Listing Status</span>
-                    <Badge variant={property.status === 'active' ? 'default' : 'secondary'}>
-                      {property.status}
-                    </Badge>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Listed Date</span>
-                    <span className="text-sm text-foreground">
-                      {new Date(property.created_at).toLocaleDateString()}
-                    </span>
-                  </div>
-                  {property.development_status !== 'completed' && (
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Development</span>
-                      <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">
-                        {property.development_status === 'new_project' ? 'New Project' : 'Pre-Launch'}
-                      </Badge>
-                    </div>
-                  )}
-                </div>
               </CardContent>
             </Card>
           </div>
         </div>
 
-        {/* Similar Units Section - Like "Tipe Unit Lainnya" in reference */}
+        {/* Related Properties Section */}
         {relatedProperties.length > 0 && (
           <div className="mt-12">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold">Tipe Unit Lainnya</h2>
-              <span className="text-blue-600 hover:underline cursor-pointer">View All</span>
+              <h2 className="text-2xl font-bold bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">Similar Properties</h2>
+              <Button variant="outline" className="text-primary hover:bg-primary/5">View All</Button>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {relatedProperties.slice(0, 2).map((relatedProperty) => (
-                <Card key={relatedProperty.id} className="overflow-hidden hover:shadow-lg transition-shadow">
-                  <div className="aspect-[4/3] overflow-hidden">
+                <Card key={relatedProperty.id} className="group border-0 bg-card/90 backdrop-blur-sm shadow-lg hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300 cursor-pointer hover-scale">
+                  <div className="aspect-[4/3] overflow-hidden rounded-t-lg">
                     <img
                       src={relatedProperty.images?.[0] || "/placeholder.svg"}
                       alt={relatedProperty.title}
-                      className="w-full h-full object-cover hover:scale-105 transition-transform cursor-pointer"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       onClick={() => navigate(`/properties/${relatedProperty.id}`)}
                     />
                   </div>
-                  <CardContent className="p-4">
+                  <CardContent className="p-6">
                     <div className="text-center">
-                      <h3 className="text-xl font-bold text-blue-600 mb-1">
+                      <h3 className="text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-2">
                         {formatPrice(relatedProperty.price)}
                       </h3>
-                      <h4 className="font-semibold mb-2">{relatedProperty.title}</h4>
-                      <div className="grid grid-cols-2 gap-4 text-sm text-muted-foreground mb-3">
-                        <div>
-                          <span className="font-medium">LT:</span> {relatedProperty.area_sqm || 120} m²
-                        </div>
-                        <div>
-                          <span className="font-medium">LB:</span> {(relatedProperty.area_sqm || 120) * 2} m²
-                        </div>
-                      </div>
-                      <div className="flex items-center justify-center gap-4 text-sm">
-                        <div className="flex items-center gap-1">
+                      <h4 className="font-semibold mb-3 text-foreground">{relatedProperty.title}</h4>
+                      <div className="flex items-center justify-center gap-4 text-sm mb-4">
+                        <div className="flex items-center gap-1 text-muted-foreground">
                           <Bed className="h-4 w-4" />
                           <span>{relatedProperty.bedrooms || 5}</span>
                         </div>
-                        <div className="flex items-center gap-1">
+                        <div className="flex items-center gap-1 text-muted-foreground">
                           <Bath className="h-4 w-4" />
                           <span>{relatedProperty.bathrooms || 5}</span>
                         </div>
+                        <div className="flex items-center gap-1 text-muted-foreground">
+                          <Square className="h-4 w-4" />
+                          <span>{relatedProperty.area_sqm || 120}m²</span>
+                        </div>
                       </div>
+                      <Button 
+                        className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90"
+                        onClick={() => navigate(`/properties/${relatedProperty.id}`)}
+                      >
+                        View Details
+                      </Button>
                     </div>
                   </CardContent>
                 </Card>
@@ -903,78 +818,36 @@ const PropertyDetail: React.FC = () => {
           </div>
         )}
 
-        {/* Enhanced Bottom Agent Contact Section */}
-        {property?.posted_by && (
-          <div className="mt-12 bg-gradient-to-r from-blue-50 to-white rounded-xl p-6 border shadow-sm">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className="w-14 h-14 bg-gradient-to-br from-blue-600 to-blue-700 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg">
-                  {property.posted_by.company_pt_name?.split(' ')[0]?.substring(0, 2) || 'PT'}
-                </div>
-                <div>
-                  <p className="text-sm text-gray-600 mb-1">
-                    Diperbarui {formatTimeAgo(property.created_at)} yang lalu oleh
-                  </p>
-                  <h3 className="font-bold text-lg text-gray-800">{property.posted_by.company_pt_name}</h3>
-                  <div className="flex items-center gap-4 mt-1">
-                    <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">
-                      ✓ Verified Developer
-                    </span>
-                    <span className="text-xs text-gray-500">
-                      {property.posted_by.total_properties}+ projects completed
-                    </span>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="flex items-center gap-3">
-                <Button 
-                  variant="outline" 
-                  className="flex items-center gap-2"
-                  onClick={() => window.open('/official-brochure.pdf', '_blank')}
-                >
-                  📄 Official Brosur
-                </Button>
-                <Button 
-                  className="bg-green-600 hover:bg-green-700 text-white flex items-center gap-2"
-                  onClick={() => window.open(`https://wa.me/${property.posted_by?.whatsapp_number?.replace('+', '')}?text=Halo, saya tertarik dengan properti ${property.title} di ${property.location}`, '_blank')}
-                >
-                  📱 WhatsApp
-                </Button>
-              </div>
-            </div>
-          </div>
-        )}
-
         {/* More Properties from User Section */}
         {userMoreProperties.length > 0 && (
           <div className="mt-12">
-            <h2 className="text-2xl font-bold mb-6">
-              More from {agentInfo ? agentInfo.full_name : ownerInfo?.full_name || 'this user'}
+            <h2 className="text-2xl font-bold mb-6 bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
+              More from {agentInfo ? agentInfo.full_name : ownerInfo?.full_name || 'this agent'}
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {userMoreProperties.map((userProperty) => (
-                <Card key={userProperty.id} className="cursor-pointer hover:shadow-lg transition-shadow">
+                <Card key={userProperty.id} className="group border-0 bg-card/90 backdrop-blur-sm shadow-lg hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300 cursor-pointer hover-scale">
                   <div className="aspect-[4/3] overflow-hidden rounded-t-lg">
                     <img
                       src={userProperty.images?.[0] || "/placeholder.svg"}
                       alt={userProperty.title}
-                      className="w-full h-full object-cover hover:scale-105 transition-transform"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       onClick={() => navigate(`/properties/${userProperty.id}`)}
                     />
                   </div>
                   <CardContent className="p-4">
-                    <h3 className="font-semibold line-clamp-2 mb-2">{userProperty.title}</h3>
+                    <h3 className="font-semibold line-clamp-2 mb-2 text-foreground">{userProperty.title}</h3>
                     <div className="flex items-center text-sm text-muted-foreground mb-2">
-                      <MapPin className="h-4 w-4 mr-1" />
+                      <MapPin className="h-4 w-4 mr-1 text-primary" />
                       {userProperty.location}
                     </div>
-                    <div className="font-bold text-primary">
+                    <div className="font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-3">
                       {formatPrice(userProperty.price)}
                     </div>
                     <Button 
-                      className="w-full mt-3" 
+                      className="w-full" 
                       size="sm"
+                      variant="outline"
                       onClick={() => navigate(`/properties/${userProperty.id}`)}
                     >
                       View Details
