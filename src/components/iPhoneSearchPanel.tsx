@@ -568,40 +568,40 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto">
-      {/* iPhone-style Glass Container */}
-      <div className="professional-card border-0 bg-gradient-to-br from-background/40 via-muted/40 to-background/40 backdrop-blur-2xl shadow-2xl overflow-hidden">
-        <div className="p-6 space-y-4">
+    <div className="w-full max-w-7xl mx-auto">
+      {/* Modern Slim Glass Container */}
+      <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border border-gray-200/50 dark:border-gray-700/50 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
+        <div className="p-4 lg:p-6 space-y-3">
           
-          {/* For Sale/For Rent/All Tabs */}
+          {/* Compact Tabs for Sale/Rent/All */}
           <div className="flex justify-center">
-            <div className="flex bg-muted/40 backdrop-blur-sm rounded-lg p-0.5 border border-border/50">
+            <div className="inline-flex bg-gray-100 dark:bg-gray-800 rounded-xl p-1 border border-gray-200 dark:border-gray-700">
               <button
                 onClick={() => setActiveTab('all')}
-                className={`px-4 py-2 rounded-md font-medium text-sm transition-all ${
+                className={`px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200 ${
                   activeTab === 'all' 
-                    ? 'btn-primary text-primary-foreground shadow-lg transform scale-105' 
-                    : 'text-foreground hover:text-foreground hover:bg-muted/20'
+                    ? 'bg-white dark:bg-gray-700 text-blue-600 dark:text-blue-400 shadow-sm' 
+                    : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100'
                 }`}
               >
                 {currentText.all}
               </button>
               <button
                 onClick={() => setActiveTab('sale')}
-                className={`px-4 py-2 rounded-md font-medium text-sm transition-all ${
+                className={`px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200 ${
                   activeTab === 'sale' 
-                    ? 'btn-primary text-primary-foreground shadow-lg transform scale-105' 
-                    : 'text-foreground hover:text-foreground hover:bg-muted/20'
+                    ? 'bg-white dark:bg-gray-700 text-blue-600 dark:text-blue-400 shadow-sm' 
+                    : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100'
                 }`}
               >
                 {currentText.forSale}
               </button>
               <button
                 onClick={() => setActiveTab('rent')}
-                className={`px-4 py-2 rounded-md font-medium text-sm transition-all ${
+                className={`px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200 ${
                   activeTab === 'rent' 
-                    ? 'btn-primary text-primary-foreground shadow-lg transform scale-105' 
-                    : 'text-foreground hover:text-foreground hover:bg-muted/20'
+                    ? 'bg-white dark:bg-gray-700 text-blue-600 dark:text-blue-400 shadow-sm' 
+                    : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100'
                 }`}
               >
                 {currentText.forRent}
@@ -609,43 +609,38 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
             </div>
           </div>
           
-          {/* Search Row */}
-          <div className="flex gap-2">
+          {/* Compact Search Row */}
+          <div className="flex gap-2 lg:gap-3">
             <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-primary" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-blue-500" />
               <Input
                 placeholder={currentText.searchPlaceholder}
                 value={searchQuery}
                 onChange={(e) => handleSearchChange(e.target.value)}
-                className="pl-10 h-10 text-sm"
+                className="pl-10 h-11 text-sm bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
               />
             </div>
             <Button
               onClick={() => setShowFilters(!showFilters)}
               variant="outline"
-              className="h-10 w-10 p-0 relative"
+              className="h-11 px-4 relative bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-xl transition-all"
             >
-              <Filter className="h-4 w-4" />
+              <div className="flex items-center gap-2">
+                <Filter className="h-4 w-4" />
+                <span className="hidden sm:inline text-sm">Filters</span>
+              </div>
               {getActiveFiltersCount() > 0 && (
-                <span className="absolute -top-1 -right-1 bg-destructive text-destructive-foreground text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                   {getActiveFiltersCount()}
                 </span>
               )}
             </Button>
             <Button
               onClick={handleSearch}
-              className="btn-primary h-10 px-6 font-medium text-sm relative overflow-hidden group"
+              className="h-11 px-6 bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm rounded-xl shadow-md hover:shadow-lg transition-all duration-200 flex items-center gap-2"
             >
-              <div className="flex items-center gap-2 relative z-10">
-                <div className="relative">
-                  <Bot className="h-4 w-4 transition-all duration-300 group-hover:scale-110" />
-                  <Zap className="h-3 w-3 absolute -top-0.5 -right-0.5 text-yellow-300 animate-pulse opacity-80" />
-                </div>
-                <span className="relative">
-                  {currentText.search}
-                  <Sparkles className="h-2.5 w-2.5 absolute -top-1 -right-1 text-yellow-300 animate-bounce" />
-                </span>
-              </div>
+              <Search className="h-4 w-4" />
+              <span className="hidden sm:inline">{currentText.search}</span>
             </Button>
           </div>
 
@@ -672,22 +667,22 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
             </div>
           )}
 
-          {/* Basic Filters Row */}
-          <div className="grid grid-cols-2 gap-2">
+          {/* Compact Filters Row */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 lg:gap-3">
             {/* Location Selection */}
             <Select value={filters.location || "all"} onValueChange={(value) => handleFilterChange('location', value)}>
-              <SelectTrigger className="h-8 text-xs">
-                <div className="flex items-center gap-1">
-                  <MapPin className="h-3 w-3 text-primary" />
+              <SelectTrigger className="h-10 text-sm bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-300 focus:border-blue-500 transition-colors">
+                <div className="flex items-center gap-2">
+                  <MapPin className="h-4 w-4 text-blue-500" />
                   <SelectValue placeholder={currentText.location} />
                 </div>
               </SelectTrigger>
-              <SelectContent className="bg-white dark:bg-gray-950 border-gray-200 dark:border-gray-700 max-h-60 overflow-y-auto">
-                <SelectItem value="all" className="text-xs">{currentText.any}</SelectItem>
+              <SelectContent className="bg-white dark:bg-gray-950 border-gray-200 dark:border-gray-700 rounded-xl shadow-xl max-h-60 overflow-y-auto">
+                <SelectItem value="all" className="text-sm hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg m-1">{currentText.any}</SelectItem>
                 {locationOptions.map((location) => (
-                  <SelectItem key={location.value} value={location.value} className="text-xs">
+                  <SelectItem key={location.value} value={location.value} className="text-sm hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg m-1">
                     <div className="flex items-center gap-2">
-                      <span className="text-xs text-gray-500 dark:text-gray-400 capitalize">
+                      <span className="text-xs text-blue-600 dark:text-blue-400 capitalize font-medium">
                         {location.type || 'city'}:
                       </span>
                       {location.label}
@@ -699,21 +694,61 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
 
             {/* Property Type Selection */}
             <Select value={filters.propertyType || "all"} onValueChange={(value) => handleFilterChange('propertyType', value)}>
-              <SelectTrigger className="h-8 text-xs">
-                <div className="flex items-center gap-1">
-                  <Home className="h-3 w-3 text-primary" />
+              <SelectTrigger className="h-10 text-sm bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-300 focus:border-blue-500 transition-colors">
+                <div className="flex items-center gap-2">
+                  <Home className="h-4 w-4 text-blue-500" />
                   <SelectValue placeholder={currentText.propertyType} />
                 </div>
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all" className="text-xs">{currentText.any}</SelectItem>
+              <SelectContent className="bg-white dark:bg-gray-950 border-gray-200 dark:border-gray-700 rounded-xl shadow-xl">
+                <SelectItem value="all" className="text-sm hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg m-1">{currentText.any}</SelectItem>
                 {currentFilters.propertyTypes.map((type) => (
-                  <SelectItem key={type.value} value={type.value} className="text-xs">
+                  <SelectItem key={type.value} value={type.value} className="text-sm hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg m-1">
                     {type.label}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
+
+            {/* Bedrooms Filter - Only show on larger screens */}
+            <div className="hidden lg:block">
+              <Select value={filters.bedrooms || "all"} onValueChange={(value) => handleFilterChange('bedrooms', value)}>
+                <SelectTrigger className="h-10 text-sm bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-300 focus:border-blue-500 transition-colors">
+                  <div className="flex items-center gap-2">
+                    <Bed className="h-4 w-4 text-blue-500" />
+                    <SelectValue placeholder={currentText.bedrooms} />
+                  </div>
+                </SelectTrigger>
+                <SelectContent className="bg-white dark:bg-gray-950 border-gray-200 dark:border-gray-700 rounded-xl shadow-xl">
+                  <SelectItem value="all" className="text-sm hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg m-1">{currentText.any}</SelectItem>
+                  {bedroomOptions.map((option) => (
+                    <SelectItem key={option} value={option} className="text-sm hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg m-1">
+                      {option}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Bathrooms Filter - Only show on larger screens */}
+            <div className="hidden lg:block">
+              <Select value={filters.bathrooms || "all"} onValueChange={(value) => handleFilterChange('bathrooms', value)}>
+                <SelectTrigger className="h-10 text-sm bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-300 focus:border-blue-500 transition-colors">
+                  <div className="flex items-center gap-2">
+                    <Bath className="h-4 w-4 text-blue-500" />
+                    <SelectValue placeholder={currentText.bathrooms} />
+                  </div>
+                </SelectTrigger>
+                <SelectContent className="bg-white dark:bg-gray-950 border-gray-200 dark:border-gray-700 rounded-xl shadow-xl">
+                  <SelectItem value="all" className="text-sm hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg m-1">{currentText.any}</SelectItem>
+                  {bathroomOptions.map((option) => (
+                    <SelectItem key={option} value={option} className="text-sm hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg m-1">
+                      {option}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
            {/* Advanced Filters Modal */}
