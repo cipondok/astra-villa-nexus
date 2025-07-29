@@ -8,7 +8,7 @@ import UserRolesManagement from "./UserRolesManagement";
 import DatabaseUserManagement from "./DatabaseUserManagement";
 import UserLevelManagement from "./UserLevelManagement";
 import EnhancedUserManagement from "./EnhancedUserManagement";
-import UserActivityMonitoring from "./UserActivityMonitoring";
+import RealTimeSecurityMonitoring from "./RealTimeSecurityMonitoring";
 import VendorUserManagement from "./VendorUserManagement";
 import AgentUserManagement from "./AgentUserManagement";
 import PropertyOwnerUserManagement from "./PropertyOwnerUserManagement";
@@ -136,7 +136,7 @@ const UserManagement = () => {
           </TabsContent>
 
           <TabsContent value="monitoring" className="space-y-6 mt-0">
-            <UserActivityMonitoring />
+            <RealTimeSecurityMonitoring />
           </TabsContent>
 
           <TabsContent value="simple" className="space-y-6 mt-0">
