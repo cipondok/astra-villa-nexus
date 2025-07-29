@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Label } from "@/components/ui/label";
 import { useAlert } from "@/contexts/AlertContext";
 import { UserPlus, Search, Edit, Trash2, Shield, UserCheck, UserX } from "lucide-react";
+import EnhancedAdminUserControls from "./EnhancedAdminUserControls";
 
 type UserRole = "general_user" | "property_owner" | "agent" | "vendor" | "admin" | "customer_service";
 
@@ -24,6 +25,9 @@ interface User {
   created_at: string;
   phone?: string;
   company_name?: string;
+  is_suspended?: boolean;
+  suspension_reason?: string;
+  last_seen_at?: string;
 }
 
 const SimpleUserManagement = () => {
@@ -367,26 +371,19 @@ const SimpleUserManagement = () => {
                     </TableCell>
                     <TableCell>
                       <div className="flex gap-2">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => updateVerificationMutation.mutate({
-                            userId: user.id,
-                            status: user.verification_status === 'approved' ? 'pending' : 'approved'
-                          })}
-                          disabled={updateVerificationMutation.isPending}
-                        >
-                          {user.verification_status === 'approved' ? (
-                            <UserX className="h-4 w-4" />
-                          ) : (
-                            <UserCheck className="h-4 w-4" />
-                          )}
-                        </Button>
+                        <EnhancedAdminUserControls 
+                          user={user}
+                          onUserUpdate={() => {
+                            queryClient.invalidateQueries({ queryKey: ['users'] });
+                            refetch();
+                          }}
+                        />
                         <Button
                           size="sm"
                           variant="destructive"
                           onClick={() => deleteUserMutation.mutate(user.id)}
                           disabled={deleteUserMutation.isPending}
+                          title="Delete user"
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>

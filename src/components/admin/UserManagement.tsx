@@ -13,6 +13,7 @@ import VendorUserManagement from "./VendorUserManagement";
 import AgentUserManagement from "./AgentUserManagement";
 import PropertyOwnerUserManagement from "./PropertyOwnerUserManagement";
 import CustomerServiceUserManagement from "./CustomerServiceUserManagement";
+import DatabaseUserSettings from "./DatabaseUserSettings";
 
 const UserManagement = () => {
   const [activeTab, setActiveTab] = useState("roles");
@@ -143,7 +144,7 @@ const UserManagement = () => {
           </TabsContent>
 
           <TabsContent value="database" className="space-y-6 mt-0">
-            <DatabaseUserManagement />
+            <DatabaseUserSettings />
           </TabsContent>
         </div>
       </Tabs>
