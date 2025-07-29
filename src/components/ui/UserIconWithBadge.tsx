@@ -130,7 +130,7 @@ const UserIconWithBadge = () => {
         </Button>
       </DropdownMenuTrigger>
       
-      <DropdownMenuContent className="w-72 p-0" align="end">
+      <DropdownMenuContent className="w-80 p-0" align="end">
         {/* User Profile Header */}
         <DropdownMenuLabel className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20">
           <div className="flex items-center gap-3">
@@ -152,10 +152,103 @@ const UserIconWithBadge = () => {
 
         <DropdownMenuSeparator />
 
+        {/* Role-specific Quick Actions */}
+        <div className="p-3">
+          <h4 className="text-xs font-medium text-muted-foreground mb-2 uppercase tracking-wide">Quick Actions</h4>
+          <div className="grid grid-cols-2 gap-2">
+            {isAdmin && (
+              <>
+                <button onClick={() => { navigate('/admin-dashboard'); setIsOpen(false); }} className="flex flex-col items-center gap-1 p-2 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-950/20 transition-colors">
+                  <Crown className="h-5 w-5 text-blue-500" />
+                  <span className="text-xs font-medium">Admin Panel</span>
+                </button>
+                <button onClick={() => { navigate('/properties'); setIsOpen(false); }} className="flex flex-col items-center gap-1 p-2 rounded-lg hover:bg-green-50 dark:hover:bg-green-950/20 transition-colors">
+                  <Building2 className="h-5 w-5 text-green-500" />
+                  <span className="text-xs font-medium">Manage Properties</span>
+                </button>
+                <button onClick={() => { navigate('/users'); setIsOpen(false); }} className="flex flex-col items-center gap-1 p-2 rounded-lg hover:bg-purple-50 dark:hover:bg-purple-950/20 transition-colors">
+                  <User className="h-5 w-5 text-purple-500" />
+                  <span className="text-xs font-medium">User Management</span>
+                </button>
+                <button onClick={() => { navigate('/analytics'); setIsOpen(false); }} className="flex flex-col items-center gap-1 p-2 rounded-lg hover:bg-orange-50 dark:hover:bg-orange-950/20 transition-colors">
+                  <BarChart3 className="h-5 w-5 text-orange-500" />
+                  <span className="text-xs font-medium">Analytics</span>
+                </button>
+              </>
+            )}
+
+            {isAgent && (
+              <>
+                <button onClick={() => { navigate('/agent'); setIsOpen(false); }} className="flex flex-col items-center gap-1 p-2 rounded-lg hover:bg-green-50 dark:hover:bg-green-950/20 transition-colors">
+                  <User className="h-5 w-5 text-green-500" />
+                  <span className="text-xs font-medium">Agent Hub</span>
+                </button>
+                <button onClick={() => { navigate('/listings'); setIsOpen(false); }} className="flex flex-col items-center gap-1 p-2 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-950/20 transition-colors">
+                  <Building2 className="h-5 w-5 text-blue-500" />
+                  <span className="text-xs font-medium">My Listings</span>
+                </button>
+                <button onClick={() => { navigate('/clients'); setIsOpen(false); }} className="flex flex-col items-center gap-1 p-2 rounded-lg hover:bg-purple-50 dark:hover:bg-purple-950/20 transition-colors">
+                  <MessageSquare className="h-5 w-5 text-purple-500" />
+                  <span className="text-xs font-medium">Client Chat</span>
+                </button>
+                <button onClick={() => { navigate('/performance'); setIsOpen(false); }} className="flex flex-col items-center gap-1 p-2 rounded-lg hover:bg-yellow-50 dark:hover:bg-yellow-950/20 transition-colors">
+                  <BarChart3 className="h-5 w-5 text-yellow-600" />
+                  <span className="text-xs font-medium">Performance</span>
+                </button>
+              </>
+            )}
+
+            {isVendor && (
+              <>
+                <button onClick={() => { navigate('/vendor'); setIsOpen(false); }} className="flex flex-col items-center gap-1 p-2 rounded-lg hover:bg-purple-50 dark:hover:bg-purple-950/20 transition-colors">
+                  <Settings className="h-5 w-5 text-purple-500" />
+                  <span className="text-xs font-medium">Vendor Panel</span>
+                </button>
+                <button onClick={() => { navigate('/services'); setIsOpen(false); }} className="flex flex-col items-center gap-1 p-2 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-950/20 transition-colors">
+                  <Sparkles className="h-5 w-5 text-blue-500" />
+                  <span className="text-xs font-medium">My Services</span>
+                </button>
+                <button onClick={() => { navigate('/bookings'); setIsOpen(false); }} className="flex flex-col items-center gap-1 p-2 rounded-lg hover:bg-green-50 dark:hover:bg-green-950/20 transition-colors">
+                  <MessageSquare className="h-5 w-5 text-green-500" />
+                  <span className="text-xs font-medium">Bookings</span>
+                </button>
+                <button onClick={() => { navigate('/earnings'); setIsOpen(false); }} className="flex flex-col items-center gap-1 p-2 rounded-lg hover:bg-yellow-50 dark:hover:bg-yellow-950/20 transition-colors">
+                  <BarChart3 className="h-5 w-5 text-yellow-600" />
+                  <span className="text-xs font-medium">Earnings</span>
+                </button>
+              </>
+            )}
+
+            {!isAdmin && !isAgent && !isVendor && (
+              <>
+                <button onClick={() => { navigate('/dashboard/user'); setIsOpen(false); }} className="flex flex-col items-center gap-1 p-2 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-950/20 transition-colors">
+                  <BarChart3 className="h-5 w-5 text-blue-500" />
+                  <span className="text-xs font-medium">Dashboard</span>
+                </button>
+                <button onClick={() => { navigate('/saved'); setIsOpen(false); }} className="flex flex-col items-center gap-1 p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-950/20 transition-colors">
+                  <Heart className="h-5 w-5 text-red-500" />
+                  <span className="text-xs font-medium">Saved</span>
+                </button>
+                <button onClick={() => { navigate('/search'); setIsOpen(false); }} className="flex flex-col items-center gap-1 p-2 rounded-lg hover:bg-green-50 dark:hover:bg-green-950/20 transition-colors">
+                  <Building2 className="h-5 w-5 text-green-500" />
+                  <span className="text-xs font-medium">Browse</span>
+                </button>
+                <button onClick={() => { navigate('/inquiries'); setIsOpen(false); }} className="flex flex-col items-center gap-1 p-2 rounded-lg hover:bg-purple-50 dark:hover:bg-purple-950/20 transition-colors">
+                  <MessageSquare className="h-5 w-5 text-purple-500" />
+                  <span className="text-xs font-medium">Inquiries</span>
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+
+        <DropdownMenuSeparator />
+
         {/* Statistics Section */}
-        <div className="p-3 bg-gray-50 dark:bg-gray-900/50">
-          <div className="grid grid-cols-2 gap-3">
-            <div className="flex items-center gap-2 p-2 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
+        <div className="p-3">
+          <h4 className="text-xs font-medium text-muted-foreground mb-2 uppercase tracking-wide">Activity Summary</h4>
+          <div className="grid grid-cols-2 gap-2">
+            <div className="flex items-center gap-2 p-2 bg-blue-50 dark:bg-blue-950/20 rounded-lg">
               <Building2 className="h-4 w-4 text-blue-500" />
               <div>
                 <p className="text-xs text-muted-foreground">Properties</p>
@@ -163,7 +256,7 @@ const UserIconWithBadge = () => {
               </div>
             </div>
 
-            <div className="flex items-center gap-2 p-2 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
+            <div className="flex items-center gap-2 p-2 bg-orange-50 dark:bg-orange-950/20 rounded-lg">
               <Bell className="h-4 w-4 text-orange-500" />
               <div>
                 <p className="text-xs text-muted-foreground">Notifications</p>
@@ -172,10 +265,10 @@ const UserIconWithBadge = () => {
             </div>
 
             {userStats.adminAlerts !== undefined && (
-              <div className="flex items-center gap-2 p-2 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
+              <div className="flex items-center gap-2 p-2 bg-purple-50 dark:bg-purple-950/20 rounded-lg col-span-2">
                 <Crown className="h-4 w-4 text-purple-500" />
                 <div>
-                  <p className="text-xs text-muted-foreground">Admin</p>
+                  <p className="text-xs text-muted-foreground">Admin Alerts</p>
                   <p className="text-sm font-semibold">{userStats.adminAlerts}</p>
                 </div>
               </div>
@@ -185,75 +278,16 @@ const UserIconWithBadge = () => {
 
         <DropdownMenuSeparator />
 
-        {/* Navigation Items */}
+        {/* Settings & Account */}
         <div className="p-1">
-          {/* Dashboard Navigation */}
-          {isAdmin && (
-            <DropdownMenuItem 
-              onClick={() => { navigate('/admin-dashboard'); setIsOpen(false); }}
-              className="flex items-center gap-2 p-3 text-blue-600 dark:text-blue-400"
-            >
-              <Crown className="h-4 w-4" />
-              <span>Admin Dashboard</span>
-              {userStats.adminAlerts && userStats.adminAlerts > 0 && (
-                <Badge variant="destructive" className="ml-auto h-5 text-xs">
-                  {userStats.adminAlerts}
-                </Badge>
-              )}
-            </DropdownMenuItem>
-          )}
-
-          {isAgent && (
-            <DropdownMenuItem 
-              onClick={() => { navigate('/agent'); setIsOpen(false); }}
-              className="flex items-center gap-2 p-3 text-green-600 dark:text-green-400"
-            >
-              <User className="h-4 w-4" />
-              <span>Agent Dashboard</span>
-            </DropdownMenuItem>
-          )}
-
-          {isVendor && (
-            <DropdownMenuItem 
-              onClick={() => { navigate('/vendor'); setIsOpen(false); }}
-              className="flex items-center gap-2 p-3 text-purple-600 dark:text-purple-400"
-            >
-              <Settings className="h-4 w-4" />
-              <span>Vendor Dashboard</span>
-            </DropdownMenuItem>
-          )}
-
-          {!isAdmin && !isAgent && !isVendor && (
-            <DropdownMenuItem 
-              onClick={() => { navigate('/dashboard/user'); setIsOpen(false); }}
-              className="flex items-center gap-2 p-3"
-            >
-              <BarChart3 className="h-4 w-4" />
-              <span>Dashboard</span>
-            </DropdownMenuItem>
-          )}
-
-          <DropdownMenuItem 
-            onClick={() => { navigate('/saved'); setIsOpen(false); }}
-            className="flex items-center gap-2 p-3"
-          >
-            <Heart className="h-4 w-4" />
-            <span>Saved Properties</span>
-          </DropdownMenuItem>
-
           <DropdownMenuItem 
             onClick={() => { navigate('/profile'); setIsOpen(false); }}
             className="flex items-center gap-2 p-3"
           >
             <Settings className="h-4 w-4" />
-            <span>Settings</span>
+            <span>Account Settings</span>
           </DropdownMenuItem>
-        </div>
 
-        <DropdownMenuSeparator />
-
-        {/* Sign Out */}
-        <div className="p-1">
           <DropdownMenuItem 
             onClick={handleSignOut}
             className="flex items-center gap-2 p-3 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
