@@ -89,26 +89,36 @@ const AdminDashboardHeader = ({ isAdmin, user, profile, activeTab, onTabChange }
   const queryClient = useQueryClient();
   const { isMobile } = useIsMobile();
 
-  // Fetch admin counts for badge
-  const { data: adminCounts = { unreadAlerts: 0, pendingTasks: 0, systemIssues: 0 } } = useQuery({
-    queryKey: ['admin-counts', user?.id],
+  // Fetch admin counts for badge - use same query key as other components
+  const { data: unreadCountData = 0 } = useQuery({
+    queryKey: ['admin-alerts-count'],
     queryFn: async () => {
-      if (!user?.id || !isAdmin) return { unreadAlerts: 0, pendingTasks: 0, systemIssues: 0 };
+      const { count, error } = await supabase
+        .from('admin_alerts')
+        .select('*', { count: 'exact', head: true })
+        .eq('is_read', false);
+      
+      if (error) {
+        console.error('Error fetching alert count:', error);
+        return 0;
+      }
+      return count || 0;
+    },
+    refetchInterval: 30000, // Refetch every 30 seconds
+  });
+
+  // Fetch other admin counts
+  const { data: adminCounts = { pendingTasks: 0, systemIssues: 0 } } = useQuery({
+    queryKey: ['admin-other-counts', user?.id],
+    queryFn: async () => {
+      if (!user?.id || !isAdmin) return { pendingTasks: 0, systemIssues: 0 };
       
       const counts = {
-        unreadAlerts: 0,
         pendingTasks: 0,
         systemIssues: 0,
       };
 
       try {
-        // Get unread admin alerts
-        const { count: alertsCount } = await supabase
-          .from('admin_alerts')
-          .select('*', { count: 'exact', head: true })
-          .eq('is_read', false);
-        counts.unreadAlerts = alertsCount || 0;
-
         // Get pending tasks (you can adjust this query based on your needs)
         const { count: tasksCount } = await supabase
           .from('properties')
@@ -120,7 +130,7 @@ const AdminDashboardHeader = ({ isAdmin, user, profile, activeTab, onTabChange }
         const { count: issuesCount } = await supabase
           .from('admin_alerts')
           .select('*', { count: 'exact', head: true })
-          .eq('type', 'error')
+          .eq('type', 'system_issue')
           .eq('action_required', true);
         counts.systemIssues = issuesCount || 0;
       } catch (error) {
@@ -185,9 +195,11 @@ const AdminDashboardHeader = ({ isAdmin, user, profile, activeTab, onTabChange }
   const displayEmail = user?.email || 'admin@astra.com';
   const userRole = profile?.role || 'admin';
 
-  // Calculate total badge count
+  // Calculate total badge count using consistent unread count
+  const unreadCount = typeof unreadCountData === 'number' ? unreadCountData : 0;
+  
   const getTotalBadgeCount = () => {
-    return adminCounts.unreadAlerts + adminCounts.pendingTasks + adminCounts.systemIssues;
+    return unreadCount + adminCounts.pendingTasks + adminCounts.systemIssues;
   };
 
   const badgeCount = getTotalBadgeCount();

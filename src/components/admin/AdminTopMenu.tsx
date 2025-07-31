@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -78,8 +78,43 @@ const AdminTopMenu = ({
   const [searchQuery, setSearchQuery] = useState("");
   const [showAlerts, setShowAlerts] = useState(false);
   const { user, profile } = useAuth();
+  const queryClient = useQueryClient();
 
-  // Fetch admin alerts
+  // Mark alert as read mutation
+  const markAsReadMutation = useMutation({
+    mutationFn: async (alertId: string) => {
+      const { error } = await supabase
+        .from('admin_alerts')
+        .update({ is_read: true })
+        .eq('id', alertId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      // Invalidate both queries to ensure count and list are updated
+      queryClient.invalidateQueries({ queryKey: ['admin-alerts-count'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-alerts'] });
+    },
+  });
+
+  // Fetch admin alerts - use same query key as other components
+  const { data: unreadCountData = 0 } = useQuery({
+    queryKey: ['admin-alerts-count'],
+    queryFn: async () => {
+      const { count, error } = await supabase
+        .from('admin_alerts')
+        .select('*', { count: 'exact', head: true })
+        .eq('is_read', false);
+      
+      if (error) {
+        console.error('Error fetching alert count:', error);
+        return 0;
+      }
+      return count || 0;
+    },
+    refetchInterval: 30000, // Refetch every 30 seconds
+  });
+
+  // Fetch alerts for the dropdown - use same query key as other components
   const { data: alerts = [] } = useQuery({
     queryKey: ['admin-alerts'],
     queryFn: async () => {
@@ -95,11 +130,11 @@ const AdminTopMenu = ({
       }
       return data as AdminAlert[] || [];
     },
-    refetchInterval: 30000, // Refetch every 30 seconds
+    refetchInterval: 30000,
   });
 
-  // Calculate unread count
-  const unreadCount = alerts.filter(alert => !alert.is_read).length;
+  // Use the count from the dedicated count query
+  const unreadCount = typeof unreadCountData === 'number' ? unreadCountData : 0;
 
   // Fetch location statistics
   const { data: locationStats } = useQuery({
@@ -324,14 +359,19 @@ const AdminTopMenu = ({
                     ) : (
                       <div className="space-y-2">
                         {alerts.map((alert) => (
-                          <div
-                            key={alert.id}
-                            className={`p-3 border rounded-lg transition-colors hover:bg-muted/50 cursor-pointer ${
-                              !alert.is_read 
-                                ? 'bg-blue-50 border-blue-200 dark:bg-blue-950/20 dark:border-blue-800' 
-                                : 'hover:bg-muted/50'
-                            }`}
-                          >
+                           <div
+                             key={alert.id}
+                             className={`p-3 border rounded-lg transition-colors hover:bg-muted/50 cursor-pointer ${
+                               !alert.is_read 
+                                 ? 'bg-blue-50 border-blue-200 dark:bg-blue-950/20 dark:border-blue-800' 
+                                 : 'hover:bg-muted/50'
+                             }`}
+                             onClick={() => {
+                               if (!alert.is_read) {
+                                 markAsReadMutation.mutate(alert.id);
+                               }
+                             }}
+                           >
                             <div className="flex items-start gap-3">
                               <span className="text-base mt-0.5">
                                 {getAlertIcon(alert.type)}
