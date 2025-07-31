@@ -1098,6 +1098,59 @@ export type Database = {
           },
         ]
       }
+      chat_messages: {
+        Row: {
+          created_at: string
+          edited_at: string | null
+          id: string
+          is_edited: boolean | null
+          message: string
+          message_type: string | null
+          metadata: Json | null
+          sender_id: string | null
+          sender_name: string
+          sender_type: string
+          sent_at: string
+          session_id: string
+        }
+        Insert: {
+          created_at?: string
+          edited_at?: string | null
+          id?: string
+          is_edited?: boolean | null
+          message: string
+          message_type?: string | null
+          metadata?: Json | null
+          sender_id?: string | null
+          sender_name: string
+          sender_type: string
+          sent_at?: string
+          session_id: string
+        }
+        Update: {
+          created_at?: string
+          edited_at?: string | null
+          id?: string
+          is_edited?: boolean | null
+          message?: string
+          message_type?: string | null
+          metadata?: Json | null
+          sender_id?: string | null
+          sender_name?: string
+          sender_type?: string
+          sent_at?: string
+          session_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_chat_messages_session_id"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "live_chat_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       cms_content: {
         Row: {
           author_id: string | null
@@ -1481,6 +1534,78 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      customer_support_tickets: {
+        Row: {
+          assigned_to: string | null
+          category: string
+          created_at: string
+          customer_email: string
+          customer_id: string | null
+          customer_name: string
+          customer_response: string | null
+          escalated_at: string | null
+          escalated_to: string | null
+          id: string
+          internal_notes: string | null
+          message: string
+          metadata: Json | null
+          priority: string
+          resolved_at: string | null
+          satisfaction_rating: number | null
+          status: string
+          subject: string
+          tags: Json | null
+          ticket_number: string
+          updated_at: string
+        }
+        Insert: {
+          assigned_to?: string | null
+          category?: string
+          created_at?: string
+          customer_email: string
+          customer_id?: string | null
+          customer_name: string
+          customer_response?: string | null
+          escalated_at?: string | null
+          escalated_to?: string | null
+          id?: string
+          internal_notes?: string | null
+          message: string
+          metadata?: Json | null
+          priority?: string
+          resolved_at?: string | null
+          satisfaction_rating?: number | null
+          status?: string
+          subject: string
+          tags?: Json | null
+          ticket_number: string
+          updated_at?: string
+        }
+        Update: {
+          assigned_to?: string | null
+          category?: string
+          created_at?: string
+          customer_email?: string
+          customer_id?: string | null
+          customer_name?: string
+          customer_response?: string | null
+          escalated_at?: string | null
+          escalated_to?: string | null
+          id?: string
+          internal_notes?: string | null
+          message?: string
+          metadata?: Json | null
+          priority?: string
+          resolved_at?: string | null
+          satisfaction_rating?: number | null
+          status?: string
+          subject?: string
+          tags?: Json | null
+          ticket_number?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       daily_analytics: {
         Row: {
@@ -4251,6 +4376,44 @@ export type Database = {
           value?: Json | null
         }
         Relationships: []
+      }
+      ticket_activities: {
+        Row: {
+          activity_type: string
+          created_at: string
+          created_by: string | null
+          description: string
+          id: string
+          metadata: Json | null
+          ticket_id: string
+        }
+        Insert: {
+          activity_type: string
+          created_at?: string
+          created_by?: string | null
+          description: string
+          id?: string
+          metadata?: Json | null
+          ticket_id: string
+        }
+        Update: {
+          activity_type?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string
+          id?: string
+          metadata?: Json | null
+          ticket_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_ticket_activities_ticket_id"
+            columns: ["ticket_id"]
+            isOneToOne: false
+            referencedRelation: "customer_support_tickets"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       trending_topics: {
         Row: {
