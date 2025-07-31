@@ -248,7 +248,13 @@ const UserIconWithBadge = () => {
         <div className="p-3">
           <h4 className="text-xs font-medium text-muted-foreground mb-2 uppercase tracking-wide">Activity Summary</h4>
           <div className="grid grid-cols-2 gap-2">
-            <div className="flex items-center gap-2 p-2 bg-blue-50 dark:bg-blue-950/20 rounded-lg">
+            <div 
+              className="flex items-center gap-2 p-2 bg-blue-50 dark:bg-blue-950/20 rounded-lg cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-950/30 transition-colors"
+              onClick={() => { 
+                navigate('/saved'); 
+                setIsOpen(false); 
+              }}
+            >
               <Building2 className="h-4 w-4 text-blue-500" />
               <div>
                 <p className="text-xs text-muted-foreground">Properties</p>
@@ -256,7 +262,20 @@ const UserIconWithBadge = () => {
               </div>
             </div>
 
-            <div className="flex items-center gap-2 p-2 bg-orange-50 dark:bg-orange-950/20 rounded-lg">
+            <div 
+              className="flex items-center gap-2 p-2 bg-orange-50 dark:bg-orange-950/20 rounded-lg cursor-pointer hover:bg-orange-100 dark:hover:bg-orange-950/30 transition-colors"
+              onClick={() => { 
+                setIsOpen(false);
+                // Try to open notification center, fallback to navigate to a notifications page
+                const notificationCenter = document.querySelector('[data-notification-center]') as HTMLButtonElement;
+                if (notificationCenter) {
+                  notificationCenter.click();
+                } else {
+                  // Fallback - could navigate to a dedicated notifications page
+                  navigate('/notifications');
+                }
+              }}
+            >
               <Bell className="h-4 w-4 text-orange-500" />
               <div>
                 <p className="text-xs text-muted-foreground">Notifications</p>
@@ -265,7 +284,13 @@ const UserIconWithBadge = () => {
             </div>
 
             {userStats.adminAlerts !== undefined && (
-              <div className="flex items-center gap-2 p-2 bg-purple-50 dark:bg-purple-950/20 rounded-lg col-span-2">
+              <div 
+                className="flex items-center gap-2 p-2 bg-purple-50 dark:bg-purple-950/20 rounded-lg col-span-2 cursor-pointer hover:bg-purple-100 dark:hover:bg-purple-950/30 transition-colors"
+                onClick={() => { 
+                  navigate('/admin-dashboard'); 
+                  setIsOpen(false); 
+                }}
+              >
                 <Crown className="h-4 w-4 text-purple-500" />
                 <div>
                   <p className="text-xs text-muted-foreground">Admin Alerts</p>
