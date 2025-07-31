@@ -60,7 +60,9 @@ const EnhancedAlertManagement = () => {
       if (error) throw error;
     },
     onSuccess: () => {
+      // Invalidate both alerts and count queries
       queryClient.invalidateQueries({ queryKey: ['admin-alerts'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-alerts-count'] });
       setSelectedAlerts([]);
       toast.success('Alerts marked as read');
     },
@@ -78,7 +80,9 @@ const EnhancedAlertManagement = () => {
       if (error) throw error;
     },
     onSuccess: () => {
+      // Invalidate both alerts and count queries
       queryClient.invalidateQueries({ queryKey: ['admin-alerts'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-alerts-count'] });
       setSelectedAlerts([]);
       toast.success('Alerts deleted');
     },

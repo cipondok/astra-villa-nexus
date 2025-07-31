@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Bell, BellRing } from "lucide-react";
@@ -65,6 +65,23 @@ const AdminAlertBadge = () => {
       return data as AdminAlert[] || [];
     },
     enabled: showAlerts, // Only fetch when dialog is open
+  });
+
+  const queryClient = useQueryClient();
+
+  const markAsReadMutation = useMutation({
+    mutationFn: async (alertId: string) => {
+      const { error } = await supabase
+        .from('admin_alerts')
+        .update({ is_read: true })
+        .eq('id', alertId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      // Invalidate both queries to ensure count and list are updated
+      queryClient.invalidateQueries({ queryKey: ['admin-alerts-count'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-alerts'] });
+    },
   });
 
   // Ensure unreadCount is a number
@@ -178,11 +195,16 @@ const AdminAlertBadge = () => {
                 alerts.map((alert) => (
                   <div
                     key={alert.id}
-                    className={`p-4 border rounded-lg transition-colors ${
+                    className={`p-4 border rounded-lg transition-colors cursor-pointer ${
                       !alert.is_read 
                         ? 'bg-blue-50 border-blue-200 dark:bg-blue-950/20 dark:border-blue-800' 
                         : 'hover:bg-muted/50'
                     }`}
+                    onClick={() => {
+                      if (!alert.is_read) {
+                        markAsReadMutation.mutate(alert.id);
+                      }
+                    }}
                   >
                     <div className="flex items-start gap-3">
                       <span className="text-lg mt-0.5">

@@ -94,7 +94,9 @@ const AdminAlertSystem = () => {
       if (error) throw error;
     },
     onSuccess: () => {
+      // Invalidate both alerts and count queries
       queryClient.invalidateQueries({ queryKey: ['admin-alerts'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-alerts-count'] });
       showSuccess("Alert Marked", "Alert has been marked as read.");
     },
   });
@@ -108,7 +110,9 @@ const AdminAlertSystem = () => {
       if (error) throw error;
     },
     onSuccess: () => {
+      // Invalidate both alerts and count queries
       queryClient.invalidateQueries({ queryKey: ['admin-alerts'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-alerts-count'] });
       showSuccess("Alert Deleted", "Alert has been deleted successfully.");
       setIsDialogOpen(false);
       setSelectedAlert(null);
