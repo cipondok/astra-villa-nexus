@@ -33,6 +33,9 @@ import UserDashboardPage from '@/pages/UserDashboardPage';
 import ThreeDShowcase from '@/pages/ThreeDShowcase';
 import PreLaunching from '@/pages/PreLaunching';
 import Properties from '@/pages/Properties';
+import Notifications from '@/pages/Notifications';
+import Users from '@/pages/Users';
+import Analytics from '@/pages/Analytics';
 import ErrorPage from '@/pages/ErrorPage';
 
 
@@ -71,6 +74,9 @@ const AppContent = () => {
           <Route path="/dashboard" element={<UserDashboardPage />} />
           <Route path="/booking/:propertyId" element={<BookingPage />} />
           <Route path="/booking-success" element={<BookingSuccessPage />} />
+          <Route path="/notifications" element={<Notifications />} />
+          <Route path="/users" element={<Users />} />
+          <Route path="/analytics" element={<Analytics />} />
           <Route path="*" element={<ErrorPage />} />
         </Routes>
       </main>
