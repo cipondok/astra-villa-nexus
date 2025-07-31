@@ -32,6 +32,7 @@ import CustomerServiceDashboardPage from '@/pages/CustomerServiceDashboard';
 import UserDashboardPage from '@/pages/UserDashboardPage';
 import ThreeDShowcase from '@/pages/ThreeDShowcase';
 import PreLaunching from '@/pages/PreLaunching';
+import Properties from '@/pages/Properties';
 import ErrorPage from '@/pages/ErrorPage';
 
 
@@ -55,6 +56,7 @@ const AppContent = () => {
           <Route path="/disewa" element={<Disewa />} />
           <Route path="/rent" element={<Disewa />} />
           <Route path="/pre-launching" element={<PreLaunching />} />
+          <Route path="/properties" element={<Properties />} />
           <Route path="/3d-showcase" element={<ThreeDShowcase />} />
           <Route path="/properties/:id" element={<PropertyDetail />} />
           <Route path="/admin" element={<AdminDashboard />} />
