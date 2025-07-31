@@ -53,7 +53,6 @@ const Properties = () => {
       let query = supabase
         .from('properties')
         .select('*')
-        .eq('status', 'available')
         .order('created_at', { ascending: false });
 
       if (searchQuery) {
