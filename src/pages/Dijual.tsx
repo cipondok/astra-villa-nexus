@@ -63,16 +63,17 @@ const Dijual = () => {
   const [filteredProperties, setFilteredProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
   const [savedProperties, setSavedProperties] = useState<Set<string>>(new Set());
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   const [filters, setFilters] = useState<SearchFilters>({
     searchTerm: '',
-    propertyType: '',
-    city: '',
-    area: '',
+    propertyType: 'all',
+    city: 'all',
+    area: 'all',
     minPrice: 0,
     maxPrice: 10000000000,
-    bedrooms: '',
-    bathrooms: '',
+    bedrooms: 'all',
+    bathrooms: 'all',
     minArea: 0,
     maxArea: 1000,
     yearBuilt: '',
@@ -218,41 +219,41 @@ const Dijual = () => {
         </div>
       </div>
 
-      {/* Main Layout with Sidebar */}
-      <div className="flex">
-        {/* Sidebar Filters */}
-        <PropertySidebarFilters
-          filters={filters}
-          onFiltersChange={setFilters}
-          onSearch={applyFilters}
-          propertyTypes={propertyTypes}
-          cities={cities}
-          areas={areas}
-        />
-
-        {/* Main Content */}
-        <div className="flex-1 p-6">
-
-          {/* Results Summary */}
-          <div className="mb-6 professional-card border-l-4 border-primary">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-lg font-semibold text-foreground">
-                Menampilkan {filteredProperties.length} properti
-              </p>
-              <p className="text-sm text-muted-foreground">
-                dari total {properties.length} properti dijual
-              </p>
+      {/* Main Layout */}
+      <div className="container mx-auto px-4">
+        {/* Filter Button and Results Summary */}
+        <div className="mb-6 flex items-center justify-between gap-4">
+          <PropertySidebarFilters
+            filters={filters}
+            onFiltersChange={setFilters}
+            onSearch={applyFilters}
+            propertyTypes={propertyTypes}
+            cities={cities}
+            areas={areas}
+            isOpen={isFilterOpen}
+            onToggle={() => setIsFilterOpen(!isFilterOpen)}
+          />
+          
+          <div className="professional-card border-l-4 border-primary flex-1 ml-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-lg font-semibold text-foreground">
+                  Menampilkan {filteredProperties.length} properti
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  dari total {properties.length} properti dijual
+                </p>
+              </div>
+              {filteredProperties.length > 0 && (
+                <Badge variant="secondary" className="badge-primary">
+                  {Math.round((filteredProperties.length / properties.length) * 100)}% hasil
+                </Badge>
+              )}
             </div>
-            {filteredProperties.length > 0 && (
-              <Badge variant="secondary" className="badge-primary">
-                {Math.round((filteredProperties.length / properties.length) * 100)}% hasil
-              </Badge>
-            )}
           </div>
         </div>
 
-          {/* Properties Grid */}
+        {/* Properties Grid */}
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...Array(6)].map((_, i) => (
@@ -279,13 +280,13 @@ const Dijual = () => {
             <Button 
               onClick={() => setFilters({
                 searchTerm: '',
-                propertyType: '',
-                city: '',
-                area: '',
+                propertyType: 'all',
+                city: 'all',
+                area: 'all',
                 minPrice: 0,
                 maxPrice: 10000000000,
-                bedrooms: '',
-                bathrooms: '',
+                bedrooms: 'all',
+                bathrooms: 'all',
                 minArea: 0,
                 maxArea: 1000,
                 yearBuilt: '',
@@ -299,7 +300,7 @@ const Dijual = () => {
             </Button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {filteredProperties.map((property) => (
               <Card key={property.id} className="hover:shadow-xl transition-all duration-300 cursor-pointer border-0 shadow-md hover:-translate-y-1">
                 <div className="relative group">
@@ -417,8 +418,8 @@ const Dijual = () => {
           </div>
         )}
 
-          {/* Market Insights */}
-          <div className="mt-16 grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* Market Insights */}
+        <div className="mt-16 grid grid-cols-1 lg:grid-cols-2 gap-8">
           <Card className="shadow-lg border-0">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-xl">
@@ -468,7 +469,6 @@ const Dijual = () => {
               </div>
             </CardContent>
           </Card>
-          </div>
         </div>
       </div>
     </div>
