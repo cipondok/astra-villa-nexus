@@ -86,13 +86,13 @@ const PropertySidebarFilters: React.FC<PropertySidebarFiltersProps> = ({
   const clearAllFilters = () => {
     onFiltersChange({
       searchTerm: '',
-      propertyType: '',
-      city: '',
-      area: '',
+      propertyType: 'all',
+      city: 'all',
+      area: 'all',
       minPrice: 0,
       maxPrice: 10000000000,
-      bedrooms: '',
-      bathrooms: '',
+      bedrooms: 'all',
+      bathrooms: 'all',
       minArea: 0,
       maxArea: 1000,
       yearBuilt: '',
@@ -105,15 +105,57 @@ const PropertySidebarFilters: React.FC<PropertySidebarFiltersProps> = ({
   const getActiveFiltersCount = () => {
     let count = 0;
     if (filters.searchTerm) count++;
-    if (filters.propertyType) count++;
-    if (filters.city) count++;
-    if (filters.area) count++;
+    if (filters.propertyType && filters.propertyType !== 'all') count++;
+    if (filters.city && filters.city !== 'all') count++;
+    if (filters.area && filters.area !== 'all') count++;
     if (filters.minPrice > 0 || filters.maxPrice < 10000000000) count++;
-    if (filters.bedrooms) count++;
-    if (filters.bathrooms) count++;
+    if (filters.bedrooms && filters.bedrooms !== 'all') count++;
+    if (filters.bathrooms && filters.bathrooms !== 'all') count++;
     if (filters.minArea > 0 || filters.maxArea < 1000) count++;
     if (filters.features.length > 0) count++;
     return count;
+  };
+
+  const getSectionActiveCount = (section: string) => {
+    switch (section) {
+      case 'search':
+        return (filters.searchTerm ? 1 : 0) + (filters.propertyType && filters.propertyType !== 'all' ? 1 : 0);
+      case 'location':
+        return (filters.city && filters.city !== 'all' ? 1 : 0) + (filters.area && filters.area !== 'all' ? 1 : 0);
+      case 'price':
+        return (filters.minPrice > 0 || filters.maxPrice < 10000000000) ? 1 : 0;
+      case 'rooms':
+        return (filters.bedrooms && filters.bedrooms !== 'all' ? 1 : 0) + (filters.bathrooms && filters.bathrooms !== 'all' ? 1 : 0);
+      case 'area':
+        return (filters.minArea > 0 || filters.maxArea < 1000) ? 1 : 0;
+      case 'features':
+        return filters.features.length;
+      default:
+        return 0;
+    }
+  };
+
+  const clearSectionFilters = (section: string) => {
+    switch (section) {
+      case 'search':
+        onFiltersChange({ ...filters, searchTerm: '', propertyType: 'all' });
+        break;
+      case 'location':
+        onFiltersChange({ ...filters, city: 'all', area: 'all' });
+        break;
+      case 'price':
+        onFiltersChange({ ...filters, minPrice: 0, maxPrice: 10000000000 });
+        break;
+      case 'rooms':
+        onFiltersChange({ ...filters, bedrooms: 'all', bathrooms: 'all' });
+        break;
+      case 'area':
+        onFiltersChange({ ...filters, minArea: 0, maxArea: 1000 });
+        break;
+      case 'features':
+        onFiltersChange({ ...filters, features: [] });
+        break;
+    }
   };
 
   const propertyFeatures = [
@@ -160,8 +202,28 @@ const PropertySidebarFilters: React.FC<PropertySidebarFiltersProps> = ({
             <div className="flex items-center gap-2">
               <Search className="h-4 w-4" />
               <span className="font-medium">Pencarian</span>
+              {getSectionActiveCount('search') > 0 && (
+                <Badge variant="secondary" className="bg-primary text-primary-foreground text-xs px-1.5 py-0.5 min-w-[20px] h-5">
+                  {getSectionActiveCount('search')}
+                </Badge>
+              )}
             </div>
-            {openSections.search ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+            <div className="flex items-center gap-2">
+              {getSectionActiveCount('search') > 0 && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    clearSectionFilters('search');
+                  }}
+                  className="h-6 w-6 p-0 hover:bg-destructive hover:text-destructive-foreground"
+                >
+                  <X className="h-3 w-3" />
+                </Button>
+              )}
+              {openSections.search ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+            </div>
           </CollapsibleTrigger>
           <CollapsibleContent className="mt-3 space-y-3">
             <Input
@@ -190,8 +252,28 @@ const PropertySidebarFilters: React.FC<PropertySidebarFiltersProps> = ({
             <div className="flex items-center gap-2">
               <MapPin className="h-4 w-4" />
               <span className="font-medium">Lokasi</span>
+              {getSectionActiveCount('location') > 0 && (
+                <Badge variant="secondary" className="bg-primary text-primary-foreground text-xs px-1.5 py-0.5 min-w-[20px] h-5">
+                  {getSectionActiveCount('location')}
+                </Badge>
+              )}
             </div>
-            {openSections.location ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+            <div className="flex items-center gap-2">
+              {getSectionActiveCount('location') > 0 && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    clearSectionFilters('location');
+                  }}
+                  className="h-6 w-6 p-0 hover:bg-destructive hover:text-destructive-foreground"
+                >
+                  <X className="h-3 w-3" />
+                </Button>
+              )}
+              {openSections.location ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+            </div>
           </CollapsibleTrigger>
           <CollapsibleContent className="mt-3 space-y-3">
             <Select value={filters.city} onValueChange={(value) => updateFilter('city', value)}>
@@ -225,8 +307,28 @@ const PropertySidebarFilters: React.FC<PropertySidebarFiltersProps> = ({
             <div className="flex items-center gap-2">
               <DollarSign className="h-4 w-4" />
               <span className="font-medium">Harga</span>
+              {getSectionActiveCount('price') > 0 && (
+                <Badge variant="secondary" className="bg-primary text-primary-foreground text-xs px-1.5 py-0.5 min-w-[20px] h-5">
+                  {getSectionActiveCount('price')}
+                </Badge>
+              )}
             </div>
-            {openSections.price ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+            <div className="flex items-center gap-2">
+              {getSectionActiveCount('price') > 0 && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    clearSectionFilters('price');
+                  }}
+                  className="h-6 w-6 p-0 hover:bg-destructive hover:text-destructive-foreground"
+                >
+                  <X className="h-3 w-3" />
+                </Button>
+              )}
+              {openSections.price ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+            </div>
           </CollapsibleTrigger>
           <CollapsibleContent className="mt-3 space-y-3">
             <div className="space-y-2">
@@ -258,8 +360,28 @@ const PropertySidebarFilters: React.FC<PropertySidebarFiltersProps> = ({
             <div className="flex items-center gap-2">
               <Bed className="h-4 w-4" />
               <span className="font-medium">Kamar</span>
+              {getSectionActiveCount('rooms') > 0 && (
+                <Badge variant="secondary" className="bg-primary text-primary-foreground text-xs px-1.5 py-0.5 min-w-[20px] h-5">
+                  {getSectionActiveCount('rooms')}
+                </Badge>
+              )}
             </div>
-            {openSections.rooms ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+            <div className="flex items-center gap-2">
+              {getSectionActiveCount('rooms') > 0 && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    clearSectionFilters('rooms');
+                  }}
+                  className="h-6 w-6 p-0 hover:bg-destructive hover:text-destructive-foreground"
+                >
+                  <X className="h-3 w-3" />
+                </Button>
+              )}
+              {openSections.rooms ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+            </div>
           </CollapsibleTrigger>
           <CollapsibleContent className="mt-3 space-y-3">
             <Select value={filters.bedrooms} onValueChange={(value) => updateFilter('bedrooms', value)}>
@@ -296,8 +418,28 @@ const PropertySidebarFilters: React.FC<PropertySidebarFiltersProps> = ({
             <div className="flex items-center gap-2">
               <Square className="h-4 w-4" />
               <span className="font-medium">Luas Area</span>
+              {getSectionActiveCount('area') > 0 && (
+                <Badge variant="secondary" className="bg-primary text-primary-foreground text-xs px-1.5 py-0.5 min-w-[20px] h-5">
+                  {getSectionActiveCount('area')}
+                </Badge>
+              )}
             </div>
-            {openSections.area ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+            <div className="flex items-center gap-2">
+              {getSectionActiveCount('area') > 0 && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    clearSectionFilters('area');
+                  }}
+                  className="h-6 w-6 p-0 hover:bg-destructive hover:text-destructive-foreground"
+                >
+                  <X className="h-3 w-3" />
+                </Button>
+              )}
+              {openSections.area ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+            </div>
           </CollapsibleTrigger>
           <CollapsibleContent className="mt-3 space-y-3">
             <div className="space-y-2">
@@ -329,8 +471,28 @@ const PropertySidebarFilters: React.FC<PropertySidebarFiltersProps> = ({
             <div className="flex items-center gap-2">
               <Home className="h-4 w-4" />
               <span className="font-medium">Fasilitas</span>
+              {getSectionActiveCount('features') > 0 && (
+                <Badge variant="secondary" className="bg-primary text-primary-foreground text-xs px-1.5 py-0.5 min-w-[20px] h-5">
+                  {getSectionActiveCount('features')}
+                </Badge>
+              )}
             </div>
-            {openSections.features ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+            <div className="flex items-center gap-2">
+              {getSectionActiveCount('features') > 0 && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    clearSectionFilters('features');
+                  }}
+                  className="h-6 w-6 p-0 hover:bg-destructive hover:text-destructive-foreground"
+                >
+                  <X className="h-3 w-3" />
+                </Button>
+              )}
+              {openSections.features ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+            </div>
           </CollapsibleTrigger>
           <CollapsibleContent className="mt-3 space-y-3">
             <div className="space-y-2">
