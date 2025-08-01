@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Building2, Plus, List, Settings, MapPin, Activity, Sliders, Monitor, Eye, Blocks } from "lucide-react";
+import { Building2, Plus, List, Settings, MapPin, Activity, Sliders, Monitor, Eye, Blocks, Filter } from "lucide-react";
 import SimplePropertyManagement from "./SimplePropertyManagement";
 import EnhancedPropertyInsertForm from "./EnhancedPropertyInsertForm";
 import PropertyCategoriesManagement from "./PropertyCategoriesManagement";
@@ -15,6 +15,7 @@ import Property3DViewSettings from "./Property3DViewSettings";
 import PropertySmartPreview from "./PropertySmartPreview";
 import PropertyTestPanel from "./PropertyTestPanel";
 import AdminAccessChecker from "./AdminAccessChecker";
+import PropertyFilterSettings from "./settings/PropertyFilterSettings";
 
 const AdminPropertyManagement = () => {
   const [activeTab, setActiveTab] = useState("properties");
@@ -42,7 +43,7 @@ const AdminPropertyManagement = () => {
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
         <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-xl border border-white/20 dark:border-slate-700/50 p-2">
-          <TabsList className="grid w-full grid-cols-9 bg-transparent gap-1">
+          <TabsList className="grid w-full grid-cols-10 bg-transparent gap-1">
             <TabsTrigger 
               value="diagnostic" 
               className="flex items-center gap-2 data-[state=active]:bg-blue-500 data-[state=active]:text-white dark:data-[state=active]:bg-blue-600"
@@ -106,6 +107,13 @@ const AdminPropertyManagement = () => {
               <MapPin className="h-4 w-4" />
               <span className="hidden sm:inline">Locations</span>
             </TabsTrigger>
+            <TabsTrigger 
+              value="filters" 
+              className="flex items-center gap-2 data-[state=active]:bg-blue-500 data-[state=active]:text-white dark:data-[state=active]:bg-blue-600"
+            >
+              <Filter className="h-4 w-4" />
+              <span className="hidden sm:inline">Filters</span>
+            </TabsTrigger>
           </TabsList>
         </div>
 
@@ -147,6 +155,10 @@ const AdminPropertyManagement = () => {
 
         <TabsContent value="locations">
           <LocationDatabaseManager />
+        </TabsContent>
+
+        <TabsContent value="filters">
+          <PropertyFilterSettings />
         </TabsContent>
       </Tabs>
     </div>
