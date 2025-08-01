@@ -106,12 +106,12 @@ const desktopApps = [
     color: 'bg-cyan-500'
   },
   { 
-    id: 'error-logs', 
-    name: '🚨 Error Logs', 
-    description: '404 errors, system errors, and detailed error tracking',
-    icon: AlertTriangle, 
-    section: 'error-logs',
-    color: 'bg-red-500',
+    id: 'system-tools', 
+    name: '🛠️ System Tools', 
+    description: 'Database monitoring, error tracking, system health, and administrative tools',
+    icon: Settings, 
+    section: 'system-tools',
+    color: 'bg-purple-500',
     badge: 'NEW',
     badgeType: 'new',
     addedDate: new Date().toISOString()
@@ -137,7 +137,7 @@ const fileCategories = [
     files: [
       { name: 'User Management', section: 'users' },
       { name: 'Role Permissions', section: 'security' },
-      { name: '🚨 Error Logs', section: 'error-logs' },
+      { name: '🛠️ System Tools', section: 'system-tools' },
       { name: 'Audit Trail', section: 'security' }
     ]
   },

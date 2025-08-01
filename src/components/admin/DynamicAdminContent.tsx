@@ -18,6 +18,7 @@ import PaymentSystemStatus from "./PaymentSystemStatus";
 import ImageOptimizationPanel from "./ImageOptimizationPanel";
 import AdminPropertyManagement from "./AdminPropertyManagement";
 import LocationManagement from "./LocationManagement";
+import SystemToolsDashboard from "./SystemToolsDashboard";
 import MediaGallery from "./MediaGallery";
 
 // Move lazy loading outside the component to prevent re-creation on every render
@@ -91,6 +92,10 @@ const DynamicAdminContent = ({ activeSection, onSectionChange }: DynamicAdminCon
         );
       case "payment-system":
         return <PaymentSystemStatus />;
+      case "system-tools":
+        return <SystemToolsDashboard />;
+      case "error-logs":
+        return <SystemToolsDashboard />;
       case "image-optimization":
         return <ImageOptimizationPanel />;
       case "system-alerts":
