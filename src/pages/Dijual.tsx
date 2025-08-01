@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import PropertySidebarFilters from "@/components/property/PropertySidebarFilters";
@@ -81,6 +83,10 @@ const Dijual = () => {
     features: [],
     sortBy: 'newest'
   });
+
+  const updateFilter = (key: keyof SearchFilters, value: any) => {
+    setFilters(prev => ({ ...prev, [key]: value }));
+  };
 
   useEffect(() => {
     fetchProperties();
@@ -217,6 +223,90 @@ const Dijual = () => {
             Temukan properti impian Anda dengan sistem pencarian canggih dan filter yang komprehensif
           </p>
         </div>
+      </div>
+
+      {/* Main Search Panel */}
+      <div className="container mx-auto px-4 mb-8">
+        <Card className="shadow-lg border-0 bg-card/95 backdrop-blur-sm">
+          <CardContent className="p-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4 items-end">
+              {/* Search Input */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-muted-foreground">Cari Properti</label>
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder="Lokasi, tipe properti..."
+                    value={filters.searchTerm}
+                    onChange={(e) => updateFilter('searchTerm', e.target.value)}
+                    className="pl-10"
+                  />
+                </div>
+              </div>
+
+              {/* Property Type */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-muted-foreground">Tipe Properti</label>
+                <Select value={filters.propertyType} onValueChange={(value) => updateFilter('propertyType', value)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Pilih Tipe" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Semua Tipe</SelectItem>
+                    {propertyTypes.map((type) => (
+                      <SelectItem key={type} value={type}>{type}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Location */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-muted-foreground">Lokasi</label>
+                <Select value={filters.city} onValueChange={(value) => updateFilter('city', value)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Pilih Kota" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Semua Kota</SelectItem>
+                    {cities.map((city) => (
+                      <SelectItem key={city} value={city}>{city}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Price Range */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-muted-foreground">Harga Max</label>
+                <Select 
+                  value={filters.maxPrice.toString()} 
+                  onValueChange={(value) => updateFilter('maxPrice', parseInt(value))}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Pilih Budget" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="10000000000">Semua Harga</SelectItem>
+                    <SelectItem value="500000000">&lt; Rp 500 Jt</SelectItem>
+                    <SelectItem value="1000000000">&lt; Rp 1 M</SelectItem>
+                    <SelectItem value="2000000000">&lt; Rp 2 M</SelectItem>
+                    <SelectItem value="5000000000">&lt; Rp 5 M</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Search Button */}
+              <Button 
+                onClick={applyFilters}
+                className="bg-primary hover:bg-primary/90 text-primary-foreground h-10"
+              >
+                <Search className="h-4 w-4 mr-2" />
+                Cari
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Main Layout */}
