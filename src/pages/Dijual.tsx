@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { AdvancedSearchPanel } from "@/components/property/AdvancedSearchPanel";
+import PropertySidebarFilters from "@/components/property/PropertySidebarFilters";
 import { 
   MapPin, 
   Home, 
@@ -206,10 +206,9 @@ const Dijual = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      
-      <div className="container mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="text-center mb-8">
+      {/* Header */}
+      <div className="container mx-auto px-4 pt-8 pb-4">
+        <div className="text-center mb-6">
           <h1 className="text-5xl font-bold gradient-text mb-4">
             Properti Dijual
           </h1>
@@ -217,21 +216,25 @@ const Dijual = () => {
             Temukan properti impian Anda dengan sistem pencarian canggih dan filter yang komprehensif
           </p>
         </div>
+      </div>
 
-        {/* Advanced Search Panel */}
-        <div className="mb-8">
-          <AdvancedSearchPanel
-            filters={filters}
-            onFiltersChange={setFilters}
-            onSearch={applyFilters}
-            propertyTypes={propertyTypes}
-            cities={cities}
-            areas={areas}
-          />
-        </div>
+      {/* Main Layout with Sidebar */}
+      <div className="flex">
+        {/* Sidebar Filters */}
+        <PropertySidebarFilters
+          filters={filters}
+          onFiltersChange={setFilters}
+          onSearch={applyFilters}
+          propertyTypes={propertyTypes}
+          cities={cities}
+          areas={areas}
+        />
 
-        {/* Results Summary */}
-        <div className="mb-6 professional-card border-l-4 border-primary">
+        {/* Main Content */}
+        <div className="flex-1 p-6">
+
+          {/* Results Summary */}
+          <div className="mb-6 professional-card border-l-4 border-primary">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-lg font-semibold text-foreground">
@@ -249,7 +252,7 @@ const Dijual = () => {
           </div>
         </div>
 
-        {/* Properties Grid */}
+          {/* Properties Grid */}
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...Array(6)].map((_, i) => (
@@ -414,8 +417,8 @@ const Dijual = () => {
           </div>
         )}
 
-        {/* Market Insights */}
-        <div className="mt-16 grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Market Insights */}
+          <div className="mt-16 grid grid-cols-1 lg:grid-cols-2 gap-8">
           <Card className="shadow-lg border-0">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-xl">
@@ -465,10 +468,10 @@ const Dijual = () => {
               </div>
             </CardContent>
           </Card>
+          </div>
         </div>
       </div>
-
-      </div>
+    </div>
   );
 };
 
