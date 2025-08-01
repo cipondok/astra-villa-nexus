@@ -138,7 +138,6 @@ const fileCategories = [
       { name: 'User Management', section: 'users' },
       { name: 'Role Permissions', section: 'security' },
       { name: '🚨 Error Logs', section: 'error-logs' },
-      { name: 'System Logs', section: 'system-logs' },
       { name: 'Audit Trail', section: 'security' }
     ]
   },
