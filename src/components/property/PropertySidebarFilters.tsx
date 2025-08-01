@@ -75,7 +75,22 @@ const PropertySidebarFilters: React.FC<PropertySidebarFiltersProps> = ({
   // Click outside to close
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (filterRef.current && !filterRef.current.contains(event.target as Node)) {
+      const target = event.target as Node;
+      
+      // Check if click is outside filter panel
+      if (filterRef.current && !filterRef.current.contains(target)) {
+        // Check if click is on a Select dropdown (which renders in portal)
+        const selectContent = document.querySelector('[data-radix-select-content]');
+        const selectTrigger = document.querySelector('[data-radix-select-trigger]');
+        
+        // Don't close if clicking on Select dropdown content or trigger
+        if (selectContent && selectContent.contains(target)) return;
+        if (selectTrigger && selectTrigger.contains(target)) return;
+        
+        // Don't close if clicking on any element with data-radix attribute (Radix components)
+        const radixElement = (target as Element).closest?.('[data-radix-popper-content-wrapper]');
+        if (radixElement) return;
+        
         onToggle();
       }
     };
