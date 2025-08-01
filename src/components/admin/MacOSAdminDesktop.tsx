@@ -108,7 +108,7 @@ const desktopApps = [
   { 
     id: 'system-tools', 
     name: '🛠️ System Tools', 
-    description: 'Database monitoring, error tracking, system health, and administrative tools',
+    description: 'Database monitoring, error tracking, system health, configuration, and administrative tools',
     icon: Settings, 
     section: 'system-tools',
     color: 'bg-purple-500',

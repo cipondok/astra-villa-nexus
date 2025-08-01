@@ -12,6 +12,7 @@ import {
 import ErrorLogsTable from "./ErrorLogsTable";
 import DatabaseErrorMonitor from "./DatabaseErrorMonitor";
 import SystemHealthMonitor from "./SystemHealthMonitor";
+import SystemSettings from "./SystemSettings";
 
 const SystemToolsDashboard = () => {
   const [activeTab, setActiveTab] = useState("overview");
@@ -174,7 +175,7 @@ const SystemToolsDashboard = () => {
       {/* Main Content Tabs */}
       <div className="flex-1">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="h-full flex flex-col">
-          <TabsList className="grid w-full grid-cols-4 mb-4">
+          <TabsList className="grid w-full grid-cols-5 mb-4">
             <TabsTrigger value="overview" className="flex items-center gap-2">
               <BarChart3 className="h-4 w-4" />
               Overview
@@ -190,6 +191,10 @@ const SystemToolsDashboard = () => {
             <TabsTrigger value="system-health" className="flex items-center gap-2">
               <Monitor className="h-4 w-4" />
               System Health
+            </TabsTrigger>
+            <TabsTrigger value="system-config" className="flex items-center gap-2">
+              <Settings className="h-4 w-4" />
+              System Config
             </TabsTrigger>
           </TabsList>
 
@@ -292,6 +297,10 @@ const SystemToolsDashboard = () => {
 
           <TabsContent value="system-health" className="flex-1">
             <SystemHealthMonitor />
+          </TabsContent>
+
+          <TabsContent value="system-config" className="flex-1">
+            <SystemSettings />
           </TabsContent>
         </Tabs>
       </div>
