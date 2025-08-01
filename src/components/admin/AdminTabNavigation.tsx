@@ -39,7 +39,7 @@ interface TabItem {
   icon: React.ComponentType<any>;
   category: string;
   badge?: string;
-  badgeType?: 'new' | 'updating' | 'beta';
+  badgeType?: 'new' | 'updating' | 'beta' | 'critical';
   addedDate?: string; // ISO date string
   updatedDate?: string; // ISO date string
 }
@@ -72,6 +72,11 @@ const AdminTabNavigation = ({ isAdmin }: AdminTabNavigationProps) => {
 
   // Get badge color based on type
   const getBadgeColor = (badgeText: string, badgeType?: string) => {
+    // Check badgeType first for specific styling
+    if (badgeType === "critical") {
+      return "bg-red-600/20 text-red-600 border-red-600/30 animate-pulse";
+    }
+    
     switch (badgeText) {
       case "New":
         return "bg-green-600/10 text-green-600 border-green-600/20";
@@ -202,8 +207,17 @@ const AdminTabNavigation = ({ isAdmin }: AdminTabNavigationProps) => {
       category: "management" 
     },
     { 
+      id: "error-logs", 
+      label: "🚨 Error Logs", 
+      icon: AlertTriangle, 
+      category: "technical",
+      badge: "404 & System Errors",
+      badgeType: "critical",
+      addedDate: new Date().toISOString()
+    },
+    { 
       id: "database-errors", 
-      label: "DB Errors", 
+      label: "DB Manager", 
       icon: AlertTriangle, 
       category: "technical" 
     },
