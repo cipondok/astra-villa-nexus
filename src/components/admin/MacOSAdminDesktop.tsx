@@ -111,7 +111,10 @@ const desktopApps = [
     description: '404 errors, system errors, and detailed error tracking',
     icon: AlertTriangle, 
     section: 'error-logs',
-    color: 'bg-red-500'
+    color: 'bg-red-500',
+    badge: 'NEW',
+    badgeType: 'new',
+    addedDate: new Date().toISOString()
   },
   { 
     id: 'kyc', 
@@ -459,6 +462,21 @@ export const MacOSAdminDesktop = () => {
 
   const handleLogout = async () => {
     await signOut();
+  };
+
+  
+  // Helper function to get badge styling
+  const getBadgeStyle = (badgeType: string) => {
+    switch (badgeType) {
+      case 'new':
+        return 'bg-green-500 text-white';
+      case 'updated':
+        return 'bg-blue-500 text-white';
+      case 'critical':
+        return 'bg-red-500 text-white animate-pulse';
+      default:
+        return 'bg-orange-500 text-white';
+    }
   };
 
   const goHome = () => {
@@ -908,12 +926,21 @@ export const MacOSAdminDesktop = () => {
                     {isOpen && (
                       <div className="absolute -bottom-1 w-1 h-1 bg-white rounded-full" />
                     )}
+                    {/* New Badge */}
+                    {(app as any).badge && (
+                      <div className={`absolute -top-1 -right-1 px-1.5 py-0.5 rounded-full text-xs font-bold shadow-lg ${getBadgeStyle((app as any).badgeType || 'new')}`}>
+                        {(app as any).badge}
+                      </div>
+                    )}
                   </button>
                 </TooltipTrigger>
                 <TooltipContent>
                   <div className="text-center">
                     <p className="font-medium">{app.name}</p>
                     <p className="text-xs text-gray-400 mt-1">{app.description}</p>
+                    {(app as any).badge && (
+                      <p className="text-xs text-green-400 mt-1 font-medium">✨ {(app as any).badge}</p>
+                    )}
                   </div>
                 </TooltipContent>
               </Tooltip>
