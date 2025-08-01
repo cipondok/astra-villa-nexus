@@ -175,7 +175,7 @@ const PropertySidebarFilters: React.FC<PropertySidebarFiltersProps> = ({
                 <SelectValue placeholder="Tipe Properti" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Semua Tipe</SelectItem>
+                <SelectItem value="all">Semua Tipe</SelectItem>
                 {propertyTypes.map((type) => (
                   <SelectItem key={type} value={type}>{type}</SelectItem>
                 ))}
@@ -199,7 +199,7 @@ const PropertySidebarFilters: React.FC<PropertySidebarFiltersProps> = ({
                 <SelectValue placeholder="Kota" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Semua Kota</SelectItem>
+                <SelectItem value="all">Semua Kota</SelectItem>
                 {cities.map((city) => (
                   <SelectItem key={city} value={city}>{city}</SelectItem>
                 ))}
@@ -210,7 +210,7 @@ const PropertySidebarFilters: React.FC<PropertySidebarFiltersProps> = ({
                 <SelectValue placeholder="Area" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Semua Area</SelectItem>
+                <SelectItem value="all">Semua Area</SelectItem>
                 {areas.map((area) => (
                   <SelectItem key={area} value={area}>{area}</SelectItem>
                 ))}
@@ -267,7 +267,7 @@ const PropertySidebarFilters: React.FC<PropertySidebarFiltersProps> = ({
                 <SelectValue placeholder="Kamar Tidur" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Semua</SelectItem>
+                <SelectItem value="all">Semua</SelectItem>
                 <SelectItem value="1">1 Kamar</SelectItem>
                 <SelectItem value="2">2 Kamar</SelectItem>
                 <SelectItem value="3">3 Kamar</SelectItem>
@@ -280,7 +280,7 @@ const PropertySidebarFilters: React.FC<PropertySidebarFiltersProps> = ({
                 <SelectValue placeholder="Kamar Mandi" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Semua</SelectItem>
+                <SelectItem value="all">Semua</SelectItem>
                 <SelectItem value="1">1 Kamar Mandi</SelectItem>
                 <SelectItem value="2">2 Kamar Mandi</SelectItem>
                 <SelectItem value="3">3 Kamar Mandi</SelectItem>
