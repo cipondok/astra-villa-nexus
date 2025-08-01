@@ -106,6 +106,14 @@ const desktopApps = [
     color: 'bg-cyan-500'
   },
   { 
+    id: 'error-logs', 
+    name: '🚨 Error Logs', 
+    description: '404 errors, system errors, and detailed error tracking',
+    icon: AlertTriangle, 
+    section: 'error-logs',
+    color: 'bg-red-500'
+  },
+  { 
     id: 'kyc', 
     name: 'KYC Review', 
     description: 'Know Your Customer verification and compliance',
@@ -126,6 +134,7 @@ const fileCategories = [
     files: [
       { name: 'User Management', section: 'users' },
       { name: 'Role Permissions', section: 'security' },
+      { name: '🚨 Error Logs', section: 'error-logs' },
       { name: 'System Logs', section: 'system-logs' },
       { name: 'Audit Trail', section: 'security' }
     ]
