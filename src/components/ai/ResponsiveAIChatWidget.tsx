@@ -195,7 +195,16 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
   };
 
   return (
-    <div className={`${getPositionClass()} pointer-events-auto transition-all duration-300`} style={{ position: 'fixed', zIndex: 9999 }}>
+    <div 
+      className="pointer-events-auto transition-all duration-300" 
+      style={{ 
+        position: 'fixed',
+        bottom: isMobile ? '16px' : '24px',
+        right: isMobile ? '16px' : '24px',
+        zIndex: 99999,
+        transform: 'none'
+      }}
+    >
       {!isOpen ? (
         <div className="relative">
           <AIChatTrigger onOpen={() => setIsOpen(true)} />
