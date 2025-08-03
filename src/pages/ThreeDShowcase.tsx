@@ -38,38 +38,41 @@ const windowsData = [
   { id: 'terrace-door', position: [2.01, 3.5, 0.5], size: [1.2, 2.0], name: 'Terrace French Doors', wall: 'Right', floor: 2, type: 'French Doors', material: 'Triple Glazed', isTerraceEntry: true },
 ];
 
-// Enhanced materials and textures
-const materials = {
+// Enhanced materials and textures - Optimized for stable colors
+const createMaterials = () => ({
   brick: new THREE.MeshStandardMaterial({ 
-    color: '#CD853F',
+    color: new THREE.Color('#CD853F'),
     roughness: 0.8,
     metalness: 0.1,
   }),
   roof: new THREE.MeshStandardMaterial({ 
-    color: '#8B0000',
+    color: new THREE.Color('#8B0000'),
     roughness: 0.9,
     metalness: 0.0,
   }),
   wood: new THREE.MeshStandardMaterial({ 
-    color: '#8B4513',
+    color: new THREE.Color('#8B4513'),
     roughness: 0.7,
     metalness: 0.0,
   }),
   glass: new THREE.MeshPhysicalMaterial({
-    color: '#87CEEB',
+    color: new THREE.Color('#87CEEB'),
     transparent: true,
     opacity: 0.3,
     roughness: 0.0,
     metalness: 0.0,
-    transmission: 0.9,
+    transmission: 0.8,
     ior: 1.5,
+    clearcoat: 1.0,
   }),
   windowFrame: new THREE.MeshStandardMaterial({
-    color: '#654321',
+    color: new THREE.Color('#654321'),
     roughness: 0.6,
     metalness: 0.2,
   }),
-};
+});
+
+const materials = createMaterials();
 
 // Enhanced Box component with better materials
 interface EnhancedBoxProps {
@@ -168,105 +171,171 @@ const RealisticWindow = ({ data, isHovered, onHover, onLeave, isDayTime }) => {
   );
 };
 
-// Enhanced House Structure
-const RealisticHouseStructure = ({ isDayTime }) => {
+// Enhanced House Structure with improved realism
+const RealisticHouseStructure = ({ isDayTime, wireframeMode }) => {
+  const activeMaterials = wireframeMode ? 
+    {
+      brick: new THREE.MeshBasicMaterial({ color: '#CD853F', wireframe: true }),
+      roof: new THREE.MeshBasicMaterial({ color: '#8B0000', wireframe: true }),
+      wood: new THREE.MeshBasicMaterial({ color: '#8B4513', wireframe: true }),
+    } : materials;
+
   return (
     <group>
-      {/* Foundation */}
-      <EnhancedBox args={[4.5, 0.5, 4.5]} position={[0, -1.25, 0]} material={new THREE.MeshStandardMaterial({ color: '#696969' })} />
+      {/* Enhanced Foundation with steps */}
+      <EnhancedBox args={[4.8, 0.6, 4.8]} position={[0, -1.3, 0]} 
+        material={new THREE.MeshStandardMaterial({ color: new THREE.Color('#696969'), roughness: 0.9 })} />
+      
+      {/* Foundation Steps */}
+      <EnhancedBox args={[2.0, 0.2, 1.0]} position={[0, -0.9, 2.5]} 
+        material={new THREE.MeshStandardMaterial({ color: new THREE.Color('#708090'), roughness: 0.8 })} />
+      <EnhancedBox args={[2.0, 0.2, 0.8]} position={[0, -0.7, 2.6]} 
+        material={new THREE.MeshStandardMaterial({ color: new THREE.Color('#708090'), roughness: 0.8 })} />
       
       {/* First Floor Base */}
-      <EnhancedBox args={[4, 0.2, 4]} position={[0, -1, 0]} material={materials.wood} />
+      <EnhancedBox args={[4.2, 0.25, 4.2]} position={[0, -0.95, 0]} material={activeMaterials.wood} />
       
-      {/* First Floor Walls */}
-      <EnhancedBox args={[4, 2.5, 0.2]} position={[0, 0.25, 2]} material={materials.brick} />
-      <EnhancedBox args={[4, 2.5, 0.2]} position={[0, 0.25, -2]} material={materials.brick} />
-      <EnhancedBox args={[0.2, 2.5, 4]} position={[-2, 0.25, 0]} material={materials.brick} />
-      <EnhancedBox args={[0.2, 2.5, 4]} position={[2, 0.25, 0]} material={materials.brick} />
+      {/* Enhanced First Floor Walls with texture variation */}
+      <EnhancedBox args={[4.2, 2.8, 0.25]} position={[0, 0.4, 2.1]} material={activeMaterials.brick} />
+      <EnhancedBox args={[4.2, 2.8, 0.25]} position={[0, 0.4, -2.1]} material={activeMaterials.brick} />
+      <EnhancedBox args={[0.25, 2.8, 4.2]} position={[-2.1, 0.4, 0]} material={activeMaterials.brick} />
+      <EnhancedBox args={[0.25, 2.8, 4.2]} position={[2.1, 0.4, 0]} material={activeMaterials.brick} />
+
+      {/* Decorative Corner Pillars */}
+      <EnhancedBox args={[0.3, 3.0, 0.3]} position={[-2.0, 0.5, 2.0]} 
+        material={new THREE.MeshStandardMaterial({ color: new THREE.Color('#8B7355'), roughness: 0.7 })} />
+      <EnhancedBox args={[0.3, 3.0, 0.3]} position={[2.0, 0.5, 2.0]} 
+        material={new THREE.MeshStandardMaterial({ color: new THREE.Color('#8B7355'), roughness: 0.7 })} />
 
       {/* Second Floor Base */}
-      <EnhancedBox args={[4, 0.2, 4]} position={[0, 2.4, 0]} material={materials.wood} />
+      <EnhancedBox args={[4.2, 0.25, 4.2]} position={[0, 2.5, 0]} material={activeMaterials.wood} />
 
-      {/* Second Floor Walls */}
-      <EnhancedBox args={[4, 2.5, 0.2]} position={[0, 3.75, 2]} material={materials.brick} />
-      <EnhancedBox args={[3, 2.5, 0.2]} position={[-0.5, 3.75, -2]} material={materials.brick} />
-      <EnhancedBox args={[0.2, 2.5, 4]} position={[-2, 3.75, 0]} material={materials.brick} />
-      <EnhancedBox args={[0.2, 2.5, 2]} position={[2, 3.75, -1]} material={materials.brick} />
+      {/* Enhanced Second Floor Walls */}
+      <EnhancedBox args={[4.2, 2.8, 0.25]} position={[0, 3.9, 2.1]} material={activeMaterials.brick} />
+      <EnhancedBox args={[3.2, 2.8, 0.25]} position={[-0.5, 3.9, -2.1]} material={activeMaterials.brick} />
+      <EnhancedBox args={[0.25, 2.8, 4.2]} position={[-2.1, 3.9, 0]} material={activeMaterials.brick} />
+      <EnhancedBox args={[0.25, 2.8, 2.2]} position={[2.1, 3.9, -1]} material={activeMaterials.brick} />
 
-      {/* Roof Structure */}
+      {/* Enhanced Roof Structure */}
       <group>
-        {/* Main Roof */}
-        <mesh position={[0, 5.5, 0]} rotation={[0, 0, 0]} castShadow>
-          <boxGeometry args={[4.8, 0.3, 4.8]} />
-          <primitive object={materials.roof} attach="material" />
+        {/* Main Roof Base */}
+        <EnhancedBox args={[5.0, 0.35, 5.0]} position={[0, 5.7, 0]} material={activeMaterials.roof} />
+        
+        {/* Roof Slopes */}
+        <mesh position={[0, 6.3, 0]} rotation={[0, Math.PI / 4, 0]} castShadow>
+          <coneGeometry args={[3.0, 1.2, 8]} />
+          <primitive object={activeMaterials.roof} attach="material" />
         </mesh>
         
-        {/* Roof Peak */}
-        <mesh position={[0, 6.0, 0]} rotation={[0, 0, 0]} castShadow>
-          <coneGeometry args={[2.5, 1, 4]} />
-          <primitive object={materials.roof} attach="material" />
-        </mesh>
+        {/* Chimney */}
+        <EnhancedBox args={[0.6, 2.0, 0.6]} position={[-1.5, 6.5, -1]} 
+          material={new THREE.MeshStandardMaterial({ color: new THREE.Color('#8B0000'), roughness: 0.8 })} />
+        <EnhancedBox args={[0.8, 0.3, 0.8]} position={[-1.5, 7.6, -1]} 
+          material={new THREE.MeshStandardMaterial({ color: new THREE.Color('#696969'), roughness: 0.9 })} />
       </group>
 
-      {/* Terrace Floor - Enhanced */}
-      <EnhancedBox args={[2.2, 0.15, 2.2]} position={[1, 2.55, 1]} material={materials.wood} />
+      {/* Enhanced Terrace with detailed flooring */}
+      <EnhancedBox args={[2.4, 0.2, 2.4]} position={[1, 2.6, 1]} material={activeMaterials.wood} />
       
-      {/* Terrace Planks */}
-      {Array.from({ length: 10 }, (_, i) => (
+      {/* Detailed Terrace Planks */}
+      {Array.from({ length: 12 }, (_, i) => (
         <EnhancedBox 
           key={`plank-${i}`}
-          args={[2, 0.05, 0.15]} 
-          position={[1, 2.65, 0.1 + i * 0.2]} 
-          material={new THREE.MeshStandardMaterial({ color: '#D2691E', roughness: 0.8 })} 
+          args={[2.2, 0.05, 0.12]} 
+          position={[1, 2.72, 0.0 + i * 0.17]} 
+          material={new THREE.MeshStandardMaterial({ 
+            color: new THREE.Color(wireframeMode ? '#D2691E' : '#CD853F'), 
+            roughness: 0.9,
+            wireframe: wireframeMode 
+          })} 
         />
       ))}
 
-      {/* Enhanced Terrace Railings */}
-      {/* Front Railing */}
-      <EnhancedBox args={[2.2, 1.0, 0.1]} position={[1, 3.5, 2.1]} material={materials.wood} />
+      {/* Enhanced Terrace Railings with posts */}
+      {/* Front Railing System */}
+      <EnhancedBox args={[2.4, 1.2, 0.12]} position={[1, 3.6, 2.15]} material={activeMaterials.wood} />
+      <EnhancedBox args={[2.4, 0.08, 0.08]} position={[1, 3.2, 2.15]} material={activeMaterials.wood} />
       {/* Vertical Posts */}
-      {Array.from({ length: 5 }, (_, i) => (
+      {Array.from({ length: 6 }, (_, i) => (
         <EnhancedBox 
           key={`post-front-${i}`}
-          args={[0.05, 1.0, 0.05]} 
-          position={[0.2 + i * 0.4, 3.5, 2.05]} 
-          material={materials.wood} 
+          args={[0.08, 1.2, 0.08]} 
+          position={[0.1 + i * 0.4, 3.6, 2.1]} 
+          material={activeMaterials.wood} 
         />
       ))}
       
-      {/* Right Railing */}
-      <EnhancedBox args={[0.1, 1.0, 2.2]} position={[2.1, 3.5, 1]} material={materials.wood} />
+      {/* Right Railing System */}
+      <EnhancedBox args={[0.12, 1.2, 2.4]} position={[2.15, 3.6, 1]} material={activeMaterials.wood} />
+      <EnhancedBox args={[0.08, 0.08, 2.4]} position={[2.15, 3.2, 1]} material={activeMaterials.wood} />
       {/* Vertical Posts */}
-      {Array.from({ length: 5 }, (_, i) => (
+      {Array.from({ length: 6 }, (_, i) => (
         <EnhancedBox 
           key={`post-right-${i}`}
-          args={[0.05, 1.0, 0.05]} 
-          position={[2.05, 3.5, 0.2 + i * 0.4]} 
-          material={materials.wood} 
+          args={[0.08, 1.2, 0.08]} 
+          position={[2.1, 3.6, 0.1 + i * 0.4]} 
+          material={activeMaterials.wood} 
         />
       ))}
       
       {/* Back Railing */}
-      <EnhancedBox args={[2.2, 1.0, 0.1]} position={[1, 3.5, -0.1]} material={materials.wood} />
+      <EnhancedBox args={[2.4, 1.2, 0.12]} position={[1, 3.6, -0.15]} material={activeMaterials.wood} />
 
-      {/* Front Door */}
-      <EnhancedBox 
-        args={[0.9, 2.0, 0.1]} 
-        position={[0, 1.0, 2.05]} 
-        material={new THREE.MeshStandardMaterial({ color: '#8B4513', roughness: 0.7 })} 
-      />
+      {/* Enhanced Front Door with frame */}
+      <EnhancedBox args={[1.0, 2.2, 0.12]} position={[0, 1.1, 2.12]} 
+        material={new THREE.MeshStandardMaterial({ 
+          color: new THREE.Color('#654321'), 
+          roughness: 0.6,
+          wireframe: wireframeMode 
+        })} />
+      {/* Door Frame */}
+      <EnhancedBox args={[1.2, 2.4, 0.15]} position={[0, 1.2, 2.08]} 
+        material={new THREE.MeshStandardMaterial({ 
+          color: new THREE.Color('#8B7355'), 
+          roughness: 0.7,
+          wireframe: wireframeMode 
+        })} />
+      
+      {/* Door Handle */}
+      <mesh position={[0.4, 1.1, 2.2]} castShadow>
+        <sphereGeometry args={[0.04, 8, 8]} />
+        <meshStandardMaterial color="#FFD700" metalness={0.8} roughness={0.2} />
+      </mesh>
 
-      {/* Ground Landscaping */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.5, 0]} receiveShadow>
-        <planeGeometry args={[25, 25]} />
-        <meshStandardMaterial color="#228B22" />
+      {/* Enhanced Ground Landscaping */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.6, 0]} receiveShadow>
+        <planeGeometry args={[30, 30]} />
+        <meshStandardMaterial color={isDayTime ? "#228B22" : "#1a5d1a"} roughness={0.9} />
       </mesh>
       
-      {/* Pathway */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.45, 3]} receiveShadow>
-        <planeGeometry args={[1.5, 3]} />
-        <meshStandardMaterial color="#708090" />
+      {/* Garden Path */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.55, 4]} receiveShadow>
+        <planeGeometry args={[2.0, 4]} />
+        <meshStandardMaterial color="#708090" roughness={0.8} />
       </mesh>
+      
+      {/* Decorative Garden Elements */}
+      {/* Small bushes */}
+      <mesh position={[-3, -1.2, 3]} castShadow>
+        <sphereGeometry args={[0.4, 8, 6]} />
+        <meshStandardMaterial color="#228B22" roughness={0.9} />
+      </mesh>
+      <mesh position={[3, -1.2, 3]} castShadow>
+        <sphereGeometry args={[0.4, 8, 6]} />
+        <meshStandardMaterial color="#228B22" roughness={0.9} />
+      </mesh>
+      
+      {/* Trees */}
+      <group position={[-6, -1.5, -6]}>
+        <mesh position={[0, 2, 0]} castShadow>
+          <cylinderGeometry args={[0.15, 0.2, 3, 8]} />
+          <meshStandardMaterial color="#8B4513" roughness={0.8} />
+        </mesh>
+        <mesh position={[0, 4, 0]} castShadow>
+          <sphereGeometry args={[1.2, 8, 6]} />
+          <meshStandardMaterial color="#228B22" roughness={0.9} />
+        </mesh>
+      </group>
     </group>
   );
 };
@@ -345,7 +414,7 @@ const ToolsPanel = ({
   ];
 
   return (
-    <div className="absolute top-20 left-4 bg-white/95 backdrop-blur-sm rounded-xl p-4 shadow-xl z-10 max-w-xs">
+    <div className="absolute top-20 left-4 bg-white/95 backdrop-blur-sm rounded-xl p-6 shadow-xl z-10 w-80 max-w-sm">
       <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
         <Move3D className="h-5 w-5 text-primary" />
         3D Tools
@@ -468,14 +537,24 @@ const EnhancedScene = ({
     setHoveredWindow(null);
   };
 
-  // Update materials for wireframe mode
+  // Stable wireframe mode without causing color blasting
+  const [wireframeMaterials, setWireframeMaterials] = React.useState(null);
+  
   React.useEffect(() => {
-    Object.values(materials).forEach(material => {
-      if (material instanceof THREE.Material) {
-        material.wireframe = wireframeMode;
-      }
-    });
-  }, [wireframeMode]);
+    if (wireframeMode && !wireframeMaterials) {
+      // Create separate wireframe materials to prevent color issues
+      const newWireframeMaterials = {
+        brick: new THREE.MeshBasicMaterial({ color: '#CD853F', wireframe: true }),
+        roof: new THREE.MeshBasicMaterial({ color: '#8B0000', wireframe: true }),
+        wood: new THREE.MeshBasicMaterial({ color: '#8B4513', wireframe: true }),
+        glass: new THREE.MeshBasicMaterial({ color: '#87CEEB', wireframe: true, transparent: true, opacity: 0.5 }),
+        windowFrame: new THREE.MeshBasicMaterial({ color: '#654321', wireframe: true }),
+      };
+      setWireframeMaterials(newWireframeMaterials);
+    } else if (!wireframeMode && wireframeMaterials) {
+      setWireframeMaterials(null);
+    }
+  }, [wireframeMode, wireframeMaterials]);
 
   return (
     <>
@@ -523,7 +602,7 @@ const EnhancedScene = ({
       />
 
       {/* House Structure */}
-      <RealisticHouseStructure isDayTime={isDayTime} />
+      <RealisticHouseStructure isDayTime={isDayTime} wireframeMode={wireframeMode} />
 
       {/* Windows */}
       {windowsData.map((windowData) => (
