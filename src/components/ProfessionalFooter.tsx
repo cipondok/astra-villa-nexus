@@ -137,7 +137,7 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
             <h3 className="text-sm font-semibold">{currentText.quickLinks}</h3>
             <ul className="space-y-1 text-xs">
               <li><Link to="/" className="text-gray-300 hover:text-blue-400 transition-colors">{currentText.home}</Link></li>
-              <li><Link to="/properties" className="text-gray-300 hover:text-blue-400 transition-colors">{currentText.properties}</Link></li>
+              <li><Link to="/dijual" className="text-gray-300 hover:text-blue-400 transition-colors">{currentText.properties}</Link></li>
               <li><Link to="/dijual" className="text-gray-300 hover:text-blue-400 transition-colors">{currentText.buy}</Link></li>
               <li><Link to="/disewa" className="text-gray-300 hover:text-blue-400 transition-colors">{currentText.rent}</Link></li>
               <li><Link to="/about" className="text-gray-300 hover:text-blue-400 transition-colors">{currentText.about}</Link></li>

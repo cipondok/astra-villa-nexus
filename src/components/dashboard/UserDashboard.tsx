@@ -103,7 +103,7 @@ const UserDashboard = () => {
           description: "Manage your properties and listings",
           actions: [
             { label: "Add New Property", icon: PlusCircle, path: "/properties/new" },
-            { label: "My Properties", icon: Building, path: "/properties" },
+            { label: "My Properties", icon: Building, path: "/dijual" },
             { label: "View Analytics", icon: BarChart3, path: "/analytics" },
             { label: "Manage Listings", icon: FileText, path: "/listings" }
           ]

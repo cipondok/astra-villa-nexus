@@ -104,7 +104,7 @@ const UserDashboard = () => {
             <TabsContent value="overview" className="space-y-6">
               {/* Quick Actions */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => navigate('/properties')}>
+                <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => navigate('/dijual')}>
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <Search className="h-5 w-5" />
@@ -146,7 +146,7 @@ const UserDashboard = () => {
                     <Bell className="h-12 w-12 mx-auto mb-4 text-gray-400" />
                     <p>No recent activity</p>
                     <p className="text-sm">Start browsing properties to see your activity here</p>
-                    <Button className="mt-4" onClick={() => navigate('/properties')}>
+                    <Button className="mt-4" onClick={() => navigate('/dijual')}>
                       Browse Properties
                     </Button>
                   </div>

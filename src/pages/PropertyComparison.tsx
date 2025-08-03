@@ -20,7 +20,7 @@ const PropertyComparison = () => {
             <p className="text-muted-foreground mb-8">
               Add properties to your comparison list to see detailed side-by-side analysis
             </p>
-            <Button onClick={() => navigate('/properties')}>
+            <Button onClick={() => navigate('/dijual')}>
               Browse Properties
             </Button>
           </div>

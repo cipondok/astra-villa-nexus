@@ -64,7 +64,7 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
 
   const navItems = [
     { name: currentText.home, path: "/" },
-    { name: currentText.properties, path: "/properties" },
+    { name: currentText.properties, path: "/dijual" },
     { name: currentText.about, path: "/about" },
   ];
 

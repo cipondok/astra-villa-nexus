@@ -114,7 +114,7 @@ const PropertyOwnerOverview = () => {
                   Tambah Properti
                 </Button>
                 <Button 
-                  onClick={() => navigate('/properties')}
+                  onClick={() => navigate('/dijual')}
                   size="lg"
                   variant="outline"
                   className="bg-white/10 hover:bg-white/20 text-white border-white/30 backdrop-blur-sm"

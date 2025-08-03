@@ -162,7 +162,7 @@ const UserIconWithBadge = () => {
                   <Crown className="h-5 w-5 text-blue-500" />
                   <span className="text-xs font-medium">Admin Panel</span>
                 </button>
-                <button onClick={() => { navigate('/properties'); setIsOpen(false); }} className="flex flex-col items-center gap-1 p-2 rounded-lg hover:bg-green-50 dark:hover:bg-green-950/20 transition-colors">
+                <button onClick={() => { navigate('/dijual'); setIsOpen(false); }} className="flex flex-col items-center gap-1 p-2 rounded-lg hover:bg-green-50 dark:hover:bg-green-950/20 transition-colors">
                   <Building2 className="h-5 w-5 text-green-500" />
                   <span className="text-xs font-medium">Manage Properties</span>
                 </button>

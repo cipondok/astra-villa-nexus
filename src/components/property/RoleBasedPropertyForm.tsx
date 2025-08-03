@@ -245,7 +245,7 @@ const RoleBasedPropertyForm = () => {
       queryClient.invalidateQueries({ queryKey: ['properties'] });
       
       // Navigate to property list
-      navigate('/properties');
+      navigate('/dijual');
     },
     onError: (error: any) => {
       console.error('Property creation failed:', error);
@@ -814,7 +814,7 @@ const RoleBasedPropertyForm = () => {
                 <Button 
                   type="button" 
                   variant="outline"
-                  onClick={() => navigate('/properties')}
+                  onClick={() => navigate('/dijual')}
                 >
                   Cancel
                 </Button>

@@ -171,7 +171,7 @@ const AuthenticatedNavigation = ({
                     <div className="w-48 p-2">
                       <NavigationMenuLink
                         className="block px-3 py-2 rounded-md text-sm hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
-                        onClick={() => navigate('/properties')}
+                        onClick={() => navigate('/dijual')}
                       >
                         {currentText.properties}
                       </NavigationMenuLink>
@@ -350,7 +350,7 @@ const AuthenticatedNavigation = ({
                 {currentText.home}
               </button>
               <button
-                onClick={() => navigate('/properties')}
+                onClick={() => navigate('/dijual')}
                 className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-blue-600 hover:bg-gray-100 dark:hover:bg-gray-700"
               >
                 {currentText.properties}

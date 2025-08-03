@@ -158,7 +158,7 @@ const PropertyListingsSection = ({
                   <Button onClick={() => window.location.reload()} variant="outline" className="w-full text-sm">
                     Refresh
                   </Button>
-                  <Button onClick={() => navigate('/properties')} className="w-full text-sm">
+                  <Button onClick={() => navigate('/dijual')} className="w-full text-sm">
                     {currentText.browseAll}
                   </Button>
                 </div>

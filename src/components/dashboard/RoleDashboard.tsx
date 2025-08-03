@@ -345,7 +345,7 @@ const RoleDashboard = ({ language }: RoleDashboardProps) => {
                           const navState = ('tab' in action && action.tab) ? { state: { defaultTab: action.tab } } : {};
                           navigate(action.path, navState);
                         } else if (action.label.includes("Properties") || action.label.includes("Properti")) {
-                          navigate('/properties');
+                          navigate('/dijual');
                         } else {
                           // Fallback for actions without a path, you might want to handle this.
                           // For now, we are navigating to admin for some of them.

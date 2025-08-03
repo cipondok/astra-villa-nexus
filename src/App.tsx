@@ -59,7 +59,7 @@ const AppContent = () => {
           <Route path="/disewa" element={<Disewa />} />
           <Route path="/rent" element={<Disewa />} />
           <Route path="/pre-launching" element={<PreLaunching />} />
-          <Route path="/properties" element={<Properties />} />
+          <Route path="/dijual" element={<Properties />} />
           <Route path="/3d-showcase" element={<ThreeDShowcase />} />
           <Route path="/properties/:id" element={<PropertyDetail />} />
           <Route path="/admin" element={<AdminDashboard />} />

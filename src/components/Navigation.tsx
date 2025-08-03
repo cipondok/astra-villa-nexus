@@ -107,7 +107,7 @@ const Navigation = () => {
     { 
       icon: Building, 
       label: currentText.properties, 
-      path: '/properties',
+      path: '/dijual',
       color: 'text-indigo-600 dark:text-indigo-400'
     },
     { 
