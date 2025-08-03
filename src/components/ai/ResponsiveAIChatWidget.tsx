@@ -181,11 +181,11 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
     maxHeight: '70vh'
   };
 
-  // Dynamic positioning based on device and screen size - always visible
+  // Sticky positioning - always visible on screen like header
   const positionStyles = {
-    mobile: "fixed bottom-4 right-4 z-[9999]",
-    tablet: "fixed bottom-6 right-6 z-[9999]", 
-    desktop: "fixed bottom-6 right-6 z-[9999]"
+    mobile: "fixed bottom-4 right-4 z-[99999]",
+    tablet: "fixed bottom-6 right-6 z-[99999]", 
+    desktop: "fixed bottom-6 right-6 z-[99999]"
   };
 
   const getPositionClass = () => {
