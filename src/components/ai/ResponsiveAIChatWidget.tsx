@@ -195,41 +195,52 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
   };
 
   return (
-    <div 
-      style={{ 
-        position: 'fixed',
-        bottom: '20px',
-        right: '20px',
-        zIndex: 99999,
-        pointerEvents: 'auto'
-      }}
-    >
-      {!isOpen ? (
-        <div className="relative">
-          <AIChatTrigger onOpen={() => setIsOpen(true)} />
-          {/* Always visible indicator - enhanced visibility */}
-          <div className="absolute -inset-2 bg-gradient-to-r from-primary/30 to-accent/30 rounded-full animate-pulse opacity-90 blur-sm"></div>
-          <div className="absolute -inset-1 bg-gradient-to-r from-blue-500/40 to-purple-500/40 rounded-full animate-pulse opacity-100"></div>
-        </div>
-      ) : (
+    <>
+      {/* Chat trigger - always visible in viewport */}
+      <div 
+        style={{ 
+          position: 'fixed' as const,
+          bottom: '20px',
+          right: '20px',
+          zIndex: 2147483647,
+          pointerEvents: 'auto' as const,
+          display: 'block'
+        }}
+      >
+        {!isOpen && (
+          <div style={{ position: 'relative' }}>
+            <AIChatTrigger onOpen={() => setIsOpen(true)} />
+            <div 
+              style={{
+                position: 'absolute',
+                inset: '-8px',
+                background: 'linear-gradient(45deg, rgba(59, 130, 246, 0.4), rgba(147, 51, 234, 0.4))',
+                borderRadius: '50%',
+                animation: 'pulse 2s infinite',
+                opacity: 0.9
+              }}
+            />
+          </div>
+        )}
+      </div>
+
+      {/* Chat window - always visible in viewport when open */}
+      {isOpen && (
         <div 
           style={{
-            position: 'fixed',
+            position: 'fixed' as const,
             top: '50%',
             right: '20px',
             transform: 'translateY(-50%)',
             width: isMobile ? 'calc(100vw - 40px)' : '380px',
             height: isMobile ? 'calc(100vh - 40px)' : '550px',
             maxHeight: '90vh',
-            zIndex: 99999
+            zIndex: 2147483647,
+            pointerEvents: 'auto' as const,
+            display: 'block'
           }}
         >
-          <Card className={cn(
-            "h-full w-full flex flex-col border-primary/20 overflow-hidden",
-            "bg-background/95 backdrop-blur-xl shadow-2xl",
-            "rounded-2xl border shadow-xl",
-            "transition-all duration-300 hover:shadow-3xl"
-          )}>
+          <Card className="h-full w-full flex flex-col border-primary/20 overflow-hidden bg-background/95 backdrop-blur-xl shadow-2xl rounded-2xl border shadow-xl transition-all duration-300 hover:shadow-3xl">
             <AIChatHeader onClose={() => setIsOpen(false)} />
             <CardContent className="p-0 flex-1 flex flex-col min-h-0">
               <ScrollArea className="flex-1">
@@ -268,7 +279,7 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
           </Card>
         </div>
       )}
-    </div>
+    </>
   );
 };
 
