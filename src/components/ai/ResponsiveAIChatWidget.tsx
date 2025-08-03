@@ -196,13 +196,11 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
 
   return (
     <div 
-      className="pointer-events-auto transition-all duration-300" 
       style={{ 
         position: 'fixed',
-        bottom: isMobile ? '16px' : '24px',
-        right: isMobile ? '16px' : '24px',
-        zIndex: 99999,
-        transform: 'none'
+        bottom: '20px',
+        right: '20px',
+        zIndex: 99999
       }}
     >
       {!isOpen ? (
@@ -213,20 +211,21 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
         </div>
       ) : (
         <div 
-          className={cn(
-            "shadow-2xl",
-            isMobile ? "fixed inset-x-4 bottom-20 top-20" : "relative"
-          )}
-          style={!isMobile ? {
-            width: chatDimensions.width,
-            height: chatDimensions.height,
-            maxHeight: chatDimensions.maxHeight
-          } : {}}
+          style={{
+            position: 'fixed',
+            top: '50%',
+            right: '20px',
+            transform: 'translateY(-50%)',
+            width: isMobile ? 'calc(100vw - 40px)' : '380px',
+            height: isMobile ? 'calc(100vh - 40px)' : '550px',
+            maxHeight: '90vh',
+            zIndex: 99999
+          }}
         >
           <Card className={cn(
             "h-full w-full flex flex-col border-primary/20 overflow-hidden",
             "bg-background/95 backdrop-blur-xl shadow-2xl",
-            isMobile ? "rounded-t-3xl border-t border-l border-r" : "rounded-2xl border shadow-xl",
+            "rounded-2xl border shadow-xl",
             "transition-all duration-300 hover:shadow-3xl"
           )}>
             <AIChatHeader onClose={() => setIsOpen(false)} />
