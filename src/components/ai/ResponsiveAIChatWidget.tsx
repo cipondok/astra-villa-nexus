@@ -200,14 +200,16 @@ ${propertyId ? "I see you're viewing a property. Feel free to ask me anything ab
         position: 'fixed',
         bottom: '20px',
         right: '20px',
-        zIndex: 99999
+        zIndex: 99999,
+        pointerEvents: 'auto'
       }}
     >
       {!isOpen ? (
         <div className="relative">
           <AIChatTrigger onOpen={() => setIsOpen(true)} />
-          {/* Always visible indicator */}
-          <div className="absolute -inset-1 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-full animate-pulse opacity-75"></div>
+          {/* Always visible indicator - enhanced visibility */}
+          <div className="absolute -inset-2 bg-gradient-to-r from-primary/30 to-accent/30 rounded-full animate-pulse opacity-90 blur-sm"></div>
+          <div className="absolute -inset-1 bg-gradient-to-r from-blue-500/40 to-purple-500/40 rounded-full animate-pulse opacity-100"></div>
         </div>
       ) : (
         <div 
