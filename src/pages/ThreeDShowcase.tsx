@@ -1,44 +1,90 @@
-import React, { useState, useRef, Suspense, useMemo } from 'react';
+import React, { useState, useRef, Suspense, useCallback } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls } from '@react-three/drei';
+import { OrbitControls, Text, Environment, ContactShadows } from '@react-three/drei';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Sun, Moon, Home, Info, RotateCcw, Box as BoxIcon, Eye, MousePointer, Maximize } from 'lucide-react';
+import { Separator } from '@/components/ui/separator';
+import { 
+  Sun, Moon, Home, Info, RotateCcw, Box as BoxIcon, Eye, MousePointer, Maximize,
+  Camera, Ruler, Maximize2, RotateCw, ZoomIn, ZoomOut, Move3D, Grid3X3,
+  Download, Fullscreen, MapPin, Building
+} from 'lucide-react';
 import * as THREE from 'three';
 
-// Window data with details
+// Enhanced window data with more details
 const windowsData = [
-  // First Floor
-  { id: 'front-1', position: [-1.5, 0.5, 2.01], size: [0.8, 1.2], name: 'Living Room Window', wall: 'Front', floor: 1 },
-  { id: 'front-2', position: [1.5, 0.5, 2.01], size: [0.8, 1.2], name: 'Kitchen Window', wall: 'Front', floor: 1 },
-  { id: 'back-1', position: [-1, 0.5, -2.01], size: [1.0, 1.2], name: 'Dining Room Window', wall: 'Back', floor: 1 },
-  { id: 'back-2', position: [1, 0.5, -2.01], size: [1.0, 1.2], name: 'Bedroom Window', wall: 'Back', floor: 1 },
-  { id: 'left-1', position: [-2.01, 0.5, 0], size: [0.8, 1.2], name: 'Side Room Window', wall: 'Left', floor: 1 },
-  { id: 'right-1', position: [2.01, 0.5, 0], size: [0.8, 1.2], name: 'Guest Room Window', wall: 'Right', floor: 1 },
+  // First Floor - Front Wall
+  { id: 'front-1', position: [-1.5, 0.5, 2.01], size: [1.2, 1.4], name: 'Living Room Bay Window', wall: 'Front', floor: 1, type: 'Bay Window', material: 'Double Glazed' },
+  { id: 'front-2', position: [1.5, 0.5, 2.01], size: [0.8, 1.2], name: 'Kitchen Window', wall: 'Front', floor: 1, type: 'Casement', material: 'Triple Glazed' },
   
-  // Second Floor
-  { id: 'front-3', position: [-1, 3.5, 2.01], size: [0.8, 1.2], name: 'Master Bedroom Window', wall: 'Front', floor: 2 },
-  { id: 'front-4', position: [1, 3.5, 2.01], size: [0.8, 1.2], name: 'Study Room Window', wall: 'Front', floor: 2 },
-  { id: 'back-3', position: [-0.5, 3.5, -2.01], size: [0.8, 1.2], name: 'Kids Room Window', wall: 'Back', floor: 2 },
-  { id: 'left-2', position: [-2.01, 3.5, -0.5], size: [0.8, 1.2], name: 'Bathroom Window', wall: 'Left', floor: 2 },
-  { id: 'terrace-door', position: [2.01, 3.5, 0.5], size: [1.0, 1.8], name: 'Terrace Door', wall: 'Right', floor: 2, isTerraceEntry: true },
+  // First Floor - Back Wall
+  { id: 'back-1', position: [-1, 0.5, -2.01], size: [1.0, 1.2], name: 'Dining Room Window', wall: 'Back', floor: 1, type: 'Sliding', material: 'Double Glazed' },
+  { id: 'back-2', position: [1, 0.5, -2.01], size: [1.0, 1.2], name: 'Guest Bedroom Window', wall: 'Back', floor: 1, type: 'Casement', material: 'Double Glazed' },
+  
+  // First Floor - Side Walls
+  { id: 'left-1', position: [-2.01, 0.5, 0], size: [0.8, 1.2], name: 'Study Room Window', wall: 'Left', floor: 1, type: 'Fixed', material: 'Double Glazed' },
+  { id: 'right-1', position: [2.01, 0.5, 0], size: [0.8, 1.2], name: 'Utility Room Window', wall: 'Right', floor: 1, type: 'Awning', material: 'Single Glazed' },
+  
+  // Second Floor - Front Wall
+  { id: 'front-3', position: [-1, 3.5, 2.01], size: [1.0, 1.4], name: 'Master Bedroom Window', wall: 'Front', floor: 2, type: 'French Window', material: 'Triple Glazed' },
+  { id: 'front-4', position: [1, 3.5, 2.01], size: [0.8, 1.2], name: 'Home Office Window', wall: 'Front', floor: 2, type: 'Casement', material: 'Double Glazed' },
+  
+  // Second Floor - Back Wall
+  { id: 'back-3', position: [-0.5, 3.5, -2.01], size: [0.8, 1.2], name: 'Kids Bedroom Window', wall: 'Back', floor: 2, type: 'Tilt & Turn', material: 'Triple Glazed' },
+  
+  // Second Floor - Side Walls
+  { id: 'left-2', position: [-2.01, 3.5, -0.5], size: [0.6, 1.0], name: 'Bathroom Window', wall: 'Left', floor: 2, type: 'Obscure Glass', material: 'Double Glazed' },
+  { id: 'terrace-door', position: [2.01, 3.5, 0.5], size: [1.2, 2.0], name: 'Terrace French Doors', wall: 'Right', floor: 2, type: 'French Doors', material: 'Triple Glazed', isTerraceEntry: true },
 ];
 
-// Simple Box component that handles all props safely
-interface SimpleBoxProps {
+// Enhanced materials and textures
+const materials = {
+  brick: new THREE.MeshStandardMaterial({ 
+    color: '#CD853F',
+    roughness: 0.8,
+    metalness: 0.1,
+  }),
+  roof: new THREE.MeshStandardMaterial({ 
+    color: '#8B0000',
+    roughness: 0.9,
+    metalness: 0.0,
+  }),
+  wood: new THREE.MeshStandardMaterial({ 
+    color: '#8B4513',
+    roughness: 0.7,
+    metalness: 0.0,
+  }),
+  glass: new THREE.MeshPhysicalMaterial({
+    color: '#87CEEB',
+    transparent: true,
+    opacity: 0.3,
+    roughness: 0.0,
+    metalness: 0.0,
+    transmission: 0.9,
+    ior: 1.5,
+  }),
+  windowFrame: new THREE.MeshStandardMaterial({
+    color: '#654321',
+    roughness: 0.6,
+    metalness: 0.2,
+  }),
+};
+
+// Enhanced Box component with better materials
+interface EnhancedBoxProps {
   position: [number, number, number];
   args: [number, number, number];
-  color: string;
+  material: THREE.Material;
   onClick?: (event: any) => void;
   onPointerEnter?: (event: any) => void;
   onPointerLeave?: (event: any) => void;
-  transparent?: boolean;
-  opacity?: number;
+  castShadow?: boolean;
+  receiveShadow?: boolean;
 }
 
-const SimpleBox = ({ position, args, color, onClick, onPointerEnter, onPointerLeave, transparent = false, opacity = 1 }: SimpleBoxProps) => {
-  const meshRef = useRef();
+const EnhancedBox = ({ position, args, material, onClick, onPointerEnter, onPointerLeave, castShadow = true, receiveShadow = true }: EnhancedBoxProps) => {
+  const meshRef = useRef<THREE.Mesh>(null);
   
   return (
     <mesh 
@@ -47,29 +93,27 @@ const SimpleBox = ({ position, args, color, onClick, onPointerEnter, onPointerLe
       onClick={onClick}
       onPointerEnter={onPointerEnter}
       onPointerLeave={onPointerLeave}
+      castShadow={castShadow}
+      receiveShadow={receiveShadow}
     >
       <boxGeometry args={args} />
-      <meshStandardMaterial 
-        color={color} 
-        transparent={transparent}
-        opacity={opacity}
-      />
+      <primitive object={material} attach="material" />
     </mesh>
   );
 };
 
-// Window Component - Simplified
-const Window = ({ data, isHovered, onHover, onLeave, isDayTime }) => {
+// Enhanced Window Component
+const RealisticWindow = ({ data, isHovered, onHover, onLeave, isDayTime }) => {
   const isVertical = Math.abs(data.position[0]) > 1.9;
   const rotationY = isVertical ? Math.PI / 2 : 0;
 
   return (
     <group position={data.position as [number, number, number]} rotation={[0, rotationY, 0]}>
-      {/* Window Frame */}
-      <SimpleBox
+      {/* Window Frame - Outer */}
+      <EnhancedBox
         position={[0, 0, 0]}
-        args={[data.size[0] + 0.1, data.size[1] + 0.1, 0.1]}
-        color={isHovered ? "#8B4513" : "#654321"}
+        args={[data.size[0] + 0.15, data.size[1] + 0.15, 0.15]}
+        material={materials.windowFrame}
         onPointerEnter={(e) => {
           e.stopPropagation();
           onHover && onHover(e);
@@ -80,75 +124,339 @@ const Window = ({ data, isHovered, onHover, onLeave, isDayTime }) => {
         }}
       />
       
-      {/* Window Glass */}
-      <SimpleBox
+      {/* Window Frame - Inner */}
+      <EnhancedBox
         position={[0, 0, 0.05]}
-        args={[data.size[0], data.size[1], 0.05]}
-        color={isDayTime ? "#87CEEB" : "#1e3a8a"}
-        transparent={true}
-        opacity={0.3}
+        args={[data.size[0] + 0.05, data.size[1] + 0.05, 0.05]}
+        material={materials.windowFrame}
+      />
+      
+      {/* Window Glass */}
+      <EnhancedBox
+        position={[0, 0, 0.08]}
+        args={[data.size[0], data.size[1], 0.02]}
+        material={materials.glass}
+        castShadow={false}
+      />
+
+      {/* Window Dividers */}
+      {/* Horizontal divider */}
+      <EnhancedBox
+        position={[0, 0, 0.1]}
+        args={[data.size[0], 0.02, 0.01]}
+        material={materials.windowFrame}
+      />
+      
+      {/* Vertical divider */}
+      <EnhancedBox
+        position={[0, 0, 0.1]}
+        args={[0.02, data.size[1], 0.01]}
+        material={materials.windowFrame}
       />
 
       {/* Highlight when hovered */}
       {isHovered && (
-        <SimpleBox
+        <EnhancedBox
           position={[0, 0, -0.1]}
-          args={[data.size[0] + 0.2, data.size[1] + 0.2, 0.15]}
-          color="#ffff00"
-          transparent={true}
-          opacity={0.3}
+          args={[data.size[0] + 0.3, data.size[1] + 0.3, 0.1]}
+          material={new THREE.MeshBasicMaterial({ color: "#ffff00", transparent: true, opacity: 0.3 })}
+          castShadow={false}
+          receiveShadow={false}
         />
       )}
     </group>
   );
 };
 
-// House Structure - Simplified
-const HouseStructure = ({ isDayTime }) => {
-  const wallColor = isDayTime ? "#F5DEB3" : "#D2B48C";
-  
+// Enhanced House Structure
+const RealisticHouseStructure = ({ isDayTime }) => {
   return (
     <group>
+      {/* Foundation */}
+      <EnhancedBox args={[4.5, 0.5, 4.5]} position={[0, -1.25, 0]} material={new THREE.MeshStandardMaterial({ color: '#696969' })} />
+      
       {/* First Floor Base */}
-      <SimpleBox args={[4, 0.2, 4]} position={[0, -1, 0]} color="#8B4513" />
+      <EnhancedBox args={[4, 0.2, 4]} position={[0, -1, 0]} material={materials.wood} />
       
       {/* First Floor Walls */}
-      <SimpleBox args={[4, 2.5, 0.2]} position={[0, 0.25, 2]} color={wallColor} />
-      <SimpleBox args={[4, 2.5, 0.2]} position={[0, 0.25, -2]} color={wallColor} />
-      <SimpleBox args={[0.2, 2.5, 4]} position={[-2, 0.25, 0]} color={wallColor} />
-      <SimpleBox args={[0.2, 2.5, 4]} position={[2, 0.25, 0]} color={wallColor} />
+      <EnhancedBox args={[4, 2.5, 0.2]} position={[0, 0.25, 2]} material={materials.brick} />
+      <EnhancedBox args={[4, 2.5, 0.2]} position={[0, 0.25, -2]} material={materials.brick} />
+      <EnhancedBox args={[0.2, 2.5, 4]} position={[-2, 0.25, 0]} material={materials.brick} />
+      <EnhancedBox args={[0.2, 2.5, 4]} position={[2, 0.25, 0]} material={materials.brick} />
 
       {/* Second Floor Base */}
-      <SimpleBox args={[4, 0.2, 4]} position={[0, 2.4, 0]} color="#8B4513" />
+      <EnhancedBox args={[4, 0.2, 4]} position={[0, 2.4, 0]} material={materials.wood} />
 
       {/* Second Floor Walls */}
-      <SimpleBox args={[4, 2.5, 0.2]} position={[0, 3.75, 2]} color={wallColor} />
-      <SimpleBox args={[3, 2.5, 0.2]} position={[-0.5, 3.75, -2]} color={wallColor} />
-      <SimpleBox args={[0.2, 2.5, 4]} position={[-2, 3.75, 0]} color={wallColor} />
-      <SimpleBox args={[0.2, 2.5, 2]} position={[2, 3.75, -1]} color={wallColor} />
+      <EnhancedBox args={[4, 2.5, 0.2]} position={[0, 3.75, 2]} material={materials.brick} />
+      <EnhancedBox args={[3, 2.5, 0.2]} position={[-0.5, 3.75, -2]} material={materials.brick} />
+      <EnhancedBox args={[0.2, 2.5, 4]} position={[-2, 3.75, 0]} material={materials.brick} />
+      <EnhancedBox args={[0.2, 2.5, 2]} position={[2, 3.75, -1]} material={materials.brick} />
 
-      {/* Roof */}
-      <SimpleBox args={[4.5, 0.3, 4.5]} position={[0, 5.2, 0]} color="#8B0000" />
+      {/* Roof Structure */}
+      <group>
+        {/* Main Roof */}
+        <mesh position={[0, 5.5, 0]} rotation={[0, 0, 0]} castShadow>
+          <boxGeometry args={[4.8, 0.3, 4.8]} />
+          <primitive object={materials.roof} attach="material" />
+        </mesh>
+        
+        {/* Roof Peak */}
+        <mesh position={[0, 6.0, 0]} rotation={[0, 0, 0]} castShadow>
+          <coneGeometry args={[2.5, 1, 4]} />
+          <primitive object={materials.roof} attach="material" />
+        </mesh>
+      </group>
 
-      {/* Terrace Floor */}
-      <SimpleBox args={[2, 0.1, 2]} position={[1, 2.6, 1]} color="#8B4513" />
+      {/* Terrace Floor - Enhanced */}
+      <EnhancedBox args={[2.2, 0.15, 2.2]} position={[1, 2.55, 1]} material={materials.wood} />
+      
+      {/* Terrace Planks */}
+      {Array.from({ length: 10 }, (_, i) => (
+        <EnhancedBox 
+          key={`plank-${i}`}
+          args={[2, 0.05, 0.15]} 
+          position={[1, 2.65, 0.1 + i * 0.2]} 
+          material={new THREE.MeshStandardMaterial({ color: '#D2691E', roughness: 0.8 })} 
+        />
+      ))}
 
-      {/* Terrace Railings */}
-      <SimpleBox args={[2, 0.8, 0.1]} position={[1, 3.4, 2]} color="#654321" />
-      <SimpleBox args={[0.1, 0.8, 2]} position={[2, 3.4, 1]} color="#654321" />
-      <SimpleBox args={[2, 0.8, 0.1]} position={[1, 3.4, 0]} color="#654321" />
+      {/* Enhanced Terrace Railings */}
+      {/* Front Railing */}
+      <EnhancedBox args={[2.2, 1.0, 0.1]} position={[1, 3.5, 2.1]} material={materials.wood} />
+      {/* Vertical Posts */}
+      {Array.from({ length: 5 }, (_, i) => (
+        <EnhancedBox 
+          key={`post-front-${i}`}
+          args={[0.05, 1.0, 0.05]} 
+          position={[0.2 + i * 0.4, 3.5, 2.05]} 
+          material={materials.wood} 
+        />
+      ))}
+      
+      {/* Right Railing */}
+      <EnhancedBox args={[0.1, 1.0, 2.2]} position={[2.1, 3.5, 1]} material={materials.wood} />
+      {/* Vertical Posts */}
+      {Array.from({ length: 5 }, (_, i) => (
+        <EnhancedBox 
+          key={`post-right-${i}`}
+          args={[0.05, 1.0, 0.05]} 
+          position={[2.05, 3.5, 0.2 + i * 0.4]} 
+          material={materials.wood} 
+        />
+      ))}
+      
+      {/* Back Railing */}
+      <EnhancedBox args={[2.2, 1.0, 0.1]} position={[1, 3.5, -0.1]} material={materials.wood} />
 
-      {/* Ground */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.2, 0]}>
-        <planeGeometry args={[20, 20]} />
-        <meshStandardMaterial color={isDayTime ? "#90EE90" : "#2F4F2F"} />
+      {/* Front Door */}
+      <EnhancedBox 
+        args={[0.9, 2.0, 0.1]} 
+        position={[0, 1.0, 2.05]} 
+        material={new THREE.MeshStandardMaterial({ color: '#8B4513', roughness: 0.7 })} 
+      />
+
+      {/* Ground Landscaping */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.5, 0]} receiveShadow>
+        <planeGeometry args={[25, 25]} />
+        <meshStandardMaterial color="#228B22" />
+      </mesh>
+      
+      {/* Pathway */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.45, 3]} receiveShadow>
+        <planeGeometry args={[1.5, 3]} />
+        <meshStandardMaterial color="#708090" />
       </mesh>
     </group>
   );
 };
 
+// Enhanced Info Panel
+const EnhancedInfoPanel = ({ windowData, position }) => {
+  if (!windowData) return null;
+
+  return (
+    <div 
+      className="absolute bg-white/95 backdrop-blur-sm border-2 border-primary/20 rounded-xl p-4 shadow-xl z-20 min-w-[280px] max-w-[320px]"
+      style={{
+        left: Math.min(position.x + 10, window.innerWidth - 340),
+        top: Math.max(position.y - 10, 10),
+        pointerEvents: 'none'
+      }}
+    >
+      <div className="flex items-center gap-2 mb-3">
+        <Building className="h-5 w-5 text-primary" />
+        <h3 className="font-bold text-lg text-primary">{windowData.name}</h3>
+      </div>
+      
+      <div className="grid grid-cols-2 gap-3 text-sm">
+        <div>
+          <p className="font-medium text-gray-600">Location</p>
+          <p className="text-gray-800">{windowData.wall} Wall</p>
+        </div>
+        <div>
+          <p className="font-medium text-gray-600">Floor</p>
+          <p className="text-gray-800">Floor {windowData.floor}</p>
+        </div>
+        <div>
+          <p className="font-medium text-gray-600">Dimensions</p>
+          <p className="text-gray-800">{windowData.size[0]}m × {windowData.size[1]}m</p>
+        </div>
+        <div>
+          <p className="font-medium text-gray-600">Type</p>
+          <p className="text-gray-800">{windowData.type}</p>
+        </div>
+        <div className="col-span-2">
+          <p className="font-medium text-gray-600">Glazing</p>
+          <p className="text-gray-800">{windowData.material}</p>
+        </div>
+      </div>
+      
+      {windowData.isTerraceEntry && (
+        <Badge variant="secondary" className="mt-3 bg-green-100 text-green-800">
+          <MapPin className="h-3 w-3 mr-1" />
+          Terrace Access
+        </Badge>
+      )}
+    </div>
+  );
+};
+
+// 3D Tools Panel Component
+const ToolsPanel = ({ 
+  onResetView, 
+  onToggleWireframe, 
+  wireframeMode, 
+  onToggleGrid,
+  gridMode,
+  onCameraPreset,
+  onMeasureMode,
+  measureMode,
+  onScreenshot,
+  onFullscreen 
+}) => {
+  const cameraPresets = [
+    { name: 'Front', icon: Camera, value: 'front' },
+    { name: 'Back', icon: Camera, value: 'back' },
+    { name: 'Left', icon: Camera, value: 'left' },
+    { name: 'Right', icon: Camera, value: 'right' },
+    { name: 'Top', icon: Camera, value: 'top' },
+    { name: 'Isometric', icon: Camera, value: 'iso' },
+  ];
+
+  return (
+    <div className="absolute top-20 left-4 bg-white/95 backdrop-blur-sm rounded-xl p-4 shadow-xl z-10 max-w-xs">
+      <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
+        <Move3D className="h-5 w-5 text-primary" />
+        3D Tools
+      </h3>
+      
+      {/* View Controls */}
+      <div className="space-y-3">
+        <div>
+          <p className="font-medium text-sm mb-2">View Controls</p>
+          <div className="flex flex-wrap gap-2">
+            <Button
+              size="sm"
+              variant={wireframeMode ? "default" : "outline"}
+              onClick={onToggleWireframe}
+              className="text-xs"
+            >
+              <Grid3X3 className="h-3 w-3 mr-1" />
+              Wireframe
+            </Button>
+            <Button
+              size="sm"
+              variant={gridMode ? "default" : "outline"}
+              onClick={onToggleGrid}
+              className="text-xs"
+            >
+              <Grid3X3 className="h-3 w-3 mr-1" />
+              Grid
+            </Button>
+            <Button
+              size="sm"
+              variant={measureMode ? "default" : "outline"}
+              onClick={onMeasureMode}
+              className="text-xs"
+            >
+              <Ruler className="h-3 w-3 mr-1" />
+              Measure
+            </Button>
+          </div>
+        </div>
+
+        <Separator />
+
+        {/* Camera Presets */}
+        <div>
+          <p className="font-medium text-sm mb-2">Camera Views</p>
+          <div className="grid grid-cols-2 gap-1">
+            {cameraPresets.map((preset) => (
+              <Button
+                key={preset.value}
+                size="sm"
+                variant="outline"
+                onClick={() => onCameraPreset(preset.value)}
+                className="text-xs justify-start"
+              >
+                <preset.icon className="h-3 w-3 mr-1" />
+                {preset.name}
+              </Button>
+            ))}
+          </div>
+        </div>
+
+        <Separator />
+
+        {/* Action Controls */}
+        <div>
+          <p className="font-medium text-sm mb-2">Actions</p>
+          <div className="space-y-2">
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={onResetView}
+              className="w-full text-xs"
+            >
+              <RotateCcw className="h-3 w-3 mr-1" />
+              Reset View
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={onScreenshot}
+              className="w-full text-xs"
+            >
+              <Download className="h-3 w-3 mr-1" />
+              Screenshot
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={onFullscreen}
+              className="w-full text-xs"
+            >
+              <Fullscreen className="h-3 w-3 mr-1" />
+              Fullscreen
+            </Button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 // Scene Component
-const Scene = ({ isDayTime, hoveredWindow, setHoveredWindow, setMousePosition }) => {
+const EnhancedScene = ({ 
+  isDayTime, 
+  hoveredWindow, 
+  setHoveredWindow, 
+  setMousePosition, 
+  wireframeMode,
+  gridMode,
+  controlsRef 
+}) => {
   const handleWindowHover = (windowData, event) => {
     setHoveredWindow(windowData);
     if (event.clientX && event.clientY) {
@@ -160,25 +468,66 @@ const Scene = ({ isDayTime, hoveredWindow, setHoveredWindow, setMousePosition })
     setHoveredWindow(null);
   };
 
+  // Update materials for wireframe mode
+  React.useEffect(() => {
+    Object.values(materials).forEach(material => {
+      if (material instanceof THREE.Material) {
+        material.wireframe = wireframeMode;
+      }
+    });
+  }, [wireframeMode]);
+
   return (
     <>
-      {/* Lighting */}
-      <ambientLight intensity={isDayTime ? 0.6 : 0.3} />
+      {/* Environment and Lighting */}
+      <Environment preset={isDayTime ? "sunset" : "night"} />
+      
+      {/* Enhanced Lighting */}
+      <ambientLight intensity={isDayTime ? 0.4 : 0.2} />
       <directionalLight 
         position={[10, 10, 5]} 
-        intensity={isDayTime ? 1 : 0.4}
+        intensity={isDayTime ? 1.2 : 0.5}
         castShadow
+        shadow-mapSize-width={2048}
+        shadow-mapSize-height={2048}
+        shadow-camera-far={50}
+        shadow-camera-left={-10}
+        shadow-camera-right={10}
+        shadow-camera-top={10}
+        shadow-camera-bottom={-10}
       />
+      
+      {/* Additional lights for realism */}
+      <pointLight position={[-5, 8, 5]} intensity={0.3} color="#FFF8DC" />
+      <pointLight position={[5, 8, -5]} intensity={0.3} color="#FFF8DC" />
+      
       {!isDayTime && (
-        <pointLight position={[0, 8, 0]} intensity={0.5} color="#ffd700" />
+        <>
+          <pointLight position={[0, 8, 0]} intensity={0.6} color="#ffd700" />
+          <pointLight position={[1, 3, 1]} intensity={0.4} color="#ffaa00" />
+        </>
       )}
 
+      {/* Grid Helper */}
+      {gridMode && (
+        <gridHelper args={[20, 20, '#888888', '#444444']} position={[0, -1.5, 0]} />
+      )}
+
+      {/* Contact Shadows for better ground integration */}
+      <ContactShadows 
+        position={[0, -1.5, 0]} 
+        opacity={0.4} 
+        scale={15} 
+        blur={2.5} 
+        far={4.5} 
+      />
+
       {/* House Structure */}
-      <HouseStructure isDayTime={isDayTime} />
+      <RealisticHouseStructure isDayTime={isDayTime} />
 
       {/* Windows */}
       {windowsData.map((windowData) => (
-        <Window
+        <RealisticWindow
           key={windowData.id}
           data={windowData}
           isHovered={hoveredWindow?.id === windowData.id}
@@ -191,174 +540,64 @@ const Scene = ({ isDayTime, hoveredWindow, setHoveredWindow, setMousePosition })
   );
 };
 
-// Info Panel Component
-const InfoPanel = ({ windowData, position }) => {
-  if (!windowData) return null;
-
-  return (
-    <div 
-      className="absolute bg-white/90 backdrop-blur-sm border rounded-lg p-4 shadow-lg z-10 min-w-[200px]"
-      style={{
-        left: position.x + 10,
-        top: position.y - 10,
-        pointerEvents: 'none'
-      }}
-    >
-      <h3 className="font-semibold text-lg mb-2">{windowData.name}</h3>
-      <div className="space-y-1 text-sm">
-        <p><span className="font-medium">Wall:</span> {windowData.wall}</p>
-        <p><span className="font-medium">Floor:</span> {windowData.floor}</p>
-        <p><span className="font-medium">Size:</span> {windowData.size[0]}m × {windowData.size[1]}m</p>
-        {windowData.isTerraceEntry && (
-          <Badge variant="secondary" className="mt-2">Terrace Access</Badge>
-        )}
-      </div>
-    </div>
-  );
-};
-
-// Fallback component for when WebGL is not supported
-const Fallback3D = () => {
-  const features = [
-    {
-      icon: <BoxIcon className="h-8 w-8 text-primary" />,
-      title: "Interactive 3D House Model",
-      description: "Explore a detailed house with windows on all walls and floors"
-    },
-    {
-      icon: <Eye className="h-8 w-8 text-primary" />,
-      title: "Window Details",
-      description: "Hover over windows to see detailed information about each room"
-    },
-    {
-      icon: <MousePointer className="h-8 w-8 text-primary" />,
-      title: "Interactive Features",
-      description: "Day/night cycle, terrace access, and orbital controls"
-    },
-    {
-      icon: <Maximize className="h-8 w-8 text-primary" />,
-      title: "Second Floor Terrace",
-      description: "Spacious terrace with safety railings and wooden flooring"
-    }
-  ];
-
-  return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8">
-        {/* Hero Section */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold mb-4">3D House Model Showcase</h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Experience an interactive 3D house model with detailed windows, terrace access, and realistic lighting effects.
-          </p>
-        </div>
-
-        {/* WebGL Not Supported Message */}
-        <Card className="mb-8 bg-yellow-50 border-yellow-200">
-          <CardHeader>
-            <CardTitle className="text-yellow-800">3D Viewer Not Available</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-yellow-700 mb-4">
-              Your browser or device doesn't support WebGL, which is required for the 3D house model. 
-              Here are the features you would experience:
-            </p>
-          </CardContent>
-        </Card>
-
-        {/* Features Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          {features.map((feature, index) => (
-            <Card key={index} className="text-center">
-              <CardHeader>
-                <div className="flex justify-center mb-4">
-                  {feature.icon}
-                </div>
-                <CardTitle className="text-lg">{feature.title}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">{feature.description}</p>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
-        {/* House Features */}
-        <Card>
-          <CardHeader>
-            <CardTitle>House Model Features</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <h4 className="font-semibold mb-3">Window Placement</h4>
-                <ul className="space-y-2 text-sm">
-                  <li>• Living Room Window (Front Wall, Floor 1)</li>
-                  <li>• Kitchen Window (Front Wall, Floor 1)</li>
-                  <li>• Dining Room Window (Back Wall, Floor 1)</li>
-                  <li>• Guest Room Window (Right Wall, Floor 1)</li>
-                  <li>• Master Bedroom Window (Front Wall, Floor 2)</li>
-                  <li>• Terrace Door (Right Wall, Floor 2)</li>
-                </ul>
-              </div>
-              <div>
-                <h4 className="font-semibold mb-3">Interactive Features</h4>
-                <ul className="space-y-2 text-sm">
-                  <li>• Hover over windows for detailed information</li>
-                  <li>• Day/Night lighting cycle toggle</li>
-                  <li>• Orbital camera controls (rotate, zoom, pan)</li>
-                  <li>• Second-floor terrace with safety railings</li>
-                  <li>• Realistic material and lighting effects</li>
-                  <li>• Responsive design for all devices</li>
-                </ul>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Technology Info */}
-        <Card className="mt-8 bg-gradient-to-r from-primary/10 to-secondary/10">
-          <CardHeader className="text-center">
-            <CardTitle className="text-2xl">3D Technology</CardTitle>
-          </CardHeader>
-          <CardContent className="text-center">
-            <p className="text-muted-foreground">
-              This 3D house model is built with React Three Fiber and Three.js, 
-              providing WebGL-powered interactive 3D visualization with realistic lighting and materials.
-            </p>
-          </CardContent>
-        </Card>
-      </div>
-    </div>
-  );
-};
-
-// WebGL Detection
-const isWebGLSupported = () => {
-  try {
-    const canvas = document.createElement('canvas');
-    return !!(window.WebGLRenderingContext && (canvas.getContext('webgl') || canvas.getContext('experimental-webgl')));
-  } catch (e) {
-    return false;
-  }
-};
-
+// Main Component
 const ThreeDShowcase = () => {
   const [isDayTime, setIsDayTime] = useState(true);
   const [hoveredWindow, setHoveredWindow] = useState(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [webGLSupported, setWebGLSupported] = useState(true);
+  const [wireframeMode, setWireframeMode] = useState(false);
+  const [gridMode, setGridMode] = useState(false);
+  const [measureMode, setMeasureMode] = useState(false);
   const [loading, setLoading] = useState(true);
+  const controlsRef = useRef<any>();
 
   React.useEffect(() => {
-    const checkWebGL = () => {
-      const supported = isWebGLSupported();
-      setWebGLSupported(supported);
-      setLoading(false);
+    const timer = setTimeout(() => setLoading(false), 1000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const handleCameraPreset = useCallback((preset: string) => {
+    if (!controlsRef.current) return;
+    
+    const positions = {
+      front: [0, 3, 8],
+      back: [0, 3, -8],
+      left: [-8, 3, 0],
+      right: [8, 3, 0],
+      top: [0, 15, 0],
+      iso: [8, 6, 8],
     };
     
-    // Small delay to ensure proper detection
-    setTimeout(checkWebGL, 100);
+    const position = positions[preset as keyof typeof positions];
+    if (position && controlsRef.current.object && controlsRef.current.target) {
+      controlsRef.current.object.position.set(...position);
+      controlsRef.current.target.set(0, 2, 0);
+      controlsRef.current.update();
+    }
+  }, []);
+
+  const handleResetView = useCallback(() => {
+    handleCameraPreset('iso');
+  }, [handleCameraPreset]);
+
+  const handleScreenshot = useCallback(() => {
+    // This would capture the canvas content
+    const canvas = document.querySelector('canvas');
+    if (canvas) {
+      const link = document.createElement('a');
+      link.download = '3d-house-model.png';
+      link.href = canvas.toDataURL();
+      link.click();
+    }
+  }, []);
+
+  const handleFullscreen = useCallback(() => {
+    const element = document.querySelector('.canvas-container');
+    if (element) {
+      if (element.requestFullscreen) {
+        element.requestFullscreen();
+      }
+    }
   }, []);
 
   if (loading) {
@@ -366,29 +605,25 @@ const ThreeDShowcase = () => {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-primary mx-auto mb-4"></div>
-          <h2 className="text-xl font-semibold">Loading 3D House Model...</h2>
-          <p className="text-muted-foreground">Checking WebGL compatibility...</p>
+          <h2 className="text-xl font-semibold">Loading Realistic 3D House Model...</h2>
+          <p className="text-muted-foreground">Preparing enhanced visualization with professional tools</p>
         </div>
       </div>
     );
   }
 
-  if (!webGLSupported) {
-    return <Fallback3D />;
-  }
-
   return (
     <div className="min-h-screen bg-background relative">
       {/* Header */}
-      <div className="relative z-10 bg-background/80 backdrop-blur-sm border-b">
+      <div className="relative z-20 bg-background/90 backdrop-blur-sm border-b">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-bold flex items-center gap-2">
                 <Home className="h-6 w-6" />
-                Interactive 3D House Model
+                Realistic 3D House Model
               </h1>
-              <p className="text-muted-foreground">Explore every detail with interactive windows and terrace</p>
+              <p className="text-muted-foreground">Professional virtual house tour with advanced tools</p>
             </div>
             
             <div className="flex items-center gap-4">
@@ -407,58 +642,93 @@ const ThreeDShowcase = () => {
       </div>
 
       {/* 3D Canvas */}
-      <div className="h-[calc(100vh-120px)] relative">
+      <div className="h-[calc(100vh-120px)] relative canvas-container">
         <Canvas
           camera={{ position: [8, 6, 8], fov: 60 }}
-          onCreated={(state) => {
-            state.gl.setClearColor(isDayTime ? '#87CEEB' : '#191970');
-          }}
+          shadows
+          className="bg-gradient-to-b from-sky-100 to-sky-50 dark:from-gray-900 dark:to-gray-800"
         >
           <Suspense fallback={null}>
             <OrbitControls 
+              ref={controlsRef}
               enablePan={true}
               enableZoom={true}
               enableRotate={true}
-              minDistance={5}
-              maxDistance={20}
-              maxPolarAngle={Math.PI / 2.2}
+              minDistance={3}
+              maxDistance={25}
+              maxPolarAngle={Math.PI / 2.1}
+              enableDamping
+              dampingFactor={0.05}
             />
             
-            <Scene 
+            <EnhancedScene 
               isDayTime={isDayTime}
               hoveredWindow={hoveredWindow}
               setHoveredWindow={setHoveredWindow}
               setMousePosition={setMousePosition}
+              wireframeMode={wireframeMode}
+              gridMode={gridMode}
+              controlsRef={controlsRef}
             />
           </Suspense>
         </Canvas>
 
-        {/* Information Panel */}
-        <InfoPanel windowData={hoveredWindow} position={mousePosition} />
+        {/* Tools Panel */}
+        <ToolsPanel
+          onResetView={handleResetView}
+          onToggleWireframe={() => setWireframeMode(!wireframeMode)}
+          wireframeMode={wireframeMode}
+          onToggleGrid={() => setGridMode(!gridMode)}
+          gridMode={gridMode}
+          onCameraPreset={handleCameraPreset}
+          onMeasureMode={() => setMeasureMode(!measureMode)}
+          measureMode={measureMode}
+          onScreenshot={handleScreenshot}
+          onFullscreen={handleFullscreen}
+        />
+
+        {/* Enhanced Information Panel */}
+        <EnhancedInfoPanel windowData={hoveredWindow} position={mousePosition} />
 
         {/* Features Panel */}
-        <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-sm rounded-lg p-4 max-w-xs">
-          <h3 className="font-semibold mb-2 flex items-center gap-2">
-            <Info className="h-4 w-4" />
-            Features
+        <div className="absolute bottom-4 left-4 bg-white/95 backdrop-blur-sm rounded-xl p-4 max-w-xs shadow-xl">
+          <h3 className="font-bold mb-3 flex items-center gap-2">
+            <Info className="h-4 w-4 text-primary" />
+            Model Features
           </h3>
-          <ul className="text-sm space-y-1">
-            <li>• Interactive windows on all walls</li>
-            <li>• Second-floor terrace with railings</li>
-            <li>• Day/Night lighting cycle</li>
-            <li>• Hover for window details</li>
-            <li>• Orbit, zoom & pan controls</li>
+          <ul className="text-sm space-y-2">
+            <li className="flex items-center gap-2">
+              <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+              Realistic materials & textures
+            </li>
+            <li className="flex items-center gap-2">
+              <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+              Enhanced lighting & shadows
+            </li>
+            <li className="flex items-center gap-2">
+              <span className="w-2 h-2 bg-purple-500 rounded-full"></span>
+              Professional 3D tools
+            </li>
+            <li className="flex items-center gap-2">
+              <span className="w-2 h-2 bg-orange-500 rounded-full"></span>
+              Interactive window details
+            </li>
+            <li className="flex items-center gap-2">
+              <span className="w-2 h-2 bg-red-500 rounded-full"></span>
+              Multiple camera angles
+            </li>
           </ul>
         </div>
 
         {/* Controls Info */}
-        <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-sm rounded-lg p-4 max-w-xs">
-          <h3 className="font-semibold mb-2">Controls</h3>
-          <ul className="text-sm space-y-1">
-            <li>• <strong>Left Click + Drag:</strong> Rotate</li>
-            <li>• <strong>Right Click + Drag:</strong> Pan</li>
-            <li>• <strong>Scroll:</strong> Zoom</li>
-            <li>• <strong>Hover Windows:</strong> View Info</li>
+        <div className="absolute bottom-4 right-4 bg-white/95 backdrop-blur-sm rounded-xl p-4 max-w-xs shadow-xl">
+          <h3 className="font-bold mb-3">Navigation Controls</h3>
+          <ul className="text-sm space-y-2">
+            <li><strong>Left Click + Drag:</strong> Rotate view</li>
+            <li><strong>Right Click + Drag:</strong> Pan camera</li>
+            <li><strong>Mouse Wheel:</strong> Zoom in/out</li>
+            <li><strong>Hover Windows:</strong> View details</li>
+            <li><strong>Tools Panel:</strong> Advanced options</li>
           </ul>
         </div>
       </div>
