@@ -391,7 +391,7 @@ const EnhancedInfoPanel = ({ windowData, position }) => {
   );
 };
 
-// 3D Tools Panel Component
+// 3D Tools Panel Component - Collapsible and Compact
 const ToolsPanel = ({ 
   onResetView, 
   onToggleWireframe, 
@@ -404,6 +404,8 @@ const ToolsPanel = ({
   onScreenshot,
   onFullscreen 
 }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  
   const cameraPresets = [
     { name: 'Front', icon: Camera, value: 'front' },
     { name: 'Back', icon: Camera, value: 'back' },
@@ -414,104 +416,113 @@ const ToolsPanel = ({
   ];
 
   return (
-    <div className="absolute top-20 left-4 bg-white/95 backdrop-blur-sm rounded-xl p-6 shadow-xl z-10 w-80 max-w-sm">
-      <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
-        <Move3D className="h-5 w-5 text-primary" />
-        3D Tools
-      </h3>
-      
-      {/* View Controls */}
-      <div className="space-y-3">
-        <div>
-          <p className="font-medium text-sm mb-2">View Controls</p>
-          <div className="flex flex-wrap gap-2">
-            <Button
-              size="sm"
-              variant={wireframeMode ? "default" : "outline"}
-              onClick={onToggleWireframe}
-              className="text-xs"
-            >
-              <Grid3X3 className="h-3 w-3 mr-1" />
-              Wireframe
-            </Button>
-            <Button
-              size="sm"
-              variant={gridMode ? "default" : "outline"}
-              onClick={onToggleGrid}
-              className="text-xs"
-            >
-              <Grid3X3 className="h-3 w-3 mr-1" />
-              Grid
-            </Button>
-            <Button
-              size="sm"
-              variant={measureMode ? "default" : "outline"}
-              onClick={onMeasureMode}
-              className="text-xs"
-            >
-              <Ruler className="h-3 w-3 mr-1" />
-              Measure
-            </Button>
-          </div>
-        </div>
+    <div className="absolute top-20 left-4 z-50">
+      {/* Tools Toggle Button */}
+      <Button
+        onClick={() => setIsOpen(!isOpen)}
+        className="mb-2 bg-white/95 hover:bg-white/100 text-gray-800 border border-gray-200 shadow-lg backdrop-blur-sm"
+        size="sm"
+      >
+        <Move3D className="h-4 w-4 mr-2" />
+        Tools
+        {isOpen ? <span className="ml-2">▼</span> : <span className="ml-2">▶</span>}
+      </Button>
 
-        <Separator />
-
-        {/* Camera Presets */}
-        <div>
-          <p className="font-medium text-sm mb-2">Camera Views</p>
-          <div className="grid grid-cols-2 gap-1">
-            {cameraPresets.map((preset) => (
+      {/* Collapsible Tools Panel */}
+      {isOpen && (
+        <div className="bg-white/98 backdrop-blur-sm rounded-lg shadow-2xl border border-gray-200 p-4 w-72 max-h-[70vh] overflow-y-auto z-50">
+          {/* Quick Actions */}
+          <div className="mb-4">
+            <p className="font-semibold text-sm mb-2 text-gray-700">Quick Actions</p>
+            <div className="grid grid-cols-2 gap-2">
               <Button
-                key={preset.value}
+                size="sm"
+                variant={wireframeMode ? "default" : "outline"}
+                onClick={onToggleWireframe}
+                className="text-xs h-8"
+              >
+                <Grid3X3 className="h-3 w-3 mr-1" />
+                Wire
+              </Button>
+              <Button
+                size="sm"
+                variant={gridMode ? "default" : "outline"}
+                onClick={onToggleGrid}
+                className="text-xs h-8"
+              >
+                <Grid3X3 className="h-3 w-3 mr-1" />
+                Grid
+              </Button>
+              <Button
+                size="sm"
+                variant={measureMode ? "default" : "outline"}
+                onClick={onMeasureMode}
+                className="text-xs h-8"
+              >
+                <Ruler className="h-3 w-3 mr-1" />
+                Measure
+              </Button>
+              <Button
                 size="sm"
                 variant="outline"
-                onClick={() => onCameraPreset(preset.value)}
-                className="text-xs justify-start"
+                onClick={onResetView}
+                className="text-xs h-8"
               >
-                <preset.icon className="h-3 w-3 mr-1" />
-                {preset.name}
+                <RotateCcw className="h-3 w-3 mr-1" />
+                Reset
               </Button>
-            ))}
+            </div>
+          </div>
+
+          <Separator className="my-3" />
+
+          {/* Camera Views */}
+          <div className="mb-4">
+            <p className="font-semibold text-sm mb-2 text-gray-700">Camera Views</p>
+            <div className="grid grid-cols-2 gap-1">
+              {cameraPresets.map((preset) => (
+                <Button
+                  key={preset.value}
+                  size="sm"
+                  variant="outline"
+                  onClick={() => onCameraPreset(preset.value)}
+                  className="text-xs h-8 justify-start"
+                >
+                  <preset.icon className="h-3 w-3 mr-1" />
+                  {preset.name}
+                </Button>
+              ))}
+            </div>
+          </div>
+
+          <Separator className="my-3" />
+
+          {/* Export Tools */}
+          <div>
+            <p className="font-semibold text-sm mb-2 text-gray-700">Export & View</p>
+            <div className="space-y-2">
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={onScreenshot}
+                className="w-full text-xs h-8 justify-start"
+              >
+                <Download className="h-3 w-3 mr-2" />
+                Download Screenshot
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={onFullscreen}
+                className="w-full text-xs h-8 justify-start"
+              >
+                <Fullscreen className="h-3 w-3 mr-2" />
+                Enter Fullscreen
+              </Button>
+            </div>
           </div>
         </div>
-
-        <Separator />
-
-        {/* Action Controls */}
-        <div>
-          <p className="font-medium text-sm mb-2">Actions</p>
-          <div className="space-y-2">
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={onResetView}
-              className="w-full text-xs"
-            >
-              <RotateCcw className="h-3 w-3 mr-1" />
-              Reset View
-            </Button>
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={onScreenshot}
-              className="w-full text-xs"
-            >
-              <Download className="h-3 w-3 mr-1" />
-              Screenshot
-            </Button>
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={onFullscreen}
-              className="w-full text-xs"
-            >
-              <Fullscreen className="h-3 w-3 mr-1" />
-              Fullscreen
-            </Button>
-          </div>
-        </div>
-      </div>
+      )}
     </div>
   );
 };
