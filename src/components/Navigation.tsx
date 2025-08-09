@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Menu, X, User, Settings, LogOut, Crown, Moon, Sun, Sparkles, Brain, Home as HomeIcon, Building, Key, Rocket, Hammer, BarChart3, Headphones, Box, Settings2, Bell } from "lucide-react";
+import { Menu, X, User, Settings, LogOut, Crown, Moon, Sun, Sparkles, Brain, Home as HomeIcon, Building, Key, Rocket, Hammer, BarChart3, Headphones, Box, Settings2, Bell, Coins } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useTheme } from "@/components/ThemeProvider";
@@ -207,18 +207,31 @@ const Navigation = () => {
                 {currentText.services}
               </Button>
 
-              {/* Dashboard link - show role-appropriate dashboard */}
-              {user && !isAdmin && !isAgent && (
-                <Button 
-                  variant="ghost" 
-                  size="sm"
-                  className="h-10 px-3 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-all"
-                  onClick={() => navigate('/dashboard/user')}
-                >
-                  <BarChart3 className="h-4 w-4 mr-1" />
-                  {currentText.dashboard}
-                </Button>
-              )}
+               {/* ASTRA Tokens - show for authenticated users */}
+               {user && (
+                 <Button 
+                   variant="ghost" 
+                   size="sm"
+                   className="h-10 px-3 text-sm font-medium text-yellow-600 dark:text-yellow-400 hover:text-yellow-700 dark:hover:text-yellow-300 hover:bg-yellow-50 dark:hover:bg-yellow-900/20 rounded-lg transition-all"
+                   onClick={() => navigate('/astra-tokens')}
+                 >
+                   <Coins className="h-4 w-4 mr-1" />
+                   ASTRA Tokens
+                 </Button>
+               )}
+
+               {/* Dashboard link - show role-appropriate dashboard */}
+               {user && !isAdmin && !isAgent && (
+                 <Button 
+                   variant="ghost" 
+                   size="sm"
+                   className="h-10 px-3 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-all"
+                   onClick={() => navigate('/dashboard/user')}
+                 >
+                   <BarChart3 className="h-4 w-4 mr-1" />
+                   {currentText.dashboard}
+                 </Button>
+               )}
 
               {/* Agent Dashboard - only show for agent users */}
               {isAgent && (
@@ -346,6 +359,14 @@ const Navigation = () => {
                   <Settings2 className="h-4 w-4 mr-2" />
                   {currentText.services}
                 </Button>
+
+                {/* ASTRA Tokens - show for authenticated users */}
+                {user && (
+                  <Button variant="ghost" className="w-full justify-start text-sm font-medium text-yellow-600 dark:text-yellow-400 hover:text-yellow-700 dark:hover:text-yellow-300 hover:bg-yellow-50 dark:hover:bg-yellow-900/20" onClick={() => { navigate('/astra-tokens'); toggleMenu(); }}>
+                    <Coins className="h-4 w-4 mr-2" />
+                    ASTRA Tokens
+                  </Button>
+                )}
                 
                 {/* Dashboard link - show for authenticated users */}
                 {user && !isAdmin && !isAgent && (

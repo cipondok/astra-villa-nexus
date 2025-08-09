@@ -32,6 +32,7 @@ import CustomerServiceDashboardPage from '@/pages/CustomerServiceDashboard';
 import UserDashboardPage from '@/pages/UserDashboardPage';
 import ThreeDShowcase from '@/pages/ThreeDShowcase';
 import PreLaunching from '@/pages/PreLaunching';
+import AstraTokensPage from '@/pages/AstraTokensPage';
 import Properties from '@/pages/Properties';
 import Notifications from '@/pages/Notifications';
 import Users from '@/pages/Users';
@@ -53,6 +54,7 @@ const AppContent = () => {
           <Route path="/saved" element={<Saved />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/auth" element={<Profile />} />
+          <Route path="/astra-tokens" element={<AstraTokensPage />} />
           <Route path="/services" element={<Services />} />
           <Route path="/dijual" element={<Dijual />} />
           <Route path="/buy" element={<Dijual />} />
