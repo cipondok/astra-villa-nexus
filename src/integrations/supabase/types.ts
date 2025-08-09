@@ -892,6 +892,51 @@ export type Database = {
           },
         ]
       }
+      astra_token_transfers: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          message: string | null
+          metadata: Json | null
+          net_amount: number
+          recipient_id: string
+          sender_id: string
+          status: string
+          transfer_fee: number
+          transfer_type: string
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          id?: string
+          message?: string | null
+          metadata?: Json | null
+          net_amount: number
+          recipient_id: string
+          sender_id: string
+          status?: string
+          transfer_fee?: number
+          transfer_type?: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          message?: string | null
+          metadata?: Json | null
+          net_amount?: number
+          recipient_id?: string
+          sender_id?: string
+          status?: string
+          transfer_fee?: number
+          transfer_type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       billing_plans: {
         Row: {
           billing_cycle: string | null
@@ -3405,6 +3450,66 @@ export type Database = {
           },
         ]
       }
+      property_filter_configurations: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          default_value: Json | null
+          display_order: number | null
+          filter_category: string
+          filter_name: string
+          filter_options: Json | null
+          filter_type: string
+          id: string
+          is_active: boolean | null
+          is_required: boolean | null
+          listing_type: string
+          max_value: number | null
+          min_value: number | null
+          step_value: number | null
+          updated_at: string
+          validation_rules: Json | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          default_value?: Json | null
+          display_order?: number | null
+          filter_category: string
+          filter_name: string
+          filter_options?: Json | null
+          filter_type: string
+          id?: string
+          is_active?: boolean | null
+          is_required?: boolean | null
+          listing_type: string
+          max_value?: number | null
+          min_value?: number | null
+          step_value?: number | null
+          updated_at?: string
+          validation_rules?: Json | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          default_value?: Json | null
+          display_order?: number | null
+          filter_category?: string
+          filter_name?: string
+          filter_options?: Json | null
+          filter_type?: string
+          id?: string
+          is_active?: boolean | null
+          is_required?: boolean | null
+          listing_type?: string
+          max_value?: number | null
+          min_value?: number | null
+          step_value?: number | null
+          updated_at?: string
+          validation_rules?: Json | null
+        }
+        Relationships: []
+      }
       property_images: {
         Row: {
           alt_text: string | null
@@ -4573,6 +4678,39 @@ export type Database = {
           session_token?: string
           user_agent?: string | null
           user_id?: string
+        }
+        Relationships: []
+      }
+      user_filter_preferences: {
+        Row: {
+          created_at: string
+          filter_name: string
+          id: string
+          is_default: boolean | null
+          listing_type: string
+          saved_value: Json
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          filter_name: string
+          id?: string
+          is_default?: boolean | null
+          listing_type: string
+          saved_value: Json
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          filter_name?: string
+          id?: string
+          is_default?: boolean | null
+          listing_type?: string
+          saved_value?: Json
+          updated_at?: string
+          user_id?: string | null
         }
         Relationships: []
       }

@@ -93,6 +93,25 @@ export const useAstraToken = () => {
     enabled: !!user?.id
   });
 
+  // Fetch transfers
+  const {
+    data: transfers,
+    isLoading: loadingTransfers,
+    refetch: refetchTransfers
+  } = useQuery({
+    queryKey: ['astra-transfers', user?.id],
+    queryFn: async () => {
+      if (!user?.id) return [];
+      
+      const { data } = await supabase.functions.invoke('astra-token-hub', {
+        body: { action: 'get_transfers', userId: user.id }
+      });
+      
+      return data?.transfers || [];
+    },
+    enabled: !!user?.id
+  });
+
   // Daily checkin mutation
   const checkinMutation = useMutation({
     mutationFn: async () => {
@@ -200,6 +219,38 @@ export const useAstraToken = () => {
     }
   };
 
+  // Transfer tokens function
+  const transferTokens = async (recipientId: string, amount: number, message?: string) => {
+    if (!user?.id) return null;
+    
+    try {
+      const { data } = await supabase.functions.invoke('astra-token-hub', {
+        body: { 
+          action: 'transfer_tokens', 
+          userId: user.id, 
+          recipientId,
+          amount,
+          message
+        }
+      });
+      
+      if (data?.success) {
+        showSuccess('Transfer Successful!', data.message);
+        queryClient.invalidateQueries({ queryKey: ['astra-balance'] });
+        queryClient.invalidateQueries({ queryKey: ['astra-transactions'] });
+        queryClient.invalidateQueries({ queryKey: ['astra-transfers'] });
+        return data;
+      } else {
+        showError('Transfer Failed', data.message);
+        return null;
+      }
+    } catch (error) {
+      console.error('Transfer error:', error);
+      showError('Error', `Failed to transfer tokens: ${error.message}`);
+      return null;
+    }
+  };
+
   // Format token amount
   const formatTokenAmount = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -213,11 +264,13 @@ export const useAstraToken = () => {
     balance,
     checkinStatus,
     transactions,
+    transfers,
     
     // Loading states
     loadingBalance,
     loadingCheckin,
     loadingTransactions,
+    loadingTransfers,
     
     // Actions
     performCheckin: checkinMutation.mutate,
@@ -225,12 +278,14 @@ export const useAstraToken = () => {
     triggerTransactionBonus,
     awardTokens,
     claimWelcomeBonus,
+    transferTokens,
     
     // Utilities
     formatTokenAmount,
     refetchBalance,
     refetchCheckin,
     refetchTransactions,
+    refetchTransfers,
     
     // User info
     user

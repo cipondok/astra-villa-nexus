@@ -18,12 +18,16 @@ import {
   Star,
   Award,
   Copy,
-  ExternalLink
+  ExternalLink,
+  Send,
+  ArrowUpDown
 } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAlert } from '@/contexts/AlertContext';
 import { useAuth } from '@/contexts/AuthContext';
+import AstraTokenTransfer from './AstraTokenTransfer';
+import AstraTransferHistory from './AstraTransferHistory';
 
 interface TokenBalance {
   total_tokens: number;
@@ -264,12 +268,21 @@ const AstraTokenHub = () => {
       </div>
 
       <Tabs defaultValue="earn" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="earn">Earn Tokens</TabsTrigger>
-          <TabsTrigger value="transactions">Transaction History</TabsTrigger>
+          <TabsTrigger value="transfer">Transfer</TabsTrigger>
+          <TabsTrigger value="transactions">History</TabsTrigger>
           <TabsTrigger value="referrals">Referrals</TabsTrigger>
           <TabsTrigger value="rewards">Rewards</TabsTrigger>
         </TabsList>
+
+        {/* Transfer Tab */}
+        <TabsContent value="transfer" className="space-y-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <AstraTokenTransfer />
+            <AstraTransferHistory />
+          </div>
+        </TabsContent>
 
         {/* Earn Tokens Tab */}
         <TabsContent value="earn" className="space-y-4">

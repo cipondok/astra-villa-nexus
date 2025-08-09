@@ -29,7 +29,8 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
-    const { action, userId, amount, transactionType, description, referenceType, referenceId, metadata }: TokenRequest = await req.json();
+    const body = await req.json();
+    const { action, userId, amount, transactionType, description, referenceType, referenceId, metadata, recipientId, message }: TokenRequest & { recipientId?: string; message?: string } = body;
 
     console.log('ASTRA Token Hub action:', action, { userId, amount, transactionType });
 
@@ -60,6 +61,12 @@ serve(async (req) => {
       
       case 'get_checkin_status':
         return await getCheckinStatus(supabase, userId!);
+      
+      case 'transfer_tokens':
+        return await processTokenTransfer(supabase, userId!, recipientId!, amount!, message);
+      
+      case 'get_transfers':
+        return await getTokenTransfers(supabase, userId!);
       
       default:
         return new Response(
@@ -661,6 +668,219 @@ async function getCheckinStatus(supabase: any, userId: string) {
       currentStreak,
       todayCheckin: hasCheckedInToday ? todayCheckin : null
     }),
+    { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+  );
+}
+
+async function processTokenTransfer(supabase: any, senderId: string, recipientId: string, amount: number, message?: string) {
+  console.log('Processing token transfer:', { senderId, recipientId, amount, message });
+  
+  // Validate minimum transfer amount and sender balance requirements
+  if (amount <= 0) {
+    return new Response(
+      JSON.stringify({ success: false, message: 'Transfer amount must be greater than 0' }),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  }
+
+  // Get sender's current balance
+  const { data: senderBalance, error: senderError } = await supabase
+    .from('astra_token_balances')
+    .select('*')
+    .eq('user_id', senderId)
+    .single();
+
+  if (senderError || !senderBalance) {
+    return new Response(
+      JSON.stringify({ success: false, message: 'Failed to get sender balance' }),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  }
+
+  // Check if sender has minimum 1000 tokens to be eligible for transfers
+  if (senderBalance.available_tokens < 1000) {
+    return new Response(
+      JSON.stringify({ 
+        success: false, 
+        message: 'You need at least 1,000 ASTRA tokens to make transfers'
+      }),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  }
+
+  // Check if sender has enough tokens for the transfer
+  if (senderBalance.available_tokens < amount) {
+    return new Response(
+      JSON.stringify({ 
+        success: false, 
+        message: `Insufficient balance. You have ${senderBalance.available_tokens} tokens available`
+      }),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  }
+
+  // Verify recipient exists
+  const { data: recipientProfile, error: recipientError } = await supabase
+    .from('profiles')
+    .select('id, full_name, email')
+    .eq('id', recipientId)
+    .single();
+
+  if (recipientError || !recipientProfile) {
+    return new Response(
+      JSON.stringify({ success: false, message: 'Recipient not found' }),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  }
+
+  // Calculate transfer fee (1% of transfer amount, minimum 1 token)
+  const transferFeeRate = 0.01;
+  const transferFee = Math.max(1, Math.floor(amount * transferFeeRate));
+  const netAmount = amount - transferFee;
+
+  // Get or create recipient balance
+  const { data: recipientBalance, error: recipientBalanceError } = await supabase
+    .from('astra_token_balances')
+    .select('*')
+    .eq('user_id', recipientId)
+    .single();
+
+  // If recipient doesn't have a balance record, we'll create one
+  const recipientCurrentBalance = recipientBalance || {
+    total_tokens: 0,
+    available_tokens: 0,
+    locked_tokens: 0,
+    lifetime_earned: 0
+  };
+
+  try {
+    // Start transaction by updating sender balance
+    const { error: senderUpdateError } = await supabase
+      .from('astra_token_balances')
+      .update({
+        total_tokens: senderBalance.total_tokens - amount,
+        available_tokens: senderBalance.available_tokens - amount,
+        updated_at: new Date().toISOString()
+      })
+      .eq('user_id', senderId);
+
+    if (senderUpdateError) {
+      throw new Error(`Failed to update sender balance: ${senderUpdateError.message}`);
+    }
+
+    // Update or create recipient balance
+    const { error: recipientUpdateError } = await supabase
+      .from('astra_token_balances')
+      .upsert({
+        user_id: recipientId,
+        total_tokens: recipientCurrentBalance.total_tokens + netAmount,
+        available_tokens: recipientCurrentBalance.available_tokens + netAmount,
+        locked_tokens: recipientCurrentBalance.locked_tokens || 0,
+        lifetime_earned: recipientCurrentBalance.lifetime_earned + netAmount,
+        updated_at: new Date().toISOString()
+      }, {
+        onConflict: 'user_id'
+      });
+
+    if (recipientUpdateError) {
+      throw new Error(`Failed to update recipient balance: ${recipientUpdateError.message}`);
+    }
+
+    // Record the transfer
+    const { error: transferError } = await supabase
+      .from('astra_token_transfers')
+      .insert({
+        sender_id: senderId,
+        recipient_id: recipientId,
+        amount: amount,
+        transfer_fee: transferFee,
+        net_amount: netAmount,
+        status: 'completed',
+        transfer_type: 'user_transfer',
+        message: message || '',
+        metadata: {
+          sender_balance_before: senderBalance.available_tokens,
+          recipient_balance_before: recipientCurrentBalance.available_tokens
+        }
+      });
+
+    if (transferError) {
+      throw new Error(`Failed to record transfer: ${transferError.message}`);
+    }
+
+    // Create transaction records for both users
+    await Promise.all([
+      // Sender transaction (debit)
+      supabase.from('astra_token_transactions').insert({
+        user_id: senderId,
+        transaction_type: 'transfer_sent',
+        amount: -amount,
+        description: `Transfer to ${recipientProfile.full_name || recipientProfile.email}${message ? ': ' + message : ''}`,
+        reference_type: 'transfer',
+        reference_id: recipientId,
+        status: 'completed',
+        metadata: { transfer_fee: transferFee, net_amount: amount }
+      }),
+      
+      // Recipient transaction (credit)
+      supabase.from('astra_token_transactions').insert({
+        user_id: recipientId,
+        transaction_type: 'transfer_received',
+        amount: netAmount,
+        description: `Transfer from user${message ? ': ' + message : ''}`,
+        reference_type: 'transfer',
+        reference_id: senderId,
+        status: 'completed',
+        metadata: { transfer_fee: transferFee, gross_amount: amount }
+      })
+    ]);
+
+    return new Response(
+      JSON.stringify({ 
+        success: true,
+        transferAmount: amount,
+        transferFee: transferFee,
+        netAmount: netAmount,
+        recipientName: recipientProfile.full_name || recipientProfile.email,
+        message: `Successfully transferred ${amount} ASTRA tokens (${transferFee} fee)`
+      }),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+
+  } catch (error) {
+    console.error('Transfer failed:', error);
+    return new Response(
+      JSON.stringify({ 
+        success: false, 
+        message: `Transfer failed: ${error.message}`
+      }),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  }
+}
+
+async function getTokenTransfers(supabase: any, userId: string) {
+  const { data, error } = await supabase
+    .from('astra_token_transfers')
+    .select(`
+      *,
+      sender:profiles!astra_token_transfers_sender_id_fkey(full_name, email),
+      recipient:profiles!astra_token_transfers_recipient_id_fkey(full_name, email)
+    `)
+    .or(`sender_id.eq.${userId},recipient_id.eq.${userId}`)
+    .order('created_at', { ascending: false })
+    .limit(50);
+
+  if (error) {
+    console.error('Failed to get transfers:', error);
+    return new Response(
+      JSON.stringify({ transfers: [] }),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  }
+
+  return new Response(
+    JSON.stringify({ transfers: data || [] }),
     { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
   );
 }
