@@ -1,14 +1,15 @@
-import React, { useState, useRef, Suspense, useCallback } from 'react';
+import React, { useState, useRef, Suspense, useCallback, useEffect } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, Text, Environment, ContactShadows } from '@react-three/drei';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { 
   Sun, Moon, Home, Info, RotateCcw, Box as BoxIcon, Eye, MousePointer, Maximize,
   Camera, Ruler, Maximize2, RotateCw, ZoomIn, ZoomOut, Move3D, Grid3X3,
-  Download, Fullscreen, MapPin, Building
+  Download, Fullscreen, MapPin, Building, AlertTriangle, RefreshCw
 } from 'lucide-react';
 import * as THREE from 'three';
 
@@ -630,6 +631,48 @@ const EnhancedScene = ({
   );
 };
 
+// WebGL compatibility check function
+const checkWebGLSupport = () => {
+  try {
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('webgl') || canvas.getContext('experimental-webgl') as WebGLRenderingContext;
+    
+    if (!context) {
+      return { supported: false, error: 'WebGL not supported by browser' };
+    }
+    
+    // Check for required WebGL extensions
+    const requiredExtensions = ['OES_element_index_uint', 'WEBGL_depth_texture'];
+    const missingExtensions = [];
+    
+    for (const ext of requiredExtensions) {
+      if (!context.getExtension(ext)) {
+        missingExtensions.push(ext);
+      }
+    }
+    
+    // Check WebGL capabilities
+    const maxTextureSize = context.getParameter(context.MAX_TEXTURE_SIZE) as number;
+    const maxVertexUniforms = context.getParameter(context.MAX_VERTEX_UNIFORM_VECTORS) as number;
+    
+    if (maxTextureSize < 1024 || maxVertexUniforms < 128) {
+      return { 
+        supported: false, 
+        error: 'WebGL capabilities insufficient',
+        details: `Max texture: ${maxTextureSize}, Max uniforms: ${maxVertexUniforms}`
+      };
+    }
+    
+    return { 
+      supported: true, 
+      capabilities: { maxTextureSize, maxVertexUniforms },
+      missingExtensions 
+    };
+  } catch (error: any) {
+    return { supported: false, error: `WebGL check failed: ${error.message}` };
+  }
+};
+
 // Main Component
 const ThreeDShowcase = () => {
   const [isDayTime, setIsDayTime] = useState(true);
@@ -639,11 +682,28 @@ const ThreeDShowcase = () => {
   const [gridMode, setGridMode] = useState(false);
   const [measureMode, setMeasureMode] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [webglError, setWebglError] = useState<string | null>(null);
+  const [webglSupport, setWebglSupport] = useState<any>(null);
   const controlsRef = useRef<any>();
 
-  React.useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 1000);
-    return () => clearTimeout(timer);
+  // WebGL compatibility check on mount
+  useEffect(() => {
+    const checkSupport = () => {
+      const support = checkWebGLSupport();
+      setWebglSupport(support);
+      
+      if (!support.supported) {
+        setWebglError(support.error);
+        setLoading(false);
+        return;
+      }
+      
+      // Add a delay to ensure proper initialization
+      const timer = setTimeout(() => setLoading(false), 1500);
+      return () => clearTimeout(timer);
+    };
+    
+    checkSupport();
   }, []);
 
   const handleCameraPreset = useCallback((preset: string) => {
@@ -690,13 +750,87 @@ const ThreeDShowcase = () => {
     }
   }, []);
 
+  // Handle retry for WebGL issues
+  const handleRetry = useCallback(() => {
+    setWebglError(null);
+    setLoading(true);
+    
+    // Force a re-check of WebGL support
+    setTimeout(() => {
+      const support = checkWebGLSupport();
+      setWebglSupport(support);
+      
+      if (!support.supported) {
+        setWebglError(support.error);
+      }
+      setLoading(false);
+    }, 500);
+  }, []);
+
+  // Error state for WebGL compatibility issues
+  if (webglError) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
+        <Card className="max-w-2xl w-full">
+          <CardHeader className="text-center">
+            <CardTitle className="flex items-center justify-center gap-2 text-destructive">
+              <AlertTriangle className="h-6 w-6" />
+              3D Model Loading Error
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Alert variant="destructive">
+              <AlertTriangle className="h-4 w-4" />
+              <AlertDescription className="text-sm">
+                <strong>WebGL Compatibility Issue:</strong> {webglError}
+              </AlertDescription>
+            </Alert>
+            
+            <div className="space-y-3">
+              <h3 className="font-semibold">Possible Solutions:</h3>
+              <ul className="text-sm space-y-2 list-disc pl-5">
+                <li>Try updating your web browser to the latest version</li>
+                <li>Enable hardware acceleration in your browser settings</li>
+                <li>Update your graphics drivers</li>
+                <li>Try switching to a different browser (Chrome, Firefox, Safari)</li>
+                <li>Disable browser extensions that might interfere with WebGL</li>
+              </ul>
+              
+              {webglSupport?.details && (
+                <div className="text-xs text-muted-foreground p-2 bg-muted rounded">
+                  <strong>Technical Details:</strong> {webglSupport.details}
+                </div>
+              )}
+            </div>
+            
+            <div className="flex gap-2 justify-center pt-4">
+              <Button onClick={handleRetry} className="flex items-center gap-2">
+                <RefreshCw className="h-4 w-4" />
+                Try Again
+              </Button>
+              <Button variant="outline" onClick={() => window.location.href = '/'}>
+                <Home className="h-4 w-4 mr-2" />
+                Go Back Home
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-primary mx-auto mb-4"></div>
+        <div className="text-center space-y-4">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-primary mx-auto"></div>
           <h2 className="text-xl font-semibold">Loading Realistic 3D House Model...</h2>
-          <p className="text-muted-foreground">Preparing enhanced visualization with professional tools</p>
+          <p className="text-muted-foreground">Checking WebGL compatibility and preparing visualization...</p>
+          {webglSupport?.capabilities && (
+            <div className="text-xs text-muted-foreground">
+              WebGL Supported • Max Texture Size: {webglSupport.capabilities.maxTextureSize}px
+            </div>
+          )}
         </div>
       </div>
     );
@@ -731,12 +865,26 @@ const ThreeDShowcase = () => {
         </div>
       </div>
 
-      {/* 3D Canvas */}
+      {/* 3D Canvas with Error Boundary */}
       <div className="h-[calc(100vh-120px)] relative canvas-container">
         <Canvas
           camera={{ position: [8, 6, 8], fov: 60 }}
           shadows
           className="bg-gradient-to-b from-sky-100 to-sky-50 dark:from-gray-900 dark:to-gray-800"
+          gl={{
+            antialias: true,
+            alpha: false,
+            powerPreference: "high-performance",
+            failIfMajorPerformanceCaveat: false,
+            preserveDrawingBuffer: true
+          }}
+          onCreated={({ gl }) => {
+            // Optimize WebGL settings for better compatibility
+            gl.toneMapping = THREE.ACESFilmicToneMapping;
+            gl.toneMappingExposure = 1.0;
+            gl.shadowMap.enabled = true;
+            gl.shadowMap.type = THREE.PCFSoftShadowMap;
+          }}
         >
           <Suspense fallback={null}>
             <OrbitControls 
