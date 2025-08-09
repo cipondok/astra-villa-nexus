@@ -126,6 +126,8 @@ async function awardTokens(supabase: any, userId: string, amount: number, transa
       locked_tokens: currentBalance?.locked_tokens || 0,
       lifetime_earned: newLifetimeEarned,
       updated_at: new Date().toISOString()
+    }, {
+      onConflict: 'user_id'
     });
 
   if (upsertError) {
