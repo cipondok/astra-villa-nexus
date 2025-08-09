@@ -884,3 +884,163 @@ async function getTokenTransfers(supabase: any, userId: string) {
     { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
   );
 }
+
+// Admin Analytics Functions
+async function getAdminStats(supabase: any) {
+  try {
+    // Get total tokens in circulation
+    const { data: balanceStats } = await supabase
+      .from('astra_token_balances')
+      .select('total_tokens, available_tokens, locked_tokens');
+
+    let totalTokensInCirculation = 0;
+    let activeUsersCount = 0;
+    
+    if (balanceStats) {
+      totalTokensInCirculation = balanceStats.reduce((sum: number, balance: any) => sum + (balance.total_tokens || 0), 0);
+      activeUsersCount = balanceStats.filter((balance: any) => balance.total_tokens > 0).length;
+    }
+
+    // Get today's check-ins
+    const todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0);
+    
+    const { data: todayCheckins } = await supabase
+      .from('astra_token_transactions')
+      .select('id')
+      .eq('transaction_type', 'daily_checkin')
+      .gte('created_at', todayStart.toISOString());
+
+    // Get today's transfers
+    const { data: todayTransfers } = await supabase
+      .from('astra_token_transfers')
+      .select('id')
+      .gte('created_at', todayStart.toISOString());
+
+    // Get welcome bonuses claimed
+    const { data: welcomeBonuses } = await supabase
+      .from('astra_token_transactions')
+      .select('id')
+      .eq('transaction_type', 'welcome_bonus');
+
+    // Get total transfers
+    const { data: allTransfers } = await supabase
+      .from('astra_token_transfers')
+      .select('id');
+
+    // Calculate average balance
+    const averageBalance = activeUsersCount > 0 ? totalTokensInCirculation / activeUsersCount : 0;
+
+    const stats = {
+      totalTokensInCirculation,
+      activeUsersCount,
+      todayCheckins: todayCheckins?.length || 0,
+      todayTransfers: todayTransfers?.length || 0,
+      welcomeBonusesClaimed: welcomeBonuses?.length || 0,
+      totalTransfers: allTransfers?.length || 0,
+      averageBalance
+    };
+
+    return new Response(
+      JSON.stringify({ success: true, stats }),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  } catch (error) {
+    console.error('Failed to get admin stats:', error);
+    return new Response(
+      JSON.stringify({ success: false, error: error.message }),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  }
+}
+
+async function getTopUsers(supabase: any) {
+  try {
+    const { data: topUsers, error } = await supabase
+      .from('astra_token_balances')
+      .select(`
+        user_id,
+        total_tokens,
+        available_tokens,
+        profiles:user_id (
+          full_name,
+          email,
+          avatar_url
+        )
+      `)
+      .order('total_tokens', { ascending: false })
+      .limit(20);
+
+    if (error) {
+      throw error;
+    }
+
+    const users = topUsers.map((user: any) => ({
+      user_id: user.user_id,
+      total_tokens: user.total_tokens,
+      available_tokens: user.available_tokens,
+      full_name: user.profiles?.full_name,
+      email: user.profiles?.email,
+      avatar_url: user.profiles?.avatar_url
+    }));
+
+    return new Response(
+      JSON.stringify({ success: true, users }),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  } catch (error) {
+    console.error('Failed to get top users:', error);
+    return new Response(
+      JSON.stringify({ success: false, error: error.message }),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  }
+}
+
+async function getRecentCheckins(supabase: any) {
+  try {
+    const { data: checkins, error } = await supabase
+      .from('astra_token_transactions')
+      .select(`
+        id,
+        user_id,
+        amount as tokens_earned,
+        created_at,
+        metadata,
+        profiles:user_id (
+          full_name,
+          email,
+          avatar_url
+        )
+      `)
+      .eq('transaction_type', 'daily_checkin')
+      .order('created_at', { ascending: false })
+      .limit(20);
+
+    if (error) {
+      throw error;
+    }
+
+    const recentCheckins = checkins.map((checkin: any) => ({
+      id: checkin.id,
+      user_id: checkin.user_id,
+      tokens_earned: checkin.tokens_earned,
+      created_at: checkin.created_at,
+      current_streak: checkin.metadata?.current_streak || 0,
+      full_name: checkin.profiles?.full_name,
+      email: checkin.profiles?.email,
+      avatar_url: checkin.profiles?.avatar_url
+    }));
+
+    return new Response(
+      JSON.stringify({ success: true, checkins: recentCheckins }),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  } catch (error) {
+    console.error('Failed to get recent check-ins:', error);
+    return new Response(
+      JSON.stringify({ success: false, error: error.message }),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  }
+}
