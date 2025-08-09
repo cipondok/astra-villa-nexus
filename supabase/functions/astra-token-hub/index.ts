@@ -223,6 +223,8 @@ async function spendTokens(supabase: any, userId: string, amount: number, descri
 }
 
 async function processWelcomeBonus(supabase: any, userId: string) {
+  console.log('Processing welcome bonus for user:', userId);
+  
   // Get user role
   const { data: userProfile, error: profileError } = await supabase
     .from('profiles')
@@ -231,8 +233,11 @@ async function processWelcomeBonus(supabase: any, userId: string) {
     .single();
 
   if (profileError) {
+    console.error('Profile error:', profileError);
     throw new Error(`Failed to get user profile: ${profileError.message}`);
   }
+
+  console.log('User profile retrieved:', userProfile);
 
   // Check if user already received welcome bonus
   const { data: existingClaim, error: claimError } = await supabase
@@ -243,10 +248,14 @@ async function processWelcomeBonus(supabase: any, userId: string) {
     .single();
 
   if (claimError && claimError.code !== 'PGRST116') {
+    console.error('Claim check error:', claimError);
     throw new Error(`Failed to check existing claims: ${claimError.message}`);
   }
 
+  console.log('Existing claim check:', existingClaim);
+
   if (existingClaim) {
+    console.log('Welcome bonus already claimed for user:', userId);
     return new Response(
       JSON.stringify({ success: false, message: 'Welcome bonus already claimed' }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -254,6 +263,7 @@ async function processWelcomeBonus(supabase: any, userId: string) {
   }
 
   // Get welcome bonus amount for user role
+  console.log('Looking for reward config for role:', userProfile.role);
   const { data: rewardConfig, error: configError } = await supabase
     .from('astra_reward_config')
     .select('reward_amount')
@@ -262,7 +272,51 @@ async function processWelcomeBonus(supabase: any, userId: string) {
     .eq('is_active', true)
     .single();
 
+  console.log('Reward config result:', { rewardConfig, configError });
+
   if (configError) {
+    console.error('Welcome bonus config error:', configError);
+    // If no specific config found, use default amount
+    if (configError.code === 'PGRST116') {
+      // No config found, use default welcome bonus
+      const defaultAmount = 100; // Default welcome bonus
+      console.log(`No specific config for role ${userProfile.role}, using default: ${defaultAmount}`);
+      
+      // Award default welcome bonus
+      const awardResult = await awardTokens(
+        supabase, 
+        userId, 
+        defaultAmount, 
+        'welcome_bonus', 
+        `Welcome bonus for ${userProfile.role} (default)`,
+        'welcome_bonus',
+        userId
+      );
+
+      // Record the claim
+      const { error: recordError } = await supabase
+        .from('astra_reward_claims')
+        .insert({
+          user_id: userId,
+          claim_type: 'welcome_bonus',
+          amount: defaultAmount,
+          metadata: { user_role: userProfile.role, default_bonus: true }
+        });
+
+      if (recordError) {
+        console.error('Failed to record welcome bonus claim:', recordError);
+      }
+
+      return new Response(
+        JSON.stringify({ 
+          success: true, 
+          welcomeBonus: defaultAmount,
+          message: `Welcome bonus of ${defaultAmount} ASTRA tokens awarded!`
+        }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+    
     throw new Error(`Failed to get reward config: ${configError.message}`);
   }
 
