@@ -5,7 +5,9 @@ import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
-import { Coins, Gift, Calendar, ArrowRightLeft, Settings2 } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Coins, Gift, Calendar, ArrowRightLeft, Settings2, BarChart3 } from 'lucide-react';
+import AstraTokenAnalytics from '../analytics/AstraTokenAnalytics';
 
 interface AstraTokenSettingsProps {
   settings: any;
@@ -17,9 +19,27 @@ const AstraTokenSettings: React.FC<AstraTokenSettingsProps> = ({ settings, onInp
     <div className="space-y-6">
       <div className="flex items-center gap-2">
         <Coins className="h-5 w-5 text-primary" />
-        <h3 className="text-lg font-semibold">ASTRA Token System Configuration</h3>
-        <Badge variant="secondary">Token Management</Badge>
+        <h3 className="text-lg font-semibold">ASTRA Token System Management</h3>
+        <Badge variant="secondary">Admin Panel</Badge>
       </div>
+
+      <Tabs defaultValue="analytics" className="space-y-4">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="analytics" className="flex items-center gap-2">
+            <BarChart3 className="h-4 w-4" />
+            Analytics & Users
+          </TabsTrigger>
+          <TabsTrigger value="settings" className="flex items-center gap-2">
+            <Settings2 className="h-4 w-4" />
+            Configuration
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="analytics" className="space-y-4">
+          <AstraTokenAnalytics />
+        </TabsContent>
+
+        <TabsContent value="settings" className="space-y-4">
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Welcome Bonus Settings */}
@@ -295,6 +315,8 @@ const AstraTokenSettings: React.FC<AstraTokenSettingsProps> = ({ settings, onInp
           </div>
         </CardContent>
       </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
