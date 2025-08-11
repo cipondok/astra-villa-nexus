@@ -621,6 +621,13 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "astra_daily_checkins_user_fk"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "astra_daily_checkins_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
@@ -695,9 +702,23 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "astra_referrals_referred_fk"
+            columns: ["referred_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "astra_referrals_referred_id_fkey"
             columns: ["referred_id"]
             isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "astra_referrals_referrer_fk"
+            columns: ["referrer_id"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -739,6 +760,13 @@ export type Database = {
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "astra_reward_claims_user_fk"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "astra_reward_claims_user_id_fkey"
             columns: ["user_id"]
@@ -834,6 +862,13 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "astra_token_balances_user_fk"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "astra_token_balances_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: true
@@ -883,6 +918,13 @@ export type Database = {
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "astra_token_transactions_user_fk"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "astra_token_transactions_user_id_fkey"
             columns: ["user_id"]
@@ -935,7 +977,22 @@ export type Database = {
           transfer_type?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "astra_token_transfers_recipient_id_fkey"
+            columns: ["recipient_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "astra_token_transfers_sender_id_fkey"
+            columns: ["sender_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       billing_plans: {
         Row: {
