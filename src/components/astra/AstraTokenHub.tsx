@@ -28,6 +28,7 @@ import { useAlert } from '@/contexts/AlertContext';
 import { useAuth } from '@/contexts/AuthContext';
 import AstraTokenTransfer from './AstraTokenTransfer';
 import AstraTransferHistory from './AstraTransferHistory';
+import { useNavigate } from 'react-router-dom';
 
 interface TokenBalance {
   total_tokens: number;
@@ -56,10 +57,12 @@ interface CheckinStatus {
 }
 
 const AstraTokenHub = () => {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const [referralCode, setReferralCode] = useState('');
+  const isAdmin = profile?.role === 'admin' || user?.email === 'mycode103@gmail.com';
 
   // Fetch token balance
   const { data: balance, isLoading: loadingBalance } = useQuery({
@@ -286,108 +289,133 @@ const AstraTokenHub = () => {
 
         {/* Earn Tokens Tab */}
         <TabsContent value="earn" className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Daily Check-in */}
+          {isAdmin ? (
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Calendar className="h-5 w-5" />
-                  Daily Check-in
+                  <Star className="h-5 w-5" />
+                  Admin Tools
                 </CardTitle>
                 <CardDescription>
-                  Check in daily to earn tokens and build your streak!
+                  Admin accounts cannot claim rewards. Manage ASTRA settings and analytics instead.
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="space-y-1">
-                    <p className="text-sm font-medium">Current Streak</p>
-                    <div className="flex items-center gap-2">
-                      <span className="text-2xl font-bold">{checkinStatus?.currentStreak || 0}</span>
-                      <span className="text-sm text-muted-foreground">days</span>
-                      {checkinStatus?.currentStreak && checkinStatus.currentStreak >= 7 && (
-                        <Badge className={`${getStreakReward(checkinStatus.currentStreak).color} bg-transparent border`}>
-                          {getStreakReward(checkinStatus.currentStreak).multiplier} Bonus
-                        </Badge>
-                      )}
-                    </div>
-                  </div>
-                  <Button 
-                    onClick={() => checkinMutation.mutate()}
-                    disabled={checkinStatus?.hasCheckedInToday || checkinMutation.isPending}
-                    className="flex items-center gap-2"
-                  >
-                    {checkinStatus?.hasCheckedInToday ? (
-                      <>
-                        <CheckCircle className="h-4 w-4" />
-                        Checked In
-                      </>
-                    ) : (
-                      <>
-                        <Calendar className="h-4 w-4" />
-                        {checkinMutation.isPending ? 'Checking In...' : 'Check In'}
-                      </>
-                    )}
+              <CardContent className="space-y-3">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <Button onClick={() => navigate('/settings')} className="w-full">
+                    Open ASTRA Admin Settings
                   </Button>
-                </div>
-                
-                {checkinStatus?.hasCheckedInToday && checkinStatus.todayCheckin && (
-                  <div className="bg-green-50 p-3 rounded-lg">
-                    <p className="text-sm text-green-800">
-                      ✅ Earned {formatTokenAmount(checkinStatus.todayCheckin.tokens_earned)} ASTRA tokens today!
-                      {checkinStatus.todayCheckin.bonus_multiplier > 1 && (
-                        <span className="font-medium"> ({checkinStatus.todayCheckin.bonus_multiplier}x streak bonus)</span>
-                      )}
-                    </p>
-                  </div>
-                )}
-
-                <div className="space-y-2">
-                  <p className="text-sm font-medium">Streak Milestones</p>
-                  <div className="space-y-1 text-xs text-muted-foreground">
-                    <div className="flex justify-between">
-                      <span>7 days: 1.5x bonus</span>
-                      <span>14 days: 2x bonus</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>30 days: 3x bonus</span>
-                      <span>Keep the streak alive!</span>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Welcome Bonus */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Gift className="h-5 w-5" />
-                  Welcome Bonus
-                </CardTitle>
-                <CardDescription>
-                  Claim your one-time welcome bonus to get started!
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="text-center space-y-4">
-                  <div className="text-4xl">🎉</div>
-                  <div>
-                    <p className="text-lg font-semibold">Ready to claim your welcome bonus?</p>
-                    <p className="text-sm text-muted-foreground">Get started with free ASTRA tokens</p>
-                  </div>
-                  <Button 
-                    onClick={() => welcomeBonusMutation.mutate()}
-                    disabled={welcomeBonusMutation.isPending}
-                    className="w-full"
-                    variant="default"
-                  >
-                    {welcomeBonusMutation.isPending ? 'Claiming...' : 'Claim Welcome Bonus'}
+                  <Button variant="outline" onClick={() => navigate('/admin')} className="w-full">
+                    Open Admin Dashboard
                   </Button>
                 </div>
               </CardContent>
             </Card>
-          </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Daily Check-in */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Calendar className="h-5 w-5" />
+                    Daily Check-in
+                  </CardTitle>
+                  <CardDescription>
+                    Check in daily to earn tokens and build your streak!
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-1">
+                      <p className="text-sm font-medium">Current Streak</p>
+                      <div className="flex items-center gap-2">
+                        <span className="text-2xl font-bold">{checkinStatus?.currentStreak || 0}</span>
+                        <span className="text-sm text-muted-foreground">days</span>
+                        {checkinStatus?.currentStreak && checkinStatus.currentStreak >= 7 && (
+                          <Badge className={`${getStreakReward(checkinStatus.currentStreak).color} bg-transparent border`}>
+                            {getStreakReward(checkinStatus.currentStreak).multiplier} Bonus
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+                    <Button 
+                      onClick={() => checkinMutation.mutate()}
+                      disabled={checkinStatus?.hasCheckedInToday || checkinMutation.isPending}
+                      className="flex items-center gap-2"
+                    >
+                      {checkinStatus?.hasCheckedInToday ? (
+                        <>
+                          <CheckCircle className="h-4 w-4" />
+                          Checked In
+                        </>
+                      ) : (
+                        <>
+                          <Calendar className="h-4 w-4" />
+                          {checkinMutation.isPending ? 'Checking In...' : 'Check In'}
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                  
+                  {checkinStatus?.hasCheckedInToday && checkinStatus.todayCheckin && (
+                    <div className="bg-green-50 p-3 rounded-lg">
+                      <p className="text-sm text-green-800">
+                        ✅ Earned {formatTokenAmount(checkinStatus.todayCheckin.tokens_earned)} ASTRA tokens today!
+                        {checkinStatus.todayCheckin.bonus_multiplier > 1 && (
+                          <span className="font-medium"> ({checkinStatus.todayCheckin.bonus_multiplier}x streak bonus)</span>
+                        )}
+                      </p>
+                    </div>
+                  )}
+
+                  <div className="space-y-2">
+                    <p className="text-sm font-medium">Streak Milestones</p>
+                    <div className="space-y-1 text-xs text-muted-foreground">
+                      <div className="flex justify-between">
+                        <span>7 days: 1.5x bonus</span>
+                        <span>14 days: 2x bonus</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>30 days: 3x bonus</span>
+                        <span>Keep the streak alive!</span>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Welcome Bonus */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Gift className="h-5 w-5" />
+                    Welcome Bonus
+                  </CardTitle>
+                  <CardDescription>
+                    Claim your one-time welcome bonus to get started!
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="text-center space-y-4">
+                    <div className="text-4xl">🎉</div>
+                    <div>
+                      <p className="text-lg font-semibold">Ready to claim your welcome bonus?</p>
+                      <p className="text-sm text-muted-foreground">Get started with free ASTRA tokens</p>
+                    </div>
+                    <Button 
+                      onClick={() => welcomeBonusMutation.mutate()}
+                      disabled={welcomeBonusMutation.isPending}
+                      className="w-full"
+                      variant="default"
+                    >
+                      {welcomeBonusMutation.isPending ? 'Claiming...' : 'Claim Welcome Bonus'}
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
+
 
           {/* Earning Opportunities */}
           <Card>
