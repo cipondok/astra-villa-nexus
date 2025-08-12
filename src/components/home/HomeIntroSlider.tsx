@@ -1,6 +1,9 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import slide1 from "@/assets/home/slide-1.webp";
+import slide2 from "@/assets/home/slide-2.webp";
+import slide3 from "@/assets/home/slide-3.webp";
 
 interface HomeIntroSliderProps {
   className?: string;
@@ -10,6 +13,8 @@ interface SlideItem {
   title: string;
   subtitle: string;
   cta?: { label: string; href: string }[];
+  bg: string;
+  alt: string;
 }
 
 const slides: SlideItem[] = [
@@ -20,6 +25,8 @@ const slides: SlideItem[] = [
       { label: "Lihat Demo 3D", href: "/3d-showcase" },
       { label: "Layanan & Harga", href: "/services" },
     ],
+    bg: slide1,
+    alt: "Hero latar villa modern untuk 3D virtual tour properti Indonesia",
   },
   {
     title: "All‑in‑One: Desain, Render 3D, Virtual Staging, Hosting",
@@ -28,6 +35,8 @@ const slides: SlideItem[] = [
       { label: "Jelajahi Fitur", href: "/3d-showcase" },
       { label: "Hubungi Tim", href: "/services" },
     ],
+    bg: slide2,
+    alt: "Interior modern minimalis untuk layanan desain dan virtual staging ASTRA",
   },
   {
     title: "Tingkatkan Konversi Listing dengan 3D Interaktif",
@@ -35,11 +44,14 @@ const slides: SlideItem[] = [
     cta: [
       { label: "Mulai Sekarang", href: "/services" },
     ],
+    bg: slide3,
+    alt: "Pemandangan balkon apartemen kota, cocok sebagai latar tur 3D",
   },
 ];
 
 const HomeIntroSlider: React.FC<HomeIntroSliderProps> = ({ className }) => {
   const [index, setIndex] = useState(0);
+  const [flash, setFlash] = useState(false);
 
   const total = slides.length;
   const next = () => setIndex((i) => (i + 1) % total);
@@ -51,29 +63,53 @@ const HomeIntroSlider: React.FC<HomeIntroSliderProps> = ({ className }) => {
     return () => clearInterval(id);
   }, []);
 
+  // Flash effect when slide changes
+  useEffect(() => {
+    setFlash(true);
+    const t = setTimeout(() => setFlash(false), 250);
+    return () => clearTimeout(t);
+  }, [index]);
+
   const current = useMemo(() => slides[index], [index]);
 
   return (
     <section
       className={cn(
-        "relative w-full overflow-hidden bg-gradient-to-br from-primary/15 via-background to-background",
+        "relative w-full overflow-hidden bg-background",
         className
       )}
       aria-label="Intro 3D Virtual Tour"
     >
-      {/* Slides container */}
-      <div className="absolute inset-0">
-        {/* Simple dot grid backdrop */}
-        <div className="absolute inset-0 opacity-40" aria-hidden>
-          <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <pattern id="dots" width="24" height="24" patternUnits="userSpaceOnUse">
-                <circle cx="2" cy="2" r="2" className="fill-primary/20" />
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#dots)" />
-          </svg>
+      {/* Background image layer with crossfade */}
+      <div className="absolute inset-0 z-0">
+        {slides.map((s, i) => (
+          <img
+            key={i}
+            src={s.bg}
+            alt={s.alt}
+            decoding="async"
+            loading={i === 0 ? "eager" : "lazy"}
+            className={cn(
+              "absolute inset-0 h-full w-full object-cover transition-opacity duration-700",
+              i === index ? "opacity-100" : "opacity-0"
+            )}
+          />
+        ))}
+        {/* Gradient overlays for readability */}
+        <div className="absolute inset-0 bg-gradient-to-t from-background/70 via-background/20 to-background/40" />
+        <div className="absolute inset-0 bg-gradient-to-r from-background/40 via-transparent to-background/60" />
+        {/* Light streak accent */}
+        <div className="pointer-events-none absolute -inset-x-1/2 -top-1/2 h-[150%] rotate-12 opacity-30 mix-blend-screen">
+          <div className="h-full w-[40%] bg-gradient-to-r from-primary/30 via-white/40 to-transparent blur-2xl pulse" />
         </div>
+        {/* Flash overlay */}
+        <div
+          className={cn(
+            "absolute inset-0 bg-white/60 transition-opacity duration-200",
+            flash ? "opacity-60" : "opacity-0"
+          )}
+          aria-hidden
+        />
       </div>
 
       {/* Content */}
@@ -103,7 +139,7 @@ const HomeIntroSlider: React.FC<HomeIntroSliderProps> = ({ className }) => {
         </article>
       </div>
 
-      {/* Controls */}
+      {/* Dots */}
       <div className="absolute inset-x-0 bottom-4 z-10 flex items-center justify-center gap-2">
         {slides.map((_, i) => (
           <button
@@ -114,11 +150,11 @@ const HomeIntroSlider: React.FC<HomeIntroSliderProps> = ({ className }) => {
               i === index ? "bg-primary w-6" : "bg-foreground/30 hover:bg-foreground/50"
             )}
             aria-label={`Slide ${i + 1}`}
-          />)
-        )}
+          />
+        ))}
       </div>
 
-      {/* Prev/Next buttons */}
+      {/* Prev/Next */}
       <div className="absolute inset-y-0 left-0 right-0 z-10 flex items-center justify-between px-2 md:px-4">
         <button
           onClick={prev}
