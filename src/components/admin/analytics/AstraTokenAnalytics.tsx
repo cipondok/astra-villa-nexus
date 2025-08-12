@@ -46,8 +46,36 @@ const AstraTokenAnalytics: React.FC = () => {
 
   const stats = tokenStats?.stats || {};
 
+  // Derive regular active users (e.g., users with streak >= 7) from recent check-ins
+  const regularActiveUsers = React.useMemo(() => {
+    if (!recentCheckins || recentCheckins.length === 0) return [] as any[];
+    const byUser = new Map<string, any>();
+    for (const c of recentCheckins as any[]) {
+      const key = c.user_id || c.userId || c.email;
+      if (!key) continue;
+      const prev = byUser.get(key);
+      if (!prev || (c.current_streak || 0) > (prev.current_streak || 0)) {
+        byUser.set(key, c);
+      }
+    }
+    return Array.from(byUser.values())
+      .filter((u: any) => (u.current_streak || 0) >= 7)
+      .sort((a: any, b: any) => (b.current_streak || 0) - (a.current_streak || 0))
+      .slice(0, 10);
+  }, [recentCheckins]);
   return (
     <div className="space-y-6">
+      {/* Admin Tools */}
+      <Card>
+        <CardContent className="p-4 flex flex-wrap items-center justify-between gap-3">
+          <div className="text-sm text-muted-foreground">Admin quick actions</div>
+          <div className="flex items-center gap-2">
+            <a href="/settings" className="inline-flex items-center px-3 py-2 rounded-md border bg-background hover:bg-muted transition-colors text-sm">Open ASTRA Settings</a>
+            <a href="/admin" className="inline-flex items-center px-3 py-2 rounded-md border bg-background hover:bg-muted transition-colors text-sm">Open Admin Dashboard</a>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Overview Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card>
@@ -196,6 +224,44 @@ const AstraTokenAnalytics: React.FC = () => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Regular Active Users */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Users className="h-4 w-4 text-purple-500" />
+            Regular Active Users
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-3">
+            {regularActiveUsers.length > 0 ? (
+              regularActiveUsers.map((u: any, index: number) => (
+                <div key={(u.user_id || u.userId || u.email || index)} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src={u.avatar_url} />
+                      <AvatarFallback>
+                        {u.full_name?.charAt(0) || u.email?.charAt(0) || '?'}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <p className="font-medium text-sm">{u.full_name || u.email || 'Anonymous'}</p>
+                      <p className="text-xs text-muted-foreground">Streak: {u.current_streak || 0} days</p>
+                    </div>
+                  </div>
+                  <Badge variant="outline" className="text-xs">Active</Badge>
+                </div>
+              ))
+            ) : (
+              <div className="text-center py-6 text-muted-foreground">
+                <Users className="h-12 w-12 mx-auto mb-2 opacity-50" />
+                <p>No regular active users yet</p>
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Token Distribution Chart */}
       <Card>
