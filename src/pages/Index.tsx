@@ -23,6 +23,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { cn } from "@/lib/utils";
+import HomeIntroSlider from "@/components/home/HomeIntroSlider";
 
 type ViewMode = 'list' | 'grid' | 'map';
 
@@ -284,26 +285,9 @@ const Index = () => {
         isTablet ? "min-h-screen overflow-x-hidden tablet-safe-area" : "min-h-screen"
       )}>
         
-        {/* Matterport 3D View Section */}
+        {/* Hero Intro Slider Section */}
         <section className="relative w-full">
-          <div className="w-full h-[50vh] bg-black overflow-hidden">
-            <iframe
-              src="https://my.matterport.com/show/?m=MC9zDt6bgEM"
-              className="w-full h-full border-0 block"
-              title="3D Virtual Tour - ASTRA Villa"
-              allowFullScreen
-              loading="eager"
-              onLoad={() => console.log('Matterport iframe loaded successfully')}
-              onError={() => console.log('Matterport iframe failed to load')}
-              style={{ 
-                width: '100%', 
-                height: '50vh',
-                border: 'none',
-                display: 'block'
-              }}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
-            />
-          </div>
+          <HomeIntroSlider className="h-[50vh]" />
         </section>
 
         {/* Search Panel Section - Positioned below 3D */}
