@@ -114,16 +114,25 @@ const HomeIntroSlider: React.FC<HomeIntroSliderProps> = ({ className }) => {
 
       {/* Content */}
       <div className="relative z-10 h-full flex items-center justify-center px-6">
-        <article className="max-w-5xl mx-auto text-center animate-fade-in">
-          <h1 className="text-3xl md:text-5xl font-extrabold leading-tight tracking-tight">
+        <article key={index} className="max-w-5xl mx-auto text-center animate-fade-in motion-reduce:animate-none">
+          <h1
+            className="text-3xl md:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight animate-fade-in motion-reduce:animate-none"
+            style={{ animationDelay: "80ms" }}
+          >
             {current.title}
           </h1>
-          <p className="mt-4 text-base md:text-lg text-muted-foreground">
+          <p
+            className="mt-4 text-base md:text-lg text-muted-foreground animate-fade-in motion-reduce:animate-none"
+            style={{ animationDelay: "140ms" }}
+          >
             {current.subtitle}
           </p>
 
           {current.cta && (
-            <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+            <div
+              className="mt-6 flex flex-wrap items-center justify-center gap-3 animate-fade-in motion-reduce:animate-none"
+              style={{ animationDelay: "200ms" }}
+            >
               {current.cta.map((c, i) => (
                 <Button
                   key={i}
@@ -150,12 +159,13 @@ const HomeIntroSlider: React.FC<HomeIntroSliderProps> = ({ className }) => {
               i === index ? "bg-primary w-6" : "bg-foreground/30 hover:bg-foreground/50"
             )}
             aria-label={`Slide ${i + 1}`}
+            aria-current={i === index ? "true" : undefined}
           />
         ))}
       </div>
 
       {/* Prev/Next */}
-      <div className="absolute inset-y-0 left-0 right-0 z-10 flex items-center justify-between px-2 md:px-4">
+      <div className="absolute inset-y-0 left-0 right-0 z-10 hidden md:flex items-center justify-between px-2 md:px-4">
         <button
           onClick={prev}
           className="rounded-full bg-background/60 backdrop-blur border px-3 py-2 text-sm hover:bg-background"
