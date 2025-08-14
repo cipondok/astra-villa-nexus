@@ -7,7 +7,7 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instanciate createClient with right options
+  // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "12.2.3 (519615d)"
@@ -7687,7 +7687,7 @@ export type Database = {
         Returns: boolean
       }
       can_create_development_status: {
-        Args: { user_id: string; dev_status: string }
+        Args: { dev_status: string; user_id: string }
         Returns: boolean
       }
       check_account_lockout: {
@@ -7716,21 +7716,21 @@ export type Database = {
       }
       create_account_lockout: {
         Args: {
-          p_email: string
-          p_user_id?: string
-          p_ip_address?: unknown
           p_duration_minutes?: number
+          p_email: string
+          p_ip_address?: unknown
+          p_user_id?: string
         }
         Returns: string
       }
       create_login_alert: {
         Args: {
-          p_user_id: string
           p_alert_type: string
           p_device_info?: Json
           p_ip_address?: unknown
           p_location_data?: Json
           p_message?: string
+          p_user_id: string
         }
         Returns: string
       }
@@ -7776,35 +7776,35 @@ export type Database = {
       }
       log_database_error: {
         Args: {
-          p_error_type: string
           p_error_message: string
           p_error_severity?: string
-          p_table_name?: string
-          p_suggested_fix?: string
+          p_error_type: string
           p_metadata?: Json
+          p_suggested_fix?: string
+          p_table_name?: string
         }
         Returns: string
       }
       log_page_error: {
         Args: {
-          p_error_type?: string
           p_error_page?: string
-          p_user_ip?: unknown
-          p_user_agent?: string
-          p_referrer_url?: string
+          p_error_type?: string
           p_metadata?: Json
+          p_referrer_url?: string
+          p_user_agent?: string
+          p_user_ip?: unknown
         }
         Returns: string
       }
       log_security_event: {
         Args: {
-          p_user_id: string
+          p_device_fingerprint?: string
           p_event_type: string
           p_ip_address?: unknown
-          p_user_agent?: string
-          p_device_fingerprint?: string
           p_location_data?: Json
           p_risk_score?: number
+          p_user_agent?: string
+          p_user_id: string
         }
         Returns: string
       }
@@ -7818,39 +7818,39 @@ export type Database = {
       }
       search_properties_optimized: {
         Args: {
-          p_search_text?: string
-          p_property_type?: string
-          p_listing_type?: string
           p_city?: string
-          p_min_price?: number
-          p_max_price?: number
-          p_min_bedrooms?: number
-          p_max_bedrooms?: number
-          p_min_bathrooms?: number
-          p_max_bathrooms?: number
-          p_min_area?: number
-          p_max_area?: number
           p_limit?: number
+          p_listing_type?: string
+          p_max_area?: number
+          p_max_bathrooms?: number
+          p_max_bedrooms?: number
+          p_max_price?: number
+          p_min_area?: number
+          p_min_bathrooms?: number
+          p_min_bedrooms?: number
+          p_min_price?: number
           p_offset?: number
+          p_property_type?: string
+          p_search_text?: string
         }
         Returns: {
-          id: string
-          title: string
+          area: string
+          area_sqm: number
+          bathrooms: number
+          bedrooms: number
+          city: string
+          created_at: string
           description: string
-          price: number
-          property_type: string
+          id: string
+          image_urls: string[]
+          images: string[]
           listing_type: string
           location: string
-          city: string
-          area: string
+          price: number
+          property_type: string
           state: string
-          bedrooms: number
-          bathrooms: number
-          area_sqm: number
-          images: string[]
-          image_urls: string[]
           status: string
-          created_at: string
+          title: string
           total_count: number
         }[]
       }
