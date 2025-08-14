@@ -7325,6 +7325,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "vendor_services_business_profile_id_fkey"
+            columns: ["business_profile_id"]
+            isOneToOne: false
+            referencedRelation: "vendor_business_profiles_public"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "vendor_services_category_hierarchy_id_fkey"
             columns: ["category_hierarchy_id"]
             isOneToOne: false
@@ -7675,7 +7682,48 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      vendor_business_profiles_public: {
+        Row: {
+          banner_url: string | null
+          business_description: string | null
+          business_name: string | null
+          business_type: string | null
+          gallery_images: Json | null
+          id: string | null
+          is_active: boolean | null
+          logo_url: string | null
+          rating: number | null
+          social_media: Json | null
+          total_reviews: number | null
+        }
+        Insert: {
+          banner_url?: string | null
+          business_description?: string | null
+          business_name?: string | null
+          business_type?: string | null
+          gallery_images?: Json | null
+          id?: string | null
+          is_active?: boolean | null
+          logo_url?: string | null
+          rating?: number | null
+          social_media?: Json | null
+          total_reviews?: number | null
+        }
+        Update: {
+          banner_url?: string | null
+          business_description?: string | null
+          business_name?: string | null
+          business_type?: string | null
+          gallery_images?: Json | null
+          id?: string | null
+          is_active?: boolean | null
+          logo_url?: string | null
+          rating?: number | null
+          social_media?: Json | null
+          total_reviews?: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       aggregate_daily_analytics: {
