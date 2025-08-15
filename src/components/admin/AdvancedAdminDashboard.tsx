@@ -21,6 +21,7 @@ import CompactAdminNavigation from './CompactAdminNavigation';
 import RealTimeDashboardStats from './RealTimeDashboardStats';
 import EnhancedTreeNavigation from './EnhancedTreeNavigation';
 import AdminDashboardHeader from './AdminDashboardHeader';
+import AdminQuickAccess from './AdminQuickAccess';
 import { useAuth } from '@/contexts/AuthContext';
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -41,6 +42,16 @@ const AdvancedAdminDashboard = () => {
   const navigate = useNavigate();
 
   console.log('AdvancedAdminDashboard - Current active tab:', activeTab);
+
+  // Handle URL parameters to set initial tab
+  React.useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const section = urlParams.get('section');
+    if (section) {
+      console.log('Setting active tab from URL:', section);
+      setActiveTab(section);
+    }
+  }, []);
 
   // Listen for tab changes from header
   React.useEffect(() => {

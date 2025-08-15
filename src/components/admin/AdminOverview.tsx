@@ -23,6 +23,7 @@ import {
   Eye
 } from "lucide-react";
 import AdminQuickActions from "./AdminQuickActions";
+import AdminQuickAccess from "./AdminQuickAccess";
 
 interface AdminOverviewProps {
   onSectionChange?: (section: string) => void;
@@ -246,10 +247,13 @@ const AdminOverview = ({ onSectionChange }: AdminOverviewProps) => {
         </div>
       </div>
 
+      {/* Quick Access Panel */}
+      <AdminQuickAccess onSectionChange={onSectionChange} />
+
       {/* Quick Actions Command Panel */}
       <div className="hud-border p-6">
         <div className="flex items-center gap-3 mb-6">
-          <Settings className="h-6 w-6 hud-text" />
+          <Wrench className="h-6 w-6 hud-text" />
           <h3 className="text-xl font-bold hud-text">COMMAND INTERFACE</h3>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">

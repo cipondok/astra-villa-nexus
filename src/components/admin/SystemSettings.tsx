@@ -34,6 +34,18 @@ const SystemSettings = () => {
 
   console.log('SystemSettings rendering, loading:', loading, 'settings:', settings);
 
+  // Handle URL tab parameter for direct token settings access
+  const [activeTab, setActiveTab] = React.useState('general');
+
+  React.useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const tab = urlParams.get('tab');
+    if (tab) {
+      console.log('Setting SystemSettings active tab from URL:', tab);
+      setActiveTab(tab);
+    }
+  }, []);
+
   // Show loading screen when settings are being saved or initially loading
   if (loading && Object.keys(settings).length === 0) {
     return (
@@ -72,7 +84,7 @@ const SystemSettings = () => {
         </div>
       </div>
 
-      <Tabs defaultValue="general" className="space-y-4">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
         <div className="overflow-x-auto">
           <TabsList className="grid w-full grid-cols-9 min-w-fit">
             <TabsTrigger value="general" className="whitespace-nowrap">General & SEO</TabsTrigger>
