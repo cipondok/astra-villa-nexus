@@ -142,7 +142,7 @@ const AstraTokenAnalytics: React.FC = () => {
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {topUsers.length > 0 ? (
+              {topUsers && topUsers.length > 0 ? (
                 topUsers.slice(0, 10).map((user: any, index: number) => (
                   <div key={user.user_id} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
                     <div className="flex items-center gap-3">
