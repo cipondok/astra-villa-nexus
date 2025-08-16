@@ -14,7 +14,7 @@ interface AstraTokenSettingsProps {
   onInputChange: (key: string, value: any) => void;
 }
 
-const AstraTokenSettings: React.FC<AstraTokenSettingsProps> = ({ settings, onInputChange }) => {
+const AstraTokenSettings: React.FC<AstraTokenSettingsProps> = ({ settings = {}, onInputChange }) => {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-2">
@@ -36,7 +36,9 @@ const AstraTokenSettings: React.FC<AstraTokenSettingsProps> = ({ settings, onInp
         </TabsList>
 
         <TabsContent value="analytics" className="space-y-4">
-          <AstraTokenAnalytics />
+          <div className="space-y-4">
+            <AstraTokenAnalytics />
+          </div>
         </TabsContent>
 
         <TabsContent value="settings" className="space-y-4">
