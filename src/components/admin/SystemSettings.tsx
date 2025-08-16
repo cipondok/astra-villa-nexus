@@ -16,7 +16,7 @@ import SystemMonitoring from './settings/SystemMonitoring';
 import BackupSettings from './settings/BackupSettings';
 import DiscountSettings from './settings/DiscountSettings';
 import PropertyFilterSettings from './settings/PropertyFilterSettings';
-import AstraTokenSettings from './settings/AstraTokenSettings';
+import AstraTokenSettingsWrapper from './settings/AstraTokenSettingsWrapper';
 import LoadingPage from '../LoadingPage';
 
 const SystemSettings = () => {
@@ -141,7 +141,7 @@ const SystemSettings = () => {
         </TabsContent>
 
         <TabsContent value="astra-tokens" className="space-y-4">
-          <AstraTokenSettings 
+          <AstraTokenSettingsWrapper 
             settings={settings}
             onInputChange={handleInputChange}
           />

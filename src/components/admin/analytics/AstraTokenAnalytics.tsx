@@ -8,6 +8,7 @@ import { Coins, TrendingUp, Users, Calendar, Crown, Activity } from 'lucide-reac
 import { formatDistanceToNow } from 'date-fns';
 
 const AstraTokenAnalytics: React.FC = () => {
+  console.log('AstraTokenAnalytics component starting...');
   // Fetch token statistics
   const { data: tokenStats } = useQuery({
     queryKey: ['astra-token-stats'],
@@ -45,6 +46,7 @@ const AstraTokenAnalytics: React.FC = () => {
   });
 
   const stats = tokenStats?.stats || {};
+  console.log('Token stats loaded:', stats, 'Top users:', topUsers);
 
   // Derive regular active users (e.g., users with streak >= 7) from recent check-ins
   const regularActiveUsers = React.useMemo(() => {
