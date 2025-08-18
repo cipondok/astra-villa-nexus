@@ -7325,13 +7325,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "vendor_services_business_profile_id_fkey"
-            columns: ["business_profile_id"]
-            isOneToOne: false
-            referencedRelation: "vendor_business_profiles_public"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "vendor_services_category_hierarchy_id_fkey"
             columns: ["category_hierarchy_id"]
             isOneToOne: false
@@ -7682,48 +7675,7 @@ export type Database = {
       }
     }
     Views: {
-      vendor_business_profiles_public: {
-        Row: {
-          banner_url: string | null
-          business_description: string | null
-          business_name: string | null
-          business_type: string | null
-          gallery_images: Json | null
-          id: string | null
-          is_active: boolean | null
-          logo_url: string | null
-          rating: number | null
-          social_media: Json | null
-          total_reviews: number | null
-        }
-        Insert: {
-          banner_url?: string | null
-          business_description?: string | null
-          business_name?: string | null
-          business_type?: string | null
-          gallery_images?: Json | null
-          id?: string | null
-          is_active?: boolean | null
-          logo_url?: string | null
-          rating?: number | null
-          social_media?: Json | null
-          total_reviews?: number | null
-        }
-        Update: {
-          banner_url?: string | null
-          business_description?: string | null
-          business_name?: string | null
-          business_type?: string | null
-          gallery_images?: Json | null
-          id?: string | null
-          is_active?: boolean | null
-          logo_url?: string | null
-          rating?: number | null
-          social_media?: Json | null
-          total_reviews?: number | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Functions: {
       aggregate_daily_analytics: {
@@ -7793,6 +7745,22 @@ export type Database = {
       get_available_payout_balance: {
         Args: { p_user_id: string }
         Returns: number
+      }
+      get_public_vendor_profiles: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          banner_url: string
+          business_description: string
+          business_name: string
+          business_type: string
+          gallery_images: Json
+          id: string
+          is_active: boolean
+          logo_url: string
+          rating: number
+          social_media: Json
+          total_reviews: number
+        }[]
       }
       is_admin_user: {
         Args: Record<PropertyKey, never>
