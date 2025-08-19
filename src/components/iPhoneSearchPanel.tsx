@@ -88,49 +88,53 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
           const locationOptions = [];
           const seenLocations = new Set();
 
-          locationData.forEach(item => {
+          locationData.forEach((item, index) => {
             // Add province level
             const province = item.province_name;
-            if (province && !seenLocations.has(province)) {
+            const provinceKey = `${province}-province`;
+            if (province && !seenLocations.has(provinceKey)) {
               locationOptions.push({
-                value: province.toLowerCase().replace(/\s+/g, '-'),
+                value: `${province.toLowerCase().replace(/\s+/g, '-')}-province`,
                 label: province,
                 type: 'province'
               });
-              seenLocations.add(province);
+              seenLocations.add(provinceKey);
             }
 
             // Add city level
             const city = item.city_name;
-            if (city && !seenLocations.has(city)) {
+            const cityKey = `${city}-${province}-city`;
+            if (city && !seenLocations.has(cityKey)) {
               locationOptions.push({
-                value: city.toLowerCase().replace(/\s+/g, '-'),
-                label: city,
+                value: `${city.toLowerCase().replace(/\s+/g, '-')}-${province?.toLowerCase().replace(/\s+/g, '-')}-city`,
+                label: `${city}, ${province}`,
                 type: 'city'
               });
-              seenLocations.add(city);
+              seenLocations.add(cityKey);
             }
 
             // Add district level
             const district = item.district_name;
-            if (district && !seenLocations.has(district)) {
+            const districtKey = `${district}-${city}-district`;
+            if (district && !seenLocations.has(districtKey)) {
               locationOptions.push({
-                value: district.toLowerCase().replace(/\s+/g, '-'),
-                label: district,
+                value: `${district.toLowerCase().replace(/\s+/g, '-')}-${city?.toLowerCase().replace(/\s+/g, '-')}-district`,
+                label: `${district}, ${city}`,
                 type: 'district'
               });
-              seenLocations.add(district);
+              seenLocations.add(districtKey);
             }
 
             // Add area level
             const area = item.area_name;
-            if (area && !seenLocations.has(area)) {
+            const areaKey = `${area}-${district}-area-${index}`;
+            if (area && !seenLocations.has(areaKey)) {
               locationOptions.push({
-                value: area.toLowerCase().replace(/\s+/g, '-'),
-                label: area,
+                value: `${area.toLowerCase().replace(/\s+/g, '-')}-${district?.toLowerCase().replace(/\s+/g, '-')}-area-${index}`,
+                label: `${area}, ${district}`,
                 type: 'area'
               });
-              seenLocations.add(area);
+              seenLocations.add(areaKey);
             }
           });
 
