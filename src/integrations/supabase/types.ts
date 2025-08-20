@@ -7321,6 +7321,13 @@ export type Database = {
             foreignKeyName: "vendor_services_business_profile_id_fkey"
             columns: ["business_profile_id"]
             isOneToOne: false
+            referencedRelation: "public_vendor_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vendor_services_business_profile_id_fkey"
+            columns: ["business_profile_id"]
+            isOneToOne: false
             referencedRelation: "vendor_business_profiles"
             referencedColumns: ["id"]
           },
@@ -7675,7 +7682,60 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      public_vendor_profiles: {
+        Row: {
+          banner_url: string | null
+          business_description: string | null
+          business_hours: Json | null
+          business_name: string | null
+          business_type: string | null
+          certifications: Json | null
+          created_at: string | null
+          gallery_images: Json | null
+          id: string | null
+          is_active: boolean | null
+          logo_url: string | null
+          rating: number | null
+          service_areas: Json | null
+          social_media: Json | null
+          total_reviews: number | null
+        }
+        Insert: {
+          banner_url?: string | null
+          business_description?: string | null
+          business_hours?: Json | null
+          business_name?: string | null
+          business_type?: string | null
+          certifications?: Json | null
+          created_at?: string | null
+          gallery_images?: Json | null
+          id?: string | null
+          is_active?: boolean | null
+          logo_url?: string | null
+          rating?: number | null
+          service_areas?: Json | null
+          social_media?: Json | null
+          total_reviews?: number | null
+        }
+        Update: {
+          banner_url?: string | null
+          business_description?: string | null
+          business_hours?: Json | null
+          business_name?: string | null
+          business_type?: string | null
+          certifications?: Json | null
+          created_at?: string | null
+          gallery_images?: Json | null
+          id?: string | null
+          is_active?: boolean | null
+          logo_url?: string | null
+          rating?: number | null
+          service_areas?: Json | null
+          social_media?: Json | null
+          total_reviews?: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       aggregate_daily_analytics: {
