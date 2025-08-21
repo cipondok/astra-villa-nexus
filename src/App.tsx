@@ -103,9 +103,9 @@ function App() {
   return (
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
-        <WebsiteSettingsProvider>
-          <ThemeProvider defaultTheme="light" storageKey="astra-villa-theme">
-            <LanguageProvider>
+        <ThemeProvider defaultTheme="light" storageKey="astra-villa-theme">
+          <LanguageProvider>
+            <WebsiteSettingsProvider>
               <AlertProvider>
                 <AuthProvider>
                   <NotificationProvider>
@@ -119,9 +119,9 @@ function App() {
                   </NotificationProvider>
                 </AuthProvider>
               </AlertProvider>
-            </LanguageProvider>
-          </ThemeProvider>
-        </WebsiteSettingsProvider>
+            </WebsiteSettingsProvider>
+          </LanguageProvider>
+        </ThemeProvider>
         <Toaster />
       </QueryClientProvider>
     </ErrorBoundary>
