@@ -7746,6 +7746,38 @@ export type Database = {
         Args: { p_user_id: string }
         Returns: number
       }
+      get_public_property_listings: {
+        Args: {
+          p_city?: string
+          p_limit?: number
+          p_listing_type?: string
+          p_max_price?: number
+          p_min_price?: number
+          p_offset?: number
+          p_property_type?: string
+          p_search?: string
+        }
+        Returns: {
+          area: string
+          area_sqm: number
+          bathrooms: number
+          bedrooms: number
+          city: string
+          created_at: string
+          description: string
+          id: string
+          image_urls: string[]
+          images: string[]
+          listing_type: string
+          location: string
+          price: number
+          property_type: string
+          state: string
+          status: string
+          title: string
+          total_count: number
+        }[]
+      }
       get_public_vendor_profiles: {
         Args: Record<PropertyKey, never>
         Returns: {
