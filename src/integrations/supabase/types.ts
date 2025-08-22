@@ -7734,6 +7734,20 @@ export type Database = {
         }
         Returns: string
       }
+      create_survey_booking: {
+        Args: {
+          p_customer_email: string
+          p_customer_name: string
+          p_customer_phone: string
+          p_message?: string
+          p_preferred_date: string
+          p_preferred_time: string
+          p_property_id: string
+          p_property_title?: string
+          p_survey_type?: string
+        }
+        Returns: string
+      }
       format_indonesian_phone: {
         Args: { input_phone: string }
         Returns: string
