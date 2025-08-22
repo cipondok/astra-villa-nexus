@@ -7808,6 +7808,10 @@ export type Database = {
           total_reviews: number
         }[]
       }
+      get_user_security_status: {
+        Args: Record<PropertyKey, never>
+        Returns: Json
+      }
       is_admin_user: {
         Args: Record<PropertyKey, never>
         Returns: boolean
@@ -7869,6 +7873,10 @@ export type Database = {
           p_user_id: string
         }
         Returns: string
+      }
+      mark_security_alerts_read: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
       }
       resolve_database_error: {
         Args: {
