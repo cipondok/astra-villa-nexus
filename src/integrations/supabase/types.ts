@@ -7808,6 +7808,23 @@ export type Database = {
           total_reviews: number
         }[]
       }
+      get_public_vendor_profiles_secure: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          banner_url: string
+          business_description: string
+          business_name: string
+          business_type: string
+          gallery_images: Json
+          id: string
+          is_active: boolean
+          logo_url: string
+          rating: number
+          service_areas: Json
+          social_media: Json
+          total_reviews: number
+        }[]
+      }
       get_user_security_status: {
         Args: Record<PropertyKey, never>
         Returns: Json
