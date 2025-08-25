@@ -105,9 +105,9 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <ThemeProvider defaultTheme="light" storageKey="astra-villa-theme">
           <LanguageProvider>
-            <WebsiteSettingsProvider>
-              <AlertProvider>
-                <AuthProvider>
+            <AlertProvider>
+              <AuthProvider>
+                <WebsiteSettingsProvider>
                   <NotificationProvider>
                     <PropertyComparisonProvider>
                       <Router>
@@ -115,14 +115,14 @@ function App() {
                           <AppContent />
                         </AppInitializer>
                       </Router>
+                      <Toaster />
                     </PropertyComparisonProvider>
                   </NotificationProvider>
-                </AuthProvider>
-              </AlertProvider>
-            </WebsiteSettingsProvider>
+                </WebsiteSettingsProvider>
+              </AuthProvider>
+            </AlertProvider>
           </LanguageProvider>
         </ThemeProvider>
-        <Toaster />
       </QueryClientProvider>
     </ErrorBoundary>
   );
