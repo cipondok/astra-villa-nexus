@@ -7,7 +7,7 @@ import { ThemeProvider } from '@/components/ThemeProvider';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { AlertProvider } from '@/contexts/AlertContext';
 import { NotificationProvider } from '@/contexts/NotificationContext';
-import { WebsiteSettingsProvider } from '@/contexts/WebsiteSettingsContext';
+
 import { PropertyComparisonProvider } from '@/contexts/PropertyComparisonContext';
 import { Toaster } from '@/components/ui/toaster';
 import ErrorBoundary from '@/components/ErrorBoundary';
@@ -107,18 +107,16 @@ function App() {
           <LanguageProvider>
             <AlertProvider>
               <AuthProvider>
-                <WebsiteSettingsProvider>
-                  <NotificationProvider>
-                    <PropertyComparisonProvider>
-                      <Router>
-                        <AppInitializer>
-                          <AppContent />
-                        </AppInitializer>
-                      </Router>
-                      <Toaster />
-                    </PropertyComparisonProvider>
-                  </NotificationProvider>
-                </WebsiteSettingsProvider>
+                <NotificationProvider>
+                  <PropertyComparisonProvider>
+                    <Router>
+                      <AppInitializer>
+                        <AppContent />
+                      </AppInitializer>
+                    </Router>
+                    <Toaster />
+                  </PropertyComparisonProvider>
+                </NotificationProvider>
               </AuthProvider>
             </AlertProvider>
           </LanguageProvider>
