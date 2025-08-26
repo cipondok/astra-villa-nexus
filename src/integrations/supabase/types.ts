@@ -7955,6 +7955,14 @@ export type Database = {
           total_count: number
         }[]
       }
+      validate_field_safe: {
+        Args: {
+          p_field_name: string
+          p_field_value: string
+          p_vendor_type?: string
+        }
+        Returns: Json
+      }
     }
     Enums: {
       admin_permission:
