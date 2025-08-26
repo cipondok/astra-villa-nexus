@@ -7734,6 +7734,19 @@ export type Database = {
         }
         Returns: string
       }
+      create_secure_survey_booking: {
+        Args: {
+          p_customer_email: string
+          p_customer_name: string
+          p_customer_phone: string
+          p_message?: string
+          p_preferred_date: string
+          p_preferred_time: string
+          p_property_id: string
+          p_survey_type?: string
+        }
+        Returns: string
+      }
       create_survey_booking: {
         Args: {
           p_customer_email: string
@@ -7759,6 +7772,10 @@ export type Database = {
       get_available_payout_balance: {
         Args: { p_user_id: string }
         Returns: number
+      }
+      get_property_booking_stats: {
+        Args: { p_property_id: string }
+        Returns: Json
       }
       get_public_property_listings: {
         Args: {
