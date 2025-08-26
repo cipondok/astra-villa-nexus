@@ -7839,6 +7839,10 @@ export type Database = {
           total_reviews: number
         }[]
       }
+      get_user_financial_summary: {
+        Args: { p_user_id?: string }
+        Returns: Json
+      }
       get_user_security_status: {
         Args: Record<PropertyKey, never>
         Returns: Json
@@ -7881,6 +7885,10 @@ export type Database = {
           p_table_name?: string
         }
         Returns: string
+      }
+      log_financial_access: {
+        Args: { p_operation: string; p_table_name: string; p_user_id?: string }
+        Returns: undefined
       }
       log_page_error: {
         Args: {
