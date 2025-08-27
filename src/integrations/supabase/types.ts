@@ -7702,6 +7702,10 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: boolean
       }
+      check_financial_admin_access: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
       check_ip_rate_limit: {
         Args: { p_ip_address: unknown }
         Returns: boolean
@@ -7879,6 +7883,14 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: Json
       }
+      get_vendor_balance_admin: {
+        Args: { p_vendor_id: string }
+        Returns: Json
+      }
+      get_vendor_financial_summary_secure: {
+        Args: Record<PropertyKey, never>
+        Returns: Json
+      }
       is_admin_user: {
         Args: Record<PropertyKey, never>
         Returns: boolean
@@ -7920,7 +7932,7 @@ export type Database = {
       }
       log_financial_access: {
         Args: { p_operation: string; p_table_name: string; p_user_id?: string }
-        Returns: undefined
+        Returns: string
       }
       log_page_error: {
         Args: {
