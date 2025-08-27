@@ -7678,6 +7678,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      add_customer_response_secure: {
+        Args: { p_customer_response: string; p_ticket_id: string }
+        Returns: boolean
+      }
       aggregate_daily_analytics: {
         Args: { target_date?: string }
         Returns: undefined
@@ -7744,6 +7748,17 @@ export type Database = {
           p_preferred_time: string
           p_property_id: string
           p_survey_type?: string
+        }
+        Returns: string
+      }
+      create_support_ticket_secure: {
+        Args: {
+          p_category?: string
+          p_customer_email: string
+          p_customer_name: string
+          p_message: string
+          p_priority?: string
+          p_subject: string
         }
         Returns: string
       }
