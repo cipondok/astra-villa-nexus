@@ -7686,6 +7686,10 @@ export type Database = {
         Args: { target_date?: string }
         Returns: undefined
       }
+      can_access_vendor_business_profile: {
+        Args: { operation?: string; profile_vendor_id: string }
+        Returns: boolean
+      }
       can_change_business_nature: {
         Args: { vendor_id: string }
         Returns: boolean
@@ -7792,6 +7796,46 @@ export type Database = {
         Args: { p_user_id: string }
         Returns: number
       }
+      get_own_vendor_profile_secure: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          banner_url: string
+          bpjs_kesehatan_status: string
+          bpjs_ketenagakerjaan_status: string
+          bpjs_verification_complete: boolean
+          business_address: string
+          business_description: string
+          business_email: string
+          business_finalized_at: string
+          business_hours: Json
+          business_name: string
+          business_nature_id: string
+          business_phone: string
+          business_type: string
+          business_website: string
+          can_change_nature: boolean
+          certifications: Json
+          compliance_documents: Json
+          created_at: string
+          gallery_images: Json
+          id: string
+          insurance_info: Json
+          is_active: boolean
+          is_verified: boolean
+          license_number: string
+          logo_url: string
+          profile_completion_percentage: number
+          rating: number
+          service_areas: Json
+          social_media: Json
+          tarif_harian_max: number
+          tarif_harian_min: number
+          tax_id: string
+          total_reviews: number
+          updated_at: string
+          vendor_id: string
+        }[]
+      }
       get_property_booking_stats: {
         Args: { p_property_id: string }
         Returns: Json
@@ -7891,6 +7935,24 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: Json
       }
+      get_vendor_public_info_secure: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          banner_url: string
+          business_description: string
+          business_hours: Json
+          business_name: string
+          business_type: string
+          created_at: string
+          id: string
+          is_active: boolean
+          is_verified: boolean
+          logo_url: string
+          rating: number
+          service_areas: Json
+          total_reviews: number
+        }[]
+      }
       is_admin_user: {
         Args: Record<PropertyKey, never>
         Returns: boolean
@@ -7954,6 +8016,14 @@ export type Database = {
           p_risk_score?: number
           p_user_agent?: string
           p_user_id: string
+        }
+        Returns: string
+      }
+      log_vendor_profile_access: {
+        Args: {
+          p_accessor_id?: string
+          p_operation: string
+          p_vendor_id: string
         }
         Returns: string
       }
