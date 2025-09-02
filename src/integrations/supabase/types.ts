@@ -7325,6 +7325,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "vendor_services_business_profile_id_fkey"
+            columns: ["business_profile_id"]
+            isOneToOne: false
+            referencedRelation: "vendor_public_profiles"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "vendor_services_category_hierarchy_id_fkey"
             columns: ["category_hierarchy_id"]
             isOneToOne: false
@@ -7675,7 +7682,74 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      vendor_public_profiles: {
+        Row: {
+          banner_url: string | null
+          business_description: string | null
+          business_hours: Json | null
+          business_name: string | null
+          business_type: string | null
+          created_at: string | null
+          gallery_images: Json | null
+          id: string | null
+          is_active: boolean | null
+          is_verified: boolean | null
+          logo_url: string | null
+          rating: number | null
+          service_areas: Json | null
+          social_media: Json | null
+          total_reviews: number | null
+          updated_at: string | null
+          vendor_id: string | null
+        }
+        Insert: {
+          banner_url?: string | null
+          business_description?: string | null
+          business_hours?: Json | null
+          business_name?: string | null
+          business_type?: string | null
+          created_at?: string | null
+          gallery_images?: Json | null
+          id?: string | null
+          is_active?: boolean | null
+          is_verified?: boolean | null
+          logo_url?: string | null
+          rating?: number | null
+          service_areas?: Json | null
+          social_media?: Json | null
+          total_reviews?: number | null
+          updated_at?: string | null
+          vendor_id?: string | null
+        }
+        Update: {
+          banner_url?: string | null
+          business_description?: string | null
+          business_hours?: Json | null
+          business_name?: string | null
+          business_type?: string | null
+          created_at?: string | null
+          gallery_images?: Json | null
+          id?: string | null
+          is_active?: boolean | null
+          is_verified?: boolean | null
+          logo_url?: string | null
+          rating?: number | null
+          service_areas?: Json | null
+          social_media?: Json | null
+          total_reviews?: number | null
+          updated_at?: string | null
+          vendor_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendor_business_profiles_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       add_customer_response_secure: {
@@ -7934,6 +8008,24 @@ export type Database = {
       get_vendor_financial_summary_secure: {
         Args: Record<PropertyKey, never>
         Returns: Json
+      }
+      get_vendor_public_directory: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          banner_url: string
+          business_description: string
+          business_hours: Json
+          business_name: string
+          business_type: string
+          created_at: string
+          id: string
+          is_active: boolean
+          is_verified: boolean
+          logo_url: string
+          rating: number
+          service_areas: Json
+          total_reviews: number
+        }[]
       }
       get_vendor_public_info_secure: {
         Args: Record<PropertyKey, never>
