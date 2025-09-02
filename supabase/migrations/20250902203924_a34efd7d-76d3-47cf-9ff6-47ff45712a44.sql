@@ -1,0 +1,86 @@
+-- Fix RLS policy issues and add vendor profile security audit
+-- Corrected version to avoid variable name conflicts
+
+-- Add basic policies for tables that might have RLS enabled but no policies
+DO $$ 
+DECLARE
+    table_exists boolean;
+    rls_enabled boolean;
+    policy_count integer;
+BEGIN
+    -- Check if bpjs_verifications table exists and has RLS enabled
+    SELECT EXISTS (
+        SELECT 1 FROM information_schema.tables 
+        WHERE table_schema = 'public' AND table_name = 'bpjs_verifications'
+    ) INTO table_exists;
+    
+    IF table_exists THEN
+        SELECT relrowsecurity INTO rls_enabled
+        FROM pg_class c
+        JOIN pg_namespace n ON n.oid = c.relnamespace
+        WHERE n.nspname = 'public' AND c.relname = 'bpjs_verifications';
+        
+        SELECT COUNT(*) INTO policy_count
+        FROM pg_policies
+        WHERE schemaname = 'public' AND tablename = 'bpjs_verifications';
+        
+        IF rls_enabled AND policy_count = 0 THEN
+            -- Add basic policies for bpjs_verifications
+            CREATE POLICY "vendors_view_own_bpjs_verifications" ON bpjs_verifications FOR SELECT USING (vendor_id = auth.uid());
+            CREATE POLICY "admins_manage_bpjs_verifications" ON bpjs_verifications FOR ALL USING (check_admin_access()) WITH CHECK (check_admin_access());
+            CREATE POLICY "system_manage_bpjs_verifications" ON bpjs_verifications FOR INSERT WITH CHECK (true);
+        END IF;
+    END IF;
+END $$;
+
+-- Add security audit function and trigger for vendor profile changes
+CREATE OR REPLACE FUNCTION public.audit_vendor_profile_changes()
+RETURNS trigger
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path TO 'public'
+AS $$
+BEGIN
+  -- Log any changes to vendor business profiles for security auditing
+  IF TG_OP = 'UPDATE' THEN
+    -- Check if sensitive fields were changed
+    IF (OLD.business_phone IS DISTINCT FROM NEW.business_phone) OR 
+       (OLD.business_email IS DISTINCT FROM NEW.business_email) OR
+       (OLD.tax_id IS DISTINCT FROM NEW.tax_id) OR
+       (OLD.license_number IS DISTINCT FROM NEW.license_number) OR
+       (OLD.tarif_harian_min IS DISTINCT FROM NEW.tarif_harian_min) OR
+       (OLD.tarif_harian_max IS DISTINCT FROM NEW.tarif_harian_max) THEN
+      
+      PERFORM log_security_event(
+        auth.uid(),
+        'sensitive_vendor_data_modified',
+        inet_client_addr(),
+        NULL,
+        NULL,
+        jsonb_build_object(
+          'vendor_id', NEW.vendor_id,
+          'changed_fields', jsonb_build_array(
+            CASE WHEN OLD.business_phone IS DISTINCT FROM NEW.business_phone THEN 'business_phone' END,
+            CASE WHEN OLD.business_email IS DISTINCT FROM NEW.business_email THEN 'business_email' END,
+            CASE WHEN OLD.tax_id IS DISTINCT FROM NEW.tax_id THEN 'tax_id' END,
+            CASE WHEN OLD.license_number IS DISTINCT FROM NEW.license_number THEN 'license_number' END,
+            CASE WHEN OLD.tarif_harian_min IS DISTINCT FROM NEW.tarif_harian_min THEN 'tarif_harian_min' END,
+            CASE WHEN OLD.tarif_harian_max IS DISTINCT FROM NEW.tarif_harian_max THEN 'tarif_harian_max' END
+          ) - ARRAY[NULL]::text[], -- Remove null values
+          'timestamp', now()
+        ),
+        30  -- Medium risk score for data changes
+      );
+    END IF;
+  END IF;
+  
+  RETURN COALESCE(NEW, OLD);
+END;
+$$;
+
+-- Add trigger for auditing vendor profile changes
+DROP TRIGGER IF EXISTS audit_vendor_profile_changes_trigger ON vendor_business_profiles;
+CREATE TRIGGER audit_vendor_profile_changes_trigger
+  AFTER UPDATE ON vendor_business_profiles
+  FOR EACH ROW
+  EXECUTE FUNCTION audit_vendor_profile_changes();
