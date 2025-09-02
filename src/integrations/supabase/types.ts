@@ -7951,15 +7951,20 @@ export type Database = {
         Returns: {
           banner_url: string
           business_description: string
+          business_hours: Json
           business_name: string
           business_type: string
+          created_at: string
           gallery_images: Json
           id: string
           is_active: boolean
+          is_verified: boolean
           logo_url: string
           rating: number
+          service_areas: Json
           social_media: Json
           total_reviews: number
+          updated_at: string
         }[]
       }
       get_public_vendor_profiles_secure: {
@@ -8010,24 +8015,6 @@ export type Database = {
         Returns: Json
       }
       get_vendor_public_directory: {
-        Args: Record<PropertyKey, never>
-        Returns: {
-          banner_url: string
-          business_description: string
-          business_hours: Json
-          business_name: string
-          business_type: string
-          created_at: string
-          id: string
-          is_active: boolean
-          is_verified: boolean
-          logo_url: string
-          rating: number
-          service_areas: Json
-          total_reviews: number
-        }[]
-      }
-      get_vendor_public_info_secure: {
         Args: Record<PropertyKey, never>
         Returns: {
           banner_url: string
