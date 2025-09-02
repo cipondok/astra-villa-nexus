@@ -1,142 +1,115 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
 import { 
   Search, 
   Filter, 
-  Phone, 
-  Mail, 
-  MessageSquare, 
   MapPin, 
   Star,
-  Clock,
   CheckCircle,
   AlertCircle,
-  Plus
+  Plus,
+  Loader2
 } from "lucide-react";
 
-interface Vendor {
+interface PublicVendorProfile {
   id: string;
-  name: string;
-  serviceType: string;
-  location: string;
-  rating: number;
-  responseTime: string;
-  availability: 'available' | 'busy' | 'offline';
-  phone: string;
-  email: string;
-  whatsapp: string;
-  specializations: string[];
-  coverageAreas: string[];
-  lastActive: string;
-  completedJobs: number;
+  business_name: string;
+  business_type: string;
+  business_description: string | null;
+  rating: number | null;
+  total_reviews: number;
+  is_active?: boolean;
+  is_verified?: boolean;
+  logo_url: string | null;
+  banner_url?: string | null;
+  service_areas: any;
+  business_hours?: any;
+  gallery_images?: any;
+  social_media?: any;
+  created_at?: string;
+  updated_at?: string;
 }
 
 const EnhancedVendorDirectory = () => {
+  const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
   const [serviceFilter, setServiceFilter] = useState("all");
-  const [locationFilter, setLocationFilter] = useState("all");
-  const [availabilityFilter, setAvailabilityFilter] = useState("all");
+  const [vendors, setVendors] = useState<PublicVendorProfile[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const vendors: Vendor[] = [
-    {
-      id: "1",
-      name: "CleanPro Services",
-      serviceType: "Cleaning",
-      location: "Downtown",
-      rating: 4.8,
-      responseTime: "15 min",
-      availability: "available",
-      phone: "+1234567890",
-      email: "contact@cleanpro.com",
-      whatsapp: "+1234567890",
-      specializations: ["Pool Cleaning", "Deep Cleaning", "Maintenance"],
-      coverageAreas: ["Downtown", "Beach Area", "Marina District"],
-      lastActive: "5 min ago",
-      completedJobs: 247
-    },
-    {
-      id: "2",
-      name: "Tech Solutions",
-      serviceType: "Repairs",
-      location: "Beach Area",
-      rating: 4.6,
-      responseTime: "30 min",
-      availability: "busy",
-      phone: "+1234567891",
-      email: "support@techsolutions.com",
-      whatsapp: "+1234567891",
-      specializations: ["AC Repair", "Electrical", "Plumbing"],
-      coverageAreas: ["Beach Area", "Uptown", "City Center"],
-      lastActive: "2 hours ago",
-      completedJobs: 156
-    },
-    {
-      id: "3",
-      name: "Green Thumb Co.",
-      serviceType: "Landscaping",
-      location: "Uptown",
-      rating: 4.9,
-      responseTime: "45 min",
-      availability: "available",
-      phone: "+1234567892",
-      email: "hello@greenthumb.com",
-      whatsapp: "+1234567892",
-      specializations: ["Garden Maintenance", "Pool Landscaping", "Tree Care"],
-      coverageAreas: ["Uptown", "Suburban", "Villa Districts"],
-      lastActive: "1 hour ago",
-      completedJobs: 189
-    },
-    {
-      id: "4",
-      name: "Emergency Fix",
-      serviceType: "Emergency",
-      location: "Citywide",
-      rating: 4.7,
-      responseTime: "10 min",
-      availability: "available",
-      phone: "+1234567893",
-      email: "urgent@emergencyfix.com",
-      whatsapp: "+1234567893",
-      specializations: ["24/7 Emergency", "Urgent Repairs", "Security"],
-      coverageAreas: ["Citywide"],
-      lastActive: "Just now",
-      completedJobs: 89
-    }
-  ];
+  useEffect(() => {
+    loadVendors();
+  }, []);
 
-  const getAvailabilityColor = (availability: string) => {
-    switch (availability) {
-      case 'available': return 'bg-green-500';
-      case 'busy': return 'bg-orange-500';
-      case 'offline': return 'bg-gray-500';
-      default: return 'bg-gray-500';
+  const loadVendors = async () => {
+    try {
+      setLoading(true);
+      // Use the secure function that only returns public, non-sensitive data
+      const { data, error } = await supabase.rpc('get_public_vendor_profiles');
+      
+      if (error) {
+        console.error('Error loading vendors:', error);
+        toast({
+          title: "Error",
+          description: "Failed to load vendor directory",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      setVendors(data || []);
+    } catch (error) {
+      console.error('Unexpected error:', error);
+      toast({
+        title: "Error", 
+        description: "An unexpected error occurred",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
-  const getAvailabilityIcon = (availability: string) => {
-    switch (availability) {
-      case 'available': return <CheckCircle className="h-4 w-4 text-green-600" />;
-      case 'busy': return <Clock className="h-4 w-4 text-orange-600" />;
-      case 'offline': return <AlertCircle className="h-4 w-4 text-gray-600" />;
-      default: return <AlertCircle className="h-4 w-4 text-gray-600" />;
+  // Search vendors using the secure function
+  const searchVendors = async (term: string) => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase.rpc('search_vendor_profiles', { 
+        search_term: term || null 
+      });
+      
+      if (error) {
+        console.error('Error searching vendors:', error);
+        return;
+      }
+      
+      setVendors(data || []);
+    } catch (error) {
+      console.error('Search error:', error);
+    } finally {
+      setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (searchTerm) {
+      const timeoutId = setTimeout(() => searchVendors(searchTerm), 300);
+      return () => clearTimeout(timeoutId);
+    } else {
+      loadVendors();
+    }
+  }, [searchTerm]);
 
   const filteredVendors = vendors.filter(vendor => {
-    const matchesSearch = vendor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         vendor.serviceType.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesService = serviceFilter === "all" || vendor.serviceType.toLowerCase() === serviceFilter.toLowerCase();
-    const matchesLocation = locationFilter === "all" || vendor.coverageAreas.some(area => 
-      area.toLowerCase().includes(locationFilter.toLowerCase())
-    );
-    const matchesAvailability = availabilityFilter === "all" || vendor.availability === availabilityFilter;
-    
-    return matchesSearch && matchesService && matchesLocation && matchesAvailability;
+    const matchesService = serviceFilter === "all" || 
+      vendor.business_type.toLowerCase().includes(serviceFilter.toLowerCase());
+    return matchesService;
   });
 
   return (
@@ -145,7 +118,7 @@ const EnhancedVendorDirectory = () => {
         <div>
           <h1 className="text-3xl font-bold">Vendor Directory</h1>
           <p className="text-muted-foreground">
-            Organized vendor contacts with direct communication tools
+            Browse verified vendor profiles with secure access controls
           </p>
         </div>
         <Button>
@@ -175,38 +148,13 @@ const EnhancedVendorDirectory = () => {
             <SelectItem value="cleaning">Cleaning</SelectItem>
             <SelectItem value="repairs">Repairs</SelectItem>
             <SelectItem value="landscaping">Landscaping</SelectItem>
-            <SelectItem value="emergency">Emergency</SelectItem>
-          </SelectContent>
-        </Select>
-
-        <Select value={locationFilter} onValueChange={setLocationFilter}>
-          <SelectTrigger className="w-48">
-            <SelectValue placeholder="Location" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Locations</SelectItem>
-            <SelectItem value="downtown">Downtown</SelectItem>
-            <SelectItem value="beach">Beach Area</SelectItem>
-            <SelectItem value="uptown">Uptown</SelectItem>
-            <SelectItem value="citywide">Citywide</SelectItem>
-          </SelectContent>
-        </Select>
-
-        <Select value={availabilityFilter} onValueChange={setAvailabilityFilter}>
-          <SelectTrigger className="w-48">
-            <SelectValue placeholder="Availability" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Statuses</SelectItem>
-            <SelectItem value="available">Available</SelectItem>
-            <SelectItem value="busy">Busy</SelectItem>
-            <SelectItem value="offline">Offline</SelectItem>
+            <SelectItem value="maintenance">Maintenance</SelectItem>
           </SelectContent>
         </Select>
       </div>
 
       {/* Quick Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card>
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
@@ -219,13 +167,13 @@ const EnhancedVendorDirectory = () => {
           </CardContent>
         </Card>
 
-        <Card>
+                <Card>
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Available Now</p>
+                <p className="text-sm text-muted-foreground">Verified Vendors</p>
                 <p className="text-2xl font-bold text-green-600">
-                  {vendors.filter(v => v.availability === 'available').length}
+                  {vendors.filter(v => v.is_verified !== false).length}
                 </p>
               </div>
               <CheckCircle className="h-8 w-8 text-green-600" />
@@ -237,20 +185,13 @@ const EnhancedVendorDirectory = () => {
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Avg Response</p>
-                <p className="text-2xl font-bold">22 min</p>
-              </div>
-              <Clock className="h-8 w-8 text-orange-600" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
                 <p className="text-sm text-muted-foreground">Avg Rating</p>
-                <p className="text-2xl font-bold">4.7</p>
+                <p className="text-2xl font-bold">
+                  {vendors.length > 0 
+                    ? (vendors.reduce((acc, v) => acc + (v.rating || 0), 0) / vendors.length).toFixed(1)
+                    : "0.0"
+                  }
+                </p>
               </div>
               <Star className="h-8 w-8 text-yellow-600" />
             </div>
@@ -258,103 +199,99 @@ const EnhancedVendorDirectory = () => {
         </Card>
       </div>
 
+      {/* Loading State */}
+      {loading && (
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex items-center justify-center">
+              <Loader2 className="h-8 w-8 animate-spin" />
+              <span className="ml-2">Loading vendors...</span>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Vendor Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredVendors.map((vendor) => (
-          <Card key={vendor.id} className="hover:shadow-md transition-shadow">
-            <CardHeader>
-              <div className="flex items-start justify-between">
-                <div>
-                  <CardTitle className="text-lg">{vendor.name}</CardTitle>
-                  <p className="text-sm text-muted-foreground">{vendor.serviceType}</p>
+      {!loading && (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredVendors.map((vendor) => (
+            <Card key={vendor.id} className="hover:shadow-md transition-shadow">
+              <CardHeader>
+                <div className="flex items-start justify-between">
+                  <div>
+                    <CardTitle className="text-lg">{vendor.business_name}</CardTitle>
+                    <p className="text-sm text-muted-foreground">{vendor.business_type}</p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {vendor.is_verified !== false && (
+                      <Badge variant="default" className="text-xs">
+                        <CheckCircle className="h-3 w-3 mr-1" />
+                        Verified
+                      </Badge>
+                    )}
+                  </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <div className={`w-3 h-3 rounded-full ${getAvailabilityColor(vendor.availability)}`}></div>
-                  <span className="text-xs text-muted-foreground capitalize">
-                    {vendor.availability}
-                  </span>
+              </CardHeader>
+              
+              <CardContent className="space-y-4">
+                {/* Rating and Reviews */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1">
+                    <Star className="h-4 w-4 text-yellow-500 fill-current" />
+                    <span className="font-medium">{vendor.rating?.toFixed(1) || "0.0"}</span>
+                    <span className="text-sm text-muted-foreground">
+                      ({vendor.total_reviews || 0} reviews)
+                    </span>
+                  </div>
+                  <Badge variant={vendor.is_active !== false ? "default" : "secondary"}>
+                    {vendor.is_active !== false ? "Active" : "Inactive"}
+                  </Badge>
                 </div>
-              </div>
-            </CardHeader>
-            
-            <CardContent className="space-y-4">
-              {/* Rating and Stats */}
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-1">
-                  <Star className="h-4 w-4 text-yellow-500 fill-current" />
-                  <span className="font-medium">{vendor.rating}</span>
-                  <span className="text-sm text-muted-foreground">
-                    ({vendor.completedJobs} jobs)
-                  </span>
-                </div>
-                <div className="text-sm text-muted-foreground">
-                  {vendor.responseTime} response
-                </div>
-              </div>
 
-              {/* Location and Coverage */}
-              <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <MapPin className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm">{vendor.location}</span>
+                {/* Description */}
+                {vendor.business_description && (
+                  <div className="space-y-2">
+                    <p className="text-sm text-muted-foreground line-clamp-2">
+                      {vendor.business_description}
+                    </p>
+                  </div>
+                )}
+
+                {/* Service Areas */}
+                {vendor.service_areas && Array.isArray(vendor.service_areas) && vendor.service_areas.length > 0 && (
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <MapPin className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-sm font-medium">Service Areas</span>
+                    </div>
+                    <div className="flex flex-wrap gap-1">
+                      {vendor.service_areas.slice(0, 3).map((area: any, index: number) => (
+                        <Badge key={index} variant="outline" className="text-xs">
+                          {typeof area === 'string' ? area : area.name || 'Unknown'}
+                        </Badge>
+                      ))}
+                      {vendor.service_areas.length > 3 && (
+                        <Badge variant="outline" className="text-xs">
+                          +{vendor.service_areas.length - 3} more
+                        </Badge>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* Contact Notice */}
+                <div className="text-xs text-muted-foreground bg-blue-50 p-3 rounded-md">
+                  <AlertCircle className="h-4 w-4 mb-1" />
+                  Contact information is only available to authenticated users for security reasons.
                 </div>
-                <div className="flex flex-wrap gap-1">
-                  {vendor.coverageAreas.slice(0, 2).map((area, index) => (
-                    <Badge key={index} variant="outline" className="text-xs">
-                      {area}
-                    </Badge>
-                  ))}
-                  {vendor.coverageAreas.length > 2 && (
-                    <Badge variant="outline" className="text-xs">
-                      +{vendor.coverageAreas.length - 2} more
-                    </Badge>
-                  )}
-                </div>
-              </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
 
-              {/* Specializations */}
-              <div className="space-y-2">
-                <p className="text-sm font-medium">Specializations:</p>
-                <div className="flex flex-wrap gap-1">
-                  {vendor.specializations.slice(0, 2).map((spec, index) => (
-                    <Badge key={index} variant="secondary" className="text-xs">
-                      {spec}
-                    </Badge>
-                  ))}
-                  {vendor.specializations.length > 2 && (
-                    <Badge variant="secondary" className="text-xs">
-                      +{vendor.specializations.length - 2}
-                    </Badge>
-                  )}
-                </div>
-              </div>
-
-              {/* Contact Buttons */}
-              <div className="flex gap-2">
-                <Button size="sm" variant="outline" className="flex-1">
-                  <Phone className="h-4 w-4 mr-1" />
-                  Call
-                </Button>
-                <Button size="sm" variant="outline" className="flex-1">
-                  <MessageSquare className="h-4 w-4 mr-1" />
-                  WhatsApp
-                </Button>
-                <Button size="sm" variant="outline" className="flex-1">
-                  <Mail className="h-4 w-4 mr-1" />
-                  Email
-                </Button>
-              </div>
-
-              {/* Last Active */}
-              <div className="text-xs text-muted-foreground text-center">
-                Last active: {vendor.lastActive}
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
-      {filteredVendors.length === 0 && (
+      {/* No Results State */}
+      {!loading && filteredVendors.length === 0 && (
         <Card>
           <CardContent className="pt-6">
             <div className="text-center text-muted-foreground">
