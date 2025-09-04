@@ -7936,6 +7936,14 @@ export type Database = {
         Args: { p_vendor_id: string }
         Returns: Json
       }
+      get_vendor_contact_info: {
+        Args: { vendor_profile_id: string }
+        Returns: {
+          business_address: string
+          business_email: string
+          business_phone: string
+        }[]
+      }
       get_vendor_financial_summary_secure: {
         Args: Record<PropertyKey, never>
         Returns: Json
@@ -8085,14 +8093,22 @@ export type Database = {
       search_vendor_profiles: {
         Args: { search_term?: string }
         Returns: {
+          banner_url: string
           business_description: string
+          business_hours: Json
           business_name: string
           business_type: string
+          created_at: string
+          gallery_images: Json
           id: string
+          is_active: boolean
+          is_verified: boolean
           logo_url: string
           rating: number
           service_areas: Json
+          social_media: Json
           total_reviews: number
+          updated_at: string
         }[]
       }
       validate_field_safe: {
