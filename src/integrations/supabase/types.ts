@@ -7883,6 +7883,23 @@ export type Database = {
           total_count: number
         }[]
       }
+      get_public_vendor_directory: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          banner_url: string
+          business_description: string
+          business_name: string
+          business_type: string
+          id: string
+          is_active: boolean
+          is_verified: boolean
+          logo_url: string
+          rating: number
+          service_areas: Json
+          social_media: Json
+          total_reviews: number
+        }[]
+      }
       get_public_vendor_profiles: {
         Args: Record<PropertyKey, never>
         Returns: {
@@ -7969,6 +7986,16 @@ export type Database = {
           rating: number
           service_areas: Json
           total_reviews: number
+        }[]
+      }
+      get_vendor_sensitive_contact_info: {
+        Args: { vendor_profile_id: string }
+        Returns: {
+          business_address: string
+          business_email: string
+          business_phone: string
+          license_number: string
+          tax_id: string
         }[]
       }
       is_admin_user: {
