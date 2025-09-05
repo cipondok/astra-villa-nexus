@@ -7840,6 +7840,17 @@ export type Database = {
         Args: { p_property_id: string }
         Returns: Json
       }
+      get_public_profile_minimal: {
+        Args: { profile_user_id: string }
+        Returns: {
+          avatar_url: string
+          company_name: string
+          full_name: string
+          id: string
+          role: Database["public"]["Enums"]["user_role"]
+          verification_status: string
+        }[]
+      }
       get_public_property_listings: {
         Args: {
           p_city?: string
