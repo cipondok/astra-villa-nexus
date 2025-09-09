@@ -69,6 +69,9 @@ const AppContent = () => {
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
           <Route path="/settings" element={<AdminDashboard />} />
           <Route path="/agent" element={<AgentDashboard />} />
+          <Route path="/listings" element={<AgentDashboard />} />
+          <Route path="/agent-dashboard" element={<AgentDashboard />} />
+          <Route path="/agent-listings" element={<AgentDashboard />} />
           <Route path="/vendor/kyc" element={<VendorKYCDashboard />} />
           <Route path="/dashboard/vendor" element={<VendorDashboard />} />
           <Route path="/vendor" element={<VendorDashboard />} />
