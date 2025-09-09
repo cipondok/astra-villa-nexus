@@ -3,8 +3,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
-import { Search, MapPin } from "lucide-react";
+import { Search } from "lucide-react";
 import { useState } from "react";
+import LocationSelector from "@/components/location/LocationSelector";
 
 interface SearchFiltersProps {
   language: "en" | "id";
@@ -13,8 +14,8 @@ interface SearchFiltersProps {
 
 const SearchFilters = ({ language, onSearch }: SearchFiltersProps) => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedState, setSelectedState] = useState("");
-  const [selectedCity, setSelectedCity] = useState("");
+  const [selectedProvince, setSelectedProvince] = useState("all");
+  const [selectedCity, setSelectedCity] = useState("all");
   const [propertyType, setPropertyType] = useState("");
   const [listingType, setListingType] = useState("");
   const [priceRange, setPriceRange] = useState("");
@@ -60,11 +61,7 @@ const SearchFilters = ({ language, onSearch }: SearchFiltersProps) => {
 
   const currentText = text[language];
 
-  const indonesianStates = [
-    "DKI Jakarta", "West Java", "East Java", "Central Java", "Bali", "North Sumatra",
-    "South Sumatra", "West Sumatra", "Riau", "South Kalimantan", "East Kalimantan",
-    "North Sulawesi", "South Sulawesi", "West Nusa Tenggara", "East Nusa Tenggara"
-  ];
+  // Location handling is now done by LocationSelector component
 
   const propertyTypes = [
     { value: "house", label: language === "en" ? "🏠 House" : "🏠 Rumah" },
@@ -76,11 +73,20 @@ const SearchFilters = ({ language, onSearch }: SearchFiltersProps) => {
     { value: "commercial", label: language === "en" ? "🏬 Commercial" : "🏬 Komersial" }
   ];
 
+  const handleProvinceChange = (province: string) => {
+    setSelectedProvince(province);
+    setSelectedCity("all"); // Reset city when province changes
+  };
+
+  const handleCityChange = (city: string) => {
+    setSelectedCity(city);
+  };
+
   const handleSearch = () => {
     const searchFilters = {
       query: searchQuery,
-      state: selectedState,
-      city: selectedCity,
+      state: selectedProvince !== "all" ? selectedProvince : "",
+      city: selectedCity !== "all" ? selectedCity : "",
       propertyType: propertyType,
       listingType: listingType,
       priceRange,
@@ -96,30 +102,27 @@ const SearchFilters = ({ language, onSearch }: SearchFiltersProps) => {
     <Card className="enhanced-card glow-gold border-binance-orange/30 backdrop-blur-lg">
       <CardContent className="p-8">
         {/* Main Search Bar */}
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
-          <div className="lg:col-span-2">
-            <div className="relative">
-              <Search className="absolute left-4 top-4 h-5 w-5 text-binance-orange" />
-              <Input
-                placeholder={currentText.search}
-                className="enhanced-input pl-12 h-12 bg-binance-gray border-binance-light-gray text-binance-white placeholder:text-binance-light-gray"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+          <div className="relative">
+            <Search className="absolute left-4 top-4 h-5 w-5 text-binance-orange" />
+            <Input
+              placeholder={currentText.search}
+              className="enhanced-input pl-12 h-12 bg-binance-gray border-binance-light-gray text-binance-white placeholder:text-binance-light-gray"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
           </div>
           
-          <Select value={selectedState} onValueChange={setSelectedState}>
-            <SelectTrigger className="h-12 bg-binance-gray border-binance-light-gray text-binance-white">
-              <SelectValue placeholder={`🌏 ${currentText.state}`} />
-            </SelectTrigger>
-            <SelectContent className="bg-binance-dark-gray border-binance-gray">
-              <SelectItem value="" className="text-binance-white hover:bg-binance-gray">{currentText.state}</SelectItem>
-              {indonesianStates.map((state) => (
-                <SelectItem key={state} value={state} className="text-binance-white hover:bg-binance-gray">{state}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <div className="lg:col-span-2">
+            <LocationSelector
+              selectedProvince={selectedProvince}
+              selectedCity={selectedCity}
+              onProvinceChange={handleProvinceChange}
+              onCityChange={handleCityChange}
+              showLabel={false}
+              className="grid grid-cols-2 gap-2"
+            />
+          </div>
           
           <Select value={propertyType} onValueChange={setPropertyType}>
             <SelectTrigger className="h-12 bg-binance-gray border-binance-light-gray text-binance-white">

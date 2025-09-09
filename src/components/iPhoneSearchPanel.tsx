@@ -125,12 +125,12 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
               seenLocations.add(districtKey);
             }
 
-            // Add area level
+            // Add area level with unique key using full location hierarchy
             const area = item.area_name;
-            const areaKey = `${area}-${district}-area-${index}`;
+            const areaKey = `${area}-${district}-${city}-${province}-area`;
             if (area && !seenLocations.has(areaKey)) {
               locationOptions.push({
-                value: `${area.toLowerCase().replace(/\s+/g, '-')}-${district?.toLowerCase().replace(/\s+/g, '-')}-area-${index}`,
+                value: `${area.toLowerCase().replace(/\s+/g, '-')}-${district?.toLowerCase().replace(/\s+/g, '-')}-${city?.toLowerCase().replace(/\s+/g, '-')}-area`,
                 label: `${area}, ${district}`,
                 type: 'area'
               });
