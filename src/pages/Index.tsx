@@ -265,52 +265,35 @@ const Index = () => {
     setHasSearched(false);
   };
 
-  // Responsive layout wrapper - Optimized for all device sizes
-  const isSmallScreen = isMobile || isTablet;
+  // Mobile-first responsive layout wrapper
   const content = (
-    <div className={cn(
-      "min-h-screen text-foreground relative",
-      isMobile ? "w-full overflow-x-hidden mobile-app-layout" : 
-      isTablet ? "w-full overflow-x-hidden tablet-app-layout" : "",
-      "px-responsive py-responsive"
-    )}>
+    <div className="min-h-screen w-full overflow-x-hidden text-foreground relative container-responsive"
+    >
       {/* Background Wallpaper Layer */}
       <div 
         className="fixed inset-0 z-0 opacity-30 dark:opacity-20"
         style={backgroundStyle}
       />
       
-      {/* Content Layer with backdrop - Responsive padding */}
-      <div className={cn(
-        "relative z-10 bg-white/90 dark:bg-black/90 backdrop-blur-sm",
-        isMobile ? "min-h-screen overflow-x-hidden mobile-safe-area" : 
-        isTablet ? "min-h-screen overflow-x-hidden tablet-safe-area" : "min-h-screen"
-      )}>
+      {/* Content Layer with mobile-first responsive backdrop */}
+      <div className="relative z-10 min-h-screen bg-white/90 dark:bg-black/90 backdrop-blur-sm safe-area-mobile"
+      >
         
-        {/* Hero Intro Slider Section */}
+        {/* Hero Intro Slider Section - Mobile optimized */}
         <section className="relative w-full">
-          <HomeIntroSlider className="h-[50vh]" />
+          <HomeIntroSlider className="h-[50vh] md:h-[60vh] lg:h-[70vh] model-container-mobile" />
         </section>
 
-        {/* Search Panel Section - Positioned below 3D */}
-        <section className={cn(
-          "relative w-full bg-white/95 dark:bg-black/95 backdrop-blur-sm border-t border-white/20",
-          isMobile ? "px-2 py-4" : "px-6 py-8"
-        )}>
-          <div className={cn(
-            "mx-auto text-center w-full",
-            isMobile ? "max-w-full px-1" : "max-w-[1800px]"
-          )}>
+        {/* Search Panel Section - Mobile-first responsive */}
+        <section className="relative w-full bg-white/95 dark:bg-black/95 backdrop-blur-sm border-t border-white/20 p-4 md:p-6 lg:p-8">
+          <div className="mx-auto text-center w-full max-w-6xl">
             {/* Search Panel */}
-            <div className={cn(
-              "animate-scale-in",
-              isMobile ? "max-w-sm mx-auto" : "max-w-4xl mx-auto"
-            )}>
+            <div className="animate-scale-in max-w-4xl mx-auto">
               <div className="mb-6">
-                <h2 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-200 mb-2">
+                <h2 className="text-mobile-h2">
                   Find Your Dream Property
                 </h2>
-                <p className="text-gray-600 dark:text-gray-400">
+                <p className="text-mobile-body text-muted-foreground">
                   🔍 Enhanced search & filtering powered by AI
                 </p>
               </div>

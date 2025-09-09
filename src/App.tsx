@@ -38,6 +38,7 @@ import Notifications from '@/pages/Notifications';
 import Users from '@/pages/Users';
 import Analytics from '@/pages/Analytics';
 import ErrorPage from '@/pages/ErrorPage';
+import MobileFirstDemo from '@/components/responsive/MobileFirstDemo';
 
 
 const AppContent = () => {
@@ -79,6 +80,7 @@ const AppContent = () => {
           <Route path="/notifications" element={<Notifications />} />
           <Route path="/users" element={<Users />} />
           <Route path="/analytics" element={<Analytics />} />
+          <Route path="/mobile-demo" element={<MobileFirstDemo />} />
           <Route path="*" element={<ErrorPage />} />
         </Routes>
       </main>
