@@ -561,7 +561,8 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
       if (key === 'features') return Array.isArray(value) && value.length > 0;
       if (key === 'sortBy') return false; // Don't count sortBy as it has a default value
       if (key === 'checkInDate' || key === 'checkOutDate') return value !== null;
-      return value !== '' && value !== null && value !== undefined;
+      // Exclude empty strings, null, undefined, and 'all' values
+      return value !== '' && value !== null && value !== undefined && value !== 'all';
     }).length;
     
     return count;
@@ -570,9 +571,9 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
   const clearAllFilters = () => {
     setFilters({
       location: '',
-      state: 'all',
-      city: 'all',
-      area: 'all',
+      state: '',
+      city: '', 
+      area: '',
       propertyType: '',
       priceRange: '',
       bedrooms: '',
