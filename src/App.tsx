@@ -37,6 +37,7 @@ import Properties from '@/pages/Properties';
 import Notifications from '@/pages/Notifications';
 import Users from '@/pages/Users';
 import Analytics from '@/pages/Analytics';
+import AddProperty from '@/pages/AddProperty';
 import ErrorPage from '@/pages/ErrorPage';
 import MobileFirstDemo from '@/components/responsive/MobileFirstDemo';
 
@@ -65,6 +66,7 @@ const AppContent = () => {
           <Route path="/dijual" element={<Properties />} />
           <Route path="/3d-showcase" element={<ThreeDShowcase />} />
           <Route path="/properties/:id" element={<PropertyDetail />} />
+          <Route path="/add-property" element={<AddProperty />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
           <Route path="/settings" element={<AdminDashboard />} />
