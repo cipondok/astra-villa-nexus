@@ -38,6 +38,9 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
   });
   const [filters, setFilters] = useState({
     location: '',
+    state: '',
+    city: '',
+    area: '',
     propertyType: '',
     priceRange: '',
     bedrooms: '',
@@ -61,102 +64,142 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
 
 
   // Dynamic data from database
-  const [dynamicLocations, setDynamicLocations] = useState<{value: string, label: string}[]>([]);
+  const [provinces, setProvinces] = useState<{code: string, name: string}[]>([]);
+  const [cities, setCities] = useState<{code: string, name: string, type: string}[]>([]);
+  const [areas, setAreas] = useState<{code: string, name: string}[]>([]);
   const [dynamicPropertyTypes, setDynamicPropertyTypes] = useState<{value: string, label: string}[]>([]);
 
-  // Fetch dynamic data on component mount
+  // Fetch provinces on component mount
   useEffect(() => {
-    const fetchDynamicData = async () => {
-      try {
-        // Fetch locations from the dedicated locations table
-        const { data: locationData } = await supabase
-          .from('locations')
-          .select('province_name, city_name, district_name, subdistrict_name, area_name')
-          .eq('is_active', true)
-          .order('province_name')
-          .order('city_name')
-          .order('district_name');
-
-        // Fetch unique property types
-        const { data: typeData } = await supabase
-          .from('properties')
-          .select('property_type')
-          .not('property_type', 'is', null);
-
-        if (locationData) {
-          // Create comprehensive location options with hierarchical structure
-          const locationOptions = [];
-          const seenLocations = new Set();
-
-          locationData.forEach((item, index) => {
-            // Add province level
-            const province = item.province_name;
-            const provinceKey = `${province}-province`;
-            if (province && !seenLocations.has(provinceKey)) {
-              locationOptions.push({
-                value: `${province.toLowerCase().replace(/\s+/g, '-')}-province`,
-                label: province,
-                type: 'province'
-              });
-              seenLocations.add(provinceKey);
-            }
-
-            // Add city level with unique key
-            const city = item.city_name;
-            const cityKey = `${city}-${province}-city-${index}`;
-            if (city && !seenLocations.has(cityKey)) {
-              locationOptions.push({
-                value: `${city.toLowerCase().replace(/\s+/g, '-')}-${province?.toLowerCase().replace(/\s+/g, '-')}-city-${index}`,
-                label: `${city}, ${province}`,
-                type: 'city'
-              });
-              seenLocations.add(cityKey);
-            }
-
-            // Add district level with unique key
-            const district = item.district_name;
-            const districtKey = `${district}-${city}-district-${index}`;
-            if (district && !seenLocations.has(districtKey)) {
-              locationOptions.push({
-                value: `${district.toLowerCase().replace(/\s+/g, '-')}-${city?.toLowerCase().replace(/\s+/g, '-')}-district-${index}`,
-                label: `${district}, ${city}`,
-                type: 'district'
-              });
-              seenLocations.add(districtKey);
-            }
-
-            // Add area level with unique key using full location hierarchy and index
-            const area = item.area_name;
-            const areaKey = `${area}-${district}-${city}-${province}-area-${index}`;
-            if (area && !seenLocations.has(areaKey)) {
-              locationOptions.push({
-                value: `${area.toLowerCase().replace(/\s+/g, '-')}-${district?.toLowerCase().replace(/\s+/g, '-')}-${city?.toLowerCase().replace(/\s+/g, '-')}-area-${index}`,
-                label: `${area}, ${district}`,
-                type: 'area'
-              });
-              seenLocations.add(areaKey);
-            }
-          });
-
-          setDynamicLocations(locationOptions);
-        }
-
-        if (typeData) {
-          const uniqueTypes = [...new Set(typeData.map(item => item.property_type))]
-            .filter(Boolean)
-            .map(type => ({
-              value: type,
-              label: type.charAt(0).toUpperCase() + type.slice(1)
-            }));
-          setDynamicPropertyTypes(uniqueTypes);
-        }
-      } catch (error) {
-        console.error('Error fetching dynamic data:', error);
-      }
-    };
-
-    fetchDynamicData();
+    fetchProvinces();
+    fetchPropertyTypes();
   }, []);
+
+  // Fetch cities when state changes
+  useEffect(() => {
+    if (filters.state && filters.state !== 'all') {
+      fetchCities(filters.state);
+    } else {
+      setCities([]);
+      setFilters(prev => ({ ...prev, city: 'all', area: 'all' }));
+    }
+  }, [filters.state]);
+
+  // Fetch areas when city changes
+  useEffect(() => {
+    if (filters.city && filters.city !== 'all' && filters.state && filters.state !== 'all') {
+      fetchAreas(filters.state, filters.city);
+    } else {
+      setAreas([]);
+      setFilters(prev => ({ ...prev, area: 'all' }));
+    }
+  }, [filters.city, filters.state]);
+
+  const fetchProvinces = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('locations')
+        .select('province_code, province_name')
+        .eq('is_active', true)
+        .order('province_name');
+
+      if (error) throw error;
+
+      // Remove duplicates
+      const uniqueProvinces = data?.reduce((acc: Array<{code: string, name: string}>, curr) => {
+        if (!acc.find(p => p.code === curr.province_code)) {
+          acc.push({
+            code: curr.province_code,
+            name: curr.province_name
+          });
+        }
+        return acc;
+      }, []) || [];
+
+      setProvinces(uniqueProvinces);
+    } catch (error) {
+      console.error('Error fetching provinces:', error);
+    }
+  };
+
+  const fetchCities = async (provinceCode: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('locations')
+        .select('city_code, city_name, city_type')
+        .eq('province_code', provinceCode)
+        .eq('is_active', true)
+        .order('city_name');
+
+      if (error) throw error;
+
+      // Remove duplicates
+      const uniqueCities = data?.reduce((acc: Array<{code: string, name: string, type: string}>, curr) => {
+        if (!acc.find(c => c.code === curr.city_code)) {
+          acc.push({
+            code: curr.city_code,
+            name: curr.city_name,
+            type: curr.city_type
+          });
+        }
+        return acc;
+      }, []) || [];
+
+      setCities(uniqueCities);
+    } catch (error) {
+      console.error('Error fetching cities:', error);
+    }
+  };
+
+  const fetchAreas = async (provinceCode: string, cityCode: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('locations')
+        .select('district_code, district_name')
+        .eq('province_code', provinceCode)
+        .eq('city_code', cityCode)
+        .eq('is_active', true)
+        .order('district_name');
+
+      if (error) throw error;
+
+      // Remove duplicates
+      const uniqueAreas = data?.reduce((acc: Array<{code: string, name: string}>, curr) => {
+        if (!acc.find(a => a.code === curr.district_code)) {
+          acc.push({
+            code: curr.district_code,
+            name: curr.district_name
+          });
+        }
+        return acc;
+      }, []) || [];
+
+      setAreas(uniqueAreas);
+    } catch (error) {
+      console.error('Error fetching areas:', error);
+    }
+  };
+
+  const fetchPropertyTypes = async () => {
+    try {
+      const { data: typeData } = await supabase
+        .from('properties')
+        .select('property_type')
+        .not('property_type', 'is', null);
+
+      if (typeData) {
+        const uniqueTypes = [...new Set(typeData.map(item => item.property_type))]
+          .filter(Boolean)
+          .map(type => ({
+            value: type,
+            label: type.charAt(0).toUpperCase() + type.slice(1)
+          }));
+        setDynamicPropertyTypes(uniqueTypes);
+      }
+    } catch (error) {
+      console.error('Error fetching property types:', error);
+    }
+  };
 
   const text = {
     en: {
@@ -316,15 +359,29 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
     { id: 'furnished', label: currentText.furnished, icon: '🛋️' },
   ];
 
-  // Use dynamic data if available, fallback to static
-  const locationOptions = dynamicLocations.length > 0 ? dynamicLocations : [
-    { value: 'jakarta', label: 'Jakarta', type: 'city' },
-    { value: 'bali', label: 'Bali', type: 'province' },
-    { value: 'surabaya', label: 'Surabaya', type: 'city' },
-    { value: 'bandung', label: 'Bandung', type: 'city' },
-    { value: 'medan', label: 'Medan', type: 'city' },
-    { value: 'semarang', label: 'Semarang', type: 'city' },
-  ];
+  const handleStateChange = (stateCode: string) => {
+    setFilters(prev => ({ 
+      ...prev, 
+      state: stateCode,
+      city: 'all',
+      area: 'all'
+    }));
+  };
+
+  const handleCityChange = (cityCode: string) => {
+    setFilters(prev => ({ 
+      ...prev, 
+      city: cityCode,
+      area: 'all'
+    }));
+  };
+
+  const handleAreaChange = (areaCode: string) => {
+    setFilters(prev => ({ 
+      ...prev, 
+      area: areaCode
+    }));
+  };
 
   // Use different property types based on active tab
   const getFilteredPropertyTypes = () => {
@@ -513,6 +570,9 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
   const clearAllFilters = () => {
     setFilters({
       location: '',
+      state: 'all',
+      city: 'all',
+      area: 'all',
       propertyType: '',
       priceRange: '',
       bedrooms: '',
@@ -543,7 +603,23 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
 
   const getSelectedFiltersDisplay = () => {
     const selected = [];
-    if (filters.location) selected.push(filters.location);
+    
+    // Combine location parts
+    const locationParts = [];
+    if (filters.state && filters.state !== 'all') {
+      const province = provinces.find(p => p.code === filters.state);
+      if (province) locationParts.push(province.name);
+    }
+    if (filters.city && filters.city !== 'all') {
+      const city = cities.find(c => c.code === filters.city);
+      if (city) locationParts.push(city.name);
+    }
+    if (filters.area && filters.area !== 'all') {
+      const area = areas.find(a => a.code === filters.area);
+      if (area) locationParts.push(area.name);
+    }
+    if (locationParts.length > 0) selected.push(locationParts.join(', '));
+    
     if (filters.propertyType) selected.push(currentText[filters.propertyType as keyof typeof currentText] || filters.propertyType);
     if (filters.priceRange) selected.push(filters.priceRange);
     if (filters.bedrooms) selected.push(`${filters.bedrooms} bed`);
@@ -557,22 +633,36 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
   const handleSearch = () => {
     const listingType = activeTab === 'all' ? '' : activeTab;
     
-    // Extract readable location name from complex location value
-    let locationValue = filters.location;
-    if (locationValue && locationValue !== 'all') {
-      // Extract the readable part - find the label that matches this value
-      const matchedLocation = locationOptions.find(loc => loc.value === locationValue);
-      if (matchedLocation) {
-        // Extract the first part of the label (before the comma)
-        locationValue = matchedLocation.label.split(',')[0].trim();
-      }
+    // Construct location from selected parts
+    let locationValue = '';
+    const locationParts = [];
+    
+    if (filters.state && filters.state !== 'all') {
+      const province = provinces.find(p => p.code === filters.state);
+      if (province) locationParts.push(province.name);
+    }
+    if (filters.city && filters.city !== 'all') {
+      const city = cities.find(c => c.code === filters.city);
+      if (city) locationParts.push(city.name);
+    }
+    if (filters.area && filters.area !== 'all') {
+      const area = areas.find(a => a.code === filters.area);
+      if (area) locationParts.push(area.name);
+    }
+    
+    // Use the most specific location part for search
+    if (locationParts.length > 0) {
+      locationValue = locationParts[locationParts.length - 1]; // Use most specific (last) part
     }
     
     // Base search data
     const searchData: any = {
       searchQuery,
       listingType,
-      location: locationValue === 'all' ? '' : locationValue,
+      location: locationValue,
+      state: filters.state === 'all' ? '' : filters.state,
+      city: filters.city === 'all' ? '' : filters.city,
+      area: filters.area === 'all' ? '' : filters.area,
       propertyType: filters.propertyType === 'all' ? '' : filters.propertyType,
       priceRange: filters.priceRange === 'all' ? '' : filters.priceRange,
       bedrooms: filters.bedrooms === 'all' ? '' : filters.bedrooms,
@@ -689,31 +779,67 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
             </div>
           )}
 
-          {/* Compact Filters Row */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 lg:gap-3">
-            {/* Location Selection */}
-            <Select value={filters.location || "all"} onValueChange={(value) => handleFilterChange('location', value)}>
+          {/* Location Selection Row - 3 separate dropdowns */}
+          <div className="grid grid-cols-3 gap-2 mb-2">
+            {/* State/Province Selection */}
+            <Select value={filters.state || "all"} onValueChange={handleStateChange}>
               <SelectTrigger className="h-10 text-sm bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-300 focus:border-blue-500 transition-colors">
                 <div className="flex items-center gap-2">
                   <MapPin className="h-4 w-4 text-blue-500" />
-                  <SelectValue placeholder={currentText.location} />
+                  <SelectValue placeholder="State" />
                 </div>
               </SelectTrigger>
               <SelectContent className="bg-white dark:bg-gray-950 border-gray-200 dark:border-gray-700 rounded-xl shadow-xl max-h-60 overflow-y-auto">
                 <SelectItem value="all" className="text-sm hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg m-1">{currentText.any}</SelectItem>
-                {locationOptions.map((location) => (
-                  <SelectItem key={location.value} value={location.value} className="text-sm hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg m-1">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs text-blue-600 dark:text-blue-400 capitalize font-medium">
-                        {location.type || 'city'}:
-                      </span>
-                      {location.label}
-                    </div>
+                {provinces.map((province) => (
+                  <SelectItem key={province.code} value={province.code} className="text-sm hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg m-1">
+                    {province.name}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
 
+            {/* City Selection */}
+            <Select 
+              value={filters.city || "all"} 
+              onValueChange={handleCityChange}
+              disabled={!filters.state || filters.state === 'all'}
+            >
+              <SelectTrigger className="h-10 text-sm bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-300 focus:border-blue-500 transition-colors">
+                <SelectValue placeholder="City" />
+              </SelectTrigger>
+              <SelectContent className="bg-white dark:bg-gray-950 border-gray-200 dark:border-gray-700 rounded-xl shadow-xl max-h-60 overflow-y-auto">
+                <SelectItem value="all" className="text-sm hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg m-1">{currentText.any}</SelectItem>
+                {cities.map((city) => (
+                  <SelectItem key={city.code} value={city.code} className="text-sm hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg m-1">
+                    {city.type} {city.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            {/* Area Selection */}
+            <Select 
+              value={filters.area || "all"} 
+              onValueChange={handleAreaChange}
+              disabled={!filters.city || filters.city === 'all'}
+            >
+              <SelectTrigger className="h-10 text-sm bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-300 focus:border-blue-500 transition-colors">
+                <SelectValue placeholder="Area" />
+              </SelectTrigger>
+              <SelectContent className="bg-white dark:bg-gray-950 border-gray-200 dark:border-gray-700 rounded-xl shadow-xl max-h-60 overflow-y-auto">
+                <SelectItem value="all" className="text-sm hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg m-1">{currentText.any}</SelectItem>
+                {areas.map((area) => (
+                  <SelectItem key={area.code} value={area.code} className="text-sm hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg m-1">
+                    {area.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Property Type and Other Filters Row */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 lg:gap-3">
             {/* Property Type Selection */}
             <Select value={filters.propertyType || "all"} onValueChange={(value) => handleFilterChange('propertyType', value)}>
               <SelectTrigger className="h-10 text-sm bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-300 focus:border-blue-500 transition-colors">
