@@ -98,6 +98,7 @@ const Index = () => {
           .from('properties')
           .select('id, title, property_type, listing_type, price, location, bedrooms, bathrooms, area_sqm, images, thumbnail_url, state, city, development_status, description, three_d_model_url, virtual_tour_url')
           .eq('status', 'active')
+          .eq('approval_status', 'approved')
           .not('title', 'is', null)
           .limit(6);
 
@@ -156,6 +157,7 @@ const Index = () => {
         .from('properties')
         .select('id, title, property_type, listing_type, price, location, bedrooms, bathrooms, area_sqm, images, thumbnail_url, state, city, description, three_d_model_url, virtual_tour_url')
         .eq('status', 'active')
+        .eq('approval_status', 'approved')
         .not('title', 'is', null);
 
       // Apply text search if present

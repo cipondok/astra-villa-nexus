@@ -22,6 +22,7 @@ const PropertiesForSaleSection = ({ language, onPropertyClick }: PropertiesForSa
           .from('properties')
           .select('id, title, property_type, listing_type, price, location, bedrooms, bathrooms, area_sqm, images, thumbnail_url, state, city, development_status, description, three_d_model_url, virtual_tour_url')
           .eq('status', 'active')
+          .eq('approval_status', 'approved')
           .eq('listing_type', 'sale')
           .in('development_status', ['completed', 'ready'])
           .not('title', 'is', null)
