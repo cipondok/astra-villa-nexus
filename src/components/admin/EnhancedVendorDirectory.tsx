@@ -63,7 +63,11 @@ const EnhancedVendorDirectory = () => {
         return;
       }
       
-      setVendors(data || []);
+      setVendors((data || []).map((vendor: any) => ({
+        ...vendor,
+        logo_url: vendor.logo_url || null,
+        service_areas: vendor.service_areas || null
+      })));
     } catch (error) {
       console.error('Unexpected error:', error);
       toast({
@@ -89,7 +93,14 @@ const EnhancedVendorDirectory = () => {
         return;
       }
       
-      setVendors(data || []);
+      // Map the data to match our interface, providing defaults for missing fields
+      const mappedData = (data || []).map((vendor: any) => ({
+        ...vendor,
+        logo_url: vendor.logo_url || null,
+        service_areas: vendor.service_areas || null
+      }));
+      
+      setVendors(mappedData);
     } catch (error) {
       console.error('Search error:', error);
     } finally {

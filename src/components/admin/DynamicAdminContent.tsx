@@ -16,6 +16,7 @@ import DatabaseTableManagement from "./DatabaseTableManagement";
 import SecurityMonitoringDashboard from "./SecurityMonitoringDashboard";
 import PaymentSystemStatus from "./PaymentSystemStatus";
 import ImageOptimizationPanel from "./ImageOptimizationPanel";
+import PaymentGatewaySetup from "./PaymentGatewaySetup";
 import AdminPropertyManagement from "./AdminPropertyManagement";
 import LocationManagement from "./LocationManagement";
 import SystemToolsDashboard from "./SystemToolsDashboard";
@@ -92,6 +93,9 @@ const DynamicAdminContent = ({ activeSection, onSectionChange }: DynamicAdminCon
         );
       case "payment-system":
         return <PaymentSystemStatus />;
+      case "payment-gateway-setup":
+      case "gateway-setup":
+        return <PaymentGatewaySetup />;
       case "system-tools":
         return <SystemToolsDashboard />;
       case "error-logs":

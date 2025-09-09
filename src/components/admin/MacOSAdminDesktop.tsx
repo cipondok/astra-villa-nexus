@@ -98,6 +98,14 @@ const desktopApps = [
     color: 'bg-emerald-500'
   },
   { 
+    id: 'gateway-setup', 
+    name: 'Payment Setup', 
+    description: 'Configure local payment gateways and integrations',
+    icon: Settings, 
+    section: 'gateway-setup',
+    color: 'bg-cyan-500'
+  },
+  { 
     id: 'seo', 
     name: 'SEO', 
     description: 'Search engine optimization and website configuration',
