@@ -7982,6 +7982,19 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: Json
       }
+      get_vendor_profile_summary: {
+        Args: { p_vendor_id: string }
+        Returns: {
+          business_description: string
+          business_name: string
+          business_type: string
+          id: string
+          is_verified: boolean
+          logo_url: string
+          rating: number
+          total_reviews: number
+        }[]
+      }
       get_vendor_public_directory: {
         Args: Record<PropertyKey, never>
         Returns: {
