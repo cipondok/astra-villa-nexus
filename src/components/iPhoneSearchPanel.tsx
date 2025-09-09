@@ -101,36 +101,36 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
               seenLocations.add(provinceKey);
             }
 
-            // Add city level
+            // Add city level with unique key
             const city = item.city_name;
-            const cityKey = `${city}-${province}-city`;
+            const cityKey = `${city}-${province}-city-${index}`;
             if (city && !seenLocations.has(cityKey)) {
               locationOptions.push({
-                value: `${city.toLowerCase().replace(/\s+/g, '-')}-${province?.toLowerCase().replace(/\s+/g, '-')}-city`,
+                value: `${city.toLowerCase().replace(/\s+/g, '-')}-${province?.toLowerCase().replace(/\s+/g, '-')}-city-${index}`,
                 label: `${city}, ${province}`,
                 type: 'city'
               });
               seenLocations.add(cityKey);
             }
 
-            // Add district level
+            // Add district level with unique key
             const district = item.district_name;
-            const districtKey = `${district}-${city}-district`;
+            const districtKey = `${district}-${city}-district-${index}`;
             if (district && !seenLocations.has(districtKey)) {
               locationOptions.push({
-                value: `${district.toLowerCase().replace(/\s+/g, '-')}-${city?.toLowerCase().replace(/\s+/g, '-')}-district`,
+                value: `${district.toLowerCase().replace(/\s+/g, '-')}-${city?.toLowerCase().replace(/\s+/g, '-')}-district-${index}`,
                 label: `${district}, ${city}`,
                 type: 'district'
               });
               seenLocations.add(districtKey);
             }
 
-            // Add area level with unique key using full location hierarchy
+            // Add area level with unique key using full location hierarchy and index
             const area = item.area_name;
-            const areaKey = `${area}-${district}-${city}-${province}-area`;
+            const areaKey = `${area}-${district}-${city}-${province}-area-${index}`;
             if (area && !seenLocations.has(areaKey)) {
               locationOptions.push({
-                value: `${area.toLowerCase().replace(/\s+/g, '-')}-${district?.toLowerCase().replace(/\s+/g, '-')}-${city?.toLowerCase().replace(/\s+/g, '-')}-area`,
+                value: `${area.toLowerCase().replace(/\s+/g, '-')}-${district?.toLowerCase().replace(/\s+/g, '-')}-${city?.toLowerCase().replace(/\s+/g, '-')}-area-${index}`,
                 label: `${area}, ${district}`,
                 type: 'area'
               });
@@ -557,17 +557,35 @@ const IPhoneSearchPanel = ({ language, onSearch, onLiveSearch, resultsCount }: I
   const handleSearch = () => {
     const listingType = activeTab === 'all' ? '' : activeTab;
     
+    // Extract readable location name from complex location value
+    let locationValue = filters.location;
+    if (locationValue && locationValue !== 'all') {
+      // Extract the readable part - find the label that matches this value
+      const matchedLocation = locationOptions.find(loc => loc.value === locationValue);
+      if (matchedLocation) {
+        // Extract the first part of the label (before the comma)
+        locationValue = matchedLocation.label.split(',')[0].trim();
+      }
+    }
+    
     // Base search data
     const searchData: any = {
       searchQuery,
       listingType,
-      ...filters,
-      minPrice: priceRange[0] * 1000000,
-      maxPrice: priceRange[1] * 1000000,
+      location: locationValue === 'all' ? '' : locationValue,
+      propertyType: filters.propertyType === 'all' ? '' : filters.propertyType,
+      priceRange: filters.priceRange === 'all' ? '' : filters.priceRange,
+      bedrooms: filters.bedrooms === 'all' ? '' : filters.bedrooms,
+      bathrooms: filters.bathrooms === 'all' ? '' : filters.bathrooms,
       minArea: areaRange[0],
-      maxArea: areaRange[1]
+      maxArea: areaRange[1],
+      features: filters.features,
+      yearBuilt: filters.yearBuilt === 'all' ? '' : filters.yearBuilt,
+      condition: filters.condition === 'all' ? '' : filters.condition,
+      sortBy: filters.sortBy
     };
 
+    console.log('Search data being sent:', searchData);
     onSearch(searchData);
   };
 
