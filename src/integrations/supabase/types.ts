@@ -7958,6 +7958,18 @@ export type Database = {
         Args: { p_vendor_id: string }
         Returns: Json
       }
+      get_vendor_bpjs_summary: {
+        Args: { p_vendor_id?: string }
+        Returns: {
+          bpjs_type: string
+          expires_at: string
+          id: string
+          is_valid: boolean
+          masked_number: string
+          verification_status: string
+          verified_at: string
+        }[]
+      }
       get_vendor_contact_info: {
         Args: { vendor_profile_id: string }
         Returns: {
@@ -8075,6 +8087,10 @@ export type Database = {
       mark_security_alerts_read: {
         Args: Record<PropertyKey, never>
         Returns: boolean
+      }
+      mask_bpjs_number: {
+        Args: { bpjs_number: string }
+        Returns: string
       }
       resolve_database_error: {
         Args: {
