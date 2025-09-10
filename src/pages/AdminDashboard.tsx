@@ -4,7 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertTriangle, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import MacOSAdminDesktop from '@/components/admin/MacOSAdminDesktop';
+import EnhancedAdminDashboard from '@/components/admin/EnhancedAdminDashboard';
 import AlertMonitoringProvider from '@/components/admin/AlertMonitoringProvider';
 import LoadingPage from '@/components/LoadingPage';
 import { useDatabaseConnection } from '@/hooks/useDatabaseConnection';
@@ -78,7 +78,7 @@ const AdminDashboard = () => {
 
   return (
     <AlertMonitoringProvider>
-      <MacOSAdminDesktop />
+      <EnhancedAdminDashboard />
     </AlertMonitoringProvider>
   );
 };
