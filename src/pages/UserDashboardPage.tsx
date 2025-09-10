@@ -1,6 +1,7 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -17,29 +18,41 @@ import {
 } from 'lucide-react';
 
 const UserDashboardPage = () => {
-  const { user, profile } = useAuth();
+  const { user, profile, loading } = useAuth();
+  const navigate = useNavigate();
 
-  if (!user) {
+  useEffect(() => {
+    if (!loading && !user) {
+      navigate('/?auth=true');
+    }
+  }, [user, loading, navigate]);
+
+  if (loading) {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">Please sign in to view your dashboard</h1>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <h2 className="text-lg font-semibold text-foreground">Loading...</h2>
         </div>
       </div>
     );
   }
 
+  if (!user) {
+    return null; // Will redirect in useEffect
+  }
+
   // Render Customer Service Dashboard for CS users
   if (profile?.role === 'customer_service') {
     return (
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8 pt-20">
         <CustomerServiceDashboard />
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 pt-20">
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
           Welcome back, {profile?.full_name || user.email}
