@@ -25,13 +25,21 @@ import {
   RefreshCw,
   CreditCard,
   Key,
-  Globe
+  Globe,
+  Briefcase,
+  Camera,
+  MessageSquare
 } from 'lucide-react';
 import SystemSettings from './SystemSettings';
 import UserManagement from './UserManagement';
 import ApiSettings from './ApiSettings';
 import PaymentSettings from './PaymentSettings';
 import ProjectSettings from './ProjectSettings';
+import IndonesianPaymentGateways from './IndonesianPaymentGateways';
+import PropertyManagement from './PropertyManagement';
+import VirtualTourSettings from './VirtualTourSettings';
+import VendorManagement from './VendorManagement';
+import CustomerSupport from './CustomerSupport';
 
 const EnhancedAdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -169,7 +177,7 @@ const EnhancedAdminDashboard = () => {
 
         {/* Main Content Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-9 lg:w-fit overflow-x-auto">
+          <TabsList className="grid w-full grid-cols-12 lg:w-fit overflow-x-auto">
             <TabsTrigger value="overview" className="gap-2 whitespace-nowrap">
               <BarChart3 className="h-4 w-4" />
               Overview
@@ -178,17 +186,29 @@ const EnhancedAdminDashboard = () => {
               <Users className="h-4 w-4" />
               Users
             </TabsTrigger>
-            <TabsTrigger value="project" className="gap-2 whitespace-nowrap">
+            <TabsTrigger value="properties" className="gap-2 whitespace-nowrap">
               <Globe className="h-4 w-4" />
-              Project
+              Properties
             </TabsTrigger>
-            <TabsTrigger value="api" className="gap-2 whitespace-nowrap">
-              <Key className="h-4 w-4" />
-              API
+            <TabsTrigger value="vendors" className="gap-2 whitespace-nowrap">
+              <Briefcase className="h-4 w-4" />
+              Vendors
             </TabsTrigger>
             <TabsTrigger value="payments" className="gap-2 whitespace-nowrap">
               <CreditCard className="h-4 w-4" />
               Payments
+            </TabsTrigger>
+            <TabsTrigger value="virtual-tours" className="gap-2 whitespace-nowrap">
+              <Camera className="h-4 w-4" />
+              3D Tours
+            </TabsTrigger>
+            <TabsTrigger value="support" className="gap-2 whitespace-nowrap">
+              <MessageSquare className="h-4 w-4" />
+              Support
+            </TabsTrigger>
+            <TabsTrigger value="api" className="gap-2 whitespace-nowrap">
+              <Key className="h-4 w-4" />
+              API
             </TabsTrigger>
             <TabsTrigger value="system" className="gap-2 whitespace-nowrap">
               <Server className="h-4 w-4" />
@@ -306,19 +326,34 @@ const EnhancedAdminDashboard = () => {
             <UserManagement />
           </TabsContent>
 
-          {/* Project Settings Tab */}
-          <TabsContent value="project" className="space-y-6">
-            <ProjectSettings />
+          {/* Properties Management Tab */}
+          <TabsContent value="properties" className="space-y-6">
+            <PropertyManagement />
+          </TabsContent>
+
+          {/* Vendors Management Tab */}
+          <TabsContent value="vendors" className="space-y-6">
+            <VendorManagement />
+          </TabsContent>
+
+          {/* Indonesian Payment Gateways Tab */}
+          <TabsContent value="payments" className="space-y-6">
+            <IndonesianPaymentGateways />
+          </TabsContent>
+
+          {/* Virtual Tours Management Tab */}
+          <TabsContent value="virtual-tours" className="space-y-6">
+            <VirtualTourSettings />
+          </TabsContent>
+
+          {/* Customer Support Tab */}
+          <TabsContent value="support" className="space-y-6">
+            <CustomerSupport />
           </TabsContent>
 
           {/* API Settings Tab */}
           <TabsContent value="api" className="space-y-6">
             <ApiSettings />
-          </TabsContent>
-
-          {/* Payment Settings Tab */}
-          <TabsContent value="payments" className="space-y-6">
-            <PaymentSettings />
           </TabsContent>
 
           {/* System Settings Tab */}
