@@ -7,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Coins, Gift, Calendar, ArrowRightLeft, Settings2, BarChart3 } from 'lucide-react';
-import AstraTokenAnalytics from '../analytics/AstraTokenAnalytics';
+import ASTRATokenAnalytics from '../ASTRATokenAnalytics';
 
 interface AstraTokenSettingsProps {
   settings: any;
@@ -38,7 +38,7 @@ const AstraTokenSettings: React.FC<AstraTokenSettingsProps> = ({ settings = {}, 
 
         <TabsContent value="analytics" className="space-y-4">
           <div className="space-y-4">
-            <AstraTokenAnalytics />
+            <ASTRATokenAnalytics />
           </div>
         </TabsContent>
 

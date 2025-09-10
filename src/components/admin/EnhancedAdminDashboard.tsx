@@ -40,6 +40,7 @@ import PropertyManagement from './PropertyManagement';
 import VirtualTourSettings from './VirtualTourSettings';
 import VendorManagement from './VendorManagement';
 import CustomerSupport from './CustomerSupport';
+import ASTRATokenSettings from './ASTRATokenSettings';
 
 const EnhancedAdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -353,7 +354,33 @@ const EnhancedAdminDashboard = () => {
 
           {/* API Settings Tab */}
           <TabsContent value="api" className="space-y-6">
-            <ApiSettings />
+            <div className="grid gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Zap className="h-5 w-5" />
+                    ASTRA Token API
+                  </CardTitle>
+                  <CardDescription>Configure ASTRA token system API settings</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <ASTRATokenSettings />
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Key className="h-5 w-5" />
+                    General API Settings
+                  </CardTitle>
+                  <CardDescription>Manage other external API configurations</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <ApiSettings />
+                </CardContent>
+              </Card>
+            </div>
           </TabsContent>
 
           {/* System Settings Tab */}
