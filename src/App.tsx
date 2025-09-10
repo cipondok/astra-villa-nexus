@@ -44,7 +44,7 @@ import MobileFirstDemo from '@/components/responsive/MobileFirstDemo';
 
 const AppContent = () => {
   const location = useLocation();
-  const isAdminRoute = ['/admin', '/admin-dashboard', '/settings', '/agent', '/agent-dashboard', '/listings', '/agent-listings', '/add-property'].includes(location.pathname);
+  const isAdminRoute = ['/admin', '/admin-dashboard', '/settings', '/add-property'].includes(location.pathname);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
